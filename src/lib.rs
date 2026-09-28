@@ -3,6 +3,7 @@
 pub mod css;
 pub mod dom;
 pub mod graphics;
+mod image_limits;
 pub mod js_string;
 pub mod layout;
 pub mod net;

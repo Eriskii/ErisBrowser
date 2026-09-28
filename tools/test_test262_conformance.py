@@ -72,13 +72,19 @@ negative:
     def test_strict_async_module_host_and_unimplemented_features_are_visible(self):
         for metadata in ('flags: [onlyStrict]', 'flags: [async]', 'flags: [module]',
                          'features: [Reflect.construct]', 'features: [cross-realm]',
-                         'features: [for-in-order]', 'flags: [FutureFlag]'):
+                         'features: [Symbol]', 'flags: [FutureFlag]'):
             case = sample(('/*---\n' + metadata + '\n---*/\n').encode())
             case['mode'] = runner.modes(case['metadata'])[0]
             with patch.object(runner, 'bounded_process', side_effect=AssertionError('must not execute')):
                 self.assertEqual(runner.run_case(case, Path('/missing'), 1)['status'], 'unsupported')
         case = sample(b'/*---\n---*/\n$262.createRealm();')
         self.assertIn('host hooks', runner.unsupported_reason(case))
+
+    def test_for_in_order_feature_is_executed_without_relaxing_strict_policy(self):
+        case = sample(b'/*---\nfeatures: [for-in-order]\n---*/\nfor(var x in {}) {}')
+        self.assertIsNone(runner.unsupported_reason(case))
+        case['mode'] = 'strict'
+        self.assertIn('strict', runner.unsupported_reason(case))
 
     def test_request_framing_preserves_cr_unicode_and_harness_bytes(self):
         source = b'/*---\r\n---*/\r\n"\r\n";' + '\U0001f980'.encode()
@@ -158,7 +164,8 @@ class ExecutionTests(unittest.TestCase):
             self.assertEqual(run.call_args.args[0], ['/fake'])
 
     def test_preflight_detects_disabled_assertions_and_wrong_error_identity(self):
-        files = {'harness/assert.js': b'unchanged assert', 'harness/sta.js': b'unchanged sta'}
+        files = {'harness/assert.js': b'unchanged assert', 'harness/sta.js': b'unchanged sta',
+                 'harness/propertyHelper.js': b'unchanged property helper'}
         with patch.object(runner, 'bounded_process', return_value=(0, response('complete'), b'')):
             results = runner.harness_preflight(files, Path('/fake'), 1)
         self.assertFalse(all(result['verified'] for result in results))

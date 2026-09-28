@@ -13,6 +13,8 @@ flowchart LR
     UI <-->|Authorized navigation and bounded resources| B[Confined resource broker]
     B --> N[HTTP and TLS]
     B --> F[Explicit local document directory]
+    UI -->|One cross-origin encoded image| I[Fresh confined image decoder]
+    I -->|Validated pixels only, then exit| UI
     R --> D[HTML and DOM]
     D --> J[Script and DOM events]
     D --> C[CSS and layout]
@@ -33,9 +35,12 @@ The parent authorizes the initial URL and optional form body. The broker allows
 that document fetch once, validates redirects, and uses the final document URL
 as the initiator for later resource requests. The parent remembers that URL and
 rejects snapshots which claim a different document. Renderer requests cannot
-supply their own initiator or file grant. Network subresources currently require
-the committed origin, including images and redirects; cross-origin image
-decoding needs a separate boundary before this restriction can be relaxed.
+supply their own initiator or file grant. Network scripts and styles require
+the committed origin, including redirects. Cross-origin images use a fresh
+decoder process with no file or socket access. The renderer receives pixels and
+origin provenance, while the parent withholds the encoded response, headers,
+status and final URL. The decoder exits after one image and is never reused
+across origins. Same-origin images and inline SVG remain in the renderer.
 
 Within the renderer, `Page` loads resources, parses HTML, runs the supported
 script subset and computes styles/layout. The DOM stores HTML, SVG and MathML
@@ -48,9 +53,9 @@ results from replacing newer input.
 Snapshots contain the DOM, display list, hit regions, shared raster images and
 page metadata. The parent checks their graph structure, namespace bindings,
 storage limits, geometry and raster dimensions before publishing them to the
-UI. Resource traffic has separate request/response messages. Both pipe channels
+UI. Resource traffic has separate request/response messages. All pipe channels
 use bounded framing, nonblocking I/O and deadlines; cancellation remains latched
-across nested broker exchanges. Failure or replacement kills and reaps the
+across nested broker and decoder exchanges. Failure or replacement kills and reaps the
 corresponding children.
 
 The painter runs in the UI and draws validated commands with bundled fonts and

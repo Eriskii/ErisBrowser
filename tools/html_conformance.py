@@ -167,12 +167,17 @@ def run_case(case, binary, timeout, legacy):
     result['source_sha256'] = hashlib.sha256(case['source'].encode()).hexdigest()
     result['case_sha256'] = case_fingerprint(case)
     if case['fragment'] is not None:
-        return dict(result, status='unsupported', reason='fragment context parsing', context=case['fragment'])
+        result['context'] = case['fragment']
+    if case['fragment'] is not None and (legacy or case['fragment'] == 'template'):
+        reason = 'baseline parser has no fragment API' if legacy else 'template fragment content representation'
+        return dict(result, status='unsupported', reason=reason, context=case['fragment'])
     if Path(case['file']).name.startswith('scripted_'):
         return dict(result, status='unsupported', reason='synchronous parser script execution')
     if legacy and case['scripting'] == 'enabled':
         return dict(result, status='unsupported', reason='baseline parser has no scripting-flag API')
     command = [str(binary), '--scripting', case['scripting']]
+    if case['fragment'] is not None:
+        command.extend(['--fragment', case['fragment']])
     try:
         status, output, errors = bounded_process(command, case['source'].encode(), timeout)
         if status != 0:
@@ -226,7 +231,7 @@ def main():
                       repository=manifest['repository'], revision=manifest['revision'], corpus_manifest_sha256=corpus_hash, source_cases=source_count,
                       mode_cases=len(results), counts=counts, seconds=round(time.monotonic() - started, 3),
                       measured=['exact DOM tree serialization'],
-                      not_measured=['parse-error counts', 'document compatibility/quirks mode', 'encoding detection', 'fragment parsing', 'synchronous script execution', 'document.write input modes', 'full WPT testharness behavior'],
+                      not_measured=['parse-error counts', 'document compatibility/quirks mode', 'encoding detection', 'template fragment contexts', 'synchronous script execution', 'document.write input modes', 'full WPT testharness behavior'],
                       binary=str(binary), binary_sha256=binary_hash,
                       regressions=regressions, improvements=improvements, cases=results)
         args.output.parent.mkdir(parents=True, exist_ok=True)

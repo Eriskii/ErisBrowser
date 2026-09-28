@@ -80,6 +80,42 @@
       "description": "Column reversal places constrained grown items from the bottom and applies per-item cross alignment.",
       "test": "flex-column-reverse-freezing.html",
       "reference": "flex-column-reverse-freezing-ref.html"
+    },
+    {
+      "name": "float-line-exclusion",
+      "description": "A left float excludes its right and bottom margins from two lines; following inline boxes regain the full width.",
+      "test": "float-line-exclusion.html",
+      "reference": "float-line-exclusion-ref.html"
+    },
+    {
+      "name": "float-opposite-lines",
+      "description": "Left and right floats shorten the first line from both sides and expire at their independent bottoms.",
+      "test": "float-opposite-lines.html",
+      "reference": "float-opposite-lines-ref.html"
+    },
+    {
+      "name": "float-clear-margins",
+      "description": "Same-side floats pack using noncollapsed margins, drop when necessary, and clear:left differs from clear:both. The right float paints over a normal block background.",
+      "test": "float-clear-margins.html",
+      "reference": "float-clear-margins-ref.html"
+    },
+    {
+      "name": "float-shrink-to-fit",
+      "description": "Auto float width is the preferred width when space permits and the available width between preferred minimum and preferred maximum; padding and float containment affect height.",
+      "test": "float-shrink-to-fit.html",
+      "reference": "float-shrink-to-fit-ref.html"
+    },
+    {
+      "name": "float-formatting-context",
+      "description": "An overflow-hidden block avoids an outside float, isolates its own inner float, and does not move a following clear below unrelated internal geometry.",
+      "test": "float-formatting-context.html",
+      "reference": "float-formatting-context-ref.html"
+    },
+    {
+      "name": "float-text-lines",
+      "description": "Monospace text wraps into two shortened lines followed by a full-width line, compared with independently positioned complete text lines.",
+      "test": "float-text-lines.html",
+      "reference": "float-text-lines-ref.html"
     }
   ]
 }

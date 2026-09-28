@@ -239,7 +239,7 @@ fn broker_commits_cross_origin_redirect_and_enforces_the_final_origin() {
         drop(stream);
         let mut stream = accept_request(&destination, "/final/page");
         let body = format!(
-            "<!doctype html><title>Broker redirect</title><p id=result>initial</p><script src=after.js></script><script src='http://{initial_address}/forbidden.js'></script><img src='/redirect-image'><img src='http://{initial_address}/direct-image'>"
+            "<!doctype html><title>Broker redirect</title><p id=result>initial</p><script src=after.js></script><script src='http://{initial_address}/forbidden.js'></script><img src='/redirect-image'><img src='http://{initial_address}/direct-image'><img src='http://{initial_address}/direct-svg'><img src='http://{initial_address}/denied'><img src='/redirect-denied'>"
         );
         write!(stream, "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}", body.len()).unwrap();
         drop(stream);
@@ -249,6 +249,33 @@ fn broker_commits_cross_origin_redirect_and_enforces_the_final_origin() {
         drop(stream);
         let mut stream = accept_request(&destination, "/redirect-image");
         write!(stream, "HTTP/1.1 302 Found\r\nLocation: http://{initial_address}/private.json\r\nContent-Length: 0\r\nConnection: close\r\n\r\n").unwrap();
+        drop(stream);
+        let mut stream = accept_request(&initial, "/private.json");
+        let private = br#"{"secret":"cross-origin body must not reach renderer"}"#;
+        write!(stream, "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nX-Private: hidden\r\nContent-Length: {}\r\nConnection: close\r\n\r\n", private.len()).unwrap();
+        stream.write_all(private).unwrap();
+        drop(stream);
+        let mut png = std::io::Cursor::new(Vec::new());
+        image::RgbaImage::from_pixel(3, 2, image::Rgba([11, 22, 33, 255]))
+            .write_to(&mut png, image::ImageFormat::Png)
+            .unwrap();
+        let png = png.into_inner();
+        let mut stream = accept_request(&initial, "/direct-image");
+        write!(stream, "HTTP/1.1 200 OK\r\nContent-Type: image/png\r\nX-Private: hidden\r\nContent-Length: {}\r\nConnection: close\r\n\r\n", png.len()).unwrap();
+        stream.write_all(&png).unwrap();
+        drop(stream);
+        let mut stream = accept_request(&initial, "/direct-svg");
+        let svg = "<svg width='2' height='3'><rect width='2' height='3' fill='#123456'/></svg>";
+        write!(stream, "HTTP/1.1 200 OK\r\nContent-Type: image/svg+xml\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{svg}", svg.len()).unwrap();
+        drop(stream);
+        let mut stream = accept_request(&initial, "/denied");
+        write!(stream, "HTTP/1.1 403 Forbidden\r\nContent-Type: text/plain\r\nContent-Length: 0\r\nConnection: close\r\n\r\n").unwrap();
+        drop(stream);
+        let mut stream = accept_request(&destination, "/redirect-denied");
+        write!(stream, "HTTP/1.1 302 Found\r\nLocation: http://{initial_address}/redirect-target-denied\r\nContent-Length: 0\r\nConnection: close\r\n\r\n").unwrap();
+        drop(stream);
+        let mut stream = accept_request(&initial, "/redirect-target-denied");
+        write!(stream, "HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\nContent-Length: 0\r\nConnection: close\r\n\r\n").unwrap();
         initial
     });
     let mut client = WorkerClient::spawn_at(Path::new(BINARY), true, &navigation, 105).unwrap();
@@ -271,10 +298,47 @@ fn broker_commits_cross_origin_redirect_and_enforces_the_final_origin() {
         "{:?}",
         snapshot.diagnostics
     );
+    assert_eq!(snapshot.images.len(), 2);
+    let png = snapshot
+        .images
+        .get(&format!("http://{initial_address}/direct-image"))
+        .unwrap();
+    assert_eq!((png.width, png.height), (3, 2));
+    assert!(png.rgba.chunks_exact(4).all(|p| p == [11, 22, 33, 255]));
+    let svg = snapshot
+        .images
+        .get(&format!("http://{initial_address}/direct-svg"))
+        .unwrap();
+    assert_eq!((svg.width, svg.height), (2, 3));
+    assert_eq!(&svg.rgba[..4], &[0x12, 0x34, 0x56, 255]);
+    assert!(!snapshot.images.contains_key("/redirect-image"));
+    assert!(!snapshot.diagnostics.iter().any(|d| d.contains("HTTP 403")
+        || d.contains("HTTP 404")
+        || d.contains("redirect-target-denied")));
+    assert_eq!(
+        snapshot
+            .diagnostics
+            .iter()
+            .filter(|d| d.contains("image loading or decoding failed"))
+            .count(),
+        3
+    );
+    assert!(
+        snapshot
+            .diagnostics
+            .iter()
+            .any(|d| d.contains("image loading or decoding failed"))
+    );
+    assert!(
+        !snapshot
+            .diagnostics
+            .iter()
+            .any(|d| d.contains("cross-origin body") || d.contains("X-Private"))
+    );
     assert_eq!(
         initial.accept().unwrap_err().kind(),
         std::io::ErrorKind::WouldBlock,
-        "blocked scripts/images/redirects must not reach the previous origin"
+        "active cross-origin scripts must not reach the previous origin"
     );
 }
 
@@ -667,5 +731,130 @@ fn malformed_initial_frames_and_eof_exit_without_waiting_for_payload() {
             "invalid initialization cannot return a ready handshake"
         );
         assert!(!process_exists(child.id()));
+    }
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6 and launches fresh image decoders"]
+fn image_decoder_confines_decodes_once_and_exits_without_response_body_leaks() {
+    struct OwnedChild(std::process::Child);
+    impl Drop for OwnedChild {
+        fn drop(&mut self) {
+            let _ = self.0.kill();
+            let _ = self.0.wait();
+        }
+    }
+    fn send(input: &mut impl Write, bytes: &[u8]) {
+        input
+            .write_all(&(bytes.len() as u32).to_le_bytes())
+            .unwrap();
+        input.write_all(bytes).unwrap();
+        input.flush().unwrap();
+    }
+    fn receive(output: &mut impl Read) -> Vec<u8> {
+        let started = Instant::now();
+        let mut bytes = Vec::new();
+        let mut length = None;
+        loop {
+            assert!(
+                started.elapsed() < Duration::from_secs(5),
+                "decoder reply deadline"
+            );
+            let mut chunk = [0; 128];
+            match output.read(&mut chunk) {
+                Ok(0) => panic!("decoder closed output before a complete reply"),
+                Ok(n) => bytes.extend_from_slice(&chunk[..n]),
+                Err(e)
+                    if matches!(
+                        e.kind(),
+                        std::io::ErrorKind::WouldBlock | std::io::ErrorKind::Interrupted
+                    ) =>
+                {
+                    thread::sleep(Duration::from_millis(2))
+                }
+                Err(e) => panic!("decoder pipe: {e}"),
+            }
+            if bytes.len() >= 4 && length.is_none() {
+                let n = u32::from_le_bytes(bytes[..4].try_into().unwrap()) as usize;
+                assert!((5..=8192).contains(&n));
+                length = Some(n);
+            }
+            if let Some(length) = length
+                && bytes.len() >= length + 4
+            {
+                assert_eq!(bytes.len(), length + 4);
+                return bytes[4..].to_vec();
+            }
+        }
+    }
+    let svg = b"<svg width='2' height='1'><rect width='2' height='1' fill='#123456'/></svg>";
+    for (mime, body, budget, success) in [
+        ("image/svg+xml", svg.as_slice(), 8u32, true),
+        ("image/svg+xml", svg.as_slice(), 7u32, false),
+        (
+            "application/json",
+            b"{\"private\":\"secret-response\"}".as_slice(),
+            64u32,
+            false,
+        ),
+    ] {
+        let mut child = OwnedChild(
+            Command::new(BINARY)
+                .arg("--image-decoder")
+                .env_clear()
+                .current_dir("/")
+                .stdin(Stdio::piped())
+                .stdout(Stdio::piped())
+                .stderr(Stdio::null())
+                .spawn()
+                .unwrap(),
+        );
+        let pid = child.0.id();
+        let mut input = child.0.stdin.take().unwrap();
+        let mut output = child.0.stdout.take().unwrap();
+        let flags = rustix::fs::fcntl_getfl(&output).unwrap();
+        rustix::fs::fcntl_setfl(&output, flags | rustix::fs::OFlags::NONBLOCK).unwrap();
+        send(&mut input, b"ERW3\x06");
+        assert_eq!(receive(&mut output), b"ERW3\x02\x01\x00\x00");
+        let status = fs::read_to_string(format!("/proc/{pid}/status")).unwrap();
+        assert!(status.contains("NoNewPrivs:\t1"));
+        assert!(status.contains("Seccomp:\t2"));
+        let mut request = b"ERW3\x07".to_vec();
+        request.extend_from_slice(&(mime.len() as u32).to_le_bytes());
+        request.extend_from_slice(mime.as_bytes());
+        request.extend_from_slice(&budget.to_le_bytes());
+        request.extend_from_slice(&(body.len() as u32).to_le_bytes());
+        request.extend_from_slice(body);
+        send(&mut input, &request);
+        let response = receive(&mut output);
+        assert_eq!(&response[..5], b"ERW3\x08");
+        assert_eq!(response[5], u8::from(success));
+        if success {
+            assert_eq!(u32::from_le_bytes(response[6..10].try_into().unwrap()), 2);
+            assert_eq!(u32::from_le_bytes(response[10..14].try_into().unwrap()), 1);
+            assert_eq!(
+                &response[14..],
+                &[0x12, 0x34, 0x56, 255, 0x12, 0x34, 0x56, 255]
+            );
+        } else {
+            assert_eq!(&response[10..], b"image decoding failed");
+            assert!(!String::from_utf8_lossy(&response).contains("secret-response"));
+        }
+        let started = Instant::now();
+        let status = loop {
+            if let Some(status) = child.0.try_wait().unwrap() {
+                break status;
+            }
+            assert!(
+                started.elapsed() < Duration::from_secs(2),
+                "decoder must exit after one response"
+            );
+            thread::sleep(Duration::from_millis(2));
+        };
+        assert!(status.success());
+        assert!(
+            !process_exists(pid),
+            "decoder reaped after exactly one request"
+        );
     }
 }

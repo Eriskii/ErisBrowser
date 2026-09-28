@@ -290,14 +290,14 @@ mod tests {
     #[test]
     fn diagnostic_names_cannot_spoof_intrinsic_error_identity() {
         let fake = evaluate(request(
-            "function Fake() {} Fake.name = 'TypeError'; throw new Fake();",
+            "function Fake() {} Object.defineProperty(Fake, 'name', {value: 'TypeError'}); throw new Fake();",
         ));
         assert_eq!(fake.error_type, "TypeError");
         assert_eq!(fake.error_identity, "");
         let shaped = evaluate(request("throw {constructor: TypeError};"));
         assert_eq!(shaped.error_identity, "");
         let renamed = evaluate(request(
-            "TypeError.name = 'Renamed'; throw new TypeError();",
+            "Object.defineProperty(TypeError, 'name', {value: 'Renamed'}); throw new TypeError();",
         ));
         assert_eq!(renamed.error_type, "Renamed");
         assert_eq!(renamed.error_identity, "TypeError");

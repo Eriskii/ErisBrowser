@@ -12,6 +12,8 @@ const MAX_VISITS: usize = 100_000;
 const MAX_COMMANDS: usize = 200_000;
 const MAX_GLYPHS: usize = 500_000;
 const MAX_FLEX_WORK: usize = 1_000_000;
+const MAX_FLOAT_WORK: usize = 1_000_000;
+const MAX_FLOATS: usize = 4096;
 const MAX_EXTENT: f32 = 1_000_000.0;
 
 #[derive(Debug, Clone)]
@@ -72,8 +74,43 @@ struct Fragment {
 enum InlineKind {
     Text(String),
     Space(String),
-    Box(Fragment),
+    Box(Fragment, Sides),
+    Float(NodeId),
     Break,
+}
+
+#[derive(Clone, Copy)]
+struct FloatExclusion {
+    outer: Rect,
+    right: bool,
+}
+
+struct FloatPaint {
+    fragment: Fragment,
+    x: f32,
+    y: f32,
+}
+
+#[derive(Default)]
+struct FloatContext {
+    boxes: Vec<FloatExclusion>,
+    paint: Vec<FloatPaint>,
+    bottom: f32,
+    left_bottom: f32,
+    right_bottom: f32,
+    source_top: f32,
+}
+
+#[derive(Clone, Copy)]
+struct FloatBand {
+    left: f32,
+    right: f32,
+    next: Option<f32>,
+}
+impl FloatBand {
+    fn width(self) -> f32 {
+        (self.right - self.left).max(0.0)
+    }
 }
 
 struct InlineItem {
@@ -97,6 +134,12 @@ struct Engine<'a> {
     emitted_glyphs_left: usize,
     intrinsic_work_left: Counter<usize>,
     flex_work_left: usize,
+    float_work_left: usize,
+    floats_left: usize,
+    floats: FloatContext,
+    fragment_root: Option<NodeId>,
+    commands_created: usize,
+    open_clips: usize,
     canvas_background_node: Option<NodeId>,
     fallback: ComputedStyle,
 }
@@ -140,6 +183,12 @@ pub fn layout(
         emitted_glyphs_left: MAX_GLYPHS,
         intrinsic_work_left: Counter::new(MAX_GLYPHS),
         flex_work_left: MAX_FLEX_WORK,
+        float_work_left: MAX_FLOAT_WORK,
+        floats_left: MAX_FLOATS,
+        floats: FloatContext::default(),
+        fragment_root: None,
+        commands_created: 0,
+        open_clips: 0,
         canvas_background_node,
         fallback: ComputedStyle::default(),
     };
@@ -212,7 +261,7 @@ impl Engine<'_> {
     fn enter(&mut self, id: NodeId, depth: usize) -> bool {
         if depth > MAX_DEPTH
             || self.visits >= MAX_VISITS
-            || self.commands.len() >= MAX_COMMANDS
+            || self.commands_created + self.open_clips >= MAX_COMMANDS.saturating_sub(8)
             || self.doc.nodes.get(id).is_none()
         {
             return false;
@@ -221,9 +270,24 @@ impl Engine<'_> {
         true
     }
 
-    fn push(&mut self, mut command: DrawCommand) {
-        if self.commands.len() >= MAX_COMMANDS {
-            return;
+    fn push(&mut self, mut command: DrawCommand) -> bool {
+        // Closing every emitted clip is part of the allocation, including clips
+        // around a fragment whose descendants consume the remaining quota.
+        match command {
+            DrawCommand::PushClip { .. } => {
+                if self.commands_created + self.open_clips + 2 > MAX_COMMANDS {
+                    return false;
+                }
+                self.open_clips += 1;
+            }
+            DrawCommand::PopClip => {
+                if self.open_clips == 0 {
+                    return false;
+                }
+                self.open_clips -= 1;
+            }
+            _ if self.commands_created + self.open_clips >= MAX_COMMANDS => return false,
+            _ => {}
         }
         // Tokenization bounds source work; this separate budget also covers
         // generated markers, controls, alt text, and expanded whitespace.
@@ -237,10 +301,83 @@ impl Engine<'_> {
             text.truncate(end);
             self.emitted_glyphs_left -= glyphs;
             if text.is_empty() {
-                return;
+                return false;
             }
         }
+        self.commands_created += 1;
         self.commands.push(command);
+        true
+    }
+
+    fn is_float(&self, id: NodeId) -> bool {
+        self.style(id).float != "none"
+            && !matches!(self.style(id).position.as_str(), "absolute" | "fixed")
+            && matches!(self.doc.nodes[id].kind, NodeKind::Element(_))
+    }
+
+    fn establishes_bfc(&self, id: NodeId) -> bool {
+        let style = self.style(id);
+        id == self.doc.root
+            || self.fragment_root == Some(id)
+            || self.doc.nodes[id].parent == Some(self.doc.root)
+            || self.is_float(id)
+            || style.flow_root
+            || matches!(
+                style.display,
+                Display::InlineBlock | Display::Flex | Display::Grid
+            )
+            || matches!(style.overflow.as_str(), "hidden" | "auto" | "scroll")
+            || matches!(style.position.as_str(), "absolute" | "fixed")
+            || matches!(self.layout_tag(id), "table" | "td" | "th")
+    }
+
+    fn clear_y(&self, id: NodeId, y: f32) -> f32 {
+        y.max(match self.style(id).clear.as_str() {
+            "left" => self.floats.left_bottom,
+            "right" => self.floats.right_bottom,
+            "both" => self.floats.bottom,
+            _ => y,
+        })
+    }
+
+    /// Margin boxes exclude complete line bands, not merely a text baseline.
+    /// On budget exhaustion conservatively move below all existing floats.
+    fn float_band(&mut self, x: f32, y: f32, width: f32, height: f32) -> FloatBand {
+        let mut band = FloatBand {
+            left: x,
+            right: x + width,
+            next: None,
+        };
+        if y >= self.floats.bottom {
+            return band;
+        }
+        if self.float_work_left < self.floats.boxes.len() {
+            self.float_work_left = 0;
+            band.right = x;
+            band.next = Some(self.floats.bottom);
+            return band;
+        }
+        self.float_work_left -= self.floats.boxes.len();
+        for float in &self.floats.boxes {
+            let r = float.outer;
+            if r.height <= 0.0 || r.y >= y + height.max(0.01) || r.y + r.height <= y {
+                continue;
+            }
+            // A nested containing block need not overlap a float's horizontal band.
+            if r.x >= x + width || r.x + r.width <= x {
+                continue;
+            }
+            if float.right {
+                band.right = band.right.min(r.x);
+            } else {
+                band.left = band.left.max(r.x + r.width);
+            }
+            let bottom = r.y + r.height;
+            band.next = Some(band.next.map_or(bottom, |old| old.min(bottom)));
+        }
+        band.left = band.left.clamp(x, x + width);
+        band.right = band.right.clamp(x, x + width);
+        band
     }
 
     fn margins(&self, id: NodeId, reference: f32) -> Sides {
@@ -366,6 +503,19 @@ impl Engine<'_> {
         let inner_width = (width - padding.horizontal() - border.horizontal()).max(0.0);
         let inner_x = x + border.left + padding.left;
         let inner_y = y + border.top + padding.top;
+        let outer_floats = self.establishes_bfc(id).then(|| {
+            std::mem::replace(
+                &mut self.floats,
+                FloatContext {
+                    bottom: inner_y,
+                    left_bottom: inner_y,
+                    right_bottom: inner_y,
+                    source_top: inner_y,
+                    ..FloatContext::default()
+                },
+            )
+        });
+        let float_paint_start = self.floats.paint.len();
         let extras = padding.vertical() + border.vertical();
         let css_to_border = if style.box_sizing == "border-box" {
             0.0
@@ -394,16 +544,16 @@ impl Engine<'_> {
         });
         let clip_index = if matches!(style.overflow.as_str(), "hidden" | "clip") {
             let index = self.commands.len();
-            self.push(DrawCommand::PushClip {
+            let opened = self.push(DrawCommand::PushClip {
                 rect: Rect::default(),
             });
-            Some(index)
+            opened.then_some(index)
         } else {
             None
         };
         let tag = self.layout_tag(id).to_owned();
         let children = self.doc.nodes[id].children.clone();
-        let natural_height = if matches!(tag.as_str(), "img" | "svg" | "canvas" | "video") {
+        let mut natural_height = if matches!(tag.as_str(), "img" | "svg" | "canvas" | "video") {
             self.paint_replaced(id, &tag, inner_x, inner_y, inner_width)
         } else if matches!(tag.as_str(), "input" | "textarea" | "select") {
             self.paint_control(id, &tag, inner_x, inner_y, inner_width)
@@ -444,6 +594,14 @@ impl Engine<'_> {
                 depth + 1,
             )
         };
+        if outer_floats.is_some() {
+            natural_height = natural_height.max(self.floats.bottom - inner_y);
+            // Float layers cover in-flow block backgrounds. Text normally does
+            // not intersect them because line boxes use the exclusion bands.
+            for paint in std::mem::take(&mut self.floats.paint) {
+                self.append_fragment(paint.fragment, paint.x, paint.y);
+            }
+        }
         let mut height = definite_height.unwrap_or(natural_height + extras);
         if forced.1.is_none()
             && let Some(max) = resolve(style.max_height, self.viewport.height)
@@ -538,6 +696,28 @@ impl Engine<'_> {
             for hit in &mut self.hits[hit_start + 1..] {
                 hit.rect = hit.rect.intersect(clip);
             }
+            // overflow:clip does not establish a formatting context. Floats
+            // escape its flow height, but their deferred paint remains clipped.
+            for paint in self.floats.paint.iter_mut().skip(float_paint_start) {
+                let local = rect(clip.x - paint.x, clip.y - paint.y, clip.width, clip.height);
+                if self.commands_created + self.open_clips + 2 <= MAX_COMMANDS {
+                    self.commands_created += 2;
+                    paint
+                        .fragment
+                        .commands
+                        .insert(0, DrawCommand::PushClip { rect: local });
+                    paint.fragment.commands.push(DrawCommand::PopClip);
+                    for hit in &mut paint.fragment.hits {
+                        hit.rect = hit.rect.intersect(local);
+                    }
+                } else {
+                    paint.fragment.commands.clear();
+                    paint.fragment.hits.clear();
+                }
+            }
+        }
+        if let Some(parent) = outer_floats {
+            self.floats = parent;
         }
         Size { width, height }
     }
@@ -564,6 +744,10 @@ impl Engine<'_> {
                 positioned.push(child);
                 continue;
             }
+            if self.is_float(child) {
+                inline.push(child);
+                continue;
+            }
             if matches!(
                 style.display,
                 Display::Block | Display::Flex | Display::Grid
@@ -585,11 +769,38 @@ impl Engine<'_> {
                 }
                 let margin = self.margins(child, width);
                 cursor += collapsed_margin(previous_bottom, margin.top);
+                cursor = self.clear_y(child, cursor);
+                self.floats.source_top = self.floats.source_top.max(cursor);
                 let available = (width - margin.horizontal()).max(0.0);
-                let child_width = self.width_for(child, available, width);
-                let child_x = x + self.block_left(child, width, child_width, margin);
-                let child_size =
-                    self.layout_box(child, child_x, cursor, width, Some(child_width), depth);
+                let mut child_width = self.width_for(child, available, width);
+                let child_size = if !self.floats.boxes.is_empty()
+                    && (self.establishes_bfc(child)
+                        || matches!(self.layout_tag(child), "img" | "svg" | "canvas" | "video"))
+                {
+                    let band = self.float_band(x, cursor, width, 0.01);
+                    if matches!(self.style(child).width, Length::Auto)
+                        && band.width() > margin.horizontal()
+                    {
+                        child_width =
+                            self.width_for(child, band.width() - margin.horizontal(), width);
+                    }
+                    let fragment = self.fragment(child, width, child_width, depth);
+                    let size = fragment.size;
+                    let band = loop {
+                        let band = self.float_band(x, cursor, width, size.height);
+                        if size.width + margin.horizontal() <= band.width() || band.next.is_none() {
+                            break band;
+                        }
+                        cursor = band.next.unwrap().max(cursor);
+                    };
+                    let child_x =
+                        band.left + self.block_left(child, band.width(), child_width, margin);
+                    self.append_fragment(fragment, child_x, cursor);
+                    size
+                } else {
+                    let child_x = x + self.block_left(child, width, child_width, margin);
+                    self.layout_box(child, child_x, cursor, width, Some(child_width), depth)
+                };
                 cursor += child_size.height;
                 previous_bottom = margin.bottom;
             } else {
@@ -674,7 +885,9 @@ impl Engine<'_> {
     ) -> Fragment {
         let command_start = self.commands.len();
         let hit_start = self.hits.len();
+        let old_fragment_root = self.fragment_root.replace(id);
         let size = self.layout_box_sized(id, 0.0, 0.0, available, (Some(width), height), depth);
+        self.fragment_root = old_fragment_root;
         Fragment {
             size,
             commands: self.commands.split_off(command_start),
@@ -728,6 +941,17 @@ impl Engine<'_> {
         if !self.enter(id, depth) || self.is_hidden(id) {
             return;
         }
+        if self.is_float(id) {
+            output.push(InlineItem {
+                node: id,
+                owner: id,
+                kind: InlineKind::Float(id),
+                width: 0.0,
+                height: 0.0,
+                preserve: false,
+            });
+            return;
+        }
         match &self.doc.nodes[id].kind {
             NodeKind::Text(text) => {
                 let text = text.chars().take(self.glyphs_left).collect::<String>();
@@ -767,7 +991,7 @@ impl Engine<'_> {
                         owner: id,
                         width: fragment.size.width + margin.horizontal(),
                         height: fragment.size.height + margin.vertical(),
-                        kind: InlineKind::Box(fragment),
+                        kind: InlineKind::Box(fragment, margin),
                         preserve: false,
                     });
                 } else {
@@ -866,6 +1090,171 @@ impl Engine<'_> {
         });
     }
 
+    /// Preferred minimum/preferred widths for bounded shrink-to-fit sizing.
+    /// Block children start new preferred lines; inline children share a line.
+    fn preferred_widths(&self, id: NodeId, available: f32, depth: usize) -> (f32, f32) {
+        let work = self.intrinsic_work_left.get();
+        if depth > MAX_DEPTH || work == 0 || self.is_hidden(id) {
+            return (0.0, 0.0);
+        }
+        self.intrinsic_work_left.set(work - 1);
+        let style = self.style(id);
+        let tag = self.layout_tag(id);
+        if resolve(style.width, available).is_some()
+            || matches!(
+                tag,
+                "img" | "svg" | "canvas" | "video" | "input" | "textarea" | "select"
+            )
+        {
+            let width = self.width_for(id, available, available);
+            return (width, width);
+        }
+        if let NodeKind::Text(text) = &self.doc.nodes[id].kind {
+            let value: String = text
+                .chars()
+                .take(4096.min(self.intrinsic_work_left.get()))
+                .collect();
+            self.intrinsic_work_left.set(
+                self.intrinsic_work_left
+                    .get()
+                    .saturating_sub(value.chars().count()),
+            );
+            let preserve = matches!(
+                style.white_space.as_str(),
+                "pre" | "pre-wrap" | "break-spaces"
+            );
+            let mut min = 0.0f32;
+            let mut max = 0.0f32;
+            for line in value.split(['\n', '\r']) {
+                let normalized = if preserve {
+                    line.replace('\t', "    ")
+                } else {
+                    line.split_ascii_whitespace().collect::<Vec<_>>().join(" ")
+                };
+                max = max.max(self.measure(&normalized, style));
+                for word in normalized.split_ascii_whitespace() {
+                    min = min.max(self.measure(word, style));
+                }
+            }
+            // Normal newlines collapse to spaces rather than forced breaks.
+            if !matches!(
+                style.white_space.as_str(),
+                "pre" | "pre-wrap" | "pre-line" | "break-spaces"
+            ) {
+                let normalized = value.split_ascii_whitespace().collect::<Vec<_>>().join(" ");
+                max = self.measure(&normalized, style);
+                // Keep boundary spaces when adjacent inline descendants contribute.
+                if value.starts_with(|c: char| c.is_ascii_whitespace()) {
+                    max += self.measure(" ", style);
+                }
+                if value.ends_with(|c: char| c.is_ascii_whitespace()) && !normalized.is_empty() {
+                    max += self.measure(" ", style);
+                }
+            }
+            if matches!(style.white_space.as_str(), "pre" | "nowrap") {
+                min = max;
+            }
+            return (extent(min), extent(max));
+        }
+        let mut min = 0.0f32;
+        let mut max = 0.0f32;
+        let mut inline = 0.0f32;
+        for &child in &self.doc.nodes[id].children {
+            if self.intrinsic_work_left.get() == 0 {
+                break;
+            }
+            if self.is_hidden(child)
+                || matches!(self.style(child).position.as_str(), "absolute" | "fixed")
+            {
+                continue;
+            }
+            let (child_min, child_max) = self.preferred_widths(child, available, depth + 1);
+            let margins = self.margins(child, available).horizontal();
+            min = min.max(child_min + margins);
+            if matches!(
+                self.style(child).display,
+                Display::Block | Display::Flex | Display::Grid
+            ) || self.layout_tag(child) == "br"
+            {
+                max = max.max(inline).max(child_max + margins);
+                inline = 0.0;
+            } else {
+                inline += child_max + margins;
+            }
+        }
+        let extra = self.padding(id, available).horizontal() + self.borders(id).horizontal();
+        (extent(min + extra), extent(max.max(inline) + extra))
+    }
+
+    fn place_float(&mut self, id: NodeId, x: f32, y: f32, width: f32, line: Size, depth: usize) {
+        if self.floats_left == 0 || self.visits >= MAX_VISITS || y >= MAX_EXTENT {
+            return;
+        }
+        self.floats_left -= 1;
+        let margin = self.margins(id, width);
+        let style = self.style(id);
+        let right = style.float == "right";
+        let mut box_width = self.width_for(id, (width - margin.horizontal()).max(0.0), width);
+        if matches!(style.width, Length::Auto)
+            && !matches!(
+                self.layout_tag(id),
+                "img" | "svg" | "canvas" | "video" | "input" | "textarea" | "select"
+            )
+        {
+            let (min, preferred) = self.preferred_widths(id, width, depth);
+            let (lower, upper) = self.flex_limits(id, width, width, false);
+            box_width = min
+                .max(width - margin.horizontal())
+                .min(preferred)
+                .clamp(lower, upper);
+        }
+        let fragment = self.fragment(id, width, box_width, depth + 1);
+        let outer_width = (fragment.size.width + margin.horizontal()).max(0.0);
+        let outer_height = (fragment.size.height + margin.vertical()).max(0.0);
+        let mut top = self.clear_y(id, y.max(self.floats.source_top));
+        let band = loop {
+            if top >= MAX_EXTENT {
+                return;
+            }
+            let band = self.float_band(x, top, width, outer_height);
+            let same_line = line.width > 0.0 && top < y + line.height;
+            let required = outer_width + if same_line { line.width } else { 0.0 };
+            if required <= band.width() || (band.next.is_none() && !same_line) {
+                break band;
+            }
+            // A float that does not fit beside earlier inline content starts no
+            // higher than that line's bottom; the earlier text remains on its line.
+            top = match (band.next, same_line) {
+                (Some(next), true) => next.min(y + line.height).max(top + 0.01),
+                (Some(next), false) => next,
+                (None, true) => y + line.height,
+                (None, false) => break band,
+            };
+        };
+        let left = if right {
+            band.right - outer_width
+        } else {
+            band.left
+        };
+        self.floats.source_top = self.floats.source_top.max(top);
+        let bottom = top + outer_height;
+        self.floats.bottom = self.floats.bottom.max(bottom);
+        if right {
+            self.floats.right_bottom = self.floats.right_bottom.max(bottom);
+        } else {
+            self.floats.left_bottom = self.floats.left_bottom.max(bottom);
+        }
+        self.floats.boxes.push(FloatExclusion {
+            outer: rect(left, top, outer_width, outer_height),
+            right,
+        });
+        self.floats.paint.push(FloatPaint {
+            fragment,
+            x: left + margin.left,
+            y: top + margin.top,
+        });
+    }
+
     fn layout_inline(
         &mut self,
         nodes: &[NodeId],
@@ -881,14 +1270,47 @@ impl Engine<'_> {
         }
         let mut line = Vec::new();
         let mut line_width = 0.0;
+        let mut line_extent = 0.0f32;
+        let mut line_baseline = 0.0f32;
+        let mut line_descent = 0.0f32;
+        let mut line_max_height = 0.0f32;
         let mut cursor = y;
         let mut pending_break = false;
         for token in tokens {
+            if cursor >= MAX_EXTENT {
+                break;
+            }
+            if let InlineKind::Float(id) = token.kind {
+                self.place_float(
+                    id,
+                    x,
+                    cursor,
+                    width,
+                    Size {
+                        width: line_width,
+                        height: line_extent,
+                    },
+                    depth,
+                );
+                continue;
+            }
             if matches!(token.kind, InlineKind::Break) {
+                let band = self.float_band(x, cursor, width, line_extent.max(token.height));
                 cursor += self
-                    .paint_line(std::mem::take(&mut line), x, cursor, width, align, false)
+                    .paint_line(
+                        std::mem::take(&mut line),
+                        band.left,
+                        cursor,
+                        band.width(),
+                        align,
+                        false,
+                    )
                     .max(token.height);
                 line_width = 0.0;
+                line_extent = 0.0;
+                line_baseline = 0.0;
+                line_descent = 0.0;
+                line_max_height = 0.0;
                 pending_break = true;
                 continue;
             }
@@ -906,16 +1328,64 @@ impl Engine<'_> {
                 self.style(token.node).white_space.as_str(),
                 "pre" | "nowrap"
             );
-            if can_wrap && !line.is_empty() && line_width + token.width > width && !space {
-                cursor += self.paint_line(std::mem::take(&mut line), x, cursor, width, align, true);
+            let (baseline, descent) = match token.kind {
+                InlineKind::Text(_) | InlineKind::Space(_) => {
+                    let size = font_size(self.style(token.node));
+                    let leading = (token.height - size * 1.3).max(0.0) / 2.0;
+                    (size * 0.95 + leading, size * 0.35 + leading)
+                }
+                _ => (token.height, 0.0),
+            };
+            let token_height = token.height.max(baseline + descent);
+            let prospective = line_max_height
+                .max(token.height)
+                .max(line_baseline.max(baseline) + line_descent.max(descent));
+            let band = self.float_band(x, cursor, width, prospective);
+            if can_wrap && !line.is_empty() && line_width + token.width > band.width() && !space {
+                let previous = self.float_band(x, cursor, width, line_extent);
+                self.floats.source_top = self.floats.source_top.max(cursor);
+                cursor += self.paint_line(
+                    std::mem::take(&mut line),
+                    previous.left,
+                    cursor,
+                    previous.width(),
+                    align,
+                    true,
+                );
                 line_width = 0.0;
+                line_baseline = 0.0;
+                line_descent = 0.0;
+                line_max_height = 0.0;
+            }
+            if line.is_empty() && !space {
+                loop {
+                    let band = self.float_band(x, cursor, width, token_height);
+                    if token.width <= band.width() || band.next.is_none() {
+                        break;
+                    }
+                    cursor = band.next.unwrap();
+                }
+            } else if !can_wrap {
+                loop {
+                    let band = self.float_band(x, cursor, width, prospective);
+                    if line_width + token.width <= band.width() || band.next.is_none() {
+                        break;
+                    }
+                    cursor = band.next.unwrap();
+                }
             }
             line_width += token.width;
+            line_baseline = line_baseline.max(baseline);
+            line_descent = line_descent.max(descent);
+            line_max_height = line_max_height.max(token.height);
+            line_extent = line_max_height.max(line_baseline + line_descent);
             line.push(token);
             pending_break = false;
         }
         if !line.is_empty() {
-            cursor += self.paint_line(line, x, cursor, width, align, false);
+            let band = self.float_band(x, cursor, width, line_extent);
+            self.floats.source_top = self.floats.source_top.max(cursor);
+            cursor += self.paint_line(line, band.left, cursor, band.width(), align, false);
         } else if pending_break {
             // A trailing <br> establishes an empty final line.
             cursor += nodes
@@ -1040,8 +1510,7 @@ impl Engine<'_> {
                         rect: item_rect,
                     });
                 }
-                InlineKind::Box(fragment) => {
-                    let margin = self.margins(item.node, available);
+                InlineKind::Box(fragment, margin) => {
                     let offset = match style.vertical_align.as_str() {
                         "top" | "text-top" => 0.0,
                         "middle" => (height - item.height) / 2.0,
@@ -1050,7 +1519,7 @@ impl Engine<'_> {
                     };
                     self.append_fragment(fragment, cursor + margin.left, y + offset + margin.top);
                 }
-                InlineKind::Break => {}
+                InlineKind::Break | InlineKind::Float(_) => {}
             }
             cursor += item.width + if is_space { extra_space } else { 0.0 };
         }
@@ -2396,6 +2865,263 @@ mod tests {
             .find(|hit| hit.node == node)
             .expect("element is laid out")
             .rect
+    }
+
+    #[test]
+    fn floats_exclude_line_bands_and_restore_full_width_below_margin_boxes() {
+        let mut source = String::from(
+            "<style>body{margin:0}main{width:240px}aside{float:left;width:60px;height:30px;margin-right:20px;margin-bottom:10px}i{display:inline-block;width:40px;height:20px}</style><main><aside id=f></aside>",
+        );
+        for id in 0..14 {
+            source.push_str(&format!("<i id=t{id}></i>"));
+        }
+        source.push_str("</main>");
+        let (doc, result) = render(&source, 320.0);
+        assert_eq!(bounds(&doc, &result, "#t0").x, 80.0);
+        assert_eq!(bounds(&doc, &result, "#t3").x, 200.0);
+        assert_eq!(bounds(&doc, &result, "#t4").x, 80.0);
+        assert_eq!(bounds(&doc, &result, "#t4").y, 20.0);
+        assert_eq!(bounds(&doc, &result, "#t8").x, 0.0);
+        assert_eq!(bounds(&doc, &result, "#t8").y, 40.0);
+        assert_eq!(bounds(&doc, &result, "main").height, 60.0);
+    }
+
+    #[test]
+    fn same_and_opposite_floats_pack_then_drop_to_the_first_available_bottom() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{width:240px}aside{float:left;margin:5px}#a{width:70px;height:30px}#b{width:90px;height:20px}#c{float:right;width:40px;height:60px}#d{width:100px;height:10px}section{height:10px}#left{clear:left}#both{clear:both}</style><main><aside id=a></aside><aside id=b></aside><aside id=c></aside><aside id=d></aside><section id=left></section><section id=both></section></main>",
+            320.0,
+        );
+        for (id, x, y) in [
+            ("#a", 5.0, 5.0),
+            ("#b", 85.0, 5.0),
+            ("#c", 195.0, 5.0),
+            ("#d", 85.0, 35.0),
+        ] {
+            let r = bounds(&doc, &result, id);
+            assert_eq!((r.x, r.y), (x, y), "{id}");
+        }
+        assert_eq!(bounds(&doc, &result, "#left").y, 50.0);
+        assert_eq!(bounds(&doc, &result, "#both").y, 70.0);
+    }
+
+    #[test]
+    fn clear_right_and_floating_clear_respect_only_the_selected_side() {
+        let (doc, result) = render(
+            "<style>body{margin:0}#l{float:left;width:40px;height:80px}#r{float:right;width:40px;height:20px}#s{clear:right;height:10px}#f{float:left;clear:left;width:30px;height:15px}</style><div id=l></div><div id=r></div><section id=s></section><div id=f></div>",
+            200.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#s").y, 20.0);
+        assert_eq!(bounds(&doc, &result, "#f").y, 80.0);
+    }
+
+    #[test]
+    fn floats_escape_ordinary_block_height_and_wrap_later_nested_text() {
+        let (doc, result) = render(
+            "<style>body,p{margin:0}#f{float:left;width:80px;height:70px}p{font-size:10px;line-height:20px}</style><div id=outer><div id=f></div></div><section id=next><p>one two three four five six seven eight nine ten eleven twelve thirteen fourteen</p></section>",
+            160.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#outer").height, 0.0);
+        assert_eq!(bounds(&doc, &result, "#next").y, 0.0);
+        let lines: Vec<_> = result
+            .commands
+            .iter()
+            .filter_map(|c| {
+                if let DrawCommand::Text { x, y, text, .. } = c {
+                    Some((*x, *y, text))
+                } else {
+                    None
+                }
+            })
+            .collect();
+        assert_eq!(lines[0].0, 80.0);
+        assert!(lines.iter().any(|(x, y, _)| *x == 0.0 && *y >= 70.0));
+    }
+
+    #[test]
+    fn fitting_float_after_inline_text_repositions_that_same_line() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{width:200px;font-size:10px;line-height:20px}aside{float:left;width:60px;height:40px}</style><main>before<aside id=f></aside> after</main>",
+            240.0,
+        );
+        let before = result
+            .commands
+            .iter()
+            .find_map(|c| {
+                if let DrawCommand::Text { x, y, text, .. } = c {
+                    (text == "before").then_some((*x, *y))
+                } else {
+                    None
+                }
+            })
+            .unwrap();
+        assert_eq!(before.0, 60.0);
+        assert!(before.1 < 20.0);
+        assert_eq!(bounds(&doc, &result, "#f").y, 0.0);
+    }
+
+    #[test]
+    fn unbreakable_text_moves_below_floats_instead_of_overlapping_them() {
+        let (_, result) = render(
+            "<style>body{margin:0}aside{float:left;width:190px;height:40px}p{margin:0;font-size:10px;line-height:20px}</style><aside></aside><p>longword</p>",
+            200.0,
+        );
+        let (x, y) = result
+            .commands
+            .iter()
+            .find_map(|c| {
+                if let DrawCommand::Text { x, y, text, .. } = c {
+                    (text == "longword").then_some((*x, *y))
+                } else {
+                    None
+                }
+            })
+            .unwrap();
+        assert_eq!(x, 0.0);
+        assert!(y >= 40.0);
+    }
+
+    #[test]
+    fn percentage_inline_margins_keep_the_containing_width_beside_floats() {
+        let (doc, result) = render(
+            "<style>body{margin:0}aside{float:left;width:80px;height:50px}i{display:inline-block;width:20px;height:20px;margin-left:10%}</style><aside></aside><i id=a></i>",
+            200.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a").x, 100.0);
+    }
+
+    #[test]
+    fn float_placement_uses_the_full_mixed_inline_baseline_and_descent() {
+        let (doc, result) = render(
+            "<style>body{margin:0;font:10px monospace;line-height:20px}i{display:inline-block;width:40px;height:40px}aside{float:left;width:160px;height:20px}</style><i></i>M<aside id=f></aside>",
+            200.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#f").y, 47.0);
+    }
+
+    #[test]
+    fn nowrap_runs_move_below_floats_without_splitting_words_into_lines() {
+        let (_, result) = render(
+            "<style>body{margin:0;font:10px monospace;line-height:20px}aside{float:right;width:160px;height:40px}span{white-space:nowrap}</style><aside></aside><span>AA AA AA</span>",
+            200.0,
+        );
+        let ys: Vec<_> = result
+            .commands
+            .iter()
+            .filter_map(|c| {
+                if let DrawCommand::Text { y, text, .. } = c {
+                    (!text.trim().is_empty()).then_some(*y)
+                } else {
+                    None
+                }
+            })
+            .collect();
+        assert_eq!(ys.len(), 3);
+        assert!(ys.iter().all(|y| *y >= 40.0 && *y == ys[0]));
+    }
+
+    #[test]
+    fn shrink_to_fit_uses_preferred_minimum_available_width_and_box_model() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:flow-root;width:200px}#small{width:70px}aside{float:left;padding:10px}i{display:inline-block;width:40px;height:20px}</style><main><aside id=a><i></i><i></i></aside></main><main id=small><aside id=b><i></i><i></i></aside></main>",
+            240.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a").width, 100.0);
+        assert_eq!(bounds(&doc, &result, "#a").height, 40.0);
+        assert_eq!(bounds(&doc, &result, "#b").width, 70.0);
+        assert_eq!(bounds(&doc, &result, "#b").height, 60.0);
+        assert_eq!(bounds(&doc, &result, "#small").y, 40.0);
+        assert_eq!(bounds(&doc, &result, "#small").height, 60.0);
+    }
+
+    #[test]
+    fn independent_contexts_contain_internal_floats_without_leaking_exclusions() {
+        for rule in [
+            "display:flow-root",
+            "overflow:hidden",
+            "display:inline-block",
+        ] {
+            let source = format!(
+                "<style>body{{margin:0}}#box{{{rule};width:120px}}aside{{float:left;width:80px;height:40px}}#next{{height:10px}}</style><div id=box><aside></aside></div><div id=next></div>"
+            );
+            let (doc, result) = render(&source, 200.0);
+            assert_eq!(bounds(&doc, &result, "#box").height, 40.0, "{rule}");
+            assert_eq!(bounds(&doc, &result, "#next").y, 40.0, "{rule}");
+        }
+        let (doc, result) = render(
+            "<style>body{margin:0}aside{float:left;width:80px;height:50px}section{overflow:hidden;height:30px}i{float:left;width:20px;height:20px}</style><aside></aside><section id=b><i id=inner></i></section><div id=clear style='clear:both;height:1px'></div>",
+            200.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#b").x, 80.0);
+        assert_eq!(bounds(&doc, &result, "#b").width, 120.0);
+        assert_eq!(bounds(&doc, &result, "#inner").x, 80.0);
+        assert_eq!(bounds(&doc, &result, "#clear").y, 50.0);
+    }
+
+    #[test]
+    fn overflow_clip_does_not_contain_floats_but_clips_deferred_hits() {
+        let (doc, result) = render(
+            "<style>body{margin:0}#clip{overflow:clip;width:40px;height:20px}#f{float:left;width:80px;height:60px;background:red}#after{clear:both;height:10px}</style><div id=clip><a id=f href='#x'></a></div><div id=after></div>",
+            200.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#after").y, 60.0);
+        let f = bounds(&doc, &result, "#f");
+        assert_eq!((f.width, f.height), (40.0, 20.0));
+        assert_ne!(result.hit_test(50.0, 10.0), doc.query_selector("#f"));
+    }
+
+    #[test]
+    fn float_inventory_and_pairwise_exclusion_work_are_bounded() {
+        let source = format!(
+            "<style>body{{margin:0}}i{{float:left;width:1px;height:1px}}</style>{}",
+            "<i></i>".repeat(6000)
+        );
+        let (_, result) = render(&source, 100.0);
+        assert!(result.commands.len() <= MAX_COMMANDS);
+        assert!(
+            result
+                .hit_regions
+                .iter()
+                .all(|h| h.rect.x.is_finite() && h.rect.y.is_finite())
+        );
+        assert!(result.hit_regions.len() < 5000);
+    }
+
+    #[test]
+    fn command_quota_preserves_all_closures_in_nested_clipped_float_fragments() {
+        let mut source = String::from(
+            "<style>body{margin:0}.clip{overflow:hidden;width:40px}.float{float:left;width:40px}.leaf{height:1px;overflow:hidden}</style>",
+        );
+        for _ in 0..16 {
+            source.push_str("<div class=clip><div class=float>");
+        }
+        source.push_str(&"<div class=leaf>x</div>".repeat(30_000));
+        for _ in 0..16 {
+            source.push_str("</div></div>");
+        }
+        let (doc, result) = render(&source, 200.0);
+        let leaves = result
+            .hit_regions
+            .iter()
+            .filter(|h| doc.attr(h.node, "class") == Some("leaf"))
+            .count();
+        assert!(
+            (20_000..30_000).contains(&leaves),
+            "quota must actually truncate leaf layout: {leaves}"
+        );
+        let mut open = 0usize;
+        for command in &result.commands {
+            match command {
+                DrawCommand::PushClip { .. } => open += 1,
+                DrawCommand::PopClip => {
+                    assert!(open > 0, "clip stack underflow");
+                    open -= 1;
+                }
+                _ => {}
+            }
+        }
+        assert_eq!(open, 0, "quota must reserve every closing clip");
+        assert!(result.commands.len() <= MAX_COMMANDS);
     }
 
     #[test]

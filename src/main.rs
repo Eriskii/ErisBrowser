@@ -8,6 +8,12 @@ use eris::{
 use std::{path::PathBuf, time::Instant};
 
 fn main() {
+    if std::env::args().nth(1).as_deref() == Some("--image-decoder") {
+        if eris::worker::serve_image_decoder().is_err() {
+            std::process::exit(1);
+        }
+        return;
+    }
     if std::env::args().nth(1).as_deref() == Some("--resource-broker") {
         if eris::worker::serve_resource_broker().is_err() {
             std::process::exit(1);

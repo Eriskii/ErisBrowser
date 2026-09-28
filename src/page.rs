@@ -14,7 +14,7 @@ use std::{
     time::Instant,
 };
 
-const MAX_DECODED_IMAGE_BYTES: usize = 64 * 1024 * 1024;
+pub(crate) const MAX_DECODED_IMAGE_BYTES: usize = 64 * 1024 * 1024;
 const MAX_STYLE_BYTES: usize = 8 * 1024 * 1024;
 const MAX_SCRIPT_BYTES: usize = 1024 * 1024;
 const MAX_FORM_BYTES: usize = net::MAX_FORM_BODY_BYTES;
@@ -42,6 +42,7 @@ pub struct Page {
     pub diagnostics: Vec<String>,
     pub load_ms: f64,
     pub scripts_enabled: bool,
+    image_origins: HashMap<String, bool>,
     external_styles: HashMap<NodeId, Arc<str>>,
     policy_blocks_styles: bool,
 }
@@ -98,7 +99,7 @@ impl Page {
         let ids = page.document.query_selector_all("link, script, img");
         let mut script_sources: HashMap<NodeId, Arc<str>> = HashMap::new();
         let mut text_cache: HashMap<(ResourceKind, String), Arc<str>> = HashMap::new();
-        let mut image_cache: HashMap<String, Arc<RasterImage>> = HashMap::new();
+        let mut image_cache: HashMap<String, (Arc<RasterImage>, bool)> = HashMap::new();
         let mut failed = HashSet::new();
         let mut decoded_bytes = 0usize;
         let mut style_bytes = 0usize;
@@ -147,8 +148,8 @@ impl Page {
                 continue;
             }
             if kind == ResourceKind::Image {
-                if let Some(image) = image_cache.get(&key).cloned() {
-                    page.attach_image(id, href, image);
+                if let Some((image, origin_clean)) = image_cache.get(&key).cloned() {
+                    page.attach_image(id, href, image, origin_clean);
                     continue;
                 }
             } else if let Some(source) = text_cache.get(&(kind, key.clone())).cloned() {
@@ -159,7 +160,7 @@ impl Page {
                 }
                 continue;
             }
-            let resource = match fetcher.fetch(&target, Some(&page.url), kind) {
+            let mut resource = match fetcher.fetch(&target, Some(&page.url), kind) {
                 Ok(resource) => resource,
                 Err(error) => {
                     failed.insert((kind, key));
@@ -198,7 +199,10 @@ impl Page {
                     }
                 }
                 ResourceKind::Image => {
-                    let result = if resource
+                    let remaining = MAX_DECODED_IMAGE_BYTES.saturating_sub(decoded_bytes);
+                    let result = if let Some(image) = resource.decoded_image.take() {
+                        Ok(image)
+                    } else if resource
                         .content_type
                         .split(';')
                         .next()
@@ -206,9 +210,9 @@ impl Page {
                         .trim()
                         .eq_ignore_ascii_case("image/svg+xml")
                     {
-                        crate::svg::render(&resource.text(), None, None)
+                        crate::svg::render_with_budget(&resource.text(), None, None, remaining)
                     } else {
-                        decode_image(&resource.bytes)
+                        decode_image_with_budget(&resource.bytes, remaining)
                     };
                     match result {
                         Ok(image) => {
@@ -222,8 +226,8 @@ impl Page {
                             }
                             decoded_bytes += image.rgba.len();
                             let image = Arc::new(image);
-                            image_cache.insert(key, image.clone());
-                            page.attach_image(id, href, image);
+                            image_cache.insert(key, (image.clone(), resource.origin_clean));
+                            page.attach_image(id, href, image, resource.origin_clean);
                         }
                         Err(error) => {
                             failed.insert((kind, key));
@@ -249,6 +253,7 @@ impl Page {
             diagnostics: Vec::new(),
             load_ms: 0.0,
             scripts_enabled,
+            image_origins: HashMap::new(),
             external_styles: HashMap::new(),
             policy_blocks_styles: false,
         }
@@ -294,16 +299,30 @@ impl Page {
     fn is_active_node(&self, id: NodeId) -> bool {
         self.document.is_active_node(id)
     }
-    fn attach_image(&mut self, id: NodeId, key: String, image: Arc<RasterImage>) {
+    /// Image provenance for future pixel-reading APIs; unknown images are not
+    /// implicitly clean. Cached aliases retain the original redirect taint.
+    pub fn image_origin_clean(&self, key: &str) -> Option<bool> {
+        self.image_origins.get(key).copied()
+    }
+    fn attach_image(
+        &mut self,
+        id: NodeId,
+        key: String,
+        image: Arc<RasterImage>,
+        origin_clean: bool,
+    ) {
         self.document
             .set_attr(id, "data-eris-natural-width", &image.width.to_string());
         self.document
             .set_attr(id, "data-eris-natural-height", &image.height.to_string());
+        self.image_origins.insert(key.clone(), origin_clean);
         self.images.insert(key, image);
     }
     pub fn refresh_inline_svg(&mut self) {
         // A DOM replacement must release rasters belonging to removed or now-inert SVG nodes.
         self.images
+            .retain(|key, _| !key.starts_with("eris-inline-svg:"));
+        self.image_origins
             .retain(|key, _| !key.starts_with("eris-inline-svg:"));
         let mut seen = HashSet::new();
         let mut image_bytes = self
@@ -345,7 +364,12 @@ impl Page {
                     .push("inline SVG source budget exceeded".into());
                 break;
             }
-            match crate::svg::render(&source, None, None) {
+            match crate::svg::render_with_budget(
+                &source,
+                None,
+                None,
+                MAX_DECODED_IMAGE_BYTES.saturating_sub(image_bytes),
+            ) {
                 Ok(image) => {
                     if image.rgba.len() > MAX_DECODED_IMAGE_BYTES.saturating_sub(image_bytes) {
                         self.diagnostics
@@ -353,7 +377,7 @@ impl Page {
                         break;
                     }
                     image_bytes += image.rgba.len();
-                    self.attach_image(id, format!("eris-inline-svg:{id}"), Arc::new(image));
+                    self.attach_image(id, format!("eris-inline-svg:{id}"), Arc::new(image), true);
                 }
                 Err(error) => self.diagnostics.push(format!("inline SVG: {error}")),
             }
@@ -831,15 +855,33 @@ pub fn find_fragment(document: &Document, fragment: &str) -> Option<NodeId> {
     })
 }
 pub fn decode_image(bytes: &[u8]) -> Result<RasterImage, String> {
-    let mut reader = image::ImageReader::new(Cursor::new(bytes))
-        .with_guessed_format()
+    decode_image_with_budget(bytes, MAX_DECODED_IMAGE_BYTES)
+}
+pub(crate) fn decode_image_with_budget(bytes: &[u8], budget: usize) -> Result<RasterImage, String> {
+    use image::ImageDecoder;
+    if budget < 4 {
+        return Err("decoded image budget exhausted".into());
+    }
+    crate::image_limits::validate_webp(bytes, budget.min(MAX_DECODED_IMAGE_BYTES))?;
+    let (mut decoder, mut limits) =
+        bounded_image_decoder(bytes, MAX_DECODED_IMAGE_BYTES as u64).map_err(|e| e.to_string())?;
+    let (width, height) = decoder.dimensions();
+    if width == 0
+        || height == 0
+        || width > 4096
+        || height > 4096
+        || u64::from(width) * u64::from(height) * 4 > budget.min(MAX_DECODED_IMAGE_BYTES) as u64
+    {
+        return Err("decoded image exceeds geometry or remaining byte budget".into());
+    }
+    // Match ImageReader::decode's native-buffer reservation before conversion.
+    limits
+        .reserve(decoder.total_bytes())
         .map_err(|e| e.to_string())?;
-    let mut limits = image::Limits::default();
-    limits.max_image_width = Some(4096);
-    limits.max_image_height = Some(4096);
-    limits.max_alloc = Some(64 * 1024 * 1024);
-    reader.limits(limits);
-    let image = reader.decode().map_err(|e| e.to_string())?.into_rgba8();
+    decoder.set_limits(limits).map_err(|e| e.to_string())?;
+    let image = image::DynamicImage::from_decoder(decoder)
+        .map_err(|e| e.to_string())?
+        .into_rgba8();
     Ok(RasterImage {
         width: image.width(),
         height: image.height(),
@@ -847,9 +889,65 @@ pub fn decode_image(bytes: &[u8]) -> Result<RasterImage, String> {
     })
 }
 
+fn bounded_image_decoder(
+    bytes: &[u8],
+    max_alloc: u64,
+) -> image::ImageResult<(impl image::ImageDecoder + '_, image::Limits)> {
+    let mut reader = image::ImageReader::new(Cursor::new(bytes)).with_guessed_format()?;
+    let mut limits = image::Limits::default();
+    limits.max_image_width = Some(4096);
+    limits.max_image_height = Some(4096);
+    limits.max_alloc = Some(max_alloc.min(MAX_DECODED_IMAGE_BYTES as u64));
+    // Limits must precede decoder construction: PNG ancillary metadata may be
+    // decompressed while reading dimensions. Reuse that configured decoder.
+    reader.limits(limits.clone());
+    Ok((reader.into_decoder()?, limits))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn png_ancillary_metadata_obeys_limits_during_decoder_construction() {
+        use image::ImageDecoder;
+        let icc = include_bytes!("../tests/fixtures/png-ancillary-icc-4k.png");
+        let exif = include_bytes!("../tests/fixtures/png-ancillary-exif-4k.png");
+        let (mut full, _) = bounded_image_decoder(icc, 16384).unwrap();
+        assert_eq!(full.icc_profile().unwrap().unwrap().len(), 4096);
+        let (mut limited, _) = bounded_image_decoder(icc, 1024).unwrap();
+        assert!(
+            limited.icc_profile().unwrap().is_none(),
+            "over-budget optional ICC metadata must be discarded"
+        );
+        let (mut full, _) = bounded_image_decoder(exif, 16384).unwrap();
+        assert_eq!(full.exif_metadata().unwrap().unwrap().len(), 4096);
+        assert!(matches!(
+            bounded_image_decoder(exif, 1024),
+            Err(image::ImageError::Limits(_))
+        ));
+    }
+    #[test]
+    fn image_decoders_enforce_remaining_pixel_budget_before_raster_allocation() {
+        let mut encoded = Cursor::new(Vec::new());
+        image::RgbaImage::from_pixel(3, 2, image::Rgba([11, 22, 33, 255]))
+            .write_to(&mut encoded, image::ImageFormat::Png)
+            .unwrap();
+        let bytes = encoded.into_inner();
+        assert_eq!(decode_image_with_budget(&bytes, 24).unwrap().rgba.len(), 24);
+        assert!(decode_image_with_budget(&bytes, 23).is_err());
+        let svg = "<svg width='3' height='2'><rect width='3' height='2'/></svg>";
+        assert_eq!(
+            crate::svg::render_with_budget(svg, None, None, 24)
+                .unwrap()
+                .rgba
+                .len(),
+            24
+        );
+        assert!(crate::svg::render_with_budget(svg, None, None, 23).is_err());
+        for source in [b"{\"secret\":42}".as_slice(), b"<html>private</html>"] {
+            assert!(decode_image_with_budget(source, 64).is_err());
+        }
+    }
     #[test]
     fn builtin_pages_preserve_query_and_fragment_without_resource_fetches() {
         for address in [

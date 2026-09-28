@@ -16,7 +16,7 @@ from html_conformance import bounded_process, paths_alias
 from import_test262 import DIRECTORIES, MAX_FILE, MAX_TOTAL, REPOSITORY, REVISION, parse_metadata
 
 ROOT = Path(__file__).resolve().parents[1]
-SUPPORTED_FEATURES = {'arrow-function', 'String.fromCodePoint', 'well-formed-json-stringify'}
+SUPPORTED_FEATURES = {'arrow-function', 'String.fromCodePoint', 'well-formed-json-stringify', 'for-in-order'}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -247,12 +247,17 @@ def harness_preflight(files, binary, timeout):
         ('throws-wrong-type', 'assert.throws(TypeError, function () { throw new RangeError(); });', 'failed'),
         ('throws-missing', 'assert.throws(TypeError, function () {});', 'failed'),
         ('array-mismatch', 'assert.compareArray([1], [2]);', 'failed'),
+        ('property-success', "verifyProperty({x: 1}, 'x', {value: 1, writable: true, enumerable: true, configurable: true});", 'passed'),
+        ('property-writable', "verifyProperty({x: 1}, 'x', {writable: false});", 'failed'),
+        ('property-enumerable', "verifyProperty({x: 1}, 'x', {enumerable: false});", 'failed'),
+        ('property-configurable', "verifyProperty({x: 1}, 'x', {configurable: false});", 'failed'),
     ]
     outcomes = []
     for name, source, expected in scripts:
+        includes = ['propertyHelper.js'] if name.startswith('property-') else []
         case = dict(id=f'harness-preflight:{name}', file='<preflight>', mode='sloppy',
-                    metadata=dict(flags=[], includes=[], features=[], locale=[], negative=None),
-                    source=source.encode(), harness=[(name, files[f'harness/{name}']) for name in ('assert.js', 'sta.js')])
+                    metadata=dict(flags=[], includes=includes, features=[], locale=[], negative=None),
+                    source=source.encode(), harness=[(item, files[f'harness/{item}']) for item in ['assert.js', 'sta.js'] + includes])
         case['case_sha256'] = case_fingerprint(case)
         result = run_case(case, binary, timeout)
         correct = result['status'] == expected

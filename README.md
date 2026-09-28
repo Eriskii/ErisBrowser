@@ -13,6 +13,7 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 ./run.sh ./examples/standards.html
 ./run.sh ./examples/unicode.html
 ./run.sh ./examples/namespaces.html
+./run.sh ./examples/flow.html
 ```
 
 The launcher builds the release executable and exposes installed desktop libraries on NixOS. Rust, Cargo, Python 3, and a Wayland or X11 desktop are required. Native browsing currently requires Linux with Landlock ABI 6 enabled (normally kernel 6.12 or newer), mounted procfs, and seccomp support; sandbox setup fails closed. The validated platform is x86-64 Linux. Fonts are bundled. On a conventional desktop with the shared libraries available:
@@ -48,7 +49,7 @@ cargo run --locked --release -- --benchmark 100 --output artifacts/benchmark.png
 
 `--dump-dom` prints the resulting DOM. `--window-screenshot artifacts/window.png --exit-after 5` captures the browser's own framebuffer during a short native-window smoke test. Run `--help` for CLI details.
 
-The native UI loads each document in a fresh child process. Its address bar, clipboard and software painter stay in the UI process; a separate broker supplies resources and authoritative redirect URLs, while validated document and drawing snapshots return from the renderer. The renderer cannot directly read files or open sockets. See [the security boundary](docs/SECURITY.md) for remaining gaps.
+The native UI loads each document in a fresh child process. Its address bar, clipboard and software painter stay in the UI process; a separate broker supplies resources and authoritative redirect URLs, while validated document and drawing snapshots return from the renderer. The renderer cannot directly read files or open sockets. Cross-origin images use a fresh restricted decoder, which returns pixels without exposing their raw responses to the renderer. See [the security boundary](docs/SECURITY.md) for remaining gaps.
 
 For a JSON report covering the home, gallery, and form fixtures, run `python3 tools/benchmark.py`.
 

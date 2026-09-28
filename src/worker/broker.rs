@@ -48,13 +48,19 @@ impl BrokerClient {
         request: &FetchRequest,
         cancel: impl Fn() -> bool,
     ) -> Result<Resource, String> {
-        let bytes = self.channel.exchange(
+        let bytes = self.channel.exchange_bounded(
             codec::encode_fetch_request(request)?,
             Duration::from_secs(40),
+            // URL (16 MiB), body (8 MiB), bounded headers and framing.
+            26 * 1024 * 1024,
             cancel,
             |_| Ok(None),
         )?;
-        codec::decode_resource(&bytes)?
+        let resource = codec::decode_resource(&bytes)??;
+        if resource.decoded_image.is_some() {
+            return Err("broker sent unexpected decoded pixels".into());
+        }
+        Ok(resource)
     }
     pub(super) fn pid(&self) -> u32 {
         self.channel.pid()
@@ -81,7 +87,7 @@ impl Policy {
             attempted_document: false,
             csp: false,
             requests: 0,
-            fetcher: Fetcher::for_broker(init.root),
+            fetcher: Fetcher::new(init.root),
         })
     }
     fn fetch(&mut self, request: FetchRequest) -> Result<Resource, String> {

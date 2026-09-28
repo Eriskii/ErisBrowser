@@ -205,6 +205,78 @@ impl Document {
     pub fn parse_with_scripting(source: &str, scripting: bool) -> Self {
         parse_with_scripting(source, scripting)
     }
+    /// Parse against an existing element without modifying its document. The
+    /// returned arena's root directly contains the fragment children. Scripts
+    /// are never executed. Template content and document quirks inheritance
+    /// are not represented yet; supported contexts use no-quirks mode.
+    pub fn parse_fragment(&self, context: NodeId, source: &str) -> Result<Self, String> {
+        let Some(Node {
+            kind: NodeKind::Element(element),
+            ..
+        }) = self.nodes.get(context)
+        else {
+            return Err("fragment context must be an element".into());
+        };
+        if element.namespace == Namespace::Html && element.tag == "template" {
+            return Err("template fragment context is not implemented".into());
+        }
+        if element.retained_bytes() > MAX_DOM_BYTES / 2 || element.attrs.len() > 1024 {
+            return Err("fragment context exceeds resource limit".into());
+        }
+        let mut form_ancestor = false;
+        let mut ancestor = Some(context);
+        for _ in 0..MAX_DEPTH {
+            let Some(id) = ancestor else { break };
+            let node = self.nodes.get(id).ok_or("invalid fragment ancestor")?;
+            if self.namespace(id) == Some(Namespace::Html) && self.tag(id) == Some("form") {
+                form_ancestor = true;
+            }
+            ancestor = node.parent;
+        }
+        if ancestor.is_some() {
+            return Err("fragment context ancestry exceeds depth limit".into());
+        }
+        let mut builder = TreeBuilder::new(self.scripting_enabled);
+        builder.quirks = false;
+        let html = builder.element(&HtmlToken::start("html"), false, true);
+        builder.html = Some(html);
+        let context_id = builder.doc.nodes.len();
+        builder.doc.retained_bytes += element.retained_bytes();
+        builder.doc.nodes.push(Node {
+            parent: None,
+            children: vec![],
+            kind: NodeKind::Element(element.clone()),
+        });
+        builder.fragment_context = Some(context_id);
+        if form_ancestor {
+            // This detached sentinel is not in scope, just as the real form
+            // ancestor belongs to another document and is not on the stack.
+            builder.form = Some(builder.doc.create_element("form"));
+        }
+        if element.namespace == Namespace::Html {
+            let entities = matches!(element.tag.as_str(), "title" | "textarea");
+            if entities
+                || matches!(
+                    element.tag.as_str(),
+                    "style" | "xmp" | "iframe" | "noembed" | "noframes" | "script" | "plaintext"
+                )
+                || element.tag == "noscript" && self.scripting_enabled
+            {
+                // No start-tag token has been emitted in this tokenizer, so
+                // there is no appropriate end tag, even for </textarea>.
+                builder.raw = Some((String::new(), entities));
+            }
+        }
+        builder.reset_mode();
+        let mut document = parse_with_builder(source, builder);
+        let children = std::mem::take(&mut document.nodes[html].children);
+        document.nodes[html].parent = None;
+        for child in &children {
+            document.nodes[*child].parent = Some(document.root);
+        }
+        document.nodes[document.root].children = children;
+        Ok(document)
+    }
     pub fn scripting_enabled(&self) -> bool {
         self.scripting_enabled
     }
@@ -908,12 +980,16 @@ fn is_void(tag: &str) -> bool {
         tag,
         "area"
             | "base"
+            | "basefont"
+            | "bgsound"
             | "br"
             | "col"
             | "embed"
+            | "frame"
             | "hr"
             | "img"
             | "input"
+            | "keygen"
             | "link"
             | "meta"
             | "param"
@@ -1027,6 +1103,11 @@ impl<'a> HtmlTokenizer<'a> {
             let start = self.position;
             let close = format!("</{tag}");
             let mut script_escape = 0u8;
+            if tag.is_empty() {
+                // Fragment raw-text contexts and plaintext never recognize an
+                // end tag. Do not use a magic tag spelling that input can forge.
+                self.position = bytes.len();
+            }
             while self.position < bytes.len() {
                 if tag == "script" {
                     if script_escape == 0 && bytes[self.position..].starts_with(b"<!--") {
@@ -1532,6 +1613,7 @@ enum InsertionMode {
     InTableBody,
     InRow,
     InCell,
+    InFrameset,
     AfterBody,
     AfterAfterBody,
 }
@@ -1544,6 +1626,7 @@ struct TreeBuilder {
     head: Option<NodeId>,
     body: Option<NodeId>,
     form: Option<NodeId>,
+    fragment_context: Option<NodeId>,
     mode: InsertionMode,
     scripting: bool,
     quirks: bool,
@@ -1572,6 +1655,7 @@ impl TreeBuilder {
             head: None,
             body: None,
             form: None,
+            fragment_context: None,
             mode: InsertionMode::Initial,
             scripting,
             quirks: true,
@@ -1585,6 +1669,13 @@ impl TreeBuilder {
     fn current(&self) -> NodeId {
         self.stack.last().copied().unwrap_or(self.doc.root)
     }
+    fn adjusted_current(&self) -> NodeId {
+        if self.stack.len() == 1 {
+            self.fragment_context.unwrap_or_else(|| self.current())
+        } else {
+            self.current()
+        }
+    }
     fn current_tag(&self) -> &str {
         self.html_tag(self.current()).unwrap_or("")
     }
@@ -1595,7 +1686,7 @@ impl TreeBuilder {
     }
     fn foreign(&self) -> bool {
         self.doc
-            .namespace(self.current())
+            .namespace(self.adjusted_current())
             .is_some_and(|ns| ns != Namespace::Html)
     }
     fn math_text_integration(&self, id: NodeId) -> bool {
@@ -1618,8 +1709,8 @@ impl TreeBuilder {
     }
     fn foreign_characters(&self) -> bool {
         self.foreign()
-            && !self.math_text_integration(self.current())
-            && !self.html_integration(self.current())
+            && !self.math_text_integration(self.adjusted_current())
+            && !self.html_integration(self.adjusted_current())
     }
     fn dispatch_foreign(&self, token: &HtmlToken) -> bool {
         if !self.foreign() || matches!(token, HtmlToken::Eof) {
@@ -1629,11 +1720,11 @@ impl TreeBuilder {
             return self.foreign_characters();
         }
         if token.is_start()
-            && (self.math_text_integration(self.current())
+            && (self.math_text_integration(self.adjusted_current())
                 && !matches!(token.tag(), "mglyph" | "malignmark")
-                || self.html_integration(self.current())
-                || self.doc.namespace(self.current()) == Some(Namespace::MathMl)
-                    && self.doc.tag(self.current()) == Some("annotation-xml")
+                || self.html_integration(self.adjusted_current())
+                || self.doc.namespace(self.adjusted_current()) == Some(Namespace::MathMl)
+                    && self.doc.tag(self.adjusted_current()) == Some("annotation-xml")
                     && token.tag() == "svg")
         {
             return false;
@@ -1663,7 +1754,10 @@ impl TreeBuilder {
             }
             HtmlToken::Doctype(_) | HtmlToken::Eof => {}
             _ if foreign_breakout(token) => {
-                while self.foreign()
+                while self
+                    .doc
+                    .namespace(self.current())
+                    .is_some_and(|ns| ns != Namespace::Html)
                     && !self.math_text_integration(self.current())
                     && !self.html_integration(self.current())
                 {
@@ -1675,7 +1769,7 @@ impl TreeBuilder {
                 return false;
             }
             HtmlToken::Start { self_closing, .. } => {
-                if let Some(namespace) = self.doc.namespace(self.current()) {
+                if let Some(namespace) = self.doc.namespace(self.adjusted_current()) {
                     self.element_ns(token, namespace, false, !self_closing);
                 }
             }
@@ -1743,17 +1837,30 @@ impl TreeBuilder {
         self.mode = self
             .stack
             .iter()
+            .enumerate()
             .rev()
-            .find_map(|id| match self.html_tag(*id) {
-                Some("td" | "th") => Some(InsertionMode::InCell),
-                Some("tr") => Some(InsertionMode::InRow),
-                Some("tbody" | "thead" | "tfoot") => Some(InsertionMode::InTableBody),
-                Some("caption") => Some(InsertionMode::InCaption),
-                Some("colgroup") => Some(InsertionMode::InColumnGroup),
-                Some("table") => Some(InsertionMode::InTable),
-                Some("head") => Some(InsertionMode::InHead),
-                Some("body" | "template") => Some(InsertionMode::InBody),
-                _ => None,
+            .find_map(|(index, id)| {
+                match self.html_tag(if index == 0 {
+                    self.fragment_context.unwrap_or(*id)
+                } else {
+                    *id
+                }) {
+                    Some("td" | "th") if index != 0 => Some(InsertionMode::InCell),
+                    Some("tr") => Some(InsertionMode::InRow),
+                    Some("tbody" | "thead" | "tfoot") => Some(InsertionMode::InTableBody),
+                    Some("caption") => Some(InsertionMode::InCaption),
+                    Some("colgroup") => Some(InsertionMode::InColumnGroup),
+                    Some("table") => Some(InsertionMode::InTable),
+                    Some("head") if index != 0 => Some(InsertionMode::InHead),
+                    Some("body" | "template") => Some(InsertionMode::InBody),
+                    Some("frameset") => Some(InsertionMode::InFrameset),
+                    Some("html") => Some(if self.head.is_none() {
+                        InsertionMode::BeforeHead
+                    } else {
+                        InsertionMode::AfterHead
+                    }),
+                    _ => None,
+                }
             })
             .unwrap_or(InsertionMode::InBody);
     }
@@ -2634,6 +2741,11 @@ impl TreeBuilder {
                         self.merge_attrs(self.html, &token);
                         return;
                     }
+                    _ if start && tag == "frameset" && self.fragment_context.is_some() => {
+                        self.element(&token, false, true);
+                        self.mode = InFrameset;
+                        return;
+                    }
                     _ if start
                         && matches!(
                             tag,
@@ -2904,7 +3016,9 @@ impl TreeBuilder {
                         return;
                     }
                     _ if end && tag == "html" => {
-                        self.mode = AfterAfterBody;
+                        if self.fragment_context.is_none() {
+                            self.mode = AfterAfterBody;
+                        }
                         return;
                     }
                     _ => {
@@ -2931,6 +3045,31 @@ impl TreeBuilder {
                 },
                 InBody => {
                     self.in_body(&token, false);
+                    return;
+                }
+                InFrameset => {
+                    match &token {
+                        HtmlToken::Characters(text) => {
+                            let spaces = text
+                                .chars()
+                                .filter(|ch| ch.is_ascii() && is_space(*ch as u8))
+                                .collect::<String>();
+                            self.text(&spaces, false);
+                        }
+                        HtmlToken::Comment(text) => self.comment(text, None),
+                        _ if start && tag == "html" => self.merge_attrs(self.html, &token),
+                        _ if start && tag == "frameset" => {
+                            self.element(&token, false, true);
+                        }
+                        _ if start && tag == "frame" => {
+                            self.element(&token, false, false);
+                        }
+                        _ if start && tag == "noframes" => self.raw_element(&token, false),
+                        _ if end && tag == "frameset" && self.current_tag() != "html" => {
+                            self.stack.pop();
+                        }
+                        _ => {}
+                    }
                     return;
                 }
             }
@@ -3032,6 +3171,18 @@ impl TreeBuilder {
                 tag, self_closing, ..
             } => {
                 let tag = tag.as_str();
+                if matches!(tag, "input" | "select")
+                    && self
+                        .fragment_context
+                        .is_some_and(|id| self.html_tag(id) == Some("select"))
+                {
+                    return;
+                }
+                if tag == "frameset"
+                    && (self.stack.len() < 2 || self.html_tag(self.stack[1]) != Some("body"))
+                {
+                    return;
+                }
                 if tag == "html" {
                     self.merge_attrs(self.html, token);
                     return;
@@ -3146,7 +3297,7 @@ impl TreeBuilder {
                 }
                 if tag == "plaintext" {
                     self.element(token, foster, true);
-                    self.raw = Some(("\0never".into(), false));
+                    self.raw = Some((String::new(), false));
                     return;
                 }
                 if reconstruct_before_start(tag) {
@@ -3187,7 +3338,7 @@ impl TreeBuilder {
                 }
                 if matches!(tag, "body" | "html") {
                     if self.scope(&["body"], false).is_some() {
-                        self.mode = if tag == "html" {
+                        self.mode = if tag == "html" && self.fragment_context.is_none() {
                             AfterAfterBody
                         } else {
                             AfterBody
@@ -3588,18 +3739,20 @@ pub fn parse(source: &str) -> Document {
     parse_with_scripting(source, false)
 }
 pub fn parse_with_scripting(source: &str, scripting: bool) -> Document {
+    parse_with_builder(source, TreeBuilder::new(scripting))
+}
+fn parse_with_builder(source: &str, mut builder: TreeBuilder) -> Document {
     let source = &source[..floor_boundary(source, source.len().min(MAX_TEXT))];
     let normalized = source.replace("\r\n", "\n").replace('\r', "\n");
     let mut tokenizer = HtmlTokenizer::new(&normalized);
-    let mut builder = TreeBuilder::new(scripting);
     loop {
-        let token = tokenizer.next();
-        let eof = matches!(token, HtmlToken::Eof);
-        builder.process(token);
         tokenizer.raw = builder.raw.take();
         tokenizer.skip_lf = std::mem::take(&mut builder.skip_lf);
         tokenizer.foreign = builder.foreign();
         tokenizer.foreign_characters = builder.foreign_characters();
+        let token = tokenizer.next();
+        let eof = matches!(token, HtmlToken::Eof);
+        builder.process(token);
         if eof || builder.work == 0 || builder.doc.nodes.len() >= MAX_NODES {
             break;
         }
@@ -6514,6 +6667,225 @@ fn nth_matches(s: &str, index: usize) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    fn fragment(namespace: Namespace, tag: &str, source: &str, scripting: bool) -> Document {
+        let mut owner = Document::parse_with_scripting("", scripting);
+        let context = owner.create_element_ns(namespace, tag);
+        owner.parse_fragment(context, source).unwrap()
+    }
+    #[test]
+    fn fragment_table_modes_use_context_without_inserting_it_on_the_stack() {
+        for (context, source, expected) in [
+            (
+                "table",
+                "<td>A<td>B",
+                "<tbody><tr><td>A</td><td>B</td></tr></tbody>",
+            ),
+            ("tbody", "<td>A<td>B", "<tr><td>A</td><td>B</td></tr>"),
+            ("tr", "<td>A<td>B", "<td>A</td><td>B</td>"),
+            ("td", "one</td><td>two", "onetwo"),
+            ("colgroup", "x<col><colgroup><col>", "<col><col>"),
+            (
+                "frameset",
+                "</frameset><frame><div>ignored</div>",
+                "<frame>",
+            ),
+            (
+                "select",
+                "<input><select><keygen><option>A<option>B",
+                "<keygen><option>A</option><option>B</option>",
+            ),
+            ("div", "<span><frameset>", "<span></span>"),
+            (
+                "html",
+                "<frameset><span>",
+                "<head></head><frameset></frameset>",
+            ),
+            (
+                "html",
+                "<title>T</title><p>B</html><!--tail-->",
+                "<head><title>T</title></head><body><p>B</p></body><!--tail-->",
+            ),
+        ] {
+            let d = fragment(Namespace::Html, context, source, false);
+            assert_eq!(d.outer_html(d.root), expected, "{context}");
+            assert_bounded_forest(&d);
+        }
+    }
+    #[test]
+    fn fragment_tokenizer_has_no_appropriate_context_end_tag_and_keeps_initial_lf() {
+        for context in [
+            "textarea",
+            "title",
+            "style",
+            "xmp",
+            "iframe",
+            "noembed",
+            "noframes",
+            "script",
+            "plaintext",
+            "noscript",
+        ] {
+            for scripting in [false, true] {
+                let source = format!("\n&amp;\0</{context}></\0fragment><b>text</b>");
+                let d = fragment(Namespace::Html, context, &source, scripting);
+                if context == "noscript" && !scripting {
+                    assert!(d.query_selector("b").is_some());
+                } else {
+                    let expected = source.replace('\0', "\u{fffd}");
+                    let expected = if matches!(context, "textarea" | "title") {
+                        expected.replace("&amp;", "&")
+                    } else {
+                        expected
+                    };
+                    assert_eq!(d.text_content(d.root), expected, "{context}/{scripting}");
+                    assert_eq!(d.nodes[d.root].children.len(), 1);
+                    assert!(matches!(
+                        d.nodes[d.nodes[d.root].children[0]].kind,
+                        NodeKind::Text(_)
+                    ));
+                }
+                assert_bounded_forest(&d);
+            }
+        }
+    }
+    #[test]
+    fn foreign_fragment_adjusted_current_node_controls_cdata_and_breakout() {
+        let d = fragment(
+            Namespace::Svg,
+            "svg",
+            "<![CDATA[<&\0]]><lineargradient xlink:href='#x' viewbox='0 0 1 1'/><p>HTML</p><circle/>",
+            false,
+        );
+        assert!(d.text_content(d.root).starts_with("<&\u{fffd}"));
+        let gradient = d.query_selector("linearGradient").unwrap();
+        assert_eq!(d.namespace(gradient), Some(Namespace::Svg));
+        assert_eq!(d.attr(gradient, "viewBox"), Some("0 0 1 1"));
+        let NodeKind::Element(element) = &d.nodes[gradient].kind else {
+            unreachable!()
+        };
+        assert_eq!(
+            element.attr_namespaces.get("xlink:href"),
+            Some(&AttributeNamespace::XLink)
+        );
+        assert_eq!(
+            d.namespace(d.query_selector("p").unwrap()),
+            Some(Namespace::Html)
+        );
+        assert_eq!(
+            d.namespace(d.query_selector("circle").unwrap()),
+            Some(Namespace::Svg)
+        );
+        for context in ["foreignObject", "desc", "title"] {
+            let d = fragment(
+                Namespace::Svg,
+                context,
+                "<b>HTML</b><svg><circle/></svg>",
+                false,
+            );
+            assert_eq!(
+                d.namespace(d.query_selector("b").unwrap()),
+                Some(Namespace::Html)
+            );
+            assert_eq!(
+                d.namespace(d.query_selector("circle").unwrap()),
+                Some(Namespace::Svg)
+            );
+            assert_bounded_forest(&d);
+        }
+        assert_bounded_forest(&d);
+    }
+    #[test]
+    fn math_fragment_integration_uses_context_attributes_and_namespace() {
+        let d = fragment(
+            Namespace::MathMl,
+            "mi",
+            "<mglyph/><b>HTML</b><malignmark/>",
+            false,
+        );
+        for (selector, namespace) in [
+            ("mglyph", Namespace::MathMl),
+            ("b", Namespace::Html),
+            ("malignmark", Namespace::MathMl),
+        ] {
+            assert_eq!(
+                d.namespace(d.query_selector(selector).unwrap()),
+                Some(namespace)
+            );
+        }
+        let mut owner = Document::parse("");
+        let context = owner.create_element_ns(Namespace::MathMl, "annotation-xml");
+        owner.set_attr(context, "encoding", "TEXT/HTML");
+        let d = owner.parse_fragment(context, "<div><svg/></div>").unwrap();
+        assert_eq!(
+            d.namespace(d.query_selector("div").unwrap()),
+            Some(Namespace::Html)
+        );
+        assert_eq!(
+            d.namespace(d.query_selector("svg").unwrap()),
+            Some(Namespace::Svg)
+        );
+        let d = fragment(
+            Namespace::MathMl,
+            "annotation-xml",
+            "<spanish/><svg/>",
+            false,
+        );
+        assert_eq!(
+            d.namespace(d.query_selector("spanish").unwrap()),
+            Some(Namespace::MathMl)
+        );
+        assert_eq!(
+            d.namespace(d.query_selector("svg").unwrap()),
+            Some(Namespace::Svg)
+        );
+    }
+    #[test]
+    fn fragment_form_pointer_uses_inclusive_context_ancestors_without_mutating_them() {
+        let owner = Document::parse("<form id=outer><div id=context></div></form>");
+        let context = owner.query_selector("#context").unwrap();
+        let before = owner.outer_html(owner.root);
+        let d = owner
+            .parse_fragment(
+                context,
+                "<form id=ignored><input></form><form id=allowed></form>",
+            )
+            .unwrap();
+        assert!(d.query_selector("#ignored").is_none());
+        assert!(d.query_selector("#allowed").is_some());
+        assert!(d.query_selector("input").is_some());
+        assert_eq!(owner.outer_html(owner.root), before);
+        let form = owner.query_selector("#outer").unwrap();
+        let d = owner
+            .parse_fragment(form, "<form id=ignored><input>")
+            .unwrap();
+        assert!(d.query_selector("#ignored").is_none());
+        assert_bounded_forest(&d);
+    }
+    #[test]
+    fn fragment_rejects_invalid_contexts_and_bounds_malformed_reparenting() {
+        let mut owner = Document::parse("");
+        assert!(owner.parse_fragment(owner.root, "x").is_err());
+        assert!(owner.parse_fragment(usize::MAX, "x").is_err());
+        let template = owner.create_element("template");
+        assert!(
+            owner
+                .parse_fragment(template, "x")
+                .unwrap_err()
+                .contains("template")
+        );
+        let context = owner.create_element("div");
+        owner.nodes[context].parent = Some(context);
+        assert!(owner.parse_fragment(context, "x").is_err());
+        for namespace in [Namespace::Html, Namespace::Svg, Namespace::MathMl] {
+            let source = format!(
+                "{}{}",
+                "<a><b><div><table><svg><foreignObject>".repeat(800),
+                "</a></table></svg><p>tail".repeat(800)
+            );
+            let d = fragment(namespace, "div", &source, false);
+            assert_bounded_forest(&d);
+        }
+    }
     #[test]
     fn foreign_namespaces_case_adjustments_and_attribute_identity() {
         let d = parse(

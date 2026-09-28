@@ -66,13 +66,14 @@ requesting other constructors are explicitly unsupported until their identities
 can be checked. The framed adapter response keeps identity separate from the
 diagnostic name.
 
-A nine-case preflight runs the upstream assertion implementations, including
+A thirteen-case preflight runs the upstream assertion and property-helper implementations, including
 deliberate failures, signed zero, expected exceptions with matching and differing
-constructors, and mismatched arrays. Failure of this preflight makes the run
+constructors, mismatched arrays, and deliberately incorrect writable, enumerable
+and configurable descriptors. Failure of this preflight makes the run
 unhealthy and prevents recording a baseline.
 
 The current declared-feature support policy permits `arrow-function`,
-`String.fromCodePoint`, and `well-formed-json-stringify`. Other declared features
+`String.fromCodePoint`, `well-formed-json-stringify`, and `for-in-order`. Other declared features
 are explicitly unsupported. In particular, `isConstructor.js` catches failures
 from `Reflect.construct`: running its tests without Reflect could accidentally
 pass negative constructor assertions, so those cases are gated as unsupported.
@@ -105,13 +106,22 @@ python3 tools/test262_conformance.py --record-baseline tests/conformance/test262
 python3 tools/test262_conformance.py --baseline tests/conformance/test262-current.json
 ```
 
-The recorded release measurement contains **108 passed, 140 failed,
-23 harness errors and 381 unsupported variants**, with all nine assertion
-preflights verified and no resource, timeout or adapter errors. All 326 strict
-variants are unsupported. The 23 harness errors are failures to parse the
-unchanged `propertyHelper.js`; they are not counted as test passes. The freshly
-recorded baseline gate passes with zero regressions. CI runs this gate after
-building the release adapter.
+The recorded release measurement contains **265 passed, 5 failed and 382
+unsupported variants**, with all thirteen preflights verified and no harness,
+resource, timeout or adapter errors. All 326 strict variants are unsupported.
+The unchanged `propertyHelper.js` now executes using ordinary property
+descriptors, accessors, deletion, `for...in`, and bound functions. Before recording,
+the previous feature policy preserved all 108 previous passing cases and added
+155; enabling `for-in-order` added two more. All 652 source/mode/harness
+fingerprints remain unchanged. The freshly recorded baseline gate passes with
+zero regressions. CI runs this gate after building the release adapter.
+
+Ordinary object descriptors support writable, enumerable and configurable data
+properties and getter/setter properties. Array indexed/length descriptor
+mutation, array extensibility restrictions and host-object reflection are
+explicitly unsupported. Strict-mode assignment failures, full lexical binding
+rules, proxies, symbols and other exotic objects remain incomplete. Passing
+this selected corpus does not establish full ECMAScript conformance.
 
 Recording and checking are mutually exclusive. A baseline binds the upstream
 revision, manifest bytes, runner feature policy and timeout, and every case's
@@ -122,9 +132,10 @@ not write a baseline when the run is unhealthy. Includes that cannot execute are
 retained as `harness-error` limitations, distinct from transport errors.
 Report output cannot overwrite the baseline, including through a symlink alias.
 The adapter executable's hash must remain unchanged throughout the measurement.
-Runner policy version 2 records the supported intrinsic error identities; its
-reviewed baseline replaces version 1's diagnostic-name classification. The
-pinned source inventory and measured counts are unchanged by that correction.
+Runner policy format 2 records intrinsic error identities and supported declared
+features. This baseline also enables `for-in-order`; the previous-policy gate
+and the subsequent feature-policy comparison both preserved all prior passes.
+The pinned source inventory remains unchanged.
 
 The pinned data can be reimported deliberately with
 `python3 tools/import_test262.py`. A different upstream revision requires editing

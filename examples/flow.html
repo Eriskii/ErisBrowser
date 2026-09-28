@@ -1,0 +1,38 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Eris · Reading in flow</title>
+<style>
+body{margin:0;background:#ecf0eb;color:#172f2b;font-family:sans-serif;font-size:16px;line-height:1.55}
+main{max-width:900px;margin:40px auto;padding:36px;background:#fffdf6;border:1px solid #c9d5ca}
+header{border-bottom:2px solid #173f35;padding-bottom:18px;margin-bottom:28px}
+.kicker{color:#537569;font-size:12px;letter-spacing:2px}h1{font-size:42px;line-height:1.1;margin:12px 0}h2{font-size:24px;margin:24px 0 10px}p{margin:0 0 16px}
+.note{float:right;width:220px;margin:0 0 20px 28px;padding:20px;background:#d5e7da;border-top:5px solid #30644c}.note h2{margin:0 0 12px;font-size:20px}.note p{font-size:14px}
+.chapter{display:flow-root}strong{color:#235d44}.mark{float:left;width:68px;height:68px;margin:5px 18px 8px 0;background:#173f35;color:#f8e8ad;font-size:42px;text-align:center;line-height:1.5}
+.controls{clear:both;margin-top:24px;padding:20px;background:#f1ead8;border:1px solid #d9caa5}button{background:#173f35;color:white;border:0;padding:10px 16px;font-size:15px;cursor:pointer}.status{margin:14px 0 0;color:#456451;font-size:14px}table{width:100%;border-collapse:collapse;margin-top:16px}td{padding:10px;border-bottom:1px solid #d9caa5;font-size:14px}footer{clear:both;margin-top:26px;font-size:12px;color:#63766a}
+</style>
+<main>
+<header><div class="kicker">ERIS / FIELD NOTES 01</div><h1>Reading in flow</h1><p>A small page built from text, space, and a few moving parts.</p></header>
+<section class="chapter">
+<aside class="note"><h2>A note in the margin</h2><p>This box floats on the right. The article's lines use the space beside it, then return to the full width below.</p><svg width="180" height="60" viewBox="0 0 180 60"><rect width="180" height="60" fill="#173f35"/><circle cx="30" cy="30" r="17" fill="#f8e8ad"/><path d="M66 18H157M66 30H137M66 42H148" stroke="#d5e7da" stroke-width="3"/></svg></aside>
+<div class="mark">E</div><p>Text has a shape. A paragraph can make room for an illustration, pass a note, and carry on below it. Floats ask the layout engine to find that space one line at a time.</p>
+<p>This example combines left and right floats, their margins, and a separate formatting context around the article. The green initial and the margin note keep their own dimensions while the words adapt to the remaining width.</p>
+<p><strong>Try a narrower window.</strong> The available line width changes as the floats begin and end. The controls below use clearance to stay beneath the article's floating boxes.</p>
+</section>
+<section class="controls"><button id="advance" type="button">Turn the page</button><p id="status" class="status">Chapter 1 / Spring</p><table id="chapters"><tr><td>Current chapter</td><td>Spring</td></tr></table></section>
+<footer>Custom HTML · CSS float layout · DOM fragments · JavaScript property descriptors</footer>
+</main>
+<script>
+const titles=['Spring','Summer','Autumn'];
+let chapter=0;
+const book={};
+Object.defineProperty(book,'chapter',{
+  enumerable:true,
+  get:function(){return chapter;},
+  set:function(value){
+    chapter=value%titles.length;
+    document.getElementById('status').textContent='Chapter '+(chapter+1)+' / '+titles[chapter];
+    document.getElementById('chapters').innerHTML='<tr><td>Current chapter</td><td>'+titles[chapter]+'</td></tr>';
+  }
+});
+document.getElementById('advance').onclick=function(){book.chapter=book.chapter+1;};
+</script>

@@ -27,6 +27,33 @@ use winit::{
 
 const TOOLBAR: f32 = 76.0;
 const STATUS: f32 = 25.0;
+
+/// Hit regions have already been clipped by layout. Propagating their visible
+/// area to ancestors also covers inline links whose text owns the actual hits.
+/// Do not clip to the viewport: a control below the fold remains focusable.
+fn visible_layout_nodes(snapshot: &Snapshot) -> Vec<bool> {
+    let mut visible = vec![false; snapshot.document.nodes.len()];
+    for hit in &snapshot.layout.hit_regions {
+        if hit.rect.width <= 0.0 || hit.rect.height <= 0.0 {
+            continue;
+        }
+        let mut current = Some(hit.node);
+        for _ in 0..eris::dom::MAX_DEPTH {
+            let Some(node) = current else {
+                break;
+            };
+            let Some(mark) = visible.get_mut(node) else {
+                break;
+            };
+            if *mark {
+                break;
+            }
+            *mark = true;
+            current = snapshot.document.nodes[node].parent;
+        }
+    }
+    visible
+}
 enum Event {
     Ready,
     Failed {
@@ -401,6 +428,7 @@ pub fn run(
         surface: None,
         fonts: Fonts::new(),
         snapshot: None,
+        visible_nodes: Vec::new(),
         ready_snapshot,
         tx,
         current,
@@ -446,6 +474,7 @@ struct Browser {
     surface: Option<softbuffer::Surface<Arc<Window>, Arc<Window>>>,
     fonts: Fonts,
     snapshot: Option<Snapshot>,
+    visible_nodes: Vec<bool>,
     ready_snapshot: Arc<Latest<Snapshot>>,
     tx: Arc<RequestQueue>,
     current: Arc<AtomicU64>,
@@ -658,7 +687,9 @@ impl Browser {
         else {
             return;
         };
-        if !s.document.can_focus_control(node) {
+        if !self.visible_nodes.get(node).copied().unwrap_or(false)
+            || !s.document.can_focus_control(node)
+        {
             return;
         }
         self.focused = Some(node);
@@ -794,7 +825,10 @@ impl Browser {
         self.snapshot
             .as_ref()
             .filter(|snapshot| snapshot.generation == self.generation())
-            .is_some_and(|s| s.document.can_edit_control(node))
+            .is_some_and(|s| {
+                self.visible_nodes.get(node).copied().unwrap_or(false)
+                    && s.document.can_edit_control(node)
+            })
     }
     fn password_focused(&self) -> bool {
         !self.address_focused
@@ -832,7 +866,8 @@ impl Browser {
         let Some(node) = self.focused else {
             return;
         };
-        if !snapshot.document.can_focus_control(node)
+        if !self.visible_nodes.get(node).copied().unwrap_or(false)
+            || !snapshot.document.can_focus_control(node)
             || self.editable(node) && !snapshot.document.can_edit_control(node)
         {
             self.focused = None;
@@ -904,6 +939,7 @@ impl Browser {
             eprintln!("[page] {diagnostic}");
         }
         self.clear_stale_focus(snapshot.generation);
+        self.visible_nodes = visible_layout_nodes(&snapshot);
         self.reconcile_input(&snapshot);
         self.snapshot = Some(snapshot);
         self.clamp_scroll();
@@ -919,6 +955,7 @@ impl Browser {
         }
         self.loading = false;
         self.snapshot = None;
+        self.visible_nodes.clear();
         self.focused = None;
         self.input_value.clear();
         self.scroll = 0.0;
@@ -1157,7 +1194,10 @@ impl Browser {
             .document
             .query_selector_all("input, textarea, button, a[href]")
             .into_iter()
-            .filter(|&n| s.document.can_focus_control(n))
+            .filter(|&n| {
+                self.visible_nodes.get(n).copied().unwrap_or(false)
+                    && s.document.can_focus_control(n)
+            })
             .collect::<Vec<_>>();
         if inputs.is_empty() {
             return;
@@ -1754,26 +1794,32 @@ mod tests {
         dom::Document, graphics::ImageStore, layout::LayoutResult, page::Page, worker::apply_edit,
     };
 
+    fn document_layout(document: &Document, fonts: &Fonts) -> LayoutResult {
+        let styles = eris::css::compute_styles(document, &document.stylesheets(), 1180.0, 739.0);
+        eris::layout::layout(document, &styles, 1180.0, 739.0, fonts)
+    }
+
     fn editing_browser(html: &str) -> Browser {
+        let fonts = Fonts::new();
+        let document = Document::parse(html);
+        let snapshot = Snapshot {
+            generation: 1,
+            processed_edit_sequence: 0,
+            layout: document_layout(&document, &fonts),
+            images: ImageStore::new(),
+            document,
+            title: "Pure editing test".into(),
+            url: "https://old.example/".into(),
+            diagnostics: Vec::new(),
+            load_ms: 0.0,
+        };
+        let visible_nodes = visible_layout_nodes(&snapshot);
         Browser {
             window: None,
             surface: None,
-            fonts: Fonts::new(),
-            snapshot: Some(Snapshot {
-                generation: 1,
-                processed_edit_sequence: 0,
-                layout: LayoutResult {
-                    commands: Vec::new(),
-                    hit_regions: Vec::new(),
-                    content_height: 120.0,
-                },
-                images: ImageStore::new(),
-                document: Document::parse(html),
-                title: "Pure editing test".into(),
-                url: "https://old.example/".into(),
-                diagnostics: Vec::new(),
-                load_ms: 0.0,
-            }),
+            fonts,
+            snapshot: Some(snapshot),
+            visible_nodes,
             ready_snapshot: Arc::new(Latest::default()),
             tx: Arc::new(RequestQueue::default()),
             current: Arc::new(AtomicU64::new(1)),
@@ -1808,11 +1854,7 @@ mod tests {
         Snapshot {
             generation: old.generation,
             processed_edit_sequence: sequence,
-            layout: LayoutResult {
-                commands: Vec::new(),
-                hit_regions: Vec::new(),
-                content_height: 120.0,
-            },
+            layout: document_layout(&document, &browser.fonts),
             images: ImageStore::new(),
             document,
             title: old.title.clone(),
@@ -2178,6 +2220,163 @@ mod tests {
         browser.tab_focus();
         assert_eq!(browser.focused, Some(normal));
         assert!(browser.clipboard.is_none());
+    }
+
+    #[test]
+    fn tab_focus_uses_clipped_geometry_keeps_inline_links_and_offscreen_controls() {
+        let mut browser = editing_browser(
+            "<style>body{margin:0}#hidden,#hidden-parent{display:none}#clip{height:0;overflow:hidden}#partial-parent{height:10px;overflow:clip}#offscreen{position:absolute;top:2000px}</style><input id=first><input id=hidden><div id=hidden-parent><textarea id=descendant></textarea></div><div id=clip><input id=clipped></div><div id=partial-parent><input id=partial></div><a id=link href='#target'><span><em>inline link</em></span></a><input id=offscreen><button id=last>last</button>",
+        );
+        let node = |browser: &Browser, selector| {
+            browser
+                .snapshot
+                .as_ref()
+                .unwrap()
+                .document
+                .query_selector(selector)
+                .unwrap()
+        };
+        for selector in ["#hidden", "#descendant", "#clipped"] {
+            let id = node(&browser, selector);
+            assert!(
+                browser
+                    .snapshot
+                    .as_ref()
+                    .unwrap()
+                    .document
+                    .can_focus_control(id)
+            );
+            browser.focus_input(id);
+            assert!(browser.focused.is_none(), "{selector}");
+            assert!(!browser.editable(id), "{selector}");
+            browser.send_edit(id);
+        }
+        assert!(!browser.tx.has_pending());
+        let link = node(&browser, "#link");
+        assert!(
+            !browser
+                .snapshot
+                .as_ref()
+                .unwrap()
+                .layout
+                .hit_regions
+                .iter()
+                .any(|h| h.node == link)
+        );
+        for selector in [
+            "#first",
+            "#partial",
+            "#link",
+            "#offscreen",
+            "#last",
+            "#first",
+        ] {
+            browser.tab_focus();
+            assert_eq!(
+                browser.focused,
+                Some(node(&browser, selector)),
+                "{selector}"
+            );
+        }
+        browser.scroll = 1000.0;
+        browser.modifiers = ModifiersState::SHIFT;
+        browser.tab_focus();
+        assert_eq!(browser.focused, Some(node(&browser, "#last")));
+        browser.tab_focus();
+        assert_eq!(browser.focused, Some(node(&browser, "#offscreen")));
+        assert_eq!(
+            browser.scroll, 1000.0,
+            "visibility is document geometry, not viewport intersection"
+        );
+    }
+
+    #[test]
+    fn pointer_and_tab_admit_the_same_partly_clipped_input_geometry() {
+        let mut browser = editing_browser(
+            "<style>body{margin:0}main{width:80px;height:10px;overflow:hidden}input{width:120px;height:30px}</style><main><input id=field value=visible></main>",
+        );
+        let snapshot = browser.snapshot.as_ref().unwrap();
+        let node = snapshot.document.query_selector("#field").unwrap();
+        let hit = snapshot
+            .layout
+            .hit_regions
+            .iter()
+            .find(|h| h.node == node)
+            .unwrap()
+            .rect;
+        assert_eq!((hit.width, hit.height), (80.0, 10.0));
+        browser.tab_focus();
+        assert_eq!(browser.focused, Some(node));
+        browser.focused = None;
+        browser.cursor = (hit.x + hit.width / 2.0, TOOLBAR + hit.y + hit.height / 2.0);
+        browser.click();
+        assert_eq!(browser.focused, Some(node));
+        browser.focused = None;
+        browser.cursor = (hit.x + hit.width + 1.0, TOOLBAR + hit.y + hit.height / 2.0);
+        browser.click();
+        assert!(browser.focused.is_none());
+    }
+
+    #[test]
+    fn accepted_hidden_geometry_revokes_pending_native_edits_before_acknowledgement() {
+        let mut browser = editing_browser("<input id=field value=base>");
+        let node = browser
+            .snapshot
+            .as_ref()
+            .unwrap()
+            .document
+            .query_selector("#field")
+            .unwrap();
+        browser.focus_input(node);
+        browser.insert_text("-pending");
+        assert!(matches!(
+            browser.tx.recv(),
+            Some(Request::Edit { sequence: 1, .. })
+        ));
+        let mut document = browser.snapshot.as_ref().unwrap().document.clone();
+        document.set_attr(node, "style", "display:none");
+        browser.accept_snapshot(acknowledgement(&browser, 0, document.clone()));
+        assert!(browser.focused.is_none());
+        assert!(browser.input_value.is_empty());
+        assert!(!browser.editable(node));
+        assert_eq!(browser.edit_sequence, 1);
+        browser.insert_text("blocked");
+        browser.send_edit(node);
+        assert!(!browser.tx.has_pending());
+        document.set_attr(node, "style", "display:block");
+        document.set_attr(node, "value", "acknowledged");
+        browser.accept_snapshot(acknowledgement(&browser, 1, document));
+        browser.tab_focus();
+        assert_eq!(browser.focused, Some(node));
+        assert_eq!(browser.input_value, "acknowledged");
+    }
+
+    #[test]
+    fn obsolete_hidden_snapshot_cannot_replace_accepted_focus_geometry() {
+        let mut browser = editing_browser("<input id=field value=current>");
+        let node = browser
+            .snapshot
+            .as_ref()
+            .unwrap()
+            .document
+            .query_selector("#field")
+            .unwrap();
+        browser.snapshot.as_mut().unwrap().processed_edit_sequence = 2;
+        browser.edit_sequence = 2;
+        browser.focus_input(node);
+        let visible = browser.visible_nodes.clone();
+        let mut document = browser.snapshot.as_ref().unwrap().document.clone();
+        document.set_attr(node, "style", "display:none");
+        browser.accept_snapshot(acknowledgement(&browser, 1, document.clone()));
+        assert_eq!(browser.visible_nodes, visible);
+        assert_eq!(browser.focused, Some(node));
+        assert!(browser.editable(node));
+        let mut stale_generation = acknowledgement(&browser, 3, document);
+        stale_generation.generation = 0;
+        browser.accept_snapshot(stale_generation);
+        assert_eq!(browser.visible_nodes, visible);
+        assert_eq!(browser.focused, Some(node));
+        assert_eq!(browser.input_value, "current");
     }
 
     #[test]

@@ -37,3 +37,11 @@ After the broker, namespace and Test262 increment, the same warm-render configur
 ## Current implementation choices
 
 Arena DOM storage, indexed style-rule candidates, bounded selector matching, retained display lists during scrolling, cached glyph masks, clipped painting and a separate page worker avoid some repeated work. The painter remains a CPU rasterizer. It does not implement a GPU compositor or incremental style/layout invalidation. Changes currently recalculate layout, and significant performance work remains.
+
+The fragment/descriptor/float/image-isolation checkpoint recorded warm medians
+of 4.454 ms (home), 7.057 ms (gallery), and 5.270 ms (forms), with p95 values of
+4.860, 7.553 and 5.351 ms under the same 100-iteration, 1180×880 configuration.
+[The measurement record](benchmark-fragments-floats.json) includes build/input
+hashes. These uncontrolled local timings exclude image decoding, process startup,
+IPC and native presentation; they do not establish the cost of isolated image
+loading or performance relative to Chromium.

@@ -21,7 +21,7 @@ pub(super) const MAX_REQUEST: usize = 18 * 1024 * 1024;
 const MAX_STRING: usize = 16 * 1024 * 1024;
 const MAX_IMAGES: usize = 64 * 1024 * 1024;
 const MAX_COMMANDS: usize = 200_000;
-const MAGIC: &[u8] = b"ERW2";
+const MAGIC: &[u8] = b"ERW3";
 type Result<T> = std::result::Result<T, String>;
 
 pub(super) fn read_frame(input: &mut impl Read, limit: usize) -> Result<Vec<u8>> {
@@ -862,6 +862,12 @@ pub(super) fn encode_resource(
             }
             e.u32(r.bytes.len());
             e.raw(&r.bytes);
+            e.boolean(r.origin_clean);
+            e.boolean(r.decoded_image.is_some());
+            if let Some(image) = &r.decoded_image {
+                validate_opaque_resource(r)?;
+                encode_raster(&mut e, image, MAX_IMAGES)?;
+            }
         }
     }
     e.finish()
@@ -895,15 +901,126 @@ pub(super) fn decode_resource(
         }
         let length = d.count(crate::net::MAX_RESOURCE_BYTES)?;
         let bytes = d.raw(length)?.to_vec();
-        Ok(crate::net::Resource {
+        let origin_clean = d.boolean()?;
+        let decoded_image = if d.boolean()? {
+            Some(decode_raster(&mut d, MAX_IMAGES)?)
+        } else {
+            None
+        };
+        let resource = crate::net::Resource {
             url,
             status,
             content_type,
             headers,
             bytes,
-        })
+            origin_clean,
+            decoded_image,
+        };
+        if resource.decoded_image.is_some() {
+            validate_opaque_resource(&resource)?;
+        }
+        Ok(resource)
     } else {
         Err(d.string(8192)?)
+    };
+    d.end()?;
+    Ok(result)
+}
+
+fn validate_opaque_resource(r: &crate::net::Resource) -> Result<()> {
+    if r.origin_clean
+        || !r.bytes.is_empty()
+        || !r.headers.is_empty()
+        || !r.content_type.is_empty()
+        || r.status != 200
+    {
+        return Err("decoded opaque image contains response metadata".into());
+    }
+    Ok(())
+}
+fn encode_raster(e: &mut Encoder, image: &RasterImage, budget: usize) -> Result<()> {
+    let expected = raster_length(image.width as usize, image.height as usize, budget)?;
+    if image.rgba.len() != expected {
+        return Err("incorrect decoded image length".into());
+    }
+    e.u32(image.width as usize);
+    e.u32(image.height as usize);
+    e.raw(&image.rgba);
+    Ok(())
+}
+fn raster_length(width: usize, height: usize, budget: usize) -> Result<usize> {
+    if width == 0 || height == 0 || width > 4096 || height > 4096 {
+        return Err("invalid decoded image dimensions".into());
+    }
+    let length = width
+        .checked_mul(height)
+        .and_then(|n| n.checked_mul(4))
+        .ok_or("decoded image size overflow")?;
+    if length > budget.min(MAX_IMAGES) {
+        return Err("decoded image budget exceeded".into());
+    }
+    Ok(length)
+}
+fn decode_raster(d: &mut Decoder<'_>, budget: usize) -> Result<RasterImage> {
+    let width = d.count(4096)?;
+    let height = d.count(4096)?;
+    let length = raster_length(width, height, budget)?;
+    Ok(RasterImage {
+        width: width as u32,
+        height: height as u32,
+        rgba: d.raw(length)?.to_vec(),
+    })
+}
+pub(super) fn encode_decoder_init() -> Result<Vec<u8>> {
+    Encoder::new(6).finish()
+}
+pub(super) fn decode_decoder_init(bytes: &[u8]) -> Result<()> {
+    Decoder::new(bytes, 6)?.end()
+}
+pub(super) fn encode_image_request(
+    content_type: &str,
+    bytes: &[u8],
+    budget: usize,
+) -> Result<Vec<u8>> {
+    if content_type.len() > 8192
+        || bytes.len() > crate::net::MAX_RESOURCE_BYTES
+        || budget > MAX_IMAGES
+    {
+        return Err("image decoder request exceeds budget".into());
+    }
+    let mut e = Encoder::new(7);
+    e.string(content_type);
+    e.u32(budget);
+    e.u32(bytes.len());
+    e.raw(bytes);
+    e.finish()
+}
+pub(super) fn decode_image_request(bytes: &[u8]) -> Result<(String, &[u8], usize)> {
+    let mut d = Decoder::new(bytes, 7)?;
+    let content_type = d.string(8192)?;
+    let budget = d.count(MAX_IMAGES)?;
+    let length = d.count(crate::net::MAX_RESOURCE_BYTES)?;
+    let source = d.raw(length)?;
+    d.end()?;
+    Ok((content_type, source, budget))
+}
+pub(super) fn encode_image_result(result: &Result<RasterImage>, budget: usize) -> Result<Vec<u8>> {
+    let mut e = Encoder::new(8);
+    e.boolean(result.is_ok());
+    match result {
+        Ok(image) => encode_raster(&mut e, image, budget)?,
+        // Decoder diagnostics cannot contain original body fragments.
+        Err(_) => e.string("image decoding failed"),
+    }
+    e.finish()
+}
+pub(super) fn decode_image_result(bytes: &[u8], budget: usize) -> Result<Result<RasterImage>> {
+    let mut d = Decoder::new(bytes, 8)?;
+    let result = if d.boolean()? {
+        Ok(decode_raster(&mut d, budget)?)
+    } else {
+        let _ = d.string(8192)?;
+        Err("image decoding failed".into())
     };
     d.end()?;
     Ok(result)
@@ -912,6 +1029,73 @@ pub(super) fn decode_resource(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn opaque_image_protocol_preserves_pixels_without_original_response_metadata() {
+        let image = RasterImage {
+            width: 2,
+            height: 1,
+            rgba: vec![1, 2, 3, 255, 4, 5, 6, 255],
+        };
+        let mut resource = crate::net::Resource {
+            url: url::Url::parse("https://other.test/requested.png").unwrap(),
+            status: 200,
+            content_type: String::new(),
+            headers: BTreeMap::new(),
+            bytes: Vec::new(),
+            origin_clean: false,
+            decoded_image: Some(image.clone()),
+        };
+        let encoded = encode_resource(&Ok(resource)).unwrap();
+        resource = decode_resource(&encoded).unwrap().unwrap();
+        assert_eq!(resource.decoded_image.as_ref().unwrap().rgba, image.rgba);
+        assert!(!resource.origin_clean);
+        assert!(
+            resource.bytes.is_empty()
+                && resource.headers.is_empty()
+                && resource.content_type.is_empty()
+        );
+        for cut in 0..encoded.len() {
+            assert!(decode_resource(&encoded[..cut]).is_err());
+        }
+        resource.bytes = b"private body".to_vec();
+        assert!(encode_resource(&Ok(resource)).is_err());
+        let encoded = encode_image_result(&Ok(image.clone()), 8).unwrap();
+        assert_eq!(
+            decode_image_result(&encoded, 8).unwrap().unwrap().rgba,
+            image.rgba
+        );
+        assert!(decode_image_result(&encoded, 7).is_err());
+        for cut in 0..encoded.len() {
+            assert!(decode_image_result(&encoded[..cut], 8).is_err());
+        }
+        let mut forged = encoded.clone();
+        forged[6..10].copy_from_slice(&4097u32.to_le_bytes());
+        assert!(decode_image_result(&forged, MAX_IMAGES).is_err());
+        let mut forged = encoded;
+        forged[6..10].copy_from_slice(&0u32.to_le_bytes());
+        assert!(decode_image_result(&forged, MAX_IMAGES).is_err());
+        let error = encode_image_result(&Err("private original body".into()), 8).unwrap();
+        assert!(!String::from_utf8_lossy(&error).contains("private"));
+        assert_eq!(
+            decode_image_result(&error, 8).unwrap().unwrap_err(),
+            "image decoding failed"
+        );
+    }
+    #[test]
+    fn decoder_requests_reject_truncation_and_trailing_data() {
+        let encoded = encode_image_request("image/png", b"encoded bytes", 256).unwrap();
+        assert_eq!(
+            decode_image_request(&encoded).unwrap(),
+            ("image/png".to_owned(), b"encoded bytes".as_slice(), 256)
+        );
+        for cut in 0..encoded.len() {
+            assert!(decode_image_request(&encoded[..cut]).is_err());
+        }
+        let mut extra = encoded;
+        extra.push(0);
+        assert!(decode_image_request(&extra).is_err());
+        assert!(encode_image_request("image/png", b"", MAX_IMAGES + 1).is_err());
+    }
     #[test]
     fn resource_protocol_preserves_authority_fields_and_rejects_truncated_payloads() {
         use crate::net::{Resource, ResourceKind};
@@ -937,6 +1121,8 @@ mod tests {
                 "default-src 'none'".into(),
             )]),
             bytes: b"<p>broker response</p>".to_vec(),
+            origin_clean: true,
+            decoded_image: None,
         };
         let encoded = encode_resource(&Ok(resource)).unwrap();
         let decoded = decode_resource(&encoded).unwrap().unwrap();
@@ -1307,6 +1493,33 @@ mod tests {
             + key.len();
         bytes[index..index + 4].copy_from_slice(&1u32.to_le_bytes());
         assert!(decode_reply(&bytes).is_err());
+    }
+    #[test]
+    fn clipped_float_layout_at_command_quota_survives_snapshot_validation() {
+        let source = format!(
+            "<style>.clip{{overflow:hidden;width:40px}}.float{{float:left;width:40px}}.leaf{{height:1px;overflow:hidden}}</style>{}{}{}",
+            "<div class=clip><div class=float>".repeat(16),
+            "<div class=leaf>x</div>".repeat(30_000),
+            "</div></div>".repeat(16),
+        );
+        let reply = reply_with_html(&source);
+        let snapshot = decode_reply(&encode_reply(&reply).unwrap())
+            .unwrap()
+            .snapshot
+            .unwrap();
+        assert!(snapshot.layout.commands.len() <= MAX_COMMANDS);
+        let mut clips = 0;
+        for command in &snapshot.layout.commands {
+            match command {
+                DrawCommand::PushClip { .. } => clips += 1,
+                DrawCommand::PopClip => {
+                    assert!(clips > 0);
+                    clips -= 1;
+                }
+                _ => {}
+            }
+        }
+        assert_eq!(clips, 0);
     }
     #[test]
     fn snapshot_round_trip_and_truncation_rejection() {

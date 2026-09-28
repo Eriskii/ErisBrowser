@@ -228,6 +228,17 @@ struct Subpath {
 
 /// Render SVG into a transparent RGBA image without browser-engine dependencies.
 pub fn render(source: &str, width: Option<u32>, height: Option<u32>) -> Result<RasterImage> {
+    render_with_budget(source, width, height, crate::page::MAX_DECODED_IMAGE_BYTES)
+}
+pub(crate) fn render_with_budget(
+    source: &str,
+    width: Option<u32>,
+    height: Option<u32>,
+    budget: usize,
+) -> Result<RasterImage> {
+    if budget < 4 {
+        return Err("decoded image budget exhausted".into());
+    }
     if source.len() > MAX_SOURCE {
         return Err("SVG source exceeds 512 KiB".into());
     }
@@ -264,6 +275,9 @@ pub fn render(source: &str, width: Option<u32>, height: Option<u32>) -> Result<R
         || u64::from(width) * u64::from(height) > 4_194_304
     {
         return Err("SVG raster exceeds 4 megapixels or 4096 pixels per axis".into());
+    }
+    if u64::from(width) * u64::from(height) * 4 > budget as u64 {
+        return Err("SVG raster exceeds remaining decoded image budget".into());
     }
     let mut matrix = Matrix::IDENTITY;
     if let Some(v) = viewbox {

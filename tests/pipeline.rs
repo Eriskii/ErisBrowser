@@ -556,3 +556,48 @@ fn authoritative_control_edit_policy_blocks_inert_disabled_and_readonly_nodes() 
     }
     assert!(!p.can_edit_control(usize::MAX));
 }
+
+#[test]
+fn float_demo_descriptor_setter_updates_contextual_table_fragments_and_paint() {
+    let mut p = page(include_str!("../examples/flow.html"));
+    assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+    let fonts = Fonts::new();
+    let button = p.document.query_selector("#advance").unwrap();
+    let status = p.document.query_selector("#status").unwrap();
+    for (step, title) in [(2, "Summer"), (3, "Autumn"), (1, "Spring")] {
+        assert!(p.click(button).is_none());
+        assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+        assert_eq!(
+            p.document.text_content(status),
+            format!("Chapter {step} / {title}")
+        );
+        let table = p.document.query_selector("#chapters").unwrap();
+        let tbody = p.document.nodes[table].children[0];
+        assert_eq!(p.document.tag(tbody), Some("tbody"));
+        let row = p.document.nodes[tbody].children[0];
+        assert_eq!(p.document.tag(row), Some("tr"));
+        assert_eq!(p.document.nodes[row].children.len(), 2);
+        let cell = p.document.nodes[row].children[1];
+        assert_eq!(p.document.text_content(cell), title);
+        let layout = p.layout(1100.0, 1000.0, &fonts);
+        assert!(
+            layout
+                .commands
+                .iter()
+                .any(|c| matches!(c, DrawCommand::Text{text,..} if text==title))
+        );
+        let note = p.document.query_selector(".note").unwrap();
+        let rect = |node| {
+            layout
+                .hit_regions
+                .iter()
+                .find(|h| h.node == node)
+                .unwrap()
+                .rect
+        };
+        assert!(rect(button).y >= rect(note).y + rect(note).height);
+        let mut canvas = Canvas::new(1100, 1000).unwrap();
+        canvas.paint(&layout.commands, &fonts, &p.images, 0.0, 0.0);
+        assert!(canvas.pixels.contains(&0x173f35));
+    }
+}

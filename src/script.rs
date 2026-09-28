@@ -499,13 +499,14 @@ struct FunctionCode {
     name: Option<String>,
     arrow: bool,
     self_name: bool,
+    constructable: bool,
 }
 #[derive(Clone, Debug)]
 enum Expr {
     Literal(Value),
     Ident(String),
-    Array(Vec<Expr>),
-    Object(Vec<(JsString, Expr)>),
+    Array(Vec<Option<Expr>>),
+    Object(Vec<(JsString, ObjectEntry)>),
     Unary(String, Box<Expr>),
     Binary(String, Box<Expr>, Box<Expr>),
     Conditional(Box<Expr>, Box<Expr>, Box<Expr>),
@@ -517,6 +518,11 @@ enum Expr {
     Function(FunctionCode),
 }
 #[derive(Clone, Debug)]
+enum ObjectEntry {
+    Data(Expr),
+    Accessor(FunctionCode, bool),
+}
+#[derive(Clone, Debug)]
 enum Stmt {
     Empty,
     Expr(Expr),
@@ -525,6 +531,7 @@ enum Stmt {
     If(Expr, Box<Stmt>, Option<Box<Stmt>>),
     While(Expr, Box<Stmt>),
     For(Option<Box<Stmt>>, Option<Expr>, Option<Expr>, Box<Stmt>),
+    ForIn(ForBinding, Expr, Box<Stmt>),
     Switch(Expr, Vec<(Option<Expr>, Vec<Stmt>)>),
     Function(String, FunctionCode),
     Return(Option<Expr>),
@@ -532,6 +539,11 @@ enum Stmt {
     Try(Box<Stmt>, Option<CatchClause>, Option<Box<Stmt>>),
     Break,
     Continue,
+}
+#[derive(Clone, Debug)]
+enum ForBinding {
+    Declaration(String, DeclarationKind),
+    Target(Expr),
 }
 
 #[derive(Clone, Debug)]
@@ -553,6 +565,7 @@ struct Parser {
     function_depth: usize,
     loop_depth: usize,
     switch_depth: usize,
+    allow_in: bool,
 }
 impl Parser {
     fn program(source: &str) -> Result<Vec<Stmt>> {
@@ -566,6 +579,7 @@ impl Parser {
             function_depth: usize::from(function),
             loop_depth: 0,
             switch_depth: 0,
+            allow_in: true,
         };
         let mut statements = Vec::new();
         while !parser.done() {
@@ -710,6 +724,8 @@ impl Parser {
         }
         if self.eat("for") {
             self.expect("(")?;
+            let saved_in = self.allow_in;
+            self.allow_in = false;
             let init = if self.is(";") {
                 None
             } else if self.is("let") || self.is("const") || self.is("var") {
@@ -717,6 +733,26 @@ impl Parser {
             } else {
                 Some(Box::new(Stmt::Expr(self.expression()?)))
             };
+            self.allow_in = saved_in;
+            if self.eat("in") {
+                let binding = match init.map(|init| *init) {
+                    Some(Stmt::Var(mut bindings, kind))
+                        if bindings.len() == 1 && bindings[0].1.is_none() =>
+                    {
+                        ForBinding::Declaration(bindings.remove(0).0, kind)
+                    }
+                    Some(Stmt::Expr(target @ (Expr::Ident(_) | Expr::Member(..)))) => {
+                        ForBinding::Target(target)
+                    }
+                    _ => return Err(self.error("invalid for-in binding")),
+                };
+                let object = self.expression()?;
+                self.expect(")")?;
+                self.loop_depth += 1;
+                let body = self.statement()?;
+                self.loop_depth -= 1;
+                return Ok(Stmt::ForIn(binding, object, Box::new(body)));
+            }
             self.expect(";")?;
             let test = if self.is(";") {
                 None
@@ -834,7 +870,7 @@ impl Parser {
             } else {
                 None
             };
-            if kind == DeclarationKind::Const && value.is_none() {
+            if kind == DeclarationKind::Const && value.is_none() && !self.is("in") {
                 return Err(self.error("const declaration needs a value"));
             }
             bindings.push((name, value));
@@ -854,6 +890,16 @@ impl Parser {
         }
         Ok(body)
     }
+    fn object_key(&mut self) -> Result<JsString> {
+        let key = match self.tokens[self.pos].kind.clone() {
+            TokenKind::Word(value) => value.into(),
+            TokenKind::String(value) => value,
+            TokenKind::Number(value) => json_number(value).into(),
+            _ => return Err(self.error("expected object property")),
+        };
+        self.pos += 1;
+        Ok(key)
+    }
     fn function(&mut self) -> Result<FunctionCode> {
         self.expect("(")?;
         let mut params = Vec::new();
@@ -867,13 +913,14 @@ impl Parser {
             }
         }
         self.expect("{")?;
-        let saved = (self.loop_depth, self.switch_depth);
+        let saved = (self.loop_depth, self.switch_depth, self.allow_in);
         self.loop_depth = 0;
         self.switch_depth = 0;
+        self.allow_in = true;
         self.function_depth += 1;
         let body = self.block()?;
         self.function_depth -= 1;
-        (self.loop_depth, self.switch_depth) = saved;
+        (self.loop_depth, self.switch_depth, self.allow_in) = saved;
         Self::check_directives(&body)?;
         Ok(FunctionCode {
             params,
@@ -881,12 +928,14 @@ impl Parser {
             name: None,
             arrow: false,
             self_name: false,
+            constructable: true,
         })
     }
     fn arrow(&mut self, params: Vec<String>) -> Result<Expr> {
-        let saved = (self.loop_depth, self.switch_depth);
+        let saved = (self.loop_depth, self.switch_depth, self.allow_in);
         self.loop_depth = 0;
         self.switch_depth = 0;
+        self.allow_in = true;
         self.function_depth += 1;
         let body = if self.eat("{") {
             self.block()?
@@ -895,13 +944,14 @@ impl Parser {
         };
         Self::check_directives(&body)?;
         self.function_depth -= 1;
-        (self.loop_depth, self.switch_depth) = saved;
+        (self.loop_depth, self.switch_depth, self.allow_in) = saved;
         Ok(Expr::Function(FunctionCode {
             params,
             body: Rc::new(body),
             name: None,
             arrow: true,
             self_name: false,
+            constructable: false,
         }))
     }
     fn expression(&mut self) -> Result<Expr> {
@@ -943,6 +993,9 @@ impl Parser {
         let mut chain = 0;
         while let TokenKind::Symbol(s) | TokenKind::Word(s) = &self.tokens[self.pos].kind {
             let op = s.clone();
+            if op == "in" && !self.allow_in {
+                break;
+            }
             let precedence = match op.as_str() {
                 "||" | "??" => 1,
                 "&&" => 2,
@@ -981,7 +1034,7 @@ impl Parser {
         result
     }
     fn unary_inner(&mut self) -> Result<Expr> {
-        for op in ["!", "-", "+", "~", "typeof", "void"] {
+        for op in ["!", "-", "+", "~", "typeof", "void", "delete"] {
             if self.eat(op) {
                 return Ok(Expr::Unary(op.to_owned(), Box::new(self.unary()?)));
             }
@@ -1064,33 +1117,51 @@ impl Parser {
             return Ok(value);
         }
         if self.eat("[") {
+            let saved = self.allow_in;
+            self.allow_in = true;
             let mut items = Vec::new();
-            if !self.eat("]") {
-                loop {
-                    items.push(self.expression()?);
-                    if self.eat("]") {
-                        break;
-                    }
-                    self.expect(",")?;
-                    if self.eat("]") {
-                        break;
-                    }
+            while !self.eat("]") {
+                if self.eat(",") {
+                    items.push(None);
+                    continue;
                 }
+                items.push(Some(self.expression()?));
+                if self.eat("]") {
+                    break;
+                }
+                self.expect(",")?;
             }
+            self.allow_in = saved;
             return Ok(Expr::Array(items));
         }
         if self.eat("{") {
+            let saved = self.allow_in;
+            self.allow_in = true;
             let mut entries = Vec::new();
-            if !self.eat("}") {
-                loop {
-                    let key = match self.tokens[self.pos].kind.clone() {
-                        TokenKind::Word(s) => JsString::from(s),
-                        TokenKind::String(s) => s,
-                        TokenKind::Number(n) => JsString::from(json_number(n)),
-                        _ => return Err(self.error("expected object property")),
-                    };
-                    self.pos += 1;
-                    let value =
+            while !self.eat("}") {
+                let mut key = self.object_key()?;
+                let value = if (key == JsString::from("get") || key == JsString::from("set"))
+                    && !self.is(":")
+                    && !self.is("(")
+                    && !self.is(",")
+                    && !self.is("}")
+                {
+                    let setter = key == JsString::from("set");
+                    key = self.object_key()?;
+                    let mut code = self.function()?;
+                    if code.params.len() != usize::from(setter) {
+                        return Err(self.error("invalid accessor parameter count"));
+                    }
+                    code.name = Some(format!("{} {}", if setter { "set" } else { "get" }, key));
+                    code.constructable = false;
+                    ObjectEntry::Accessor(code, setter)
+                } else if self.is("(") {
+                    let mut code = self.function()?;
+                    code.name = Some(key.to_string());
+                    code.constructable = false;
+                    ObjectEntry::Data(Expr::Function(code))
+                } else {
+                    let mut expression =
                         if self.eat(":") {
                             self.expression()?
                         } else {
@@ -1098,16 +1169,20 @@ impl Parser {
                                 self.error("object shorthand requires an identifier")
                             })?)
                         };
-                    entries.push((key, value));
-                    if self.eat("}") {
-                        break;
+                    if let Expr::Function(code) = &mut expression
+                        && code.name.is_none()
+                    {
+                        code.name = Some(key.to_string());
                     }
-                    self.expect(",")?;
-                    if self.eat("}") {
-                        break;
-                    }
+                    ObjectEntry::Data(expression)
+                };
+                entries.push((key, value));
+                if self.eat("}") {
+                    break;
                 }
+                self.expect(",")?;
             }
+            self.allow_in = saved;
             return Ok(Expr::Object(entries));
         }
         if self.eat("function") {
@@ -1202,6 +1277,13 @@ struct Function {
     code: FunctionCode,
     environment: usize,
     properties: usize,
+    bound: Option<BoundFunction>,
+}
+#[derive(Clone)]
+struct BoundFunction {
+    target: Value,
+    receiver: Value,
+    arguments: Vec<Value>,
 }
 enum Flow {
     Normal(Value),
@@ -1214,36 +1296,88 @@ enum Reference {
     Property(Value, JsString),
 }
 
+#[derive(Clone, Debug)]
+enum PropertyValue {
+    Data { value: Value, writable: bool },
+    Accessor { get: Value, set: Value },
+}
+#[derive(Clone, Debug)]
+struct Property {
+    value: PropertyValue,
+    enumerable: bool,
+    configurable: bool,
+}
+impl Property {
+    fn data(value: Value, writable: bool, enumerable: bool, configurable: bool) -> Self {
+        Self {
+            value: PropertyValue::Data { value, writable },
+            enumerable,
+            configurable,
+        }
+    }
+}
+#[derive(Default)]
+struct PropertyDescriptor {
+    value: Option<Value>,
+    writable: Option<bool>,
+    get: Option<Value>,
+    set: Option<Value>,
+    enumerable: Option<bool>,
+    configurable: Option<bool>,
+}
+impl PropertyDescriptor {
+    fn accessor(&self) -> bool {
+        self.get.is_some() || self.set.is_some()
+    }
+    fn data(&self) -> bool {
+        self.value.is_some() || self.writable.is_some()
+    }
+}
 #[derive(Default)]
 struct ScriptObject {
-    values: BTreeMap<JsString, Value>,
+    values: BTreeMap<JsString, Property>,
     order: Vec<JsString>,
     prototype: Option<Value>,
     boxed: Option<Value>,
-    non_enumerable: BTreeSet<JsString>,
+    non_extensible: bool,
     intrinsic_error: Option<&'static str>,
 }
 impl ScriptObject {
     fn get(&self, key: impl Into<JsString>) -> Option<&Value> {
-        self.values.get(&key.into())
+        self.values
+            .get(&key.into())
+            .and_then(|property| match &property.value {
+                PropertyValue::Data { value, .. } => Some(value),
+                PropertyValue::Accessor { .. } => None,
+            })
     }
     fn contains_key(&self, key: impl Into<JsString>) -> bool {
         self.values.contains_key(&key.into())
     }
     fn insert(&mut self, key: JsString, value: Value) {
+        self.insert_property(key, Property::data(value, true, true, true));
+    }
+    fn insert_property(&mut self, key: JsString, property: Property) {
         if !self.values.contains_key(&key) {
             self.order.push(key.clone());
         }
-        self.values.insert(key, value);
+        self.values.insert(key, property);
     }
     fn remove(&mut self, key: &JsString) {
         self.values.remove(key);
         self.order.retain(|item| item != key);
-        self.non_enumerable.remove(key);
     }
     fn insert_hidden(&mut self, key: JsString, value: Value) {
-        self.non_enumerable.insert(key.clone());
-        self.insert(key, value);
+        self.insert_property(key, Property::data(value, true, false, true));
+    }
+    fn attributes(&mut self, key: &str, writable: bool, enumerable: bool, configurable: bool) {
+        if let Some(property) = self.values.get_mut(&JsString::from(key)) {
+            property.enumerable = enumerable;
+            property.configurable = configurable;
+            if let PropertyValue::Data { writable: old, .. } = &mut property.value {
+                *old = writable;
+            }
+        }
     }
 }
 
@@ -1271,6 +1405,8 @@ pub struct Runtime {
     functions: Vec<Function>,
     arrays: Vec<Vec<Value>>,
     array_properties: Vec<usize>,
+    array_holes: Vec<BTreeSet<usize>>,
+    array_prototype: Option<usize>,
     objects: Vec<ScriptObject>,
     prototypes: BTreeMap<&'static str, usize>,
     native_properties: BTreeMap<String, usize>,
@@ -1353,6 +1489,8 @@ impl Runtime {
             functions: Vec::new(),
             arrays: Vec::new(),
             array_properties: Vec::new(),
+            array_holes: Vec::new(),
+            array_prototype: None,
             objects: Vec::new(),
             prototypes: BTreeMap::new(),
             native_properties: BTreeMap::new(),
@@ -1419,14 +1557,21 @@ impl Runtime {
                 name: None,
                 arrow: true,
                 self_name: false,
+                constructable: false,
             },
             environment: 0,
             properties: self.prototypes["Function"],
+            bound: None,
         });
         self.objects[self.prototypes["Function"]]
             .insert_hidden("name".into(), Value::String(JsString::default()));
         self.objects[self.prototypes["Function"]]
             .insert_hidden("length".into(), Value::Number(0.0));
+        let Value::Array(array_prototype) = self.array(Vec::new())? else {
+            unreachable!()
+        };
+        self.array_properties[array_prototype] = self.prototypes["Array"];
+        self.array_prototype = Some(array_prototype);
         for name in [
             "Object",
             "Function",
@@ -1451,6 +1596,8 @@ impl Runtime {
                     "prototype".into(),
                     if name == "Function" {
                         Value::Function(self.function_prototype)
+                    } else if name == "Array" {
+                        Value::Array(array_prototype)
                     } else {
                         Value::Object(prototype)
                     },
@@ -1460,11 +1607,9 @@ impl Runtime {
                 unreachable!()
             };
             self.objects[properties].prototype = Some(Value::Function(self.function_prototype));
-            self.objects[properties].non_enumerable.extend([
-                "name".into(),
-                "length".into(),
-                "prototype".into(),
-            ]);
+            self.objects[properties].attributes("name", false, false, true);
+            self.objects[properties].attributes("length", false, false, true);
+            self.objects[properties].attributes("prototype", false, false, false);
             self.native_properties.insert(name.into(), properties);
             self.objects[prototype].insert_hidden("constructor".into(), constructor);
             if name.ends_with("Error") {
@@ -1477,11 +1622,19 @@ impl Runtime {
             ("Object", "toString", "Object.toString"),
             ("Object", "valueOf", "Object.valueOf"),
             ("Object", "hasOwnProperty", "Object.hasOwnProperty"),
+            (
+                "Object",
+                "propertyIsEnumerable",
+                "Object.propertyIsEnumerable",
+            ),
             ("Function", "call", "Function.call"),
             ("Function", "apply", "Function.apply"),
+            ("Function", "bind", "Function.bind"),
             ("Error", "toString", "Error.toString"),
             ("Array", "map", "Array.map"),
             ("Array", "join", "Array.join"),
+            ("Array", "push", "Array.push"),
+            ("Array", "toString", "Array.toString"),
             ("String", "toString", "String.toString"),
             ("String", "valueOf", "String.valueOf"),
             ("Number", "toString", "Number.toString"),
@@ -1499,6 +1652,12 @@ impl Runtime {
             "setPrototypeOf",
             "keys",
             "values",
+            "defineProperty",
+            "defineProperties",
+            "getOwnPropertyDescriptor",
+            "getOwnPropertyNames",
+            "preventExtensions",
+            "isExtensible",
         ] {
             self.objects[properties].insert_hidden(
                 method.into(),
@@ -1512,8 +1671,133 @@ impl Runtime {
             ("NEGATIVE_INFINITY", f64::NEG_INFINITY),
         ] {
             self.objects[properties].insert_hidden(key.into(), Value::Number(value));
+            self.objects[properties].attributes(key, false, false, false);
+        }
+        self.objects[self.prototypes["Function"]].attributes("name", false, false, true);
+        self.objects[self.prototypes["Function"]].attributes("length", false, false, true);
+        self.objects[self.prototypes["String"]].boxed = Some(Value::String(JsString::default()));
+        self.objects[self.prototypes["Number"]].boxed = Some(Value::Number(0.0));
+        self.objects[self.prototypes["Boolean"]].boxed = Some(Value::Bool(false));
+        for (name, key, length) in [
+            ("String", "charAt", 1),
+            ("String", "charCodeAt", 1),
+            ("String", "codePointAt", 1),
+            ("String", "slice", 2),
+            ("String", "substring", 2),
+            ("String", "includes", 1),
+            ("String", "startsWith", 1),
+            ("String", "endsWith", 1),
+            ("String", "indexOf", 1),
+            ("String", "split", 2),
+            ("String", "trim", 0),
+            ("String", "toUpperCase", 0),
+            ("String", "toLowerCase", 0),
+            ("Array", "pop", 0),
+            ("Array", "shift", 0),
+            ("Array", "unshift", 1),
+            ("Array", "forEach", 1),
+            ("Array", "filter", 1),
+            ("Array", "includes", 1),
+            ("Array", "indexOf", 1),
+            ("Array", "slice", 2),
+        ] {
+            let full = format!("{name}.{key}");
+            let value = self.intrinsic_function(&full, key, length)?;
+            self.objects[self.prototypes[name]].insert_hidden(key.into(), value);
+        }
+        for (owner, key, length) in [
+            ("String", "fromCharCode", 1),
+            ("String", "fromCodePoint", 1),
+            ("Array", "isArray", 1),
+        ] {
+            let full = format!("{owner}.{key}");
+            let value = self.intrinsic_function(&full, key, length)?;
+            self.objects[self.native_properties[owner]].insert_hidden(key.into(), value);
+        }
+        for name in ["JSON", "Math"] {
+            let Value::Object(id) = self.object_ordered([])? else {
+                unreachable!()
+            };
+            self.native_properties.insert(name.into(), id);
+        }
+        for (key, length) in [("parse", 2), ("stringify", 3)] {
+            let function = self.intrinsic_function(&format!("JSON.{key}"), key, length)?;
+            self.objects[self.native_properties["JSON"]].insert_hidden(key.into(), function);
+        }
+        for (key, length) in [
+            ("abs", 1),
+            ("floor", 1),
+            ("ceil", 1),
+            ("round", 1),
+            ("trunc", 1),
+            ("sqrt", 1),
+            ("pow", 2),
+            ("sin", 1),
+            ("cos", 1),
+            ("tan", 1),
+            ("log", 1),
+            ("exp", 1),
+            ("sign", 1),
+            ("min", 2),
+            ("max", 2),
+        ] {
+            let function = self.intrinsic_function(&format!("Math.{key}"), key, length)?;
+            self.objects[self.native_properties["Math"]].insert_hidden(key.into(), function);
+        }
+        for (key, value) in [("PI", std::f64::consts::PI), ("E", std::f64::consts::E)] {
+            self.objects[self.native_properties["Math"]].insert_property(
+                key.into(),
+                Property::data(Value::Number(value), false, false, false),
+            );
+        }
+        // Give every stored intrinsic method a stable ordinary property bag.
+        let mut methods = Vec::new();
+        for object in &self.objects {
+            for property in object.values.values() {
+                if let PropertyValue::Data {
+                    value: Value::Native(native),
+                    ..
+                } = &property.value
+                    && native.name.contains('.')
+                    && !self.native_properties.contains_key(&native.name)
+                {
+                    methods.push(native.name.clone());
+                }
+            }
+        }
+        for full in methods {
+            let key = full.rsplit('.').next().unwrap();
+            let length = match key {
+                "call" | "bind" => 1,
+                "apply"
+                | "create"
+                | "setPrototypeOf"
+                | "defineProperties"
+                | "getOwnPropertyDescriptor" => 2,
+                "defineProperty" => 3,
+                "toString" | "valueOf" => 0,
+                _ => 1,
+            };
+            self.intrinsic_function(&full, key, length)?;
         }
         Ok(())
+    }
+
+    fn intrinsic_function(&mut self, full: &str, name: &str, length: usize) -> Result<Value> {
+        if !self.native_properties.contains_key(full) {
+            let Value::Object(id) = self.object_ordered([
+                ("name".into(), Value::String(name.into())),
+                ("length".into(), Value::Number(length as f64)),
+            ])?
+            else {
+                unreachable!()
+            };
+            self.objects[id].prototype = Some(Value::Function(self.function_prototype));
+            self.objects[id].attributes("name", false, false, true);
+            self.objects[id].attributes("length", false, false, true);
+            self.native_properties.insert(full.into(), id);
+        }
+        Ok(Self::native(full, Value::Undefined))
     }
 
     pub fn execute(&mut self, source: &str, document: &mut Document) -> Result<Value> {
@@ -1668,9 +1952,12 @@ impl Runtime {
         let Value::Object(properties) = self.object_ordered([])? else {
             unreachable!()
         };
-        self.objects[properties].prototype =
-            self.prototypes.get("Array").copied().map(Value::Object);
+        self.objects[properties].prototype = self
+            .array_prototype
+            .map(Value::Array)
+            .or_else(|| self.prototypes.get("Array").copied().map(Value::Object));
         self.array_properties.push(properties);
+        self.array_holes.push(BTreeSet::new());
         Ok(Value::Array(id))
     }
     fn object(&mut self, values: BTreeMap<String, Value>) -> Result<Value> {
@@ -1686,7 +1973,7 @@ impl Runtime {
             ..ScriptObject::default()
         };
         for (key, value) in values {
-            self.charge(160 + key.byte_len().saturating_mul(2))?;
+            self.charge(256 + key.byte_len().saturating_mul(2))?;
             object.insert(key, value);
         }
         let id = self.objects.len();
@@ -1767,6 +2054,14 @@ impl Runtime {
                 }
                 self.hoist_statement(body, owner)?;
             }
+            Stmt::ForIn(binding, _, body) => {
+                if let ForBinding::Declaration(name, DeclarationKind::Var) = binding
+                    && !self.environments[owner].bindings.contains_key(name)
+                {
+                    self.define(owner, name, Value::Undefined, true)?;
+                }
+                self.hoist_statement(body, owner)?;
+            }
             Stmt::Switch(_, cases) => {
                 for (_, body) in cases {
                     self.hoist_vars(body, owner)?;
@@ -1799,13 +2094,13 @@ impl Runtime {
             unreachable!()
         };
         self.objects[properties].prototype = Some(Value::Function(self.function_prototype));
-        self.objects[properties]
-            .non_enumerable
-            .extend(["name".into(), "length".into()]);
+        self.objects[properties].attributes("name", false, false, true);
+        self.objects[properties].attributes("length", false, false, true);
         self.functions.push(Function {
             code: code.clone(),
             environment,
             properties,
+            bound: None,
         });
         if code.self_name
             && let Some(name) = &code.name
@@ -1814,12 +2109,13 @@ impl Runtime {
             self.define(scope, name, Value::Function(id), false)?;
             self.functions[id].environment = scope;
         }
-        if !code.arrow {
+        if code.constructable {
             let prototype = self.object_ordered([("constructor".into(), Value::Function(id))])?;
             if let Value::Object(id) = prototype {
-                self.objects[id].non_enumerable.insert("constructor".into());
+                self.objects[id].attributes("constructor", true, false, true);
             }
             self.objects[properties].insert_hidden("prototype".into(), prototype);
+            self.objects[properties].attributes("prototype", true, false, false);
         }
         Ok(Value::Function(id))
     }
@@ -1928,6 +2224,9 @@ impl Runtime {
                     }
                 }
             }
+            Stmt::ForIn(binding, expression, body) => {
+                return self.for_in(binding, expression, body, env, doc);
+            }
             Stmt::Switch(expression, cases) => {
                 let value = self.eval(expression, env, doc)?;
                 let mut default = None;
@@ -1936,7 +2235,8 @@ impl Runtime {
                     self.tick()?;
                     if let Some(condition) = condition {
                         let case = self.eval(condition, env, doc)?;
-                        if self.binary_value("===", value.clone(), case)? == Value::Bool(true) {
+                        if self.binary_value("===", value.clone(), case, doc)? == Value::Bool(true)
+                        {
                             start = Some(index);
                             break;
                         }
@@ -2011,6 +2311,67 @@ impl Runtime {
             }
             Stmt::Break => return Ok(Flow::Break),
             Stmt::Continue => return Ok(Flow::Continue),
+        }
+        Ok(Flow::Normal(Value::Undefined))
+    }
+    fn for_in(
+        &mut self,
+        binding: &ForBinding,
+        expression: &Expr,
+        body: &Stmt,
+        env: usize,
+        doc: &mut Document,
+    ) -> Result<Flow> {
+        let value = self.eval(expression, env, doc)?;
+        if matches!(value, Value::Null | Value::Undefined) {
+            return Ok(Flow::Normal(Value::Undefined));
+        }
+        let mut cursor = Some(self.coerce_object(value)?);
+        let mut visited = BTreeSet::new();
+        let mut depth = 0;
+        while let Some(object) = cursor {
+            if depth >= MAX_DEPTH {
+                return Err(ScriptError::resource("for-in prototype depth exceeded"));
+            }
+            depth += 1;
+            for key in self.own_keys(&object)? {
+                self.work(1 + key.len() / 8)?;
+                if visited.contains(&key) {
+                    continue;
+                }
+                let Some(property) = self.own_property(&object, &key) else {
+                    continue;
+                };
+                self.charge(32 + key.byte_len())?;
+                visited.insert(key.clone());
+                if !property.enumerable {
+                    continue;
+                }
+                let value = self.string(key)?;
+                let scope = match binding {
+                    ForBinding::Declaration(name, DeclarationKind::Var) => {
+                        let owner = self.var_scope(env);
+                        self.define(owner, name, value, true)?;
+                        env
+                    }
+                    ForBinding::Declaration(name, kind) => {
+                        let child = self.environment(env)?;
+                        self.define(child, name, value, *kind != DeclarationKind::Const)?;
+                        child
+                    }
+                    ForBinding::Target(target) => {
+                        let reference = self.reference(target, env, doc)?;
+                        self.write_reference(reference, value, doc)?;
+                        env
+                    }
+                };
+                match self.statement(body, scope, doc)? {
+                    Flow::Break => return Ok(Flow::Normal(Value::Undefined)),
+                    flow @ Flow::Return(_) => return Ok(flow),
+                    _ => {}
+                }
+            }
+            cursor = self.prototype_of(&object);
         }
         Ok(Flow::Normal(Value::Undefined))
     }
@@ -2100,20 +2461,66 @@ impl Runtime {
                 .map(|(_, value)| value)
                 .ok_or_else(|| ScriptError::reference(format!("'{name}' is not defined"))),
             Expr::Array(items) => {
-                let values = items
-                    .iter()
-                    .map(|item| self.eval(item, env, doc))
-                    .collect::<Result<Vec<_>>>()?;
-                self.array(values)
+                let mut values = Vec::new();
+                let mut holes = BTreeSet::new();
+                for (index, item) in items.iter().enumerate() {
+                    values.push(if let Some(item) = item {
+                        self.eval(item, env, doc)?
+                    } else {
+                        holes.insert(index);
+                        Value::Undefined
+                    });
+                }
+                self.charge(holes.len().saturating_mul(32))?;
+                let array = self.array(values)?;
+                let Value::Array(id) = array else {
+                    unreachable!()
+                };
+                self.array_holes[id] = holes;
+                Ok(array)
             }
             Expr::Object(items) => {
-                let mut values = Vec::new();
-                for (key, expression) in items {
-                    values.push((key.clone(), self.eval(expression, env, doc)?));
+                let object = self.object_ordered([])?;
+                for (key, entry) in items {
+                    let mut desc = PropertyDescriptor {
+                        enumerable: Some(true),
+                        configurable: Some(true),
+                        ..PropertyDescriptor::default()
+                    };
+                    match entry {
+                        ObjectEntry::Data(expression) => {
+                            desc.value = Some(self.eval(expression, env, doc)?);
+                            desc.writable = Some(true);
+                        }
+                        ObjectEntry::Accessor(code, setter) => {
+                            let function = self.function_value(code, env)?;
+                            if *setter {
+                                desc.set = Some(function);
+                            } else {
+                                desc.get = Some(function);
+                            }
+                        }
+                    }
+                    self.define_own(&object, key, desc)?;
                 }
-                self.object_ordered(values)
+                Ok(object)
             }
             Expr::Unary(op, expression) => {
+                if op == "delete" {
+                    return match &**expression {
+                        Expr::Member(object, key) => {
+                            let object = self.eval(object, env, doc)?;
+                            let value = self.eval(key, env, doc)?;
+                            let key = self.json_text(value, doc, &mut Vec::new())?;
+                            Ok(Value::Bool(self.delete_property(object, &key)?))
+                        }
+                        Expr::Ident(name) => Ok(Value::Bool(self.lookup(env, name).is_none())),
+                        _ => {
+                            self.eval(expression, env, doc)?;
+                            Ok(Value::Bool(true))
+                        }
+                    };
+                }
                 if op == "typeof"
                     && let Expr::Ident(name) = &**expression
                     && self.lookup(env, name).is_none()
@@ -2126,9 +2533,11 @@ impl Runtime {
                 }
                 match op.as_str() {
                     "!" => Ok(Value::Bool(!value.truthy())),
-                    "-" => Ok(Value::Number(-value.number())),
-                    "+" => Ok(Value::Number(value.number())),
-                    "~" => Ok(Value::Number((!to_i32(value.number())) as f64)),
+                    "-" => Ok(Value::Number(-self.number_value(value, doc)?)),
+                    "+" => Ok(Value::Number(self.number_value(value, doc)?)),
+                    "~" => Ok(Value::Number(
+                        (!to_i32(self.number_value(value, doc)?)) as f64,
+                    )),
                     "void" => Ok(Value::Undefined),
                     "typeof" => self.string(match value {
                         Value::Undefined => "undefined",
@@ -2153,7 +2562,7 @@ impl Runtime {
                 if op == "&&" || op == "||" || op == "??" {
                     return Ok(right);
                 }
-                self.binary_value(op, left, right)
+                self.binary_value(op, left, right, doc)
             }
             Expr::Conditional(condition, yes, no) => {
                 if self.eval(condition, env, doc)?.truthy() {
@@ -2171,7 +2580,7 @@ impl Runtime {
                 };
                 let mut value = self.eval(right, env, doc)?;
                 if let Some(old) = old {
-                    value = self.binary_value(&op[..op.len() - 1], old, value)?;
+                    value = self.binary_value(&op[..op.len() - 1], old, value, doc)?;
                 }
                 self.write_reference(reference, value.clone(), doc)?;
                 Ok(value)
@@ -2182,20 +2591,22 @@ impl Runtime {
                 if let Value::String(text) = &previous {
                     self.work(1 + text.len() / 8)?;
                 }
-                let old = previous.number();
+                let old = self.number_value(previous, doc)?;
                 let value = Value::Number(old + delta);
                 self.write_reference(reference, value.clone(), doc)?;
                 Ok(if *prefix { value } else { Value::Number(old) })
             }
             Expr::Member(object, property) => {
                 let object = self.eval(object, env, doc)?;
-                let property = self.eval(property, env, doc)?.js_string();
+                let value = self.eval(property, env, doc)?;
+                let property = self.json_text(value, doc, &mut Vec::new())?;
                 self.get_key(object, &property, doc)
             }
             Expr::Call(callee, arguments) => {
                 let (function, receiver) = if let Expr::Member(object, property) = &**callee {
                     let receiver = self.eval(object, env, doc)?;
-                    let property = self.eval(property, env, doc)?.js_string();
+                    let value = self.eval(property, env, doc)?;
+                    let property = self.json_text(value, doc, &mut Vec::new())?;
                     (self.get_key(receiver.clone(), &property, doc)?, receiver)
                 } else {
                     (self.eval(callee, env, doc)?, Value::Window)
@@ -2217,13 +2628,32 @@ impl Runtime {
             Expr::Function(code) => self.function_value(code, env),
         }
     }
-    fn binary_value(&mut self, op: &str, left: Value, right: Value) -> Result<Value> {
+    fn binary_value(
+        &mut self,
+        op: &str,
+        left: Value,
+        right: Value,
+        doc: &mut Document,
+    ) -> Result<Value> {
         for value in [&left, &right] {
             if let Value::String(text) = value {
                 self.work(1 + text.len() / 8)?;
             }
         }
         if op == "instanceof" {
+            let mut right = right;
+            let mut bound_depth = 0;
+            while let Value::Function(id) = right {
+                let Some(bound) = &self.functions[id].bound else {
+                    break;
+                };
+                if bound_depth >= MAX_DEPTH {
+                    return Err(ScriptError::resource("bound function chain limit exceeded"));
+                }
+                right = bound.target.clone();
+                bound_depth += 1;
+                self.tick()?;
+            }
             if !json_callable(&right) {
                 return Err(ScriptError::type_error(
                     "instanceof right-hand side is not callable",
@@ -2233,7 +2663,7 @@ impl Runtime {
                 return Ok(Value::Bool(false));
             }
             let prototype = self
-                .lookup_property(&right, &"prototype".into())?
+                .lookup_property(&right, &"prototype".into(), doc)?
                 .ok_or_else(|| ScriptError::type_error("constructor prototype is not an object"))?;
             if !js_object(&prototype) {
                 return Err(ScriptError::type_error(
@@ -2260,7 +2690,7 @@ impl Runtime {
                 ));
             }
             return Ok(Value::Bool(
-                self.lookup_property(&right, &left.js_string())?.is_some(),
+                self.find_property(&right, &left.js_string())?.is_some(),
             ));
         }
         if op == "+" && (matches!(left, Value::String(_)) || matches!(right, Value::String(_))) {
@@ -2304,8 +2734,8 @@ impl Runtime {
                 _ => {}
             }
         }
-        let a = left.number();
-        let b = right.number();
+        let a = self.number_value(left, doc)?;
+        let b = self.number_value(right, doc)?;
         Ok(match op {
             "+" => Value::Number(a + b),
             "-" => Value::Number(a - b),
@@ -2342,7 +2772,8 @@ impl Runtime {
             }
             Expr::Member(object, property) => {
                 let object = self.eval(object, env, doc)?;
-                let property = self.eval(property, env, doc)?.js_string();
+                let value = self.eval(property, env, doc)?;
+                let property = self.json_text(value, doc, &mut Vec::new())?;
                 Ok(Reference::Property(object, property))
             }
             _ => Err(ScriptError::type_error("invalid assignment target")),
@@ -2404,6 +2835,15 @@ impl Runtime {
         match function {
             Value::Function(id) => {
                 let function = self.functions[id].clone();
+                if let Some(bound) = function.bound {
+                    self.charge(
+                        (bound.arguments.len() + arguments.len())
+                            .saturating_mul(std::mem::size_of::<Value>()),
+                    )?;
+                    let mut combined = bound.arguments;
+                    combined.extend(arguments);
+                    return self.call(bound.target, combined, bound.receiver, doc);
+                }
                 let env = self.environment(function.environment)?;
                 self.environments[env].function_scope = true;
                 if !function.code.arrow {
@@ -2453,9 +2893,9 @@ impl Runtime {
             Value::Object(id) => Some(*id),
             Value::Function(id) => Some(self.functions[*id].properties),
             Value::Array(id) => Some(self.array_properties[*id]),
-            Value::Native(native) if native.receiver == Value::Window => {
-                self.native_properties.get(&native.name).copied()
-            }
+            Value::Native(native) => self.native_properties.get(&native.name).copied(),
+            Value::Json => self.native_properties.get("JSON").copied(),
+            Value::Math => self.native_properties.get("Math").copied(),
             _ => None,
         }
     }
@@ -2475,21 +2915,351 @@ impl Runtime {
         };
         self.prototypes.get(name).copied().map(Value::Object)
     }
-    fn lookup_property(&mut self, receiver: &Value, key: &JsString) -> Result<Option<Value>> {
+    fn own_property(&self, receiver: &Value, key: &JsString) -> Option<Property> {
+        if let Some(id) = self.property_object(receiver)
+            && let Some(property) = self.objects[id].values.get(key)
+        {
+            return Some(property.clone());
+        }
+        if let Value::Array(id) = receiver {
+            if key == &JsString::from("length") {
+                return Some(Property::data(
+                    Value::Number(self.arrays[*id].len() as f64),
+                    true,
+                    false,
+                    false,
+                ));
+            }
+            if let Some(index) = json_array_index(key).map(|index| index as usize)
+                && !self.array_holes[*id].contains(&index)
+                && let Some(value) = self.arrays[*id].get(index)
+            {
+                return Some(Property::data(value.clone(), true, true, true));
+            }
+        }
+        let text = match receiver {
+            Value::String(text) => Some(text),
+            Value::Object(id) => match &self.objects[*id].boxed {
+                Some(Value::String(text)) => Some(text),
+                _ => None,
+            },
+            _ => None,
+        };
+        if let Some(text) = text {
+            if key == &JsString::from("length") {
+                return Some(Property::data(
+                    Value::Number(text.len() as f64),
+                    false,
+                    false,
+                    false,
+                ));
+            }
+            if let Some(index) = json_array_index(key).map(|index| index as usize)
+                && let Some(unit) = text.units().get(index)
+            {
+                return Some(Property::data(
+                    Value::String(vec![*unit].into()),
+                    false,
+                    true,
+                    false,
+                ));
+            }
+        }
+        None
+    }
+    fn find_property(&mut self, receiver: &Value, key: &JsString) -> Result<Option<Property>> {
         let mut cursor = Some(receiver.clone());
         for _ in 0..MAX_DEPTH {
             let Some(value) = cursor else {
                 return Ok(None);
             };
             self.work(1 + key.len() / 16)?;
-            if let Some(id) = self.property_object(&value)
-                && let Some(value) = self.objects[id].get(key)
-            {
-                return Ok(Some(value.clone()));
+            if let Some(property) = self.own_property(&value, key) {
+                return Ok(Some(property));
             }
             cursor = self.prototype_of(&value);
         }
         Err(ScriptError::resource("prototype chain limit exceeded"))
+    }
+    fn lookup_property(
+        &mut self,
+        receiver: &Value,
+        key: &JsString,
+        doc: &mut Document,
+    ) -> Result<Option<Value>> {
+        let Some(property) = self.find_property(receiver, key)? else {
+            return Ok(None);
+        };
+        Ok(Some(match property.value {
+            PropertyValue::Data { value, .. } => value,
+            PropertyValue::Accessor {
+                get: Value::Undefined,
+                ..
+            } => Value::Undefined,
+            PropertyValue::Accessor { get, .. } => {
+                self.call(get, Vec::new(), receiver.clone(), doc)?
+            }
+        }))
+    }
+    fn own_keys(&mut self, receiver: &Value) -> Result<Vec<JsString>> {
+        let mut keys = Vec::new();
+        if let Value::Array(id) = receiver {
+            self.charge(self.arrays[*id].len().saturating_mul(64))?;
+            keys.extend(
+                (0..self.arrays[*id].len())
+                    .filter(|i| !self.array_holes[*id].contains(i))
+                    .map(|i| JsString::from(i.to_string())),
+            );
+            keys.push("length".into());
+        }
+        let text_len = match receiver {
+            Value::String(text) => Some(text.len()),
+            Value::Object(id) => match &self.objects[*id].boxed {
+                Some(Value::String(text)) => Some(text.len()),
+                _ => None,
+            },
+            _ => None,
+        };
+        if let Some(length) = text_len {
+            self.charge(length.saturating_mul(64))?;
+            keys.extend((0..length).map(|i| JsString::from(i.to_string())));
+            keys.push("length".into());
+        }
+        if let Some(id) = self.property_object(receiver) {
+            self.charge(
+                self.objects[id]
+                    .order
+                    .iter()
+                    .map(|key| key.byte_len() + 32)
+                    .sum(),
+            )?;
+            keys.extend(self.objects[id].order.iter().cloned());
+        } else if js_object(receiver) {
+            return Err(ScriptError::unsupported(
+                "host own-property enumeration is not implemented",
+            ));
+        }
+        let count = keys.len();
+        self.work(1 + count.saturating_mul(1 + count.checked_ilog2().unwrap_or(0) as usize) / 8)?;
+        keys.sort_by_key(|key| {
+            json_array_index(key)
+                .map(|index| (false, index))
+                .unwrap_or((true, 0))
+        });
+        let mut seen = BTreeSet::new();
+        keys.retain(|key| seen.insert(key.clone()));
+        Ok(keys)
+    }
+    fn property_descriptor(
+        &mut self,
+        object: Value,
+        doc: &mut Document,
+    ) -> Result<PropertyDescriptor> {
+        if !js_object(&object) {
+            return Err(ScriptError::type_error(
+                "property descriptor must be an object",
+            ));
+        }
+        let mut desc = PropertyDescriptor::default();
+        for key in [
+            "enumerable",
+            "configurable",
+            "value",
+            "writable",
+            "get",
+            "set",
+        ] {
+            if self.find_property(&object, &key.into())?.is_none() {
+                continue;
+            }
+            let value = self.get(object.clone(), key, doc)?;
+            match key {
+                "enumerable" => desc.enumerable = Some(value.truthy()),
+                "configurable" => desc.configurable = Some(value.truthy()),
+                "value" => desc.value = Some(value),
+                "writable" => desc.writable = Some(value.truthy()),
+                "get" | "set" => {
+                    if value != Value::Undefined && !json_callable(&value) {
+                        return Err(ScriptError::type_error(
+                            "accessor must be callable or undefined",
+                        ));
+                    }
+                    if key == "get" {
+                        desc.get = Some(value);
+                    } else {
+                        desc.set = Some(value);
+                    }
+                }
+                _ => unreachable!(),
+            }
+        }
+        if desc.accessor() && desc.data() {
+            return Err(ScriptError::type_error(
+                "descriptor cannot contain data and accessors",
+            ));
+        }
+        Ok(desc)
+    }
+    fn define_own(
+        &mut self,
+        receiver: &Value,
+        key: &JsString,
+        desc: PropertyDescriptor,
+    ) -> Result<bool> {
+        self.work(1 + key.len() / 8)?;
+        let id = self.property_object(receiver).ok_or_else(|| {
+            ScriptError::unsupported("host property definition is not implemented")
+        })?;
+        if matches!(receiver, Value::Array(_))
+            && (key == &JsString::from("length") || json_array_index(key).is_some())
+        {
+            return Err(ScriptError::unsupported(
+                "array indexed/length descriptor mutation is not implemented",
+            ));
+        }
+        let current = self.own_property(receiver, key);
+        if let Some(current) = &current {
+            if !current.configurable {
+                if desc.configurable == Some(true)
+                    || desc
+                        .enumerable
+                        .is_some_and(|value| value != current.enumerable)
+                {
+                    return Ok(false);
+                }
+                match &current.value {
+                    PropertyValue::Data { value, writable } => {
+                        if desc.accessor()
+                            || !*writable
+                                && (desc.writable == Some(true)
+                                    || desc
+                                        .value
+                                        .as_ref()
+                                        .is_some_and(|next| !json_same_value(value, next)))
+                        {
+                            return Ok(false);
+                        }
+                    }
+                    PropertyValue::Accessor { get, set } => {
+                        if desc.data()
+                            || desc
+                                .get
+                                .as_ref()
+                                .is_some_and(|value| !json_same_value(value, get))
+                            || desc
+                                .set
+                                .as_ref()
+                                .is_some_and(|value| !json_same_value(value, set))
+                        {
+                            return Ok(false);
+                        }
+                    }
+                }
+            }
+        } else if self.objects[id].non_extensible {
+            return Ok(false);
+        }
+        let mut property =
+            current.unwrap_or_else(|| Property::data(Value::Undefined, false, false, false));
+        if desc.accessor() && matches!(property.value, PropertyValue::Data { .. }) {
+            property.value = PropertyValue::Accessor {
+                get: Value::Undefined,
+                set: Value::Undefined,
+            };
+        } else if desc.data() && matches!(property.value, PropertyValue::Accessor { .. }) {
+            property.value = PropertyValue::Data {
+                value: Value::Undefined,
+                writable: false,
+            };
+        }
+        if let Some(value) = desc.enumerable {
+            property.enumerable = value;
+        }
+        if let Some(value) = desc.configurable {
+            property.configurable = value;
+        }
+        match &mut property.value {
+            PropertyValue::Data { value, writable } => {
+                if let Some(next) = desc.value {
+                    *value = next;
+                }
+                if let Some(next) = desc.writable {
+                    *writable = next;
+                }
+            }
+            PropertyValue::Accessor { get, set } => {
+                if let Some(next) = desc.get {
+                    *get = next;
+                }
+                if let Some(next) = desc.set {
+                    *set = next;
+                }
+            }
+        }
+        if !self.objects[id].contains_key(key) {
+            self.charge(256 + key.byte_len().saturating_mul(2))?;
+        }
+        self.objects[id].insert_property(key.clone(), property);
+        Ok(true)
+    }
+    fn define_properties(
+        &mut self,
+        object: Value,
+        properties: Value,
+        doc: &mut Document,
+    ) -> Result<()> {
+        let properties = self.coerce_object(properties)?;
+        let mut descriptors = Vec::new();
+        for key in self.own_keys(&properties)? {
+            if !self
+                .own_property(&properties, &key)
+                .is_some_and(|p| p.enumerable)
+            {
+                continue;
+            }
+            let value = self.get_key(properties.clone(), &key, doc)?;
+            let desc = self.property_descriptor(value, doc)?;
+            self.charge(256 + key.byte_len())?;
+            descriptors.push((key, desc));
+        }
+        for (key, desc) in descriptors {
+            if !self.define_own(&object, &key, desc)? {
+                return Err(ScriptError::type_error("incompatible property definition"));
+            }
+        }
+        Ok(())
+    }
+    fn delete_property(&mut self, receiver: Value, key: &JsString) -> Result<bool> {
+        if matches!(receiver, Value::Null | Value::Undefined) {
+            return Err(ScriptError::type_error(
+                "cannot delete property of null or undefined",
+            ));
+        }
+        self.work(1 + key.len() / 8)?;
+        let Some(property) = self.own_property(&receiver, key) else {
+            if self.property_object(&receiver).is_none() && js_object(&receiver) {
+                return Err(ScriptError::unsupported(
+                    "host property deletion is not implemented",
+                ));
+            }
+            return Ok(true);
+        };
+        if !property.configurable {
+            return Ok(false);
+        }
+        if let Value::Array(id) = receiver
+            && let Some(index) = json_array_index(key)
+        {
+            self.charge(32)?;
+            self.array_holes[id].insert(index as usize);
+            self.arrays[id][index as usize] = Value::Undefined;
+            return Ok(true);
+        }
+        if let Some(id) = self.property_object(&receiver) {
+            self.work(1 + self.objects[id].order.len() / 8)?;
+            self.objects[id].remove(key);
+        }
+        Ok(true)
     }
     fn coerce_object(&mut self, value: Value) -> Result<Value> {
         if js_object(&value) {
@@ -2509,14 +3279,58 @@ impl Runtime {
         self.objects[id].boxed = Some(value);
         Ok(result)
     }
+    fn number_value(&mut self, value: Value, doc: &mut Document) -> Result<f64> {
+        if let Value::String(text) = &value {
+            self.work(1 + text.len() / 8)?;
+        }
+        if !js_object(&value) {
+            return Ok(value.number());
+        }
+        for key in ["valueOf", "toString"] {
+            let method = self.get(value.clone(), key, doc)?;
+            if json_callable(&method) {
+                let primitive = self.call(method, Vec::new(), value.clone(), doc)?;
+                if !js_object(&primitive) {
+                    if let Value::String(text) = &primitive {
+                        self.work(1 + text.len() / 8)?;
+                    }
+                    return Ok(primitive.number());
+                }
+            }
+        }
+        Err(ScriptError::type_error(
+            "object cannot be converted to a number",
+        ))
+    }
     fn construct(
         &mut self,
         constructor: Value,
         arguments: Vec<Value>,
         doc: &mut Document,
     ) -> Result<Value> {
+        self.enter_stack(4)?;
+        let result = self.construct_inner(constructor, arguments, doc);
+        self.stack_units -= 4;
+        result
+    }
+    fn construct_inner(
+        &mut self,
+        constructor: Value,
+        arguments: Vec<Value>,
+        doc: &mut Document,
+    ) -> Result<Value> {
         match &constructor {
-            Value::Function(id) if !self.functions[*id].code.arrow => {
+            Value::Function(id) if self.functions[*id].bound.is_some() => {
+                let bound = self.functions[*id].bound.clone().unwrap();
+                self.charge(
+                    (bound.arguments.len() + arguments.len())
+                        .saturating_mul(std::mem::size_of::<Value>()),
+                )?;
+                let mut combined = bound.arguments;
+                combined.extend(arguments);
+                self.construct(bound.target, combined, doc)
+            }
+            Value::Function(id) if self.functions[*id].code.constructable => {
                 let prototype = self.get(constructor.clone(), "prototype", doc)?;
                 let instance = self.object_ordered([])?;
                 let Value::Object(id) = instance else {
@@ -2530,7 +3344,22 @@ impl Runtime {
             }
             Value::Native(native)
                 if native.receiver == Value::Window
-                    && self.native_properties.contains_key(&native.name) =>
+                    && matches!(
+                        native.name.as_str(),
+                        "Object"
+                            | "Function"
+                            | "Array"
+                            | "String"
+                            | "Number"
+                            | "Boolean"
+                            | "Error"
+                            | "TypeError"
+                            | "SyntaxError"
+                            | "ReferenceError"
+                            | "RangeError"
+                            | "EvalError"
+                            | "URIError"
+                    ) =>
             {
                 let name = native.name.clone();
                 let result = self.call(constructor, arguments, Value::Window, doc)?;
@@ -2546,7 +3375,7 @@ impl Runtime {
 
     fn get_key(&mut self, receiver: Value, key: &JsString, doc: &mut Document) -> Result<Value> {
         self.work(1 + key.len() / 8)?;
-        if let Some(value) = self.lookup_property(&receiver, key)? {
+        if let Some(value) = self.lookup_property(&receiver, key, doc)? {
             return Ok(value);
         }
         match key.to_utf8() {
@@ -2565,15 +3394,44 @@ impl Runtime {
         doc: &mut Document,
     ) -> Result<()> {
         self.work(1 + key.len() / 8)?;
-        if let Some(id) = self.property_object(&receiver)
-            && !(matches!(receiver, Value::Array(_))
-                && (key == &JsString::from("length")
-                    || key.to_utf8().is_ok_and(|key| key.parse::<usize>().is_ok())))
-        {
-            if !self.objects[id].contains_key(key) {
-                self.charge(160 + key.byte_len().saturating_mul(2))?;
+        if let Some(property) = self.find_property(&receiver, key)? {
+            match property.value {
+                PropertyValue::Accessor {
+                    set: Value::Undefined,
+                    ..
+                }
+                | PropertyValue::Data {
+                    writable: false, ..
+                } => return Ok(()),
+                PropertyValue::Accessor { set, .. } => {
+                    self.call(set, vec![value], receiver, doc)?;
+                    return Ok(());
+                }
+                _ => {}
             }
-            self.objects[id].insert(key.clone(), value);
+        }
+        if let Some(id) = self.property_object(&receiver) {
+            let indexed = matches!(receiver, Value::Array(_))
+                && (key == &JsString::from("length") || json_array_index(key).is_some());
+            if indexed {
+                if self.own_property(&receiver, key).is_none() && self.objects[id].non_extensible {
+                    return Ok(());
+                }
+            } else {
+                if let Some(property) = self.objects[id].values.get_mut(key) {
+                    if let PropertyValue::Data { value: old, .. } = &mut property.value {
+                        *old = value;
+                    }
+                    return Ok(());
+                }
+                if self.objects[id].non_extensible {
+                    return Ok(());
+                }
+                self.charge(256 + key.byte_len().saturating_mul(2))?;
+                self.objects[id].insert(key.clone(), value);
+                return Ok(());
+            }
+        } else if !js_object(&receiver) && !matches!(receiver, Value::Null | Value::Undefined) {
             return Ok(());
         }
         let key = key
@@ -2582,8 +3440,18 @@ impl Runtime {
         self.set(receiver, &key, value, doc)
     }
     fn get(&mut self, receiver: Value, key: &str, doc: &mut Document) -> Result<Value> {
-        if let Some(value) = self.lookup_property(&receiver, &key.into())? {
+        if let Some(value) = self.lookup_property(&receiver, &key.into(), doc)? {
             return Ok(value);
+        }
+        if (self.property_object(&receiver).is_some()
+            || matches!(
+                receiver,
+                Value::String(_) | Value::Number(_) | Value::Bool(_)
+            ))
+            && !(matches!(receiver, Value::Object(_))
+                && matches!(key, "preventDefault" | "stopPropagation"))
+        {
+            return Ok(Value::Undefined);
         }
         if matches!(receiver, Value::Document)
             || matches!(key, "textContent" | "innerText" | "innerHTML" | "outerHTML")
@@ -2878,6 +3746,12 @@ impl Runtime {
                     if new > self.arrays[id].len() {
                         self.charge((new - self.arrays[id].len()) * std::mem::size_of::<Value>())?;
                     }
+                    let old = self.arrays[id].len();
+                    if new > old {
+                        self.charge((new - old).saturating_mul(32))?;
+                        self.array_holes[id].extend(old..new);
+                    }
+                    self.array_holes[id].retain(|index| *index < new);
                     self.arrays[id].resize(new, Value::Undefined);
                 } else {
                     let index = key.parse::<usize>().map_err(|_| {
@@ -2890,8 +3764,12 @@ impl Runtime {
                         self.charge(
                             (index + 1 - self.arrays[id].len()) * std::mem::size_of::<Value>(),
                         )?;
+                        let old = self.arrays[id].len();
+                        self.charge((index - old).saturating_mul(32))?;
+                        self.array_holes[id].extend(old..index);
                         self.arrays[id].resize(index + 1, Value::Undefined);
                     }
+                    self.array_holes[id].remove(&index);
                     self.arrays[id][index] = value;
                 }
             }
@@ -3013,14 +3891,15 @@ impl Runtime {
         if source.len() > MAX_SOURCE {
             return Err(ScriptError::resource("HTML fragment source limit exceeded"));
         }
-        let fragment = Document::parse(source);
+        let fragment = doc
+            .parse_fragment(id, source)
+            .map_err(ScriptError::unsupported)?;
         self.ensure_dom_capacity(doc, fragment.nodes.len())?;
         for child in doc.nodes[id].children.clone() {
             doc.nodes[child].parent = None;
         }
         doc.nodes[id].children.clear();
-        let fragment_root = fragment.query_selector("body").unwrap_or(fragment.root);
-        for child in fragment.nodes[fragment_root].children.clone() {
+        for child in fragment.nodes[fragment.root].children.clone() {
             import_node(doc, id, &fragment, child, 0);
         }
         Ok(())
@@ -3058,7 +3937,12 @@ impl Runtime {
         let mut keys: Vec<_> = self.objects[id]
             .order
             .iter()
-            .filter(|key| !self.objects[id].non_enumerable.contains(*key))
+            .filter(|key| {
+                self.objects[id]
+                    .values
+                    .get(*key)
+                    .is_some_and(|p| p.enumerable)
+            })
             .cloned()
             .collect();
         keys.sort_by_key(|key| {
@@ -3195,20 +4079,19 @@ impl Runtime {
                 let child_record = record.and_then(|record| record.children.get(&key));
                 let child = self.json_revive(value.clone(), &key, reviver, child_record, doc)?;
                 if child == Value::Undefined {
-                    match value {
-                        Value::Object(id) => {
-                            self.work(1 + self.objects[id].order.len() / 8)?;
-                            self.objects[id].remove(&key);
-                        }
-                        Value::Array(id) => {
-                            if let Ok(index) = key.to_string().parse::<usize>()
-                                && let Some(slot) = self.arrays[id].get_mut(index)
-                            {
-                                *slot = Value::Undefined;
-                            }
-                        }
-                        _ => {}
-                    }
+                    self.delete_property(value.clone(), &key)?;
+                } else if matches!(value, Value::Object(_)) {
+                    self.define_own(
+                        &value,
+                        &key,
+                        PropertyDescriptor {
+                            value: Some(child),
+                            writable: Some(true),
+                            enumerable: Some(true),
+                            configurable: Some(true),
+                            ..PropertyDescriptor::default()
+                        },
+                    )?;
                 } else {
                     self.set_key(value.clone(), &key, child, doc)?;
                 }
@@ -3234,9 +4117,18 @@ impl Runtime {
             let mut keys = Vec::new();
             for index in 0..len {
                 self.tick()?;
-                let key = match &self.arrays[id][index] {
-                    Value::String(text) => Some(text.clone()),
-                    Value::Number(number) => Some(JsString::from(json_number(*number))),
+                let item = self.get(Value::Array(id), &index.to_string(), doc)?;
+                let key = match item {
+                    Value::String(text) => Some(text),
+                    Value::Number(number) => Some(JsString::from(json_number(number))),
+                    Value::Object(id)
+                        if matches!(
+                            self.objects[id].boxed,
+                            Some(Value::String(_) | Value::Number(_))
+                        ) =>
+                    {
+                        Some(self.json_text(Value::Object(id), doc, &mut Vec::new())?)
+                    }
                     _ => None,
                 };
                 if let Some(key) = key
@@ -3250,6 +4142,17 @@ impl Runtime {
             Some(keys)
         } else {
             None
+        };
+        let space = if let Value::Object(id) = space {
+            match self.objects[id].boxed {
+                Some(Value::Number(_)) => Value::Number(self.number_value(Value::Object(id), doc)?),
+                Some(Value::String(_)) => {
+                    Value::String(self.json_text(Value::Object(id), doc, &mut Vec::new())?)
+                }
+                _ => Value::Object(id),
+            }
+        } else {
+            space
         };
         let gap = match space {
             Value::Number(n) => JsString::from(" ".repeat(n.clamp(0.0, 10.0) as usize)),
@@ -3291,6 +4194,19 @@ impl Runtime {
         if let Some(replacer) = replacer {
             let key = self.string(key)?;
             value = self.call(replacer.clone(), vec![key, value], holder, doc)?;
+        }
+        if let Value::Object(id) = value {
+            match self.objects[id].boxed.clone() {
+                Some(Value::String(_)) => {
+                    value =
+                        Value::String(self.json_text(Value::Object(id), doc, &mut Vec::new())?)
+                }
+                Some(Value::Number(_)) => {
+                    value = Value::Number(self.number_value(Value::Object(id), doc)?)
+                }
+                Some(value @ Value::Bool(_)) => return Ok(value),
+                _ => {}
+            }
         }
         Ok(value)
     }
@@ -3499,6 +4415,53 @@ impl Runtime {
         args: Vec<Value>,
         doc: &mut Document,
     ) -> Result<Value> {
+        let normalized;
+        let native = if let Some(method) = native.name.strip_prefix("String.")
+            && !matches!(method, "toString" | "valueOf")
+        {
+            let receiver = if matches!(method, "fromCharCode" | "fromCodePoint") {
+                Self::native("String", Value::Window)
+            } else {
+                if matches!(native.receiver, Value::Null | Value::Undefined) {
+                    return Err(ScriptError::type_error(
+                        "String method receiver is null or undefined",
+                    ));
+                }
+                Value::String(self.json_text(native.receiver.clone(), doc, &mut Vec::new())?)
+            };
+            normalized = Native {
+                name: method.into(),
+                receiver,
+            };
+            &normalized
+        } else if let Some(method) = native.name.strip_prefix("Array.")
+            && !matches!(method, "isArray" | "toString")
+        {
+            if !matches!(native.receiver, Value::Array(_)) {
+                return Err(ScriptError::unsupported(
+                    "generic Array method receivers are not implemented",
+                ));
+            }
+            normalized = Native {
+                name: method.into(),
+                receiver: native.receiver.clone(),
+            };
+            &normalized
+        } else if let Some(method) = native.name.strip_prefix("JSON.") {
+            normalized = Native {
+                name: method.into(),
+                receiver: Value::Json,
+            };
+            &normalized
+        } else if let Some(method) = native.name.strip_prefix("Math.") {
+            normalized = Native {
+                name: method.into(),
+                receiver: Value::Math,
+            };
+            &normalized
+        } else {
+            native
+        };
         let name = native.name.as_str();
         let mut units = 1usize;
         for value in args.iter().chain(std::iter::once(&native.receiver)) {
@@ -3511,6 +4474,79 @@ impl Runtime {
         self.work(units)?;
         let arg = |index: usize| args.get(index).cloned().unwrap_or(Value::Undefined);
         match name {
+            "Array.toString" => {
+                let object = self.coerce_object(native.receiver.clone())?;
+                let join = self.get(object.clone(), "join", doc)?;
+                return if json_callable(&join) {
+                    self.call(join, Vec::new(), object, doc)
+                } else {
+                    self.native_call(
+                        &Native {
+                            name: "Object.toString".into(),
+                            receiver: object,
+                        },
+                        Vec::new(),
+                        doc,
+                    )
+                };
+            }
+            "Array.isArray" => return Ok(Value::Bool(matches!(arg(0), Value::Array(_)))),
+            "Function.bind" => {
+                let target = native.receiver.clone();
+                if !json_callable(&target) {
+                    return Err(ScriptError::type_error("bind receiver is not callable"));
+                }
+                let length = self.get(target.clone(), "length", doc)?;
+                let length = if let Value::Number(number) = length {
+                    integer_or_infinity(number).max(0.0)
+                } else {
+                    0.0
+                };
+                let name = self.get(target.clone(), "name", doc)?;
+                let mut units = JsString::from("bound ").units().to_vec();
+                if let Value::String(text) = name {
+                    units.extend_from_slice(text.units());
+                }
+                let name = self.string(units)?;
+                let bound_args: Vec<_> = args.iter().skip(1).cloned().collect();
+                self.charge(
+                    192 + bound_args
+                        .len()
+                        .saturating_mul(std::mem::size_of::<Value>()),
+                )?;
+                let Value::Object(properties) = self.object_ordered([
+                    ("name".into(), name),
+                    (
+                        "length".into(),
+                        Value::Number((length - bound_args.len() as f64).max(0.0)),
+                    ),
+                ])?
+                else {
+                    unreachable!()
+                };
+                self.objects[properties].prototype = self.prototype_of(&target);
+                self.objects[properties].attributes("name", false, false, true);
+                self.objects[properties].attributes("length", false, false, true);
+                let id = self.functions.len();
+                self.functions.push(Function {
+                    code: FunctionCode {
+                        params: Vec::new(),
+                        body: Rc::new(Vec::new()),
+                        name: None,
+                        arrow: true,
+                        self_name: false,
+                        constructable: false,
+                    },
+                    environment: 0,
+                    properties,
+                    bound: Some(BoundFunction {
+                        target,
+                        receiver: arg(0),
+                        arguments: bound_args,
+                    }),
+                });
+                return Ok(Value::Function(id));
+            }
             "Function.call" | "Function.apply" => {
                 if !json_callable(&native.receiver) {
                     return Err(ScriptError::type_error("function receiver is not callable"));
@@ -3564,24 +4600,97 @@ impl Runtime {
                 return self.string(format!("[object {tag}]"));
             }
             "Object.valueOf" => return self.coerce_object(native.receiver.clone()),
-            "Object.hasOwnProperty" => {
-                let object = self.coerce_object(native.receiver.clone())?;
+            "Object.hasOwnProperty" | "Object.propertyIsEnumerable" => {
                 let key = self.json_text(arg(0), doc, &mut Vec::new())?;
-                let exists = self
-                    .property_object(&object)
-                    .is_some_and(|id| self.objects[id].contains_key(&key));
-                return Ok(Value::Bool(exists));
+                let object = self.coerce_object(native.receiver.clone())?;
+                if self.property_object(&object).is_none() {
+                    return Err(ScriptError::unsupported(
+                        "host own-property reflection is not implemented",
+                    ));
+                }
+                let property = self.own_property(&object, &key);
+                return Ok(Value::Bool(if name.ends_with("propertyIsEnumerable") {
+                    property.is_some_and(|p| p.enumerable)
+                } else {
+                    property.is_some()
+                }));
+            }
+            "Object.defineProperty" => {
+                let object = arg(0);
+                if !js_object(&object) {
+                    return Err(ScriptError::type_error(
+                        "defineProperty target must be an object",
+                    ));
+                }
+                let key = self.json_text(arg(1), doc, &mut Vec::new())?;
+                let desc = self.property_descriptor(arg(2), doc)?;
+                if !self.define_own(&object, &key, desc)? {
+                    return Err(ScriptError::type_error("incompatible property definition"));
+                }
+                return Ok(object);
+            }
+            "Object.defineProperties" => {
+                let object = arg(0);
+                if !js_object(&object) {
+                    return Err(ScriptError::type_error(
+                        "defineProperties target must be an object",
+                    ));
+                }
+                self.define_properties(object.clone(), arg(1), doc)?;
+                return Ok(object);
+            }
+            "Object.getOwnPropertyDescriptor" => {
+                let object = self.coerce_object(arg(0))?;
+                let key = self.json_text(arg(1), doc, &mut Vec::new())?;
+                if self.property_object(&object).is_none() {
+                    return Err(ScriptError::unsupported(
+                        "host own-property reflection is not implemented",
+                    ));
+                }
+                let Some(property) = self.own_property(&object, &key) else {
+                    return Ok(Value::Undefined);
+                };
+                let mut fields = match property.value {
+                    PropertyValue::Data { value, writable } => vec![
+                        ("value".into(), value),
+                        ("writable".into(), Value::Bool(writable)),
+                    ],
+                    PropertyValue::Accessor { get, set } => {
+                        vec![("get".into(), get), ("set".into(), set)]
+                    }
+                };
+                fields.push(("enumerable".into(), Value::Bool(property.enumerable)));
+                fields.push(("configurable".into(), Value::Bool(property.configurable)));
+                return self.object_ordered(fields);
+            }
+            "Object.preventExtensions" | "Object.isExtensible" => {
+                let object = arg(0);
+                if !js_object(&object) {
+                    return Ok(if name.ends_with("isExtensible") {
+                        Value::Bool(false)
+                    } else {
+                        object
+                    });
+                }
+                let id = self.property_object(&object).ok_or_else(|| {
+                    ScriptError::unsupported("host extensibility is not implemented")
+                })?;
+                if name.ends_with("isExtensible") {
+                    return Ok(Value::Bool(!self.objects[id].non_extensible));
+                }
+                if matches!(object, Value::Array(_)) {
+                    return Err(ScriptError::unsupported(
+                        "array extensibility restrictions are not implemented",
+                    ));
+                }
+                self.objects[id].non_extensible = true;
+                return Ok(object);
             }
             "Object.create" => {
                 let prototype = arg(0);
                 if !js_object(&prototype) && prototype != Value::Null {
                     return Err(ScriptError::type_error(
                         "object prototype must be an object or null",
-                    ));
-                }
-                if !matches!(arg(1), Value::Undefined) {
-                    return Err(ScriptError::unsupported(
-                        "property descriptors are not implemented",
                     ));
                 }
                 let object = self.object_ordered([])?;
@@ -3593,6 +4702,9 @@ impl Runtime {
                 } else {
                     Some(prototype)
                 };
+                if arg(1) != Value::Undefined {
+                    self.define_properties(object.clone(), arg(1), doc)?;
+                }
                 return Ok(object);
             }
             "Object.getPrototypeOf" => {
@@ -3618,6 +4730,16 @@ impl Runtime {
                 let id = self.property_object(&object).ok_or_else(|| {
                     ScriptError::unsupported("host object prototype mutation is unsupported")
                 })?;
+                let next = if prototype == Value::Null {
+                    None
+                } else {
+                    Some(prototype.clone())
+                };
+                if self.objects[id].non_extensible && self.objects[id].prototype != next {
+                    return Err(ScriptError::type_error(
+                        "non-extensible object prototype cannot change",
+                    ));
+                }
                 let mut cursor = if prototype == Value::Null {
                     None
                 } else {
@@ -3643,27 +4765,23 @@ impl Runtime {
                 };
                 return Ok(object);
             }
-            "Object.keys" | "Object.values" => {
+            "Object.keys" | "Object.values" | "Object.getOwnPropertyNames" => {
                 let object = self.coerce_object(arg(0))?;
-                let keys = match &object {
-                    Value::Array(id) => (0..self.arrays[*id].len())
-                        .map(|index| index.to_string().into())
-                        .collect(),
-                    _ => {
-                        if let Some(id) = self.property_object(&object) {
-                            self.json_keys(id)?
-                        } else {
-                            Vec::new()
-                        }
-                    }
-                };
+                let keys = self.own_keys(&object)?;
                 let mut result = Vec::new();
                 for key in keys {
                     self.tick()?;
-                    result.push(if name == "Object.keys" {
-                        self.string(key)?
-                    } else {
+                    if name != "Object.getOwnPropertyNames"
+                        && !self
+                            .own_property(&object, &key)
+                            .is_some_and(|p| p.enumerable)
+                    {
+                        continue;
+                    }
+                    result.push(if name == "Object.values" {
                         self.get_key(object.clone(), &key, doc)?
+                    } else {
+                        self.string(key)?
                     });
                 }
                 return self.array(result);
@@ -3731,21 +4849,6 @@ impl Runtime {
                     self.string(value.js_string())
                 };
             }
-            "Array.map" | "Array.join" => {
-                if !matches!(native.receiver, Value::Array(_)) {
-                    return Err(ScriptError::unsupported(
-                        "generic array method receivers are not implemented",
-                    ));
-                }
-                return self.native_call(
-                    &Native {
-                        name: name[6..].into(),
-                        receiver: native.receiver.clone(),
-                    },
-                    args,
-                    doc,
-                );
-            }
             _ => {}
         }
         if native.receiver == Value::Window {
@@ -3783,7 +4886,13 @@ impl Runtime {
                     if length > 65536.0 {
                         return Err(ScriptError::resource("array length limit exceeded"));
                     }
-                    return self.array(vec![Value::Undefined; length as usize]);
+                    let array = self.array(vec![Value::Undefined; length as usize])?;
+                    let Value::Array(id) = array else {
+                        unreachable!()
+                    };
+                    self.charge((length as usize).saturating_mul(32))?;
+                    self.array_holes[id].extend(0..length as usize);
+                    return Ok(array);
                 }
                 return self.array(args);
             }
@@ -3911,15 +5020,28 @@ impl Runtime {
                         if name == "push" {
                             self.arrays[id].extend(args);
                         } else {
+                            let count = args.len();
+                            self.array_holes[id] = self.array_holes[id]
+                                .iter()
+                                .map(|index| index + count)
+                                .collect();
                             self.arrays[id].splice(0..0, args);
                         }
                         return Ok(Value::Number(self.arrays[id].len() as f64));
                     }
-                    "pop" => return Ok(self.arrays[id].pop().unwrap_or(Value::Undefined)),
+                    "pop" => {
+                        let value = self.arrays[id].pop().unwrap_or(Value::Undefined);
+                        self.array_holes[id].remove(&self.arrays[id].len());
+                        return Ok(value);
+                    }
                     "shift" => {
                         return Ok(if self.arrays[id].is_empty() {
                             Value::Undefined
                         } else {
+                            self.array_holes[id] = self.array_holes[id]
+                                .iter()
+                                .filter_map(|index| index.checked_sub(1))
+                                .collect();
                             self.arrays[id].remove(0)
                         });
                     }
@@ -4015,7 +5137,14 @@ impl Runtime {
                 }
             }
             Value::String(text) => {
-                let needle = arg(0).js_string();
+                let needle = if matches!(
+                    name,
+                    "includes" | "indexOf" | "startsWith" | "endsWith" | "split"
+                ) {
+                    self.json_text(arg(0), doc, &mut Vec::new())?
+                } else {
+                    JsString::default()
+                };
                 let units = text.units();
                 let len = text.len();
                 match name {
@@ -4025,8 +5154,8 @@ impl Runtime {
                     "trim" => return self.string(text.trimmed_units()),
                     "toString" => return Ok(native.receiver.clone()),
                     "includes" | "indexOf" => {
-                        let start =
-                            integer_or_infinity(arg(1).number()).clamp(0.0, len as f64) as usize;
+                        let start = integer_or_infinity(self.number_value(arg(1), doc)?)
+                            .clamp(0.0, len as f64) as usize;
                         let found = self.string_find(units, needle.units(), start)?;
                         return Ok(if name == "includes" {
                             Value::Bool(found.is_some())
@@ -4035,8 +5164,8 @@ impl Runtime {
                         });
                     }
                     "startsWith" => {
-                        let start =
-                            integer_or_infinity(arg(1).number()).clamp(0.0, len as f64) as usize;
+                        let start = integer_or_infinity(self.number_value(arg(1), doc)?)
+                            .clamp(0.0, len as f64) as usize;
                         self.work(1 + needle.len() / 8)?;
                         return Ok(Value::Bool(units[start..].starts_with(needle.units())));
                     }
@@ -4044,13 +5173,14 @@ impl Runtime {
                         let end = if matches!(arg(1), Value::Undefined) {
                             len
                         } else {
-                            integer_or_infinity(arg(1).number()).clamp(0.0, len as f64) as usize
+                            integer_or_infinity(self.number_value(arg(1), doc)?)
+                                .clamp(0.0, len as f64) as usize
                         };
                         self.work(1 + needle.len() / 8)?;
                         return Ok(Value::Bool(units[..end].ends_with(needle.units())));
                     }
                     "charAt" | "charCodeAt" | "codePointAt" => {
-                        let position = integer_or_infinity(arg(0).number());
+                        let position = integer_or_infinity(self.number_value(arg(0), doc)?);
                         if position < 0.0 || position >= len as f64 {
                             return if name == "charAt" {
                                 self.string("")
@@ -4083,16 +5213,18 @@ impl Runtime {
                     }
                     "slice" | "substring" => {
                         let mut start = if name == "slice" {
-                            relative_index(arg(0).number(), len)
+                            relative_index(self.number_value(arg(0), doc)?, len)
                         } else {
-                            integer_or_infinity(arg(0).number()).clamp(0.0, len as f64) as usize
+                            integer_or_infinity(self.number_value(arg(0), doc)?)
+                                .clamp(0.0, len as f64) as usize
                         };
                         let mut end = if matches!(arg(1), Value::Undefined) {
                             len
                         } else if name == "slice" {
-                            relative_index(arg(1).number(), len)
+                            relative_index(self.number_value(arg(1), doc)?, len)
                         } else {
-                            integer_or_infinity(arg(1).number()).clamp(0.0, len as f64) as usize
+                            integer_or_infinity(self.number_value(arg(1), doc)?)
+                                .clamp(0.0, len as f64) as usize
                         };
                         if name == "substring" && start > end {
                             std::mem::swap(&mut start, &mut end);
@@ -4103,7 +5235,7 @@ impl Runtime {
                         let limit = if matches!(arg(1), Value::Undefined) {
                             u32::MAX as usize
                         } else {
-                            to_i32(arg(1).number()) as u32 as usize
+                            to_i32(self.number_value(arg(1), doc)?) as u32 as usize
                         };
                         if limit == 0 {
                             return self.array(Vec::new());
@@ -4152,7 +5284,7 @@ impl Runtime {
                 let mut units = Vec::new();
                 for value in &args {
                     self.tick()?;
-                    let number = value.number();
+                    let number = self.number_value(value.clone(), doc)?;
                     if name == "fromCharCode" {
                         units.push((to_i32(number) as u32 & 0xffff) as u16);
                     } else {
@@ -5112,7 +6244,7 @@ mod tests {
                 .contains("limit")
         );
         assert!(
-            run("const a = []; a[4294967295] = 1;")
+            run("const a = []; a[4294967294] = 1;")
                 .unwrap_err()
                 .message
                 .contains("limit")
@@ -6232,7 +7364,7 @@ mod tests {
     fn thrown_constructor_diagnostics_charge_reused_large_names() {
         let mut runtime = Runtime::new();
         let mut document = Document::parse("");
-        let error = runtime.execute("function F(){}let text='a';for(let i=0;i<15;i++)text+=text;F.name=text;const item=new F();let attempts=0;let caught=0;while(true){attempts++;try{throw item;}catch(e){caught++;}}", &mut document).unwrap_err();
+        let error = runtime.execute("function F(){}let text='a';for(let i=0;i<15;i++)text+=text;Object.defineProperty(F,'name',{value:text});const item=new F();let attempts=0;let caught=0;while(true){attempts++;try{throw item;}catch(e){caught++;}}", &mut document).unwrap_err();
         assert!(error.is_resource_limit());
         let attempts = runtime
             .lookup(0, "attempts")
@@ -6313,7 +7445,7 @@ mod tests {
     #[test]
     fn canonical_error_identity_cannot_be_spoofed_by_constructor_names_or_properties() {
         for source in [
-            "function Fake(){}Fake.name='TypeError';throw new Fake();",
+            "function Fake(){}Object.defineProperty(Fake,'name',{value:'TypeError'});throw new Fake();",
             "throw {constructor:TypeError};",
             "throw Object.create(TypeError.prototype);",
             "const error=new TypeError();error.constructor=RangeError;throw error;",
@@ -6327,7 +7459,7 @@ mod tests {
         for source in [
             "throw new TypeError('real');",
             "try{null.x;}catch(error){throw error;}",
-            "TypeError.name='ForgedDiagnostic';throw new TypeError();",
+            "Object.defineProperty(TypeError,'name',{value:'ForgedDiagnostic'});throw new TypeError();",
         ] {
             assert_eq!(
                 run(source).unwrap_err().intrinsic_error_name(),
@@ -6339,9 +7471,242 @@ mod tests {
             run("JSON.parse('{')").unwrap_err().intrinsic_error_name(),
             Some("SyntaxError")
         );
-        let error = run("function Fake(){}Fake.name='TypeError';throw new Fake();").unwrap_err();
+        let error = run("function Fake(){}Object.defineProperty(Fake,'name',{value:'TypeError'});throw new Fake();").unwrap_err();
         assert_eq!(error.name(), "TypeError");
         assert_eq!(error.intrinsic_error_name(), None);
+    }
+
+    #[test]
+    fn inner_html_uses_context_tree_modes_and_foreign_namespaces() {
+        let mut document = Document::parse(
+            "<table id=t></table><select id=s></select><textarea id=text></textarea><svg id=v></svg><template id=unsupported>kept</template>",
+        );
+        let mut runtime = Runtime::new();
+        runtime.execute(r##"
+            document.getElementById('t').innerHTML='<tr><td>cell</td></tr>';
+            document.getElementById('s').innerHTML='<div>word</div><option>choice</option>';
+            document.getElementById('text').innerHTML='a&amp;<b>';
+            document.getElementById('v').innerHTML='<linearGradient id="paint" viewBox="0 0 1 1" xlink:href="#x"/>';
+        "##,&mut document).unwrap();
+        assert!(document.query_selector("#t > tbody > tr > td").is_some());
+        // Current WHATWG customizable-select parsing retains generic children.
+        assert!(document.query_selector("#s > div").is_some());
+        assert!(document.query_selector("#s > option").is_some());
+        assert_eq!(
+            document.text_content(document.query_selector("#text").unwrap()),
+            "a&<b>"
+        );
+        let paint = document.query_selector("#paint").unwrap();
+        assert_eq!(document.namespace(paint), Some(Namespace::Svg));
+        assert_eq!(document.tag(paint), Some("linearGradient"));
+        assert_eq!(document.attr(paint, "viewBox"), Some("0 0 1 1"));
+        assert!(
+            runtime
+                .execute(
+                    "document.getElementById('unsupported').innerHTML='changed';",
+                    &mut document
+                )
+                .unwrap_err()
+                .is_unsupported()
+        );
+        assert_eq!(
+            document.text_content(document.query_selector("#unsupported").unwrap()),
+            "kept"
+        );
+    }
+
+    #[test]
+    fn literal_accessors_methods_and_holes_keep_property_semantics() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var object={saved:2,get value(){return this.saved;},set value(next){this.saved=next;},method(a){return this.saved+a;}};
+            object.value=4;assert.sameValue(object.value,4);assert.sameValue(object.method(3),7);
+            var desc=Object.getOwnPropertyDescriptor(object,'value');
+            assert.sameValue(desc.get.name,'get value');assert.sameValue(desc.get.length,0);
+            assert.sameValue(desc.set.name,'set value');assert.sameValue(desc.set.length,1);
+            assert.sameValue(desc.enumerable,true);assert.sameValue(desc.configurable,true);
+            assert.sameValue(object.method.hasOwnProperty('prototype'),false);
+            assert.throws(TypeError,function(){new object.method();});
+            var a=[,undefined,,3,];assert.sameValue(a.length,4);assert.compareArray(Object.keys(a),['1','3']);
+            assert.sameValue(JSON.stringify(a),'[null,null,null,3]');
+            assert.sameValue(Array.isArray(Array.prototype),true);assert.sameValue(Array.prototype.length,0);
+            assert.sameValue(Object.getPrototypeOf([]),Array.prototype);
+            var reads=0;var json=JSON.stringify({get a(){reads++;return 1;},b:2});
+            assert.sameValue(json,'{"a":1,"b":2}');assert.sameValue(reads,1);
+            var keep=JSON.parse('{"a":1,"b":2}',function(k,v){if(k==='a'){Object.defineProperty(this,'b',{value:9,configurable:false});}if(k==='b')return undefined;return v;});
+            assert.sameValue(keep.b,9);
+        "#,&mut document).unwrap();
+        for source in [
+            "({get x(a){return a;}})",
+            "({set x(){}})",
+            "({set x(a,b){}})",
+        ] {
+            assert!(Runtime::parse_only(source).unwrap_err().is_parse_error());
+        }
+    }
+
+    fn property_harness() -> (Runtime, Document) {
+        let (mut runtime, mut document) = upstream_harness();
+        runtime
+            .execute(
+                include_str!("../tests/upstream/test262/harness/propertyHelper.js"),
+                &mut document,
+            )
+            .unwrap();
+        (runtime, document)
+    }
+
+    #[test]
+    fn ordinary_descriptors_enforce_defaults_transitions_and_same_value() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var o={};Object.defineProperty(o,'x',{value:1});
+            verifyProperty(o,'x',{value:1,writable:false,enumerable:false,configurable:false});
+            o.x=2;assert.sameValue(o.x,1);assert.sameValue(delete o.x,false);
+            assert.throws(TypeError,function(){Object.defineProperty(o,'x',{value:2});});
+            assert.throws(TypeError,function(){Object.defineProperty(o,'x',{enumerable:true});});
+            assert.throws(TypeError,function(){Object.defineProperty(o,'x',{get:function(){return 1;}});});
+            Object.defineProperty(o,'nan',{value:NaN});Object.defineProperty(o,'nan',{value:NaN});
+            Object.defineProperty(o,'zero',{value:-0});
+            assert.throws(TypeError,function(){Object.defineProperty(o,'zero',{value:0});});
+            Object.defineProperty(o,'change',{value:7,writable:true,enumerable:true,configurable:true});
+            var getter=function(){return 8;};Object.defineProperty(o,'change',{get:getter});
+            verifyProperty(o,'change',{get:getter,set:undefined,enumerable:true,configurable:true},{restore:true});
+            Object.defineProperty(o,'change',{value:9});
+            verifyProperty(o,'change',{value:9,writable:false,enumerable:true,configurable:true},{restore:true});
+            Object.preventExtensions(o);o.extra=2;assert.sameValue(o.extra,undefined);
+            assert.sameValue(Object.isExtensible(o),false);
+            assert.throws(TypeError,function(){Object.defineProperty(o,'extra',{value:1});});
+            Object.setPrototypeOf(o,Object.getPrototypeOf(o));
+            assert.throws(TypeError,function(){Object.setPrototypeOf(o,null);});
+            assert.sameValue(Object.getOwnPropertyDescriptor('x','0').writable,false);
+            assert.sameValue(Object.getOwnPropertyDescriptor('x','0').configurable,false);
+            assert.compareArray(Object.keys('x'),['0']);
+        "#,&mut document).unwrap();
+    }
+
+    #[test]
+    fn inherited_accessors_descriptor_conversion_and_definition_order_are_observable() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var p={};var hits=0;var get=function(){hits++;return this.saved;};
+            var set=function(v){this.saved=v;};Object.defineProperty(p,'x',{get:get,set:set,enumerable:true});
+            var c=Object.create(p);c.x=9;assert.sameValue(c.x,9);assert.sameValue(hits,1);
+            assert.sameValue(c.hasOwnProperty('x'),false);assert.sameValue(c.saved,9);
+            Object.getOwnPropertyDescriptor(p,'x');assert.sameValue(hits,1);
+            Object.defineProperty(p,'locked',{value:3});c.locked=4;assert.sameValue(c.hasOwnProperty('locked'),false);
+            var log='';var proto={};var desc=Object.create(proto);
+            Object.defineProperty(proto,'enumerable',{get:function(){log+='e';return true;}});
+            Object.defineProperty(proto,'configurable',{get:function(){log+='c';return true;}});
+            Object.defineProperty(proto,'value',{get:function(){log+='v';return 12;}});
+            Object.defineProperty(proto,'writable',{get:function(){log+='w';return true;}});
+            Object.defineProperty(c,'data',desc);assert.sameValue(log,'ecvw');assert.sameValue(c.data,12);
+            var target={};assert.throws(TypeError,function(){Object.defineProperties(target,{a:{value:1},b:{get:1}});});
+            assert.sameValue(target.hasOwnProperty('a'),false);
+            Object.defineProperties(target,{a:{value:1,enumerable:true},b:{value:2}});
+            assert.compareArray(Object.keys(target),['a']);
+            assert.throws(TypeError,function(){Object.defineProperty(target,'bad',{value:1,set:undefined});});
+            var key={toString:function(){return 'coerced';}};target[key]=5;assert.sameValue(target.coerced,5);
+        "#,&mut document).unwrap();
+    }
+
+    #[test]
+    fn for_in_handles_prototypes_shadowing_deletions_and_per_iteration_bindings() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var p={shadow:1,inherited:2};var o=Object.create(p);o.b=1;o['2']=2;o.a=3;o['1']=1;
+            Object.defineProperty(o,'shadow',{value:9});var keys=[];
+            for(var key in o){keys.push(key);if(key==='1')delete o.a;}
+            assert.compareArray(keys,['1','2','b','inherited']);
+            var fns=[];for(let name in {x:1,y:2})fns.push(function(){return name;});
+            assert.sameValue(fns[0](),'x');assert.sameValue(fns[1](),'y');assert.sameValue(typeof name,'undefined');
+            var target={};var calls=0;function ref(){calls++;return target;}
+            for(ref().key in {a:1,b:2}){}assert.sameValue(calls,2);assert.sameValue(target.key,'b');
+            var count=0;for(const key in null)count++;for(var key in undefined)count++;
+            assert.sameValue(count,0);for(const unit in 'ab')count++;assert.sameValue(count,2);
+            var array=[undefined,2];delete array[0];assert.sameValue('0' in array,false);
+            assert.sameValue('length' in array,true);assert.compareArray(Object.keys(array),['1']);
+            array.length=4;assert.sameValue(array.hasOwnProperty('3'),false);array[3]=undefined;
+            assert.sameValue(array.hasOwnProperty('3'),true);assert.sameValue(JSON.stringify(array),'[null,2,null,null]');
+            array[4294967295]=1;assert.sameValue(array.length,4);
+        "#,&mut document).unwrap();
+        for source in [
+            "for(var a,b in {}){}",
+            "for(const a=1 in {}){}",
+            "for(1 in {}){}",
+        ] {
+            assert!(Runtime::parse_only(source).unwrap_err().is_parse_error());
+        }
+    }
+
+    #[test]
+    fn unchanged_property_helper_verifies_intrinsics_and_rejects_false_descriptors() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            verifyCallableProperty(String.prototype,'charAt','charAt',1,undefined,{restore:true});
+            verifyCallableProperty(String.prototype,'substring','substring',2,undefined,{restore:true});
+            verifyCallableProperty(JSON,'parse','parse',2,undefined,{restore:true});
+            verifyCallableProperty(JSON,'stringify','stringify',3,undefined,{restore:true});
+            assert.sameValue('abc'.charAt(1),'b');assert.sameValue(JSON.parse('3'),3);
+            function F(a,b){this.sum=a+b;}var Bound=F.bind(null,3);var item=new Bound(4);
+            assert.sameValue(item.sum,7);assert.sameValue(item instanceof Bound,true);
+            assert.sameValue(item instanceof F,true);assert.sameValue(Bound.length,1);
+            assert.sameValue(Bound.name,'bound F');assert.sameValue(Bound.hasOwnProperty('prototype'),false);
+            var receiver={x:4};function plus(a,b){return this.x+a+b;}
+            var bound=plus.bind(receiver,2);assert.sameValue(bound.call({x:99},3),9);
+        "#,&mut document).unwrap();
+        for source in [
+            "verifyProperty({x:1},'x',{writable:false})",
+            "verifyProperty({x:1},'x',{enumerable:false})",
+            "verifyProperty({x:1},'x',{configurable:false})",
+            "verifyProperty({x:1},'x',{value:2})",
+        ] {
+            let error = runtime.execute(source, &mut document).unwrap_err();
+            assert_eq!(error.name(), "Test262Error", "{source}: {error}");
+        }
+    }
+
+    #[test]
+    fn accessors_and_bound_chains_cannot_escape_resource_termination() {
+        for source in [
+            "let o={};Object.defineProperty(o,'x',{get:function(){return o.x;}});o.x;",
+            "let o={};Object.defineProperty(o,'x',{set:function(v){o.x=v;}});o.x=1;",
+            "let desc={};Object.defineProperty(desc,'value',{get:function(){while(true){}}});Object.defineProperty({},'x',desc);",
+            "function f(){}let target=f;for(let i=0;i<100;i++)target=target.bind(null);target();",
+        ] {
+            let mut runtime = Runtime::new();
+            let mut document = Document::parse("");
+            let source = format!("let caught=false;try{{{source}}}catch(e){{caught=true;}}");
+            assert!(
+                runtime
+                    .execute(&source, &mut document)
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(runtime.lookup(0, "caught").unwrap().1, Value::Bool(false));
+            assert_eq!(runtime.stack_units, 0);
+            assert_eq!(runtime.calls, 0);
+        }
+        assert!(
+            run("Object.defineProperty([],'0',{get:function(){return 1;}})")
+                .unwrap_err()
+                .is_unsupported()
+        );
+    }
+
+    #[test]
+    fn string_methods_coerce_receivers_and_positions_and_json_unboxes_primitives() {
+        let (mut runtime, mut document) = upstream_harness();
+        runtime.execute(r#"
+            var receiver={toString:function(){return 'abc';}};
+            var position={valueOf:function(){return 1;}};
+            assert.sameValue(String.prototype.charAt.call(receiver,position),'b');
+            assert.sameValue(String.prototype.slice.call(receiver,position),'bc');
+            assert.sameValue(String.fromCharCode({valueOf:function(){return 65;}}),'A');
+            assert.throws(TypeError,function(){String.prototype.charAt.call(null);});
+            assert.throws(TypeError,function(){'a'.charAt({valueOf:function(){return {};},toString:function(){return {};}});});
+            assert.sameValue(JSON.stringify([new Number(2),new String('x'),new Boolean(false)]),'[2,"x",false]');
+        "#,&mut document).unwrap();
     }
 
     fn upstream_harness() -> (Runtime, Document) {

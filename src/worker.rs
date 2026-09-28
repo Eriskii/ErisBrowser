@@ -2,6 +2,7 @@
 mod broker;
 mod channel;
 mod codec;
+mod image_decoder;
 mod sandbox;
 use crate::{
     dom::{Document, NodeId},
@@ -80,6 +81,7 @@ pub struct WorkerClient {
     document_failed: bool,
     requests: usize,
     loaded: bool,
+    opaque_image_bytes: usize,
 }
 impl WorkerClient {
     pub fn spawn(scripts: bool, navigation: &Navigation, generation: u64) -> Result<Self, String> {
@@ -147,6 +149,7 @@ impl WorkerClient {
             document_failed: false,
             requests: 0,
             loaded: false,
+            opaque_image_bytes: 0,
         })
     }
     pub fn pid(&self) -> u32 {
@@ -195,6 +198,7 @@ impl WorkerClient {
             document_attempted,
             document_failed,
             requests,
+            opaque_image_bytes,
             ..
         } = self;
         let result = channel
@@ -230,7 +234,7 @@ impl WorkerClient {
                         cancelled,
                     )?);
                 }
-                let response = broker
+                let mut response = broker
                     .as_mut()
                     .ok_or("resource broker unavailable")?
                     .fetch(&request, cancelled);
@@ -242,6 +246,37 @@ impl WorkerClient {
                         }
                         Err(_) => *document_failed = true,
                     }
+                }
+                if request.kind == net::ResourceKind::Image {
+                    response = response
+                        .and_then(|resource| {
+                            let source = committed
+                                .as_ref()
+                                .ok_or("image has no committed document")?;
+                            let opaque = !resource.origin_clean
+                                || !net::image_origin_clean(source, &request.url)
+                                || !net::image_origin_clean(source, &resource.url);
+                            if !opaque {
+                                return Ok(resource);
+                            }
+                            let remaining = crate::page::MAX_DECODED_IMAGE_BYTES
+                                .saturating_sub(*opaque_image_bytes);
+                            let image =
+                                image_decoder::decode(executable, &resource, remaining, cancelled)?;
+                            *opaque_image_bytes += image.rgba.len();
+                            // Only the requested address and pixels cross into the renderer.
+                            // The final URL, raw body, response headers and status do not.
+                            Ok(net::Resource {
+                                url: request.url.clone(),
+                                bytes: Vec::new(),
+                                content_type: String::new(),
+                                headers: Default::default(),
+                                status: 200,
+                                origin_clean: false,
+                                decoded_image: Some(image),
+                            })
+                        })
+                        .map_err(|_| "image loading or decoding failed".to_owned());
                 }
                 Ok(Some(codec::encode_resource(&response)?))
             })
@@ -332,6 +367,10 @@ fn validate_committed(initial: &Url, committed: &Url) -> Result<(), String> {
     }
     Ok(())
 }
+pub fn serve_image_decoder() -> Result<(), String> {
+    image_decoder::serve()
+}
+
 pub fn serve_resource_broker() -> Result<(), String> {
     broker::serve()
 }

@@ -1,4 +1,4 @@
-//! Renderer and broker process restrictions: Landlock, resource caps and a seccomp denylist.
+//! Renderer, image decoder and broker process restrictions: Landlock, resource caps and a seccomp denylist.
 //! This reduces the exposed kernel surface; it is not a complete syscall allowlist.
 use std::path::Path;
 
@@ -152,7 +152,7 @@ fn syscall_filter(renderer: bool) -> Result<seccompiler::BpfProgram, String> {
         SeccompAction, SeccompCmpArgLen, SeccompCmpOp, SeccompCondition, SeccompFilter, SeccompRule,
     };
     use std::collections::BTreeMap;
-    // Both children run single-threaded. Reject process/thread creation, new
+    // All confined children run single-threaded. Reject process/thread creation, new
     // executables and namespace changes, including io_uring's alternative path
     // to socket operations. Only the broker retains sockets for DNS and HTTP.
     let mut rules: BTreeMap<i64, Vec<SeccompRule>> = [

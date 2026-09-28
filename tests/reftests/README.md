@@ -1,6 +1,6 @@
 # Focused rendering reference tests
 
-These thirteen self-authored cases compare Eris rendering against independently
+These nineteen self-authored cases compare Eris rendering against independently
 expressed reference layouts at 320 × 240 pixels. They exercise specific HTML/CSS
 behaviors; they are not the Web Platform Tests, a browser compatibility score, or
 a Chromium performance comparison. Passing a pair cannot detect a defect shared
@@ -19,3 +19,6 @@ exact RGBA match, and saves the two rendered images and a JSON report under
 `target/reftests`. Mismatches also produce red/white pixel difference images.
 Render failures, timeouts, malformed PNGs, and pixel differences fail the run;
 no case is silently skipped. `manifest.json` describes each assertion.
+
+The six float cases and the associated geometry coverage are described in
+[`floats.md`](floats.md), including the remaining formatting limitations.

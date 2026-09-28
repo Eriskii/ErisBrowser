@@ -64,6 +64,9 @@ pub enum Display {
 #[derive(Debug, Clone)]
 pub struct ComputedStyle {
     pub display: Display,
+    pub flow_root: bool,
+    pub float: String,
+    pub clear: String,
     pub width: Length,
     pub height: Length,
     pub min_width: Length,
@@ -111,6 +114,9 @@ impl Default for ComputedStyle {
     fn default() -> Self {
         Self {
             display: Display::Inline,
+            flow_root: false,
+            float: "none".into(),
+            clear: "none".into(),
             width: Length::Auto,
             height: Length::Auto,
             min_width: Length::Auto,
@@ -416,8 +422,10 @@ fn supports_matches(query: &str) -> bool {
         match name.trim() {
             "display" => matches!(
                 value.trim(),
-                "block" | "inline" | "inline-block" | "flex" | "grid" | "none"
+                "block" | "flow-root" | "inline" | "inline-block" | "flex" | "grid" | "none"
             ),
+            "float" => matches!(value.trim(), "none" | "left" | "right"),
+            "clear" => matches!(value.trim(), "none" | "left" | "right" | "both"),
             "color" | "background-color" => parse_color(value.trim()).is_some(),
             "width" | "height" | "margin" | "padding" => {
                 parse_length(value.trim(), 16.0, 16.0, 800.0, 600.0).is_some()
@@ -449,6 +457,16 @@ pub fn parse_declarations(source: &str) -> Vec<Declaration> {
             .is_some_and(|i| lower[i + 1..].trim() == "important");
         if important {
             value = value[..value.rfind('!').unwrap_or(value.len())].trim_end();
+        }
+        if matches!(name.as_str(), "float" | "clear") && !value.contains("var(") {
+            let keyword = value.to_ascii_lowercase();
+            if !(matches!(
+                keyword.as_str(),
+                "none" | "left" | "right" | "inherit" | "initial" | "unset" | "revert"
+            ) || name == "clear" && keyword == "both")
+            {
+                continue;
+            }
         }
         expand_declaration(&name, value, important, &mut declarations);
     }
@@ -923,6 +941,14 @@ pub fn compute_styles_with_rules(
                 }
             }
         }
+        if matches!(style.position.as_str(), "absolute" | "fixed") {
+            style.float = "none".into();
+        } else if style.float != "none"
+            && matches!(style.display, Display::Inline | Display::InlineBlock)
+        {
+            // CSS2 section 9.7 blockifies floating inline boxes.
+            style.display = Display::Block;
+        }
         variables[id] = vars;
         styles[id] = style;
         pending.extend(node.children.iter().rev().copied());
@@ -934,6 +960,8 @@ fn supported_property(name: &str) -> bool {
         || matches!(
             name,
             "display"
+                | "float"
+                | "clear"
                 | "width"
                 | "height"
                 | "min-width"
@@ -1391,7 +1419,8 @@ fn apply_property(
     width: f32,
     height: f32,
 ) {
-    let value = value.trim();
+    let keyword = matches!(name, "float" | "clear").then(|| value.trim().to_ascii_lowercase());
+    let value = keyword.as_deref().unwrap_or_else(|| value.trim());
     if value.len() > 256
         && matches!(
             name,
@@ -1438,6 +1467,28 @@ fn apply_property(
     };
     match name {
         "display" => {
+            if matches!(
+                value,
+                "none"
+                    | "block"
+                    | "flow-root"
+                    | "list-item"
+                    | "table"
+                    | "table-row"
+                    | "table-row-group"
+                    | "table-header-group"
+                    | "table-footer-group"
+                    | "inline"
+                    | "contents"
+                    | "inline-block"
+                    | "table-cell"
+                    | "flex"
+                    | "inline-flex"
+                    | "grid"
+                    | "inline-grid"
+            ) {
+                s.flow_root = value == "flow-root";
+            }
             s.display = match value {
                 "none" => Display::None,
                 "block" | "flow-root" | "list-item" | "table" | "table-row" | "table-row-group"
@@ -1448,6 +1499,18 @@ fn apply_property(
                 "grid" | "inline-grid" => Display::Grid,
                 _ => s.display,
             };
+        }
+        "float" => {
+            let value = value.to_ascii_lowercase();
+            if matches!(value.as_str(), "none" | "left" | "right") {
+                s.float = value;
+            }
+        }
+        "clear" => {
+            let value = value.to_ascii_lowercase();
+            if matches!(value.as_str(), "none" | "left" | "right" | "both") {
+                s.clear = value;
+            }
         }
         "width" => {
             if let Some(v) = length() {
@@ -1721,7 +1784,12 @@ fn apply_property(
 }
 fn copy_property(s: &mut ComputedStyle, p: &ComputedStyle, name: &str) {
     match name {
-        "display" => s.display = p.display,
+        "display" => {
+            s.display = p.display;
+            s.flow_root = p.flow_root;
+        }
+        "float" => s.float = p.float.clone(),
+        "clear" => s.clear = p.clear.clone(),
         "width" => s.width = p.width,
         "height" => s.height = p.height,
         "min-width" => s.min_width = p.min_width,
@@ -1740,6 +1808,7 @@ fn copy_property(s: &mut ComputedStyle, p: &ComputedStyle, name: &str) {
         "text-decoration" => s.text_decoration = p.text_decoration.clone(),
         "list-style-type" => s.list_style_type = p.list_style_type.clone(),
         "position" => s.position = p.position.clone(),
+        "overflow" | "overflow-x" | "overflow-y" => s.overflow = p.overflow.clone(),
         "opacity" => s.opacity = p.opacity,
         "box-sizing" => s.box_sizing = p.box_sizing.clone(),
         "flex-direction" => s.flex_direction = p.flex_direction.clone(),
@@ -2185,6 +2254,26 @@ impl<T> TransposeOption<T> for Option<Option<T>> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn float_clear_cascade_blockification_and_flow_root_are_distinct() {
+        let doc = Document::parse(
+            "<style>main{float:LEFT;clear:both;display:flow-root}#a{float:inherit;clear:INHERIT}#b{float:right;float:invalid;clear:left;clear:invalid}#c{float:left;position:absolute}#d{display:flow-root;display:block}#e{float:unset;clear:unset}</style><main><i id=a></i><i id=b></i><i id=c></i><i id=d></i><i id=e></i><i id=f></i></main>",
+        );
+        let styles = compute_styles(&doc, &doc.stylesheets(), 300.0, 200.0);
+        let style = |selector| &styles[doc.query_selector(selector).unwrap()];
+        assert!(style("main").flow_root);
+        assert_eq!(style("#a").float, "left");
+        assert_eq!(style("#a").clear, "both");
+        assert_eq!(style("#a").display, Display::Block);
+        assert_eq!(style("#b").float, "right");
+        assert_eq!(style("#b").clear, "left");
+        assert_eq!(style("#c").float, "none");
+        assert!(!style("#d").flow_root);
+        for selector in ["#e", "#f"] {
+            assert_eq!(style(selector).float, "none");
+            assert_eq!(style(selector).clear, "none");
+        }
+    }
     #[test]
     fn foreign_type_candidates_preserve_case_sensitive_matching() {
         let doc =

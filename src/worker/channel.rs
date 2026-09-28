@@ -1,5 +1,5 @@
-//! One cancellable pipe channel and one owned child process. Both renderer and
-//! resource broker use the same framing/deadline/reaping boundary.
+//! One cancellable pipe channel and one owned child process. Renderer,
+//! resource broker and image decoders use this framing/deadline/reaping boundary.
 use super::codec;
 use std::{
     io::{self, Read, Write},
@@ -66,6 +66,16 @@ impl Channel {
         bytes: Vec<u8>,
         timeout: Duration,
         cancel: impl Fn() -> bool,
+        service: impl FnMut(&[u8]) -> Result<Option<Vec<u8>>, String>,
+    ) -> Result<Vec<u8>, String> {
+        self.exchange_bounded(bytes, timeout, codec::MAX_FRAME, cancel, service)
+    }
+    pub(super) fn exchange_bounded(
+        &mut self,
+        bytes: Vec<u8>,
+        timeout: Duration,
+        response_limit: usize,
+        cancel: impl Fn() -> bool,
         mut service: impl FnMut(&[u8]) -> Result<Option<Vec<u8>>, String>,
     ) -> Result<Vec<u8>, String> {
         if self.failed {
@@ -110,7 +120,7 @@ impl Channel {
                             header_read += n;
                             if header_read == 4 {
                                 let length = u32::from_le_bytes(header) as usize;
-                                if !(5..=codec::MAX_FRAME).contains(&length) {
+                                if !(5..=response_limit.min(codec::MAX_FRAME)).contains(&length) {
                                     return Err("IPC frame length outside limit".into());
                                 }
                                 response
@@ -207,6 +217,31 @@ fn wait_pipe<T>(_: &T, _: bool) -> Result<(), String> {
 #[cfg(all(test, target_os = "linux"))]
 mod tests {
     use super::*;
+    #[test]
+    fn response_budget_rejects_advertised_length_before_reading_payload() {
+        use std::os::unix::process::CommandExt;
+        let child = Command::new("/bin/sh")
+            .args(["-c", r"printf '\145\000\000\000'; sleep 60"])
+            .process_group(0)
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::null())
+            .spawn()
+            .unwrap();
+        let mut channel = Channel::from_child(child).unwrap();
+        let pid = channel.pid();
+        let error = channel
+            .exchange_bounded(
+                vec![0; 5],
+                Duration::from_secs(1),
+                100,
+                || false,
+                |_| Ok(None),
+            )
+            .unwrap_err();
+        assert_eq!(error, "IPC frame length outside limit");
+        assert!(!Path::new(&format!("/proc/{pid}")).exists());
+    }
     #[test]
     fn deadlines_cover_stalled_reads_and_full_input_pipes() {
         use std::os::unix::process::CommandExt;

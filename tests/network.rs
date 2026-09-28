@@ -551,3 +551,71 @@ fn encoded_gzip_header_is_bounded_before_it_produces_decoded_bytes() {
             .is_err()
     );
 }
+
+#[test]
+#[ignore = "requires permission to bind two loopback test servers"]
+fn image_origin_taint_survives_redirects_and_cached_aliases() {
+    let svg = "<svg width='2' height='2'><rect width='2' height='2' fill='red'/></svg>";
+    let home = Server::new(vec![(
+        "/image",
+        response("200 OK", "image/svg+xml", "", svg),
+    )]);
+    let other = Server::new(vec![(
+        "/back",
+        response(
+            "302 Found",
+            "text/plain",
+            &format!("Location: {}\r\n", home.base.join("image").unwrap()),
+            "",
+        ),
+    )]);
+    let mut f = Fetcher::default();
+    let clean = f
+        .fetch(
+            &home.base.join("image").unwrap(),
+            Some(&home.base),
+            ResourceKind::Image,
+        )
+        .unwrap();
+    assert!(clean.origin_clean);
+    let tainted = f
+        .fetch(
+            &other.base.join("back").unwrap(),
+            Some(&home.base),
+            ResourceKind::Image,
+        )
+        .unwrap();
+    assert_eq!(tainted.url, clean.url);
+    assert!(
+        !tainted.origin_clean,
+        "a final same-origin URL cannot remove earlier redirect taint"
+    );
+    let document = Server::new(vec![(
+        "/page",
+        response(
+            "200 OK",
+            "text/html",
+            "",
+            &format!(
+                "<img src='{0}'><img src='{0}'><img src='{0}#alias'>",
+                other.base.join("back").unwrap()
+            ),
+        ),
+    )]);
+    let page = Page::load(document.base.join("page").unwrap().as_str(), false).unwrap();
+    let key = other.base.join("back").unwrap().to_string();
+    assert_eq!(page.image_origin_clean(&key), Some(false));
+    assert_eq!(
+        page.image_origin_clean(&format!("{key}#alias")),
+        Some(false)
+    );
+    assert!(Arc::ptr_eq(
+        page.images.get(&key).unwrap(),
+        page.images.get(&format!("{key}#alias")).unwrap()
+    ));
+    assert_eq!(
+        other.requests().len(),
+        2,
+        "page aliases share a single image fetch"
+    );
+}

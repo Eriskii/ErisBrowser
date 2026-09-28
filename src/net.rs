@@ -70,6 +70,10 @@ pub struct Resource {
     pub content_type: String,
     pub headers: BTreeMap<String, String>,
     pub status: u16,
+    /// False if any network redirect crosses the document origin.
+    pub origin_clean: bool,
+    /// Pixels from the isolated decoder; opaque responses have no body or headers.
+    pub decoded_image: Option<crate::graphics::RasterImage>,
 }
 impl Resource {
     pub fn text(&self) -> String {
@@ -92,7 +96,6 @@ impl Resource {
 pub struct Fetcher {
     agent: Option<ureq::Agent>,
     bridge: Option<FetchBridge>,
-    broker_origin_lock: bool,
     local_root: Option<PathBuf>,
     total: usize,
     count: usize,
@@ -126,20 +129,11 @@ impl Fetcher {
         Self {
             agent,
             bridge,
-            broker_origin_lock: false,
             local_root,
             total: 0,
             count: 0,
             started: Instant::now(),
         }
-    }
-    pub(crate) fn for_broker(local_root: Option<PathBuf>) -> Self {
-        let mut fetcher = Self::new(local_root);
-        // Resource kinds come from an untrusted renderer. Until cross-origin
-        // images have an opaque decoding boundary, no kind may expose bytes
-        // from another network origin. validate() rechecks every redirect.
-        fetcher.broker_origin_lock = true;
-        fetcher
     }
     pub fn for_document(url: &Url) -> Self {
         if PAGE_FETCH_BRIDGE.get().is_some() {
@@ -191,6 +185,7 @@ impl Fetcher {
             return Err("page resource or time budget exceeded".into());
         }
         let mut target = url.clone();
+        let mut origin_clean = true;
         for _ in 0..=8 {
             let remaining_time = Duration::from_secs(30)
                 .checked_sub(self.started.elapsed())
@@ -198,6 +193,7 @@ impl Fetcher {
                 .ok_or("page time budget exceeded")?;
             let remaining_bytes = MAX_PAGE_BYTES.saturating_sub(self.total);
             self.validate(&target, initiator, kind)?;
+            origin_clean &= initiator.is_none_or(|source| image_origin_clean(source, &target));
             let mut resource = match target.scheme() {
                 "http" | "https" => {
                     let timeout = Some(remaining_time.min(Duration::from_secs(12)));
@@ -272,6 +268,8 @@ impl Fetcher {
                         content_type,
                         headers,
                         status,
+                        origin_clean,
+                        decoded_image: None,
                     }
                 }
                 "file" => {
@@ -300,6 +298,8 @@ impl Fetcher {
                         content_type: mime_for_path(&path).into(),
                         headers: BTreeMap::new(),
                         status: 200,
+                        origin_clean,
+                        decoded_image: None,
                     }
                 }
                 "data" => decode_data_url(&target)?,
@@ -330,6 +330,7 @@ impl Fetcher {
             if kind == ResourceKind::Script && !is_javascript_mime(&resource.content_type) {
                 return Err("script has an unsupported MIME type".into());
             }
+            resource.origin_clean = origin_clean;
             resource.url = target;
             return Ok(resource);
         }
@@ -351,15 +352,6 @@ impl Fetcher {
             return Err(format!("unsupported scheme: {}", url.scheme()));
         }
         if let Some(source) = initiator {
-            if self.broker_origin_lock
-                && kind != ResourceKind::Document
-                && matches!(url.scheme(), "http" | "https")
-                && source.origin() != url.origin()
-            {
-                return Err(
-                    "cross-origin broker subresource blocked pending opaque image decoding".into(),
-                );
-            }
             if url.scheme() == "file" && source.scheme() != "file" {
                 return Err("remote documents cannot load local files".into());
             }
@@ -378,6 +370,17 @@ impl Fetcher {
             }
         }
         Ok(())
+    }
+}
+
+/// Local images are restricted to the authorized directory; data images have no
+/// external response origin. Network image taint survives every redirect hop.
+pub(crate) fn image_origin_clean(source: &Url, target: &Url) -> bool {
+    match target.scheme() {
+        "data" => true,
+        "file" => source.scheme() == "file",
+        "http" | "https" => source.origin() == target.origin(),
+        _ => false,
     }
 }
 
@@ -485,6 +488,8 @@ fn decode_data_url(url: &Url) -> Result<Resource, String> {
         content_type: content_type.into(),
         headers: BTreeMap::new(),
         status: 200,
+        origin_clean: true,
+        decoded_image: None,
     })
 }
 pub(crate) fn percent_decode(input: &str) -> Result<Vec<u8>, String> {
@@ -629,6 +634,8 @@ mod tests {
             content_type: "text/html; charset=windows-1252".into(),
             headers: BTreeMap::new(),
             status: 200,
+            origin_clean: true,
+            decoded_image: None,
         };
         assert_eq!(r.text(), "café");
     }
@@ -640,6 +647,8 @@ mod tests {
             content_type: "text/html;charset=windows-1252".into(),
             headers: BTreeMap::new(),
             status: 200,
+            origin_clean: true,
+            decoded_image: None,
         };
         assert_eq!(r.text(), "café");
     }
