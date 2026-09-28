@@ -478,7 +478,13 @@ fn broker_commits_cross_origin_redirect_and_enforces_the_final_origin() {
         .get(&format!("http://{initial_address}/direct-image"))
         .unwrap();
     assert_eq!((png.width, png.height), (3, 2));
-    assert!(png.rgba.chunks_exact(4).all(|p| p == [11, 22, 33, 255]));
+    assert!(
+        png.rgba
+            .as_chunks::<4>()
+            .0
+            .iter()
+            .all(|p| *p == [11, 22, 33, 255])
+    );
     let svg = snapshot
         .images
         .get(&format!("http://{initial_address}/direct-svg"))
