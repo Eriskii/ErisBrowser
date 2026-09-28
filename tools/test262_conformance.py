@@ -29,13 +29,15 @@ ARRAY_SORT_FEATURES = SUPPORTED_FEATURES | {'stable-array-sort'}
 IDENTIFIER_FEATURES = SUPPORTED_FEATURES | {'u180e'}
 ARRAY_REDUCE_FEATURES = SUPPORTED_FEATURES.copy()
 NUMBER_STATIC_FEATURES = SUPPORTED_FEATURES.copy()
+NUMERIC_CONVERSION_FEATURES = SUPPORTED_FEATURES.copy()
 PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
                     'is-prototype-of': IS_PROTOTYPE_OF_FEATURES,
                     'global-values': GLOBAL_VALUE_FEATURES, 'array-sort': ARRAY_SORT_FEATURES,
                     'identifiers': IDENTIFIER_FEATURES, 'array-reduce': ARRAY_REDUCE_FEATURES,
-                    'number-statics': NUMBER_STATIC_FEATURES}
+                    'number-statics': NUMBER_STATIC_FEATURES,
+                    'numeric-conversion': NUMERIC_CONVERSION_FEATURES}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -404,6 +406,66 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                 for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
                     source = guard + setup + f'assert.sameValue({actual},{value});'
                     variants.append(('array-sort-' + name + suffix, source, expected, mode))
+    if profile == 'numeric-conversion':
+        guard = ("var N=Number;assert.sameValue(typeof N,'function');"
+                 "assert.sameValue(N({valueOf:function(){return 5;}}),5);")
+        pairs = [
+            ('number-primitives', "assert.sameValue(N(),0);assert.sameValue(N(undefined),NaN);"
+             "assert.sameValue(N(null),0);assert.sameValue(N(false),0);assert.sameValue(N(true),1);"
+             "assert.sameValue(N('-0'),-0);assert.sameValue(N(' 0x10 '),16);assert.sameValue(N('0b11'),3);"
+             "assert.sameValue(N('Infinity'),Infinity);assert.sameValue(N('1x'),NaN);",
+             "N('')", '0', '1'),
+            ('number-hook-order', "var trace='',o={get valueOf(){trace+='V';return function(){assert.sameValue(this,o);trace+='v';return {};};},"
+             "get toString(){trace+='T';return function(){assert.sameValue(this,o);trace+='t';return '7';};}};"
+             "assert.sameValue(N(o),7);",
+             'trace', "'VvTt'", "'TtVv'"),
+            ('number-abrupt', "var reason={},seen,called=false;try{N({get valueOf(){throw reason;},toString:function(){called=true;return '1';}});}catch(e){seen=e;}"
+             "assert.sameValue(seen,reason);assert.sameValue(called,false);seen=undefined;"
+             "try{new N({valueOf:function(){throw reason;}});}catch(e){seen=e;}",
+             'seen', 'reason', 'undefined'),
+            ('number-noncallable', "var trace='',o={valueOf:7,toString:function(){trace+='t';return '8';}};"
+             "assert.sameValue(N(o),8);assert.throws(TypeError,function(){N({valueOf:function(){return {};},toString:function(){return {};}});});",
+             'trace', "'t'", "''"),
+            ('number-boxing-alias', "var prototype=N.prototype;Number=function(){throw 1;};"
+             "var box=new N({valueOf:function(){return -0;}});Number=N;"
+             "assert.sameValue(typeof box,'object');assert.sameValue(Object.getPrototypeOf(box),prototype);"
+             "assert.sameValue(box.valueOf(),-0);assert.sameValue(new N(undefined).valueOf(),NaN);",
+             'N(box)', '-0', '0'),
+            ('number-argument-order', "var trace='',bomb={get valueOf(){throw 9;}},o={valueOf:function(){trace+='v';return 4;}};"
+             "function first(){trace+='a';return o;}function extra(){trace+='b';return bomb;}"
+             "assert.sameValue(N.call(bomb,first(),extra()),4);assert.sameValue(N.apply(null,[o,bomb]),4);",
+             'trace', "'abvv'", "'avbv'"),
+        ]
+        for mode in ('sloppy', 'strict'):
+            for name, setup, actual, good, bad in pairs:
+                for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                    variants.append(('numeric-conversion-' + name + suffix,
+                                     guard + setup + f'assert.sameValue({actual},{value});', expected, mode))
+        for method in ('isFinite', 'isNaN'):
+            converted = 'true' if method == 'isFinite' else 'false'
+            guard = (f"var m={method};assert.sameValue(typeof m,'function');"
+                     f"assert.sameValue(m({{valueOf:function(){{return 1;}}}}),{converted});")
+            pairs = [
+                ('coercion', "var reads=0,o={valueOf:function(){reads++;return '2';}};"
+                 f"assert.sameValue(m(o),{converted});assert.sameValue(Number.{method}(o),false);"
+                 f"assert.sameValue(m.call({{}},null),{converted});assert.sameValue(m([]),{converted});",
+                 'reads', '1', '0'),
+                ('abrupt-order', "var trace='',reason={},seen;function first(){trace+='a';return {valueOf:function(){trace+='v';throw reason;}};}"
+                 "function extra(){trace+='b';return {};}try{m(first(),extra());}catch(e){seen=e;}"
+                 "assert.sameValue(seen,reason);assert.throws(TypeError,function(){m({valueOf:null,toString:null});});",
+                 'trace', "'abv'", "'avb'"),
+                ('property-metadata', f"verifyProperty(m,'name',{{value:'{method}',writable:false,enumerable:false,configurable:true}},{{restore:true}});"
+                 "verifyProperty(m,'length',{value:1,writable:false,enumerable:false,configurable:true},{restore:true});"
+                 "assert.sameValue(Object.getPrototypeOf(m),Function.prototype);assert.sameValue(Object.getOwnPropertyDescriptor(m,'prototype'),undefined);"
+                 "assert.throws(TypeError,function(){new m(1);});"
+                 f"{method}=function(){{throw 1;}};assert.sameValue(m.bind(null)({{valueOf:function(){{return 1;}}}}),{converted});",
+                 'm.length', '1', '2'),
+            ]
+            for mode in ('sloppy', 'strict'):
+                for name, setup, actual, good, bad in pairs:
+                    for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                        variants.append(('numeric-conversion-' + method + '-' + name + suffix,
+                                         guard + setup + f'assert.sameValue({actual},{value});', expected, mode))
     if profile == 'number-statics':
         # Validate actual callable execution before nonconstructor/descriptor
         # checks; an absent method's TypeError is never positive evidence.

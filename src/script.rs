@@ -3346,6 +3346,16 @@ impl Runtime {
             self.objects[self.native_properties[owner]].insert_hidden(key.into(), value);
         }
         self.initialize_number_statics()?;
+        for name in ["isFinite", "isNaN"] {
+            // Cover literal metadata/native strings and registry storage before
+            // intrinsic_function creates its separately charged property bag.
+            self.work(1 + name.len())?;
+            self.charge(1024 + name.len() * 6)?;
+            let function = self.intrinsic_function(name, name, 1)?;
+            let binding = self.environments[0].bindings.get_mut(name).unwrap();
+            binding.value = function;
+            binding.enumerable = false;
+        }
         for name in ["JSON", "Math"] {
             let Value::Object(id) = self.object_ordered([])? else {
                 unreachable!()
@@ -6963,9 +6973,9 @@ impl Runtime {
                 ));
             }
             // Keys are either "length" or at most sixteen ASCII digits.
-            // own_property can make decimal/UTF-8 temporaries at an Array
-            // edge and a one-unit value at a boxed-string edge. Cover those
-            // actual allocations before each HasProperty/Get traversal edge.
+            // Retain the conservative per-edge storage estimate. Array index
+            // decoding itself is allocation-free; a boxed-string edge can
+            // still create a one-unit value during either presence or Get.
             self.charge(128)?;
             if let Some(property) = self.own_property(&value, key) {
                 return Ok(Some(property));
@@ -7356,22 +7366,27 @@ impl Runtime {
         self.charge((units.len() - start).saturating_mul(2) + 24)?;
         Ok(Value::String(JsString::from(units[start..].to_vec())))
     }
-    fn number_value(&mut self, value: Value, doc: &mut Document) -> Result<f64> {
+    fn primitive_number_value(&mut self, value: Value) -> Result<f64> {
         if let Value::String(text) = &value {
-            self.work(1 + text.len() / 8)?;
+            // Trimming, ASCII validation/copy and decimal/radix parsing make
+            // bounded passes over the code units. Cover temporary ASCII
+            // storage before JsString::number constructs it.
+            self.work(1 + text.len().saturating_mul(6) / 8)?;
+            self.charge(32 + text.len().saturating_mul(2))?;
         }
+        Ok(value.number())
+    }
+    fn number_value(&mut self, value: Value, doc: &mut Document) -> Result<f64> {
         if !js_object(&value) {
-            return Ok(value.number());
+            return self.primitive_number_value(value);
         }
         for key in ["valueOf", "toString"] {
+            self.charge(64)?;
             let method = self.get(value.clone(), key, doc)?;
             if json_callable(&method) {
                 let primitive = self.call(method, Vec::new(), value.clone(), doc)?;
                 if !js_object(&primitive) {
-                    if let Value::String(text) = &primitive {
-                        self.work(1 + text.len() / 8)?;
-                    }
-                    return Ok(primitive.number());
+                    return self.primitive_number_value(primitive);
                 }
             }
         }
@@ -7463,9 +7478,9 @@ impl Runtime {
                             | "URIError"
                     ) =>
             {
-                let name = native.name.clone();
+                let boxed = matches!(native.name.as_str(), "String" | "Number" | "Boolean");
                 let result = self.call(constructor, arguments, Value::Window, doc)?;
-                if matches!(name.as_str(), "String" | "Number" | "Boolean") {
+                if boxed {
                     self.coerce_object(result)
                 } else {
                     Ok(result)
@@ -9908,6 +9923,19 @@ impl Runtime {
             // No coercion, argument-content scan, receiver lookup or allocation.
             return Ok(Value::Bool(predicate.test(args.first())));
         }
+        if matches!(native.name.as_str(), "Number" | "isFinite" | "isNaN") {
+            self.tick()?;
+            let number = if native.name == "Number" && args.is_empty() {
+                0.0
+            } else {
+                self.number_value(args.first().cloned().unwrap_or(Value::Undefined), doc)?
+            };
+            return Ok(match native.name.as_str() {
+                "Number" => Value::Number(number),
+                "isFinite" => Value::Bool(number.is_finite()),
+                _ => Value::Bool(number.is_nan()),
+            });
+        }
         if matches!(native.name.as_str(), "Array.reduce" | "Array.reduceRight") {
             return self.array_reduce(
                 native.receiver.clone(),
@@ -10552,18 +10580,7 @@ impl Runtime {
             Value::Json if name == "stringify" => {
                 return self.json_stringify(arg(0), arg(1), arg(2), doc);
             }
-            Value::Window
-                if [
-                    "String",
-                    "Number",
-                    "Boolean",
-                    "parseInt",
-                    "parseFloat",
-                    "isNaN",
-                    "isFinite",
-                ]
-                .contains(&name) =>
-            {
+            Value::Window if ["String", "Boolean", "parseInt", "parseFloat"].contains(&name) => {
                 let value = arg(0);
                 return match name {
                     "String" => {
@@ -10574,14 +10591,7 @@ impl Runtime {
                         };
                         self.string(text)
                     }
-                    "Number" => Ok(Value::Number(if args.is_empty() {
-                        0.0
-                    } else {
-                        value.number()
-                    })),
                     "Boolean" => Ok(Value::Bool(value.truthy())),
-                    "isNaN" => Ok(Value::Bool(value.number().is_nan())),
-                    "isFinite" => Ok(Value::Bool(value.number().is_finite())),
                     "parseFloat" => Ok(Value::Number(parse_float(
                         &value.js_string().to_utf8_lossy(),
                     ))),
@@ -11458,9 +11468,19 @@ fn json_same_value(left: &Value, right: &Value) -> bool {
     }
 }
 fn json_array_index(key: &JsString) -> Option<u32> {
-    let key = key.to_utf8().ok()?;
-    let index = key.parse::<u32>().ok()?;
-    (index != u32::MAX && index.to_string() == key).then_some(index)
+    let units = key.units();
+    if units.is_empty() || units.len() > 10 || units.len() > 1 && units[0] == u16::from(b'0') {
+        return None;
+    }
+    let mut index = 0u32;
+    for &unit in units {
+        let digit = unit.checked_sub(u16::from(b'0'))?;
+        if digit > 9 {
+            return None;
+        }
+        index = index.checked_mul(10)?.checked_add(u32::from(digit))?;
+    }
+    (index != u32::MAX).then_some(index)
 }
 // Rust supplies shortest round-trippable digits; ECMAScript chooses decimal
 // notation for exponents -6 through 20 and an explicit '+' for positive ones.
@@ -17420,6 +17440,270 @@ mod tests {
                 runtime.execute(source, &mut document)
             };
             result.unwrap_or_else(|error| panic!("strict={strict}: {error}"));
+        }
+    }
+
+    #[test]
+    fn numeric_conversion_observes_live_hooks_receivers_and_primitive_fallback() {
+        number_static_modes(
+            r#"
+            var methods=[Number,isFinite,isNaN];
+            for(var i=0;i<methods.length;i++){
+                var fn=methods[i],trace='',o={get valueOf(){trace+='V';return function(){
+                    assert.sameValue(this,o);trace+='v';
+                    Object.defineProperty(o,'toString',{get:function(){trace+='T';return function(){
+                        assert.sameValue(this,o);trace+='t';return '7';};},configurable:true});return {};};},
+                    toString:function(){throw 'stale';}};
+                assert.sameValue(fn(o),i===0?7:i===1);assert.sameValue(trace,'VvTt');
+                trace='';o={valueOf:null,toString:function(){trace+='t';return '-0';}};
+                assert.sameValue(fn(o),i===0?-0:i===1);assert.sameValue(trace,'t');
+                o={valueOf:function(){return undefined;},get toString(){throw 'unused';}};
+                assert.sameValue(fn(o),i===0?NaN:i===2);
+                assert.throws(TypeError,function(){fn(Object.create(null));});
+                assert.throws(TypeError,function(){fn({valueOf:function(){return {};},toString:function(){return [];}});});
+            }
+        "#,
+        );
+    }
+
+    #[test]
+    fn numeric_conversion_preserves_abrupt_identity_and_argument_order() {
+        number_static_modes(
+            r#"
+            var methods=[Number,isFinite,isNaN];
+            for(var i=0;i<methods.length;i++){
+                var fn=methods[i],trace='',reason={},seen,bomb={get valueOf(){throw 'receiver';}};
+                function first(){trace+='a';return {valueOf:function(){trace+='v';throw reason;}};}
+                function extra(){trace+='b';return bomb;}
+                try{fn.call(bomb,first(),extra());}catch(e){seen=e;}
+                assert.sameValue(seen,reason);assert.sameValue(trace,'abv');
+                trace='';seen=undefined;
+                try{fn(first(),(function(){trace+='t';throw reason;})());}catch(e){seen=e;}
+                assert.sameValue(seen,reason);assert.sameValue(trace,'at');
+                seen=undefined;trace='';
+                try{fn({get valueOf(){trace+='V';throw reason;},get toString(){throw 'unused';}});}catch(e){seen=e;}
+                assert.sameValue(seen,reason);assert.sameValue(trace,'V');
+                seen=undefined;trace='';
+                try{fn({valueOf:function(){trace+='v';return {};},get toString(){trace+='T';throw reason;}});}catch(e){seen=e;}
+                assert.sameValue(seen,reason);assert.sameValue(trace,'vT');
+            }
+        "#,
+        );
+    }
+
+    #[test]
+    fn numeric_conversion_boxes_bound_constructors_and_keeps_saved_aliases() {
+        number_static_modes(
+            r#"
+            var N=Number,F=isFinite,I=isNaN,prototype=N.prototype,trace='';
+            var o={valueOf:function(){trace+='v';return -0;}};
+            var B=N.bind({valueOf:function(){throw 'receiver';}},o);
+            Number=function(){throw 'replacement';};isFinite=function(){throw 'replacement';};isNaN=isFinite;
+            var a=new N(),b=new N(undefined),c=new B({valueOf:function(){throw 'extra';}});
+            assert.sameValue(a.valueOf(),0);assert.sameValue(b.valueOf(),NaN);
+            assert.sameValue(c.valueOf(),-0);assert.sameValue(Object.getPrototypeOf(c),prototype);
+            assert.sameValue(N(c),-0);assert.sameValue(F(c),true);assert.sameValue(I(b),true);
+            assert.sameValue(trace,'v');assert.sameValue(N(),0);assert.sameValue(N(undefined),NaN);
+            assert.sameValue(F(),false);assert.sameValue(I(),true);
+            assert.sameValue(F.name,'isFinite');assert.sameValue(I.name,'isNaN');
+            assert.sameValue(F.length,1);assert.sameValue(I.length,1);
+            assert.throws(TypeError,function(){new F(1);});assert.throws(TypeError,function(){new I(1);});
+        "#,
+        );
+    }
+
+    #[test]
+    fn numeric_conversion_strings_preserve_utf16_grammar_and_signed_zero() {
+        number_static_modes(
+            r#"
+            var cases=[['',0],[' \t\r\n\uFEFF',0],['\u00A0-0\u2029',-0],
+                ['0x20000000000001',9007199254740992],['0o10',8],['0b11',3],
+                ['1e309',Infinity],['-1e-999',-0],['+Infinity',Infinity],['-Infinity',-Infinity],
+                ['\u180E1',NaN],['1\u0085',NaN],['\uD800',NaN],['\uDC00',NaN],
+                ['+0x10',NaN],['-0b1',NaN],['1_0',NaN],['1e',NaN],['inf',NaN],['1x',NaN]];
+            for(var i=0;i<cases.length;i++){
+                var text=cases[i][0],expected=cases[i][1],o={valueOf:function(){return text;}};
+                assert.sameValue(Number(text),expected);assert.sameValue(Number(o),expected);
+                assert.sameValue(isFinite(o),Number.isFinite(expected));
+                assert.sameValue(isNaN(o),Number.isNaN(expected));
+            }
+            var reads=0,o={valueOf:function(){reads++;return 1;}};
+            assert.sameValue(Number.isFinite(o),false);assert.sameValue(Number.isNaN(o),false);
+            assert.sameValue(reads,0);assert.sameValue(isFinite(o),true);assert.sameValue(reads,1);
+        "#,
+        );
+    }
+
+    #[test]
+    fn numeric_conversion_ignores_prebuilt_extra_values_at_heap_ceiling() {
+        for name in ["Number", "isFinite", "isNaN"] {
+            let mut runtime = Runtime::new();
+            let mut document = Document::parse("");
+            let function = runtime.environments[0].bindings[name].value.clone();
+            let huge = Value::String(JsString::from(vec![120; MAX_STRING]));
+            let array = runtime.array(vec![Value::Undefined; 65_536]).unwrap();
+            runtime.allocated = MAX_HEAP;
+            runtime.steps = 2;
+            assert_eq!(
+                runtime
+                    .call(
+                        function.clone(),
+                        vec![Value::Number(1.0), huge, array],
+                        Value::Document,
+                        &mut document
+                    )
+                    .unwrap(),
+                if name == "Number" {
+                    Value::Number(1.0)
+                } else {
+                    Value::Bool(name == "isFinite")
+                }
+            );
+            assert_eq!(
+                (
+                    runtime.allocated,
+                    runtime.steps,
+                    runtime.calls,
+                    runtime.stack_units
+                ),
+                (MAX_HEAP, 0, 0, 0)
+            );
+            runtime.steps = 1;
+            assert!(
+                runtime
+                    .call(
+                        function,
+                        vec![Value::Number(1.0)],
+                        Value::Null,
+                        &mut document
+                    )
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(
+                (
+                    runtime.allocated,
+                    runtime.steps,
+                    runtime.calls,
+                    runtime.stack_units
+                ),
+                (MAX_HEAP, 0, 0, 0)
+            );
+        }
+    }
+
+    #[test]
+    fn numeric_conversion_precharges_strings_after_preserving_getter_effects() {
+        for hook in ["valueOf", "toString"] {
+            let mut runtime = Runtime::new();
+            let mut document = Document::parse("");
+            let source = format!(
+                "var touched=false,caught=false,text='{}';var o={{valueOf:null,get {hook}(){{touched=true;return function(){{return text;}};}}}};o;",
+                "1".repeat(8192)
+            );
+            let object = runtime.execute(&source, &mut document).unwrap();
+            runtime.allocated = MAX_HEAP - 4096;
+            runtime.steps = MAX_STEPS;
+            let function = runtime.environments[0].bindings["Number"].value.clone();
+            let error = runtime
+                .call(function, vec![object], Value::Null, &mut document)
+                .unwrap_err();
+            assert!(error.is_resource_limit(), "{hook}: {error}");
+            assert!(error.to_string().contains("allocation"), "{hook}: {error}");
+            assert_eq!(
+                runtime.environments[0].bindings["touched"].value,
+                Value::Bool(true)
+            );
+            assert_eq!((runtime.calls, runtime.stack_units), (0, 0));
+        }
+        let mut runtime = Runtime::new();
+        let text = Value::String(JsString::from("123"));
+        runtime.allocated = MAX_HEAP;
+        assert!(
+            runtime
+                .primitive_number_value(text)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        let before = runtime.allocated;
+        runtime.steps = 0;
+        assert!(
+            runtime
+                .primitive_number_value(Value::String("1".into()))
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(runtime.allocated, before);
+    }
+
+    #[test]
+    fn numeric_conversion_recursive_hooks_keep_shared_exhaustion_uncatchable() {
+        for name in ["Number", "isFinite", "isNaN"] {
+            for body in [format!("return {name}(o);"), "while(true){}".into()] {
+                let mut runtime = Runtime::new();
+                let mut document = Document::parse("");
+                runtime.execute("var caught=false;", &mut document).unwrap();
+                let source = format!(
+                    "var o={{valueOf:function(){{{body}}}}};try{{{name}(o);}}catch(e){{caught=true;}}"
+                );
+                assert!(
+                    runtime
+                        .execute(&source, &mut document)
+                        .unwrap_err()
+                        .is_resource_limit()
+                );
+                assert_eq!(
+                    runtime.environments[0].bindings["caught"].value,
+                    Value::Bool(false)
+                );
+                assert_eq!((runtime.calls, runtime.stack_units), (0, 0));
+            }
+        }
+    }
+
+    #[test]
+    fn numeric_conversion_array_index_decoder_preserves_canonical_boundaries() {
+        for (key, expected) in [
+            ("0", Some(0)),
+            ("1", Some(1)),
+            ("4294967294", Some(u32::MAX - 1)),
+            ("", None),
+            ("00", None),
+            ("01", None),
+            ("-0", None),
+            ("+1", None),
+            ("1.0", None),
+            ("1e0", None),
+            (" 1", None),
+            ("4294967295", None),
+            ("4294967296", None),
+            ("9999999999", None),
+            ("10000000000", None),
+            ("１", None),
+        ] {
+            assert_eq!(json_array_index(&key.into()), expected, "{key}");
+        }
+        for units in [
+            vec![0xd800],
+            vec![0x31, 0xdc00],
+            vec![0],
+            vec![0x30, 0],
+            vec![0x39; 100_000],
+        ] {
+            assert_eq!(json_array_index(&JsString::from(units)), None);
+        }
+        // Differential control against the previous canonical UTF-8/decimal
+        // definition, including both valid indices and deliberately bad keys.
+        let mut state = 0x6713_cdef_u32;
+        for _ in 0..10_000 {
+            state = state.wrapping_mul(1664525).wrapping_add(1013904223);
+            for key in [state.to_string(), format!("0{state}"), format!("{state}x")] {
+                let old = key
+                    .parse::<u32>()
+                    .ok()
+                    .filter(|n| *n != u32::MAX && n.to_string() == key);
+                assert_eq!(json_array_index(&key.as_str().into()), old, "{key}");
+            }
         }
     }
 

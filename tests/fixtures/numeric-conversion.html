@@ -1,0 +1,42 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Number and coercing global predicates</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#primitives{left:0}#hooks{left:50px}#abrupt{left:100px}#boxing{left:150px}#finite{left:200px}#nan{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="primitives" class="sample"></div><div id="hooks" class="sample"></div>
+<div id="abrupt" class="sample"></div><div id="boxing" class="sample"></div>
+<div id="finite" class="sample"></div><div id="nan" class="sample"></div>
+<button id="change" type="button">Convert through saved functions</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color='green'){document.getElementById(id).style.backgroundColor=color;}
+const N=Number,F=isFinite,I=isNaN;
+check(N()===0&&N.isNaN(N(undefined))&&1/N('-0')===-Infinity,'missing and explicit arguments');
+check(N(' 0x10 ')===16&&N('0b11')===3&&N.isNaN(N('1x')),'numeric strings');mark('primitives');
+let trace='';const object={get valueOf(){trace+='V';return function(){check(this===object,'valueOf receiver');trace+='v';return {};};},
+  get toString(){trace+='T';return function(){check(this===object,'toString receiver');trace+='t';return '7';};}};
+check(N(object)===7&&trace==='VvTt','ordered ordinary conversion');mark('hooks');
+const reason={};let seen,after=false;
+try{N({get valueOf(){throw reason;},toString(){after=true;return '1';}});}catch(error){seen=error;}
+check(seen===reason&&!after,'abrupt getter identity');mark('abrupt');
+const Bound=N.bind(null,{valueOf(){return -0;}}),box=new Bound();
+check(typeof box==='object'&&Object.getPrototypeOf(box)===N.prototype&&1/box.valueOf()===-Infinity,'bound native boxing');mark('boxing');
+check(F({valueOf(){return '2';}})&&F(null)&&F([])&&!F(undefined)&&!F(Infinity),'coercing finite');
+check(!N.isFinite('2')&&F.length===1&&F.name==='isFinite','static distinction and metadata');mark('finite');
+check(I({valueOf(){return 'bad';}})&&I()&&!I('2')&&!I(null),'coercing NaN');
+check(!N.isNaN('bad')&&I.length===1&&I.name==='isNaN','static distinction and metadata');mark('nan');
+document.getElementById('result').textContent='ready';document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  Number=function(){throw 'replacement';};isFinite=Number;isNaN=Number;
+  const values=['1','2','bad'],count=values.reduce(function(total,text){
+    const input={valueOf(){return text;}};return total+(F(input)&&!I(input)?N(input):0);
+  },0);
+  check(count===3,'saved native conversion in callback');Number=N;isFinite=F;isNaN=I;
+  document.getElementById('result').textContent=String(count);
+  mark('primitives','blue');mark('hooks','blue');mark('abrupt','blue');
+  mark('boxing','blue');mark('finite','blue');mark('nan','blue');document.body.className='clicked';
+};
+</script>

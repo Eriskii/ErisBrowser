@@ -40,10 +40,12 @@ argument order, resource accounting and the unchanged near-limit reduceRight
 source. Page and confined-worker fixtures exercise these values and retained
 native aliases through an event callback.
 
-The Number constructor, global coercing isFinite/isNaN functions, Number.parseInt
-and Number.parseFloat are separate APIs; their incomplete behavior is retained
-in the [complete pinned inventory](test262-number-statics.md). This increment
-does not add Symbol, BigInt, Reflect, cross-realm behavior or numeric formatting.
+The Number constructor and global coercing isFinite/isNaN functions are separate
+APIs; their subsequent [ordinary conversion increment](numeric-conversion.md)
+is measured separately. Number.parseInt and Number.parseFloat remain missing
+aliases in the [complete pinned inventory](test262-number-statics.md). These
+increments do not add Symbol, BigInt, Reflect, cross-realm behavior or numeric
+formatting.
 
 Primary algorithms and constant definitions:
 [Number constructor properties](https://tc39.es/ecma262/multipage/numbers-and-dates.html#sec-properties-of-the-number-constructor),

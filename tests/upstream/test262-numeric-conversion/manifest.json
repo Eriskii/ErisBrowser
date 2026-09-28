@@ -1,0 +1,267 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all direct .js files in built-ins/isFinite and isNaN; no implementation",
+  "directories": {
+    "isFinite": [
+      "S15.1.2.5_A2.6.js",
+      "S15.1.2.5_A2.7.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "return-abrupt-from-tonumber-number-symbol.js",
+      "return-abrupt-from-tonumber-number.js",
+      "return-false-on-nan-or-infinities.js",
+      "return-true-for-valid-finite-numbers.js",
+      "tonumber-operations.js",
+      "toprimitive-call-abrupt.js",
+      "toprimitive-get-abrupt.js",
+      "toprimitive-not-callable-throws.js",
+      "toprimitive-result-is-object-throws.js",
+      "toprimitive-result-is-symbol-throws.js",
+      "toprimitive-valid-result.js"
+    ],
+    "isNaN": [
+      "S15.1.2.4_A2.6.js",
+      "S15.1.2.4_A2.7.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "return-abrupt-from-tonumber-number-symbol.js",
+      "return-abrupt-from-tonumber-number.js",
+      "return-false-not-nan-numbers.js",
+      "return-true-nan.js",
+      "tonumber-operations.js",
+      "toprimitive-call-abrupt.js",
+      "toprimitive-get-abrupt.js",
+      "toprimitive-not-callable-throws.js",
+      "toprimitive-result-is-object-throws.js",
+      "toprimitive-result-is-symbol-throws.js",
+      "toprimitive-valid-result.js"
+    ]
+  },
+  "test_files": 30,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/nans.js",
+      "upstream_path": "harness/nans.js",
+      "bytes": 608,
+      "sha256": "cfc08a1415d798879d544b58e11bee1e368f7ca52e1bbf3652c77737050bc90d"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/built-ins/isFinite/S15.1.2.5_A2.6.js",
+      "upstream_path": "test/built-ins/isFinite/S15.1.2.5_A2.6.js",
+      "bytes": 382,
+      "sha256": "aaf37da7f09b3bc14aa59d832706eecb7bd700d665a66c60a8c0de6337792cc1"
+    },
+    {
+      "path": "test/built-ins/isFinite/S15.1.2.5_A2.7.js",
+      "upstream_path": "test/built-ins/isFinite/S15.1.2.5_A2.7.js",
+      "bytes": 429,
+      "sha256": "f1399f3d7558de9d7c63b50f83d4e97aba88f831adb4816f40a0728762a3d6d8"
+    },
+    {
+      "path": "test/built-ins/isFinite/not-a-constructor.js",
+      "upstream_path": "test/built-ins/isFinite/not-a-constructor.js",
+      "bytes": 833,
+      "sha256": "e813860f10aae893d27875f604b38ed01e5f55e58dd0d2d813cafad448f496ad"
+    },
+    {
+      "path": "test/built-ins/isFinite/prop-desc.js",
+      "upstream_path": "test/built-ins/isFinite/prop-desc.js",
+      "bytes": 325,
+      "sha256": "10ec3059d50cf80939bc905423f63e5ce8c7f3ad673f390c613854277413a827"
+    },
+    {
+      "path": "test/built-ins/isFinite/return-abrupt-from-tonumber-number-symbol.js",
+      "upstream_path": "test/built-ins/isFinite/return-abrupt-from-tonumber-number-symbol.js",
+      "bytes": 397,
+      "sha256": "3b3e8b8e52fa2f2e2735eeafdb105cdd39302be39a6053bfb14eb46003479c84"
+    },
+    {
+      "path": "test/built-ins/isFinite/return-abrupt-from-tonumber-number.js",
+      "upstream_path": "test/built-ins/isFinite/return-abrupt-from-tonumber-number.js",
+      "bytes": 608,
+      "sha256": "9871fa3a1432142028bc0191c11cdd0cf8486b423854dc068988645c8a76c34f"
+    },
+    {
+      "path": "test/built-ins/isFinite/return-false-on-nan-or-infinities.js",
+      "upstream_path": "test/built-ins/isFinite/return-false-on-nan-or-infinities.js",
+      "bytes": 525,
+      "sha256": "694ac0e4a9787aab12308d730167691419bfd832a3c690b01a0affcdda6503ce"
+    },
+    {
+      "path": "test/built-ins/isFinite/return-true-for-valid-finite-numbers.js",
+      "upstream_path": "test/built-ins/isFinite/return-true-for-valid-finite-numbers.js",
+      "bytes": 920,
+      "sha256": "7760298d0e97e190fe96fb48e8739f030b9dd512d3763326c1c1bbdc784059c7"
+    },
+    {
+      "path": "test/built-ins/isFinite/tonumber-operations.js",
+      "upstream_path": "test/built-ins/isFinite/tonumber-operations.js",
+      "bytes": 1044,
+      "sha256": "21002d96858ea784b71c5f75c282a82c130a1d2eff4775ce7286fc637a89682d"
+    },
+    {
+      "path": "test/built-ins/isFinite/toprimitive-call-abrupt.js",
+      "upstream_path": "test/built-ins/isFinite/toprimitive-call-abrupt.js",
+      "bytes": 712,
+      "sha256": "88687df6ec39c90f06d154a20d70e44aa1f6195f30be748bf227fcfcccf5e44a"
+    },
+    {
+      "path": "test/built-ins/isFinite/toprimitive-get-abrupt.js",
+      "upstream_path": "test/built-ins/isFinite/toprimitive-get-abrupt.js",
+      "bytes": 638,
+      "sha256": "8621a6e41a87ca3d27790da66c3d81c7b0e3eee6cb4700bcdafa0464e6aff85b"
+    },
+    {
+      "path": "test/built-ins/isFinite/toprimitive-not-callable-throws.js",
+      "upstream_path": "test/built-ins/isFinite/toprimitive-not-callable-throws.js",
+      "bytes": 1201,
+      "sha256": "a9e58c164b64bb3ecfb1d35c91f67c97d22e4eeda1f109be7bb7a9d050e0bbf0"
+    },
+    {
+      "path": "test/built-ins/isFinite/toprimitive-result-is-object-throws.js",
+      "upstream_path": "test/built-ins/isFinite/toprimitive-result-is-object-throws.js",
+      "bytes": 809,
+      "sha256": "4ce015bcd5b847ba3b1b8b98f0eb081d125de3a133ad79e71d3aaa8a6a37c4f4"
+    },
+    {
+      "path": "test/built-ins/isFinite/toprimitive-result-is-symbol-throws.js",
+      "upstream_path": "test/built-ins/isFinite/toprimitive-result-is-symbol-throws.js",
+      "bytes": 907,
+      "sha256": "b78bc4070cefdc76917f033dde934f5bea1d205e9ff63f8a8267b50f65b65914"
+    },
+    {
+      "path": "test/built-ins/isFinite/toprimitive-valid-result.js",
+      "upstream_path": "test/built-ins/isFinite/toprimitive-valid-result.js",
+      "bytes": 2129,
+      "sha256": "5698afc277eafe599165a3ea2864f066aa8498826475e3f1ae0edfa0756aa74a"
+    },
+    {
+      "path": "test/built-ins/isNaN/S15.1.2.4_A2.6.js",
+      "upstream_path": "test/built-ins/isNaN/S15.1.2.4_A2.6.js",
+      "bytes": 367,
+      "sha256": "4cccdbb2a5cca52f5373cd5b633689c0936477c2b221dbdc2fdbc92dcdce89ba"
+    },
+    {
+      "path": "test/built-ins/isNaN/S15.1.2.4_A2.7.js",
+      "upstream_path": "test/built-ins/isNaN/S15.1.2.4_A2.7.js",
+      "bytes": 420,
+      "sha256": "3e4e135fc421e50c85bea592f4e5c08632a7dc18a40b7bd7587314adb893ceb1"
+    },
+    {
+      "path": "test/built-ins/isNaN/not-a-constructor.js",
+      "upstream_path": "test/built-ins/isNaN/not-a-constructor.js",
+      "bytes": 821,
+      "sha256": "d51fb1616426d8ef18ffc284f756ef8dca6318020c1d5acd40c7c30ea7533fb4"
+    },
+    {
+      "path": "test/built-ins/isNaN/prop-desc.js",
+      "upstream_path": "test/built-ins/isNaN/prop-desc.js",
+      "bytes": 313,
+      "sha256": "b949f3ba0254c3906136a71d78fabf6a2718868ceff9c0457ff5acf9aca7e483"
+    },
+    {
+      "path": "test/built-ins/isNaN/return-abrupt-from-tonumber-number-symbol.js",
+      "upstream_path": "test/built-ins/isNaN/return-abrupt-from-tonumber-number-symbol.js",
+      "bytes": 388,
+      "sha256": "c57928fd2d14af60c8bea3f66dc369b4441386862bee437aa8d4c5b5c16a057c"
+    },
+    {
+      "path": "test/built-ins/isNaN/return-abrupt-from-tonumber-number.js",
+      "upstream_path": "test/built-ins/isNaN/return-abrupt-from-tonumber-number.js",
+      "bytes": 596,
+      "sha256": "27eb3f288d0cf6416f9fc6c6ab8d0cba63b355e9e3727e2dab0f939e2785a880"
+    },
+    {
+      "path": "test/built-ins/isNaN/return-false-not-nan-numbers.js",
+      "upstream_path": "test/built-ins/isNaN/return-false-not-nan-numbers.js",
+      "bytes": 967,
+      "sha256": "337eb404476fb5b2068e451416007d899850823f23e63de417df384f839cef1e"
+    },
+    {
+      "path": "test/built-ins/isNaN/return-true-nan.js",
+      "upstream_path": "test/built-ins/isNaN/return-true-nan.js",
+      "bytes": 433,
+      "sha256": "9d551cfc435c609096520f908ecf081364697cc12f244fff9d08165f32f4a723"
+    },
+    {
+      "path": "test/built-ins/isNaN/tonumber-operations.js",
+      "upstream_path": "test/built-ins/isNaN/tonumber-operations.js",
+      "bytes": 989,
+      "sha256": "f4e90c6de733c2002ac028b49ced28dd67a3fdedcdfb5ba5acde3f6032139721"
+    },
+    {
+      "path": "test/built-ins/isNaN/toprimitive-call-abrupt.js",
+      "upstream_path": "test/built-ins/isNaN/toprimitive-call-abrupt.js",
+      "bytes": 703,
+      "sha256": "fb9427b893832d00160c2ceaf437e831ec9dfca2b8c2611e01a5044291437e04"
+    },
+    {
+      "path": "test/built-ins/isNaN/toprimitive-get-abrupt.js",
+      "upstream_path": "test/built-ins/isNaN/toprimitive-get-abrupt.js",
+      "bytes": 629,
+      "sha256": "1f4d595493b0de7165fef05f5f09972c3288d557ff393acede3d69c321ad463c"
+    },
+    {
+      "path": "test/built-ins/isNaN/toprimitive-not-callable-throws.js",
+      "upstream_path": "test/built-ins/isNaN/toprimitive-not-callable-throws.js",
+      "bytes": 1180,
+      "sha256": "dd4971cd6073ae6bad1112d68105510ce898bb8d14ae33e3c336ef9e94d15b5c"
+    },
+    {
+      "path": "test/built-ins/isNaN/toprimitive-result-is-object-throws.js",
+      "upstream_path": "test/built-ins/isNaN/toprimitive-result-is-object-throws.js",
+      "bytes": 800,
+      "sha256": "469f3bf3c85a986ef38e831dce025ac0be66d884d94a154c2389f11c9203f10c"
+    },
+    {
+      "path": "test/built-ins/isNaN/toprimitive-result-is-symbol-throws.js",
+      "upstream_path": "test/built-ins/isNaN/toprimitive-result-is-symbol-throws.js",
+      "bytes": 898,
+      "sha256": "c0d04e8c8ce9b231595ee5f0da2038d8eaad2d857e67415c1fbb06553c5e2c65"
+    },
+    {
+      "path": "test/built-ins/isNaN/toprimitive-valid-result.js",
+      "upstream_path": "test/built-ins/isNaN/toprimitive-valid-result.js",
+      "bytes": 1913,
+      "sha256": "9752021cf5c178071ec34b21fc344d700da668784bf2dfa52d66e5838c032bdd"
+    }
+  ]
+}

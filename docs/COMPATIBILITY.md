@@ -105,10 +105,14 @@ All eight Number constants now have their standard values and immutable flags.
 Number.isFinite, isNaN, isInteger and isSafeInteger classify primitive numbers
 without coercion, including subnormal values, negative zero and rounded large
 integers. Saved aliases retain native identity through method/global replacement.
-Number constructor conversion and parsing aliases remain incomplete. The
+Number and the global isFinite/isNaN functions now perform
+[ordinary numeric conversion](../tests/conformance/numeric-conversion.md),
+preserving live hooks, receiver identity and abrupt effects. Symbol/BigInt
+conversion, general constructor infrastructure and parsing aliases remain
+incomplete. The
 [static builtin scope](../tests/conformance/number-statics.md) and
 [complete pinned inventory](../tests/conformance/test262-number-statics.md)
-record 234 passes, 14 failures and 92 unsupported variants, with all 104
+record 244 passes, four failures and 92 unsupported variants, with all 104
 assertion checks verified.
 
 Untagged template literals support nested substitutions, cooked escapes and multiline text. Each substitution uses string-hint conversion before the next expression executes; tagged templates remain unsupported. See [template literal coverage](../tests/conformance/template-literals.md) and the separate [57-source upstream inventory](../tests/conformance/test262-template-literal.md), which retains 82 passing and 32 unsupported variants.

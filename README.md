@@ -91,6 +91,7 @@ python3 tools/test262_conformance.py --profile is-prototype-of --baseline tests/
 python3 tools/test262_conformance.py --profile global-values --baseline tests/conformance/test262-global-values-current.json
 python3 tools/test262_conformance.py --profile array-reduce --baseline tests/conformance/test262-array-reduce-current.json
 python3 tools/test262_conformance.py --profile number-statics --baseline tests/conformance/test262-number-statics-current.json
+python3 tools/test262_conformance.py --profile numeric-conversion --baseline tests/conformance/test262-numeric-conversion-current.json
 python3 -m unittest discover -s tools -p 'test_*.py'
 cargo run --locked --release --bin eris-stress -- 5000
 ```
@@ -138,10 +139,15 @@ passes with no losses. All 128 assertion checks verify; CI preserves the passing
 cases and the full unchanged inventory.
 
 The [Number static builtin inventory](tests/conformance/test262-number-statics.md)
-retains 340 variants: 234 pass, 14 fail on constructor conversion/parsing aliases
-and 92 remain unsupported. Five missing constants and four non-coercing
-predicates add 76 passes with no losses. All 104 assertion checks verify, and
+retains 340 variants: 244 pass, four fail on parsing aliases and 92 remain
+unsupported. Constants, non-coercing predicates and ordinary constructor
+conversion add 86 passes with no losses. All 104 assertion checks verify, and
 the complete regression baseline runs in CI.
+
+The complete [coercing global predicate directories](tests/conformance/test262-numeric-conversion.md)
+retain 60 variants: 24 pass and 36 remain unsupported. Ordinary numeric conversion
+adds eight passes with no losses. All 80 assertion controls verify, and CI
+preserves the complete inventory and passing outcomes.
 
 The complete [identifier and whitespace directories](tests/conformance/test262-identifiers.md)
 retain 669 variants: 507 pass, 154 remain unsupported and eight reach compile

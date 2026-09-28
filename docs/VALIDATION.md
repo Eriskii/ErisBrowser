@@ -1,6 +1,78 @@
 # Validation record
 
+## Ordinary numeric conversion
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **821 Rust tests** pass with `--include-ignored`: 665 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 45 pipeline and 36 confined-worker tests. None remain
+ignored. All **103 Python checks** and **57 exact pixel references** pass.
+
+The [implementation](../tests/conformance/numeric-conversion.md) routes Number,
+global isFinite and global isNaN through ordinary numeric conversion. Live
+valueOf/toString lookup preserves the original receiver, hook mutations,
+exceptions and prior effects. Omitted Number arguments remain distinct from
+explicit undefined. Native and bound construction box the converted result;
+saved functions survive global replacement. Static Number predicates retain
+non-coercing behavior.
+
+Eight focused groups check conversion order, primitives, UTF-16 grammar,
+boxing/aliases and resource accounting. Private calls ignore prebuilt large
+extra values at the heap ceiling; strings returned from getters consume scratch
+storage before conversion, and failed conversion unwinds call/stack guards.
+Recursive or looping hooks cannot catch resource termination. Array-index
+recognition is allocation-free with canonical boundary checks and 30,000
+comparisons against the previous decoder's definition. No resource ceiling
+was increased. The Page and actual confined-worker fixtures preserve six green
+then six blue pixel samples, including saved conversions inside a click callback.
+
+The new [complete global profile](../tests/conformance/test262-numeric-conversion.md)
+retains **30 sources / 60 modes / 80 preflights**. It moves from **16 passed /
+eight failed / 36 unsupported** to **24 passed / 36 unsupported**, with all
+80 assertion controls verified. Initial conversion-guard failures are retained.
+The 36 unsupported modes include 32 unchanged prerequisite exclusions and four
+runtime global-reflection outcomes. There are no resources, timeouts or adapter
+errors. Actual baseline recording and a subsequent gate reproduce the candidate
+exactly; CI now runs this complete regression gate.
+
+The existing Number inventory gains ten constructor-conversion passes:
+**244 passed / four failed / 92 unsupported**, with all 104 preflights.
+Its [full comparison](../tests/conformance/test262-number-statics-numeric-conversion.json)
+retains all prior outcomes; the updated baseline protects the gains. Missing
+parseInt/parseFloat aliases account for the remaining four failures. All eleven
+earlier profiles retain **4,467 case and 760 preflight fingerprints**. Every
+observation in the other ten profiles is identical, including the 14 retained
+function/sort/identifier resource stops. HTML remains at 3,868 matches, two
+mismatches and six unsupported modes.
+
+The **15,000-case** mutation smoke run reports zero caught panics or invariant
+failures: 5,000 accepted HTML, 611 accepted/4,389 rejected scripts and
+3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and
+display-list size is 1,173 commands; 17 cases stop within paint limits. A new
+conversion seed changes the inventory, so counts are not acceptance-rate comparisons.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+| --- | --- |
+| `eris-browser` | `6d516838ae17232e01cbc37d2bc59369c23159727467b26124da4c944780d8a3` |
+| `eris-js` | `b3b0964931661f63d570d6b3bbb52061a9054fe00e4ec8a1025f624326c95d12` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `23d94649dcdaeae35a8c0b21a9f3bb6d4b6fb69c00e3bc077b93f916a1e50876` |
+
+Source-input SHA-256:
+`41577621af344b5f9301064d69abbf7a65dcdf4f46de8a5d1524e9e03734004d`.
+Local records are `artifacts/*numeric-conversion*`. Agent sessions were unavailable;
+these are local implementation and validation results, not independent-agent
+review. No native-window, Vulkan or Chromium performance measurement is assigned
+to this checkpoint. Full web compatibility, production security and the requested
+performance threshold remain unverified.
+
 ## Number constants and non-coercing predicates
+
+Published checkpoint `a2b22a1` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36431356192),
+including both numeric regression gates, Rust 1.88 and the Vulkan probe.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **811 Rust tests** pass with `--include-ignored`: 657 library,

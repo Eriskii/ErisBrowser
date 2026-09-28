@@ -1,0 +1,3011 @@
+{
+  "suite": "pinned-test262-numeric-conversion-selection",
+  "full_test262_conformance": false,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "corpus_manifest_sha256": "de7cf1098618ad0fdb7786d4ab4f6c648bfb6fe2543981fe21ca6e0cba50928f",
+  "runner_policy": {
+    "format": 2,
+    "supported_features": [
+      "String.fromCodePoint",
+      "arrow-function",
+      "for-in-order",
+      "well-formed-json-stringify"
+    ],
+    "negative_intrinsic_errors": [
+      "Error",
+      "EvalError",
+      "RangeError",
+      "ReferenceError",
+      "SyntaxError",
+      "TypeError",
+      "URIError"
+    ],
+    "strict": true,
+    "modules": false,
+    "async_completion": false,
+    "host_hooks": false,
+    "timeout_seconds": 3.0
+  },
+  "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+  "source_files": 30,
+  "source_tests": 30,
+  "negative_source_tests": 0,
+  "fixture_files": [],
+  "mode_cases": 60,
+  "counts": {
+    "passed": 24,
+    "unsupported": 36
+  },
+  "seconds": 0.178,
+  "binary_sha256": "b3b0964931661f63d570d6b3bbb52061a9054fe00e4ec8a1025f624326c95d12",
+  "harness_preflight": [
+    {
+      "name": "success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:success",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "7fe7d94d9e84765c39e095ba88d5f54cb937df0d780785e185ff5dfd3bb74291",
+        "source_sha256": "2485acdeffa6a0eaa6c2483198a4384021f8b3dda5fbe0e31889ab4a21637849",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "assert-false",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:assert-false",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "6470c0827c0de6472342233bbb189008df60df75393ac98843660e2729be2e41",
+        "source_sha256": "d0d1f50a5cc28c1ea72f93a59ff43e2de631ed7fb9add9964dd1f29a38d065f4",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:same-value",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a4d7d481cb816dc706a6b8f84e7dbcea5f1d7c6393094ab35cb6d47ab0d39494",
+        "source_sha256": "22ae75695ff709309cb80f46b82cf58252826926b3bd8e3fadfae56c72c2f031",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "signed-zero",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:signed-zero",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "8e329999cda16ae14b530d61dcc7794f2b572e0809370e4c6b8ee9faff63d074",
+        "source_sha256": "862870d24485db4c8763181434fcc45886c6504cb6c14f24740f0f8107cf665a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "not-same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:not-same-value",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "738a0dd64663125af510063f604bec8e8f914f340be2cd3f430eaf1e5cf2cc0c",
+        "source_sha256": "524aa491b0239cd572a71a972f22557d333509659a55e3cb894bee0534ae8415",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "throws-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:throws-success",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "bdf648715c68784de062689b85db48546e44e14dc31df5644ff1e420e5623d1c",
+        "source_sha256": "06adf2351bff48eebd68184c6e4a9fb74e0c00f9acc6e14f4d35808a2a5017a7",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "throws-wrong-type",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:throws-wrong-type",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "d0f5b25203199d201f006e90e7bb6b78023d5bb7ea803581daf5caf2d52fcf9c",
+        "source_sha256": "99982c4b3bd8f707222e78c1742c855cbc5428ffb83171661392e6e461be1336",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "throws-missing",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:throws-missing",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "29bc8742a93e811f9680ef2098bfcb4984e86673ea3da41c377e907067cde255",
+        "source_sha256": "25cc89bd353c7f8aa2fb23afb2e1f2e52324e36a385647a498e157e5ccd29f5c",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "array-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:array-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a883850a23bc0f55e12bb5f3d09780b9935eb141e2af3892dabc5b5a35172096",
+        "source_sha256": "fccb44163731695919a45cb9cfbb1c99f5c508778937eac46f5fa5e97f5f60ea",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-success",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "b35a36c10460a813dbcc5a40b356d1ae07c2d54c272b35a717dd6bddf667c51e",
+        "source_sha256": "5f3a5de6c5896c29b489bec40463fbf565e86f993f00ca214a7e65241be28f04",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-writable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-writable",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "6cbcbbbcae8167c890124971bd07ceb81f6daf8e286ad12025bb4a82a0672944",
+        "source_sha256": "58e50c0eb345267a90f035e104dc54b60455d981e5364651b5e0c1e4fda0deb5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-enumerable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-enumerable",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "2a651b1aefd71f4a017d564e91b842569e6cd78d0145d03b20b48d0836c3c56d",
+        "source_sha256": "6a029d9d45542346ad7bf0b5036fa32346522b049c4925588dc40db894ea19a5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-configurable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-configurable",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "e18cf4dde2cd44993c84b43d6a01e68c021d56365f4e15673fe1fa2bdb774cd8",
+        "source_sha256": "f0ec83e690c6d34e68680b9d10a7931ee5b4fba6810ee920902881494202d2e6",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-success",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "3c5650218df0ef937e5a3ecd6f9c7460f960e61f0c9832515a63b77b832d78cd",
+        "source_sha256": "2485acdeffa6a0eaa6c2483198a4384021f8b3dda5fbe0e31889ab4a21637849",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-assert-false",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-assert-false",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "11fe2e709b0565e340d83176bc248895795e43c8d9eaa47619dcd939374937e7",
+        "source_sha256": "d0d1f50a5cc28c1ea72f93a59ff43e2de631ed7fb9add9964dd1f29a38d065f4",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-same-value",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "03efed7bd86096fb67e4d8e0941b4768e61e8f7068c95f9b5ac63c86a95ee96f",
+        "source_sha256": "22ae75695ff709309cb80f46b82cf58252826926b3bd8e3fadfae56c72c2f031",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-signed-zero",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-signed-zero",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "b4ce5d0baa51a09beb8d14cc65bf66e805a4f48e03ad306bd044f6bf0fba7631",
+        "source_sha256": "862870d24485db4c8763181434fcc45886c6504cb6c14f24740f0f8107cf665a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-not-same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-not-same-value",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "615fa57db6e08e455e124d6f3eaf118f2e4eab20161f51aab723923c9a0f8d36",
+        "source_sha256": "524aa491b0239cd572a71a972f22557d333509659a55e3cb894bee0534ae8415",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-throws-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-throws-success",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "bafcbdea8809ac7c1628fe502c6a060a0e2ad7ca9a8598faf3e902734673c4e4",
+        "source_sha256": "06adf2351bff48eebd68184c6e4a9fb74e0c00f9acc6e14f4d35808a2a5017a7",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-throws-wrong-type",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-throws-wrong-type",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "f83aeacb9dc37b65255ab7bfd51a0d8052e8da2915d8fb7fe06777292780b078",
+        "source_sha256": "99982c4b3bd8f707222e78c1742c855cbc5428ffb83171661392e6e461be1336",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-throws-missing",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-throws-missing",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "a6d552fcd92dddd52b6239ebe82177f95648349f2b07847a36307aada0579e35",
+        "source_sha256": "25cc89bd353c7f8aa2fb23afb2e1f2e52324e36a385647a498e157e5ccd29f5c",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-array-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-array-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "8f8086b6d6f7fc051eac7270c9ca4be3f85cbcb5ae935dabd4c6d264cc917338",
+        "source_sha256": "fccb44163731695919a45cb9cfbb1c99f5c508778937eac46f5fa5e97f5f60ea",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-success",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "a46db4f2087865126ceac90ba93407c3877f00c0c698d8f4e604111f395780ba",
+        "source_sha256": "5f3a5de6c5896c29b489bec40463fbf565e86f993f00ca214a7e65241be28f04",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-writable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-writable",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "412b91a8d1093f526f34b58ad29668225c387226712184ef8d79e36cd470bccd",
+        "source_sha256": "58e50c0eb345267a90f035e104dc54b60455d981e5364651b5e0c1e4fda0deb5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-enumerable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-enumerable",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "c571e812c4ddab362d7caabd07b4b3ed427f9962e91e728c61b272fe7f8004eb",
+        "source_sha256": "6a029d9d45542346ad7bf0b5036fa32346522b049c4925588dc40db894ea19a5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-configurable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-configurable",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "634b734df32d4d581162c58f74ddb831dc337fce988dd52d74f23fca1d93a126",
+        "source_sha256": "f0ec83e690c6d34e68680b9d10a7931ee5b4fba6810ee920902881494202d2e6",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-receiver",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-receiver",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "9e721632d9643b3489c411eb2d5a3f87a08c3bea9f9cf9a673ebb102b24a5974",
+        "source_sha256": "d0e7bb44576a0bf890774b1736e79cd0166a2e32fe030a3ba86e5015f2c244bf",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-unbound-write",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-unbound-write",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "2916d638664aa431071561dff0ba0337d5f005f08424cfe8c67d07c93c0cf792",
+        "source_sha256": "150659db8ea36d09b80df3f046ab341af7b1f64b691051fa9c866e2da4c5314d",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-readonly-write",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-readonly-write",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "937d5d1a945b824e6d6d60304aea3337db809214469240d437ba6081a9bec231",
+        "source_sha256": "a1cce38d2daa07cbcc33a2d2db74f0e720a5f0deee03767480c699db33b4882b",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-delete",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-delete",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "2c630739c1458f6444b889a03992a2be2de36b0e00dd56522bf0844fe2c54a2c",
+        "source_sha256": "cb997e967d015ba97c122c1ea746bdd0fbcb2659573645728918558d1349a965",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-arguments",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-arguments",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "54df002c837ca5ed70e5d5b49dc0375e40bbfb6b88580dfdc66b5ee7bec44171",
+        "source_sha256": "a77f7981af7c3910476440f16ac4c18b7ffaf381714ad33e70fa0d0d5c953887",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-tdz",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-tdz",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "cf503031beb1832405ad98ea6ca81c8b6de9bb1f90143829dac8788b2affbbfd",
+        "source_sha256": "2e0d83e7123f5fa749a3f10484c95aa95eac4140438da59faa19edfb82d1061f",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-primitives",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-primitives",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a358a5683516fe14f502269e4c156ee37746b8e98dd96c74452ecfde20cd5f7c",
+        "source_sha256": "1f97a5604eaa2cfd1bf3f788a7716ed9481f1473f420c2dfb7a3fd162dccfe50",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-primitives-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-primitives-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "b48fdf01c57c9e8cfcbc8d615cd47c25e50b0e3b73a61986ad8ee7cdb3c6bc0a",
+        "source_sha256": "b96a492186250ee67e519e34e0ced39e1b921f9a0bb3800d15a9de14db156561",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-hook-order",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-hook-order",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "2838f0840e387f29c8fdfc69901e1995d7d50816160cf9fcaba2846880904585",
+        "source_sha256": "080d1148079734adf0176ff033907c9a0fed3e7d2a437163b93310af11593707",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-hook-order-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-hook-order-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "e57b94f145235160241dc4e000733d88c0d7a3adc2fe2ad38d5a1b6c8790d2ec",
+        "source_sha256": "5afa7489639ff669431306287033e2d0bcf3de4f014d6a10d01db9891bcd1766",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-abrupt",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-abrupt",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "3b468e297e0485748f255a43f186ae9c8f83b287cc05ab1825daae25a2cbcc28",
+        "source_sha256": "42f7f96919f25d74b89872bf37d14872fab97058cfc45bd1b5a35245308f0768",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-abrupt-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-abrupt-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a36f2329672e512a0153694db2b983edc3eaac63fb06b1cd9acd5b8ec9fa7ebc",
+        "source_sha256": "ce82f53eac39d7dbf202f013a0b235573dcbef145e9bef0093568c79032b2f7a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-noncallable",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-noncallable",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "4ec823c72438053bbcc916ab1f692976c0186210aeee097b408627cad3e87269",
+        "source_sha256": "27497a64cca7297ff4b7709cf1c3b1a5c7d76db0a65d9cdce01eb4110c573bc1",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-noncallable-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-noncallable-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "2d159fbb25bcbeac3b6516cdf975cffd6cd0581fae76ce6028065ad0c515cf82",
+        "source_sha256": "304f4a97a79cd61a8ec0f98196a093f0ca53d2242385794ee7b54407f1695524",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-boxing-alias",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-boxing-alias",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a22eb129a158a26c61a9859421e3367249de08043fb11357d026cc8bc582b48c",
+        "source_sha256": "fdad41fbc49db03e5919d56f60d618b67e2744b6851fdb48fbcc4afac106d57a",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-boxing-alias-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-boxing-alias-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "7715ea37707c97d00cb525dbdc79bec0bb9fec8facf75e7b7720dbdbb071419e",
+        "source_sha256": "4454b21ffd855ee108ba3dfb57b416bce90998e8e3705404023191f2c0016db5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-argument-order",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-argument-order",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "f05e20d4c5aeb09bef99b8c9defa1b6ea4bd3edcb98f29c18094fc1fc4dde54a",
+        "source_sha256": "891ff2d236c592e7de9b0d73559b424668d42d11464b97b5f7d21b4b82c3f766",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-argument-order-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-argument-order-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "e0c0f12d239fbeed3fac22c3d2d0d5dea15e5d2ba18b7e1c513f4b240ecc0c56",
+        "source_sha256": "b86a793ab0e3ecb2dbafb57f02e5533a8ae21dc8766fd373f8b2e91a8a18b9ac",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-primitives",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-primitives",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "d26e6d0ccdf27be93842a6cc85c545b9f289ab83f562d0d60474506c0af19dca",
+        "source_sha256": "1f97a5604eaa2cfd1bf3f788a7716ed9481f1473f420c2dfb7a3fd162dccfe50",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-primitives-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-primitives-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "8bf810ac1f4bda06ec12892aeafd746f2c9275dbadb7c192526d6cfa4fb81c99",
+        "source_sha256": "b96a492186250ee67e519e34e0ced39e1b921f9a0bb3800d15a9de14db156561",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-hook-order",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-hook-order",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "867f99d6cacc99f7463403254fc9148a21128c4114e5afbe68a8ef4f56b5e9e0",
+        "source_sha256": "080d1148079734adf0176ff033907c9a0fed3e7d2a437163b93310af11593707",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-hook-order-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-hook-order-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "745083ca36e52e396c8cd1c71581bccf3388f6be0a98b3f345f6215041bf127c",
+        "source_sha256": "5afa7489639ff669431306287033e2d0bcf3de4f014d6a10d01db9891bcd1766",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-abrupt",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-abrupt",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "1f3f7690036b8bc8f62162b9824828fd20696bc21ef26ac7b69e3bb077a8dc99",
+        "source_sha256": "42f7f96919f25d74b89872bf37d14872fab97058cfc45bd1b5a35245308f0768",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-abrupt-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-abrupt-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "b6a9fa640fa133bdb6198f43b365364e84443b0099582d68a4d9191177da7407",
+        "source_sha256": "ce82f53eac39d7dbf202f013a0b235573dcbef145e9bef0093568c79032b2f7a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-noncallable",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-noncallable",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "2b94ab8c4edde892a009dfb48be4f5dea5f7825f919821bfece64715c97ba2e1",
+        "source_sha256": "27497a64cca7297ff4b7709cf1c3b1a5c7d76db0a65d9cdce01eb4110c573bc1",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-noncallable-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-noncallable-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "fadb9206752019ead26656755b1bad57ccca9950d8fba63667b17cf3188f6e3a",
+        "source_sha256": "304f4a97a79cd61a8ec0f98196a093f0ca53d2242385794ee7b54407f1695524",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-boxing-alias",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-boxing-alias",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "0696dc056349507de4ba0a8f51118a376c0a844e2fad0c33397bcfc35bffd943",
+        "source_sha256": "fdad41fbc49db03e5919d56f60d618b67e2744b6851fdb48fbcc4afac106d57a",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-boxing-alias-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-boxing-alias-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "9e2cdd21f4c12dc2dfef88665bb218a1c7c1a261c63aa0a64ab96877d64a4f69",
+        "source_sha256": "4454b21ffd855ee108ba3dfb57b416bce90998e8e3705404023191f2c0016db5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-argument-order",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-argument-order",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "9b51e598c8d9e82cf97f521d178b30c65b8b5cb6a50e7dfad42ffc12e7b22360",
+        "source_sha256": "891ff2d236c592e7de9b0d73559b424668d42d11464b97b5f7d21b4b82c3f766",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-number-argument-order-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-number-argument-order-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "8cb7f95b7c97412c2388c02fa5eeec2d20515f7ae293970fecf8e1bbda490c0e",
+        "source_sha256": "b86a793ab0e3ecb2dbafb57f02e5533a8ae21dc8766fd373f8b2e91a8a18b9ac",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isFinite-coercion",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isFinite-coercion",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "2639de298953f262a35680c21b9cdac9a05ee88ee8725e910fc0ae24e1220e39",
+        "source_sha256": "bb611e7a17ac74b8016bc0db714410f6b7b02f32a6b2152d966c2e90c09f078a",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isFinite-coercion-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isFinite-coercion-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "eee2cb54fec3166082611ccc6497b1f5eae35a59fae3ffe690de8cb5b40bdba0",
+        "source_sha256": "7b142dc8e0be636e66cc86df2b83c5f52d4471d9724692cd054c48ec75bfc26c",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isFinite-abrupt-order",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isFinite-abrupt-order",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "bcc838d82fa16dabe99e93611cf6845274d7e2177cfdfed5b90fe7c7312e8cd8",
+        "source_sha256": "15bd0b19647f44110402ff63274f9fe7a0cc01a9fbc9df4586168287c140d847",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isFinite-abrupt-order-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isFinite-abrupt-order-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "02e6ec155654c622315a9579c5a2132b7529d26357167fe75e1b67751b406f29",
+        "source_sha256": "37080645103759e3ddaf24ed088dd27f93ed0e0ba6a605cf7eb956f1d3b6a02a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isFinite-property-metadata",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isFinite-property-metadata",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "13db8c30904952981005f6c9dd871e35b7f2dfa6c4a47cbd1bf0022dc7925474",
+        "source_sha256": "6db47308648d9acd2264c8c4eb771f86df1259bd0695ab01b40659e08358211b",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isFinite-property-metadata-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isFinite-property-metadata-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "309965c36ab609df536627c45c76d59243e817531739a511baa25ed95888ea4b",
+        "source_sha256": "bd22ebe26d0d491f78f0df5498a17a30909c7556b2561703a034ddf43ecf1a14",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isFinite-coercion",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isFinite-coercion",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "a85e310691eb828a5334e0d4567a0df889134f1c47d81b8b9d15042dfbe3d369",
+        "source_sha256": "bb611e7a17ac74b8016bc0db714410f6b7b02f32a6b2152d966c2e90c09f078a",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isFinite-coercion-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isFinite-coercion-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "a1f6541d8af5195e91b3719e22b95bc754ac28f08ea0cd3ce9b9d4f6a301651d",
+        "source_sha256": "7b142dc8e0be636e66cc86df2b83c5f52d4471d9724692cd054c48ec75bfc26c",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isFinite-abrupt-order",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isFinite-abrupt-order",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "9e942fa830fecf06c76661c27d020fbbc6dfb35647f1ab7595659e5a01d79748",
+        "source_sha256": "15bd0b19647f44110402ff63274f9fe7a0cc01a9fbc9df4586168287c140d847",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isFinite-abrupt-order-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isFinite-abrupt-order-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "33eebfc93e2007618be1db47a135c79ff5ba6d0eb88e1f60c70c30d89d22d750",
+        "source_sha256": "37080645103759e3ddaf24ed088dd27f93ed0e0ba6a605cf7eb956f1d3b6a02a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isFinite-property-metadata",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isFinite-property-metadata",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "08805d7425e95bfc89e0d297437f72182e0345c92c61e56f6d6a994affa86d70",
+        "source_sha256": "6db47308648d9acd2264c8c4eb771f86df1259bd0695ab01b40659e08358211b",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isFinite-property-metadata-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isFinite-property-metadata-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "99bd875ced337b3b88607ccd25e3b4664d118ad118223e8749fb92401ede65c1",
+        "source_sha256": "bd22ebe26d0d491f78f0df5498a17a30909c7556b2561703a034ddf43ecf1a14",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isNaN-coercion",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isNaN-coercion",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "b7d3ce46545951eae01797450d9f2b34d0c9ce39fa09bd7e3d2877460a85f01d",
+        "source_sha256": "aadd71574819c249868b316975007bc24cc41391e0a35c4538360a7a62981dba",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isNaN-coercion-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isNaN-coercion-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "0221c4b42713219a59f3af9d9502c910b7d46eaed29d839578894bf5076625aa",
+        "source_sha256": "73bf7b8b4078723b709bc3e53b34e7b483fbe41f19c583203d1fc8bfab8b0838",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isNaN-abrupt-order",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isNaN-abrupt-order",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "019cbd6dad0c79444a0e645e834bebf09bd84345fdf7b8eec14850e80c4bee74",
+        "source_sha256": "b0fef78bf34306ce1370eef94f8f477a36a5214ea1eb4a39d48824c7309500ce",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isNaN-abrupt-order-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isNaN-abrupt-order-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a24f02f865fbd48fb515d8de94bbc89ebef49a2f684f1f41774a0aefe355f004",
+        "source_sha256": "6f29432c0d40a743ef7c9c1eb62f042cb37f6eb6df79cdc94c0cabcdf55160de",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isNaN-property-metadata",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isNaN-property-metadata",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "4bbbae7bf01890c197573e6209fd2288c43e95cc1c12e1a70835681f25798cac",
+        "source_sha256": "e2679c5576a779d3060ff6c8c2ecedb72b0b00312eace594e96492a269051bad",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isNaN-property-metadata-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isNaN-property-metadata-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "cc754f4503a919977171219f79f311cef881087210353d3791eb680cf5ba1075",
+        "source_sha256": "41f9b151d3edf9e3d2c9ff06c869c785ab07f6ad1f95ec2e4280e826ed1670e7",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isNaN-coercion",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isNaN-coercion",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "5df1897be56b746789ae8b6a2383abe594efad0e3c8152c47d8477d53509e83f",
+        "source_sha256": "aadd71574819c249868b316975007bc24cc41391e0a35c4538360a7a62981dba",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isNaN-coercion-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isNaN-coercion-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "beb95daf018ef202a3c0fed9800626c63c41500cf1838219541be7123fca5a5b",
+        "source_sha256": "73bf7b8b4078723b709bc3e53b34e7b483fbe41f19c583203d1fc8bfab8b0838",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isNaN-abrupt-order",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isNaN-abrupt-order",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "69da2588dd48d98e2333215e5cd5d8ff2702fbc6f0292c2bf9a347d595b8aa4a",
+        "source_sha256": "b0fef78bf34306ce1370eef94f8f477a36a5214ea1eb4a39d48824c7309500ce",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isNaN-abrupt-order-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isNaN-abrupt-order-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "ff49680951372a9448e42897bcf1b328ec2bab86341a57b095eaa5dafb47ed3f",
+        "source_sha256": "6f29432c0d40a743ef7c9c1eb62f042cb37f6eb6df79cdc94c0cabcdf55160de",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isNaN-property-metadata",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isNaN-property-metadata",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "a0b1075ca1deef8df7f0953cf53826a91f9476540472c8d8bbbd11b7ebdaa0f0",
+        "source_sha256": "e2679c5576a779d3060ff6c8c2ecedb72b0b00312eace594e96492a269051bad",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "numeric-conversion-isNaN-property-metadata-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:numeric-conversion-isNaN-property-metadata-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "fb58625f5fe28fb05e616c5fb86ea906b27c8d5c6075635b2154bd1ea205f7a5",
+        "source_sha256": "41f9b151d3edf9e3d2c9ff06c869c785ab07f6ad1f95ec2e4280e826ed1670e7",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    }
+  ],
+  "harness_preflight_passed": true,
+  "regressions": [],
+  "improvements": [],
+  "cases": [
+    {
+      "id": "test/built-ins/isFinite/S15.1.2.5_A2.6.js:sloppy",
+      "file": "test/built-ins/isFinite/S15.1.2.5_A2.6.js",
+      "mode": "sloppy",
+      "case_sha256": "23f11dd4f8ad1cfbb3cfa0f4913ca6fed4ac83dce6d85091ccfc4b079a26412d",
+      "source_sha256": "aaf37da7f09b3bc14aa59d832706eecb7bd700d665a66c60a8c0de6337792cc1",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isFinite/S15.1.2.5_A2.6.js:strict",
+      "file": "test/built-ins/isFinite/S15.1.2.5_A2.6.js",
+      "mode": "strict",
+      "case_sha256": "f21206de33c9f1f9c4a74f77fe79dfe2e263b4099d5bc9847008152f84d1ece5",
+      "source_sha256": "aaf37da7f09b3bc14aa59d832706eecb7bd700d665a66c60a8c0de6337792cc1",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isFinite/S15.1.2.5_A2.7.js:sloppy",
+      "file": "test/built-ins/isFinite/S15.1.2.5_A2.7.js",
+      "mode": "sloppy",
+      "case_sha256": "bc58f157b160e0494e0b790c834e952781df30f5eac0b8c43ca6612cce5cd5a7",
+      "source_sha256": "f1399f3d7558de9d7c63b50f83d4e97aba88f831adb4816f40a0728762a3d6d8",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isFinite/S15.1.2.5_A2.7.js:strict",
+      "file": "test/built-ins/isFinite/S15.1.2.5_A2.7.js",
+      "mode": "strict",
+      "case_sha256": "23f7925de6cd92f3672959597d0f3cb287c140093c7e8276ab3a7710e6f08602",
+      "source_sha256": "f1399f3d7558de9d7c63b50f83d4e97aba88f831adb4816f40a0728762a3d6d8",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isFinite/not-a-constructor.js:sloppy",
+      "file": "test/built-ins/isFinite/not-a-constructor.js",
+      "mode": "sloppy",
+      "case_sha256": "0573d5a3ac7eb279fa5b2f50680718c3c5b93cf1f9e10541197119a48eb02fce",
+      "source_sha256": "e813860f10aae893d27875f604b38ed01e5f55e58dd0d2d813cafad448f496ad",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Reflect.construct"
+    },
+    {
+      "id": "test/built-ins/isFinite/not-a-constructor.js:strict",
+      "file": "test/built-ins/isFinite/not-a-constructor.js",
+      "mode": "strict",
+      "case_sha256": "334061c223e389bdb25e8b201ca9cbb762cf6cd25039c70a17857c5fd941f096",
+      "source_sha256": "e813860f10aae893d27875f604b38ed01e5f55e58dd0d2d813cafad448f496ad",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Reflect.construct"
+    },
+    {
+      "id": "test/built-ins/isFinite/prop-desc.js:sloppy",
+      "file": "test/built-ins/isFinite/prop-desc.js",
+      "mode": "sloppy",
+      "case_sha256": "0f4f0ea28246a08611859dfac1abe237861285c16719af390645e550ca05f876",
+      "source_sha256": "10ec3059d50cf80939bc905423f63e5ce8c7f3ad673f390c613854277413a827",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "runtime",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "host own-property reflection is not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isFinite/prop-desc.js:strict",
+      "file": "test/built-ins/isFinite/prop-desc.js",
+      "mode": "strict",
+      "case_sha256": "2ec2f70542a7778d18d47231cec826e5c99bce41b0be2aa8d7499028ef4c46b1",
+      "source_sha256": "10ec3059d50cf80939bc905423f63e5ce8c7f3ad673f390c613854277413a827",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "runtime",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "host own-property reflection is not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isFinite/return-abrupt-from-tonumber-number-symbol.js:sloppy",
+      "file": "test/built-ins/isFinite/return-abrupt-from-tonumber-number-symbol.js",
+      "mode": "sloppy",
+      "case_sha256": "95dc9094b021e687ebc17e2db8b6e0400a3bd5fce0e4f89e4917901332f1f67c",
+      "source_sha256": "3b3e8b8e52fa2f2e2735eeafdb105cdd39302be39a6053bfb14eb46003479c84",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol"
+    },
+    {
+      "id": "test/built-ins/isFinite/return-abrupt-from-tonumber-number-symbol.js:strict",
+      "file": "test/built-ins/isFinite/return-abrupt-from-tonumber-number-symbol.js",
+      "mode": "strict",
+      "case_sha256": "9d0068a7a186863ef8bccf3790b812c60ab033a674848ae750c3cff209999605",
+      "source_sha256": "3b3e8b8e52fa2f2e2735eeafdb105cdd39302be39a6053bfb14eb46003479c84",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol"
+    },
+    {
+      "id": "test/built-ins/isFinite/return-abrupt-from-tonumber-number.js:sloppy",
+      "file": "test/built-ins/isFinite/return-abrupt-from-tonumber-number.js",
+      "mode": "sloppy",
+      "case_sha256": "8c174df9ed004697e9b906e573fe95172fb06b9299a02cdf70e5e8af45f75595",
+      "source_sha256": "9871fa3a1432142028bc0191c11cdd0cf8486b423854dc068988645c8a76c34f",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isFinite/return-abrupt-from-tonumber-number.js:strict",
+      "file": "test/built-ins/isFinite/return-abrupt-from-tonumber-number.js",
+      "mode": "strict",
+      "case_sha256": "4e367ef53145211ff5cc6480f41604b665de3c7f9caf025f43853595c13103be",
+      "source_sha256": "9871fa3a1432142028bc0191c11cdd0cf8486b423854dc068988645c8a76c34f",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isFinite/return-false-on-nan-or-infinities.js:sloppy",
+      "file": "test/built-ins/isFinite/return-false-on-nan-or-infinities.js",
+      "mode": "sloppy",
+      "case_sha256": "8bb879242e2f8086e7a4722bf0a2fafc5cb50e6b09ae11b43d3c67cd891521f8",
+      "source_sha256": "694ac0e4a9787aab12308d730167691419bfd832a3c690b01a0affcdda6503ce",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isFinite/return-false-on-nan-or-infinities.js:strict",
+      "file": "test/built-ins/isFinite/return-false-on-nan-or-infinities.js",
+      "mode": "strict",
+      "case_sha256": "883fb169d75ca96ae331691dfa6585329659192b5f6281deb6f1ab4a6d717b21",
+      "source_sha256": "694ac0e4a9787aab12308d730167691419bfd832a3c690b01a0affcdda6503ce",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isFinite/return-true-for-valid-finite-numbers.js:sloppy",
+      "file": "test/built-ins/isFinite/return-true-for-valid-finite-numbers.js",
+      "mode": "sloppy",
+      "case_sha256": "bb7f11812bb9c49812ec11775f7e027a3d05a7c63a37af945b084f7431672be9",
+      "source_sha256": "7760298d0e97e190fe96fb48e8739f030b9dd512d3763326c1c1bbdc784059c7",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isFinite/return-true-for-valid-finite-numbers.js:strict",
+      "file": "test/built-ins/isFinite/return-true-for-valid-finite-numbers.js",
+      "mode": "strict",
+      "case_sha256": "296f57da53b5881c9f64c40f5db1579805e4c363748ff64af7670a5b19f74805",
+      "source_sha256": "7760298d0e97e190fe96fb48e8739f030b9dd512d3763326c1c1bbdc784059c7",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isFinite/tonumber-operations.js:sloppy",
+      "file": "test/built-ins/isFinite/tonumber-operations.js",
+      "mode": "sloppy",
+      "case_sha256": "6ab797b6850df485d26bb8811510badd6253c01d76e48c1dadb48f8b44fd9130",
+      "source_sha256": "21002d96858ea784b71c5f75c282a82c130a1d2eff4775ce7286fc637a89682d",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isFinite/tonumber-operations.js:strict",
+      "file": "test/built-ins/isFinite/tonumber-operations.js",
+      "mode": "strict",
+      "case_sha256": "6b8a275a1c31d77ba3d91c91a9acfb55df06229d5f79efd219cb54ce26c776c3",
+      "source_sha256": "21002d96858ea784b71c5f75c282a82c130a1d2eff4775ce7286fc637a89682d",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isFinite/toprimitive-call-abrupt.js:sloppy",
+      "file": "test/built-ins/isFinite/toprimitive-call-abrupt.js",
+      "mode": "sloppy",
+      "case_sha256": "3eb847bf01646849ac94c5ab53a178c77d254067ef3b8a76a72ede992947fbee",
+      "source_sha256": "88687df6ec39c90f06d154a20d70e44aa1f6195f30be748bf227fcfcccf5e44a",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isFinite/toprimitive-call-abrupt.js:strict",
+      "file": "test/built-ins/isFinite/toprimitive-call-abrupt.js",
+      "mode": "strict",
+      "case_sha256": "c2180ee58de59cca0d0061037e68cb069201a8fa0f4a45816e083eea8e740751",
+      "source_sha256": "88687df6ec39c90f06d154a20d70e44aa1f6195f30be748bf227fcfcccf5e44a",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isFinite/toprimitive-get-abrupt.js:sloppy",
+      "file": "test/built-ins/isFinite/toprimitive-get-abrupt.js",
+      "mode": "sloppy",
+      "case_sha256": "fda9a26d9fd37d2739c143585e3ca9b246fc7c60c25bfc5f478071a6d5025429",
+      "source_sha256": "8621a6e41a87ca3d27790da66c3d81c7b0e3eee6cb4700bcdafa0464e6aff85b",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isFinite/toprimitive-get-abrupt.js:strict",
+      "file": "test/built-ins/isFinite/toprimitive-get-abrupt.js",
+      "mode": "strict",
+      "case_sha256": "5fdce59ea2cfd881b0237af4ac4727ba95778fcf50597a28733fb1a8303ad4cf",
+      "source_sha256": "8621a6e41a87ca3d27790da66c3d81c7b0e3eee6cb4700bcdafa0464e6aff85b",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isFinite/toprimitive-not-callable-throws.js:sloppy",
+      "file": "test/built-ins/isFinite/toprimitive-not-callable-throws.js",
+      "mode": "sloppy",
+      "case_sha256": "33a8c06a0b18ba496ae3da824d81a6b5b59fe5cc888f7cea4b7525ccffaea81b",
+      "source_sha256": "a9e58c164b64bb3ecfb1d35c91f67c97d22e4eeda1f109be7bb7a9d050e0bbf0",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isFinite/toprimitive-not-callable-throws.js:strict",
+      "file": "test/built-ins/isFinite/toprimitive-not-callable-throws.js",
+      "mode": "strict",
+      "case_sha256": "1afffb664377de09798d9a5e9b48fcc95628f5946048afa9f1fc427787ad9de2",
+      "source_sha256": "a9e58c164b64bb3ecfb1d35c91f67c97d22e4eeda1f109be7bb7a9d050e0bbf0",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isFinite/toprimitive-result-is-object-throws.js:sloppy",
+      "file": "test/built-ins/isFinite/toprimitive-result-is-object-throws.js",
+      "mode": "sloppy",
+      "case_sha256": "61502c45a007f7dc28f499a0791a49137e6dd4c336ac1876ca94cee2ad9ae574",
+      "source_sha256": "4ce015bcd5b847ba3b1b8b98f0eb081d125de3a133ad79e71d3aaa8a6a37c4f4",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isFinite/toprimitive-result-is-object-throws.js:strict",
+      "file": "test/built-ins/isFinite/toprimitive-result-is-object-throws.js",
+      "mode": "strict",
+      "case_sha256": "2616ae979518d6f685a2d2165fec567d5bb7b430e4bf326958072148b1d521d1",
+      "source_sha256": "4ce015bcd5b847ba3b1b8b98f0eb081d125de3a133ad79e71d3aaa8a6a37c4f4",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isFinite/toprimitive-result-is-symbol-throws.js:sloppy",
+      "file": "test/built-ins/isFinite/toprimitive-result-is-symbol-throws.js",
+      "mode": "sloppy",
+      "case_sha256": "aabd9d1e319ced2f14a8014320500b7267fc37c0051bc819ead66eb344ea378a",
+      "source_sha256": "b78bc4070cefdc76917f033dde934f5bea1d205e9ff63f8a8267b50f65b65914",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isFinite/toprimitive-result-is-symbol-throws.js:strict",
+      "file": "test/built-ins/isFinite/toprimitive-result-is-symbol-throws.js",
+      "mode": "strict",
+      "case_sha256": "c252eef38632554998dc349613e2f5947fa8a357c4381ca8bf5e6316bee9f6ae",
+      "source_sha256": "b78bc4070cefdc76917f033dde934f5bea1d205e9ff63f8a8267b50f65b65914",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isFinite/toprimitive-valid-result.js:sloppy",
+      "file": "test/built-ins/isFinite/toprimitive-valid-result.js",
+      "mode": "sloppy",
+      "case_sha256": "0d83f53edc059e56ba1f601461894ecf3e7a54e7fc0b715e22858ce5973049b7",
+      "source_sha256": "5698afc277eafe599165a3ea2864f066aa8498826475e3f1ae0edfa0756aa74a",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isFinite/toprimitive-valid-result.js:strict",
+      "file": "test/built-ins/isFinite/toprimitive-valid-result.js",
+      "mode": "strict",
+      "case_sha256": "8fd6e6827577779deea7f98edc8964962f7722215abbaa1a05d78a129893df6e",
+      "source_sha256": "5698afc277eafe599165a3ea2864f066aa8498826475e3f1ae0edfa0756aa74a",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isNaN/S15.1.2.4_A2.6.js:sloppy",
+      "file": "test/built-ins/isNaN/S15.1.2.4_A2.6.js",
+      "mode": "sloppy",
+      "case_sha256": "d739cc9f9644d9eab9cc5ccd20aacd8cc25520e3cf198b53ba81160864794a5b",
+      "source_sha256": "4cccdbb2a5cca52f5373cd5b633689c0936477c2b221dbdc2fdbc92dcdce89ba",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isNaN/S15.1.2.4_A2.6.js:strict",
+      "file": "test/built-ins/isNaN/S15.1.2.4_A2.6.js",
+      "mode": "strict",
+      "case_sha256": "e45f135a5b890f8d7ffd7b6edabadce06ba0c82ad36d12f68d9ac1a203ad2c99",
+      "source_sha256": "4cccdbb2a5cca52f5373cd5b633689c0936477c2b221dbdc2fdbc92dcdce89ba",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isNaN/S15.1.2.4_A2.7.js:sloppy",
+      "file": "test/built-ins/isNaN/S15.1.2.4_A2.7.js",
+      "mode": "sloppy",
+      "case_sha256": "73c21c79a66d38bb3d7e558f4c1d9ff76fb7db14fd4b9cadf95f2b857c9ca1ab",
+      "source_sha256": "3e4e135fc421e50c85bea592f4e5c08632a7dc18a40b7bd7587314adb893ceb1",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isNaN/S15.1.2.4_A2.7.js:strict",
+      "file": "test/built-ins/isNaN/S15.1.2.4_A2.7.js",
+      "mode": "strict",
+      "case_sha256": "300e55caa59937b8688ff95d4a4467c951a390f6b4bef5a185c2988b78c43ef1",
+      "source_sha256": "3e4e135fc421e50c85bea592f4e5c08632a7dc18a40b7bd7587314adb893ceb1",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isNaN/not-a-constructor.js:sloppy",
+      "file": "test/built-ins/isNaN/not-a-constructor.js",
+      "mode": "sloppy",
+      "case_sha256": "fd1c4133baf5d58224aaa8c20aa6accb351bb808139a38c1f81f945cc33d1188",
+      "source_sha256": "d51fb1616426d8ef18ffc284f756ef8dca6318020c1d5acd40c7c30ea7533fb4",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Reflect.construct"
+    },
+    {
+      "id": "test/built-ins/isNaN/not-a-constructor.js:strict",
+      "file": "test/built-ins/isNaN/not-a-constructor.js",
+      "mode": "strict",
+      "case_sha256": "0b9f31201abda5f3aa1c51a88ad961381976439f46dca62c69801b84e96d4e2e",
+      "source_sha256": "d51fb1616426d8ef18ffc284f756ef8dca6318020c1d5acd40c7c30ea7533fb4",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Reflect.construct"
+    },
+    {
+      "id": "test/built-ins/isNaN/prop-desc.js:sloppy",
+      "file": "test/built-ins/isNaN/prop-desc.js",
+      "mode": "sloppy",
+      "case_sha256": "34219c711bad8b11497cbf69a961e7f29c6ab3b4cd022f722928b4f00e9f0f93",
+      "source_sha256": "b949f3ba0254c3906136a71d78fabf6a2718868ceff9c0457ff5acf9aca7e483",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "runtime",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "host own-property reflection is not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isNaN/prop-desc.js:strict",
+      "file": "test/built-ins/isNaN/prop-desc.js",
+      "mode": "strict",
+      "case_sha256": "741dca2b57c1a8869c49f3b3d898916df24cea117d4b37686ec478da0fbc3980",
+      "source_sha256": "b949f3ba0254c3906136a71d78fabf6a2718868ceff9c0457ff5acf9aca7e483",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "runtime",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "host own-property reflection is not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isNaN/return-abrupt-from-tonumber-number-symbol.js:sloppy",
+      "file": "test/built-ins/isNaN/return-abrupt-from-tonumber-number-symbol.js",
+      "mode": "sloppy",
+      "case_sha256": "9ca19dd00e84cb8aaeada8ccb91c144f0ad6d24447343b4e5edef63a0600832d",
+      "source_sha256": "c57928fd2d14af60c8bea3f66dc369b4441386862bee437aa8d4c5b5c16a057c",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol"
+    },
+    {
+      "id": "test/built-ins/isNaN/return-abrupt-from-tonumber-number-symbol.js:strict",
+      "file": "test/built-ins/isNaN/return-abrupt-from-tonumber-number-symbol.js",
+      "mode": "strict",
+      "case_sha256": "000d35527316a0f1e05b339a44b0a775d20602fb1c510df62ac067c08fc224cd",
+      "source_sha256": "c57928fd2d14af60c8bea3f66dc369b4441386862bee437aa8d4c5b5c16a057c",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol"
+    },
+    {
+      "id": "test/built-ins/isNaN/return-abrupt-from-tonumber-number.js:sloppy",
+      "file": "test/built-ins/isNaN/return-abrupt-from-tonumber-number.js",
+      "mode": "sloppy",
+      "case_sha256": "52c34c4ceb74e76fa9f9d4c4d76a540924e0d022b22167ce99767ecfb94ca860",
+      "source_sha256": "27eb3f288d0cf6416f9fc6c6ab8d0cba63b355e9e3727e2dab0f939e2785a880",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isNaN/return-abrupt-from-tonumber-number.js:strict",
+      "file": "test/built-ins/isNaN/return-abrupt-from-tonumber-number.js",
+      "mode": "strict",
+      "case_sha256": "1e8505d672a3fc0d53544ac2f6f26f84d6f8152930c6f65a9898b2a51eb6e095",
+      "source_sha256": "27eb3f288d0cf6416f9fc6c6ab8d0cba63b355e9e3727e2dab0f939e2785a880",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isNaN/return-false-not-nan-numbers.js:sloppy",
+      "file": "test/built-ins/isNaN/return-false-not-nan-numbers.js",
+      "mode": "sloppy",
+      "case_sha256": "d7306bdaca8b2c9f633f3b858e5f5cf3f5b62e41582bd083996296529c58269e",
+      "source_sha256": "337eb404476fb5b2068e451416007d899850823f23e63de417df384f839cef1e",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isNaN/return-false-not-nan-numbers.js:strict",
+      "file": "test/built-ins/isNaN/return-false-not-nan-numbers.js",
+      "mode": "strict",
+      "case_sha256": "7f7e2272d100d5886ec6f74fc244c2b62c72b50736f99597989e5631c8be9d77",
+      "source_sha256": "337eb404476fb5b2068e451416007d899850823f23e63de417df384f839cef1e",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isNaN/return-true-nan.js:sloppy",
+      "file": "test/built-ins/isNaN/return-true-nan.js",
+      "mode": "sloppy",
+      "case_sha256": "35d607aa8e7e36c9341462b5e4584c09c3eca81cf894fb23210d4cb43165eba1",
+      "source_sha256": "9d551cfc435c609096520f908ecf081364697cc12f244fff9d08165f32f4a723",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isNaN/return-true-nan.js:strict",
+      "file": "test/built-ins/isNaN/return-true-nan.js",
+      "mode": "strict",
+      "case_sha256": "259d96d8c2c314b9825768414666edbe33ba0f339c9926552974afd0a39bb71c",
+      "source_sha256": "9d551cfc435c609096520f908ecf081364697cc12f244fff9d08165f32f4a723",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isNaN/tonumber-operations.js:sloppy",
+      "file": "test/built-ins/isNaN/tonumber-operations.js",
+      "mode": "sloppy",
+      "case_sha256": "bcaa3ca11f2981bb3d02743ccae690a3c4445310094ab9d2ad111811cde6ee12",
+      "source_sha256": "f4e90c6de733c2002ac028b49ced28dd67a3fdedcdfb5ba5acde3f6032139721",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isNaN/tonumber-operations.js:strict",
+      "file": "test/built-ins/isNaN/tonumber-operations.js",
+      "mode": "strict",
+      "case_sha256": "6a3430eccf305c0af95f1ae11ff8d5627b06f523035eb9a6cccf1c39da173424",
+      "source_sha256": "f4e90c6de733c2002ac028b49ced28dd67a3fdedcdfb5ba5acde3f6032139721",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/isNaN/toprimitive-call-abrupt.js:sloppy",
+      "file": "test/built-ins/isNaN/toprimitive-call-abrupt.js",
+      "mode": "sloppy",
+      "case_sha256": "8a854492db2db2eed02f367a1f5d52275db591ebc212d82cf34453155cb93809",
+      "source_sha256": "fb9427b893832d00160c2ceaf437e831ec9dfca2b8c2611e01a5044291437e04",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isNaN/toprimitive-call-abrupt.js:strict",
+      "file": "test/built-ins/isNaN/toprimitive-call-abrupt.js",
+      "mode": "strict",
+      "case_sha256": "2faca9ce7ebf3a1f3879dc71787766cdbe0725c881e78b44035fca1aac5c9aff",
+      "source_sha256": "fb9427b893832d00160c2ceaf437e831ec9dfca2b8c2611e01a5044291437e04",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isNaN/toprimitive-get-abrupt.js:sloppy",
+      "file": "test/built-ins/isNaN/toprimitive-get-abrupt.js",
+      "mode": "sloppy",
+      "case_sha256": "0610dce72d95bf52043663700996d6daad19a5025cbfd330fea3686692cf11a8",
+      "source_sha256": "1f4d595493b0de7165fef05f5f09972c3288d557ff393acede3d69c321ad463c",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isNaN/toprimitive-get-abrupt.js:strict",
+      "file": "test/built-ins/isNaN/toprimitive-get-abrupt.js",
+      "mode": "strict",
+      "case_sha256": "9efa3f2d2770c8b25115edd5d0e2f68eb059189affcae8b1b142435cd5c8bc43",
+      "source_sha256": "1f4d595493b0de7165fef05f5f09972c3288d557ff393acede3d69c321ad463c",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isNaN/toprimitive-not-callable-throws.js:sloppy",
+      "file": "test/built-ins/isNaN/toprimitive-not-callable-throws.js",
+      "mode": "sloppy",
+      "case_sha256": "b46ad5277883b78316f565378bd06d94fe3740dcf49d17f4c9929a50c28fba9d",
+      "source_sha256": "dd4971cd6073ae6bad1112d68105510ce898bb8d14ae33e3c336ef9e94d15b5c",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isNaN/toprimitive-not-callable-throws.js:strict",
+      "file": "test/built-ins/isNaN/toprimitive-not-callable-throws.js",
+      "mode": "strict",
+      "case_sha256": "229fb4f448838efb305f4a47e8d09d1e4980944bbf6007e26f9fdfe326c74e14",
+      "source_sha256": "dd4971cd6073ae6bad1112d68105510ce898bb8d14ae33e3c336ef9e94d15b5c",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isNaN/toprimitive-result-is-object-throws.js:sloppy",
+      "file": "test/built-ins/isNaN/toprimitive-result-is-object-throws.js",
+      "mode": "sloppy",
+      "case_sha256": "51209fd5e1515d9a6afad702c8c14f2d6299c74acc5f736d63c038ff703865b3",
+      "source_sha256": "469f3bf3c85a986ef38e831dce025ac0be66d884d94a154c2389f11c9203f10c",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isNaN/toprimitive-result-is-object-throws.js:strict",
+      "file": "test/built-ins/isNaN/toprimitive-result-is-object-throws.js",
+      "mode": "strict",
+      "case_sha256": "946e178d1321a01a2b6bb336fd1fcf6c88fd8a40ae1573208026b8944365c14f",
+      "source_sha256": "469f3bf3c85a986ef38e831dce025ac0be66d884d94a154c2389f11c9203f10c",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isNaN/toprimitive-result-is-symbol-throws.js:sloppy",
+      "file": "test/built-ins/isNaN/toprimitive-result-is-symbol-throws.js",
+      "mode": "sloppy",
+      "case_sha256": "a6dc573cb7b1b4728637bf25bd11093eecb496f7b2ea913bac23a1a0479a5af0",
+      "source_sha256": "c0d04e8c8ce9b231595ee5f0da2038d8eaad2d857e67415c1fbb06553c5e2c65",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isNaN/toprimitive-result-is-symbol-throws.js:strict",
+      "file": "test/built-ins/isNaN/toprimitive-result-is-symbol-throws.js",
+      "mode": "strict",
+      "case_sha256": "7613fd56e4058853e19fe858de9f020e10a4b6515b0fcec44bbd7e6f16c915ea",
+      "source_sha256": "c0d04e8c8ce9b231595ee5f0da2038d8eaad2d857e67415c1fbb06553c5e2c65",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isNaN/toprimitive-valid-result.js:sloppy",
+      "file": "test/built-ins/isNaN/toprimitive-valid-result.js",
+      "mode": "sloppy",
+      "case_sha256": "a71953a8ca5430d1ef52d3acb6d2780557f10751fecceb7e75959ba1402b8acc",
+      "source_sha256": "9752021cf5c178071ec34b21fc344d700da668784bf2dfa52d66e5838c032bdd",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    },
+    {
+      "id": "test/built-ins/isNaN/toprimitive-valid-result.js:strict",
+      "file": "test/built-ins/isNaN/toprimitive-valid-result.js",
+      "mode": "strict",
+      "case_sha256": "2d06542d54802e65dd12b51d859f1bdce546352bee04ac56e14c50ae0c6624e4",
+      "source_sha256": "9752021cf5c178071ec34b21fc344d700da668784bf2dfa52d66e5838c032bdd",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol.toPrimitive"
+    }
+  ],
+  "source_input_sha256": "41577621af344b5f9301064d69abbf7a65dcdf4f46de8a5d1524e9e03734004d",
+  "baseline_recorded": true,
+  "comparison": {
+    "same_case_identities": true,
+    "same_preflight_identities": true,
+    "same_runner_policy": true,
+    "newly_passing": [
+      "test/built-ins/isFinite/return-abrupt-from-tonumber-number.js:sloppy",
+      "test/built-ins/isFinite/return-abrupt-from-tonumber-number.js:strict",
+      "test/built-ins/isFinite/tonumber-operations.js:sloppy",
+      "test/built-ins/isFinite/tonumber-operations.js:strict",
+      "test/built-ins/isNaN/return-abrupt-from-tonumber-number.js:sloppy",
+      "test/built-ins/isNaN/return-abrupt-from-tonumber-number.js:strict",
+      "test/built-ins/isNaN/tonumber-operations.js:sloppy",
+      "test/built-ins/isNaN/tonumber-operations.js:strict"
+    ],
+    "lost_passes": [],
+    "changed_observations": [
+      {
+        "id": "test/built-ins/isFinite/return-abrupt-from-tonumber-number.js:sloppy",
+        "before": {
+          "id": "test/built-ins/isFinite/return-abrupt-from-tonumber-number.js:sloppy",
+          "file": "test/built-ins/isFinite/return-abrupt-from-tonumber-number.js",
+          "mode": "sloppy",
+          "case_sha256": "8c174df9ed004697e9b906e573fe95172fb06b9299a02cdf70e5e8af45f75595",
+          "source_sha256": "9871fa3a1432142028bc0191c11cdd0cf8486b423854dc068988645c8a76c34f",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "test/built-ins/isFinite/return-abrupt-from-tonumber-number.js:sloppy",
+          "file": "test/built-ins/isFinite/return-abrupt-from-tonumber-number.js",
+          "mode": "sloppy",
+          "case_sha256": "8c174df9ed004697e9b906e573fe95172fb06b9299a02cdf70e5e8af45f75595",
+          "source_sha256": "9871fa3a1432142028bc0191c11cdd0cf8486b423854dc068988645c8a76c34f",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "id": "test/built-ins/isFinite/return-abrupt-from-tonumber-number.js:strict",
+        "before": {
+          "id": "test/built-ins/isFinite/return-abrupt-from-tonumber-number.js:strict",
+          "file": "test/built-ins/isFinite/return-abrupt-from-tonumber-number.js",
+          "mode": "strict",
+          "case_sha256": "4e367ef53145211ff5cc6480f41604b665de3c7f9caf025f43853595c13103be",
+          "source_sha256": "9871fa3a1432142028bc0191c11cdd0cf8486b423854dc068988645c8a76c34f",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "test/built-ins/isFinite/return-abrupt-from-tonumber-number.js:strict",
+          "file": "test/built-ins/isFinite/return-abrupt-from-tonumber-number.js",
+          "mode": "strict",
+          "case_sha256": "4e367ef53145211ff5cc6480f41604b665de3c7f9caf025f43853595c13103be",
+          "source_sha256": "9871fa3a1432142028bc0191c11cdd0cf8486b423854dc068988645c8a76c34f",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "id": "test/built-ins/isFinite/tonumber-operations.js:sloppy",
+        "before": {
+          "id": "test/built-ins/isFinite/tonumber-operations.js:sloppy",
+          "file": "test/built-ins/isFinite/tonumber-operations.js",
+          "mode": "sloppy",
+          "case_sha256": "6ab797b6850df485d26bb8811510badd6253c01d76e48c1dadb48f8b44fd9130",
+          "source_sha256": "21002d96858ea784b71c5f75c282a82c130a1d2eff4775ce7286fc637a89682d",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "test/built-ins/isFinite/tonumber-operations.js:sloppy",
+          "file": "test/built-ins/isFinite/tonumber-operations.js",
+          "mode": "sloppy",
+          "case_sha256": "6ab797b6850df485d26bb8811510badd6253c01d76e48c1dadb48f8b44fd9130",
+          "source_sha256": "21002d96858ea784b71c5f75c282a82c130a1d2eff4775ce7286fc637a89682d",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "id": "test/built-ins/isFinite/tonumber-operations.js:strict",
+        "before": {
+          "id": "test/built-ins/isFinite/tonumber-operations.js:strict",
+          "file": "test/built-ins/isFinite/tonumber-operations.js",
+          "mode": "strict",
+          "case_sha256": "6b8a275a1c31d77ba3d91c91a9acfb55df06229d5f79efd219cb54ce26c776c3",
+          "source_sha256": "21002d96858ea784b71c5f75c282a82c130a1d2eff4775ce7286fc637a89682d",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "test/built-ins/isFinite/tonumber-operations.js:strict",
+          "file": "test/built-ins/isFinite/tonumber-operations.js",
+          "mode": "strict",
+          "case_sha256": "6b8a275a1c31d77ba3d91c91a9acfb55df06229d5f79efd219cb54ce26c776c3",
+          "source_sha256": "21002d96858ea784b71c5f75c282a82c130a1d2eff4775ce7286fc637a89682d",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "id": "test/built-ins/isNaN/return-abrupt-from-tonumber-number.js:sloppy",
+        "before": {
+          "id": "test/built-ins/isNaN/return-abrupt-from-tonumber-number.js:sloppy",
+          "file": "test/built-ins/isNaN/return-abrupt-from-tonumber-number.js",
+          "mode": "sloppy",
+          "case_sha256": "52c34c4ceb74e76fa9f9d4c4d76a540924e0d022b22167ce99767ecfb94ca860",
+          "source_sha256": "27eb3f288d0cf6416f9fc6c6ab8d0cba63b355e9e3727e2dab0f939e2785a880",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "test/built-ins/isNaN/return-abrupt-from-tonumber-number.js:sloppy",
+          "file": "test/built-ins/isNaN/return-abrupt-from-tonumber-number.js",
+          "mode": "sloppy",
+          "case_sha256": "52c34c4ceb74e76fa9f9d4c4d76a540924e0d022b22167ce99767ecfb94ca860",
+          "source_sha256": "27eb3f288d0cf6416f9fc6c6ab8d0cba63b355e9e3727e2dab0f939e2785a880",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "id": "test/built-ins/isNaN/return-abrupt-from-tonumber-number.js:strict",
+        "before": {
+          "id": "test/built-ins/isNaN/return-abrupt-from-tonumber-number.js:strict",
+          "file": "test/built-ins/isNaN/return-abrupt-from-tonumber-number.js",
+          "mode": "strict",
+          "case_sha256": "1e8505d672a3fc0d53544ac2f6f26f84d6f8152930c6f65a9898b2a51eb6e095",
+          "source_sha256": "27eb3f288d0cf6416f9fc6c6ab8d0cba63b355e9e3727e2dab0f939e2785a880",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "test/built-ins/isNaN/return-abrupt-from-tonumber-number.js:strict",
+          "file": "test/built-ins/isNaN/return-abrupt-from-tonumber-number.js",
+          "mode": "strict",
+          "case_sha256": "1e8505d672a3fc0d53544ac2f6f26f84d6f8152930c6f65a9898b2a51eb6e095",
+          "source_sha256": "27eb3f288d0cf6416f9fc6c6ab8d0cba63b355e9e3727e2dab0f939e2785a880",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "id": "test/built-ins/isNaN/tonumber-operations.js:sloppy",
+        "before": {
+          "id": "test/built-ins/isNaN/tonumber-operations.js:sloppy",
+          "file": "test/built-ins/isNaN/tonumber-operations.js",
+          "mode": "sloppy",
+          "case_sha256": "bcaa3ca11f2981bb3d02743ccae690a3c4445310094ab9d2ad111811cde6ee12",
+          "source_sha256": "f4e90c6de733c2002ac028b49ced28dd67a3fdedcdfb5ba5acde3f6032139721",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "test/built-ins/isNaN/tonumber-operations.js:sloppy",
+          "file": "test/built-ins/isNaN/tonumber-operations.js",
+          "mode": "sloppy",
+          "case_sha256": "bcaa3ca11f2981bb3d02743ccae690a3c4445310094ab9d2ad111811cde6ee12",
+          "source_sha256": "f4e90c6de733c2002ac028b49ced28dd67a3fdedcdfb5ba5acde3f6032139721",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "id": "test/built-ins/isNaN/tonumber-operations.js:strict",
+        "before": {
+          "id": "test/built-ins/isNaN/tonumber-operations.js:strict",
+          "file": "test/built-ins/isNaN/tonumber-operations.js",
+          "mode": "strict",
+          "case_sha256": "6a3430eccf305c0af95f1ae11ff8d5627b06f523035eb9a6cccf1c39da173424",
+          "source_sha256": "f4e90c6de733c2002ac028b49ced28dd67a3fdedcdfb5ba5acde3f6032139721",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "test/built-ins/isNaN/tonumber-operations.js:strict",
+          "file": "test/built-ins/isNaN/tonumber-operations.js",
+          "mode": "strict",
+          "case_sha256": "6a3430eccf305c0af95f1ae11ff8d5627b06f523035eb9a6cccf1c39da173424",
+          "source_sha256": "f4e90c6de733c2002ac028b49ced28dd67a3fdedcdfb5ba5acde3f6032139721",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      }
+    ],
+    "prior_report": "test262-numeric-conversion-initial.json",
+    "prior_report_sha256": "dfafb5b1003d057ff80c78bf44a0462ca4be974b7225ead417763413877b283e"
+  },
+  "triage": [
+    {
+      "observation": {
+        "observation": null,
+        "reason": "unimplemented declared features: Reflect.construct",
+        "status": "unsupported"
+      },
+      "count": 4,
+      "case_ids": [
+        "test/built-ins/isFinite/not-a-constructor.js:sloppy",
+        "test/built-ins/isFinite/not-a-constructor.js:strict",
+        "test/built-ins/isNaN/not-a-constructor.js:sloppy",
+        "test/built-ins/isNaN/not-a-constructor.js:strict"
+      ]
+    },
+    {
+      "observation": {
+        "observation": null,
+        "reason": "unimplemented declared features: Symbol",
+        "status": "unsupported"
+      },
+      "count": 4,
+      "case_ids": [
+        "test/built-ins/isFinite/return-abrupt-from-tonumber-number-symbol.js:sloppy",
+        "test/built-ins/isFinite/return-abrupt-from-tonumber-number-symbol.js:strict",
+        "test/built-ins/isNaN/return-abrupt-from-tonumber-number-symbol.js:sloppy",
+        "test/built-ins/isNaN/return-abrupt-from-tonumber-number-symbol.js:strict"
+      ]
+    },
+    {
+      "observation": {
+        "observation": null,
+        "reason": "unimplemented declared features: Symbol.toPrimitive",
+        "status": "unsupported"
+      },
+      "count": 24,
+      "case_ids": [
+        "test/built-ins/isFinite/toprimitive-call-abrupt.js:sloppy",
+        "test/built-ins/isFinite/toprimitive-call-abrupt.js:strict",
+        "test/built-ins/isFinite/toprimitive-get-abrupt.js:sloppy",
+        "test/built-ins/isFinite/toprimitive-get-abrupt.js:strict",
+        "test/built-ins/isFinite/toprimitive-not-callable-throws.js:sloppy",
+        "test/built-ins/isFinite/toprimitive-not-callable-throws.js:strict",
+        "test/built-ins/isFinite/toprimitive-result-is-object-throws.js:sloppy",
+        "test/built-ins/isFinite/toprimitive-result-is-object-throws.js:strict",
+        "test/built-ins/isFinite/toprimitive-result-is-symbol-throws.js:sloppy",
+        "test/built-ins/isFinite/toprimitive-result-is-symbol-throws.js:strict",
+        "test/built-ins/isFinite/toprimitive-valid-result.js:sloppy",
+        "test/built-ins/isFinite/toprimitive-valid-result.js:strict",
+        "test/built-ins/isNaN/toprimitive-call-abrupt.js:sloppy",
+        "test/built-ins/isNaN/toprimitive-call-abrupt.js:strict",
+        "test/built-ins/isNaN/toprimitive-get-abrupt.js:sloppy",
+        "test/built-ins/isNaN/toprimitive-get-abrupt.js:strict",
+        "test/built-ins/isNaN/toprimitive-not-callable-throws.js:sloppy",
+        "test/built-ins/isNaN/toprimitive-not-callable-throws.js:strict",
+        "test/built-ins/isNaN/toprimitive-result-is-object-throws.js:sloppy",
+        "test/built-ins/isNaN/toprimitive-result-is-object-throws.js:strict",
+        "test/built-ins/isNaN/toprimitive-result-is-symbol-throws.js:sloppy",
+        "test/built-ins/isNaN/toprimitive-result-is-symbol-throws.js:strict",
+        "test/built-ins/isNaN/toprimitive-valid-result.js:sloppy",
+        "test/built-ins/isNaN/toprimitive-valid-result.js:strict"
+      ]
+    },
+    {
+      "observation": {
+        "observation": {
+          "error_identity": "",
+          "error_type": "UnsupportedFeature",
+          "harness": "",
+          "message": "host own-property reflection is not implemented",
+          "phase": "runtime",
+          "status": "unsupported"
+        },
+        "reason": null,
+        "status": "unsupported"
+      },
+      "count": 4,
+      "case_ids": [
+        "test/built-ins/isFinite/prop-desc.js:sloppy",
+        "test/built-ins/isFinite/prop-desc.js:strict",
+        "test/built-ins/isNaN/prop-desc.js:sloppy",
+        "test/built-ins/isNaN/prop-desc.js:strict"
+      ]
+    }
+  ],
+  "baseline_sha256": "8fec4cd70dfea5f1c1f49e91a2fb491be0eb70cc2af18ed30afb92cda2797a7b",
+  "record_and_gate_match_candidate": true,
+  "note": "Complete unchanged inventory after ordinary numeric conversion. All failures, unsupported outcomes and prerequisite exclusions remain explicit; this is not full ECMAScript conformance."
+}

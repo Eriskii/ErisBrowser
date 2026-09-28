@@ -91,9 +91,9 @@ from these retained gaps.
 
 An actual baseline-recording invocation and a subsequent CLI gate both return
 0, preserving exactly the candidate's cases, preflights and observations.
-The [current baseline](test262-number-statics-current.json) contains all 340
-statuses, including the 14 failures and 92 unsupported cases; it preserves
-passes without claiming all-pass conformance. A plain nonbaseline invocation
+The [baseline at this checkpoint](https://github.com/Eriskii/ErisBrowser/blob/a2b22a1f2c298ce70346552d64b96d82c15cbb37/tests/conformance/test262-number-statics-current.json)
+contains all 340 statuses, including the 14 failures and 92 unsupported cases;
+it preserves passes without claiming all-pass conformance. A plain nonbaseline invocation
 continues to return 1. CI runs the baseline gate.
 
 ```sh
@@ -109,9 +109,21 @@ python3 tools/test262_conformance.py --profile number-statics --baseline tests/c
 | Candidate source input | `f9f8fbdd7b40a1a276b7eb493113639e9bd9478913571e7543e4141b8ed324a5` |
 | Initial report | `64bf8b71ec67dd8d38fc4281d7c8c5ddae3ecd5f73bbd4eaf33633a9b06eb21d` |
 | Candidate report | `53a04f8c09aca71d2c5875e179108cba2a2e999e9cc314eaec49359f0428bb96` |
-| Current baseline | `153ed888ebf9af8394517d3078a6db35c3ff6c553a2f84d919ba25e93ac3c5e3` |
+| Original baseline at a2b22a1 | `153ed888ebf9af8394517d3078a6db35c3ff6c553a2f84d919ba25e93ac3c5e3` |
 
 Number.MAX_SAFE_INTEGER also enables the unchanged near-limit reduceRight
 source in both modes. The [complete separate comparison](test262-array-reduce-number-statics.json)
 retains 1,034 variants and 128 preflights, with **848 passes, 16 failures and
 170 unsupported cases**. Its regression baseline now preserves those two gains.
+
+## Subsequent ordinary conversion
+
+The [numeric conversion increment](test262-numeric-conversion.md) resolves all
+ten constructor-conversion failures: **244 passed, four failed, 92 unsupported**.
+The [full comparison](test262-number-statics-numeric-conversion.json) retains
+all 340 case identities and 104 verified preflights with no lost passes.
+The [current baseline](test262-number-statics-current.json) protects those gains;
+its SHA-256 is
+`03c6fad5ceb5f119df2dc5db1d432bece74bba5b6cadc6aead3300c75882a427`.
+Both modes of parseFloat.js and parseInt.js remain failed. Original reports and
+the original baseline linked above remain historical evidence.
