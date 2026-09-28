@@ -1204,6 +1204,14 @@ fn words(source: &str) -> Vec<&str> {
     result
 }
 fn wide_keyword(value: &str) -> Option<String> {
+    // Recognize unescaped keywords directly, avoiding temporary identifier and
+    // lowercase strings for ordinary values. Escapes still need token decoding.
+    if !value.contains('\\') {
+        return ["inherit", "initial", "unset", "revert", "revert-layer"]
+            .into_iter()
+            .find(|word| value.eq_ignore_ascii_case(word))
+            .map(str::to_owned);
+    }
     let (word, consumed) = css_identifier(value)?;
     if consumed != value.len() {
         return None;

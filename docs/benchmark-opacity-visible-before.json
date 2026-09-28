@@ -1,0 +1,31 @@
+{
+  "address": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/examples/events.html#panel",
+  "binary_sha256": "e82719d9f469b104788458144ef098b65019a7bc706e597c7311a03939813f42",
+  "input_sha256": "9394f7c16674d6f86115b1c3bb062359004e34d13ee016aad36ec1b1d512c79c",
+  "viewport": [
+    1180,
+    880
+  ],
+  "iterations": 100,
+  "median_ms": 11.763,
+  "p95_ms": 11.945,
+  "log": "Rendered file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/examples/events.html#panel \u2192 artifacts/events-visible-before.png (1180\u00d7880, 113 nodes, 295 commands, 18.13 ms total)\nBenchmark: 100 iterations; style+layout+paint median 11.763 ms, p95 11.945 ms (warm glyph cache; excludes network, parse, scripts, PNG encoding; no Chromium comparison)",
+  "controlled_environment": false,
+  "chromium_comparison": false,
+  "system": "Linux-7.2.6-x86_64-with-glibc2.42",
+  "cpu": "AMD Ryzen 7 7800X3D 8-Core Processor",
+  "rustc": "rustc 1.95.0 (59807616e 2026-04-14)",
+  "measured": "warm-cache style computation + layout + software paint",
+  "excluded": [
+    "network",
+    "HTML parsing",
+    "script execution",
+    "image decoding",
+    "PNG encoding",
+    "native process startup",
+    "IPC encoding/validation/copying",
+    "native presentation"
+  ],
+  "timestamp_utc": "2026-09-28T06:24:19.180587+00:00",
+  "commit": "2caff22a36796a30280b0feffc81f16b62b0313a"
+}

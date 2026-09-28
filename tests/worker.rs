@@ -216,6 +216,65 @@ fn layered_imports_opacity_and_event_capture_cross_real_process_boundary() {
 
 #[test]
 #[ignore = "requires Linux Landlock ABI 6 and launches the real confined browser worker"]
+fn aborting_a_listener_restores_native_link_navigation_across_ipc() {
+    let fixture = Fixture::new(
+        r#"<!doctype html><a id=go href='#next'>Continue</a>
+        <button id=stop type=button>Release listener</button><p id=out>ready</p>
+        <section id=next>Destination</section>
+        <script>
+        var controller = new AbortController();
+        var signal = controller.signal;
+        var out = document.getElementById('out');
+        var count = 0;
+        document.getElementById('go').addEventListener('click', function(event) {
+            event.preventDefault(); count++; out.textContent = 'held ' + count;
+        }, {signal:signal});
+        signal.addEventListener('abort', function(event) {
+            out.textContent = 'released ' + signal.reason + ' ' + event.isTrusted;
+        });
+        document.getElementById('stop').addEventListener('click', function() {
+            controller.abort('closed');
+        });
+        </script>"#,
+    );
+    let mut client = fixture.spawn(true, 92);
+    load(&mut client, &fixture.navigation);
+    let snapshot = render(&mut client);
+    let go = snapshot.document.query_selector("#go").unwrap();
+    let stop = snapshot.document.query_selector("#stop").unwrap();
+    let output = snapshot.document.query_selector("#out").unwrap();
+    for (node, expected) in [(go, "held 1"), (stop, "released closed true")] {
+        exchange_empty(&mut client, WorkerCommand::Click { node });
+        let snapshot = render(&mut client);
+        assert_eq!(snapshot.document.text_content(output), expected);
+        assert!(
+            snapshot
+                .diagnostics
+                .iter()
+                .all(|message| message.starts_with("Page process ")
+                    || message.starts_with("Resource broker ")),
+            "{:?}",
+            snapshot.diagnostics
+        );
+    }
+    let reply = client
+        .exchange(WorkerCommand::Click { node: go }, || false)
+        .unwrap();
+    let mut destination = Url::parse(&fixture.navigation.address).unwrap();
+    destination.set_fragment(Some("next"));
+    let navigation = reply
+        .navigation
+        .expect("the aborted listener must no longer cancel navigation");
+    assert_eq!(navigation.address, destination.as_str());
+    assert!(navigation.form_body.is_none());
+    assert_eq!(
+        render(&mut client).document.text_content(output),
+        "released closed true"
+    );
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6 and launches the real confined browser worker"]
 fn isolated_load_render_returns_valid_snapshot_from_distinct_process() {
     let fixture = Fixture::new(
         "<!doctype html><title>Worker fixture</title><h1 id=heading>Hello worker</h1><svg width=12 height=12><rect width=12 height=12 fill=red /></svg>",

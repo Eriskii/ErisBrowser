@@ -1987,6 +1987,7 @@ struct ScriptObject {
     regexp: Option<Rc<RegExp>>,
     event: Option<usize>,
     event_target: bool,
+    abort: Option<AbortSlot>,
 }
 impl ScriptObject {
     fn get(&self, key: impl Into<JsString>) -> Option<&Value> {
@@ -2063,6 +2064,15 @@ impl EventTarget {
         }
     }
 }
+#[derive(Clone, Copy)]
+enum AbortSlot {
+    Controller(usize),
+    Signal(usize),
+}
+struct AbortState {
+    reason: Value,
+    listeners: Vec<usize>,
+}
 struct EventState {
     event_type: JsString,
     bubbles: bool,
@@ -2110,6 +2120,7 @@ pub struct Runtime {
     native_properties: BTreeMap<String, usize>,
     function_prototype: usize,
     events: Vec<EventState>,
+    abort_signals: Vec<AbortState>,
     listeners: Vec<EventListener>,
     event_listeners: BTreeMap<(EventTarget, JsString), Vec<usize>>,
     event_handlers: BTreeMap<(EventTarget, JsString), EventHandler>,
@@ -2174,6 +2185,8 @@ impl Runtime {
             "CustomEvent",
             "EventTarget",
             "DOMException",
+            "AbortController",
+            "AbortSignal",
             "Error",
             "TypeError",
             "SyntaxError",
@@ -2220,6 +2233,7 @@ impl Runtime {
             native_properties: BTreeMap::new(),
             function_prototype: 0,
             events: Vec::new(),
+            abort_signals: Vec::new(),
             listeners: Vec::new(),
             event_listeners: BTreeMap::new(),
             event_handlers: BTreeMap::new(),
@@ -2269,6 +2283,8 @@ impl Runtime {
             "CustomEvent",
             "EventTarget",
             "DOMException",
+            "AbortController",
+            "AbortSignal",
         ] {
             let Value::Object(id) = self.object_ordered([])? else {
                 unreachable!()
@@ -2291,6 +2307,8 @@ impl Runtime {
             Some(Value::Object(self.prototypes["Event"]));
         self.objects[self.prototypes["DOMException"]].prototype =
             Some(Value::Object(self.prototypes["Error"]));
+        self.objects[self.prototypes["AbortSignal"]].prototype =
+            Some(Value::Object(self.prototypes["EventTarget"]));
         self.functions.push(Function {
             code: FunctionCode {
                 params: Vec::new(),
@@ -2347,6 +2365,8 @@ impl Runtime {
             "CustomEvent",
             "EventTarget",
             "DOMException",
+            "AbortController",
+            "AbortSignal",
         ] {
             let constructor = Self::native(name, Value::Window);
             let prototype = self.prototypes[name];
@@ -2356,7 +2376,7 @@ impl Runtime {
                     "length".into(),
                     Value::Number(match name {
                         "RegExp" => 2.0,
-                        "EventTarget" | "DOMException" => 0.0,
+                        "EventTarget" | "DOMException" | "AbortController" | "AbortSignal" => 0.0,
                         _ => 1.0,
                     }),
                 ),
@@ -2632,6 +2652,8 @@ impl Runtime {
     fn initialize_events(&mut self) -> Result<()> {
         self.objects[self.native_properties["CustomEvent"]].prototype =
             Some(Self::native("Event", Value::Window));
+        self.objects[self.native_properties["AbortSignal"]].prototype =
+            Some(Self::native("EventTarget", Value::Window));
         for (owner, key, length) in [
             ("EventTarget", "addEventListener", 2),
             ("EventTarget", "removeEventListener", 2),
@@ -2642,9 +2664,35 @@ impl Runtime {
             ("Event", "composedPath", 0),
             ("Event", "initEvent", 1),
             ("CustomEvent", "initCustomEvent", 1),
+            ("AbortController", "abort", 0),
+            ("AbortSignal", "throwIfAborted", 0),
         ] {
             let value = self.intrinsic_function(&format!("{owner}.{key}"), key, length)?;
             self.objects[self.prototypes[owner]].insert(key.into(), value);
+        }
+        let abort = self.intrinsic_function("AbortSignal.static.abort", "abort", 0)?;
+        self.objects[self.native_properties["AbortSignal"]].insert("abort".into(), abort);
+        for (owner, key) in [
+            ("AbortController", "signal"),
+            ("AbortSignal", "aborted"),
+            ("AbortSignal", "reason"),
+            ("AbortSignal", "onabort"),
+        ] {
+            let get =
+                self.intrinsic_function(&format!("{owner}.get.{key}"), &format!("get {key}"), 0)?;
+            let set = if key == "onabort" {
+                self.intrinsic_function("AbortSignal.set.onabort", "set onabort", 1)?
+            } else {
+                Value::Undefined
+            };
+            self.objects[self.prototypes[owner]].insert_property(
+                key.into(),
+                Property {
+                    value: PropertyValue::Accessor { get, set },
+                    enumerable: true,
+                    configurable: true,
+                },
+            );
         }
         for key in [
             "type",
@@ -2704,8 +2752,121 @@ impl Runtime {
                 "INVALID_STATE_ERR".into(),
                 Property::data(Value::Number(11.0), false, true, false),
             );
+            self.objects[id].insert_property(
+                "ABORT_ERR".into(),
+                Property::data(Value::Number(20.0), false, true, false),
+            );
         }
         Ok(())
+    }
+    fn abort_signal_index(&self, value: &Value) -> Result<usize> {
+        if let Value::Object(id) = value
+            && let Some(AbortSlot::Signal(index)) = self.objects[*id].abort
+        {
+            return Ok(index);
+        }
+        Err(ScriptError::type_error("receiver is not an AbortSignal"))
+    }
+    fn abort_signal_object(&mut self, reason: Value) -> Result<Value> {
+        self.charge(std::mem::size_of::<AbortState>())?;
+        let value = self.object_ordered([])?;
+        let Value::Object(id) = value else {
+            unreachable!()
+        };
+        self.objects[id].abort = Some(AbortSlot::Signal(self.abort_signals.len()));
+        self.objects[id].event_target = true;
+        self.objects[id].prototype = Some(Value::Object(self.prototypes["AbortSignal"]));
+        self.abort_signals.push(AbortState {
+            reason,
+            listeners: Vec::new(),
+        });
+        Ok(value)
+    }
+    fn abort_reason(&mut self, reason: Value) -> Result<Value> {
+        if reason == Value::Undefined {
+            self.dom_exception("AbortError".into(), "The operation was aborted.".into())
+        } else {
+            Ok(reason)
+        }
+    }
+    fn abort_native(
+        &mut self,
+        name: &str,
+        receiver: Value,
+        args: &[Value],
+        doc: &mut Document,
+    ) -> Result<Value> {
+        if name == "AbortSignal.static.abort" {
+            let reason = self.abort_reason(args.first().cloned().unwrap_or(Value::Undefined))?;
+            return self.abort_signal_object(reason);
+        }
+        if name.starts_with("AbortController.") {
+            let Value::Object(controller) = receiver else {
+                return Err(ScriptError::type_error(
+                    "receiver is not an AbortController",
+                ));
+            };
+            let Some(AbortSlot::Controller(signal)) = self.objects[controller].abort else {
+                return Err(ScriptError::type_error(
+                    "receiver is not an AbortController",
+                ));
+            };
+            if name == "AbortController.get.signal" {
+                return Ok(Value::Object(signal));
+            }
+            let index = self.abort_signal_index(&Value::Object(signal))?;
+            if self.abort_signals[index].reason != Value::Undefined {
+                return Ok(Value::Undefined);
+            }
+            // No user callbacks run until all removals have completed. Reserve
+            // their entire work before making observable state changes, so an
+            // exhausted quota cannot leave a partially detached observer list.
+            self.work(self.abort_signals[index].listeners.len())?;
+            let reason = self.abort_reason(args.first().cloned().unwrap_or(Value::Undefined))?;
+            let event =
+                self.event_object("abort".into(), false, false, false, Value::Null, false)?;
+            let event_index = self.event_index(&event)?;
+            self.abort_signals[index].reason = reason;
+            let listeners = std::mem::take(&mut self.abort_signals[index].listeners);
+            for listener in listeners {
+                self.listeners[listener].removed = true;
+            }
+            self.events[event_index].trusted = true;
+            self.dispatch_event_object(EventTarget::Object(signal), event, None, doc)?;
+            return Ok(Value::Undefined);
+        }
+        let index = self.abort_signal_index(&receiver)?;
+        match name {
+            "AbortSignal.get.aborted" => Ok(Value::Bool(
+                self.abort_signals[index].reason != Value::Undefined,
+            )),
+            "AbortSignal.get.reason" => Ok(self.abort_signals[index].reason.clone()),
+            "AbortSignal.throwIfAborted" => {
+                let reason = self.abort_signals[index].reason.clone();
+                if reason == Value::Undefined {
+                    Ok(Value::Undefined)
+                } else {
+                    Err(self.thrown_error(reason)?)
+                }
+            }
+            "AbortSignal.get.onabort" => {
+                let target = self.event_target(&receiver, doc)?;
+                self.event_listener_lookup_work(&"abort".into())?;
+                self.event_handler_callback(target, &"abort".into())
+            }
+            "AbortSignal.set.onabort" => {
+                let target = self.event_target(&receiver, doc)?;
+                self.event_listener_lookup_work(&"abort".into())?;
+                self.set_event_handler(
+                    target,
+                    "abort".into(),
+                    args.first().cloned().unwrap_or(Value::Undefined),
+                    true,
+                )?;
+                Ok(Value::Undefined)
+            }
+            _ => unreachable!("unknown AbortSignal native operation"),
+        }
     }
     fn event_index(&self, value: &Value) -> Result<usize> {
         if let Value::Object(id) = value
@@ -2778,6 +2939,21 @@ impl Runtime {
         Ok(value)
     }
     fn event_construct(&mut self, name: &str, args: &[Value], doc: &mut Document) -> Result<Value> {
+        if name == "AbortSignal" {
+            return Err(ScriptError::type_error(
+                "AbortSignal has no public constructor",
+            ));
+        }
+        if name == "AbortController" {
+            let signal = self.abort_signal_object(Value::Undefined)?;
+            let value = self.object_ordered([])?;
+            let (Value::Object(signal), Value::Object(id)) = (signal, &value) else {
+                unreachable!()
+            };
+            self.objects[*id].abort = Some(AbortSlot::Controller(signal));
+            self.objects[*id].prototype = Some(Value::Object(self.prototypes["AbortController"]));
+            return Ok(value);
+        }
         if name == "EventTarget" {
             let value = self.object_ordered([])?;
             let Value::Object(id) = value else {
@@ -2840,6 +3016,7 @@ impl Runtime {
         let code = match name.to_utf8().as_deref() {
             Ok("InvalidStateError") => 11.0,
             Ok("NotSupportedError") => 9.0,
+            Ok("AbortError") => 20.0,
             _ => 0.0,
         };
         let value = self.object_ordered([
@@ -2991,7 +3168,7 @@ impl Runtime {
                     "InvalidStateError".into(),
                     "event is already being dispatched or is uninitialized".into(),
                 )?;
-                return Err(ScriptError::thrown(value));
+                return Err(self.thrown_error(value)?);
             }
             self.events[id].trusted = false;
             return self
@@ -3019,6 +3196,7 @@ impl Runtime {
         };
         let mut once = false;
         let mut passive = None;
+        let mut signal_index = None;
         if dictionary && name == "addEventListener" {
             once = self.get(options.clone(), "once", doc)?.truthy();
             let value = self.get(options.clone(), "passive", doc)?;
@@ -3026,11 +3204,12 @@ impl Runtime {
                 passive = Some(value.truthy());
             }
             let signal = self.get(options, "signal", doc)?;
-            if !matches!(signal, Value::Undefined | Value::Null) {
-                return Err(ScriptError::unsupported(
-                    "AbortSignal listener removal is not implemented",
-                ));
+            if signal != Value::Undefined {
+                signal_index = Some(self.abort_signal_index(&signal)?);
             }
+        }
+        if signal_index.is_some_and(|id| self.abort_signals[id].reason != Value::Undefined) {
+            return Ok(Value::Undefined);
         }
         if matches!(callback, Value::Null | Value::Undefined) {
             return Ok(Value::Undefined);
@@ -3074,7 +3253,10 @@ impl Runtime {
                 }
                 None => false,
             };
-            self.add_listener(
+            if signal_index.is_some() {
+                self.charge(std::mem::size_of::<usize>())?;
+            }
+            let listener = self.add_listener(
                 target,
                 kind,
                 EventListener {
@@ -3086,6 +3268,9 @@ impl Runtime {
                     handler: false,
                 },
             )?;
+            if let Some(signal) = signal_index {
+                self.abort_signals[signal].listeners.push(listener);
+            }
         }
         Ok(Value::Undefined)
     }
@@ -3586,7 +3771,7 @@ impl Runtime {
         &mut self,
         values: impl IntoIterator<Item = (JsString, Value)>,
     ) -> Result<Value> {
-        self.charge(72)?;
+        self.charge(72 + std::mem::size_of::<Option<AbortSlot>>())?;
         let mut object = ScriptObject {
             prototype: self.prototypes.get("Object").copied().map(Value::Object),
             ..ScriptObject::default()
@@ -3952,12 +4137,9 @@ impl Runtime {
             }
             Stmt::Throw(expression) => {
                 let value = self.eval(expression, env, doc)?;
-                if let Value::String(text) = &value {
-                    self.work(1 + text.len() / 8)?;
-                }
                 let name = self.thrown_name(&value, doc)?;
                 let intrinsic = self.thrown_intrinsic_name(&value, doc)?;
-                let mut error = ScriptError::thrown(value);
+                let mut error = self.thrown_error(value)?;
                 error.thrown_name = name;
                 error.intrinsic_name = intrinsic;
                 return Err(error);
@@ -4218,6 +4400,19 @@ impl Runtime {
                 .unwrap_or(self.prototypes["Error"]),
         ));
         Ok(value)
+    }
+    fn thrown_error(&mut self, value: Value) -> Result<ScriptError> {
+        // Value's diagnostic formatter never reads author properties. A UTF-16
+        // code unit needs at most three UTF-8 bytes, including lone-surrogate
+        // replacement; the constant also covers the prefix and numeric output.
+        let units = if let Value::String(text) = &value {
+            text.len()
+        } else {
+            0
+        };
+        self.work(1 + units / 8)?;
+        self.charge(units.saturating_mul(3).saturating_add(512))?;
+        Ok(ScriptError::thrown(value))
     }
     fn thrown_name(&mut self, value: &Value, doc: &mut Document) -> Result<Option<String>> {
         if !js_object(value) {
@@ -5267,7 +5462,12 @@ impl Runtime {
                 if native.receiver == Value::Window
                     && matches!(
                         native.name.as_str(),
-                        "Event" | "CustomEvent" | "EventTarget" | "DOMException"
+                        "Event"
+                            | "CustomEvent"
+                            | "EventTarget"
+                            | "DOMException"
+                            | "AbortController"
+                            | "AbortSignal"
                     ) =>
             {
                 self.event_construct(&native.name, &arguments, doc)
@@ -7305,6 +7505,9 @@ impl Runtime {
         args: Vec<Value>,
         doc: &mut Document,
     ) -> Result<Value> {
+        if native.name.starts_with("AbortController.") || native.name.starts_with("AbortSignal.") {
+            return self.abort_native(&native.name, native.receiver.clone(), &args, doc);
+        }
         if let Some(method) = native
             .name
             .strip_prefix("Event.")
@@ -7317,7 +7520,12 @@ impl Runtime {
         }
         if matches!(
             native.name.as_str(),
-            "Event" | "CustomEvent" | "EventTarget" | "DOMException"
+            "Event"
+                | "CustomEvent"
+                | "EventTarget"
+                | "DOMException"
+                | "AbortController"
+                | "AbortSignal"
         ) {
             return Err(ScriptError::type_error("DOM constructor requires new"));
         }
@@ -7340,7 +7548,7 @@ impl Runtime {
                     "NotSupportedError".into(),
                     "event interface is not supported".into(),
                 )?;
-                return Err(ScriptError::thrown(value));
+                return Err(self.thrown_error(value)?);
             }
             let event = self.event_object(
                 "".into(),
@@ -7556,6 +7764,16 @@ impl Runtime {
                         } else {
                             "Event"
                         }
+                    }
+                    Value::Object(id)
+                        if matches!(self.objects[*id].abort, Some(AbortSlot::Controller(_))) =>
+                    {
+                        "AbortController"
+                    }
+                    Value::Object(id)
+                        if matches!(self.objects[*id].abort, Some(AbortSlot::Signal(_))) =>
+                    {
+                        "AbortSignal"
                     }
                     Value::Object(id) if self.objects[*id].event_target => "EventTarget",
                     Value::Object(id) => match self.objects[*id].boxed {
@@ -9301,6 +9519,247 @@ mod tests {
         );
     }
 
+    #[test]
+    fn abort_controller_signal_slots_and_reason_identity_are_private() {
+        let (mut runtime, mut doc) = property_harness();
+        runtime.execute(r#"
+            var c=new AbortController(),s=c.signal;
+            assert.sameValue(c.signal,s);assert.sameValue(s instanceof AbortSignal,true);
+            assert.sameValue(s instanceof EventTarget,true);assert.sameValue(s.aborted,false);
+            assert.sameValue(s.reason,undefined);assert.sameValue(s.throwIfAborted(),undefined);
+            assert.sameValue(Object.prototype.toString.call(c),'[object AbortController]');
+            assert.sameValue(Object.prototype.toString.call(s),'[object AbortSignal]');
+            assert.throws(TypeError,()=>AbortController());assert.throws(TypeError,()=>new AbortSignal());
+            assert.throws(TypeError,()=>AbortSignal());assert.throws(TypeError,()=>AbortController.prototype.abort.call(s));
+            assert.throws(TypeError,()=>AbortSignal.prototype.throwIfAborted.call({}));
+            var getter=Object.getOwnPropertyDescriptor(AbortController.prototype,'signal').get;
+            assert.throws(TypeError,()=>getter.call(Object.create(AbortController.prototype)));
+            var stateGetter=Object.getOwnPropertyDescriptor(AbortSignal.prototype,'aborted').get;
+            assert.throws(TypeError,()=>stateGetter.call(Object.create(AbortSignal.prototype)));
+            c.signal=null;s.aborted=true;s.reason='forged';
+            assert.sameValue(c.signal,s);assert.sameValue(s.aborted,false);assert.sameValue(s.reason,undefined);
+            assert.throws(TypeError,function(){'use strict';s.aborted=true;});
+            var reason={get constructor(){throw new Error('must not inspect reason');}},caught;
+            c.abort(reason);assert.sameValue(s.reason,reason);assert.sameValue(s.aborted,true);
+            try{s.throwIfAborted();}catch(error){caught=error;}assert.sameValue(caught,reason);
+            c.abort('second');assert.sameValue(s.reason,reason);
+            var d=new AbortController();d.abort(undefined);
+            assert.sameValue(d.signal.reason instanceof DOMException,true);
+            assert.sameValue(d.signal.reason.name,'AbortError');assert.sameValue(d.signal.reason.code,20);
+            assert.sameValue(DOMException.ABORT_ERR,20);
+            var same=d.signal.reason;d.abort();assert.sameValue(d.signal.reason,same);
+            var a=AbortSignal.abort(null);assert.sameValue(a.reason,null);assert.sameValue(a.aborted,true);
+            caught='missing';try{a.throwIfAborted();}catch(error){caught=error;}assert.sameValue(caught,null);
+            var b=AbortSignal.abort();assert.sameValue(b.reason.name,'AbortError');
+            assert.sameValue(AbortSignal.abort()===b,false);
+            assert.sameValue(AbortSignal.any,undefined);assert.sameValue(AbortSignal.timeout,undefined);
+        "#,&mut doc).unwrap();
+        assert!(runtime.console.is_empty(), "{:?}", runtime.console);
+    }
+    #[test]
+    fn abort_events_are_synchronous_trusted_idempotent_and_isolated() {
+        let (mut runtime, mut doc) = property_harness();
+        runtime.execute(r#"
+            var c=new AbortController(),s=c.signal,trace='',saved;
+            window.addEventListener('abort',()=>{trace+='window;';});
+            s.onabort=function(e){trace+='handler;';assert.sameValue(this,s);assert.sameValue(e.currentTarget,s);return false;};
+            s.addEventListener('abort',function(e){
+                saved=e;trace+='listener;';assert.sameValue(s.aborted,true);assert.sameValue(s.reason,'first');
+                assert.sameValue(e.target,s);assert.sameValue(e.isTrusted,true);assert.sameValue(e.bubbles,false);
+                assert.sameValue(e.cancelable,false);assert.sameValue(e.composed,false);assert.sameValue(e.eventPhase,2);
+                assert.sameValue(e.composedPath().length,1);c.abort('second');
+            });
+            assert.sameValue(c.abort('first'),undefined);trace+='after;';
+            assert.sameValue(trace,'handler;listener;after;');assert.sameValue(s.reason,'first');
+            assert.sameValue(saved.currentTarget,null);assert.sameValue(saved.eventPhase,0);
+            assert.sameValue(saved.composedPath().length,0);assert.sameValue(saved.defaultPrevented,false);
+            c.abort();assert.sameValue(trace,'handler;listener;after;');
+            var d=new AbortController(),seen=0;
+            d.signal.onabort=function(e){seen++;assert.sameValue(e.isTrusted,false);};
+            d.signal.dispatchEvent(new Event('abort'));
+            assert.sameValue(d.signal.aborted,false);assert.sameValue(d.signal.reason,undefined);assert.sameValue(seen,1);
+            d.signal.onabort=17;assert.sameValue(d.signal.onabort,null);d.abort();assert.sameValue(seen,1);
+            assert.throws(TypeError,()=>Object.getOwnPropertyDescriptor(AbortSignal.prototype,'onabort').get.call({}));
+        "#,&mut doc).unwrap();
+        assert!(runtime.console.is_empty(), "{:?}", runtime.console);
+    }
+    #[test]
+    fn abort_listener_options_validate_before_null_duplicates_or_aborted_suppression() {
+        let (mut runtime, mut doc) = property_harness();
+        runtime.execute(r#"
+            var t=new EventTarget(),c=new AbortController(),d=new AbortController(),trace='',count=0;
+            function listener(){count++;}
+            var options={get capture(){trace+='capture;';return false;},get once(){trace+='once;';return false;},
+                get passive(){trace+='passive;';return false;},get signal(){trace+='signal;';return c.signal;}};
+            t.addEventListener('x',null,options);assert.sameValue(trace,'capture;once;passive;signal;');
+            trace='';t.addEventListener('x',listener,options);t.addEventListener('x',listener,options);
+            assert.sameValue(trace,'capture;once;passive;signal;capture;once;passive;signal;');
+            assert.throws(TypeError,()=>t.addEventListener('x',listener,{signal:null}));
+            assert.throws(TypeError,()=>t.addEventListener('x',null,{signal:null}));
+            assert.throws(TypeError,()=>t.addEventListener('x',listener,{signal:Object.create(AbortSignal.prototype)}));
+            assert.throws(TypeError,()=>t.addEventListener('x',null,{signal:{aborted:true}}));
+            t.addEventListener('x',listener,{signal:d.signal});d.abort();
+            t.dispatchEvent(new Event('x'));assert.sameValue(count,1);
+            c.abort();t.dispatchEvent(new Event('x'));assert.sameValue(count,1);
+            t.addEventListener('x',listener,{signal:c.signal});t.dispatchEvent(new Event('x'));assert.sameValue(count,1);
+            var reentrant=new AbortController();
+            t.addEventListener('x',listener,{get signal(){reentrant.abort();return reentrant.signal;}});
+            t.dispatchEvent(new Event('x'));assert.sameValue(count,1);
+            t.addEventListener('x',listener,{signal:undefined});
+            t.removeEventListener('x',listener,{get signal(){throw new Error('remove must not read signal');}});
+            t.dispatchEvent(new Event('x'));assert.sameValue(count,1);
+            // Public property shadowing cannot substitute private signal state.
+            Object.defineProperty(c.signal,'aborted',{value:false});
+            t.addEventListener('x',listener,{signal:c.signal});t.dispatchEvent(new Event('x'));assert.sameValue(count,1);
+        "#,&mut doc).unwrap();
+        assert!(runtime.console.is_empty(), "{:?}", runtime.console);
+    }
+    #[test]
+    fn abort_removals_precede_callbacks_and_affect_active_dispatch_snapshots() {
+        let (mut runtime, mut doc) = property_harness();
+        runtime.execute(r#"
+            var t=new EventTarget(),c=new AbortController(),trace='';
+            function managed(){trace+='managed;';}
+            t.addEventListener('x',function(){trace+='first;';c.abort('stop');},{once:true});
+            t.addEventListener('x',managed,{signal:c.signal});
+            t.addEventListener('x',function(){trace+='last;';});
+            c.signal.addEventListener('abort',function(){trace+='abort;';t.dispatchEvent(new Event('x'));});
+            c.signal.addEventListener('abort',()=>{trace+='self-managed;';},{signal:c.signal});
+            t.dispatchEvent(new Event('x'));assert.sameValue(trace,'first;abort;last;last;');
+            var d=new AbortController(),n=0;
+            function again(){n++;}
+            t.addEventListener('y',again,{signal:d.signal});t.removeEventListener('y',again);
+            t.addEventListener('y',again);d.abort();t.dispatchEvent(new Event('y'));assert.sameValue(n,1);
+            var e=new AbortController();
+            t.addEventListener('z',function(){n++;e.abort();t.dispatchEvent(new Event('z'));},{once:true,signal:e.signal});
+            t.dispatchEvent(new Event('z'));assert.sameValue(n,2);
+            var f=new AbortController();f.signal.onabort=()=>{throw 'reported abort callback';};
+            f.signal.addEventListener('abort',()=>{n++;});f.abort();assert.sameValue(n,3);
+        "#,&mut doc).unwrap();
+        assert_eq!(runtime.console.len(), 1, "{:?}", runtime.console);
+        assert!(runtime.console[0].contains("reported abort callback"));
+    }
+    #[test]
+    fn abort_long_reasons_charge_formatting_work_and_diagnostic_allocation() {
+        for action in ["signal.throwIfAborted()", "throw reason"] {
+            let mut runtime = Runtime::new();
+            let mut doc = Document::parse("");
+            runtime
+                .execute(
+                    &format!(
+                        "var reason='{}';var signal=AbortSignal.abort(reason);var n=0;",
+                        "x".repeat(65_536)
+                    ),
+                    &mut doc,
+                )
+                .unwrap();
+            let error = runtime
+                .execute(
+                    &format!("for(n=0;n<100;n++){{try{{{action};}}catch(error){{}}}}"),
+                    &mut doc,
+                )
+                .unwrap_err();
+            assert!(error.is_resource_limit(), "{action}");
+            let Value::Number(iterations) = runtime.execute("n", &mut doc).unwrap() else {
+                panic!("numeric loop counter");
+            };
+            assert!(iterations < 16.0, "{action}: {iterations}");
+        }
+        let mut runtime = Runtime::new();
+        let mut doc = Document::parse("");
+        // Lone surrogates expand to three-byte replacement characters only in
+        // the diagnostic; the stored thrown reason must remain exact UTF-16.
+        let reason = runtime.string(JsString::from(&[0xd800; 64][..])).unwrap();
+        let signal = runtime.abort_signal_object(reason.clone()).unwrap();
+        let index = runtime.abort_signal_index(&signal).unwrap();
+        runtime.allocated = MAX_HEAP - 64;
+        let error = runtime
+            .abort_native("AbortSignal.throwIfAborted", signal, &[], &mut doc)
+            .unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(runtime.abort_signals[index].reason, reason);
+    }
+    #[test]
+    fn abort_observer_work_is_preflighted_and_callback_limits_are_uncatchable() {
+        let mut runtime = Runtime::new();
+        let mut doc = Document::parse("");
+        let controller = runtime
+            .event_construct("AbortController", &[], &mut doc)
+            .unwrap();
+        let signal = runtime
+            .abort_native(
+                "AbortController.get.signal",
+                controller.clone(),
+                &[],
+                &mut doc,
+            )
+            .unwrap();
+        let index = runtime.abort_signal_index(&signal).unwrap();
+        runtime.execute("function callback(){}", &mut doc).unwrap();
+        let callback = runtime.execute("callback", &mut doc).unwrap();
+        let options = runtime
+            .object_ordered([("signal".into(), signal.clone())])
+            .unwrap();
+        for i in 0..40 {
+            runtime
+                .event_target_native(
+                    "addEventListener",
+                    Value::Document,
+                    &[
+                        Value::String(format!("event{i}").into()),
+                        callback.clone(),
+                        options.clone(),
+                    ],
+                    &mut doc,
+                )
+                .unwrap();
+        }
+        assert_eq!(runtime.abort_signals[index].listeners.len(), 40);
+        runtime.steps = 39;
+        assert!(
+            runtime
+                .abort_native("AbortController.abort", controller.clone(), &[], &mut doc)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(runtime.abort_signals[index].reason, Value::Undefined);
+        assert!(
+            runtime.abort_signals[index]
+                .listeners
+                .iter()
+                .all(|id| !runtime.listeners[*id].removed)
+        );
+        runtime.steps = MAX_STEPS;
+        runtime
+            .abort_native("AbortController.abort", controller, &[], &mut doc)
+            .unwrap();
+        assert!(runtime.abort_signals[index].listeners.is_empty());
+        assert!(runtime.listeners.iter().all(|listener| listener.removed));
+        for source in [
+            "var c=new AbortController();c.signal.onabort=function(){while(true){}};try{c.abort();}catch(error){caught=true;}",
+            "var c=new AbortController();function chain(){var n=new AbortController();n.signal.onabort=chain;n.abort();}c.signal.onabort=chain;try{c.abort();}catch(error){caught=true;}",
+        ] {
+            let mut runtime = Runtime::new();
+            let mut doc = Document::parse("");
+            runtime.execute("var caught=false", &mut doc).unwrap();
+            assert!(
+                runtime
+                    .execute(source, &mut doc)
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(
+                runtime
+                    .execute("caught===false && c.signal.aborted===true", &mut doc)
+                    .unwrap(),
+                Value::Bool(true)
+            );
+            assert_eq!(runtime.stack_units, 0);
+            assert!(runtime.events.iter().all(|event| !event.dispatching
+                && event.path.is_empty()
+                && event.current_target == Value::Null));
+        }
+    }
     #[test]
     fn events_have_private_state_readonly_fields_and_standard_construction() {
         let (mut runtime, mut doc) = property_harness();

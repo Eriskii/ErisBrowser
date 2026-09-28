@@ -12,6 +12,10 @@ jobs:
       - run: cargo fmt --all -- --check
       - run: cargo clippy --locked --all-targets -- -D warnings
       - run: cargo test --locked -- --include-ignored
+        env:
+          # Sanitize build/CI descriptors before test startup; worker startup
+          # still rejects descriptors deliberately inherited by a test.
+          CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUNNER: python3 tools/ci_test_runner.py
       - run: cargo build --locked --release
       - run: python3 tools/reftest.py --binary target/release/eris-browser
       - run: python3 -m unittest discover -s tools -p 'test_*.py'

@@ -24,7 +24,7 @@ After the parser, JSON and flex compatibility increment, the same fixture/viewpo
 
 After the broker, namespace and Test262 increment, the same warm-render configuration recorded medians of 4.399 ms (home), 7.053 ms (gallery), and 5.203 ms (forms); p95 values were 4.542, 7.519 and 5.273 ms. [This record](benchmark-broker.json) retains the measured build/input hashes. It still excludes native process startup and IPC, so these timings do not measure the new broker's overhead or establish a Chromium comparison.
 
-`python3 tools/benchmark.py` records timings for six local fixtures in `artifacts/benchmark.json`, including source/assets/dependency input hashes, binary hash, CPU, OS, compiler and excluded phases. The template/Grid, positioning and event/compositing fixtures use their initially loaded documents; cloning, import loading and click handlers execute outside the measured warm-render loop. The event fixture's opacity groups are composited inside that loop.
+`python3 tools/benchmark.py` records seven measurements across six local pages in `artifacts/benchmark.json`, including source/assets/dependency input hashes, binary hash, CPU, OS, compiler and excluded phases. The template/Grid, positioning and event/compositing fixtures use their initially loaded documents; cloning, import loading and click handlers execute outside the measured warm-render loop. The event page is measured both from the top and scrolled to its panel so the opacity group is visible. Opacity allocation and compositing, when needed, are inside that loop.
 
 ## Required comparison design
 
@@ -78,3 +78,22 @@ compositing, even when the group's content is outside the viewport: intermediate
 surfaces currently use the full caller viewport. Group bounds or tiling remain
 performance work. Loading and event dispatch remain outside these measurements.
 These local observations do not establish Chromium-relative performance.
+
+After deferred opacity allocation and AbortSignal support, the seven recorded
+medians were 5.002 ms (home), 8.216 ms (gallery), 6.010 ms (forms), 1.115 ms
+(templates), 1.121 ms (positioning), 1.155 ms (events from the top), and
+12.385 ms (events scrolled to `#panel`, with its opacity group visible).
+Corresponding p95 values were 5.405, 8.445, 6.118, 1.281, 1.153, 1.391 and
+13.712 ms. [The final record](benchmark-abort-opacity.json) retains verified
+build/input hashes and the same 100-iteration, 1180×880 configuration.
+
+The offscreen event case previously measured 11.047 ms. It now avoids allocating
+8,307,200 bytes and charging 2,076,800 initialization/composite pixels for a group
+that contributes no visible pixels. A separately recorded
+[visible-group baseline](benchmark-opacity-visible-before.json) on the previous
+frozen build measured 11.763 ms median and 11.945 ms p95; the later visible-group
+measurement was higher. Visible groups still allocate the full caller viewport.
+Nine decoded-pixel comparisons, covering both event views, desktop/narrow clicked
+pages and the other benchmark pages, match the previous build exactly.
+These are uncontrolled local observations, not evidence of a general speedup or
+performance relative to Chromium. Abort dispatch is outside the measured loop.

@@ -6,6 +6,15 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 
 ## Open the browser
 
+Clone the public repository:
+
+```sh
+git clone https://github.com/Eriskii/ErisBrowser.git
+cd ErisBrowser
+```
+
+Then launch the home page or one of the examples:
+
 ```sh
 ./run.sh
 ./run.sh https://example.com
@@ -54,7 +63,7 @@ cargo run --locked --release -- --benchmark 100 --output artifacts/benchmark.png
 
 The native UI loads each document in a fresh child process. Its address bar, clipboard and software painter stay in the UI process; a separate broker supplies resources and authoritative redirect URLs, while validated document and drawing snapshots return from the renderer. The renderer cannot directly read files or open sockets. Cross-origin images use a fresh restricted decoder, which returns pixels without exposing their raw responses to the renderer. See [the security boundary](docs/SECURITY.md) for remaining gaps.
 
-For a JSON report covering the home, gallery, form, template/Grid, positioning and event/compositing fixtures, run `python3 tools/benchmark.py`.
+For a JSON report covering the home, gallery, form, template/Grid, positioning and event/compositing fixtures, including a scrolled view with visible opacity, run `python3 tools/benchmark.py`.
 
 The benchmark measures **warm-cache CSS computation + layout + software painting of the loaded page**. It excludes parsing, scripts, network, image decoding, PNG encoding, and native presentation. It is not a Chromium comparison or a general web-performance score. See [performance](docs/PERFORMANCE.md).
 
@@ -76,11 +85,16 @@ cargo run --locked --release --bin eris-stress -- 5000
 
 Network and sandbox integration tests explicitly opt in: they bind temporary loopback HTTP servers or require the Linux sandbox features above. They require no public network. Other tests cover parser recovery, selectors and cascade, box layout, DOM/script interaction, script exhaustion, file scopes, geometry and raster limits. Reference tests compare independently constructed pages pixel-for-pixel with this renderer. They are a small self-authored suite, not a claim to pass the Web Platform Tests. The deterministic stress harness mutates HTML/CSS, script, and SVG seeds and checks bounded-output invariants; it is smoke fuzzing, not coverage-guided fuzzing.
 
+CI uses a Cargo target runner to close ambient build/runner descriptors before
+each Rust test executable starts. Worker rejection of unexpected descriptors,
+including descriptors deliberately opened by a test, remains enforced.
+
 The [validation record](docs/VALIDATION.md) lists observed results and their limits. A pinned upstream HTML tree corpus now provides exact-tree comparisons and a regression baseline; [its documentation](tests/conformance/README.md) records all mismatches, unsupported modes, and untested semantics. A pinned [Test262 selection](tests/conformance/test262.md) runs unchanged upstream tests and assertion harnesses with explicit failure/unsupported categories. Neither runner establishes platform-wide compatibility.
 
 ## Implementation
 
 The [architecture notes](docs/ARCHITECTURE.md) describe the page pipeline and native process boundaries.
+The [development docket](docs/ROADMAP.md) includes a planned Vulkan rendering backend.
 
 | Module | Responsibility |
 |---|---|

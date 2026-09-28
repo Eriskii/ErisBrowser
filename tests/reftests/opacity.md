@@ -35,9 +35,18 @@ linear-light compositing, blend modes, filters, masks, or a GPU compositor.
 
 Opacity zero preserves layout and hit regions while suppressing drawing and
 surface allocation. Opacity-one protocol scopes pass through without a surface;
-normal source-over grouping is invariant in this case. All other groups currently
-allocate the caller viewport rectangle, not a tightly fitted content rectangle.
-This includes potential fixed descendants outside the current clip.
+normal source-over grouping is invariant in this case. Other groups start pending:
+their first clipped pixel with nonzero source alpha allocates transparent surfaces
+for the group and any pending opacity ancestors. Empty, entirely offscreen and
+fully transparent groups allocate no surfaces and incur no initialization or
+composition work. Primitive sampling and glyph work remain charged normally.
+All scope commands still execute, so a fixed descendant that escapes an empty
+document clip can trigger allocation and retain its ancestor opacity.
+
+Allocated groups cover the caller viewport rectangle, not a tightly fitted
+content rectangle. This includes potential fixed descendants outside the current
+clip. The painter remembers the outermost pending group; it does not rescan
+subtrees or walk all allocated ancestors for every pixel.
 
 Resource limits apply before allocation or scope emission:
 
@@ -58,13 +67,19 @@ Resource limits apply before allocation or scope emission:
 
 These limits intentionally reject some otherwise valid content. In particular,
 the maximum 16-megapixel framebuffer is larger than one permitted opacity
-surface, and many small groups can consume viewport-sized allocations/work.
-Tighter group bounds or tiled surfaces remain a performance improvement.
+surface, and many small visible groups can consume viewport-sized allocations/work.
+Deferring allocation removes that cost only when a group contributes no visible
+source pixels. Tighter group bounds or tiled surfaces remain a performance
+improvement.
 
 Unit tests cover premultiplied image alpha, glyph coverage, transparent holes,
 source-order isolation, zero-opacity hit targets, wrapped inline runs, scrolled
 fixed pixels, row-background ownership and root propagation. Adversarial tests
 check allocation limits before reservation, zero-opacity nesting, malformed
 mixed scopes, cleanup after work exhaustion, and a deep clipped/fixed/opacity
-layout whose command inventory is actually truncated. The mutation harness and
-native IPC validator separately enforce typed scope balance.
+layout whose command inventory is actually truncated. Deferred-allocation tests
+also cover empty 128-level groups, offscreen and transparent ink, first-pixel
+ancestor allocation, fixed descendants escaping empty clips, and partial ancestor
+allocation failing after transparent-image sampling consumes the work budget.
+The mutation harness and native IPC validator separately enforce typed scope
+balance.

@@ -238,8 +238,14 @@ struct OpacityLayer {
     y: usize,
     width: usize,
     height: usize,
-    pixels: Vec<u64>,
+    pixels: LayerPixels,
     opacity: f32,
+}
+
+enum LayerPixels {
+    Pending,
+    Suppressed,
+    Allocated(Vec<u64>),
 }
 
 fn premultiplied_over(source: u64, destination: u64) -> u64 {
@@ -259,6 +265,11 @@ pub struct Canvas {
     budget: Option<PaintBudget>,
     paint_exhausted: bool,
     layers: Vec<OpacityLayer>,
+    // The first pending ancestor is cached: ordinary pixels do not scan the
+    // layer stack. Only a first visible, nontransparent contribution allocates.
+    first_pending: Option<usize>,
+    layer_allocated: usize,
+    layer_live: usize,
 }
 impl Canvas {
     pub fn new(width: u32, height: u32) -> Result<Self, String> {
@@ -283,6 +294,9 @@ impl Canvas {
             budget: None,
             paint_exhausted: false,
             layers: Vec::new(),
+            first_pending: None,
+            layer_allocated: 0,
+            layer_live: 0,
         })
     }
 
@@ -342,40 +356,20 @@ impl Canvas {
     fn suppressed(&self) -> bool {
         self.layers
             .last()
-            .is_some_and(|layer| layer.pixels.is_empty())
+            .is_some_and(|layer| matches!(layer.pixels, LayerPixels::Suppressed))
     }
 
-    fn begin_opacity(
-        &mut self,
-        opacity: f32,
-        viewport: Rect,
-        allocated: &mut usize,
-        live: &mut usize,
-    ) -> bool {
+    fn begin_opacity(&mut self, opacity: f32, viewport: Rect) {
         let x = viewport.x.ceil().max(0.0) as usize;
         let y = viewport.y.ceil().max(0.0) as usize;
         let width = ((viewport.x + viewport.width).ceil().max(0.0) as usize).saturating_sub(x);
         let height = ((viewport.y + viewport.height).ceil().max(0.0) as usize).saturating_sub(y);
-        let count = if opacity == 0.0 || self.suppressed() {
-            0
+        let pixels = if opacity == 0.0 || self.suppressed() || width == 0 || height == 0 {
+            LayerPixels::Suppressed
         } else {
-            width * height
+            self.first_pending.get_or_insert(self.layers.len());
+            LayerPixels::Pending
         };
-        if count > MAX_LAYER_PIXELS.saturating_sub(*live)
-            || count > MAX_LAYER_ALLOCATED_PIXELS.saturating_sub(*allocated)
-            || !self.consume_pixels(count as u64)
-        {
-            self.paint_exhausted = true;
-            return false;
-        }
-        let mut pixels = Vec::new();
-        if pixels.try_reserve_exact(count).is_err() {
-            self.paint_exhausted = true;
-            return false;
-        }
-        pixels.resize(count, 0);
-        *live += count;
-        *allocated += count;
         self.layers.push(OpacityLayer {
             x,
             y,
@@ -384,19 +378,70 @@ impl Canvas {
             pixels,
             opacity,
         });
+    }
+
+    fn materialize_layers(&mut self) -> bool {
+        if self.paint_exhausted {
+            return false;
+        }
+        let Some(first) = self.first_pending else {
+            return true;
+        };
+        // Allocate outer ancestors before children. A child can then composite
+        // without allocating its parent while its own surface remains live.
+        for index in first..self.layers.len() {
+            let layer = &self.layers[index];
+            if !matches!(layer.pixels, LayerPixels::Pending) {
+                self.paint_exhausted = true;
+                return false;
+            }
+            let count = layer.width * layer.height;
+            if count > MAX_LAYER_PIXELS.saturating_sub(self.layer_live)
+                || count > MAX_LAYER_ALLOCATED_PIXELS.saturating_sub(self.layer_allocated)
+                || !self.consume_pixels(count as u64)
+            {
+                self.paint_exhausted = true;
+                return false;
+            }
+            let mut pixels = Vec::new();
+            if pixels.try_reserve_exact(count).is_err() {
+                self.paint_exhausted = true;
+                return false;
+            }
+            pixels.resize(count, 0);
+            self.layer_live += count;
+            self.layer_allocated += count;
+            self.layers[index].pixels = LayerPixels::Allocated(pixels);
+        }
+        self.first_pending = None;
         true
     }
 
-    fn end_opacity(&mut self, live: &mut usize) -> bool {
+    fn end_opacity(&mut self) -> bool {
         let Some(layer) = self.layers.pop() else {
             self.paint_exhausted = true;
             return false;
         };
-        *live = live.saturating_sub(layer.pixels.len());
-        if !self.consume_pixels(layer.pixels.len() as u64) {
+        if self
+            .first_pending
+            .is_some_and(|first| first >= self.layers.len())
+        {
+            self.first_pending = None;
+        }
+        let LayerPixels::Allocated(pixels) = layer.pixels else {
+            return true;
+        };
+        self.layer_live = self.layer_live.saturating_sub(pixels.len());
+        if !self.consume_pixels(pixels.len() as u64) {
             return false;
         }
-        for (index, pixel) in layer.pixels.into_iter().enumerate() {
+        if self.layers.last().is_some_and(|parent| {
+            !matches!(&parent.pixels, LayerPixels::Allocated(parent_pixels) if parent_pixels.len() == pixels.len())
+        }) {
+            self.paint_exhausted = true;
+            return false;
+        }
+        for (index, pixel) in pixels.into_iter().enumerate() {
             // Keep opacity unquantized until compositing. RGBA16 retains enough
             // intermediate precision to avoid dark fringes and repeated 8-bit
             // rounding through nested translucent groups.
@@ -408,7 +453,8 @@ impl Canvas {
             let y = layer.y + index / layer.width;
             if let Some(parent) = self.layers.last_mut() {
                 // All nonempty layers use the same caller-viewport rectangle.
-                if let Some(destination) = parent.pixels.get_mut(index) {
+                if let LayerPixels::Allocated(parent_pixels) = &mut parent.pixels {
+                    let destination = &mut parent_pixels[index];
                     let component = |shift: u32| {
                         channel(shift, ((*destination >> shift) & 65_535u64) as f32).round() as u64
                     };
@@ -445,8 +491,8 @@ impl Canvas {
         if a == 0 {
             return;
         }
-        if let Some(layer) = self.layers.last_mut() {
-            if layer.pixels.is_empty() {
+        if let Some(layer) = self.layers.last() {
+            if matches!(layer.pixels, LayerPixels::Suppressed) {
                 return;
             }
             let x = x as usize;
@@ -458,12 +504,23 @@ impl Canvas {
             {
                 return;
             }
+            if !self.materialize_layers() {
+                return;
+            }
+            let layer = self
+                .layers
+                .last_mut()
+                .expect("opacity layer is still present");
+            let LayerPixels::Allocated(pixels) = &mut layer.pixels else {
+                self.paint_exhausted = true;
+                return;
+            };
             let alpha = u64::from(a) * 257;
             let source = (alpha << 48)
                 | (((u64::from(color.r) * alpha + 127) / 255) << 32)
                 | (((u64::from(color.g) * alpha + 127) / 255) << 16)
                 | ((u64::from(color.b) * alpha + 127) / 255);
-            let pixel = &mut layer.pixels[(y - layer.y) * layer.width + x - layer.x];
+            let pixel = &mut pixels[(y - layer.y) * layer.width + x - layer.x];
             *pixel = premultiplied_over(source, *pixel);
             return;
         }
@@ -671,10 +728,12 @@ impl Canvas {
         }
         self.paint_exhausted = false;
         self.layers.clear();
+        self.first_pending = None;
+        self.layer_allocated = 0;
+        self.layer_live = 0;
         let caller_clip = self.clip;
         let mut scopes = Vec::new();
         let (mut dx, mut dy) = document_offset;
-        let (mut allocated, mut live) = (0usize, 0usize);
         self.budget = Some(PaintBudget {
             pixels: (u64::from(self.width) * u64::from(self.height) * 16)
                 .clamp(1_000_000, MAX_PAINT_PIXELS),
@@ -738,10 +797,8 @@ impl Canvas {
                         break;
                     }
                     let layer = *opacity < 1.0;
-                    if layer
-                        && !self.begin_opacity(*opacity, caller_clip, &mut allocated, &mut live)
-                    {
-                        break;
+                    if layer {
+                        self.begin_opacity(*opacity, caller_clip);
                     }
                     scopes.push(Scope::Opacity { layer });
                 }
@@ -750,7 +807,7 @@ impl Canvas {
                         self.paint_exhausted = true;
                         break;
                     };
-                    if layer && !self.end_opacity(&mut live) {
+                    if layer && !self.end_opacity() {
                         break;
                     }
                 }
@@ -808,6 +865,8 @@ impl Canvas {
         // Unfinished groups never leak partially composited layers into the UI
         // or retain temporary memory after invalid input or quota exhaustion.
         self.layers.clear();
+        self.first_pending = None;
+        self.layer_live = 0;
         self.budget = None;
         self.clip = caller_clip;
     }
@@ -1025,21 +1084,48 @@ mod tests {
     fn opacity_storage_caps_are_checked_before_allocation_and_zero_groups_allocate_nothing() {
         let mut canvas = Canvas::new(8, 8).unwrap();
         let viewport = canvas.clip;
-        let mut allocated = MAX_LAYER_ALLOCATED_PIXELS - 64;
-        let mut live = MAX_LAYER_PIXELS - 64;
-        assert!(canvas.begin_opacity(0.5, viewport, &mut allocated, &mut live));
-        assert_eq!(canvas.layers[0].pixels.len(), 64);
-        assert!(!canvas.begin_opacity(0.5, viewport, &mut allocated, &mut live));
-        assert_eq!(live, MAX_LAYER_PIXELS);
-        assert!(canvas.end_opacity(&mut live));
-        assert!(!canvas.begin_opacity(0.5, viewport, &mut allocated, &mut live));
-        assert!(canvas.layers.is_empty());
+        for peak_limit in [true, false] {
+            let mut limited = Canvas::new(8, 8).unwrap();
+            if peak_limit {
+                limited.layer_live = MAX_LAYER_PIXELS - 64;
+            } else {
+                limited.layer_allocated = MAX_LAYER_ALLOCATED_PIXELS - 64;
+            }
+            limited.begin_opacity(0.5, viewport);
+            assert!(matches!(limited.layers[0].pixels, LayerPixels::Pending));
+            limited.blend(0, 0, Color::BLACK, 255);
+            assert!(
+                matches!(&limited.layers[0].pixels, LayerPixels::Allocated(pixels) if pixels.len() == 64)
+            );
+            let allocated_before_failure = limited.layer_allocated;
+            let live_before_failure = limited.layer_live;
+            if !peak_limit {
+                // Completing a layer releases live storage, but must not
+                // refund the cumulative allocation budget.
+                assert!(limited.end_opacity());
+                assert_eq!(limited.layer_live, 0);
+            }
+            limited.begin_opacity(0.5, viewport);
+            limited.blend(0, 0, Color::BLACK, 255);
+            assert!(limited.exhausted());
+            assert!(matches!(
+                limited.layers.last().unwrap().pixels,
+                LayerPixels::Pending
+            ));
+            assert_eq!(limited.layer_allocated, allocated_before_failure);
+            if peak_limit {
+                assert_eq!(limited.layer_live, live_before_failure);
+            }
+        }
         let mut commands = vec![DrawCommand::PushOpacity { opacity: 0.0 }; 128];
         commands.extend((0..1000).map(|_| colored_rect(0.0, 0.0, 1e6, 1e6, Color::BLACK)));
         commands.extend(vec![DrawCommand::PopOpacity; 128]);
         canvas.paint(&commands, &Fonts::new(), &ImageStore::new(), 0.0, 0.0);
         assert!(!canvas.exhausted());
         assert!(canvas.layers.is_empty());
+        assert_eq!(canvas.layer_allocated, 0);
+        assert_eq!(canvas.layer_live, 0);
+        assert!(canvas.first_pending.is_none());
         assert!(canvas.pixels.iter().all(|pixel| *pixel == 0xffffff));
     }
 
@@ -1050,11 +1136,17 @@ mod tests {
         // 20.48M work allowance, so the independent peak-storage cap must win.
         let mut canvas = Canvas::new(1600, 800).unwrap();
         let mut commands = vec![DrawCommand::PushOpacity { opacity: 0.5 }; 7];
+        commands.push(colored_rect(0.0, 0.0, 1.0, 1.0, Color::BLACK));
         commands.extend(vec![DrawCommand::PopOpacity; 7]);
         canvas.paint(&commands, &Fonts::new(), &ImageStore::new(), 0.0, 0.0);
         assert!(canvas.exhausted());
         assert!(canvas.layers.is_empty());
+        assert_eq!(canvas.layer_allocated, 6 * 1600 * 800);
+        assert_eq!(canvas.layer_live, 0);
+        assert!(canvas.first_pending.is_none());
         assert!(canvas.pixels.iter().all(|pixel| *pixel == 0xffffff));
+        // A failed materialization does not disable direct toolbar painting.
+        canvas.rect(canvas.clip, Color::WHITE, 0.0);
         // Opacity-one scopes need no surface and preserve ordinary paint.
         canvas.paint(
             &[
@@ -1069,6 +1161,197 @@ mod tests {
         );
         assert!(!canvas.exhausted());
         assert_eq!(canvas.pixels[0], 0);
+        assert_eq!(canvas.layer_allocated, 0);
+    }
+
+    #[test]
+    fn empty_nested_opacity_groups_do_not_allocate_or_charge_surface_work() {
+        // Eager allocation would exceed peak storage on the seventh group.
+        let mut canvas = Canvas::new(1600, 800).unwrap();
+        let mut commands = vec![DrawCommand::PushOpacity { opacity: 0.5 }; MAX_CLIP_DEPTH];
+        commands.extend(vec![DrawCommand::PopOpacity; MAX_CLIP_DEPTH]);
+        canvas.paint(&commands, &Fonts::new(), &ImageStore::new(), 0.0, 0.0);
+        assert!(!canvas.exhausted());
+        assert_eq!(canvas.layer_allocated, 0);
+        assert_eq!(canvas.layer_live, 0);
+        assert!(canvas.first_pending.is_none());
+        assert!(canvas.pixels.iter().all(|pixel| *pixel == 0xffffff));
+    }
+
+    #[test]
+    fn offscreen_and_fully_transparent_opacity_content_keeps_surfaces_pending() {
+        let mut images = ImageStore::new();
+        images.insert(
+            "clear".into(),
+            Arc::new(RasterImage {
+                width: 1,
+                height: 1,
+                rgba: vec![255, 0, 0, 0],
+            }),
+        );
+        let mut canvas = Canvas::new(64, 32).unwrap();
+        let text = |y, text: &str| DrawCommand::Text {
+            x: 0.0,
+            y,
+            text: text.into(),
+            size: 16.0,
+            color: Color::BLACK,
+            bold: false,
+            italic: false,
+            monospace: false,
+        };
+        canvas.paint(
+            &[
+                DrawCommand::PushOpacity { opacity: 0.5 },
+                colored_rect(0.0, 64.0, 64.0, 32.0, Color::BLACK),
+                text(64.0, "offscreen"),
+                DrawCommand::Image {
+                    rect: Rect {
+                        x: 0.0,
+                        y: 64.0,
+                        width: 64.0,
+                        height: 32.0,
+                    },
+                    key: "clear".into(),
+                },
+                // These commands intersect the viewport but contain no ink.
+                colored_rect(0.0, 0.0, 64.0, 32.0, Color::rgba(255, 0, 0, 0)),
+                text(0.0, "    "),
+                DrawCommand::Image {
+                    rect: canvas.clip,
+                    key: "clear".into(),
+                },
+                DrawCommand::PopOpacity,
+            ],
+            &Fonts::new(),
+            &images,
+            0.0,
+            0.0,
+        );
+        assert!(!canvas.exhausted());
+        assert_eq!(canvas.layer_allocated, 0);
+        assert!(canvas.pixels.iter().all(|pixel| *pixel == 0xffffff));
+    }
+
+    #[test]
+    fn first_visible_pixel_materializes_pending_ancestors_once() {
+        let mut canvas = Canvas::new(8, 8).unwrap();
+        canvas.paint(
+            &[
+                DrawCommand::PushOpacity { opacity: 0.5 },
+                DrawCommand::PushOpacity { opacity: 0.5 },
+                DrawCommand::PopOpacity,
+                DrawCommand::PushOpacity { opacity: 0.0 },
+                colored_rect(0.0, 0.0, 8.0, 8.0, Color::BLACK),
+                DrawCommand::PopOpacity,
+                DrawCommand::PushOpacity { opacity: 0.5 },
+                colored_rect(0.0, 0.0, 1.0, 1.0, Color::rgb(255, 0, 0)),
+                colored_rect(1.0, 0.0, 1.0, 1.0, Color::rgb(255, 0, 0)),
+                DrawCommand::PopOpacity,
+                colored_rect(2.0, 0.0, 1.0, 1.0, Color::BLACK),
+                DrawCommand::PushOpacity { opacity: 0.5 },
+                colored_rect(3.0, 0.0, 1.0, 1.0, Color::rgb(0, 0, 255)),
+                DrawCommand::PopOpacity,
+                DrawCommand::PopOpacity,
+            ],
+            &Fonts::new(),
+            &ImageStore::new(),
+            0.0,
+            0.0,
+        );
+        assert!(!canvas.exhausted());
+        assert_eq!(canvas.layer_allocated, 3 * 64);
+        assert_eq!(canvas.layer_live, 0);
+        assert!(canvas.first_pending.is_none());
+        assert_eq!(
+            &canvas.pixels[..5],
+            &[0xffbfbf, 0xffbfbf, 0x808080, 0xbfbfff, 0xffffff]
+        );
+    }
+
+    #[test]
+    fn pending_groups_materialize_for_fixed_descendants_of_empty_document_clips() {
+        let mut canvas = Canvas::new(8, 8).unwrap();
+        let viewport = Rect {
+            x: 1.0,
+            y: 2.0,
+            width: 6.0,
+            height: 4.0,
+        };
+        canvas.set_clip(viewport);
+        canvas.paint_with_viewport(
+            &[
+                DrawCommand::PushOpacity { opacity: 0.5 },
+                DrawCommand::PushClip {
+                    rect: Rect {
+                        x: 0.0,
+                        y: 0.0,
+                        width: 8.0,
+                        height: 8.0,
+                    },
+                },
+                colored_rect(0.0, 0.0, 8.0, 8.0, Color::BLACK),
+                DrawCommand::PushOpacity { opacity: 0.5 },
+                DrawCommand::PushFixed,
+                colored_rect(0.0, 0.0, 8.0, 8.0, Color::rgb(255, 0, 0)),
+                DrawCommand::PopFixed,
+                DrawCommand::PopOpacity,
+                DrawCommand::PopClip,
+                DrawCommand::PopOpacity,
+            ],
+            &Fonts::new(),
+            &ImageStore::new(),
+            (0.0, -100.0),
+            (0.0, 0.0),
+        );
+        assert!(!canvas.exhausted());
+        assert_eq!(canvas.layer_allocated, 2 * 6 * 4);
+        assert_eq!(canvas.clip, viewport);
+        for y in 0..8 {
+            for x in 0..8 {
+                assert_eq!(
+                    canvas.pixels[y * 8 + x],
+                    if viewport.contains(x as f32, y as f32) {
+                        0xffbfbf
+                    } else {
+                        0xffffff
+                    }
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn transparent_drawing_still_charges_work_and_failed_materialization_is_discarded() {
+        let mut canvas = Canvas::new(64, 64).unwrap();
+        let mut images = ImageStore::new();
+        images.insert(
+            "clear".into(),
+            Arc::new(RasterImage {
+                width: 1,
+                height: 1,
+                rgba: vec![255, 0, 0, 0],
+            }),
+        );
+        let mut commands = vec![DrawCommand::PushOpacity { opacity: 0.5 }; 2];
+        // Transparent source pixels require sampling work, but no surface.
+        // 243 * 4096 samples leave enough of the 1M budget for one surface,
+        // but not two. No first source pixel may escape the unfinished group.
+        commands.extend((0..243).map(|_| DrawCommand::Image {
+            rect: canvas.clip,
+            key: "clear".into(),
+        }));
+        commands.push(colored_rect(0.0, 0.0, 1.0, 1.0, Color::BLACK));
+        commands.extend(vec![DrawCommand::PopOpacity; 2]);
+        canvas.paint(&commands, &Fonts::new(), &images, 0.0, 0.0);
+        assert!(canvas.exhausted());
+        assert_eq!(canvas.layer_allocated, 4096);
+        assert_eq!(canvas.layer_live, 0);
+        assert!(canvas.first_pending.is_none());
+        assert!(canvas.layers.is_empty());
+        assert!(canvas.pixels.iter().all(|pixel| *pixel == 0xffffff));
+        canvas.rect(canvas.clip, Color::BLACK, 0.0);
+        assert!(canvas.pixels.iter().all(|pixel| *pixel == 0));
     }
 
     #[test]
