@@ -56,7 +56,9 @@ class WorkerBenchmarkTests(unittest.TestCase):
                     # A reparented zombie has exited and cannot execute work;
                     # its final reaping belongs to the host's init process.
                     state = (Path('/proc') / str(pid) / 'stat').read_text().rsplit(')', 1)[1].split()[0]
-                except FileNotFoundError:
+                except (FileNotFoundError, ProcessLookupError):
+                    # procfs can report ESRCH if the process disappears after
+                    # stat is opened but before its contents are read.
                     break
                 if state == 'Z':
                     break
