@@ -190,3 +190,7 @@ producing **42 passed / six missing-Date failures / 40 unsupported**, with all
 gains without any other observation changes. Actual recording and gate checks
 protect them in the [current baseline](test262-global-values-current.json); the
 checkpoint link above retains earlier evidence.
+
+## Window reflection follow-up
+
+The later [Window reflection checkpoint](window-reflection.md) adds 22 passes: **64 passed / six failed / 18 unsupported**, with all 64 controls verified. The remaining unsupported cases require eval; the failures still require Date. The complete healthy baseline is updated.

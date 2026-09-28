@@ -1,5 +1,10 @@
 # Symbols and property keys
 
+The later [Window reflection checkpoint](window-reflection.md) adds the two global
+Symbol descriptor modes: the current profile records **168 passed / six failed /
+68 unsupported**, with all 64 controls verified. The original measurements below
+remain the evidence for the Symbol implementation itself.
+
 Eris implements Symbol primitives in its own Rust interpreter. Unique symbols
 retain identity independently of descriptions; the registry uses exact UTF-16
 keys. Well-known symbols have stable identities. `Symbol` is callable but cannot

@@ -137,3 +137,7 @@ retains every case and adds four passes without losses. The
 [current baseline](test262-number-statics-current.json) protects these gains;
 SHA-256 `8b4837fb66a9ced2a9e1910830bc5a8aa67d81d52b6766764c2aceddef7b8717`.
 Earlier reports and linked checkpoint baselines remain historical evidence.
+
+## Window reflection follow-up
+
+The later [Window reflection checkpoint](window-reflection.md) adds two global Number descriptor passes: **250 passed / 90 unsupported**, with all 104 controls verified. The complete healthy baseline is updated.

@@ -961,7 +961,7 @@ mod tests {
         for source in [
             "try{while(true){}}catch(e){console.log('caught');}finally{console.log('finally');}",
             "try{throw 1;}catch(e){for(;;){}}finally{console.log('finally');}",
-            "try{for(var k in globalThis){}}catch(e){console.log('caught');}finally{console.log('finally');}",
+            "try{for(var k in document){}}catch(e){console.log('caught');}finally{console.log('finally');}",
         ] {
             let mut runtime = Runtime::new();
             let mut doc = Document::parse("");
@@ -970,6 +970,14 @@ mod tests {
             assert!(runtime.console.is_empty());
             clean(&runtime);
         }
+        // Window enumeration is now supported, so its original case completes
+        // normally and executes finally. The unsupported Document case above
+        // still checks that an uncatchable host stop bypasses both handlers.
+        let mut runtime = Runtime::new();
+        let mut doc = Document::parse("");
+        runtime.execute("try{for(var k in globalThis){}}catch(e){console.log('caught');}finally{console.log('finally');}", &mut doc).unwrap();
+        assert_eq!(runtime.console, ["finally"]);
+        clean(&runtime);
     }
 
     #[test]

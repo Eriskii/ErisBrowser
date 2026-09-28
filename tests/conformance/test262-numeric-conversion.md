@@ -95,3 +95,7 @@ Number alias failures. The Number baseline hash above refers to
 [checkpoint cf28fc4](https://github.com/Eriskii/ErisBrowser/blob/cf28fc4eba40b5a22f8ea1632e33825a3c751fc1/tests/conformance/test262-number-statics-current.json);
 the current baseline and separate comparison are linked from the parsing report.
 This profile's 24 passes and 36 unsupported outcomes remain unchanged.
+
+## Window reflection follow-up
+
+The later [Window reflection checkpoint](window-reflection.md) adds four global predicate descriptor passes: **28 passed / 32 unsupported**, with all 80 controls verified. The complete healthy baseline is updated.

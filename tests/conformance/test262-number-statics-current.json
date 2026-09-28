@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "3c5c2503458843bfc64eaf546ee08b6e693714f561df42330d9001a2ec8216cd",
   "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
-  "binary_sha256": "528693af5794bc16e18b956ffe781cbab91b335615c82ea773eca6fe2b13c126",
+  "binary_sha256": "2035b3b51b264c4592ab4c7c598eea61492d1b375e10d04f0ec87dd3aff93f43",
   "cases": {
     "test/built-ins/Number/15.7.3-1.js:sloppy": {
       "status": "passed",
@@ -1315,12 +1315,12 @@
       "source_sha256": "a56bf47c394d27906bc3ddadb35186b6201a8ac2d35ad4c81c26266c016836ae"
     },
     "test/built-ins/Number/prop-desc.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "567ef6283c48ea0aae6e4f42569a01df554bf431534072d401c0b1d29148488c",
       "source_sha256": "c5a22879019d97a2c932c9549d68af86a8d7f1f9c35c4a797fcd8d028ce5423f"
     },
     "test/built-ins/Number/prop-desc.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "8d09d7b46fe15e4d8a209e585cc91432ca2cea2c5f003ea2e3a57f47baae4132",
       "source_sha256": "c5a22879019d97a2c932c9549d68af86a8d7f1f9c35c4a797fcd8d028ce5423f"
     },

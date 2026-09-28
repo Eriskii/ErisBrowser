@@ -85,6 +85,10 @@ names, embedded NUL and isolated UTF-16 surrogates do not alias these globals.
 Symbols, cross-realm objects, WindowProxy/cross-origin semantics, general Window
 own-key enumeration, host hasOwnProperty/propertyIsEnumerable and extensibility
 are outside this increment. Protected window/document behavior is unchanged.
+The subsequent [Window reflection checkpoint](window-reflection.md) implements
+own-key enumeration and membership/enumerability over supported Window bindings;
+general descriptor definitions, extensibility and full Window semantics remain
+incomplete. Symbols also have their own later implementation record.
 The adapter still shares the browser host realm. This global-property increment
 introduced no eval, Date or URI capability. The later [URI increment](uri.md)
 adds four encoding/decoding functions; complete global-object conformance

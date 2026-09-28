@@ -84,3 +84,7 @@ instruction limit. The [complete comparison](test262-uri-labels.json) records
 **210 passed / 24 unsupported / 112 resources**, with all 128 controls and no lost
 passes. All 104 earlier stops remain. No healthy URI baseline is recorded; the
 historical tables above retain the original URI checkpoint evidence.
+
+## Window reflection follow-up
+
+The later [Window reflection checkpoint](window-reflection.md) adds 16 global URI function reflection passes: **226 passed / eight unsupported / 112 runtime resources**, with all 128 controls verified. Resource observations and every other outcome remain unchanged; there is still no healthy baseline.

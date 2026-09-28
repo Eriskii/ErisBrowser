@@ -153,6 +153,17 @@ exhaustion, with execution-state cleanup checked afterward. These checks do not
 establish full DOM operation atomicity or exact process-wide memory accounting.
 Lone UTF-16 surrogates are still replaced at the DOM storage boundary.
 
+## Window binding reflection
+
+Window binding reflection now precharges snapshots, name scans, UTF-16 key copies,
+both output vectors and sorting work. Sorting allocates no additional buffer;
+vector reservations are fallible. The binding ledger includes each creation serial,
+and serial exhaustion rejects a new property before publication. Descriptor and
+membership queries do not invoke author getters or expose global lexical bindings.
+The [reflection checks](../tests/conformance/window-reflection.json) cover refused
+storage/work and counter exhaustion; quotas remain unchanged. General Window
+definitions, full interface reflection and WindowProxy semantics remain incomplete.
+
 ## Remaining work
 
 Stronger syscall confinement and complete opaque-response semantics; headless and cross-platform process isolation; complete origin/opaque-origin handling; Fetch/CORS/CSP and navigation policy; cookie/storage partitioning; mixed-content/private-network protection; permissions; verified dependency vulnerability monitoring; continuous coverage-guided fuzzing; sanitizers and cross-platform hardening; independent audit. The [CSP standard](https://www.w3.org/TR/CSP3/) describes substantially more behavior than the fallback above.

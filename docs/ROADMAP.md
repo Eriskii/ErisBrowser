@@ -1,11 +1,11 @@
 # Development docket
 
-The [DOM binding checkpoint](../tests/conformance/dom-string-conversion.md) adds
-checked string conversion and receiver handling to the supported DOM operations,
-building on [Symbol identities and hooks](../tests/conformance/symbols.md).
-Next work includes complete DOMString storage and Web IDL interfaces, global
-reflection, the remaining Symbol consumers, iterator infrastructure and broader
-ECMAScript dependencies.
+The [Window reflection checkpoint](../tests/conformance/window-reflection.md) adds
+ordered key enumeration, own membership and intrinsic binding flags, following
+the [DOM conversion work](../tests/conformance/dom-string-conversion.md).
+Next work includes general Window property definitions/accessors and private
+binding separation, complete DOMString storage and Web IDL interfaces, remaining
+Symbol consumers, iterator infrastructure and broader ECMAScript dependencies.
 These sit alongside the Vulkan milestones below.
 
 The goal remains an independent, fully web-compatible Rust browser with a

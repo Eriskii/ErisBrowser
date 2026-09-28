@@ -114,3 +114,7 @@ the complete Unicode loops and hit the existing instruction limit. The
 case identities and 80 preflights: **164 passed / 46 unsupported / eight
 resources**, with no lost or new passes. The original helper-error report above
 remains historical evidence; no healthy parsing baseline is recorded.
+
+## Window reflection follow-up
+
+The later [Window reflection checkpoint](window-reflection.md) adds eight global parsing-function reflection passes: **172 passed / 38 unsupported / eight runtime resources**, with all 80 controls verified. Resource observations and every other outcome remain unchanged; there is still no healthy baseline.

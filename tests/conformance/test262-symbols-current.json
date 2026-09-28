@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "c234ca3a603d668cff1b769612b3574cf2e59cfa5d21cd70695300e18751f127",
   "runner_policy_sha256": "34973c30f01597f7a0d535832c49d33b6f9b8d87746ad679a68ab2b74ebaa053",
-  "binary_sha256": "4b890d92a4027dc929be92ba366b0cf670f94f18e4bfb28025e365aba6bbab57",
+  "binary_sha256": "2035b3b51b264c4592ab4c7c598eea61492d1b375e10d04f0ec87dd3aff93f43",
   "cases": {
     "test/built-ins/Object/getOwnPropertySymbols/length.js:sloppy": {
       "status": "passed",
@@ -1135,12 +1135,12 @@
       "source_sha256": "5c7ba2a3485aad3bf3fe2ae26f1841c0c8a3c6dcc1991cbfd77ecf103a579dcd"
     },
     "test/built-ins/Symbol/symbol.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "9eed0bc9cbc9299057f9c0dabde0effb8e2e167f2fb64b2f0c65154e02d17efc",
       "source_sha256": "a5b41246e84f1604e77b7c8a8132bb55da4f20b4a81667c76702d064ba021220"
     },
     "test/built-ins/Symbol/symbol.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "78efa0832e43b96ae9b3b55148a95fd4499eb6a6dc608b597c73dacfd30219cd",
       "source_sha256": "a5b41246e84f1604e77b7c8a8132bb55da4f20b4a81667c76702d064ba021220"
     },

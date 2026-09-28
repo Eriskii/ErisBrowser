@@ -206,6 +206,7 @@ impl Runtime {
             tag,
             Property::data(Value::String("Reflect".into()), false, false, true),
         );
+        let global_order = self.global_creation_order("Reflect")?;
         self.environments[0].bindings.insert(
             "Reflect".into(),
             Binding {
@@ -215,6 +216,7 @@ impl Runtime {
                 initialized: true,
                 strict_immutable: false,
                 global_property: true,
+                global_order,
                 enumerable: false,
                 deletable: true,
             },

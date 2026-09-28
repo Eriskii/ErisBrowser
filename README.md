@@ -130,8 +130,8 @@ adds 20 variants: ten pass and ten require unsupported features. Its separate
 CI gate requires all method assertion preflights to pass.
 
 The complete [global-value directories](tests/conformance/test262-global-values.md)
-retain 88 variants: 42 pass, six fail on missing Date, and 40 remain unsupported.
-Global-property corrections and URI bindings add ten passes. All 64 assertion
+retain 88 variants: 64 pass, six fail on missing Date, and 18 remain unsupported.
+Global-property corrections and URI bindings add ten passes; Window reflection adds 22 more. All 64 assertion
 preflights verify; CI preserves those passes and the unchanged inventory.
 
 The complete [array-sort directory](tests/conformance/test262-array-sort.md)
@@ -147,18 +147,18 @@ passes with no losses; Symbol-based Math/JSON tags add eight more. All 128 asser
 cases and the full unchanged inventory.
 
 The [Number static builtin inventory](tests/conformance/test262-number-statics.md)
-retains 340 variants: 248 pass and 92 remain unsupported. Constants, static
+retains 340 variants: 250 pass and 90 remain unsupported. Constants, static
 predicates, ordinary constructor conversion and parsing aliases add 90 passes
-with no losses. All 104 assertion checks verify, and
+with no losses; Window reflection adds two more. All 104 assertion checks verify, and
 the complete regression baseline runs in CI.
 
 The complete [coercing global predicate directories](tests/conformance/test262-numeric-conversion.md)
-retain 60 variants: 24 pass and 36 remain unsupported. Ordinary numeric conversion
-adds eight passes with no losses. All 80 assertion controls verify, and CI
+retain 60 variants: 28 pass and 32 remain unsupported. Ordinary numeric conversion
+adds eight passes with no losses; Window reflection adds four more. All 80 assertion controls verify, and CI
 preserves the complete inventory and passing outcomes.
 
 The complete [numeric parsing directories](tests/conformance/test262-numeric-parsing.md)
-retain 218 variants: 164 pass, 46 remain unsupported and eight exceed the
+retain 218 variants: 172 pass, 38 remain unsupported and eight exceed the
 instruction budget. Compound assignment support lets the unchanged helper load
 and its dependent loops run. All 80 assertion controls verify; resource stops
 prevent a healthy regression baseline.
@@ -198,7 +198,7 @@ Ordinary conversion adds eight passes; all 128 assertion controls verify.
 CI preserves the passes and unchanged inventory.
 
 The complete [URI builtin directories](tests/conformance/test262-uri.md) retain
-346 variants: 210 pass, 24 remain unsupported and 112 hit the instruction limit.
+346 variants: 226 pass, eight remain unsupported and 112 hit the instruction limit.
 All 128 assertion controls verify. Full loops remain unchanged; resource stops
 prevent a healthy URI regression baseline.
 
@@ -210,7 +210,7 @@ regressions that were resolved by reducing actual lookup work and token storage.
 The remaining resource stops prevent a healthy regression baseline.
 
 The complete [Symbol tree and key-reflection inventory](tests/conformance/symbols.md)
-adds 123 sources / 242 modes: 166 pass, six fail and 70 remain unsupported, with
+adds 123 sources / 242 modes: 168 pass, six fail and 68 remain unsupported, with
 64 verified controls. Symbol identities, UTF-16 descriptions/registry keys,
 symbol properties, primitive/tag/instance hooks and key reflection now work.
 Their broader protocols remain incomplete. The [full comparison](tests/conformance/symbol-properties.json)
@@ -222,6 +222,11 @@ DOM effects. Attribute/append/class-list conversion preserves callback order and
 thrown values; nullable strings and Boolean setters use their respective rules.
 The original probes gain 16 passes with no regression in the existing inventories.
 Complete DOMString storage and Web IDL interfaces remain incomplete.
+
+Supported [Window binding reflection](tests/conformance/window-reflection.md) now
+preserves numeric/string/symbol key order, intrinsic flags and live for-in behavior.
+The unchanged upstream inventories gain 54 passes without losing previous passes.
+General Window property definitions and full interface behavior remain incomplete.
 
 ## Implementation
 

@@ -1,0 +1,16 @@
+global-symbol-descriptor	verifyProperty(globalThis,'Symbol',{writable:true,enumerable:false,configurable:true});
+global-reflect-descriptor	verifyProperty(globalThis,'Reflect',{writable:true,enumerable:false,configurable:true});
+window-own-membership	assert.sameValue(Object.prototype.hasOwnProperty.call(window,'globalThis'),true);assert.sameValue(Object.prototype.hasOwnProperty.call(window,'this'),false);assert.sameValue(Object.prototype.hasOwnProperty.call(window,'toString'),false);
+window-enumerability	assert.sameValue(Object.prototype.propertyIsEnumerable.call(window,'NaN'),false);assert.sameValue(Object.prototype.propertyIsEnumerable.call(window,'self'),true);
+window-own-names	var a=Object.getOwnPropertyNames(window);assert(a.indexOf('Object')>=0);assert(a.indexOf('Symbol')>=0);assert.sameValue(a.indexOf('this'),-1);
+window-lexicals-not-properties	let reflectionLexical=1;const reflectionConst=2;var names=Object.getOwnPropertyNames(window);assert.sameValue(names.indexOf('reflectionLexical'),-1);assert.sameValue(names.indexOf('reflectionConst'),-1);
+window-creation-order	window.zzReflection=1;window.aaReflection=2;var keys=Object.keys(window);assert(keys.indexOf('zzReflection')<keys.indexOf('aaReflection'));
+window-numeric-order	window[19]=1;window[2]=2;var keys=Object.getOwnPropertyNames(window);assert.sameValue(keys[0],'2');assert.sameValue(keys[1],'19');
+window-delete-reinsert-order	window.zzReflection=1;window.aaReflection=2;delete window.zzReflection;window.zzReflection=3;var keys=Object.keys(window);assert(keys.indexOf('aaReflection')<keys.indexOf('zzReflection'));
+global-constructor-flags	var d=Object.getOwnPropertyDescriptor(window,'Object');assert.sameValue(d.writable,true);assert.sameValue(d.enumerable,false);assert.sameValue(d.configurable,true);
+global-math-flags	var d=Object.getOwnPropertyDescriptor(window,'Math');assert.sameValue(d.writable,true);assert.sameValue(d.enumerable,false);assert.sameValue(d.configurable,true);
+window-defined-data	Object.defineProperty(window,'reflectionData',{value:1,writable:false,enumerable:true,configurable:true});assert.sameValue(reflectionData,1);assert.sameValue(Object.getOwnPropertyDescriptor(window,'reflectionData').writable,false);
+window-defined-accessor	var value=1;Object.defineProperty(window,'reflectionAccessor',{get:function(){assert.sameValue(this,window);return value;},set:function(v){assert.sameValue(this,window);value=v;},configurable:true});assert.sameValue(reflectionAccessor,1);reflectionAccessor=2;assert.sameValue(value,2);
+window-string-symbol-order	var s=Symbol('reflection');window[s]=1;window.zzReflection=2;var keys=Reflect.ownKeys(window);assert.sameValue(keys[keys.length-1],s);assert(keys.indexOf('zzReflection')>=0);
+window-for-in-shadowing	var seen=false;Object.prototype.NaN=1;for(var k in window){if(k==='NaN')seen=true;}assert.sameValue(seen,false);
+window-descriptor-does-not-call-global-accessor	var n=0;Object.defineProperty(window,'globalThis',{get:function(){n++;return window;},configurable:true});var d=Object.getOwnPropertyDescriptor(window,'globalThis');assert.sameValue(typeof d.get,'function');assert.sameValue(n,0);

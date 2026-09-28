@@ -23,6 +23,7 @@ mod names;
 mod parser;
 mod property_keys;
 mod symbols;
+mod window;
 use symbols::PropertyKey;
 pub use symbols::Symbol;
 #[cfg(test)]
@@ -1204,6 +1205,8 @@ struct Binding {
     initialized: bool,
     strict_immutable: bool,
     global_property: bool,
+    // Creation order for object-environment properties; unused by lexical bindings.
+    global_order: u64,
     enumerable: bool,
     deletable: bool,
 }
@@ -1211,7 +1214,8 @@ struct BindingAccessor {
     get: Value,
     set: Value,
 }
-const BINDING_BYTES: usize = 128 + std::mem::size_of::<Option<Rc<BindingAccessor>>>();
+const BINDING_BYTES: usize =
+    128 + std::mem::size_of::<Option<Rc<BindingAccessor>>>() + std::mem::size_of::<u64>();
 impl Binding {
     fn property(&self) -> Property {
         Property {
@@ -1521,6 +1525,7 @@ pub struct Runtime {
     pub console: Vec<String>,
     pub last_default_prevented: bool,
     tracked_global_keys: [JsString; 5],
+    next_global_order: u64,
 }
 
 impl Default for Runtime {
@@ -1531,7 +1536,7 @@ impl Default for Runtime {
 impl Runtime {
     pub fn new() -> Self {
         let mut bindings = BTreeMap::new();
-        for (name, value) in [
+        for (order, (name, value)) in [
             ("undefined", Value::Undefined),
             ("NaN", Value::Number(f64::NAN)),
             ("Infinity", Value::Number(f64::INFINITY)),
@@ -1542,18 +1547,25 @@ impl Runtime {
             ("console", Value::Console),
             ("Math", Value::Math),
             ("JSON", Value::Json),
-        ] {
+        ]
+        .into_iter()
+        .enumerate()
+        {
             bindings.insert(
                 name.to_owned(),
                 Binding {
                     value,
                     accessor: None,
-                    mutable: name == "globalThis",
+                    mutable: matches!(name, "globalThis" | "Math" | "JSON"),
                     initialized: true,
                     strict_immutable: false,
                     global_property: name != "this",
-                    enumerable: !matches!(name, "globalThis" | "undefined" | "NaN" | "Infinity"),
-                    deletable: name == "globalThis",
+                    global_order: order as u64,
+                    enumerable: !matches!(
+                        name,
+                        "globalThis" | "undefined" | "NaN" | "Infinity" | "Math" | "JSON"
+                    ),
+                    deletable: matches!(name, "globalThis" | "Math" | "JSON"),
                 },
             );
         }
@@ -1590,6 +1602,7 @@ impl Runtime {
             "URIError",
             "eval",
         ] {
+            let global_order = bindings.len() as u64;
             bindings.insert(
                 name.to_owned(),
                 Binding {
@@ -1599,13 +1612,15 @@ impl Runtime {
                     initialized: true,
                     strict_immutable: false,
                     global_property: true,
-                    enumerable: name != "Symbol",
+                    global_order,
+                    enumerable: false,
                     deletable: true,
                 },
             );
         }
-        let initial_binding_bytes =
-            bindings.len() * std::mem::size_of::<Option<Rc<BindingAccessor>>>();
+        let initial_binding_bytes = bindings.len()
+            * (std::mem::size_of::<Option<Rc<BindingAccessor>>>() + std::mem::size_of::<u64>());
+        let next_global_order = bindings.len() as u64;
         let mut runtime = Self {
             environments: vec![
                 Environment {
@@ -1654,6 +1669,7 @@ impl Runtime {
             console: Vec::new(),
             last_default_prevented: false,
             tracked_global_keys: TrackedGlobal::ALL.map(|kind| kind.name().into()),
+            next_global_order,
         };
         machine::initialize(&mut runtime)
             .expect("fixed expression frame bootstrap fits runtime limits");
@@ -2030,6 +2046,7 @@ impl Runtime {
             self.objects[id].namespace = Some("CSS");
         }
         self.charge(BINDING_BYTES)?;
+        let global_order = self.global_creation_order("CSS")?;
         self.environments[0].bindings.insert(
             "CSS".into(),
             Binding {
@@ -2039,6 +2056,7 @@ impl Runtime {
                 initialized: true,
                 strict_immutable: false,
                 global_property: true,
+                global_order,
                 enumerable: false,
                 deletable: true,
             },
@@ -3483,6 +3501,11 @@ impl Runtime {
                 "cannot redeclare constant '{name}'"
             )));
         }
+        let global_order = if env == 0 {
+            self.global_creation_order(name)?
+        } else {
+            0
+        };
         self.environments[env].bindings.insert(
             name.into(),
             Binding {
@@ -3492,6 +3515,7 @@ impl Runtime {
                 initialized: true,
                 strict_immutable: !mutable,
                 global_property: env == 0,
+                global_order,
                 enumerable: true,
                 deletable: false,
             },
@@ -3597,6 +3621,7 @@ impl Runtime {
                             initialized: false,
                             strict_immutable: *kind == DeclarationKind::Const,
                             global_property: false,
+                            global_order: 0,
                             enumerable: true,
                             deletable: false,
                         },
@@ -4516,6 +4541,9 @@ impl Runtime {
         }))
     }
     fn own_keys(&mut self, receiver: &Value) -> Result<Vec<JsString>> {
+        if receiver == &Value::Window {
+            return self.window_own_keys();
+        }
         let mut keys = Vec::new();
         if let Value::Array(id) = receiver {
             self.charge(self.arrays[*id].len().saturating_mul(64))?;
@@ -4776,6 +4804,7 @@ impl Runtime {
             0
         };
         self.charge(accessor_bytes + if new { BINDING_BYTES + name.len() } else { 0 })?;
+        let global_order = self.global_creation_order(name)?;
         let (value, mutable, accessor) = match property.value {
             PropertyValue::Data { value, writable } => (value, writable, None),
             PropertyValue::Accessor { get, set } => (
@@ -4791,6 +4820,7 @@ impl Runtime {
             initialized: true,
             strict_immutable: false,
             global_property: true,
+            global_order,
             enumerable: property.enumerable,
             deletable: property.configurable,
         };
@@ -8353,13 +8383,21 @@ impl Runtime {
             "Object.hasOwnProperty" | "Object.propertyIsEnumerable" => {
                 let key = self.property_key(arg(0), doc)?;
                 let object = self.coerce_object(native.receiver.clone())?;
-                if self.property_object(&object).is_none() && matches!(key, PropertyKey::String(_))
+                if self.property_object(&object).is_none()
+                    && object != Value::Window
+                    && matches!(key, PropertyKey::String(_))
                 {
                     return Err(ScriptError::unsupported(
                         "host own-property reflection is not implemented",
                     ));
                 }
-                let property = self.own_property_key(&object, &key);
+                let property = if object == Value::Window
+                    && let Some(key) = key.as_string()
+                {
+                    self.window_reflected_property(key)?
+                } else {
+                    self.own_property_key(&object, &key)
+                };
                 return Ok(Value::Bool(if name.ends_with("propertyIsEnumerable") {
                     property.is_some_and(|p| p.enumerable)
                 } else {
@@ -8396,33 +8434,7 @@ impl Runtime {
                 let property = if matches!(object, Value::Window)
                     && let Some(key) = key.as_string()
                 {
-                    // Global object bindings are authoritative property records. Do not read through the host getter/prototype
-                    // fallback or expose the separate lexical environment.
-                    let comparisons = 1 + self.environments[0]
-                        .bindings
-                        .len()
-                        .checked_ilog2()
-                        .unwrap_or(0) as usize;
-                    self.work(1 + key.len().saturating_mul(comparisons))?;
-                    // Include spare capacity while decoding into UTF-8.
-                    self.charge(24 + key.len().saturating_mul(6))?;
-                    match key.to_utf8() {
-                        Ok(key) => {
-                            if event_handler_name(&key) {
-                                return Err(ScriptError::unsupported(
-                                    "Window event-handler descriptor reflection is not implemented",
-                                ));
-                            }
-                            self.environments[0]
-                                .bindings
-                                .get(&key)
-                                .filter(|binding| binding.global_property)
-                                .map(|binding| binding.property())
-                        }
-                        // Host binding names are scalar UTF-8. Do not replace
-                        // isolated surrogates and alias an unrelated key.
-                        Err(_) => None,
-                    }
+                    self.window_reflected_property(key)?
                 } else {
                     if self.property_object(&object).is_none()
                         && matches!(key, PropertyKey::String(_))
@@ -10845,14 +10857,23 @@ mod tests {
                     .is_unsupported()
             );
         }
-        for source in [
-            "Object.keys(window)",
-            "window.hasOwnProperty('globalThis')",
-            "window.propertyIsEnumerable('NaN')",
-            "Object.defineProperty(window,'other',{value:1})",
-        ] {
-            assert!(run(source).unwrap_err().is_unsupported());
-        }
+        assert!(
+            run("Object.defineProperty(window,'other',{value:1})")
+                .unwrap_err()
+                .is_unsupported()
+        );
+        assert!(matches!(
+            run("Object.keys(window)").unwrap(),
+            Value::Array(_)
+        ));
+        assert_eq!(
+            run("window.hasOwnProperty('globalThis')").unwrap(),
+            Value::Bool(true)
+        );
+        assert_eq!(
+            run("window.propertyIsEnumerable('NaN')").unwrap(),
+            Value::Bool(false)
+        );
     }
 
     #[test]
@@ -12546,11 +12567,14 @@ mod tests {
             "window.onclick = function(){}; Object.getOwnPropertyDescriptor(window, 'onclick')",
             "Object.getOwnPropertyDescriptor(document, 'title')",
             "Object.getOwnPropertyDescriptor(document.createElement('div'), 'textContent')",
-            "Object.getOwnPropertyNames(window)",
             "Object.defineProperty(window, 'CSS', {value: 1})",
         ] {
             assert!(run(source).unwrap_err().is_unsupported(), "{source}");
         }
+        assert_eq!(
+            run("Object.getOwnPropertyNames(window).indexOf('CSS') >= 0").unwrap(),
+            Value::Bool(true)
+        );
     }
 
     #[test]

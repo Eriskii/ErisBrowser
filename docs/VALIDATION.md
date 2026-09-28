@@ -1,5 +1,45 @@
 # Validation record
 
+## Window property order and reflection
+
+Formatting, strict all-target Clippy and release compilation pass. **981 Rust
+tests** pass with `--include-ignored` (799 library; none ignored), alongside
+**155 Python checks**, **57 exact pixel references** and **15,000 mutation cases**
+without a caught panic or invariant failure.
+
+[Window binding reflection](../tests/conformance/window-reflection.md) adds own
+membership/enumerability and ordered key snapshots, preserves live `for-in`
+deletion/shadowing, and corrects intrinsic binding flags. Six new Rust groups cover
+these behaviors and resource refusals. Two older groups initially failed because
+they expected Window enumeration to be unsupported. They now check successful
+enumeration; the old `finally` source is retained as a success check and unsupported
+Document enumeration preserves the host-stop check. Original resource cuts and
+looping checks are unchanged.
+
+The **32 frozen self-authored modes** retain all sources and fingerprints:
+**26 improve**, two earlier passes remain, and four general Window definition
+cases remain unsupported. All **21 upstream profiles / 7,121 modes / 1,744 controls**
+retain their sources and policies. Exactly **54 modes improve**: global values 22,
+Symbols two, Number statics two, numeric conversion four, numeric parsing eight
+and URI functions 16. No passes are lost; all controls verify. Every other
+observation, including resource stops, is unchanged.
+
+Four healthy baseline files gain the new passes while preserving their complete
+inventories. Numeric parsing and URI remain resource-stopped observations. All
+17 existing baseline gates pass. HTML retains **3,868 matched / two mismatched /
+six unsupported** modes without change. The
+[public comparison](../tests/conformance/window-reflection.json) records all probe
+outcomes, profile comparisons, source/release hashes and baseline changes. Local
+evidence is `artifacts/*global-reflection*`. Prior commit `6b4d18e` passed all jobs
+in [CI run 36488324312](https://github.com/Eriskii/ErisBrowser/actions/runs/36488324312).
+
+Creation serial storage and snapshots use the existing estimated ledger; no quota
+increased. Full Window interfaces, general property definitions/accessors and
+arbitrary UTF-16 host property storage remain incomplete. Agent sessions were
+unavailable, so no independent-agent review is claimed. No native-window, Vulkan
+integration or Chromium comparison was run. Full compatibility and production
+security remain unverified.
+
 ## DOM string conversion and operation receivers
 
 Formatting, strict all-target Clippy and release compilation pass. **975 Rust

@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "c1b627a7249d3ab460d5be88b54f34ead98c375c160bee9e72379aef213894a4",
   "runner_policy_sha256": "f096c9be039b6e5a005d3997e38d8da419399e8c6e8d3a23d2162d20c1763d03",
-  "binary_sha256": "1c7c0853356cc5282833d3ab0ed5deede421cbab3022668e1ba3cb5bcb7f7d06",
+  "binary_sha256": "2035b3b51b264c4592ab4c7c598eea61492d1b375e10d04f0ec87dd3aff93f43",
   "cases": {
     "test/built-ins/Infinity/15.1.1.2-0.js:sloppy": {
       "status": "passed",
@@ -35,22 +35,22 @@
       "source_sha256": "1db86b381d714854d30a108252fa47dfdb1482f696d78cd79e24c9117d009d0c"
     },
     "test/built-ins/Infinity/S15.1.1.2_A4.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "218ea2c8a673c627fe9016ad54b6734876c7b767870acc6cf79e7f35c68bb6ec",
       "source_sha256": "89c7978b3624ecbdf697b1c795d8032dff6dd06ff55ef1d7f47f2e04c95793c9"
     },
     "test/built-ins/Infinity/S15.1.1.2_A4.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "1499ef286b60ae0ba495af0ec26099921bd8306a5cca99a182fd1b86ff507762",
       "source_sha256": "89c7978b3624ecbdf697b1c795d8032dff6dd06ff55ef1d7f47f2e04c95793c9"
     },
     "test/built-ins/Infinity/prop-desc.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "7f66c9a1b807b583c913a19aad1c23904702439aac526edd958b2a61b2d304ee",
       "source_sha256": "eb77a7e658ad51edf5c1eabb1cde4045875c177159a5fc345d4eab10e59fc879"
     },
     "test/built-ins/Infinity/prop-desc.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "ea052d5ea131ce655e381e364dc63179bc2164d823cc0dab555b659b03f9522a",
       "source_sha256": "eb77a7e658ad51edf5c1eabb1cde4045875c177159a5fc345d4eab10e59fc879"
     },
@@ -85,22 +85,22 @@
       "source_sha256": "51c9f5a86ed00d49f57519f49f44718255abb6fa163f1855188b26b5c0cd1d9c"
     },
     "test/built-ins/NaN/S15.1.1.1_A4.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "9328ecd4964b1ec87fdee666eb70e0ca593fdb2838b46b26cc3ac2f8d28f5b34",
       "source_sha256": "691603b796df393f288db3b1afb0b32956550ec2b29c86572c567949020a4480"
     },
     "test/built-ins/NaN/S15.1.1.1_A4.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "e48e9a5e00be7c072f323196d08c4edc24dfae28ea673f8b07d37ffe1b5b758f",
       "source_sha256": "691603b796df393f288db3b1afb0b32956550ec2b29c86572c567949020a4480"
     },
     "test/built-ins/NaN/prop-desc.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "2ad68389d488489d4479f856eac3d5ad0762dc40acd0a8bdd3e273ebf8fac2c7",
       "source_sha256": "d768a164c97197b00099e830b4213e5c95149c25919e6bfecdc7d1442990ad4d"
     },
     "test/built-ins/NaN/prop-desc.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "6f4b87ca3a638b5d98c83cb50690835b7bc3a4228a070b3e53e11a4837243b19",
       "source_sha256": "d768a164c97197b00099e830b4213e5c95149c25919e6bfecdc7d1442990ad4d"
     },
@@ -255,42 +255,42 @@
       "source_sha256": "c2fcc0eae1b6a568bcd6fab02a91d32bec43e17e9301e42316a4f6f66ed257c1"
     },
     "test/built-ins/global/S10.2.3_A2.1_T1.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "f533ee962d3c6a346bc05404667dffa113ac389b5965d5e6b571f8e302095aeb",
       "source_sha256": "6efb4314c67ca0ff1ca16a4448f46931ef479dab6c2b51c3b5579848657a09c9"
     },
     "test/built-ins/global/S10.2.3_A2.1_T1.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "76dd01b036cadffbf680208c9bba959a6b9c383187879d8ce8f7c21091a9edee",
       "source_sha256": "6efb4314c67ca0ff1ca16a4448f46931ef479dab6c2b51c3b5579848657a09c9"
     },
     "test/built-ins/global/S10.2.3_A2.1_T2.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "f060b70152292b8f143a8b2f55a23318beb917c188a981ca948803aecdd10b3f",
       "source_sha256": "8a8441cfa2a5075106539479616a8ce0c99fded82f5cb89307dc49094d18d469"
     },
     "test/built-ins/global/S10.2.3_A2.1_T2.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "6c56239d4379cc9ef18f75dcfd692cc1f2f9829d2cee8d13a4e1d63d0b00d82a",
       "source_sha256": "8a8441cfa2a5075106539479616a8ce0c99fded82f5cb89307dc49094d18d469"
     },
     "test/built-ins/global/S10.2.3_A2.1_T3.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "8142bf7c63f97dfd7247a465689d5b18afffade4f4dd15155dacd1c234e41ee5",
       "source_sha256": "e426e017c73236dd33289373dbc96c45f9ad5204816062f77642eb458e68a354"
     },
     "test/built-ins/global/S10.2.3_A2.1_T3.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "2ec3888ee4ccc614eb3b5e886b2c3357ed3bc286871d02ba81c3884aecf25997",
       "source_sha256": "e426e017c73236dd33289373dbc96c45f9ad5204816062f77642eb458e68a354"
     },
     "test/built-ins/global/S10.2.3_A2.1_T4.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "570c91e089b829f5fd9065cad0a2e2fb1c72bba7e18df54f11d95e40e9c9507e",
       "source_sha256": "80cb546e60e8658d555251fd0d00b56dcd53a42abb402aaface5c7792b4ab609"
     },
     "test/built-ins/global/S10.2.3_A2.1_T4.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "05707062b52bdecd45a52cc34799a1f86d48cfb40c11657988c95819d3d06006",
       "source_sha256": "80cb546e60e8658d555251fd0d00b56dcd53a42abb402aaface5c7792b4ab609"
     },
@@ -375,12 +375,12 @@
       "source_sha256": "7b9cf9f00d8a6a4aeb3d452c8499bb80d16af0b5ad24da094511e6cbc500de8b"
     },
     "test/built-ins/global/property-descriptor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "7c2e540376cbad08864d4940fbe562e168b35638ac57b9f7dcc09abd3d60db5f",
       "source_sha256": "74d731bbd7f28b416d2c0ab56d252d4a8cad3c9ed29e25a783c3a0d4c18b7604"
     },
     "test/built-ins/global/property-descriptor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "5fabf254868c8766b2267fcc63e0250f47c5c684485698d7b7f6e19a7a50625f",
       "source_sha256": "74d731bbd7f28b416d2c0ab56d252d4a8cad3c9ed29e25a783c3a0d4c18b7604"
     },
@@ -425,22 +425,22 @@
       "source_sha256": "6e7ac6a7d142e2946890c49797a4d51104711198578f594dd155000490169ba4"
     },
     "test/built-ins/undefined/S15.1.1.3_A4.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "40848b5ca5d77cd3beb42d7320ae5c09c5ebecb0efae6293300f0b595db38167",
       "source_sha256": "2ed249fdcdabb086fe07dd33de3b4adf4581b94e0fbc09d48bf961c49739702d"
     },
     "test/built-ins/undefined/S15.1.1.3_A4.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "0b3015a1c2a7170df449607cc6b73216c846a87fac8b6b0f44dc6c7f205555b9",
       "source_sha256": "2ed249fdcdabb086fe07dd33de3b4adf4581b94e0fbc09d48bf961c49739702d"
     },
     "test/built-ins/undefined/prop-desc.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "446bf4018000643d614b00c89fb32371176340ff8ee580143a2fa747f1b83336",
       "source_sha256": "feb68b76e5ac10ab8d5c3b756ab4609a7769335ed91c7a847c5aa0d2194ce726"
     },
     "test/built-ins/undefined/prop-desc.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "0ba3a1e63e7b93367b1370480edf9d4787d5696e20de2bbfd04555339452223e",
       "source_sha256": "feb68b76e5ac10ab8d5c3b756ab4609a7769335ed91c7a847c5aa0d2194ce726"
     }
