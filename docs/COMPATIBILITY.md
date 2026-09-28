@@ -49,12 +49,24 @@ includes inherited values, compares default strings as UTF-16 code units, and
 uses live author comparators and conversion hooks. Collection and comparison
 precede ordered strict writes/deletes; exceptions preserve earlier author and
 write-back effects. The [bounded sort implementation](../tests/conformance/array-sort.md)
-does not add indexed-array descriptor mutation, reduce, Proxy, typed-array or
+does not add indexed-array descriptor mutation, Proxy, typed-array or
 general host receiver support. Its work/heap limits can stop large inputs.
 The [complete pinned sort directory](../tests/conformance/test262-array-sort.md)
-records 53 passed, 46 unsupported, six failed on missing reduce, and two
-instruction-limit stops across 107 modes. The 2,048-element stability test is
-retained in both modes, and no healthy sort baseline is recorded.
+now records 57 passed, 46 unsupported and four resource stops across 107 modes.
+Adding reduce enables the 5- and 11-element stability tests in both modes;
+the unchanged 513- and 2,048-element tests reach the shared work/allocation
+limits. No healthy sort baseline is recorded.
+
+`Array.prototype.reduce` and `reduceRight` stream over supported ordinary
+array-like receivers. They capture length once, distinguish omitted initial
+values from explicit undefined, and read sparse/inherited entries live in the
+requested direction. Four callback arguments, actual-callee this behavior and
+prior author effects survive through page and event execution. Full safe-integer
+logical lengths share existing work/allocation limits without allocating from
+length. Host receivers, Proxy and typed arrays remain unsupported; actual Array
+indexed/length descriptor definitions are still incomplete. See the
+[implementation scope](../tests/conformance/array-reduce.md) and
+[complete paired upstream inventory](../tests/conformance/test262-array-reduce.md).
 
 Strictness follows exact unescaped directive prologues and lexical function inheritance. Supported code checks restricted names, duplicate simple parameters, legacy literals and identifier deletion; strict calls preserve the supplied `this`, and failed writes/deletes throw. Strict arguments and arguments of functions with defaults or rest parameters are unmapped and have a throwing `callee` accessor; supported sloppy functions with simple parameter lists retain aliases until deletion or descriptor changes detach them. Lexical bindings include initialization checks, declaration conflicts and per-iteration loop environments. This does not implement the complete ECMAScript grammar or all Annex B behaviors. Unsupported dynamic eval, tagged templates, destructured parameters and labeled control flow are reported explicitly.
 

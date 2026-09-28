@@ -53,6 +53,11 @@ fn unicode_identifier_bindings_survive_rendering_and_event_callbacks() {
 }
 
 #[test]
+fn array_reductions_preserve_direction_live_values_and_accumulator_identity() {
+    assert_six_scripted_samples(include_str!("fixtures/array-reduce.html"));
+}
+
+#[test]
 fn invalid_identifier_scripts_leave_no_effects_and_later_scripts_still_run() {
     for invalid in [
         r"var \u0069f=1;",

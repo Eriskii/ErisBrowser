@@ -932,6 +932,12 @@ enum DeclarationKind {
     Const,
 }
 
+#[derive(Clone, Copy)]
+enum ReduceDirection {
+    Left,
+    Right,
+}
+
 struct Parser<'source> {
     tokens: Vec<Token>,
     source: &'source str,
@@ -3260,6 +3266,8 @@ impl Runtime {
             ("Array", "slice", 2),
             ("Array", "reverse", 0),
             ("Array", "sort", 1),
+            ("Array", "reduce", 1),
+            ("Array", "reduceRight", 1),
             ("Number", "toString", 1),
         ] {
             let full = format!("{name}.{key}");
@@ -6436,7 +6444,7 @@ impl Runtime {
             return Some(property);
         }
         if let Value::Array(id) = receiver {
-            if key == &JsString::from("length") {
+            if key.units() == [108, 101, 110, 103, 116, 104] {
                 return Some(Property::data(
                     Value::Number(self.arrays[*id].len() as f64),
                     true,
@@ -6460,7 +6468,7 @@ impl Runtime {
             _ => None,
         };
         if let Some(text) = text {
-            if key == &JsString::from("length") {
+            if key.units() == [108, 101, 110, 103, 116, 104] {
                 return Some(Property::data(
                     Value::Number(text.len() as f64),
                     false,
@@ -6866,6 +6874,130 @@ impl Runtime {
         self.objects[id].prototype = prototype;
         self.objects[id].boxed = Some(value);
         Ok(result)
+    }
+    fn reduce_property(&mut self, receiver: &Value, key: &JsString) -> Result<Option<Property>> {
+        let mut cursor = Some(receiver.clone());
+        for _ in 0..MAX_DEPTH {
+            let Some(value) = cursor else {
+                return Ok(None);
+            };
+            self.work(1 + key.len() / 8)?;
+            if self.property_object(&value).is_none() {
+                return Err(ScriptError::unsupported(
+                    "host prototype lookup during reduction is not implemented",
+                ));
+            }
+            // Keys are either "length" or at most sixteen ASCII digits.
+            // own_property can make decimal/UTF-8 temporaries at an Array
+            // edge and a one-unit value at a boxed-string edge. Cover those
+            // actual allocations before each HasProperty/Get traversal edge.
+            self.charge(128)?;
+            if let Some(property) = self.own_property(&value, key) {
+                return Ok(Some(property));
+            }
+            cursor = self.prototype_of(&value);
+        }
+        Err(ScriptError::resource("prototype chain limit exceeded"))
+    }
+    fn reduce_get(
+        &mut self,
+        receiver: &Value,
+        key: &JsString,
+        doc: &mut Document,
+    ) -> Result<Value> {
+        let Some(property) = self.reduce_property(receiver, key)? else {
+            return Ok(Value::Undefined);
+        };
+        match property.value {
+            PropertyValue::Data { value, .. } => Ok(value),
+            PropertyValue::Accessor {
+                get: Value::Undefined,
+                ..
+            } => Ok(Value::Undefined),
+            PropertyValue::Accessor { get, .. } => {
+                self.call(get, Vec::new(), receiver.clone(), doc)
+            }
+        }
+    }
+    fn reduce_index_key(&mut self, mut index: u64) -> Result<JsString> {
+        if index > 9_007_199_254_740_991 {
+            return Err(ScriptError::resource(
+                "reduction index exceeds safe integer range",
+            ));
+        }
+        self.work(17)?;
+        self.charge(64)?;
+        let mut digits = [0u16; 16];
+        let mut start = digits.len();
+        loop {
+            start -= 1;
+            digits[start] = u16::from(b'0') + (index % 10) as u16;
+            index /= 10;
+            if index == 0 {
+                break;
+            }
+        }
+        Ok(JsString::from(&digits[start..]))
+    }
+    fn array_reduce(
+        &mut self,
+        receiver: Value,
+        callback: Value,
+        mut accumulator: Option<Value>,
+        direction: ReduceDirection,
+        doc: &mut Document,
+    ) -> Result<Value> {
+        self.tick()?;
+        let object = self.coerce_object(receiver)?;
+        if self.property_object(&object).is_none() {
+            return Err(ScriptError::unsupported(
+                "host array-like reduction is not implemented",
+            ));
+        }
+        self.charge(64)?;
+        let length = self.reduce_get(&object, &JsString::from("length"), doc)?;
+        let length = integer_or_infinity(self.number_value(length, doc)?)
+            .clamp(0.0, 9_007_199_254_740_991.0) as u64;
+        // Length access/conversion precedes validation, even for an empty
+        // input. Initial presence must remain distinct from an undefined value.
+        if !json_callable(&callback) {
+            return Err(ScriptError::type_error(
+                "reduction callback must be callable",
+            ));
+        }
+        // No collection is allocated from this logical length. A huge sparse
+        // range consumes the same shared work budget one visited index at a time.
+        for visited in 0..length {
+            self.tick()?;
+            let index = match direction {
+                ReduceDirection::Left => visited,
+                ReduceDirection::Right => length - visited - 1,
+            };
+            let key = self.reduce_index_key(index)?;
+            if self.reduce_property(&object, &key)?.is_none() {
+                continue;
+            }
+            let value = self.reduce_get(&object, &key, doc)?;
+            let Some(previous) = accumulator.take() else {
+                accumulator = Some(value);
+                continue;
+            };
+            let bytes = std::mem::size_of::<Value>()
+                .checked_mul(4)
+                .and_then(|bytes| bytes.checked_add(32))
+                .ok_or_else(|| {
+                    ScriptError::resource("reduction callback allocation limit exceeded")
+                })?;
+            self.charge(bytes)?;
+            let mut arguments = Vec::new();
+            arguments
+                .try_reserve_exact(4)
+                .map_err(|_| ScriptError::resource("reduction callback allocation failed"))?;
+            arguments.extend([previous, value, Value::Number(index as f64), object.clone()]);
+            accumulator = Some(self.call(callback.clone(), arguments, Value::Undefined, doc)?);
+        }
+        accumulator
+            .ok_or_else(|| ScriptError::type_error("empty reduction requires an initial value"))
     }
     fn array_sort(
         &mut self,
@@ -9696,6 +9828,19 @@ impl Runtime {
         args: Vec<Value>,
         doc: &mut Document,
     ) -> Result<Value> {
+        if matches!(native.name.as_str(), "Array.reduce" | "Array.reduceRight") {
+            return self.array_reduce(
+                native.receiver.clone(),
+                args.first().cloned().unwrap_or(Value::Undefined),
+                args.get(1).cloned(),
+                if native.name == "Array.reduce" {
+                    ReduceDirection::Left
+                } else {
+                    ReduceDirection::Right
+                },
+                doc,
+            );
+        }
         if native.name == "Array.sort" {
             return self.array_sort(
                 native.receiver.clone(),
@@ -17184,6 +17329,405 @@ mod tests {
         );
         assert_eq!(document.nodes.len(), before);
         assert!(!document.has_pending_details_toggles());
+    }
+
+    fn reduction_modes(source: &str) {
+        for (name, right) in [("reduce", false), ("reduceRight", true)] {
+            for strict in [false, true] {
+                let (mut runtime, mut document) = upstream_harness();
+                runtime
+                    .execute(
+                        &format!(
+                            "var methodName='{name}',method=Array.prototype.{name},right={right};"
+                        ),
+                        &mut document,
+                    )
+                    .unwrap();
+                let result = if strict {
+                    runtime.execute_strict(source, &mut document)
+                } else {
+                    runtime.execute(source, &mut document)
+                };
+                result.unwrap_or_else(|error| panic!("{name} strict={strict}: {error}"));
+            }
+        }
+    }
+
+    #[test]
+    fn array_reduce_metadata_aliases_and_call_apply_bind() {
+        reduction_modes(
+            r#"
+            assert.sameValue(method.name,methodName);assert.sameValue(method.length,1);
+            var d=Object.getOwnPropertyDescriptor(Array.prototype,methodName);
+            assert.sameValue(d.value,method);assert.sameValue(d.writable,true);
+            assert.sameValue(d.enumerable,false);assert.sameValue(d.configurable,true);
+            var n=Object.getOwnPropertyDescriptor(method,'name'),l=Object.getOwnPropertyDescriptor(method,'length');
+            assert.sameValue(n.writable,false);assert.sameValue(n.enumerable,false);assert.sameValue(n.configurable,true);
+            assert.sameValue(l.writable,false);assert.sameValue(l.enumerable,false);assert.sameValue(l.configurable,true);
+            assert.sameValue(Object.getOwnPropertyDescriptor(method,'prototype'),undefined);
+            assert.throws(TypeError,function(){new method(function(){});});
+            function sum(a,v){return a+v;}var poison={toString(){throw 'coercion';},valueOf(){throw 'coercion';}};
+            assert.sameValue(method.call([1,2],sum,0,poison),3);
+            assert.sameValue(method.apply([1,2],[sum,0,poison]),3);
+            assert.sameValue(method.bind([1,2],sum,0)(),3);
+            assert.sameValue(delete Array.prototype[methodName],true);
+            assert.sameValue([1,2][methodName],undefined);assert.sameValue(method.call([1,2],sum,0),3);
+            Object.defineProperty(Array.prototype,methodName,d);
+            assert.sameValue([1,2][methodName],method);
+        "#,
+        );
+    }
+
+    #[test]
+    fn array_reduce_boxes_and_converts_length_before_validating_callback() {
+        reduction_modes(
+            r#"
+            var log='',reason={},indexReads=0,callback={get call(){throw 'call probe';},toString(){throw 'coercion';}};
+            assert.throws(TypeError,function(){method.call(null,callback);});
+            assert.throws(TypeError,function(){method.call(undefined,callback);});
+            var object={get length(){log+='l';return {valueOf(){log+='v';return 2;},toString(){throw 'wrong hint';}};},
+                get 0(){indexReads++;return 1;},get 1(){indexReads++;return 2;}};
+            assert.throws(TypeError,function(){method.call(object,callback,0);});
+            assert.sameValue(log,'lv');assert.sameValue(indexReads,0);
+            log='';assert.throws(TypeError,function(){method.call(object);});assert.sameValue(log,'lv');
+            object={get length(){throw reason;}};var seen;
+            try{method.call(object,null);}catch(error){seen=error;}assert.sameValue(seen,reason);
+            object={length:{valueOf(){throw reason;}}};seen=undefined;
+            try{method.call(object,null);}catch(error){seen=error;}assert.sameValue(seen,reason);
+            assert.throws(TypeError,function(){method.call({length:0},null,7);});
+        "#,
+        );
+    }
+
+    #[test]
+    fn array_reduce_initial_presence_holes_and_undefined_are_distinct() {
+        reduction_modes(
+            r#"
+            var count=0;function callback(a,v){count++;return a;}
+            assert.throws(TypeError,function(){method.call([],callback);});
+            assert.throws(TypeError,function(){method.call(new Array(3),callback);});
+            assert.sameValue(method.call([],callback,undefined),undefined);
+            var initial={};assert.sameValue(method.call(new Array(3),callback,initial),initial);
+            assert.sameValue(count,0);
+            var sparse=new Array(3);sparse[1]=undefined;
+            assert.sameValue(method.call(sparse,callback),undefined);assert.sameValue(count,0);
+            assert.sameValue(method.call(sparse,callback,initial),initial);assert.sameValue(count,1);
+            var observed=[];method.call([undefined,undefined],function(a,v,k){
+                assert.sameValue(a,undefined);assert.sameValue(v,undefined);observed.push(k);return undefined;
+            });assert.sameValue(observed.join(','),right?'0':'1');
+            count=0;assert.sameValue(method.call({length:0},callback,null),null);assert.sameValue(count,0);
+            var fn=function(){};assert.sameValue(method.call([],callback,fn),fn);
+        "#,
+        );
+    }
+
+    #[test]
+    fn array_reduce_captures_tolength_and_preserves_primitive_boxing() {
+        reduction_modes(
+            r#"
+            var initial={},calls=0;function cb(a){calls++;return a;}
+            var emptyLengths=[undefined,null,false,NaN,-1,-Infinity,'not a number',-0.5];
+            for(var i=0;i<emptyLengths.length;i++)assert.sameValue(method.call({length:emptyLengths[i]},cb,initial),initial);
+            assert.sameValue(calls,0);
+            for(var i=0;i<2;i++){
+                var primitive=i===0?false:42;assert.sameValue(method.call(primitive,cb,initial),initial);
+                assert.throws(TypeError,function(){method.call(primitive,cb);});
+            }
+            var object={0:1,1:2,2:100,length:{valueOf(){return '2.9';}}};
+            assert.sameValue(method.call(object,function(a,v){return a+v;},0),3);
+            var boxed,units=[],indices=[];
+            method.call('\uD800A\uDC00',function(a,v,k,o){
+                assert.sameValue(typeof o,'object');if(boxed===undefined)boxed=o;else assert.sameValue(o,boxed);
+                assert.sameValue(v.length,1);units.push(v.charCodeAt(0));indices.push(k);return a;
+            },0);
+            assert.sameValue(units.join(','),right?'56320,65,55296':'55296,65,56320');
+            assert.sameValue(indices.join(','),right?'2,1,0':'0,1,2');
+        "#,
+        );
+    }
+
+    #[test]
+    fn array_reduce_inherited_non_enumerable_properties_and_generic_receivers() {
+        reduction_modes(
+            r#"
+            var prototype={};Object.defineProperty(prototype,'1',{value:7,enumerable:false});
+            var object=Object.create(prototype);object.length=3;
+            assert.sameValue(method.call(object,function(){throw 'unexpected callback';}),7);
+            object[0]=2;object[2]=5;var seen=[];
+            assert.sameValue(method.call(object,function(a,v,k,o){assert.sameValue(o,object);seen.push(k);return a+v;},0),14);
+            assert.sameValue(seen.join(','),right?'2,1,0':'0,1,2');
+            var bare=Object.create(null);bare.length=1;bare[0]=9;
+            assert.sameValue(method.call(bare,function(){throw 'callback';}),9);
+            function indexed(a,b){}indexed[0]=3;indexed[1]=4;
+            assert.sameValue(method.call(indexed,function(a,v){return a+v;},0),7);
+            function argumentsCase(a,b){var object=arguments;return method.call(object,function(total,value,index,receiver){
+                assert.sameValue(receiver,object);return total+value;
+            },0);}assert.sameValue(argumentsCase(2,3),5);
+            var array=new Array(3);var p=Object.create(Array.prototype);p[1]=8;Object.setPrototypeOf(array,p);
+            assert.sameValue(method.call(array,function(){throw 'callback';}),8);
+        "#,
+        );
+    }
+
+    #[test]
+    fn array_reduce_getters_and_callbacks_observe_live_mutation_with_saved_length() {
+        reduction_modes(
+            r#"
+            var first=right?2:0,last=right?0:2,reads=0,log='',prototype={};prototype[last]=9;
+            var object={length:3,0:2,1:2,2:2};
+            Object.defineProperty(object,''+first,{get:function(){
+                assert.sameValue(this,object);reads++;object.length=1;object[1]=7;delete object[last];
+                Object.setPrototypeOf(object,prototype);object[3]=100;return 1;
+            },configurable:true});
+            var result=method.call(object,function(a,v,k){log+=k;return a+v;},0);
+            assert.sameValue(result,17);assert.sameValue(reads,1);assert.sameValue(log,right?'210':'012');
+            object={length:4};object[right?3:0]=1;object[right?0:3]=100;
+            var indices=[];result=method.call(object,function(a,v,k,o){
+                indices.push(k);if(indices.length===1){o[right?2:1]=2;delete o[right?0:3];o.length=50;o[49]=1000;}
+                return a+v;
+            },0);assert.sameValue(result,3);assert.sameValue(indices.join(','),right?'3,2':'0,1');
+            var array=[1,2,3];result=method.call(array,function(a,v,k){array.length=0;return a+v;},0);
+            assert.sameValue(result,right?3:1);assert.sameValue(array.length,0);
+        "#,
+        );
+    }
+
+    #[test]
+    fn array_reduce_callback_arguments_receivers_and_results_use_actual_callee_rules() {
+        for name in ["reduce", "reduceRight"] {
+            let (mut runtime, mut document) = upstream_harness();
+            runtime.execute(r#"
+                var count=0,receiver={},captured;
+                function loose(a,v,k,o){assert.sameValue(this,window);assert.sameValue(arguments.length,4);count++;return a+v;}
+                function tight(a,v,k,o){'use strict';assert.sameValue(this,undefined);assert.sameValue(arguments.length,4);count++;return a+v;}
+                function make(){'use strict';return (a,v)=>{assert.sameValue(this,receiver);return a+v;};}
+                var arrow=make.call(receiver);
+            "#,&mut document).unwrap();
+            runtime.execute_strict(&format!(r#"
+                var method=Array.prototype.{name};assert.sameValue(method.call([1,2],loose,0),3);
+                assert.sameValue(method.call([1,2],tight,0),3);assert.sameValue(count,4);
+                assert.sameValue(method.call([1,2],arrow,0),3);
+                var bound=function(prefix,a,v,k,o){{assert.sameValue(this,receiver);assert.sameValue(prefix,7);assert.sameValue(arguments.length,5);return a+v;}}.bind(receiver,7);
+                assert.sameValue(method.call([1,2],bound,0),3);
+                var poison={{toString(){{throw 'coercion';}},valueOf(){{throw 'coercion';}}}};
+                assert.sameValue(method.call([1,2],function(a,v){{return poison;}},poison),poison);
+            "#),&mut document).unwrap();
+        }
+    }
+
+    #[test]
+    fn array_reduce_abrupt_completion_preserves_prior_effects_and_reentry() {
+        reduction_modes(
+            r#"
+            var reason={},seen,calls=0,first=right?1:0,object={length:2};
+            Object.defineProperty(object,''+first,{get:function(){this.changed=1;throw reason;}});
+            try{method.call(object,function(){calls++;},0);}catch(error){seen=error;}
+            assert.sameValue(seen,reason);assert.sameValue(object.changed,1);assert.sameValue(calls,0);
+            object={length:2,0:1,1:2};seen=undefined;
+            try{method.call(object,function(a,v,k,o){calls++;o.changed=2;throw reason;},0);}catch(error){seen=error;}
+            assert.sameValue(seen,reason);assert.sameValue(object.changed,2);assert.sameValue(calls,1);
+            var nested=false;assert.sameValue(method.call([1,2],function(a,v){
+                if(!nested){nested=true;assert.sameValue(method.call([3,4],function(x,y){return x+y;},0),7);}
+                return a+v;
+            },0),3);
+            var text;try{method.call([1],function(){throw '\uD800';},0);}catch(error){text=error;}
+            assert.sameValue(text.charCodeAt(0),55296);
+        "#,
+        );
+    }
+
+    #[test]
+    fn array_reduce_full_safe_integer_range_visits_bounded_live_indices() {
+        reduction_modes(
+            r#"
+            var object={length:9007199254740991},reason={},log=[];
+            var first=right?9007199254740990:0,last=right?9007199254740988:2;
+            object[first]=1;object[last]=3;var seen;
+            try{method.call(object,function(a,v,k,o){log.push(k);a.push(v);if(v===3)throw a;return a;},[]);}catch(error){seen=error;}
+            assert.sameValue(seen.join(','),'1,3');
+            assert.sameValue(log.join(','),right?'9007199254740990,9007199254740988':'0,2');
+            object.length=Infinity;seen=undefined;
+            try{method.call(object,function(){throw reason;},0);}catch(error){seen=error;}
+            assert.sameValue(seen,reason);
+        "#,
+        );
+    }
+
+    #[test]
+    fn array_reduce_host_boundaries_are_checked_only_when_reached() {
+        for name in ["reduce", "reduceRight"] {
+            for source in [
+                format!("Array.prototype.{name}.call(window,function(){{}},0);"),
+                format!(
+                    "var o=Object.create(window);o.length=1;Array.prototype.{name}.call(o,function(){{}},0);"
+                ),
+                format!(
+                    "var o={{length:1,0:1}};Array.prototype.{name}.call(o,function(){{}});Object.defineProperty([], '0', {{get:function(){{return 1;}}}});"
+                ),
+            ] {
+                assert!(run(&source).unwrap_err().is_unsupported(), "{source}");
+            }
+            assert_eq!(run(&format!("var o=Object.create(window);o.length=1;o[0]=7;Array.prototype.{name}.call(o,function(){{throw 'unexpected';}});" )).unwrap(),Value::Number(7.0));
+        }
+    }
+
+    #[test]
+    fn array_reduce_resources_are_shared_uncatchable_and_guard_recursive_callbacks() {
+        for name in ["reduce", "reduceRight"] {
+            for source in [
+                format!(
+                    "try{{Array.prototype.{name}.call({{length:9007199254740991}},function(){{}},0);}}catch(e){{caught=true;}}"
+                ),
+                format!(
+                    "function f(){{return [1].{name}(f,0);}}try{{f();}}catch(e){{caught=true;}}"
+                ),
+                format!(
+                    "try{{[1].{name}(function(){{while(true){{}}}},0);}}catch(e){{caught=true;}}"
+                ),
+                format!(
+                    "var o={{length:1,get 0(){{return Array.prototype.{name}.call(o,function(){{}},0);}}}};try{{Array.prototype.{name}.call(o,function(){{}},0);}}catch(e){{caught=true;}}"
+                ),
+            ] {
+                let mut runtime = Runtime::new();
+                let mut document = Document::parse("");
+                runtime.execute("var caught=false;", &mut document).unwrap();
+                assert!(
+                    runtime
+                        .execute(&source, &mut document)
+                        .unwrap_err()
+                        .is_resource_limit(),
+                    "{source}"
+                );
+                assert_eq!(runtime.calls, 0);
+                assert_eq!(runtime.stack_units, 0);
+                assert_eq!(
+                    runtime.environments[0].bindings["caught"].value,
+                    Value::Bool(false)
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn array_reduce_private_preflight_retains_getter_effect_before_callback_failure() {
+        fn setup() -> (Runtime, Document, Value, Value) {
+            let mut runtime = Runtime::new();
+            let mut document = Document::parse("");
+            runtime.execute("var marker=0,called=0,object={length:1,get 0(){marker=1;return 2;}};function callback(){called=1;return 3;}",&mut document).unwrap();
+            let object = runtime.environments[0].bindings["object"].value.clone();
+            let callback = runtime.environments[0].bindings["callback"].value.clone();
+            (runtime, document, object, callback)
+        }
+        let (mut measured, mut document, object, _) = setup();
+        let before = measured.allocated;
+        measured.charge(64).unwrap();
+        measured
+            .reduce_get(&object, &"length".into(), &mut document)
+            .unwrap();
+        let key = measured.reduce_index_key(0).unwrap();
+        measured.reduce_property(&object, &key).unwrap();
+        measured.reduce_get(&object, &key, &mut document).unwrap();
+        let before_callback = measured.allocated - before;
+        for direction in [ReduceDirection::Left, ReduceDirection::Right] {
+            let (mut runtime, mut document, object, callback) = setup();
+            runtime.allocated =
+                MAX_HEAP - before_callback - (32 + 4 * std::mem::size_of::<Value>() - 1);
+            let error = runtime
+                .array_reduce(
+                    object,
+                    callback,
+                    Some(Value::Number(0.0)),
+                    direction,
+                    &mut document,
+                )
+                .unwrap_err();
+            assert!(error.is_resource_limit());
+            assert_eq!(runtime.allocated, MAX_HEAP + 1);
+            assert_eq!(
+                runtime.environments[0].bindings["marker"].value,
+                Value::Number(1.0)
+            );
+            assert_eq!(
+                runtime.environments[0].bindings["called"].value,
+                Value::Number(0.0)
+            );
+            assert_eq!(runtime.calls, 0);
+            assert_eq!(runtime.stack_units, 0);
+        }
+        let mut runtime = Runtime::new();
+        runtime.steps = 16;
+        let before = runtime.allocated;
+        assert!(runtime.reduce_index_key(0).unwrap_err().is_resource_limit());
+        assert_eq!(runtime.allocated, before);
+        runtime.steps = 17;
+        runtime.allocated = MAX_HEAP - 64;
+        assert_eq!(
+            runtime
+                .reduce_index_key(9_007_199_254_740_990)
+                .unwrap()
+                .to_string(),
+            "9007199254740990"
+        );
+        assert_eq!(runtime.allocated, MAX_HEAP);
+        assert_eq!(runtime.steps, 0);
+        runtime.steps = 17;
+        runtime.allocated = MAX_HEAP - 63;
+        assert!(runtime.reduce_index_key(0).unwrap_err().is_resource_limit());
+        assert_eq!(runtime.allocated, MAX_HEAP + 1);
+    }
+
+    #[test]
+    fn array_reduce_private_prototype_cycles_and_per_edge_scratch_are_bounded() {
+        let mut runtime = Runtime::new();
+        let a = runtime.object_ordered([]).unwrap();
+        let b = runtime.object_ordered([]).unwrap();
+        let (Value::Object(aid), Value::Object(bid)) = (a.clone(), b.clone()) else {
+            panic!("objects")
+        };
+        runtime.objects[aid].prototype = Some(b);
+        runtime.objects[bid].prototype = Some(a.clone());
+        let before = runtime.allocated;
+        let key = JsString::from("0");
+        runtime.steps = MAX_STEPS;
+        assert!(
+            runtime
+                .reduce_property(&a, &key)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(runtime.allocated - before, MAX_DEPTH * 128);
+        assert_eq!(MAX_STEPS - runtime.steps, MAX_DEPTH);
+        runtime.allocated = MAX_HEAP - 127;
+        runtime.steps = MAX_STEPS;
+        assert!(
+            runtime
+                .reduce_property(&a, &key)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(runtime.allocated, MAX_HEAP + 1);
+    }
+
+    #[test]
+    fn array_reduce_executes_unchanged_small_sort_stability_cases() {
+        for source in [
+            include_str!(
+                "../tests/upstream/test262-array-sort/test/built-ins/Array/prototype/sort/stability-5-elements.js"
+            ),
+            include_str!(
+                "../tests/upstream/test262-array-sort/test/built-ins/Array/prototype/sort/stability-11-elements.js"
+            ),
+        ] {
+            for strict in [false, true] {
+                let (mut runtime, mut document) = upstream_harness();
+                if strict {
+                    runtime.execute_strict(source, &mut document)
+                } else {
+                    runtime.execute(source, &mut document)
+                }
+                .unwrap();
+            }
+        }
     }
 
     #[test]

@@ -1,0 +1,51 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Array reduction order and live property reads</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#metadata{left:0}#initial{left:50px}#direction{left:100px}#inherited{left:150px}#mutation{left:200px}#effects{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="metadata" class="sample"></div><div id="initial" class="sample"></div>
+<div id="direction" class="sample"></div><div id="inherited" class="sample"></div>
+<div id="mutation" class="sample"></div><div id="effects" class="sample"></div>
+<button id="change" type="button">Reduce from the other end</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color='green'){document.getElementById(id).style.backgroundColor=color;}
+const reduce=Array.prototype.reduce,right=Array.prototype.reduceRight;
+const descriptor=Object.getOwnPropertyDescriptor(Array.prototype,'reduce');
+check(descriptor.value===reduce&&descriptor.writable&&!descriptor.enumerable&&descriptor.configurable,'method descriptor');
+check(reduce.name==='reduce'&&reduce.length===1&&right.name==='reduceRight'&&right.length===1,'method metadata');mark('metadata');
+const sentinel={};let calls=0;
+check([,,].reduce(function(){calls++;},sentinel)===sentinel&&calls===0,'all holes retain initial identity');
+check([,,].reduceRight(function(){calls++;},undefined)===undefined&&calls===0,'explicit undefined initial');
+let caught=false;try{[,,].reduce(function(){});}catch(error){caught=error instanceof TypeError;}
+check(caught&&[,undefined,].reduce(function(){throw sentinel;})===undefined,'missing initial and present undefined');mark('initial');
+const values=[1,2,3];let order='';
+check(values.reduce(function(acc,value,index,receiver){'use strict';check(this===undefined&&receiver===values&&arguments.length===4,'callback contract');order+=String(index);return acc+value;},0)===6&&order==='012','left direction');
+check(values.reduceRight(function(acc,value){return acc+String(value);},'')==='321','right direction');mark('direction');
+const proto={1:4};const generic=Object.create(proto);generic.length=4;generic[3]=6;
+check(reduce.call(generic,function(acc,value,index,receiver){check(acc===4&&value===6&&index===3&&receiver===generic,'inherited initial');return acc+value;})===10,'generic reduction');
+check(right.call(generic,function(acc,value,index){check(acc===6&&value===4&&index===1,'inherited reverse read');return acc+value;})===10,'generic reverse reduction');mark('inherited');
+const live={0:1,2:3,length:3};let liveOrder='';
+const sum=reduce.call(live,function(acc,value,index){liveOrder+=String(index);if(index===0){live[1]=2;live[2]=9;live[3]=100;live.length=4;}return acc+value;},0);
+check(sum===12&&liveOrder==='012','live future values and captured length');mark('mutation');
+const interrupted=[1,2,3];caught=false;
+try{right.call(interrupted,function(acc,value,index){interrupted[0]=7;check(index===2,'first reverse callback');throw sentinel;},0);}catch(error){caught=error===sentinel;}
+check(caught&&interrupted[0]===7&&interrupted[1]===2&&interrupted[2]===3,'callback effects and abrupt identity');mark('effects');
+const records=[{id:'a',rank:2},{id:'b',rank:1},{id:'c',rank:2}];
+const state={text:'',total:0};
+check(records.reduce(function(acc,item){acc.text+=item.id;acc.total+=item.rank;return acc;},state)===state,'object accumulator identity');
+check(state.text==='abc'&&state.total===5,'retained accumulated state');
+document.getElementById('result').textContent=state.text;document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  check(state.text==='abc'&&state.total===5,'accumulator survives page checkpoint');
+  const text=right.call(records,function(acc,item){check(this===window,'sloppy callback receiver');return acc+item.id;},'');
+  check(text==='cba'&&records[0].id==='a'&&records[2].id==='c','reverse reduction preserves order');
+  document.getElementById('result').textContent=text;
+  mark('metadata','blue');mark('initial','blue');mark('direction','blue');
+  mark('inherited','blue');mark('mutation','blue');mark('effects','blue');
+  document.body.className='clicked';
+};
+</script>

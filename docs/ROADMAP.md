@@ -28,6 +28,13 @@ surface. Software remains the only browser path; no graphics dependency,
 Vulkan backend, presenter thread or frame queue was added. Native Vulkan
 integration and custom GPU rasterization remain separate milestones.
 
+The [first integration contract](vulkan-rendering.md#first-integration-contract)
+now specifies one active upload and one pending frame, viewport/visibility
+invalidation, fixed operation deadlines and confirmed release before fallback.
+The review also accounts for staging allocated before submission and distinguishes
+texture readback from final compositor output. These remain implementation
+requirements, with no browser Vulkan path enabled yet.
+
 Acceptance work:
 
 - Define a backend interface for the existing validated display list and image

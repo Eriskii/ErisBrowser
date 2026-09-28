@@ -30,6 +30,23 @@ python3 tools/test262_conformance.py --profile array-sort
 python3 -m unittest discover -s tools -p 'test_test262_conformance.py'
 ```
 
+## Reduction-method checkpoint
+
+The [complete reduction comparison](test262-array-sort-reduce.json) preserves
+all 107 case identities, 80 preflights and the same policy. Results are now
+**57 passed / 46 unsupported / four resources**, with no lost passes.
+Implementing reduce enables the unchanged 5- and 11-element stability sources
+in both modes. The 513-element source now reaches the shared runtime instruction
+limit in both modes; these two earlier missing-method failures remain nonpasses.
+The two 2,048-element modes retain their runtime allocation stops.
+
+All preflights verify. No healthy baseline is recorded while these resource
+stops remain. The adapter SHA-256 is
+`2b0e59686ff8fb8db409c8a54b8f92df592f00668fcd9ff00da2de0b3585705a`;
+the source-input digest is
+`be187dd3a00025c8461dc08013ca49696231b350d5b4490ea8166c15de83a79f`.
+The following measurements remain historical evidence.
+
 ## Identifier compiler checkpoint
 
 The [full later comparison](test262-array-sort-identifiers.json) preserves all

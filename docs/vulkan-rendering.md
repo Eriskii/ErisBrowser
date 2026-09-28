@@ -151,8 +151,9 @@ selection remain unimplemented. Proposed future interfaces are illustrative:
 
 ```text
 Presenter = Software | Vulkan
-Frame = { serial, generation, width, height, opaque_pixels }
-present(Frame) -> Presented | Deferred | Unsupported | Failed
+Target = { generation, viewport_revision, physical_size, occluded }
+Frame = { serial, generation, viewport_revision, width, height, opaque_pixels }
+submit(Frame) -> Presented | Queued | Replaced | IgnoredStale | Stopped
 ```
 
 The initial Vulkan option should be explicit and experimental; software stays
@@ -182,6 +183,55 @@ describes this slice accurately. The headless CPU path remains the reference.
 The GPU work in this milestone is transfer and presentation. The page is still
 rasterized and composited by `Canvas`. Existing CPU screenshot output by itself
 cannot verify that the Vulkan copy or presentation was correct.
+
+### First integration contract
+
+A review of the pinned binding and current browser identified these requirements
+for implementation. They are design constraints, not completed browser behavior.
+
+- Keep one active upload and one replaceable pending frame. Navigation and
+  physical viewport changes advance the target epoch, including a resize back
+  to earlier dimensions. Explicit occlusion/restore events resume a deferred
+  frame; idle, zero-size and occluded states have no progress deadline. A frame's
+  epoch identifies the current UI request, which may still display the prior
+  document while navigation loads.
+- Treat `Queue::write_texture` as a state change: it copies bytes into staging
+  before submission. If the epoch changes after that call, flush and retire the
+  queued upload without presenting, or release the owner. Do not start another
+  upload or release its accounting merely because no submission occurred yet.
+  Recheck epochs before conversion, writing and presentation; a native call
+  already in progress cannot be atomically canceled.
+- Attach fixed deadlines to initialization, active work and teardown. Pending
+  replacement, resize traffic and notices must not postpone them. The UI services
+  expiry even without redraws. Expiry requests shutdown and marks the owner
+  stalled; it neither establishes release nor permits another native surface.
+- Keep lifecycle state durable under a short lock; a coalesced event only wakes
+  the UI. Observing state and clearing its wake flag must be atomic. Never hold
+  that lock during a driver call or thread join, and never let a late ready
+  notice overwrite stop, stall or confirmed release.
+- Retry an Outdated surface configuration once. A Lost surface or device-loss
+  event instead requests clean release and fallback in this first slice.
+  Consume or drop acquired textures, including suboptimal ones, before any
+  reconfiguration. Install bounded, nonpanicking error callbacks before GPU
+  work; callbacks must not retain devices, queues or surfaces in ownership cycles.
+- Publish release only after actual resource drops return. Unexpected thread
+  panic, a timeout and a requested stop are insufficient. Join only a finished
+  thread. A later confirmed release may enable software fallback after a stall.
+- A bounded verification option must count distinct completed frame serials and
+  fail its process result on fallback, missing copy-source support, insufficient
+  samples, mismatch, device error or stall. Acquired-texture readback verifies
+  bytes before the compositor; neither CPU screenshots nor a present call prove
+  exact visible output.
+
+These requirements follow the pinned
+[queue](https://docs.rs/wgpu/30.0.1/wgpu/struct.Queue.html),
+[surface](https://docs.rs/wgpu/30.0.1/wgpu/struct.Surface.html),
+[acquisition outcomes](https://docs.rs/wgpu/30.0.1/wgpu/enum.CurrentSurfaceTexture.html)
+and [device](https://docs.rs/wgpu/30.0.1/wgpu/struct.Device.html) APIs. CPU tests
+should inject invalidation before and after queued writes, loss, callbacks,
+delayed release and stuck cleanup. Queue and resize storms must preserve fixed
+deadlines, bounded storage and exclusive surface ownership. Such simulations
+do not establish recovery from a real driver hang.
 
 ## Milestone B: custom GPU rasterization
 
@@ -231,26 +281,32 @@ Proposed initial application-controlled limits are:
 
 | Resource | Initial policy |
 | --- | --- |
-| Submitted frames | At most two in flight |
+| Submitted frames | One active upload/submission, retained until completion or release |
 | Pending CPU frame | One replaceable latest frame |
 | Presenter allocations | 128 MiB ledger for retained upload buffers, intermediate textures and surface-image estimates; include retired generations until completion |
-| Upload work | At most two bounded framebuffer uploads outstanding; account row padding and staging copies |
-| CPU framebuffer | Existing 16-megapixel/8,192-axis checks still apply; use software when the presenter budget cannot admit the window |
+| Upload work | One outstanding upload and one reusable conversion buffer; account row padding and staging copies |
+| Vulkan input | At most 4,194,304 pixels and 8,192 per axis; larger frames require clean release before software fallback |
+| CPU framebuffer | Existing 16-megapixel/8,192-axis software checks remain unchanged |
 | Shader/pipeline sources | Fixed application-owned code, compiled at initialization; no page-provided code or unbounded per-style variants |
 
 These numbers are design choices awaiting implementation measurements. They are
 not hard bounds on undocumented driver allocations or wgpu's internal allocator.
-For example, a 16-megapixel RGBA frame is 64 MiB; multiple uploads and surface
-images can exceed the proposed presenter ledger before any opacity targets.
-Pool retention, alignment and resize retirement must be charged, not just live
-logical texture dimensions. Query supported device limits and request only
-those needed by the bounded implementation.
+At the proposed four-megapixel Vulkan limit, active pixels, pending pixels and
+converted bytes occupy up to 48 MiB; the UI may simultaneously paint another
+16 MiB frame. Count buffer capacities and replacement transients, padded
+readback storage, alignment and retirement, not just live logical dimensions.
+Swap pending ownership under the accounting lock. Label staging and surface
+estimates separately from exact application allocations. Query effective device
+texture/buffer limits and request only those needed by the implementation.
+Limiting inspection to 16 adapters does not bound the binding's prior full
+adapter enumeration or driver allocations.
 
-Completion callbacks release frame slots and request redraw; they do not run
-page code. Avoid indefinite application waits and unbounded retry loops.
-Minimized/occluded windows defer presentation. Lost/outdated surfaces recreate
-only after old acquired textures are released; repeated failures disable the
-experimental backend. Missing adapters, unsupported formats and rejected
+Completion callbacks release frame slots; they do not run page code or request
+another draw merely because a draw completed. Avoid indefinite application
+waits and unbounded retry loops. Minimized/occluded windows defer presentation.
+Outdated surfaces reconfigure only after old acquired textures are released;
+Lost surfaces and repeated failures disable the experimental backend. Missing
+adapters, unsupported formats and rejected
 allocations fall back to software. Device-loss fallback requires successful
 release of the old surface; a stuck driver is not safely canceled by dropping
 a Rust future or abandoning a wait.
@@ -264,7 +320,7 @@ and retain application resources through its completion notifications. See
 
 **Recommendation for browser integration, not yet adopted by the browser:**
 implement the first slice using
-wgpu 30.0.1 with defaults disabled and only `std`, `vulkan` and `wgsl` enabled,
+wgpu exactly 30.0.1 with defaults disabled and only `std` and `vulkan` enabled,
 behind an optional Eris feature. Select `Backends::VULKAN` explicitly at runtime.
 Keep application `unsafe_code = "forbid"` and use the checked public APIs; do
 not bypass validation through HAL access, trusted shader entry points or
@@ -283,7 +339,10 @@ The [wgpu manifest](https://docs.rs/crate/wgpu/30.0.1/source/Cargo.toml) and cac
 30.0.1 manifests confirm the Rust requirement and feature selection. Disabling
 other backends does not eliminate Naga, core/HAL validation or every support
 dependency: the native dependency configuration enables WGSL and RenderDoc
-support transitively. The recommended feature set avoids enabling the other
+support transitively. Omitting the public `wgsl` feature removes its unused
+public shader-source variant for the upload slice; it does not remove Naga,
+the native WGSL frontend or internal shader machinery. The recommended feature
+set avoids enabling the other
 graphics backends and browser-facing web backend. Use the safe
 [surface](https://docs.rs/wgpu/30.0.1/wgpu/struct.Instance.html#method.create_surface)
 and [shader APIs](https://docs.rs/wgpu/30.0.1/wgpu/struct.Device.html#method.create_shader_module).

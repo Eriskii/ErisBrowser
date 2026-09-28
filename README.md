@@ -89,6 +89,7 @@ python3 tools/test262_conformance.py --profile template-literal --baseline tests
 python3 tools/test262_conformance.py --profile rest-parameters --baseline tests/conformance/test262-rest-parameters-current.json
 python3 tools/test262_conformance.py --profile is-prototype-of --baseline tests/conformance/test262-is-prototype-of-current.json
 python3 tools/test262_conformance.py --profile global-values --baseline tests/conformance/test262-global-values-current.json
+python3 tools/test262_conformance.py --profile array-reduce --baseline tests/conformance/test262-array-reduce-current.json
 python3 -m unittest discover -s tools -p 'test_*.py'
 cargo run --locked --release --bin eris-stress -- 5000
 ```
@@ -124,9 +125,16 @@ unsupported. Corrected global-property behavior adds six passes and verifies all
 64 assertion preflights; CI preserves those passes and the unchanged inventory.
 
 The complete [array-sort directory](tests/conformance/test262-array-sort.md)
-retains 107 variants: 53 pass, 46 remain unsupported, six fail on missing reduce,
-and two exceed the shared script budget. Those resource stops prevent a healthy
+retains 107 variants: 57 pass, 46 remain unsupported, and four exceed the shared
+script budget. Adding reduce enables the 5- and 11-element stability tests in
+both modes. Those resource stops prevent a healthy
 regression baseline; the full inventory remains part of local measurements.
+
+The complete paired [reduce/reduceRight directories](tests/conformance/test262-array-reduce.md)
+retain 1,034 variants: 846 pass, 18 fail on remaining prerequisites and 170
+remain unsupported. Both methods now execute in the custom runtime, adding 762
+passes with no losses. All 128 assertion checks verify; CI preserves the passing
+cases and the full unchanged inventory.
 
 The complete [identifier and whitespace directories](tests/conformance/test262-identifiers.md)
 retain 669 variants: 507 pass, 154 remain unsupported and eight reach compile

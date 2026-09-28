@@ -27,12 +27,13 @@ IS_PROTOTYPE_OF_FEATURES = SUPPORTED_FEATURES.copy()
 GLOBAL_VALUE_FEATURES = SUPPORTED_FEATURES | {'globalThis'}
 ARRAY_SORT_FEATURES = SUPPORTED_FEATURES | {'stable-array-sort'}
 IDENTIFIER_FEATURES = SUPPORTED_FEATURES | {'u180e'}
+ARRAY_REDUCE_FEATURES = SUPPORTED_FEATURES.copy()
 PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
                     'is-prototype-of': IS_PROTOTYPE_OF_FEATURES,
                     'global-values': GLOBAL_VALUE_FEATURES, 'array-sort': ARRAY_SORT_FEATURES,
-                    'identifiers': IDENTIFIER_FEATURES}
+                    'identifiers': IDENTIFIER_FEATURES, 'array-reduce': ARRAY_REDUCE_FEATURES}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -401,6 +402,71 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                 for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
                     source = guard + setup + f'assert.sameValue({actual},{value});'
                     variants.append(('array-sort-' + name + suffix, source, expected, mode))
+    if profile == 'array-reduce':
+        # Both directions prove successful method execution before any error
+        # assertion: an absent method's TypeError is not validation evidence.
+        for method, order, digits, first, last in (
+                ('reduce', '012', '123', 0, 2), ('reduceRight', '210', '321', 2, 0)):
+            guard = (f"var m=Array.prototype.{method};assert.sameValue(typeof m,'function');"
+                     "assert.sameValue(m.call([1,2],function(a,b){return a+b;},0),3);")
+            pairs = [
+                ('direction', "var a=[1,2,3],trace='';var result=m.call(a,function(acc,v,k,o){assert.sameValue(o,a);trace+=k;return acc*10+v;},0);"
+                 f"assert.sameValue(trace,'{order}');assert.sameValue(m.call(a,function(acc,v){{return acc*10+v;}}),{digits});",
+                 'result', digits, '999'),
+                ('initial', "var calls=0,fn=function(){calls++;return 8;};assert.throws(TypeError,function(){m.call([],fn);});"
+                 "assert.sameValue(m.call([],fn,undefined),undefined);assert.sameValue(m.call([undefined],fn),undefined);"
+                 "var token={valueOf:function(){throw 9;}};assert.sameValue(m.call([],fn,token),token);",
+                 'calls', '0', '1'),
+                ('holes-undefined', "var a=[,undefined,,4],trace='',undefineds=0;var result=m.call(a,function(acc,v,k){trace+=k;if(v===undefined){undefineds++;return acc;}return acc+v;},0);"
+                 f"assert.sameValue(trace,'{'13' if method == 'reduce' else '31'}');assert.sameValue(undefineds,1);"
+                 "assert.throws(TypeError,function(){m.call(new Array(4),function(){});});",
+                 'result', '4', '5'),
+                ('validation-order', "var trace='',reads=0,o={};Object.defineProperty(o,'length',{get:function(){trace+='L';return {valueOf:function(){trace+='V';return 1;}};}});"
+                 "Object.defineProperty(o,'0',{get:function(){reads++;return 1;}});assert.throws(TypeError,function(){m.call(o,{},7);});"
+                 "assert.throws(TypeError,function(){m.call(null,function(){});});assert.throws(TypeError,function(){m.call(undefined,function(){});});assert.sameValue(reads,0);",
+                 'trace', "'LV'", "'VL'"),
+                ('inherited', "var p={};Object.defineProperty(p,'0',{value:4,enumerable:false});Object.defineProperty(p,'2',{value:8,enumerable:false});"
+                 "var o=Object.create(p);o[1]=7;o.length=3;var calls=0;var result=m.call(o,function(acc,v,k,receiver){assert.sameValue(receiver,o);calls++;return acc+v;});assert.sameValue(calls,2);",
+                 'result', '19', '20'),
+                ('live-get', f"var o={{length:3,1:7}},trace='';Object.defineProperty(o,'{first}',{{get:function(){{o[{last}]=9;delete o[1];return 1;}}}});"
+                 "var result=m.call(o,function(acc,v,k){trace+=k;return acc+v;},0);"
+                 f"assert.sameValue(trace,'{first}{last}');assert.sameValue(1 in o,false);",
+                 'result', '10', '17'),
+                ('captured-length', "var reads=0,o={0:1,1:2,2:3},calls=0;Object.defineProperty(o,'length',{configurable:true,get:function(){reads++;return 3;}});"
+                 "var result=m.call(o,function(acc,v,k){if(calls===0){Object.defineProperty(o,'length',{value:0});o[3]=99;}calls++;return acc+v;},0);"
+                 "assert.sameValue(reads,1);assert.sameValue(calls,3);assert.sameValue(o.length,0);assert.sameValue(o[3],99);",
+                 'result', '6', '105'),
+                ('abrupt', "var reason={},caught=0,calls=0,o={length:3};"
+                 f"Object.defineProperty(o,'{first}',{{get:function(){{throw reason;}}}});"
+                 "try{m.call(o,function(){calls++;},0);}catch(e){assert.sameValue(e,reason);caught++;}assert.sameValue(calls,0);"
+                 "var a=[1,2,3];try{m.call(a,function(){calls++;a.changed=7;throw reason;},0);}catch(e){assert.sameValue(e,reason);caught++;}"
+                 "assert.sameValue(caught,2);assert.sameValue(a.changed,7);",
+                 'calls', '1', '2'),
+                ('callback-this', "var realm=this,o=[1,2],calls=0;var result=m.call(o,function(acc,v,k,receiver){'use strict';assert.sameValue(this,undefined);"
+                 "assert.sameValue(arguments.length,4);assert.sameValue(receiver,o);calls++;return acc+v;},0);assert.sameValue(result,3);assert.sameValue(calls,2);"
+                 "m.call([1],function(){assert.sameValue(this,@THIS@);return 0;},0);var token={};var bound=function(acc,v){'use strict';assert.sameValue(this,token);return acc+v;}.bind(token);",
+                 'm.call([2],bound,3)', '5', '6'),
+                ('boxed-string', "var boxed,trace='';var result=m.call('ab',function(acc,v,k,o){if(boxed===undefined){boxed=o;}assert.sameValue(o,boxed);"
+                 "assert.sameValue(typeof o,'object');assert.sameValue(Object.getPrototypeOf(o),String.prototype);trace+=k;return acc+v;},'');"
+                 f"assert.sameValue(trace,'{'01' if method == 'reduce' else '10'}');",
+                 'result', "'ab'" if method == 'reduce' else "'ba'", "'wrong'"),
+                ('saved-alias', f"Array.prototype.{method}=function(){{return 99;}};var fn=function(a,b){{return a+b;}};"
+                 "assert.sameValue(m.apply([1,2],[fn,0]),3);assert.sameValue(m.bind([1,2])(fn,0),3);"
+                 f"delete Array.prototype.{method};",
+                 'm.call([1,2],fn,0)', '3', '99'),
+                ('property-metadata', f"verifyProperty(Array.prototype,'{method}',{{value:m,writable:true,enumerable:false,configurable:true}},{{restore:true}});"
+                 "verifyProperty(m,'length',{value:1,writable:false,enumerable:false,configurable:true},{restore:true});"
+                 f"verifyProperty(m,'name',{{value:'{method}',writable:false,enumerable:false,configurable:true}},{{restore:true}});"
+                 "assert.sameValue(Object.getPrototypeOf(m),Function.prototype);assert.sameValue(Object.prototype.hasOwnProperty.call(m,'prototype'),false);"
+                 "assert.throws(TypeError,function(){new m();});",
+                 'm.length', '1', '2'),
+            ]
+            for mode in ('sloppy', 'strict'):
+                for name, setup, actual, good, bad in pairs:
+                    setup = setup.replace('@THIS@', 'undefined' if mode == 'strict' else 'realm')
+                    for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                        source = guard + setup + f'assert.sameValue({actual},{value});'
+                        variants.append(('array-reduce-' + method + '-' + name + suffix, source, expected, mode))
     if profile == 'identifiers':
         pairs = [
             ('identifier-alias', r"var \u0061=7;var \u{000000000061}lias=9;assert.sameValue(a,7);function f(\u0078){return x;}assert.sameValue(f(11),11);", 'alias', '9', '8'),

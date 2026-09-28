@@ -1,6 +1,93 @@
 # Validation record
 
+## Streaming array reductions
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **799 Rust tests** pass with `--include-ignored`: 647 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 43 pipeline and 34 confined-worker tests. None remain
+ignored. All **91 Python checks** and **57 exact pixel references** pass.
+
+The [reduction implementation](../tests/conformance/array-reduce.md) adds
+reduce/reduceRight with one captured ToLength, live sparse/inherited property
+reads, omitted-initial distinction and four callback arguments. It streams over
+the full safe-integer logical range with a fixed stack key formatter. Separate
+presence and value walks precharge work and temporary storage at each prototype
+edge; callbacks share the unchanged work, allocation and stack limits. Fourteen
+new script groups include conversion order, boxed strings, actual-callee this,
+mutation, exceptions, reentrancy and accounting boundaries.
+
+Direct Page and real confined-worker fixtures preserve six green samples and
+six blue samples after a retained callback. They check callback direction,
+captured length, live values, abrupt effects and object accumulator identity.
+Worker pixels equal the direct output.
+
+The complete [paired upstream inventory](../tests/conformance/test262-array-reduce.md)
+retains **520 sources / 1,034 variants / 128 preflights**. Results move from
+**84 passed / 780 failed / 170 unsupported** to **846 passed / 18 failed /
+170 unsupported**: 762 gains and no lost passes. All 128 preflights verify;
+there are no resource stops, timeouts or adapter errors. The initial 84 raw
+passes are retained with their missing-method exception caveat, rather than
+counted as gains. Remaining failures expose Date, Math/JSON receiver tags and
+Number.MAX_SAFE_INTEGER prerequisites. The full reports preserve all unchanged
+identities and every nonpassing outcome.
+
+Baseline recording and a subsequent CLI gate both succeed with identical
+outcomes, zero regressions and zero additional passes. CI now checks this
+separate regression baseline. It retains all 1,034 statuses, including every
+failure and unsupported case; a plain conformance run still fails.
+
+Independent frozen-release review matches **370 unchanged outcomes**: 312
+normal completions, 20 explicit unsupported controls, 16 intended missing-global
+ReferenceErrors, two deliberately failed assertion controls and 20 uncatchable
+resources. Three bounded private groups pass, covering failure after getter
+effects, exact key/callback allocation boundaries, prototype cycles and
+per-edge scratch accounting, shared work and recursion. Static delta review
+found no concrete scoped defect.
+
+All nine prior JavaScript profiles preserve their **3,093 case identities and
+528 preflight identities**, with no prior passing case lost. The
+[full sort comparison](../tests/conformance/test262-array-sort-reduce.json)
+gains four modes: the unchanged 5- and 11-element stability sources now pass
+in both modes. Sort totals are **57 passed / 46 unsupported / four resources**.
+The 513-element source now reaches the runtime instruction limit instead of a
+missing-method failure; the two 2,048-element allocation stops are unchanged.
+Functions remain 509 passed / 620 unsupported / two parser resources, and
+identifiers remain 507 passed / 154 unsupported / eight compiler resources,
+with unchanged diagnostics. The six existing healthy JavaScript gates and HTML
+gate preserve all results; HTML retains 3,868 matches, two mismatches and six
+unsupported modes. No sort, function or identifier baseline is invented.
+
+The **15,000-case** mutation smoke run reports zero caught panics or invariant
+failures: 5,000 accepted HTML, 615 accepted/4,385 rejected scripts and
+3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and
+display-list size is 1,173 commands; 17 cases stop within paint limits. The
+added reduction seed changes the inventory, so these counts are not an
+acceptance-rate comparison.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+|---|---|
+| `eris-browser` | `b7bac529a1fb2739c806d955ad186aa2894a3cc40b6c6873be334bbab745dceb` |
+| `eris-js` | `2b0e59686ff8fb8db409c8a54b8f92df592f00668fcd9ff00da2de0b3585705a` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `01f92eac3d21d87bdfd9e2bed7b892980d040e3266e8b11d7108a0aa8d61f4f1` |
+
+Source-input SHA-256:
+`be187dd3a00025c8461dc08013ca49696231b350d5b4490ea8166c15de83a79f`.
+Local logs and reports use `artifacts/*-reduce-final*`; independent review
+records remain in session scratch storage. No native-window run, GPU execution
+or Chromium performance comparison is assigned to this checkpoint. The Vulkan
+docket incorporates a reviewed upload/ownership contract; its browser backend
+remains unimplemented. These results do not establish full web compatibility
+or production security.
+
 ## Unicode identifiers and bounded compilation
+
+Published checkpoint `9d5add8` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36418501821),
+including Rust 1.88, the offline Unicode check and the Vulkan probe.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **783 Rust tests** pass with `--include-ignored`: 633 library,

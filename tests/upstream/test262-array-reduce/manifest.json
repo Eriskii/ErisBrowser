@@ -1,0 +1,3709 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all direct .js files in built-ins/Array/prototype/reduce and reduceRight; no implementation",
+  "directories": {
+    "Array/prototype/reduce": [
+      "15.4.4.21-1-1.js",
+      "15.4.4.21-1-10.js",
+      "15.4.4.21-1-11.js",
+      "15.4.4.21-1-12.js",
+      "15.4.4.21-1-13.js",
+      "15.4.4.21-1-14.js",
+      "15.4.4.21-1-15.js",
+      "15.4.4.21-1-2.js",
+      "15.4.4.21-1-3.js",
+      "15.4.4.21-1-4.js",
+      "15.4.4.21-1-5.js",
+      "15.4.4.21-1-6.js",
+      "15.4.4.21-1-7.js",
+      "15.4.4.21-1-8.js",
+      "15.4.4.21-1-9.js",
+      "15.4.4.21-10-1.js",
+      "15.4.4.21-10-2.js",
+      "15.4.4.21-10-3.js",
+      "15.4.4.21-10-4.js",
+      "15.4.4.21-10-5.js",
+      "15.4.4.21-10-6.js",
+      "15.4.4.21-10-7.js",
+      "15.4.4.21-10-8.js",
+      "15.4.4.21-2-1.js",
+      "15.4.4.21-2-10.js",
+      "15.4.4.21-2-11.js",
+      "15.4.4.21-2-12.js",
+      "15.4.4.21-2-13.js",
+      "15.4.4.21-2-14.js",
+      "15.4.4.21-2-17.js",
+      "15.4.4.21-2-18.js",
+      "15.4.4.21-2-19.js",
+      "15.4.4.21-2-2.js",
+      "15.4.4.21-2-3.js",
+      "15.4.4.21-2-4.js",
+      "15.4.4.21-2-5.js",
+      "15.4.4.21-2-6.js",
+      "15.4.4.21-2-7.js",
+      "15.4.4.21-2-8.js",
+      "15.4.4.21-2-9.js",
+      "15.4.4.21-3-1.js",
+      "15.4.4.21-3-10.js",
+      "15.4.4.21-3-11.js",
+      "15.4.4.21-3-12.js",
+      "15.4.4.21-3-13.js",
+      "15.4.4.21-3-14.js",
+      "15.4.4.21-3-15.js",
+      "15.4.4.21-3-16.js",
+      "15.4.4.21-3-17.js",
+      "15.4.4.21-3-18.js",
+      "15.4.4.21-3-19.js",
+      "15.4.4.21-3-2.js",
+      "15.4.4.21-3-20.js",
+      "15.4.4.21-3-21.js",
+      "15.4.4.21-3-22.js",
+      "15.4.4.21-3-23.js",
+      "15.4.4.21-3-24.js",
+      "15.4.4.21-3-25.js",
+      "15.4.4.21-3-3.js",
+      "15.4.4.21-3-4.js",
+      "15.4.4.21-3-5.js",
+      "15.4.4.21-3-6.js",
+      "15.4.4.21-3-7.js",
+      "15.4.4.21-3-9.js",
+      "15.4.4.21-4-1.js",
+      "15.4.4.21-4-10.js",
+      "15.4.4.21-4-11.js",
+      "15.4.4.21-4-12.js",
+      "15.4.4.21-4-15.js",
+      "15.4.4.21-4-2.js",
+      "15.4.4.21-4-3.js",
+      "15.4.4.21-4-4.js",
+      "15.4.4.21-4-5.js",
+      "15.4.4.21-4-6.js",
+      "15.4.4.21-4-7.js",
+      "15.4.4.21-4-8.js",
+      "15.4.4.21-4-9.js",
+      "15.4.4.21-5-1.js",
+      "15.4.4.21-5-10.js",
+      "15.4.4.21-5-11.js",
+      "15.4.4.21-5-12.js",
+      "15.4.4.21-5-13.js",
+      "15.4.4.21-5-2.js",
+      "15.4.4.21-5-3.js",
+      "15.4.4.21-5-4.js",
+      "15.4.4.21-5-5.js",
+      "15.4.4.21-5-6.js",
+      "15.4.4.21-5-7.js",
+      "15.4.4.21-5-8.js",
+      "15.4.4.21-5-9.js",
+      "15.4.4.21-7-1.js",
+      "15.4.4.21-7-10.js",
+      "15.4.4.21-7-11.js",
+      "15.4.4.21-7-2.js",
+      "15.4.4.21-7-3.js",
+      "15.4.4.21-7-4.js",
+      "15.4.4.21-7-5.js",
+      "15.4.4.21-7-6.js",
+      "15.4.4.21-7-7.js",
+      "15.4.4.21-7-8.js",
+      "15.4.4.21-7-9.js",
+      "15.4.4.21-8-b-1.js",
+      "15.4.4.21-8-b-2.js",
+      "15.4.4.21-8-b-3.js",
+      "15.4.4.21-8-b-ii-1.js",
+      "15.4.4.21-8-b-ii-2.js",
+      "15.4.4.21-8-b-iii-1-1.js",
+      "15.4.4.21-8-b-iii-1-10.js",
+      "15.4.4.21-8-b-iii-1-11.js",
+      "15.4.4.21-8-b-iii-1-12.js",
+      "15.4.4.21-8-b-iii-1-13.js",
+      "15.4.4.21-8-b-iii-1-14.js",
+      "15.4.4.21-8-b-iii-1-15.js",
+      "15.4.4.21-8-b-iii-1-16.js",
+      "15.4.4.21-8-b-iii-1-17.js",
+      "15.4.4.21-8-b-iii-1-18.js",
+      "15.4.4.21-8-b-iii-1-19.js",
+      "15.4.4.21-8-b-iii-1-2.js",
+      "15.4.4.21-8-b-iii-1-20.js",
+      "15.4.4.21-8-b-iii-1-21.js",
+      "15.4.4.21-8-b-iii-1-22.js",
+      "15.4.4.21-8-b-iii-1-25.js",
+      "15.4.4.21-8-b-iii-1-26.js",
+      "15.4.4.21-8-b-iii-1-27.js",
+      "15.4.4.21-8-b-iii-1-28.js",
+      "15.4.4.21-8-b-iii-1-29.js",
+      "15.4.4.21-8-b-iii-1-3.js",
+      "15.4.4.21-8-b-iii-1-30.js",
+      "15.4.4.21-8-b-iii-1-31.js",
+      "15.4.4.21-8-b-iii-1-32.js",
+      "15.4.4.21-8-b-iii-1-33.js",
+      "15.4.4.21-8-b-iii-1-4.js",
+      "15.4.4.21-8-b-iii-1-5.js",
+      "15.4.4.21-8-b-iii-1-6.js",
+      "15.4.4.21-8-b-iii-1-7.js",
+      "15.4.4.21-8-b-iii-1-8.js",
+      "15.4.4.21-8-b-iii-1-9.js",
+      "15.4.4.21-8-c-1.js",
+      "15.4.4.21-8-c-2.js",
+      "15.4.4.21-8-c-3.js",
+      "15.4.4.21-8-c-4.js",
+      "15.4.4.21-8-c-5.js",
+      "15.4.4.21-8-c-6.js",
+      "15.4.4.21-8-c-7.js",
+      "15.4.4.21-8-c-8.js",
+      "15.4.4.21-9-1.js",
+      "15.4.4.21-9-10.js",
+      "15.4.4.21-9-2.js",
+      "15.4.4.21-9-3.js",
+      "15.4.4.21-9-4.js",
+      "15.4.4.21-9-5.js",
+      "15.4.4.21-9-6.js",
+      "15.4.4.21-9-7.js",
+      "15.4.4.21-9-8.js",
+      "15.4.4.21-9-9.js",
+      "15.4.4.21-9-b-1.js",
+      "15.4.4.21-9-b-10.js",
+      "15.4.4.21-9-b-11.js",
+      "15.4.4.21-9-b-12.js",
+      "15.4.4.21-9-b-13.js",
+      "15.4.4.21-9-b-14.js",
+      "15.4.4.21-9-b-15.js",
+      "15.4.4.21-9-b-16.js",
+      "15.4.4.21-9-b-17.js",
+      "15.4.4.21-9-b-18.js",
+      "15.4.4.21-9-b-19.js",
+      "15.4.4.21-9-b-2.js",
+      "15.4.4.21-9-b-20.js",
+      "15.4.4.21-9-b-21.js",
+      "15.4.4.21-9-b-22.js",
+      "15.4.4.21-9-b-23.js",
+      "15.4.4.21-9-b-24.js",
+      "15.4.4.21-9-b-25.js",
+      "15.4.4.21-9-b-26.js",
+      "15.4.4.21-9-b-27.js",
+      "15.4.4.21-9-b-28.js",
+      "15.4.4.21-9-b-29.js",
+      "15.4.4.21-9-b-3.js",
+      "15.4.4.21-9-b-4.js",
+      "15.4.4.21-9-b-5.js",
+      "15.4.4.21-9-b-6.js",
+      "15.4.4.21-9-b-7.js",
+      "15.4.4.21-9-b-8.js",
+      "15.4.4.21-9-b-9.js",
+      "15.4.4.21-9-c-1.js",
+      "15.4.4.21-9-c-i-1.js",
+      "15.4.4.21-9-c-i-10.js",
+      "15.4.4.21-9-c-i-11.js",
+      "15.4.4.21-9-c-i-12.js",
+      "15.4.4.21-9-c-i-13.js",
+      "15.4.4.21-9-c-i-14.js",
+      "15.4.4.21-9-c-i-15.js",
+      "15.4.4.21-9-c-i-16.js",
+      "15.4.4.21-9-c-i-17.js",
+      "15.4.4.21-9-c-i-18.js",
+      "15.4.4.21-9-c-i-19.js",
+      "15.4.4.21-9-c-i-2.js",
+      "15.4.4.21-9-c-i-20.js",
+      "15.4.4.21-9-c-i-21.js",
+      "15.4.4.21-9-c-i-22.js",
+      "15.4.4.21-9-c-i-25.js",
+      "15.4.4.21-9-c-i-26.js",
+      "15.4.4.21-9-c-i-27.js",
+      "15.4.4.21-9-c-i-28.js",
+      "15.4.4.21-9-c-i-29.js",
+      "15.4.4.21-9-c-i-3.js",
+      "15.4.4.21-9-c-i-30.js",
+      "15.4.4.21-9-c-i-31.js",
+      "15.4.4.21-9-c-i-32.js",
+      "15.4.4.21-9-c-i-33.js",
+      "15.4.4.21-9-c-i-4.js",
+      "15.4.4.21-9-c-i-5.js",
+      "15.4.4.21-9-c-i-6.js",
+      "15.4.4.21-9-c-i-7.js",
+      "15.4.4.21-9-c-i-8.js",
+      "15.4.4.21-9-c-i-9.js",
+      "15.4.4.21-9-c-ii-1.js",
+      "15.4.4.21-9-c-ii-10.js",
+      "15.4.4.21-9-c-ii-11.js",
+      "15.4.4.21-9-c-ii-12.js",
+      "15.4.4.21-9-c-ii-13.js",
+      "15.4.4.21-9-c-ii-14.js",
+      "15.4.4.21-9-c-ii-16.js",
+      "15.4.4.21-9-c-ii-17.js",
+      "15.4.4.21-9-c-ii-18.js",
+      "15.4.4.21-9-c-ii-19.js",
+      "15.4.4.21-9-c-ii-2.js",
+      "15.4.4.21-9-c-ii-20.js",
+      "15.4.4.21-9-c-ii-21.js",
+      "15.4.4.21-9-c-ii-22.js",
+      "15.4.4.21-9-c-ii-23.js",
+      "15.4.4.21-9-c-ii-24.js",
+      "15.4.4.21-9-c-ii-25.js",
+      "15.4.4.21-9-c-ii-26.js",
+      "15.4.4.21-9-c-ii-27.js",
+      "15.4.4.21-9-c-ii-28.js",
+      "15.4.4.21-9-c-ii-29.js",
+      "15.4.4.21-9-c-ii-3.js",
+      "15.4.4.21-9-c-ii-30.js",
+      "15.4.4.21-9-c-ii-31.js",
+      "15.4.4.21-9-c-ii-32.js",
+      "15.4.4.21-9-c-ii-33.js",
+      "15.4.4.21-9-c-ii-34.js",
+      "15.4.4.21-9-c-ii-35.js",
+      "15.4.4.21-9-c-ii-37.js",
+      "15.4.4.21-9-c-ii-4-s.js",
+      "15.4.4.21-9-c-ii-4.js",
+      "15.4.4.21-9-c-ii-5.js",
+      "15.4.4.21-9-c-ii-7.js",
+      "15.4.4.21-9-c-ii-8.js",
+      "15.4.4.21-9-c-ii-9.js",
+      "call-with-boolean.js",
+      "callbackfn-resize-arraybuffer.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "resizable-buffer-grow-mid-iteration.js",
+      "resizable-buffer-shrink-mid-iteration.js",
+      "resizable-buffer.js"
+    ],
+    "Array/prototype/reduceRight": [
+      "15.4.4.22-1-1.js",
+      "15.4.4.22-1-10.js",
+      "15.4.4.22-1-11.js",
+      "15.4.4.22-1-12.js",
+      "15.4.4.22-1-13.js",
+      "15.4.4.22-1-14.js",
+      "15.4.4.22-1-15.js",
+      "15.4.4.22-1-2.js",
+      "15.4.4.22-1-3.js",
+      "15.4.4.22-1-4.js",
+      "15.4.4.22-1-5.js",
+      "15.4.4.22-1-6.js",
+      "15.4.4.22-1-7.js",
+      "15.4.4.22-1-8.js",
+      "15.4.4.22-1-9.js",
+      "15.4.4.22-10-1.js",
+      "15.4.4.22-10-2.js",
+      "15.4.4.22-10-3.js",
+      "15.4.4.22-10-4.js",
+      "15.4.4.22-10-5.js",
+      "15.4.4.22-10-6.js",
+      "15.4.4.22-10-7.js",
+      "15.4.4.22-10-8.js",
+      "15.4.4.22-2-1.js",
+      "15.4.4.22-2-10.js",
+      "15.4.4.22-2-11.js",
+      "15.4.4.22-2-12.js",
+      "15.4.4.22-2-13.js",
+      "15.4.4.22-2-14.js",
+      "15.4.4.22-2-17.js",
+      "15.4.4.22-2-18.js",
+      "15.4.4.22-2-19.js",
+      "15.4.4.22-2-2.js",
+      "15.4.4.22-2-3.js",
+      "15.4.4.22-2-4.js",
+      "15.4.4.22-2-5.js",
+      "15.4.4.22-2-6.js",
+      "15.4.4.22-2-7.js",
+      "15.4.4.22-2-8.js",
+      "15.4.4.22-2-9.js",
+      "15.4.4.22-3-1.js",
+      "15.4.4.22-3-10.js",
+      "15.4.4.22-3-11.js",
+      "15.4.4.22-3-12.js",
+      "15.4.4.22-3-13.js",
+      "15.4.4.22-3-14.js",
+      "15.4.4.22-3-15.js",
+      "15.4.4.22-3-16.js",
+      "15.4.4.22-3-17.js",
+      "15.4.4.22-3-18.js",
+      "15.4.4.22-3-19.js",
+      "15.4.4.22-3-2.js",
+      "15.4.4.22-3-20.js",
+      "15.4.4.22-3-21.js",
+      "15.4.4.22-3-22.js",
+      "15.4.4.22-3-23.js",
+      "15.4.4.22-3-24.js",
+      "15.4.4.22-3-25.js",
+      "15.4.4.22-3-3.js",
+      "15.4.4.22-3-4.js",
+      "15.4.4.22-3-5.js",
+      "15.4.4.22-3-6.js",
+      "15.4.4.22-3-7.js",
+      "15.4.4.22-3-9.js",
+      "15.4.4.22-4-1.js",
+      "15.4.4.22-4-10.js",
+      "15.4.4.22-4-11.js",
+      "15.4.4.22-4-12.js",
+      "15.4.4.22-4-15.js",
+      "15.4.4.22-4-2.js",
+      "15.4.4.22-4-3.js",
+      "15.4.4.22-4-4.js",
+      "15.4.4.22-4-5.js",
+      "15.4.4.22-4-6.js",
+      "15.4.4.22-4-7.js",
+      "15.4.4.22-4-8.js",
+      "15.4.4.22-4-9.js",
+      "15.4.4.22-5-1.js",
+      "15.4.4.22-5-10.js",
+      "15.4.4.22-5-11.js",
+      "15.4.4.22-5-12.js",
+      "15.4.4.22-5-13.js",
+      "15.4.4.22-5-2.js",
+      "15.4.4.22-5-3.js",
+      "15.4.4.22-5-4.js",
+      "15.4.4.22-5-5.js",
+      "15.4.4.22-5-6.js",
+      "15.4.4.22-5-7.js",
+      "15.4.4.22-5-8.js",
+      "15.4.4.22-5-9.js",
+      "15.4.4.22-7-1.js",
+      "15.4.4.22-7-10.js",
+      "15.4.4.22-7-11.js",
+      "15.4.4.22-7-2.js",
+      "15.4.4.22-7-3.js",
+      "15.4.4.22-7-4.js",
+      "15.4.4.22-7-5.js",
+      "15.4.4.22-7-6.js",
+      "15.4.4.22-7-7.js",
+      "15.4.4.22-7-8.js",
+      "15.4.4.22-7-9.js",
+      "15.4.4.22-8-b-1.js",
+      "15.4.4.22-8-b-2.js",
+      "15.4.4.22-8-b-3.js",
+      "15.4.4.22-8-b-ii-1.js",
+      "15.4.4.22-8-b-ii-2.js",
+      "15.4.4.22-8-b-iii-1-1.js",
+      "15.4.4.22-8-b-iii-1-10.js",
+      "15.4.4.22-8-b-iii-1-11.js",
+      "15.4.4.22-8-b-iii-1-12.js",
+      "15.4.4.22-8-b-iii-1-13.js",
+      "15.4.4.22-8-b-iii-1-14.js",
+      "15.4.4.22-8-b-iii-1-15.js",
+      "15.4.4.22-8-b-iii-1-16.js",
+      "15.4.4.22-8-b-iii-1-17.js",
+      "15.4.4.22-8-b-iii-1-18.js",
+      "15.4.4.22-8-b-iii-1-19.js",
+      "15.4.4.22-8-b-iii-1-2.js",
+      "15.4.4.22-8-b-iii-1-20.js",
+      "15.4.4.22-8-b-iii-1-21.js",
+      "15.4.4.22-8-b-iii-1-22.js",
+      "15.4.4.22-8-b-iii-1-25.js",
+      "15.4.4.22-8-b-iii-1-26.js",
+      "15.4.4.22-8-b-iii-1-27.js",
+      "15.4.4.22-8-b-iii-1-28.js",
+      "15.4.4.22-8-b-iii-1-29.js",
+      "15.4.4.22-8-b-iii-1-3.js",
+      "15.4.4.22-8-b-iii-1-30.js",
+      "15.4.4.22-8-b-iii-1-31.js",
+      "15.4.4.22-8-b-iii-1-32.js",
+      "15.4.4.22-8-b-iii-1-33.js",
+      "15.4.4.22-8-b-iii-1-4.js",
+      "15.4.4.22-8-b-iii-1-5.js",
+      "15.4.4.22-8-b-iii-1-6.js",
+      "15.4.4.22-8-b-iii-1-7.js",
+      "15.4.4.22-8-b-iii-1-8.js",
+      "15.4.4.22-8-b-iii-1-9.js",
+      "15.4.4.22-8-c-1.js",
+      "15.4.4.22-8-c-2.js",
+      "15.4.4.22-8-c-3.js",
+      "15.4.4.22-8-c-4.js",
+      "15.4.4.22-8-c-5.js",
+      "15.4.4.22-8-c-6.js",
+      "15.4.4.22-8-c-7.js",
+      "15.4.4.22-8-c-8.js",
+      "15.4.4.22-9-1.js",
+      "15.4.4.22-9-2.js",
+      "15.4.4.22-9-3.js",
+      "15.4.4.22-9-4.js",
+      "15.4.4.22-9-5.js",
+      "15.4.4.22-9-6.js",
+      "15.4.4.22-9-7.js",
+      "15.4.4.22-9-8.js",
+      "15.4.4.22-9-9.js",
+      "15.4.4.22-9-b-1.js",
+      "15.4.4.22-9-b-10.js",
+      "15.4.4.22-9-b-11.js",
+      "15.4.4.22-9-b-12.js",
+      "15.4.4.22-9-b-13.js",
+      "15.4.4.22-9-b-14.js",
+      "15.4.4.22-9-b-15.js",
+      "15.4.4.22-9-b-16.js",
+      "15.4.4.22-9-b-17.js",
+      "15.4.4.22-9-b-18.js",
+      "15.4.4.22-9-b-19.js",
+      "15.4.4.22-9-b-2.js",
+      "15.4.4.22-9-b-20.js",
+      "15.4.4.22-9-b-21.js",
+      "15.4.4.22-9-b-22.js",
+      "15.4.4.22-9-b-23.js",
+      "15.4.4.22-9-b-24.js",
+      "15.4.4.22-9-b-25.js",
+      "15.4.4.22-9-b-26.js",
+      "15.4.4.22-9-b-27.js",
+      "15.4.4.22-9-b-28.js",
+      "15.4.4.22-9-b-29.js",
+      "15.4.4.22-9-b-3.js",
+      "15.4.4.22-9-b-4.js",
+      "15.4.4.22-9-b-5.js",
+      "15.4.4.22-9-b-6.js",
+      "15.4.4.22-9-b-7.js",
+      "15.4.4.22-9-b-8.js",
+      "15.4.4.22-9-b-9.js",
+      "15.4.4.22-9-c-1.js",
+      "15.4.4.22-9-c-i-1.js",
+      "15.4.4.22-9-c-i-10.js",
+      "15.4.4.22-9-c-i-11.js",
+      "15.4.4.22-9-c-i-12.js",
+      "15.4.4.22-9-c-i-13.js",
+      "15.4.4.22-9-c-i-14.js",
+      "15.4.4.22-9-c-i-15.js",
+      "15.4.4.22-9-c-i-16.js",
+      "15.4.4.22-9-c-i-17.js",
+      "15.4.4.22-9-c-i-18.js",
+      "15.4.4.22-9-c-i-19.js",
+      "15.4.4.22-9-c-i-2.js",
+      "15.4.4.22-9-c-i-20.js",
+      "15.4.4.22-9-c-i-21.js",
+      "15.4.4.22-9-c-i-22.js",
+      "15.4.4.22-9-c-i-25.js",
+      "15.4.4.22-9-c-i-26.js",
+      "15.4.4.22-9-c-i-27.js",
+      "15.4.4.22-9-c-i-28.js",
+      "15.4.4.22-9-c-i-29.js",
+      "15.4.4.22-9-c-i-3.js",
+      "15.4.4.22-9-c-i-30.js",
+      "15.4.4.22-9-c-i-31.js",
+      "15.4.4.22-9-c-i-32.js",
+      "15.4.4.22-9-c-i-33.js",
+      "15.4.4.22-9-c-i-4.js",
+      "15.4.4.22-9-c-i-5.js",
+      "15.4.4.22-9-c-i-6.js",
+      "15.4.4.22-9-c-i-7.js",
+      "15.4.4.22-9-c-i-8.js",
+      "15.4.4.22-9-c-i-9.js",
+      "15.4.4.22-9-c-ii-1.js",
+      "15.4.4.22-9-c-ii-10.js",
+      "15.4.4.22-9-c-ii-11.js",
+      "15.4.4.22-9-c-ii-12.js",
+      "15.4.4.22-9-c-ii-13.js",
+      "15.4.4.22-9-c-ii-14.js",
+      "15.4.4.22-9-c-ii-16.js",
+      "15.4.4.22-9-c-ii-17.js",
+      "15.4.4.22-9-c-ii-18.js",
+      "15.4.4.22-9-c-ii-19.js",
+      "15.4.4.22-9-c-ii-2.js",
+      "15.4.4.22-9-c-ii-20.js",
+      "15.4.4.22-9-c-ii-21.js",
+      "15.4.4.22-9-c-ii-22.js",
+      "15.4.4.22-9-c-ii-23.js",
+      "15.4.4.22-9-c-ii-24.js",
+      "15.4.4.22-9-c-ii-25.js",
+      "15.4.4.22-9-c-ii-26.js",
+      "15.4.4.22-9-c-ii-27.js",
+      "15.4.4.22-9-c-ii-28.js",
+      "15.4.4.22-9-c-ii-29.js",
+      "15.4.4.22-9-c-ii-3.js",
+      "15.4.4.22-9-c-ii-30.js",
+      "15.4.4.22-9-c-ii-31.js",
+      "15.4.4.22-9-c-ii-32.js",
+      "15.4.4.22-9-c-ii-33.js",
+      "15.4.4.22-9-c-ii-34.js",
+      "15.4.4.22-9-c-ii-35.js",
+      "15.4.4.22-9-c-ii-37.js",
+      "15.4.4.22-9-c-ii-4-s.js",
+      "15.4.4.22-9-c-ii-4.js",
+      "15.4.4.22-9-c-ii-5.js",
+      "15.4.4.22-9-c-ii-7.js",
+      "15.4.4.22-9-c-ii-8.js",
+      "15.4.4.22-9-c-ii-9.js",
+      "call-with-boolean.js",
+      "callbackfn-resize-arraybuffer.js",
+      "length-near-integer-limit.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "resizable-buffer-grow-mid-iteration.js",
+      "resizable-buffer-shrink-mid-iteration.js",
+      "resizable-buffer.js"
+    ]
+  },
+  "test_files": 520,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/resizableArrayBufferUtils.js",
+      "upstream_path": "harness/resizableArrayBufferUtils.js",
+      "bytes": 3829,
+      "sha256": "029aa552050861eb85fe9d848a52716dfd24747dcaf06f2a8937cb510ab31f50"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "harness/testTypedArray.js",
+      "upstream_path": "harness/testTypedArray.js",
+      "bytes": 16526,
+      "sha256": "51eb50e53e6215f31f14d64d249bea2d08ad943c77835f63ba52ec694de2189a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-1.js",
+      "bytes": 324,
+      "sha256": "bdd97f85ceca674b38287f0fafac4721f9df2a808733ab6e6f2570e237ccc00d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-10.js",
+      "bytes": 515,
+      "sha256": "9739083d9f8e6665f1d1daaf643aa96bb22be756e4fddb036b39a99f10b54031"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-11.js",
+      "bytes": 492,
+      "sha256": "9c4b2595aa684ac525b6ade1ff276143adc8dd6550e445af082fc80ce64fdcac"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-12.js",
+      "bytes": 497,
+      "sha256": "ef4d6a96f39425262db7e8361a53d7dc1cd04d64da678d60818df83d5333eef5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-13.js",
+      "bytes": 515,
+      "sha256": "3bf1768ad446fce675ba1cb3feb329de3d405b7826a81e27b5f4aefd242df705"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-14.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-14.js",
+      "bytes": 494,
+      "sha256": "5bd2e50fdeea6f8279dc786f46834e6cb185c60a5837821d056c537ff15a1471"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-15.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-15.js",
+      "bytes": 551,
+      "sha256": "a0032b5c79531fb8f335c76c6db9540c94ce361a56835340a8e7b691b77a0939"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-2.js",
+      "bytes": 314,
+      "sha256": "d114e52b708328d883f89c988c04825046a3a64c834df7085ea729fec5ca794d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-3.js",
+      "bytes": 513,
+      "sha256": "a0a7ef92975d268a4e34184e057e996c086c53b9c93618dfca593fb861f2dacc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-4.js",
+      "bytes": 518,
+      "sha256": "080c2e4511a77f3bad27d57e9776efc2105e48d5cde2a88b773564adc673be1f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-5.js",
+      "bytes": 502,
+      "sha256": "bb189d74b954fda1eafe93d6b2c886eda758add8621e7c19c57c8ec5c0d3754c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-6.js",
+      "bytes": 515,
+      "sha256": "81f559de176a5eabd3139589cceee161d2bcc3942a4f234bc2da9acefae9ab78"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-7.js",
+      "bytes": 451,
+      "sha256": "8125b61a81ceeff8bf6384e15eacc0799acbebabf62abe0b1b295842318fcc6e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-8.js",
+      "bytes": 474,
+      "sha256": "c03ca9170b96b7ddddde46ac997ce8174deb996286a5f85a93e07a8cdf9ae55d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-9.js",
+      "bytes": 520,
+      "sha256": "d11f45460a7c896bc05053cad70c97e409e7f625a4816c7aaf72ebab6a790b00"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-10-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-10-1.js",
+      "bytes": 624,
+      "sha256": "40c32826329f30349d21a60a3a6bf776e7f62e80754c17fb746d34c55687a126"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-10-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-10-2.js",
+      "bytes": 478,
+      "sha256": "2fb659a819655d804e179b12c0f885fc976f2e5125da83120c947d6597685c39"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-10-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-10-3.js",
+      "bytes": 378,
+      "sha256": "26c2fbb5cf44251fb5407c255f76ecf4e75c33c6c5f1d9bdc98b2b374ca3fe53"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-10-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-10-4.js",
+      "bytes": 462,
+      "sha256": "4dbda3bc71a27460892b20253920fab71f2fa0f61ef8d4ab56bf0f068e782864"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-10-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-10-5.js",
+      "bytes": 510,
+      "sha256": "d55d72749a2f6cfff2ca6fef9eb7d2914102fcfae02d4bf9337b3fc3465da947"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-10-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-10-6.js",
+      "bytes": 472,
+      "sha256": "3e53672eba8f7c3e30f73ff70b48853176dd96b2b2bb7904a1a4ec9778f2cbc6"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-10-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-10-7.js",
+      "bytes": 476,
+      "sha256": "1780f4fb2c5c6181e4bcfec41d5143930e87023216a4f726100e2185b49b4028"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-10-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-10-8.js",
+      "bytes": 486,
+      "sha256": "474d91dff7fffe8ce669e2604e86cec6dc72d26cc1252fd088fd3ff9f82c2741"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-1.js",
+      "bytes": 543,
+      "sha256": "71baa0d0622a13240ef6180b8e04b51eb320bb062d6e02cd57149880e0436b52"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-10.js",
+      "bytes": 750,
+      "sha256": "8470e5e856ef8b91eb3592190c7de651242e1a93c8806d3efec080d61ff9cc58"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-11.js",
+      "bytes": 699,
+      "sha256": "a4a01e07d1414e126597f62f46e29d6c786f2bc402d2ffefd6485de1dd35ed0b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-12.js",
+      "bytes": 847,
+      "sha256": "81abe7aed3a13696497178b3b45399d4d3d42adf5bef63be6370c3ae74c691e8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-13.js",
+      "bytes": 799,
+      "sha256": "83c1fa578a12bf3c1f4584a5611d3ba9c9def7114908ad1ceb2bcdcab3139f02"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-14.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-14.js",
+      "bytes": 593,
+      "sha256": "5e2e9c9c9016ec9e3684148a557f20264e580a7eab4276a62b4e1ad5d4243091"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-17.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-17.js",
+      "bytes": 557,
+      "sha256": "67571c20cca652e8cf9228daf142d40784eb8bfe6d383008717a5e47928940c6"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-18.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-18.js",
+      "bytes": 534,
+      "sha256": "61964b4d33a2cb41b0b16579771ad9e5cdb90d10e5d57690d8cbc07a38cd9424"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-19.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-19.js",
+      "bytes": 591,
+      "sha256": "037dfdd90c2e7557f610b9a873e1f0fc50d98d174e31ecc0054a2f8de2026c41"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-2.js",
+      "bytes": 433,
+      "sha256": "5f81e409a1729a0afac6b61db2527faa2a283baad3e36afd35ea6c9e74584847"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-3.js",
+      "bytes": 703,
+      "sha256": "f0f4f22eb40646ee4c3b79917027f61b8b2eed38642ae1898407c02202998af0"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-4.js",
+      "bytes": 580,
+      "sha256": "7607fcd5238e02d783c1df495fe37af4975bc734e6448de5ca46ecf88ffd590b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-5.js",
+      "bytes": 864,
+      "sha256": "7367442a692b99a2c5d162b989e2d21918e6964d5c7777e9420ae7998125832c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-6.js",
+      "bytes": 653,
+      "sha256": "a58a8fa5bd28831198de5a664de0e7c2bd96ec64e1843730950422a8d8cd549b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-7.js",
+      "bytes": 658,
+      "sha256": "e657f73923a84c8a8eeb6b2a54aeb60635c1e91f3dbec6d7ebf9a1c0a270e1c6"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-8.js",
+      "bytes": 800,
+      "sha256": "04e648551ba167dfe0bda4ead3fb85c3aa9fa52e815cfc00cabf58d289849900"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-2-9.js",
+      "bytes": 901,
+      "sha256": "e948cf4b34f4aee8291b8495ece963a4f567a169a84b3a969bbba5a6c645a818"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-1.js",
+      "bytes": 577,
+      "sha256": "aeb8d8e213160b43744746bb0ee2a10c92a914923437f85fa013760f9d5c97c5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-10.js",
+      "bytes": 595,
+      "sha256": "a52fcd685977a5aba696f6f65a817d9683fe08e8c82631ab97148f22f659a1f4"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-11.js",
+      "bytes": 542,
+      "sha256": "d2f83577cb2f05729db7c184ed1ad5494f59b822bc3797642988236d585a9d0b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-12.js",
+      "bytes": 549,
+      "sha256": "45d65fd2041b8041daa82243355204e95cdd10c87550b395f6e2ea92b3d6ecf2"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-13.js",
+      "bytes": 543,
+      "sha256": "2ee1ed178d5f8077637249263665402d46537def62da5ece00d9344adce05c92"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-14.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-14.js",
+      "bytes": 592,
+      "sha256": "3670f45cf6549f588e105680c2359c5bfaea2d603a7bbf277994ccffb007bad1"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-15.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-15.js",
+      "bytes": 548,
+      "sha256": "4e83df2c15f07dd85378c80c514014a8abc6f9eaeebd3d07a007fe60f60d3d25"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-16.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-16.js",
+      "bytes": 542,
+      "sha256": "2bee968760b9613308585c17a60b3715ac3c077ba9b2dbf9b08c9c7b17845c1a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-17.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-17.js",
+      "bytes": 558,
+      "sha256": "196b096faaf7c9786cb71ab8645e5f899943067f13dde78e82afe2c3d48b43cd"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-18.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-18.js",
+      "bytes": 608,
+      "sha256": "4e99908e6e0f04d6d5ffe369c37aed6993c250e0aa5a5580ea89bde9f0deb702"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-19.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-19.js",
+      "bytes": 609,
+      "sha256": "fe1982b414f935fd0b4228a689d2a4c60527e0c85d605d2543cfc6517d4017b6"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-2.js",
+      "bytes": 540,
+      "sha256": "b86ed5a582cec80eb87e3cd814ee5bb94d5f602314a880932db8e7e82b2d7f1e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-20.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-20.js",
+      "bytes": 605,
+      "sha256": "a9c5eacd218edfdc333ef84e0791a474a80791fbbd9daf801a7943a798f32b48"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-21.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-21.js",
+      "bytes": 938,
+      "sha256": "524aa396cceca415a43073c91fd3193abec8807ce53fcba37cfb55b47b713b5e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-22.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-22.js",
+      "bytes": 981,
+      "sha256": "044cd97b5d19f500c54efa35aaa02105ee4d672be0df7570b213f6d479d43820"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-23.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-23.js",
+      "bytes": 1009,
+      "sha256": "bc4683ec212fa84973617557dba351abde23ca37d304581905bdbd524337a767"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-24.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-24.js",
+      "bytes": 588,
+      "sha256": "295f6c96540195e2993794d1230cb280de1be1a13d8e6d4eb3ba0a96d25b5ab5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-25.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-25.js",
+      "bytes": 543,
+      "sha256": "09db4502f2f7aa749924b156bfe0d9db36c3a31c7a546c374b0c5535e65e7b1d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-3.js",
+      "bytes": 581,
+      "sha256": "99ee4636dd8e4d53dd16335c232780b680e6d13eb4d9494fc29b8e4abb0b0101"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-4.js",
+      "bytes": 586,
+      "sha256": "a14987cd147069cb03131084726851d2c13dd3d3ac1bc574e5c4e025afd4dd86"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-5.js",
+      "bytes": 586,
+      "sha256": "f0bb5c8afcc5ea3301a914429fee6f746fa047006d3751b3bfd0990313f7d242"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-6.js",
+      "bytes": 540,
+      "sha256": "ba7ac7968afd062ea35fab52447a5056ee80ed54d957237393dd8952b8422748"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-7.js",
+      "bytes": 547,
+      "sha256": "2644198680ba6bc00c6f87cde830470500cb8b7b4df9abd2d2953f1c38b30c26"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-3-9.js",
+      "bytes": 587,
+      "sha256": "ab2700598811170719744fab4bab5846b488ab58dbb227fe55d6ab0e22f48037"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-1.js",
+      "bytes": 345,
+      "sha256": "20e20cd8efbe45d905d16368defe83eb92b69d1757de32d84892b057fbc553dc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-10.js",
+      "bytes": 537,
+      "sha256": "31aaf60355d24fbf0e4e9c2990feca93e2b01840431e4a7e667d39147680299f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-11.js",
+      "bytes": 598,
+      "sha256": "1dd8f91699b02c917b54ac265544aa31a18fdead7ec4b7fa46cf20a1150bb362"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-12.js",
+      "bytes": 491,
+      "sha256": "be946d079d7dd33cb4ea278681c2b4f091c9c1674c1607ecffc54ab3c2116f5a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-15.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-15.js",
+      "bytes": 824,
+      "sha256": "52067eac52420350a53cd6f521364066d432efa11dad83af742c36c43d6c593e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-2.js",
+      "bytes": 371,
+      "sha256": "e3dba433087472e48179ab04e12deb520b687458a9ff65525e05eb7328c994b8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-3.js",
+      "bytes": 344,
+      "sha256": "ea2eaf1a6588c8ba1a59d38486d682c230baa86e4ece42a5d317a3ccff3c2639"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-4.js",
+      "bytes": 347,
+      "sha256": "634378d15677d60cfe48d6e52662769fec05e8baa2e40f55efac9c777e86e909"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-5.js",
+      "bytes": 343,
+      "sha256": "71d9b2579b05f23c369930a7628f117e7e87f4fc12eea033444e1bcd2bf1a30a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-6.js",
+      "bytes": 347,
+      "sha256": "5233eeadeb5e8014f34ed64852aaf745e3bd73cd9103b43200d1835b9aa75825"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-7.js",
+      "bytes": 397,
+      "sha256": "0bec40c8fc2a25d26e3ad2369d911ee27edcfacacae159f6ba053a4d4dea68c7"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-8.js",
+      "bytes": 602,
+      "sha256": "4fa0f93c379e9c543c108788b8ce50526d368bb119cc041e2bb185fe4685654d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-4-9.js",
+      "bytes": 669,
+      "sha256": "a7867f3ae801538e99353da4400fd2a066cd779547b2ec75a1d412eca3d933fc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-1.js",
+      "bytes": 364,
+      "sha256": "517706a5a2662ef59b0ba703b22532e5102dda281bd423d3ce208eeb82475083"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-10.js",
+      "bytes": 702,
+      "sha256": "6b504e19e7d744b86175e8c305a0f9e14d4d913b81d4fd4392d2506961a89848"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-11.js",
+      "bytes": 773,
+      "sha256": "11a3cb1cb86307b0358894caee8af55024b799937d269fea7ce19245000aa5bc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-12.js",
+      "bytes": 614,
+      "sha256": "310c6eaf0ac1a32eb03b50a25eea0946af22cccac2337ca94ccba2ed75ddd113"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-13.js",
+      "bytes": 675,
+      "sha256": "a25044bdc3ee67627820aa012f27e59ac6de9b522076387cfcddcb61d18b3ce6"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-2.js",
+      "bytes": 509,
+      "sha256": "ec42795f81bf598e22d51694464dc7a68b0ecec11f2f5ff293b9249f6cef8fc1"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-3.js",
+      "bytes": 511,
+      "sha256": "5c874232934f849f8d522a6cd5d60fccf6c7ccc44d15e2e3db51c97588620013"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-4.js",
+      "bytes": 503,
+      "sha256": "3079f2701c8898b99e50fe7cf0f8e148749d5ee0ed23409a0adb67688553daa3"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-5.js",
+      "bytes": 507,
+      "sha256": "5d0f3838bed743f3fd471e8ad8b2cc8bc051e6a9ab7336eff3caaccfece27e81"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-6.js",
+      "bytes": 558,
+      "sha256": "a9bd5a9c7c4af3017ef53a48d70c35f9ab109cb8fa820dd3fe5f5af03b04d2da"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-7.js",
+      "bytes": 884,
+      "sha256": "af3d08c2b7860a1ef688f1f95a44c0e3950ef0d06f5770788ff7e96ed60c909d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-8.js",
+      "bytes": 1320,
+      "sha256": "6231defd60aa4e10067c146606655a397aef22cfde53dcfa7fafb1288a774dbe"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-5-9.js",
+      "bytes": 517,
+      "sha256": "7df8d64a2413993de47bc851ba12fa4206f5899dae495b653ac2655352ff6f8d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-1.js",
+      "bytes": 383,
+      "sha256": "c9e398fe708251d936a02325a8340abe857e836ef0fecb1167a3b4669b7eaf66"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-10.js",
+      "bytes": 373,
+      "sha256": "ef1acc5fb10a691f4409da65ca847819d8e357eef23aaf00d4484e98eebe7cea"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-11.js",
+      "bytes": 377,
+      "sha256": "9ee1f538397f4908af62e94ff0d1c3a053719a65bbf7a75db5395e43630424c7"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-2.js",
+      "bytes": 527,
+      "sha256": "7f8e91f2153fce526ed4088f947545b5e876346fa7e921a68d40f439630d82e3"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-3.js",
+      "bytes": 529,
+      "sha256": "e5985e6eab75fa2858dbd724f069b2fe7c8e6772f6bc309a2bb1b3775acf4041"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-4.js",
+      "bytes": 521,
+      "sha256": "471eb3b2ed6220286ee77d037484b8852fd0ef97e10ce7b49ade36cc2ed5833c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-5.js",
+      "bytes": 525,
+      "sha256": "8143092303584a7b5bb189a7bb9e3e26cb22d51e3cb7f2b77d0a501c476c7a27"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-6.js",
+      "bytes": 576,
+      "sha256": "53a034715e268da8278715a1f9af55720b44f585b80ef37e67bad3f68972990c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-7.js",
+      "bytes": 902,
+      "sha256": "9af6cd7d6bc84d78f29b3cdd1984fb27e058ce2e2dfbebb2fffd5af2359ec64e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-8.js",
+      "bytes": 1342,
+      "sha256": "60ab1b9155d070e36e2b6758cb5b8ee65312e5fe1d6dc3fc6f6d93d5c634df85"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-7-9.js",
+      "bytes": 1344,
+      "sha256": "5ded9fd96450aff6bc3a3973d6e21aeb195df049ede16bac86a63ae47407795e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-1.js",
+      "bytes": 575,
+      "sha256": "bbcd77187664b992419839d071a58439b1cefd13227e7e84e06e1d8979761cec"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-2.js",
+      "bytes": 645,
+      "sha256": "a9b38ef2605ecb79704f51360c796080266657ab2eb510d5b26ae97c3181e906"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-3.js",
+      "bytes": 885,
+      "sha256": "37ac70177be8fd5f53083e343cca61716144bfebc17c912d27240523f7308e0d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-ii-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-ii-1.js",
+      "bytes": 556,
+      "sha256": "6035f2b4c597972c9fbfbc15dd1592930ffbfe38d3a2ae9a2b1c9b83f9e10010"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-ii-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-ii-2.js",
+      "bytes": 588,
+      "sha256": "52277462c92ccff687dbc214d4ac4723e5057d690f509ec82dbf9c7704beb6a5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-1.js",
+      "bytes": 574,
+      "sha256": "b164f386603a138c43e8815c7a3c11d9fb9d10802370b456402bff1e5eff3111"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-10.js",
+      "bytes": 618,
+      "sha256": "472f10f8d3c721050289e0448bb4a3aa2b4dad5e3216214d65b879eede52ceae"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-11.js",
+      "bytes": 812,
+      "sha256": "be14d170ea4290a9c05331da9e0e17848d887040876b1de06f7574b8e36ed2e7"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-12.js",
+      "bytes": 683,
+      "sha256": "b2b01340ec3ce2c2148726292c35e055a93c1cac2ec2ac928f30f29869c9fa8e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-13.js",
+      "bytes": 909,
+      "sha256": "f880fbf7e913c9a2f20cc8cb2bea0fc476f4b43c05bd496ed5c79712f4e9ac58"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-14.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-14.js",
+      "bytes": 773,
+      "sha256": "781c95daeabbf6839d8ee86f6770965615a3439db04f5a897bbdfac6776f2078"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-15.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-15.js",
+      "bytes": 760,
+      "sha256": "80facf53e6f7ea1a81badc6e0bc0f3237428f67aa8cd55f529a49964153c4bf1"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-16.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-16.js",
+      "bytes": 631,
+      "sha256": "d0243c20a89fba06d3c565a273797fbfbd6309ea0d202f859c15a401f75539d8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-17.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-17.js",
+      "bytes": 684,
+      "sha256": "655b8c6d9803fe912eb9987f2601b7f7f799e47b7c88f0787092fd2f5f3a9110"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-18.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-18.js",
+      "bytes": 627,
+      "sha256": "9bd8077ef69eb2b37b5160ee39043c7dfc9b63c578ff677143a8c4a4a18280ce"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-19.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-19.js",
+      "bytes": 760,
+      "sha256": "8d99c71f77d8d489286de3c3ca5ed576f0e29ccc1b675552d0d42ef396bc2f36"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-2.js",
+      "bytes": 510,
+      "sha256": "beee03a0cee159c0ffd419b04bf863e3070fa776b617d7dd21c38fc286cb92a0"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-20.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-20.js",
+      "bytes": 700,
+      "sha256": "367ae4f202d69a4b98b419c0b2699e7e45f492171f2289aa3ae22bd32e0858e0"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-21.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-21.js",
+      "bytes": 774,
+      "sha256": "c51edb7837f113d846cffc399effa4e767a93db64fd62744d78252d06da59081"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-22.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-22.js",
+      "bytes": 645,
+      "sha256": "6c01897fdf2a731b01cf6a763e5eed221630b2db8c5979d20b876037db95b1fc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-25.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-25.js",
+      "bytes": 650,
+      "sha256": "243caf299ec7f5779916fb38d0395499709809a44223f147ca001230ff1e0287"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-26.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-26.js",
+      "bytes": 670,
+      "sha256": "891c2f43b4b5b866e143db6d5fa959413ac46cdf43623f4c2b36d9355807c93d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-27.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-27.js",
+      "bytes": 705,
+      "sha256": "c930187150039fcc3215603eb9b61f945a426ab44994ed83ce1b9960342e46e3"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-28.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-28.js",
+      "bytes": 556,
+      "sha256": "ebc93a19a769f8e59e69f14c950f3c79ae05367a51245e596f97d96f8c6b4d8d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-29.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-29.js",
+      "bytes": 628,
+      "sha256": "4c71070ce36361ba60cfa047a5331839dc99feaea53e053a57c2932f9017840e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-3.js",
+      "bytes": 749,
+      "sha256": "13de47862d26d8e6eb6cc6c2807a1198d0a6900148ac3fca4273e47d75b145c2"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-30.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-30.js",
+      "bytes": 866,
+      "sha256": "7cc69d3389b97e5229a7e4aa6e2eff2d9b5b99d7fdeb0145ac5b6af76711cdcf"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-31.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-31.js",
+      "bytes": 912,
+      "sha256": "50c1fadab31af03796c73cf9baf612f6fe8820f19e888288318ff191135cfb74"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-32.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-32.js",
+      "bytes": 854,
+      "sha256": "a98afbbcb172a4453eee93fcf600eb3ee8d803e1dbeaa6f72a94abb85f19500d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-33.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-33.js",
+      "bytes": 798,
+      "sha256": "58b06327eb5cf5d02587018362107b4d5131e8b63f92fb534a996cf4ba0f4f04"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-4.js",
+      "bytes": 563,
+      "sha256": "837f2ca4b6d848e99a75da89a186e055095f97d4e7ddef6a5b4a6464aea19371"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-5.js",
+      "bytes": 877,
+      "sha256": "21a8253411f595ad65bab67c487bc6dc4736b243b9333a33fd8a4a7836b1ec6f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-6.js",
+      "bytes": 654,
+      "sha256": "b1aba82033562ba5f29f42f27ed6224fa140c875aacd539f9213111fd3fca02f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-7.js",
+      "bytes": 675,
+      "sha256": "9b5a23e57a54a63b07e9b480add169afdd0b1c9fd7363ab59366883a1296bdad"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-8.js",
+      "bytes": 572,
+      "sha256": "b49d620f35793484e55ba66c42610e8bd722f7432db3b3fa365bdef8029c1f26"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-b-iii-1-9.js",
+      "bytes": 669,
+      "sha256": "0a9a934975289bea5ced818ebb1e12c4b18994d7b1a974973fbdf7014fe3bfb3"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-c-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-c-1.js",
+      "bytes": 441,
+      "sha256": "5ebf290c312077d79c24326b06367f072423ed10078e5b0ac4cd2340def23d00"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-c-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-c-2.js",
+      "bytes": 520,
+      "sha256": "3c0982f765e91d1593d87a7b891ae81112a49b3bd7c1585067879473843a8767"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-c-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-c-3.js",
+      "bytes": 540,
+      "sha256": "8557a729d0e4721ee1598733208b2b3eeae40aeb8507642d67316838af96b356"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-c-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-c-4.js",
+      "bytes": 457,
+      "sha256": "94f052e7855ce5d8c53eb6c365ff178834896346158ea3f06920ad3078cde65c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-c-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-c-5.js",
+      "bytes": 611,
+      "sha256": "457f967abeac7d4b6b46c17a43ce3e6083edf585189d15119a0b617d0fd2de5f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-c-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-c-6.js",
+      "bytes": 678,
+      "sha256": "47cb098e44a8d21d57469f49ab6609cdf1fd0737c230170d4ae0782cd8ec5067"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-c-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-c-7.js",
+      "bytes": 523,
+      "sha256": "3b6c2b36d29f74d9ad8203e51f7b5e730e2ac476d13535dce4e8f0b9920ad96c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-c-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-8-c-8.js",
+      "bytes": 584,
+      "sha256": "63039402bc87dacfab40ce2864d8f3dc609bf4a1df7b17efd53a5fa12106cd73"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-1.js",
+      "bytes": 503,
+      "sha256": "64361f0ed4efae1eb09de6bb380d9eb93fb0a9817aa3f5a5b68b8d843f1a7e76"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-10.js",
+      "bytes": 542,
+      "sha256": "04fd23992abaae42a2801f37db37387029adb9092bb88f727c60125a1a41bcf5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-2.js",
+      "bytes": 496,
+      "sha256": "a11ee7403c701c4935d54e4ffbac9d8fe89352e6e0a1748fe426b3202afd5851"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-3.js",
+      "bytes": 525,
+      "sha256": "d6d14e62160bb8baaa5ba617e2aec75c6c148b3a1dd87f062643a0ece98e2f73"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-4.js",
+      "bytes": 486,
+      "sha256": "91167a953ae9fe3827ee2d70b4d080d6c1d034ce7de5a207968f308acdb2b458"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-5.js",
+      "bytes": 502,
+      "sha256": "1123fa4dc9268b2fc480f57e16a4238e6956dab044071c993f9c3a55f7ed713f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-6.js",
+      "bytes": 616,
+      "sha256": "b70b234904f52a5c9df4a59948a013d7cde7e2c606595b512f2f2d7fed8e13e7"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-7.js",
+      "bytes": 598,
+      "sha256": "07cfe8675011b7ea050567ab5c152df34d8bb598f421d7b30bfa43e700c52c0e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-8.js",
+      "bytes": 691,
+      "sha256": "923929250dbf3d592c0b7851577b237fd7580ec0bd01caf954fb94a1675675a6"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-9.js",
+      "bytes": 692,
+      "sha256": "4faaa573e2085a2c9785425e29cece537aa353eba95a035243d987d1bbebb222"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-1.js",
+      "bytes": 450,
+      "sha256": "ad64e0ca2d92f6991eb1a8523e675986a2ad5cd6b389a229631540937c5ab212"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-10.js",
+      "bytes": 828,
+      "sha256": "7f2bd13de021dc74b28ce5b3d4016e3f76bfb5f836d279ab6136863edae4553b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-11.js",
+      "bytes": 772,
+      "sha256": "043df8a32c578c205183d616049cfa2165dd7f2c7edc3a171b27a31a5c8ff40e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-12.js",
+      "bytes": 780,
+      "sha256": "cffec04248f02d093b0f7eab58ceef15bebdb9029946e14eb49b5639b76a3266"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-13.js",
+      "bytes": 709,
+      "sha256": "1bff45439fc1296561d0e295f8f00ef60612dbcd1c1e28d834c05329ed859f2f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-14.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-14.js",
+      "bytes": 725,
+      "sha256": "a2c54b6719f475e532d6e0c71770f31ecaa6da3d13deee3f76ec5d339c700fa0"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-15.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-15.js",
+      "bytes": 810,
+      "sha256": "ef8bb3e7eed7c94c0f367bbcf65b95ea7e6a54a68681355835c285323b6f52f8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-16.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-16.js",
+      "bytes": 802,
+      "sha256": "6f2abb37ff3fcbc5ea33eabf84f114968c27fa3b4448f33b2ef6891174816ac0"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-17.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-17.js",
+      "bytes": 785,
+      "sha256": "a764adbc93639a68095a3fc53100467afa7a11bd478e19ea043b938d86d93e12"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-18.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-18.js",
+      "bytes": 744,
+      "sha256": "0200b95fad5f54357bab6c27e6b272a196d57fce378e2e941aa3bcfdf27ca247"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-19.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-19.js",
+      "bytes": 801,
+      "sha256": "baef718d346afa248ddf5b48c88b5e17b1f8cf40a101169bb97d1a16e2d56eb8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-2.js",
+      "bytes": 650,
+      "sha256": "22b32abb822c50242754cd2a616c17067ef88b825c5147b3ea351a7b88b5af23"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-20.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-20.js",
+      "bytes": 766,
+      "sha256": "9595801380887d4ddfd330c49d5529f833a8e7a048495ab50e886625c89f5181"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-21.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-21.js",
+      "bytes": 886,
+      "sha256": "ecb194c76dcdb5d680de51cfce596b16739d48014f8318b0760ddc9e937fb304"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-22.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-22.js",
+      "bytes": 838,
+      "sha256": "15f7a6e858ae77808374d7a0de2f9ee225244fd77f461888009fa323f3f61fcd"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-23.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-23.js",
+      "bytes": 830,
+      "sha256": "8e638e47b4c7033436f24cd4aafa2a71e8250a5ef03fec8cf249188d3564143a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-24.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-24.js",
+      "bytes": 779,
+      "sha256": "7cd4d1c1fd1a7568df360d344eaef65d40a01e813be0147df3c6ec9eca2b4e68"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-25.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-25.js",
+      "bytes": 786,
+      "sha256": "9c2ac2f5ed8aefd982c5ee0ae49a4cdc1bd86922dda20c3b54a4e22dcd21265e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-26.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-26.js",
+      "bytes": 711,
+      "sha256": "cd05ae7596d32ef96a326c992355f45576485935400e11bf169c24c6e47dada8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-27.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-27.js",
+      "bytes": 731,
+      "sha256": "c096508a26049ace9ae15ede167a0e57982780dcf007beb2faa274498e0fe9fc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-28.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-28.js",
+      "bytes": 816,
+      "sha256": "0d36a85fffbf18b0e7eea74d2a4baf68ec56d5d8737a1c25dec500f287712c99"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-29.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-29.js",
+      "bytes": 808,
+      "sha256": "3f470b200b107fe18fe09809b9eaa4278b3e620ac3af4e409bfacfb2300d2d3f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-3.js",
+      "bytes": 737,
+      "sha256": "a3e6091bb0576b6ea891d2f2a5967953ba35b4fd346e262ce3f4be0e9e8d45f1"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-4.js",
+      "bytes": 779,
+      "sha256": "cdedbd9886b9f9b35a9894c141a431a68418802d9d03fc3e9871bd216468a184"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-5.js",
+      "bytes": 738,
+      "sha256": "eeeec887692855f9b42c96b5c0a75ef356b4241f7776514da261cea745c39596"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-6.js",
+      "bytes": 795,
+      "sha256": "67277c82feb00d19114e395ce805168a3d7b1a9521782016cb132df661ccc82f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-7.js",
+      "bytes": 753,
+      "sha256": "46335ad727455fc0c0be4bec2d9ab84282e416b85d26085a38435e17508ef010"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-8.js",
+      "bytes": 880,
+      "sha256": "e95b5d45197ec9db784e6b9b93c9f8b74fc11aafce44102a1628c052c970b103"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-b-9.js",
+      "bytes": 728,
+      "sha256": "85274be6a8401e2d77a73cb85964ffc160383ccb56b66e53cd720926dc7d8f97"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-1.js",
+      "bytes": 597,
+      "sha256": "59f989f46b3d4486a495114e8a8a4ed9cfdeeee8a2050240f76fdb5d27749cb6"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-1.js",
+      "bytes": 609,
+      "sha256": "3508bb7f51bed24a63c148ea4bbcce5abd0f9a2f0ec7131b813cc685d6adeb59"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-10.js",
+      "bytes": 648,
+      "sha256": "ada5e3e3a630111b8488ce66f92f5c00b2167c31707f327dae8e5b7e52652254"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-11.js",
+      "bytes": 849,
+      "sha256": "f9609281170d56313351a86abcdacb84542a71df0db75c8ea99a0bb0580030c3"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-12.js",
+      "bytes": 720,
+      "sha256": "d72cf927f7c54c9348fb6591670fec5ae6bbd185bfd78310c418962e9e7f2f77"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-13.js",
+      "bytes": 946,
+      "sha256": "574d9e4f67383f313aae2be40ee6f08cfd73b14d6902af17330dfff256f52038"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-14.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-14.js",
+      "bytes": 810,
+      "sha256": "75f7c56b664c909c78f403d12f851c1f4694c98e18669f8acf0d38e5f8987065"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-15.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-15.js",
+      "bytes": 795,
+      "sha256": "8de515fefc7956f9dce76ab1f38a89e86374923ccdf8273b53ff7da59bd69b61"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-16.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-16.js",
+      "bytes": 668,
+      "sha256": "066302f78dc3eceb69e0d5604a7beed93611facc2accf236c4ee379222fca146"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-17.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-17.js",
+      "bytes": 719,
+      "sha256": "4b72a908fb6a5b872a06877ffed54a35a46bea9fe1f5c46567ef4d97f4f5e4a1"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-18.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-18.js",
+      "bytes": 662,
+      "sha256": "7233b24114fc8f67ba3f0d263121d9c3a4a18f453787f951019bb8c2c5ce5376"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-19.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-19.js",
+      "bytes": 881,
+      "sha256": "c903e3540eb8ed9cb405394273ce59c7594d43f19f43fbf9372c3eabe0123b42"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-2.js",
+      "bytes": 542,
+      "sha256": "3dc55431ae3f896ef8dbe9cdfd3f704af14eb6e6c1334edc0e71dbd679e19234"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-20.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-20.js",
+      "bytes": 823,
+      "sha256": "7dc06615c022756f6be15f8b876568caf4531d15becd00d9e0cf2fd864a287c7"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-21.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-21.js",
+      "bytes": 809,
+      "sha256": "0d43131db0decd1e9bcbf549105fa18fba34ab898a2697c7b135a84201a23ed5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-22.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-22.js",
+      "bytes": 680,
+      "sha256": "d044c2bbf72dad4ce64c70ddad29e7ff510216d275dae64f16ca19f9d416f61f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-25.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-25.js",
+      "bytes": 685,
+      "sha256": "36d6b8ac20902619616b71b5445878a57271a2e96e8ee644c5b2d3a9e45b8c31"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-26.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-26.js",
+      "bytes": 682,
+      "sha256": "807f8633939400581bd63b6bd462361e37d3727bc1aeb138a2209d15a67adc93"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-27.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-27.js",
+      "bytes": 694,
+      "sha256": "a0c9ea81f0f96a3204a68a6756864db58bbcfa5c8d73207c2ce67c660ce7d361"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-28.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-28.js",
+      "bytes": 592,
+      "sha256": "f5328d007dac6f212ff64586c38b220381f537ae95077e977cc1dcf8ab2fb214"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-29.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-29.js",
+      "bytes": 663,
+      "sha256": "8ce3473ccde049b00152717523ed9834035ff0489f33b78595eda36bf5d5949f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-3.js",
+      "bytes": 787,
+      "sha256": "492f38811af390ff457827641f2e27282154752ed40b686ec6defad6ec8a1be9"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-30.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-30.js",
+      "bytes": 878,
+      "sha256": "92d2022a140615c62fb2680d48931f5eb48cc54b648a1d39e9c2941573b96ff4"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-31.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-31.js",
+      "bytes": 929,
+      "sha256": "e3b01407879802d665e8601ff4ae2347b633cd7ff5f4521ebadf635efb549f99"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-32.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-32.js",
+      "bytes": 908,
+      "sha256": "164a953339189af07fc984446e89fe709168b228fc2b8fd2687eba0a5f2bbb50"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-33.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-33.js",
+      "bytes": 852,
+      "sha256": "1916be2af3458a4f3d8cf2632ab2d37df55d882ad174cfb981b0ee1ddf95c150"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-4.js",
+      "bytes": 598,
+      "sha256": "c84b46dcfea389ff62ab99cc7112b6d65cef92fce9a749c2a650713c4844c83d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-5.js",
+      "bytes": 914,
+      "sha256": "cf82c6619aa8c3be940f58808fe3da44cbe06445f8a55ff0eea316335dc2c90e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-6.js",
+      "bytes": 688,
+      "sha256": "9b27ed12185fb34f6a93d113af670f10d66864b4f707eaadcf1f248353a9a043"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-7.js",
+      "bytes": 710,
+      "sha256": "020f6a1c02c3aa83162403cf4e55360c852fb6d7df2adb993a449aa5fa44e39f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-8.js",
+      "bytes": 607,
+      "sha256": "167d0b47c51ee85e3f671c9b9beb344cc14804e195fca646f9c3a81adf507fc3"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-i-9.js",
+      "bytes": 704,
+      "sha256": "5ec129de3f19dca49ac9bfbd3d63f4d7e284a1e320a31b171ae787674012ee1e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-1.js",
+      "bytes": 589,
+      "sha256": "374b39e350f0664b435f7e40e2337aee85845f2d5541ec2764ca226041985de9"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-10.js",
+      "bytes": 422,
+      "sha256": "0bd329ae32bddb516258d269fccf6f87c9f3c4e219a2ec08f62648f6bc0382d3"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-11.js",
+      "bytes": 445,
+      "sha256": "13dcb6f26d909cdbf656dccf6df6a779dcc6da16f212bab3b4768958f71ffbe0"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-12.js",
+      "bytes": 467,
+      "sha256": "77ed5a1828510e270c1c7e16ddf11e43d7845677679a8588ba6279014b4c6c49"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-13.js",
+      "bytes": 463,
+      "sha256": "cfcba691cf9e8fe25637d0e131ea927ad7e7da273e2caba9d1a93c58cce4cb4a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-14.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-14.js",
+      "bytes": 443,
+      "sha256": "5fcbd5001afb76a1dd4059d78510cf9f0c6ffb71dcac8b3541cdd42dc7fbf755"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-16.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-16.js",
+      "bytes": 724,
+      "sha256": "406b31755b68e860266a44175c4231008bca1be2c55b6abe79dbb8c67975a925"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-17.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-17.js",
+      "bytes": 665,
+      "sha256": "e28f9b78f94b6631fca42c9b7e0d03630c81bd3dcf874e101a48392243329ec3"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-18.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-18.js",
+      "bytes": 617,
+      "sha256": "d112b1faaf35febf6f6185f407dff7b2b95a129756f1e838c02948593209f6ae"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-19.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-19.js",
+      "bytes": 663,
+      "sha256": "fada2031ff8d349981af9b384203fcc08f37801274b4cded181ee8d876b99e1e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-2.js",
+      "bytes": 754,
+      "sha256": "17a377d502ad20a163e13ac58d69087f5c315884a27e582fb6a669e226a2f31f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-20.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-20.js",
+      "bytes": 608,
+      "sha256": "53fc741b37131cd82ce5b176a723ecf309ba7b360f2e70359e8c2b6fba0fdd73"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-21.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-21.js",
+      "bytes": 579,
+      "sha256": "59b841d35527ab180fa9087f2e55827265b8d68e9f8154b5d2d488ac9c2d1537"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-22.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-22.js",
+      "bytes": 605,
+      "sha256": "c5e137bddbfa40783de00178be8e10f228e386760230d6ab7cc733b97b0a58f0"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-23.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-23.js",
+      "bytes": 595,
+      "sha256": "10aef66fdfdad06635f8cc5aba4b9e2609af2d00bab3363f4dc5060e88f961ea"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-24.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-24.js",
+      "bytes": 613,
+      "sha256": "b68a903b529ac5559adec37002dc87ca326880840159bd093f49bbc190ceeddc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-25.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-25.js",
+      "bytes": 645,
+      "sha256": "f120354f76e8d9b54e886ba2320d3256d00d34eb46ff0ae7cb0e6f51a4e9595b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-26.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-26.js",
+      "bytes": 630,
+      "sha256": "c4eb471352c4251d494543b6cd239abae36f41c111c8c5cece74aa04785cdf17"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-27.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-27.js",
+      "bytes": 634,
+      "sha256": "19d6f905ded87eae66960c0491ff05f7c246ea4246733ef6de6e6b28cbb94ee6"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-28.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-28.js",
+      "bytes": 640,
+      "sha256": "dc6c89b1945e4a8b35f2fddf87fa50ec07f8d95f764a23de8ac61ef90845b549"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-29.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-29.js",
+      "bytes": 634,
+      "sha256": "735a149bd15b790440c0c6601de3da5b99096ba422d29ad245b33fcbad068ddc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-3.js",
+      "bytes": 604,
+      "sha256": "d8529665146689d4be580fa470f59e962ebb028e5ca989f6a308dfab28f3f263"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-30.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-30.js",
+      "bytes": 590,
+      "sha256": "290d35529f8cdf15c1bd4af60b98d8f90a882306b6be4694e4d0ec3af320fa65"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-31.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-31.js",
+      "bytes": 623,
+      "sha256": "d9c0c6838483ce823805e275ced99046c445b32b5819ed4d06949fefe141d146"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-32.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-32.js",
+      "bytes": 634,
+      "sha256": "f0d9fd4109a18020934e318141d68e1d1c4af1bbf9639865b2778f12399f6db9"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-33.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-33.js",
+      "bytes": 583,
+      "sha256": "3d9c10df3ab98c95f3cef834c59c8df9f76b4678833b86eb03efad4a64f1bf7b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-34.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-34.js",
+      "bytes": 633,
+      "sha256": "285676b60197598a03ca5d573dea7c8fa8ee35329dd3ab7ac4d983c53b797adc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-35.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-35.js",
+      "bytes": 669,
+      "sha256": "5371e0dece8e27ca176dcd0fda2ffacb91d1f22462e935ad90dd93b4a20e110f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-37.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-37.js",
+      "bytes": 623,
+      "sha256": "78f6aa65130b1e6280d17ecf552db7f8f1b051267ae14c9c658cd4650f44e18e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-4-s.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-4-s.js",
+      "bytes": 539,
+      "sha256": "f2f9dfffcec2b0f603fa6ed53e6e59032a075d33f950e217610e3683db7c993f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-4.js",
+      "bytes": 617,
+      "sha256": "600244c2a2774d399f3e8ec3bfbfbffb0250ec6dbc020ac18968e010a48c398e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-5.js",
+      "bytes": 1058,
+      "sha256": "a85ca2509a5747bc63aca5468be7b33b3d024f3df7e433af5e3f2fe8b25c24e4"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-7.js",
+      "bytes": 682,
+      "sha256": "4c9d969f5298071160327ebc2f042659a3adbf7af0d481b9484b4683803f6d1b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-8.js",
+      "bytes": 597,
+      "sha256": "fb1aedfaf353fd0291e257951a809d68baaaf44b9416a2800566e1f9ce6228d7"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/15.4.4.21-9-c-ii-9.js",
+      "bytes": 403,
+      "sha256": "f7b845d4f0aafdc89eff07582b23770232883bc6cd57dc8370df3db15db36848"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/call-with-boolean.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/call-with-boolean.js",
+      "bytes": 533,
+      "sha256": "8d4438226ffb0cb3ba9c69582a40856f7af8e18ce3e83da3085fcb1a6403d302"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/callbackfn-resize-arraybuffer.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/callbackfn-resize-arraybuffer.js",
+      "bytes": 2412,
+      "sha256": "d6b791c3553874831bc7ffd198409ff8af8b811d0b7ffe5bd185d7e4ab99a1f6"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/length.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/length.js",
+      "bytes": 1066,
+      "sha256": "beb1e2f1c5431ea96ba74dfb25e9c112bf28e189a40255935400667b2236bc23"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/name.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/name.js",
+      "bytes": 865,
+      "sha256": "c9489fc06f9037dc3c567b0d5c7f36132f66f63d6ddf98c09bd40ea27f069940"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/not-a-constructor.js",
+      "bytes": 908,
+      "sha256": "9539d87ca785b0836b7fc8fbccfc70af297636cd7c53f473bd4f0a0c671f584a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/prop-desc.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/prop-desc.js",
+      "bytes": 693,
+      "sha256": "491e3e3f20bb2b61b60094da4b88970461af225575b5e6dc7f327c5237cd5850"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/resizable-buffer-grow-mid-iteration.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/resizable-buffer-grow-mid-iteration.js",
+      "bytes": 2514,
+      "sha256": "2a8de3c65082a67699ef8c1b76e4790f3d564212fd4bad6921f49aa723f3ee1b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/resizable-buffer-shrink-mid-iteration.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/resizable-buffer-shrink-mid-iteration.js",
+      "bytes": 2457,
+      "sha256": "e85ec76ce663315ea1d3b1da10c66f6f09fbe2eeb9d5175f3c31c046eb048996"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduce/resizable-buffer.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduce/resizable-buffer.js",
+      "bytes": 3642,
+      "sha256": "ef32077b6eb82f97dceef0ab67d74c2c274c8463216ea7ab807f644130c6fe36"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-1.js",
+      "bytes": 358,
+      "sha256": "049770010107e3532e2a4b8ba30caecc1171e280f879489f949e051e85c51a46"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-10.js",
+      "bytes": 614,
+      "sha256": "4a6897b4be741d5f2bf18212322e4f6c9a3184f8edc3d4c045ecb4e219a58199"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-11.js",
+      "bytes": 592,
+      "sha256": "1e7d17366b94e3787de23be9afe70c729cde99aa1b87d4aab3a7da0d9564e380"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-12.js",
+      "bytes": 593,
+      "sha256": "611789694db32d217ce3e3b99aac88fbda565042e450aa7ec8755df333262bff"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-13.js",
+      "bytes": 616,
+      "sha256": "853ba806f1fb5a1360ee4e851d0722228cb8c0692d02dd5416722e28a08fc91b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-14.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-14.js",
+      "bytes": 590,
+      "sha256": "4193d04421ef09c1a7115c53763bb33ecc06473c6c647c1bee5501a8cf600e19"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-15.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-15.js",
+      "bytes": 654,
+      "sha256": "1d65226cd88062216a7e03efbcdca58f17497899a857555e08836ffa1ce5a7f1"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-2.js",
+      "bytes": 348,
+      "sha256": "6a3b3c02912fa0f18638f74e0c8d4eb2f6e3117f065d5ed138242f867f347e31"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-3.js",
+      "bytes": 611,
+      "sha256": "da7c0e4ccb467d8cddf2fe262eff448428f175606c1abeb5ea051d18aac7fc3f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-4.js",
+      "bytes": 620,
+      "sha256": "b44f9568fc51fbdab81db8147c420dd4dc43b7d196dc69a2a87892924fdafdd5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-5.js",
+      "bytes": 603,
+      "sha256": "8bbb7b7aaf34b10a61ad1bbc94e4c2f1a93230f837e50e0b5a4dad0d3ad2c081"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-6.js",
+      "bytes": 613,
+      "sha256": "4ebf1dda4f2fb5457fa3d822a49d6ba209d5ccb528afda68f260652dc4625025"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-7.js",
+      "bytes": 580,
+      "sha256": "f50d3a055f3349baca82fdc83b89e4d7a321657a9324583f9fb4f2c537e9da48"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-8.js",
+      "bytes": 586,
+      "sha256": "302ec9ac3bc1637c11c7e53787d9e26c2156ca1ce064da1b30f53575ffb21587"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-9.js",
+      "bytes": 618,
+      "sha256": "31f7e2eaf01fbcbccf983d7e8c602c336bce0f508d2042e8192d1e8f195e927d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-10-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-10-1.js",
+      "bytes": 639,
+      "sha256": "31d04ed08020d139fd83aa3e0cd0b2ea98270a267c2979f6dbcf0bae656e75c2"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-10-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-10-2.js",
+      "bytes": 495,
+      "sha256": "f2fbbf765dae2cfdbcdfa294a0c6c3aa8dc12923e53b77e4b3cb24492e15ac1f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-10-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-10-3.js",
+      "bytes": 400,
+      "sha256": "7500c423523e32f46a51331db287e609ae424f2faf30ff6403724b2116e6003f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-10-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-10-4.js",
+      "bytes": 491,
+      "sha256": "072d7e3610a3ad5974e015f3d43b9db8ea0714291c2d5a50a49c5cbe3d75588d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-10-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-10-5.js",
+      "bytes": 527,
+      "sha256": "62673f9b80b3dda7b358e69c63f1936e1da9694de49b5326d7e349fb07b1ffb8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-10-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-10-6.js",
+      "bytes": 509,
+      "sha256": "80abc0d1c458dfe2f823fea268a4c12df691e18732630afc4bd4dadff25b6746"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-10-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-10-7.js",
+      "bytes": 504,
+      "sha256": "3a133cffb2d043a37e308655ec2e8029556cf4774d33af9379d600b2ac2ce513"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-10-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-10-8.js",
+      "bytes": 485,
+      "sha256": "20b4121944f130e25b386fd58f7f1384e9397708acba9f16dbaa78deeb84b0da"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-1.js",
+      "bytes": 643,
+      "sha256": "fefff72a95978cb9e4a19a261c61d9238f42c019f520bbac7b65518c88456c9f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-10.js",
+      "bytes": 846,
+      "sha256": "d467be0ca5a1fa247c3bf00426d5c3df4d14afed5bdaf64a10bd835505c5303f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-11.js",
+      "bytes": 769,
+      "sha256": "92ab425cb06ec36740082e1dcb6d07b2bd8dfba2295239dd7322d89dd34fa67f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-12.js",
+      "bytes": 902,
+      "sha256": "6f3096486fb0f231b0d82612888470722deb7e54a7f40e0d4963762a8d194c48"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-13.js",
+      "bytes": 851,
+      "sha256": "4fd29232294e994e81e9772825ce6e86c046bc2f6e4fb2a34df09730659b234e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-14.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-14.js",
+      "bytes": 640,
+      "sha256": "01ef6dc38724fe1e24beb7c7e20f8ba9b87d3882769d16e08f800c7c7831a1c6"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-17.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-17.js",
+      "bytes": 653,
+      "sha256": "d617d7c4c2863c9c602b1c3a4f9688d504e18588a0719fc9ccc68209f2c0f629"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-18.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-18.js",
+      "bytes": 656,
+      "sha256": "9cb46246150f2900b15692fbef5871b2a17b97e4cb4c70ac1cbbbe0792b359b5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-19.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-19.js",
+      "bytes": 684,
+      "sha256": "c9cbd54852b683f9c222955edfe2cb8f0521959d2aec6a5330a03ba5284ae10f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-2.js",
+      "bytes": 537,
+      "sha256": "12bbb009831c4e350a8e78cd70c67d631b51f10a26484c811c057a6bcfde6967"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-3.js",
+      "bytes": 792,
+      "sha256": "13559ba40daaabaa46b7eb9a4f0446ef8cdc59c449fcd4219fe17332f04daf1c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-4.js",
+      "bytes": 663,
+      "sha256": "930a9227ff20ead1d218d1b7ae1187df44d93b8ac4033d1ecfdc736786730f7b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-5.js",
+      "bytes": 953,
+      "sha256": "fb9367f3360cb2b96db057e194f33575e6040009a637ce8727dfad56740a0d28"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-6.js",
+      "bytes": 748,
+      "sha256": "7c0bb4233a4b15026ee5de00be86d7bc119ebea6d129cab9f95f454d7cc949a0"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-7.js",
+      "bytes": 749,
+      "sha256": "c01944070cc2ecda2da8a89982734f0c297624fd9d504c6e89a14f271b610881"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-8.js",
+      "bytes": 898,
+      "sha256": "e2200997b8ddb1d33a2ccd4621454d0dd01aa09ac3be691aa3e6e93be3ca42a9"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-2-9.js",
+      "bytes": 997,
+      "sha256": "05bed34a280b5b1548fe61ae3eb1aede520111f8cf6784259629dc0e9daeac3b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-1.js",
+      "bytes": 577,
+      "sha256": "bc8006ac99cfd38cf02a014eb86ae937733e526b5fcf7ccfdb7849e266c3953e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-10.js",
+      "bytes": 595,
+      "sha256": "461a4bcb65dd1db4c6828bca9fab14b0c2d6400172c6b3f1ebbcdd5bbf6b775b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-11.js",
+      "bytes": 712,
+      "sha256": "8fba7d70e0de933571436c1f26554c6586d78c5e26f6d0d8f40d104dc3057a11"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-12.js",
+      "bytes": 730,
+      "sha256": "52967f8870ba4a304f571f438d52de42e593fe435bb0dc61bb4ee3b227ea5d73"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-13.js",
+      "bytes": 713,
+      "sha256": "024471e492ab68631be83fce9c7ca5be6996d155ba5d63c8c61e2c28d21ca425"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-14.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-14.js",
+      "bytes": 619,
+      "sha256": "0781d8933f85163b46cd73a87c52db82cc38068c9022b1f6b500eaa69a6fd026"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-15.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-15.js",
+      "bytes": 718,
+      "sha256": "7ae0d5a89dbf8b1fb41e3af46ba1a33773bb23543927fe8563b6f65fcf094495"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-16.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-16.js",
+      "bytes": 712,
+      "sha256": "dc2b9cb5f791c20bffc13fcc4c58b13aabe16a4392ccb892eaea6fb2480649a0"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-17.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-17.js",
+      "bytes": 728,
+      "sha256": "2dfb59c0c3649f8cfea16613285c000f9755aeb6188be3a4773d6a652c474f48"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-18.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-18.js",
+      "bytes": 624,
+      "sha256": "f587bb0af6737d9d33297123ea009409c181da8728e31ddf6c6c48bcae337bc0"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-19.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-19.js",
+      "bytes": 1187,
+      "sha256": "0fbf3c6a0239da6856c72c5f5e0985a9971c28e5d84a9cb74085d9011b1b2432"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-2.js",
+      "bytes": 642,
+      "sha256": "76a58616bec1c08c828a506f261c0ed61489e1141057a4a03b365593cdfcf0dd"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-20.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-20.js",
+      "bytes": 879,
+      "sha256": "4958684515c842d70b190dff3034fc306d5134f3677298faf970600dbfc5d49c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-21.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-21.js",
+      "bytes": 1107,
+      "sha256": "8b6684f73a48d7f1ef1566767a96fcf6ee00658e77cfdd5ea20a126b61529cd3"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-22.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-22.js",
+      "bytes": 984,
+      "sha256": "dfdc85263583cc64c0242227a26b5e6cddce182cefc3d73584af3d29a8c9661a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-23.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-23.js",
+      "bytes": 1218,
+      "sha256": "f2bdacb245df90c573657a7d694cf3834b009d3c06592ce1d3c20f26d7d92a57"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-24.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-24.js",
+      "bytes": 749,
+      "sha256": "848ac58c17d6e3eaf79c2a4b661a6de10a49b30aa06212e474d6b9810e6fb09b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-25.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-25.js",
+      "bytes": 715,
+      "sha256": "0b9f0164ce8028dab58235776e4a273ec6328f5e092aee1ed6f9b72d12d77b12"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-3.js",
+      "bytes": 591,
+      "sha256": "d59ed145009955c2fa7bfce28767f984352bc829b4179f2cd6c83c287247e841"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-4.js",
+      "bytes": 593,
+      "sha256": "27d2ec5737eef23db0009ee4b6a7f59451ac9de2307f2a15c4dc7e7131370ea8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-5.js",
+      "bytes": 592,
+      "sha256": "b7f9eab450350d7a0ff0a46d4eb24c881e4ee40cbdb9145fbd06a5ef2ee275ec"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-6.js",
+      "bytes": 692,
+      "sha256": "437331f1da27eb54d4abc5727b33be7be5fdf7c33b0c766d95d8517b0fdc968d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-7.js",
+      "bytes": 710,
+      "sha256": "e1d3bc40f1e06a1c74a3b6aed14844cbbd041f8ddecd8ed10c636ef13c568579"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-3-9.js",
+      "bytes": 607,
+      "sha256": "d3ae08fe02401a91abe312c9aa9f5763667eb219f19921612744bab3d6718549"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-1.js",
+      "bytes": 370,
+      "sha256": "8f721823013212fb85955cdf435e05c3e7234170420b69d9acad6b129c917b2d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-10.js",
+      "bytes": 552,
+      "sha256": "6c81498e695f040854319e07fd7d2c7be683684674dd91d31f90740e64415756"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-11.js",
+      "bytes": 613,
+      "sha256": "8f34870d9c72ac107316b8510a57136b5bd68d07e10a4a7a9476dbd6fda9a5b3"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-12.js",
+      "bytes": 477,
+      "sha256": "215bf3b07f78dc8102bbd5cc60acf7d6ff27ef65f7108b5a0da51f1fad573a01"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-15.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-15.js",
+      "bytes": 849,
+      "sha256": "fe1f5219768f0e78bb655c722b2ffb6cad3afa44811e9e8ff1503945b7cc3d1a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-2.js",
+      "bytes": 386,
+      "sha256": "9baa30a2497a9b35c573a292fe5ade8b6d92924e167af0b6338180d5bf72d0fe"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-3.js",
+      "bytes": 359,
+      "sha256": "b025fda44d17392044dab3725d49d4cf4e1f4b53e87d5350895ce0910a60eff5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-4.js",
+      "bytes": 372,
+      "sha256": "7f41b4da25082657bf8f090a71923d70f7103c53ead463c8729ce1b5c32d53e4"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-5.js",
+      "bytes": 368,
+      "sha256": "c4b3cff10d762893d9e5bd32b2eb2ef32cef4c156df716b0461e7e780f24016e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-6.js",
+      "bytes": 372,
+      "sha256": "37d07cd7818e255313b249803febdf5d8029fe8acf40e82fd2af228b910972ed"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-7.js",
+      "bytes": 412,
+      "sha256": "e1bcc1c5bade9c1dc3b8e9731e7f948e72107d85a58d94565d08862349985e80"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-8.js",
+      "bytes": 617,
+      "sha256": "1ec6e0b924e7335e013fcab72fdb1586ad1d0e7fa8f060554f82f865ab8cb30d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-4-9.js",
+      "bytes": 684,
+      "sha256": "57e10e420b0034b36d1b610139fcf295c0d0115a761cb69a5cbbf1b5ae61aff1"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-1.js",
+      "bytes": 379,
+      "sha256": "24c61f250c52893ff6529eeead09dabdde923f51b952304ed0d1503df5956183"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-10.js",
+      "bytes": 614,
+      "sha256": "790eb585c6d17871845dee361cca5f5c0b6d51cca376728bb799bee257ed47bb"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-11.js",
+      "bytes": 681,
+      "sha256": "b791bed52e719b7fb7d204db9975642917253a503b43539e6f109b3f3e4be4a5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-12.js",
+      "bytes": 556,
+      "sha256": "5aad48132cd6b55e2fce1010a0f5af24764cb2a1c9c3c19c06c7db7530666978"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-13.js",
+      "bytes": 617,
+      "sha256": "f8ccf0050847aa6eacf92b3ea49f3aa3d91fdc21c32fda9b70fd8e06380d14c9"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-2.js",
+      "bytes": 524,
+      "sha256": "3bb7db26ffc544a3e029cb65939d05f3a43156290127a7e6c5fcdd74d8e52e3e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-3.js",
+      "bytes": 526,
+      "sha256": "86392f4460f9d4e4c0102779bf3df453c7ecffaba241b3636e90abed7045818d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-4.js",
+      "bytes": 518,
+      "sha256": "3ec255f3797956fbf45090c364ee16aa8c7f211ba0d33fbd9617be23638affdc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-5.js",
+      "bytes": 522,
+      "sha256": "75b07924dd75321f25e3df84d51b5cb0f3aa82134d1d5fbb87603a3e38fce477"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-6.js",
+      "bytes": 573,
+      "sha256": "abbd158d79ccaafb4bf0d6c3b51b46c763c74331b20ac5a2f9486e12df1b8647"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-7.js",
+      "bytes": 899,
+      "sha256": "36476f20bfb73c83bf9f0d58e006ce5516d290e95d3d5630914d74a003b9548a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-8.js",
+      "bytes": 1335,
+      "sha256": "28f935017f9292dae73a6603571d124bb5a5fa5a5697fb591baecf4af385607e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-5-9.js",
+      "bytes": 461,
+      "sha256": "de5a4033b8521f6770a7bf1cd62b2d5b1ce5daa6e8860c05799b5a85d2fd27cf"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-1.js",
+      "bytes": 403,
+      "sha256": "d0a29eea8daa3c0bde9c613590b185d1c33322e252056584ed4a1ad9d228bde8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-10.js",
+      "bytes": 393,
+      "sha256": "8db17a41916302cb871a6e731377cacc07c42919befa840daee0b15abda2f0ce"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-11.js",
+      "bytes": 397,
+      "sha256": "4b2448a6f7bade2cc03afed6dfd95eb6b4e37d5eec46d5f7abab4a244a14c503"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-2.js",
+      "bytes": 547,
+      "sha256": "b7467a620a068b1a6afe43a36a8ccef2f090645ab1c787e1e7104b5aee7f4434"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-3.js",
+      "bytes": 549,
+      "sha256": "5c473324c01d78f7aeddd83347f3739cc1084a4907c074426490eb5e4856c5e7"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-4.js",
+      "bytes": 541,
+      "sha256": "01e8772adc296b76f6df5e6db68fba9a8fb473eb2776e4e4e513dd250abbcbc5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-5.js",
+      "bytes": 545,
+      "sha256": "7bbb5c16a07b8448153bdcf0669aa31d842d82e601c207ed5e1a59d30375e596"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-6.js",
+      "bytes": 596,
+      "sha256": "27fef91e29620a592bf68ab0d844174563b227fef2f728f73490618f751723d7"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-7.js",
+      "bytes": 922,
+      "sha256": "726196343bef4d0f0d075de410cc2a34e4071f937ea0cc65b4535f35ceba92bc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-8.js",
+      "bytes": 1362,
+      "sha256": "348019a76b3841a0317faf15ef8062541e8042829d89f6af2704d0d6a0f97869"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-7-9.js",
+      "bytes": 1364,
+      "sha256": "5a9adb626adba83ecc676bd4180e1bf54a9c19b12f0b8a1987e7bde5d2416550"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-1.js",
+      "bytes": 600,
+      "sha256": "4173a1acf99fccd1348a37d70d8efce382f44a7360c1dd551cb0f8cb67a03bdb"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-2.js",
+      "bytes": 682,
+      "sha256": "f5218a2453169991ee441bd735c68ac3ea8f30101faa9bdf7dfe8a013766f5dd"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-3.js",
+      "bytes": 920,
+      "sha256": "9ea6caf40044deb430b4407533cfb07a92af20519846f9989c2808335f769fc9"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-ii-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-ii-1.js",
+      "bytes": 619,
+      "sha256": "4c3587ac6e6152fdb237a5ec8dd91ea723719587c12218935b3c5a82bb44f16f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-ii-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-ii-2.js",
+      "bytes": 608,
+      "sha256": "c35895cd0bcaa2ec8bda7c65966c52e308b4eaa9afbca091c5e0515383b30bb8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-1.js",
+      "bytes": 582,
+      "sha256": "4f474ff0de231c56a93f6f1c855e8c61c7e8ca7f05563aec9e5f735a03f6f577"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-10.js",
+      "bytes": 630,
+      "sha256": "a53be149b77895ae98ce1bd3303734e315eb3a9eee3e87d42ed459e551841760"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-11.js",
+      "bytes": 829,
+      "sha256": "3ef97a4bc1b612f50e71e7f9494ec13a48911be8ac8dffdf94a27ec30d544c2b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-12.js",
+      "bytes": 702,
+      "sha256": "58dc5a1a65bb5f67cc80daae67aa836dfd3db77c53451185684a0f1986dfbbf8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-13.js",
+      "bytes": 926,
+      "sha256": "623836704fecb6b959796c8270fea335087c6f8d2ac155eb6b307761ea685d1f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-14.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-14.js",
+      "bytes": 797,
+      "sha256": "dd271c0af500fa9faebcec73ea3a404f972284d63a04c1e60d465a04fa721578"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-15.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-15.js",
+      "bytes": 775,
+      "sha256": "e39bbf8a3e372965279f258cedd8e81fa4d34546d14bac9589fedc50bd95dd78"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-16.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-16.js",
+      "bytes": 648,
+      "sha256": "35545bfadaf7abfe3881bd62cf3215e295eb46e1ebb35bd1392a8abeca1fe44f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-17.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-17.js",
+      "bytes": 708,
+      "sha256": "766e2d3950fc7bb500b67ee5ecba1f7080d85db4793ff2ac4f1b0a5d68ab9eba"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-18.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-18.js",
+      "bytes": 649,
+      "sha256": "453207dbbaba7ae648c57f7f3ed7334ee2b39e38d67f6b5ceba7b3baf1c19884"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-19.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-19.js",
+      "bytes": 783,
+      "sha256": "33c99169a771a540fe703a79fd5e817ed4211dcfeb0375274c8a7d9c3a0f1a0c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-2.js",
+      "bytes": 526,
+      "sha256": "ee8d68bd0fbf32c493fe98bb24d7704c98e9c68cde30a5fa1b627ab93af76653"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-20.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-20.js",
+      "bytes": 722,
+      "sha256": "f12e8490af02f078111b00d3abd8abe22b8db186695f43f23f7af575aa72fc84"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-21.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-21.js",
+      "bytes": 798,
+      "sha256": "4f830c7b2c8efb70ebd2391e1d473542b024552ba6c18a10ff6075324fed0656"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-22.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-22.js",
+      "bytes": 671,
+      "sha256": "904550e9cb6403b7b9c1975b76e257c0d253fc5878676b06aea7f8cac178d7e9"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-25.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-25.js",
+      "bytes": 665,
+      "sha256": "aff66352785b794d1474f4c8befe22ecfa9c4d8789b170caeb61b157bced71e4"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-26.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-26.js",
+      "bytes": 662,
+      "sha256": "7af82de2ce3a957dc4fca657f1e4c425a41d1021cb97c15030a826061dd4f95d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-27.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-27.js",
+      "bytes": 674,
+      "sha256": "5d36b8ba9bab03a2bf36114416e70e05f0051fa66d4822218224ba24228fe5ea"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-28.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-28.js",
+      "bytes": 570,
+      "sha256": "d3e1c7627b6842774821ad75e44ac93fda22376c59fd2bb620405435a61f5db5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-29.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-29.js",
+      "bytes": 630,
+      "sha256": "4fbe0fb9b27cb90461af89fd7c2751955a292c69ac368b9ee6c0f3cfcf18dec5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-3.js",
+      "bytes": 767,
+      "sha256": "1e97b82f1a7f679ead6af7d13c626e55836b0e8b56f87082d0ba99039f0c9498"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-30.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-30.js",
+      "bytes": 894,
+      "sha256": "1e22e880da097a2e0ebfee2e82a39c6f3ba7e57dae36092e996fc7f84f036064"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-31.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-31.js",
+      "bytes": 935,
+      "sha256": "3f621aa0e9d1293e6958e857a0eb8aa339721179963a0376770c853c6d7a2cfa"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-32.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-32.js",
+      "bytes": 759,
+      "sha256": "f6a55122b72c439296a1a579972d0f94031f787b2da49f532ee06a26abc57e61"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-33.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-33.js",
+      "bytes": 701,
+      "sha256": "6b3bd3e35ccea9987a50378d87ba582eb0bd01aee1c94e41001083ca47abde76"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-4.js",
+      "bytes": 579,
+      "sha256": "fe3c8af54753086c59079abe844804b3b12775c617cc701bcf38405bb79b81cc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-5.js",
+      "bytes": 911,
+      "sha256": "b5286552e5a09300dddd3fda9089bc1d83b60e743b3aeb735dabace1f07e7d5d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-6.js",
+      "bytes": 668,
+      "sha256": "88c96e92f09bd3ac68b9ac4b93c5b64288181166139839d0965733f4459abe04"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-7.js",
+      "bytes": 672,
+      "sha256": "85be64d8939a6841b457227014fecbf935686fa84daee486115ac8ec972bbc04"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-8.js",
+      "bytes": 587,
+      "sha256": "cd7ea0544de9563f34bae3425f1fa58081355edf3b58572cd311944aa3ef1418"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-b-iii-1-9.js",
+      "bytes": 684,
+      "sha256": "0ebbb3cb18a012c7e5cf0727e989275356c242fdb5c787b6321362b16a676e92"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-c-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-c-1.js",
+      "bytes": 456,
+      "sha256": "039df56fe4daf55d1d1396721ff92e72c428041528e62719655b28ca5f2ee526"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-c-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-c-2.js",
+      "bytes": 535,
+      "sha256": "2608d0108204a980346d464c883452dfdcd70673ea8e2861d6419169c1fb03dd"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-c-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-c-3.js",
+      "bytes": 555,
+      "sha256": "6a81d243273658cf738d2d6d435930df61f0a5aa3d6096aca38b13d64b1d80af"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-c-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-c-4.js",
+      "bytes": 472,
+      "sha256": "47800442fd5b82bfe4dcb8d45791264f210c8a30112527ec75729e9504dd3f47"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-c-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-c-5.js",
+      "bytes": 608,
+      "sha256": "aa7ac2049d246461f434650839d193747fba902599566701e53e54704998dfe3"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-c-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-c-6.js",
+      "bytes": 675,
+      "sha256": "91db1ec3f21c2805e72d85dc95ff62f7a466d48fdd126d63fc479f8d2e99cb89"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-c-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-c-7.js",
+      "bytes": 538,
+      "sha256": "2f4a6bc7436b281505aa60aa34d8a21720b1f8fd7d447a1cd8fe2495089e8285"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-c-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-8-c-8.js",
+      "bytes": 599,
+      "sha256": "1d52a71bc5baf438bbaf886551ea821ce81e1eaaf519bb1c374d682e422ddc02"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-1.js",
+      "bytes": 648,
+      "sha256": "ab997a4752d0e9c6512e1d0d558e16f1e02b0898345daf3a93df4ed500ad9280"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-2.js",
+      "bytes": 517,
+      "sha256": "e570deb7290e02a46a3c455fe80e3778b191a8c4aeef79c2ce5596cb8fad9352"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-3.js",
+      "bytes": 558,
+      "sha256": "3b44f15f53a900ace2a0810af702f9f721d9e32f7c3645af770db150c4aeaf69"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-4.js",
+      "bytes": 520,
+      "sha256": "b5cfa17d84e71ada81a40a6ca5088df80f6afaf8bf8527ffc8ad5cba81a98c38"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-5.js",
+      "bytes": 522,
+      "sha256": "743f4dbccac3b19e7687b0b4e43ae07adef1d7723c2fee855555e45b26e88874"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-6.js",
+      "bytes": 621,
+      "sha256": "3f30a195c644fe1b181579123d9d0c875e6a333653836f3c7d5097889099a7c6"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-7.js",
+      "bytes": 607,
+      "sha256": "b787a3736416bf0ebc9b28b8fe9e3551d12658db51e8e6beb3481c3a99c2f49b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-8.js",
+      "bytes": 716,
+      "sha256": "1394213d002ff543e948254861b3a59271bafb0ff5f60c4bebcfde1273998c1b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-9.js",
+      "bytes": 588,
+      "sha256": "498cd9a4258b51e2aefc696d3dd0863a349a8e60a9ec48a371f23a9c4cfa275b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-1.js",
+      "bytes": 475,
+      "sha256": "a26fee875c356ac0350beb6caed1c576889e0f9b7e96deb74cc1751c47ef79d7"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-10.js",
+      "bytes": 844,
+      "sha256": "8d49e892781d2dc9e40a77cb3ff646f83a3fc96ae6ad32a55830ed6d8d2de46a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-11.js",
+      "bytes": 792,
+      "sha256": "887c2894bf5f2b58a1d657f18c33ea172c213f1b778318abf7d3101e50fd212e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-12.js",
+      "bytes": 794,
+      "sha256": "8c5abbda9dffeaed85be3d23588dc432b9617dc18957178e6808b658ec22e4ce"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-13.js",
+      "bytes": 732,
+      "sha256": "93398bdb50ad6d3106095d069fdd25c2a4e2cb2655a8771f298bc6ae9816de4e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-14.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-14.js",
+      "bytes": 745,
+      "sha256": "afee2afffd1b85f175221e90104284dd22272ae60ae10ad49d648f94fc6d53fc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-15.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-15.js",
+      "bytes": 837,
+      "sha256": "135ef8b821102a13094797a5bdf03a1ac37c19190c93c69ac143f17e2d8cfee4"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-16.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-16.js",
+      "bytes": 825,
+      "sha256": "b5c1e972e0094b0bdfa9d08da3b010113235a51dad0d6d1f4808852b8d405919"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-17.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-17.js",
+      "bytes": 808,
+      "sha256": "9581fed67346087b274628eb2221a53f428aad85873c1a13d1474663f938923f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-18.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-18.js",
+      "bytes": 767,
+      "sha256": "2033d9335ffb05f938941773ce93e2d4baf39a85acf94401a42604078ad9e4c9"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-19.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-19.js",
+      "bytes": 824,
+      "sha256": "4abc9937a2dc72b6a01b4a4bcc32a20ab882f534e93663b31b0e9cc8045b9f35"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-2.js",
+      "bytes": 673,
+      "sha256": "6231b3a39ef12365f27ea8eb3a3c6269dbbda6ff64712b2ae4bb7b04af69cd6b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-20.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-20.js",
+      "bytes": 785,
+      "sha256": "9379ab97743441bebb2062547a2e95314a35c68a64c29d41908d7994079934d4"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-21.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-21.js",
+      "bytes": 906,
+      "sha256": "91c74b6fb8bdfce544f4722a9b3518f609ba17b6d5402aaab694f36463e168ec"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-22.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-22.js",
+      "bytes": 858,
+      "sha256": "37a501ca2d6ce27b1ab5653e13f1de04575a1d389725f039f8011966696134cd"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-23.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-23.js",
+      "bytes": 854,
+      "sha256": "9a37d3a0cc1be61abf7e758c2d827122f0c03d100386ff2525156eebe8b3e09f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-24.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-24.js",
+      "bytes": 798,
+      "sha256": "55f21eef4233fa16672dd6a57c63bf0ec7dd442c4f9f9dc5f27ab0eefd1da30d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-25.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-25.js",
+      "bytes": 809,
+      "sha256": "5972cf8dd1c36accdb65e584c6bf461bc75038dcb218bf8f9ce83c6d61e21ea5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-26.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-26.js",
+      "bytes": 734,
+      "sha256": "2a3fa40a5a8bb7c77b4b85c3324a88e39e14c999d6a84a08f57c301176186fd5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-27.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-27.js",
+      "bytes": 751,
+      "sha256": "68312eb16fb688b6093e15d459c5952d46aad210a7c863588a0463b047bf73da"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-28.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-28.js",
+      "bytes": 839,
+      "sha256": "be3f5a0a34048bdc7e06ba29edcc82739087f8e7c78c1cb38c91835b5b81e80c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-29.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-29.js",
+      "bytes": 831,
+      "sha256": "b9d9b29b5bd558d8991b8fda010167c6bb81238c4a6c6c2b1fb560c7e6ff2fd2"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-3.js",
+      "bytes": 756,
+      "sha256": "692aaeae1e72c8e35dc7b4ae826fbe0af79f848403631e0c41eb17307801b762"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-4.js",
+      "bytes": 804,
+      "sha256": "1ec644ae3425968d3dc7e00815bb7401817a2bfc3b1e39617706cfc88f456def"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-5.js",
+      "bytes": 763,
+      "sha256": "cdb5f9d0eae324e2b032b9cfd74c9f24061322d97790a33bf8a2039b844085fc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-6.js",
+      "bytes": 813,
+      "sha256": "5154a2be14e784eb036e844a555b8087fbf7d2f5d3f810f4edfa7470fda2eb3b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-7.js",
+      "bytes": 771,
+      "sha256": "ee89b32237e1697259be62bb38d4522383a854b8c44652a885cf37e3b0eea4e4"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-8.js",
+      "bytes": 900,
+      "sha256": "d18dd092e8adde1adaef57b6f53a46012b88fd0d051cfbe8cd778feb41d775fe"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-b-9.js",
+      "bytes": 845,
+      "sha256": "1a0c471a84b770032d7bc861c74cf99dddf6e4bd765c62647c11212b6d57f6b5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-1.js",
+      "bytes": 617,
+      "sha256": "4eb2a55da0c270cc488c07b8a4671cd70fae792e29ffb1f060e8d5b6a6b610fa"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-1.js",
+      "bytes": 604,
+      "sha256": "4d9c754399e9b2e390d708388ba77ed2fa02736e21b19740c4cd5a21017ab9b2"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-10.js",
+      "bytes": 643,
+      "sha256": "7af4ba84a9bf4898ad45a38b93186cfbbea76197a0821e0dc1229e8836f8dec7"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-11.js",
+      "bytes": 843,
+      "sha256": "508d710ca3cf2e2c3e3f34702421fa8065329241b75f8186bd0a67f0a175b7a4"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-12.js",
+      "bytes": 718,
+      "sha256": "c1f56021976e0747b7f4faa1b708cad02b0cb63c590790181934dc15a22bfd16"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-13.js",
+      "bytes": 940,
+      "sha256": "65b60c577d8d3704b9e9f3d0b3cf53d01c6f01804fa780c5c1e80b69acc5f207"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-14.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-14.js",
+      "bytes": 808,
+      "sha256": "94f27f958b583943e86bd00de7235710477757c532ceb7ef377e7faa3194e0f1"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-15.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-15.js",
+      "bytes": 790,
+      "sha256": "e2a2e0b3363567f810516706c44a1939e7e16ed42176c61c6970d4786dfa44f8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-16.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-16.js",
+      "bytes": 661,
+      "sha256": "00a40feb1547f14907763e871392890229faaf976a9fef9603cfffb494001aeb"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-17.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-17.js",
+      "bytes": 723,
+      "sha256": "e04c03322dd71d25baa6aa89b5ab959bc708844f4750f6ec89ede2abd217df1d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-18.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-18.js",
+      "bytes": 666,
+      "sha256": "e1d2fe7cace9c6f90296f72dd7f7c171661f90cbb28d969bacd579967c69ac53"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-19.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-19.js",
+      "bytes": 798,
+      "sha256": "3066040ae147e62690bbc731adf67e738a2991c23912944a5adb2e6ff15bb848"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-2.js",
+      "bytes": 540,
+      "sha256": "fc21fbcbf0c4d57a6faff304c23cecac540a1fe70d4d1c0bb8e69f26610786ff"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-20.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-20.js",
+      "bytes": 739,
+      "sha256": "925840e7fd3ebf284dbdaec4f5cdba3730ef1fece5fdeef2c66c8d455fbbba71"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-21.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-21.js",
+      "bytes": 813,
+      "sha256": "55f9feafb5e47495e87ceb8c677743ce7f4c4ffa8ca6c38c787b8838ff723a0c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-22.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-22.js",
+      "bytes": 684,
+      "sha256": "8ae72460ea8a5f057c4068fcc2977c2ef5b93bfb1fb1406cfcfbe206bd14104d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-25.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-25.js",
+      "bytes": 680,
+      "sha256": "a27e6d5ce6eadbbfa77fff3608a9d323fe46086ddfa5a79318fd941caf45c952"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-26.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-26.js",
+      "bytes": 677,
+      "sha256": "da0293654475ca3bd0471161fd3f26883b50392546ce9cbad325663f3dd83844"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-27.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-27.js",
+      "bytes": 689,
+      "sha256": "4ada5db4f73d107e18d3d9ee82238bd1b3e657fa4dae047cc041358cfcad8551"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-28.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-28.js",
+      "bytes": 584,
+      "sha256": "c72ebbf990e1054e9b224c9602af1cc0aa61718293bd952e4463ad71d964853c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-29.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-29.js",
+      "bytes": 676,
+      "sha256": "e800125b3ab995aa3ea947f1e7624b5db47854345917d3bd59a92fe7374aee68"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-3.js",
+      "bytes": 782,
+      "sha256": "e44a3f8f855e2f812fa00f388e0bcf6f29df69e23e252b831ac7a96d94804c2d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-30.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-30.js",
+      "bytes": 873,
+      "sha256": "b91d70a98caaee5470274321041da5240b8d2dbd20b1ab691f7227abfe50c60c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-31.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-31.js",
+      "bytes": 916,
+      "sha256": "a0aa9b3d96ef37be086efbb32bc89043d251988eead74f3de98c37a9bdba152d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-32.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-32.js",
+      "bytes": 797,
+      "sha256": "d8b1ae0696484f1880b0b0119c4badb0ca28046f345c81e576f04edb065f9d13"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-33.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-33.js",
+      "bytes": 746,
+      "sha256": "515c73f1549bac4ab1e68fa578ebe8d0c1d6f51a017b8e582f65a509873f73ff"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-4.js",
+      "bytes": 594,
+      "sha256": "6bdb058b0ba605050d90b52c8a551d75f00570008254eb6e019f7df8bac2087e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-5.js",
+      "bytes": 908,
+      "sha256": "5aab8450796e7ac527a51d60aec0e9e1d5a468bb952607ee68462ff8c4f87856"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-6.js",
+      "bytes": 684,
+      "sha256": "8896ca2ecba03e993d9ea0605546f5b24a66412ea1990fa5dcf84bf7a6ea6608"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-7.js",
+      "bytes": 692,
+      "sha256": "68b9ac25292ee6c739a2ca54f3f9067ccf8b17b2f718071bf37cf51b0f2f6266"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-8.js",
+      "bytes": 602,
+      "sha256": "cfe9b01506b864ef68f9513032917acaf3d5eee845abe08b2db29a510f6faade"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-i-9.js",
+      "bytes": 699,
+      "sha256": "f9c3a6b070e0cecdd84c171ec8b17e6eb8caeb3a1995938d8688de669616c9dd"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-1.js",
+      "bytes": 617,
+      "sha256": "5dd8ec64e1b8dfad2f58131b3c6bc511d4ab98b1c8b8c3ac19a75464310538ff"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-10.js",
+      "bytes": 508,
+      "sha256": "a37587930783d98a0e7eb4148d1f6328c684bad4f97c329ca8ff1b3e9e65fba8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-11.js",
+      "bytes": 565,
+      "sha256": "6ca0728dffc3beb18f4ae7f8cdd5bbdfa08477b6d584dfc03a03c6cc7b79f311"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-12.js",
+      "bytes": 663,
+      "sha256": "ed1a1aa41c7c90ba5ef1c849902045ec78295279dac13b2f248c3ccea065c9bf"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-13.js",
+      "bytes": 659,
+      "sha256": "0483470ca7274114d61d5521f7bbe95b8f53a5a1a2883725d0a11b431be4ecfc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-14.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-14.js",
+      "bytes": 457,
+      "sha256": "0bd4942caaf6ce9d01ba4378fd491f4c9558be40d6fd42683e64ca733a2cc8bc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-16.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-16.js",
+      "bytes": 636,
+      "sha256": "6afaed92dfedce7937f1a634cc91b9400f45ba95a5e1db0742422de8ea84ab71"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-17.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-17.js",
+      "bytes": 654,
+      "sha256": "e7957836a103c7e8559e802194b9f0268fc8fd790c18a0558b629968798136d9"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-18.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-18.js",
+      "bytes": 624,
+      "sha256": "724a7d5cb554c23d137e9a69100b92860b611718032ec05138a994085eb829bb"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-19.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-19.js",
+      "bytes": 645,
+      "sha256": "76b4d746c7613f164704724548822653473e1b7debeab9f17d6386b35756e6a5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-2.js",
+      "bytes": 795,
+      "sha256": "677ab5cc45a8167b216595ddaffec8edec239e6aded577d4998ba32a34dc2895"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-20.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-20.js",
+      "bytes": 628,
+      "sha256": "b46687cad355afab421763f659169822b49b244a8a754c4826b1e45fe1f6a976"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-21.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-21.js",
+      "bytes": 599,
+      "sha256": "568d82a000fecaa2d1d19512f8e04cee5b628ead2682b7042aa7391735166fa8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-22.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-22.js",
+      "bytes": 625,
+      "sha256": "c6c3e93fdce2e9ce1c8bad5a522198e6dee4584f122381edac972fdb62847fb4"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-23.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-23.js",
+      "bytes": 615,
+      "sha256": "fb07ce664baf6533015a6829a3d186ea9fb66f4243f131864c67ff5c0a7070a5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-24.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-24.js",
+      "bytes": 633,
+      "sha256": "e20da37976462fcc07c63e50f1885f7e6b605172225895d220ea2363d643d67a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-25.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-25.js",
+      "bytes": 674,
+      "sha256": "52a7eba1077cfb08144c3cdfa231cd6c920bb73e0e82deb18e047a4d6e18d3ee"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-26.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-26.js",
+      "bytes": 648,
+      "sha256": "7638a7585b85d284bd99cc239bcdbc83a03d1f33ad0df5fde3693baf6b4debc8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-27.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-27.js",
+      "bytes": 663,
+      "sha256": "87d07453c1d5b9729a968cda723a11501fb2c1cee618717f1e760bb0439a4e89"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-28.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-28.js",
+      "bytes": 669,
+      "sha256": "9e3076ca486de25f485ee000eeab71acd72d2c847a7f584870b726d99e7aa15e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-29.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-29.js",
+      "bytes": 663,
+      "sha256": "dbad2003264ef25ef0a3828735f4d3aef752c51f526dfcd8659ceda24b44965a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-3.js",
+      "bytes": 624,
+      "sha256": "10f4881abe397f83e9b49ac7a1b408a508c8943c8c9976837b4862cb259a15dc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-30.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-30.js",
+      "bytes": 620,
+      "sha256": "b85ab03ad00948722942575ee4360266b659ff188c2d1ec4ba8b658ae328120e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-31.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-31.js",
+      "bytes": 652,
+      "sha256": "5b12e0a548fd832591935b18c32881e3e8166a7ab60f02d19d3573b4fb751b42"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-32.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-32.js",
+      "bytes": 663,
+      "sha256": "be72633560ebf847ac9556e51bc6a5a709552ebb6d872ad5c51c28d4ce96c935"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-33.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-33.js",
+      "bytes": 603,
+      "sha256": "026abc7866658daaede1979c313fb8824a68f36fda3f57748a10cef86c96460b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-34.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-34.js",
+      "bytes": 663,
+      "sha256": "abed4d3e9b01d19a6a75a160e44a6c4d09dd0c9fd40f2e7cde147cdaafb48e7e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-35.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-35.js",
+      "bytes": 689,
+      "sha256": "94b2ad79b526108b562ac03df6d446054b5bd9d059b2cced0f03f16ae28284f4"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-37.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-37.js",
+      "bytes": 643,
+      "sha256": "6da2c29aaee98fb1bb757eb6cf967818324e538988319669ed71c12e487fc5b5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-4-s.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-4-s.js",
+      "bytes": 554,
+      "sha256": "91b4abb06c357c6c7648e8602bab254cf1a9eb1c8ef26e53bd7a95d0f70f917b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-4.js",
+      "bytes": 640,
+      "sha256": "416146d2d8e51acdb0cb32389bf1822e5aee007b67b69422f5ab2ab649a63ea6"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-5.js",
+      "bytes": 1094,
+      "sha256": "c4cfa8cfd7e60463f2c15ef7201e39e7972c47685b36679df9b07e9d4cc61f16"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-7.js",
+      "bytes": 715,
+      "sha256": "c73989cd00626bcd3a970ce70d325579d4bd5eeb90c1d143fa1b82b6e596a647"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-8.js",
+      "bytes": 685,
+      "sha256": "925713cfb3b0fab5ec5366b97b10b7c0b13f8e3d809aeed674be337539559006"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-9-c-ii-9.js",
+      "bytes": 497,
+      "sha256": "2e6fc1734d21d217bbe4d86f2797fd79d608572807e0fe7812fa74ff83e29fca"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/call-with-boolean.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/call-with-boolean.js",
+      "bytes": 563,
+      "sha256": "35535b669b0e230d09a77bcb402d9075b1ec3ba4b7ba41a1b011368d621d0d88"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/callbackfn-resize-arraybuffer.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/callbackfn-resize-arraybuffer.js",
+      "bytes": 2811,
+      "sha256": "ab9ee4597044628a3dc5c970b0c4e6621530f7397dd963a43f5d638289d9b051"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/length-near-integer-limit.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/length-near-integer-limit.js",
+      "bytes": 1566,
+      "sha256": "d13d55ebdaa4b5394745a7cd3f0aaad9ce712585fe7e83b618b376d70a927dbb"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/length.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/length.js",
+      "bytes": 1081,
+      "sha256": "0ffaa3de6eb19ecdfd419cec7322ad38343d239421603008e806df6695309b6f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/name.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/name.js",
+      "bytes": 895,
+      "sha256": "04b6f1fd23a7a748b6fb871097d84690c52b59031478a20a7169d40f397bcc74"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/not-a-constructor.js",
+      "bytes": 928,
+      "sha256": "a40f5d7efcabaf7a482c0d7fc959466829e82ad588881e3189e0828fe662a279"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/prop-desc.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/prop-desc.js",
+      "bytes": 713,
+      "sha256": "469a00c2167427cac8253d26360368ed247f9e1836dc3b84c05b19d03aebf8aa"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/resizable-buffer-grow-mid-iteration.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/resizable-buffer-grow-mid-iteration.js",
+      "bytes": 2546,
+      "sha256": "cd8c593ebbf5db31fc9debda8a76d5e138c9c1e202a2e75f6121e28bbe866164"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/resizable-buffer-shrink-mid-iteration.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/resizable-buffer-shrink-mid-iteration.js",
+      "bytes": 2966,
+      "sha256": "c7f2d226b392c74aa6e066a112f162eb4316651232ef209dd2048b9236e09da1"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/reduceRight/resizable-buffer.js",
+      "upstream_path": "test/built-ins/Array/prototype/reduceRight/resizable-buffer.js",
+      "bytes": 3808,
+      "sha256": "5afc6c6b72012d297fd37a9e50c61821bf343d8eed27576d8df0b25c5e21fe19"
+    }
+  ]
+}

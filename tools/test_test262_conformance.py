@@ -191,6 +191,166 @@ class ExecutionTests(unittest.TestCase):
 
 
 class IntegrityTests(unittest.TestCase):
+    def test_array_reduce_inventory_retains_both_complete_directories(self):
+        manifest, files, cases, fixtures, manifest_hash = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-array-reduce', 'array-reduce')
+        self.assertEqual({key: len(value) for key, value in manifest['directories'].items()},
+                         {'Array/prototype/reduce': 260, 'Array/prototype/reduceRight': 260})
+        self.assertEqual(runner.digest(json.dumps(manifest['directories'], sort_keys=True,
+                                                separators=(',', ':')).encode()),
+                         'b7200a203682b4c2cd82695de080d24e7bfdc98f36113930bd56d719850cc60e')
+        self.assertEqual(manifest_hash, '77ee716188d99fdba64adbe151ef4efd915fbaa6345b2b0ec8fe3550efb5ec24')
+        self.assertEqual((manifest['test_files'], len(cases), fixtures), (520, 1034, []))
+        self.assertEqual(sum(c['mode'] == 'sloppy' for c in cases), 520)
+        self.assertTrue(all(c['metadata']['negative'] is None for c in cases))
+        self.assertEqual(sum(len(v) for p, v in files.items() if p.startswith('test/')), 364611)
+        self.assertEqual(sum(map(len, files.values())), 431206)
+        self.assertEqual({p for p in files if p.startswith('harness/')}, {
+            'harness/assert.js', 'harness/sta.js', 'harness/compareArray.js', 'harness/propertyHelper.js',
+            'harness/isConstructor.js', 'harness/resizableArrayBufferUtils.js', 'harness/testTypedArray.js'})
+        _, original, _, _, _ = runner.load_corpus(runner.ROOT / 'tests/upstream/test262-array-sort', 'array-sort')
+        for path, data in files.items():
+            if not path.startswith('test/'):
+                if path in original:
+                    self.assertEqual(data, original[path])
+        for method, expected in [('reduce', '45ca3e00e2102c702d9b907015148b179d394bd48f24b242054dba2f9f6e6bdf'),
+                                 ('reduceRight', '3c129440d766f2d3bd286c4f1c0ffb156f3373b83bc90adc526950923659f4cb')]:
+            records = sorted((p, runner.digest(data)) for p, data in files.items()
+                             if p.startswith('test/') and Path(p).parent.name == method)
+            self.assertEqual(runner.digest(''.join(p + '\0' + h + '\n' for p, h in records).encode()), expected)
+            selected = [c for c in cases if Path(c['file']).parent.name == method]
+            self.assertEqual(len(selected), 517)
+            self.assertEqual(sum('noStrict' in c['metadata']['flags'] for c in selected), 3)
+
+    def test_array_reduce_core_policy_retains_unrelated_prerequisites(self):
+        self.assertEqual(runner.ARRAY_REDUCE_FEATURES, runner.SUPPORTED_FEATURES)
+        _, files, cases, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-array-reduce', 'array-reduce')
+        unsupported = [c for c in cases if runner.unsupported_reason(c, runner.ARRAY_REDUCE_FEATURES)]
+        self.assertEqual((len(unsupported), len({c['file'] for c in unsupported})), (20, 10))
+        for c in unsupported:
+            self.assertTrue(set(c['metadata']['features']) & {'Reflect.construct', 'resizable-arraybuffer'})
+        dependencies = [c for c in cases if b'Date' in c['source'] or b'Number.MAX_SAFE_INTEGER' in c['source']]
+        self.assertEqual(len(dependencies), 10)
+        self.assertTrue(all(runner.unsupported_reason(c, runner.ARRAY_REDUCE_FEATURES) is None for c in dependencies))
+        self.assertIn(b'Number.MAX_SAFE_INTEGER', files['test/built-ins/Array/prototype/reduceRight/length-near-integer-limit.js'])
+        for feature in ('stable-array-sort', 'rest-parameters', 'globalThis', 'u180e', 'Proxy', 'Reflect.construct', 'Symbol'):
+            case = sample(('/*---\nfeatures: [' + feature + ']\n---*/\n').encode())
+            self.assertIn(feature, runner.unsupported_reason(case, runner.ARRAY_REDUCE_FEATURES))
+
+    def test_array_reduce_preflight_preserves_core_and_rejects_wrong_error_identity(self):
+        _, files, _, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-array-reduce', 'array-reduce')
+        with patch.object(runner, 'bounded_process', return_value=(0, response('complete'), b'')):
+            previous = runner.harness_preflight(files, Path('/fake'), 1)
+            current = runner.harness_preflight(files, Path('/fake'), 1, 'array-reduce')
+        self.assertEqual(current[:32], previous)
+        self.assertEqual(len(current), 128)
+        self.assertEqual(sum(p['verified'] for p in current[32:]), 48)
+        for error_type in ('TypeError', 'ReferenceError', 'SyntaxError'):
+            with patch.object(runner, 'bounded_process', return_value=(
+                    0, response('exception', 'runtime', error_type), b'')):
+                wrong = runner.harness_preflight(files, Path('/fake'), 1, 'array-reduce')
+            self.assertFalse(any(p['verified'] for p in wrong[32:]))
+        with patch.object(runner, 'bounded_process', return_value=(
+                0, response('exception', 'runtime', 'Test262Error'), b'')):
+            mismatch = runner.harness_preflight(files, Path('/fake'), 1, 'array-reduce')
+        self.assertTrue(all(p['verified'] == (p['expected'] == 'failed') for p in mismatch[32:]))
+        self.assertFalse(all(p['verified'] for p in mismatch))
+
+    def test_array_reduce_guarded_pairs_differ_only_in_final_assertion(self):
+        _, files, _, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-array-reduce', 'array-reduce')
+        captured = []
+        def capture(case, *args):
+            captured.append(case)
+            return dict(status='passed')
+        with patch.object(runner, 'run_case', side_effect=capture):
+            outcomes = runner.harness_preflight(files, Path('/fake'), 1, 'array-reduce')
+        added = captured[32:]
+        self.assertEqual(len(added), 96)
+        self.assertEqual({c['mode'] for c in added}, {'strict', 'sloppy'})
+        for c in added:
+            method = 'reduceRight' if 'array-reduce-reduceRight-' in c['id'] else 'reduce'
+            guard = (f"var m=Array.prototype.{method};assert.sameValue(typeof m,'function');"
+                     "assert.sameValue(m.call([1,2],function(a,b){return a+b;},0),3);").encode()
+            self.assertTrue(c['source'].startswith(guard))
+            if b'assert.throws' in c['source']:
+                self.assertGreater(c['source'].index(b'assert.throws'), len(guard) - 1)
+            if 'property-metadata' in c['id']:
+                self.assertEqual(c['source'].count(b'{restore:true}'), 3)
+            self.assertNotIn(b'@THIS@', c['source'])
+            self.assertEqual([name for name, _ in c['harness']], ['assert.js', 'sta.js'] +
+                             (['propertyHelper.js'] if 'property-' in c['id'] else []))
+        for offset in range(0, len(added), 2):
+            good, bad = added[offset:offset + 2]
+            self.assertEqual(good['source'].rsplit(b'assert.sameValue(', 1)[0],
+                             bad['source'].rsplit(b'assert.sameValue(', 1)[0])
+            self.assertNotEqual(good['source'], bad['source'])
+            self.assertEqual(outcomes[offset + 32]['expected'], 'passed')
+            self.assertEqual(outcomes[offset + 33]['expected'], 'failed')
+
+    def test_array_reduce_import_checks_both_directory_inventories_and_blobs(self):
+        _, files, _, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-array-reduce', 'array-reduce')
+        raw = f'https://raw.githubusercontent.com/{importer.REPOSITORY}/{importer.REVISION}/'
+        api = f'https://api.github.com/repos/{importer.REPOSITORY}/contents/test/built-ins/'
+        listings = {name: [] for name in importer.ARRAY_REDUCE_DIRECTORIES}
+        for path, data in files.items():
+            if path.startswith('test/'):
+                directory = str(Path(path).parent).removeprefix('test/built-ins/')
+                listings[directory].append(dict(type='file', name=Path(path).name,
+                    sha=importer.hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()))
+        def fetch(url):
+            if url.startswith(api):
+                name = url[len(api):].removesuffix('?ref=' + importer.REVISION)
+                return json.dumps(listings[name]).encode()
+            self.assertTrue(url.startswith(raw))
+            return files[url[len(raw):]]
+        with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch), contextlib.redirect_stdout(io.StringIO()):
+            importer.import_corpus(Path(temporary), 'array-reduce')
+            _, imported, cases, fixtures, _ = runner.load_corpus(Path(temporary), 'array-reduce')
+            self.assertEqual(imported, files)
+            self.assertEqual((len(cases), fixtures), (1034, []))
+        for name in listings:
+            saved = listings[name][0]['sha']
+            listings[name][0]['sha'] = '0' * 40
+            with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch):
+                with self.assertRaisesRegex(ValueError, 'pinned Git blob'):
+                    importer.import_corpus(Path(temporary), 'array-reduce')
+                self.assertFalse(any(Path(temporary).iterdir()))
+            listings[name][0]['sha'] = saved
+            item = listings[name].pop()
+            with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch):
+                with self.assertRaisesRegex(ValueError, 'inventory mismatch'):
+                    importer.import_corpus(Path(temporary), 'array-reduce')
+                self.assertFalse(any(Path(temporary).iterdir()))
+            listings[name].append(item)
+
+    def test_array_reduce_preserves_all_nine_prior_profile_contracts(self):
+        profiles = ('string-json', 'regexp', 'template-literal', 'functions', 'rest-parameters',
+                    'is-prototype-of', 'global-values', 'array-sort', 'identifiers')
+        retained = {}
+        for name in profiles:
+            _, files, cases, fixtures, manifest_hash = runner.load_corpus(
+                runner.ROOT / 'tests/upstream' / runner.corpus_name(name), name)
+            captured = []
+            def capture(case, *args):
+                captured.append(dict(name=case['id'], mode=case['mode'], case_sha256=case['case_sha256'],
+                                     source_sha256=runner.digest(case['source'])))
+                return dict(status='passed', mode=case['mode'], case_sha256=case['case_sha256'],
+                            source_sha256=runner.digest(case['source']))
+            with patch.object(runner, 'run_case', side_effect=capture):
+                runner.harness_preflight(files, Path('/fake'), 3, name)
+            retained[name] = dict(manifest_sha256=manifest_hash,
+                                 cases={c['id']: c['case_sha256'] for c in cases},
+                                 preflights=captured, fixtures=fixtures,
+                                 features=sorted(runner.PROFILE_FEATURES[name]))
+        self.assertEqual(sum(len(v['cases']) for v in retained.values()), 3093)
+        self.assertEqual(sum(len(v['preflights']) for v in retained.values()), 528)
+        self.assertEqual(runner.digest(json.dumps(retained, sort_keys=True, separators=(',', ':')).encode()),
+                         '00bc0a2ee53cc28fd1eda61af5f8cc98cf83c910a1d65680987ef914b0a47177')
+
     def test_identifier_inventory_keeps_both_complete_directories_and_all_modes(self):
         manifest, files, cases, fixtures, manifest_hash = runner.load_corpus(
             runner.ROOT / 'tests/upstream/test262-identifiers', 'identifiers')

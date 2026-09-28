@@ -29,6 +29,12 @@ conversion order, avoidance of author getters/coercion, built-in chains and
 mutation. Page and confined-worker tests compare six green initial samples and
 blue samples after a callback restores a prototype link. It loads no external assets.
 
+`array-reduce.html` checks both reduction directions, omitted versus explicit
+initial values, inherited entries, live future reads, captured length, callback
+arguments and abrupt effects. Page and confined-worker tests compare six green
+initial samples and blue clicked samples, including an object accumulator
+retained through the event callback. It loads no external assets.
+
 `calc-resize.html` uses mixed length-percentage widths and margins. Page and
 confined-worker tests verify exact geometry and pixels at 320 and 520 pixels,
 then repeat after CSSOM mutation, including a resize back to the smaller viewport.
