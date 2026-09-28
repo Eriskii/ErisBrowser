@@ -113,8 +113,8 @@ retains 72 passes, twelve class/Symbol failures and 48 unsupported modes, with
 
 [Declaration traversal](../tests/conformance/scope-walk.md) uses bounded borrowed
 ancestor cursors for name collection and hoisting. Switch scopes no longer clone
-statement trees. This preserves scope behavior without making the parser or
-evaluator fully iterative. [Declaration-name validation](../tests/conformance/scope-names.md)
+statement trees. It retains a separate 96-ancestor bound alongside the parser
+and ordinary execution continuations. [Declaration-name validation](../tests/conformance/scope-names.md)
 now charges temporary records, sorting, comparisons and named diagnostics while
 preserving duplicate and scope-conflict behavior.
 
@@ -129,9 +129,12 @@ calls, with call 33 stopped by the existing logical ceiling. Native callback and
 constructor bridges remain guarded. [Direct flat parsing](../tests/conformance/flat-parser.md)
 now removes the temporary owning AST and second lowering pass. The parser emits
 charged record pages and flat lists, preserving cover grammar, early errors and
-lexical rescans. Its grammar recursion and guards remain; the retained
-32-nested-IIFE test still stops in parsing. Flat cleanup alone does not establish
-deeper source acceptance.
+lexical rescans. [Grammar continuations](../tests/conformance/parser-continuations.md)
+also remove native grammar recursion: both modes of the original 32-nested-IIFE
+test now pass within the unchanged compile quotas. The complete functions profile
+has 511 passes and 620 unsupported variants and now has a healthy CI baseline.
+The retained depth probes parse through 40 and run through 32 calls; declaration
+traversal, labels, logical calls and native helpers retain independent limits.
 
 [Labeled break and continue](../tests/conformance/labels.md) resolve ordinary
 statement/loop targets, propagate through nested loops and switches, and preserve

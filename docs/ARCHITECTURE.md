@@ -106,8 +106,9 @@ JavaScript declaration analysis and hoisting share a fixed-depth traversal of
 borrowed statements. It visits control-flow bodies in source order and stops at
 function boundaries. Switch scopes use borrowed case statements, and parsing
 records whether a scope contains lexical declarations to skip unnecessary name
-analysis. This removes recursive declaration walks and temporary syntax clones;
-grammar parsing and native callback bridges still have recursive paths.
+analysis. This removes recursive declaration walks and temporary syntax clones.
+Supported JavaScript grammar also uses continuations; native callback bridges
+and the separately bounded RegExp compiler retain recursive paths.
 Declaration-name validation uses borrowed record lists and a fallible iterative
 merge sort. Growth, scratch storage, copies and UTF-8 comparisons consume the
 compile ledger. Stable ordering retains source-order duplicate diagnostics;
@@ -144,8 +145,15 @@ already lexed prefix; later rescans can require charged growth. This avoids
 repeated record/root-list copying and keeps the large Unicode declaration case
 within the original budgets. Cover grammar moves names/default IDs out of
 unreferenced records, retaining charged tombstones; it does not rewind tokens.
-Grammar recursion and its old guards remain. Diagnostic formatting, native
-helper allocations and runtime maps still need broader accounting review.
+A separate parser-owned continuation stack now handles supported JavaScript
+grammar, including functions/defaults, cover syntax, computed keys and template
+substitutions. Saved function contexts preserve labels, strictness and loop/switch
+boundaries. Dispatch and frame growth share the compile ledger. Bounded leaf forms
+avoid suspending empty grammar layers; all input-dependent loops and payload growth
+remain charged. The former grammar-depth and member/constructor chain guards are
+removed; declaration traversal, active labels and the RegExp compiler retain
+independent bounds. Diagnostic formatting, native helper allocations and runtime
+maps still need broader accounting review.
 
 Media-query conditions use bounded recursive evaluation with unknown-value
 logic and share work across stylesheet sources. Flex layout forms row or column

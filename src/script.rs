@@ -12097,11 +12097,7 @@ mod tests {
             }
         }
         let nested = format!("function f(a={}1{}){{}}", "(".repeat(100), ")".repeat(100));
-        assert!(
-            Runtime::parse_only(&nested)
-                .unwrap_err()
-                .is_resource_limit()
-        );
+        Runtime::parse_only(&nested).unwrap();
         let parameters = (0..1000)
             .map(|i| format!("p{i}{}=1", "x".repeat(36)))
             .collect::<Vec<_>>()
@@ -12879,11 +12875,14 @@ mod tests {
                 .unwrap_err()
                 .is_resource_limit()
         );
+        assert_eq!(
+            run(&format!("{}1{}", "(".repeat(1000), ")".repeat(1000))).unwrap(),
+            Value::Number(1.0)
+        );
         assert!(
-            run(&format!("{}1{}", "(".repeat(1000), ")".repeat(1000)))
+            Runtime::parse_only(&format!("{}1{}", "(".repeat(16_000), ")".repeat(16_000)))
                 .unwrap_err()
-                .message
-                .contains("nesting")
+                .is_resource_limit()
         );
         assert!(
             run("let s = 'x'; while (true) { s = s + s; }")
@@ -13132,11 +13131,8 @@ mod tests {
             );
         }
         let nested = format!("{}0{}", "`${".repeat(200), "}`".repeat(200));
-        assert!(
-            Runtime::parse_only(&nested)
-                .unwrap_err()
-                .is_resource_limit()
-        );
+        Runtime::parse_only(&nested).unwrap();
+        assert_eq!(run(&nested).unwrap(), Value::String("0".into()));
         let large = format!("`{}`", "x".repeat(MAX_SOURCE));
         assert!(Runtime::parse_only(&large).unwrap_err().is_resource_limit());
         let many = format!("`{}`", "${0}".repeat(5000));
@@ -13802,11 +13798,16 @@ mod tests {
                 .message
                 .contains("limit")
         );
-        assert!(
+        assert_eq!(
             run(&format!("x{}", ".x".repeat(5000)))
                 .unwrap_err()
-                .message
-                .contains("limit")
+                .intrinsic_error_name(),
+            Some("ReferenceError")
+        );
+        assert!(
+            Runtime::parse_only(&format!("x{}", ".x".repeat(20_000)))
+                .unwrap_err()
+                .is_resource_limit()
         );
         assert!(
             run("let s = 'x'; for (let i = 0; i < 17; i++) { s += s; } console.log(s,s,s);")
@@ -19299,10 +19300,10 @@ mod tests {
             Value::Bool(false)
         );
         let nested = format!("{}0{}", "({[".repeat(200), "]:1})".repeat(200));
-        assert!(
-            Runtime::parse_only(&nested)
-                .unwrap_err()
-                .is_resource_limit()
+        Runtime::parse_only(&nested).unwrap();
+        assert_eq!(
+            run(&format!("{nested}['[object Object]']")).unwrap(),
+            Value::Number(1.0)
         );
         let large = format!("({{{}}})", "['x']:1,".repeat(MAX_TOKENS));
         assert!(Runtime::parse_only(&large).unwrap_err().is_resource_limit());

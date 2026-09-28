@@ -1,5 +1,80 @@
 # Validation record
 
+## Bounded JavaScript grammar continuations
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **959 Rust tests** pass with `--include-ignored`: 777 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 53 pipeline, one declaration-name matrix, nine completion
+and 44 confined-worker tests. None remain ignored. All **151 Python checks** and
+**57 exact pixel references** pass.
+
+[Grammar continuations](../tests/conformance/parser-continuations.md) replace
+supported JavaScript grammar recursion with a parser-owned flat work stack.
+Expressions, statements, function/default contexts and template substitutions
+retain the shared compile ledger. Obsolete grammar-depth and member/constructor
+chain guards are removed after the guarded conversion passed its initial checks.
+Source/token/work/storage quotas, active-label and declaration-walk bounds,
+logical calls and native-helper guards remain unchanged.
+
+Six new driver test groups cover small-stack source parsing, unchanged upstream
+32-IIFE parsing/execution/release, 128-link member/call/constructor chains,
+malformed deep input cleanup, refused frame growth and literal dispatch. Requested
+128 KiB stacks parse and release 256 nested IIFEs, 512 blocks/functions and the
+other documented shapes. The literal test compares 28 sources in four contexts
+against the private oracle and parses the unchanged 2,048-element sort source.
+Existing grammar/scope/completion, work-cutoff, heap-refusal and flat-destruction
+checks remain. Earlier guard-refusal assertions retain their original sources
+and now assert acceptance, with larger independent-quota cases added.
+
+The initial complete upstream run exposed two earlier resource stops in the
+2,048-element sort test: redundant grammar dispatch exhausted compile work.
+Terminated numeric/string literals now finish directly instead of suspending
+empty grammar layers. The unchanged source again reaches the same runtime
+instruction-limit outcome as before, under the original budgets. Initial logs,
+source/binary hashes and reports remain recorded locally.
+
+All **20 Test262 profiles / 6,879 modes / 1,680 controls** preserve source identities
+and policies. Exactly two upstream observations improve: both modes of the original
+32-nested-IIFE function test now pass. Every other case and all controls are identical.
+The function profile reaches **511 passed / 620 unsupported** and now has a healthy
+CI baseline. Sixteen healthy gates pass; four resource-stopped profiles remain
+nonpassing observations. No old baseline, upstream test, assertion or policy changed.
+HTML remains 3,868 matches, two mismatches and six unsupported modes.
+
+All **480 existing depth sources** remain unchanged. All three shapes parse
+through the tested depth of 40 and execute through 32 calls, with call 33 stopped
+by the logical ceiling. The nested-IIFE shape gains 104 completions and changes
+16 parse-resource outcomes to runtime logical-call stops, with no lost completion.
+Ordinary/default observations are identical.
+
+The final **15,000-case** mutation run catches no panic or invariant failure.
+An earlier 45,000-case run also completed without caught panics before the literal
+dispatch correction; the final release was checked again after that change.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+| --- | --- |
+| `eris-browser` | `dfc989f3cff62c3422bc78972b1bd53f0e2bd74f54a92fe4f141e97d6c32459f` |
+| `eris-js` | `af3f3205e0a7f13ade2a9236ca22bf8bfefe20ef947a3c106e48c7f0bb711da7` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `36bef395c7f9b391e5e3ac7d53c622ffa7dd67e832d29a82393fccf744f618aa` |
+
+Source-input SHA-256: `e314cfc86bed205fa1f32ae17320d4dead05055c468d81e94f424afe9ab107fb`.
+Local evidence is `artifacts/*parser-continuations*`; the
+[public comparison](../tests/conformance/parser-continuations.json),
+[full function report](../tests/conformance/test262-functions-parser-continuations.json)
+and [depth inventory](../tests/conformance/parser-continuations-depth.json)
+preserve provenance. Prior checkpoint `e546e7a` passed every job in
+[CI run 36474559666](https://github.com/Eriskii/ErisBrowser/actions/runs/36474559666).
+
+Agent sessions remain unavailable; no independent-agent review is assigned.
+Declaration depth, remaining allocation accounting and native bridges need further
+work. No native-window, Vulkan or Chromium comparison was run for this change.
+Full compatibility, production security and the requested performance threshold
+remain unverified.
+
 ## Direct flat parser ownership
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release

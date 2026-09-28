@@ -58,42 +58,34 @@ security work continues alongside preparation for this backend.
 
 ## JavaScript execution depth
 
-The retained Test262 test with 32 nested immediately invoked functions currently
-stops at the parser budget in both modes. A separate investigation of checkpoint
-`9d6aa9e` found that a controlled chain of ten IIFEs parses and executes, while
-eleven stop in parsing. A shallow recursive function reaches the combined
-runtime stack limit independently. Ordinary activation continuations have since
-removed that earlier combined-stack barrier for shallow calls, up to the existing
-32-call ceiling. Native helpers remain separately guarded.
+The original Test262 source with 32 nested immediately invoked functions now
+passes in both modes. Its source and the complete function inventory remain
+unchanged; [the latest comparison](../tests/conformance/parser-continuations.md)
+records 511 passes and 620 unsupported variants, with a new healthy CI baseline.
 
-The planned progression is:
+The implemented progression is:
 
-1. Syntax ownership is now flat from parsing through execution, with direct
-   construction into charged record pages and explicit unit handles for closures
-   and callbacks. Parser lists, records and publication share one compile ledger;
-   the old owning tree/lowering path is test-only. Declaration analysis and
-   hoisting use bounded cursors; declaration-name validation uses charged buffers
-   and comparisons. Preserve grammar guards during the remaining parser work.
-2. Ordinary execution now uses [shared continuations](../tests/conformance/activation-frames.md),
-   including expressions, statements, activation, defaults, bound forwarding and
-   try/finally. Actual values and code units survive reentry; cleanup retains the
-   correct frame boundary and logical-call ownership. Fully iterative work uses
-   charged frame storage instead of native-depth charges. Retained shallow call
-   and default-initializer probes now complete 32 calls; call 33 reaches the
-   existing logical ceiling. Native callbacks and constructors retain weighted
-   guards. Continue validating those bridges as execution features expand.
-3. Convert recursive grammar calls to bounded continuations over the now-flat
-   syntax records. Preserve strict-context checks, RegExp/template lexical goals,
-   early errors and safe destruction of partially parsed input. The ownership
-   prerequisite is implemented; the continuation conversion remains pending.
+1. Syntax ownership is flat from direct parsing through execution. Charged record
+   pages and typed IDs cover partial syntax, defaults, methods and function bodies.
+   Closures and callbacks retain their unit. The old owning tree/lowering path is
+   test-only. Declaration walks and name validation use bounded charged storage.
+2. Expressions, statements, ordinary activation, defaults and bound forwarding
+   share an execution driver. Reentry and cleanup preserve frame boundaries and
+   logical-call ownership. Native callbacks and constructors retain weighted guards.
+3. Supported JavaScript grammar uses a separate bounded continuation stack over
+   flat records. Function context, strict checks, cover grammar and RegExp/template
+   lexical goals are preserved. The former grammar-depth and member/constructor
+   chain guards are removed; source/token/work/storage quotas remain unchanged.
 
-Each stage needs independent allocation, callback, cleanup and small-native-stack
-checks. Keep the original 32-function test and all previous passing cases in the
-inventory throughout; only the combined parser and runtime work can establish
-that test's improved result. Flat executable ownership, bounded declaration
-traversal and ordinary execution continuations are implemented. The iterative
-parser remains unimplemented. The recorded [480 depth observations](../tests/conformance/activation-frames-depth.json)
-include 72 newly completed ordinary/default runs and 32 changed resource messages;
-all parsing and nested-IIFE outcomes remain unchanged. [Direct flat parsing](../tests/conformance/flat-parser.md)
-also preserves all 480 observations. Grammar continuations, remaining allocation
-accounting and the independent declaration-traversal depth limit need further work.
+The [480 depth observations](../tests/conformance/parser-continuations-depth.json)
+now show all three shapes parsing through the tested depth of 40 and executing
+through 32 calls; call 33 reaches the existing logical ceiling. Relative to direct
+flat parsing, nested IIFEs gain 104 completions and change 16 resource observations
+from parsing to the logical runtime limit. No completion is lost. Separate source
+and malformed-cleanup tests request a 128 KiB native stack.
+
+Remaining depth work includes the independent 96-ancestor declaration traversal
+limit, native callback/constructor bridges and wider allocation accounting.
+Keep source inventories, strict/early-error checks, work/heap refusal tests and
+small-stack cleanup checks as these boundaries evolve. No stage establishes full
+language coverage, production security or the requested Chromium performance.

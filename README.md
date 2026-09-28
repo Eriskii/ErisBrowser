@@ -86,6 +86,7 @@ python3 tools/html_conformance.py --baseline tests/conformance/html-tree-current
 python3 tools/test262_conformance.py --baseline tests/conformance/test262-current.json
 python3 tools/test262_conformance.py --profile regexp --baseline tests/conformance/test262-regexp-current.json
 python3 tools/test262_conformance.py --profile template-literal --baseline tests/conformance/test262-template-literal-current.json
+python3 tools/test262_conformance.py --profile functions --baseline tests/conformance/test262-functions-current.json
 python3 tools/test262_conformance.py --profile rest-parameters --baseline tests/conformance/test262-rest-parameters-current.json
 python3 tools/test262_conformance.py --profile is-prototype-of --baseline tests/conformance/test262-is-prototype-of-current.json
 python3 tools/test262_conformance.py --profile global-values --baseline tests/conformance/test262-global-values-current.json
@@ -114,10 +115,10 @@ The [validation record](docs/VALIDATION.md) lists observed results and their lim
 
 A separate [function inventory](tests/conformance/test262-functions.md) retains
 663 unchanged Test262 sources and 1,131 required variants. Default parameters,
-prototype membership, Window.self, array sorting and identifier parsing bring it
-to 509 passing variants, 159 more than the initial measurement with no lost
-passes. Unsupported features and two parser-limit stops remain; it is not yet a healthy
-regression gate.
+prototype membership, Window.self, array sorting, identifier parsing and bounded
+grammar continuations bring it to 511 passing variants, 161 more than the initial
+measurement with no lost passes. Both original 32-nested-function tests now pass.
+The remaining 620 variants are unsupported; its healthy baseline runs in CI.
 
 A separate complete [rest-parameter directory](tests/conformance/test262-rest-parameters.md)
 retains 22 variants: 16 pass and six remain unsupported. Its assertion-checked
@@ -216,9 +217,11 @@ JavaScript [parses directly into flat code records](tests/conformance/flat-parse
 and uses [shared execution continuations](tests/conformance/activation-frames.md),
 including ordinary calls and default initializers. Retained shallow recursion
 probes now complete 32 calls, reaching the existing logical ceiling at call 33.
-Native callbacks remain guarded; grammar parsing retains its existing recursion
-limits. Partial syntax and completed code now release without recursive syntax
-ownership. The selected upstream inventories remain unchanged.
+Native callbacks remain guarded. [Grammar continuations](tests/conformance/parser-continuations.md)
+now also parse the original 32-nested-IIFE source within the unchanged compile
+budget; both upstream modes pass. Partial syntax, pending grammar and completed
+code release without recursive syntax ownership. Upstream inventories and policies
+remain unchanged.
 
 | Module | Responsibility |
 |---|---|

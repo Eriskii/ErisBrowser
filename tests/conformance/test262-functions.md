@@ -28,7 +28,7 @@ The manifest SHA-256 is
 
 ```sh
 cargo build --locked --release --bin eris-js
-python3 tools/test262_conformance.py --profile functions
+python3 tools/test262_conformance.py --profile functions --baseline tests/conformance/test262-functions-current.json
 ```
 
 This profile permits execution of declared default parameters, object methods,
@@ -39,6 +39,19 @@ async completion, modules, host hooks and unavailable execution modes remain
 explicitly unsupported. Existing profile policies and baselines are unchanged.
 The [runner contract](test262.md) describes isolated processes, bounds,
 unchanged assertions, negative error identity and outcome categories.
+
+## Grammar continuation checkpoint
+
+The [complete continuation report](test262-functions-parser-continuations.json)
+records **511 passed / 620 unsupported**, with all 48 preflights verified. Both
+unchanged modes of `S13.2.1_A1_T1.js` now pass after replacing recursive grammar
+calls with bounded continuations. Every other case and control observation matches
+the direct flat parser; all 1,131 identities, source bytes and policies are unchanged.
+There are no ordinary failures or resource stops in this inventory. Its first
+healthy [baseline](test262-functions-current.json) now runs in CI. The implementation
+and remaining independent limits are recorded in [grammar continuations](parser-continuations.md).
+
+The following sections preserve historical observations and their original limits.
 
 ## Identifier checkpoint
 
