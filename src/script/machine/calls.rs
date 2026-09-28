@@ -4,7 +4,7 @@ use super::{
     code, enter_frame, push, statements, value,
 };
 use crate::script::{
-    DeclarationKind, Flow, JsString, Native, NumberPredicate, Parameter, ScriptError, Value,
+    DeclarationKind, Flow, JsString, Native, NumberPredicate, ParameterStorage, ScriptError, Value,
 };
 use std::collections::BTreeSet;
 use std::rc::Rc;
@@ -168,7 +168,7 @@ fn setup(
     runtime.work(1 + text_bytes.saturating_add(name_bytes) / 8)?;
     runtime.charge(
         128usize
-            .saturating_add(parameter_count.saturating_mul(std::mem::size_of::<Parameter>()))
+            .saturating_add(parameter_count.saturating_mul(std::mem::size_of::<ParameterStorage>()))
             .saturating_add(text_bytes)
             .saturating_add(name_bytes)
             .saturating_add(bound_bytes),
@@ -386,8 +386,10 @@ fn body(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::script::Parameter;
+    use crate::script::parser::Parser;
     use crate::script::{
-        Expr, FunctionCode, MAX_CALLS, MAX_HEAP, MAX_STACK_UNITS, MAX_STEPS, Parser, Stmt,
+        Expr, FunctionCode, MAX_CALLS, MAX_HEAP, MAX_STACK_UNITS, MAX_STEPS, Stmt,
     };
 
     fn clean(runtime: &Runtime) {
@@ -587,7 +589,7 @@ mod tests {
             ),
         ];
         for (setup, source, expected) in fixtures {
-            let unit = code::compile(Parser::program(source).unwrap()).unwrap();
+            let unit = Parser::program(source).unwrap();
             let mut doc = Document::parse("");
             let prepare = |doc: &mut Document| {
                 let mut runtime = Runtime::new();
@@ -793,7 +795,7 @@ mod tests {
 
     #[test]
     fn frame_storage_refusal_preserves_outer_frames_and_unentered_call_count() {
-        let unit = code::compile(Parser::program("held;").unwrap()).unwrap();
+        let unit = Parser::program("held;").unwrap();
         let code::Stmt::Expr(id) = unit.stmt(unit.body[0]) else {
             unreachable!()
         };

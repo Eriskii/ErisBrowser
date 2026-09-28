@@ -1,5 +1,74 @@
 # Validation record
 
+## Direct flat parser ownership
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **953 Rust tests** pass with `--include-ignored`: 771 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 53 pipeline, one declaration-name matrix, nine completion
+and 44 confined-worker tests. None remain ignored. All **151 Python checks**
+and **57 exact pixel references** pass.
+
+[Direct flat parsing](../tests/conformance/flat-parser.md) replaces the production
+owning AST and second lowering pass. Typed record IDs cover defaults, methods,
+function bodies and inline handlers from their initial construction. Record pages
+and parser lists share the original compile ledger; one-pass cover grammar moves
+names/default IDs into parameters and retains charged tombstones. The old owning
+parser remains only as a private frozen test oracle. Ordinary driver source tests
+now use the production parser.
+
+Seven new parser groups include **85 grammar sources / 340 mode-context cases**,
+144 existing name-diagnostic modes, 240 completion-fixture modes and 144 nesting
+guard comparisons. Payloads and early errors match the oracle. Every work cutoff
+and sampled heap refusals in five fixtures share the same compile/publication
+ledger. Other checks cover default/RegExp/template identity, handler metadata and
+partial-unit release. Two record-page groups verify indices, descriptor work,
+retained values and precharged refusals. A thread requesting **64 KiB** releases
+directly constructed **16,000 unary edges and 8,000 labeled-statement edges** after
+successful or refused publication. This is a destruction test, not deeper parsing.
+
+The initial complete library run exposed a compile-work regression in the existing
+8,327-declaration Unicode fixture. Paged records alone were insufficient; the root
+body now also reserves its ID slots from the already lexed prefix, avoiding
+repeated copies. The unchanged fixture passes with the original quotas. Initial
+build/test-integration diagnostics and those failed attempts remain in local logs.
+Grammar recursion and its depth guards have not changed.
+
+All **20 Test262 profiles / 6,879 modes / 1,680 controls** retain identical case
+identities, policies, preflight observations and every case observation. Fifteen
+healthy baseline gates pass; five resource-stopped profiles remain nonpassing
+observations, with no new baselines. HTML remains at 3,868 matches, two mismatches
+and six unsupported modes. All **480 depth observations** are unchanged: ordinary
+and default recursion reaches 32 calls, while nested IIFEs still stop in parsing
+at depth eleven. The original upstream 32-nested-IIFE source remains unchanged.
+
+The **15,000-case** mutation run catches no panic or invariant failure: 5,000
+accepted HTML, 623 accepted/4,377 rejected scripts and 3,347 accepted/1,653 rejected
+SVG inputs. Maximum DOM/display-list sizes are 191 nodes/1,173 commands;
+17 cases stop within paint limits.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+| --- | --- |
+| `eris-browser` | `9abb7c64d2a0af29bf671db035416774e9b48bca9706f8c094f192fc0ae49143` |
+| `eris-js` | `caf321e9de54b1e24268d6d8b8b9bfbe99e97dd9f1e7320a5d6e07ae1d38590e` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `511ff5a9db04537425b304ed5fe28f4146d64eee2810fc68ece14d100f0473b7` |
+
+Source-input SHA-256: `d7f8d3fea81a4f2d89aabd02aab976961f44c2d044b91aca2806a18fee884cd2`.
+Local evidence is `artifacts/*flat-parser*`; the
+[public comparison](../tests/conformance/flat-parser.json) and
+[depth inventory](../tests/conformance/flat-parser-depth.json) preserve provenance.
+The prior activation checkpoint `2c6cf75` passed every job in
+[CI run 36470693599](https://github.com/Eriskii/ErisBrowser/actions/runs/36470693599).
+
+Agent sessions remain unavailable; no independent-agent review is assigned.
+Grammar continuations, remaining allocation accounting and bounded declaration
+traversal still need work. No native-window, Vulkan or Chromium comparison was
+run for this parser change. Full compatibility, production security and the
+requested performance threshold remain unverified.
+
 ## Ordinary activation and default continuations
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release

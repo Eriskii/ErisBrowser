@@ -957,10 +957,11 @@ fn arguments_next(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::script::{Expr, MAX_DEPTH, MAX_HEAP, MAX_STEPS, Parser, Stmt};
+    use crate::script::parser::Parser;
+    use crate::script::{Expr, MAX_DEPTH, MAX_HEAP, MAX_STEPS, Stmt};
 
     fn expression(source: &str) -> (Rc<code::Unit>, code::ExprId) {
-        let unit = code::compile(Parser::program(source).unwrap()).unwrap();
+        let unit = Parser::program(source).unwrap();
         let code::Stmt::Expr(id) = unit.stmt(unit.body[0]) else {
             panic!("expression fixture");
         };

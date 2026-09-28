@@ -107,7 +107,7 @@ borrowed statements. It visits control-flow bodies in source order and stops at
 function boundaries. Switch scopes use borrowed case statements, and parsing
 records whether a scope contains lexical declarations to skip unnecessary name
 analysis. This removes recursive declaration walks and temporary syntax clones;
-temporary parser syntax and native callback bridges still have recursive paths.
+grammar parsing and native callback bridges still have recursive paths.
 Declaration-name validation uses borrowed record lists and a fallible iterative
 merge sort. Growth, scratch storage, copies and UTF-8 comparisons consume the
 compile ledger. Stable ordering retains source-order duplicate diagnostics;
@@ -115,8 +115,11 @@ sorted lookups preserve lexical/var and parameter/body conflicts.
 
 Executable JavaScript uses immutable shared units with flat expression, statement
 and function records. Typed IDs connect records; closures retain their unit and
-function ID. An iterative lowering pass consumes the remaining compile ledger,
-then releases the temporary parser tree. Callbacks carry their own unit explicitly,
+function ID. The parser emits those records directly, including parameters,
+defaults, method bodies and inline handlers. Partially built syntax has the same
+flat ownership as published code; there is no production owning AST or lowering
+pass. The old grammar/tree implementation remains only as a private test oracle.
+Callbacks carry their own unit explicitly,
 including calls across separately compiled scripts. Retaining one closure retains
 its complete unit; the compile charge includes the unit's known allocations.
 Inline handlers use the same representation. Expressions, references and all
@@ -134,10 +137,15 @@ invocations share the existing logical-call and work limits.
 
 Token storage uses 128-record pages, so appending tokens moves page descriptors
 rather than the complete prefix. Page growth and lexical rescans share cumulative
-accounting. Lowering reserves known edge-list lengths once and emits statement
-leaves directly. These changes preserve the large Unicode declaration case within
-the original budgets. The temporary parser's remaining allocation/accounting gaps
-are separate from the flat executable representation.
+accounting. Executable records now also use 128-record pages. Parser-owned lists,
+page descriptors, payload names/operators and publication consume the same ledger
+before checked allocation. The root body reserves an ID-slot bound from its
+already lexed prefix; later rescans can require charged growth. This avoids
+repeated record/root-list copying and keeps the large Unicode declaration case
+within the original budgets. Cover grammar moves names/default IDs out of
+unreferenced records, retaining charged tombstones; it does not rewind tokens.
+Grammar recursion and its old guards remain. Diagnostic formatting, native
+helper allocations and runtime maps still need broader accounting review.
 
 Media-query conditions use bounded recursive evaluation with unknown-value
 logic and share work across stylesheet sources. Flex layout forms row or column

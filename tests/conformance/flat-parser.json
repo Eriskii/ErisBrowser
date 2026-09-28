@@ -1,0 +1,715 @@
+{
+  "recorded_date_utc": "2026-09-28",
+  "kind": "direct flat parser ownership comparison",
+  "before": {
+    "head": "2c6cf7508ab58d551ce435d30cd18bff9ef64c65",
+    "source_input_sha256": "832ffcee3212595a1b67dbb8fa5ef75a15adf444dbf9c87abd05fb3d3aae88aa",
+    "files": {
+      "src/script.rs": "db2a32c3cd1863d7b512e4b76e74ec807d3e796f08e88b36fc08cc4e901ada79",
+      "src/script/code.rs": "41fe714a77a4745a251e339859278df1b7a9595aee108e0e32d556ca29139a28",
+      "src/script/machine.rs": "173a81f0dcc7002de4eab5c239e2f1c3eb6270c8b5fede04c3698217bf8d59ec",
+      "target/release/eris-js": "7dd5587f39f42f26c629ac3f195825b4f171a93c2cade8337c980e6dc50f540c",
+      "target/release/eris-browser": "a3c76c013ae8fcab2180a794f7e393cb6574af606b2812ab6673aed7268b9568"
+    },
+    "prior_depth": "tests/conformance/activation-frames-depth.json",
+    "prior_reports": "artifacts/{profile}-activation-frames-final.json",
+    "ci": "https://github.com/Eriskii/ErisBrowser/actions/runs/36470693599",
+    "ci_result": "success (all three jobs)"
+  },
+  "source_input_sha256": "d7f8d3fea81a4f2d89aabd02aab976961f44c2d044b91aca2806a18fee884cd2",
+  "source_files": {
+    "src/script.rs": "b7ace1dd47be8e0f2fa25bcdc52bdafe44563fc237896caf3c488b41c28de759",
+    "src/script/parser.rs": "2abe0e83db50111b6e5430b1db2127446d7df2179617c3ea93e1c5198ad6b2ad",
+    "src/script/parser_legacy.rs": "a6110dd18b6bf3a207de1ad483227822cd5e9c468e1af55ed229ad68a3e37d30",
+    "src/script/names.rs": "6ccbc235c97507315f65c827169270e30c0bb4bb2533ed435fa9b5cddc138332",
+    "src/script/code.rs": "ba9a4d8c862e271b168427194a79d7e74008054d82957a31623dd21737fa3cf0",
+    "src/script/code/records.rs": "85581141e1ebb437d9b23ff884dcbee6e7b1f6bc8a19933f21de39097e398860",
+    "src/script/machine.rs": "b0ecb7a95e29eea4e3523c81f7a0aa02515b9811cfb13500666318c4ac03daa2",
+    "src/script/machine/statements.rs": "3a108908df6b75a177f34ac9b8191a96b1acad84d08fae9cb0e89206b8f219ce",
+    "src/script/machine/calls.rs": "f3536815973ae97972c89ee90a701d2443d419561ab214463dcc7350867a073e",
+    "src/script/tokens.rs": "b044323426c54e4c8eef93312eae0d0b45ab5b6019a796321c7d73085c373342",
+    "src/js_uri.rs": "4759c1634201f4f6720871e240201c35a08e81addc30417376a45f69fc4830e6",
+    "src/js_identifier.rs": "49187f73fcbae9d685e7848c6a412315c247a7fbfd4f3919bd5c08f8a6a7b552",
+    "src/lib.rs": "d96945bd6e61e3f7e5e2210b4df69e51f61d82a9c1fd945313666709e2de9d92",
+    "src/bin/eris-stress.rs": "c4768e4028c34c9e891e24d39d3ec8573c8411fc72c4f93d000923d86e7e4743",
+    "tests/fixtures/script-completion.tsv": "7a53bb8b0b6e5d2f8eb1ff782ac139fb5dd302df3feae3391b2f20de0edcd90b",
+    "tests/script_completion.rs": "a8188f0b8c9c8c186bc9a8c1fa4f8823228193163e49918826d2d51fe61d23da",
+    "tests/fixtures/scope-names.tsv": "58415bfd670354c04027df2eae0dcdc2d56efaf7db30fd2973ddcf0e5faa60f7",
+    "tests/scope_names.rs": "172fa7d2cd0ea996d1a7e2e0fc01feb6a35461b2d838468ce97b573b375c4c7f",
+    "tests/pipeline.rs": "b50f3bf725f79a31ab28cec4983a4aedf3c007208a8557f49bd2b0ff95657f3f",
+    "tests/worker.rs": "ca479ad64df4a01481beba3980ee0821d6fed255852f25a237982e2e7b7bc79d"
+  },
+  "release_binaries": {
+    "eris-browser": "9abb7c64d2a0af29bf671db035416774e9b48bca9706f8c094f192fc0ae49143",
+    "eris-js": "caf321e9de54b1e24268d6d8b8b9bfbe99e97dd9f1e7320a5d6e07ae1d38590e",
+    "eris-dom": "b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb",
+    "eris-stress": "511ff5a9db04537425b304ed5fe28f4146d64eee2810fc68ece14d100f0473b7"
+  },
+  "contract_sha256": "b991dba2884de93d6ce5ea15884cbc6354282e48ba747c8ec05cad5d82a84453",
+  "upstream_profiles": [
+    {
+      "profile": "string-json",
+      "source_files": 326,
+      "mode_cases": 652,
+      "before_counts": {
+        "passed": 536,
+        "unsupported": 116
+      },
+      "after_counts": {
+        "passed": 536,
+        "unsupported": 116
+      },
+      "preflights": 32,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "f073410553ed7cac9c6ddb0d5d10da1e52616d067a0310578e84cbf000df4191",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-current.json",
+      "prior_public_report_sha256": "5fd495beea57cc15da9a4a1de7f530eb57c8e9ba942ca5a18dc725d8e26f8733",
+      "before_raw_report": "artifacts/string-json-activation-frames-final.json",
+      "before_raw_report_sha256": "1fad40e0915166a3b8b4040e71a1775de12537b1b017e37844021dd600a6aace",
+      "after_raw_report": "artifacts/string-json-flat-parser-final.json",
+      "after_raw_report_sha256": "4db02fc056b51f72e36eaf7d2e344f1228411ea3a8ed080b4cbe4901dbfcdcc8"
+    },
+    {
+      "profile": "regexp",
+      "source_files": 145,
+      "mode_cases": 290,
+      "before_counts": {
+        "passed": 250,
+        "unsupported": 40
+      },
+      "after_counts": {
+        "passed": 250,
+        "unsupported": 40
+      },
+      "preflights": 44,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "33c8319c02da5367a5ac2596cbb48fc3176839740935966754ea0370f4408fa0",
+      "runner_policy_sha256": "0997761beccb3ac2d6d387c373fe92b5fc59157e9a2e1114677d99433f867e4f",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-regexp-current.json",
+      "prior_public_report_sha256": "abc887ad63aa114bb019baf1610962d68fcf787a0844a1ea6c86736d49eee787",
+      "before_raw_report": "artifacts/regexp-activation-frames-final.json",
+      "before_raw_report_sha256": "de7b74be982508e764d2939a9adf18d14e6e5d65f329a9dcd623513f05506897",
+      "after_raw_report": "artifacts/regexp-flat-parser-final.json",
+      "after_raw_report_sha256": "7e6e90bcdc60750d1cf6221813731dd89b0eb009db3a2816ebfe2c9a11a41c3b"
+    },
+    {
+      "profile": "template-literal",
+      "source_files": 57,
+      "mode_cases": 114,
+      "before_counts": {
+        "unsupported": 32,
+        "passed": 82
+      },
+      "after_counts": {
+        "unsupported": 32,
+        "passed": 82
+      },
+      "preflights": 44,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "58951312763d816ca4cc139a4fcb2bf63f43a81414b91bf673f65c450b217d94",
+      "runner_policy_sha256": "17b229706fb4915c6c9d5daf4daa74129f2ac470bba8d993487356f12384517e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-template-literal-current.json",
+      "prior_public_report_sha256": "78df751741907b64bc65f8d88bd70d300df7d9b650630e5ec07b13c0dd594077",
+      "before_raw_report": "artifacts/template-literal-activation-frames-final.json",
+      "before_raw_report_sha256": "731492808af7783c524a40fdaa29f7d70342e66ce098f6402569889069148cc4",
+      "after_raw_report": "artifacts/template-literal-flat-parser-final.json",
+      "after_raw_report_sha256": "651d541ea8adf9d34aaeb53f12cff88b4bfe6474f29e61122f343640cb1b143d"
+    },
+    {
+      "profile": "rest-parameters",
+      "source_files": 11,
+      "mode_cases": 22,
+      "before_counts": {
+        "unsupported": 6,
+        "passed": 16
+      },
+      "after_counts": {
+        "unsupported": 6,
+        "passed": 16
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "a3e15e061fc8c9cac736e081554f3e42b497d805ebfd7647ea49736cb2d83be5",
+      "runner_policy_sha256": "b579a37e261689714f4b2e41fe933581aa246348bafa391f2dba7c8aec4edacc",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-rest-parameters-current.json",
+      "prior_public_report_sha256": "24ff3862abfa3e83d4f6533f5e2603e975fe155b97d2f4d1475cc8dd8c64db16",
+      "before_raw_report": "artifacts/rest-parameters-activation-frames-final.json",
+      "before_raw_report_sha256": "3410d04e9376e32c15c4e1e8f271226f52c9de7b46e48b425bd07d341201471e",
+      "after_raw_report": "artifacts/rest-parameters-flat-parser-final.json",
+      "after_raw_report_sha256": "37d93b941de71feaacaf0f3ebca5a3a06c231f82363a74b31d44ccbd404412cf"
+    },
+    {
+      "profile": "is-prototype-of",
+      "source_files": 10,
+      "mode_cases": 20,
+      "before_counts": {
+        "unsupported": 10,
+        "passed": 10
+      },
+      "after_counts": {
+        "unsupported": 10,
+        "passed": 10
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "f019dcc5e150cf14a6b144577a30937ed1314c6b5de3dd331ad574585f16d461",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-is-prototype-of-current.json",
+      "prior_public_report_sha256": "3d9c290af97e33fdaf3383e72ab319240802c6f10a6fce680d15e0bd338c775d",
+      "before_raw_report": "artifacts/is-prototype-of-activation-frames-final.json",
+      "before_raw_report_sha256": "a5013a1957da0beb85d5071e94f996ba3ba355cfabb7e78ef81571ac42731f8e",
+      "after_raw_report": "artifacts/is-prototype-of-flat-parser-final.json",
+      "after_raw_report_sha256": "808ee997bd4bb1bc2cd924bad86d84792fe4bb3a7979e3bd0d8ac2b2a3445652"
+    },
+    {
+      "profile": "global-values",
+      "source_files": 49,
+      "mode_cases": 88,
+      "before_counts": {
+        "passed": 42,
+        "unsupported": 40,
+        "failed": 6
+      },
+      "after_counts": {
+        "passed": 42,
+        "unsupported": 40,
+        "failed": 6
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "c1b627a7249d3ab460d5be88b54f34ead98c375c160bee9e72379aef213894a4",
+      "runner_policy_sha256": "f096c9be039b6e5a005d3997e38d8da419399e8c6e8d3a23d2162d20c1763d03",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-global-values-current.json",
+      "prior_public_report_sha256": "ea3dd8c07ab8a76f22e02b4de9ce01035547ec06c37ef4f08569d922425196ee",
+      "before_raw_report": "artifacts/global-values-activation-frames-final.json",
+      "before_raw_report_sha256": "51e12b18d35a7f7da67f22f8121d4a93a1e118ac3f3c21c289276f855cf2ced7",
+      "after_raw_report": "artifacts/global-values-flat-parser-final.json",
+      "after_raw_report_sha256": "d66be13dac11bf691031bc7539af23c5140e845f799daacde8e6ee64cdc64b8c"
+    },
+    {
+      "profile": "array-reduce",
+      "source_files": 520,
+      "mode_cases": 1034,
+      "before_counts": {
+        "passed": 848,
+        "failed": 16,
+        "unsupported": 170
+      },
+      "after_counts": {
+        "passed": 848,
+        "failed": 16,
+        "unsupported": 170
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "77ee716188d99fdba64adbe151ef4efd915fbaa6345b2b0ec8fe3550efb5ec24",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-array-reduce-current.json",
+      "prior_public_report_sha256": "0eeff1f9bdccb1a035ed2d5e888390352f1f9a2704511a4f979085a26ed79c76",
+      "before_raw_report": "artifacts/array-reduce-activation-frames-final.json",
+      "before_raw_report_sha256": "49ba50638ce5a511bd531a50398235b7540fe86784fbb6d841c206d2224c44de",
+      "after_raw_report": "artifacts/array-reduce-flat-parser-final.json",
+      "after_raw_report_sha256": "03b23cc631f57a4bad3dbde5a12496fed380c3f7e377411d519ab345f06c982f"
+    },
+    {
+      "profile": "number-statics",
+      "source_files": 170,
+      "mode_cases": 340,
+      "before_counts": {
+        "passed": 248,
+        "unsupported": 92
+      },
+      "after_counts": {
+        "passed": 248,
+        "unsupported": 92
+      },
+      "preflights": 104,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "3c5c2503458843bfc64eaf546ee08b6e693714f561df42330d9001a2ec8216cd",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-number-statics-current.json",
+      "prior_public_report_sha256": "8b4837fb66a9ced2a9e1910830bc5a8aa67d81d52b6766764c2aceddef7b8717",
+      "before_raw_report": "artifacts/number-statics-activation-frames-final.json",
+      "before_raw_report_sha256": "0b0cff954759b9c8cbe2674403d0fe60c8424a4c56e8cadce85d383470c63473",
+      "after_raw_report": "artifacts/number-statics-flat-parser-final.json",
+      "after_raw_report_sha256": "8a013e4545916823b564379f815aa8b40dbca6bfdb16af5bdd0853ff61fd1619"
+    },
+    {
+      "profile": "numeric-conversion",
+      "source_files": 30,
+      "mode_cases": 60,
+      "before_counts": {
+        "passed": 24,
+        "unsupported": 36
+      },
+      "after_counts": {
+        "passed": 24,
+        "unsupported": 36
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "de7cf1098618ad0fdb7786d4ab4f6c648bfb6fe2543981fe21ca6e0cba50928f",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-numeric-conversion-current.json",
+      "prior_public_report_sha256": "8fec4cd70dfea5f1c1f49e91a2fb491be0eb70cc2af18ed30afb92cda2797a7b",
+      "before_raw_report": "artifacts/numeric-conversion-activation-frames-final.json",
+      "before_raw_report_sha256": "d33c380e78a89926f3b1f61bfdbbfd75b7fa8b79b9f74cf00ff9d8cfd0869e89",
+      "after_raw_report": "artifacts/numeric-conversion-flat-parser-final.json",
+      "after_raw_report_sha256": "6260c3e9030497e5d0ff467a402c09598ec95d0fb1646abcccf3e6d6eaf5ce45"
+    },
+    {
+      "profile": "compound-assignment",
+      "source_files": 454,
+      "mode_cases": 786,
+      "before_counts": {
+        "unsupported": 180,
+        "passed": 606
+      },
+      "after_counts": {
+        "unsupported": 180,
+        "passed": 606
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "edc2b04b5e9f810e1757a327f5d2a32c240f41d61e8a6d2a89cb35c3ec14f1d0",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-compound-assignment-current.json",
+      "prior_public_report_sha256": "11cd52f4c5416495f0653d4444f798e70beecd6afd2de328980f7025dddb5213",
+      "before_raw_report": "artifacts/compound-assignment-activation-frames-final.json",
+      "before_raw_report_sha256": "9318a8f740fd37d2ef95126018616c1f901ee89cbb946bba9d57033af8fd57fc",
+      "after_raw_report": "artifacts/compound-assignment-flat-parser-final.json",
+      "after_raw_report_sha256": "fd24cc9d435145decbeb43c4b17f131c9b1e2df6b3169f6e6fef32402aa6b75c"
+    },
+    {
+      "profile": "addition",
+      "source_files": 48,
+      "mode_cases": 95,
+      "before_counts": {
+        "unsupported": 28,
+        "passed": 65,
+        "failed": 2
+      },
+      "after_counts": {
+        "unsupported": 28,
+        "passed": 65,
+        "failed": 2
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "56088f55075e4d44da6915ca41383604182a8a72aaef8230af61369513cbdc0c",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-addition-current.json",
+      "prior_public_report_sha256": "d2770943fb2be1285decb499952fd908ca8021a49e321f5be26dab71a45dfd57",
+      "before_raw_report": "artifacts/addition-activation-frames-final.json",
+      "before_raw_report_sha256": "54e68e55c1b77aa0b9e5553b8459fd4637cf7f49f864cb46005b06845c6fa15d",
+      "after_raw_report": "artifacts/addition-flat-parser-final.json",
+      "after_raw_report_sha256": "0684c91c557c90d7002f05b04a1928409b512553d0babce636e36ca95438a35a"
+    },
+    {
+      "profile": "logical-assignment",
+      "source_files": 78,
+      "mode_cases": 132,
+      "before_counts": {
+        "unsupported": 48,
+        "passed": 72,
+        "failed": 12
+      },
+      "after_counts": {
+        "unsupported": 48,
+        "passed": 72,
+        "failed": 12
+      },
+      "preflights": 104,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "a83f71b8a6b6a1523951d73a4711f024cf77ad3bf90e6698bc6224e7bfabf1a3",
+      "runner_policy_sha256": "6f127a653c09ef49d48382570086b28407a0b1f6426fd888045621d72d3e89af",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-logical-assignment-current.json",
+      "prior_public_report_sha256": "ad49bf074436d4b37a00ad41064f45f477e8aad81ae15fc4df3eadcb14e7742a",
+      "before_raw_report": "artifacts/logical-assignment-activation-frames-final.json",
+      "before_raw_report_sha256": "4022648a16303e21c933a2113be3dd97abc47d098b945ae4c5ee916dbfb187ec",
+      "after_raw_report": "artifacts/logical-assignment-flat-parser-final.json",
+      "after_raw_report_sha256": "e2b300a5ef382ac9f6cf27c3cb34af1c95b072ba8dfa7a9fe0c3e62f25c48770"
+    },
+    {
+      "profile": "relational",
+      "source_files": 184,
+      "mode_cases": 364,
+      "before_counts": {
+        "unsupported": 64,
+        "passed": 300
+      },
+      "after_counts": {
+        "unsupported": 64,
+        "passed": 300
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "34497c818a4de422d2628afe1270525fe6c5467bbb43126c1796324a5bc8f138",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-relational-current.json",
+      "prior_public_report_sha256": "e86260961b586de3423fbd9bab9bed25559745c314803d1107ad02a1b58078d1",
+      "before_raw_report": "artifacts/relational-activation-frames-final.json",
+      "before_raw_report_sha256": "dd014f8436293384e10e3c2e45da6a86e4c5ff9b752db51c36d1d27a7453cff2",
+      "after_raw_report": "artifacts/relational-flat-parser-final.json",
+      "after_raw_report_sha256": "4301c207f06b9fe517ee72913afbb3808cf0b556afbd245407265410374bbc6f"
+    },
+    {
+      "profile": "equality",
+      "source_files": 145,
+      "mode_cases": 286,
+      "before_counts": {
+        "unsupported": 96,
+        "passed": 190
+      },
+      "after_counts": {
+        "unsupported": 96,
+        "passed": 190
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "b1d07bdfaee72e164608d7ed3351ab70d05931ffda34f174f6c3f99bf12a0046",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-equality-current.json",
+      "prior_public_report_sha256": "91e65f1532487a2b2d552e4c95f118e07249f23abc1d4dd65de56fb9103f262c",
+      "before_raw_report": "artifacts/equality-activation-frames-final.json",
+      "before_raw_report_sha256": "9657632d29f1f2089e181d46804c8f120ef80f9958028dc93411e8aba04d936b",
+      "after_raw_report": "artifacts/equality-flat-parser-final.json",
+      "after_raw_report_sha256": "5e5c6a1b9a283d0e6ddc9ccf9c042692af1dd631530001281995fa29c7588aa6"
+    },
+    {
+      "profile": "labels",
+      "source_files": 68,
+      "mode_cases": 125,
+      "before_counts": {
+        "passed": 100,
+        "unsupported": 25
+      },
+      "after_counts": {
+        "passed": 100,
+        "unsupported": 25
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "32889cc4ab3de15132243dae4981418ba559cd10294df9222329070b8f74649b",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-labels-current.json",
+      "prior_public_report_sha256": "5a84e2f694ccb009e7a7e21d501df73c346368df454d43d9618965a02753c22f",
+      "before_raw_report": "artifacts/labels-activation-frames-final.json",
+      "before_raw_report_sha256": "2705d44f33b145affea93abe716ab008c7ec640678ebb21eca05ac969ef9bffa",
+      "after_raw_report": "artifacts/labels-flat-parser-final.json",
+      "after_raw_report_sha256": "c184199ad877d86b7a701c5bc67f9119e3ea8e601462d1908899c392cbb04556"
+    },
+    {
+      "profile": "functions",
+      "source_files": 663,
+      "mode_cases": 1131,
+      "before_counts": {
+        "passed": 509,
+        "unsupported": 620,
+        "resource": 2
+      },
+      "after_counts": {
+        "passed": 509,
+        "unsupported": 620,
+        "resource": 2
+      },
+      "preflights": 48,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "15281ebe6e6c980c547f113563df7d2b5d346ac0db5c9c4aca75dbb6fc60b330",
+      "runner_policy_sha256": "952e68b04e464d1a954c5949b0b9bbd8924472b8fba70a719a20a754d4d03439",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-functions-identifiers.json",
+      "prior_public_report_sha256": "2902b700a5861e68886cfef65ed1bb2feed32d13cd3e9a2fed7968efcfb4d575",
+      "before_raw_report": "artifacts/functions-activation-frames-final.json",
+      "before_raw_report_sha256": "f40702f4144551461a2c71bd3d451caaf4e4a6547ffbb5366d2b04e0652b3c37",
+      "after_raw_report": "artifacts/functions-flat-parser-final.json",
+      "after_raw_report_sha256": "cc61ac2b64ac23c9088f07fc7fbda40e06e3322829b37fa92919692b274f2261"
+    },
+    {
+      "profile": "uri",
+      "source_files": 173,
+      "mode_cases": 346,
+      "before_counts": {
+        "resource": 112,
+        "passed": 210,
+        "unsupported": 24
+      },
+      "after_counts": {
+        "resource": 112,
+        "passed": 210,
+        "unsupported": 24
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "bf48d1dddac882a9609fe78aea7521e7477c1cef2ba6036a74c48513ad28ab8f",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-uri-labels.json",
+      "prior_public_report_sha256": "eb7f76b625fa2fe581fcc289f3b77729cc102e43c9a60171f7ca58ee894613db",
+      "before_raw_report": "artifacts/uri-activation-frames-final.json",
+      "before_raw_report_sha256": "7b5d2eebc47a1f3cb2b0f097e902b3e213de48bd9cf42c9f363f246d987139ef",
+      "after_raw_report": "artifacts/uri-flat-parser-final.json",
+      "after_raw_report_sha256": "291c6043811d82dbb901e8e59a9edb8d02382ff3a1097a26e89cb3ef3bdf0818"
+    },
+    {
+      "profile": "numeric-parsing",
+      "source_files": 109,
+      "mode_cases": 218,
+      "before_counts": {
+        "passed": 164,
+        "unsupported": 46,
+        "resource": 8
+      },
+      "after_counts": {
+        "passed": 164,
+        "unsupported": 46,
+        "resource": 8
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "f8959cc2e43d94b5b0c671105f87d3fc831fa6359065566791707a6f9b400c6a",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-numeric-parsing-compound-assignment.json",
+      "prior_public_report_sha256": "bffcd9ab4898076622c1002fc11c3a6523eb1185981c27f44468ca7fb6520950",
+      "before_raw_report": "artifacts/numeric-parsing-activation-frames-final.json",
+      "before_raw_report_sha256": "74d4bca62a9af230e9a110e050ebcce3a44bc1bb1740d8e3ed131078a40e4466",
+      "after_raw_report": "artifacts/numeric-parsing-flat-parser-final.json",
+      "after_raw_report_sha256": "0fbeb0edcb2a0d093aa69fc5f0d493ec8e0631f765a045fb716553e4452dfb2b"
+    },
+    {
+      "profile": "array-sort",
+      "source_files": 54,
+      "mode_cases": 107,
+      "before_counts": {
+        "passed": 57,
+        "unsupported": 46,
+        "resource": 4
+      },
+      "after_counts": {
+        "passed": 57,
+        "unsupported": 46,
+        "resource": 4
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "d6f43dd379ae49ae08f959596852e28e6bd33a0420eb699d763ff696b0e961d2",
+      "runner_policy_sha256": "8621a5b10295e4a41806178744c4e906157ef78c884220a154860fae829fd205",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-array-sort-flat-code.json",
+      "prior_public_report_sha256": "5f38ae6296fdee99ad917f4816a8fabbccaac5fb6ace808cc979b4f151f19976",
+      "before_raw_report": "artifacts/array-sort-activation-frames-final.json",
+      "before_raw_report_sha256": "eba6f58188429cca0ac45a6f59e519bc3ba7f0f44fbff1ee1fcdf3436feea43f",
+      "after_raw_report": "artifacts/array-sort-flat-parser-final.json",
+      "after_raw_report_sha256": "dbdd885c562e59e3afa893ad6a91808b2d6c74d6ea8824f75cb33f12f675e15f"
+    },
+    {
+      "profile": "identifiers",
+      "source_files": 335,
+      "mode_cases": 669,
+      "before_counts": {
+        "passed": 509,
+        "unsupported": 154,
+        "resource": 6
+      },
+      "after_counts": {
+        "passed": 509,
+        "unsupported": 154,
+        "resource": 6
+      },
+      "preflights": 88,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "b93b9e76f5231a3d342d95fe0a8cf47ca79c2a3101f2a78e4d5bb564c4d06ea8",
+      "runner_policy_sha256": "bdbeba5b53e7ef315e7f06e78fe8c66247cd7dd9ae2545ac5ec25749b94d95d5",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-identifiers-flat-code.json",
+      "prior_public_report_sha256": "cafe035932b135e20929d47a341214bba4e3ab8c07f74b281ebd479fcf59893c",
+      "before_raw_report": "artifacts/identifiers-activation-frames-final.json",
+      "before_raw_report_sha256": "0fb3d3a3fde5f91ac8c8d7573f4c8df14130b8144ca2d505c6d97cd5ad43328d",
+      "after_raw_report": "artifacts/identifiers-flat-parser-final.json",
+      "after_raw_report_sha256": "dfe3a8598eb21f8719e17c6a14c061ab2d2b248a613b977074264e736ec0912f"
+    }
+  ],
+  "upstream_mode_cases": 6879,
+  "upstream_preflights": 1680,
+  "healthy_baseline_gates": 15,
+  "new_baselines_recorded": false,
+  "lost_passes": 0,
+  "newly_passing_upstream": 0,
+  "changed_upstream_observations": 0,
+  "validation": {
+    "rust_tests": 953,
+    "rust_library_tests": 771,
+    "rust_ignored": 0,
+    "python_checks": 151,
+    "exact_pixel_references": 57,
+    "mutation_smoke_cases": 15000,
+    "caught_panics": 0,
+    "independent_agent_review": false,
+    "chromium_comparison": false,
+    "production_vulkan": false
+  },
+  "implementation": {
+    "production_parser_emits_executable_records_directly": true,
+    "production_owning_syntax_tree": false,
+    "production_lowering_pass": false,
+    "legacy_tree_and_grammar_test_only": true,
+    "record_page_slots": 128,
+    "record_page_descriptors_may_move": true,
+    "ordinary_parser_records_do_not_relocate": true,
+    "root_body_slot_reservation": "already lexed prefix token count, capped at 32768; later rescan growth remains charged",
+    "all_new_record_and_list_growth_precharged": true,
+    "cover_grammar_single_pass": true,
+    "cover_reinterpretation_moves_names_and_default_ids": true,
+    "cover_tombstones_remain_charged": true,
+    "scope_validation_borrows_flat_records": true,
+    "handler_body_and_event_parameter_use_same_builder": true,
+    "shared_compile_work_limit": 100000,
+    "shared_compile_heap_limit": 8388608,
+    "parser_depth_limit": 96,
+    "source_byte_limit": 262144,
+    "token_limit": 32768,
+    "grammar_recursion_and_guard_constants_unchanged": true,
+    "legacy_activation_metadata_allowance_preserved": true
+  },
+  "focused_checks": {
+    "new_parser_test_groups": 7,
+    "new_record_page_test_groups": 2,
+    "frozen_grammar_sources": 85,
+    "frozen_grammar_mode_context_variants": 340,
+    "scope_name_diagnostic_modes": 144,
+    "completion_fixture_modes": 240,
+    "nesting_guard_comparisons": 144,
+    "every_work_cut_for_five_compile_fixtures": true,
+    "sampled_heap_refusals_for_five_compile_fixtures": true,
+    "shared_ledger_publication_refusal": true,
+    "partial_unit_payload_release_after_grammar_and_quota_errors": true,
+    "cover_regex_template_default_identity": true,
+    "inline_handler_metadata_and_strict_body": true,
+    "page_index_stability_and_work_bound": true,
+    "page_storage_work_count_refusals": true,
+    "singleton_growth_precharged": true,
+    "small_native_stack_release": {
+      "requested_stack_bytes": 65536,
+      "unary_edges": 16000,
+      "labeled_statement_edges": 8000,
+      "success_and_publication_refusal": true,
+      "direct_test_construction": true,
+      "not_deep_source_acceptance": true
+    },
+    "depth_frontier": {
+      "report": "flat-parser-depth.json",
+      "report_sha256": "a22b464c7822fa6cd32f6e2416eccb51a95c3f82446a3f7c64cccaaf6e311d40",
+      "mode_goal_cases": 480,
+      "changed_observations": 0,
+      "ordinary_and_default_completed_calls": 32,
+      "nested_iife_completed_depth": 10,
+      "first_nested_iife_parser_stop": 11
+    }
+  },
+  "limitations": [
+    "Grammar still uses guarded Rust recursion; this stage does not accept deeper nested source or pass the unchanged 32-nested-IIFE upstream fixture.",
+    "Declaration traversal separately retains its 96-ancestor bound, and ordinary calls retain the 32-call ceiling.",
+    "Record pages and root-body reservations can retain unused slots; cover-grammar tombstones and otherwise unreachable records retain their charged storage until the entire unit is dropped.",
+    "The compile ledger is cumulative, including refused charges, and is not total process-memory accounting. Diagnostic formatting, allocator overhead, native helpers and runtime arenas require further review.",
+    "The frozen private oracle and tests are not independent-agent review or exhaustive language proof.",
+    "All 20 upstream inventories preserve their observations; five profiles remain nonpassing resource observations without healthy baselines.",
+    "No production Vulkan, Chromium-relative performance, full-compatibility or production-security claim."
+  ]
+}

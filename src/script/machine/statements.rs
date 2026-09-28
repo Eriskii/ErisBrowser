@@ -840,10 +840,11 @@ fn for_in_body(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::script::{Expr, MAX_HEAP, MAX_STACK_UNITS, MAX_STEPS, Parser, Stmt};
+    use crate::script::parser::Parser;
+    use crate::script::{Expr, MAX_HEAP, MAX_STACK_UNITS, MAX_STEPS, Stmt};
 
     fn compile(source: &str) -> Rc<code::Unit> {
-        code::compile(Parser::program(source).unwrap()).unwrap()
+        Parser::program(source).unwrap()
     }
     fn execute(runtime: &mut Runtime, unit: &Rc<code::Unit>, doc: &mut Document) -> Result<Value> {
         match super::super::evaluate_statements(runtime, unit, ListOwner::Program, 1, doc)? {

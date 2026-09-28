@@ -62,17 +62,18 @@ The retained Test262 test with 32 nested immediately invoked functions currently
 stops at the parser budget in both modes. A separate investigation of checkpoint
 `9d6aa9e` found that a controlled chain of ten IIFEs parses and executes, while
 eleven stop in parsing. A shallow recursive function reaches the combined
-runtime stack limit independently. Parser changes alone will therefore leave
-an execution barrier.
+runtime stack limit independently. Ordinary activation continuations have since
+removed that earlier combined-stack barrier for shallow calls, up to the existing
+32-call ceiling. Native helpers remain separately guarded.
 
 The planned progression is:
 
-1. Executable-code ownership is now flat, with charged iterative lowering and
-   explicit unit handles for closures and callbacks. Declaration analysis and
+1. Syntax ownership is now flat from parsing through execution, with direct
+   construction into charged record pages and explicit unit handles for closures
+   and callbacks. Parser lists, records and publication share one compile ledger;
+   the old owning tree/lowering path is test-only. Declaration analysis and
    hoisting use bounded cursors; declaration-name validation uses charged buffers
-   and comparisons. Temporary parser trees still have recursive ownership and
-   incomplete allocation accounting. Preserve their existing limits during the
-   remaining parser work.
+   and comparisons. Preserve grammar guards during the remaining parser work.
 2. Ordinary execution now uses [shared continuations](../tests/conformance/activation-frames.md),
    including expressions, statements, activation, defaults, bound forwarding and
    try/finally. Actual values and code units survive reentry; cleanup retains the
@@ -81,9 +82,10 @@ The planned progression is:
    and default-initializer probes now complete 32 calls; call 33 reaches the
    existing logical ceiling. Native callbacks and constructors retain weighted
    guards. Continue validating those bridges as execution features expand.
-3. Convert the recursive parser paths to bounded continuations with flat syntax
-   ownership. Preserve strict-context checks, RegExp/template lexical goals,
-   early errors and safe destruction of partially parsed input.
+3. Convert recursive grammar calls to bounded continuations over the now-flat
+   syntax records. Preserve strict-context checks, RegExp/template lexical goals,
+   early errors and safe destruction of partially parsed input. The ownership
+   prerequisite is implemented; the continuation conversion remains pending.
 
 Each stage needs independent allocation, callback, cleanup and small-native-stack
 checks. Keep the original 32-function test and all previous passing cases in the
@@ -92,5 +94,6 @@ that test's improved result. Flat executable ownership, bounded declaration
 traversal and ordinary execution continuations are implemented. The iterative
 parser remains unimplemented. The recorded [480 depth observations](../tests/conformance/activation-frames-depth.json)
 include 72 newly completed ordinary/default runs and 32 changed resource messages;
-all parsing and nested-IIFE outcomes remain unchanged. Temporary syntax ownership,
-parser allocation accounting and bounded declaration traversal need separate work.
+all parsing and nested-IIFE outcomes remain unchanged. [Direct flat parsing](../tests/conformance/flat-parser.md)
+also preserves all 480 observations. Grammar continuations, remaining allocation
+accounting and the independent declaration-traversal depth limit need further work.

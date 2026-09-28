@@ -212,11 +212,13 @@ The remaining resource stops prevent a healthy regression baseline.
 The [architecture notes](docs/ARCHITECTURE.md) describe the page pipeline and native process boundaries.
 The [development docket](docs/ROADMAP.md) includes a planned Vulkan rendering backend. An independent [Vulkan transfer probe](tools/vulkan-probe/README.md) checks exact offscreen uploads/readback with its own pinned dependencies; the browser still uses software painting and presentation.
 
-JavaScript uses flat executable units and [shared execution continuations](tests/conformance/activation-frames.md),
+JavaScript [parses directly into flat code records](tests/conformance/flat-parser.md)
+and uses [shared execution continuations](tests/conformance/activation-frames.md),
 including ordinary calls and default initializers. Retained shallow recursion
 probes now complete 32 calls, reaching the existing logical ceiling at call 33.
-Native callbacks remain guarded; the nested-IIFE parser limit remains. All 6,879
-selected upstream observations are preserved.
+Native callbacks remain guarded; grammar parsing retains its existing recursion
+limits. Partial syntax and completed code now release without recursive syntax
+ownership. The selected upstream inventories remain unchanged.
 
 | Module | Responsibility |
 |---|---|
@@ -225,7 +227,7 @@ selected upstream observations are preserved.
 | `cssom.rs` | Bounded inline declaration storage, queries, priorities and staged mutation |
 | `selectors.rs` | Bounded CSS tokens and selector grammar shared by matching and feature queries |
 | `layout.rs` | Block/inline flow, floats, flex, Grid placement/tracks, tables, controls, display lists, hit regions |
-| `script.rs` | Custom lexer, parser, interpreter, lexical environments, DOM bindings and events |
+| `script.rs`, `script/` | Custom lexer, flat parser/code storage, execution driver, lexical environments, DOM bindings and events |
 | `js_identifier.rs` | Offline-generated Unicode identifier membership with pinned source data |
 | `regexp.rs` | Custom bounded UTF-16 regular-expression parser and backtracking matcher |
 | `svg.rs` | Custom SVG geometry, paths, transforms and bounded RGBA rasterization |

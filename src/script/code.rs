@@ -1,9 +1,13 @@
 //! Flat executable ownership. Child edges never own other syntax records.
+#[cfg(test)]
+use super::MAX_HEAP;
 use super::{
-    DeclarationKind, JsString, MAX_HEAP, MAX_TOKENS, RegExp, Result, ScriptError, Value,
-    compile_allocate, regexp, regexp_error,
+    DeclarationKind, JsString, MAX_TOKENS, RegExp, Result, ScriptError, Value, compile_allocate,
+    regexp, regexp_error,
 };
 use std::rc::Rc;
+mod records;
+use records::Records;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct ExprId(usize);
@@ -19,7 +23,7 @@ pub(super) struct Parameter {
     pub rest: bool,
 }
 impl Parameter {
-    fn is_simple(&self) -> bool {
+    pub fn is_simple(&self) -> bool {
         !self.rest && self.initializer.is_none()
     }
 }
@@ -61,14 +65,47 @@ impl Function {
 
 #[derive(Debug)]
 pub(super) struct Unit {
-    expressions: Vec<Expr>,
-    statements: Vec<Stmt>,
-    functions: Vec<Function>,
+    expressions: Records<Expr>,
+    statements: Records<Stmt>,
+    functions: Records<Function>,
     pub body: Vec<StmtId>,
     pub strict: bool,
     pub compiled_storage: usize,
 }
 impl Unit {
+    pub fn add_expr(&mut self, value: Expr, budget: &mut regexp::Budget) -> Result<ExprId> {
+        let id = ExprId(self.expressions.len());
+        self.expressions.append(value, budget)?;
+        Ok(id)
+    }
+    pub fn add_stmt(&mut self, value: Stmt, budget: &mut regexp::Budget) -> Result<StmtId> {
+        let id = StmtId(self.statements.len());
+        self.statements.append(value, budget)?;
+        Ok(id)
+    }
+    pub fn add_function(
+        &mut self,
+        value: Function,
+        budget: &mut regexp::Budget,
+    ) -> Result<FunctionId> {
+        let id = FunctionId(self.functions.len());
+        self.functions.append(value, budget)?;
+        Ok(id)
+    }
+    // Used only while reinterpreting the one-pass cover grammar. IDs are private
+    // to the unpublished unit; the consumed record remains a charged tombstone.
+    pub fn take_expr(&mut self, id: ExprId) -> Expr {
+        std::mem::replace(&mut self.expressions[id.0], Expr::Literal(Value::Undefined))
+    }
+    pub fn finish(mut self, budget: &mut regexp::Budget) -> Result<Rc<Self>> {
+        budget.work(1).map_err(regexp_error)?;
+        compile_allocate(
+            budget,
+            std::mem::size_of::<Self>() + 2 * std::mem::size_of::<usize>(),
+        )?;
+        self.compiled_storage = budget.allocated;
+        Ok(Rc::new(self))
+    }
     pub fn expr(&self, id: ExprId) -> &Expr {
         &self.expressions[id.0]
     }
@@ -81,11 +118,11 @@ impl Unit {
     pub fn anonymous(&self, id: ExprId) -> bool {
         matches!(self.expr(id), Expr::Function(id) if self.function(*id).name.is_none())
     }
-    fn empty(strict: bool) -> Self {
+    pub fn empty(strict: bool) -> Self {
         Self {
-            expressions: Vec::new(),
-            statements: Vec::new(),
-            functions: Vec::new(),
+            expressions: Records::new(),
+            statements: Records::new(),
+            functions: Records::new(),
             body: Vec::new(),
             strict,
             compiled_storage: 0,
@@ -109,10 +146,7 @@ impl FunctionRef {
     }
     pub fn empty() -> Result<Self> {
         let mut unit = Unit::empty(true);
-        unit.functions
-            .try_reserve_exact(1)
-            .map_err(|_| ScriptError::resource("empty executable allocation failed"))?;
-        unit.functions.push(Function::empty());
+        unit.functions = Records::singleton(Function::empty())?;
         Ok(Self {
             unit: Rc::new(unit),
             id: FunctionId(0),
@@ -177,6 +211,14 @@ pub(super) enum Stmt {
     Break(Option<usize>),
     Continue(Option<usize>),
 }
+impl Stmt {
+    pub fn is_lexical_declaration(&self, block_functions: bool) -> bool {
+        matches!(
+            self,
+            Self::Var(_, DeclarationKind::Let | DeclarationKind::Const)
+        ) || block_functions && matches!(self, Self::Function(..))
+    }
+}
 #[derive(Debug)]
 pub(super) enum ForBinding {
     Declaration(String, DeclarationKind),
@@ -191,6 +233,7 @@ pub(super) struct CatchClause {
 
 // Every auxiliary vector is bounded and charged before growth, including the
 // lowering worklist. Only successful lowering publishes a unit and its IDs.
+#[cfg(test)]
 fn reserve<T>(items: &mut Vec<T>, needed: usize, budget: &mut regexp::Budget) -> Result<()> {
     if needed > MAX_TOKENS {
         return Err(ScriptError::resource(
@@ -209,6 +252,7 @@ fn reserve<T>(items: &mut Vec<T>, needed: usize, budget: &mut regexp::Budget) ->
     }
     Ok(())
 }
+#[cfg(test)]
 fn push<T>(items: &mut Vec<T>, value: T, budget: &mut regexp::Budget) -> Result<()> {
     budget.work(1).map_err(regexp_error)?;
     reserve(items, items.len().saturating_add(1), budget)?;
@@ -218,6 +262,7 @@ fn push<T>(items: &mut Vec<T>, value: T, budget: &mut regexp::Budget) -> Result<
 // A source list already supplies its exact length. Reserve once and precharge
 // every output slot before visiting its input; no geometric copies or per-item
 // capacity checks are needed while this list is filled.
+#[cfg(test)]
 fn list<T>(length: usize, budget: &mut regexp::Budget) -> Result<Vec<T>> {
     if length > MAX_TOKENS {
         return Err(ScriptError::resource(
@@ -234,6 +279,7 @@ fn list<T>(length: usize, budget: &mut regexp::Budget) -> Result<Vec<T>> {
     }
     Ok(output)
 }
+#[cfg(test)]
 fn text(value: &str, budget: &mut regexp::Budget) -> Result<String> {
     budget.work(1 + value.len() / 8).map_err(regexp_error)?;
     compile_allocate(budget, value.len() + 32)?;
@@ -245,30 +291,31 @@ fn text(value: &str, budget: &mut regexp::Budget) -> Result<String> {
     Ok(output)
 }
 
+#[cfg(test)]
 enum Task<'a> {
     Expr(&'a super::Expr, ExprId),
     Stmt(&'a super::Stmt, StmtId),
     Function(&'a super::FunctionCode, FunctionId),
 }
+#[cfg(test)]
 struct Lower<'a> {
     unit: Unit,
     tasks: Vec<Task<'a>>,
     budget: regexp::Budget,
 }
+#[cfg(test)]
 impl<'a> Lower<'a> {
     fn expr(&mut self, value: &'a super::Expr) -> Result<ExprId> {
         let id = ExprId(self.unit.expressions.len());
-        push(
-            &mut self.unit.expressions,
-            Expr::Literal(Value::Undefined),
-            &mut self.budget,
-        )?;
+        self.unit
+            .expressions
+            .append(Expr::Literal(Value::Undefined), &mut self.budget)?;
         push(&mut self.tasks, Task::Expr(value, id), &mut self.budget)?;
         Ok(id)
     }
     fn stmt(&mut self, value: &'a super::Stmt) -> Result<StmtId> {
         let id = StmtId(self.unit.statements.len());
-        push(&mut self.unit.statements, Stmt::Empty, &mut self.budget)?;
+        self.unit.statements.append(Stmt::Empty, &mut self.budget)?;
         // These variants cannot call stmt() while their fields are lowered.
         // Emit them directly instead of enqueueing and revisiting a leaf.
         if matches!(
@@ -290,11 +337,9 @@ impl<'a> Lower<'a> {
     }
     fn function(&mut self, value: &'a super::FunctionCode) -> Result<FunctionId> {
         let id = FunctionId(self.unit.functions.len());
-        push(
-            &mut self.unit.functions,
-            Function::empty(),
-            &mut self.budget,
-        )?;
+        self.unit
+            .functions
+            .append(Function::empty(), &mut self.budget)?;
         push(&mut self.tasks, Task::Function(value, id), &mut self.budget)?;
         Ok(id)
     }
@@ -308,7 +353,7 @@ impl<'a> Lower<'a> {
     }
     fn statements(&mut self, input: &'a [super::Stmt]) -> Result<Vec<StmtId>> {
         let needed = self.unit.statements.len().saturating_add(input.len());
-        reserve(&mut self.unit.statements, needed, &mut self.budget)?;
+        self.unit.statements.reserve(needed, &mut self.budget)?;
         let mut output = list(input.len(), &mut self.budget)?;
         for value in input {
             let id = self.stmt(value)?;
@@ -512,6 +557,7 @@ impl<'a> Lower<'a> {
     }
 }
 
+#[cfg(test)]
 pub(super) fn compile(program: super::Program) -> Result<Rc<Unit>> {
     let mut lower = Lower {
         unit: Unit::empty(program.strict),
@@ -525,34 +571,6 @@ pub(super) fn compile(program: super::Program) -> Result<Rc<Unit>> {
     };
     lower.unit.body = lower.statements(&program.body)?;
     lower.finish()
-}
-
-pub(super) fn handler(program: super::Program, name: String) -> Result<FunctionRef> {
-    let mut budget = regexp::Budget {
-        steps: program.remaining_work,
-        allocated: program.compiled_storage,
-        heap_limit: MAX_HEAP,
-        stack_limit: 16,
-    };
-    compile_allocate(&mut budget, 256 + name.len())?;
-    budget.work(2).map_err(regexp_error)?;
-    let function = super::FunctionCode {
-        params: vec![super::Parameter::simple("event".into())],
-        body: Rc::new(program.body),
-        name: Some(name),
-        arrow: false,
-        self_name: false,
-        constructable: false,
-        strict: program.strict,
-    };
-    let mut lower = Lower {
-        unit: Unit::empty(program.strict),
-        tasks: Vec::new(),
-        budget,
-    };
-    let id = lower.function(&function)?;
-    let unit = lower.finish()?;
-    Ok(FunctionRef { unit, id })
 }
 
 // Borrow statement children in source order without visiting expression or
@@ -729,6 +747,11 @@ pub(super) fn test_function(code: &super::FunctionCode) -> FunctionRef {
 }
 
 #[cfg(test)]
+pub(super) fn canonical(unit: &Unit) -> String {
+    format!("{}:{:?}", unit.strict, tests::statements(unit, &unit.body))
+}
+
+#[cfg(test)]
 mod tests {
     use super::*;
     use crate::dom::Document;
@@ -817,7 +840,7 @@ mod tests {
             ),
         }
     }
-    fn statements(unit: &Unit, ids: &[StmtId]) -> Vec<super::super::Stmt> {
+    pub(super) fn statements(unit: &Unit, ids: &[StmtId]) -> Vec<super::super::Stmt> {
         ids.iter().map(|&id| statement(unit, id)).collect()
     }
     fn statement(unit: &Unit, id: StmtId) -> super::super::Stmt {
@@ -956,9 +979,9 @@ mod tests {
         }
         assert_eq!(old_work, new_work);
         let mut unit = Unit::empty(false);
-        unit.statements.push(Stmt::Empty);
+        unit.statements.test_push(Stmt::Empty);
         for i in 0..97 {
-            unit.statements.push(Stmt::Label(i, StmtId(i)));
+            unit.statements.test_push(Stmt::Label(i, StmtId(i)));
         }
         let roots = [StmtId(96)];
         let mut walk = StatementWalk::new(&unit, roots.iter());
@@ -1064,7 +1087,8 @@ mod tests {
         let mut builder = lower();
         let input = super::super::Expr::Ident(String::new());
         // Node reservation succeeds; refusing the worklist cannot publish a unit.
-        builder.budget.heap_limit = 4 * std::mem::size_of::<Expr>() + 32;
+        builder.budget.heap_limit =
+            128 * std::mem::size_of::<Expr>() + 32 + 4 * std::mem::size_of::<Vec<Expr>>() + 32;
         assert!(builder.expr(&input).unwrap_err().is_resource_limit());
         assert_eq!(builder.unit.expressions.len(), 1);
         assert!(builder.tasks.is_empty());
@@ -1081,22 +1105,22 @@ mod tests {
             .stack_size(64 * 1024)
             .spawn(|| {
                 let mut unit = Unit::empty(false);
-                unit.expressions.push(Expr::Literal(Value::Undefined));
+                unit.expressions.test_push(Expr::Literal(Value::Undefined));
                 for i in 1..24_000 {
                     unit.expressions
-                        .push(Expr::Unary("!".into(), ExprId(i - 1)));
+                        .test_push(Expr::Unary("!".into(), ExprId(i - 1)));
                 }
                 for i in 0..8_000 {
                     let expression = ExprId(unit.expressions.len());
-                    unit.expressions.push(if i == 0 {
+                    unit.expressions.test_push(if i == 0 {
                         Expr::Literal(Value::Undefined)
                     } else {
                         Expr::Function(FunctionId(i - 1))
                     });
-                    unit.statements.push(Stmt::Return(Some(expression)));
+                    unit.statements.test_push(Stmt::Return(Some(expression)));
                     let mut function = Function::empty();
                     function.body.push(StmtId(i));
-                    unit.functions.push(function);
+                    unit.functions.test_push(function);
                 }
                 let unit = Rc::new(unit);
                 let weak = Rc::downgrade(&unit);

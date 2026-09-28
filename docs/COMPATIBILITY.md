@@ -126,8 +126,12 @@ now cover expressions, references and supported statements, including loops and
 try/finally. [Ordinary activation and defaults](../tests/conformance/activation-frames.md)
 also use the driver: retained shallow ordinary/default probes now complete 32
 calls, with call 33 stopped by the existing logical ceiling. Native callback and
-constructor bridges remain guarded. Parser recursion still blocks the retained
-32-nested-IIFE test; this execution improvement does not establish deeper parsing.
+constructor bridges remain guarded. [Direct flat parsing](../tests/conformance/flat-parser.md)
+now removes the temporary owning AST and second lowering pass. The parser emits
+charged record pages and flat lists, preserving cover grammar, early errors and
+lexical rescans. Its grammar recursion and guards remain; the retained
+32-nested-IIFE test still stops in parsing. Flat cleanup alone does not establish
+deeper source acceptance.
 
 [Labeled break and continue](../tests/conformance/labels.md) resolve ordinary
 statement/loop targets, propagate through nested loops and switches, and preserve
