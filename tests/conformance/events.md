@@ -147,3 +147,54 @@ The primary references are the [DOM Event interface](https://dom.spec.whatwg.org
 [AbortSignal](https://dom.spec.whatwg.org/#interface-abortsignal),
 [HTML event handlers](https://html.spec.whatwg.org/multipage/webappapis.html#event-handlers),
 and [Web IDL callback conversion](https://webidl.spec.whatwg.org/#es-callback-function).
+# Disclosure toggle events
+
+`ToggleEvent` extends the existing Event implementation with private `oldState`,
+`newState` and `source` data. Its constructor performs type and dictionary
+conversion in Web IDL order, preserves UTF-16 state strings, and accepts an
+Element or null as source. Its readonly getters validate the receiver; synthetic
+events are untrusted. The existing event dispatch, cleanup, exception reporting
+and uncatchable resource limits apply. Shadow-root retargeting remains outside
+the DOM subset, so source is returned directly within supported ordinary trees.
+
+HTML `details` elements reflect `open` as a boolean and `name` as a string;
+foreign elements named details do not acquire these bindings. Boolean writes do
+not invoke author conversion methods. String writes use string-hint conversion
+and the existing explicit UTF-16-to-UTF-8 DOM boundary. The `ontoggle` property
+and inline attribute use the existing event-handler machinery.
+
+The DOM coalesces disclosure notifications. The host calls
+`Runtime::dispatch_details_toggles` at its integration checkpoints; mutations do
+not synchronously dispatch an event. Each checkpoint processes at most 64 queued
+notifications with one shared 100,000-step allowance, the persistent 8 MiB
+allocation allowance and existing stack limits. Native notifications are trusted
+ToggleEvents with non-bubbling, non-cancelable defaults and null source. Ancestor
+capture listeners can observe them. Reentrant changes queue another notification.
+
+Event/path allocation is preflighted before taking a queued notification. A task
+that has begun dispatch is consumed even if a listener exhausts quota; its
+callbacks are not replayed. Tasks not yet started, including those beyond the
+64-task limit, remain pending. This bounded host checkpoint is a task-loop
+approximation: it does not implement the HTML event loop, microtask checkpoints,
+task-source interleaving or full timing guarantees. No popover/dialog activation
+or `beforetoggle` default action is supplied by the constructor.
+
+Reentrant state coalescing also differs from the HTML task tracker: this
+checkpoint consumes a record before invoking callbacks. A listener closing an
+element during its closed-to-open notification therefore queues an open-to-closed
+notification. The current HTML algorithm keeps the original tracker until after
+firing and can retain the original `closed` old state for that reentrant task.
+This implementation does not claim that task-tracker behavior.
+
+Six focused runtime groups are selected by
+`cargo test --locked --offline --lib script::tests::disclosure_`. They cover
+constructor getter/coercion order, receiver brands and readonly state, reflection
+and namespaces, deferred/coalesced delivery, trusted flags and capture,
+reentrant/detached targets, queue limits, preservation of unstarted tasks, and
+uncatchable constructor/mutation/callback exhaustion and preflight of named-group
+work before clone/import allocation or target replacement. These are local regression
+tests, not upstream WPT conformance counts. DOM/layout/activation scope is
+documented separately in [details.md](details.md).
+
+Primary references: [HTML ToggleEvent](https://html.spec.whatwg.org/multipage/interaction.html#the-toggleevent-interface)
+and [details notification and grouping algorithms](https://html.spec.whatwg.org/multipage/interactive-elements.html#the-details-element).

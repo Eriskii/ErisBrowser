@@ -27,9 +27,10 @@ The native UI owns address entry, history, clipboard, window events and the fina
 pixel surface. A document navigation creates a new renderer; its first resource
 request starts a separate broker. Both children have cleared environments,
 checked inherited descriptors, Linux confinement and resource limits. The
-renderer cannot directly open resource files or create sockets. Headless CLI
-and library entry points currently use the page pipeline in their calling
-process and do not install this confinement.
+renderer cannot directly open resource files or create sockets. The `--render`
+and `--benchmark` CLI modes and library entry points use the page pipeline in
+their calling process. The separate `--benchmark-worker` mode uses the confined
+worker/broker boundary without opening a desktop window.
 
 The parent authorizes the initial URL and optional form body. The broker allows
 that document fetch once, validates redirects, and uses the final document URL
@@ -57,8 +58,8 @@ results from replacing newer input.
 Snapshots contain the DOM, display list, hit regions, shared raster images and
 page metadata. The parent checks their graph structure, namespace bindings,
 storage limits, geometry and raster dimensions before publishing them to the
-UI. The ERW6 format also validates reciprocal template/fragment ownership,
-host-inclusive cycles/depth, canonical encoding metadata, frozen base URLs, fixed hit coordinates and typed clip/fixed/opacity display scopes. Resource traffic has separate request/response messages. All pipe channels
+UI. The ERW7 format also validates reciprocal template/fragment ownership,
+host-inclusive cycles/depth, canonical encoding metadata, frozen base URLs, fixed hit coordinates, generated-summary action hints and typed clip/fixed/opacity display scopes. Generated-summary hints require an active, visible HTML details element without an authored direct summary. Resource traffic has separate request/response messages. All pipe channels
 use bounded framing, nonblocking I/O and deadlines; cancellation remains latched
 across nested broker and decoder exchanges. Failure or replacement kills and reaps the
 corresponding children.
@@ -66,9 +67,12 @@ corresponding children.
 The painter runs in the UI and draws validated commands with bundled fonts and
 a glyph cache. Fixed scopes retain viewport coordinates and reset document ancestor clips to the caller viewport clip; both native and headless scrolling keep these offsets separate. Scrolling reuses the display list; edits currently recompute
 styles and layout. Rendering is CPU based, without a GPU compositor or general
-incremental invalidation. The existing warm-render benchmark excludes process
-startup, resource transfer and snapshot serialization, so it cannot measure the
-cost of this complete native path.
+incremental invalidation. The `--benchmark` warm-render loop excludes process
+startup, resource transfer and snapshot serialization. The separate
+`--benchmark-worker` mode uses the same confined worker and validated snapshots
+as the native browser, measuring startup, load, render round trips, parent
+software paint and teardown separately. It excludes the window event loop and
+native presentation; neither mode measures the complete native path.
 
 HTML byte decoding chooses a BOM, transport charset, or bounded markup prescan,
 with windows-1252 as the current locale-independent fallback. A later accepted

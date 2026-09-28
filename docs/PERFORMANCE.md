@@ -24,7 +24,42 @@ After the parser, JSON and flex compatibility increment, the same fixture/viewpo
 
 After the broker, namespace and Test262 increment, the same warm-render configuration recorded medians of 4.399 ms (home), 7.053 ms (gallery), and 5.203 ms (forms); p95 values were 4.542, 7.519 and 5.273 ms. [This record](benchmark-broker.json) retains the measured build/input hashes. It still excludes native process startup and IPC, so these timings do not measure the new broker's overhead or establish a Chromium comparison.
 
-`python3 tools/benchmark.py` records eight measurements across seven local pages in `artifacts/benchmark.json`, including source/assets/dependency input hashes, binary hash, CPU, OS, compiler and excluded phases. The template/Grid, positioning, event/compositing and responsive fixtures use their initially loaded documents; cloning, import loading and click handlers execute outside the measured warm-render loop. The event page is measured both from the top and scrolled to its panel so the opacity group is visible. Opacity allocation and compositing, when needed, are inside that loop.
+`python3 tools/benchmark.py` records nine measurements across eight local pages in `artifacts/benchmark.json`, including source/assets/dependency input hashes, binary hash, CPU, OS, compiler and excluded phases. The template/Grid, positioning, event/compositing responsive and disclosure fixtures use their initially loaded documents; cloning, import loading and click handlers execute outside the measured warm-render loop. The event page is measured both from the top and scrolled to its panel so the opacity group is visible. Opacity allocation and compositing, when needed, are inside that loop.
+
+## Confined worker measurements
+
+```sh
+target/release/eris-browser examples/responsive.html --benchmark-worker 100 --output artifacts/worker.png
+python3 tools/benchmark_worker.py --fresh-runs 5 --iterations 100
+```
+
+The CLI prints a JSON record with raw warm samples and writes the final frame.
+The Python runner measures the same nine fixture views as `benchmark.py`,
+retains all samples, records source/binary/environment hashes, and rejects
+changed inputs or page diagnostics. Linux confinement is required; this mode
+does not fall back to execution in the calling process. `--no-scripts` is
+available for individual CLI measurements. Clicks, DOM dumping and desktop
+options are incompatible with the worker benchmark.
+
+| Phase | Included work |
+|---|---|
+| Startup | Address/file authorization, renderer spawn, sandbox handshake |
+| Load | Load round trip, renderer font setup, resource broker startup and reads, parsing, script setup and any requested image decoding |
+| Cold render exchange | First style/layout computation, snapshot generation, IPC copying, decoding and validation |
+| Cold clear/paint | Parent canvas clear and software paint with a fresh glyph cache |
+| Warm render exchange | Repeated style/layout and validated snapshot round trips |
+| Warm clear/paint | Parent canvas clear and software paint with a warmed glyph cache |
+| Warm total | Render exchange, fragment lookup, clear/paint and snapshot destruction |
+| Teardown | Worker/broker closure, termination and wait |
+
+Parent font/canvas initialization, PNG encoding, the desktop event loop and
+native presentation are excluded. “Cold” means fresh processes and parent glyph
+cache; operating-system and filesystem caches are not flushed. Cold values have
+one sample per fresh CLI invocation. Warm samples are pooled across invocations,
+with an upper-middle median and nearest-rank p95. Five cold samples cannot
+establish a reliable tail latency. Frame totals are measured directly, so their
+quantiles need not equal sums of the component quantiles. These are local
+implemented-workload measurements, not a Chromium comparison.
 
 ## Required comparison design
 
@@ -121,3 +156,35 @@ These uncontrolled local observations cover implemented layout/paint behavior;
 they do not establish a general speed change, script throughput, GPU performance
 or the requested Chromium threshold. Vulkan remains planned on the
 [development docket](ROADMAP.md), without a backend or performance result yet.
+
+
+## Disclosures, feature queries and confined-worker baseline
+
+Recorded September 28, 2026 UTC on the same machine, after heavy checks and
+native window inspection finished. Both reports have verified source and release
+binary hashes. The [warm-render record](benchmark-disclosures.json) uses 100
+iterations per view. The new [confined-worker record](benchmark-worker-disclosures.json)
+uses five fresh processes per view, each followed by 100 warm frames. It retains
+all raw samples, phase definitions and runner hashes.
+
+| Local fixture | In-process warm median / p95 | Confined warm frame median / p95 |
+|---|---:|---:|
+| home | 5.032 / 5.412 ms | 5.284 / 5.658 ms |
+| gallery | 8.194 / 8.372 ms | 9.143 / 9.902 ms |
+| forms | 6.090 / 6.510 ms | 6.162 / 7.091 ms |
+| templates | 1.143 / 1.197 ms | 1.269 / 1.448 ms |
+| positioning | 1.130 / 1.225 ms | 1.281 / 1.506 ms |
+| events | 1.140 / 1.192 ms | 1.296 / 1.513 ms |
+| events-visible | 12.296 / 12.943 ms | 12.682 / 13.696 ms |
+| responsive | 1.974 / 2.024 ms | 2.097 / 2.429 ms |
+| disclosures | 1.222 / 1.297 ms | 1.371 / 1.565 ms |
+
+The columns measure different paths: the second includes repeated validated
+snapshot round trips and destruction; its software painter runs in the parent.
+They are uncontrolled local observations and cannot by themselves establish an
+IPC regression or a cross-engine speed result. Loading, script execution and
+process creation are outside both warm columns; their separately measured
+confined phases are retained in the JSON. PNG encoding and native presentation
+remain excluded. The disclosure fixture and confined path have no earlier
+recorded equivalent baseline. Vulkan and the requested Chromium threshold remain
+unverified.

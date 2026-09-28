@@ -2,6 +2,7 @@ use crate::edit::Selection;
 use eris::{
     dom::{Namespace, NodeId},
     graphics::{Canvas, Color, DrawCommand, Fonts, Rect},
+    layout::HitAction,
     page::Navigation,
     worker::{Command, Snapshot, WorkerClient},
 };
@@ -33,9 +34,13 @@ const STATUS: f32 = 25.0;
 /// Do not clip to the viewport: a control below the fold remains focusable.
 fn visible_layout_nodes(snapshot: &Snapshot) -> Vec<bool> {
     let mut visible = vec![false; snapshot.document.nodes.len()];
+    let mut default_summaries = vec![false; snapshot.document.nodes.len()];
     for hit in &snapshot.layout.hit_regions {
         if hit.rect.width <= 0.0 || hit.rect.height <= 0.0 {
             continue;
+        }
+        if hit.action == HitAction::DefaultSummary {
+            default_summaries[hit.node] = true;
         }
         let mut current = Some(hit.node);
         for _ in 0..eris::dom::MAX_DEPTH {
@@ -50,6 +55,14 @@ fn visible_layout_nodes(snapshot: &Snapshot) -> Vec<bool> {
             }
             *mark = true;
             current = snapshot.document.nodes[node].parent;
+        }
+    }
+    for (node, mark) in visible.iter_mut().enumerate() {
+        if snapshot.document.namespace(node) == Some(Namespace::Html)
+            && snapshot.document.tag(node) == Some("details")
+            && snapshot.document.first_summary(node).is_none()
+        {
+            *mark = default_summaries[node];
         }
     }
     visible
@@ -75,6 +88,10 @@ enum Request {
         height: f32,
     },
     Click {
+        generation: u64,
+        node: NodeId,
+    },
+    DefaultSummary {
         generation: u64,
         node: NodeId,
     },
@@ -309,6 +326,15 @@ fn worker(
                     continue;
                 }
                 Some(Command::Click { node })
+            }
+            Request::DefaultSummary {
+                generation: id,
+                node,
+            } => {
+                if id != generation {
+                    continue;
+                }
+                Some(Command::DefaultSummary { node })
             }
             Request::Edit {
                 generation: id,
@@ -637,6 +663,9 @@ impl Browser {
         self.scroll = self.scroll.clamp(0.0, max);
     }
     fn hit(&self) -> Option<NodeId> {
+        self.hit_region().map(|hit| hit.node)
+    }
+    fn hit_region(&self) -> Option<&eris::layout::HitRegion> {
         let (x, y) = self.cursor;
         if y < TOOLBAR
             || self
@@ -650,18 +679,12 @@ impl Browser {
         if snapshot.generation != self.generation() {
             return None;
         }
-        snapshot
-            .layout
-            .hit_regions
-            .iter()
-            .rev()
-            .find(|h| {
-                h.rect.contains(
-                    x / self.zoom,
-                    (y - TOOLBAR + if h.fixed { 0.0 } else { self.scroll }) / self.zoom,
-                )
-            })
-            .map(|h| h.node)
+        snapshot.layout.hit_regions.iter().rev().find(|h| {
+            h.rect.contains(
+                x / self.zoom,
+                (y - TOOLBAR + if h.fixed { 0.0 } else { self.scroll }) / self.zoom,
+            )
+        })
     }
     fn ancestor_with_tag(&self, mut id: NodeId, tags: &[&str]) -> Option<NodeId> {
         let snapshot = self
@@ -730,7 +753,15 @@ impl Browser {
         }
         self.address_focused = false;
         self.focused = None;
-        if let Some(node) = self.hit() {
+        if let Some((node, action)) = self.hit_region().map(|hit| (hit.node, hit.action)) {
+            let focus = if action == HitAction::DefaultSummary {
+                Some(node)
+            } else {
+                self.ancestor_with_tag(node, &["summary", "input", "textarea", "button", "a"])
+            };
+            if let Some(focus) = focus {
+                self.focus_input(focus);
+            }
             if let Some(input) = self.ancestor_with_tag(node, &["input", "textarea"]) {
                 let kind = self
                     .snapshot
@@ -745,10 +776,18 @@ impl Browser {
                     self.focus_input(input);
                 }
             }
-            let _ = self.tx.send(Request::Click {
-                generation: self.generation(),
-                node,
-            });
+            let request = if action == HitAction::DefaultSummary {
+                Request::DefaultSummary {
+                    generation: self.generation(),
+                    node,
+                }
+            } else {
+                Request::Click {
+                    generation: self.generation(),
+                    node,
+                }
+            };
+            let _ = self.tx.send(request);
         }
         self.redraw();
     }
@@ -832,6 +871,29 @@ impl Browser {
                 self.visible_nodes.get(node).copied().unwrap_or(false)
                     && s.document.can_edit_control(node)
             })
+    }
+    fn activate_focused(&self, node: NodeId) {
+        let fallback = self.snapshot.as_ref().is_some_and(|snapshot| {
+            snapshot.generation == self.generation()
+                && snapshot.layout.hit_regions.iter().any(|hit| {
+                    hit.node == node
+                        && hit.action == HitAction::DefaultSummary
+                        && hit.rect.width > 0.0
+                        && hit.rect.height > 0.0
+                })
+        });
+        let request = if fallback {
+            Request::DefaultSummary {
+                generation: self.generation(),
+                node,
+            }
+        } else {
+            Request::Click {
+                generation: self.generation(),
+                node,
+            }
+        };
+        let _ = self.tx.send(request);
     }
     fn password_focused(&self) -> bool {
         !self.address_focused
@@ -1088,10 +1150,7 @@ impl Browser {
             Key::Named(NamedKey::Enter) if self.focused.is_some() => {
                 let node = self.focused.unwrap();
                 if !self.editable(node) {
-                    let _ = self.tx.send(Request::Click {
-                        generation: self.generation(),
-                        node,
-                    });
+                    self.activate_focused(node);
                     return;
                 }
                 if self
@@ -1123,10 +1182,7 @@ impl Browser {
                 if self.has_text_focus() {
                     self.insert_text(" ");
                 } else if let Some(node) = self.focused {
-                    let _ = self.tx.send(Request::Click {
-                        generation: self.generation(),
-                        node,
-                    });
+                    self.activate_focused(node);
                 } else {
                     self.scroll += self.viewport().1
                         * self.zoom
@@ -1195,7 +1251,7 @@ impl Browser {
         };
         let inputs = s
             .document
-            .query_selector_all("input, textarea, button, a[href]")
+            .query_selector_all("input, textarea, button, a[href], summary, details")
             .into_iter()
             .filter(|&n| {
                 self.visible_nodes.get(n).copied().unwrap_or(false)
@@ -1625,8 +1681,11 @@ impl ApplicationHandler<Event> for Browser {
                     .unwrap_or_default();
                 let clickable = link.is_some()
                     || node
-                        .and_then(|n| self.ancestor_with_tag(n, &["button"]))
-                        .is_some();
+                        .and_then(|n| self.ancestor_with_tag(n, &["button", "summary"]))
+                        .is_some()
+                    || self
+                        .hit_region()
+                        .is_some_and(|hit| hit.action == HitAction::DefaultSummary);
                 if clickable != self.hover_clickable {
                     self.hover_clickable = clickable;
                     if let Some(w) = &self.window {
@@ -1817,11 +1876,13 @@ mod tests {
         snapshot.layout.hit_regions = vec![
             eris::layout::HitRegion {
                 node: normal,
+                action: HitAction::Node,
                 rect,
                 fixed: false,
             },
             eris::layout::HitRegion {
                 node: fixed,
+                action: HitAction::Node,
                 rect,
                 fixed: true,
             },
@@ -1892,6 +1953,89 @@ mod tests {
             clipboard: None,
             applied_fragment_generation: 0,
         }
+    }
+
+    #[test]
+    fn details_native_focus_and_activation_distinguish_real_and_default_summaries() {
+        let mut browser = editing_browser(
+            "<style>body{margin:0}</style><details><summary id=s><b id=label>Show</b></summary><input id=closed></details><details id=fallback></details><button id=last>End</button>",
+        );
+        let s = browser
+            .snapshot
+            .as_ref()
+            .unwrap()
+            .document
+            .query_selector("#s")
+            .unwrap();
+        let fallback = browser
+            .snapshot
+            .as_ref()
+            .unwrap()
+            .document
+            .query_selector("#fallback")
+            .unwrap();
+        browser.tab_focus();
+        assert_eq!(browser.focused, Some(s));
+        browser.key(Key::Named(NamedKey::Enter), None);
+        assert!(matches!(browser.tx.recv(),Some(Request::Click{node,..}) if node==s));
+        browser.tab_focus();
+        assert_eq!(browser.focused, Some(fallback));
+        browser.key(Key::Named(NamedKey::Space), None);
+        assert!(
+            matches!(browser.tx.recv(),Some(Request::DefaultSummary{node,..}) if node==fallback)
+        );
+        let header = browser
+            .snapshot
+            .as_ref()
+            .unwrap()
+            .layout
+            .hit_regions
+            .iter()
+            .find(|hit| hit.action == HitAction::DefaultSummary)
+            .unwrap()
+            .rect;
+        browser.cursor = (header.x + 1.0, TOOLBAR + header.y + 1.0);
+        browser.click();
+        assert_eq!(browser.focused, Some(fallback));
+        assert!(
+            matches!(browser.tx.recv(),Some(Request::DefaultSummary{node,..}) if node==fallback)
+        );
+        let mut clipped = editing_browser(
+            "<style>details{height:0;overflow:hidden;border:2px solid}</style><details id=d></details><button id=b>end</button>",
+        );
+        clipped.tab_focus();
+        assert_eq!(
+            clipped.focused,
+            clipped
+                .snapshot
+                .as_ref()
+                .unwrap()
+                .document
+                .query_selector("#b")
+        );
+    }
+
+    #[test]
+    fn details_closing_revokes_native_focus_before_an_outstanding_edit_ack() {
+        let mut browser = editing_browser(
+            "<details id=d open><summary>Show</summary><input id=field value=old></details>",
+        );
+        let field = browser
+            .snapshot
+            .as_ref()
+            .unwrap()
+            .document
+            .query_selector("#field")
+            .unwrap();
+        browser.focus_input(field);
+        browser.insert_text("pending");
+        let mut document = browser.snapshot.as_ref().unwrap().document.clone();
+        let details = document.query_selector("#d").unwrap();
+        document.remove_attr(details, "open");
+        let snapshot = acknowledgement(&browser, 0, document);
+        browser.accept_snapshot(snapshot);
+        assert!(browser.focused.is_none());
+        assert!(!browser.editable(field));
     }
 
     fn acknowledgement(browser: &Browser, sequence: u64, document: Document) -> Snapshot {

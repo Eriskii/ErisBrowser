@@ -51,6 +51,9 @@ pub enum Command {
     Click {
         node: NodeId,
     },
+    DefaultSummary {
+        node: NodeId,
+    },
     Edit {
         sequence: u64,
         node: NodeId,
@@ -436,6 +439,18 @@ pub fn serve() -> Result<(), String> {
             Command::Click { node } => {
                 reply.navigation = page.as_mut().ok_or("no page")?.click(node)
             }
+            Command::DefaultSummary { node } => {
+                let page = page.as_mut().ok_or("no page")?;
+                if page.document.namespace(node) != Some(crate::dom::Namespace::Html)
+                    || page.document.tag(node) != Some("details")
+                    || page.document.first_summary(node).is_some()
+                    || page.document.interaction_blocked(node)
+                    || page.document.disclosure_hidden(node)
+                {
+                    return Err("invalid generated summary activation".into());
+                }
+                page.click_default_summary(node);
+            }
             Command::Edit {
                 sequence,
                 node,
@@ -502,6 +517,10 @@ pub fn apply_edit(page: &mut Page, node: NodeId, value: &str) {
             .dispatch_event(node, "input", &mut page.document)
     {
         page.diagnostics.push(format!("input: {error}"));
+    }
+    page.disclosure_checkpoint();
+    if page.scripts_enabled {
+        page.refresh_inline_svg();
     }
 }
 

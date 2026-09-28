@@ -42,15 +42,17 @@ not the full CSS grammar or loading model.
 The loader retains one anonymous identity for every source segment belonging to
 the same imported layer. Layer order statements before imports remain before
 them in the cascade inventory. A valid layered import registers its layer even
-when fetching fails, subject to its media conditions. Layers and media contexts
+when fetching fails, subject to its media and supports conditions. Layers and media contexts
 are carried in `StyleSource` metadata, including empty registration sources;
 they are never serialized into invented author-visible names or CSS wrappers.
 Nested imports inherit both the parent layer and media conjunction. See
 [cascade behavior](../tests/conformance/cascade-layers.md).
 
+An optional `supports(...)` clause follows the optional layer clause and precedes media conditions. It accepts either a full supports condition or a bare declaration. A false, invalid or over-budget condition skips the import before fetching or registering a layer, even if that URL is already cached. Static capability tests need no retained resize metadata. True imports retain media conditions and nested source scopes. The loader charges condition evaluation against an additional shared 8 MiB work limit; see [feature-query syntax and bounds](../tests/conformance/supports.md).
+
 Media evaluation implements a bounded subset of [Media Queries 4](https://www.w3.org/TR/mediaqueries-4/#mq-syntax):
-comma-separated alternatives, media types, `only`/`not`, plain feature
-conjunctions with `and`, and negation of a single feature. `screen` and `all`
+comma-separated alternatives, media types, `only`/`not`, grouped conditions
+with `and`, `or` and `not`, escaped identifiers, and width/height range comparisons. Mixed operators require explicit grouping. `screen` and `all`
 match; `print` and unknown media types do not. Unknown types are false, so
 `not bogus` matches. Unknown features and unsupported feature values retain the
 specification's unknown truth value through negation: neither
@@ -64,9 +66,7 @@ the initial 16px font size. Orientation treats a square viewport as portrait.
 Boolean color, hover and pointer features are supported. Reported environment
 values are fixed: light color scheme, reduced motion, hover, a fine pointer and
 browser display mode. They are not measurements of operating-system preferences
-or attached input devices. Range comparisons, `or`, grouped Boolean conditions,
-`calc()`, escaped media identifiers and the full media-feature inventory remain
-unsupported.
+or attached input devices. `calc()`, aspect ratio/resolution and the full media-feature inventory remain unsupported. See [media-query grammar and limitations](../tests/conformance/media-queries.md).
 
 Media conditions require a structurally valid prelude: strings,
 comments and delimiters must close, and unquoted braces or semicolons are
@@ -80,7 +80,7 @@ Per-load bounds are 8 MiB of decoded stylesheet text, 8 MiB of constructed text,
 retained segments and 16 recursive external-sheet levels. Parsing an import
 prelude or validating a media condition permits at most 128 nested delimiters.
 Media evaluation separately permits 64 KiB of input, 64 comma-separated queries,
-64 conjunctive features per query and 16 nested delimiters. Stylesheet URL work
+64 leaf terms across the list, 16 nested delimiters and 2 MiB of local work; stylesheet evaluation also charges the shared 32 MiB parse allowance. Stylesheet URL work
 and retained URL cache data each have a 32 MiB allowance, including repeated
 cache lookups and failed-resource keys. Page resource resolution has its own
 32 MiB work limit. Page-wide fetch count/body limits and the final
@@ -106,11 +106,10 @@ these bounds. The first exhausted inline collection stops further copying;
 initial loading records a diagnostic and can still process other resource kinds.
 The separate final segment/media budget above still applies.
 
-Remaining limitations include `supports()` import conditions,
-complete CSS Syntax recovery and namespace semantics, asynchronous/parser-driven
+Remaining limitations include complete feature-query support,
+CSS Syntax recovery and namespace semantics, asynchronous/parser-driven
 loading, dynamic stylesheet fetching, CSSOM, alternate stylesheet sets and full
-CORS/CSP. Unsupported import supports clauses produce a diagnostic and do
-not fetch. Non-CSS style types are inert. Inline DOM text changes invalidate the
+CORS/CSP. False and invalid import supports clauses do not fetch. Non-CSS style types are inert. Inline DOM text changes invalidate the
 cached expanded source, but do not start new import fetches. `Page::from_html`
 uses the supplied text without fetching external resources. Nested browsing
 contexts, srcdoc/about-base fallback, base targets and complete URL-reflecting DOM

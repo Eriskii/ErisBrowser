@@ -114,6 +114,19 @@ pub struct Document {
     first_base: Option<(NodeId, url::Url)>,
     base_tracking: bool,
     base_href_bytes: usize,
+    details_groups: BTreeMap<(NodeId, String), NodeId>,
+    details_toggles: BTreeMap<u64, DetailsToggle>,
+    details_pending: BTreeMap<NodeId, u64>,
+    details_sequence: u64,
+    details_name_bytes: usize,
+    details_summaries: std::cell::RefCell<BTreeMap<NodeId, Option<NodeId>>>,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub(crate) struct DetailsToggle {
+    pub node: NodeId,
+    pub old_open: bool,
+    pub new_open: bool,
 }
 
 impl Default for Document {
@@ -245,7 +258,7 @@ impl Document {
         if visited != nodes.len() {
             return Err("cyclic snapshot DOM".into());
         }
-        Ok(Self {
+        let mut document = Self {
             nodes,
             root,
             retained_bytes: bytes,
@@ -257,7 +270,22 @@ impl Document {
             first_base: None,
             base_tracking: true,
             base_href_bytes: 0,
-        })
+            details_groups: BTreeMap::new(),
+            details_toggles: BTreeMap::new(),
+            details_pending: BTreeMap::new(),
+            details_sequence: 0,
+            details_name_bytes: 0,
+            details_summaries: std::cell::RefCell::new(BTreeMap::new()),
+        };
+        for id in 0..document.nodes.len() {
+            if document.html_control_tag(id) == Some("details") {
+                document.details_name_bytes += document.attr(id, "name").map_or(0, str::len);
+                if let Some(key) = document.details_group_key(id) {
+                    document.details_groups.entry(key).or_insert(id);
+                }
+            }
+        }
+        Ok(document)
     }
     pub fn parse(source: &str) -> Self {
         parse(source)
@@ -710,10 +738,22 @@ impl Document {
             return;
         }
         let refresh = self.base_clear_work(id) != 0;
+        self.details_summaries.get_mut().remove(&id);
+        let moving = self.nodes[id]
+            .children
+            .iter()
+            .flat_map(|&child| self.moving_details(child))
+            .collect::<Vec<_>>();
+        for &details in &moving {
+            self.forget_details_group(details);
+        }
         for child in std::mem::take(&mut self.nodes[id].children) {
             if let Some(node) = self.nodes.get_mut(child) {
                 node.parent = None;
             }
+        }
+        for details in moving {
+            self.enforce_details_group(details, false);
         }
         if refresh {
             self.refresh_base_url(None);
@@ -875,15 +915,23 @@ impl Document {
             }
         }
         let refresh = self.base_tree_change_work(parent, child, contains_base) != 0;
+        let moving = self.moving_details(child);
+        for &details in &moving {
+            self.forget_details_group(details);
+        }
         let moved_first = self
             .subtree_contains_first_base(child)
             .then(|| self.first_base.as_ref().map(|(id, _)| *id))
             .flatten();
         if matches!(self.nodes[child].kind, NodeKind::DocumentFragment { .. }) {
+            self.details_summaries.get_mut().remove(&parent);
             let children = std::mem::take(&mut self.nodes[child].children);
             for child in children {
                 self.nodes[child].parent = Some(parent);
                 self.nodes[parent].children.push(child);
+            }
+            for details in moving {
+                self.enforce_details_group(details, false);
             }
             if refresh {
                 self.refresh_base_url(moved_first);
@@ -893,10 +941,15 @@ impl Document {
         if let Some(old) = self.nodes[child].parent
             && let Some(n) = self.nodes.get_mut(old)
         {
+            self.details_summaries.get_mut().remove(&old);
             n.children.retain(|c| *c != child);
         }
+        self.details_summaries.get_mut().remove(&parent);
         self.nodes[child].parent = Some(parent);
         self.nodes[parent].children.push(child);
+        for details in moving {
+            self.enforce_details_group(details, false);
+        }
         if refresh {
             self.refresh_base_url(moved_first);
         }
@@ -904,8 +957,16 @@ impl Document {
     pub fn remove_child(&mut self, parent: NodeId, child: NodeId) {
         if self.nodes.get(child).and_then(|n| n.parent) == Some(parent) {
             let refresh = self.base_remove_work(child) != 0;
+            self.details_summaries.get_mut().remove(&parent);
+            let moving = self.moving_details(child);
+            for &details in &moving {
+                self.forget_details_group(details);
+            }
             self.nodes[parent].children.retain(|n| *n != child);
             self.nodes[child].parent = None;
+            for details in moving {
+                self.enforce_details_group(details, false);
+            }
             if refresh {
                 self.refresh_base_url(None);
             }
@@ -942,6 +1003,19 @@ impl Document {
         namespace: Option<AttributeNamespace>,
     ) {
         let refresh = self.base_attribute_work(id, name) != 0;
+        let details = namespace.is_none()
+            && self.html_control_tag(id) == Some("details")
+            && matches!(name, "open" | "name");
+        let old_open = self.attr(id, "open").is_some();
+        let old_name_size = if details && name == "name" {
+            self.attr(id, "name").map_or(0, str::len)
+        } else {
+            0
+        };
+        // Preserve the index if an allocation/storage preflight rejects this
+        // mutation. The previous key is removed only after a successful write.
+        let old_group = details.then(|| self.details_group_key(id)).flatten();
+        let mut changed = false;
         if let Some(Node {
             kind: NodeKind::Element(el),
             ..
@@ -974,9 +1048,28 @@ impl Document {
             self.retained_bytes =
                 self.retained_bytes.saturating_sub(old_size) + name_size + value.len();
             el.attrs.insert(name.into(), value.into());
+            changed = true;
             if let Some(namespace) = namespace {
                 el.attr_namespaces.insert(name.into(), namespace);
             }
+        }
+        if details && changed {
+            if name == "name" {
+                self.details_name_bytes = self
+                    .details_name_bytes
+                    .saturating_sub(old_name_size)
+                    .saturating_add(self.attr(id, "name").map_or(0, str::len));
+            }
+            if let Some(key) = old_group
+                && self.details_groups.get(&key) == Some(&id)
+            {
+                self.details_groups.remove(&key);
+            }
+            let new_open = self.attr(id, "open").is_some();
+            if old_open != new_open {
+                self.queue_details_toggle(id, old_open, new_open);
+            }
+            self.enforce_details_group(id, !old_open && new_open);
         }
         if refresh {
             self.refresh_base_url(Some(id));
@@ -989,6 +1082,17 @@ impl Document {
         } else {
             name.to_owned()
         };
+        let details = self.html_control_tag(id) == Some("details")
+            && matches!(name.as_str(), "open" | "name");
+        let old_open = self.attr(id, "open").is_some();
+        if details && name == "name" {
+            self.details_name_bytes = self
+                .details_name_bytes
+                .saturating_sub(self.attr(id, "name").map_or(0, str::len));
+        }
+        if details {
+            self.forget_details_group(id);
+        }
         if let Some(Node {
             kind: NodeKind::Element(el),
             ..
@@ -1002,6 +1106,13 @@ impl Document {
             if el.attr_namespaces.remove(&name).is_some() {
                 self.retained_bytes = self.retained_bytes.saturating_sub(name.len());
             }
+        }
+        if details {
+            let new_open = self.attr(id, "open").is_some();
+            if old_open != new_open {
+                self.queue_details_toggle(id, old_open, new_open);
+            }
+            self.enforce_details_group(id, false);
         }
         if refresh {
             self.refresh_base_url(Some(id));
@@ -1101,6 +1212,214 @@ impl Document {
             .then(|| self.tag(id))
             .flatten()
     }
+    /// The first direct HTML summary child remains the disclosure summary even
+    /// when author CSS hides it. Foreign summaries and nested summaries do not.
+    pub fn first_summary(&self, details: NodeId) -> Option<NodeId> {
+        if self.html_control_tag(details) != Some("details") {
+            return None;
+        }
+        if let Some(summary) = self.details_summaries.borrow().get(&details) {
+            return *summary;
+        }
+        let summary = self
+            .nodes
+            .get(details)?
+            .children
+            .iter()
+            .copied()
+            .find(|&id| self.html_control_tag(id) == Some("summary"));
+        self.details_summaries.borrow_mut().insert(details, summary);
+        summary
+    }
+    pub fn summary_details(&self, summary: NodeId) -> Option<NodeId> {
+        if self.html_control_tag(summary) != Some("summary") {
+            return None;
+        }
+        let parent = self.nodes.get(summary)?.parent?;
+        (self.first_summary(parent) == Some(summary)).then_some(parent)
+    }
+    /// Rendering/native eligibility, deliberately separate from document
+    /// activity: hidden disclosure content can still run scripts and submit.
+    pub fn disclosure_hidden(&self, mut node: NodeId) -> bool {
+        for _ in 0..=MAX_DEPTH {
+            let Some(parent) = self.nodes.get(node).and_then(|n| n.parent) else {
+                return false;
+            };
+            if self.html_control_tag(parent) == Some("details")
+                && self.attr(parent, "open").is_none()
+                && self.first_summary(parent) != Some(node)
+            {
+                return true;
+            }
+            node = parent;
+        }
+        true
+    }
+    /// One linear traversal for renderers; do not repeatedly scan large sibling
+    /// lists while laying out each descendant of a closed disclosure.
+    pub fn disclosure_hidden_mask(&self) -> Vec<bool> {
+        let mut hidden = vec![false; self.nodes.len()];
+        let mut pending = vec![(self.root, false)];
+        let mut visits = 0;
+        while let Some((id, ancestor_hidden)) = pending.pop() {
+            if visits >= MAX_NODES {
+                break;
+            }
+            visits += 1;
+            let Some(node) = self.nodes.get(id) else {
+                continue;
+            };
+            hidden[id] = ancestor_hidden;
+            let closed =
+                self.html_control_tag(id) == Some("details") && self.attr(id, "open").is_none();
+            let summary = closed.then(|| self.first_summary(id)).flatten();
+            pending.extend(
+                node.children
+                    .iter()
+                    .rev()
+                    .map(|&child| (child, ancestor_hidden || closed && Some(child) != summary)),
+            );
+        }
+        hidden
+    }
+    fn details_root(&self, mut id: NodeId) -> NodeId {
+        for _ in 0..=MAX_DEPTH {
+            let Some(parent) = self.nodes.get(id).and_then(|n| n.parent) else {
+                break;
+            };
+            id = parent;
+        }
+        id
+    }
+    fn details_group_key(&self, id: NodeId) -> Option<(NodeId, String)> {
+        if self.html_control_tag(id) != Some("details") || self.attr(id, "open").is_none() {
+            return None;
+        }
+        let name = self.attr(id, "name").filter(|name| !name.is_empty())?;
+        Some((self.details_root(id), name.to_owned()))
+    }
+    fn forget_details_group(&mut self, id: NodeId) {
+        if let Some(key) = self.details_group_key(id)
+            && self.details_groups.get(&key) == Some(&id)
+        {
+            self.details_groups.remove(&key);
+        }
+    }
+    fn enforce_details_group(&mut self, id: NodeId, opening: bool) {
+        let Some(key) = self.details_group_key(id) else {
+            return;
+        };
+        if let Some(other) = self
+            .details_groups
+            .get(&key)
+            .copied()
+            .filter(|&other| other != id)
+        {
+            if opening {
+                self.remove_attr(other, "open");
+            } else {
+                self.remove_attr(id, "open");
+                return;
+            }
+        }
+        self.details_groups.insert(key, id);
+    }
+    fn moving_details(&self, root: NodeId) -> Vec<NodeId> {
+        if self.details_groups.is_empty() {
+            return Vec::new();
+        }
+        let mut result = Vec::new();
+        let mut pending = vec![root];
+        let mut visited = 0;
+        while let Some(id) = pending.pop() {
+            if visited >= MAX_NODES {
+                break;
+            }
+            visited += 1;
+            let Some(node) = self.nodes.get(id) else {
+                continue;
+            };
+            if self.html_control_tag(id) == Some("details")
+                && self.attr(id, "open").is_some()
+                && self.attr(id, "name").is_some_and(|name| !name.is_empty())
+            {
+                result.push(id);
+            }
+            // Hosted template fragments have separate DOM roots and do not
+            // change their name groups when their host is moved.
+            pending.extend(node.children.iter().rev().copied());
+        }
+        result
+    }
+    fn queue_details_toggle(&mut self, node: NodeId, old_open: bool, new_open: bool) {
+        let old_open = self
+            .details_pending
+            .remove(&node)
+            .and_then(|sequence| self.details_toggles.remove(&sequence))
+            .map_or(old_open, |event| event.old_open);
+        let sequence = self.details_sequence;
+        self.details_sequence = self.details_sequence.saturating_add(1);
+        self.details_pending.insert(node, sequence);
+        self.details_toggles.insert(
+            sequence,
+            DetailsToggle {
+                node,
+                old_open,
+                new_open,
+            },
+        );
+    }
+    pub(crate) fn peek_details_toggle(&self) -> Option<DetailsToggle> {
+        self.details_toggles
+            .first_key_value()
+            .map(|(_, event)| *event)
+    }
+    pub(crate) fn take_details_toggle(&mut self) -> Option<DetailsToggle> {
+        let (_, event) = self.details_toggles.pop_first()?;
+        self.details_pending.remove(&event.node);
+        Some(event)
+    }
+    pub(crate) fn has_pending_details_toggles(&self) -> bool {
+        !self.details_toggles.is_empty()
+    }
+    pub(crate) fn details_attribute_work(&self, id: NodeId, name: &str) -> usize {
+        if self.html_control_tag(id) != Some("details")
+            || !(name.eq_ignore_ascii_case("open") || name.eq_ignore_ascii_case("name"))
+        {
+            return 0;
+        }
+        // Include worst-case ordered-map name comparisons and old-value copies.
+        self.details_name_bytes
+            .saturating_mul(64)
+            .saturating_add(MAX_DEPTH * 4)
+    }
+    pub(crate) fn details_tree_change_work(&self, _parent: NodeId, _child: NodeId) -> usize {
+        if self.details_groups.is_empty() {
+            return 0;
+        }
+        self.nodes
+            .len()
+            .saturating_mul(MAX_DEPTH + 8)
+            .saturating_add(self.details_name_bytes.saturating_mul(64))
+    }
+    pub(crate) fn details_bulk_change_work(
+        &self,
+        new_nodes: usize,
+        new_name_bytes: usize,
+    ) -> usize {
+        if self.details_groups.is_empty() && new_name_bytes == 0 {
+            return 0;
+        }
+        self.nodes
+            .len()
+            .saturating_add(new_nodes)
+            .saturating_mul(MAX_DEPTH + 8)
+            .saturating_add(
+                self.details_name_bytes
+                    .saturating_add(new_name_bytes)
+                    .saturating_mul(64),
+            )
+    }
     fn is_descendant_of(&self, mut node: NodeId, ancestor: NodeId) -> bool {
         for _ in 0..crate::dom::MAX_DEPTH {
             if node == ancestor {
@@ -1167,7 +1486,10 @@ impl Document {
         true
     }
     pub fn can_edit_control(&self, node: NodeId) -> bool {
-        if self.interaction_blocked(node) || self.attr(node, "readonly").is_some() {
+        if self.interaction_blocked(node)
+            || self.disclosure_hidden(node)
+            || self.attr(node, "readonly").is_some()
+        {
             return false;
         }
         match self.html_control_tag(node) {
@@ -1192,7 +1514,7 @@ impl Document {
     }
     /// DOM policy for the native UI's supported focusable controls; CSS visibility is separate.
     pub fn can_focus_control(&self, node: NodeId) -> bool {
-        if self.interaction_blocked(node) {
+        if self.interaction_blocked(node) || self.disclosure_hidden(node) {
             return false;
         }
         match self.html_control_tag(node) {
@@ -1201,6 +1523,8 @@ impl Document {
                 .is_some_and(|kind| kind.eq_ignore_ascii_case("hidden")),
             Some("textarea" | "button") => true,
             Some("a") => self.attr(node, "href").is_some(),
+            Some("summary") => self.summary_details(node).is_some(),
+            Some("details") => self.first_summary(node).is_none(),
             _ => false,
         }
     }
@@ -2103,6 +2427,12 @@ impl TreeBuilder {
                 first_base: None,
                 base_tracking: false,
                 base_href_bytes: 0,
+                details_groups: BTreeMap::new(),
+                details_toggles: BTreeMap::new(),
+                details_pending: BTreeMap::new(),
+                details_sequence: 0,
+                details_name_bytes: 0,
+                details_summaries: std::cell::RefCell::new(BTreeMap::new()),
             },
             stack: vec![],
             formatting: vec![],
@@ -7716,6 +8046,113 @@ fn nth_matches(s: &str, index: usize) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn details_summary_cache_and_visibility_follow_mutations_without_inerting_content() {
+        let mut d = Document::parse(
+            "<details id=d><p id=before>x</p><summary id=a>A</summary><summary id=b>B</summary><input id=input name=v value=ok><script id=script>value</script></details>",
+        );
+        let details = d.query_selector("#d").unwrap();
+        let a = d.query_selector("#a").unwrap();
+        let b = d.query_selector("#b").unwrap();
+        let input = d.query_selector("#input").unwrap();
+        assert_eq!(d.first_summary(details), Some(a));
+        assert!(!d.disclosure_hidden(a));
+        assert!(d.disclosure_hidden(b));
+        assert!(d.is_active_node(input));
+        assert!(!d.disabled_control(input));
+        assert!(!d.can_edit_control(input));
+        assert!(!d.can_focus_control(input));
+        d.append_child(details, a);
+        assert_eq!(d.first_summary(details), Some(b));
+        assert!(d.disclosure_hidden(a));
+        d.set_attr(details, "open", "false");
+        assert!(!d.disclosure_hidden(input));
+        assert!(d.can_edit_control(input));
+        d.clear_children(details);
+        assert_eq!(d.first_summary(details), None);
+    }
+
+    #[test]
+    fn details_name_groups_follow_attributes_detached_roots_and_bulk_moves() {
+        let mut d = Document::parse(
+            "<details id=a name=g open></details><details id=b name=g open></details><details id=c name=G open></details>",
+        );
+        let a = d.query_selector("#a").unwrap();
+        let b = d.query_selector("#b").unwrap();
+        let c = d.query_selector("#c").unwrap();
+        assert!(d.attr(a, "open").is_some());
+        assert!(d.attr(b, "open").is_none());
+        assert!(d.attr(c, "open").is_some());
+        d.set_attr(b, "open", "");
+        assert!(d.attr(a, "open").is_none());
+        assert!(d.attr(b, "open").is_some());
+        d.set_attr(c, "name", "g");
+        assert!(d.attr(c, "open").is_none());
+        let fragment = d.create_document_fragment();
+        d.append_child(fragment, b);
+        d.set_attr(a, "open", "");
+        assert!(
+            d.attr(b, "open").is_some(),
+            "separate trees have separate groups"
+        );
+        let body = d.query_selector("body").unwrap();
+        d.append_child(body, fragment);
+        assert!(
+            d.attr(b, "open").is_none(),
+            "existing destination member wins insertion"
+        );
+        assert_eq!(d.details_groups.len(), 1);
+        d.clear_children(body);
+        d.set_attr(b, "open", "");
+        assert!(d.attr(a, "open").is_some());
+        assert!(d.attr(b, "open").is_some());
+    }
+
+    #[test]
+    fn details_toggle_queue_coalesces_reorders_and_does_not_grow_with_repeated_toggles() {
+        let mut d = Document::parse("<details id=a></details><details id=b></details>");
+        let a = d.query_selector("#a").unwrap();
+        let b = d.query_selector("#b").unwrap();
+        d.set_attr(a, "open", "");
+        d.set_attr(b, "open", "");
+        d.remove_attr(a, "open");
+        let event = d.take_details_toggle().unwrap();
+        assert_eq!(event.node, b);
+        let event = d.take_details_toggle().unwrap();
+        assert_eq!(
+            (event.node, event.old_open, event.new_open),
+            (a, false, false)
+        );
+        d.set_attr(b, "open", "different value");
+        assert!(d.take_details_toggle().is_none());
+        for _ in 0..20_000 {
+            d.set_attr(a, "open", "");
+            d.remove_attr(a, "open");
+        }
+        assert_eq!(d.details_pending.len(), 1);
+        assert_eq!(d.details_toggles.len(), 1);
+    }
+    #[test]
+    fn details_first_summary_lookup_is_shared_across_broad_sibling_sets() {
+        let source = format!(
+            "<details>{}{}",
+            "<i></i>".repeat(10_000),
+            "<summary></summary>".repeat(10_000)
+        );
+        let mut d = Document::parse(&source);
+        let details = d.query_selector("details").unwrap();
+        let summaries = d.query_selector_all("summary");
+        for &summary in &summaries {
+            assert_eq!(
+                d.summary_details(summary),
+                (summary == summaries[0]).then_some(details)
+            );
+        }
+        assert_eq!(d.details_summaries.borrow().len(), 1);
+        d.remove_child(details, summaries[0]);
+        assert_eq!(d.first_summary(details), Some(summaries[1]));
+    }
     #[test]
     fn child_text_collection_preflights_bytes_and_visits_without_descending() {
         let mut document = Document::parse("");

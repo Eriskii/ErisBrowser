@@ -13,6 +13,60 @@ fn page(source: &str) -> Page {
 }
 
 #[test]
+fn disclosure_notes_preserve_dom_state_and_reflow_only_the_open_group_member() {
+    let mut p = page(include_str!("../examples/disclosures.html"));
+    let fonts = Fonts::new();
+    for (action, open, title) in [
+        (None, Some(1), "The shape of a fern"),
+        (Some("#next-note"), Some(2), "A sky in a puddle"),
+        (Some("#summary-3"), Some(3), "The colors of lichen"),
+        (Some("#summary-3"), None, "The colors of lichen"),
+        (Some("#next-note"), Some(1), "The shape of a fern"),
+    ] {
+        if let Some(selector) = action {
+            assert!(
+                p.click(p.document.query_selector(selector).unwrap())
+                    .is_none()
+            );
+        }
+        assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+        let status = p.document.query_selector("#status").unwrap();
+        assert_eq!(
+            p.document.text_content(status),
+            format!("Now reading · {title}")
+        );
+        for width in [960, 390, 960] {
+            let layout = p.layout(width as f32, 1300.0, &fonts);
+            for (index, content) in [
+                (1, "#fern-content"),
+                (2, "#rain-content"),
+                (3, "#lichen-content"),
+            ] {
+                let note = p
+                    .document
+                    .query_selector(&format!("#note-{index}"))
+                    .unwrap();
+                assert_eq!(p.document.attr(note, "open").is_some(), open == Some(index));
+                let content = p.document.query_selector(content).unwrap();
+                assert_eq!(
+                    layout.hit_regions.iter().any(|hit| hit.node == content),
+                    open == Some(index)
+                );
+                let summary = p
+                    .document
+                    .query_selector(&format!("#summary-{index}"))
+                    .unwrap();
+                assert!(layout.hit_regions.iter().any(|hit| hit.node == summary));
+            }
+            let mut canvas = Canvas::new(width, 1300).unwrap();
+            canvas.paint(&layout.commands, &fonts, &p.images, 0.0, 0.0);
+            assert!(!canvas.exhausted());
+            assert_eq!(canvas.pixels[0], 0xf3f1e8);
+        }
+    }
+}
+
+#[test]
 fn responsive_notes_reflow_on_resize_and_interpolate_clicked_readings() {
     let mut p = page(include_str!("../examples/responsive.html"));
     assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);

@@ -163,6 +163,7 @@ pub enum Display {
 pub struct ComputedStyle {
     pub display: Display,
     pub flow_root: bool,
+    pub list_item: bool,
     pub float: String,
     pub clear: String,
     pub width: Length,
@@ -220,6 +221,7 @@ pub struct ComputedStyle {
     pub opacity: f32,
     pub box_sizing: String,
     pub list_style_type: String,
+    pub list_style_position: String,
     pub vertical_align: String,
 }
 impl Default for ComputedStyle {
@@ -227,6 +229,7 @@ impl Default for ComputedStyle {
         Self {
             display: Display::Inline,
             flow_root: false,
+            list_item: false,
             float: "none".into(),
             clear: "none".into(),
             width: Length::Auto,
@@ -284,6 +287,7 @@ impl Default for ComputedStyle {
             opacity: 1.0,
             box_sizing: "content-box".into(),
             list_style_type: "disc".into(),
+            list_style_position: "outside".into(),
             vertical_align: "baseline".into(),
         }
     }
@@ -301,6 +305,7 @@ impl ComputedStyle {
             s.text_align = p.text_align.clone();
             s.white_space = p.white_space.clone();
             s.list_style_type = p.list_style_type.clone();
+            s.list_style_position = p.list_style_position.clone();
             s.text_decoration = p.text_decoration.clone();
         }
         s
@@ -510,7 +515,11 @@ fn parse_source(
     if rules.len() >= 10_000 {
         return;
     }
-    let clean = strip_comments(source);
+    let mut end = source.len().min(MAX_STYLE_BYTES);
+    while !source.is_char_boundary(end) {
+        end -= 1;
+    }
+    let source = &source[..end];
     if let Some(layer) = layer {
         rules.push(Rule {
             selectors: vec![],
@@ -518,7 +527,7 @@ fn parse_source(
             layer: Some(layer.clone()),
         });
     }
-    parse_rules(&clean, width, height, 0, layer, true, rules, budget);
+    parse_rules(source, width, height, 0, layer, true, rules, budget);
 }
 
 struct ParseBudget {
@@ -636,6 +645,12 @@ fn parse_rules(
             i += 1;
             continue;
         }
+        if c == b'/' && bytes.get(i + 1) == Some(&b'*') {
+            i = source[i + 2..]
+                .find("*/")
+                .map_or(bytes.len(), |end| i + end + 4);
+            continue;
+        }
         if matches!(c, b'\'' | b'"') {
             quote = Some(c);
             i += 1;
@@ -650,7 +665,9 @@ fn parse_rules(
             layer_statement(&source[start..i], layer, rules, budget);
             start = i + 1;
         } else if c == b'{' && parens == 0 {
-            let header = source[start..i].trim();
+            let raw_header = rule_start(&source[start..i]);
+            let clean_header = strip_comments(raw_header);
+            let header = clean_header.trim();
             let body_start = i + 1;
             let mut nesting = 1;
             let mut q = None;
@@ -675,6 +692,12 @@ fn parse_rules(
                     i += 1;
                     continue;
                 }
+                if c == b'/' && bytes.get(i + 1) == Some(&b'*') {
+                    i = source[i + 2..]
+                        .find("*/")
+                        .map_or(bytes.len(), |end| i + end + 4);
+                    continue;
+                }
                 if matches!(c, b'\'' | b'"') {
                     q = Some(c);
                 } else if c == b'{' {
@@ -692,8 +715,8 @@ fn parse_rules(
                 if media_matches_with_budget(media, width, height, &mut budget.work) {
                     parse_rules(body, width, height, depth + 1, layer, apply, rules, budget);
                 }
-            } else if let Some(supports) = at_rule(header, "supports") {
-                if supports_matches(supports) {
+            } else if let Some(supports) = at_rule(raw_header, "supports") {
+                if supports_matches_with_budget(supports, false, &mut budget.work) {
                     parse_rules(body, width, height, depth + 1, layer, apply, rules, budget);
                 }
             } else if let Some(name) = at_rule(header, "layer") {
@@ -734,7 +757,10 @@ fn parse_rules(
                     .collect();
                 rules.push(Rule {
                     selectors,
-                    declarations: parse_declarations_with_limit(body, &mut budget.declarations),
+                    declarations: parse_declarations_with_limit(
+                        &strip_comments(body),
+                        &mut budget.declarations,
+                    ),
                     layer: layer.clone(),
                 });
             }
@@ -752,6 +778,7 @@ fn layer_statement(
     rules: &mut Vec<Rule>,
     budget: &mut ParseBudget,
 ) {
+    let header = strip_comments(header);
     if let Some(names) = at_rule(header.trim(), "layer") {
         let names = split_top_level(names, ',');
         // An invalid name invalidates the entire order statement.
@@ -772,6 +799,21 @@ fn layer_statement(
                 }
             }
         }
+    }
+}
+
+// Preserve conditional preludes until their own evaluator sees token boundaries.
+// Other consumers retain the existing comment normalization behavior.
+fn rule_start(mut header: &str) -> &str {
+    loop {
+        header = media_trim(header);
+        if !header.starts_with("/*") {
+            return header;
+        }
+        let Some(end) = header[2..].find("*/") else {
+            return "";
+        };
+        header = &header[end + 4..];
     }
 }
 
@@ -1477,32 +1519,714 @@ fn media_feature(feature: &str, width: f64, height: f64) -> Option<bool> {
         _ => None,
     }
 }
-fn supports_matches(query: &str) -> bool {
-    if query.len() > 4096 || query.matches("not ").take(17).count() > 16 {
+/// A conservative, bounded CSS Conditional Rules 3/4 capability query.
+/// This is an @supports condition, not the CSS.supports() implied-declaration API.
+pub fn supports_matches(query: &str) -> bool {
+    let mut work = MAX_SUPPORTS_WORK;
+    supports_matches_with_budget(query, false, &mut work)
+}
+const MAX_SUPPORTS_BYTES: usize = 16 * 1024;
+const MAX_SUPPORTS_WORK: usize = 256 * 1024;
+const MAX_SUPPORTS_TERMS: usize = 64;
+
+pub(crate) fn supports_matches_with_budget(
+    query: &str,
+    implied_declaration: bool,
+    work: &mut usize,
+) -> bool {
+    if query.len() > MAX_SUPPORTS_BYTES {
         return false;
     }
-    let q = query.trim();
-    if let Some(rest) = q.strip_prefix("not ") {
-        return !supports_matches(rest);
-    }
-    let q = q.trim_matches(['(', ')']);
-    if let Some((name, value)) = q.split_once(':') {
-        match name.trim() {
-            "display" => matches!(
-                value.trim(),
-                "block" | "flow-root" | "inline" | "inline-block" | "flex" | "grid" | "none"
-            ),
-            "float" => matches!(value.trim(), "none" | "left" | "right"),
-            "clear" => matches!(value.trim(), "none" | "left" | "right" | "both"),
-            "color" | "background-color" => parse_color(value.trim()).is_some(),
-            "width" | "height" | "margin" | "padding" => {
-                parse_length(value.trim(), 16.0, 16.0, 800.0, 600.0).is_some()
-            }
-            _ => false,
+    let available = (*work).min(MAX_SUPPORTS_WORK);
+    let mut evaluator = SupportsEvaluator {
+        work: available,
+        terms: MAX_SUPPORTS_TERMS,
+        exhausted: false,
+    };
+    let result = (|| {
+        evaluator.spend(query.len().saturating_mul(3) + 1)?;
+        if supports_commented_selector(query) {
+            return Err(());
         }
-    } else {
-        false
+        let clean = strip_comments(query);
+        let clean = media_trim(&clean);
+        // Validate even branches whose truth value cannot change the result.
+        // A lexical/depth failure is never an unsupported feature to negate.
+        evaluator.tokens(clean)?;
+        if implied_declaration && supports_declaration_parts(clean).is_some() {
+            evaluator.declaration(clean)
+        } else {
+            evaluator.condition(clean, 0)
+        }
+    })();
+    *work -= available - evaluator.work;
+    result == Ok(true) && !evaluator.exhausted
+}
+// In selectors, replacing a comment with whitespace can invent a descendant
+// combinator (div/**/span). Until selector tokenization preserves that distinction,
+// decline complete capability queries combining selector() and actual comments.
+fn supports_commented_selector(source: &str) -> bool {
+    let mut comment = false;
+    let mut selector = false;
+    let mut at = 0;
+    while at < source.len() {
+        let rest = &source[at..];
+        if let Some(comment_text) = rest.strip_prefix("/*") {
+            comment = true;
+            at = comment_text
+                .find("*/")
+                .map_or(source.len(), |end| at + end + 4);
+            continue;
+        }
+        if let Some((name, rest)) = media_word(rest) {
+            selector |= name == "selector" && rest.starts_with('(');
+        }
+        at += media_token(rest).1;
     }
+    comment && selector
+}
+struct SupportsEvaluator {
+    work: usize,
+    terms: usize,
+    exhausted: bool,
+}
+impl SupportsEvaluator {
+    fn spend(&mut self, amount: usize) -> Result<(), ()> {
+        if amount > self.work {
+            self.work = 0;
+            self.exhausted = true;
+            return Err(());
+        }
+        self.work -= amount;
+        Ok(())
+    }
+    fn term(&mut self) -> Result<(), ()> {
+        if self.terms == 0 {
+            self.exhausted = true;
+            return Err(());
+        }
+        self.terms -= 1;
+        Ok(())
+    }
+    fn tokens(&mut self, source: &str) -> Result<(), ()> {
+        self.spend(source.len() + 1)?;
+        let mut stack = Vec::new();
+        let mut at = 0;
+        while at < source.len() {
+            let (token, count) = media_token(&source[at..]);
+            match token {
+                MediaToken::Open(ch) => {
+                    if stack.len() >= MAX_MEDIA_DEPTH {
+                        self.exhausted = true;
+                        return Err(());
+                    }
+                    stack.push(ch);
+                }
+                MediaToken::Close(ch)
+                    if stack.pop()
+                        != Some(match ch {
+                            ')' => '(',
+                            ']' => '[',
+                            _ => '{',
+                        }) =>
+                {
+                    return Err(());
+                }
+                MediaToken::Bad => return Err(()),
+                _ => {}
+            }
+            at += count;
+        }
+        if stack.is_empty() { Ok(()) } else { Err(()) }
+    }
+    fn condition(&mut self, query: &str, depth: usize) -> Result<bool, ()> {
+        self.spend(query.len() + 1)?;
+        if depth >= MAX_MEDIA_DEPTH {
+            self.exhausted = true;
+            return Err(());
+        }
+        let query = media_trim(query);
+        if let Some(rest) = media_operator(query, "not") {
+            let (value, rest) = self.leaf(rest, depth)?;
+            return if media_trim(rest).is_empty() {
+                Ok(!value)
+            } else {
+                Err(())
+            };
+        }
+        let (mut value, mut rest) = self.leaf(query, depth)?;
+        let mut operator = None;
+        loop {
+            rest = media_trim(rest);
+            if rest.is_empty() {
+                return Ok(value);
+            }
+            let (and, next) = if let Some(next) = media_operator(rest, "and") {
+                (true, next)
+            } else if let Some(next) = media_operator(rest, "or") {
+                (false, next)
+            } else {
+                return Err(());
+            };
+            if operator.is_some_and(|previous| previous != and) {
+                return Err(());
+            }
+            operator = Some(and);
+            let (right, tail) = self.leaf(next, depth)?;
+            value = if and { value & right } else { value | right };
+            rest = tail;
+        }
+    }
+    fn leaf<'a>(&mut self, query: &'a str, depth: usize) -> Result<(bool, &'a str), ()> {
+        self.spend(query.len() + 1)?;
+        if query.starts_with('(') {
+            let (inner, tail) = media_parentheses(query).ok_or(())?;
+            let inner = media_trim(inner);
+            if supports_declaration_parts(inner).is_some() {
+                return Ok((self.declaration(inner)?, tail));
+            }
+            // Recognized condition syntax must parse completely. Unknown future
+            // enclosed syntax is false; malformed known operators are invalid.
+            if inner.starts_with('(')
+                || media_operator(inner, "not").is_some()
+                || media_word(inner).is_some_and(|(_, rest)| rest.starts_with('('))
+            {
+                return Ok((self.condition(inner, depth + 1)?, tail));
+            }
+            self.term()?;
+            return Ok((false, tail));
+        }
+        let (name, rest) = media_word(query).ok_or(())?;
+        if name == "url" && !media_url_quoted(rest) {
+            return Err(());
+        }
+        let (inner, tail) = media_parentheses(rest).ok_or(())?;
+        self.term()?;
+        self.spend(inner.len() + 1)?;
+        let value = if name == "selector" {
+            let mut parts = 64;
+            supports_selector(inner, 0, &mut parts, &mut self.work)?
+        } else {
+            false
+        };
+        Ok((value, tail))
+    }
+    fn declaration(&mut self, source: &str) -> Result<bool, ()> {
+        self.term()?;
+        self.spend(source.len().saturating_mul(8) + 1)?;
+        let Some((name, mut value)) = supports_declaration_parts(source) else {
+            return Ok(false);
+        };
+        if name.len() > 256 || value.len() > 4096 {
+            return Ok(false);
+        }
+        if let Some((before, important)) = value.rsplit_once('!') {
+            if !media_trim(important).eq_ignore_ascii_case("important") {
+                return Ok(false);
+            }
+            value = media_trim(before);
+        }
+        if value.is_empty() || value.contains([';', '!', '{', '}']) {
+            return Ok(false);
+        }
+        // Escaped property/value identifiers are not decoded by the actual
+        // declaration application path. Do not claim that spelling works.
+        if name.contains('\\') || value.contains('\\') {
+            return Ok(false);
+        }
+        Ok(supports_property(&name.to_ascii_lowercase(), value))
+    }
+}
+fn supports_declaration_parts(source: &str) -> Option<(&str, &str)> {
+    let (_, end) = css_identifier(source)?;
+    let rest = media_trim(&source[end..]);
+    Some((&source[..end], media_trim(rest.strip_prefix(':')?)))
+}
+fn supports_number(value: &str) -> Option<f32> {
+    (media_number_end(value)? == value.len())
+        .then(|| finite_number(value))
+        .flatten()
+}
+fn supports_length(value: &str, percent: bool, negative: bool) -> bool {
+    let Some(end) = media_number_end(value) else {
+        return false;
+    };
+    let Some(number) = supports_number(&value[..end]) else {
+        return false;
+    };
+    if !negative && number < 0.0 {
+        return false;
+    }
+    let unit = &value[end..];
+    (unit.is_empty() && number == 0.0
+        || percent && unit == "%"
+        || matches!(
+            unit.to_ascii_lowercase().as_str(),
+            "px" | "em"
+                | "rem"
+                | "ex"
+                | "ch"
+                | "vw"
+                | "vh"
+                | "vmin"
+                | "vmax"
+                | "dvw"
+                | "dvh"
+                | "svw"
+                | "svh"
+                | "lvw"
+                | "lvh"
+                | "pt"
+                | "pc"
+                | "in"
+                | "cm"
+                | "mm"
+                | "q"
+        ))
+        && parse_length(value, 16.0, 16.0, 800.0, 600.0).is_some()
+}
+fn supports_color(value: &str) -> bool {
+    if value.eq_ignore_ascii_case("currentcolor") {
+        return true;
+    }
+    let lower = value.to_ascii_lowercase();
+    if !lower.contains('(') {
+        return parse_color(value).is_some();
+    }
+    let Some((name, inner)) = lower.split_once('(') else {
+        return false;
+    };
+    let Some(inner) = inner.strip_suffix(')') else {
+        return false;
+    };
+    if !matches!(name, "rgb" | "rgba" | "hsl" | "hsla") {
+        return false;
+    }
+    let (channels, alpha) = if inner.contains(',') {
+        if inner.contains('/') {
+            return false;
+        }
+        let parts: Vec<_> = inner.split(',').map(media_trim).collect();
+        if !(3..=4).contains(&parts.len()) {
+            return false;
+        }
+        (parts[..3].to_vec(), parts.get(3).copied())
+    } else {
+        let (channels, alpha) = inner
+            .split_once('/')
+            .map_or((inner, None), |(c, a)| (c, Some(media_trim(a))));
+        let parts: Vec<_> = channels.split_ascii_whitespace().collect();
+        if parts.len() != 3 {
+            return false;
+        }
+        (parts, alpha)
+    };
+    let number = |v: &str| supports_number(v.strip_suffix('%').unwrap_or(v)).is_some();
+    if alpha.is_some_and(|a| !number(a)) {
+        return false;
+    }
+    let valid = if name.starts_with("rgb") {
+        channels.iter().all(|v| number(v))
+            && (!inner.contains(',')
+                || channels.iter().all(|v| v.ends_with('%'))
+                || channels.iter().all(|v| !v.ends_with('%')))
+    } else {
+        let hue = channels[0]
+            .strip_suffix("deg")
+            .or_else(|| channels[0].strip_suffix("rad"))
+            .or_else(|| channels[0].strip_suffix("turn"))
+            .unwrap_or(channels[0]);
+        supports_number(hue).is_some()
+            && channels[1..].iter().all(|v| v.ends_with('%') && number(v))
+    };
+    valid && parse_color(value).is_some()
+}
+fn supports_property(name: &str, value: &str) -> bool {
+    let known = matches!(
+        name,
+        "display"
+            | "float"
+            | "clear"
+            | "position"
+            | "box-sizing"
+            | "flex-direction"
+            | "flex-wrap"
+            | "width"
+            | "height"
+            | "min-width"
+            | "min-height"
+            | "max-width"
+            | "max-height"
+            | "flex-basis"
+            | "top"
+            | "right"
+            | "bottom"
+            | "left"
+            | "inset"
+            | "margin"
+            | "margin-top"
+            | "margin-right"
+            | "margin-bottom"
+            | "margin-left"
+            | "padding"
+            | "padding-top"
+            | "padding-right"
+            | "padding-bottom"
+            | "padding-left"
+            | "gap"
+            | "row-gap"
+            | "column-gap"
+            | "color"
+            | "background-color"
+            | "background"
+            | "opacity"
+            | "order"
+            | "z-index"
+            | "flex-grow"
+            | "flex-shrink"
+            | "grid-template-columns"
+            | "grid-template-rows"
+            | "grid-auto-columns"
+            | "grid-auto-rows"
+            | "grid-column-start"
+            | "grid-column-end"
+            | "grid-row-start"
+            | "grid-row-end"
+            | "grid-auto-flow"
+    );
+    if !known {
+        return false;
+    }
+    if css_wide(value) {
+        return true;
+    }
+    match name {
+        // These spellings are exactly those currently consumed by apply_property.
+        "display" => matches!(
+            value,
+            "none" | "block" | "flow-root" | "inline" | "inline-block" | "flex" | "grid"
+        ),
+        "float" => matches!(
+            value.to_ascii_lowercase().as_str(),
+            "none" | "left" | "right"
+        ),
+        "clear" => matches!(
+            value.to_ascii_lowercase().as_str(),
+            "none" | "left" | "right" | "both"
+        ),
+        "position" => matches!(
+            value.to_ascii_lowercase().as_str(),
+            "static" | "relative" | "absolute" | "fixed"
+        ),
+        "box-sizing" => matches!(value, "content-box" | "border-box"),
+        "flex-direction" => matches!(value, "row" | "row-reverse" | "column" | "column-reverse"),
+        "flex-wrap" => matches!(value, "nowrap" | "wrap" | "wrap-reverse"),
+        "color" | "background-color" => supports_color(value),
+        "background" => {
+            supports_color(value)
+                && (!value.eq_ignore_ascii_case("currentcolor") || value == "currentcolor")
+        }
+        "opacity" => supports_number(value).is_some(),
+        "flex-grow" | "flex-shrink" => supports_number(value).is_some_and(|v| v >= 0.0),
+        "order" | "z-index" => {
+            name == "z-index" && value.eq_ignore_ascii_case("auto") || supports_integer(value)
+        }
+        "grid-auto-flow" => valid_grid_auto_flow(value),
+        "grid-column-start" | "grid-column-end" | "grid-row-start" | "grid-row-end" => {
+            let lower = value.to_ascii_lowercase();
+            let parts: Vec<_> = lower.split_ascii_whitespace().collect();
+            let valid = lower == "auto"
+                || supports_integer(&lower)
+                || parts.len() == 2
+                    && parts.contains(&"span")
+                    && parts.iter().any(|v| supports_integer(v));
+            valid && parse_grid_line(value).is_some()
+        }
+        "grid-template-columns" | "grid-template-rows" | "grid-auto-columns" | "grid-auto-rows" => {
+            let lower = value.to_ascii_lowercase();
+            (!name.starts_with("grid-auto-") || lower != "none" && !lower.contains("repeat("))
+                && supports_tracks(&lower, 0)
+                && parse_grid_tracks(value, 16.0, 16.0, 800.0, 600.0).is_some()
+        }
+        _ => {
+            let spacing = name.starts_with("margin")
+                || name.starts_with("padding")
+                || matches!(name, "inset" | "top" | "right" | "bottom" | "left");
+            let signed = spacing && !name.starts_with("padding");
+            let auto = signed
+                || matches!(
+                    name,
+                    "width" | "height" | "min-width" | "min-height" | "flex-basis"
+                );
+            let none = matches!(name, "max-width" | "max-height");
+            let gap = matches!(name, "gap" | "row-gap" | "column-gap");
+            let count = if matches!(name, "margin" | "padding" | "inset") {
+                4
+            } else if name == "gap" {
+                2
+            } else {
+                1
+            };
+            let parts: Vec<_> = value.split_ascii_whitespace().collect();
+            !parts.is_empty()
+                && parts.len() <= count
+                && parts.iter().all(|v| {
+                    auto && v.eq_ignore_ascii_case("auto")
+                        || none && v.eq_ignore_ascii_case("none")
+                        || gap && v.eq_ignore_ascii_case("normal")
+                        || supports_length(v, true, signed)
+                })
+        }
+    }
+}
+fn supports_integer(value: &str) -> bool {
+    let digits = value.strip_prefix(['+', '-']).unwrap_or(value);
+    !digits.is_empty() && digits.bytes().all(|b| b.is_ascii_digit()) && value.parse::<i32>().is_ok()
+}
+fn supports_tracks(value: &str, depth: usize) -> bool {
+    fn count(value: &str, depth: usize) -> Option<usize> {
+        if depth > 1 {
+            return None;
+        }
+        if depth == 0 && value == "none" {
+            return Some(0);
+        }
+        let tokens = words(value);
+        if tokens.is_empty() || tokens.len() > 64 {
+            return None;
+        }
+        let breadth = |value: &str, fraction: bool| {
+            matches!(value, "auto" | "min-content" | "max-content")
+                || supports_length(value, true, false)
+                || fraction
+                    && value
+                        .strip_suffix("fr")
+                        .and_then(supports_number)
+                        .is_some_and(|v| v >= 0.0)
+        };
+        let mut total = 0usize;
+        for v in tokens {
+            let tracks = if let Some(inner) =
+                v.strip_prefix("repeat(").and_then(|v| v.strip_suffix(')'))
+            {
+                let args = split_top_level(inner, ',');
+                if depth != 0 || args.len() != 2 || !supports_integer(args[0]) {
+                    return None;
+                }
+                let repeat = args[0].parse::<usize>().ok()?;
+                if !(1..=64).contains(&repeat) {
+                    return None;
+                }
+                repeat.checked_mul(count(args[1], depth + 1)?)?
+            } else if let Some(inner) = v.strip_prefix("minmax(").and_then(|v| v.strip_suffix(')'))
+            {
+                let args = split_top_level(inner, ',');
+                if args.len() != 2 || !breadth(args[0], false) || !breadth(args[1], true) {
+                    return None;
+                }
+                1
+            } else {
+                if !breadth(v, true) {
+                    return None;
+                }
+                1
+            };
+            total = total.checked_add(tracks)?;
+            if total > 64 {
+                return None;
+            }
+        }
+        Some(total)
+    }
+    count(value, depth).is_some()
+}
+// A syntax-only positive subset of the matcher. Matching against a fabricated
+// DOM cannot determine support, especially inside :not() or forgiving :is().
+fn supports_selector(
+    source: &str,
+    depth: usize,
+    parts: &mut usize,
+    work: &mut usize,
+) -> Result<bool, ()> {
+    if source.len() > 4096 || depth >= 16 || source.len() + 1 > *work {
+        return Err(());
+    }
+    *work -= source.len() + 1;
+    // @namespace is not implemented. An undeclared named prefix invalidates
+    // the conditional rule itself, including under `not` (Conditional 4 §2).
+    let mut at = 0;
+    while at < source.len() {
+        if media_ident_start(&source[at..]) {
+            let n = media_ident_sequence(&source[at..]).0;
+            let rest = &source[at + n..];
+            if rest.starts_with('|') && !rest.starts_with("|=") && !rest.starts_with("||") {
+                return Err(());
+            }
+        }
+        at += media_token(&source[at..]).1;
+    }
+    if source.contains('\\') {
+        return Ok(false);
+    }
+    let mut rest = media_trim(source);
+    let mut need_compound = true;
+    while !rest.is_empty() {
+        if *parts == 0 {
+            return Err(());
+        }
+        *parts -= 1;
+        let before = rest;
+        let mut found = false;
+        if let Some(next) = rest.strip_prefix('*') {
+            rest = next;
+            found = true;
+        } else if let Some((_, n)) = css_identifier(rest) {
+            rest = &rest[n..];
+            found = true;
+        }
+        loop {
+            if let Some(next) = rest.strip_prefix(['.', '#']) {
+                let Some((_, n)) = css_identifier(next) else {
+                    return Ok(false);
+                };
+                rest = &next[n..];
+                found = true;
+            } else if let Some(next) = rest.strip_prefix('[') {
+                let Some(end) = next.find(']') else {
+                    return Ok(false);
+                };
+                if !supports_attribute(&next[..end]) {
+                    return Ok(false);
+                }
+                rest = &next[end + 1..];
+                found = true;
+            } else if let Some(next) = rest.strip_prefix(':') {
+                let Some((name, n)) = css_identifier(next) else {
+                    return Ok(false);
+                };
+                rest = &next[n..];
+                if rest.starts_with('(') {
+                    let Some((inner, tail)) = media_parentheses(rest) else {
+                        return Ok(false);
+                    };
+                    if matches!(name.as_str(), "is" | "where" | "not") {
+                        let list = split_top_level(inner, ',');
+                        if list.is_empty() || list.len() > 64 {
+                            return Ok(false);
+                        }
+                        for item in list {
+                            if !supports_selector(item, depth + 1, parts, work)? {
+                                return Ok(false);
+                            }
+                        }
+                    } else if matches!(
+                        name.as_str(),
+                        "nth-child" | "nth-last-child" | "nth-of-type" | "nth-last-of-type"
+                    ) {
+                        if !supports_nth(inner) {
+                            return Ok(false);
+                        }
+                    } else {
+                        return Ok(false);
+                    }
+                    rest = tail;
+                } else if !matches!(
+                    name.as_str(),
+                    "root"
+                        | "empty"
+                        | "first-child"
+                        | "last-child"
+                        | "only-child"
+                        | "first-of-type"
+                        | "last-of-type"
+                        | "only-of-type"
+                ) {
+                    return Ok(false);
+                }
+                found = true;
+            } else {
+                break;
+            }
+        }
+        if !found || before.len() == rest.len() {
+            return Ok(false);
+        }
+        need_compound = false;
+        let trimmed = media_trim(rest);
+        let whitespace = trimmed.len() != rest.len();
+        rest = trimmed;
+        if rest.is_empty() {
+            break;
+        }
+        if let Some(next) = rest.strip_prefix(['>', '+', '~']) {
+            rest = media_trim(next);
+        } else if !whitespace {
+            return Ok(false);
+        }
+        need_compound = true;
+    }
+    Ok(!need_compound)
+}
+fn supports_attribute(source: &str) -> bool {
+    let source = media_trim(source);
+    let Some((_, n)) = css_identifier(source) else {
+        return false;
+    };
+    let mut rest = media_trim(&source[n..]);
+    if rest.is_empty() {
+        return true;
+    }
+    if let Some(next) = rest.strip_prefix(['~', '|', '^', '$', '*']) {
+        rest = next;
+    }
+    let Some(next) = rest.strip_prefix('=') else {
+        return false;
+    };
+    rest = media_trim(next);
+    if rest.starts_with(['\'', '"']) {
+        let quote = rest.as_bytes()[0] as char;
+        let Some(end) = rest[1..].find(quote) else {
+            return false;
+        };
+        if rest[1..end + 1].contains(['\n', '\r', '\x0c']) {
+            return false;
+        }
+        rest = &rest[end + 2..];
+    } else {
+        let Some((_, n)) = css_identifier(rest) else {
+            return false;
+        };
+        rest = &rest[n..];
+    }
+    rest.is_empty()
+        || rest.chars().next().is_some_and(media_space)
+            && matches!(media_trim(rest), "" | "i" | "I" | "s")
+}
+fn supports_nth(source: &str) -> bool {
+    if source.contains(['\t', '\r', '\n', '\x0c']) {
+        return false;
+    }
+    let lower = media_trim(source).to_ascii_lowercase();
+    if matches!(lower.as_str(), "odd" | "even") || supports_integer(&lower) {
+        return true;
+    }
+    let Some((a, b)) = lower.split_once('n') else {
+        return false;
+    };
+    if !(matches!(a, "" | "+" | "-") || supports_integer(a)) {
+        return false;
+    }
+    let b = b.trim();
+    if b.is_empty() {
+        return true;
+    }
+    let Some(unsigned) = b.strip_prefix(['+', '-']) else {
+        return false;
+    };
+    let unsigned = unsigned.trim_start();
+    !unsigned.is_empty()
+        && unsigned.bytes().all(|b| b.is_ascii_digit())
+        && unsigned.parse::<i32>().is_ok()
 }
 pub fn parse_declarations(source: &str) -> Vec<Declaration> {
     parse_declarations_with_limit(&strip_comments(source), &mut (1024 * 1024))
@@ -1676,6 +2400,7 @@ fn shorthand_properties(name: &str) -> Option<Vec<String>> {
         "place-content" => &["align-content", "justify-content"],
         "inset" => &["top", "right", "bottom", "left"],
         "background" => &["background-color"],
+        "list-style" => &["list-style-type", "list-style-position"],
         "flex" => &["flex-grow", "flex-shrink", "flex-basis"],
         "flex-flow" => &["flex-direction", "flex-wrap"],
         "font" => &[
@@ -1735,6 +2460,50 @@ fn shorthand_properties(name: &str) -> Option<Vec<String>> {
     Some(list.iter().map(|name| (*name).into()).collect())
 }
 fn expand_declaration(name: &str, value: &str, important: bool, out: &mut Vec<Declaration>) {
+    if name == "list-style" && !css_wide(value) && !value.contains("var(") {
+        let lower = value.to_ascii_lowercase();
+        let parts = words(&lower);
+        let mut kind = None;
+        let mut position = None;
+        if parts.is_empty() || parts.len() > 2 {
+            return;
+        }
+        for part in parts {
+            if matches!(part, "inside" | "outside") {
+                if position.replace(part).is_some() {
+                    return;
+                }
+            } else if matches!(
+                part,
+                "none"
+                    | "disc"
+                    | "circle"
+                    | "square"
+                    | "decimal"
+                    | "decimal-leading-zero"
+                    | "disclosure-open"
+                    | "disclosure-closed"
+            ) {
+                if kind.replace(part).is_some() {
+                    return;
+                }
+            } else {
+                return;
+            }
+        }
+        for (name, value) in [
+            ("list-style-type", kind.unwrap_or("disc")),
+            ("list-style-position", position.unwrap_or("outside")),
+        ] {
+            out.push(Declaration {
+                name: name.into(),
+                value: value.into(),
+                important,
+                pending_shorthand: None,
+            });
+        }
+        return;
+    }
     let global = css_wide(value);
     let has_vars = value.contains("var(");
     if let Some(properties) = shorthand_properties(name) {
@@ -2309,6 +3078,7 @@ pub fn compute_styles_with_rules(
         }
     }
     let mut styles = vec![ComputedStyle::default(); doc.nodes.len()];
+    let mut first_summaries = vec![false; doc.nodes.len()];
     let mut border_styles = vec![Edges::all(false); doc.nodes.len()];
     let empty_variables = Arc::new(BTreeMap::new());
     let mut variables: Vec<Arc<BTreeMap<String, String>>> = vec![empty_variables; doc.nodes.len()];
@@ -2337,7 +3107,14 @@ pub fn compute_styles_with_rules(
             style.display = Display::None;
         }
         let tag = doc.tag(id).unwrap_or("");
-        apply_user_agent(&mut style, doc, id, tag);
+        if tag == "details"
+            && doc.namespace(id) == Some(Namespace::Html)
+            && let Some(summary) = doc.first_summary(id)
+            && let Some(first) = first_summaries.get_mut(summary)
+        {
+            *first = true;
+        }
+        apply_user_agent(&mut style, doc, id, tag, first_summaries[id]);
         style.line_height = style.font_size
             * parent
                 .map(|p| p.line_height / p.font_size.max(1.0))
@@ -2620,6 +3397,7 @@ const SUPPORTED_PROPERTIES: &[&str] = &[
     "opacity",
     "box-sizing",
     "list-style-type",
+    "list-style-position",
     "vertical-align",
 ];
 fn supported_property(name: &str) -> bool {
@@ -2845,7 +3623,13 @@ fn resolve_vars(
     let new = format!("{}{}{}", &value[..start], replacement, &value[end + 1..]);
     resolve_vars(&new, variables, depth + 1, work)
 }
-fn apply_user_agent(s: &mut ComputedStyle, doc: &Document, id: NodeId, tag: &str) {
+fn apply_user_agent(
+    s: &mut ComputedStyle,
+    doc: &Document,
+    id: NodeId,
+    tag: &str,
+    first_summary: bool,
+) {
     if doc.namespace(id) != Some(Namespace::Html) {
         if doc.namespace(id) == Some(Namespace::Svg) {
             if tag == "svg" {
@@ -2872,6 +3656,19 @@ fn apply_user_agent(s: &mut ComputedStyle, doc: &Document, id: NodeId, tag: &str
             }
         }
         return;
+    }
+    s.list_item = tag == "li" || first_summary;
+    if first_summary {
+        s.list_style_position = "inside".into();
+        s.list_style_type = if doc.nodes[id]
+            .parent
+            .is_some_and(|parent| doc.attr(parent, "open").is_some())
+        {
+            "disclosure-open"
+        } else {
+            "disclosure-closed"
+        }
+        .into();
     }
     s.display = match tag {
         "noscript" if doc.scripting_enabled() => Display::None,
@@ -3059,6 +3856,7 @@ fn apply_property(
                 | "align-content"
                 | "grid-auto-flow"
                 | "list-style-type"
+                | "list-style-position"
                 | "vertical-align"
         )
     {
@@ -3078,6 +3876,7 @@ fn apply_property(
                 | "text-align"
                 | "white-space"
                 | "list-style-type"
+                | "list-style-position"
         );
         let from = if value == "inherit" || value == "unset" && inherited {
             parent.unwrap_or(&initial)
@@ -3130,6 +3929,7 @@ fn apply_property(
                     | "inline-grid"
             ) {
                 s.flow_root = value == "flow-root";
+                s.list_item = value == "list-item";
             }
             s.display = match value {
                 "none" => Display::None,
@@ -3436,6 +4236,9 @@ fn apply_property(
             }
         }
         "list-style-type" => s.list_style_type = value.into(),
+        "list-style-position" if matches!(value, "inside" | "outside") => {
+            s.list_style_position = value.into()
+        }
         "vertical-align" => s.vertical_align = value.into(),
         _ => {
             if let Some(side) = name.strip_prefix("margin-") {
@@ -3475,6 +4278,7 @@ fn copy_property(s: &mut ComputedStyle, p: &ComputedStyle, name: &str) {
         "display" => {
             s.display = p.display;
             s.flow_root = p.flow_root;
+            s.list_item = p.list_item;
         }
         "float" => s.float = p.float.clone(),
         "clear" => s.clear = p.clear.clone(),
@@ -3495,6 +4299,7 @@ fn copy_property(s: &mut ComputedStyle, p: &ComputedStyle, name: &str) {
         "white-space" => s.white_space = p.white_space.clone(),
         "text-decoration" => s.text_decoration = p.text_decoration.clone(),
         "list-style-type" => s.list_style_type = p.list_style_type.clone(),
+        "list-style-position" => s.list_style_position = p.list_style_position.clone(),
         "vertical-align" => s.vertical_align = p.vertical_align.clone(),
         "border-radius" => s.border_radius = p.border_radius,
         "position" => s.position = p.position.clone(),
@@ -4057,6 +4862,334 @@ impl<T> TransposeOption<T> for Option<Option<T>> {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn supports_review_regressions_preserve_raw_comments_namespaces_and_capabilities() {
+        let long_prefix = "x".repeat(1100);
+        for query in [
+            "(position:sticky)".to_owned(),
+            "selector(div/**/span)".into(),
+            r"s\65 lector(div/**/span)".into(),
+            "not selector(div/**/span)".into(),
+            "selector(div/* ) } '\" */span) or (display:flex)".into(),
+            "selector(div) /* unterminated".into(),
+            format!("not selector({long_prefix}|rect)"),
+            format!("(display:flex) or selector(a[{long_prefix}|href])"),
+        ] {
+            assert!(!supports_matches(&query), "{query}");
+            let doc = Document::parse("<p id=x>text</p>");
+            let source = format!("#x{{color:green}} @supports {query} {{#x{{color:red}}}}");
+            let style =
+                &compute_styles(&doc, &[source], 400.0, 300.0)[doc.query_selector("#x").unwrap()];
+            assert_eq!(style.color, Color::rgb(0, 128, 0), "{query}");
+        }
+        assert!(supports_matches(r#"selector([data-value="/*literal*/"] )"#));
+        assert!(supports_matches("not (position:sticky)"));
+        let doc = Document::parse("<p id=x>text</p>");
+        let source = r#"/* } ) " ' */ @layer before;
+            @supports /* } ) " ' */ (display:flex) {
+                /* } ) " ' */ @layer after {#x{color:green /* } */}}
+            }
+            @layer before {#x {color:red}}
+            @supports selector(div/**/span) {@layer false;}
+            @layer tail, false;
+            @layer tail {#x{background:red}}
+            @layer false {#x{background:green}}
+            @media (width >= 100px) {#x{width:20px/*) } "*/}}
+            #x{height:30px; /* unterminated } "
+        "#;
+        let style = &compute_styles(&doc, &[source.into()], 400.0, 300.0)
+            [doc.query_selector("#x").unwrap()];
+        assert_eq!(style.color, Color::rgb(0, 128, 0));
+        assert_eq!(style.background_color, Color::rgb(0, 128, 0));
+        assert_eq!(style.width, Length::Px(20.0));
+        assert_eq!(style.height, Length::Px(30.0));
+    }
+
+    #[test]
+    fn summary_markers_use_first_html_summary_and_author_display_and_list_overrides() {
+        let doc = Document::parse(
+            "<details id=d><div>before</div><summary id=first><b id=child>Summary</b></summary><summary id=second>Second</summary></details><details open><summary id=open>Open</summary></details><summary id=outside>Outside</summary><ul><li id=li>Item</li></ul>",
+        );
+        let rules = "#first{list-style:none inside} #open{display:block} #li{list-style:square inside} #second{display:list-item;list-style:disclosure-open outside} #child{list-style-position:inherit}";
+        let styles = compute_styles(&doc, &[rules.into()], 400.0, 300.0);
+        let style = |id| &styles[doc.query_selector(id).unwrap()];
+        assert!(style("#first").list_item);
+        assert_eq!(style("#first").list_style_type, "none");
+        assert_eq!(style("#first").list_style_position, "inside");
+        assert!(!style("#child").list_item);
+        assert_eq!(style("#child").list_style_position, "inside");
+        assert!(!style("#open").list_item);
+        assert_eq!(style("#open").list_style_type, "disclosure-open");
+        assert!(!style("#outside").list_item);
+        assert!(style("#li").list_item);
+        assert_eq!(style("#li").list_style_type, "square");
+        assert_eq!(style("#second").list_style_type, "disclosure-open");
+        assert_eq!(style("#second").list_style_position, "outside");
+        let styles = compute_styles(&doc, &[], 400.0, 300.0);
+        assert_eq!(
+            styles[doc.query_selector("#first").unwrap()].list_style_type,
+            "disclosure-closed"
+        );
+        assert!(!styles[doc.query_selector("#second").unwrap()].list_item);
+    }
+    #[test]
+    fn list_style_shorthand_global_values_and_invalid_pairs_are_atomic() {
+        let doc = Document::parse(
+            "<ul style='list-style:circle inside'><li id=a style='list-style:inherit'>a</li><li id=b style='display:block;display:inherit;list-style:initial'>b</li><li id=c style='list-style:square inside;list-style:none bogus;list-style:inside outside'>c</li></ul>",
+        );
+        let styles = compute_styles(&doc, &[], 400.0, 300.0);
+        let a = &styles[doc.query_selector("#a").unwrap()];
+        assert_eq!(a.list_style_type, "circle");
+        assert_eq!(a.list_style_position, "inside");
+        let b = &styles[doc.query_selector("#b").unwrap()];
+        assert!(!b.list_item);
+        assert_eq!(b.list_style_type, "disc");
+        assert_eq!(b.list_style_position, "outside");
+        let c = &styles[doc.query_selector("#c").unwrap()];
+        assert_eq!(c.list_style_type, "square");
+        assert_eq!(c.list_style_position, "inside");
+    }
+
+    #[test]
+    fn supports_conditions_preserve_boolean_grammar_and_unknown_negation() {
+        for query in [
+            "(display:flex)",
+            "(display:flex) and (width:1px)",
+            "(display:flex) or (unknown:value)",
+            "not (unknown:value)",
+            "((display:flex) or (display:subgrid)) and (opacity:.5)",
+            "not ((display:subgrid) and (color:red))",
+            "not future(foo)",
+            "(display:flex)/**/and/**/(color:red)",
+            "(DISPLAY:flex) AND (COLOR:RED)",
+            "(display:flex !important)",
+            "(display:flex ! IMPORTANT)",
+            "(display:revert-layer)",
+            "future(url(abc)) or (display:flex)",
+        ] {
+            assert!(supports_matches(query), "{query}");
+        }
+        for query in [
+            "",
+            "display:flex",
+            "(display:flex",
+            "display:flex)",
+            "not not (display:flex)",
+            "(display:flex) and (color:red) or (width:1px)",
+            "(display:flex) or (color:red) and (width:1px)",
+            "not (display:flex) or (color:red)",
+            "(display:flex), (color:red)",
+            "(display:flex) and",
+            "(display:flex) garbage",
+            "url(foo) or (display:flex)",
+            "future(url(foo bar)) or (display:flex)",
+            "not future(url(foo bar))",
+            "not (display:flex",
+            "not ((display:flex) and)",
+        ] {
+            assert!(!supports_matches(query), "{query}");
+        }
+    }
+    #[test]
+    fn supports_declarations_use_strict_positive_value_grammar() {
+        for query in [
+            "(width:0)",
+            "(width:1e2px)",
+            "(width:10%)",
+            "(height:auto)",
+            "(min-width:0)",
+            "(max-height:none)",
+            "(margin:-1px auto 2em 3%)",
+            "(padding:0 1px)",
+            "(inset:0 auto)",
+            "(gap:normal 1rem)",
+            "(position:FIXED)",
+            "(flex-wrap:wrap-reverse)",
+            "(box-sizing:border-box)",
+            "(flex-grow:0.5)",
+            "(order:-3)",
+            "(z-index:auto)",
+            "(opacity:2)",
+            "(color:rgba(20, 30, 40, .5))",
+            "(color:rgb(10% 20% 30% / 20%))",
+            "(color:hsl(1turn, 50%, 30%))",
+            "(color:HSLA(120deg 50% 40% / .5))",
+            "(color:currentcolor)",
+            "(background:#ff000080)",
+            "(grid-template-columns:repeat(2,minmax(10px,1fr) 20%))",
+            "(grid-auto-rows:min-content 1fr)",
+            "(grid-auto-flow:column dense)",
+            "(grid-column-start:span 3)",
+            "(grid-row-end:-2)",
+        ] {
+            assert!(supports_matches(query), "{query}");
+        }
+        for query in [
+            "(padding:auto)",
+            "(padding:-1px)",
+            "(width:-1px)",
+            "(width:20)",
+            "(width:1.px)",
+            "(width:1 px)",
+            "(width:NaNpx)",
+            "(width:none)",
+            "(width:min-content)",
+            "(padding:1px 2px 3px 4px 5px)",
+            "(margin:1px junk)",
+            "(gap:-1px)",
+            "(flex-grow:-1)",
+            "(order:1.0)",
+            "(z-index:1e2)",
+            "(opacity:20%)",
+            "(display:contents)",
+            "(display:subgrid)",
+            "(display:flex garbage)",
+            "(display:flex !garbage)",
+            "(display:flex; color:red)",
+            "(color:rgb(1,,2,3))",
+            "(color:rgb(1 2 3 0.5))",
+            "(color:rgb(1%,2,3))",
+            "(color:rgb(1 / 2 / 3))",
+            "(color:hsl(1deg 2 3))",
+            "(color:lab(30% 0 0))",
+            "(background:linear-gradient(red,blue))",
+            "(background:red garbage)",
+            "(grid-template-columns:subgrid)",
+            "(grid-template-columns:10)",
+            "(grid-template-columns:minmax(1fr,2fr))",
+            "(grid-auto-rows:repeat(2,1fr))",
+            "(grid-column-start:0)",
+            "(grid-column-start:span -1)",
+            "(--custom:anything)",
+            "(width:var(--size))",
+            "(width:calc(1px + 2px))",
+            "(transform:rotate(1deg))",
+            "(display:FLEX)",
+            r"(d\69 splay:flex)",
+        ] {
+            assert!(!supports_matches(query), "{query}");
+        }
+    }
+    #[test]
+    fn supports_selector_is_structural_and_recursively_unforgiving() {
+        for selector in [
+            "missing",
+            "*",
+            "div.missing#absent",
+            "main > div + p ~ a",
+            "article .child",
+            "[data-x]",
+            "[data-x='value']",
+            "[data-x^=prefix i]",
+            "[lang|=en]",
+            "div:first-child",
+            "div:nth-child(2n + 1)",
+            "div:nth-last-of-type(-n+3)",
+            "div:not(.a,.b)",
+            ":is(div,p):where(.a,.b)",
+            ":not(:is(.a,.b))",
+            ":root",
+            ":empty",
+        ] {
+            assert!(
+                supports_matches(&format!("selector({selector})")),
+                "{selector}"
+            );
+        }
+        for selector in [
+            "",
+            "div,p",
+            "> div",
+            "div >",
+            "div > > p",
+            "#",
+            ".123",
+            "div..a",
+            "[x==foo]",
+            "[x='foo' bogus]",
+            "[x=123]",
+            "div::before",
+            "div::marker",
+            "div:has(p)",
+            "div:hover",
+            "div:scope",
+            "div:first-child()",
+            "div:nth-child(2 n)",
+            "div:nth-child(n 1)",
+            "div:nth-child(2n of .x)",
+            "svg|rect",
+            "*|rect",
+            ":is(div,:unknown)",
+            ":not(:unknown)",
+            ":where(div,)",
+            r".a\62",
+            "DIV:FIRST-CHILD",
+        ] {
+            assert!(
+                !supports_matches(&format!("selector({selector})")),
+                "{selector}"
+            );
+        }
+        assert!(supports_matches("not selector(:has(p))"));
+        assert!(!supports_matches("not selector(svg|rect)"));
+        assert!(!supports_matches(
+            "(display:flex) or selector(a[xlink|href])"
+        ));
+        assert!(supports_matches("selector(.absent) and (display:grid)"));
+    }
+    #[test]
+    fn supports_limits_never_become_matches_through_not_or_short_circuit() {
+        let huge = "x".repeat(MAX_SUPPORTS_BYTES + 1);
+        assert!(!supports_matches(&huge));
+        assert!(!supports_matches(&format!("not ({huge})")));
+        let deep = format!("not {}(unknown:value){}", "(".repeat(30), ")".repeat(30));
+        assert!(!supports_matches(&deep));
+        let many = vec!["(display:flex)"; MAX_SUPPORTS_TERMS + 1].join(" or ");
+        assert!(!supports_matches(&many));
+        let selectors = vec!["div"; 66].join(" ");
+        assert!(!supports_matches(&format!("not selector({selectors})")));
+        let mut work = 1;
+        assert!(!supports_matches_with_budget(
+            "not (unknown:value)",
+            false,
+            &mut work
+        ));
+        assert_eq!(work, 0);
+        let mut work = 500;
+        let mut matches = 0;
+        for _ in 0..20 {
+            matches += usize::from(supports_matches_with_budget(
+                "(display:flex)",
+                false,
+                &mut work,
+            ));
+        }
+        assert!(matches > 0 && matches < 20);
+        assert_eq!(work, 0);
+        let mut work = MAX_SUPPORTS_WORK;
+        assert!(supports_matches_with_budget(
+            "display:flex",
+            true,
+            &mut work
+        ));
+        assert!(!supports_matches_with_budget(
+            "display:flex",
+            false,
+            &mut work
+        ));
+    }
+    #[test]
+    fn supports_controls_layers_with_actual_computed_values() {
+        let doc = Document::parse("<div id=x></div>");
+        let source = "@supports (padding:auto) {@layer rejected;} @supports selector(#absent) and (display:grid) {@layer accepted;} @layer later,accepted,rejected; @layer rejected {#x{color:red}} @layer later {#x{color:green}} @supports ((width:2em) and (color:rgb(1 2 3))) {#x{width:2em;background:rgb(1 2 3);opacity:.5}}";
+        let style = &compute_styles(&doc, &[source.into()], 800.0, 600.0)
+            [doc.query_selector("#x").unwrap()];
+        assert_eq!(style.color, Color::rgb(255, 0, 0));
+        assert_eq!(style.width, Length::Px(32.0));
+        assert_eq!(style.background_color, Color::rgb(1, 2, 3));
+        assert_eq!(style.opacity, 0.5);
+    }
+
     use super::*;
     fn layered_style(css: &str, inline: &str) -> ComputedStyle {
         let doc = Document::parse(&format!("<div id=target style='{inline}'>text</div>"));

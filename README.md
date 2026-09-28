@@ -27,6 +27,7 @@ Then launch the home page or one of the examples:
 ./run.sh ./examples/positioning.html
 ./run.sh ./examples/events.html
 ./run.sh ./examples/responsive.html
+./run.sh ./examples/disclosures.html
 ```
 
 The launcher builds the release executable and exposes installed desktop libraries on NixOS. Rust, Cargo, Python 3, and a Wayland or X11 desktop are required. Native browsing currently requires Linux with Landlock ABI 6 enabled (normally kernel 6.12 or newer), mounted procfs, and seccomp support; sandbox setup fails closed. The validated platform is x86-64 Linux. Fonts are bundled. On a conventional desktop with the shared libraries available:
@@ -35,7 +36,7 @@ The launcher builds the release executable and exposes installed desktop librari
 cargo run --locked --release -- https://example.com
 ```
 
-`./run.sh` does not install anything, change system settings, or use another browser to render pages. The `shell.nix` file offers a Nix development environment. Headless rendering does not require a display server. The current `--render`, benchmark and library paths execute in their own calling process and do not install the native page sandbox.
+`./run.sh` does not install anything, change system settings, or use another browser to render pages. The `shell.nix` file offers a Nix development environment. Headless rendering does not require a display server. The `--render`, `--benchmark` and library paths execute in their own calling process and do not install the native page sandbox. `--benchmark-worker` uses the confined worker and broker, with the same Linux requirements as native browsing.
 
 ## Use it
 
@@ -43,7 +44,7 @@ cargo run --locked --release -- https://example.com
 - **Alt+Left / Alt+Right** navigate history; **Ctrl+R** or F5 reloads.
 - Scroll with the wheel, arrow keys, Page Up/Down, Home, and End.
 - **Ctrl+Plus / Ctrl+Minus / Ctrl+0** change page zoom.
-- Click links and buttons; Tab moves among basic form fields and links.
+- Click links and buttons; Tab moves among basic form fields, links and disclosure summaries.
 - Text fields support typing, cursor movement, Shift-selection, Backspace/Delete, and native Ctrl+C/X/V clipboard shortcuts. Basic GET and URL-encoded POST forms are supported.
 - The home page's **Add one** button executes this engine's own script interpreter.
 - `--no-scripts` disables scripting. Diagnostics are printed to the terminal.
@@ -58,15 +59,18 @@ cargo run --locked --release -- --render examples/forms.html --output artifacts/
 cargo run --locked --release -- --render --click '#increment' --click '#increment' --output artifacts/counter.png
 cargo run --locked --release -- --render --width 600 --height 1000 --output artifacts/narrow.png
 cargo run --locked --release -- --benchmark 100 --output artifacts/benchmark.png
+cargo run --locked --release -- --benchmark-worker 100 --output artifacts/worker-benchmark.png
 ```
 
 `--dump-dom` prints the resulting DOM. `--window-screenshot artifacts/window.png --exit-after 5` captures the browser's own framebuffer during a short native-window smoke test. Run `--help` for CLI details.
 
 The native UI loads each document in a fresh child process. Its address bar, clipboard and software painter stay in the UI process; a separate broker supplies resources and authoritative redirect URLs, while validated document and drawing snapshots return from the renderer. The renderer cannot directly read files or open sockets. Cross-origin images use a fresh restricted decoder, which returns pixels without exposing their raw responses to the renderer. See [the security boundary](docs/SECURITY.md) for remaining gaps.
 
-For a JSON report covering the home, gallery, form, template/Grid, positioning, event/compositing and responsive fixtures, including a scrolled view with visible opacity, run `python3 tools/benchmark.py`.
+For a JSON report covering the home, gallery, form, template/Grid, positioning, event/compositing, responsive and disclosure fixtures, including a scrolled view with visible opacity, run `python3 tools/benchmark.py`.
 
 The benchmark measures **warm-cache CSS computation + layout + software painting of the loaded page**. It excludes parsing, scripts, network, image decoding, PNG encoding, and native presentation. It is not a Chromium comparison or a general web-performance score. See [performance](docs/PERFORMANCE.md).
+
+`python3 tools/benchmark_worker.py` separately measures fresh confined process startup, document loading, validated snapshot round trips, software painting and teardown. It saves raw samples and environment/build hashes. It does not open a window or measure native presentation.
 
 ## Check the implementation
 

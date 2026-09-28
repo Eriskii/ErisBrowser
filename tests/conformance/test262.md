@@ -110,18 +110,18 @@ python3 tools/test262_conformance.py --record-baseline tests/conformance/test262
 python3 tools/test262_conformance.py --baseline tests/conformance/test262-current.json
 ```
 
-The recorded release measurement contains **534 passed and 118 unsupported
+The recorded release measurement contains **536 passed and 116 unsupported
 variants**, with all 32 preflights verified and no failed, harness, resource,
-timeout or adapter outcomes. Each execution mode has 267 passes and 59
-unsupported cases. The RegExp increment preserved all 532 previous passes,
-all 652 source/mode/harness fingerprints and the original runner policy, then
-added both variants of the existing JSON RegExp-object case. The recorded
-baseline gate has zero regressions. CI runs it after building the release
-adapter.
+timeout or adapter outcomes. Each execution mode has 268 passes and 58
+unsupported cases. Object literals, array reversal and integer radix formatting
+preserve all 534 previous passes and add both variants of the existing JSON
+ASCII-escaping source. All 652 source/mode/harness fingerprints and the runner
+policy remain unchanged. The recorded baseline gate has zero regressions.
+CI runs it after building the release adapter.
 
 Unsupported outcomes retain their declared-feature or interpreter reasons,
 including Reflect, Proxy, Symbol, BigInt, complete JSON source-context semantics,
-computed object keys, dynamic eval/Function construction and array descriptor mutation. A separate
+dynamic eval/Function construction and array descriptor mutation. A separate
 [RegExp prototype selection](test262-regexp.md) adds its own unchanged corpus,
 mode inventory, report and baseline without replacing this selection. The separate
 [template literal selection](test262-template-literal.md) likewise retains every

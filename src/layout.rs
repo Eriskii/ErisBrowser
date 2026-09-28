@@ -867,9 +867,18 @@ fn positioned_axis(axis: PositionedAxis) -> (f32, f32) {
 #[derive(Debug, Clone)]
 pub struct HitRegion {
     pub node: NodeId,
+    pub action: HitAction,
     pub rect: Rect,
     /// Coordinates are viewport-relative when true, document-relative otherwise.
     pub fixed: bool,
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub enum HitAction {
+    #[default]
+    Node,
+    /// The anonymous, UA-generated summary, not the details background.
+    DefaultSummary,
 }
 
 pub struct LayoutResult {
@@ -1005,6 +1014,7 @@ struct Engine<'a> {
     open_clips: usize,
     canvas_background_node: Option<NodeId>,
     fallback: ComputedStyle,
+    disclosure_hidden: Vec<bool>,
 }
 
 /// Construct a display list in document coordinates. Scrolling is a paint-time
@@ -1066,6 +1076,7 @@ pub fn layout(
         open_clips: 0,
         canvas_background_node,
         fallback: ComputedStyle::default(),
+        disclosure_hidden: doc.disclosure_hidden_mask(),
     };
     if let Some(id) = canvas_background_node {
         // A propagated body background belongs to the root element's canvas
@@ -1131,12 +1142,23 @@ impl Engine<'_> {
     }
 
     fn is_hidden(&self, id: NodeId) -> bool {
-        self.style(id).display == Display::None
+        self.disclosure_hidden.get(id).copied().unwrap_or(true)
+            || self.style(id).display == Display::None
             || self.html_tag(id) == Some("input")
                 && self
                     .doc
                     .attr(id, "type")
                     .is_some_and(|kind| kind.eq_ignore_ascii_case("hidden"))
+    }
+
+    fn layout_children(&self, id: NodeId) -> Vec<NodeId> {
+        let mut children = self.doc.nodes[id].children.clone();
+        if let Some(summary) = self.doc.first_summary(id)
+            && let Some(at) = children.iter().position(|&child| child == summary)
+        {
+            children[..=at].rotate_right(1);
+        }
+        children
     }
 
     fn enter(&mut self, id: NodeId, depth: usize) -> bool {
@@ -1453,6 +1475,7 @@ impl Engine<'_> {
         self.push_hit(HitRegion {
             fixed: false,
             node: id,
+            action: HitAction::Node,
             rect: rect(x, y, width, 0.0),
         });
         let clip_index = if matches!(style.overflow.as_str(), "hidden" | "clip") {
@@ -1465,11 +1488,43 @@ impl Engine<'_> {
             None
         };
         let tag = self.layout_tag(id).to_owned();
-        let children = self.doc.nodes[id].children.clone();
+        let children = self.layout_children(id);
         let mut natural_height = if matches!(tag.as_str(), "img" | "svg" | "canvas" | "video") {
             self.paint_replaced(id, &tag, inner_x, inner_y, inner_width)
         } else if matches!(tag.as_str(), "input" | "textarea" | "select") {
             self.paint_control(id, &tag, inner_x, inner_y, inner_width)
+        } else if tag == "details" && self.doc.first_summary(id).is_none() {
+            let marker = if self.doc.attr(id, "open").is_some() {
+                "▾"
+            } else {
+                "▸"
+            };
+            self.push(DrawCommand::Text {
+                x: inner_x,
+                y: inner_y,
+                text: format!("{marker} Details"),
+                size: font_size(&style),
+                color: style.color,
+                bold: style.font_weight >= 600,
+                italic: style.font_style == "italic",
+                monospace: monospace(&style),
+            });
+            let header_height = line_height(&style);
+            self.push_hit(HitRegion {
+                node: id,
+                action: HitAction::DefaultSummary,
+                fixed: false,
+                rect: rect(inner_x, inner_y, inner_width, header_height),
+            });
+            header_height
+                + self.layout_flow(
+                    &children,
+                    inner_x,
+                    inner_y + header_height,
+                    inner_width,
+                    &style.text_align,
+                    depth + 1,
+                )
         } else if matches!(self.doc.nodes[id].kind, NodeKind::Text(_)) {
             self.layout_inline(
                 &[id],
@@ -1513,15 +1568,27 @@ impl Engine<'_> {
         } else if tag == "table" {
             self.layout_table(&children, inner_x, inner_y, inner_width, depth + 1)
         } else {
+            let marker_advance = if style.list_item
+                && style.list_style_type != "none"
+                && style.list_style_position == "inside"
+            {
+                (self.measure(&self.list_marker(id, &style), &style) + font_size(&style) * 0.5)
+                    .min(inner_width)
+            } else {
+                0.0
+            };
             self.layout_flow(
                 &children,
-                inner_x,
+                inner_x + marker_advance,
                 inner_y,
-                inner_width,
+                inner_width - marker_advance,
                 &style.text_align,
                 depth + 1,
             )
         };
+        if style.list_item && style.list_style_type != "none" {
+            natural_height = natural_height.max(line_height(&style));
+        }
         if outer_floats.is_some() {
             natural_height = natural_height.max(self.floats.bottom - inner_y);
             // Float layers cover in-flow block backgrounds. Text normally does
@@ -1620,7 +1687,7 @@ impl Engine<'_> {
             fixed: false,
             inline: false,
         });
-        if tag == "li" && style.list_style_type != "none" {
+        if style.list_item && style.list_style_type != "none" {
             self.paint_list_marker(id, inner_x, inner_y, &style);
         }
         if let Some(index) = clip_index {
@@ -2416,7 +2483,8 @@ impl Engine<'_> {
                 if matches!(
                     tag,
                     "img" | "svg" | "canvas" | "video" | "input" | "textarea" | "select"
-                ) || self.style(id).display == Display::InlineBlock
+                ) || tag == "details"
+                    || self.style(id).display == Display::InlineBlock
                 {
                     let margin = self.margins(id, width);
                     let inner_width = if matches!(self.style(id).width, Length::Auto)
@@ -2438,7 +2506,7 @@ impl Engine<'_> {
                         preserve: false,
                     });
                 } else {
-                    let children = self.doc.nodes[id].children.clone();
+                    let children = self.layout_children(id);
                     for child in children {
                         self.collect_inline(child, id, width, depth + 1, output);
                     }
@@ -2602,6 +2670,11 @@ impl Engine<'_> {
         let mut min = 0.0f32;
         let mut max = 0.0f32;
         let mut inline = 0.0f32;
+        if tag == "details" && self.doc.first_summary(id).is_none() {
+            let advance = self.measure("▸ Details", style);
+            min = advance;
+            max = advance;
+        }
         for &child in &self.doc.nodes[id].children {
             if self.intrinsic_work_left.get() == 0 {
                 break;
@@ -2626,7 +2699,18 @@ impl Engine<'_> {
             }
         }
         let extra = self.padding(id, available).horizontal() + self.borders(id).horizontal();
-        (extent(min + extra), extent(max.max(inline) + extra))
+        let marker = if style.list_item
+            && style.list_style_type != "none"
+            && style.list_style_position == "inside"
+        {
+            self.measure(&self.list_marker(id, style), style) + font_size(style) * 0.5
+        } else {
+            0.0
+        };
+        (
+            extent(min + extra + marker),
+            extent(max.max(inline) + extra + marker),
+        )
     }
 
     fn place_float(&mut self, id: NodeId, x: f32, y: f32, width: f32, line: Size, depth: usize) {
@@ -3015,6 +3099,7 @@ impl Engine<'_> {
                     self.push_hit(HitRegion {
                         fixed: false,
                         node: item.node,
+                        action: HitAction::Node,
                         rect: item_rect,
                     });
                 }
@@ -3864,6 +3949,7 @@ impl Engine<'_> {
             self.push_hit(HitRegion {
                 fixed: false,
                 node: id,
+                action: HitAction::Node,
                 rect: row_rect,
             });
             cursor += heights[row] + spacing;
@@ -4212,8 +4298,8 @@ impl Engine<'_> {
         height
     }
 
-    fn paint_list_marker(&mut self, id: NodeId, x: f32, y: f32, style: &ComputedStyle) {
-        let marker = match style.list_style_type.as_str() {
+    fn list_marker(&self, id: NodeId, style: &ComputedStyle) -> String {
+        match style.list_style_type.as_str() {
             "decimal" | "decimal-leading-zero" => {
                 let parent = self.doc.nodes[id].parent;
                 let mut number = parent
@@ -4221,6 +4307,11 @@ impl Engine<'_> {
                     .unwrap_or(1.0) as usize;
                 if let Some(parent) = parent {
                     for &child in &self.doc.nodes[parent].children {
+                        let work = self.intrinsic_work_left.get();
+                        if work == 0 {
+                            break;
+                        }
+                        self.intrinsic_work_left.set(work - 1);
                         if child == id {
                             break;
                         }
@@ -4236,11 +4327,20 @@ impl Engine<'_> {
             }
             "circle" => "◦".into(),
             "square" => "▪".into(),
+            "disclosure-open" => "▾".into(),
+            "disclosure-closed" => "▸".into(),
             _ => "•".into(),
-        };
+        }
+    }
+    fn paint_list_marker(&mut self, id: NodeId, x: f32, y: f32, style: &ComputedStyle) {
+        let marker = self.list_marker(id, style);
         let marker_width = self.measure(&marker, style);
         self.push(DrawCommand::Text {
-            x: x - marker_width - font_size(style) * 0.5,
+            x: if style.list_style_position == "inside" {
+                x
+            } else {
+                x - marker_width - font_size(style) * 0.5
+            },
             y,
             text: marker,
             size: font_size(style),
@@ -4723,6 +4823,67 @@ mod tests {
         let styles = crate::css::compute_styles(&document, &document.stylesheets(), width, 400.0);
         let result = layout(&document, &styles, width, 400.0, &Fonts::new());
         (document, result)
+    }
+
+    #[test]
+    fn details_closed_content_never_paints_hits_positions_or_contributes_intrinsic_width() {
+        let (doc, result) = render(
+            "<style>body{margin:0}details{display:inline-block}summary{list-style:none}#fixed{position:fixed;top:0;left:0}#wide{width:900px}</style><details id=d><div id=wide>secret</div><summary id=s>Show</summary><summary id=second>Second</summary><a id=fixed>fixed secret</a></details>",
+            400.0,
+        );
+        for selector in ["#wide", "#second", "#fixed"] {
+            let id = doc.query_selector(selector).unwrap();
+            assert!(
+                result.hit_regions.iter().all(|hit| hit.node != id),
+                "{selector}"
+            );
+        }
+        assert!(bounds(&doc, &result, "#d").width < 100.0);
+        assert!(result.commands.iter().all(
+            |command| !matches!(command, DrawCommand::Text{text,..} if text.contains("secret"))
+        ));
+        let (doc, result) = render(
+            "<style>body{margin:0}summary{list-style:none;height:20px}p{margin:0;height:30px}</style><details open><p id=p>before</p><summary id=s>Show</summary><summary id=second>Second</summary></details>",
+            400.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#s").y, 0.0);
+        assert_eq!(bounds(&doc, &result, "#p").y, 20.0);
+        assert_eq!(bounds(&doc, &result, "#second").y, 50.0);
+    }
+
+    #[test]
+    fn details_default_summary_has_a_distinct_clipped_hit_and_no_synthetic_dom_node() {
+        let (doc, result) = render(
+            "<style>body{margin:0}details{height:80px;width:100px;padding:10px;overflow:clip}</style><details id=d><input id=hidden></details>",
+            400.0,
+        );
+        let details = doc.query_selector("#d").unwrap();
+        assert!(doc.first_summary(details).is_none());
+        let header = result
+            .hit_regions
+            .iter()
+            .find(|hit| hit.action == HitAction::DefaultSummary)
+            .unwrap();
+        assert_eq!(header.node, details);
+        assert_eq!((header.rect.x, header.rect.y), (10.0, 10.0));
+        assert!(header.rect.height < 40.0);
+        assert!(result.hit_regions.iter().any(|hit| hit.node == details
+            && hit.action == HitAction::Node
+            && hit.rect.height >= 80.0));
+        assert!(result.commands.iter().any(
+            |command| matches!(command, DrawCommand::Text{text,..} if text.contains("Details"))
+        ));
+        let (_, clipped) = render(
+            "<style>body{margin:0}details{height:0;overflow:hidden;border:2px solid}</style><details></details>",
+            400.0,
+        );
+        assert!(
+            clipped
+                .hit_regions
+                .iter()
+                .filter(|hit| hit.action == HitAction::DefaultSummary)
+                .all(|hit| hit.rect.height == 0.0)
+        );
     }
 
     fn bounds(document: &Document, result: &LayoutResult, selector: &str) -> Rect {
@@ -6722,11 +6883,13 @@ mod tests {
                 HitRegion {
                     fixed: false,
                     node: 1,
+                    action: HitAction::Node,
                     rect: rect(0.0, 0.0, 100.0, 100.0),
                 },
                 HitRegion {
                     fixed: false,
                     node: 2,
+                    action: HitAction::Node,
                     rect: rect(20.0, 20.0, 20.0, 20.0),
                 },
             ],

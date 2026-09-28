@@ -1,5 +1,88 @@
 # Validation record
 
+## Disclosures, feature queries, object literals and worker measurements
+
+Recorded September 28, 2026 UTC on the same x86-64 Linux/Rust setup. The final
+explicit `--include-ignored` run passes **604 Rust tests**: 489 library, 33
+browser/editor, four HTML adapter, six JavaScript adapter, five stress-invariant,
+four CLI, 17 network, 28 pipeline and 18 real-worker tests. None remain ignored.
+Formatting, strict all-target Clippy, release compilation, **47 Python checks**
+and **50 exact pixel references** pass. These are bounded implementation checks,
+not a platform-wide conformance result or security certification.
+
+Object initializers add computed names with ordered string-hint conversion,
+UTF-16 method/accessor names and descriptors, and static prototype setters.
+Generic Array.reverse preserves supported ordinary property operations, holes,
+inherited indices and abrupt completion. Number radix formatting covers finite
+safe integers in bases 2–36; nondecimal fractions and larger magnitudes remain
+unsupported. All **115 script tests** pass. Independent review found uncharged
+owned parameter/name copies when functions were created and called. Those copies
+now reserve work and allocation before retention. An identical 40,938-byte probe
+creating 1,000 methods with 1,000 long parameters now stops with an uncatchable
+Resource error at about 14 MiB observed process RSS, versus normal completion at
+about 79 MiB before; a one-parameter control still completes. RSS includes more
+than the interpreter's estimated heap accounting and is not its allocation limit.
+
+All earlier upstream passes and source/mode/harness identities survive. The
+original Test262 inventory is now **536 passed/116 unsupported**: both unchanged
+JSON ASCII-escaping variants newly execute successfully. Its 32 preflights pass.
+The RegExp inventory remains **250/40**, and templates **82/32**, with 44
+preflights each. None report failures, harness errors, resource limits or timeouts.
+The original baseline advances only those two statuses and its adapter hash;
+corpus bytes and runner policy are unchanged. HTML remains **3,868 exact matches,
+two mismatches and six unsupported modes**. Final adapter hashes are verified.
+
+Feature queries use strict condition grammar and a conservative positive
+property/value/selector inventory. False conditional imports neither fetch nor
+register layers; true imports retain media resize behavior and fetch authority.
+All **51 CSS** and **19 loader** tests pass. Review found positive sticky queries,
+comment-separated selector tokens becoming descendant combinators, and long
+undeclared namespace prefixes evading invalidation. Raw prelude preservation,
+a bounded conservative commented-selector policy and token-span validation fix
+those cases. Twenty independent direct/block/import probes pass, as does a
+20,000-case malformed supports/stylesheet smoke. These checks do not establish
+complete CSS Syntax or feature-query conformance.
+
+Disclosures add first-summary/default-header behavior, closed-content visibility,
+exclusive name groups, open/name reflection and coalesced ToggleEvents. Closed
+contents retain DOM, script, stylesheet, resource and form activity. ERW7 carries
+validated generated-summary actions; forged commands fail closed. Native focus
+and pending edits follow disclosure visibility. Three independent rectangle
+references and pipeline/real-worker checks cover these paths. Review also found
+stale inline SVG rasters after toggle/input callbacks; refresh now follows each
+interaction's callbacks and default actions, including partial mutations before
+handled exceptions or quota termination. Two pixel regressions failed before
+that correction and pass afterward. Toggle delivery remains a bounded checkpoint
+approximation, including documented reentrant tracker differences, with no idle
+pump, full task/microtask scheduling, complete keyboard timing or accessibility
+implementation.
+
+The deterministic **15,000-case** mutation run has zero caught panics or invariant
+failures: 5,000 accepted HTML pipelines, 620 accepted/4,380 rejected scripts, and
+3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size is 210 nodes and maximum
+display-list size 1,173 commands; **27 cases reach paint limits** within checked
+invariants. Added disclosure/feature-query/object seeds change the inventory, so
+these totals are not comparisons with earlier acceptance counts.
+
+The new field-guide example is checked at wide/narrow viewports, through grouped
+summary/button clicks and toggle handlers, and against identical direct/worker
+pixels. Release pixels match the visually inspected debug images. The final
+native framebuffer is visually inspected, and the UI plus renderer/broker exit
+with no tracked process remaining. The worker benchmark rejects document-load
+error pages, preserves script/fragment pixels, and its Python runner validates
+measurements and terminates the process group on timeout. These controls retain
+the production confinement and snapshot validation path.
+
+[Performance records](PERFORMANCE.md) retain verified source/binary hashes and
+nine fixture views. Warm in-process runs use 100 iterations; the separate
+confined-worker baseline uses five fresh processes with 100 warm frames each and
+retains raw phase samples. The disclosure view records 1.222 ms in-process median
+and 1.371 ms confined warm-frame median. These measure different paths in an
+uncontrolled local environment, exclude native presentation and establish no
+Chromium comparison. Vulkan remains planned; full compatibility, independently
+audited security and the requested performance threshold remain unfulfilled.
+
+
 ## Template literals, media conditions and wrapped flex lines
 
 Recorded September 28, 2026 UTC on the same x86-64 Linux/Rust setup. The explicit `--include-ignored` run passes **550 Rust tests**: 444 library, 31 browser/editor, four HTML adapter, six JavaScript adapter, five stress-invariant, one CLI, 16 network, 27 pipeline and 16 real-worker tests. Formatting, strict all-target Clippy, release compilation, **44 Python harness tests** and **46 exact pixel references** pass. These remain bounded implementation checks, not a full-platform conformance or security certification.

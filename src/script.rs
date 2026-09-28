@@ -626,7 +626,7 @@ enum Expr {
     RegExp(Rc<RegExp>),
     Ident(String),
     Array(Vec<Option<Expr>>),
-    Object(Vec<(JsString, ObjectEntry)>),
+    Object(Vec<(PropertyName, ObjectEntry)>),
     Unary(String, Box<Expr>),
     BinaryChain(Box<Expr>, Vec<(String, Expr)>),
     Conditional(Box<Expr>, Box<Expr>, Box<Expr>),
@@ -640,9 +640,16 @@ enum Expr {
     Template(JsString, Vec<(Expr, JsString)>),
 }
 #[derive(Clone, Debug)]
+enum PropertyName {
+    Literal(JsString, bool), // The boolean preserves IdentifierName syntax for shorthand/accessors.
+    Computed(Box<Expr>),
+}
+#[derive(Clone, Debug)]
 enum ObjectEntry {
     Data(Expr),
+    Method(FunctionCode),
     Accessor(FunctionCode, bool),
+    Prototype(Expr),
 }
 #[derive(Clone, Debug)]
 enum Stmt {
@@ -1336,23 +1343,28 @@ impl Parser {
             _ => {}
         }
     }
-    fn object_key(&mut self) -> Result<JsString> {
-        if self.is("[") {
-            return Err(ScriptError::unsupported(
-                "computed object literal keys are not implemented",
-            ));
+    fn object_key(&mut self) -> Result<PropertyName> {
+        if self.eat("[") {
+            // ComputedPropertyName uses AssignmentExpression[+In], rather
+            // than Expression: commas need an explicit pair of parentheses.
+            let saved = self.allow_in;
+            self.allow_in = true;
+            let expression = self.expression()?;
+            self.expect("]")?;
+            self.allow_in = saved;
+            return Ok(PropertyName::Computed(Box::new(expression)));
         }
         if self.strict && self.tokens[self.pos].legacy_literal {
             return Err(self.error("legacy literals are forbidden in strict code"));
         }
-        let key = match self.tokens[self.pos].kind.clone() {
-            TokenKind::Word(value) => value.into(),
-            TokenKind::String(value) => value,
-            TokenKind::Number(value) => json_number(value).into(),
+        let (key, identifier) = match self.tokens[self.pos].kind.clone() {
+            TokenKind::Word(value) => (value.into(), true),
+            TokenKind::String(value) => (value, false),
+            TokenKind::Number(value) => (json_number(value).into(), false),
             _ => return Err(self.error("expected object property")),
         };
         self.pos += 1;
-        Ok(key)
+        Ok(PropertyName::Literal(key, identifier))
     }
     fn function(&mut self) -> Result<FunctionCode> {
         self.expect("(")?;
@@ -1723,21 +1735,47 @@ impl Parser {
             let saved = self.allow_in;
             self.allow_in = true;
             let mut entries = Vec::new();
+            let mut prototype_setter = false;
             while !self.eat("}") {
+                if self.is("*") || self.is(".") {
+                    return Err(ScriptError::unsupported(
+                        "generator methods and object spread are not implemented",
+                    ));
+                }
+                self.compile_budget.work(1).map_err(regexp_error)?;
+                self.compile_budget.allocated = self
+                    .compile_budget
+                    .allocated
+                    .saturating_add(2 * std::mem::size_of::<(PropertyName, ObjectEntry)>());
+                if self.compile_budget.allocated > MAX_HEAP {
+                    return Err(self.resource_error("object literal allocation limit exceeded"));
+                }
                 let mut key = self.object_key()?;
-                let value = if (key == JsString::from("get") || key == JsString::from("set"))
+                let accessor = matches!(&key, PropertyName::Literal(name, true)
+                    if name == &JsString::from("get") || name == &JsString::from("set"));
+                if matches!(&key, PropertyName::Literal(name, true) if name == &JsString::from("async"))
+                    && !self.is(":")
+                    && !self.is("(")
+                    && !self.is(",")
+                    && !self.is("}")
+                    && !self.tokens[self.pos].line_break_before
+                {
+                    return Err(ScriptError::unsupported(
+                        "async methods are not implemented",
+                    ));
+                }
+                let value = if accessor
                     && !self.is(":")
                     && !self.is("(")
                     && !self.is(",")
                     && !self.is("}")
                 {
-                    let setter = key == JsString::from("set");
+                    let setter = matches!(&key, PropertyName::Literal(name, _) if name == &JsString::from("set"));
                     key = self.object_key()?;
                     let mut code = self.function()?;
                     if code.params.len() != usize::from(setter) {
                         return Err(self.error("invalid accessor parameter count"));
                     }
-                    code.name = Some(format!("{} {}", if setter { "set" } else { "get" }, key));
                     code.constructable = false;
                     ObjectEntry::Accessor(code, setter)
                 } else if self.is("(") {
@@ -1745,25 +1783,31 @@ impl Parser {
                     if code.params.iter().collect::<BTreeSet<_>>().len() != code.params.len() {
                         return Err(self.error("duplicate method parameter"));
                     }
-                    code.name = Some(key.to_string());
                     code.constructable = false;
-                    ObjectEntry::Data(Expr::Function(code))
+                    ObjectEntry::Method(code)
                 } else {
-                    let mut expression = if self.eat(":") {
-                        self.expression()?
+                    if self.eat(":") {
+                        let is_prototype = matches!(&key, PropertyName::Literal(name, _) if name == &JsString::from("__proto__"));
+                        if is_prototype && prototype_setter {
+                            return Err(self.error("duplicate __proto__ prototype setter"));
+                        }
+                        let expression = self.expression()?;
+                        if is_prototype {
+                            prototype_setter = true;
+                            ObjectEntry::Prototype(expression)
+                        } else {
+                            ObjectEntry::Data(expression)
+                        }
                     } else {
-                        let name = key
+                        let PropertyName::Literal(name, true) = &key else {
+                            return Err(self.error("object shorthand requires an identifier"));
+                        };
+                        let name = name
                             .to_utf8()
                             .map_err(|_| self.error("object shorthand requires an identifier"))?;
                         self.validate_identifier(&name, false)?;
-                        Expr::Ident(name)
-                    };
-                    if let Expr::Function(code) = &mut expression
-                        && code.name.is_none()
-                    {
-                        code.name = Some(key.to_string());
+                        ObjectEntry::Data(Expr::Ident(name))
                     }
-                    ObjectEntry::Data(expression)
                 };
                 entries.push((key, value));
                 if self.eat("}") {
@@ -1810,6 +1854,9 @@ impl Parser {
                 Ok(Expr::Literal(Value::Bool(s == "true")))
             }
             TokenKind::Word(s) if s == "null" => Ok(Expr::Literal(Value::Null)),
+            TokenKind::Word(s) if s == "super" => Err(ScriptError::unsupported(
+                "super property and constructor references are not implemented",
+            )),
             TokenKind::Word(s) => {
                 if self.eat("=>") {
                     self.arrow(vec![s])
@@ -2162,6 +2209,11 @@ struct AbortState {
     reason: Value,
     listeners: Vec<usize>,
 }
+struct ToggleState {
+    old_state: JsString,
+    new_state: JsString,
+    source: Value,
+}
 struct EventState {
     event_type: JsString,
     bubbles: bool,
@@ -2169,6 +2221,7 @@ struct EventState {
     composed: bool,
     detail: Value,
     custom: bool,
+    toggle: Option<ToggleState>,
     target: Value,
     current_target: Value,
     phase: u8,
@@ -2272,6 +2325,7 @@ impl Runtime {
             "RegExp",
             "Event",
             "CustomEvent",
+            "ToggleEvent",
             "EventTarget",
             "DOMException",
             "AbortController",
@@ -2370,6 +2424,7 @@ impl Runtime {
             "URIError",
             "Event",
             "CustomEvent",
+            "ToggleEvent",
             "EventTarget",
             "DOMException",
             "AbortController",
@@ -2393,6 +2448,8 @@ impl Runtime {
         }
         self.function_prototype = self.functions.len();
         self.objects[self.prototypes["CustomEvent"]].prototype =
+            Some(Value::Object(self.prototypes["Event"]));
+        self.objects[self.prototypes["ToggleEvent"]].prototype =
             Some(Value::Object(self.prototypes["Event"]));
         self.objects[self.prototypes["DOMException"]].prototype =
             Some(Value::Object(self.prototypes["Error"]));
@@ -2452,6 +2509,7 @@ impl Runtime {
             "URIError",
             "Event",
             "CustomEvent",
+            "ToggleEvent",
             "EventTarget",
             "DOMException",
             "AbortController",
@@ -2583,6 +2641,8 @@ impl Runtime {
             ("Array", "includes", 1),
             ("Array", "indexOf", 1),
             ("Array", "slice", 2),
+            ("Array", "reverse", 0),
+            ("Number", "toString", 1),
         ] {
             let full = format!("{name}.{key}");
             let value = self.intrinsic_function(&full, key, length)?;
@@ -2741,6 +2801,8 @@ impl Runtime {
     fn initialize_events(&mut self) -> Result<()> {
         self.objects[self.native_properties["CustomEvent"]].prototype =
             Some(Self::native("Event", Value::Window));
+        self.objects[self.native_properties["ToggleEvent"]].prototype =
+            Some(Self::native("Event", Value::Window));
         self.objects[self.native_properties["AbortSignal"]].prototype =
             Some(Self::native("EventTarget", Value::Window));
         for (owner, key, length) in [
@@ -2797,6 +2859,9 @@ impl Runtime {
             "cancelBubble",
             "returnValue",
             "detail",
+            "oldState",
+            "newState",
+            "source",
         ] {
             let get =
                 self.intrinsic_function(&format!("Event.get.{key}"), &format!("get {key}"), 0)?;
@@ -2807,6 +2872,8 @@ impl Runtime {
             };
             let owner = if key == "detail" {
                 "CustomEvent"
+            } else if matches!(key, "oldState" | "newState" | "source") {
+                "ToggleEvent"
             } else {
                 "Event"
             };
@@ -3012,6 +3079,7 @@ impl Runtime {
             composed,
             detail,
             custom,
+            toggle: None,
             target: Value::Null,
             current_target: Value::Null,
             phase: 0,
@@ -3074,7 +3142,11 @@ impl Runtime {
         let Some(kind) = args.first() else {
             return Err(ScriptError::type_error("Event requires a type"));
         };
-        let kind = self.json_text(kind.clone(), doc, &mut Vec::new())?;
+        let kind = if name == "ToggleEvent" {
+            self.string_hint(kind.clone(), doc)?
+        } else {
+            self.json_text(kind.clone(), doc, &mut Vec::new())?
+        };
         let init = args.get(1).cloned().unwrap_or(Value::Undefined);
         if !matches!(init, Value::Null | Value::Undefined) && !js_object(&init) {
             return Err(ScriptError::type_error(
@@ -3090,6 +3162,41 @@ impl Runtime {
                 flags[i] = self.get(init.clone(), key, doc)?.truthy();
             }
         }
+        if name == "ToggleEvent" {
+            // Web IDL converts dictionary members in lexicographic order,
+            // after converting all inherited dictionary members.
+            let mut states = [JsString::default(), JsString::default()];
+            let mut source = Value::Null;
+            if js_object(&init) {
+                for (index, key) in ["newState", "oldState"].into_iter().enumerate() {
+                    let value = self.get(init.clone(), key, doc)?;
+                    if value != Value::Undefined {
+                        states[index] = self.string_hint(value, doc)?;
+                    }
+                }
+                source = match self.get(init, "source", doc)? {
+                    Value::Null | Value::Undefined => Value::Null,
+                    Value::Node(node)
+                        if matches!(
+                            doc.nodes.get(node).map(|node| &node.kind),
+                            Some(NodeKind::Element(_))
+                        ) =>
+                    {
+                        Value::Node(node)
+                    }
+                    _ => {
+                        return Err(ScriptError::type_error(
+                            "ToggleEvent source must be an Element or null",
+                        ));
+                    }
+                };
+            }
+            let [new_state, old_state] = states;
+            let event =
+                self.event_object(kind, flags[0], flags[1], flags[2], Value::Null, false)?;
+            self.attach_toggle_state(&event, old_state, new_state, source)?;
+            return Ok(event);
+        }
         let custom = name == "CustomEvent";
         let detail = if custom && js_object(&init) {
             match self.get(init, "detail", doc)? {
@@ -3100,6 +3207,26 @@ impl Runtime {
             Value::Null
         };
         self.event_object(kind, flags[0], flags[1], flags[2], detail, custom)
+    }
+    fn attach_toggle_state(
+        &mut self,
+        event: &Value,
+        old_state: JsString,
+        new_state: JsString,
+        source: Value,
+    ) -> Result<()> {
+        let id = self.event_index(event)?;
+        let Value::Object(object) = event else {
+            unreachable!()
+        };
+        self.charge(old_state.byte_len().saturating_add(new_state.byte_len()))?;
+        self.objects[*object].prototype = Some(Value::Object(self.prototypes["ToggleEvent"]));
+        self.events[id].toggle = Some(ToggleState {
+            old_state,
+            new_state,
+            source,
+        });
+        Ok(())
     }
     fn dom_exception(&mut self, name: JsString, message: JsString) -> Result<Value> {
         let code = match name.to_utf8().as_deref() {
@@ -3146,6 +3273,13 @@ impl Runtime {
                 "isTrusted" => Value::Bool(state.trusted),
                 "timeStamp" => Value::Number(state.timestamp),
                 "detail" if state.custom => state.detail.clone(),
+                "oldState" if state.toggle.is_some() => {
+                    Value::String(state.toggle.as_ref().unwrap().old_state.clone())
+                }
+                "newState" if state.toggle.is_some() => {
+                    Value::String(state.toggle.as_ref().unwrap().new_state.clone())
+                }
+                "source" if state.toggle.is_some() => state.toggle.as_ref().unwrap().source.clone(),
                 _ => {
                     return Err(ScriptError::type_error(
                         "event getter receiver is incompatible",
@@ -3731,6 +3865,44 @@ impl Runtime {
     pub fn dispatch_click(&mut self, target: NodeId, document: &mut Document) -> Result<()> {
         self.dispatch_event(target, "click", document)
     }
+    /// Host task checkpoint: coalesced details notifications share one budget.
+    /// Tasks beyond the checkpoint limit remain queued for a later checkpoint.
+    pub fn dispatch_details_toggles(&mut self, document: &mut Document) -> Result<()> {
+        self.steps = MAX_STEPS;
+        for _ in 0..64 {
+            let Some(task) = document.peek_details_toggle() else {
+                break;
+            };
+            // Preflight the event and path before consuming the queued task.
+            // Once dispatch starts, ordinary listener errors are reported and
+            // quota errors terminate the task without replaying its callbacks.
+            let mut cursor = Some(task.node);
+            let mut path_length = 2usize; // Document/window upper bound.
+            while let Some(node) = cursor {
+                self.tick()?;
+                if path_length >= 258 {
+                    return Err(ScriptError::resource("event path limit exceeded"));
+                }
+                path_length += 1;
+                cursor = document.nodes.get(node).and_then(|node| node.parent);
+            }
+            self.work(path_length)?;
+            self.charge(path_length.saturating_mul(std::mem::size_of::<EventTarget>()))?;
+            let event =
+                self.event_object("toggle".into(), false, false, false, Value::Null, false)?;
+            self.attach_toggle_state(
+                &event,
+                if task.old_open { "open" } else { "closed" }.into(),
+                if task.new_open { "open" } else { "closed" }.into(),
+                Value::Null,
+            )?;
+            let id = self.event_index(&event)?;
+            self.events[id].trusted = true;
+            document.take_details_toggle();
+            self.dispatch_event_object(EventTarget::Node(task.node), event, None, document)?;
+        }
+        Ok(())
+    }
     pub fn dispatch_event(
         &mut self,
         target: NodeId,
@@ -4042,7 +4214,7 @@ impl Runtime {
         Ok(())
     }
     fn function_value(&mut self, code: &FunctionCode, environment: usize) -> Result<Value> {
-        self.charge(128)?;
+        self.charge_function_code_copy(code)?;
         let id = self.functions.len();
         let Value::Object(properties) = self.object_ordered([
             (
@@ -4084,6 +4256,61 @@ impl Runtime {
             self.objects[properties].attributes("prototype", true, false, false);
         }
         Ok(Value::Function(id))
+    }
+    fn charge_function_code_copy(&mut self, code: &FunctionCode) -> Result<()> {
+        // Function bodies are shared, but Clone owns every parameter and name.
+        // Charge the scan first, then the retained copies before any allocation.
+        self.work(1 + code.params.len())?;
+        let text_bytes = code
+            .params
+            .iter()
+            .fold(0usize, |size, name| size.saturating_add(name.len()));
+        let name_bytes = code.name.as_ref().map_or(0, String::len);
+        self.work(1 + text_bytes.saturating_add(name_bytes) / 8)?;
+        self.charge(
+            128usize
+                .saturating_add(
+                    code.params
+                        .len()
+                        .saturating_mul(std::mem::size_of::<String>()),
+                )
+                .saturating_add(text_bytes)
+                .saturating_add(name_bytes.saturating_mul(4)),
+        )
+    }
+    fn set_function_name(
+        &mut self,
+        function: &Value,
+        key: &JsString,
+        prefix: Option<&str>,
+    ) -> Result<()> {
+        let name = if let Some(prefix) = prefix {
+            let length = key.len().saturating_add(prefix.len() + 1);
+            if length > MAX_STRING {
+                return Err(ScriptError::resource("function name string limit exceeded"));
+            }
+            self.work(1 + length / 8)?;
+            self.charge(length.saturating_mul(4))?;
+            let mut units = Vec::with_capacity(length);
+            units.extend(prefix.encode_utf16());
+            units.push(u16::from(b' '));
+            units.extend_from_slice(key.units());
+            JsString::from(units)
+        } else {
+            key.clone()
+        };
+        self.define_own(
+            function,
+            &"name".into(),
+            PropertyDescriptor {
+                value: Some(Value::String(name)),
+                writable: Some(false),
+                enumerable: Some(false),
+                configurable: Some(true),
+                ..PropertyDescriptor::default()
+            },
+        )?;
+        Ok(())
     }
     fn native(name: &str, receiver: Value) -> Value {
         Value::Native(Rc::new(Native {
@@ -4554,7 +4781,7 @@ impl Runtime {
                 self.append_template_text(&mut output, head)?;
                 for (expression, text) in tail {
                     let value = self.eval(expression, env, doc)?;
-                    let cooked = self.template_string(value, doc)?;
+                    let cooked = self.string_hint(value, doc)?;
                     self.append_template_text(&mut output, &cooked)?;
                     self.append_template_text(&mut output, text)?;
                 }
@@ -4596,6 +4823,22 @@ impl Runtime {
             Expr::Object(items) => {
                 let object = self.object_ordered([])?;
                 for (key, entry) in items {
+                    if let ObjectEntry::Prototype(expression) = entry {
+                        let prototype = self.eval(expression, env, doc)?;
+                        if js_object(&prototype) || prototype == Value::Null {
+                            self.set_object_prototype(&object, prototype)?;
+                        }
+                        continue;
+                    }
+                    // ToPropertyKey precedes RHS evaluation and function
+                    // creation. This runtime's supported keys are strings.
+                    let key = match key {
+                        PropertyName::Literal(key, _) => key.clone(),
+                        PropertyName::Computed(expression) => {
+                            let value = self.eval(expression, env, doc)?;
+                            self.string_hint(value, doc)?
+                        }
+                    };
                     let mut desc = PropertyDescriptor {
                         enumerable: Some(true),
                         configurable: Some(true),
@@ -4603,19 +4846,35 @@ impl Runtime {
                     };
                     match entry {
                         ObjectEntry::Data(expression) => {
-                            desc.value = Some(self.eval(expression, env, doc)?);
+                            let value = self.eval(expression, env, doc)?;
+                            if matches!(expression, Expr::Function(code) if code.name.is_none()) {
+                                self.set_function_name(&value, &key, None)?;
+                            }
+                            desc.value = Some(value);
+                            desc.writable = Some(true);
+                        }
+                        ObjectEntry::Method(code) => {
+                            let function = self.function_value(code, env)?;
+                            self.set_function_name(&function, &key, None)?;
+                            desc.value = Some(function);
                             desc.writable = Some(true);
                         }
                         ObjectEntry::Accessor(code, setter) => {
                             let function = self.function_value(code, env)?;
+                            self.set_function_name(
+                                &function,
+                                &key,
+                                Some(if *setter { "set" } else { "get" }),
+                            )?;
                             if *setter {
                                 desc.set = Some(function);
                             } else {
                                 desc.get = Some(function);
                             }
                         }
+                        ObjectEntry::Prototype(_) => unreachable!(),
                     }
-                    self.define_own(&object, key, desc)?;
+                    self.define_own(&object, &key, desc)?;
                 }
                 Ok(object)
             }
@@ -5009,6 +5268,30 @@ impl Runtime {
     ) -> Result<Value> {
         match function {
             Value::Function(id) => {
+                // Release the immutable arena borrow before charging the copy.
+                // Only the Rc body is shared by FunctionCode::clone.
+                let parameters = self.functions[id].code.params.len();
+                self.work(1 + parameters)?;
+                let code = &self.functions[id].code;
+                let text_bytes = code
+                    .params
+                    .iter()
+                    .fold(0usize, |size, name| size.saturating_add(name.len()));
+                let name_bytes = code.name.as_ref().map_or(0, String::len);
+                let bound_bytes = self.functions[id].bound.as_ref().map_or(0, |bound| {
+                    bound
+                        .arguments
+                        .len()
+                        .saturating_mul(std::mem::size_of::<Value>())
+                });
+                self.work(1 + text_bytes.saturating_add(name_bytes) / 8)?;
+                self.charge(
+                    128usize
+                        .saturating_add(parameters.saturating_mul(std::mem::size_of::<String>()))
+                        .saturating_add(text_bytes)
+                        .saturating_add(name_bytes)
+                        .saturating_add(bound_bytes),
+                )?;
                 let function = self.functions[id].clone();
                 if let Some(bound) = function.bound {
                     self.charge(
@@ -5116,6 +5399,37 @@ impl Runtime {
             _ => "Object",
         };
         self.prototypes.get(name).copied().map(Value::Object)
+    }
+    fn set_object_prototype(&mut self, object: &Value, prototype: Value) -> Result<()> {
+        let id = self.property_object(object).ok_or_else(|| {
+            ScriptError::unsupported("host object prototype mutation is unsupported")
+        })?;
+        let next = if prototype == Value::Null {
+            None
+        } else {
+            Some(prototype)
+        };
+        if self.objects[id].non_extensible && self.objects[id].prototype != next {
+            return Err(ScriptError::type_error(
+                "non-extensible object prototype cannot change",
+            ));
+        }
+        let mut cursor = next.clone();
+        for depth in 0..=MAX_DEPTH {
+            self.tick()?;
+            let Some(value) = cursor else {
+                break;
+            };
+            if &value == object {
+                return Err(ScriptError::type_error("cyclic object prototype"));
+            }
+            if depth == MAX_DEPTH {
+                return Err(ScriptError::resource("prototype chain limit exceeded"));
+            }
+            cursor = self.prototype_of(&value);
+        }
+        self.objects[id].prototype = next;
+        Ok(())
     }
     fn own_property(&self, receiver: &Value, key: &JsString) -> Option<Property> {
         if matches!(receiver, Value::Window) {
@@ -5517,6 +5831,99 @@ impl Runtime {
         self.objects[id].boxed = Some(value);
         Ok(result)
     }
+    fn array_reverse(&mut self, receiver: Value, doc: &mut Document) -> Result<Value> {
+        let object = self.coerce_object(receiver)?;
+        if self.property_object(&object).is_none() {
+            return Err(ScriptError::unsupported(
+                "host array-like reverse is not implemented",
+            ));
+        }
+        let length = self.get(object.clone(), "length", doc)?;
+        let length = integer_or_infinity(self.number_value(length, doc)?)
+            .clamp(0.0, 9_007_199_254_740_991.0);
+        if length > 65_536.0 {
+            return Err(ScriptError::resource("array-like length limit exceeded"));
+        }
+        let length = length as usize;
+        for lower in 0..length / 2 {
+            self.tick()?;
+            // Both index strings have at most five UTF-16 units under the cap.
+            self.charge(96)?;
+            let upper_key = JsString::from((length - lower - 1).to_string());
+            let lower_key = JsString::from(lower.to_string());
+            let lower_value = if self.find_property(&object, &lower_key)?.is_some() {
+                Some(self.get_key(object.clone(), &lower_key, doc)?)
+            } else {
+                None
+            };
+            let upper_value = if self.find_property(&object, &upper_key)?.is_some() {
+                Some(self.get_key(object.clone(), &upper_key, doc)?)
+            } else {
+                None
+            };
+            match (lower_value, upper_value) {
+                (Some(lower), Some(upper)) => {
+                    self.set_key_strict(object.clone(), &lower_key, upper, true, doc)?;
+                    self.set_key_strict(object.clone(), &upper_key, lower, true, doc)?;
+                }
+                (None, Some(upper)) => {
+                    self.set_key_strict(object.clone(), &lower_key, upper, true, doc)?;
+                    if !self.delete_property(object.clone(), &upper_key)? {
+                        return Err(ScriptError::type_error("reverse cannot delete property"));
+                    }
+                }
+                (Some(lower), None) => {
+                    if !self.delete_property(object.clone(), &lower_key)? {
+                        return Err(ScriptError::type_error("reverse cannot delete property"));
+                    }
+                    self.set_key_strict(object.clone(), &upper_key, lower, true, doc)?;
+                }
+                (None, None) => {}
+            }
+        }
+        Ok(object)
+    }
+    fn number_to_string(&mut self, number: f64, radix: Value, doc: &mut Document) -> Result<Value> {
+        let radix = if radix == Value::Undefined {
+            10.0
+        } else {
+            integer_or_infinity(self.number_value(radix, doc)?)
+        };
+        if !(2.0..=36.0).contains(&radix) {
+            return Err(ScriptError::range_error(
+                "number radix must be between 2 and 36",
+            ));
+        }
+        if radix == 10.0 || !number.is_finite() || number == 0.0 {
+            return self.string(Value::Number(number).js_string());
+        }
+        if number.fract() != 0.0 || number.abs() > 9_007_199_254_740_991.0 {
+            return Err(ScriptError::unsupported(
+                "nondecimal formatting requires a finite safe integer",
+            ));
+        }
+        let radix = radix as u64;
+        let mut magnitude = number.abs() as u64;
+        let mut units = [0u16; 54];
+        let mut start = units.len();
+        while magnitude != 0 {
+            self.tick()?;
+            let digit = (magnitude % radix) as u16;
+            start -= 1;
+            units[start] = if digit < 10 {
+                u16::from(b'0') + digit
+            } else {
+                u16::from(b'a') + digit - 10
+            };
+            magnitude /= radix;
+        }
+        if number < 0.0 {
+            start -= 1;
+            units[start] = u16::from(b'-');
+        }
+        self.charge((units.len() - start).saturating_mul(2) + 24)?;
+        Ok(Value::String(JsString::from(units[start..].to_vec())))
+    }
     fn number_value(&mut self, value: Value, doc: &mut Document) -> Result<f64> {
         if let Value::String(text) = &value {
             self.work(1 + text.len() / 8)?;
@@ -5564,6 +5971,7 @@ impl Runtime {
                         native.name.as_str(),
                         "Event"
                             | "CustomEvent"
+                            | "ToggleEvent"
                             | "EventTarget"
                             | "DOMException"
                             | "AbortController"
@@ -5934,6 +6342,18 @@ impl Runtime {
                     return Err(ScriptError::new("invalid DOM node"));
                 }
                 match key {
+                    "open"
+                        if doc.namespace(id) == Some(Namespace::Html)
+                            && doc.tag(id) == Some("details") =>
+                    {
+                        return Ok(Value::Bool(doc.attr(id, "open").is_some()));
+                    }
+                    "name"
+                        if doc.namespace(id) == Some(Namespace::Html)
+                            && doc.tag(id) == Some("details") =>
+                    {
+                        return self.string(doc.attr(id, "name").unwrap_or(""));
+                    }
                     "content" if doc.template_contents(id).is_some() => {
                         return Ok(Value::Node(doc.template_contents(id).unwrap()));
                     }
@@ -6147,6 +6567,26 @@ impl Runtime {
                 if id >= doc.nodes.len() {
                     return Err(ScriptError::new("invalid DOM node"));
                 }
+                if doc.namespace(id) == Some(Namespace::Html) && doc.tag(id) == Some("details") {
+                    if key == "open" {
+                        self.charge_details_attribute(id, key, 0, doc)?;
+                        if value.truthy() {
+                            doc.set_attr(id, "open", "");
+                        } else {
+                            doc.remove_attr(id, "open");
+                        }
+                        return Ok(());
+                    }
+                    if key == "name" {
+                        let name = self.string_hint(value, doc)?;
+                        self.work(1 + name.len() / 16)?;
+                        self.charge(name.len().saturating_mul(3))?;
+                        let text = name.to_utf8_lossy();
+                        self.charge_details_attribute(id, key, text.len(), doc)?;
+                        doc.set_attr(id, "name", &text);
+                        return Ok(());
+                    }
+                }
                 let text =
                     if key == "value" && doc.tag(id) == Some("textarea") && value == Value::Null {
                         String::new()
@@ -6283,19 +6723,42 @@ impl Runtime {
             1
         };
         self.work(doc.base_tree_change_work(parent, child, contains_base))?;
+        self.work(doc.details_tree_change_work(parent, child))?;
         self.charge(inserted.saturating_mul(2 * std::mem::size_of::<NodeId>()))
     }
 
     fn charge_dom_remove(&mut self, parent: NodeId, doc: &Document) -> Result<()> {
-        self.work(doc.nodes[parent].children.len())
+        self.work(
+            doc.nodes[parent]
+                .children
+                .len()
+                .saturating_add(doc.details_tree_change_work(parent, parent)),
+        )
     }
     fn charge_dom_clear(&mut self, parent: NodeId, doc: &Document) -> Result<()> {
         self.work(
             doc.nodes[parent]
                 .children
                 .len()
-                .saturating_add(doc.base_clear_work(parent)),
+                .saturating_add(doc.base_clear_work(parent))
+                .saturating_add(doc.details_tree_change_work(parent, parent)),
         )
+    }
+    fn charge_details_attribute(
+        &mut self,
+        id: NodeId,
+        key: &str,
+        incoming: usize,
+        doc: &Document,
+    ) -> Result<()> {
+        let work = doc.details_attribute_work(id, key);
+        if work > 0 {
+            self.work(work.saturating_add(incoming))?;
+            // Queue/group bookkeeping is retained by the DOM rather than the
+            // script heap, but script-triggered growth still consumes quota.
+            self.charge(256)?;
+        }
+        Ok(())
     }
 
     fn set_inner_html(&mut self, id: NodeId, source: &str, doc: &mut Document) -> Result<()> {
@@ -6311,6 +6774,8 @@ impl Runtime {
             return Err(ScriptError::resource("DOM fragment storage limit exceeded"));
         }
         let mut pending = vec![(fragment.root, 0usize)];
+        let mut details_count = 0usize;
+        let mut details_name_bytes = 0usize;
         while let Some((node, depth)) = pending.pop() {
             self.tick()?;
             if depth > 96 {
@@ -6326,7 +6791,25 @@ impl Runtime {
             if let Some(contents) = fragment.template_contents(node) {
                 pending.push((contents, depth));
             }
+            if fragment.namespace(node) == Some(Namespace::Html)
+                && fragment.tag(node) == Some("details")
+            {
+                details_count += 1;
+                details_name_bytes = details_name_bytes
+                    .saturating_add(fragment.attr(node, "name").map_or(0, str::len));
+            }
         }
+        self.work(
+            doc.details_bulk_change_work(
+                fragment.nodes.len().saturating_add(1),
+                details_name_bytes,
+            ),
+        )?;
+        self.charge(
+            details_count
+                .saturating_mul(256)
+                .saturating_add(details_name_bytes.saturating_mul(4)),
+        )?;
         self.ensure_dom_capacity(doc, fragment.nodes.len().saturating_add(1))?;
         let id = doc.template_contents(id).unwrap_or(id);
         let staging = doc.create_document_fragment();
@@ -6340,6 +6823,40 @@ impl Runtime {
         Ok(())
     }
     fn clone_dom_node(&mut self, source: NodeId, deep: bool, doc: &mut Document) -> Result<NodeId> {
+        if source >= doc.nodes.len() {
+            return Err(ScriptError::type_error("invalid DOM clone source"));
+        }
+        let mut pending = vec![source];
+        let mut new_nodes = 0usize;
+        let mut details_count = 0usize;
+        let mut details_name_bytes = 0usize;
+        self.charge(std::mem::size_of::<NodeId>())?;
+        while let Some(node) = pending.pop() {
+            self.tick()?;
+            new_nodes += 1;
+            if doc.namespace(node) == Some(Namespace::Html) && doc.tag(node) == Some("details") {
+                details_count += 1;
+                details_name_bytes =
+                    details_name_bytes.saturating_add(doc.attr(node, "name").map_or(0, str::len));
+            }
+            if deep {
+                let edges = doc.nodes[node].children.len()
+                    + usize::from(doc.template_contents(node).is_some());
+                self.charge(edges.saturating_mul(2 * std::mem::size_of::<NodeId>()))?;
+                pending.extend(doc.nodes[node].children.iter().copied());
+                if let Some(contents) = doc.template_contents(node) {
+                    pending.push(contents);
+                }
+            } else {
+                new_nodes += usize::from(doc.template_contents(node).is_some());
+            }
+        }
+        self.work(doc.details_bulk_change_work(new_nodes, details_name_bytes))?;
+        self.charge(
+            details_count
+                .saturating_mul(256)
+                .saturating_add(details_name_bytes.saturating_mul(4)),
+        )?;
         let root = self.clone_dom_shallow(source, doc)?;
         if !deep {
             return Ok(root);
@@ -6517,7 +7034,7 @@ impl Runtime {
         output.extend_from_slice(text.units());
         Ok(())
     }
-    fn template_string(&mut self, value: Value, doc: &mut Document) -> Result<JsString> {
+    fn string_hint(&mut self, value: Value, doc: &mut Document) -> Result<JsString> {
         let mut primitive = value.clone();
         if js_object(&value) {
             for key in ["toString", "valueOf"] {
@@ -6531,7 +7048,7 @@ impl Runtime {
             }
             if !json_primitive(&primitive) {
                 return Err(ScriptError::type_error(
-                    "template substitution cannot be converted to a primitive string",
+                    "value cannot be converted to a primitive string",
                 ));
             }
         }
@@ -7644,6 +8161,7 @@ impl Runtime {
             .name
             .strip_prefix("Event.")
             .or_else(|| native.name.strip_prefix("CustomEvent."))
+            .or_else(|| native.name.strip_prefix("ToggleEvent."))
         {
             return self.event_native(method, native.receiver.clone(), &args, doc);
         }
@@ -7654,6 +8172,7 @@ impl Runtime {
             native.name.as_str(),
             "Event"
                 | "CustomEvent"
+                | "ToggleEvent"
                 | "EventTarget"
                 | "DOMException"
                 | "AbortController"
@@ -7714,7 +8233,7 @@ impl Runtime {
             };
             &normalized
         } else if let Some(method) = native.name.strip_prefix("Array.")
-            && !matches!(method, "isArray" | "toString")
+            && !matches!(method, "isArray" | "toString" | "reverse")
         {
             if !matches!(native.receiver, Value::Array(_)) {
                 return Err(ScriptError::unsupported(
@@ -7772,6 +8291,7 @@ impl Runtime {
         self.work(units)?;
         let arg = |index: usize| args.get(index).cloned().unwrap_or(Value::Undefined);
         match name {
+            "Array.reverse" => return self.array_reverse(native.receiver.clone(), doc),
             "Array.toString" => {
                 let object = self.coerce_object(native.receiver.clone())?;
                 let join = self.get(object.clone(), "join", doc)?;
@@ -7891,7 +8411,10 @@ impl Runtime {
                     Value::Object(id) if self.objects[*id].arguments => "Arguments",
                     Value::Object(id) if self.objects[*id].regexp.is_some() => "RegExp",
                     Value::Object(id) if self.objects[*id].event.is_some() => {
-                        if self.events[self.objects[*id].event.unwrap()].custom {
+                        let state = &self.events[self.objects[*id].event.unwrap()];
+                        if state.toggle.is_some() {
+                            "ToggleEvent"
+                        } else if state.custom {
                             "CustomEvent"
                         } else {
                             "Event"
@@ -8046,42 +8569,7 @@ impl Runtime {
                 if !js_object(&object) {
                     return Ok(object);
                 }
-                let id = self.property_object(&object).ok_or_else(|| {
-                    ScriptError::unsupported("host object prototype mutation is unsupported")
-                })?;
-                let next = if prototype == Value::Null {
-                    None
-                } else {
-                    Some(prototype.clone())
-                };
-                if self.objects[id].non_extensible && self.objects[id].prototype != next {
-                    return Err(ScriptError::type_error(
-                        "non-extensible object prototype cannot change",
-                    ));
-                }
-                let mut cursor = if prototype == Value::Null {
-                    None
-                } else {
-                    Some(prototype.clone())
-                };
-                for depth in 0..=MAX_DEPTH {
-                    self.tick()?;
-                    let Some(value) = cursor else {
-                        break;
-                    };
-                    if value == object {
-                        return Err(ScriptError::type_error("cyclic object prototype"));
-                    }
-                    if depth == MAX_DEPTH {
-                        return Err(ScriptError::resource("prototype chain limit exceeded"));
-                    }
-                    cursor = self.prototype_of(&value);
-                }
-                self.objects[id].prototype = if prototype == Value::Null {
-                    None
-                } else {
-                    Some(prototype)
-                };
+                self.set_object_prototype(&object, prototype)?;
                 return Ok(object);
             }
             "Object.keys" | "Object.values" | "Object.getOwnPropertyNames" => {
@@ -8155,12 +8643,9 @@ impl Runtime {
                     ));
                 }
                 if name == "Number.toString"
-                    && !matches!(arg(0), Value::Undefined)
-                    && arg(0).number() != 10.0
+                    && let Value::Number(number) = value
                 {
-                    return Err(ScriptError::unsupported(
-                        "nondecimal Number.toString is not implemented",
-                    ));
+                    return self.number_to_string(number, arg(0), doc);
                 }
                 return if name.ends_with("valueOf") {
                     Ok(value)
@@ -8641,13 +9126,8 @@ impl Runtime {
                 return self.string(units);
             }
             Value::Number(_) | Value::Bool(_) if name == "toString" => {
-                if matches!(native.receiver, Value::Number(_))
-                    && !matches!(arg(0), Value::Undefined)
-                    && arg(0).number() != 10.0
-                {
-                    return Err(ScriptError::type_error(
-                        "non-decimal Number.toString radix is unsupported",
-                    ));
+                if let Value::Number(number) = native.receiver {
+                    return self.number_to_string(number, arg(0), doc);
                 }
                 return self.string(native.receiver.js_string());
             }
@@ -8811,6 +9291,7 @@ impl Runtime {
                     self.charge(key.len() + text.len() + 64)?;
                     let work = doc.base_attribute_work(id, &key);
                     self.work(work.saturating_add(if work > 0 { text.len() } else { 0 }))?;
+                    self.charge_details_attribute(id, &key, text.len(), doc)?;
                     doc.set_attr(id, &key, &text);
                     self.event_attribute_changed(id, &key, doc)?;
                     return Ok(Value::Undefined);
@@ -8818,6 +9299,7 @@ impl Runtime {
                 "removeAttribute" => {
                     let key = arg(0).to_string();
                     self.work(doc.base_attribute_work(id, &key))?;
+                    self.charge_details_attribute(id, &key, 0, doc)?;
                     doc.remove_attr(id, &key);
                     self.event_attribute_changed(id, &key, doc)?;
                     return Ok(Value::Undefined);
@@ -9317,6 +9799,7 @@ fn event_handler_name(name: &str) -> bool {
     matches!(
         name,
         "onclick"
+            | "ontoggle"
             | "ondblclick"
             | "oninput"
             | "onbeforeinput"
@@ -11640,6 +12123,711 @@ mod tests {
             )
             .unwrap();
         (runtime, document)
+    }
+
+    #[test]
+    fn disclosure_toggle_event_constructor_converts_dictionaries_and_protects_private_state() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var source=document.createElement('summary');
+            var e=new ToggleEvent('toggle',{oldState:'closed',newState:'open',source:source,bubbles:true,cancelable:true,composed:true});
+            assert.sameValue(e instanceof ToggleEvent,true);assert.sameValue(e instanceof Event,true);
+            assert.sameValue(e instanceof CustomEvent,false);
+            assert.sameValue(Object.prototype.toString.call(e),'[object ToggleEvent]');
+            assert.sameValue(e.oldState,'closed');assert.sameValue(e.newState,'open');assert.sameValue(e.source,source);
+            assert.sameValue(e.bubbles,true);assert.sameValue(e.cancelable,true);assert.sameValue(e.composed,true);
+            assert.sameValue(e.isTrusted,false);assert.sameValue(ToggleEvent.AT_TARGET,2);
+            assert.sameValue(ToggleEvent.length,1);assert.sameValue(ToggleEvent.name,'ToggleEvent');
+            e.oldState='other';assert.sameValue(e.oldState,'closed');
+            assert.throws(TypeError,function(){'use strict';e.source=null;});
+            var getter=Object.getOwnPropertyDescriptor(ToggleEvent.prototype,'oldState').get;
+            assert.sameValue(getter.call(e),'closed');assert.throws(TypeError,()=>getter.call(new Event('toggle')));
+            assert.throws(TypeError,()=>getter.call({oldState:'closed'}));
+            assert.throws(TypeError,()=>ToggleEvent('toggle'));assert.throws(TypeError,()=>new ToggleEvent());
+            assert.throws(TypeError,()=>new ToggleEvent('x',1));
+            assert.throws(TypeError,()=>new ToggleEvent('x',{source:{}}));
+            assert.throws(TypeError,()=>new ToggleEvent('x',{source:document}));
+            assert.throws(TypeError,()=>new ToggleEvent('x',{source:document.createTextNode('x')}));
+            var defaults=new ToggleEvent('x',null);assert.sameValue(defaults.oldState,'');
+            assert.sameValue(defaults.newState,'');assert.sameValue(defaults.source,null);
+            var converted=new ToggleEvent('x',{oldState:null,newState:undefined,source:undefined});
+            assert.sameValue(converted.oldState,'null');assert.sameValue(converted.newState,'');
+            assert.sameValue(new ToggleEvent('x',{oldState:'\uD800'}).oldState,'\uD800');
+            e.initEvent('again',false,false);assert.sameValue(e.oldState,'closed');assert.sameValue(e.source,source);
+            var log='';function state(label){return {toString(){log+=label+';';return label;}};}
+            var ordered=new ToggleEvent(state('type'),{
+                get bubbles(){log+='bubbles;';return false;},get cancelable(){log+='cancelable;';return false;},
+                get composed(){log+='composed;';return false;},get newState(){log+='get new;';return state('new');},
+                get oldState(){log+='get old;';return state('old');},get source(){log+='source;';return null;}
+            });
+            assert.sameValue(log,'type;bubbles;cancelable;composed;get new;new;get old;old;source;');
+            assert.sameValue(ordered.oldState,'old');assert.sameValue(ordered.newState,'new');
+            var reason={},after=0;
+            assert.throws(TypeError,()=>new ToggleEvent('x',{newState:{toString(){return {};},valueOf(){return {};}}}));
+            try{new ToggleEvent('x',{get newState(){throw reason;},get oldState(){after++;return '';}});}catch(caught){assert.sameValue(caught,reason);}
+            assert.sameValue(after,0);
+        "#,&mut document).unwrap();
+    }
+
+    #[test]
+    fn disclosure_reflection_coerces_names_but_not_booleans_and_respects_namespaces() {
+        let (mut runtime, _) = property_harness();
+        let mut document = Document::parse(
+            "<details id=a></details><details id=b></details><svg><details id=foreign open name=svg /></svg>",
+        );
+        runtime.execute(r#"
+            var a=document.getElementById('a'),b=document.getElementById('b'),foreign=document.getElementById('foreign');
+            assert.sameValue(a.open,false);assert.sameValue(a.name,'');
+            var conversions=0;var truthy={toString(){conversions++;throw 'coerced boolean';},valueOf(){conversions++;throw 'coerced boolean';}};
+            a.open=truthy;assert.sameValue(a.open,true);assert.sameValue(a.getAttribute('open'),'');assert.sameValue(conversions,0);
+            a.open='false';assert.sameValue(a.open,true);a.open=0;assert.sameValue(a.open,false);
+            a.setAttribute('OPEN','false');assert.sameValue(a.open,true);
+            a.removeAttribute('open');assert.sameValue(a.open,false);
+            a.name={toString(){conversions++;return 'group';}};b.name='group';
+            assert.sameValue(a.getAttribute('name'),'group');assert.sameValue(conversions,1);
+            a.open=true;b.open=true;assert.sameValue(a.open,false);assert.sameValue(b.open,true);
+            a.name=null;assert.sameValue(a.name,'null');
+            a.name='\uD800';assert.sameValue(a.name,'\uFFFD');
+            assert.sameValue(foreign.open,undefined);assert.sameValue(foreign.name,undefined);
+            assert.sameValue(foreign.getAttribute('name'),'svg');
+            var previous=a.name,reason={};try{a.name={toString(){throw reason;}};}catch(e){assert.sameValue(e,reason);}
+            assert.sameValue(a.name,previous);
+        "#,&mut document).unwrap();
+    }
+
+    #[test]
+    fn disclosure_checkpoint_coalesces_delivers_trusted_events_and_handles_reentrant_changes() {
+        let (mut runtime, _) = property_harness();
+        let mut document = Document::parse(
+            "<details id=d ontoggle='inlineCount++;'><summary>Label</summary><p>Content</p></details>",
+        );
+        runtime.execute(r#"
+            var d=document.getElementById('d'),count=0,inlineCount=0,capture=0,bubble=0,last;
+            document.addEventListener('toggle',function(){capture++;},true);
+            document.addEventListener('toggle',function(){bubble++;});
+            d.addEventListener('toggle',function(e){
+                count++;last=e;assert.sameValue(e.target,d);assert.sameValue(e.currentTarget,d);
+                assert.sameValue(e instanceof ToggleEvent,true);assert.sameValue(e.isTrusted,true);
+                assert.sameValue(e.bubbles,false);assert.sameValue(e.cancelable,false);assert.sameValue(e.source,null);
+                e.preventDefault();assert.sameValue(e.defaultPrevented,false);
+            });
+            d.open=true;d.open=false;assert.sameValue(count,0);assert.sameValue(inlineCount,0);
+        "#,&mut document).unwrap();
+        runtime.dispatch_details_toggles(&mut document).unwrap();
+        runtime.execute(r#"
+            assert.sameValue(count,1);assert.sameValue(inlineCount,1);assert.sameValue(capture,1);assert.sameValue(bubble,0);
+            assert.sameValue(last.oldState,'closed');assert.sameValue(last.newState,'closed');
+            assert.sameValue(last.currentTarget,null);assert.sameValue(last.eventPhase,0);assert.sameValue(last.composedPath().length,0);
+            var trace='';d.ontoggle=function(e){trace+=e.oldState+'>'+e.newState+';';if(d.open){d.open=false;}return false;};
+            d.open=true;assert.sameValue(count,1);
+        "#,&mut document).unwrap();
+        runtime.dispatch_details_toggles(&mut document).unwrap();
+        runtime.execute(r#"
+            assert.sameValue(count,3);assert.sameValue(trace,'closed>open;open>closed;');assert.sameValue(d.open,false);
+            assert.sameValue(inlineCount,1);assert.sameValue(last.defaultPrevented,false);
+            var detached=document.createElement('details'),detachedCount=0;
+            detached.ontoggle=function(e){detachedCount++;assert.sameValue(e.composedPath().length,1);};detached.open=true;
+        "#,&mut document).unwrap();
+        runtime.dispatch_details_toggles(&mut document).unwrap();
+        runtime
+            .execute(
+                "assert.sameValue(detachedCount,1);assert.sameValue(capture,3);",
+                &mut document,
+            )
+            .unwrap();
+        assert!(!document.has_pending_details_toggles());
+    }
+
+    #[test]
+    fn disclosure_checkpoint_limits_tasks_and_preserves_unstarted_notifications_on_failure() {
+        let (mut runtime, _) = property_harness();
+        let mut document = Document::parse(&"<details></details>".repeat(70));
+        runtime.execute("var count=0;document.querySelectorAll('details').forEach(function(d){d.addEventListener('toggle',function(){count++;});});",&mut document).unwrap();
+        for node in document.query_selector_all("details") {
+            document.set_attr(node, "open", "");
+        }
+        runtime.dispatch_details_toggles(&mut document).unwrap();
+        assert_eq!(
+            runtime.execute("count", &mut document).unwrap(),
+            Value::Number(64.0)
+        );
+        assert!(document.has_pending_details_toggles());
+        runtime.dispatch_details_toggles(&mut document).unwrap();
+        assert_eq!(
+            runtime.execute("count", &mut document).unwrap(),
+            Value::Number(70.0)
+        );
+        assert!(!document.has_pending_details_toggles());
+
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("<details></details>");
+        let node = document.query_selector("details").unwrap();
+        document.set_attr(node, "open", "");
+        runtime.allocated = MAX_HEAP;
+        assert!(
+            runtime
+                .dispatch_details_toggles(&mut document)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(document.peek_details_toggle().unwrap().node, node);
+        assert_eq!(runtime.stack_units, 0);
+
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("<details id=a></details><details id=b></details>");
+        runtime.execute("var caught=false;document.getElementById('a').ontoggle=function(){try{while(true){}}catch(e){caught=true;}};",&mut document).unwrap();
+        let a = document.query_selector("#a").unwrap();
+        let b = document.query_selector("#b").unwrap();
+        document.set_attr(a, "open", "");
+        document.set_attr(b, "open", "");
+        assert!(
+            runtime
+                .dispatch_details_toggles(&mut document)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(document.peek_details_toggle().unwrap().node, b);
+        assert_eq!(runtime.stack_units, 0);
+        assert!(!runtime.events.last().unwrap().dispatching);
+        assert_eq!(
+            runtime.execute("caught", &mut document).unwrap(),
+            Value::Bool(false)
+        );
+    }
+
+    #[test]
+    fn disclosure_mutation_and_constructor_coercion_preflight_uncatchable_limits() {
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("<details></details>");
+        let node = document.query_selector("details").unwrap();
+        runtime.steps = 0;
+        assert!(
+            runtime
+                .set(Value::Node(node), "open", Value::Bool(true), &mut document)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert!(document.attr(node, "open").is_none());
+        assert!(!document.has_pending_details_toggles());
+        runtime.steps = MAX_STEPS;
+        runtime.allocated = MAX_HEAP;
+        assert!(
+            runtime
+                .set(Value::Node(node), "open", Value::Bool(true), &mut document)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert!(document.attr(node, "open").is_none());
+        assert!(!document.has_pending_details_toggles());
+        for source in [
+            "try{new ToggleEvent('x',{newState:{toString(){while(true){}}}});}catch(e){caught=true;}",
+            "var value={toString(){return new ToggleEvent('x',{newState:value}).newState;}};try{new ToggleEvent('x',{newState:value});}catch(e){caught=true;}",
+            "try{document.querySelector('details').name={toString(){while(true){}}};}catch(e){caught=true;}",
+        ] {
+            let mut runtime = Runtime::new();
+            let mut document = Document::parse("<details></details>");
+            runtime.execute("var caught=false", &mut document).unwrap();
+            assert!(
+                runtime
+                    .execute(source, &mut document)
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(runtime.stack_units, 0);
+            assert_eq!(
+                runtime.execute("caught", &mut document).unwrap(),
+                Value::Bool(false)
+            );
+        }
+    }
+
+    #[test]
+    fn disclosure_copy_group_work_is_charged_before_allocating_or_replacing_the_target() {
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("<main><p>preserved</p></main>");
+        let target = document.query_selector("main").unwrap();
+        let before = document.nodes.len();
+        let markup = "<details name=g open></details>".repeat(500);
+        assert!(
+            runtime
+                .set_inner_html(target, &markup, &mut document)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(document.nodes.len(), before);
+        assert_eq!(document.text_content(target), "preserved");
+        assert!(!document.has_pending_details_toggles());
+
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse(&format!("<main>{markup}</main>"));
+        while document.take_details_toggle().is_some() {}
+        let source = document.query_selector("main").unwrap();
+        let before = document.nodes.len();
+        assert!(
+            runtime
+                .clone_dom_node(source, true, &mut document)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(document.nodes.len(), before);
+        assert!(!document.has_pending_details_toggles());
+    }
+
+    #[test]
+    fn array_reverse_preserves_holes_inheritance_and_generic_receiver_identity() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var a=[1,2,3,4];delete a[1];
+            assert.sameValue(a.reverse(),a);assert.sameValue(a.length,4);
+            assert.sameValue(a[0],4);assert.sameValue(a[1],3);
+            assert.sameValue(a.hasOwnProperty('2'),false);assert.sameValue(a[3],1);
+            var p={0:'inherited'},o=Object.create(p);o.length=3;o[2]='own';
+            assert.sameValue(Array.prototype.reverse.call(o),o);
+            assert.sameValue(o[0],'own');assert.sameValue(o[2],'inherited');
+            assert.sameValue(o.hasOwnProperty('1'),false);assert.sameValue(p[0],'inherited');
+            var sparse={length:5,1:undefined};Array.prototype.reverse.call(sparse);
+            assert.sameValue(sparse.hasOwnProperty('1'),false);
+            assert.sameValue(sparse.hasOwnProperty('3'),true);
+            var log='',like={get length(){log+='length;';return {valueOf(){log+='number;';return 3.9;}};},0:'a',2:'b'};
+            Array.prototype.reverse.call(like);assert.sameValue(log,'length;number;');
+            assert.sameValue(like[0],'b');assert.sameValue(like[2],'a');
+            var noLength={0:'kept'};assert.sameValue(Array.prototype.reverse.call(noLength),noLength);
+            assert.sameValue(noLength[0],'kept');
+            assert.sameValue(Array.prototype.reverse.call('x').valueOf(),'x');
+            assert.sameValue(Array.prototype.reverse.call(2).valueOf(),2);
+            function mapped(a,b){Array.prototype.reverse.call(arguments);return a+'|'+b;}
+            function unmapped(a,b){'use strict';Array.prototype.reverse.call(arguments);return a+'|'+b+'|'+arguments[0];}
+            assert.sameValue(mapped('a','b'),'b|a');assert.sameValue(unmapped('a','b'),'a|b|b');
+            assert.throws(TypeError,function(){Array.prototype.reverse.call(null);});
+            assert.throws(TypeError,function(){Array.prototype.reverse.call(undefined);});
+            assert.throws(TypeError,function(){Array.prototype.reverse.call('ab');});
+            verifyProperty(Array.prototype.reverse,'length',{value:0,writable:false,enumerable:false,configurable:true});
+            verifyProperty(Array.prototype,'reverse',{writable:true,enumerable:false,configurable:true});
+        "#, &mut document).unwrap();
+    }
+
+    #[test]
+    fn array_reverse_observes_accessor_order_and_mutations_between_steps() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var log='',o={length:2,get 0(){log+='get0;';return 'a';},set 0(v){log+='set0='+v+';';},get 1(){log+='get1;';return 'b';},set 1(v){log+='set1='+v+';';}};
+            Array.prototype.reverse.call(o);assert.sameValue(log,'get0;get1;set0=b;set1=a;');
+            var changing={length:2,get 0(){delete this[1];return 'a';},1:'b'};
+            Array.prototype.reverse.call(changing);
+            assert.sameValue(changing.hasOwnProperty('0'),false);assert.sameValue(changing[1],'a');
+            var inserted={length:2,get 0(){this[1]='new';return 'old';},set 0(v){log=v;}};
+            Array.prototype.reverse.call(inserted);assert.sameValue(log,'new');assert.sameValue(inserted[1],'old');
+            var proto={set 0(v){assert.sameValue(this,child);log=v;}},child=Object.create(proto);child.length=2;child[1]='upper';
+            Array.prototype.reverse.call(child);assert.sameValue(log,'upper');
+            assert.sameValue(child[1],undefined);assert.sameValue(child.hasOwnProperty('0'),false);
+            var detached={length:4,0:1,3:4};
+            Object.defineProperty(detached,'0',{get:function(){this.length=0;this[1]=2;return 1;},set:function(v){log=v;},configurable:true});
+            Array.prototype.reverse.call(detached);assert.sameValue(detached[2],2);assert.sameValue(detached.hasOwnProperty('1'),false);
+        "#, &mut document).unwrap();
+    }
+
+    #[test]
+    fn array_reverse_strict_writes_and_deletes_preserve_abrupt_partial_effects() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var readOnly={length:2,0:'lower'};
+            Object.defineProperty(readOnly,'1',{value:'upper',writable:false});
+            assert.throws(TypeError,function(){Array.prototype.reverse.call(readOnly);});
+            assert.sameValue(readOnly[0],'upper');assert.sameValue(readOnly[1],'upper');
+            var upperOnly={length:2};Object.defineProperty(upperOnly,'1',{value:'kept',configurable:false});
+            assert.throws(TypeError,function(){Array.prototype.reverse.call(upperOnly);});
+            assert.sameValue(upperOnly[0],'kept');assert.sameValue(upperOnly[1],'kept');
+            var lowerOnly={length:2};Object.defineProperty(lowerOnly,'0',{value:'kept',configurable:false});
+            assert.throws(TypeError,function(){Array.prototype.reverse.call(lowerOnly);});
+            assert.sameValue(lowerOnly.hasOwnProperty('1'),false);
+            var sealed=Object.preventExtensions({length:2,0:'lost'});
+            assert.throws(TypeError,function(){Array.prototype.reverse.call(sealed);});
+            assert.sameValue(sealed.hasOwnProperty('0'),false);
+            var reason={},seen,log='',getter={length:2,get 0(){throw reason;},get 1(){log+='wrong';}};
+            try{Array.prototype.reverse.call(getter);}catch(e){seen=e;}
+            assert.sameValue(seen,reason);assert.sameValue(log,'');
+            var setter={length:2,set 0(v){throw reason;},get 1(){log+='get;';return 1;},set 1(v){log+='wrong';}};
+            try{Array.prototype.reverse.call(setter);}catch(e){seen=e;}
+            assert.sameValue(seen,reason);assert.sameValue(log,'get;');
+        "#, &mut document).unwrap();
+    }
+
+    #[test]
+    fn array_reverse_charges_lengths_pair_work_and_recursive_accessors() {
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        let error=runtime.execute("var order='',caught=false,o={get length(){order+='get;';return {valueOf(){order+='number;';return Infinity;}};},0:'untouched'};try{Array.prototype.reverse.call(o);}catch(e){caught=true;}",&mut document).unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(
+            runtime
+                .execute("order+'|'+caught+'|'+o[0]", &mut document)
+                .unwrap()
+                .to_string(),
+            "get;number;|false|untouched"
+        );
+        for source in [
+            "var a={length:65536};try{for(var i=0;i<10;i++)Array.prototype.reverse.call(a);}catch(e){throw 'caught';}",
+            "var a={length:2,get 0(){return Array.prototype.reverse.call(a);}};Array.prototype.reverse.call(a);",
+        ] {
+            assert!(run(source).unwrap_err().is_resource_limit(), "{source}");
+        }
+        assert_eq!(
+            run("var o={length:-Infinity,0:1};Array.prototype.reverse.call(o);o[0]").unwrap(),
+            Value::Number(1.0)
+        );
+    }
+
+    #[test]
+    fn number_radix_formats_safe_integers_and_special_values_exactly() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            assert.sameValue((255).toString(16),'ff');assert.sameValue((-255).toString(16),'-ff');
+            assert.sameValue((9007199254740991).toString(16),'1fffffffffffff');
+            assert.sameValue((9007199254740991).toString(2),'11111111111111111111111111111111111111111111111111111');
+            assert.sameValue((9007199254740991).toString(36),'2gosa7pa2gv');
+            for(var radix=2;radix<=36;radix++){
+                assert.sameValue(radix.toString(radix),'10');
+                assert.sameValue((-radix).toString(radix),'-10');
+                assert.sameValue((radix*radix+1).toString(radix),'101');
+                assert.sameValue((-0).toString(radix),'0');
+            }
+            assert.sameValue(NaN.toString(16),'NaN');assert.sameValue(Infinity.toString(2),'Infinity');
+            assert.sameValue((-Infinity).toString(36),'-Infinity');
+            assert.sameValue((1.25).toString(10),'1.25');assert.sameValue((1e21).toString(),'1e+21');
+            assert.sameValue((35).toString(36),'z');assert.sameValue((10).toString(11),'a');
+            assert.sameValue((5).toString(2.9),'101');assert.sameValue((255).toString('16'),'ff');
+            var boxed=new Number(15);boxed.valueOf=function(){throw 'wrong receiver coercion';};
+            assert.sameValue(boxed.toString(16),'f');
+            verifyProperty(Number.prototype.toString,'length',{value:1,writable:false,enumerable:false,configurable:true});
+        "#, &mut document).unwrap();
+    }
+
+    #[test]
+    fn number_radix_coercion_branding_errors_and_unsupported_ranges_are_explicit() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var log='',radix={get valueOf(){log+='get;';return function(){log+='value;';return {};};},toString(){log+='string;';return '16';}};
+            assert.sameValue((255).toString(radix),'ff');assert.sameValue(log,'get;value;string;');
+            log='';assert.throws(TypeError,function(){Number.prototype.toString.call({},radix);});assert.sameValue(log,'');
+            var reason={},seen;try{(1).toString({valueOf(){throw reason;}});}catch(e){seen=e;}assert.sameValue(seen,reason);
+            var invalid=[null,false,NaN,0,-0,1,-2,37,Infinity,-Infinity];
+            for(var i=0;i<invalid.length;i++){
+                assert.throws(RangeError,function(){return (1).toString(invalid[i]);});
+                assert.throws(RangeError,function(){return NaN.toString(invalid[i]);});
+                assert.throws(RangeError,function(){return Infinity.toString(invalid[i]);});
+            }
+            assert.throws(TypeError,function(){(1).toString({valueOf(){return {};},toString(){return {};}});});
+        "#, &mut document).unwrap();
+        for source in [
+            "(0.5).toString(2)",
+            "(9007199254740992).toString(16)",
+            "(1e100).toString(36)",
+        ] {
+            assert!(run(source).unwrap_err().is_unsupported(), "{source}");
+        }
+        assert!(
+            run("(1).toString({valueOf(){while(true){}}})")
+                .unwrap_err()
+                .is_resource_limit()
+        );
+    }
+
+    #[test]
+    fn function_parameter_copies_consume_work_and_heap_before_retention() {
+        let params = (0..1000)
+            .map(|i| format!("p{i}{}", "x".repeat(36)))
+            .collect::<Vec<_>>()
+            .join(",");
+        let source = format!(
+            "var caught=false;try{{for(var i=0;i<1000;i++){{var o={{m({params}){{return 1;}}}};}}}}catch(e){{caught=true;}}"
+        );
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        assert!(
+            runtime
+                .execute(&source, &mut document)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(runtime.lookup(0, "caught").unwrap().1, Value::Bool(false));
+        assert!(runtime.functions.len() < 100);
+        // Directly exhaust the allocation allowance while leaving work available.
+        let program = Parser::program(&format!("({{m({params}){{}}}})")).unwrap();
+        let Stmt::Expr(Expr::Object(entries)) = &program.body[0] else {
+            panic!("method AST");
+        };
+        let ObjectEntry::Method(code) = &entries[0].1 else {
+            panic!("method code");
+        };
+        let mut runtime = Runtime::new();
+        runtime.allocated = MAX_HEAP - 1024;
+        let before = runtime.functions.len();
+        assert!(
+            runtime
+                .function_value(code, 1)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(runtime.functions.len(), before);
+        let mut named = code.clone();
+        named.params.clear();
+        named.name = Some("n".repeat(8192));
+        let mut runtime = Runtime::new();
+        runtime.allocated = MAX_HEAP - 1024;
+        let before = runtime.functions.len();
+        assert!(
+            runtime
+                .function_value(&named, 1)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(runtime.functions.len(), before);
+    }
+
+    #[test]
+    fn array_number_methods_execute_unchanged_json_ascii_case() {
+        let source = include_str!(
+            "../tests/upstream/test262/test/built-ins/JSON/stringify/value-string-escape-ascii.js"
+        );
+        for strict in [false, true] {
+            let (mut runtime, mut document) = upstream_harness();
+            if strict {
+                runtime.execute_strict(source, &mut document).unwrap();
+            } else {
+                runtime.execute(source, &mut document).unwrap();
+            }
+        }
+    }
+
+    #[test]
+    fn object_literals_evaluate_keys_coercions_and_values_in_source_order() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var log='';
+            var key={get toString(){log+='get;';return function(){log+='string;';return 'x';};},valueOf(){throw 'wrong hint';}};
+            function keyExpression(){log+='key;';return key;}
+            function valueExpression(){log+='value;';return 4;}
+            var o={ [keyExpression()]:valueExpression(), [(log+='next;', 'y')]:5 };
+            assert.sameValue(log,'key;get;string;value;next;');
+            assert.sameValue(o.x,4);assert.sameValue(o.y,5);
+            var fallback={toString(){return {};},valueOf(){return 8;}};
+            assert.sameValue({[fallback]:6}[8],6);
+            var array=[1,2];array.toString=function(){return 'array key';};
+            assert.sameValue({[array]:7}['array key'],7);
+            var func=function(){};func.toString=function(){return 'function key';};
+            assert.sameValue({[func]:8}['function key'],8);
+            var primitive={[-0]:1,[NaN]:2,[Infinity]:3,[null]:4,[undefined]:5,[true]:6};
+            assert.sameValue(primitive['0'],1);assert.sameValue(primitive.NaN,2);
+            assert.sameValue(primitive.Infinity,3);assert.sameValue(primitive.null,4);
+            assert.sameValue(primitive.undefined,5);assert.sameValue(primitive.true,6);
+            var reason={},seen,after=0;
+            try{({[{get toString(){throw reason;}}]:after++,[(after++, 'later')]:0});}catch(e){seen=e;}
+            assert.sameValue(seen,reason);assert.sameValue(after,0);
+            assert.throws(TypeError,function(){return {[{toString(){return {};},valueOf(){return {};}}]:after++};});
+            assert.sameValue(after,0);
+            try{({[keyExpression()]:(function(){throw reason;})(),[(after++,'later')]:0});}catch(e){seen=e;}
+            assert.sameValue(seen,reason);assert.sameValue(after,0);
+            var initial;for(initial={['x' in {x:1}]:9};false;){}
+            assert.sameValue(initial.true,9);
+            assert.sameValue({[(1,2)]:3}[2],3);
+            var ordered={b:1,[2]:2,a:3,[1]:4,['b']:5};
+            assert.compareArray(Object.keys(ordered),['1','2','b','a']);assert.sameValue(ordered.b,5);
+        "#, &mut document).unwrap();
+    }
+
+    #[test]
+    fn object_literals_methods_and_accessors_preserve_receivers_names_and_descriptors() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var name='method',slot='slot',source=3,seen;
+            var o={ [name](a,b){return this;}, get [slot](){seen=this;return source;}, set [slot](value){seen=this;source=value;} };
+            assert.sameValue(o.method(1,2),o);assert.sameValue(o.method.call(null),window);
+            assert.sameValue(o.method.call(7).valueOf(),7);
+            assert.sameValue(o.slot,3);assert.sameValue(seen,o);o.slot=9;assert.sameValue(source,9);
+            var descriptor=Object.getOwnPropertyDescriptor(o,'slot');
+            verifyProperty(o,'method',{value:o.method,writable:true,enumerable:true,configurable:true},{restore:true});
+            verifyProperty(o.method,'name',{value:'method',writable:false,enumerable:false,configurable:true},{restore:true});
+            verifyProperty(o.method,'length',{value:2,writable:false,enumerable:false,configurable:true},{restore:true});
+            assert.sameValue(descriptor.get.name,'get slot');assert.sameValue(descriptor.get.length,0);
+            assert.sameValue(descriptor.set.name,'set slot');assert.sameValue(descriptor.set.length,1);
+            assert.sameValue(descriptor.enumerable,true);assert.sameValue(descriptor.configurable,true);
+            assert.sameValue(Object.prototype.hasOwnProperty.call(o.method,'prototype'),false);
+            assert.sameValue(Object.prototype.hasOwnProperty.call(descriptor.get,'prototype'),false);
+            assert.throws(TypeError,()=>new o.method());assert.throws(TypeError,()=>new descriptor.get());
+            var replacement={get [slot](){return 1;},set [slot](x){source=x;},get [slot](){return 2;}};
+            replacement.slot=11;assert.sameValue(source,11);assert.sameValue(replacement.slot,2);
+            var dataLast={get ['x'](){return 1;},['x']:2};
+            verifyProperty(dataLast,'x',{value:2,writable:true,enumerable:true,configurable:true});
+            var getterLast={['x']:2,get ['x'](){return 3;}};
+            assert.sameValue(getterLast.x,3);assert.sameValue(Object.getOwnPropertyDescriptor(getterLast,'x').set,undefined);
+            var strict={['method'](){'use strict';return this;},get ['x'](){'use strict';return this;}};
+            assert.sameValue(strict.method.call(null),null);
+            assert.sameValue(strict.method.call(8),8);
+            assert.sameValue(Object.getOwnPropertyDescriptor(strict,'x').get.call(undefined),undefined);
+            function inheritedStrict(){'use strict';return {['method'](){return this;}};}
+            assert.sameValue(inheritedStrict().method.call(undefined),undefined);
+            var inherited=Object.create(o);assert.sameValue(inherited.slot,11);assert.sameValue(seen,inherited);
+            inherited.slot=12;assert.sameValue(seen,inherited);assert.sameValue(source,12);
+            var shorthand=7;var ambiguous={get(){return 1;},set:2,async(){return 3;},shorthand};
+            assert.sameValue(ambiguous.get(),1);assert.sameValue(ambiguous.set,2);
+            assert.sameValue(ambiguous.async(),3);assert.sameValue(ambiguous.shorthand,7);
+        "#, &mut document).unwrap();
+    }
+
+    #[test]
+    fn object_literals_function_naming_preserves_utf16_without_renaming_references() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var key='\uD800',other='\uDC00';
+            var o={ [key](){}, get [other](){return 1;}, set [other](v){}, ['']:function(){}, [42]:()=>0 };
+            assert.sameValue(o[key].name,key);
+            assert.sameValue(Object.getOwnPropertyDescriptor(o,other).get.name,'get '+other);
+            assert.sameValue(Object.getOwnPropertyDescriptor(o,other).set.name,'set '+other);
+            assert.sameValue(o[''].name,'');assert.sameValue(o[42].name,'42');
+            assert.sameValue({'\uD800'(){}}[key].name,key);
+            assert.sameValue({get '\uD800'(){}}[key],undefined);
+            var accessor=Object.getOwnPropertyDescriptor({get '\uD800'(){}},key).get;
+            assert.sameValue(accessor.name,'get '+key);
+            var named=function declared(){};var o2={a:named,b:function explicit(){},c:function(){},d:()=>0,e:(function(){})};
+            assert.sameValue(o2.a.name,'declared');assert.sameValue(o2.b.name,'explicit');
+            assert.sameValue(o2.c.name,'c');assert.sameValue(o2.d.name,'d');assert.sameValue(o2.e.name,'e');
+            assert.sameValue(named.name,'declared');
+            var anonymous=[function(){}][0];var o3={x:anonymous,y:(0,function(){})};
+            assert.sameValue(o3.x.name,'');assert.sameValue(o3.y.name,'');
+            var existing=function old(){};var shorthand={existing};assert.sameValue(shorthand.existing.name,'old');
+            var bareProto={__proto__:function(){}};assert.sameValue(Object.getPrototypeOf(bareProto).name,'');
+            var namedProto={['__proto__']:function(){}};assert.sameValue(namedProto.__proto__.name,'__proto__');
+        "#, &mut document).unwrap();
+    }
+
+    #[test]
+    fn object_literals_prototype_setters_are_distinct_from_ordinary_proto_properties() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var base={inherited:4};var a={__proto__:base,own:5};
+            assert.sameValue(Object.getPrototypeOf(a),base);assert.sameValue(a.inherited,4);
+            assert.sameValue(Object.prototype.hasOwnProperty.call(a,'__proto__'),false);
+            var n={'__pr\u006fto__':null,x:1};assert.sameValue(Object.getPrototypeOf(n),null);
+            assert.sameValue(Object.prototype.hasOwnProperty.call(n,'__proto__'),false);
+            var effects=0;var ignored={__proto__:(effects++,17)};
+            assert.sameValue(effects,1);assert.sameValue(Object.getPrototypeOf(ignored),Object.prototype);
+            assert.sameValue(Object.prototype.hasOwnProperty.call(ignored,'__proto__'),false);
+            var coercions=0;var p={toString(){coercions++;return 'wrong';},valueOf(){coercions++;return null;}};
+            assert.sameValue(Object.getPrototypeOf({__proto__:p}),p);assert.sameValue(coercions,0);
+            var seen='',setter={set x(value){throw 'inherited setter invoked';}};
+            var ordered={[(seen+='key;','x')]:(seen+='value;',1),__proto__:(seen+='proto;',setter),y:(seen+='last;',2)};
+            assert.sameValue(seen,'key;value;proto;last;');assert.sameValue(ordered.x,1);
+            assert.sameValue({__proto__:setter,x:3}.x,3);
+            var __proto__=8;var ordinary={__proto__,['__proto__']:9};
+            assert.sameValue(ordinary.__proto__,9);assert.sameValue(Object.getPrototypeOf(ordinary),Object.prototype);
+            var combined={['__proto__']:7,__proto__:null};
+            assert.sameValue(combined.__proto__,7);assert.sameValue(Object.getPrototypeOf(combined),null);
+            var method={__proto__(){return 10;}};assert.sameValue(method.__proto__(),10);
+            var access={get __proto__(){return 11;},set __proto__(v){effects=v;}};
+            assert.sameValue(access.__proto__,11);access.__proto__=12;assert.sameValue(effects,12);
+            var parsed=JSON.parse('{"__proto__":{"x":1}}');
+            assert.sameValue(Object.getPrototypeOf(parsed),Object.prototype);
+            assert.sameValue(Object.prototype.hasOwnProperty.call(parsed,'__proto__'),true);
+            assert.sameValue(parsed.__proto__.x,1);
+        "#, &mut document).unwrap();
+    }
+
+    #[test]
+    fn object_literals_early_errors_and_unsupported_method_forms_are_explicit() {
+        for source in [
+            "({[1,2]:3})",
+            "({[]:1})",
+            "({[1]})",
+            "({'x'})",
+            "({1})",
+            "({'get' x(){}})",
+            "({'set' x(v){}})",
+            "({get x(v){}})",
+            "({set x(){}})",
+            "({set x(a,b){}})",
+            "({m(a,a){}})",
+            "({['m'](a,a){}})",
+            "({m(eval){'use strict';}})",
+            "({__proto__:null,'__proto__':null})",
+            "({__proto__:1,'__pr\\u006fto__':2})",
+        ] {
+            let error = Runtime::parse_only(source).unwrap_err();
+            assert!(error.is_parse_error(), "{source}: {error:?}");
+        }
+        for source in [
+            "({*m(){}})",
+            "({async m(){}})",
+            "({async ['m'](){}})",
+            "({async *m(){}})",
+            "({...x})",
+            "({m(){return super.x;}})",
+            "({m(a=1){}})",
+            "({m(...args){}})",
+            "({m({a}){}})",
+        ] {
+            assert!(
+                Runtime::parse_only(source).unwrap_err().is_unsupported(),
+                "{source}"
+            );
+        }
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        runtime.execute("var touched=false", &mut document).unwrap();
+        let error = runtime
+            .execute("touched=true;({__proto__:1,__proto__:2})", &mut document)
+            .unwrap_err();
+        assert!(error.is_parse_error());
+        assert_eq!(
+            runtime.execute("touched", &mut document).unwrap(),
+            Value::Bool(false)
+        );
+    }
+
+    #[test]
+    fn object_literals_charge_keys_names_prototype_walks_and_nested_coercion() {
+        for source in [
+            "var key={toString(){while(true){}}};try{({[key]:1});}catch(e){caught=true;}",
+            "var key={toString(){return Object.keys({[key]:1})[0];}};try{({[key]:1});}catch(e){caught=true;}",
+            "var proto=null;try{for(var i=0;i<200;i++){proto={__proto__:proto};}}catch(e){caught=true;}",
+        ] {
+            let mut runtime = Runtime::new();
+            let mut document = Document::parse("");
+            runtime.execute("var caught=false", &mut document).unwrap();
+            let error = runtime.execute(source, &mut document).unwrap_err();
+            assert!(error.is_resource_limit(), "{source}: {error:?}");
+            assert_eq!(runtime.stack_units, 0);
+            assert_eq!(
+                runtime.execute("caught", &mut document).unwrap(),
+                Value::Bool(false)
+            );
+        }
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        runtime
+            .execute(
+                "var caught=false;var key='x';for(var i=0;i<15;i++){key=key+key;}",
+                &mut document,
+            )
+            .unwrap();
+        let error = runtime
+            .execute(
+                "try{for(var n=0;n<500;n++){({get [key](){}});}}catch(e){caught=true;}",
+                &mut document,
+            )
+            .unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(
+            runtime.execute("caught", &mut document).unwrap(),
+            Value::Bool(false)
+        );
+        let nested = format!("{}0{}", "({[".repeat(200), "]:1})".repeat(200));
+        assert!(
+            Runtime::parse_only(&nested)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        let large = format!("({{{}}})", "['x']:1,".repeat(MAX_TOKENS));
+        assert!(Runtime::parse_only(&large).unwrap_err().is_resource_limit());
     }
 
     #[test]

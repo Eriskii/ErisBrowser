@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "f073410553ed7cac9c6ddb0d5d10da1e52616d067a0310578e84cbf000df4191",
   "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
-  "binary_sha256": "f01d1bc534b9401ab22ced44cc9d1e3a87eb012ac77aee96ada2f5ae4cfed0b3",
+  "binary_sha256": "1b39697a2afe24505fef534bc09c8641191c114a9b0a9c23fc8424366c9ffae6",
   "cases": {
     "test/built-ins/JSON/parse/15.12.1.1-0-1.js:sloppy": {
       "status": "passed",
@@ -1335,12 +1335,12 @@
       "source_sha256": "8829b6686a5bc3399edc7a23bf4abe02f5706b0b712d9eec3590e5785c2bc6e8"
     },
     "test/built-ins/JSON/stringify/value-string-escape-ascii.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "36ef0ca32f49704ba04ea449383236c6eca0154727b07c1524350b45011e4283",
       "source_sha256": "8185a70c7e050b19f02491618f462f53796bccde59463dfa2fc4dfd0dfd1eb50"
     },
     "test/built-ins/JSON/stringify/value-string-escape-ascii.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "4a084ca3454f4ce239e2ce9abb3441c0d45ffbe83043ba764f2b4c118c9d2e19",
       "source_sha256": "8185a70c7e050b19f02491618f462f53796bccde59463dfa2fc4dfd0dfd1eb50"
     },

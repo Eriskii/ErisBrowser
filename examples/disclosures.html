@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Small wonders — field notes</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f3f1e8; color: #233d32; font-family: sans-serif; }
+    main { max-width: 980px; margin: 0 auto; padding: 52px 36px; }
+    .eyebrow { font-size: 12px; letter-spacing: 2px; color: #56735e; margin: 0 0 18px; }
+    h1 { font-size: 48px; line-height: 1.12; margin: 0 0 20px; max-width: 660px; }
+    .intro { font-size: 18px; line-height: 1.6; color: #56705e; max-width: 620px; margin: 0 0 32px; }
+    .notebook { border-top: 2px solid #233d32; }
+    details { border-bottom: 1px solid #bac7b7; padding: 0 20px; }
+    details[open] { background: #fffdf5; }
+    summary { padding: 22px 0; font-size: 21px; font-weight: bold; cursor: pointer; }
+    .note { padding: 0 0 24px; }
+    .note p { font-size: 16px; line-height: 1.65; margin: 0 0 16px; }
+    .place { color: #65795f; font-size: 12px; margin: 0 0 18px; }
+    .swatch { height: 116px; background: #789178; border-radius: 4px; margin-bottom: 18px; }
+    .rain { background: #78999d; }
+    .lichen { background: #b1b56e; }
+    .prompt { background: #e8ecdf; padding: 16px; font-size: 14px; line-height: 1.5; }
+    .controls { margin-top: 26px; }
+    button { color: white; background: #233d32; border: 0; border-radius: 4px; padding: 12px 20px; font-size: 15px; cursor: pointer; }
+    #status { color: #56705e; font-size: 14px; margin: 16px 0 0; }
+    footer { margin-top: 38px; color: #687d68; font-size: 13px; }
+    @supports (display: grid) and (gap: 24px) {
+      .note { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+    }
+    @media (width < 640px) {
+      main { padding: 30px 20px; }
+      h1 { font-size: 36px; }
+      details { padding: 0 12px; }
+      summary { font-size: 18px; }
+      .note { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">SMALL WONDERS / A POCKET FIELD GUIDE</p>
+    <h1>Look a little closer.</h1>
+    <p class="intro">Three things to notice on your next walk. Pick a note, take your time, and leave room for a small discovery.</p>
+    <section class="notebook">
+      <details id="note-1" name="field-notes" open>
+        <summary id="summary-1">01 &nbsp; The shape of a fern</summary>
+        <div class="note" id="fern-content">
+          <div>
+            <p class="place">SHADED PATHS / AFTER THE RAIN</p>
+            <p>A fern repeats its shape at a smaller scale. Follow one frond from its stem to its tip and look for the pattern inside the pattern.</p>
+            <p>New fronds begin as tightly curled fiddleheads, opening slowly toward the light.</p>
+          </div>
+          <aside><div class="swatch"></div><div class="prompt">Try this: sketch the outline with one continuous line.</div></aside>
+        </div>
+      </details>
+      <details id="note-2" name="field-notes">
+        <summary id="summary-2">02 &nbsp; A sky in a puddle</summary>
+        <div class="note" id="rain-content">
+          <div>
+            <p class="place">QUIET STREETS / BETWEEN SHOWERS</p>
+            <p>A shallow puddle can hold an entire sky. Move a little to one side and the reflection changes: branches, clouds, a passing bird.</p>
+            <p>Wait for a raindrop. Watch its circles cross the surface and disappear.</p>
+          </div>
+          <aside><div class="swatch rain"></div><div class="prompt">Try this: find three colors in a reflection.</div></aside>
+        </div>
+      </details>
+      <details id="note-3" name="field-notes">
+        <summary id="summary-3">03 &nbsp; The colors of lichen</summary>
+        <div class="note" id="lichen-content">
+          <div>
+            <p class="place">OLD STONE / ANY SEASON</p>
+            <p>Look at a weathered wall. Pale green, soft gray and bright yellow patches make a landscape of their own.</p>
+            <p>Lichens grow slowly. Leave them where they are, and enjoy the details from a little closer.</p>
+          </div>
+          <aside><div class="swatch lichen"></div><div class="prompt">Try this: give each shade a name of your own.</div></aside>
+        </div>
+      </details>
+    </section>
+    <div class="controls"><button id="next-note" type="button">Open the next note</button><p id="status">Now reading · The shape of a fern</p></div>
+    <footer>A short walk. An open notebook. Something new to notice.</footer>
+  </main>
+  <script>
+    const notes = document.querySelectorAll('details');
+    const titles = {
+      ['note-' + 1]: 'The shape of a fern',
+      ['note-' + 2]: 'A sky in a puddle',
+      ['note-' + 3]: 'The colors of lichen'
+    };
+    let current = 0;
+    const action = 'advance';
+    const controls = {
+      [action]() {
+        current = (current + 1) % notes.length;
+        notes[current].open = true;
+      }
+    };
+    document.getElementById('next-note').addEventListener('click', function () {
+      controls[action]();
+    });
+    for (let index = 0; index < notes.length; index++) {
+      notes[index].addEventListener('toggle', function (event) {
+        if (event.newState === 'open') {
+          current = index;
+          document.getElementById('status').textContent = `Now reading · ${titles[this.id]}`;
+        }
+      });
+    }
+  </script>
+</body>
+</html>

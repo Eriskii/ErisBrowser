@@ -167,7 +167,7 @@ fn byte_response(mime: &str, body: &[u8]) -> Vec<u8> {
 
 #[test]
 #[ignore = "requires permission to bind a loopback test server"]
-fn layered_imports_keep_network_order_shared_layers_and_unsupported_condition_policy() {
+fn layered_imports_keep_network_order_shared_layers_and_false_supports_suppression() {
     use eris::{css, graphics::Color};
     let server = Server::new(vec![
         (
@@ -209,8 +209,7 @@ fn layered_imports_keep_network_order_shared_layers_and_unsupported_condition_po
         ),
     ]);
     let page = Page::load(server.base.as_str(), false).unwrap();
-    assert_eq!(page.diagnostics.len(), 1, "{:?}", page.diagnostics);
-    assert!(page.diagnostics[0].contains("supports conditions are unsupported"));
+    assert!(page.diagnostics.is_empty(), "{:?}", page.diagnostics);
     let x = page.document.query_selector("#x").unwrap();
     let styles =
         css::compute_styles_from_sources(&page.document, &page.stylesheets(), 400.0, 300.0);
@@ -223,6 +222,96 @@ fn layered_imports_keep_network_order_shared_layers_and_unsupported_condition_po
         .map(|r| r.path)
         .collect::<Vec<_>>();
     assert_eq!(paths, ["/", "/theme.css", "/tokens.css", "/base.css"]);
+}
+
+#[test]
+#[ignore = "requires permission to bind a loopback test server"]
+fn supports_imports_suppress_requests_and_layers_but_keep_true_media_resize_behavior() {
+    use eris::{css, graphics::Color};
+    let server = Server::new(vec![
+        (
+            "/",
+            response(
+                "200 OK",
+                "text/html",
+                "",
+                r#"<!doctype html><style>
+            @import '/suppressed.css' layer(later) supports(padding:auto);
+            @import '/suppressed-negative.css' supports(padding:-1px);
+            @import '/suppressed-unitless.css' supports(width:20);
+            @import '/suppressed-grammar.css' supports(not ((display:flex) and));
+            @import '/suppressed-selector.css' supports(selector(:has(*)));
+            @import '/nested.css' layer(early) supports((display:flex) and (color:rgb(0, 0, 255))) (width >= 400px);
+            @import '/fallback.css' supports(not (unknown-property:value));
+            @layer later { #x {color:red} }
+            @layer early { #x {color:blue} }
+            #x {background:white;border:1px solid black}
+            </style><p id=x>sample</p>"#,
+            ),
+        ),
+        (
+            "/nested.css",
+            response(
+                "200 OK",
+                "text/css",
+                "",
+                r#"
+            @import '/suppressed-nested.css' layer(unused) supports(not (display:flex));
+            @import '/child.css' supports(selector(#x));
+            @supports (display:grid) and (width:10px) { #x{background:red!important} }
+            @supports (padding:auto) { #x{color:green!important} }
+            "#,
+            ),
+        ),
+        (
+            "/child.css",
+            response("200 OK", "text/css", "", "#x{border-color:blue!important}"),
+        ),
+        (
+            "/fallback.css",
+            response("200 OK", "text/css", "", "#x{height:40px}"),
+        ),
+    ]);
+    let page = Page::load(server.base.as_str(), false).unwrap();
+    assert!(page.diagnostics.is_empty(), "{:?}", page.diagnostics);
+    let x = page.document.query_selector("#x").unwrap();
+    for width in [320.0, 640.0, 320.0] {
+        let styles =
+            css::compute_styles_from_sources(&page.document, &page.stylesheets(), width, 240.0);
+        // The suppressed import cannot establish 'later' first. The true
+        // import establishes 'early' only while its media condition matches.
+        assert_eq!(
+            styles[x].color,
+            if width >= 400.0 {
+                Color::rgb(255, 0, 0)
+            } else {
+                Color::rgb(0, 0, 255)
+            }
+        );
+        assert_eq!(
+            styles[x].background_color,
+            if width >= 400.0 {
+                Color::rgb(255, 0, 0)
+            } else {
+                Color::WHITE
+            }
+        );
+        assert_eq!(
+            styles[x].border_color,
+            if width >= 400.0 {
+                Color::rgb(0, 0, 255)
+            } else {
+                Color::BLACK
+            }
+        );
+        assert_eq!(styles[x].height, css::Length::Px(40.0));
+    }
+    let paths = server
+        .requests()
+        .into_iter()
+        .map(|request| request.path)
+        .collect::<Vec<_>>();
+    assert_eq!(paths, ["/", "/nested.css", "/child.css", "/fallback.css"]);
 }
 
 #[test]
@@ -323,7 +412,7 @@ fn base_and_import_urls_cannot_broaden_document_fetch_authority() {
                 "text/html",
                 "",
                 &format!(
-                    "<!doctype html><style>@import '{}secret.css'; @import 'never.css' supports(display:grid); p{{color:green}}</style><style type='text/plain'>@import 'inert.css';</style><p>x",
+                    "<!doctype html><style>@import '{0}secret.css'; @import '{0}conditional.css' supports(display:grid); @import 'never.css' supports(display:bogus); p{{color:green}}</style><style type='text/plain'>@import 'inert.css';</style><p>x",
                     other.base
                 ),
             ),

@@ -92,6 +92,173 @@ fn exchange_empty(client: &mut WorkerClient, command: WorkerCommand) {
 
 #[test]
 #[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn generated_summary_actions_survive_ipc_and_cannot_activate_ordinary_nodes() {
+    use eris::layout::HitAction;
+    let fixture = Fixture::new(
+        "<!doctype html><details id=fallback><p id=content>Disclosure content</p></details><details id=real><summary id=summary>Authored summary</summary><p>More content</p></details><p id=ordinary>Ordinary text</p>",
+    );
+    let mut client = fixture.spawn(false, 95);
+    load(&mut client, &fixture.navigation);
+    let before = render(&mut client);
+    let fallback = before.document.query_selector("#fallback").unwrap();
+    let content = before.document.query_selector("#content").unwrap();
+    assert!(
+        before
+            .layout
+            .hit_regions
+            .iter()
+            .any(|hit| hit.node == fallback && hit.action == HitAction::DefaultSummary)
+    );
+    assert!(
+        !before
+            .layout
+            .hit_regions
+            .iter()
+            .any(|hit| hit.node == content)
+    );
+    exchange_empty(&mut client, WorkerCommand::Click { node: fallback });
+    assert!(
+        render(&mut client)
+            .document
+            .attr(fallback, "open")
+            .is_none()
+    );
+    exchange_empty(
+        &mut client,
+        WorkerCommand::DefaultSummary { node: fallback },
+    );
+    let opened = render(&mut client);
+    assert!(opened.document.attr(fallback, "open").is_some());
+    assert!(
+        opened
+            .layout
+            .hit_regions
+            .iter()
+            .any(|hit| hit.node == content)
+    );
+    exchange_empty(
+        &mut client,
+        WorkerCommand::DefaultSummary { node: fallback },
+    );
+    let closed = render(&mut client);
+    assert!(closed.document.attr(fallback, "open").is_none());
+    assert!(
+        !closed
+            .layout
+            .hit_regions
+            .iter()
+            .any(|hit| hit.node == content)
+    );
+    drop(client);
+    // Invalid action hints fail the worker boundary closed. Each forged
+    // command gets a fresh worker because rejection terminates that channel.
+    for selector in ["#real", "#summary", "#ordinary"] {
+        let mut client = fixture.spawn(false, 96);
+        load(&mut client, &fixture.navigation);
+        let snapshot = render(&mut client);
+        let node = snapshot.document.query_selector(selector).unwrap();
+        assert!(
+            client
+                .exchange(WorkerCommand::DefaultSummary { node }, || false)
+                .is_err()
+        );
+    }
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn disclosure_group_clicks_and_toggle_handlers_match_direct_page_pixels_through_ipc() {
+    use eris::{
+        graphics::{Canvas, Fonts},
+        page::Page,
+    };
+    let source = include_str!("../examples/disclosures.html");
+    let fixture = Fixture::new(source);
+    let mut expected = Page::from_html(
+        Url::parse(&fixture.navigation.address).unwrap(),
+        source,
+        true,
+    );
+    let mut client = fixture.spawn(true, 94);
+    load(&mut client, &fixture.navigation);
+    let fonts = Fonts::new();
+    for action in [
+        None,
+        Some("#next-note"),
+        Some("#summary-3"),
+        Some("#summary-3"),
+        Some("#next-note"),
+    ] {
+        if let Some(selector) = action {
+            let before = render(&mut client);
+            let node = before.document.query_selector(selector).unwrap();
+            exchange_empty(&mut client, WorkerCommand::Click { node });
+            assert!(
+                expected
+                    .click(expected.document.query_selector(selector).unwrap())
+                    .is_none()
+            );
+        }
+        assert!(
+            expected.diagnostics.is_empty(),
+            "{:?}",
+            expected.diagnostics
+        );
+        for width in [960, 390] {
+            let reply = client
+                .exchange(
+                    WorkerCommand::Render {
+                        width: width as f32,
+                        height: 1300.0,
+                    },
+                    || false,
+                )
+                .unwrap();
+            assert!(reply.navigation.is_none());
+            let snapshot = reply.snapshot.unwrap();
+            assert!(
+                snapshot
+                    .diagnostics
+                    .iter()
+                    .all(|line| line.starts_with("Page process ")
+                        || line.starts_with("Resource broker ")),
+                "{:?}",
+                snapshot.diagnostics
+            );
+            for selector in ["#status", "#note-1", "#note-2", "#note-3"] {
+                let actual = snapshot.document.query_selector(selector).unwrap();
+                let target = expected.document.query_selector(selector).unwrap();
+                assert_eq!(
+                    snapshot.document.text_content(actual),
+                    expected.document.text_content(target)
+                );
+                assert_eq!(
+                    snapshot.document.attr(actual, "open"),
+                    expected.document.attr(target, "open")
+                );
+            }
+            let mut actual = Canvas::new(width, 1300).unwrap();
+            actual.paint(
+                &snapshot.layout.commands,
+                &fonts,
+                &snapshot.images,
+                0.0,
+                0.0,
+            );
+            let layout = expected.layout(width as f32, 1300.0, &fonts);
+            let mut direct = Canvas::new(width, 1300).unwrap();
+            direct.paint(&layout.commands, &fonts, &expected.images, 0.0, 0.0);
+            assert!(!actual.exhausted() && !direct.exhausted());
+            assert_eq!(
+                actual.pixels, direct.pixels,
+                "action={action:?}, width={width}"
+            );
+        }
+    }
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
 fn responsive_template_updates_and_flex_resize_survive_worker_snapshots() {
     let fixture = Fixture::new(include_str!("../examples/responsive.html"));
     let mut client = fixture.spawn(true, 93);
@@ -1140,12 +1307,12 @@ fn image_decoder_confines_decodes_once_and_exits_without_response_body_leaks() {
         let mut output = child.0.stdout.take().unwrap();
         let flags = rustix::fs::fcntl_getfl(&output).unwrap();
         rustix::fs::fcntl_setfl(&output, flags | rustix::fs::OFlags::NONBLOCK).unwrap();
-        send(&mut input, b"ERW6\x06");
-        assert_eq!(receive(&mut output), b"ERW6\x02\x01\x00\x00");
+        send(&mut input, b"ERW7\x06");
+        assert_eq!(receive(&mut output), b"ERW7\x02\x01\x00\x00");
         let status = fs::read_to_string(format!("/proc/{pid}/status")).unwrap();
         assert!(status.contains("NoNewPrivs:\t1"));
         assert!(status.contains("Seccomp:\t2"));
-        let mut request = b"ERW6\x07".to_vec();
+        let mut request = b"ERW7\x07".to_vec();
         request.extend_from_slice(&(mime.len() as u32).to_le_bytes());
         request.extend_from_slice(mime.as_bytes());
         request.extend_from_slice(&budget.to_le_bytes());
@@ -1153,7 +1320,7 @@ fn image_decoder_confines_decodes_once_and_exits_without_response_body_leaks() {
         request.extend_from_slice(body);
         send(&mut input, &request);
         let response = receive(&mut output);
-        assert_eq!(&response[..5], b"ERW6\x08");
+        assert_eq!(&response[..5], b"ERW7\x08");
         assert_eq!(response[5], u8::from(success));
         if success {
             assert_eq!(u32::from_le_bytes(response[6..10].try_into().unwrap()), 2);

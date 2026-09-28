@@ -1,0 +1,23 @@
+<!doctype html>
+<style>
+body { margin: 0 }
+i { position: absolute; top: 20px; width: 30px; height: 40px; background: red }
+#a { left: 10px } #b { left: 50px } #c { left: 90px } #d { left: 130px }
+#e { left: 170px } #f { left: 210px } #g { left: 250px; background: green }
+#h { left: 10px; top: 80px; background: green }
+#i { left: 50px; top: 80px; background: green }
+#j { left: 90px; top: 80px } #k { left: 130px; top: 80px }
+@supports (display: flex) and (color: rgb(0, 128, 0)) { #a { background: green } }
+@supports not (padding: auto) { #b { background: green } }
+@supports not (width: 20) { #c { background: green } }
+@supports not (padding: -1px) { #d { background: green } }
+@supports not (unknown-property: value) { #e { background: green } }
+@supports selector(i#f) { #f { background: green } }
+@supports (display: flex) or (display: grid) and (width: 0) { #g { background: red } }
+@supports not ((display: flex) and) { #h { background: red } }
+@supports selector(:has(*)) { #i { background: red } }
+@supports ((display: flex) or (unknown-property: value)) and (width: 0) { #j { background: green } }
+@supports not (color: rgb(1,,2,3)) { #k { background: green } }
+</style>
+<i id=a></i><i id=b></i><i id=c></i><i id=d></i><i id=e></i><i id=f></i><i id=g></i>
+<i id=h></i><i id=i></i><i id=j></i><i id=k></i>

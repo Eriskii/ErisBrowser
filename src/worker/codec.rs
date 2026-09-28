@@ -7,7 +7,7 @@ use crate::{
         Namespace, Node, NodeKind,
     },
     graphics::{Color, DrawCommand, ImageStore, RasterImage, Rect},
-    layout::{HitRegion, LayoutResult},
+    layout::{HitAction, HitRegion, LayoutResult},
     page::Navigation,
 };
 use std::{
@@ -21,7 +21,7 @@ pub(super) const MAX_REQUEST: usize = 18 * 1024 * 1024;
 const MAX_STRING: usize = 16 * 1024 * 1024;
 const MAX_IMAGES: usize = 64 * 1024 * 1024;
 const MAX_COMMANDS: usize = 200_000;
-const MAGIC: &[u8] = b"ERW6";
+const MAGIC: &[u8] = b"ERW7";
 type Result<T> = std::result::Result<T, String>;
 
 pub(super) fn read_frame(input: &mut impl Read, limit: usize) -> Result<Vec<u8>> {
@@ -264,6 +264,10 @@ pub(super) fn encode_command(command: &Command) -> Result<Vec<u8>> {
             e.byte(1);
             e.u32(*node);
         }
+        Command::DefaultSummary { node } => {
+            e.byte(5);
+            e.u32(*node);
+        }
         Command::Edit {
             sequence,
             node,
@@ -310,6 +314,9 @@ pub(super) fn decode_command(bytes: &[u8]) -> Result<Command> {
         4 => Command::Render {
             width: d.f32()?,
             height: d.f32()?,
+        },
+        5 => Command::DefaultSummary {
+            node: d.count(MAX_NODES - 1)?,
         },
         _ => return Err("unknown page command".into()),
     };
@@ -477,6 +484,10 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
         e.u32(hit.node);
         e.rect(hit.rect);
         e.boolean(hit.fixed);
+        e.byte(match hit.action {
+            HitAction::Node => 0,
+            HitAction::DefaultSummary => 1,
+        });
     }
     e.u32(s.layout.commands.len());
     for command in &s.layout.commands {
@@ -734,7 +745,24 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
         let node = d.count(document.nodes.len() - 1)?;
         let rect = d.rect()?;
         let fixed = d.boolean()?;
-        hit_regions.push(HitRegion { node, rect, fixed });
+        let action = match d.byte()? {
+            0 => HitAction::Node,
+            1 if document.namespace(node) == Some(Namespace::Html)
+                && document.tag(node) == Some("details")
+                && document.first_summary(node).is_none()
+                && document.is_active_node(node)
+                && !document.disclosure_hidden(node) =>
+            {
+                HitAction::DefaultSummary
+            }
+            _ => return Err("invalid IPC hit action".into()),
+        };
+        hit_regions.push(HitRegion {
+            node,
+            rect,
+            fixed,
+            action,
+        });
     }
     let mut commands = Vec::new();
     let mut text_bytes = 8 * 1024 * 1024;
@@ -1490,6 +1518,44 @@ mod tests {
                 load_ms: 0.0,
             }),
         }
+    }
+    #[test]
+    fn details_generated_summary_actions_round_trip_and_reject_forged_targets() {
+        let mut reply = reply_with_html("<details id=d>contents</details><p id=p>ordinary</p>");
+        let decoded = decode_reply(&encode_reply(&reply).unwrap()).unwrap();
+        assert!(
+            decoded
+                .snapshot
+                .unwrap()
+                .layout
+                .hit_regions
+                .iter()
+                .any(|hit| hit.action == HitAction::DefaultSummary)
+        );
+        let snapshot = reply.snapshot.as_mut().unwrap();
+        let ordinary = snapshot.document.query_selector("#p").unwrap();
+        let hit = snapshot
+            .layout
+            .hit_regions
+            .iter_mut()
+            .find(|hit| hit.action == HitAction::DefaultSummary)
+            .unwrap();
+        hit.node = ordinary;
+        assert!(decode_reply(&encode_reply(&reply).unwrap()).is_err());
+        let mut reply = reply_with_html("<details id=d><summary>actual</summary></details>");
+        let snapshot = reply.snapshot.as_mut().unwrap();
+        let details = snapshot.document.query_selector("#d").unwrap();
+        snapshot
+            .layout
+            .hit_regions
+            .iter_mut()
+            .find(|hit| hit.node == details)
+            .unwrap()
+            .action = HitAction::DefaultSummary;
+        assert!(decode_reply(&encode_reply(&reply).unwrap()).is_err());
+        let command =
+            decode_command(&encode_command(&Command::DefaultSummary { node: 7 }).unwrap()).unwrap();
+        assert!(matches!(command, Command::DefaultSummary { node: 7 }));
     }
     #[test]
     fn unavailable_images_keep_the_rendered_fallback_without_fetching() {

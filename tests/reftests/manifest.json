@@ -4,6 +4,12 @@
   "height": 240,
   "cases": [
     {
+      "name": "supports-conditions",
+      "description": "Feature queries accept supported declaration and selector syntax, reject invalid values and grammar, and preserve grouped Boolean conditions.",
+      "test": "supports-conditions.html",
+      "reference": "supports-conditions-ref.html"
+    },
+    {
       "name": "overflow-clip",
       "description": "Overflow clips descendants at the padding edge and restores clipping for a following sibling.",
       "test": "overflow-clip.html",
@@ -278,6 +284,24 @@
       "description": "Wrapped lines honor center, space-between, space-around and space-evenly alignment.",
       "test": "flex-align-content-distributed.html",
       "reference": "flex-align-content-distributed-ref.html"
+    },
+    {
+      "name": "details-closed-open",
+      "description": "Closed disclosure omits its content; presence of open, including open=false, reveals it.",
+      "test": "details-closed-open.html",
+      "reference": "details-closed-open-ref.html"
+    },
+    {
+      "name": "details-nested-positioned",
+      "description": "Closed disclosure descendants, including fixed boxes and nested open disclosures, contribute no pixels.",
+      "test": "details-nested-positioned.html",
+      "reference": "details-nested-positioned-ref.html"
+    },
+    {
+      "name": "details-first-summary-order",
+      "description": "The first direct summary is laid out before disclosure content without changing DOM order.",
+      "test": "details-first-summary-order.html",
+      "reference": "details-first-summary-order-ref.html"
     }
   ]
 }

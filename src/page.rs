@@ -531,6 +531,7 @@ impl Page {
         if let Err(error) = self.runtime.dispatch_dom_content_loaded(&mut self.document) {
             self.diagnostics.push(format!("DOMContentLoaded: {error}"));
         }
+        self.disclosure_checkpoint();
     }
     pub fn stylesheets(&self) -> Vec<css::StyleSource> {
         if self.policy_blocks_styles {
@@ -654,19 +655,86 @@ impl Page {
     fn interaction_blocked(&self, node: NodeId) -> bool {
         self.document.interaction_blocked(node)
     }
+    pub fn disclosure_checkpoint(&mut self) {
+        if self.scripts_enabled
+            && self.document.has_pending_details_toggles()
+            && let Err(error) = self.runtime.dispatch_details_toggles(&mut self.document)
+        {
+            self.diagnostics.push(format!("toggle: {error}"));
+        }
+    }
     pub fn click(&mut self, id: NodeId) -> Option<Navigation> {
+        let navigation = self.click_impl(id, false);
+        self.disclosure_checkpoint();
+        if self.scripts_enabled {
+            // Click/default actions and their queued toggle callbacks may all
+            // mutate SVG, including before a handled error or quota failure.
+            self.refresh_inline_svg();
+        }
+        navigation
+    }
+    pub fn click_default_summary(&mut self, id: NodeId) {
+        self.click_impl(id, true);
+        self.disclosure_checkpoint();
+        if self.scripts_enabled {
+            self.refresh_inline_svg();
+        }
+    }
+    fn click_impl(&mut self, id: NodeId, default_summary: bool) -> Option<Navigation> {
         let original_id = id;
-        if self.interaction_blocked(id) {
+        if self.interaction_blocked(id) || self.document.disclosure_hidden(id) {
             return None;
         }
+        if default_summary
+            && (self.html_tag(id) != Some("details") || self.document.first_summary(id).is_some())
+        {
+            return None;
+        }
+        // Activation belongs to the original click path. Listener mutations
+        // must not substitute a different summary by reparenting the target.
+        let summary = if default_summary {
+            None
+        } else {
+            let mut node = Some(id);
+            let mut summary = None;
+            for _ in 0..crate::dom::MAX_DEPTH {
+                let Some(current) = node else { break };
+                match self.html_tag(current) {
+                    Some("summary") => {
+                        summary = Some(current);
+                        break;
+                    }
+                    Some("input" | "button" | "select" | "textarea") => break,
+                    Some("a") if self.document.attr(current, "href").is_some() => break,
+                    _ => {}
+                }
+                node = self
+                    .document
+                    .nodes
+                    .get(current)
+                    .and_then(|node| node.parent);
+            }
+            summary
+        };
         if self.scripts_enabled {
             if let Err(error) = self.runtime.dispatch_click(id, &mut self.document) {
                 self.diagnostics.push(format!("click: {error}"));
             }
-            self.refresh_inline_svg();
             if self.runtime.last_default_prevented {
                 return None;
             }
+        }
+        if default_summary {
+            if self.html_tag(id) == Some("details") && self.document.first_summary(id).is_none() {
+                self.toggle_details(id);
+            }
+            return None;
+        }
+        if let Some(summary) = summary {
+            if let Some(details) = self.document.summary_details(summary) {
+                self.toggle_details(details);
+            }
+            return None;
         }
         if self.interaction_blocked(id) {
             return None;
@@ -741,6 +809,13 @@ impl Page {
             node = self.document.nodes.get(id).and_then(|n| n.parent);
         }
         None
+    }
+    fn toggle_details(&mut self, id: NodeId) {
+        if self.document.attr(id, "open").is_some() {
+            self.document.remove_attr(id, "open");
+        } else {
+            self.document.set_attr(id, "open", "");
+        }
     }
     pub fn can_edit_control(&self, node: NodeId) -> bool {
         self.document.can_edit_control(node)
@@ -1081,6 +1156,181 @@ fn bounded_image_decoder(
 #[cfg(test)]
 mod tests {
     use super::*;
+    fn painted_inline_svg_pixels(page: &Page) -> (u32, u32) {
+        let fonts = Fonts::new();
+        let layout = page.layout(80.0, 80.0, &fonts);
+        let mut canvas = crate::graphics::Canvas::new(80, 80).unwrap();
+        canvas.clear(crate::graphics::Color::WHITE);
+        canvas.paint(&layout.commands, &fonts, &page.images, 0.0, 0.0);
+        assert!(!canvas.exhausted());
+        (canvas.pixels[45 * 80 + 5], canvas.pixels[45 * 80 + 15])
+    }
+    #[test]
+    fn details_toggle_callbacks_refresh_inline_svg_after_mutation_and_errors() {
+        for summary in ["<summary id=s>Show</summary>", ""] {
+            for suffix in ["", "throw new Error('handled');", "while(true){}"] {
+                let mut page = Page::from_html(
+                    Url::parse("https://example.test/").unwrap(),
+                    &format!(
+                        "<style>body{{margin:0}}svg{{position:absolute;left:0;top:40px}}</style><details id=d>{summary}content</details><svg width=20 height=10><rect id=r width=10 height=10 fill=red /></svg><script>document.getElementById('d').ontoggle=()=>{{const r=document.getElementById('r');r.setAttribute('fill','blue');r.setAttribute('width','20');{suffix}}};</script>"
+                    ),
+                    true,
+                );
+                assert_eq!(painted_inline_svg_pixels(&page), (0xff0000, 0xffffff));
+                let details = page.document.query_selector("#d").unwrap();
+                if let Some(summary) = page.document.query_selector("#s") {
+                    page.click(summary);
+                } else {
+                    page.click_default_summary(details);
+                }
+                assert!(page.document.attr(details, "open").is_some());
+                assert_eq!(
+                    painted_inline_svg_pixels(&page),
+                    (0x0000ff, 0x0000ff),
+                    "summary={summary:?}, callback suffix={suffix:?}"
+                );
+            }
+        }
+    }
+    #[test]
+    fn input_callbacks_and_their_toggle_checkpoint_refresh_inline_svg() {
+        for toggle in [false, true] {
+            for suffix in ["", "throw new Error('handled');", "while(true){}"] {
+                let action = if toggle {
+                    "document.getElementById('d').open=true;"
+                } else {
+                    "update();"
+                };
+                let mut page = Page::from_html(
+                    Url::parse("https://example.test/").unwrap(),
+                    &format!(
+                        "<style>body{{margin:0}}svg{{position:absolute;left:0;top:40px}}</style><input id=i><details id=d><summary>Show</summary>content</details><svg width=20 height=10><rect id=r width=10 height=10 fill=red /></svg><script>function update(){{const r=document.getElementById('r');r.setAttribute('fill','blue');r.setAttribute('width','20');{suffix}}}document.getElementById('d').ontoggle=update;document.getElementById('i').oninput=()=>{{{action}}};</script>"
+                    ),
+                    true,
+                );
+                assert_eq!(painted_inline_svg_pixels(&page), (0xff0000, 0xffffff));
+                let input = page.document.query_selector("#i").unwrap();
+                crate::worker::apply_edit(&mut page, input, "edited");
+                assert_eq!(page.document.attr(input, "value"), Some("edited"));
+                assert_eq!(
+                    painted_inline_svg_pixels(&page),
+                    (0x0000ff, 0x0000ff),
+                    "toggle={toggle}, callback suffix={suffix:?}"
+                );
+            }
+        }
+    }
+    #[test]
+    fn details_activation_cancellation_grouping_and_event_order() {
+        let mut page = Page::from_html(
+            Url::parse("https://example.test/").unwrap(),
+            "<details id=a name=g open><summary>A</summary></details><details id=b name=g><summary id=s><span id=target>B</span></summary><input id=inside></details><p id=log></p><script>const a=document.getElementById('a');const b=document.getElementById('b');const s=document.getElementById('s');const log=document.getElementById('log');s.addEventListener('click',()=>{log.textContent+='click:'+b.open+';';});b.addEventListener('toggle',e=>{log.textContent+=e.oldState+'>'+e.newState+';';});</script>",
+            true,
+        );
+        let a = page.document.query_selector("#a").unwrap();
+        let b = page.document.query_selector("#b").unwrap();
+        let target = page.document.query_selector("#target").unwrap();
+        let log = page.document.query_selector("#log").unwrap();
+        page.click(target);
+        assert!(page.document.attr(a, "open").is_none());
+        assert!(page.document.attr(b, "open").is_some());
+        assert_eq!(page.document.text_content(log), "click:false;closed>open;");
+        page.runtime
+            .execute("s.onclick=e=>e.preventDefault();", &mut page.document)
+            .unwrap();
+        page.click(target);
+        assert!(page.document.attr(b, "open").is_some());
+        page.runtime
+            .execute("s.onclick=e=>e.stopPropagation();", &mut page.document)
+            .unwrap();
+        page.click(target);
+        assert!(page.document.attr(b, "open").is_none());
+    }
+    #[test]
+    fn details_activation_keeps_original_summary_when_listener_moves_the_target() {
+        let mut page = Page::from_html(
+            Url::parse("https://example.test/").unwrap(),
+            "<details id=a><summary id=s><span id=t>A</span></summary></details><details id=b><summary id=other>B</summary></details><script>const t=document.getElementById('t');t.onclick=()=>document.getElementById('other').appendChild(t);</script>",
+            true,
+        );
+        let target = page.document.query_selector("#t").unwrap();
+        page.click(target);
+        assert!(
+            page.document
+                .attr(page.document.query_selector("#a").unwrap(), "open")
+                .is_some()
+        );
+        assert!(
+            page.document
+                .attr(page.document.query_selector("#b").unwrap(), "open")
+                .is_none()
+        );
+        let mut page = Page::from_html(
+            Url::parse("https://example.test/").unwrap(),
+            "<details id=a><summary id=s><span id=t>A</span></summary></details><script>const t=document.getElementById('t');t.onclick=()=>t.remove();</script>",
+            true,
+        );
+        page.click(page.document.query_selector("#t").unwrap());
+        assert!(
+            page.document
+                .attr(page.document.query_selector("#a").unwrap(), "open")
+                .is_some()
+        );
+    }
+    #[test]
+    fn details_nested_controls_and_background_do_not_activate_a_summary() {
+        let mut page = Page::from_html(
+            Url::parse("https://example.test/").unwrap(),
+            "<details id=d><summary id=s><a id=link href='/next'>Go</a><button id=button type=button>button</button><input id=check type=checkbox></summary><input id=closed></details><details id=fallback>hidden</details>",
+            false,
+        );
+        let details = page.document.query_selector("#d").unwrap();
+        let link = page.document.query_selector("#link").unwrap();
+        assert!(page.click(link).unwrap().address.ends_with("/next"));
+        for selector in ["#button", "#check", "#d"] {
+            page.click(page.document.query_selector(selector).unwrap());
+        }
+        assert!(page.document.attr(details, "open").is_none());
+        assert!(
+            page.document
+                .attr(page.document.query_selector("#check").unwrap(), "checked")
+                .is_some()
+        );
+        let fallback = page.document.query_selector("#fallback").unwrap();
+        page.click(fallback);
+        assert!(page.document.attr(fallback, "open").is_none());
+        page.click_default_summary(fallback);
+        assert!(page.document.attr(fallback, "open").is_some());
+        page.click_default_summary(details);
+        assert!(
+            page.document.attr(details, "open").is_none(),
+            "forged fallback action is ignored"
+        );
+    }
+    #[test]
+    fn details_closed_contents_still_run_scripts_supply_styles_and_submit_controls() {
+        let mut page = Page::from_html(
+            Url::parse("https://example.test/").unwrap(),
+            "<p id=out>before</p><form id=form action='/save'><details><summary>Show</summary><input id=value name=answer value=42><style>#out{color:red}</style><script>document.getElementById('out').textContent='ran';</script></details></form>",
+            true,
+        );
+        assert_eq!(
+            page.document
+                .text_content(page.document.query_selector("#out").unwrap()),
+            "ran"
+        );
+        assert!(
+            page.stylesheets()
+                .iter()
+                .any(|source| source.source.contains("#out"))
+        );
+        let field = page.document.query_selector("#value").unwrap();
+        assert!(!page.can_edit_control(field));
+        let navigation = page
+            .submit_form(page.document.query_selector("#form").unwrap(), None)
+            .unwrap();
+        assert!(navigation.address.ends_with("/save?answer=42"));
+    }
     #[test]
     fn inert_style_metadata_is_checked_before_any_text_collection() {
         let mut page = Page::from_html(

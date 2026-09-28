@@ -1,6 +1,7 @@
 #![forbid(unsafe_code)]
 mod browser;
 mod edit;
+mod worker_benchmark;
 use eris::{
     graphics::{Canvas, Color, Fonts},
     page::Page,
@@ -40,6 +41,7 @@ fn run() -> Result<(), String> {
     let mut scripts = true;
     let mut dump = false;
     let mut iterations = 0usize;
+    let mut worker_iterations = None;
     let mut clicks = Vec::new();
     let mut exit_after = None;
     let mut capture = None;
@@ -48,7 +50,7 @@ fn run() -> Result<(), String> {
         match arg.as_str() {
             "--help" | "-h" => {
                 println!(
-                    "Eris Browser — independent experimental Rust web engine\n\nUsage: eris-browser [ADDRESS] [OPTIONS]\n\n  --render                 Render without a desktop window\n  --output PATH            PNG output (default: render.png)\n  --width N --height N     Viewport in CSS pixels (1180 × 880)\n  --no-scripts             Disable page scripting\n  --click SELECTOR         Activate a matched node before rendering; repeatable\n  --dump-dom               Print the resulting document tree\n  --benchmark N            Measure N style/layout/paint iterations\n  --exit-after SECONDS     Close desktop window after a smoke-test interval\n  --window-screenshot PATH Capture the native browser framebuffer\n\nAddresses: https://example.com, ./examples/forms.html, eris:home, about:blank\nDesktop keys: Ctrl+L address, Ctrl+R reload, Alt+Left/Right history, Ctrl +/- zoom\n\nThis is an early implementation with partial HTML/CSS/JavaScript support.\nFull web compatibility, production security and Chromium performance are unverified."
+                    "Eris Browser — independent experimental Rust web engine\n\nUsage: eris-browser [ADDRESS] [OPTIONS]\n\n  --render                 Render without a desktop window\n  --output PATH            PNG output (default: render.png)\n  --width N --height N     Viewport in CSS pixels (1180 × 880)\n  --no-scripts             Disable page scripting\n  --click SELECTOR         Activate a matched node before rendering; repeatable\n  --dump-dom               Print the resulting document tree\n  --benchmark N            Measure N style/layout/paint iterations\n  --benchmark-worker N     Measure confined load/render/paint phases; JSON stdout\n  --exit-after SECONDS     Close desktop window after a smoke-test interval\n  --window-screenshot PATH Capture the native browser framebuffer\n\nAddresses: https://example.com, ./examples/forms.html, eris:home, about:blank\nDesktop keys: Ctrl+L address, Ctrl+R reload, Alt+Left/Right history, Ctrl +/- zoom\n\nThis is an early implementation with partial HTML/CSS/JavaScript support.\nFull web compatibility, production security and Chromium performance are unverified."
                 );
                 return Ok(());
             }
@@ -90,6 +92,18 @@ fn run() -> Result<(), String> {
                 clicks.push(args.next().ok_or("--click needs a selector")?);
                 headless = true;
             }
+            "--benchmark-worker" => {
+                let count = args
+                    .next()
+                    .ok_or("--benchmark-worker needs an iteration count")?
+                    .parse::<usize>()
+                    .map_err(|_| "invalid worker iteration count")?;
+                if !(1..=10_000).contains(&count) {
+                    return Err("worker benchmark iterations must be between 1 and 10000".into());
+                }
+                worker_iterations = Some(count);
+                headless = true;
+            }
             "--exit-after" => {
                 let seconds: f64 = args
                     .next()
@@ -109,6 +123,13 @@ fn run() -> Result<(), String> {
             flag if flag.starts_with('-') => return Err(format!("unknown option: {flag}")),
             value => address = value.into(),
         }
+    }
+    if let Some(count) = worker_iterations {
+        if iterations > 0 || dump || !clicks.is_empty() || exit_after.is_some() || capture.is_some()
+        {
+            return Err("--benchmark-worker cannot be combined with --benchmark, --dump-dom, --click, --exit-after or --window-screenshot".into());
+        }
+        return worker_benchmark::run(&address, scripts, width, height, count, &output);
     }
     if !headless {
         return browser::run(address, scripts, exit_after, capture);

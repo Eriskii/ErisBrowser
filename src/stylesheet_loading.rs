@@ -1,6 +1,6 @@
 //! Bounded stylesheet import loading. Fetch authority always remains the document.
 use crate::{
-    css::{CascadeLayer, StyleSource},
+    css::{CascadeLayer, StyleSource, supports_matches_with_budget},
     net::{Fetcher, ResourceKind},
     text_encoding,
 };
@@ -32,6 +32,7 @@ pub(crate) struct Loader {
     url_work: usize,
     url_storage: usize,
     segments: usize,
+    supports_work: usize,
 }
 
 impl Loader {
@@ -47,6 +48,7 @@ impl Loader {
             url_work: 0,
             url_storage: 0,
             segments: 0,
+            supports_work: MAX_BYTES,
         }
     }
     pub(crate) fn external(
@@ -240,11 +242,11 @@ impl Loader {
             let Some(import) = parse_import(&source[prelude..end]) else {
                 continue;
             };
-            if import.unsupported {
-                diagnostic(
-                    diagnostics,
-                    "stylesheet import supports conditions are unsupported",
-                );
+            if import.supports.as_deref().is_some_and(|condition| {
+                !supports_matches_with_budget(condition, true, &mut self.supports_work)
+            }) {
+                // Failed capability conditions neither fetch nor establish a
+                // layer, even if this URL was already loaded by another link.
                 continue;
             }
             // Order statements before an import establish its position. Preserve
@@ -426,7 +428,7 @@ struct Import {
     url: String,
     media: String,
     layer: Option<ImportLayer>,
-    unsupported: bool,
+    supports: Option<String>,
 }
 enum ImportLayer {
     Anonymous,
@@ -476,17 +478,24 @@ fn parse_import(source: &str) -> Option<Import> {
         None
     };
     cursor.space();
+    let before_supports = cursor.at;
+    let supports = if cursor.ident().eq_ignore_ascii_case("supports") {
+        // Whitespace before '(' would be an identifier, not a function token.
+        Some(cursor.supports_condition()?.to_owned())
+    } else {
+        cursor.at = before_supports;
+        None
+    };
+    cursor.space();
     let media = cursor.rest().trim().to_owned();
     if !valid_media_condition(&media) {
         return None;
     }
-    let first = cursor.ident();
-    let unsupported = first.eq_ignore_ascii_case("supports");
     Some(Import {
         url,
         media,
         layer,
-        unsupported,
+        supports,
     })
 }
 
@@ -642,6 +651,70 @@ impl<'a> Cursor<'a> {
         self.eat(')').then_some(url)
     }
 
+    // Bound extraction before allocating strings or scanning nested blocks.
+    // The capability evaluator validates tokens and grammar independently.
+    fn supports_condition(&mut self) -> Option<&'a str> {
+        if !self.eat('(') {
+            return None;
+        }
+        let start = self.at;
+        let mut end = self.source.len().min(start.saturating_add(16 * 1024 + 1));
+        while !self.source.is_char_boundary(end) {
+            end -= 1;
+        }
+        let mut cursor = Cursor::new(&self.source[start..end]);
+        let mut brackets = vec!['('];
+        while let Some(ch) = cursor.peek() {
+            if cursor.rest().starts_with("/*") {
+                let end = cursor.rest().find("*/")?;
+                cursor.at += end + 2;
+                continue;
+            }
+            if matches!(ch, '\'' | '"') {
+                cursor.string()?;
+                continue;
+            }
+            if ch.is_ascii_alphabetic() || matches!(ch, '-' | '_' | '\\') || !ch.is_ascii() {
+                let before = cursor.at;
+                let name = cursor.ident();
+                if before == cursor.at {
+                    cursor.next();
+                }
+                if name.eq_ignore_ascii_case("url") && cursor.eat('(') {
+                    cursor.url()?;
+                }
+                continue;
+            }
+            let at = cursor.at;
+            cursor.next();
+            match ch {
+                '(' | '[' | '{' => {
+                    if brackets.len() >= 16 {
+                        return None;
+                    }
+                    brackets.push(ch);
+                }
+                ')' | ']' | '}' => {
+                    if brackets.pop()?
+                        != match ch {
+                            ')' => '(',
+                            ']' => '[',
+                            _ => '{',
+                        }
+                    {
+                        return None;
+                    }
+                    if brackets.is_empty() {
+                        self.at = start + cursor.at;
+                        return Some(&self.source[start..start + at]);
+                    }
+                }
+                _ => {}
+            }
+        }
+        None
+    }
+
     // Returns the prelude's end and whether a block follows. Balanced tokens
     // keep URL/string delimiters distinct from the enclosing at-rule boundary.
     fn statement_end(&mut self) -> Option<(usize, bool)> {
@@ -704,6 +777,154 @@ impl<'a> Cursor<'a> {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn supports_import_review_regressions_keep_comments_and_long_namespace_failures_closed() {
+        let (mut loader, base) = cached_loader(&[("a.css", Ok("#x{color:red}"))]);
+        let prefix = "x".repeat(1100);
+        let source = format!(
+            "@layer first; @import 'a.css' layer(rejected) supports(not selector({prefix}|rect)); @import 'a.css' layer(rejected) supports(selector(div/**/span)); @import 'a.css' layer(first) supports(/* ) }} '\" */ display:flex); @layer last{{#x{{color:green}}}}"
+        );
+        let sources = loader
+            .inline(
+                &mut Fetcher::for_document(&base),
+                &source,
+                &base,
+                &mut Vec::new(),
+            )
+            .unwrap();
+        assert_eq!(loader.imports, 1);
+        let doc = crate::dom::Document::parse("<p id=x>text</p>");
+        let style = &crate::css::compute_styles_from_sources(&doc, &sources, 400.0, 300.0)
+            [doc.query_selector("#x").unwrap()];
+        assert_eq!(style.color, crate::graphics::Color::rgb(0, 128, 0));
+    }
+
+    #[test]
+    fn supports_imports_skip_fetch_and_layer_registration_when_false_or_invalid() {
+        for condition in [
+            "display:subgrid",
+            "padding:auto",
+            "not not (display:flex)",
+            "(display:flex) or (color:red) and (width:1px)",
+            "selector(:has(p))",
+            "future(url(foo bar))",
+            "not future(url(foo bar))",
+            "position:sticky",
+            "selector(div/**/span)",
+            "not selector(div/**/span)",
+            "selector(div/* ) } ' */span) or (display:flex)",
+        ] {
+            let (mut loader, base) = cached_loader(&[("missing.css", Err("must not fetch"))]);
+            let mut diagnostics = Vec::new();
+            let source = format!(
+                "@import 'missing.css' layer(theme) supports({condition}); @layer base{{#x{{color:green}}}} @layer theme{{#x{{color:red}}}}"
+            );
+            let sources = loader
+                .inline(
+                    &mut Fetcher::for_document(&base),
+                    &source,
+                    &base,
+                    &mut diagnostics,
+                )
+                .unwrap();
+            assert_eq!(loader.imports, 0, "{condition}");
+            assert!(diagnostics.is_empty(), "{condition}");
+            assert!(sources.iter().all(|s| s.layer.is_none()), "{condition}");
+            let doc = crate::dom::Document::parse("<p id=x>text</p>");
+            let styles = crate::css::compute_styles_from_sources(&doc, &sources, 400.0, 300.0);
+            assert_eq!(
+                styles[doc.query_selector("#x").unwrap()].color,
+                crate::graphics::Color::rgb(255, 0, 0),
+                "{condition}"
+            );
+        }
+    }
+    #[test]
+    fn supports_imports_preserve_layer_order_media_and_shared_anonymous_identity() {
+        let (mut loader, base) = cached_loader(&[
+            (
+                "outer.css",
+                Ok(
+                    "@import 'inner.css' supports((display:grid) and selector(p)); @layer child{#x{color:blue!important}}",
+                ),
+            ),
+            ("inner.css", Ok("@layer child{#x{color:red!important}}")),
+        ]);
+        let sources = loader
+            .inline(
+                &mut Fetcher::for_document(&base),
+                "@import 'outer.css' layer supports(display:flex) (width >= 400px);",
+                &base,
+                &mut Vec::new(),
+            )
+            .unwrap();
+        assert_eq!(loader.imports, 2);
+        let layers: Vec<_> = sources.iter().filter_map(|s| s.layer.as_ref()).collect();
+        assert!(layers.len() >= 3);
+        assert!(layers.iter().all(|layer| Arc::ptr_eq(layer, layers[0])));
+        let doc = crate::dom::Document::parse("<p id=x>text</p>");
+        let x = doc.query_selector("#x").unwrap();
+        assert_eq!(
+            crate::css::compute_styles_from_sources(&doc, &sources, 400.0, 300.0)[x].color,
+            crate::graphics::Color::rgb(0, 0, 255)
+        );
+        assert_eq!(
+            crate::css::compute_styles_from_sources(&doc, &sources, 399.0, 300.0)[x].color,
+            crate::graphics::Color::BLACK
+        );
+        let (mut loader, base) = cached_loader(&[("missing.css", Err("missing"))]);
+        let mut diagnostics = Vec::new();
+        let sources=loader.inline(&mut Fetcher::for_document(&base),
+            "@import 'missing.css' layer(theme) supports(not (display:subgrid)); @layer base{#x{color:green}} @layer theme{#x{color:red}}",&base,&mut diagnostics).unwrap();
+        assert_eq!(loader.imports, 1);
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(
+            crate::css::compute_styles_from_sources(&doc, &sources, 400.0, 300.0)[x].color,
+            crate::graphics::Color::rgb(0, 128, 0)
+        );
+    }
+    #[test]
+    fn supports_import_syntax_handles_comments_escapes_and_limits() {
+        let import = parse_import(
+            r#"'a' layer(theme) s\75 pports( (display:flex)/**/and selector([x="("]) ) screen"#,
+        )
+        .unwrap();
+        assert_eq!(import.media, "screen");
+        assert!(import.supports.unwrap().contains("selector"));
+        for source in [
+            "'a' supports (display:flex)",
+            "'a' supports(display:flex",
+            "'a' supports(display:flex))",
+            "'a' supports\\\n(display:flex)",
+            "'a' supports\\",
+            "'a' supports((display:flex])",
+        ] {
+            assert!(parse_import(source).is_none(), "{source:?}");
+        }
+        assert!(parse_import(&format!("'a' supports({})", "x".repeat(16 * 1024 + 1))).is_none());
+        assert!(
+            parse_import(&format!(
+                "'a' supports({}(display:flex){})",
+                "(".repeat(17),
+                ")".repeat(17)
+            ))
+            .is_none()
+        );
+        let (mut loader, base) = cached_loader(&[("a.css", Ok("p{color:red}"))]);
+        loader.supports_work = 1;
+        let sources = loader
+            .inline(
+                &mut Fetcher::for_document(&base),
+                "@import 'a.css' layer(foo) supports(not (unknown:value));",
+                &base,
+                &mut Vec::new(),
+            )
+            .unwrap();
+        assert_eq!(loader.supports_work, 0);
+        assert_eq!(loader.imports, 0);
+        assert!(sources.is_empty());
+    }
+
     use super::*;
     fn cached_loader(sheets: &[(&str, Result<&str, &str>)]) -> (Loader, Url) {
         let base = Url::parse("https://example.test/main.css").unwrap();
@@ -1174,16 +1395,18 @@ mod tests {
             parse_import(" /*a*/ uRl(\"a\\20 b.css\") /*b*/ screen and (min-width: 10px)").unwrap();
         assert_eq!(import.url, "a b.css");
         assert_eq!(import.media, "screen and (min-width: 10px)");
-        assert!(!import.unsupported);
+        assert!(import.supports.is_none());
         assert_eq!(parse_import("url(a\\)b.css)").unwrap().url, "a)b.css");
         assert!(parse_import("url(a b.css)").is_none());
         assert!(parse_import("url(\"unterminated)").is_none());
-        assert!(
+        assert_eq!(
             parse_import("'a' supports(display: grid)")
                 .unwrap()
-                .unsupported
+                .supports
+                .as_deref(),
+            Some("display: grid")
         );
-        assert!(!parse_import("'a' layer(theme)").unwrap().unsupported);
+        assert!(parse_import("'a' layer(theme)").unwrap().supports.is_none());
         assert!(matches!(
             parse_import("'a' layer").unwrap().layer,
             Some(ImportLayer::Anonymous)
