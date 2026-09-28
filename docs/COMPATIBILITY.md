@@ -115,7 +115,10 @@ retains 72 passes, twelve class/Symbol failures and 48 unsupported modes, with
 statement/loop targets, propagate through nested loops and switches, and preserve
 finally overrides and function boundaries. The complete three-directory profile
 retains 100 passes and 25 unsupported modes, with 80 controls. Legacy labeled
-functions and general statement completion values remain incomplete.
+functions remain incomplete. [Statement completion values](../tests/conformance/statement-completion.md)
+now distinguish empty results from JavaScript `undefined` through the supported
+blocks, branches, loops, switches, labels and try/catch/finally. Dynamic eval,
+with, for-of and other unsupported statement forms remain gaps.
 
 [Loose equality](../tests/conformance/equality.md) follows ordinary primitive
 conversion and Boolean/Number/String dispatch. Null and undefined remain unequal

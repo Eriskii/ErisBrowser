@@ -1,0 +1,2185 @@
+{
+  "recorded_date_utc": "2026-09-28",
+  "kind": "root-authored direct Runtime API regression matrix; not upstream conformance",
+  "case_table": "../fixtures/script-completion.tsv",
+  "case_table_sha256": "7a53bb8b0b6e5d2f8eb1ff782ac139fb5dd302df3feae3391b2f20de0edcd90b",
+  "source_files": 120,
+  "mode_cases": 240,
+  "before_passed": 118,
+  "after_passed": 240,
+  "newly_passing": 122,
+  "lost_passes": 0,
+  "before_commit": "f4c287cb5eedbd3666d4f85932898ed99148e68a",
+  "before_source_input_sha256": "e34329d60bba0a821277b13b537bf0021285d2d2add3e554160f51e48e684c61",
+  "after_source_input_sha256": "0fe716f518fcb4c21499cfdd974479494a4d2121f1fee2057e1c6ddf4880aca2",
+  "after_release_binaries": {
+    "eris-browser": "746d1cb755ce7fa74a32ec8fc1be7b597c47de265c09a2b66c07c8bdd7944a5e",
+    "eris-js": "760a8821afc3bd83928b01be4caf0d729113eb26c843051265197043f9326459",
+    "eris-dom": "b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb",
+    "eris-stress": "d568d90d7756fe839a2b1588809f1797a611c82ac813a941c109ae0f58bcdfb3"
+  },
+  "before_probe": {
+    "probe_source_sha256": "876141f47277047473a30e960091f1a948e29b185889464d3677df7405fbc316",
+    "rlib_sha256": "4a228fff95ac0324933333726c33664e8c63e53f34badeb7deb80da76e7a749a",
+    "executable_sha256": "8ae7f519148786e2708682c33d8e9eacd815cf5d17953eef23f15aae1f1c8f64"
+  },
+  "after_probe": {
+    "probe_source_sha256": "876141f47277047473a30e960091f1a948e29b185889464d3677df7405fbc316",
+    "rlib_sha256": "1de992bfc33ce019cfdef6cad040d80a9b6a569240eb0308d57b029e35b6ef21",
+    "executable_sha256": "e286cdced7c83adde2d9f570358d60ce6d98522174a5618c17bb240e1c8ac004"
+  },
+  "probe_source": "use eris::dom::Document;\nuse eris::script::{Runtime,Value};\nuse std::io::{self,Read};\nfn main() {\n    let mut input=String::new();io::stdin().read_to_string(&mut input).unwrap();\n    for record in input.split('\\0').filter(|s|!s.is_empty()) {\n        let (mode,source)=record.split_once('\\n').unwrap();\n        let mut runtime=Runtime::new();let mut doc=Document::parse(\"\");\n        let result=if mode==\"strict\"{runtime.execute_strict(source,&mut doc)}else{runtime.execute(source,&mut doc)};\n        match result {\n            Ok(Value::Undefined)=>println!(\"undefined\"),\n            Ok(Value::Null)=>println!(\"null\"),\n            Ok(Value::Bool(value))=>println!(\"bool:{value}\"),\n            Ok(Value::Number(value))=>println!(\"number:{:016x}\",value.to_bits()),\n            Ok(Value::String(value))=>println!(\"string:{:?}\",value.units()),\n            Ok(value)=>println!(\"object:{value:?}\"),\n            Err(error)=>println!(\"error:{}:{error}\",error.name()),\n        }\n    }\n}\n",
+  "probe_protocol": "stdin NUL-separated strict-or-sloppy + newline + source records; one scalar tag per stdout line; fresh Runtime and Document per record",
+  "cases": [
+    {
+      "id": "list/empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "list/empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "list/only-empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "list/only-empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "list/empty-tail/sloppy",
+      "expected": "number:401c000000000000",
+      "before": "undefined",
+      "after": "number:401c000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/empty-tail/strict",
+      "expected": "number:401c000000000000",
+      "before": "undefined",
+      "after": "number:401c000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/var-tail/sloppy",
+      "expected": "number:401c000000000000",
+      "before": "undefined",
+      "after": "number:401c000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/var-tail/strict",
+      "expected": "number:401c000000000000",
+      "before": "undefined",
+      "after": "number:401c000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/let-tail/sloppy",
+      "expected": "number:401c000000000000",
+      "before": "undefined",
+      "after": "number:401c000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/let-tail/strict",
+      "expected": "number:401c000000000000",
+      "before": "undefined",
+      "after": "number:401c000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/const-tail/sloppy",
+      "expected": "number:401c000000000000",
+      "before": "undefined",
+      "after": "number:401c000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/const-tail/strict",
+      "expected": "number:401c000000000000",
+      "before": "undefined",
+      "after": "number:401c000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/function-tail/sloppy",
+      "expected": "number:401c000000000000",
+      "before": "undefined",
+      "after": "number:401c000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/function-tail/strict",
+      "expected": "number:401c000000000000",
+      "before": "undefined",
+      "after": "number:401c000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/block-empty/sloppy",
+      "expected": "number:401c000000000000",
+      "before": "undefined",
+      "after": "number:401c000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/block-empty/strict",
+      "expected": "number:401c000000000000",
+      "before": "undefined",
+      "after": "number:401c000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/block-vars/sloppy",
+      "expected": "number:401c000000000000",
+      "before": "undefined",
+      "after": "number:401c000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/block-vars/strict",
+      "expected": "number:401c000000000000",
+      "before": "undefined",
+      "after": "number:401c000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/nested/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/nested/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/actual-undefined/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "list/actual-undefined/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "list/void/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "list/void/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "list/null/sloppy",
+      "expected": "null",
+      "before": "undefined",
+      "after": "null",
+      "newly_passing": true
+    },
+    {
+      "id": "list/null/strict",
+      "expected": "null",
+      "before": "undefined",
+      "after": "null",
+      "newly_passing": true
+    },
+    {
+      "id": "list/false/sloppy",
+      "expected": "bool:false",
+      "before": "undefined",
+      "after": "bool:false",
+      "newly_passing": true
+    },
+    {
+      "id": "list/false/strict",
+      "expected": "bool:false",
+      "before": "undefined",
+      "after": "bool:false",
+      "newly_passing": true
+    },
+    {
+      "id": "list/negative-zero/sloppy",
+      "expected": "number:8000000000000000",
+      "before": "undefined",
+      "after": "number:8000000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/negative-zero/strict",
+      "expected": "number:8000000000000000",
+      "before": "undefined",
+      "after": "number:8000000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/utf16/sloppy",
+      "expected": "string:[55296, 0, 56320]",
+      "before": "undefined",
+      "after": "string:[55296, 0, 56320]",
+      "newly_passing": true
+    },
+    {
+      "id": "list/utf16/strict",
+      "expected": "string:[55296, 0, 56320]",
+      "before": "undefined",
+      "after": "string:[55296, 0, 56320]",
+      "newly_passing": true
+    },
+    {
+      "id": "list/empty-string/sloppy",
+      "expected": "string:[]",
+      "before": "undefined",
+      "after": "string:[]",
+      "newly_passing": true
+    },
+    {
+      "id": "list/empty-string/strict",
+      "expected": "string:[]",
+      "before": "undefined",
+      "after": "string:[]",
+      "newly_passing": true
+    },
+    {
+      "id": "list/label-empty/sloppy",
+      "expected": "number:401c000000000000",
+      "before": "undefined",
+      "after": "number:401c000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/label-empty/strict",
+      "expected": "number:401c000000000000",
+      "before": "undefined",
+      "after": "number:401c000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/label-block/sloppy",
+      "expected": "number:401c000000000000",
+      "before": "undefined",
+      "after": "number:401c000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/label-block/strict",
+      "expected": "number:401c000000000000",
+      "before": "undefined",
+      "after": "number:401c000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/label-break-empty/sloppy",
+      "expected": "number:401c000000000000",
+      "before": "undefined",
+      "after": "number:401c000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/label-break-empty/strict",
+      "expected": "number:401c000000000000",
+      "before": "undefined",
+      "after": "number:401c000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/label-break-value/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/label-break-value/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/label-chain/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/label-chain/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/label-nested/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/label-nested/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "list/label-undefined/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "list/label-undefined/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "if/true-empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "if/true-empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "if/false-empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "if/false-empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "if/else-empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "if/else-empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "if/true-value/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "if/true-value/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "if/else-value/sloppy",
+      "expected": "number:4022000000000000",
+      "before": "undefined",
+      "after": "number:4022000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "if/else-value/strict",
+      "expected": "number:4022000000000000",
+      "before": "undefined",
+      "after": "number:4022000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "if/break-empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "if/break-empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "if/break-value/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "if/break-value/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "if/branch-empty-block/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "if/branch-empty-block/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "if/nested-empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "if/nested-empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "if/label-through-branch/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "if/label-through-branch/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/while-empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/while-empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/while-break/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/while-break/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/while-break-empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/while-break-empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/while-label/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/while-label/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/while-if-break/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/while-if-break/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/while-last/sloppy",
+      "expected": "number:402a000000000000",
+      "before": "undefined",
+      "after": "number:402a000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/while-last/strict",
+      "expected": "number:402a000000000000",
+      "before": "undefined",
+      "after": "number:402a000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/while-continue/sloppy",
+      "expected": "number:402a000000000000",
+      "before": "undefined",
+      "after": "number:402a000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/while-continue/strict",
+      "expected": "number:402a000000000000",
+      "before": "undefined",
+      "after": "number:402a000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/do-empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/do-empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/do-break/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/do-break/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/do-break-empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/do-break-empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/do-label/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/do-label/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/do-if-break/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/do-if-break/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/do-last/sloppy",
+      "expected": "number:402a000000000000",
+      "before": "undefined",
+      "after": "number:402a000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/do-last/strict",
+      "expected": "number:402a000000000000",
+      "before": "undefined",
+      "after": "number:402a000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/do-continue/sloppy",
+      "expected": "number:402a000000000000",
+      "before": "undefined",
+      "after": "number:402a000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/do-continue/strict",
+      "expected": "number:402a000000000000",
+      "before": "undefined",
+      "after": "number:402a000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/for-empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/for-empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/for-break/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/for-break/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/for-break-empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/for-break-empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/for-label/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/for-label/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/for-if-break/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/for-if-break/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/for-last/sloppy",
+      "expected": "number:402a000000000000",
+      "before": "undefined",
+      "after": "number:402a000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/for-last/strict",
+      "expected": "number:402a000000000000",
+      "before": "undefined",
+      "after": "number:402a000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/for-continue/sloppy",
+      "expected": "number:402a000000000000",
+      "before": "undefined",
+      "after": "number:402a000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/for-continue/strict",
+      "expected": "number:402a000000000000",
+      "before": "undefined",
+      "after": "number:402a000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/for-in-empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/for-in-empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/for-in-break/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/for-in-break/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/for-in-break-empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/for-in-break-empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/for-in-label/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/for-in-label/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/for-in-if-break/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/for-in-if-break/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/for-in-last/sloppy",
+      "expected": "number:402a000000000000",
+      "before": "undefined",
+      "after": "number:402a000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/for-in-last/strict",
+      "expected": "number:402a000000000000",
+      "before": "undefined",
+      "after": "number:402a000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/for-in-continue/sloppy",
+      "expected": "number:402a000000000000",
+      "before": "undefined",
+      "after": "number:402a000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/for-in-continue/strict",
+      "expected": "number:402a000000000000",
+      "before": "undefined",
+      "after": "number:402a000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/nullish/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/nullish/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/undefined/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/undefined/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/for-init-ignored/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/for-init-ignored/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/for-update-ignored/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/for-update-ignored/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/bare-continue/sloppy",
+      "expected": "number:4028000000000000",
+      "before": "undefined",
+      "after": "number:4028000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/bare-continue/strict",
+      "expected": "number:4028000000000000",
+      "before": "undefined",
+      "after": "number:4028000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/continue-if-erases/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/continue-if-erases/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/switch-empty-erases/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/switch-empty-erases/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/nested-break/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/nested-break/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/nested-continue/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/nested-continue/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/inner-undefined/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/inner-undefined/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/block-break/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/block-break/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "loop/lexical-env/sloppy",
+      "expected": "bool:true",
+      "before": "bool:true",
+      "after": "bool:true",
+      "newly_passing": false
+    },
+    {
+      "id": "loop/lexical-env/strict",
+      "expected": "bool:true",
+      "before": "bool:true",
+      "after": "bool:true",
+      "newly_passing": false
+    },
+    {
+      "id": "switch/empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "switch/empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "switch/no-match/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "switch/no-match/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "switch/no-body/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "switch/no-body/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "switch/body/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "switch/body/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "switch/break/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "number:4020000000000000",
+      "after": "number:4020000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "switch/break/strict",
+      "expected": "number:4020000000000000",
+      "before": "number:4020000000000000",
+      "after": "number:4020000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "switch/block-break/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "number:4020000000000000",
+      "after": "number:4020000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "switch/block-break/strict",
+      "expected": "number:4020000000000000",
+      "before": "number:4020000000000000",
+      "after": "number:4020000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "switch/if-break/sloppy",
+      "expected": "undefined",
+      "before": "number:4020000000000000",
+      "after": "undefined",
+      "newly_passing": true
+    },
+    {
+      "id": "switch/if-break/strict",
+      "expected": "undefined",
+      "before": "number:4020000000000000",
+      "after": "undefined",
+      "newly_passing": true
+    },
+    {
+      "id": "switch/fallthrough/sloppy",
+      "expected": "number:4022000000000000",
+      "before": "undefined",
+      "after": "number:4022000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "switch/fallthrough/strict",
+      "expected": "number:4022000000000000",
+      "before": "undefined",
+      "after": "number:4022000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "switch/empty-fallthrough/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "switch/empty-fallthrough/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "switch/default/sloppy",
+      "expected": "number:4022000000000000",
+      "before": "undefined",
+      "after": "number:4022000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "switch/default/strict",
+      "expected": "number:4022000000000000",
+      "before": "undefined",
+      "after": "number:4022000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "switch/post-default/sloppy",
+      "expected": "number:4024000000000000",
+      "before": "number:4024000000000000",
+      "after": "number:4024000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "switch/post-default/strict",
+      "expected": "number:4024000000000000",
+      "before": "number:4024000000000000",
+      "after": "number:4024000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "switch/label/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "switch/label/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "switch/continue/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "switch/continue/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "switch/explicit-undefined/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "switch/explicit-undefined/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "try/try-empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "try/try-empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "try/finally-empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "try/finally-empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "try/finally-value-ignored/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "try/finally-value-ignored/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "try/finally-empty-ignored/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "number:4020000000000000",
+      "after": "number:4020000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "try/finally-empty-ignored/strict",
+      "expected": "number:4020000000000000",
+      "before": "number:4020000000000000",
+      "after": "number:4020000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "try/finally-undefined-ignored/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "number:4020000000000000",
+      "after": "number:4020000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "try/finally-undefined-ignored/strict",
+      "expected": "number:4020000000000000",
+      "before": "number:4020000000000000",
+      "after": "number:4020000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "try/catch-value/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "try/catch-value/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "try/catch-empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "try/catch-empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "try/catch-finally/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "number:4020000000000000",
+      "after": "number:4020000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "try/catch-finally/strict",
+      "expected": "number:4020000000000000",
+      "before": "number:4020000000000000",
+      "after": "number:4020000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "try/break-try/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "try/break-try/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "try/break-try-empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "try/break-try-empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "try/break-finally/sloppy",
+      "expected": "number:4022000000000000",
+      "before": "undefined",
+      "after": "number:4022000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "try/break-finally/strict",
+      "expected": "number:4022000000000000",
+      "before": "undefined",
+      "after": "number:4022000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "try/break-finally-empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "try/break-finally-empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "try/break-replaces-throw/sloppy",
+      "expected": "number:4022000000000000",
+      "before": "undefined",
+      "after": "number:4022000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "try/break-replaces-throw/strict",
+      "expected": "number:4022000000000000",
+      "before": "undefined",
+      "after": "number:4022000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "try/break-replaces-catch/sloppy",
+      "expected": "number:4022000000000000",
+      "before": "undefined",
+      "after": "number:4022000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "try/break-replaces-catch/strict",
+      "expected": "number:4022000000000000",
+      "before": "undefined",
+      "after": "number:4022000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "try/break-catch/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "try/break-catch/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "try/continue-try/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "try/continue-try/strict",
+      "expected": "number:4020000000000000",
+      "before": "undefined",
+      "after": "number:4020000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "try/continue-finally/sloppy",
+      "expected": "number:4022000000000000",
+      "before": "undefined",
+      "after": "number:4022000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "try/continue-finally/strict",
+      "expected": "number:4022000000000000",
+      "before": "undefined",
+      "after": "number:4022000000000000",
+      "newly_passing": true
+    },
+    {
+      "id": "try/continue-finally-empty/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "try/continue-finally-empty/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "try/nested-finally/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "number:4020000000000000",
+      "after": "number:4020000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "try/nested-finally/strict",
+      "expected": "number:4020000000000000",
+      "before": "number:4020000000000000",
+      "after": "number:4020000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "try/caught-null/sloppy",
+      "expected": "null",
+      "before": "undefined",
+      "after": "null",
+      "newly_passing": true
+    },
+    {
+      "id": "try/caught-null/strict",
+      "expected": "null",
+      "before": "undefined",
+      "after": "null",
+      "newly_passing": true
+    },
+    {
+      "id": "try/caught-undefined/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "try/caught-undefined/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "return/implicit/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "return/implicit/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "return/bare/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "return/bare/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "return/value/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "number:4020000000000000",
+      "after": "number:4020000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "return/value/strict",
+      "expected": "number:4020000000000000",
+      "before": "number:4020000000000000",
+      "after": "number:4020000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "return/normal-finally/sloppy",
+      "expected": "number:4020000000000000",
+      "before": "number:4020000000000000",
+      "after": "number:4020000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "return/normal-finally/strict",
+      "expected": "number:4020000000000000",
+      "before": "number:4020000000000000",
+      "after": "number:4020000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "return/override-finally/sloppy",
+      "expected": "number:4022000000000000",
+      "before": "number:4022000000000000",
+      "after": "number:4022000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "return/override-finally/strict",
+      "expected": "number:4022000000000000",
+      "before": "number:4022000000000000",
+      "after": "number:4022000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "return/bare-finally/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "return/bare-finally/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "return/break-over-return/sloppy",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "return/break-over-return/strict",
+      "expected": "undefined",
+      "before": "undefined",
+      "after": "undefined",
+      "newly_passing": false
+    },
+    {
+      "id": "return/throw-over-return/sloppy",
+      "expected": "number:4022000000000000",
+      "before": "number:4022000000000000",
+      "after": "number:4022000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "return/throw-over-return/strict",
+      "expected": "number:4022000000000000",
+      "before": "number:4022000000000000",
+      "after": "number:4022000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "return/return-over-throw/sloppy",
+      "expected": "number:4022000000000000",
+      "before": "number:4022000000000000",
+      "after": "number:4022000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "return/return-over-throw/strict",
+      "expected": "number:4022000000000000",
+      "before": "number:4022000000000000",
+      "after": "number:4022000000000000",
+      "newly_passing": false
+    },
+    {
+      "id": "return/return-object/sloppy",
+      "expected": "bool:true",
+      "before": "bool:true",
+      "after": "bool:true",
+      "newly_passing": false
+    },
+    {
+      "id": "return/return-object/strict",
+      "expected": "bool:true",
+      "before": "bool:true",
+      "after": "bool:true",
+      "newly_passing": false
+    },
+    {
+      "id": "return/throw-object/sloppy",
+      "expected": "bool:true",
+      "before": "bool:true",
+      "after": "bool:true",
+      "newly_passing": false
+    },
+    {
+      "id": "return/throw-object/strict",
+      "expected": "bool:true",
+      "before": "bool:true",
+      "after": "bool:true",
+      "newly_passing": false
+    }
+  ],
+  "upstream_contract_sha256": "e1224b75d2d3b091c736857f0b617139209644d1bc4dc2c200290347baaef2ea",
+  "upstream_profiles": [
+    {
+      "profile": "string-json",
+      "source_files": 326,
+      "mode_cases": 652,
+      "counts": {
+        "passed": 536,
+        "unsupported": 116
+      },
+      "preflights": 32,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "f073410553ed7cac9c6ddb0d5d10da1e52616d067a0310578e84cbf000df4191",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-current.json",
+      "prior_public_report_sha256": "5fd495beea57cc15da9a4a1de7f530eb57c8e9ba942ca5a18dc725d8e26f8733",
+      "before_raw_report": "artifacts/string-json-labels-final.json",
+      "before_raw_report_sha256": "a3a6a8ffd26897a4b4d4da2292be09b7c21c6b63b1f321a123b11910b026d433",
+      "after_raw_report": "artifacts/string-json-completion-final.json",
+      "after_raw_report_sha256": "525179600fc80e3756ccf776895b0239bbdee1106fcdda499e1bc9d0afbb047f"
+    },
+    {
+      "profile": "regexp",
+      "source_files": 145,
+      "mode_cases": 290,
+      "counts": {
+        "passed": 250,
+        "unsupported": 40
+      },
+      "preflights": 44,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "33c8319c02da5367a5ac2596cbb48fc3176839740935966754ea0370f4408fa0",
+      "runner_policy_sha256": "0997761beccb3ac2d6d387c373fe92b5fc59157e9a2e1114677d99433f867e4f",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-regexp-current.json",
+      "prior_public_report_sha256": "abc887ad63aa114bb019baf1610962d68fcf787a0844a1ea6c86736d49eee787",
+      "before_raw_report": "artifacts/regexp-labels-final.json",
+      "before_raw_report_sha256": "4cc8562d53b09c4877febc3aa3f4f313753225f29767342332403fbf5355b749",
+      "after_raw_report": "artifacts/regexp-completion-final.json",
+      "after_raw_report_sha256": "0c1a405aa684bdd87850d0a3ede927b87beeb627aaa0c20948c30bd9eca3ad0b"
+    },
+    {
+      "profile": "template-literal",
+      "source_files": 57,
+      "mode_cases": 114,
+      "counts": {
+        "unsupported": 32,
+        "passed": 82
+      },
+      "preflights": 44,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "58951312763d816ca4cc139a4fcb2bf63f43a81414b91bf673f65c450b217d94",
+      "runner_policy_sha256": "17b229706fb4915c6c9d5daf4daa74129f2ac470bba8d993487356f12384517e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-template-literal-current.json",
+      "prior_public_report_sha256": "78df751741907b64bc65f8d88bd70d300df7d9b650630e5ec07b13c0dd594077",
+      "before_raw_report": "artifacts/template-literal-labels-final.json",
+      "before_raw_report_sha256": "f7c0e71b7a6d8db5e50329c70f7aea960680c3603b35bec342134dfb4a74a368",
+      "after_raw_report": "artifacts/template-literal-completion-final.json",
+      "after_raw_report_sha256": "a52dc9347410876524b4ef85b1b633a490a16df840d257b27ee8660221804058"
+    },
+    {
+      "profile": "rest-parameters",
+      "source_files": 11,
+      "mode_cases": 22,
+      "counts": {
+        "unsupported": 6,
+        "passed": 16
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "a3e15e061fc8c9cac736e081554f3e42b497d805ebfd7647ea49736cb2d83be5",
+      "runner_policy_sha256": "b579a37e261689714f4b2e41fe933581aa246348bafa391f2dba7c8aec4edacc",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-rest-parameters-current.json",
+      "prior_public_report_sha256": "24ff3862abfa3e83d4f6533f5e2603e975fe155b97d2f4d1475cc8dd8c64db16",
+      "before_raw_report": "artifacts/rest-parameters-labels-final.json",
+      "before_raw_report_sha256": "409db7495dfbe1f0263eeabc096ab5403cb4fddc61efa9a8070b3d3416f44b99",
+      "after_raw_report": "artifacts/rest-parameters-completion-final.json",
+      "after_raw_report_sha256": "57a681df6de65a9c3f12873d1f71c5dd0ff990a2b449842b374392149263c004"
+    },
+    {
+      "profile": "is-prototype-of",
+      "source_files": 10,
+      "mode_cases": 20,
+      "counts": {
+        "unsupported": 10,
+        "passed": 10
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "f019dcc5e150cf14a6b144577a30937ed1314c6b5de3dd331ad574585f16d461",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-is-prototype-of-current.json",
+      "prior_public_report_sha256": "3d9c290af97e33fdaf3383e72ab319240802c6f10a6fce680d15e0bd338c775d",
+      "before_raw_report": "artifacts/is-prototype-of-labels-final.json",
+      "before_raw_report_sha256": "6b29921f76141673d50bc63dfc8115e67d45a1d9b355b31f3123c2553e863dea",
+      "after_raw_report": "artifacts/is-prototype-of-completion-final.json",
+      "after_raw_report_sha256": "243f86651d83f681de0fa06d2689fa856299ddce0a82ce556b7fe22eef8b33e4"
+    },
+    {
+      "profile": "global-values",
+      "source_files": 49,
+      "mode_cases": 88,
+      "counts": {
+        "passed": 42,
+        "unsupported": 40,
+        "failed": 6
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "c1b627a7249d3ab460d5be88b54f34ead98c375c160bee9e72379aef213894a4",
+      "runner_policy_sha256": "f096c9be039b6e5a005d3997e38d8da419399e8c6e8d3a23d2162d20c1763d03",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-global-values-current.json",
+      "prior_public_report_sha256": "ea3dd8c07ab8a76f22e02b4de9ce01035547ec06c37ef4f08569d922425196ee",
+      "before_raw_report": "artifacts/global-values-labels-final.json",
+      "before_raw_report_sha256": "1d4e932051350e7734993f82e3f92df3af211bf60b6f038db1c329341e1d0b41",
+      "after_raw_report": "artifacts/global-values-completion-final.json",
+      "after_raw_report_sha256": "573efe74ddf020dffa13a293bf724c67fe5c7b6fecb3def265455be7c061ea4d"
+    },
+    {
+      "profile": "array-reduce",
+      "source_files": 520,
+      "mode_cases": 1034,
+      "counts": {
+        "passed": 848,
+        "failed": 16,
+        "unsupported": 170
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "77ee716188d99fdba64adbe151ef4efd915fbaa6345b2b0ec8fe3550efb5ec24",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-array-reduce-current.json",
+      "prior_public_report_sha256": "0eeff1f9bdccb1a035ed2d5e888390352f1f9a2704511a4f979085a26ed79c76",
+      "before_raw_report": "artifacts/array-reduce-labels-final.json",
+      "before_raw_report_sha256": "58b17105b951108980102d650b8351ad9329a235c596ffc7b6de19d81d36d3f2",
+      "after_raw_report": "artifacts/array-reduce-completion-final.json",
+      "after_raw_report_sha256": "fea008e17182bc754c93e8aface03201df9822858c0d409059598c9e9fe41ff4"
+    },
+    {
+      "profile": "number-statics",
+      "source_files": 170,
+      "mode_cases": 340,
+      "counts": {
+        "passed": 248,
+        "unsupported": 92
+      },
+      "preflights": 104,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "3c5c2503458843bfc64eaf546ee08b6e693714f561df42330d9001a2ec8216cd",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-number-statics-current.json",
+      "prior_public_report_sha256": "8b4837fb66a9ced2a9e1910830bc5a8aa67d81d52b6766764c2aceddef7b8717",
+      "before_raw_report": "artifacts/number-statics-labels-final.json",
+      "before_raw_report_sha256": "c98161d2f5341cfff27364a9be23f1e6d1f527ba950ee902fdb92788730fbbab",
+      "after_raw_report": "artifacts/number-statics-completion-final.json",
+      "after_raw_report_sha256": "b372890d6d4833f18f52697bcf0f8543e9ec3ac8a61b124f4d2d0efc088319db"
+    },
+    {
+      "profile": "numeric-conversion",
+      "source_files": 30,
+      "mode_cases": 60,
+      "counts": {
+        "passed": 24,
+        "unsupported": 36
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "de7cf1098618ad0fdb7786d4ab4f6c648bfb6fe2543981fe21ca6e0cba50928f",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-numeric-conversion-current.json",
+      "prior_public_report_sha256": "8fec4cd70dfea5f1c1f49e91a2fb491be0eb70cc2af18ed30afb92cda2797a7b",
+      "before_raw_report": "artifacts/numeric-conversion-labels-final.json",
+      "before_raw_report_sha256": "5340aa4e2ee557694d0c4ec588533bde520ca5f7f98a493cb164cedbbc90a16e",
+      "after_raw_report": "artifacts/numeric-conversion-completion-final.json",
+      "after_raw_report_sha256": "47aedb12b7eb9117dd43175ac04eea8e2d8bf195981cd37d30972a5471f200cd"
+    },
+    {
+      "profile": "compound-assignment",
+      "source_files": 454,
+      "mode_cases": 786,
+      "counts": {
+        "unsupported": 180,
+        "passed": 606
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "edc2b04b5e9f810e1757a327f5d2a32c240f41d61e8a6d2a89cb35c3ec14f1d0",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-compound-assignment-current.json",
+      "prior_public_report_sha256": "11cd52f4c5416495f0653d4444f798e70beecd6afd2de328980f7025dddb5213",
+      "before_raw_report": "artifacts/compound-assignment-labels-final.json",
+      "before_raw_report_sha256": "765cfe47eb3318bf14c303e06e8745908631f44123e29a5b37425973ccf89119",
+      "after_raw_report": "artifacts/compound-assignment-completion-final.json",
+      "after_raw_report_sha256": "8f909bb6d1c6f98f59741a13ecf7e1e7a438395c31cd64f205c908daed511a92"
+    },
+    {
+      "profile": "addition",
+      "source_files": 48,
+      "mode_cases": 95,
+      "counts": {
+        "unsupported": 28,
+        "passed": 65,
+        "failed": 2
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "56088f55075e4d44da6915ca41383604182a8a72aaef8230af61369513cbdc0c",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-addition-current.json",
+      "prior_public_report_sha256": "d2770943fb2be1285decb499952fd908ca8021a49e321f5be26dab71a45dfd57",
+      "before_raw_report": "artifacts/addition-labels-final.json",
+      "before_raw_report_sha256": "3bc4ac4d584546376f32a0ce962e2609ba2bda8792f1399aa1ad9c853896b1c9",
+      "after_raw_report": "artifacts/addition-completion-final.json",
+      "after_raw_report_sha256": "5c4e53e1156e0487fcd42d34013ed5ad176e21cd5bdcfaef0c28fbd898dcad65"
+    },
+    {
+      "profile": "logical-assignment",
+      "source_files": 78,
+      "mode_cases": 132,
+      "counts": {
+        "unsupported": 48,
+        "passed": 72,
+        "failed": 12
+      },
+      "preflights": 104,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "a83f71b8a6b6a1523951d73a4711f024cf77ad3bf90e6698bc6224e7bfabf1a3",
+      "runner_policy_sha256": "6f127a653c09ef49d48382570086b28407a0b1f6426fd888045621d72d3e89af",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-logical-assignment-current.json",
+      "prior_public_report_sha256": "ad49bf074436d4b37a00ad41064f45f477e8aad81ae15fc4df3eadcb14e7742a",
+      "before_raw_report": "artifacts/logical-assignment-labels-final.json",
+      "before_raw_report_sha256": "c8e9ceca630cdbbe171579a8d39e952de57b4632c9160836c26ee9388278cd9b",
+      "after_raw_report": "artifacts/logical-assignment-completion-final.json",
+      "after_raw_report_sha256": "891882fa46a22177529ff69ab86882a867be6d640b5d1c19a777dc4ea268db69"
+    },
+    {
+      "profile": "relational",
+      "source_files": 184,
+      "mode_cases": 364,
+      "counts": {
+        "unsupported": 64,
+        "passed": 300
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "34497c818a4de422d2628afe1270525fe6c5467bbb43126c1796324a5bc8f138",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-relational-current.json",
+      "prior_public_report_sha256": "e86260961b586de3423fbd9bab9bed25559745c314803d1107ad02a1b58078d1",
+      "before_raw_report": "artifacts/relational-labels-final.json",
+      "before_raw_report_sha256": "dbe741f2b36705eba9c0f4fa741069367e230547e60659c34f8859149447b138",
+      "after_raw_report": "artifacts/relational-completion-final.json",
+      "after_raw_report_sha256": "098f286baa314130e77ae7d1a729f9b5f34588d3411396630e032da1e5d7c793"
+    },
+    {
+      "profile": "equality",
+      "source_files": 145,
+      "mode_cases": 286,
+      "counts": {
+        "unsupported": 96,
+        "passed": 190
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "b1d07bdfaee72e164608d7ed3351ab70d05931ffda34f174f6c3f99bf12a0046",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-equality-current.json",
+      "prior_public_report_sha256": "91e65f1532487a2b2d552e4c95f118e07249f23abc1d4dd65de56fb9103f262c",
+      "before_raw_report": "artifacts/equality-labels-final.json",
+      "before_raw_report_sha256": "8b830a54449b19087d7da8854e9f5e679ab30427d0da71207ad24b5973d8bf3c",
+      "after_raw_report": "artifacts/equality-completion-final.json",
+      "after_raw_report_sha256": "448c6d76ccba2dd11c0d9919b56d7d17cd1c6194f610f475e6ddad121af34fda"
+    },
+    {
+      "profile": "labels",
+      "source_files": 68,
+      "mode_cases": 125,
+      "counts": {
+        "passed": 100,
+        "unsupported": 25
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "32889cc4ab3de15132243dae4981418ba559cd10294df9222329070b8f74649b",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-labels-current.json",
+      "prior_public_report_sha256": "5a84e2f694ccb009e7a7e21d501df73c346368df454d43d9618965a02753c22f",
+      "before_raw_report": "artifacts/test262-labels-candidate.json",
+      "before_raw_report_sha256": "fc85838aa5847e15912dba1b1030098ca70a68929015c7984a35888862146a5d",
+      "after_raw_report": "artifacts/labels-completion-final.json",
+      "after_raw_report_sha256": "4f18c423548ded3fd7454f378f7439dd4c21d1ecaa69d8dbc30585ae8fc95715"
+    },
+    {
+      "profile": "functions",
+      "source_files": 663,
+      "mode_cases": 1131,
+      "counts": {
+        "passed": 509,
+        "unsupported": 620,
+        "resource": 2
+      },
+      "preflights": 48,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "15281ebe6e6c980c547f113563df7d2b5d346ac0db5c9c4aca75dbb6fc60b330",
+      "runner_policy_sha256": "952e68b04e464d1a954c5949b0b9bbd8924472b8fba70a719a20a754d4d03439",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-functions-identifiers.json",
+      "prior_public_report_sha256": "2902b700a5861e68886cfef65ed1bb2feed32d13cd3e9a2fed7968efcfb4d575",
+      "before_raw_report": "artifacts/functions-labels-final.json",
+      "before_raw_report_sha256": "e09e5c6d17f4fcddab2a9eb77473b9116247eae9cfc2e7d49496b51d3b55b5ea",
+      "after_raw_report": "artifacts/functions-completion-final.json",
+      "after_raw_report_sha256": "0638e81a67836b610a4135ab8f238d440cac96f75a643f320b9ed3003b3f09dd"
+    },
+    {
+      "profile": "uri",
+      "source_files": 173,
+      "mode_cases": 346,
+      "counts": {
+        "resource": 112,
+        "passed": 210,
+        "unsupported": 24
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "bf48d1dddac882a9609fe78aea7521e7477c1cef2ba6036a74c48513ad28ab8f",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-uri-labels.json",
+      "prior_public_report_sha256": "eb7f76b625fa2fe581fcc289f3b77729cc102e43c9a60171f7ca58ee894613db",
+      "before_raw_report": "artifacts/uri-labels-final.json",
+      "before_raw_report_sha256": "4448b49a5281f00750b9b9fc0d34b70636d91ef4b05e7c7b89ba5929cd4e632d",
+      "after_raw_report": "artifacts/uri-completion-final.json",
+      "after_raw_report_sha256": "c52d2eff5390897b15729445acd312ef281d8a37a4ab5f2c1436fa8efc7d156c"
+    },
+    {
+      "profile": "numeric-parsing",
+      "source_files": 109,
+      "mode_cases": 218,
+      "counts": {
+        "passed": 164,
+        "unsupported": 46,
+        "resource": 8
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "f8959cc2e43d94b5b0c671105f87d3fc831fa6359065566791707a6f9b400c6a",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-numeric-parsing-compound-assignment.json",
+      "prior_public_report_sha256": "bffcd9ab4898076622c1002fc11c3a6523eb1185981c27f44468ca7fb6520950",
+      "before_raw_report": "artifacts/numeric-parsing-labels-final.json",
+      "before_raw_report_sha256": "a736fe8ce70edc02ce768b18391b8a779accfac5c10215f66412b1559fc75bc0",
+      "after_raw_report": "artifacts/numeric-parsing-completion-final.json",
+      "after_raw_report_sha256": "65d9cec37c5d5c26e5386395d561c585a0c738f94fb5e5a8cf1c41d41182b92c"
+    },
+    {
+      "profile": "array-sort",
+      "source_files": 54,
+      "mode_cases": 107,
+      "counts": {
+        "passed": 57,
+        "unsupported": 46,
+        "resource": 4
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "d6f43dd379ae49ae08f959596852e28e6bd33a0420eb699d763ff696b0e961d2",
+      "runner_policy_sha256": "8621a5b10295e4a41806178744c4e906157ef78c884220a154860fae829fd205",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-array-sort-reduce.json",
+      "prior_public_report_sha256": "af4f9eef2e405faf726ad2893a4724a1a491339899927a697dc50a301466a5e5",
+      "before_raw_report": "artifacts/array-sort-labels-final.json",
+      "before_raw_report_sha256": "691fec080d80d3781df8f679c20ebb05c0d1dfea31b287618bf006664f646730",
+      "after_raw_report": "artifacts/array-sort-completion-final.json",
+      "after_raw_report_sha256": "035eb2e305da97430e1aadec8ed3165af28d88bddf4176ab4fb2fef75eba4052"
+    },
+    {
+      "profile": "identifiers",
+      "source_files": 335,
+      "mode_cases": 669,
+      "counts": {
+        "passed": 507,
+        "unsupported": 154,
+        "resource": 8
+      },
+      "preflights": 88,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "b93b9e76f5231a3d342d95fe0a8cf47ca79c2a3101f2a78e4d5bb564c4d06ea8",
+      "runner_policy_sha256": "bdbeba5b53e7ef315e7f06e78fe8c66247cd7dd9ae2545ac5ec25749b94d95d5",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-identifiers-latest.json",
+      "prior_public_report_sha256": "ca6d5282f979ef7308263f90494efe5019bfeb6f1379e0cd49f065073a4922f5",
+      "before_raw_report": "artifacts/identifiers-labels-final.json",
+      "before_raw_report_sha256": "d955d9b0b959055294428ba914ee6efa1288639420ad4846859af03ee4394505",
+      "after_raw_report": "artifacts/identifiers-completion-final.json",
+      "after_raw_report_sha256": "95c36302c92d8d63154b4c541c9ea51a63fb9a348681674bdec695687f4b22c8"
+    }
+  ],
+  "upstream_mode_cases": 6879,
+  "upstream_preflights": 1680,
+  "stack_correction": {
+    "failure": "An initial completion implementation overflowed the native stack in statement_nesting_and_function_calls_share_the_native_stack_budget. Extracted runtime branch helpers and declaration setup before final validation; no stack or quota increase.",
+    "local_debug_frame_bytes": {
+      "statement_inner": {
+        "initial_candidate": 15400,
+        "final": 7000
+      },
+      "statements": {
+        "initial_candidate": 7800,
+        "final": 1352
+      }
+    },
+    "logs": {
+      "artifacts/completion-stack-failure.log": "eb91b907ca41b1a0f40538ed1450055321246a572d7c8d5802c763fd8b7faa36",
+      "artifacts/completion-stack-corrected.log": "44609bb8e2dd3f44eade69701702d7deffa4a73faf566a018b2669bd2f874bed",
+      "artifacts/completion-runtime-frame-before.log": "b8273172c511235e33925929603ebca97de86df1daa0dab19309dafb9b8d637f",
+      "artifacts/completion-runtime-frame-after.log": "6463bf453fa0ee8cd06dcb49c9f80c14b7a8f208aa6b86dda2fea5d0ab49de5b"
+    }
+  },
+  "validation": {
+    "rust_tests": 907,
+    "rust_ignored": 0,
+    "python_checks": 151,
+    "exact_pixel_references": 57,
+    "mutation_smoke_cases": 15000,
+    "caught_panics": 0,
+    "independent_agent_review": false,
+    "chromium_comparison": false,
+    "production_vulkan": false
+  },
+  "limitations": [
+    "Dynamic eval is still unsupported; original eval-based completion cases remain nonpassing.",
+    "Only the currently supported statement forms are covered; with, for-of, async, generators and modules remain incomplete.",
+    "Root-authored expected results are specification-guided regression checks, not independent upstream conformance evidence.",
+    "Native recursion remains; compiler-specific frame sizes and bounded smoke tests are not a portable stack proof or security audit."
+  ]
+}

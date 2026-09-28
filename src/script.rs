@@ -2818,10 +2818,45 @@ struct BoundFunction {
     arguments: Vec<Value>,
 }
 enum Flow {
-    Normal(Value),
+    // None is the specification's empty completion, distinct from undefined.
+    Normal(Option<Value>),
     Return(Value),
-    Break(Option<usize>),
-    Continue(Option<usize>),
+    Break(Option<usize>, Option<Value>),
+    Continue(Option<usize>, Option<Value>),
+}
+impl Flow {
+    fn update_empty(mut self, previous: Option<&Value>) -> Self {
+        match &mut self {
+            Self::Normal(value) | Self::Break(_, value) | Self::Continue(_, value)
+                if value.is_none() =>
+            {
+                *value = previous.cloned();
+            }
+            _ => {}
+        }
+        self
+    }
+
+    // LoopContinues followed by the iteration-value update. A departing jump
+    // retains its own value, or takes the last value produced by this loop.
+    fn loop_step(self, label: Option<usize>, last: &mut Value) -> std::result::Result<(), Self> {
+        let value = match self {
+            Self::Normal(value) | Self::Continue(None, value) => value,
+            Self::Continue(target, value) if target == label => value,
+            flow => return Err(flow.update_empty(Some(last))),
+        };
+        if let Some(value) = value {
+            *last = value;
+        }
+        Ok(())
+    }
+
+    fn consume_break(self) -> Self {
+        match self {
+            Self::Break(None, value) => Self::Normal(Some(value.unwrap_or(Value::Undefined))),
+            flow => flow,
+        }
+    }
 }
 enum Reference {
     Binding(usize, String, bool),
@@ -3684,7 +3719,7 @@ impl Runtime {
         let completion = self.statements(&program.body, 1, document);
         self.environments[1].strict = saved;
         match completion? {
-            Flow::Normal(value) => Ok(value),
+            Flow::Normal(value) => Ok(value.unwrap_or(Value::Undefined)),
             Flow::Return(_) => Err(ScriptError::new("return outside function")),
             _ => Err(ScriptError::new("loop control outside loop")),
         }
@@ -5314,7 +5349,7 @@ impl Runtime {
         }))
     }
 
-    fn statements(&mut self, body: &[Stmt], env: usize, doc: &mut Document) -> Result<Flow> {
+    fn instantiate_statements(&mut self, body: &[Stmt], env: usize) -> Result<()> {
         let mut tracked_functions = [None; 5];
         if env == 1 {
             // Validate declarations before inserting lexical, var, or function
@@ -5410,9 +5445,17 @@ impl Runtime {
                 }
             }
         }
-        let mut last = Value::Undefined;
+        Ok(())
+    }
+    fn statements(&mut self, body: &[Stmt], env: usize, doc: &mut Document) -> Result<Flow> {
+        // Declaration setup finishes before retaining frames for nested bodies.
+        self.instantiate_statements(body, env)?;
+        let mut last = None;
         for statement in body {
-            match self.statement(statement, env, doc)? {
+            match self
+                .statement(statement, env, doc)?
+                .update_empty(last.as_ref())
+            {
                 Flow::Normal(value) => last = value,
                 flow => return Ok(flow),
             }
@@ -5446,85 +5489,30 @@ impl Runtime {
             Stmt::Empty | Stmt::Function(_, _) => {}
             Stmt::Label(target, body) => {
                 return match self.statement_labeled(body, env, doc, Some(*target))? {
-                    Flow::Break(Some(found)) if found == *target => {
-                        Ok(Flow::Normal(Value::Undefined))
-                    }
+                    Flow::Break(Some(found), value) if found == *target => Ok(Flow::Normal(value)),
                     flow => Ok(flow),
                 };
             }
-            Stmt::Expr(expression) => return Ok(Flow::Normal(self.eval(expression, env, doc)?)),
-            Stmt::Var(bindings, kind) => {
-                let owner = if *kind == DeclarationKind::Var {
-                    self.var_scope(env)
-                } else {
-                    env
-                };
-                for (name, expression) in bindings {
-                    if *kind == DeclarationKind::Var && expression.is_none() {
-                        continue;
-                    }
-                    let value = if let Some(expression) = expression {
-                        self.eval(expression, env, doc)?
-                    } else {
-                        Value::Undefined
-                    };
-                    if *kind == DeclarationKind::Var {
-                        let target = self.lookup(env, name).map_or(owner, |(owner, _)| owner);
-                        self.write_reference(
-                            Reference::Binding(target, name.clone(), self.environments[env].strict),
-                            value,
-                            doc,
-                        )?;
-                    } else if let Some(binding) = self.environments[owner].bindings.get_mut(name)
-                        && !binding.initialized
-                    {
-                        binding.value = value;
-                        binding.initialized = true;
-                    } else {
-                        self.define(owner, name, value, *kind != DeclarationKind::Const)?;
-                        self.environments[owner]
-                            .bindings
-                            .get_mut(name)
-                            .unwrap()
-                            .global_property = false;
-                    }
-                }
+            Stmt::Expr(expression) => {
+                return Ok(Flow::Normal(Some(self.eval(expression, env, doc)?)));
             }
+            Stmt::Var(..) => return self.declaration_statement(statement, env, doc),
             Stmt::Block(body) => {
                 let child = self.environment(env)?;
                 return self.statements(body, child, doc);
             }
             Stmt::If(condition, yes, no) => {
-                if self.eval(condition, env, doc)?.truthy() {
-                    return self.statement(yes, env, doc);
-                }
-                if let Some(no) = no {
-                    return self.statement(no, env, doc);
-                }
+                let completion = if self.eval(condition, env, doc)?.truthy() {
+                    self.statement(yes, env, doc)?
+                } else if let Some(no) = no {
+                    self.statement(no, env, doc)?
+                } else {
+                    Flow::Normal(None)
+                };
+                return Ok(completion.update_empty(Some(&Value::Undefined)));
             }
-            Stmt::While(condition, body) => {
-                while self.eval(condition, env, doc)?.truthy() {
-                    self.tick()?;
-                    match self.statement(body, env, doc)? {
-                        Flow::Break(None) => break,
-                        Flow::Normal(_) | Flow::Continue(None) => {}
-                        Flow::Continue(target) if target == label => {}
-                        flow => return Ok(flow),
-                    }
-                }
-            }
-            Stmt::DoWhile(condition, body) => loop {
-                self.tick()?;
-                match self.statement(body, env, doc)? {
-                    Flow::Break(None) => break,
-                    Flow::Normal(_) | Flow::Continue(None) => {}
-                    Flow::Continue(target) if target == label => {}
-                    flow => return Ok(flow),
-                }
-                if !self.eval(condition, env, doc)?.truthy() {
-                    break;
-                }
-            },
+            Stmt::While(..) => return self.while_loop(statement, env, doc, label),
+            Stmt::DoWhile(..) => return self.do_while_loop(statement, env, doc, label),
             Stmt::For(..) => return self.for_loop(statement, env, doc, label),
             Stmt::ForIn(binding, expression, body) => {
                 return self.for_in(binding, expression, body, env, doc, label);
@@ -5548,43 +5536,134 @@ impl Runtime {
                 error.intrinsic_name = intrinsic;
                 return Err(error);
             }
-            Stmt::Try(body, handler, finalizer) => {
-                let mut completion = self.statement(body, env, doc);
-                if let Err(error) = completion {
-                    // Quota exhaustion is a host termination, not a JavaScript
-                    // exception. Running either handler could hide that failure.
-                    if error.is_resource_limit() || error.is_unsupported() {
-                        return Err(error);
-                    }
-                    completion = if let Some(handler) = handler {
-                        let catch_env = self.environment(env)?;
-                        if let Some(binding) = &handler.binding {
-                            let value = self.exception_value(error)?;
-                            self.define(catch_env, binding, value, true)?;
-                        }
-                        self.statements(&handler.body, catch_env, doc)
-                    } else {
-                        Err(error)
-                    };
-                }
-                if completion
-                    .as_ref()
-                    .is_err_and(|error| error.is_resource_limit() || error.is_unsupported())
-                {
-                    return completion;
-                }
-                if let Some(finalizer) = finalizer {
-                    match self.statement(finalizer, env, doc)? {
-                        Flow::Normal(_) => {}
-                        abrupt => return Ok(abrupt),
-                    }
-                }
-                return completion;
-            }
-            Stmt::Break(target) => return Ok(Flow::Break(*target)),
-            Stmt::Continue(target) => return Ok(Flow::Continue(*target)),
+            Stmt::Try(..) => return self.try_statement(statement, env, doc),
+            Stmt::Break(target) => return Ok(Flow::Break(*target, None)),
+            Stmt::Continue(target) => return Ok(Flow::Continue(*target, None)),
         }
-        Ok(Flow::Normal(Value::Undefined))
+        Ok(Flow::Normal(None))
+    }
+    fn declaration_statement(
+        &mut self,
+        statement: &Stmt,
+        env: usize,
+        doc: &mut Document,
+    ) -> Result<Flow> {
+        let Stmt::Var(bindings, kind) = statement else {
+            unreachable!("declaration_statement receives the matching statement");
+        };
+        let owner = if *kind == DeclarationKind::Var {
+            self.var_scope(env)
+        } else {
+            env
+        };
+        for (name, expression) in bindings {
+            if *kind == DeclarationKind::Var && expression.is_none() {
+                continue;
+            }
+            let value = if let Some(expression) = expression {
+                self.eval(expression, env, doc)?
+            } else {
+                Value::Undefined
+            };
+            if *kind == DeclarationKind::Var {
+                let target = self.lookup(env, name).map_or(owner, |(owner, _)| owner);
+                self.write_reference(
+                    Reference::Binding(target, name.clone(), self.environments[env].strict),
+                    value,
+                    doc,
+                )?;
+            } else if let Some(binding) = self.environments[owner].bindings.get_mut(name)
+                && !binding.initialized
+            {
+                binding.value = value;
+                binding.initialized = true;
+            } else {
+                self.define(owner, name, value, *kind != DeclarationKind::Const)?;
+                self.environments[owner]
+                    .bindings
+                    .get_mut(name)
+                    .unwrap()
+                    .global_property = false;
+            }
+        }
+        Ok(Flow::Normal(None))
+    }
+    fn while_loop(
+        &mut self,
+        statement: &Stmt,
+        env: usize,
+        doc: &mut Document,
+        label: Option<usize>,
+    ) -> Result<Flow> {
+        let Stmt::While(condition, body) = statement else {
+            unreachable!("while_loop receives the matching statement");
+        };
+        let mut last = Value::Undefined;
+        while self.eval(condition, env, doc)?.truthy() {
+            self.tick()?;
+            if let Err(flow) = self.statement(body, env, doc)?.loop_step(label, &mut last) {
+                return Ok(flow.consume_break());
+            }
+        }
+        Ok(Flow::Normal(Some(last)))
+    }
+    fn do_while_loop(
+        &mut self,
+        statement: &Stmt,
+        env: usize,
+        doc: &mut Document,
+        label: Option<usize>,
+    ) -> Result<Flow> {
+        let Stmt::DoWhile(condition, body) = statement else {
+            unreachable!("do_while_loop receives the matching statement");
+        };
+        let mut last = Value::Undefined;
+        loop {
+            self.tick()?;
+            if let Err(flow) = self.statement(body, env, doc)?.loop_step(label, &mut last) {
+                return Ok(flow.consume_break());
+            }
+            if !self.eval(condition, env, doc)?.truthy() {
+                break;
+            }
+        }
+        Ok(Flow::Normal(Some(last)))
+    }
+    fn try_statement(&mut self, statement: &Stmt, env: usize, doc: &mut Document) -> Result<Flow> {
+        let Stmt::Try(body, handler, finalizer) = statement else {
+            unreachable!("try_statement receives the matching statement");
+        };
+        let mut completion = self.statement(body, env, doc);
+        if let Err(error) = completion {
+            // Quota exhaustion is a host termination, not a JavaScript
+            // exception. Running either handler could hide that failure.
+            if error.is_resource_limit() || error.is_unsupported() {
+                return Err(error);
+            }
+            completion = if let Some(handler) = handler {
+                let catch_env = self.environment(env)?;
+                if let Some(binding) = &handler.binding {
+                    let value = self.exception_value(error)?;
+                    self.define(catch_env, binding, value, true)?;
+                }
+                self.statements(&handler.body, catch_env, doc)
+            } else {
+                Err(error)
+            };
+        }
+        if completion
+            .as_ref()
+            .is_err_and(|error| error.is_resource_limit() || error.is_unsupported())
+        {
+            return completion;
+        }
+        if let Some(finalizer) = finalizer {
+            match self.statement(finalizer, env, doc)? {
+                Flow::Normal(_) => {}
+                abrupt => return Ok(abrupt.update_empty(Some(&Value::Undefined))),
+            }
+        }
+        completion.map(|flow| flow.update_empty(Some(&Value::Undefined)))
     }
     fn for_loop(
         &mut self,
@@ -5611,6 +5690,7 @@ impl Runtime {
         if !names.is_empty() {
             child = self.iteration_environment(child, env, &names)?;
         }
+        let mut last = Value::Undefined;
         loop {
             self.tick()?;
             if let Some(condition) = condition
@@ -5618,11 +5698,11 @@ impl Runtime {
             {
                 break;
             }
-            match self.statement(body, child, doc)? {
-                Flow::Break(None) => break,
-                Flow::Normal(_) | Flow::Continue(None) => {}
-                Flow::Continue(target) if target == label => {}
-                flow => return Ok(flow),
+            if let Err(flow) = self
+                .statement(body, child, doc)?
+                .loop_step(label, &mut last)
+            {
+                return Ok(flow.consume_break());
             }
             if !names.is_empty() {
                 child = self.iteration_environment(child, env, &names)?;
@@ -5631,7 +5711,7 @@ impl Runtime {
                 self.eval(update, child, doc)?;
             }
         }
-        Ok(Flow::Normal(Value::Undefined))
+        Ok(Flow::Normal(Some(last)))
     }
     fn iteration_environment(
         &mut self,
@@ -5686,14 +5766,14 @@ impl Runtime {
             for (_, body) in &cases[start..] {
                 for statement in body {
                     match self.statement(statement, child, doc)? {
-                        Flow::Normal(value) => last = value,
-                        Flow::Break(None) => return Ok(Flow::Normal(last)),
-                        abrupt => return Ok(abrupt),
+                        Flow::Normal(Some(value)) => last = value,
+                        Flow::Normal(None) => {}
+                        abrupt => return Ok(abrupt.update_empty(Some(&last)).consume_break()),
                     }
                 }
             }
         }
-        Ok(Flow::Normal(last))
+        Ok(Flow::Normal(Some(last)))
     }
     fn for_in(
         &mut self,
@@ -5725,11 +5805,12 @@ impl Runtime {
         };
         let value = self.eval(expression, expression_env, doc)?;
         if matches!(value, Value::Null | Value::Undefined) {
-            return Ok(Flow::Normal(Value::Undefined));
+            return Ok(Flow::Normal(Some(Value::Undefined)));
         }
         let mut cursor = Some(self.coerce_object(value)?);
         let mut visited = BTreeSet::new();
         let mut depth = 0;
+        let mut last = Value::Undefined;
         while let Some(object) = cursor {
             if depth >= MAX_DEPTH {
                 return Err(ScriptError::resource("for-in prototype depth exceeded"));
@@ -5766,16 +5847,16 @@ impl Runtime {
                         env
                     }
                 };
-                match self.statement(body, scope, doc)? {
-                    Flow::Break(None) => return Ok(Flow::Normal(Value::Undefined)),
-                    Flow::Normal(_) | Flow::Continue(None) => {}
-                    Flow::Continue(target) if target == label => {}
-                    flow => return Ok(flow),
+                if let Err(flow) = self
+                    .statement(body, scope, doc)?
+                    .loop_step(label, &mut last)
+                {
+                    return Ok(flow.consume_break());
                 }
             }
             cursor = self.prototype_of(&object);
         }
-        Ok(Flow::Normal(Value::Undefined))
+        Ok(Flow::Normal(Some(last)))
     }
     fn exception_value(&mut self, error: ScriptError) -> Result<Value> {
         match error {

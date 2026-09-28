@@ -181,6 +181,10 @@ retain 125 variants: 100 pass and 25 need unsupported syntax or dynamic eval.
 Ordinary targets, early errors and statement-context ASI add 70 passes.
 All 80 assertion controls verify; CI preserves the complete inventory.
 
+[Statement completion values](tests/conformance/statement-completion.md) preserve
+results through empty statements, declarations, blocks, jumps and finally clauses.
+Direct interpreter tests cover these values without requiring dynamic eval.
+
 The four complete [equality directories](tests/conformance/test262-equality.md)
 retain 286 variants: 190 pass and 96 require exotic values or dynamic eval.
 Ordinary coercion and nullish dispatch add 44 passes. All 128 assertion controls

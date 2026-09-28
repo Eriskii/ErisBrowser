@@ -1,0 +1,122 @@
+# Root-authored direct Runtime API cases; no eval or external engine.
+# id	expected scalar tag	source
+list/empty	undefined	
+list/only-empty	undefined	;;; {}
+list/empty-tail	number:401c000000000000	7;;;;
+list/var-tail	number:401c000000000000	7; var a=12;
+list/let-tail	number:401c000000000000	7; let a=12;
+list/const-tail	number:401c000000000000	7; const a=12;
+list/function-tail	number:401c000000000000	7; function f(){return 12;}
+list/block-empty	number:401c000000000000	7; {}
+list/block-vars	number:401c000000000000	7; {var a=12; let b=13;}
+list/nested	number:4020000000000000	7; {8; {}; {var a=12;}}
+list/actual-undefined	undefined	7; undefined; {}
+list/void	undefined	7; void 0; var a;
+list/null	null	null; {}
+list/false	bool:false	false; var a;
+list/negative-zero	number:8000000000000000	-0; {};
+list/utf16	string:[55296, 0, 56320]	"\ud800\0\udc00"; var a;
+list/empty-string	string:[]	""; {};
+list/label-empty	number:401c000000000000	7; mark: ;
+list/label-block	number:401c000000000000	7; mark: {}
+list/label-break-empty	number:401c000000000000	7; mark: {break mark;}
+list/label-break-value	number:4020000000000000	7; mark:{8;break mark;9;}
+list/label-chain	number:4020000000000000	outer: inner:{8;break outer;}
+list/label-nested	number:4020000000000000	outer:{inner:{8;break outer;}9;}
+list/label-undefined	undefined	7; mark:{undefined;break mark;}
+if/true-empty	undefined	7; if(true);
+if/false-empty	undefined	7; if(false)8;
+if/else-empty	undefined	7; if(false)8;else{}
+if/true-value	number:4020000000000000	7;if(true){8;var a;}
+if/else-value	number:4022000000000000	7;if(false)8;else{9;{}}
+if/break-empty	undefined	mark:{7;if(true)break mark;}
+if/break-value	number:4020000000000000	mark:{7;if(true){8;break mark;}}
+if/branch-empty-block	undefined	mark:{7;if(true){} break mark;}
+if/nested-empty	undefined	mark:{7;if(true){8;if(true)break mark;}}
+if/label-through-branch	number:4020000000000000	mark:{if(true){8;{break mark;}}}
+loop/while-empty	undefined	7;while(false){}
+loop/while-break	number:4020000000000000	7;while(true){8;break;}
+loop/while-break-empty	undefined	7;while(true){break;}
+loop/while-label	number:4020000000000000	7;mark:while(true){8;break mark;}
+loop/while-if-break	undefined	7;while(true){8;if(true)break;}
+loop/while-last	number:402a000000000000	var i=0;while(i++<3){i+10;var unused;}
+loop/while-continue	number:402a000000000000	var i=0;mark:while(i++<3){i+10;continue mark;}
+loop/do-empty	undefined	7;do{}while(false);
+loop/do-break	number:4020000000000000	7;do{8;break;}while(false);
+loop/do-break-empty	undefined	7;do{break;}while(false);
+loop/do-label	number:4020000000000000	7;mark:do{8;break mark;}while(false);
+loop/do-if-break	undefined	7;do{8;if(true)break;}while(false);
+loop/do-last	number:402a000000000000	var i=0;do {i++;i+10;var unused;} while(i<3);
+loop/do-continue	number:402a000000000000	var i=0;mark:do {i++;i+10;continue mark;} while(i<3);
+loop/for-empty	undefined	7;for(;false;){}
+loop/for-break	number:4020000000000000	7;for(;;){8;break;}
+loop/for-break-empty	undefined	7;for(;;){break;}
+loop/for-label	number:4020000000000000	7;mark:for(;;){8;break mark;}
+loop/for-if-break	undefined	7;for(;;){8;if(true)break;}
+loop/for-last	number:402a000000000000	var i=0;for(;i++<3;){i+10;var unused;}
+loop/for-continue	number:402a000000000000	var i=0;mark:for(;i++<3;){i+10;continue mark;}
+loop/for-in-empty	undefined	7;for(var k in {}){}
+loop/for-in-break	number:4020000000000000	7;for(var k in {a:1}){8;break;}
+loop/for-in-break-empty	undefined	7;for(var k in {a:1}){break;}
+loop/for-in-label	number:4020000000000000	7;mark:for(var k in {a:1}){8;break mark;}
+loop/for-in-if-break	undefined	7;for(var k in {a:1}){8;if(true)break;}
+loop/for-in-last	number:402a000000000000	var i=0;for(var k in {a:1,b:2,c:3}){i++;i+10;var unused;}
+loop/for-in-continue	number:402a000000000000	var i=0;mark:for(var k in {a:1,b:2,c:3}){i++;i+10;continue mark;}
+loop/nullish	undefined	7;for(var k in null){8;}
+loop/undefined	undefined	7;for(var k in undefined){8;}
+loop/for-init-ignored	undefined	7;for(9;false;10){}
+loop/for-update-ignored	number:4020000000000000	var i=0;for(;i<2;i++){8;}
+loop/bare-continue	number:4028000000000000	for(var i=0;i<3;i++){i+10;continue;}
+loop/continue-if-erases	undefined	for(var i=0;i<3;i++){i+10;if(true)continue;}
+loop/switch-empty-erases	undefined	var i=0;while(i++<2){switch(i){case 1:8;continue;case 2:break;}break;}
+loop/nested-break	number:4020000000000000	outer:while(true){while(true){8;break outer;}}
+loop/nested-continue	number:4020000000000000	var i=0;outer:while(i++<2){while(true){8;continue outer;}}
+loop/inner-undefined	undefined	outer:while(true){7;while(true){break outer;}}
+loop/block-break	number:4020000000000000	while(true){8;{break;}}
+loop/lexical-env	bool:true	var a=[];for(let i=0;i<3;i++){a.push(function(){return i;});continue;}a[0]()===0&&a[1]()===1&&a[2]()===2;
+switch/empty	undefined	7;switch(1){}
+switch/no-match	undefined	7;switch(1){case 2:8;}
+switch/no-body	undefined	7;switch(1){case 1:}
+switch/body	number:4020000000000000	7;switch(1){case 1:8;var a;}
+switch/break	number:4020000000000000	switch(1){case 1:8;break;default:9;}
+switch/block-break	number:4020000000000000	switch(1){case 1:8;{break;}}
+switch/if-break	undefined	switch(1){case 1:8;if(true)break;}
+switch/fallthrough	number:4022000000000000	switch(1){case 1:8;case 2:9;case 3:;break;}
+switch/empty-fallthrough	number:4020000000000000	switch(1){case 1:8;case 2:var a;case 3:break;}
+switch/default	number:4022000000000000	switch(4){case 1:8;default:9;case 2:var a;}
+switch/post-default	number:4024000000000000	switch(2){case 1:8;default:9;case 2:10;break;}
+switch/label	number:4020000000000000	mark:{switch(1){case 1:8;break mark;}9;}
+switch/continue	number:4020000000000000	var i=0;mark:while(i++<2){switch(1){case 1:8;continue mark;}}
+switch/explicit-undefined	undefined	switch(1){case 1:8;case 2:undefined;break;}
+try/try-empty	undefined	7;try{}catch(e){}
+try/finally-empty	undefined	7;try{}finally{}
+try/finally-value-ignored	number:4020000000000000	7;try{8;var a;}finally{9;}
+try/finally-empty-ignored	number:4020000000000000	try{8;}finally{var a;}
+try/finally-undefined-ignored	number:4020000000000000	try{8;}finally{undefined;}
+try/catch-value	number:4020000000000000	try{throw 7;}catch(e){e+1;var a;}
+try/catch-empty	undefined	7;try{throw 8;}catch(e){}
+try/catch-finally	number:4020000000000000	try{throw 7;}catch(e){e+1;}finally{9;}
+try/break-try	number:4020000000000000	mark:{try{8;break mark;}finally{9;}}
+try/break-try-empty	undefined	mark:{7;try{break mark;}finally{9;}}
+try/break-finally	number:4022000000000000	mark:{try{8;}finally{9;break mark;}}
+try/break-finally-empty	undefined	mark:{7;try{8;}finally{break mark;}}
+try/break-replaces-throw	number:4022000000000000	mark:{try{throw 8;}finally{9;break mark;}}
+try/break-replaces-catch	number:4022000000000000	mark:{try{throw 8;}catch(e){10;}finally{9;break mark;}}
+try/break-catch	number:4020000000000000	mark:{try{throw 7;}catch(e){e+1;break mark;}finally{9;}}
+try/continue-try	number:4020000000000000	var i=0;mark:while(i++<2){try{8;continue mark;}finally{9;}}
+try/continue-finally	number:4022000000000000	var i=0;mark:while(i++<2){try{8;}finally{9;continue mark;}}
+try/continue-finally-empty	undefined	var i=0;mark:while(i++<2){7;try{8;}finally{continue mark;}}
+try/nested-finally	number:4020000000000000	try{try{8;}finally{9;}}finally{10;}
+try/caught-null	null	try{throw null;}catch(e){e;{}}
+try/caught-undefined	undefined	7;try{throw undefined;}catch(e){e;{}}
+return/implicit	undefined	(function(){8;})();
+return/bare	undefined	(function(){8;return;})();
+return/value	number:4020000000000000	(function(){7;return 8;})();
+return/normal-finally	number:4020000000000000	(function(){try{return 8;}finally{9;}})();
+return/override-finally	number:4022000000000000	(function(){try{return 8;}finally{return 9;}})();
+return/bare-finally	undefined	(function(){try{return 8;}finally{return;}})();
+return/break-over-return	undefined	(function(){mark:{try{return 8;}finally{break mark;}}})();
+return/throw-over-return	number:4022000000000000	try{(function(){try{return 8;}finally{throw 9;}})();}catch(e){e;}
+return/return-over-throw	number:4022000000000000	(function(){try{throw 8;}finally{return 9;}})();
+return/return-object	bool:true	var token={};(function(){try{return token;}finally{9;}})()===token;
+return/throw-object	bool:true	var token={};try{try{throw token;}finally{9;}}catch(e){e===token;}

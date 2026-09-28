@@ -1,6 +1,70 @@
 # Validation record
 
+## Statement completion values and runtime stack correction
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **907 Rust tests** pass with `--include-ignored`: 726 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 53 pipeline, nine completion and 44 confined-worker tests.
+None remain ignored. All **151 Python checks** and **57 exact pixel references**
+pass.
+
+The [implementation and evidence](../tests/conformance/statement-completion.md)
+distinguish internal empty completions from JavaScript undefined. Lists, labels,
+branches, four supported loops, switches and try/catch/finally preserve or replace
+values according to their completion rules. Return/throw identity, loop ordering,
+lexical environments and uncatchable host termination remain intact. No execution,
+allocation or nesting ceiling changes; no dynamic eval implementation is added.
+
+The root-authored direct-API table has **120 sources / 240 strict-sloppy modes**.
+A frozen release-library probe at `f4c287c` passes 118; the final probe passes all
+240, adding 122 without losses. The public report retains all expected/before/after
+values and source/library/executable hashes. Additional Rust checks cover reference
+identity, NaN, host stops and nine recursive statement forms. These checks are not
+upstream conformance evidence; original eval-based cases remain unsupported.
+
+The initial implementation overflowed the native stack in the existing nested
+statement/function regression. Extracting declaration setup before nested execution
+and four runtime branch helpers reduced local debug dispatcher size from 15,400
+to 7,000 bytes and statement-list size from 7,800 to 1,352 bytes. The original
+regression and new recursive forms pass, without increasing stacks or quotas.
+The measurements compare initial/final candidates in this increment, are
+compiler-specific, and do not prove a portable native-stack bound.
+
+All **20 Test262 profiles / 6,879 modes / 1,680 controls** preserve every case and
+preflight fingerprint, policy and observation. Every control verifies; fifteen
+healthy gates pass. Existing resource stops remain nonpassing observations, with
+no new baseline recording. HTML remains at 3,868 matches, two mismatches and six
+unsupported modes. No upstream source or runner-policy changes.
+
+The **15,000-case** deterministic mutation smoke run reports zero caught panics
+or invariant failures: 5,000 accepted HTML, 623 accepted/4,377 rejected scripts,
+and 3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and
+display-list size 1,173 commands; 17 cases stop within paint limits.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+| --- | --- |
+| `eris-browser` | `746d1cb755ce7fa74a32ec8fc1be7b597c47de265c09a2b66c07c8bdd7944a5e` |
+| `eris-js` | `760a8821afc3bd83928b01be4caf0d729113eb26c843051265197043f9326459` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `d568d90d7756fe839a2b1588809f1797a611c82ac813a941c109ae0f58bcdfb3` |
+
+Source-input SHA-256:
+`0fe716f518fcb4c21499cfdd974479494a4d2121f1fee2057e1c6ddf4880aca2`.
+Local records are `artifacts/*completion*`; the
+[public report](../tests/conformance/statement-completion.json) retains probe and
+comparison provenance. Agent sessions remain unavailable; this is local validation,
+not independent-agent review. No native-window, Vulkan or Chromium performance
+measurement is assigned to this checkpoint. Full compatibility, production security
+and the requested performance threshold remain unverified.
+
 ## Ordinary labeled control flow and parser stack correction
+
+Published checkpoint `f4c287c` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36450662664),
+including the labels gate, Rust 1.88 and the Vulkan probe.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **898 Rust tests** pass with `--include-ignored`: 726 library,

@@ -55,8 +55,8 @@ recorded in `artifacts/labels-parser-final-frame.log`.
 The [complete pinned inventory](test262-labels.md) retains all original sources
 and metadata. Legacy sloppy labeled function declarations, with, for-of,
 async/generator/module syntax and tail calls remain incomplete. Strict labeled
-functions are syntax errors. General statement completion-value accounting,
-including full UpdateEmpty behavior, remains a separate gap; eval-based cases
+functions are syntax errors. [Statement completion-value accounting](statement-completion.md)
+now implements UpdateEmpty for supported statement forms; eval-based cases
 remain subject to the existing dynamic-eval limitation. This is not complete
 label, ECMAScript or web-platform conformance, or proof of security.
 
