@@ -9,7 +9,14 @@ Chromium threshold. The current implementation does not satisfy that goal;
 ## Vulkan rendering backend
 
 Requested for future implementation on September 28, 2026. Add a custom Vulkan
-backend for rasterization and compositing, with the following acceptance work:
+backend for rasterization and compositing.
+
+The [Vulkan milestone design](vulkan-rendering.md) records the host device
+probe, separates upload/presentation from custom GPU rasterization, and compares
+bindings. It recommends an optional Vulkan-only wgpu path for evaluation;
+no graphics dependency or Vulkan backend has been added.
+
+Acceptance work:
 
 - Define a backend interface for the existing validated display list and image
   resources, preserving clipping, fixed coordinates, text coverage, alpha and
