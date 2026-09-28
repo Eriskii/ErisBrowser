@@ -457,7 +457,9 @@ impl Painter {
                 }
                 paths.push(Subpath {
                     points: values
-                        .chunks_exact(2)
+                        .as_chunks::<2>()
+                        .0
+                        .iter()
                         .map(|v| Point::new(v[0], v[1]))
                         .collect(),
                     closed: tag == "polygon",
@@ -1287,7 +1289,16 @@ mod tests {
     fn arc_paths_and_text_render() {
         let image = render("<svg width='100' height='100'><path d='M20 50 A30 30 0 1 0 80 50 A30 30 0 1 0 20 50Z' fill='green'/><text x='15' y='95' font-size='14'>Hello</text></svg>",None,None).unwrap();
         assert!(pixel(&image, 50, 50)[3] > 0);
-        assert!(image.rgba.chunks_exact(4).filter(|p| p[3] > 0).count() > 1000);
+        assert!(
+            image
+                .rgba
+                .as_chunks::<4>()
+                .0
+                .iter()
+                .filter(|p| p[3] > 0)
+                .count()
+                > 1000
+        );
     }
     #[test]
     fn untrusted_svg_has_bounded_resources_and_no_external_content() {
