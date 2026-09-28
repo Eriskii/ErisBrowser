@@ -32,6 +32,42 @@ fn prototype_membership_observes_identity_and_event_mutations() {
     assert_six_scripted_samples(include_str!("fixtures/prototype-membership.html"));
 }
 
+#[test]
+fn replaceable_window_self_preserves_lexical_and_event_identity() {
+    assert_six_scripted_samples(include_str!("fixtures/window-self.html"));
+}
+
+#[test]
+fn window_self_state_survives_fragment_navigation_and_resets_in_a_new_page() {
+    let source = include_str!("fixtures/window-self.html");
+    let mut p = page(source);
+    let mut destination = p.url.clone();
+    destination.set_fragment(Some("replacement"));
+    assert!(p.navigate_fragment(destination.clone()));
+    assert_eq!(p.url, destination);
+    let button = p.document.query_selector("#change").unwrap();
+    assert!(p.click(button).is_none());
+    assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+    let body = p.document.query_selector("body").unwrap();
+    assert_eq!(p.document.attr(body, "class"), Some("clicked"));
+    let fresh = Page::from_html(destination, source, true);
+    assert!(fresh.diagnostics.is_empty(), "{:?}", fresh.diagnostics);
+    let body = fresh.document.query_selector("body").unwrap();
+    assert_eq!(fresh.document.attr(body, "class"), Some("ready"));
+}
+
+#[test]
+fn rejected_self_declaration_does_not_leave_bindings_for_later_page_scripts() {
+    let p = page(
+        "<!doctype html><body><script>Object.defineProperty(window,'self',{value:3,writable:false,configurable:false});</script>\
+        <script>let rejectedLexical=1;var rejectedVar=2;function rejectedFunction(){}function self(){}document.body.className='wrong';</script>\
+        <script>if(typeof rejectedLexical==='undefined'&&typeof rejectedVar==='undefined'&&typeof rejectedFunction==='undefined'&&self===3)document.body.className='ready';</script>",
+    );
+    assert_eq!(p.diagnostics.len(), 1, "{:?}", p.diagnostics);
+    let body = p.document.query_selector("body").unwrap();
+    assert_eq!(p.document.attr(body, "class"), Some("ready"));
+}
+
 fn assert_six_scripted_samples(source: &str) {
     let mut p = page(source);
     let fonts = Fonts::new();

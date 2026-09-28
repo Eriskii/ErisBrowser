@@ -120,6 +120,59 @@ fn prototype_membership_and_mutations_survive_the_confined_worker() {
     );
 }
 
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn replaceable_window_self_preserves_pixels_and_events_through_the_worker() {
+    assert_six_scripted_samples_through_worker(include_str!("fixtures/window-self.html"), 129);
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn window_self_persists_across_fragments_and_resets_in_a_fresh_worker() {
+    let fixture = Fixture::new(include_str!("fixtures/window-self.html"));
+    let mut client = fixture.spawn(true, 130);
+    load(&mut client, &fixture.navigation);
+    let snapshot = render(&mut client);
+    let button = snapshot.document.query_selector("#change").unwrap();
+    let mut destination = Url::parse(&fixture.navigation.address).unwrap();
+    destination.set_fragment(Some("replacement"));
+    exchange_empty(
+        &mut client,
+        WorkerCommand::Fragment {
+            address: destination.to_string(),
+        },
+    );
+    exchange_empty(&mut client, WorkerCommand::Click { node: button });
+    for (reload, state) in [(false, "clicked"), (true, "ready")] {
+        if reload {
+            drop(client);
+            client = fixture.spawn(true, 131);
+            load(&mut client, &fixture.navigation);
+        }
+        let snapshot = render(&mut client);
+        assert_eq!(snapshot.generation, if reload { 131 } else { 130 });
+        assert_eq!(
+            snapshot.url,
+            if reload {
+                fixture.navigation.address.as_str()
+            } else {
+                destination.as_str()
+            }
+        );
+        let body = snapshot.document.query_selector("body").unwrap();
+        assert_eq!(snapshot.document.attr(body, "class"), Some(state));
+        assert!(
+            snapshot
+                .diagnostics
+                .iter()
+                .all(|line| line.starts_with("Page process ")
+                    || line.starts_with("Resource broker ")),
+            "{:?}",
+            snapshot.diagnostics
+        );
+    }
+}
+
 fn assert_six_scripted_samples_through_worker(source: &str, generation: u64) {
     use eris::graphics::{Canvas, Color, Fonts};
     let fixture = Fixture::new(source);

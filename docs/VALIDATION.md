@@ -1,6 +1,84 @@
 # Validation record
 
+## Replaceable Window.self
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **734 Rust tests** pass with `--include-ignored`: 591 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 38 pipeline and 30 confined-worker tests. None remain
+ignored. All **59 Python checks** and **57 exact pixel references** pass.
+
+The [Window.self correction](../tests/conformance/window-self.md) installs a
+real replaceable accessor and keeps bare identifiers, member accesses, saved
+descriptors, deletion and lexical shadows coherent. Nine new script groups
+cover brands/metadata, strictness, reentrancy, inherited lookup, declaration
+rejection before inserting bindings, shared work and allocation failure.
+The shared Object.defineProperty key conversion also observes ordinary
+array/function overrides and key-before-descriptor evaluation order.
+
+Direct Page and real confined-worker fixtures produce six green samples and
+six blue samples after replacement in a callback. They preserve Window event
+identity and runtime state across fragment navigation. Fresh Page/worker
+instances restore the initial accessor. A separate three-script Page check
+confirms a rejected declaration leaves no lexical, var or function bindings
+behind for later scripts.
+
+Independent release review matches **113 expected outcomes**: 95 successful
+cases, eight intrinsic declaration errors, four explicitly unsupported host
+reflection controls and six uncatchable resource stops. Both strict/sloppy
+continuation pages confirm absent names after rejection, successful later
+redeclaration and an unchanged locked accessor. Private declaration and
+allocation/work/cycle tests also pass under 512 MiB, three-second CPU and
+eight-second wall limits. Static source review found no concrete new defect
+within the changed descriptor, declaration and callback paths. The final
+Clippy predicate simplification produces byte-identical release binaries;
+the reviewer verified both source snapshots and final binary identities.
+
+The complete unchanged functions profile records **501 passed / 620 unsupported /
+eight failed / two resource stops**, with all 48 preflights verified. Only
+`statements/function/13.2-30-s.js:strict` newly passes: its `var self = {}` now
+replaces the browser binding before the intended bound-function checks run.
+The sloppy variant already passed without checking receiver identity; focused
+tests now verify the assignment in both modes. The
+[full comparison report](../tests/conformance/test262-functions-self.json)
+preserves all 1,131 source/harness/mode identities and the exact execution policy,
+with no lost passes. The two original parser stops still prevent a healthy
+functions baseline. No upstream source or assertion helper was modified.
+
+All existing regression gates retain their outcomes: HTML **3,868 matched /
+two mismatched / six unsupported**, String/JSON **536 passed / 116 unsupported**,
+RegExp **250 / 40**, templates **82 / 32**, rest parameters **16 / six**, and
+prototype membership **ten / ten**. Their corpus bytes, policies and baselines
+are unchanged. The **15,000-case** mutation smoke run has zero caught panics
+or invariant failures: 5,000 accepted HTML, 634 accepted/4,366 rejected scripts,
+and 3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and
+display-list size is 1,173 commands; 17 cases stop within paint limits. The new
+accessor-mutation seed changes the inventory, so these acceptance counts are
+not a comparison against the previous run.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+|---|---|
+| `eris-browser` | `76f1325b20285310fcce91f6c55253214f96417a64d6657936b136976b30ad0e` |
+| `eris-js` | `073e46ca2273fb55e458432d2b17c4edac6b6f6110f61a83d79b3eaeb2bc6d8b` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `cf5cd6881ba508b5db736da36c918419989af8ad87edc1644f96bf955ee62133` |
+
+The final source-input digest is
+`5e4cfb6d251433ae56cc1900fd3380dc19e8b759de5bc2a162a45ac3efddcab2`.
+Session logs use `self-final` under `artifacts/`; independent reviewer records
+remain session scratch files. Host own-key/reflection APIs, other initial
+global-property flags, WindowProxy and cross-realm behavior remain incomplete.
+No new native-window or performance measurement is assigned to this increment.
+Full web compatibility, independently audited security and Chromium-relative
+performance remain unverified.
+
 ## Prototype membership
+
+Published checkpoint `9d6aa9e` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36407861216),
+including the new prototype-membership gate and Rust 1.88 compilation.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **720 Rust tests** pass with `--include-ignored`: 582 library,

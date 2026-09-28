@@ -1,0 +1,66 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Replaceable Window self</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#initial{left:0}#replacement{left:50px}#restored{left:100px}#borrowed{left:150px}#lexical{left:200px}#events{left:250px}
+#change{position:absolute;top:60px;left:0}
+</style>
+<div id="initial" class="sample"></div><div id="replacement" class="sample"></div>
+<div id="restored" class="sample"></div><div id="borrowed" class="sample"></div>
+<div id="lexical" class="sample"></div><div id="events" class="sample"></div>
+<button id="change" type="button">Replace self again</button>
+<script>
+'use strict';
+var self;
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color='green'){document.getElementById(id).style.backgroundColor=color;}
+const win=window;
+const originalSelf=Object.getOwnPropertyDescriptor(win,'self');
+check(self===win&&win.self===win,'fresh realm and uninitialized var preserve self');
+check(typeof originalSelf.get==='function'&&typeof originalSelf.set==='function','initial accessor pair');
+check(originalSelf.enumerable&&originalSelf.configurable&&!('value' in originalSelf),'initial accessor flags');
+mark('initial');
+self={phase:'first'};
+const replacedSelf=Object.getOwnPropertyDescriptor(win,'self');
+check(self===win.self&&self.phase==='first'&&globalThis.self===self,'strict bare assignment replaces own property');
+check(replacedSelf.writable&&replacedSelf.enumerable&&replacedSelf.configurable&&!('get' in replacedSelf),'replacement data flags');
+mark('replacement');
+check(delete win.self,'delete replacement');
+check(typeof self==='undefined'&&!('self' in win),'deleted accessor does not resurrect');
+Object.defineProperty(win,'self',originalSelf);
+check(self===win&&Object.getOwnPropertyDescriptor(win,'self').get===originalSelf.get,'restore saved accessor');
+mark('restored');
+check(originalSelf.get.call(null)===win&&originalSelf.get.call(undefined)===win,'borrowed nullish receivers use realm Window');
+let wrongBrand=false;
+try{originalSelf.get.call({});}catch(error){wrongBrand=error instanceof TypeError;}
+check(wrongBrand,'borrowed getter rejects an ordinary object');
+mark('borrowed');
+let windowEvents=0;
+win.addEventListener('eris-self',function(event){
+  check(this===win&&event.target===win,'author replacement cannot change Window event identity');
+  windowEvents++;
+});
+</script>
+<script>
+let self='lexical';
+check(self==='lexical'&&win.self===win,'global lexical name is separate from Window property');
+win.self={phase:'ready'};
+check(self==='lexical'&&win.self.phase==='ready','member replacement preserves lexical shadow');
+mark('lexical');
+win.dispatchEvent(new Event('eris-self'));
+check(windowEvents===1,'saved Window keeps its event target');
+mark('events');document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  check(self==='lexical'&&win.self.phase==='ready','runtime state survives render and same-document navigation');
+  originalSelf.set.call(win,{phase:'clicked'});
+  self='changed lexical';
+  check(self==='changed lexical'&&win.self.phase==='clicked','saved setter and lexical assignment stay independent');
+  win.dispatchEvent(new Event('eris-self'));
+  check(windowEvents===2,'event listener survives replacement');
+  check(originalSelf.get.call(win)===win&&win.document===document,'native accessor and document keep host identity');
+  mark('initial','blue');mark('replacement','blue');mark('restored','blue');
+  mark('borrowed','blue');mark('lexical','blue');mark('events','blue');
+  document.body.className='clicked';
+};
+</script>

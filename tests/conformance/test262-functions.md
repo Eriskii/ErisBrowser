@@ -97,6 +97,28 @@ and a host `self` binding defect; none was filtered or relabeled to improve
 these counts. The separate [method inventory](test262-is-prototype-of.md) adds
 its own complete-directory measurement and assertion preflight.
 
+## Window.self checkpoint
+
+The [complete Window.self report](test262-functions-self.json) records
+**501 passed / 620 unsupported / eight failed / two resource stops**. Correct
+replacement of the host `self` accessor allows the strict variant of
+`statements/function/13.2-30-s.js` to run its existing bound-function assertions.
+Its sloppy variant already passed because the test did not check receiver
+identity; separate runtime regressions verify replacement in both modes.
+
+All 1,131 source/harness/mode identities, the execution policy and 48 verified
+preflights match the prototype checkpoint. One variant newly passes and none
+lose a pass. The eight remaining failures concern Array sorting and escaped
+identifiers; the two parser stops remain. No test source, assertion helper,
+metadata or admission policy was changed, and no healthy functions baseline
+was recorded. [The implementation scope](window-self.md) includes remaining
+Window and global-property limitations.
+
+Release adapter SHA-256:
+`073e46ca2273fb55e458432d2b17c4edac6b6f6110f61a83d79b3eaeb2bc6d8b`.
+Source-input digest:
+`5e4cfb6d251433ae56cc1900fd3380dc19e8b759de5bc2a162a45ac3efddcab2`.
+
 This selection is broader than default-parameter syntax and deliberately keeps
 unrelated function tests. It is not full Test262, Web Platform Tests, or web
 compatibility coverage. The vendored data retains its
