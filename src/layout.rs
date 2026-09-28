@@ -1484,11 +1484,14 @@ impl Engine<'_> {
                 &children,
                 inner_x,
                 inner_y,
-                Size {
+                FlexConstraints {
                     width: inner_width,
-                    height: definite_height
-                        .map(|h| (h - extras).max(0.0))
-                        .unwrap_or(-1.0),
+                    height: definite_height.map(|h| (h - extras).max(0.0)),
+                    min_height: grid_length(style.min_height, height_reference)
+                        .map(|h| extent(h + css_to_border - extras))
+                        .unwrap_or(0.0),
+                    max_height: grid_length(style.max_height, height_reference)
+                        .map(|h| extent(h + css_to_border - extras)),
                 },
                 &style,
                 depth + 1,
@@ -3123,7 +3126,7 @@ impl Engine<'_> {
         children: &[NodeId],
         x: f32,
         y: f32,
-        available: Size,
+        available: FlexConstraints,
         style: &ComputedStyle,
         depth: usize,
     ) -> f32 {
@@ -3138,28 +3141,45 @@ impl Engine<'_> {
         // Stable visual order never changes the DOM or sequential navigation order.
         items.sort_by_key(|id| self.style(*id).order);
         let width = available.width;
-        let height = (available.height >= 0.0).then_some(available.height);
+        let height = available.height;
+        let max_height = available.max_height.map(|h| h.max(available.min_height));
+        let auto_height =
+            |natural: f32| natural.clamp(available.min_height, max_height.unwrap_or(MAX_EXTENT));
         let reverse = style.flex_direction.ends_with("reverse");
         let column = style.flex_direction.starts_with("column");
         let row_gap = extent(grid_length(style.row_gap, height).unwrap_or(0.0));
         let column_gap = extent(grid_length(style.column_gap, Some(width)).unwrap_or(0.0));
         let gap = if column { row_gap } else { column_gap };
+        let single_line = style.flex_wrap == "nowrap";
+        let wrap_reverse = style.flex_wrap == "wrap-reverse";
         if column {
-            let mut prepared = Vec::new();
+            let mut columns = Vec::new();
+            let mut line = Vec::new();
+            let mut used = 0.0;
+            let mut natural_main = 0.0;
+            let line_limit = height.or(max_height);
             for id in items {
+                if !grid_charge(&mut self.flex_work_left, 1) {
+                    break;
+                }
                 let margin = self.margins(id, width);
                 let child = self.style(id);
                 let align = flex_alignment(child, style);
                 let space = (width - margin.horizontal()).max(0.0);
                 let auto_margin = matches!(child.margin.left, Length::Auto)
                     || matches!(child.margin.right, Length::Auto);
-                let child_width =
-                    if align == "stretch" && !auto_margin || !matches!(child.width, Length::Auto) {
-                        self.width_for(id, space, width)
-                    } else {
-                        let (min, max) = self.flex_limits(id, width, width, false);
-                        self.intrinsic_width(id, space).min(space).clamp(min, max)
-                    };
+                let (min, max) = self.flex_limits(id, width, width, false);
+                let child_width = if !matches!(child.width, Length::Auto) {
+                    self.width_for(id, space, width)
+                } else if single_line && align == "stretch" && !auto_margin {
+                    // A nowrap column has a known line width before main sizing.
+                    space.clamp(min, max)
+                } else {
+                    // CSS Flexbox §9.2/9.4: an indefinite auto cross size uses
+                    // fit-content before line widths and stretch are resolved.
+                    let (minimum, preferred) = self.preferred_widths(id, width, depth);
+                    minimum.max(space).min(preferred).clamp(min, max)
+                };
                 let definite_basis = matches!(child.flex_basis, Length::Px(_))
                     || height.is_some() && matches!(child.flex_basis, Length::Percent(_))
                     || matches!(child.height, Length::Px(_))
@@ -3176,72 +3196,125 @@ impl Engine<'_> {
                     true,
                     natural.as_ref().map(|f| f.size.height).unwrap_or(0.0),
                 );
-                prepared.push((id, margin, child_width, metrics, natural));
+                let outer = metrics.hypothetical() + margin.vertical();
+                if !single_line
+                    && !line.is_empty()
+                    && line_limit.is_some_and(|main| used + gap + outer > main)
+                {
+                    columns.push(std::mem::take(&mut line));
+                    used = 0.0;
+                }
+                if !line.is_empty() {
+                    used += gap;
+                }
+                if !line.is_empty() || !columns.is_empty() {
+                    natural_main += gap;
+                }
+                line.push((id, margin, child_width, metrics, natural));
+                used += outer;
+                natural_main += outer;
             }
-            let gaps = gap * prepared.len().saturating_sub(1) as f32;
-            let margins: f32 = prepared.iter().map(|(_, m, _, _, _)| m.vertical()).sum();
-            let main = height.unwrap_or_else(|| {
-                extent(
-                    prepared
-                        .iter()
-                        .map(|(_, _, _, m, _)| m.hypothetical())
-                        .sum::<f32>()
-                        + margins
-                        + gaps,
-                )
-            });
-            let metrics: Vec<_> = prepared.iter().map(|(_, _, _, m, _)| *m).collect();
-            let targets =
-                resolve_flexible_lengths(&metrics, main - margins - gaps, &mut self.flex_work_left);
-            let free = main - margins - gaps - targets.iter().sum::<f32>();
-            let auto_count: usize = prepared
+            if !line.is_empty() {
+                columns.push(line);
+            }
+            // Auto main size still obeys min/max-height. A finite maximum can
+            // break lines, without making percentage bases definite.
+            let main = height.unwrap_or_else(|| auto_height(extent(natural_main)));
+            let mut cross_sizes: Vec<_> = columns
                 .iter()
-                .map(|(id, _, _, _, _)| {
-                    let m = self.style(*id).margin;
-                    usize::from(matches!(m.top, Length::Auto))
-                        + usize::from(matches!(m.bottom, Length::Auto))
+                .map(|line| {
+                    if single_line {
+                        width
+                    } else {
+                        line.iter()
+                            .map(|(_, margin, cross, _, _)| cross + margin.horizontal())
+                            .fold(0.0, f32::max)
+                    }
                 })
-                .sum();
-            let auto_space = if auto_count > 0 {
-                free.max(0.0) / auto_count as f32
-            } else {
-                0.0
-            };
-            let (offset, between) = distribution(
-                &style.justify_content,
-                if auto_count > 0 { free.min(0.0) } else { free },
-                prepared.len(),
+                .collect();
+            let cross_positions = flex_line_positions(
+                &mut cross_sizes,
+                width,
+                column_gap,
+                single_line,
+                wrap_reverse,
+                &style.align_content,
             );
-            let mut cursor = offset;
-            for ((id, mut margin, child_width, _, natural), target) in
-                prepared.into_iter().zip(targets)
+            for ((line, line_width), line_x) in
+                columns.into_iter().zip(cross_sizes).zip(cross_positions)
             {
-                let child = self.style(id);
-                if matches!(child.margin.top, Length::Auto) {
-                    margin.top = auto_space;
-                }
-                if matches!(child.margin.bottom, Length::Auto) {
-                    margin.bottom = auto_space;
-                }
-                let align = flex_alignment(child, style);
-                let cross = width - child_width - margin.horizontal();
-                let dx = cross_offset(
-                    align,
-                    cross,
-                    matches!(child.margin.left, Length::Auto),
-                    matches!(child.margin.right, Length::Auto),
+                let gaps = gap * line.len().saturating_sub(1) as f32;
+                let margins: f32 = line.iter().map(|(_, m, _, _, _)| m.vertical()).sum();
+                let metrics: Vec<_> = line.iter().map(|(_, _, _, m, _)| *m).collect();
+                let targets = resolve_flexible_lengths(
+                    &metrics,
+                    main - margins - gaps,
+                    &mut self.flex_work_left,
                 );
-                let main_pos = if reverse {
-                    main - cursor - margin.bottom - target
+                let free = main - margins - gaps - targets.iter().sum::<f32>();
+                let auto_count: usize = line
+                    .iter()
+                    .map(|(id, _, _, _, _)| {
+                        let m = self.style(*id).margin;
+                        usize::from(matches!(m.top, Length::Auto))
+                            + usize::from(matches!(m.bottom, Length::Auto))
+                    })
+                    .sum();
+                let auto_space = if auto_count > 0 {
+                    free.max(0.0) / auto_count as f32
                 } else {
-                    cursor + margin.top
+                    0.0
                 };
-                let fragment = match natural {
-                    Some(fragment) if (fragment.size.height - target).abs() < 0.001 => fragment,
-                    _ => self.fragment_sized(id, width, child_width, Some(target), depth),
-                };
-                self.append_fragment(fragment, x + margin.left + dx, y + main_pos);
-                cursor += target + margin.vertical() + gap + between;
+                let (offset, between) = distribution(
+                    &style.justify_content,
+                    if auto_count > 0 { free.min(0.0) } else { free },
+                    line.len(),
+                );
+                let mut cursor = offset;
+                for ((id, mut margin, mut child_width, _, natural), target) in
+                    line.into_iter().zip(targets)
+                {
+                    let child = self.style(id);
+                    if matches!(child.margin.top, Length::Auto) {
+                        margin.top = auto_space;
+                    }
+                    if matches!(child.margin.bottom, Length::Auto) {
+                        margin.bottom = auto_space;
+                    }
+                    let align = flex_alignment(child, style);
+                    let auto_left = matches!(child.margin.left, Length::Auto);
+                    let auto_right = matches!(child.margin.right, Length::Auto);
+                    if align == "stretch"
+                        && matches!(child.width, Length::Auto)
+                        && !auto_left
+                        && !auto_right
+                    {
+                        let (min, max) = self.flex_limits(id, width, width, false);
+                        child_width = (line_width - margin.horizontal()).clamp(min, max);
+                    }
+                    let dx = cross_offset(
+                        flex_cross_alignment(align, wrap_reverse),
+                        line_width - child_width - margin.horizontal(),
+                        auto_left,
+                        auto_right,
+                    );
+                    let main_pos = if reverse {
+                        main - cursor - margin.bottom - target
+                    } else {
+                        cursor + margin.top
+                    };
+                    let fragment = match natural {
+                        Some(fragment)
+                            if (fragment.size.height - target).abs() < 0.001
+                                && (fragment.size.width - child_width).abs() < 0.001 =>
+                        {
+                            fragment
+                        }
+                        _ => self.fragment_sized(id, width, child_width, Some(target), depth),
+                    };
+                    self.append_fragment(fragment, x + line_x + margin.left + dx, y + main_pos);
+                    cursor += target + margin.vertical() + gap + between;
+                }
             }
             return main;
         }
@@ -3249,6 +3322,9 @@ impl Engine<'_> {
         let mut row = Vec::new();
         let mut used = 0.0;
         for id in items {
+            if !grid_charge(&mut self.flex_work_left, 1) {
+                break;
+            }
             let metrics = self.flex_metrics(
                 id,
                 width,
@@ -3271,7 +3347,6 @@ impl Engine<'_> {
         if !row.is_empty() {
             rows.push(row);
         }
-        let single_line = style.flex_wrap == "nowrap";
         let mut laid_out = Vec::new();
         for row in rows {
             let gaps = gap * row.len().saturating_sub(1) as f32;
@@ -3313,14 +3388,19 @@ impl Engine<'_> {
             laid_out.iter().map(|(height, _)| *height).sum::<f32>()
                 + row_gap * laid_out.len().saturating_sub(1) as f32,
         );
-        let cross_size = height.unwrap_or(natural_height);
-        let mut cross_cursor = 0.0;
-        for (row_height, fragments) in laid_out {
-            let row_y = if style.flex_wrap == "wrap-reverse" {
-                cross_size - cross_cursor - row_height
-            } else {
-                cross_cursor
-            };
+        let cross_size = height.unwrap_or_else(|| auto_height(natural_height));
+        let mut cross_sizes: Vec<_> = laid_out.iter().map(|(height, _)| *height).collect();
+        let cross_positions = flex_line_positions(
+            &mut cross_sizes,
+            cross_size,
+            row_gap,
+            single_line,
+            wrap_reverse,
+            &style.align_content,
+        );
+        for (((_, fragments), row_height), row_y) in
+            laid_out.into_iter().zip(cross_sizes).zip(cross_positions)
+        {
             let free = width
                 - fragments
                     .iter()
@@ -3376,14 +3456,7 @@ impl Engine<'_> {
                     }
                 }
                 let child = self.style(id);
-                let mut align = flex_alignment(child, style);
-                if style.flex_wrap == "wrap-reverse" {
-                    align = match align {
-                        "flex-start" | "stretch" | "normal" => "flex-end",
-                        "flex-end" => "flex-start",
-                        _ => align,
-                    };
-                }
+                let align = flex_cross_alignment(flex_alignment(child, style), wrap_reverse);
                 let dy = cross_offset(
                     align,
                     row_height - fragment.size.height - margin.vertical(),
@@ -3399,7 +3472,6 @@ impl Engine<'_> {
                 self.append_fragment(fragment, x + main_pos, y + row_y + margin.top + dy);
                 cursor += advance;
             }
-            cross_cursor += row_height + row_gap;
         }
         natural_height
     }
@@ -4229,6 +4301,14 @@ fn collapsed_margin(previous: f32, next: f32) -> f32 {
 }
 
 #[derive(Clone, Copy)]
+struct FlexConstraints {
+    width: f32,
+    height: Option<f32>,
+    min_height: f32,
+    max_height: Option<f32>,
+}
+
+#[derive(Clone, Copy)]
 struct FlexSize {
     base: f32,
     inner: f32,
@@ -4344,6 +4424,78 @@ fn flex_alignment<'a>(child: &'a ComputedStyle, parent: &'a ComputedStyle) -> &'
         child.align_self.as_str()
     };
     if align == "normal" { "stretch" } else { align }
+}
+
+fn flex_cross_alignment(align: &str, reverse: bool) -> &str {
+    if reverse {
+        match align {
+            "flex-start" | "stretch" | "normal" => "flex-end",
+            "flex-end" => "flex-start",
+            _ => align,
+        }
+    } else {
+        align
+    }
+}
+
+/// CSS Flexbox §9.4/9.6: size and align complete lines before aligning items.
+/// Positions are measured from the physical top/left; wrap-reverse reverses
+/// cross-start without reversing source order or changing physical start/end.
+fn flex_line_positions(
+    sizes: &mut [f32],
+    available: f32,
+    gap: f32,
+    single_line: bool,
+    reverse: bool,
+    align: &str,
+) -> Vec<f32> {
+    if sizes.is_empty() {
+        return Vec::new();
+    }
+    if single_line {
+        sizes[0] = available;
+        return vec![0.0];
+    }
+    let free = available - sizes.iter().sum::<f32>() - gap * sizes.len().saturating_sub(1) as f32;
+    let (safe, align) = if let Some(value) = align.strip_prefix("safe ") {
+        (true, value)
+    } else {
+        (false, align.strip_prefix("unsafe ").unwrap_or(align))
+    };
+    let (offset, between) = if safe && free < 0.0 {
+        (if reverse { free } else { 0.0 }, 0.0)
+    } else {
+        match align {
+            "normal" | "stretch" if free > 0.0 => {
+                let extra = free / sizes.len() as f32;
+                for size in sizes.iter_mut() {
+                    *size += extra;
+                }
+                (0.0, 0.0)
+            }
+            "start" if reverse => (free, 0.0),
+            "end" if reverse => (0.0, 0.0),
+            "space-between" | "space-around" | "space-evenly" if free < 0.0 => {
+                // Distributed alignment falls back to a safe positional value:
+                // overflow stays at the logical (top/left) start edge.
+                (if reverse { free } else { 0.0 }, 0.0)
+            }
+            _ => distribution(align, free, sizes.len()),
+        }
+    };
+    let mut cursor = offset;
+    sizes
+        .iter()
+        .map(|size| {
+            let position = if reverse {
+                available - cursor - size
+            } else {
+                cursor
+            };
+            cursor += size + gap + between;
+            position
+        })
+        .collect()
 }
 
 fn cross_offset(align: &str, free: f32, start_auto: bool, end_auto: bool) -> f32 {
@@ -5412,6 +5564,260 @@ mod tests {
         assert_eq!(bounds(&doc, &result, "#a").width, 80.0);
         assert_eq!(bounds(&doc, &result, "#b").y, 30.0);
         assert_eq!(bounds(&doc, &result, "#d").x, 160.0);
+    }
+
+    #[test]
+    fn flex_column_wrap_and_both_reverse_axes_keep_independent_gaps() {
+        for (direction, wrap, expected) in [
+            ("column", "wrap", [(0.0, 0.0), (0.0, 50.0), (70.0, 0.0)]),
+            (
+                "column-reverse",
+                "wrap",
+                [(0.0, 60.0), (0.0, 10.0), (70.0, 60.0)],
+            ),
+            (
+                "column",
+                "wrap-reverse",
+                [(170.0, 0.0), (150.0, 50.0), (100.0, 0.0)],
+            ),
+            (
+                "column-reverse",
+                "wrap-reverse",
+                [(170.0, 60.0), (150.0, 10.0), (100.0, 60.0)],
+            ),
+        ] {
+            let (doc, result) = render(
+                &format!(
+                    "<style>body{{margin:0}}main{{display:flex;flex-direction:{direction};flex-wrap:{wrap};width:200px;height:100px;gap:10px 20px;align-content:flex-start;align-items:flex-start}}i{{width:30px;height:40px}}#b{{width:50px}}</style><main><i id=a></i><i id=b></i><i id=c></i></main>"
+                ),
+                400.0,
+            );
+            for (id, position) in ["#a", "#b", "#c"].into_iter().zip(expected) {
+                let item = bounds(&doc, &result, id);
+                assert_eq!((item.x, item.y), position, "{direction} {wrap} {id}");
+            }
+        }
+    }
+
+    #[test]
+    fn flex_column_lines_resolve_freezing_and_auto_margins_independently() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:flex;flex-direction:column;flex-wrap:wrap;width:160px;height:100px;gap:10px 20px;align-content:flex-start}i{width:40px;flex:1 1 40px;min-height:0}#a{max-height:42px}section{display:flex;flex-direction:column;flex-wrap:wrap;width:120px;height:100px;gap:10px 20px;align-content:flex-start}b{width:40px;height:30px;margin-top:auto}</style><main><i id=a></i><i id=b></i><i id=c></i><i id=d></i></main><section><b id=e></b><b id=f></b><b id=g></b></section>",
+            400.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a"), rect(0.0, 0.0, 40.0, 42.0));
+        assert_eq!(bounds(&doc, &result, "#b"), rect(0.0, 52.0, 40.0, 48.0));
+        assert_eq!(bounds(&doc, &result, "#c"), rect(60.0, 0.0, 40.0, 45.0));
+        assert_eq!(bounds(&doc, &result, "#d"), rect(60.0, 55.0, 40.0, 45.0));
+        assert_eq!(bounds(&doc, &result, "#e"), rect(0.0, 115.0, 40.0, 30.0));
+        assert_eq!(bounds(&doc, &result, "#f"), rect(0.0, 170.0, 40.0, 30.0));
+        assert_eq!(bounds(&doc, &result, "#g"), rect(60.0, 170.0, 40.0, 30.0));
+    }
+
+    #[test]
+    fn flex_column_indefinite_height_uses_content_and_does_not_wrap_at_viewport() {
+        for direction in ["column", "column-reverse"] {
+            let (doc, result) = render(
+                &format!(
+                    "<style>body{{margin:0}}main{{display:flex;flex-direction:{direction};flex-wrap:wrap;width:100px;row-gap:10%;align-content:flex-start}}i{{flex-basis:50%;width:20px}}b{{display:block;height:250px}}</style><main id=main><i id=a><b></b></i><i id=b><b></b></i></main>"
+                ),
+                200.0,
+            );
+            let a = bounds(&doc, &result, "#a");
+            let b = bounds(&doc, &result, "#b");
+            assert_eq!(bounds(&doc, &result, "#main").height, 500.0);
+            assert_eq!((a.x, b.x, a.height, b.height), (0.0, 0.0, 250.0, 250.0));
+            assert_eq!(
+                (a.y, b.y),
+                if direction == "column" {
+                    (0.0, 250.0)
+                } else {
+                    (250.0, 0.0)
+                }
+            );
+        }
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:flex;flex-direction:column;flex-wrap:wrap;width:100px;height:100px;row-gap:10%;column-gap:20%;align-content:flex-start}i{flex-basis:50%;width:20px}</style><main><i id=a></i><i id=b></i></main>",
+            200.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a"), rect(0.0, 0.0, 20.0, 50.0));
+        assert_eq!(bounds(&doc, &result, "#b"), rect(40.0, 0.0, 20.0, 50.0));
+    }
+
+    #[test]
+    fn flex_column_max_height_limits_lines_without_resolving_percentage_bases() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:flex;flex-direction:column;flex-wrap:wrap;width:120px;max-height:124px;padding:10px;border:2px solid red;box-sizing:border-box;gap:10px;align-content:flex-start}i{flex:0 1 50%;width:20px}b{display:block;height:40px}</style><main id=main><i id=a><b></b></i><i id=b><b></b></i><i id=c><b></b></i></main>",
+            200.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#main"), rect(0.0, 0.0, 120.0, 124.0));
+        assert_eq!(bounds(&doc, &result, "#a"), rect(12.0, 12.0, 20.0, 40.0));
+        assert_eq!(bounds(&doc, &result, "#b"), rect(12.0, 62.0, 20.0, 40.0));
+        assert_eq!(bounds(&doc, &result, "#c"), rect(42.0, 12.0, 20.0, 40.0));
+    }
+
+    #[test]
+    fn flex_min_height_distributes_main_space_and_stretches_wrapped_cross_lines() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:flex;flex-direction:column;flex-wrap:wrap;width:100px;min-height:100px;max-height:50px;justify-content:space-between;align-content:flex-start}i{width:20px;flex-basis:50%}b{display:block;height:20px}section{display:flex;flex-wrap:wrap;width:40px;min-height:100px;row-gap:10px;align-items:flex-start}section i{width:30px;flex-basis:auto;height:10px}#d{height:20px}</style><main id=main><i id=a><b></b></i><i id=b><b></b></i></main><section><i id=c></i><i id=d></i></section>",
+            200.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#main").height, 100.0);
+        assert_eq!(bounds(&doc, &result, "#a"), rect(0.0, 0.0, 20.0, 20.0));
+        assert_eq!(bounds(&doc, &result, "#b"), rect(0.0, 80.0, 20.0, 20.0));
+        assert_eq!(bounds(&doc, &result, "#c"), rect(0.0, 100.0, 30.0, 10.0));
+        assert_eq!(bounds(&doc, &result, "#d"), rect(0.0, 150.0, 30.0, 20.0));
+    }
+
+    #[test]
+    fn flex_align_content_distributes_and_stretches_lines_on_both_axes() {
+        for (align, forward, reversed) in [
+            ("flex-start", [0.0, 20.0], [90.0, 60.0]),
+            ("flex-end", [60.0, 80.0], [30.0, 0.0]),
+            ("start", [0.0, 20.0], [30.0, 0.0]),
+            ("end", [60.0, 80.0], [90.0, 60.0]),
+            ("center", [30.0, 50.0], [60.0, 30.0]),
+            ("space-between", [0.0, 80.0], [90.0, 0.0]),
+            ("space-around", [15.0, 65.0], [75.0, 15.0]),
+            ("space-evenly", [20.0, 60.0], [70.0, 20.0]),
+            ("normal", [0.0, 50.0], [90.0, 30.0]),
+            ("stretch", [0.0, 50.0], [90.0, 30.0]),
+        ] {
+            for column in [false, true] {
+                let (direction, container, item, second) = if column {
+                    (
+                        "column",
+                        "width:100px;height:45px;column-gap:10px",
+                        "height:30px;width:10px",
+                        "width:20px",
+                    )
+                } else {
+                    (
+                        "row",
+                        "width:45px;height:100px;row-gap:10px",
+                        "width:30px;height:10px",
+                        "height:20px",
+                    )
+                };
+                for (wrap, expected) in [("wrap", forward), ("wrap-reverse", reversed)] {
+                    let (doc, result) = render(
+                        &format!(
+                            "<style>body{{margin:0}}main{{display:flex;flex-direction:{direction};flex-wrap:{wrap};{container};align-items:flex-start;align-content:{align}}}i{{{item}}}#b{{{second}}}</style><main><i id=a></i><i id=b></i></main>"
+                        ),
+                        200.0,
+                    );
+                    for (id, position) in ["#a", "#b"].into_iter().zip(expected) {
+                        let item = bounds(&doc, &result, id);
+                        assert_eq!(
+                            if column { item.x } else { item.y },
+                            position,
+                            "{direction} {wrap} {align} {id}"
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn flex_align_content_overflow_uses_positional_or_safe_distribution_fallbacks() {
+        for (align, forward, reversed) in [
+            ("flex-start", [0.0, 50.0], [20.0, -40.0]),
+            ("flex-end", [-40.0, 10.0], [60.0, 0.0]),
+            ("center", [-20.0, 30.0], [40.0, -20.0]),
+            ("unsafe center", [-20.0, 30.0], [40.0, -20.0]),
+            ("safe center", [0.0, 50.0], [60.0, 0.0]),
+            ("safe flex-end", [0.0, 50.0], [60.0, 0.0]),
+            ("space-between", [0.0, 50.0], [60.0, 0.0]),
+            ("space-around", [0.0, 50.0], [60.0, 0.0]),
+            ("space-evenly", [0.0, 50.0], [60.0, 0.0]),
+            ("stretch", [0.0, 50.0], [20.0, -40.0]),
+        ] {
+            for (wrap, expected) in [("wrap", forward), ("wrap-reverse", reversed)] {
+                let (doc, result) = render(
+                    &format!(
+                        "<style>body{{margin:0}}main{{display:flex;flex-wrap:{wrap};width:40px;height:60px;margin-top:100px;row-gap:10px;align-content:{align}}}i{{width:30px;height:40px}}#b{{height:50px}}</style><main><i id=a></i><i id=b></i></main>"
+                    ),
+                    200.0,
+                );
+                assert_eq!(
+                    bounds(&doc, &result, "#a").y,
+                    100.0 + expected[0],
+                    "{wrap} {align} a"
+                );
+                assert_eq!(
+                    bounds(&doc, &result, "#b").y,
+                    100.0 + expected[1],
+                    "{wrap} {align} b"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn flex_column_line_stretch_honors_box_constraints_and_cross_auto_margins() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:flex;flex-direction:column;flex-wrap:wrap;width:200px;height:100px;gap:10px 20px}i{height:40px;padding:5px;border:2px solid red;box-sizing:border-box}b{display:block;width:26px;height:10px}#a{max-width:64px}#b{width:40px;margin-left:auto}#c b{width:46px}</style><main><i id=a><b></b></i><i id=b><b></b></i><i id=c><b></b></i></main>",
+            400.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a"), rect(0.0, 0.0, 64.0, 40.0));
+        assert_eq!(bounds(&doc, &result, "#b"), rect(40.0, 50.0, 40.0, 40.0));
+        assert_eq!(bounds(&doc, &result, "#c"), rect(100.0, 0.0, 100.0, 40.0));
+    }
+
+    #[test]
+    fn flex_align_content_applies_to_one_wrapped_line_but_not_nowrap() {
+        for (wrap, expected) in [("wrap", 40.0), ("nowrap", 0.0)] {
+            let (doc, result) = render(
+                &format!(
+                    "<style>body{{margin:0}}main{{display:flex;flex-wrap:{wrap};width:100px;height:100px;align-content:center;align-items:flex-start}}i{{width:30px;height:20px}}</style><main><i id=a></i></main>"
+                ),
+                200.0,
+            );
+            assert_eq!(bounds(&doc, &result, "#a").y, expected);
+        }
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:flex;flex-wrap:wrap;width:40px;height:100px;row-gap:10px}i{width:30px}#a{min-height:10px}#b{min-height:20px;max-height:40px}</style><main><i id=a></i><i id=b></i></main>",
+            200.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a"), rect(0.0, 0.0, 30.0, 40.0));
+        assert_eq!(bounds(&doc, &result, "#b"), rect(0.0, 50.0, 30.0, 40.0));
+    }
+
+    #[test]
+    fn flex_column_wrapping_command_exhaustion_keeps_clips_balanced_and_geometry_finite() {
+        let source = format!(
+            "<style>body{{margin:0}}main{{display:flex;flex-direction:column;flex-wrap:wrap-reverse;width:100px;height:2px}}i{{display:block;width:2px;height:1px;overflow:hidden;background:red}}</style><main>{}</main>",
+            "<i></i>".repeat(35_000)
+        );
+        let (doc, result) = render(&source, 200.0);
+        let painted = result
+            .hit_regions
+            .iter()
+            .filter(|hit| doc.tag(hit.node) == Some("i"))
+            .count();
+        assert!(
+            (1..35_000).contains(&painted),
+            "expected actual quota truncation: {painted}"
+        );
+        assert!(result.commands.len() <= MAX_COMMANDS);
+        let mut open = 0;
+        for command in &result.commands {
+            match command {
+                DrawCommand::PushClip { .. } => open += 1,
+                DrawCommand::PopClip => {
+                    assert!(open > 0);
+                    open -= 1;
+                }
+                _ => {}
+            }
+        }
+        assert_eq!(open, 0);
+        assert!(result.hit_regions.iter().all(|hit| {
+            [hit.rect.x, hit.rect.y, hit.rect.width, hit.rect.height]
+                .iter()
+                .all(|value| value.is_finite())
+        }));
     }
 
     #[test]

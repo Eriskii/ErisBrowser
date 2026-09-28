@@ -36,7 +36,8 @@ def main():
     for name, address in [('home', 'eris:home'), ('gallery', 'examples/gallery.html'),
                           ('forms', 'examples/forms.html'), ('templates', 'examples/templates.html'),
                           ('positioning', 'examples/positioning.html'), ('events', 'examples/events.html'),
-                          ('events-visible', (ROOT / 'examples/events.html').as_uri() + '#panel')]:
+                          ('events-visible', (ROOT / 'examples/events.html').as_uri() + '#panel'),
+                          ('responsive', 'examples/responsive.html')]:
         command = [str(args.binary.resolve()), address, '--benchmark', str(args.iterations),
                    '--width', '1180', '--height', '880', '--output', str(output.parent / f'benchmark-{name}.png')]
         result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=180)

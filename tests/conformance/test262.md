@@ -119,13 +119,14 @@ added both variants of the existing JSON RegExp-object case. The recorded
 baseline gate has zero regressions. CI runs it after building the release
 adapter.
 
-The three remaining previously failing sources require template interpolation
-or dynamic eval; both variants of each remain explicitly unsupported. Other
-unsupported outcomes retain their declared-feature or interpreter reasons,
+Unsupported outcomes retain their declared-feature or interpreter reasons,
 including Reflect, Proxy, Symbol, BigInt, complete JSON source-context semantics,
-dynamic Function construction and array descriptor mutation. A separate
+computed object keys, dynamic eval/Function construction and array descriptor mutation. A separate
 [RegExp prototype selection](test262-regexp.md) adds its own unchanged corpus,
-mode inventory, report and baseline without replacing this selection.
+mode inventory, report and baseline without replacing this selection. The separate
+[template literal selection](test262-template-literal.md) likewise retains every
+source in its pinned language directory, including tagged-template cases that
+remain unsupported.
 
 Strict code retains exact raw directives, inherits strictness lexically, checks
 restricted bindings/assignments and duplicate simple parameters, rejects legacy

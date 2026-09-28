@@ -265,6 +265,7 @@ enum TokenKind {
     String(JsString),
     Symbol(String),
     RegExp(Rc<RegExp>),
+    TemplateStart,
     Invalid(ScriptError),
     End,
 }
@@ -276,6 +277,166 @@ struct Token {
     string_literal: bool,
     use_strict: bool,
     legacy_literal: bool,
+}
+
+// Scan one quoted string or cooked template component. The delimiter at
+// `start` is an opening quote/backtick or the substitution-closing brace.
+fn quoted_text(
+    source: &str,
+    start: usize,
+    quote: char,
+    mut budget: Option<&mut regexp::Budget>,
+) -> Result<(JsString, usize, bool, bool)> {
+    let mut pos = start + 1;
+    let mut legacy_literal = false;
+    let mut interpolation = false;
+    let mut value = Vec::<u16>::new();
+    let mut closed = false;
+    while pos < source.len() {
+        if let Some(budget) = budget.as_deref_mut() {
+            budget.work(1).map_err(regexp_error)?;
+            budget.allocated = budget.allocated.saturating_add(8);
+            if budget.allocated > MAX_HEAP {
+                return Err(ScriptError::resource("template storage limit exceeded"));
+            }
+        }
+        if value.len() > MAX_STRING {
+            return Err(ScriptError::resource("script string limit exceeded"));
+        }
+        let c = source[pos..].chars().next().unwrap();
+        pos += c.len_utf8();
+        if c == quote {
+            closed = true;
+            break;
+        }
+        if quote == '`' && c == '$' && source[pos..].starts_with('{') {
+            pos += 1;
+            interpolation = true;
+            break;
+        }
+        if c == '\\' {
+            let e = source[pos..]
+                .chars()
+                .next()
+                .ok_or_else(|| ScriptError::at("unterminated escape", pos))?;
+            pos += e.len_utf8();
+            match e {
+                'n' => value.push(10),
+                'r' => value.push(13),
+                't' => value.push(9),
+                'b' => value.push(8),
+                'f' => value.push(12),
+                'v' => value.push(11),
+                '0'..='7' => {
+                    let mut n = e as u16 - '0' as u16;
+                    let mut count = 1;
+                    while count < if e <= '3' { 3 } else { 2 }
+                        && source
+                            .as_bytes()
+                            .get(pos)
+                            .is_some_and(|b| (b'0'..=b'7').contains(b))
+                    {
+                        n = n * 8 + u16::from(source.as_bytes()[pos] - b'0');
+                        pos += 1;
+                        count += 1;
+                    }
+                    legacy_literal |= e != '0'
+                        || count > 1
+                        || source.as_bytes().get(pos).is_some_and(u8::is_ascii_digit);
+                    value.push(n);
+                }
+                '8' | '9' => {
+                    legacy_literal = true;
+                    value.push(e as u16);
+                }
+                '\n' | '\u{2028}' | '\u{2029}' => {}
+                '\r' => {
+                    if source.as_bytes().get(pos) == Some(&b'\n') {
+                        pos += 1;
+                    }
+                }
+                'u' | 'x' => {
+                    if e == 'u' && source.as_bytes().get(pos) == Some(&b'{') {
+                        pos += 1;
+                        let start = pos;
+                        while source
+                            .as_bytes()
+                            .get(pos)
+                            .is_some_and(u8::is_ascii_hexdigit)
+                        {
+                            pos += 1;
+                        }
+                        if start == pos || source.as_bytes().get(pos) != Some(&b'}') {
+                            return Err(ScriptError::at(
+                                "invalid Unicode code point escape",
+                                start,
+                            ));
+                        }
+                        let point = u32::from_str_radix(&source[start..pos], 16).map_err(|_| {
+                            ScriptError::at("invalid Unicode code point escape", start)
+                        })?;
+                        if point > 0x10ffff {
+                            return Err(ScriptError::at("Unicode code point exceeds range", start));
+                        }
+                        if point <= 0xffff {
+                            value.push(point as u16);
+                        } else {
+                            let point = point - 0x10000;
+                            value.push(0xd800 + (point >> 10) as u16);
+                            value.push(0xdc00 + (point & 0x3ff) as u16);
+                        }
+                        pos += 1;
+                        continue;
+                    }
+                    let len = if e == 'u' { 4 } else { 2 };
+                    let end = pos
+                        .checked_add(len)
+                        .filter(|end| *end <= source.len())
+                        .ok_or_else(|| ScriptError::at("incomplete character escape", pos))?;
+                    let hex = source
+                        .get(pos..end)
+                        .ok_or_else(|| ScriptError::at("invalid character escape", pos))?;
+                    if !hex.bytes().all(|byte| byte.is_ascii_hexdigit()) {
+                        return Err(ScriptError::at("invalid character escape", pos));
+                    }
+                    let n = u32::from_str_radix(hex, 16)
+                        .map_err(|_| ScriptError::at("invalid character escape", pos))?;
+                    value.push(n as u16);
+                    pos = end;
+                }
+                _ => {
+                    let mut units = [0; 2];
+                    value.extend_from_slice(e.encode_utf16(&mut units));
+                }
+            }
+        } else {
+            if matches!(c, '\n' | '\r') && quote != '`' {
+                return Err(ScriptError::at("newline in string", pos));
+            }
+            if quote == '`' && c == '\r' {
+                if source.as_bytes().get(pos) == Some(&b'\n') {
+                    pos += 1;
+                }
+                value.push(10);
+            } else {
+                let mut units = [0; 2];
+                value.extend_from_slice(c.encode_utf16(&mut units));
+            }
+        }
+    }
+    if !closed && !interpolation {
+        return Err(ScriptError::at("unterminated string", start));
+    }
+    if quote == '`' && legacy_literal {
+        return Err(ScriptError::at(
+            "legacy escapes are forbidden in template literals",
+            start,
+        ));
+    }
+    if let Some(budget) = budget {
+        budget.work((pos - start) / 8 + 1).map_err(regexp_error)?;
+    }
+    Ok((JsString::from(value), pos, legacy_literal, interpolation))
 }
 
 fn lex(source: &str) -> Result<Vec<Token>> {
@@ -313,146 +474,17 @@ fn lex(source: &str) -> Result<Vec<Token>> {
             }
             let start = pos;
             let mut legacy_literal = false;
-            let kind = if ch == '\'' || ch == '"' || ch == '`' {
-                let quote = ch;
+            let kind = if ch == '`' {
+                // A parser-selected lexical goal resumes after this marker.
+                // Provisional division-goal scanning must not guess where an
+                // interpolated expression or its following template text ends.
                 pos += 1;
-                let mut value = Vec::<u16>::new();
-                let mut closed = false;
-                while pos < source.len() {
-                    let c = source[pos..].chars().next().unwrap();
-                    pos += c.len_utf8();
-                    if c == quote {
-                        closed = true;
-                        break;
-                    }
-                    if quote == '`' && c == '$' && source[pos..].starts_with('{') {
-                        return Err(ScriptError::unsupported(
-                            "template interpolation is not implemented",
-                        ));
-                    }
-                    if c == '\\' {
-                        let e = source[pos..]
-                            .chars()
-                            .next()
-                            .ok_or_else(|| ScriptError::at("unterminated escape", pos))?;
-                        pos += e.len_utf8();
-                        match e {
-                            'n' => value.push(10),
-                            'r' => value.push(13),
-                            't' => value.push(9),
-                            'b' => value.push(8),
-                            'f' => value.push(12),
-                            'v' => value.push(11),
-                            '0'..='7' => {
-                                let mut n = e as u16 - '0' as u16;
-                                let mut count = 1;
-                                while count < if e <= '3' { 3 } else { 2 }
-                                    && source
-                                        .as_bytes()
-                                        .get(pos)
-                                        .is_some_and(|b| (b'0'..=b'7').contains(b))
-                                {
-                                    n = n * 8 + u16::from(source.as_bytes()[pos] - b'0');
-                                    pos += 1;
-                                    count += 1;
-                                }
-                                legacy_literal |= e != '0'
-                                    || count > 1
-                                    || source.as_bytes().get(pos).is_some_and(u8::is_ascii_digit);
-                                value.push(n);
-                            }
-                            '8' | '9' => {
-                                legacy_literal = true;
-                                value.push(e as u16);
-                            }
-                            '\n' | '\u{2028}' | '\u{2029}' => {}
-                            '\r' => {
-                                if source.as_bytes().get(pos) == Some(&b'\n') {
-                                    pos += 1;
-                                }
-                            }
-                            'u' | 'x' => {
-                                if e == 'u' && source.as_bytes().get(pos) == Some(&b'{') {
-                                    pos += 1;
-                                    let start = pos;
-                                    while source
-                                        .as_bytes()
-                                        .get(pos)
-                                        .is_some_and(u8::is_ascii_hexdigit)
-                                    {
-                                        pos += 1;
-                                    }
-                                    if start == pos
-                                        || pos - start > 6
-                                        || source.as_bytes().get(pos) != Some(&b'}')
-                                    {
-                                        return Err(ScriptError::at(
-                                            "invalid Unicode code point escape",
-                                            start,
-                                        ));
-                                    }
-                                    let point = u32::from_str_radix(&source[start..pos], 16)
-                                        .map_err(|_| {
-                                            ScriptError::at(
-                                                "invalid Unicode code point escape",
-                                                start,
-                                            )
-                                        })?;
-                                    if point > 0x10ffff {
-                                        return Err(ScriptError::at(
-                                            "Unicode code point exceeds range",
-                                            start,
-                                        ));
-                                    }
-                                    if point <= 0xffff {
-                                        value.push(point as u16);
-                                    } else {
-                                        let point = point - 0x10000;
-                                        value.push(0xd800 + (point >> 10) as u16);
-                                        value.push(0xdc00 + (point & 0x3ff) as u16);
-                                    }
-                                    pos += 1;
-                                    continue;
-                                }
-                                let len = if e == 'u' { 4 } else { 2 };
-                                let end = pos
-                                    .checked_add(len)
-                                    .filter(|end| *end <= source.len())
-                                    .ok_or_else(|| {
-                                    ScriptError::at("incomplete character escape", pos)
-                                })?;
-                                let hex = source.get(pos..end).ok_or_else(|| {
-                                    ScriptError::at("invalid character escape", pos)
-                                })?;
-                                let n = u32::from_str_radix(hex, 16).map_err(|_| {
-                                    ScriptError::at("invalid character escape", pos)
-                                })?;
-                                value.push(n as u16);
-                                pos = end;
-                            }
-                            _ => {
-                                let mut units = [0; 2];
-                                value.extend_from_slice(e.encode_utf16(&mut units));
-                            }
-                        }
-                    } else {
-                        if matches!(c, '\n' | '\r') && quote != '`' {
-                            return Err(ScriptError::at("newline in string", pos));
-                        }
-                        let mut units = [0; 2];
-                        value.extend_from_slice(c.encode_utf16(&mut units));
-                    }
-                }
-                if !closed {
-                    return Err(ScriptError::at("unterminated string", start));
-                }
-                if quote == '`' && legacy_literal {
-                    return Err(ScriptError::at(
-                        "legacy escapes are forbidden in template literals",
-                        start,
-                    ));
-                }
-                TokenKind::String(JsString::from(value))
+                TokenKind::TemplateStart
+            } else if ch == '\'' || ch == '"' {
+                let (value, end, legacy, _) = quoted_text(source, start, ch, None)?;
+                pos = end;
+                legacy_literal = legacy;
+                TokenKind::String(value)
             } else if ch.is_ascii_digit()
                 || (ch == '.'
                     && source
@@ -542,6 +574,9 @@ fn lex(source: &str) -> Result<Vec<Token>> {
                 legacy_literal,
             });
             line_break_before = false;
+            if ch == '`' {
+                break;
+            }
             if tokens.len() > MAX_TOKENS {
                 return Err(ScriptError::resource("script token limit exceeded"));
             }
@@ -602,6 +637,7 @@ enum Expr {
     New(Box<Expr>, Vec<Expr>),
     Function(FunctionCode),
     Sequence(Vec<Expr>),
+    Template(JsString, Vec<(Expr, JsString)>),
 }
 #[derive(Clone, Debug)]
 enum ObjectEntry {
@@ -1614,6 +1650,10 @@ impl Parser {
                     }
                 }
                 value = Expr::Call(Box::new(value), arguments);
+            } else if matches!(self.tokens[self.pos].kind, TokenKind::TemplateStart) {
+                return Err(ScriptError::unsupported(
+                    "tagged template literals are not implemented",
+                ));
             } else {
                 break;
             }
@@ -1628,6 +1668,9 @@ impl Parser {
         Ok(value)
     }
     fn primary(&mut self) -> Result<Expr> {
+        if matches!(self.tokens[self.pos].kind, TokenKind::TemplateStart) {
+            return self.template_literal();
+        }
         if self.is("/") || self.is("/=") {
             return self.regexp_literal();
         }
@@ -1780,6 +1823,67 @@ impl Parser {
             _ => Err(ScriptError::at("expected expression", token.offset)),
         }
     }
+    fn template_literal(&mut self) -> Result<Expr> {
+        let start = self.tokens[self.pos].offset;
+        let (head, mut at, _, mut interpolation) =
+            quoted_text(&self.source, start, '`', Some(&mut self.compile_budget))?;
+        self.pos += 1;
+        self.rescan_suffix(at)?;
+        let mut tail = Vec::new();
+        while interpolation {
+            if tail.len() >= 4096 {
+                return Err(self.resource_error("template substitution limit exceeded"));
+            }
+            self.compile_budget.allocated = self
+                .compile_budget
+                .allocated
+                .saturating_add(std::mem::size_of::<(Expr, JsString)>() * 2);
+            if self.compile_budget.allocated > MAX_HEAP {
+                return Err(self.resource_error("template storage limit exceeded"));
+            }
+            let saved = self.allow_in;
+            self.allow_in = true;
+            let expression = self.sequence();
+            self.allow_in = saved;
+            let expression = expression?;
+            let start = self.tokens[self.pos].offset;
+            self.expect("}")?;
+            let (text, end, _, next) =
+                quoted_text(&self.source, start, '`', Some(&mut self.compile_budget))?;
+            tail.push((expression, text));
+            at = end;
+            interpolation = next;
+            self.rescan_suffix(at)?;
+        }
+        Ok(if tail.is_empty() {
+            Expr::Literal(Value::String(head))
+        } else {
+            Expr::Template(head, tail)
+        })
+    }
+    fn rescan_suffix(&mut self, at: usize) -> Result<()> {
+        self.tokens.truncate(self.pos);
+        self.lex_work = self.lex_work.saturating_add(self.source.len() - at);
+        if self.lex_work > MAX_SOURCE * 32 {
+            return Err(ScriptError::resource(
+                "script lexical rescan limit exceeded",
+            ));
+        }
+        let suffix = lex(&self.source[at..])?;
+        if self.tokens.len().saturating_add(suffix.len()) > MAX_TOKENS {
+            return Err(ScriptError::resource("script token limit exceeded"));
+        }
+        self.tokens.extend(suffix.into_iter().map(|mut token| {
+            token.offset += at;
+            if let TokenKind::Invalid(error) = &mut token.kind
+                && let Some(offset) = &mut error.offset
+            {
+                *offset += at;
+            }
+            token
+        }));
+        Ok(())
+    }
     fn regexp_literal(&mut self) -> Result<Expr> {
         let start = self.tokens[self.pos].offset;
         let mut at = start + 1;
@@ -1830,26 +1934,7 @@ impl Parser {
         let pattern = Rc::new(pattern);
         self.tokens[self.pos].kind = TokenKind::RegExp(pattern.clone());
         self.pos += 1;
-        self.tokens.truncate(self.pos);
-        self.lex_work = self.lex_work.saturating_add(self.source.len() - at);
-        if self.lex_work > MAX_SOURCE * 32 {
-            return Err(ScriptError::resource(
-                "script lexical rescan limit exceeded",
-            ));
-        }
-        let suffix = lex(&self.source[at..])?;
-        if self.tokens.len().saturating_add(suffix.len()) > MAX_TOKENS {
-            return Err(ScriptError::resource("script token limit exceeded"));
-        }
-        self.tokens.extend(suffix.into_iter().map(|mut token| {
-            token.offset += at;
-            if let TokenKind::Invalid(error) = &mut token.kind
-                && let Some(offset) = &mut error.offset
-            {
-                *offset += at;
-            }
-            token
-        }));
+        self.rescan_suffix(at)?;
         Ok(Expr::RegExp(pattern))
     }
     fn new_expression(&mut self) -> Result<Expr> {
@@ -1879,6 +1964,10 @@ impl Parser {
                 let key = self.expression()?;
                 self.expect("]")?;
                 constructor = Expr::Member(Box::new(constructor), Box::new(key));
+            } else if matches!(self.tokens[self.pos].kind, TokenKind::TemplateStart) {
+                return Err(ScriptError::unsupported(
+                    "tagged template literals are not implemented",
+                ));
             } else {
                 break;
             }
@@ -4460,6 +4549,17 @@ impl Runtime {
         self.tick()?;
         match expression {
             Expr::Literal(value) => Ok(value.clone()),
+            Expr::Template(head, tail) => {
+                let mut output = Vec::new();
+                self.append_template_text(&mut output, head)?;
+                for (expression, text) in tail {
+                    let value = self.eval(expression, env, doc)?;
+                    let cooked = self.template_string(value, doc)?;
+                    self.append_template_text(&mut output, &cooked)?;
+                    self.append_template_text(&mut output, text)?;
+                }
+                self.string(output)
+            }
             Expr::RegExp(pattern) => self.regexp_object(pattern.clone()),
             Expr::Ident(name) => {
                 let (owner, _) = self
@@ -6408,6 +6508,38 @@ impl Runtime {
         self.json_revive(holder, &JsString::default(), &reviver, record.as_ref(), doc)
     }
 
+    fn append_template_text(&mut self, output: &mut Vec<u16>, text: &JsString) -> Result<()> {
+        if output.len().saturating_add(text.len()) > MAX_STRING {
+            return Err(ScriptError::resource("script string limit exceeded"));
+        }
+        self.work(1 + text.len() / 8)?;
+        self.charge(text.len().saturating_mul(4))?;
+        output.extend_from_slice(text.units());
+        Ok(())
+    }
+    fn template_string(&mut self, value: Value, doc: &mut Document) -> Result<JsString> {
+        let mut primitive = value.clone();
+        if js_object(&value) {
+            for key in ["toString", "valueOf"] {
+                let method = self.get(value.clone(), key, doc)?;
+                if json_callable(&method) {
+                    primitive = self.call(method, Vec::new(), value.clone(), doc)?;
+                    if json_primitive(&primitive) {
+                        break;
+                    }
+                }
+            }
+            if !json_primitive(&primitive) {
+                return Err(ScriptError::type_error(
+                    "template substitution cannot be converted to a primitive string",
+                ));
+            }
+        }
+        if !matches!(primitive, Value::String(_)) {
+            self.charge(1024)?;
+        }
+        Ok(primitive.js_string())
+    }
     fn json_text(
         &mut self,
         value: Value,
@@ -9519,6 +9651,207 @@ mod tests {
         );
     }
 
+    #[test]
+    fn template_interpolation_parses_nested_grammars_and_comma_expressions() {
+        let (mut runtime, mut doc) = property_harness();
+        runtime
+            .execute(
+                r#"
+            assert.sameValue(`plain`, 'plain');assert.sameValue(`${1+2}`, '3');
+            assert.sameValue(`a${1}b${2}c`, 'a1b2c');
+            assert.sameValue(`outer${`inner${{x:3}.x}end`}tail`, 'outerinner3endtail');
+            assert.sameValue(`${'{' + "}"}`, '{}');
+            assert.sameValue(`${ /* } ` ${ */ 7 // } ` ${
+            }!`, '7!');
+            assert.sameValue(`${/[}]/.test('}')}`, 'true');
+            assert.sameValue(`${/`/.test('`')}`, 'true');
+            assert.sameValue(`${/['}]/.test("'")}`, 'true');
+            assert.sameValue(`${12 / 3 / 2}`, '2');
+            assert.sameValue(`${/}/.test('}') ? `${2}` : 'no'}`, '2');
+            assert.sameValue(`${function(){return '}';}()}`, '}');
+            var n=0;assert.sameValue(`${n++, n++, n}`, '2');assert.sameValue(n,2);
+            var seen='';for(var i=`${'x' in {x:1}}`;seen==='';){seen=i;}
+            assert.sameValue(seen,'true');
+            assert.sameValue((`a${1}b`).length,3);
+            assert.sameValue(function(){return `a
+            b`;}().slice(0,2),'a\n');
+            // Template text is not a Directive Prologue string literal.
+            function loose(){`use strict`;return this;}assert.sameValue(loose(),window);
+        "#,
+                &mut doc,
+            )
+            .unwrap();
+    }
+    #[test]
+    fn template_interpolation_cooks_utf16_escapes_and_line_terminators() {
+        let mut runtime = Runtime::new();
+        let mut doc = Document::parse("");
+        let source = "`a\r\nb\rc\nd\u{2028}e\u{2029}f`";
+        assert_eq!(
+            runtime.execute(source, &mut doc).unwrap(),
+            Value::String("a\nb\nc\nd\u{2028}e\u{2029}f".into())
+        );
+        let source = "`a\\\r\nb\\\rc\\\nd\\\u{2028}e\\\u{2029}f`";
+        assert_eq!(
+            runtime.execute(source, &mut doc).unwrap(),
+            Value::String("abcdef".into())
+        );
+        let source =
+            r#"`\uD800${'\uDC00'}\u{DFFF}\u{000000000000000041}\u{1F600}\x41\0\q\`\${raw}`"#;
+        let Value::String(text) = runtime.execute(source, &mut doc).unwrap() else {
+            panic!("string");
+        };
+        let mut expected = vec![0xd800, 0xdc00, 0xdfff, 65, 0xd83d, 0xde00, 65, 0, 113, 96];
+        expected.extend("${raw}".encode_utf16());
+        assert_eq!(text.units(), expected);
+        assert_eq!(
+            runtime.execute(r#"`\r${'\n'}\t\v\f\b`"#, &mut doc).unwrap(),
+            Value::String("\r\n\t\u{b}\u{c}\u{8}".into())
+        );
+        let Value::String(text) = runtime
+            .execute(r#"JSON.stringify(`\uD800${'\uDFFF'}`)"#, &mut doc)
+            .unwrap()
+        else {
+            panic!("string");
+        };
+        assert_eq!(text.units(), "\"𐏿\"".encode_utf16().collect::<Vec<_>>());
+    }
+    #[test]
+    fn template_substitution_coercion_is_ordered_and_uses_the_string_hint() {
+        let (mut runtime, mut doc) = property_harness();
+        runtime.execute(r#"
+            var trace='';var x={get toString(){trace+='get;';return function(){trace+='call;';return 'x';};},valueOf(){throw 'wrong hint';}};
+            function next(){trace+='next;';return 2;}
+            assert.sameValue(`${x}${next()}`, 'x2');assert.sameValue(trace,'get;call;next;');
+            var fallback={toString(){return {};},valueOf(){return 7;}};
+            assert.sameValue(`${fallback}`, '7');
+            assert.sameValue(`${undefined}/${null}/${true}/${false}/${-0}/${NaN}/${Infinity}`, 'undefined/null/true/false/0/NaN/Infinity');
+            var a=[1,2];a.toString=function(){return 'custom array';};assert.sameValue(`${a}`, 'custom array');
+            var b=[1,2];b.join=function(){return 'custom join';};assert.sameValue(`${b}`, 'custom join');
+            var f=function(){};f.toString=function(){return 'custom function';};assert.sameValue(`${f}`, 'custom function');
+            var reason={token:1},caught,side=0;
+            var bad={get toString(){throw reason;}};
+            try{`${bad}${side++}`;}catch(error){caught=error;}
+            assert.sameValue(caught,reason);assert.sameValue(side,0);
+            assert.throws(TypeError,()=>`${{toString:1,valueOf(){return {};}}}`);
+            assert.throws(ReferenceError,()=>`${missingTemplateVariable}`);
+            trace='';var first={toString(){trace+='first;';return '1';}};
+            var second={toString(){trace+='second;';return '2';}};
+            assert.sameValue(`${first}${`${second}`}`, '12');assert.sameValue(trace,'first;second;');
+        "#,&mut doc).unwrap();
+    }
+    #[test]
+    fn template_syntax_errors_and_tagged_unsupported_are_distinct() {
+        for source in [
+            "`",
+            "`a${",
+            "`a${1",
+            "`a${1}",
+            "`${}`",
+            "`${1,}`",
+            "`${1;2}`",
+            "`\\01`",
+            "`\\8`",
+            "`\\9`",
+            "`\\08`",
+            "`\\xg0`",
+            "`\\x+1`",
+            "`\\u+001`",
+            "`\\u{}`",
+            "`\\u{110000}`",
+            "`\\u12`",
+            "`${1}\\1`",
+            "`${ /}/ / }`",
+        ] {
+            let error = Runtime::parse_only(source).unwrap_err();
+            assert!(error.is_parse_error(), "{source}: {error:?}");
+        }
+        for source in [
+            "tag`a`",
+            "tag`a${1}b`",
+            "tag`\\xg`",
+            "tag\n`x`",
+            "obj.tag`${1}`",
+            "new tag`x`",
+            "(function(){})`x`",
+            "`a``b`",
+        ] {
+            assert!(
+                Runtime::parse_only(source).unwrap_err().is_unsupported(),
+                "{source}"
+            );
+        }
+        let mut runtime = Runtime::new();
+        let mut doc = Document::parse("");
+        runtime.execute("var touched=false", &mut doc).unwrap();
+        assert!(
+            runtime
+                .execute("touched=true;`${1}\\u{110000}`", &mut doc)
+                .unwrap_err()
+                .is_parse_error()
+        );
+        assert_eq!(
+            runtime.execute("touched", &mut doc).unwrap(),
+            Value::Bool(false)
+        );
+    }
+    #[test]
+    fn template_growth_nesting_and_native_coercion_share_resource_limits() {
+        let mut runtime = Runtime::new();
+        let mut doc = Document::parse("");
+        runtime
+            .execute(
+                "var caught=false;var big='x';for(var i=0;i<17;i++){big=big+big;}",
+                &mut doc,
+            )
+            .unwrap();
+        runtime.execute("big=big+big;", &mut doc).unwrap();
+        assert!(
+            runtime
+                .execute("try{`${big}x`;}catch(error){caught=true;}", &mut doc)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(
+            runtime.execute("caught", &mut doc).unwrap(),
+            Value::Bool(false)
+        );
+        for source in [
+            "var o={toString(){while(true){}}};try{`${o}`;}catch(error){caught=true;}",
+            "var o={toString(){return `${o}`;}};try{`${o}`;}catch(error){caught=true;}",
+        ] {
+            let mut runtime = Runtime::new();
+            let mut doc = Document::parse("");
+            runtime.execute("var caught=false", &mut doc).unwrap();
+            assert!(
+                runtime
+                    .execute(source, &mut doc)
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(runtime.stack_units, 0);
+            assert_eq!(
+                runtime.execute("caught", &mut doc).unwrap(),
+                Value::Bool(false)
+            );
+        }
+        let nested = format!("{}0{}", "`${".repeat(200), "}`".repeat(200));
+        assert!(
+            Runtime::parse_only(&nested)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        let large = format!("`{}`", "x".repeat(MAX_SOURCE));
+        assert!(Runtime::parse_only(&large).unwrap_err().is_resource_limit());
+        let many = format!("`{}`", "${0}".repeat(5000));
+        assert!(Runtime::parse_only(&many).unwrap_err().is_resource_limit());
+        // An invalid parse must unwind bounded nesting without recursive drops
+        // proportional to a flat source's number of substitutions.
+        for suffix in ["", "}", "`", "${", "\\", "/}", "/*}*/"] {
+            let sample = format!("`prefix${{`inner${{1}}`}}{suffix}");
+            assert!(std::panic::catch_unwind(|| Runtime::parse_only(&sample)).is_ok());
+        }
+    }
     #[test]
     fn abort_controller_signal_slots_and_reason_identity_are_private() {
         let (mut runtime, mut doc) = property_harness();

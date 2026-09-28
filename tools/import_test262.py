@@ -22,7 +22,17 @@ REGEXP_DIRECTORIES = {
     'RegExp/prototype/exec': 79, 'RegExp/prototype/test': 45,
     'RegExp/prototype/toString': 9, 'RegExp/prototype/source': 12,
 }
-PROFILES = {'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES}
+TEMPLATE_DIRECTORIES = {'expressions/template-literal': 57}
+PROFILES = {'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
+            'template-literal': TEMPLATE_DIRECTORIES}
+PROFILE_ROOTS = {'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
+                 'template-literal': 'test/language'}
+
+
+def corpus_name(profile):
+    return 'test262' if profile == 'string-json' else f'test262-{profile}'
+
+
 MAX_FILE = 2 * 1024 * 1024
 MAX_TOTAL = 16 * 1024 * 1024
 METADATA_KEYS = {'description', 'esid', 'es5id', 'es6id', 'info', 'author',
@@ -121,7 +131,7 @@ def import_corpus(output, profile='string-json'):
     inventory = {}
     entries = {}
     for directory, expected in PROFILES[profile].items():
-        remote = f'test/built-ins/{directory}'
+        remote = f'{PROFILE_ROOTS[profile]}/{directory}'
         listing = json.loads(fetch(f'https://api.github.com/repos/{REPOSITORY}/contents/{remote}?ref={REVISION}'))
         names = []
         for entry in listing:
@@ -138,6 +148,10 @@ def import_corpus(output, profile='string-json'):
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
         sources = dict(zip(paths, pool.map(lambda path: fetch(raw + path), paths)))
     harness = {'assert.js', 'sta.js'}
+    if profile == 'template-literal':
+        # These unchanged helpers support the assertion-integrity preflight,
+        # even when no selected test requests them directly.
+        harness.update({'propertyHelper.js', 'compareArray.js'})
     for path, data in sources.items():
         blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
         if blob != entries[path]:
@@ -152,9 +166,11 @@ def import_corpus(output, profile='string-json'):
         sources.update(zip(additional, pool.map(lambda path: fetch(raw + path), additional)))
     if sum(map(len, sources.values())) > MAX_TOTAL:
         raise ValueError('Test262 selection exceeds aggregate import limit')
-    scope = ('all direct .js files in nine built-ins directories; no implementation'
-             if profile == 'string-json' else
-             'all direct .js files in four RegExp prototype directories; no implementation')
+    scope = {
+        'string-json': 'all direct .js files in nine built-ins directories; no implementation',
+        'regexp': 'all direct .js files in four RegExp prototype directories; no implementation',
+        'template-literal': 'all direct .js files in language/expressions/template-literal; no implementation',
+    }[profile]
     manifest = dict(format=1, repository=f'https://github.com/{REPOSITORY}', revision=REVISION,
                     scope=scope,
                     directories=inventory, test_files=len(paths), files=[])
@@ -173,8 +189,7 @@ def main():
     parser.add_argument('--profile', choices=PROFILES, default='string-json')
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
-    output = args.output or ROOT / 'tests/upstream' / (
-        'test262' if args.profile == 'string-json' else 'test262-regexp')
+    output = args.output or ROOT / 'tests/upstream' / corpus_name(args.profile)
     import_corpus(output, args.profile)
 
 

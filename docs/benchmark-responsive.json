@@ -1,0 +1,91 @@
+{
+  "timestamp_utc": "2026-09-28T07:02:32.475750+00:00",
+  "system": "Linux-7.2.6-x86_64-with-glibc2.42",
+  "cpu": "AMD Ryzen 7 7800X3D 8-Core Processor",
+  "rustc": "rustc 1.95.0 (59807616e 2026-04-14)",
+  "input_sha256": "758abea520a6cdf3eca96f98e022b2399e4b44374b8a75010bc0aa8a6b2f3f86",
+  "input_hash_includes": [
+    "Cargo.toml",
+    "Cargo.lock",
+    "src/**/*.rs",
+    "assets/**",
+    "examples/**"
+  ],
+  "binary_sha256": "a7ea5c8ae8333432f57ebe2f105720885e0c93abda8add07266185ca064d64b3",
+  "viewport": [
+    1180,
+    880
+  ],
+  "iterations": 100,
+  "measured": "warm-cache style computation + layout + software paint",
+  "excluded": [
+    "network",
+    "HTML parsing",
+    "script execution",
+    "image decoding",
+    "PNG encoding",
+    "native process startup",
+    "IPC encoding/validation/copying",
+    "native presentation"
+  ],
+  "chromium_comparison": false,
+  "controlled_environment": false,
+  "cases": [
+    {
+      "name": "home",
+      "address": "eris:home",
+      "median_ms": 5.029,
+      "p95_ms": 5.687,
+      "log": "Rendered eris:home \u2192 /home/eriskii/Documents/Programming/Projects/ErisBrowser/artifacts/benchmark-home.png (1180\u00d7880, 88 nodes, 291 commands, 9.31 ms total)\nBenchmark: 100 iterations; style+layout+paint median 5.029 ms, p95 5.687 ms (warm glyph cache; excludes network, parse, scripts, PNG encoding; no Chromium comparison)"
+    },
+    {
+      "name": "gallery",
+      "address": "examples/gallery.html",
+      "median_ms": 8.204,
+      "p95_ms": 9.163,
+      "log": "Rendered file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/examples/gallery.html \u2192 /home/eriskii/Documents/Programming/Projects/ErisBrowser/artifacts/benchmark-gallery.png (1180\u00d7880, 116 nodes, 175 commands, 16.98 ms total)\nBenchmark: 100 iterations; style+layout+paint median 8.204 ms, p95 9.163 ms (warm glyph cache; excludes network, parse, scripts, PNG encoding; no Chromium comparison)"
+    },
+    {
+      "name": "forms",
+      "address": "examples/forms.html",
+      "median_ms": 6.002,
+      "p95_ms": 6.49,
+      "log": "Rendered file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/examples/forms.html \u2192 /home/eriskii/Documents/Programming/Projects/ErisBrowser/artifacts/benchmark-forms.png (1180\u00d7880, 65 nodes, 144 commands, 9.81 ms total)\nBenchmark: 100 iterations; style+layout+paint median 6.002 ms, p95 6.490 ms (warm glyph cache; excludes network, parse, scripts, PNG encoding; no Chromium comparison)"
+    },
+    {
+      "name": "templates",
+      "address": "examples/templates.html",
+      "median_ms": 1.126,
+      "p95_ms": 1.154,
+      "log": "Rendered file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/examples/templates.html \u2192 /home/eriskii/Documents/Programming/Projects/ErisBrowser/artifacts/benchmark-templates.png (1180\u00d7880, 91 nodes, 252 commands, 4.54 ms total)\nBenchmark: 100 iterations; style+layout+paint median 1.126 ms, p95 1.154 ms (warm glyph cache; excludes network, parse, scripts, PNG encoding; no Chromium comparison)"
+    },
+    {
+      "name": "positioning",
+      "address": "examples/positioning.html",
+      "median_ms": 1.11,
+      "p95_ms": 1.38,
+      "log": "Rendered file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/examples/positioning.html \u2192 /home/eriskii/Documents/Programming/Projects/ErisBrowser/artifacts/benchmark-positioning.png (1180\u00d7880, 124 nodes, 294 commands, 4.71 ms total)\nBenchmark: 100 iterations; style+layout+paint median 1.110 ms, p95 1.380 ms (warm glyph cache; excludes network, parse, scripts, PNG encoding; no Chromium comparison)"
+    },
+    {
+      "name": "events",
+      "address": "examples/events.html",
+      "median_ms": 1.169,
+      "p95_ms": 1.467,
+      "log": "Rendered file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/examples/events.html \u2192 /home/eriskii/Documents/Programming/Projects/ErisBrowser/artifacts/benchmark-events.png (1180\u00d7880, 113 nodes, 295 commands, 4.96 ms total)\nBenchmark: 100 iterations; style+layout+paint median 1.169 ms, p95 1.467 ms (warm glyph cache; excludes network, parse, scripts, PNG encoding; no Chromium comparison)"
+    },
+    {
+      "name": "events-visible",
+      "address": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/examples/events.html#panel",
+      "median_ms": 12.296,
+      "p95_ms": 12.982,
+      "log": "Rendered file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/examples/events.html#panel \u2192 /home/eriskii/Documents/Programming/Projects/ErisBrowser/artifacts/benchmark-events-visible.png (1180\u00d7880, 113 nodes, 295 commands, 20.79 ms total)\nBenchmark: 100 iterations; style+layout+paint median 12.296 ms, p95 12.982 ms (warm glyph cache; excludes network, parse, scripts, PNG encoding; no Chromium comparison)"
+    },
+    {
+      "name": "responsive",
+      "address": "examples/responsive.html",
+      "median_ms": 1.949,
+      "p95_ms": 2.004,
+      "log": "Rendered file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/examples/responsive.html \u2192 /home/eriskii/Documents/Programming/Projects/ErisBrowser/artifacts/benchmark-responsive.png (1180\u00d7880, 95 nodes, 199 commands, 5.38 ms total)\nBenchmark: 100 iterations; style+layout+paint median 1.949 ms, p95 2.004 ms (warm glyph cache; excludes network, parse, scripts, PNG encoding; no Chromium comparison)"
+    }
+  ]
+}

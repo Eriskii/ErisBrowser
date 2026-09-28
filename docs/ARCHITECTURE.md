@@ -84,6 +84,14 @@ cycles, repeated scans, URL copies/cache storage and expanded source all have
 shared limits. The custom RegExp parser and explicit backtracking matcher use
 runtime work/allocation limits and introduce no external execution engine.
 
+Media-query conditions use bounded recursive evaluation with unknown-value
+logic and share work across stylesheet sources. Flex layout forms row or column
+lines, resolves flexible sizes per line, and distributes their cross sizes before
+item alignment. Untagged JavaScript templates use parser-selected lexical goals
+and a flat sequence of UTF-16 segments/substitutions; each substitution is
+converted to text before the next expression runs. All three paths retain the
+existing parser, layout and runtime resource boundaries.
+
 See [security](SECURITY.md) for exact grants, limits and remaining attack surface,
 [compatibility](COMPATIBILITY.md) for implemented subsets, and
 [validation](VALIDATION.md) for observed test results. These boundaries are

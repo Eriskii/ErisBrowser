@@ -92,6 +92,93 @@ fn exchange_empty(client: &mut WorkerClient, command: WorkerCommand) {
 
 #[test]
 #[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn responsive_template_updates_and_flex_resize_survive_worker_snapshots() {
+    let fixture = Fixture::new(include_str!("../examples/responsive.html"));
+    let mut client = fixture.spawn(true, 93);
+    load(&mut client, &fixture.navigation);
+    let initial = render(&mut client);
+    let button = initial.document.query_selector("#advance").unwrap();
+    exchange_empty(&mut client, WorkerCommand::Click { node: button });
+    for (width, visible) in [
+        (960.0, "#wide"),
+        (390.0, "#compact"),
+        (800.0, "#medium"),
+        (960.0, "#wide"),
+    ] {
+        let reply = client
+            .exchange(
+                WorkerCommand::Render {
+                    width,
+                    height: 900.0,
+                },
+                || false,
+            )
+            .unwrap();
+        assert!(reply.navigation.is_none());
+        let snapshot = reply.snapshot.unwrap();
+        assert!(
+            snapshot
+                .diagnostics
+                .iter()
+                .all(|m| m.starts_with("Page process ") || m.starts_with("Resource broker ")),
+            "{:?}",
+            snapshot.diagnostics
+        );
+        let status = snapshot.document.query_selector("#status").unwrap();
+        assert_eq!(snapshot.document.text_content(status), "Reading 2 · midday");
+        for selector in ["#wide", "#medium", "#compact"] {
+            let node = snapshot.document.query_selector(selector).unwrap();
+            assert_eq!(
+                snapshot
+                    .layout
+                    .hit_regions
+                    .iter()
+                    .any(|hit| hit.node == node),
+                selector == visible
+            );
+        }
+        let cards = snapshot.document.query_selector_all(".sample");
+        let boxes = cards
+            .iter()
+            .map(|node| {
+                snapshot
+                    .layout
+                    .hit_regions
+                    .iter()
+                    .find(|hit| hit.node == *node)
+                    .unwrap()
+                    .rect
+            })
+            .collect::<Vec<_>>();
+        assert_eq!(boxes.len(), 6);
+        if width >= 640.0 {
+            assert_eq!(boxes[0].x, boxes[1].x);
+            assert_eq!(boxes[0].y, boxes[2].y);
+            assert!(boxes[2].x > boxes[0].x);
+        } else {
+            assert!(
+                boxes
+                    .windows(2)
+                    .all(|pair| pair[1].x == pair[0].x && pair[1].y > pair[0].y)
+            );
+        }
+        let mut canvas = eris::graphics::Canvas::new(width as u32, 900).unwrap();
+        canvas.paint(
+            &snapshot.layout.commands,
+            &eris::graphics::Fonts::new(),
+            &snapshot.images,
+            0.0,
+            0.0,
+        );
+        assert!(!canvas.exhausted());
+        let x = (boxes[0].x + 2.0) as usize;
+        let y = (boxes[0].y + 40.0) as usize;
+        assert_eq!(canvas.pixels[y * width as usize + x], 0x203441);
+    }
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
 fn confined_stylesheet_imports_and_fixed_scopes_survive_snapshot_transfer() {
     let fixture = Fixture::new(
         "<!doctype html><base href='assets/'><link rel=stylesheet href='root.css'><div id=f>fixed</div><div id=body>body</div>",

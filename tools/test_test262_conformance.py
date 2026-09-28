@@ -178,6 +178,46 @@ class ExecutionTests(unittest.TestCase):
 
 
 class IntegrityTests(unittest.TestCase):
+    def test_language_profile_retains_all_sources_modes_and_parse_negatives(self):
+        directory = runner.ROOT / 'tests/upstream/test262-template-literal'
+        manifest, files, cases, fixtures, _ = runner.load_corpus(directory, 'template-literal')
+        self.assertEqual(manifest['test_files'], 57)
+        self.assertEqual(len(cases), 114)
+        self.assertEqual(fixtures, [])
+        self.assertEqual({case['mode'] for case in cases}, {'sloppy', 'strict'})
+        prefix = 'test/language/expressions/template-literal/'
+        self.assertTrue(all(case['file'].startswith(prefix) for case in cases))
+        negative = [case for case in cases if case['metadata']['negative']]
+        self.assertEqual(len(negative), 32)
+        self.assertTrue(all(case['metadata']['negative'] == dict(phase='parse', type='SyntaxError')
+                            for case in negative))
+        self.assertTrue({'harness/assert.js', 'harness/sta.js', 'harness/propertyHelper.js'} <= files.keys())
+        with self.assertRaisesRegex(ValueError, 'inventory'):
+            runner.load_corpus(directory, 'regexp')
+        # Byte preservation matters for the CR/CRLF template cooking tests.
+        line_source = files[prefix + 'tv-line-terminator-sequence.js']
+        self.assertIn(b'\r\n', line_source)
+        self.assertIn(b'\r', line_source.replace(b'\r\n', b''))
+
+    def test_profile_features_do_not_silently_expand_other_baselines(self):
+        case = sample(b'/*---\nfeatures: [u180e]\n---*/\nassert.sameValue(`\xe1\xa0\x8e`, "\\u180e");')
+        self.assertIsNone(runner.unsupported_reason(case, runner.TEMPLATE_FEATURES))
+        self.assertIsNotNone(runner.unsupported_reason(case, runner.SUPPORTED_FEATURES))
+        self.assertIsNotNone(runner.unsupported_reason(case, runner.REGEXP_FEATURES))
+        self.assertEqual(importer.corpus_name('string-json'), 'test262')
+        self.assertEqual(importer.corpus_name('regexp'), 'test262-regexp')
+        self.assertEqual(importer.corpus_name('template-literal'), 'test262-template-literal')
+
+    def test_template_preflight_rejects_disabled_assertions(self):
+        directory = runner.ROOT / 'tests/upstream/test262-template-literal'
+        _, files, _, _, _ = runner.load_corpus(directory, 'template-literal')
+        with patch.object(runner, 'bounded_process', return_value=(0, response('complete'), b'')):
+            results = runner.harness_preflight(files, Path('/fake'), 1, 'template-literal')
+        self.assertEqual(len(results), 44)
+        rejected = {result['name'] for result in results if not result['verified']}
+        self.assertTrue({'template-cooked-mismatch', 'template-order-mismatch',
+                         'template-tag-unsupported'} <= rejected)
+
     def test_regexp_profile_is_complete_and_cannot_replace_original_inventory(self):
         directory = runner.ROOT / 'tests/upstream/test262-regexp'
         manifest, _, cases, fixtures, _ = runner.load_corpus(directory, 'regexp')

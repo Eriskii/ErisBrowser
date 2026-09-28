@@ -248,6 +248,36 @@
       "description": "Imported source boundaries share anonymous layer identities and preserve import order.",
       "test": "layers-import-anonymous.html",
       "reference": "layers-import-anonymous-ref.html"
+    },
+    {
+      "name": "media-range-conditions",
+      "description": "Width/height ranges, nested conditions, unknown logic, invalid operator mixing and style media attributes select independent green rectangles.",
+      "test": "media-range-conditions.html",
+      "reference": "media-range-conditions-ref.html"
+    },
+    {
+      "name": "flex-column-wrap-reverse",
+      "description": "Column and cross-axis reversal retain independent gaps and distribute complete lines with space-between.",
+      "test": "flex-column-wrap-reverse.html",
+      "reference": "flex-column-wrap-reverse-ref.html"
+    },
+    {
+      "name": "flex-column-max-height",
+      "description": "Border-box max-height limits column lines without making percentage flex bases definite.",
+      "test": "flex-column-max-height.html",
+      "reference": "flex-column-max-height-ref.html"
+    },
+    {
+      "name": "flex-align-content-stretch",
+      "description": "Wrapped line stretching precedes individual flex item sizing.",
+      "test": "flex-align-content-stretch.html",
+      "reference": "flex-align-content-stretch-ref.html"
+    },
+    {
+      "name": "flex-align-content-distributed",
+      "description": "Wrapped lines honor center, space-between, space-around and space-evenly alignment.",
+      "test": "flex-align-content-distributed.html",
+      "reference": "flex-align-content-distributed-ref.html"
     }
   ]
 }

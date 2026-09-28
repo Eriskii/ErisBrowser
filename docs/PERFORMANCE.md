@@ -24,7 +24,7 @@ After the parser, JSON and flex compatibility increment, the same fixture/viewpo
 
 After the broker, namespace and Test262 increment, the same warm-render configuration recorded medians of 4.399 ms (home), 7.053 ms (gallery), and 5.203 ms (forms); p95 values were 4.542, 7.519 and 5.273 ms. [This record](benchmark-broker.json) retains the measured build/input hashes. It still excludes native process startup and IPC, so these timings do not measure the new broker's overhead or establish a Chromium comparison.
 
-`python3 tools/benchmark.py` records seven measurements across six local pages in `artifacts/benchmark.json`, including source/assets/dependency input hashes, binary hash, CPU, OS, compiler and excluded phases. The template/Grid, positioning and event/compositing fixtures use their initially loaded documents; cloning, import loading and click handlers execute outside the measured warm-render loop. The event page is measured both from the top and scrolled to its panel so the opacity group is visible. Opacity allocation and compositing, when needed, are inside that loop.
+`python3 tools/benchmark.py` records eight measurements across seven local pages in `artifacts/benchmark.json`, including source/assets/dependency input hashes, binary hash, CPU, OS, compiler and excluded phases. The template/Grid, positioning, event/compositing and responsive fixtures use their initially loaded documents; cloning, import loading and click handlers execute outside the measured warm-render loop. The event page is measured both from the top and scrolled to its panel so the opacity group is visible. Opacity allocation and compositing, when needed, are inside that loop.
 
 ## Required comparison design
 
@@ -97,3 +97,27 @@ Nine decoded-pixel comparisons, covering both event views, desktop/narrow clicke
 pages and the other benchmark pages, match the previous build exactly.
 These are uncontrolled local observations, not evidence of a general speedup or
 performance relative to Chromium. Abort dispatch is outside the measured loop.
+
+
+The template-literal/media-condition/flex-wrapping checkpoint records eight warm
+measurements at 1180×880 over 100 iterations, after heavy checks and the native
+window finished. [The measurement record](benchmark-responsive.json) retains
+verified source and release-binary hashes:
+
+| Local fixture | Median | p95 |
+|---|---:|---:|
+| home | 5.029 ms | 5.687 ms |
+| gallery | 8.204 ms | 9.163 ms |
+| forms | 6.002 ms | 6.490 ms |
+| templates | 1.126 ms | 1.154 ms |
+| positioning | 1.110 ms | 1.380 ms |
+| events | 1.169 ms | 1.467 ms |
+| events-visible | 12.296 ms | 12.982 ms |
+| responsive | 1.949 ms | 2.004 ms |
+
+The responsive page is a new fixture without an earlier equivalent baseline.
+Its click handlers and template interpolation execute outside the timed loop.
+These uncontrolled local observations cover implemented layout/paint behavior;
+they do not establish a general speed change, script throughput, GPU performance
+or the requested Chromium threshold. Vulkan remains planned on the
+[development docket](ROADMAP.md), without a backend or performance result yet.

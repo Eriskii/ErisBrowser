@@ -26,6 +26,7 @@ Then launch the home page or one of the examples:
 ./run.sh ./examples/templates.html
 ./run.sh ./examples/positioning.html
 ./run.sh ./examples/events.html
+./run.sh ./examples/responsive.html
 ```
 
 The launcher builds the release executable and exposes installed desktop libraries on NixOS. Rust, Cargo, Python 3, and a Wayland or X11 desktop are required. Native browsing currently requires Linux with Landlock ABI 6 enabled (normally kernel 6.12 or newer), mounted procfs, and seccomp support; sandbox setup fails closed. The validated platform is x86-64 Linux. Fonts are bundled. On a conventional desktop with the shared libraries available:
@@ -63,7 +64,7 @@ cargo run --locked --release -- --benchmark 100 --output artifacts/benchmark.png
 
 The native UI loads each document in a fresh child process. Its address bar, clipboard and software painter stay in the UI process; a separate broker supplies resources and authoritative redirect URLs, while validated document and drawing snapshots return from the renderer. The renderer cannot directly read files or open sockets. Cross-origin images use a fresh restricted decoder, which returns pixels without exposing their raw responses to the renderer. See [the security boundary](docs/SECURITY.md) for remaining gaps.
 
-For a JSON report covering the home, gallery, form, template/Grid, positioning and event/compositing fixtures, including a scrolled view with visible opacity, run `python3 tools/benchmark.py`.
+For a JSON report covering the home, gallery, form, template/Grid, positioning, event/compositing and responsive fixtures, including a scrolled view with visible opacity, run `python3 tools/benchmark.py`.
 
 The benchmark measures **warm-cache CSS computation + layout + software painting of the loaded page**. It excludes parsing, scripts, network, image decoding, PNG encoding, and native presentation. It is not a Chromium comparison or a general web-performance score. See [performance](docs/PERFORMANCE.md).
 
@@ -79,6 +80,7 @@ python3 tools/reftest.py --binary target/release/eris-browser
 python3 tools/html_conformance.py --baseline tests/conformance/html-tree-current.json
 python3 tools/test262_conformance.py --baseline tests/conformance/test262-current.json
 python3 tools/test262_conformance.py --profile regexp --baseline tests/conformance/test262-regexp-current.json
+python3 tools/test262_conformance.py --profile template-literal --baseline tests/conformance/test262-template-literal-current.json
 python3 -m unittest discover -s tools -p 'test_*.py'
 cargo run --locked --release --bin eris-stress -- 5000
 ```

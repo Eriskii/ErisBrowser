@@ -689,7 +689,7 @@ fn parse_rules(
             }
             let body = &source[body_start..i];
             if let Some(media) = at_rule(header, "media") {
-                if media_matches(media, width, height) {
+                if media_matches_with_budget(media, width, height, &mut budget.work) {
                     parse_rules(body, width, height, depth + 1, layer, apply, rules, budget);
                 }
             } else if let Some(supports) = at_rule(header, "supports") {
@@ -782,72 +782,235 @@ fn at_rule<'a>(header: &'a str, name: &str) -> Option<&'a str> {
         .eq_ignore_ascii_case(name)
         .then(|| media_trim(&rest[consumed..]))
 }
-/// Bounded subset of Media Queries 4: types, modifiers, comma lists and plain
-/// feature conjunctions. Unknown feature values retain the third truth value
-/// through negation; they must never become matches merely because of `not`.
-/// https://www.w3.org/TR/mediaqueries-4/#error-handling
+/// Bounded Media Queries 4 subset. Conditions retain three-valued logic until
+/// the query-list boundary; unknown features never become true merely via not.
+/// https://drafts.csswg.org/mediaqueries-4/#mq-syntax
 pub fn media_matches(query: &str, width: f32, height: f32) -> bool {
-    if query.len() > 65_536 || !width.is_finite() || !height.is_finite() {
+    let mut work = MAX_MEDIA_WORK;
+    media_matches_with_budget(query, width, height, &mut work)
+}
+const MAX_MEDIA_BYTES: usize = 65_536;
+const MAX_MEDIA_WORK: usize = 2 * 1024 * 1024;
+const MAX_MEDIA_TERMS: usize = 64;
+const MAX_MEDIA_DEPTH: usize = 16;
+
+fn media_matches_with_budget(query: &str, width: f32, height: f32, work: &mut usize) -> bool {
+    if query.len() > MAX_MEDIA_BYTES
+        || !width.is_finite()
+        || !height.is_finite()
+        || width < 0.0
+        || height < 0.0
+    {
         return false;
     }
-    let clean = strip_comments(query).to_ascii_lowercase();
-    if media_trim(&clean).is_empty() {
-        return true;
+    // The public API has its own cap; stylesheet conditions additionally share
+    // the parser's remaining work, including metadata from imported sources.
+    let available = (*work).min(MAX_MEDIA_WORK);
+    let mut evaluator = MediaEvaluator {
+        width: f64::from(width),
+        height: f64::from(height),
+        work: available,
+        terms_left: MAX_MEDIA_TERMS,
+        exhausted: false,
+    };
+    let result = evaluator.list(query);
+    *work -= available - evaluator.work;
+    result && !evaluator.exhausted
+}
+struct MediaEvaluator {
+    width: f64,
+    height: f64,
+    work: usize,
+    terms_left: usize,
+    exhausted: bool,
+}
+impl MediaEvaluator {
+    fn spend(&mut self, amount: usize) -> Result<(), ()> {
+        if amount > self.work {
+            self.work = 0;
+            self.exhausted = true;
+            return Err(());
+        }
+        self.work -= amount;
+        Ok(())
     }
-    let mut brackets = Vec::new();
-    let mut quote = None;
-    let mut escaped = false;
-    let mut start = 0;
-    let mut count = 0;
-    let mut matched = false;
-    for (at, ch) in clean.char_indices() {
-        if escaped {
-            escaped = false;
-            continue;
+    fn list(&mut self, query: &str) -> bool {
+        if self.spend(query.len().saturating_mul(3) + 1).is_err() {
+            return false;
         }
-        if ch == '\\' {
-            escaped = true;
-            continue;
+        let clean = strip_comments(query);
+        if media_trim(&clean).is_empty() {
+            return true;
         }
-        if let Some(q) = quote {
-            if ch == q {
-                quote = None;
-            }
-            continue;
-        }
-        if matches!(ch, '\'' | '"') {
-            quote = Some(ch);
-            continue;
-        }
-        match ch {
-            '(' | '[' | '{' => {
-                if brackets.len() >= 16 {
-                    return false;
+        let mut brackets = Vec::new();
+        let mut start = 0;
+        let mut count = 0;
+        let mut matched = false;
+        let mut at = 0;
+        while at < clean.len() {
+            let (token, consumed) = media_token(&clean[at..]);
+            match token {
+                MediaToken::Open(ch) => {
+                    if brackets.len() >= MAX_MEDIA_DEPTH {
+                        self.exhausted = true;
+                        return false;
+                    }
+                    brackets.push(ch);
                 }
-                brackets.push(ch);
-            }
-            ')' | ']' | '}' => {
-                let expected = match ch {
-                    ')' => '(',
-                    ']' => '[',
-                    _ => '{',
-                };
-                if brackets.last() == Some(&expected) {
-                    brackets.pop();
+                MediaToken::Close(ch) => {
+                    let expected = match ch {
+                        ')' => '(',
+                        ']' => '[',
+                        _ => '{',
+                    };
+                    if brackets.last() == Some(&expected) {
+                        brackets.pop();
+                    }
                 }
-            }
-            ',' if brackets.is_empty() => {
-                count += 1;
-                if count >= 64 {
-                    return false;
+                MediaToken::Comma if brackets.is_empty() => {
+                    count += 1;
+                    if count >= 64 {
+                        self.exhausted = true;
+                        return false;
+                    }
+                    matched |= self.query(&clean[start..at]) == Some(true);
+                    if self.exhausted {
+                        return false;
+                    }
+                    start = at + consumed;
                 }
-                matched |= media_query(&clean[start..at], width, height) == Some(true);
-                start = at + 1;
+                _ => {}
             }
-            _ => {}
+            at += consumed;
+        }
+        // Evaluate every member even after a match, so limits do not depend on
+        // truth-value short circuiting or allow trailing oversized conditions.
+        let last = self.query(&clean[start..]) == Some(true);
+        matched || last
+    }
+    fn query(&mut self, query: &str) -> Option<bool> {
+        self.spend(query.len() + 1).ok()?;
+        let mut query = media_trim(query);
+        let mut negated = false;
+        let mut only = false;
+        if let Some(rest) = media_operator(query, "not") {
+            negated = true;
+            query = rest;
+        } else if let Some(rest) = media_operator(query, "only") {
+            only = true;
+            query = rest;
+        }
+        let function = media_word(query).is_some_and(|(_, rest)| rest.starts_with('('));
+        if query.starts_with('(') || function {
+            if only {
+                return None;
+            }
+            if negated {
+                let (value, rest) = self.in_parens(query, 0).ok()?;
+                return media_trim(rest)
+                    .is_empty()
+                    .then_some(value)
+                    .flatten()
+                    .map(|v| !v);
+            }
+            return self.condition(query, 0, true).ok().flatten();
+        }
+        let (kind, rest) = media_word(query)?;
+        if matches!(kind.as_str(), "not" | "only" | "and" | "or" | "layer") {
+            return None;
+        }
+        let mut result = Some(matches!(kind.as_str(), "screen" | "all"));
+        let rest = media_trim(rest);
+        if !rest.is_empty() {
+            let condition = media_operator(rest, "and")?;
+            // A media type permits a condition without top-level `or`.
+            result = media_and(result, self.condition(condition, 0, false).ok()?);
+        }
+        if negated { result.map(|v| !v) } else { result }
+    }
+    fn condition(&mut self, query: &str, depth: usize, allow_or: bool) -> Result<Option<bool>, ()> {
+        self.spend(query.len() + 1)?;
+        let query = media_trim(query);
+        if let Some(rest) = media_operator(query, "not") {
+            let (value, tail) = self.in_parens(rest, depth)?;
+            if !media_trim(tail).is_empty() {
+                return Err(());
+            }
+            return Ok(value.map(|v| !v));
+        }
+        let (mut result, mut rest) = self.in_parens(query, depth)?;
+        let mut conjunction = None;
+        loop {
+            rest = media_trim(rest);
+            if rest.is_empty() {
+                return Ok(result);
+            }
+            let (and, next) = if let Some(next) = media_operator(rest, "and") {
+                (true, next)
+            } else if allow_or && let Some(next) = media_operator(rest, "or") {
+                (false, next)
+            } else {
+                return Err(());
+            };
+            if conjunction.is_some_and(|previous| previous != and) {
+                return Err(());
+            }
+            conjunction = Some(and);
+            let (value, tail) = self.in_parens(next, depth)?;
+            result = if and {
+                media_and(result, value)
+            } else {
+                media_or(result, value)
+            };
+            rest = tail;
         }
     }
-    matched || media_query(&clean[start..], width, height) == Some(true)
+    fn in_parens<'a>(
+        &mut self,
+        query: &'a str,
+        depth: usize,
+    ) -> Result<(Option<bool>, &'a str), ()> {
+        self.spend(query.len() + 1)?;
+        let (inner, tail, function) = if query.starts_with('(') {
+            let (inner, tail) = media_parentheses(query).ok_or(())?;
+            (inner, tail, false)
+        } else {
+            let (name, rest) = media_word(query).ok_or(())?;
+            if name == "url" && !media_url_quoted(rest) {
+                // Unquoted url() produces a URL token, not a function token.
+                return Err(());
+            }
+            // Whitespace would make this an identifier followed by a block,
+            // which does not match the general-enclosed function production.
+            let (inner, tail) = media_parentheses(rest).ok_or(())?;
+            (inner, tail, true)
+        };
+        if depth >= MAX_MEDIA_DEPTH {
+            self.exhausted = true;
+            return Err(());
+        }
+        if !function {
+            if let Ok(value) = self.condition(inner, depth + 1, true) {
+                return Ok((value, tail));
+            }
+            if self.exhausted {
+                return Err(());
+            }
+        }
+        if self.terms_left == 0 {
+            self.exhausted = true;
+            return Err(());
+        }
+        self.terms_left -= 1;
+        self.spend(inner.len() + 1)?;
+        // Unknown functions and parenthesized future syntax stay unknown.
+        let result = if function {
+            None
+        } else {
+            media_feature(inner, self.width, self.height)
+        };
+        Ok((result, tail))
+    }
 }
 fn media_space(ch: char) -> bool {
     matches!(ch, ' ' | '\t' | '\r' | '\n' | '\x0c')
@@ -855,18 +1018,13 @@ fn media_space(ch: char) -> bool {
 fn media_trim(value: &str) -> &str {
     value.trim_matches(media_space)
 }
-fn media_word(value: &str) -> Option<(&str, &str)> {
-    let first = value.chars().next()?;
-    if !(first.is_ascii_alphabetic() || matches!(first, '_' | '-') || !first.is_ascii()) {
-        return None;
-    }
-    if first == '-' && value.as_bytes().get(1).is_none_or(u8::is_ascii_digit) {
-        return None;
-    }
-    let end = value
-        .find(|ch: char| !(ch.is_ascii_alphanumeric() || matches!(ch, '_' | '-') || !ch.is_ascii()))
-        .unwrap_or(value.len());
-    Some((&value[..end], &value[end..]))
+fn media_word(value: &str) -> Option<(String, &str)> {
+    let (word, consumed) = css_identifier(value)?;
+    Some((word.to_ascii_lowercase(), &value[consumed..]))
+}
+fn media_name(value: &str) -> Option<String> {
+    let (word, rest) = media_word(media_trim(value))?;
+    rest.is_empty().then_some(word)
 }
 fn media_operator<'a>(value: &'a str, operator: &str) -> Option<&'a str> {
     let (word, rest) = media_word(value)?;
@@ -879,126 +1037,400 @@ fn media_and(a: Option<bool>, b: Option<bool>) -> Option<bool> {
         _ => None,
     }
 }
-fn media_query(query: &str, width: f32, height: f32) -> Option<bool> {
-    let mut query = media_trim(query);
-    let mut negated = false;
-    let mut only = false;
-    if let Some(rest) = media_operator(query, "not") {
-        negated = true;
-        query = rest;
-    } else if let Some(rest) = media_operator(query, "only") {
-        only = true;
-        query = rest;
+fn media_or(a: Option<bool>, b: Option<bool>) -> Option<bool> {
+    match (a, b) {
+        (Some(true), _) | (_, Some(true)) => Some(true),
+        (Some(false), Some(false)) => Some(false),
+        _ => None,
     }
-    if query.starts_with('(') {
-        if only {
-            return None;
-        }
-        let (feature, rest) = media_parentheses(query)?;
-        if negated {
-            if !media_trim(rest).is_empty() {
-                return None;
-            }
-            return media_feature(feature, width, height).map(|value| !value);
-        }
-        return media_condition(query, width, height).ok().flatten();
-    }
-    let (kind, rest) = media_word(query)?;
-    if matches!(kind, "not" | "only" | "and" | "or" | "layer") {
-        return None;
-    }
-    let mut result = Some(matches!(kind, "screen" | "all"));
-    let rest = media_trim(rest);
-    if !rest.is_empty() {
-        let condition = media_operator(rest, "and")?;
-        result = media_and(result, media_condition(condition, width, height).ok()?);
-    }
-    if negated {
-        result.map(|value| !value)
-    } else {
-        result
-    }
-}
-fn media_condition(mut query: &str, width: f32, height: f32) -> Result<Option<bool>, ()> {
-    if let Some(rest) = media_operator(query, "not") {
-        let (feature, tail) = media_parentheses(rest).ok_or(())?;
-        if !media_trim(tail).is_empty() {
-            return Err(());
-        }
-        return Ok(media_feature(feature, width, height).map(|value| !value));
-    }
-    let mut result = Some(true);
-    for _ in 0..64 {
-        let (feature, rest) = media_parentheses(query).ok_or(())?;
-        result = media_and(result, media_feature(feature, width, height));
-        let rest = media_trim(rest);
-        if rest.is_empty() {
-            return Ok(result);
-        }
-        query = media_operator(rest, "and").ok_or(())?;
-    }
-    Err(())
 }
 fn media_parentheses(query: &str) -> Option<(&str, &str)> {
     let query = query.strip_prefix('(')?;
-    let mut depth = 1usize;
-    let mut quote = None;
-    let mut escaped = false;
-    for (at, ch) in query.char_indices() {
-        if escaped {
-            escaped = false;
-            continue;
-        }
-        if ch == '\\' {
-            escaped = true;
-            continue;
-        }
-        if let Some(q) = quote {
-            if ch == q {
-                quote = None;
+    let mut brackets = vec!['('];
+    let mut at = 0;
+    while at < query.len() {
+        let (token, consumed) = media_token(&query[at..]);
+        match token {
+            MediaToken::Open(ch) => {
+                if brackets.len() >= MAX_MEDIA_DEPTH {
+                    return None;
+                }
+                brackets.push(ch);
             }
-            continue;
-        }
-        if matches!(ch, '\'' | '"') {
-            quote = Some(ch);
-            continue;
-        }
-        if ch == '(' {
-            depth += 1;
-            if depth > 16 {
-                return None;
+            MediaToken::Close(ch) => {
+                if brackets.pop()?
+                    != match ch {
+                        ')' => '(',
+                        ']' => '[',
+                        _ => '{',
+                    }
+                {
+                    return None;
+                }
+                if brackets.is_empty() {
+                    return Some((&query[..at], &query[at + consumed..]));
+                }
             }
-        } else if ch == ')' {
-            depth -= 1;
-            if depth == 0 {
-                return Some((&query[..at], &query[at + 1..]));
-            }
+            MediaToken::Bad => return None,
+            _ => {}
         }
+        at += consumed;
     }
     None
 }
-fn media_feature(feature: &str, width: f32, height: f32) -> Option<bool> {
-    let feature = media_trim(feature);
-    let Some((name, value)) = feature.split_once(':') else {
-        return match feature {
-            "color" | "hover" | "any-hover" | "pointer" | "any-pointer" => Some(true),
-            "width" => Some(width > 0.0),
-            "height" => Some(height > 0.0),
-            _ => None,
-        };
+#[derive(PartialEq)]
+enum MediaToken {
+    Other,
+    Open(char),
+    Close(char),
+    Comma,
+    Bad,
+}
+// This cursor recognizes the token boundaries needed by media conditions. It
+// does not retain token values or fetch URLs. In particular, punctuation inside
+// an unquoted URL is data, and bad URL remnants consume through their own `)`.
+fn media_token(source: &str) -> (MediaToken, usize) {
+    let first = source.chars().next().unwrap();
+    if matches!(first, '\'' | '"') {
+        let mut at = 1;
+        while at < source.len() {
+            let ch = source[at..].chars().next().unwrap();
+            if ch == first {
+                return (MediaToken::Other, at + 1);
+            }
+            if matches!(ch, '\n' | '\r' | '\x0c') {
+                return (MediaToken::Bad, at);
+            }
+            if ch == '\\' {
+                at += 1;
+                if source[at..].starts_with("\r\n") {
+                    at += 2;
+                } else if source[at..].starts_with(['\n', '\r', '\x0c']) {
+                    at += 1;
+                } else {
+                    at = media_escape(source, at).1;
+                }
+            } else {
+                at += ch.len_utf8();
+            }
+        }
+        return (MediaToken::Other, at);
+    }
+    if let Some(mut end) = media_number_end(source) {
+        if media_ident_start(&source[end..]) {
+            end += media_ident_sequence(&source[end..]).0;
+        }
+        return (MediaToken::Other, end);
+    }
+    if matches!(first, '@' | '#') {
+        let rest = &source[1..];
+        if media_ident_start(rest)
+            || first == '#' && rest.chars().next().is_some_and(media_name_char)
+        {
+            return (MediaToken::Other, 1 + media_ident_sequence(rest).0);
+        }
+    }
+    if media_ident_start(source) {
+        let (end, url) = media_ident_sequence(source);
+        if source[end..].starts_with('(') {
+            if url && !media_url_quoted(&source[end..]) {
+                return media_url_token(source, end + 1);
+            }
+            return (MediaToken::Open('('), end + 1);
+        }
+        return (MediaToken::Other, end);
+    }
+    let token = match first {
+        '(' | '[' | '{' => MediaToken::Open(first),
+        ')' | ']' | '}' => MediaToken::Close(first),
+        ',' => MediaToken::Comma,
+        _ => MediaToken::Other,
     };
-    let name = media_trim(name);
-    let value = media_trim(value);
-    match name {
-        "min-width" | "max-width" | "width" | "min-height" | "max-height" | "height" => {
-            // Media dimensions require lengths, never percentages, auto, an
-            // arbitrary unitless number or a failed parse substituted as -1.
-            if value.contains(['(', ')']) || finite_number(value).is_some_and(|n| n != 0.0) {
+    (token, first.len_utf8())
+}
+fn media_name_char(ch: char) -> bool {
+    ch.is_ascii_alphanumeric() || matches!(ch, '-' | '_' | '\0') || !ch.is_ascii()
+}
+fn media_ident_start(source: &str) -> bool {
+    let mut chars = source.chars();
+    let Some(first) = chars.next() else {
+        return false;
+    };
+    let start = |ch: char| ch.is_ascii_alphabetic() || matches!(ch, '_' | '\0') || !ch.is_ascii();
+    let escape =
+        |rest: &str| rest.starts_with('\\') && !rest[1..].starts_with(['\n', '\r', '\x0c']);
+    start(first)
+        || escape(source)
+        || first == '-'
+            && (chars.next().is_some_and(|ch| start(ch) || ch == '-') || escape(&source[1..]))
+}
+fn media_ident_sequence(source: &str) -> (usize, bool) {
+    let mut at = 0;
+    let mut count = 0;
+    let mut url = true;
+    while at < source.len() {
+        let mut ch = source[at..].chars().next().unwrap();
+        if ch == '\\' && !source[at + 1..].starts_with(['\n', '\r', '\x0c']) {
+            (ch, at) = media_escape(source, at + 1);
+        } else if media_name_char(ch) {
+            at += ch.len_utf8();
+        } else {
+            break;
+        }
+        url &= Some(ch.to_ascii_lowercase()) == ['u', 'r', 'l'].get(count).copied();
+        count += 1;
+    }
+    (at, url && count == 3)
+}
+// `at` follows the backslash. Input preprocessing's CRLF/FF rules are applied
+// locally while consuming optional escape whitespace, without allocating.
+fn media_escape(source: &str, mut at: usize) -> (char, usize) {
+    let Some(ch) = source[at..].chars().next() else {
+        return ('\u{fffd}', at);
+    };
+    if !ch.is_ascii_hexdigit() {
+        return (ch, at + ch.len_utf8());
+    }
+    let mut value = 0;
+    for _ in 0..6 {
+        let Some(ch) = source
+            .as_bytes()
+            .get(at)
+            .filter(|ch| ch.is_ascii_hexdigit())
+        else {
+            break;
+        };
+        value = value * 16 + char::from(*ch).to_digit(16).unwrap();
+        at += 1;
+    }
+    if source[at..].starts_with("\r\n") {
+        at += 2;
+    } else if source[at..].chars().next().is_some_and(media_space) {
+        at += 1;
+    }
+    (
+        char::from_u32(value)
+            .filter(|ch| *ch != '\0')
+            .unwrap_or('\u{fffd}'),
+        at,
+    )
+}
+fn media_url_quoted(rest: &str) -> bool {
+    rest.strip_prefix('(').is_some_and(|inner| {
+        inner
+            .trim_start_matches(media_space)
+            .starts_with(['\'', '"'])
+    })
+}
+fn media_url_token(source: &str, mut at: usize) -> (MediaToken, usize) {
+    while source[at..].chars().next().is_some_and(media_space) {
+        at += 1;
+    }
+    let mut bad = false;
+    while at < source.len() {
+        let ch = source[at..].chars().next().unwrap();
+        at += ch.len_utf8();
+        if ch == ')' {
+            return (
+                if bad {
+                    MediaToken::Bad
+                } else {
+                    MediaToken::Other
+                },
+                at,
+            );
+        }
+        if ch == '\\' && !source[at..].starts_with(['\n', '\r', '\x0c']) {
+            at = media_escape(source, at).1;
+        } else if !bad {
+            if media_space(ch) {
+                while source[at..].chars().next().is_some_and(media_space) {
+                    at += 1;
+                }
+                bad = at < source.len() && !source[at..].starts_with(')');
+            } else if matches!(ch, '\'' | '"' | '(' | '\\' | '\x01'..='\x08' | '\x0b' | '\x0e'..='\x1f' | '\x7f')
+            {
+                bad = true;
+            }
+        }
+    }
+    (
+        if bad {
+            MediaToken::Bad
+        } else {
+            MediaToken::Other
+        },
+        at,
+    )
+}
+fn media_number_end(value: &str) -> Option<usize> {
+    let bytes = value.as_bytes();
+    let mut at = usize::from(matches!(bytes.first(), Some(b'+' | b'-')));
+    let start = at;
+    while bytes.get(at).is_some_and(u8::is_ascii_digit) {
+        at += 1;
+    }
+    let mut digits = at - start;
+    if bytes.get(at) == Some(&b'.') && bytes.get(at + 1).is_some_and(u8::is_ascii_digit) {
+        at += 1;
+        let start = at;
+        while bytes.get(at).is_some_and(u8::is_ascii_digit) {
+            at += 1;
+        }
+        digits += at - start;
+    }
+    if digits == 0 {
+        return None;
+    }
+    if matches!(bytes.get(at), Some(b'e' | b'E')) {
+        let mut exponent = at + 1;
+        if matches!(bytes.get(exponent), Some(b'+' | b'-')) {
+            exponent += 1;
+        }
+        if bytes.get(exponent).is_some_and(u8::is_ascii_digit) {
+            at = exponent + 1;
+            while bytes.get(at).is_some_and(u8::is_ascii_digit) {
+                at += 1;
+            }
+        }
+    }
+    Some(at)
+}
+#[derive(Clone, Copy, PartialEq)]
+enum MediaComparison {
+    Less,
+    LessEqual,
+    Equal,
+    GreaterEqual,
+    Greater,
+}
+impl MediaComparison {
+    fn compare(self, left: f64, right: f64) -> bool {
+        match self {
+            Self::Less => left < right,
+            Self::LessEqual => left <= right,
+            Self::Equal => left == right,
+            Self::GreaterEqual => left >= right,
+            Self::Greater => left > right,
+        }
+    }
+    fn direction(self) -> i8 {
+        match self {
+            Self::Less | Self::LessEqual => -1,
+            Self::Greater | Self::GreaterEqual => 1,
+            Self::Equal => 0,
+        }
+    }
+}
+fn media_dimension(name: &str, width: f64, height: f64) -> Option<f64> {
+    match media_name(name)?.as_str() {
+        "width" => Some(width),
+        "height" => Some(height),
+        _ => None,
+    }
+}
+fn media_range(feature: &str, width: f64, height: f64) -> Option<bool> {
+    let mut operators = [(0, 0, MediaComparison::Equal); 2];
+    let mut count = 0;
+    let bytes = feature.as_bytes();
+    let mut at = 0;
+    while at < bytes.len() {
+        let ch = bytes[at];
+        if matches!(ch, b'<' | b'>' | b'=') {
+            if count == operators.len() {
                 return None;
             }
-            let Length::Px(n) = parse_length(value, 16.0, 16.0, width, height)? else {
-                return None;
+            let equal = ch != b'=' && bytes.get(at + 1) == Some(&b'=');
+            let comparison = match (ch, equal) {
+                (b'<', false) => MediaComparison::Less,
+                (b'<', true) => MediaComparison::LessEqual,
+                (b'>', false) => MediaComparison::Greater,
+                (b'>', true) => MediaComparison::GreaterEqual,
+                _ => MediaComparison::Equal,
             };
+            let end = at + 1 + usize::from(equal);
+            operators[count] = (at, end, comparison);
+            count += 1;
+            at = end;
+        } else {
+            at += 1;
+        }
+    }
+    let (start, end, comparison) = operators[0];
+    let left = media_trim(&feature[..start]);
+    if count == 1 {
+        let right = media_trim(&feature[end..]);
+        if let Some(actual) = media_dimension(left, width, height) {
+            return Some(comparison.compare(actual, media_length(right, width, height)?));
+        }
+        return Some(comparison.compare(
+            media_length(left, width, height)?,
+            media_dimension(right, width, height)?,
+        ));
+    }
+    if count != 2 {
+        return None;
+    }
+    let (second_start, second_end, second) = operators[1];
+    if comparison.direction() == 0 || comparison.direction() != second.direction() {
+        return None;
+    }
+    let actual = media_dimension(&feature[end..second_start], width, height)?;
+    let lower = media_length(left, width, height)?;
+    let upper = media_length(media_trim(&feature[second_end..]), width, height)?;
+    Some(comparison.compare(lower, actual) && second.compare(actual, upper))
+}
+fn media_length(value: &str, width: f64, height: f64) -> Option<f64> {
+    // Consume exactly one CSS number/dimension. Rust float parsing alone also
+    // accepts forms such as `1.` that CSS tokenizes as a number plus delimiter.
+    let at = media_number_end(value)?;
+    let number = value[..at].parse::<f64>().ok()?;
+    if !number.is_finite() || number.abs() > 1_000_000.0 {
+        return None;
+    }
+    if at == value.len() {
+        return (number == 0.0).then_some(number);
+    }
+    let (unit, rest) = media_word(&value[at..])?;
+    if !rest.is_empty() {
+        return None;
+    }
+    let scale = match unit.as_str() {
+        "px" => 1.0,
+        "em" | "rem" | "pc" => 16.0,
+        "ex" | "ch" => 8.0,
+        "vw" | "dvw" | "svw" | "lvw" => width / 100.0,
+        "vh" | "dvh" | "svh" | "lvh" => height / 100.0,
+        "vmin" => width.min(height) / 100.0,
+        "vmax" => width.max(height) / 100.0,
+        "pt" => 96.0 / 72.0,
+        "in" => 96.0,
+        "cm" => 96.0 / 2.54,
+        "mm" => 96.0 / 25.4,
+        "q" => 96.0 / 101.6,
+        _ => return None,
+    };
+    let result = number * scale;
+    (result.is_finite() && result.abs() <= 1_000_000.0).then_some(result)
+}
+fn media_feature(feature: &str, width: f64, height: f64) -> Option<bool> {
+    let feature = media_trim(feature);
+    let Some((name, value)) = feature.split_once(':') else {
+        if let Some(name) = media_name(feature) {
+            return match name.as_str() {
+                "color" | "hover" | "any-hover" | "pointer" | "any-pointer" => Some(true),
+                "width" => Some(width > 0.0),
+                "height" => Some(height > 0.0),
+                _ => None,
+            };
+        }
+        return media_range(feature, width, height);
+    };
+    let name = media_name(name)?;
+    let value = media_trim(value);
+    match name.as_str() {
+        "min-width" | "max-width" | "width" | "min-height" | "max-height" | "height" => {
+            let n = media_length(value, width, height)?;
             let actual = if name.ends_with("height") {
                 height
             } else {
@@ -1009,35 +1441,35 @@ fn media_feature(feature: &str, width: f32, height: f32) -> Option<bool> {
             } else if name.starts_with("max-") {
                 actual <= n
             } else {
-                (actual - n).abs() < 0.01
+                actual == n
             })
         }
-        "orientation" => match value {
+        "orientation" => match media_name(value)?.as_str() {
             "landscape" => Some(width > height),
             "portrait" => Some(height >= width),
             _ => None,
         },
-        "prefers-color-scheme" => match value {
+        "prefers-color-scheme" => match media_name(value)?.as_str() {
             "light" => Some(true),
             "dark" => Some(false),
             _ => None,
         },
-        "prefers-reduced-motion" => match value {
+        "prefers-reduced-motion" => match media_name(value)?.as_str() {
             "reduce" => Some(true),
             "no-preference" => Some(false),
             _ => None,
         },
-        "hover" | "any-hover" => match value {
+        "hover" | "any-hover" => match media_name(value)?.as_str() {
             "hover" => Some(true),
             "none" => Some(false),
             _ => None,
         },
-        "pointer" | "any-pointer" => match value {
+        "pointer" | "any-pointer" => match media_name(value)?.as_str() {
             "fine" => Some(true),
             "coarse" | "none" => Some(false),
             _ => None,
         },
-        "display-mode" => match value {
+        "display-mode" => match media_name(value)?.as_str() {
             "browser" => Some(true),
             "fullscreen" | "standalone" | "minimal-ui" | "picture-in-picture" => Some(false),
             _ => None,
@@ -1624,7 +2056,7 @@ pub fn compute_styles_from_sources(
         if !source
             .media
             .iter()
-            .all(|media| media_matches(media, width, height))
+            .all(|media| media_matches_with_budget(media, width, height, &mut budget.work))
         {
             continue;
         }
@@ -3960,6 +4392,7 @@ mod tests {
             "not bogus",
             "screen and (min-width:20em) and (max-height:400px)",
             "(color) and (hover)",
+            "(color) or (hover)",
             "print, screen and (width:400px)",
             "bogus, (height:300px)",
             "not (min-width:800px)",
@@ -3986,7 +4419,6 @@ mod tests {
             "screen (color)",
             "screen and (color) garbage",
             "(color) (hover)",
-            "(color) or (hover)",
             "not (color) and (hover)",
             "not screen garbage",
             "print, bogus",
@@ -4014,7 +4446,7 @@ mod tests {
             "(min-height:1e999px)",
             "(orientation:diagonal)",
             "(pointer:laser)",
-            "(width > 200px)",
+            "(resolution > 2dppx)",
             "(min-width)",
         ] {
             assert!(!media_matches(feature, 400.0, 300.0), "{feature}");
@@ -4069,6 +4501,450 @@ mod tests {
         assert_eq!(narrow[x].color, Color::rgb(0, 128, 0));
         assert_eq!(wide[x].background_color, Color::rgb(0, 0, 255));
         assert_eq!(narrow[x].background_color, Color::TRANSPARENT);
+    }
+
+    #[test]
+    fn media_ranges_support_exact_reversed_and_double_comparisons() {
+        for query in [
+            "(width = 400px)",
+            "(400px = width)",
+            "(width>=400px)",
+            "(400px<=width)",
+            "(width<=400px)",
+            "(400px>=width)",
+            "(width > 399.999px)",
+            "(399.999px < width)",
+            "(width < 400.001px)",
+            "(400.001px > width)",
+            "(height=300px)",
+            "(300px=height)",
+            "(200px < width <= 400px)",
+            "(400px >= width > 200px)",
+            "(400px <= width <= 400px)",
+            "(400px >= width >= 400px)",
+            "(1px < height < 301px)",
+            "(301px > height > 1px)",
+            "(width > -1px)",
+            "(-1px < width)",
+            "not (height <= -1px)",
+            "(min-width:400px) and (max-width:400px)",
+        ] {
+            assert!(media_matches(query, 400.0, 300.0), "{query}");
+        }
+        for query in [
+            "(width > 400px)",
+            "(400px < width)",
+            "(width < 400px)",
+            "(400px > width)",
+            "(height > 300px)",
+            "(height < 300px)",
+            "(width = 400.001px)",
+            "(width:400.001px)",
+            "(width:399.999px)",
+            "(400px < width < 401px)",
+            "(399px < width < 400px)",
+            "(400px > width > 399px)",
+            "(401px > width > 400px)",
+            "(500px < width < 300px)",
+            "(300px > width > 500px)",
+            "(width = -1px)",
+            "(max-width:-1px)",
+        ] {
+            assert!(!media_matches(query, 400.0, 300.0), "{query}");
+        }
+        assert!(media_matches("(width:0) and (height = -0)", 0.0, 0.0));
+        assert!(!media_matches("(width) or (height)", 0.0, 0.0));
+        assert!(media_matches("(400px < width < 401px)", 400.5, 300.0));
+    }
+
+    #[test]
+    fn media_ranges_resolve_css_number_tokens_and_mixed_length_units() {
+        for query in [
+            "(20em < width <= 25rem)",
+            "(25EM >= WIDTH > +2e2PX)",
+            "(width = 100vw)",
+            "(height = 100vh)",
+            "(width = 25pc)",
+            "(height = 225pt)",
+            "(50ex <= width <= 50ch)",
+            "(width = 100vmax)",
+            "(height = 100vmin)",
+            "(width = 100svw)",
+            "(width = 100lvw)",
+            "(width = 100dvw)",
+            "(height = 100svh)",
+            "(height = 100lvh)",
+            "(height = 100dvh)",
+            "(.1px < width < +5e2px)",
+            "(0e3 <= width)",
+            r"(\77 idth >= 4e2p\78)",
+            r"sCrEeN \61 nd (WIDTH:400PX)",
+        ] {
+            assert!(media_matches(query, 400.0, 300.0), "{query}");
+        }
+        for query in [
+            "(width=1in)",
+            "(width=2.54cm)",
+            "(width=25.4mm)",
+            "(width=101.6q)",
+            "(width=72pt)",
+        ] {
+            assert!(media_matches(query, 96.0, 100.0), "{query}");
+        }
+        // Relative media units use initial metrics, never authored font-size.
+        let doc = Document::parse("<p id=x>text</p>");
+        let styles = compute_styles(
+            &doc,
+            &["html{font-size:100px}@media (width=25em){#x{color:red}}".into()],
+            400.0,
+            300.0,
+        );
+        assert_eq!(
+            styles[doc.query_selector("#x").unwrap()].color,
+            Color::rgb(255, 0, 0)
+        );
+    }
+
+    #[test]
+    fn media_grouped_conditions_obey_precedence_and_type_restrictions() {
+        for query in [
+            "(width > 1000px) or (height >= 300px)",
+            "((width > 1000px) or (height >= 300px)) and (color)",
+            "(not (width > 1000px)) and ((hover: none) or (pointer: fine))",
+            "not ((width > 1000px) or (height < 300px))",
+            "screen and ((width > 1000px) or (height >= 300px))",
+            "screen and not ((width > 1000px) or (height < 300px))",
+            "not print and ((width > 1000px) or (color))",
+            "(color)or (hover)",
+            "((color))",
+            r"\6e ot ((width > 1000px) \6f r (height < 300px))",
+            "((width=400px) and (height=300px)), print",
+        ] {
+            assert!(media_matches(query, 400.0, 300.0), "{query}");
+        }
+        for query in [
+            "(color) and (hover) or (pointer)",
+            "(color) or (hover) and (pointer)",
+            "not (hover:none) or (color)",
+            "not (hover:none) and (color)",
+            "(color) or not (hover:none)",
+            "(color) and not (hover:none)",
+            "screen and (color) or (hover)",
+            "not screen and (hover:none) or (color)",
+            "screen or (color)",
+            "only ((color))",
+            "not not (hover:none)",
+            "(color) or",
+            "or (color)",
+            "(color) or(hover)",
+            "(color) or () trailing",
+            "(color) and ((height > 500px) or (width > 500px))",
+            "not ((color) or (unknown-feature))",
+        ] {
+            assert!(!media_matches(query, 400.0, 300.0), "{query}");
+        }
+    }
+
+    #[test]
+    fn media_unknown_ranges_and_general_enclosed_use_three_valued_logic() {
+        for unknown in [
+            "(width > auto)",
+            "(width > 40%)",
+            "(width > 400)",
+            "(width > 400 px)",
+            "(width > 1.px)",
+            "(width > .px)",
+            "(width > +px)",
+            "(width > 1e999px)",
+            "(width > 1000001px)",
+            "(width > 1000000in)",
+            "(width > calc(1px + 1px))",
+            "(width > NaNpx)",
+            "(width > infinity)",
+            "(width == 400px)",
+            "(width => 400px)",
+            "(width !< 400px)",
+            "(width < = 500px)",
+            "(500px > = width)",
+            "(width >=)",
+            "(min-width > 1px)",
+            "(width > height)",
+            "(height:1px:2px)",
+            "(0 < width = 400px)",
+            "(0 < width > 400px)",
+            "(0 < width < 500px < 900px)",
+            "(resolution >= 2dppx)",
+            "(orientation > portrait)",
+            "(unknown > 1px)",
+            "unknown(function)",
+            "(future syntax [with, commas])",
+            "()",
+        ] {
+            assert!(!media_matches(unknown, 400.0, 300.0), "{unknown}");
+            assert!(
+                !media_matches(&format!("not {unknown}"), 400.0, 300.0),
+                "not {unknown}"
+            );
+            assert!(
+                !media_matches(&format!("{unknown} or (width > 1000px)"), 400.0, 300.0),
+                "{unknown} OR false"
+            );
+            assert!(
+                media_matches(&format!("{unknown} or (color)"), 400.0, 300.0),
+                "{unknown} OR true"
+            );
+            assert!(
+                !media_matches(&format!("{unknown} and (color)"), 400.0, 300.0),
+                "{unknown} AND true"
+            );
+            assert!(
+                media_matches(
+                    &format!("not ({unknown} and (width > 1000px))"),
+                    400.0,
+                    300.0
+                ),
+                "NOT ({unknown} AND false)"
+            );
+        }
+        assert!(media_matches("not print and (unknown)", 400.0, 300.0));
+        assert!(media_matches("not(color) or (hover)", 400.0, 300.0));
+        assert!(media_matches(
+            "(not (width > 500px) and (color)) or (hover)",
+            400.0,
+            300.0
+        ));
+        assert!(!media_matches(
+            "not (not (width > 500px) and (color))",
+            400.0,
+            300.0
+        ));
+    }
+
+    #[test]
+    fn media_general_enclosed_distinguishes_url_tokens_and_rejects_bad_tokens() {
+        for invalid in [
+            "url(foo)",
+            "URL(foo)",
+            "url()",
+            r"\75rl(foo)",
+            r"u\72l(foo)",
+            "url( foo )",
+            "unknown(url(foo bar))",
+            "(url(foo bar))",
+            "unknown(url(foo\"bar))",
+            "unknown(url(foo'bar))",
+            "unknown(url(foo(bar))",
+            "unknown(url(foo\\\nbar))",
+            "unknown(url(foo\\\r\nbar))",
+            "unknown(url(foo\u{7f}bar))",
+            "unknown(url(foo\u{b}bar))",
+            r"unknown(\75rl(foo bar))",
+            r"(URL(foo bar))",
+            "unknown(\"bad\n)",
+            "(\"bad\r)",
+        ] {
+            assert!(
+                !media_matches(&format!("{invalid} or (color)"), 400.0, 300.0),
+                "{invalid}"
+            );
+            assert!(
+                !media_matches(&format!("(color) or {invalid}"), 400.0, 300.0),
+                "{invalid}"
+            );
+            assert!(
+                !media_matches(&format!("not {invalid}"), 400.0, 300.0),
+                "not {invalid}"
+            );
+        }
+        for unknown in [
+            r#"url("foo")"#,
+            "url( \t'foo' )",
+            r#"\75rl("foo")"#,
+            "unknown(url(foo))",
+            "(url(foo))",
+            "unknown(url())",
+            "(url(  ))",
+            r"unknown(url(foo\ bar))",
+            r"unknown(url(foo\20 bar))",
+            r"unknown(url(foo\28 bar\29))",
+            r"unknown(url(foo\)bar))",
+            "unknown(url(foo[bar{baz]))",
+            "unknown(url(foo,bar))",
+            "unknown(1url(foo bar))",
+            "unknown(1.0url(foo bar))",
+            "unknown(1e2url(foo bar))",
+            "unknown(#url(foo bar))",
+            "unknown(@url(foo bar))",
+            "unknown(üurl(foo bar))",
+            r#"unknown("url(foo bar)")"#,
+            r#"unknown(url("foo bar"))"#,
+            r"unknown(u\72l(foo))",
+            r"unknown(\75\72\6c(foo))",
+            r"unknown(url(foo\000020bar))",
+        ] {
+            assert!(!media_matches(unknown, 400.0, 300.0), "{unknown}");
+            assert!(
+                media_matches(&format!("{unknown} or (color)"), 400.0, 300.0),
+                "{unknown}"
+            );
+            assert!(
+                media_matches(&format!("(color) or {unknown}"), 400.0, 300.0),
+                "{unknown}"
+            );
+        }
+        let punctuation = format!("unknown(url({})) or (color)", "[{},]".repeat(1000));
+        assert!(media_matches(&punctuation, 400.0, 300.0));
+        // The surrounding CSS parser still treats comments as separators;
+        // comments inside unquoted URL payloads remain an explicit limitation.
+        assert!(!media_matches(
+            "unknown(url(foo/**/bar)) or (color)",
+            400.0,
+            300.0
+        ));
+    }
+
+    #[test]
+    fn media_bad_url_recovery_keeps_lists_and_stylesheet_conditions_separate() {
+        for query in [
+            "url(foo), (color)",
+            "url(foo bar), (color)",
+            "unknown(url(foo bar)), (color)",
+            "(color), unknown(url(foo bar))",
+            "unknown(\"bad\n), (color)",
+            "(color), unknown(\"bad\n)",
+            "url(foo bar, bogus), (color)",
+        ] {
+            assert!(media_matches(query, 400.0, 300.0), "{query}");
+        }
+        for query in [
+            "url(foo, screen)",
+            "url(foo bar, screen)",
+            "unknown(url(foo bar, screen))",
+            "url(foo\\), screen)",
+            "unknown(url(foo\\), screen))",
+        ] {
+            assert!(!media_matches(query, 400.0, 300.0), "{query}");
+        }
+        let doc = Document::parse("<p id=x>text</p>");
+        let mut sources = vec![StyleSource::new("#x{color:green}")];
+        for invalid in ["url(foo) or (color)", "unknown(url(foo bar)) or (color)"] {
+            sources.push(StyleSource {
+                source: "#x{color:red}".into(),
+                layer: None,
+                media: vec![invalid.into()],
+            });
+            sources.push(StyleSource::new(format!(
+                "@media {invalid} {{#x{{color:red}}}}"
+            )));
+        }
+        sources.push(StyleSource::new(
+            r#"@media url("foo") or (color) {#x{background:blue}}"#,
+        ));
+        sources.push(StyleSource {
+            source: "#x{height:12px}".into(),
+            layer: None,
+            media: vec!["unknown(url(foo)) or (color)".into()],
+        });
+        let style = &compute_styles_from_sources(&doc, &sources, 400.0, 300.0)
+            [doc.query_selector("#x").unwrap()];
+        assert_eq!(style.color, Color::rgb(0, 128, 0));
+        assert_eq!(style.background_color, Color::rgb(0, 0, 255));
+        assert_eq!(style.height, Length::Px(12.0));
+    }
+
+    #[test]
+    fn media_conditions_have_shared_work_term_depth_and_list_limits() {
+        let conjunction = std::iter::repeat_n("(color)", 64)
+            .collect::<Vec<_>>()
+            .join(" and ");
+        assert!(media_matches(&conjunction, 400.0, 300.0));
+        assert!(!media_matches(
+            &format!("{conjunction} and (color)"),
+            400.0,
+            300.0
+        ));
+        let alternatives = std::iter::repeat_n("(color)", 64)
+            .collect::<Vec<_>>()
+            .join(" or ");
+        assert!(media_matches(&alternatives, 400.0, 300.0));
+        assert!(!media_matches(
+            &format!("{alternatives} or (unknown)"),
+            400.0,
+            300.0
+        ));
+        assert!(!media_matches(
+            &format!("{conjunction}, (color)"),
+            400.0,
+            300.0
+        ));
+        let nested = format!("{}color{}", "(".repeat(16), ")".repeat(16));
+        assert!(media_matches(&nested, 400.0, 300.0));
+        assert!(!media_matches(&format!("({nested})"), 400.0, 300.0));
+        assert!(!media_matches(&format!("all, ({nested})"), 400.0, 300.0));
+        assert!(!media_matches(
+            &format!("(color) or ({}x)", " ".repeat(MAX_MEDIA_BYTES)),
+            400.0,
+            300.0
+        ));
+        assert!(!media_matches("all", -1.0, 300.0));
+        assert!(!media_matches("all", 400.0, f32::INFINITY));
+        let mut work = 1;
+        assert!(!media_matches_with_budget("all", 400.0, 300.0, &mut work));
+        assert_eq!(work, 0);
+        let mut work = 400;
+        let mut matches = 0;
+        for _ in 0..100 {
+            matches += usize::from(media_matches_with_budget(
+                "((width >= 200px) or (color))",
+                400.0,
+                300.0,
+                &mut work,
+            ));
+        }
+        assert!(matches > 0 && matches < 100);
+        assert_eq!(work, 0);
+    }
+
+    #[test]
+    fn media_ranges_control_layers_and_import_metadata_at_viewport_boundaries() {
+        let doc = Document::parse("<p id=x>text</p>");
+        let conditional = StyleSource {
+            source: "#x{color:red}".into(),
+            layer: CascadeLayer::named(None, "conditional"),
+            media: vec![
+                "(200px < width <= 400px)".into(),
+                "(height = 300px) or (orientation:portrait)".into(),
+            ],
+        };
+        let sources = [
+            conditional,
+            StyleSource::new(
+                "@layer fallback {#x{color:green}} @media ((width > 400px) or (height > 300px)) {#x{background:blue}}",
+            ),
+            StyleSource::new("@layer conditional {#x{color:red}}"),
+        ];
+        let x = doc.query_selector("#x").unwrap();
+        let inside = compute_styles_from_sources(&doc, &sources, 400.0, 300.0);
+        let outside = compute_styles_from_sources(&doc, &sources, 400.5, 300.0);
+        assert_eq!(inside[x].color, Color::rgb(0, 128, 0));
+        assert_eq!(inside[x].background_color, Color::TRANSPARENT);
+        assert_eq!(outside[x].color, Color::rgb(255, 0, 0));
+        assert_eq!(outside[x].background_color, Color::rgb(0, 0, 255));
+        let empty = StyleSource {
+            source: "".into(),
+            layer: CascadeLayer::named(None, "outer"),
+            media: vec!["(width > 400px) or (width <= 400px) and (color)".into()],
+        };
+        let sheets = [
+            empty,
+            StyleSource::new(
+                "@layer other, outer;@layer outer{#x{color:red}}@layer other{#x{color:green}}",
+            ),
+        ];
+        assert_eq!(
+            compute_styles_from_sources(&doc, &sheets, 400.0, 300.0)[x].color,
+            Color::rgb(255, 0, 0)
+        );
     }
 
     #[test]

@@ -13,6 +13,82 @@ fn page(source: &str) -> Page {
 }
 
 #[test]
+fn responsive_notes_reflow_on_resize_and_interpolate_clicked_readings() {
+    let mut p = page(include_str!("../examples/responsive.html"));
+    assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+    let button = p.document.query_selector("#advance").unwrap();
+    for (status, next) in [
+        ("Reading 2 · midday", "Return at evening"),
+        ("Reading 3 · evening", "Return tomorrow morning"),
+        ("Reading 4 · morning", "Return at midday"),
+    ] {
+        assert!(p.click(button).is_none());
+        assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+        for (selector, expected) in [("#status", status), ("#next", next)] {
+            assert_eq!(
+                p.document
+                    .text_content(p.document.query_selector(selector).unwrap()),
+                expected
+            );
+        }
+    }
+    let cards = p.document.query_selector_all(".sample");
+    assert_eq!(cards.len(), 6);
+    let fonts = Fonts::new();
+    for (width, visible) in [
+        (960, "#wide"),
+        (800, "#medium"),
+        (390, "#compact"),
+        (960, "#wide"),
+    ] {
+        let layout = p.layout(width as f32, 900.0, &fonts);
+        let boxes = cards
+            .iter()
+            .map(|node| {
+                layout
+                    .hit_regions
+                    .iter()
+                    .find(|hit| hit.node == *node)
+                    .unwrap()
+                    .rect
+            })
+            .collect::<Vec<_>>();
+        if width >= 640 {
+            for pair in boxes.as_chunks::<2>().0 {
+                assert_eq!(pair[0].x, pair[1].x);
+                assert!((pair[1].y - pair[0].y - 90.0).abs() < 0.01);
+            }
+            assert!(boxes[0].x < boxes[2].x && boxes[2].x < boxes[4].x);
+            assert_eq!(boxes[0].y, boxes[2].y);
+            assert_eq!(boxes[0].y, boxes[4].y);
+        } else {
+            for pair in boxes.windows(2) {
+                assert_eq!(pair[0].x, pair[1].x);
+                assert!((pair[1].y - pair[0].y - 90.0).abs() < 0.01);
+            }
+        }
+        for selector in ["#wide", "#medium", "#compact"] {
+            let node = p.document.query_selector(selector).unwrap();
+            assert_eq!(
+                layout.hit_regions.iter().any(|hit| hit.node == node),
+                selector == visible
+            );
+        }
+        let mut canvas = Canvas::new(width, 900).unwrap();
+        canvas.clear(Color::WHITE);
+        canvas.paint(&layout.commands, &fonts, &p.images, 0.0, 0.0);
+        assert!(!canvas.exhausted());
+        for rect in boxes {
+            let x = (rect.x + 2.0) as usize;
+            let y = (rect.y + 40.0) as usize;
+            if y < 900 {
+                assert_eq!(canvas.pixels[y * width as usize + x], 0x203441);
+            }
+        }
+    }
+}
+
+#[test]
 fn positioning_demo_loads_imports_executes_regexp_and_keeps_fixed_pixels_during_scroll() {
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("examples/positioning.html");
     let mut p = Page::load(Url::from_file_path(path).unwrap().as_str(), true).unwrap();

@@ -25,4 +25,6 @@ jobs:
         run: python3 tools/test262_conformance.py --baseline tests/conformance/test262-current.json
       - name: Preserve passing cases in the separate pinned RegExp selection
         run: python3 tools/test262_conformance.py --profile regexp --baseline tests/conformance/test262-regexp-current.json --output artifacts/test262-regexp-gate.json
+      - name: Preserve passing cases in the pinned template literal selection
+        run: python3 tools/test262_conformance.py --profile template-literal --baseline tests/conformance/test262-template-literal-current.json --output artifacts/test262-template-literal-gate.json
       - run: timeout 180s target/release/eris-stress 5000

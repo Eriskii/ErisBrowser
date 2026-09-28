@@ -13,11 +13,15 @@ import sys
 import time
 
 from html_conformance import bounded_process, paths_alias
-from import_test262 import DIRECTORIES, PROFILES, MAX_FILE, MAX_TOTAL, REPOSITORY, REVISION, parse_metadata
+from import_test262 import (DIRECTORIES, PROFILES, PROFILE_ROOTS, MAX_FILE, MAX_TOTAL,
+                            REPOSITORY, REVISION, corpus_name, parse_metadata)
 
 ROOT = Path(__file__).resolve().parents[1]
 SUPPORTED_FEATURES = {'arrow-function', 'String.fromCodePoint', 'well-formed-json-stringify', 'for-in-order'}
 REGEXP_FEATURES = SUPPORTED_FEATURES | {'regexp-dotall', 'regexp-match-indices', 'regexp-named-groups', 'regexp-sticky'}
+TEMPLATE_FEATURES = SUPPORTED_FEATURES | {'template', 'u180e'}
+PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+                    'template-literal': TEMPLATE_FEATURES}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -69,7 +73,7 @@ def load_corpus(directory, profile='string-json'):
                 or len(set(filenames)) != count
                 or any(not re.fullmatch(r'[A-Za-z0-9_.-]+\.js', value) for value in filenames)):
             raise ValueError(f'pinned Test262 directory inventory mismatch: {name}')
-        expected_tests.update(f'test/built-ins/{name}/{value}' for value in filenames)
+        expected_tests.update(f'{PROFILE_ROOTS[profile]}/{name}/{value}' for value in filenames)
     if manifest.get('test_files') != len(expected_tests):
         raise ValueError('Test262 test file count differs from pinned inventory')
     files = {}
@@ -273,6 +277,17 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
         ]
         variants += [(name, source, expected, mode)
                      for mode in ('sloppy', 'strict') for name, source, expected in checks]
+    if profile == 'template-literal':
+        checks = [
+            ('template-success', "assert.sameValue(`a${1 + 2}b${`c${4}`}d`, 'a3bc4d');", 'passed'),
+            ('template-cooked-mismatch', r"assert.sameValue(`\uD800${'x'}`, 'wrong');", 'failed'),
+            ('template-order', "var log='';var value={toString:function(){log+='s';return 'v';}};function next(){log+='n';return 2;}assert.sameValue(`${value}${next()}`, 'v2');assert.sameValue(log,'sn');", 'passed'),
+            ('template-order-mismatch', "var log='';var value={toString:function(){log+='s';return 'v';}};function next(){log+='n';return 2;}var text=`${value}${next()}`;assert.sameValue(log,'ns');", 'failed'),
+            ('template-line-normalization', "assert.sameValue(`a\r\nb\rc`, 'a\\nb\\nc');", 'passed'),
+            ('template-tag-unsupported', "function tag(x){return x;} tag`a${1}`;", 'unsupported'),
+        ]
+        variants += [(name, source, expected, mode)
+                     for mode in ('sloppy', 'strict') for name, source, expected in checks]
     outcomes = []
     for name, source, expected, mode in variants:
         includes = ['propertyHelper.js'] if 'property-' in name else []
@@ -317,10 +332,8 @@ def main():
     parser.add_argument('--jobs', type=int, default=4)
     parser.add_argument('--timeout', type=float, default=3.0)
     args = parser.parse_args()
-    args.corpus = args.corpus or ROOT / 'tests/upstream' / (
-        'test262' if args.profile == 'string-json' else 'test262-regexp')
-    args.output = args.output or ROOT / 'artifacts' / (
-        'test262-report.json' if args.profile == 'string-json' else 'test262-regexp-report.json')
+    args.corpus = args.corpus or ROOT / 'tests/upstream' / corpus_name(args.profile)
+    args.output = args.output or ROOT / 'artifacts' / f'{corpus_name(args.profile)}-report.json'
     if args.baseline and args.record_baseline:
         parser.error('baseline checking and recording are mutually exclusive')
     if any(path is not None and paths_alias(path, args.output)
@@ -335,7 +348,7 @@ def main():
         binary_hash = digest(binary.read_bytes())
         preflight = harness_preflight(files, binary, args.timeout, args.profile)
         preflight_ok = all(item['verified'] for item in preflight)
-        supported_features = SUPPORTED_FEATURES if args.profile == 'string-json' else REGEXP_FEATURES
+        supported_features = PROFILE_FEATURES[args.profile]
         with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as pool:
             results = list(pool.map(lambda case: run_case(case, binary, args.timeout, supported_features), cases))
         counts = dict(Counter(result['status'] for result in results))
