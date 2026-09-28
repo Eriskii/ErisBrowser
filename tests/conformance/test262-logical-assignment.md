@@ -1,5 +1,11 @@
 # Pinned Test262 logical-assignment inventory
 
+Current update: [Symbol primitive conversion](symbols.md) adds six passing
+modes. The complete inventory now has **78 passed / 6 failed / 48 unsupported**,
+with all 104 controls verified. Class syntax accounts for the remaining failures.
+The passing-case baseline is updated; the original measurements below remain
+historical evidence.
+
 The profile retains every direct JavaScript file in
 [language/expressions/logical-assignment](https://github.com/tc39/test262/tree/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/language/expressions/logical-assignment)
 at revision `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`: **78 sources, 86,430

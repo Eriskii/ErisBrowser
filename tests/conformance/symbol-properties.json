@@ -1,0 +1,1416 @@
+{
+  "recorded_date_utc": "2026-09-28",
+  "kind": "Symbol identities, property keys, primitive hooks and reflection",
+  "before": {
+    "head": "97ea66c8402945358350799b8abbf28d0acb7cad",
+    "source_input_sha256": "e314cfc86bed205fa1f32ae17320d4dead05055c468d81e94f424afe9ab107fb",
+    "files": {
+      "src/script.rs": "129c27b7c0ce533966ab046dcf2f1cc9a15e4de5668ab9c8a391984218fd0dd1",
+      "src/script/machine.rs": "b0ecb7a95e29eea4e3523c81f7a0aa02515b9811cfb13500666318c4ac03daa2",
+      "src/script/machine/statements.rs": "3a108908df6b75a177f34ac9b8191a96b1acad84d08fae9cb0e89206b8f219ce",
+      "src/script/machine/calls.rs": "f3536815973ae97972c89ee90a701d2443d419561ab214463dcc7350867a073e",
+      "src/js_string.rs": "511a2325e6b1e2f99ced2a4e9c3b26c7b2ef4d31ecd3c522445cb38f5f1f62ee",
+      "tools/test262_conformance.py": "d403828f7e9eb48af270e899c2d076e9748712e9372e3c29a07e59033558eb6c",
+      "tools/import_test262.py": "8f494c743aed111da6a7df040994b35f9132945c535f969036da152a101dfe38",
+      "target/release/eris-js": "af3f3205e0a7f13ade2a9236ca22bf8bfefe20ef947a3c106e48c7f0bb711da7",
+      "target/release/eris-browser": "dfc989f3cff62c3422bc78972b1bd53f0e2bd74f54a92fe4f141e97d6c32459f"
+    },
+    "ci": {
+      "commit": "97ea66c8402945358350799b8abbf28d0acb7cad",
+      "run": 36480560165,
+      "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/36480560165",
+      "status": "completed",
+      "conclusion": "success",
+      "jobs": {
+        "test": "success",
+        "minimum-rust": "success",
+        "vulkan-probe": "success"
+      }
+    },
+    "profiles": {
+      "string-json": {
+        "path": "artifacts/string-json-parser-continuations-final.json",
+        "sha256": "9bd42e2d32c2fe3ce968a4e736d31dd318a4b867380cf472281b437085740678"
+      },
+      "regexp": {
+        "path": "artifacts/regexp-parser-continuations-final.json",
+        "sha256": "c8d39861038125e64c97b5de90775ff835ab4c64393322c8ac3647d0a88d4e0c"
+      },
+      "template-literal": {
+        "path": "artifacts/template-literal-parser-continuations-final.json",
+        "sha256": "612e8ed65a4561fb8d05326d0d94245851dd610f55e6bfcfe6a513f410c3cd18"
+      },
+      "rest-parameters": {
+        "path": "artifacts/rest-parameters-parser-continuations-final.json",
+        "sha256": "8f84e5537baf659e97ff53336c41f9db4961288331461f5f2a305bec794027c4"
+      },
+      "is-prototype-of": {
+        "path": "artifacts/is-prototype-of-parser-continuations-final.json",
+        "sha256": "2a05623c13e2a094a47cfa81cf021c880e120b978c2fd5e89a30805f5b24f5eb"
+      },
+      "global-values": {
+        "path": "artifacts/global-values-parser-continuations-final.json",
+        "sha256": "0baa29793782c38ed7793e614908818419b6e3443637bb773ceb992452046d93"
+      },
+      "array-reduce": {
+        "path": "artifacts/array-reduce-parser-continuations-final.json",
+        "sha256": "8405ee6c478c413cc5e6b4ebb3af1fe3d2612d8db32239e9abb1508ae28fe79b"
+      },
+      "number-statics": {
+        "path": "artifacts/number-statics-parser-continuations-final.json",
+        "sha256": "622c5fc2e62b4339939280a3cb0b1eb97cf1ce0e3599b5b8ce0673fa235a19e6"
+      },
+      "numeric-conversion": {
+        "path": "artifacts/numeric-conversion-parser-continuations-final.json",
+        "sha256": "b2740b779115ce5cec138c096d826d786b2a52c3303e2863a720e4d3e7f0bc60"
+      },
+      "compound-assignment": {
+        "path": "artifacts/compound-assignment-parser-continuations-final.json",
+        "sha256": "2c8c1ada1af9996430f0bc1926ca09b2c2cb6f98de16b98bd351209bca3b4ee0"
+      },
+      "addition": {
+        "path": "artifacts/addition-parser-continuations-final.json",
+        "sha256": "21ec8a4c17a1db5c0b589684651024de294e50fcad43f6ff04af9a19c4a75c63"
+      },
+      "logical-assignment": {
+        "path": "artifacts/logical-assignment-parser-continuations-final.json",
+        "sha256": "718372e8b10519b9c55c6b20d892cf67371b254a14a1e094bb2a10e0e447f6fa"
+      },
+      "relational": {
+        "path": "artifacts/relational-parser-continuations-final.json",
+        "sha256": "af6bf5c37f048036a31330905e81f69d7210a37fad13fa89b0be71e0175cffac"
+      },
+      "equality": {
+        "path": "artifacts/equality-parser-continuations-final.json",
+        "sha256": "28e7018eb94f3252f6278a3982450c03b4fa44ef45a5c050faa51c13628b8aa1"
+      },
+      "labels": {
+        "path": "artifacts/labels-parser-continuations-final.json",
+        "sha256": "90eee61cfada22a907d5bfc3aabedbb7bcf899337537f886deb4cc0a9aa6d442"
+      },
+      "functions": {
+        "path": "artifacts/functions-parser-continuations-final.json",
+        "sha256": "cb04d41f57486bce18c5def170b1b3ba09e8ad62943364f2bbba6bbe243f751c"
+      },
+      "uri": {
+        "path": "artifacts/uri-parser-continuations-final.json",
+        "sha256": "237b2b627f710232d77bd019f494180d3a5d84aefdb5da2f6edf080783bc5903"
+      },
+      "numeric-parsing": {
+        "path": "artifacts/numeric-parsing-parser-continuations-final.json",
+        "sha256": "b709d49938e7e121001d3ca81ac3a22479977ee7546d4ca07039aa92cd700c6b"
+      },
+      "array-sort": {
+        "path": "artifacts/array-sort-parser-continuations-final.json",
+        "sha256": "c9673c10e8a44174413fdd2acd6ce0745785be2e9d8e775ce7254008cff2537d"
+      },
+      "identifiers": {
+        "path": "artifacts/identifiers-parser-continuations-final.json",
+        "sha256": "b1aff435d31d68315f8ef43c602c2b579ae2bd76421c8fe8b1b82f01ab8616c7"
+      }
+    }
+  },
+  "source_input_sha256": "857547575004ab839a59028a72d9e709413f2b1ced8cad2d52c2da5bb39dc0c9",
+  "source_files": {
+    "src/script.rs": "cc9f260e1cadb19c05cfca5880aaeb9f0d273b9227d71b34a2d83fd90f760955",
+    "src/script/machine.rs": "8fa0359fa97d7437a32991f0fda54376f08b2763d7543d89d8834357004f36e8",
+    "src/script/property_keys.rs": "7bd4055f08eb2d05b798b16b02c0ddf6e03a5a3fce2c269633e2967f92c665a3",
+    "src/script/symbols.rs": "7b922572d43b48953b350195c2b50e769b96d49ff1f39d2ba23b6393fa78ef32",
+    "tools/import_test262.py": "93eeed9331745835f9003e040b0f479d1fc459bdc2df46bcf85e0400e61e139b",
+    "tools/test262_conformance.py": "5863840f6cb74fe9c4cb6295022309a5c15a3fd30ad29da32620e2061bcb3d33",
+    "tools/test_test262_symbols.py": "10dbc7acd7707e2f23e74c85042216c7f13bc725714f6bcee7d58f5644162073"
+  },
+  "release_binaries": {
+    "eris-browser": "cbe8691a6bc4c5af6edaba8bbf15349a3aedd669a17d5d52e130ff9a8f04aea4",
+    "eris-js": "4b890d92a4027dc929be92ba366b0cf670f94f18e4bfb28025e365aba6bbab57",
+    "eris-dom": "b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb",
+    "eris-stress": "3335cf7c7732ac618dee11202075241ce00fb8c00dab452b37e33bb13538b381"
+  },
+  "existing_upstream_profiles": [
+    {
+      "profile": "string-json",
+      "source_files": 326,
+      "mode_cases": 652,
+      "before_counts": {
+        "passed": 536,
+        "unsupported": 116
+      },
+      "after_counts": {
+        "passed": 536,
+        "unsupported": 116
+      },
+      "preflights": 32,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "f073410553ed7cac9c6ddb0d5d10da1e52616d067a0310578e84cbf000df4191",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "changed_preflight_observations": [],
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "before_raw_report": "artifacts/string-json-parser-continuations-final.json",
+      "before_raw_report_sha256": "9bd42e2d32c2fe3ce968a4e736d31dd318a4b867380cf472281b437085740678",
+      "after_raw_report": "artifacts/string-json-symbols-final.json",
+      "after_raw_report_sha256": "9e9ec5dcebb5dfcc2cd74e068742b96bc870da21b9065a821fcb24e23598f8f0"
+    },
+    {
+      "profile": "regexp",
+      "source_files": 145,
+      "mode_cases": 290,
+      "before_counts": {
+        "passed": 250,
+        "unsupported": 40
+      },
+      "after_counts": {
+        "passed": 250,
+        "unsupported": 40
+      },
+      "preflights": 44,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "33c8319c02da5367a5ac2596cbb48fc3176839740935966754ea0370f4408fa0",
+      "runner_policy_sha256": "0997761beccb3ac2d6d387c373fe92b5fc59157e9a2e1114677d99433f867e4f",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "changed_preflight_observations": [],
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "before_raw_report": "artifacts/regexp-parser-continuations-final.json",
+      "before_raw_report_sha256": "c8d39861038125e64c97b5de90775ff835ab4c64393322c8ac3647d0a88d4e0c",
+      "after_raw_report": "artifacts/regexp-symbols-final.json",
+      "after_raw_report_sha256": "15dd16bc70213ea6b0014efbc7fff548ec94ba9606d028dcbb3d6bce728bc4f4"
+    },
+    {
+      "profile": "template-literal",
+      "source_files": 57,
+      "mode_cases": 114,
+      "before_counts": {
+        "unsupported": 32,
+        "passed": 82
+      },
+      "after_counts": {
+        "unsupported": 32,
+        "passed": 82
+      },
+      "preflights": 44,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "58951312763d816ca4cc139a4fcb2bf63f43a81414b91bf673f65c450b217d94",
+      "runner_policy_sha256": "17b229706fb4915c6c9d5daf4daa74129f2ac470bba8d993487356f12384517e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "changed_preflight_observations": [],
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "before_raw_report": "artifacts/template-literal-parser-continuations-final.json",
+      "before_raw_report_sha256": "612e8ed65a4561fb8d05326d0d94245851dd610f55e6bfcfe6a513f410c3cd18",
+      "after_raw_report": "artifacts/template-literal-symbols-final.json",
+      "after_raw_report_sha256": "6f6cd612668b9d23020b5196bb6abb457aabcfb045577fcc2218f49695253feb"
+    },
+    {
+      "profile": "functions",
+      "source_files": 663,
+      "mode_cases": 1131,
+      "before_counts": {
+        "passed": 511,
+        "unsupported": 620
+      },
+      "after_counts": {
+        "passed": 511,
+        "unsupported": 620
+      },
+      "preflights": 48,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "15281ebe6e6c980c547f113563df7d2b5d346ac0db5c9c4aca75dbb6fc60b330",
+      "runner_policy_sha256": "952e68b04e464d1a954c5949b0b9bbd8924472b8fba70a719a20a754d4d03439",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "changed_preflight_observations": [],
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "before_raw_report": "artifacts/functions-parser-continuations-final.json",
+      "before_raw_report_sha256": "cb04d41f57486bce18c5def170b1b3ba09e8ad62943364f2bbba6bbe243f751c",
+      "after_raw_report": "artifacts/functions-symbols-final.json",
+      "after_raw_report_sha256": "188b5527263f8af3786a0ebfbf3e5a1e5e6f3ac272a1d12de1ffd783749c4a6b"
+    },
+    {
+      "profile": "rest-parameters",
+      "source_files": 11,
+      "mode_cases": 22,
+      "before_counts": {
+        "unsupported": 6,
+        "passed": 16
+      },
+      "after_counts": {
+        "unsupported": 6,
+        "passed": 16
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "a3e15e061fc8c9cac736e081554f3e42b497d805ebfd7647ea49736cb2d83be5",
+      "runner_policy_sha256": "b579a37e261689714f4b2e41fe933581aa246348bafa391f2dba7c8aec4edacc",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "changed_preflight_observations": [],
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "before_raw_report": "artifacts/rest-parameters-parser-continuations-final.json",
+      "before_raw_report_sha256": "8f84e5537baf659e97ff53336c41f9db4961288331461f5f2a305bec794027c4",
+      "after_raw_report": "artifacts/rest-parameters-symbols-final.json",
+      "after_raw_report_sha256": "6cb891fcf66dfc458687c28a640289287a610e9f31b4ab6dfd74c5aa5082b5c9"
+    },
+    {
+      "profile": "is-prototype-of",
+      "source_files": 10,
+      "mode_cases": 20,
+      "before_counts": {
+        "unsupported": 10,
+        "passed": 10
+      },
+      "after_counts": {
+        "unsupported": 10,
+        "passed": 10
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "f019dcc5e150cf14a6b144577a30937ed1314c6b5de3dd331ad574585f16d461",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "changed_preflight_observations": [],
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "before_raw_report": "artifacts/is-prototype-of-parser-continuations-final.json",
+      "before_raw_report_sha256": "2a05623c13e2a094a47cfa81cf021c880e120b978c2fd5e89a30805f5b24f5eb",
+      "after_raw_report": "artifacts/is-prototype-of-symbols-final.json",
+      "after_raw_report_sha256": "229ef996f149d44a9188abff030c1bc873a98d96315032bdee987a0b08ac6704"
+    },
+    {
+      "profile": "global-values",
+      "source_files": 49,
+      "mode_cases": 88,
+      "before_counts": {
+        "passed": 42,
+        "unsupported": 40,
+        "failed": 6
+      },
+      "after_counts": {
+        "passed": 42,
+        "unsupported": 40,
+        "failed": 6
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "c1b627a7249d3ab460d5be88b54f34ead98c375c160bee9e72379aef213894a4",
+      "runner_policy_sha256": "f096c9be039b6e5a005d3997e38d8da419399e8c6e8d3a23d2162d20c1763d03",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "changed_preflight_observations": [],
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "before_raw_report": "artifacts/global-values-parser-continuations-final.json",
+      "before_raw_report_sha256": "0baa29793782c38ed7793e614908818419b6e3443637bb773ceb992452046d93",
+      "after_raw_report": "artifacts/global-values-symbols-final.json",
+      "after_raw_report_sha256": "2a3870c3ae3c31806555f0ab1629880f100f05c160f8e2f49a78c6b6ac0ac59b"
+    },
+    {
+      "profile": "array-sort",
+      "source_files": 54,
+      "mode_cases": 107,
+      "before_counts": {
+        "passed": 57,
+        "unsupported": 46,
+        "resource": 4
+      },
+      "after_counts": {
+        "passed": 57,
+        "unsupported": 46,
+        "resource": 4
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "d6f43dd379ae49ae08f959596852e28e6bd33a0420eb699d763ff696b0e961d2",
+      "runner_policy_sha256": "8621a5b10295e4a41806178744c4e906157ef78c884220a154860fae829fd205",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "changed_preflight_observations": [],
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "before_raw_report": "artifacts/array-sort-parser-continuations-final.json",
+      "before_raw_report_sha256": "c9673c10e8a44174413fdd2acd6ce0745785be2e9d8e775ce7254008cff2537d",
+      "after_raw_report": "artifacts/array-sort-symbols-final.json",
+      "after_raw_report_sha256": "1b9970dcab11889c1a54473abc21bd8b80d1e28a404d2138e9a0ec127d8ef2b6"
+    },
+    {
+      "profile": "identifiers",
+      "source_files": 335,
+      "mode_cases": 669,
+      "before_counts": {
+        "passed": 509,
+        "unsupported": 154,
+        "resource": 6
+      },
+      "after_counts": {
+        "passed": 509,
+        "unsupported": 154,
+        "resource": 6
+      },
+      "preflights": 88,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "b93b9e76f5231a3d342d95fe0a8cf47ca79c2a3101f2a78e4d5bb564c4d06ea8",
+      "runner_policy_sha256": "bdbeba5b53e7ef315e7f06e78fe8c66247cd7dd9ae2545ac5ec25749b94d95d5",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "changed_preflight_observations": [],
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "before_raw_report": "artifacts/identifiers-parser-continuations-final.json",
+      "before_raw_report_sha256": "b1aff435d31d68315f8ef43c602c2b579ae2bd76421c8fe8b1b82f01ab8616c7",
+      "after_raw_report": "artifacts/identifiers-symbols-final.json",
+      "after_raw_report_sha256": "5d47b83623ec2ba76594173f2e1da6e913d0137cd2b6bc10e0aee0ce963f3ed6"
+    },
+    {
+      "profile": "array-reduce",
+      "source_files": 520,
+      "mode_cases": 1034,
+      "before_counts": {
+        "passed": 848,
+        "failed": 16,
+        "unsupported": 170
+      },
+      "after_counts": {
+        "passed": 856,
+        "failed": 8,
+        "unsupported": 170
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "77ee716188d99fdba64adbe151ef4efd915fbaa6345b2b0ec8fe3550efb5ec24",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "changed_preflight_observations": [],
+      "lost_passes": [],
+      "newly_passing": [
+        "test/built-ins/Array/prototype/reduce/15.4.4.21-1-10.js:sloppy",
+        "test/built-ins/Array/prototype/reduce/15.4.4.21-1-10.js:strict",
+        "test/built-ins/Array/prototype/reduce/15.4.4.21-1-13.js:sloppy",
+        "test/built-ins/Array/prototype/reduce/15.4.4.21-1-13.js:strict",
+        "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-10.js:sloppy",
+        "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-10.js:strict",
+        "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-13.js:sloppy",
+        "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-13.js:strict"
+      ],
+      "changed_observations": [
+        {
+          "id": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-10.js:sloppy",
+          "before": {
+            "id": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-10.js:sloppy",
+            "file": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-10.js",
+            "mode": "sloppy",
+            "case_sha256": "7ee71a74627c2c8ac34017589de45600fb9d75acb509983dda505d8b8b5f3e43",
+            "source_sha256": "9739083d9f8e6665f1d1daaf643aa96bb22be756e4fddb036b39a99f10b54031",
+            "expected_negative": null,
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Test262Error",
+              "error_identity": "",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            }
+          },
+          "after": {
+            "id": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-10.js:sloppy",
+            "file": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-10.js",
+            "mode": "sloppy",
+            "case_sha256": "7ee71a74627c2c8ac34017589de45600fb9d75acb509983dda505d8b8b5f3e43",
+            "source_sha256": "9739083d9f8e6665f1d1daaf643aa96bb22be756e4fddb036b39a99f10b54031",
+            "expected_negative": null,
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            }
+          }
+        },
+        {
+          "id": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-10.js:strict",
+          "before": {
+            "id": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-10.js:strict",
+            "file": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-10.js",
+            "mode": "strict",
+            "case_sha256": "b174f68faca570bcdc36e50639064ab3ca4c93caa1aaf83b174865358fe2b91a",
+            "source_sha256": "9739083d9f8e6665f1d1daaf643aa96bb22be756e4fddb036b39a99f10b54031",
+            "expected_negative": null,
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Test262Error",
+              "error_identity": "",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            }
+          },
+          "after": {
+            "id": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-10.js:strict",
+            "file": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-10.js",
+            "mode": "strict",
+            "case_sha256": "b174f68faca570bcdc36e50639064ab3ca4c93caa1aaf83b174865358fe2b91a",
+            "source_sha256": "9739083d9f8e6665f1d1daaf643aa96bb22be756e4fddb036b39a99f10b54031",
+            "expected_negative": null,
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            }
+          }
+        },
+        {
+          "id": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-13.js:sloppy",
+          "before": {
+            "id": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-13.js:sloppy",
+            "file": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-13.js",
+            "mode": "sloppy",
+            "case_sha256": "121bc7be4f9dcdb3347699f2348f396e5f3681e37f692de277be9a8095272460",
+            "source_sha256": "3bf1768ad446fce675ba1cb3feb329de3d405b7826a81e27b5f4aefd242df705",
+            "expected_negative": null,
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Test262Error",
+              "error_identity": "",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            }
+          },
+          "after": {
+            "id": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-13.js:sloppy",
+            "file": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-13.js",
+            "mode": "sloppy",
+            "case_sha256": "121bc7be4f9dcdb3347699f2348f396e5f3681e37f692de277be9a8095272460",
+            "source_sha256": "3bf1768ad446fce675ba1cb3feb329de3d405b7826a81e27b5f4aefd242df705",
+            "expected_negative": null,
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            }
+          }
+        },
+        {
+          "id": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-13.js:strict",
+          "before": {
+            "id": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-13.js:strict",
+            "file": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-13.js",
+            "mode": "strict",
+            "case_sha256": "488148aa49db0d96deeefa0d83fde3e0f00c4ac289b4401c774314e64a9ac1df",
+            "source_sha256": "3bf1768ad446fce675ba1cb3feb329de3d405b7826a81e27b5f4aefd242df705",
+            "expected_negative": null,
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Test262Error",
+              "error_identity": "",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            }
+          },
+          "after": {
+            "id": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-13.js:strict",
+            "file": "test/built-ins/Array/prototype/reduce/15.4.4.21-1-13.js",
+            "mode": "strict",
+            "case_sha256": "488148aa49db0d96deeefa0d83fde3e0f00c4ac289b4401c774314e64a9ac1df",
+            "source_sha256": "3bf1768ad446fce675ba1cb3feb329de3d405b7826a81e27b5f4aefd242df705",
+            "expected_negative": null,
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            }
+          }
+        },
+        {
+          "id": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-10.js:sloppy",
+          "before": {
+            "id": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-10.js:sloppy",
+            "file": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-10.js",
+            "mode": "sloppy",
+            "case_sha256": "eaadfa2feb0d6df3b5188e54384a9eb084a379b96cc721cd0396a963c4a71a0b",
+            "source_sha256": "4a6897b4be741d5f2bf18212322e4f6c9a3184f8edc3d4c045ecb4e219a58199",
+            "expected_negative": null,
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Test262Error",
+              "error_identity": "",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            }
+          },
+          "after": {
+            "id": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-10.js:sloppy",
+            "file": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-10.js",
+            "mode": "sloppy",
+            "case_sha256": "eaadfa2feb0d6df3b5188e54384a9eb084a379b96cc721cd0396a963c4a71a0b",
+            "source_sha256": "4a6897b4be741d5f2bf18212322e4f6c9a3184f8edc3d4c045ecb4e219a58199",
+            "expected_negative": null,
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            }
+          }
+        },
+        {
+          "id": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-10.js:strict",
+          "before": {
+            "id": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-10.js:strict",
+            "file": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-10.js",
+            "mode": "strict",
+            "case_sha256": "55ceccbb72a55d2c21a81d0b460a0868ef258937fe133d8b3f06805560206356",
+            "source_sha256": "4a6897b4be741d5f2bf18212322e4f6c9a3184f8edc3d4c045ecb4e219a58199",
+            "expected_negative": null,
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Test262Error",
+              "error_identity": "",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            }
+          },
+          "after": {
+            "id": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-10.js:strict",
+            "file": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-10.js",
+            "mode": "strict",
+            "case_sha256": "55ceccbb72a55d2c21a81d0b460a0868ef258937fe133d8b3f06805560206356",
+            "source_sha256": "4a6897b4be741d5f2bf18212322e4f6c9a3184f8edc3d4c045ecb4e219a58199",
+            "expected_negative": null,
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            }
+          }
+        },
+        {
+          "id": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-13.js:sloppy",
+          "before": {
+            "id": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-13.js:sloppy",
+            "file": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-13.js",
+            "mode": "sloppy",
+            "case_sha256": "6dd7c1004b8ff5495a16705781d2342480fff21f20b9f940443c4c363e7dbb3c",
+            "source_sha256": "853ba806f1fb5a1360ee4e851d0722228cb8c0692d02dd5416722e28a08fc91b",
+            "expected_negative": null,
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Test262Error",
+              "error_identity": "",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            }
+          },
+          "after": {
+            "id": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-13.js:sloppy",
+            "file": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-13.js",
+            "mode": "sloppy",
+            "case_sha256": "6dd7c1004b8ff5495a16705781d2342480fff21f20b9f940443c4c363e7dbb3c",
+            "source_sha256": "853ba806f1fb5a1360ee4e851d0722228cb8c0692d02dd5416722e28a08fc91b",
+            "expected_negative": null,
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            }
+          }
+        },
+        {
+          "id": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-13.js:strict",
+          "before": {
+            "id": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-13.js:strict",
+            "file": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-13.js",
+            "mode": "strict",
+            "case_sha256": "60a4be2f908c39f7bb595e3ef057322171a793f8349269c89f9cb2b493b68db7",
+            "source_sha256": "853ba806f1fb5a1360ee4e851d0722228cb8c0692d02dd5416722e28a08fc91b",
+            "expected_negative": null,
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Test262Error",
+              "error_identity": "",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            }
+          },
+          "after": {
+            "id": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-13.js:strict",
+            "file": "test/built-ins/Array/prototype/reduceRight/15.4.4.22-1-13.js",
+            "mode": "strict",
+            "case_sha256": "60a4be2f908c39f7bb595e3ef057322171a793f8349269c89f9cb2b493b68db7",
+            "source_sha256": "853ba806f1fb5a1360ee4e851d0722228cb8c0692d02dd5416722e28a08fc91b",
+            "expected_negative": null,
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            }
+          }
+        }
+      ],
+      "before_raw_report": "artifacts/array-reduce-parser-continuations-final.json",
+      "before_raw_report_sha256": "8405ee6c478c413cc5e6b4ebb3af1fe3d2612d8db32239e9abb1508ae28fe79b",
+      "after_raw_report": "artifacts/array-reduce-symbols-final.json",
+      "after_raw_report_sha256": "dffc0fc62227a88dd521f97e9766b35d29d1ce9d6d76a46e3035f57e8af5d093",
+      "before_baseline_sha256": "0eeff1f9bdccb1a035ed2d5e888390352f1f9a2704511a4f979085a26ed79c76",
+      "after_baseline_sha256": "fcb4d135b2f46f970905e2de5b48e479863bd74e0a4b97f59115fd96925c83f8"
+    },
+    {
+      "profile": "number-statics",
+      "source_files": 170,
+      "mode_cases": 340,
+      "before_counts": {
+        "passed": 248,
+        "unsupported": 92
+      },
+      "after_counts": {
+        "passed": 248,
+        "unsupported": 92
+      },
+      "preflights": 104,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "3c5c2503458843bfc64eaf546ee08b6e693714f561df42330d9001a2ec8216cd",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "changed_preflight_observations": [],
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "before_raw_report": "artifacts/number-statics-parser-continuations-final.json",
+      "before_raw_report_sha256": "622c5fc2e62b4339939280a3cb0b1eb97cf1ce0e3599b5b8ce0673fa235a19e6",
+      "after_raw_report": "artifacts/number-statics-symbols-final.json",
+      "after_raw_report_sha256": "fe6bcf13733f80a18e9c25aa0b0d89b8878b2928fe88206a9cbaf1a3b3bf6107"
+    },
+    {
+      "profile": "numeric-conversion",
+      "source_files": 30,
+      "mode_cases": 60,
+      "before_counts": {
+        "passed": 24,
+        "unsupported": 36
+      },
+      "after_counts": {
+        "passed": 24,
+        "unsupported": 36
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "de7cf1098618ad0fdb7786d4ab4f6c648bfb6fe2543981fe21ca6e0cba50928f",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "changed_preflight_observations": [],
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "before_raw_report": "artifacts/numeric-conversion-parser-continuations-final.json",
+      "before_raw_report_sha256": "b2740b779115ce5cec138c096d826d786b2a52c3303e2863a720e4d3e7f0bc60",
+      "after_raw_report": "artifacts/numeric-conversion-symbols-final.json",
+      "after_raw_report_sha256": "697ffc90745381d1ab6c3abdf669740b45fd12e656db21c6b60105065bf8d3a1"
+    },
+    {
+      "profile": "numeric-parsing",
+      "source_files": 109,
+      "mode_cases": 218,
+      "before_counts": {
+        "passed": 164,
+        "unsupported": 46,
+        "resource": 8
+      },
+      "after_counts": {
+        "passed": 164,
+        "unsupported": 46,
+        "resource": 8
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "f8959cc2e43d94b5b0c671105f87d3fc831fa6359065566791707a6f9b400c6a",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "changed_preflight_observations": [],
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "before_raw_report": "artifacts/numeric-parsing-parser-continuations-final.json",
+      "before_raw_report_sha256": "b709d49938e7e121001d3ca81ac3a22479977ee7546d4ca07039aa92cd700c6b",
+      "after_raw_report": "artifacts/numeric-parsing-symbols-final.json",
+      "after_raw_report_sha256": "6a6b1117549666a1c75799cc33e0205cf4c49358bd6879bf3730a09d34573d7b"
+    },
+    {
+      "profile": "compound-assignment",
+      "source_files": 454,
+      "mode_cases": 786,
+      "before_counts": {
+        "unsupported": 180,
+        "passed": 606
+      },
+      "after_counts": {
+        "unsupported": 180,
+        "passed": 606
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "edc2b04b5e9f810e1757a327f5d2a32c240f41d61e8a6d2a89cb35c3ec14f1d0",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "changed_preflight_observations": [],
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "before_raw_report": "artifacts/compound-assignment-parser-continuations-final.json",
+      "before_raw_report_sha256": "2c8c1ada1af9996430f0bc1926ca09b2c2cb6f98de16b98bd351209bca3b4ee0",
+      "after_raw_report": "artifacts/compound-assignment-symbols-final.json",
+      "after_raw_report_sha256": "65d8b19e154b6e902b46bd9fc2110cce6bd5f12cdc15252b044e1b43adaa3f8a"
+    },
+    {
+      "profile": "addition",
+      "source_files": 48,
+      "mode_cases": 95,
+      "before_counts": {
+        "unsupported": 28,
+        "passed": 65,
+        "failed": 2
+      },
+      "after_counts": {
+        "unsupported": 28,
+        "passed": 65,
+        "failed": 2
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "56088f55075e4d44da6915ca41383604182a8a72aaef8230af61369513cbdc0c",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "changed_preflight_observations": [],
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "before_raw_report": "artifacts/addition-parser-continuations-final.json",
+      "before_raw_report_sha256": "21ec8a4c17a1db5c0b589684651024de294e50fcad43f6ff04af9a19c4a75c63",
+      "after_raw_report": "artifacts/addition-symbols-final.json",
+      "after_raw_report_sha256": "7be2d98e4b11e913b8491422dacd2520098d25bfb197a3519bc24aaed29afb88"
+    },
+    {
+      "profile": "logical-assignment",
+      "source_files": 78,
+      "mode_cases": 132,
+      "before_counts": {
+        "unsupported": 48,
+        "passed": 72,
+        "failed": 12
+      },
+      "after_counts": {
+        "unsupported": 48,
+        "passed": 78,
+        "failed": 6
+      },
+      "preflights": 104,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "a83f71b8a6b6a1523951d73a4711f024cf77ad3bf90e6698bc6224e7bfabf1a3",
+      "runner_policy_sha256": "6f127a653c09ef49d48382570086b28407a0b1f6426fd888045621d72d3e89af",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "changed_preflight_observations": [],
+      "lost_passes": [],
+      "newly_passing": [
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js:strict"
+      ],
+      "changed_observations": [
+        {
+          "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js:sloppy",
+          "before": {
+            "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js:sloppy",
+            "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js",
+            "mode": "sloppy",
+            "case_sha256": "10c676a52f208b03d6d1169cd48ac6ed8b5e55acf38299e03653b28313b94c02",
+            "source_sha256": "16d6f54b4ae2cb636dff5e5c6557d76d5f68428c8c2b2e51c773412afaddc02f",
+            "expected_negative": null,
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "ReferenceError",
+              "error_identity": "ReferenceError",
+              "message": "'Symbol' is not defined",
+              "harness": ""
+            }
+          },
+          "after": {
+            "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js:sloppy",
+            "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js",
+            "mode": "sloppy",
+            "case_sha256": "10c676a52f208b03d6d1169cd48ac6ed8b5e55acf38299e03653b28313b94c02",
+            "source_sha256": "16d6f54b4ae2cb636dff5e5c6557d76d5f68428c8c2b2e51c773412afaddc02f",
+            "expected_negative": null,
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            }
+          }
+        },
+        {
+          "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js:strict",
+          "before": {
+            "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js:strict",
+            "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js",
+            "mode": "strict",
+            "case_sha256": "1c1215e565a25c50143ba4fc26f5ddc5be66155b2c01cb8c62b460379e2b0989",
+            "source_sha256": "16d6f54b4ae2cb636dff5e5c6557d76d5f68428c8c2b2e51c773412afaddc02f",
+            "expected_negative": null,
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "ReferenceError",
+              "error_identity": "ReferenceError",
+              "message": "'Symbol' is not defined",
+              "harness": ""
+            }
+          },
+          "after": {
+            "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js:strict",
+            "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js",
+            "mode": "strict",
+            "case_sha256": "1c1215e565a25c50143ba4fc26f5ddc5be66155b2c01cb8c62b460379e2b0989",
+            "source_sha256": "16d6f54b4ae2cb636dff5e5c6557d76d5f68428c8c2b2e51c773412afaddc02f",
+            "expected_negative": null,
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            }
+          }
+        },
+        {
+          "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js:sloppy",
+          "before": {
+            "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js:sloppy",
+            "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js",
+            "mode": "sloppy",
+            "case_sha256": "73a0a0fc8c360920879cb6a3f41d87ea3e4ec715d7e094ad85e87c1ec2d822ab",
+            "source_sha256": "a75ca7efb0a81895c9823c391c98921fef3b5e381ff887bcae11fa34910071af",
+            "expected_negative": null,
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "ReferenceError",
+              "error_identity": "ReferenceError",
+              "message": "'Symbol' is not defined",
+              "harness": ""
+            }
+          },
+          "after": {
+            "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js:sloppy",
+            "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js",
+            "mode": "sloppy",
+            "case_sha256": "73a0a0fc8c360920879cb6a3f41d87ea3e4ec715d7e094ad85e87c1ec2d822ab",
+            "source_sha256": "a75ca7efb0a81895c9823c391c98921fef3b5e381ff887bcae11fa34910071af",
+            "expected_negative": null,
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            }
+          }
+        },
+        {
+          "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js:strict",
+          "before": {
+            "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js:strict",
+            "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js",
+            "mode": "strict",
+            "case_sha256": "320cf3883436ddecf843f243efebd8623063bd49fc5ed602439f52b796c57f04",
+            "source_sha256": "a75ca7efb0a81895c9823c391c98921fef3b5e381ff887bcae11fa34910071af",
+            "expected_negative": null,
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "ReferenceError",
+              "error_identity": "ReferenceError",
+              "message": "'Symbol' is not defined",
+              "harness": ""
+            }
+          },
+          "after": {
+            "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js:strict",
+            "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js",
+            "mode": "strict",
+            "case_sha256": "320cf3883436ddecf843f243efebd8623063bd49fc5ed602439f52b796c57f04",
+            "source_sha256": "a75ca7efb0a81895c9823c391c98921fef3b5e381ff887bcae11fa34910071af",
+            "expected_negative": null,
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            }
+          }
+        },
+        {
+          "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js:sloppy",
+          "before": {
+            "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js:sloppy",
+            "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js",
+            "mode": "sloppy",
+            "case_sha256": "ed69115a2b3da588565257c6a9c4930868c481f1045dd480e284b4c7978342ac",
+            "source_sha256": "d77746c5562967ea73b950e21359f0bb0839ff484f7eb55d12cc04e043f8ad01",
+            "expected_negative": null,
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "ReferenceError",
+              "error_identity": "ReferenceError",
+              "message": "'Symbol' is not defined",
+              "harness": ""
+            }
+          },
+          "after": {
+            "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js:sloppy",
+            "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js",
+            "mode": "sloppy",
+            "case_sha256": "ed69115a2b3da588565257c6a9c4930868c481f1045dd480e284b4c7978342ac",
+            "source_sha256": "d77746c5562967ea73b950e21359f0bb0839ff484f7eb55d12cc04e043f8ad01",
+            "expected_negative": null,
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            }
+          }
+        },
+        {
+          "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js:strict",
+          "before": {
+            "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js:strict",
+            "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js",
+            "mode": "strict",
+            "case_sha256": "a77150a6877c7df05d7dd35405b4b63c829663a16bae17fa8fa97531ad367be8",
+            "source_sha256": "d77746c5562967ea73b950e21359f0bb0839ff484f7eb55d12cc04e043f8ad01",
+            "expected_negative": null,
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "ReferenceError",
+              "error_identity": "ReferenceError",
+              "message": "'Symbol' is not defined",
+              "harness": ""
+            }
+          },
+          "after": {
+            "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js:strict",
+            "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js",
+            "mode": "strict",
+            "case_sha256": "a77150a6877c7df05d7dd35405b4b63c829663a16bae17fa8fa97531ad367be8",
+            "source_sha256": "d77746c5562967ea73b950e21359f0bb0839ff484f7eb55d12cc04e043f8ad01",
+            "expected_negative": null,
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            }
+          }
+        }
+      ],
+      "before_raw_report": "artifacts/logical-assignment-parser-continuations-final.json",
+      "before_raw_report_sha256": "718372e8b10519b9c55c6b20d892cf67371b254a14a1e094bb2a10e0e447f6fa",
+      "after_raw_report": "artifacts/logical-assignment-symbols-final.json",
+      "after_raw_report_sha256": "8381b967ccabe570b3058ef27cbaf3f9ff52c89e518ebad13236c472a9bcb6ca",
+      "before_baseline_sha256": "ad49bf074436d4b37a00ad41064f45f477e8aad81ae15fc4df3eadcb14e7742a",
+      "after_baseline_sha256": "5f8ff3f1b04aefb935680ab193f94fe462a86cd60df10da93f10c019b4d92ad0"
+    },
+    {
+      "profile": "uri",
+      "source_files": 173,
+      "mode_cases": 346,
+      "before_counts": {
+        "resource": 112,
+        "passed": 210,
+        "unsupported": 24
+      },
+      "after_counts": {
+        "resource": 112,
+        "passed": 210,
+        "unsupported": 24
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "bf48d1dddac882a9609fe78aea7521e7477c1cef2ba6036a74c48513ad28ab8f",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "changed_preflight_observations": [],
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "before_raw_report": "artifacts/uri-parser-continuations-final.json",
+      "before_raw_report_sha256": "237b2b627f710232d77bd019f494180d3a5d84aefdb5da2f6edf080783bc5903",
+      "after_raw_report": "artifacts/uri-symbols-final.json",
+      "after_raw_report_sha256": "d5c98a2e286b4986c7d82b98838d70a41c74cdb2c9d0bb72959dff238db18667"
+    },
+    {
+      "profile": "relational",
+      "source_files": 184,
+      "mode_cases": 364,
+      "before_counts": {
+        "unsupported": 64,
+        "passed": 300
+      },
+      "after_counts": {
+        "unsupported": 64,
+        "passed": 300
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "34497c818a4de422d2628afe1270525fe6c5467bbb43126c1796324a5bc8f138",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "changed_preflight_observations": [],
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "before_raw_report": "artifacts/relational-parser-continuations-final.json",
+      "before_raw_report_sha256": "af6bf5c37f048036a31330905e81f69d7210a37fad13fa89b0be71e0175cffac",
+      "after_raw_report": "artifacts/relational-symbols-final.json",
+      "after_raw_report_sha256": "8cd49dc7824fd8c235ff369355b440d1b2f65cfb594a452672402d1792db5379"
+    },
+    {
+      "profile": "equality",
+      "source_files": 145,
+      "mode_cases": 286,
+      "before_counts": {
+        "unsupported": 96,
+        "passed": 190
+      },
+      "after_counts": {
+        "unsupported": 96,
+        "passed": 190
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "b1d07bdfaee72e164608d7ed3351ab70d05931ffda34f174f6c3f99bf12a0046",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "changed_preflight_observations": [],
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "before_raw_report": "artifacts/equality-parser-continuations-final.json",
+      "before_raw_report_sha256": "28e7018eb94f3252f6278a3982450c03b4fa44ef45a5c050faa51c13628b8aa1",
+      "after_raw_report": "artifacts/equality-symbols-final.json",
+      "after_raw_report_sha256": "1c895b2ba2e57d5ad9396ba7e947316c685a4a53fe508ada95abf2c8fe2e161c"
+    },
+    {
+      "profile": "labels",
+      "source_files": 68,
+      "mode_cases": 125,
+      "before_counts": {
+        "passed": 100,
+        "unsupported": 25
+      },
+      "after_counts": {
+        "passed": 100,
+        "unsupported": 25
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "32889cc4ab3de15132243dae4981418ba559cd10294df9222329070b8f74649b",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "changed_preflight_observations": [],
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "before_raw_report": "artifacts/labels-parser-continuations-final.json",
+      "before_raw_report_sha256": "90eee61cfada22a907d5bfc3aabedbb7bcf899337537f886deb4cc0a9aa6d442",
+      "after_raw_report": "artifacts/labels-symbols-final.json",
+      "after_raw_report_sha256": "ce7da994309f8a9bda685501d096307e86dcbff3208465e400b0249cb047ebd6"
+    }
+  ],
+  "existing_upstream_modes": 6879,
+  "existing_upstream_preflights": 1680,
+  "newly_passing_existing_modes": 14,
+  "lost_existing_passes": 0,
+  "changed_existing_observations": 14,
+  "existing_controls_identical": true,
+  "healthy_baseline_gates": 17,
+  "updated_baselines": [
+    "tests/conformance/test262-array-reduce-current.json",
+    "tests/conformance/test262-logical-assignment-current.json"
+  ],
+  "new_baselines": [
+    "tests/conformance/test262-symbols-current.json"
+  ],
+  "new_profile": {
+    "source_files": 123,
+    "mode_cases": 242,
+    "preflights": 64,
+    "preflights_passed": true,
+    "before_counts": {
+      "failed": 170,
+      "passed": 2,
+      "unsupported": 70
+    },
+    "before_preflight_passed": false,
+    "before_was_not_healthy_baseline": true,
+    "after_counts": {
+      "passed": 166,
+      "unsupported": 70,
+      "failed": 6
+    },
+    "before_report": "test262-symbols-before-properties.json",
+    "before_report_sha256": "4833329bf168ad0054cd4696116254270e6153ffc3188be449ad72e71b8bebc4",
+    "after_report": "test262-symbols-properties.json",
+    "after_report_sha256": "325a9d8b609334d45886e9e43f1115ecc6e70a0964744f037dcdc3845aa9bf63",
+    "baseline_sha256": "a5bd8cf62526ab236909a50dd9c93569031cbe4984e2f33a8d12a7b345446685",
+    "complete_symbol_subtree_sha": "dc49ea5535598965bc55c7a0ae09c661a1e7dfb2",
+    "complete_symbol_subtree_truncated": false,
+    "static_unsupported_modes": 66,
+    "parse_or_runtime_unsupported_modes": 4,
+    "remaining_failures": [
+      {
+        "id": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/removed-symbol-wrapper-ordinary-toprimitive.js:sloppy",
+        "file": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/removed-symbol-wrapper-ordinary-toprimitive.js",
+        "mode": "sloppy",
+        "case_sha256": "f632cc4ca849842daa733f69eec894cda78167b10e93ff450bdd4bc097945b7c",
+        "source_sha256": "b292ade8c4c90a9aff0c7d2f6a49abc93b8fe61b26dcc3b49e81f023775a8333",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "value is not callable",
+          "harness": ""
+        }
+      },
+      {
+        "id": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/removed-symbol-wrapper-ordinary-toprimitive.js:strict",
+        "file": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/removed-symbol-wrapper-ordinary-toprimitive.js",
+        "mode": "strict",
+        "case_sha256": "52e89c806546067669b4a9194013be3837d86b2ce35e44ef6c179428ac4d08c2",
+        "source_sha256": "b292ade8c4c90a9aff0c7d2f6a49abc93b8fe61b26dcc3b49e81f023775a8333",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "value is not callable",
+          "harness": ""
+        }
+      },
+      {
+        "id": "test/built-ins/Symbol/prototype/description/this-val-non-symbol.js:sloppy",
+        "file": "test/built-ins/Symbol/prototype/description/this-val-non-symbol.js",
+        "mode": "sloppy",
+        "case_sha256": "169d36110bf206d9a48603fe4784f4e5a9626189c6c4d90ffacd165595388824",
+        "source_sha256": "efb4db8bb20cee68b3c07be89847cce419874aa4f1dd6fdf20fc98b81617a00a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      {
+        "id": "test/built-ins/Symbol/prototype/description/this-val-non-symbol.js:strict",
+        "file": "test/built-ins/Symbol/prototype/description/this-val-non-symbol.js",
+        "mode": "strict",
+        "case_sha256": "d78f46d36e6def6955bddd21fe4c47688b831ce410420026358d10ffa8b013b5",
+        "source_sha256": "efb4db8bb20cee68b3c07be89847cce419874aa4f1dd6fdf20fc98b81617a00a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      {
+        "id": "test/built-ins/Symbol/species/builtin-getter-name.js:sloppy",
+        "file": "test/built-ins/Symbol/species/builtin-getter-name.js",
+        "mode": "sloppy",
+        "case_sha256": "ee050ca4fb5b0eed6772ef994b8405484475a0021d89458bb3bd3c59158062f3",
+        "source_sha256": "68386a34310603b7aec0f3db44771b836ad5c5abb55bc4fea1e3fe67e133d017",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "cannot access property of null or undefined",
+          "harness": ""
+        }
+      },
+      {
+        "id": "test/built-ins/Symbol/species/builtin-getter-name.js:strict",
+        "file": "test/built-ins/Symbol/species/builtin-getter-name.js",
+        "mode": "strict",
+        "case_sha256": "635ab7c5c2241cb8fd0706af29ab30c9e1451d408bc25e3c1d35343385a6cd49",
+        "source_sha256": "68386a34310603b7aec0f3db44771b836ad5c5abb55bc4fea1e3fe67e133d017",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "cannot access property of null or undefined",
+          "harness": ""
+        }
+      }
+    ]
+  },
+  "total_upstream_modes": 7121,
+  "total_upstream_preflights": 1744,
+  "validation": {
+    "rust_tests": 969,
+    "rust_library_tests": 787,
+    "rust_ignored": 0,
+    "python_checks": 155,
+    "exact_pixel_references": 57,
+    "mutation_smoke_cases": 15000,
+    "caught_panics": 0,
+    "html_counts": {
+      "matched": 3868,
+      "mismatched": 2,
+      "unsupported": 6
+    },
+    "independent_agent_review": false,
+    "chromium_comparison": false,
+    "production_vulkan": false
+  },
+  "implementation": {
+    "unique_symbols_use_retained_identity": true,
+    "descriptions_and_registry_keys_use_utf16": true,
+    "symbol_keys_separate_from_strings": true,
+    "reference_key_conversion_deferred": true,
+    "custom_primitive_hints": [
+      "default",
+      "number",
+      "string"
+    ],
+    "to_string_tag_is_observable_property": true,
+    "has_instance_bound_delegation_iterative": true,
+    "reflection_own_keys_only": true,
+    "existing_policies_unchanged": true,
+    "quotas_raised": false
+  },
+  "limitations": [
+    "Seventy new-profile modes remain unsupported and six fail; old profiles retain their previous feature policies.",
+    "Iterator, regular-expression Symbol dispatch, species construction, spreadability, unscopables and disposal protocols remain incomplete.",
+    "Only Reflect.ownKeys is implemented. Global/host own-property reflection remains incomplete, including the global Symbol descriptor test.",
+    "Registry sharing between multiple realms is not implemented; current registry scope is one page Runtime/agent.",
+    "Legacy DOM/host Display conversions remain incomplete and can accept Symbols where Web IDL string conversion should reject them; their new description formatting cost is precharged.",
+    "Existing estimated work/storage budgets are not exact process accounting; existing four resource-stopped profiles remain observations.",
+    "No full web compatibility, production security, Vulkan integration or Chromium performance claim."
+  ]
+}

@@ -99,6 +99,7 @@ python3 tools/test262_conformance.py --profile logical-assignment --baseline tes
 python3 tools/test262_conformance.py --profile relational --baseline tests/conformance/test262-relational-current.json
 python3 tools/test262_conformance.py --profile equality --baseline tests/conformance/test262-equality-current.json
 python3 tools/test262_conformance.py --profile labels --baseline tests/conformance/test262-labels-current.json
+python3 tools/test262_conformance.py --profile symbols --baseline tests/conformance/test262-symbols-current.json
 python3 -m unittest discover -s tools -p 'test_*.py'
 cargo run --locked --release --bin eris-stress -- 5000
 ```
@@ -140,9 +141,9 @@ both modes. Those resource stops prevent a healthy
 regression baseline; the full inventory remains part of local measurements.
 
 The complete paired [reduce/reduceRight directories](tests/conformance/test262-array-reduce.md)
-retain 1,034 variants: 848 pass, 16 fail on remaining prerequisites and 170
+retain 1,034 variants: 856 pass, eight fail on missing Date behavior and 170
 remain unsupported. Both methods and Number.MAX_SAFE_INTEGER add 764
-passes with no losses. All 128 assertion checks verify; CI preserves the passing
+passes with no losses; Symbol-based Math/JSON tags add eight more. All 128 assertion checks verify; CI preserves the passing
 cases and the full unchanged inventory.
 
 The [Number static builtin inventory](tests/conformance/test262-number-statics.md)
@@ -173,9 +174,9 @@ conversion adds 14 passes with no losses. All 64 assertion controls verify; CI
 preserves the full baseline and its remaining nonpassing cases.
 
 The complete [logical-assignment directory](tests/conformance/test262-logical-assignment.md)
-retains 132 variants: 72 pass, twelve fail on class/Symbol prerequisites and 48
+retains 132 variants: 78 pass, six fail on class prerequisites and 48
 remain unsupported. The three short-circuit assignments add 54 passes without
-losses. All 104 assertion controls verify; CI preserves the complete baseline.
+losses; Symbol primitive conversion adds six more. All 104 assertion controls verify; CI preserves the complete baseline.
 
 The complete [labeled statement, break and continue directories](tests/conformance/test262-labels.md)
 retain 125 variants: 100 pass and 25 need unsupported syntax or dynamic eval.
@@ -192,7 +193,7 @@ Ordinary coercion and nullish dispatch add 44 passes. All 128 assertion controls
 verify; CI preserves the gains and complete inventory.
 
 The four complete [relational comparison directories](tests/conformance/test262-relational.md)
-retain 364 variants: 300 pass and 64 require BigInt, Symbol or dynamic eval.
+retain 364 variants: 300 pass and 64 remain outside this profile's unchanged feature policy, including Symbol-tagged cases.
 Ordinary conversion adds eight passes; all 128 assertion controls verify.
 CI preserves the passes and unchanged inventory.
 
@@ -207,6 +208,13 @@ limits. All 88 assertion checks verify. The identifier and flat-code changes add
 132 passes without losing earlier passes; retained preliminary results document 16 resource
 regressions that were resolved by reducing actual lookup work and token storage.
 The remaining resource stops prevent a healthy regression baseline.
+
+The complete [Symbol tree and key-reflection inventory](tests/conformance/symbols.md)
+adds 123 sources / 242 modes: 166 pass, six fail and 70 remain unsupported, with
+64 verified controls. Symbol identities, UTF-16 descriptions/registry keys,
+symbol properties, primitive/tag/instance hooks and key reflection now work.
+Their broader protocols remain incomplete. The [full comparison](tests/conformance/symbol-properties.json)
+retains all results; CI preserves the new passing-case baseline.
 
 ## Implementation
 

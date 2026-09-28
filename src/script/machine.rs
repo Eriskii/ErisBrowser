@@ -1,8 +1,8 @@
 //! Resumable JavaScript execution. Ordinary calls, defaults and bodies share
 //! one driver; native callbacks and constructors retain guarded bridges.
 use super::{
-    Document, Flow, JsString, MAX_CALLS, MAX_HEAP, PropertyDescriptor, Reference, Result, Runtime,
-    ScriptError, TrackedGlobal, Value, code, js_object, to_i32,
+    Document, Flow, MAX_CALLS, MAX_HEAP, PropertyDescriptor, PropertyKey, Reference, Result,
+    Runtime, ScriptError, TrackedGlobal, Value, code, js_object, to_i32,
 };
 use std::collections::BTreeSet;
 use std::rc::Rc;
@@ -64,7 +64,7 @@ enum Phase {
     ObjectValue {
         index: usize,
         object: Value,
-        key: JsString,
+        key: PropertyKey,
     },
     ObjectPrototype {
         index: usize,
@@ -340,7 +340,7 @@ fn step(
                 unreachable!()
             };
             let key = runtime.reference_key(&object, key, doc)?;
-            let deleted = runtime.delete_property(object, &key)?;
+            let deleted = runtime.delete_property_key(object, &key)?;
             if !deleted && strict {
                 return Err(ScriptError::type_error(
                     "cannot delete a non-configurable property",
@@ -389,7 +389,7 @@ fn step(
             array_next(runtime, frame, index + 1, values, holes)
         }
         Phase::ObjectKey { index, object } => {
-            let key = runtime.string_hint(value(output), doc)?;
+            let key = runtime.property_key(value(output), doc)?;
             object_entry(runtime, frame, index, object, key)
         }
         Phase::ObjectValue { index, object, key } => {
@@ -401,9 +401,9 @@ fn step(
             };
             let value = value(output);
             if unit.anonymous(*expression) {
-                runtime.set_function_name(&value, &key, None)?;
+                runtime.set_key_function_name(&value, &key, None)?;
             }
-            runtime.define_own(
+            runtime.define_own_key(
                 &object,
                 &key,
                 PropertyDescriptor::data_property(value, true, true, true),
@@ -463,7 +463,7 @@ fn step(
             {
                 runtime.work(1 + name.len() / 8)?;
                 runtime.charge(64 + name.len().saturating_mul(4))?;
-                runtime.set_function_name(&value, &name.as_str().into(), None)?;
+                runtime.set_key_function_name(&value, &name.as_str().into(), None)?;
             }
             if let Some(old) = old {
                 value = runtime.binary_value(&op[..op.len() - 1], old, value, doc)?;
@@ -678,6 +678,7 @@ fn unary(
             Value::Bool(_) => "boolean",
             Value::Number(_) => "number",
             Value::String(_) => "string",
+            Value::Symbol(_) => "symbol",
             Value::Function(_) | Value::Native(_) => "function",
             _ => "object",
         }),
@@ -811,7 +812,7 @@ fn object_next(
     }
     match key {
         code::PropertyName::Literal(key) => {
-            object_entry(runtime, frame, index, object, key.clone())
+            object_entry(runtime, frame, index, object, key.clone().into())
         }
         code::PropertyName::Computed(expression) => eval_child(
             runtime,
@@ -826,7 +827,7 @@ fn object_entry(
     frame: ExprFrame,
     mut index: usize,
     object: Value,
-    mut key: JsString,
+    mut key: PropertyKey,
 ) -> Result<Option<Output>> {
     let unit = frame.unit.clone();
     let env = frame.env;
@@ -850,13 +851,13 @@ fn object_entry(
             }
             code::ObjectEntry::Method(id) => {
                 let function = runtime.function_value(&code::FunctionRef::new(&unit, *id), env)?;
-                runtime.set_function_name(&function, &key, None)?;
+                runtime.set_key_function_name(&function, &key, None)?;
                 desc.value = Some(function);
                 desc.writable = Some(true);
             }
             code::ObjectEntry::Accessor(id, setter) => {
                 let function = runtime.function_value(&code::FunctionRef::new(&unit, *id), env)?;
-                runtime.set_function_name(
+                runtime.set_key_function_name(
                     &function,
                     &key,
                     Some(if *setter { "set" } else { "get" }),
@@ -871,7 +872,7 @@ fn object_entry(
                 unreachable!("prototype entry bypasses key conversion")
             }
         }
-        runtime.define_own(&object, &key, desc)?;
+        runtime.define_own_key(&object, &key, desc)?;
         index += 1;
         let Some((next, entry)) = items.get(index) else {
             return Ok(Some(Output::Value(object)));
@@ -885,7 +886,7 @@ fn object_entry(
             );
         }
         match next {
-            code::PropertyName::Literal(next) => key = next.clone(),
+            code::PropertyName::Literal(next) => key = next.clone().into(),
             code::PropertyName::Computed(expression) => {
                 return eval_child(
                     runtime,

@@ -1,5 +1,60 @@
 # Validation record
 
+## Symbol identities and property-key integration
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy and release
+compilation pass. **969 Rust tests** pass with `--include-ignored` (787 library;
+none remain ignored), alongside **155 Python checks**, **57 exact pixel references**
+and a **15,000-case** mutation run with no caught panic or invariant failure.
+
+[Symbol support](../tests/conformance/symbols.md) introduces distinct primitive
+identities and property keys, boxed/registry/description behavior, computed key
+names, descriptors, JSON omission, primitive/tag/instance hooks and key reflection.
+Ten focused Rust groups cover both language modes, abrupt effects, mutation order,
+resource refusals and callback cleanup. Numeric consumers now reject Symbol
+conversion. Symbol descriptions are charged before legacy host/display formatting.
+No quota changed. Existing host string conversions and broader protocols still
+need work.
+
+The new complete **123-source / 242-mode** Symbol and key-reflection profile
+records **166 passed / 6 failed / 70 unsupported**, with all **64 controls** verified.
+Sixty-six unsupported modes are excluded by metadata; four stop on class syntax or
+host/global reflection. The six failures reach missing String concat/Date, Proxy
+and collection-species dependencies. The frozen prior binary ran the same inventory
+and policy but failed preflights; its raw report is retained without treating it as
+a healthy baseline.
+
+All **20 existing profiles / 6,879 modes / 1,680 controls** retain their source
+identities and policies. Exactly **14 modes improve**: eight reduction cases use the
+actual Math/JSON tags, and six logical-assignment cases gain Symbol conversion.
+There are no lost passes, changed controls or other changed observations, including
+resource stops. The new profile brings the total to **7,121 modes / 1,744 controls**.
+Seventeen healthy passing-case gates are now enabled; four resource-stopped profiles
+remain explicit observations. HTML remains 3,868 matched, two mismatched and six
+unsupported modes. The new Symbol baseline and the two improved baselines preserve
+all failures and unsupported cases.
+
+The [public comparison](../tests/conformance/symbol-properties.json) and complete
+[before](../tests/conformance/test262-symbols-before-properties.json)/
+[after](../tests/conformance/test262-symbols-properties.json) Symbol reports retain
+provenance. Local evidence is `artifacts/*symbols*`. Prior checkpoint `97ea66c`
+passed all jobs in [CI run 36480560165](https://github.com/Eriskii/ErisBrowser/actions/runs/36480560165).
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+| --- | --- |
+| `eris-browser` | `cbe8691a6bc4c5af6edaba8bbf15349a3aedd669a17d5d52e130ff9a8f04aea4` |
+| `eris-js` | `4b890d92a4027dc929be92ba366b0cf670f94f18e4bfb28025e365aba6bbab57` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `3335cf7c7732ac618dee11202075241ce00fb8c00dab452b37e33bb13538b381` |
+
+Source-input SHA-256: `857547575004ab839a59028a72d9e709413f2b1ced8cad2d52c2da5bb39dc0c9`.
+
+Agent sessions remain unavailable; no independent-agent review is claimed.
+No native-window, Vulkan integration or Chromium performance comparison was run.
+Full web compatibility and production security remain unverified.
+
 ## Bounded JavaScript grammar continuations
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release

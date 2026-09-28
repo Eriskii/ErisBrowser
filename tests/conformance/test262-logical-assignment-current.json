@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "a83f71b8a6b6a1523951d73a4711f024cf77ad3bf90e6698bc6224e7bfabf1a3",
   "runner_policy_sha256": "6f127a653c09ef49d48382570086b28407a0b1f6426fd888045621d72d3e89af",
-  "binary_sha256": "e9d33d19a55217d159ab6e337e6f4af21a69651a7325b762247505f7c3b5cdf4",
+  "binary_sha256": "4b890d92a4027dc929be92ba366b0cf670f94f18e4bfb28025e365aba6bbab57",
   "cases": {
     "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-and.js:sloppy": {
       "status": "unsupported",
@@ -330,12 +330,12 @@
       "source_sha256": "b214f248c94b56d0b3c526c755c58f22fd751e67228eaed14c1488b8ea69b88f"
     },
     "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "10c676a52f208b03d6d1169cd48ac6ed8b5e55acf38299e03653b28313b94c02",
       "source_sha256": "16d6f54b4ae2cb636dff5e5c6557d76d5f68428c8c2b2e51c773412afaddc02f"
     },
     "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "1c1215e565a25c50143ba4fc26f5ddc5be66155b2c01cb8c62b460379e2b0989",
       "source_sha256": "16d6f54b4ae2cb636dff5e5c6557d76d5f68428c8c2b2e51c773412afaddc02f"
     },
@@ -480,12 +480,12 @@
       "source_sha256": "8750aafaa21c50c4e00f1de3f1944b0bb1f29d0d8c4ffe2420a6d72188e8b60e"
     },
     "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "73a0a0fc8c360920879cb6a3f41d87ea3e4ec715d7e094ad85e87c1ec2d822ab",
       "source_sha256": "a75ca7efb0a81895c9823c391c98921fef3b5e381ff887bcae11fa34910071af"
     },
     "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "320cf3883436ddecf843f243efebd8623063bd49fc5ed602439f52b796c57f04",
       "source_sha256": "a75ca7efb0a81895c9823c391c98921fef3b5e381ff887bcae11fa34910071af"
     },
@@ -630,12 +630,12 @@
       "source_sha256": "5e04af66fb6ecd70bdce8f8ce61d8a742879095b586033aad635ee7cafae756b"
     },
     "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "ed69115a2b3da588565257c6a9c4930868c481f1045dd480e284b4c7978342ac",
       "source_sha256": "d77746c5562967ea73b950e21359f0bb0839ff484f7eb55d12cc04e043f8ad01"
     },
     "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "a77150a6877c7df05d7dd35405b4b63c829663a16bae17fa8fa97531ad367be8",
       "source_sha256": "d77746c5562967ea73b950e21359f0bb0839ff484f7eb55d12cc04e043f8ad01"
     },

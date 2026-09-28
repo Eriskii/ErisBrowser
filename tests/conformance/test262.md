@@ -1,5 +1,10 @@
 # Pinned Test262 String and JSON selection
 
+Subsequent [Symbol support and key reflection](symbols.md) have a separate
+complete upstream profile. This original String/JSON profile retains its previous
+feature policy, source inventory and result counts; its historical Symbol/Reflect
+exclusions below do not describe the full current runtime.
+
 This runner measures Eris's own bounded JavaScript interpreter against unchanged
 upstream test bodies and harness code. It is a selection of Test262, not complete
 ECMAScript conformance and not a benchmark against another engine.

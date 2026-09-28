@@ -121,6 +121,21 @@ application waits; the browser has no Vulkan backend yet.
 
 Limits can reject valid documents, and not every allocation is covered by exact accounting. Only native renderer, broker and image-decoder children have these OS address-space limits. User-supplied public library structures can be mutated outside the checked APIs; incoming native snapshots undergo separate validation.
 
+## Symbol storage and callbacks
+
+Symbol identities use retained safe-Rust handles; descriptions do not identify keys.
+Registry lookup/scans, key lists, descriptive strings, function names and custom
+object tags share the existing work/allocation ledger. Refused registry entries
+and property insertions are not published. Primitive/instance hooks share native
+and script guards; looping or recursive callbacks cannot catch quota exhaustion.
+Legacy host/console formatting charges Symbol description scanning and UTF-8
+storage before formatting. Legacy host string conversion is still incomplete.
+
+The [Symbol validation record](../tests/conformance/symbol-properties.json)
+includes exhaustion and unwind checks. Quotas are unchanged. The registry belongs
+to the current page Runtime; shared multi-realm behavior is unimplemented.
+This remains estimated accounting, without an independent security audit.
+
 ## Remaining work
 
 Stronger syscall confinement and complete opaque-response semantics; headless and cross-platform process isolation; complete origin/opaque-origin handling; Fetch/CORS/CSP and navigation policy; cookie/storage partitioning; mixed-content/private-network protection; permissions; verified dependency vulnerability monitoring; continuous coverage-guided fuzzing; sanitizers and cross-platform hardening; independent audit. The [CSP standard](https://www.w3.org/TR/CSP3/) describes substantially more behavior than the fallback above.

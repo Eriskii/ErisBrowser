@@ -20,6 +20,10 @@ mod code;
 mod machine;
 mod names;
 mod parser;
+mod property_keys;
+mod symbols;
+use symbols::PropertyKey;
+pub use symbols::Symbol;
 #[cfg(test)]
 mod parser_legacy;
 #[cfg(test)]
@@ -45,6 +49,7 @@ pub enum Value {
     Bool(bool),
     Number(f64),
     String(JsString),
+    Symbol(Symbol),
     Array(usize),
     Object(usize),
     Function(usize),
@@ -157,6 +162,13 @@ impl fmt::Display for Value {
             Self::Number(n) if *n == 0.0 => write!(f, "0"),
             Self::Number(n) => write!(f, "{n}"),
             Self::String(s) => write!(f, "{s}"),
+            Self::Symbol(symbol) => {
+                write!(f, "Symbol(")?;
+                if let Some(description) = symbol.description() {
+                    write!(f, "{description}")?;
+                }
+                write!(f, ")")
+            }
             Self::Function(_) | Self::Native(_) => write!(f, "[function]"),
             Self::Array(_) => write!(f, "[object Array]"),
             Self::Node(_) => write!(f, "[object Element]"),
@@ -1286,7 +1298,7 @@ enum Reference {
     },
     Binding(usize, String, bool),
     // Computed names stay uncoerced until GetValue/PutValue. A successful read
-    // replaces the name with a String so compound assignments convert once.
+    // replaces the name with a string or symbol so compound assignments convert once.
     Property(Value, Value, bool),
 }
 
@@ -1338,8 +1350,8 @@ impl PropertyDescriptor {
 }
 #[derive(Default)]
 struct ScriptObject {
-    values: BTreeMap<JsString, Property>,
-    order: Vec<JsString>,
+    values: BTreeMap<PropertyKey, Property>,
+    order: Vec<PropertyKey>,
     prototype: Option<Value>,
     boxed: Option<Value>,
     non_extensible: bool,
@@ -1353,7 +1365,7 @@ struct ScriptObject {
     namespace: Option<&'static str>,
 }
 impl ScriptObject {
-    fn get(&self, key: impl Into<JsString>) -> Option<&Value> {
+    fn get(&self, key: impl Into<PropertyKey>) -> Option<&Value> {
         self.values
             .get(&key.into())
             .and_then(|property| match &property.value {
@@ -1361,27 +1373,27 @@ impl ScriptObject {
                 PropertyValue::Accessor { .. } => None,
             })
     }
-    fn contains_key(&self, key: impl Into<JsString>) -> bool {
+    fn contains_key(&self, key: impl Into<PropertyKey>) -> bool {
         self.values.contains_key(&key.into())
     }
     fn insert(&mut self, key: JsString, value: Value) {
-        self.insert_property(key, Property::data(value, true, true, true));
+        self.insert_property(key.into(), Property::data(value, true, true, true));
     }
-    fn insert_property(&mut self, key: JsString, property: Property) {
+    fn insert_property(&mut self, key: PropertyKey, property: Property) {
         if !self.values.contains_key(&key) {
             self.order.push(key.clone());
         }
         self.values.insert(key, property);
     }
-    fn remove(&mut self, key: &JsString) {
+    fn remove(&mut self, key: &PropertyKey) {
         self.values.remove(key);
         self.order.retain(|item| item != key);
     }
     fn insert_hidden(&mut self, key: JsString, value: Value) {
-        self.insert_property(key, Property::data(value, true, false, true));
+        self.insert_property(key.into(), Property::data(value, true, false, true));
     }
     fn attributes(&mut self, key: &str, writable: bool, enumerable: bool, configurable: bool) {
-        if let Some(property) = self.values.get_mut(&JsString::from(key)) {
+        if let Some(property) = self.values.get_mut(&PropertyKey::from(key)) {
             property.enumerable = enumerable;
             property.configurable = configurable;
             if let PropertyValue::Data { writable: old, .. } = &mut property.value {
@@ -1487,6 +1499,8 @@ pub struct Runtime {
     objects: Vec<ScriptObject>,
     prototypes: BTreeMap<&'static str, usize>,
     native_properties: BTreeMap<String, usize>,
+    symbols: symbols::State,
+    host_symbol_objects: BTreeMap<property_keys::HostKey, usize>,
     function_prototype: usize,
     events: Vec<EventState>,
     abort_signals: Vec<AbortState>,
@@ -1546,6 +1560,7 @@ impl Runtime {
             "String",
             "Number",
             "Boolean",
+            "Symbol",
             "parseInt",
             "parseFloat",
             "encodeURI",
@@ -1583,7 +1598,7 @@ impl Runtime {
                     initialized: true,
                     strict_immutable: false,
                     global_property: true,
-                    enumerable: true,
+                    enumerable: name != "Symbol",
                     deletable: true,
                 },
             );
@@ -1613,6 +1628,8 @@ impl Runtime {
             objects: Vec::new(),
             prototypes: BTreeMap::new(),
             native_properties: BTreeMap::new(),
+            symbols: symbols::State::default(),
+            host_symbol_objects: BTreeMap::new(),
             function_prototype: 0,
             events: Vec::new(),
             abort_signals: Vec::new(),
@@ -1662,6 +1679,7 @@ impl Runtime {
             "String",
             "Number",
             "Boolean",
+            "Symbol",
             "RegExp",
             "Error",
             "TypeError",
@@ -1742,6 +1760,7 @@ impl Runtime {
             "String",
             "Number",
             "Boolean",
+            "Symbol",
             "RegExp",
             "Error",
             "TypeError",
@@ -2265,7 +2284,7 @@ impl Runtime {
                 Property::data(Value::Number(20.0), false, true, false),
             );
         }
-        Ok(())
+        self.initialize_symbols()
     }
     fn abort_signal_index(&self, value: &Value) -> Result<usize> {
         if let Value::Object(id) = value
@@ -3882,10 +3901,10 @@ impl Runtime {
         // Value's diagnostic formatter never reads author properties. A UTF-16
         // code unit needs at most three UTF-8 bytes, including lone-surrogate
         // replacement; the constant also covers the prefix and numeric output.
-        let units = if let Value::String(text) = &value {
-            text.len()
-        } else {
-            0
+        let units = match &value {
+            Value::String(text) => text.len(),
+            Value::Symbol(symbol) => symbol.description().map_or(0, JsString::len),
+            _ => 0,
         };
         self.work(1 + units / 8)?;
         self.charge(units.saturating_mul(3).saturating_add(512))?;
@@ -3931,8 +3950,19 @@ impl Runtime {
         machine::evaluate(self, unit, *expression, env, doc)
     }
     fn number_hint_primitive(&mut self, value: Value, doc: &mut Document) -> Result<Value> {
+        self.primitive_with_hint(value, "default", doc)
+    }
+    fn primitive_with_hint(
+        &mut self,
+        value: Value,
+        hint: &str,
+        doc: &mut Document,
+    ) -> Result<Value> {
         if !js_object(&value) {
             return Ok(value);
+        }
+        if let Some(primitive) = self.exotic_primitive(&value, hint, doc)? {
+            return Ok(primitive);
         }
         // Ordinary objects use the number hint for default-hint conversion.
         // Read the fallback only after the first callable has returned.
@@ -3965,6 +3995,9 @@ impl Runtime {
                 self.charge(128)?;
                 Ok(primitive.js_string())
             }
+            Value::Symbol(_) => Err(ScriptError::type_error(
+                "cannot convert a symbol to a string",
+            )),
             _ => unreachable!("addition converts both operands before formatting"),
         }
     }
@@ -3972,7 +4005,9 @@ impl Runtime {
         let left = self.number_hint_primitive(left, doc)?;
         let right = self.number_hint_primitive(right, doc)?;
         if !matches!(left, Value::String(_)) && !matches!(right, Value::String(_)) {
-            return Ok(Value::Number(left.number() + right.number()));
+            let left = self.primitive_number_value(left)?;
+            let right = self.primitive_number_value(right)?;
+            return Ok(Value::Number(left + right));
         }
         let left = self.addition_text(left)?;
         let right = self.addition_text(right)?;
@@ -4001,8 +4036,8 @@ impl Runtime {
     ) -> Result<Value> {
         // All four operators convert in source order. Reversing the comparison
         // for > and <= must not reverse getters or calls in ToPrimitive.
-        let left = self.number_hint_primitive(left, doc)?;
-        let right = self.number_hint_primitive(right, doc)?;
+        let left = self.primitive_with_hint(left, "number", doc)?;
+        let right = self.primitive_with_hint(right, "number", doc)?;
         for value in [&left, &right] {
             if let Value::String(text) = value {
                 self.work(1 + text.len() / 8)?;
@@ -4045,6 +4080,7 @@ impl Runtime {
                 (Value::Undefined, Value::Undefined)
                 | (Value::Null, Value::Null)
                 | (Value::Bool(_), Value::Bool(_))
+                | (Value::Symbol(_), Value::Symbol(_))
                 | (Value::Number(_), Value::Number(_)) => return Ok(left == right),
                 (Value::Null, Value::Undefined) | (Value::Undefined, Value::Null) => {
                     return Ok(true);
@@ -4063,10 +4099,14 @@ impl Runtime {
                     self.tick()?;
                     right = Value::Number(f64::from(*value));
                 }
-                (Value::String(_) | Value::Number(_), object) if js_object(object) => {
+                (Value::String(_) | Value::Number(_) | Value::Symbol(_), object)
+                    if js_object(object) =>
+                {
                     right = self.number_hint_primitive(right, doc)?;
                 }
-                (object, Value::String(_) | Value::Number(_)) if js_object(object) => {
+                (object, Value::String(_) | Value::Number(_) | Value::Symbol(_))
+                    if js_object(object) =>
+                {
                     left = self.number_hint_primitive(left, doc)?;
                 }
                 (a, b) if js_object(a) && js_object(b) => return Ok(left == right),
@@ -4097,47 +4137,7 @@ impl Runtime {
             }
         }
         if op == "instanceof" {
-            let mut right = right;
-            let mut bound_depth = 0;
-            while let Value::Function(id) = right {
-                let Some(bound) = &self.functions[id].bound else {
-                    break;
-                };
-                if bound_depth >= MAX_DEPTH {
-                    return Err(ScriptError::resource("bound function chain limit exceeded"));
-                }
-                right = bound.target.clone();
-                bound_depth += 1;
-                self.tick()?;
-            }
-            if !json_callable(&right) {
-                return Err(ScriptError::type_error(
-                    "instanceof right-hand side is not callable",
-                ));
-            }
-            if !js_object(&left) {
-                return Ok(Value::Bool(false));
-            }
-            let prototype = self
-                .lookup_property(&right, &"prototype".into(), doc)?
-                .ok_or_else(|| ScriptError::type_error("constructor prototype is not an object"))?;
-            if !js_object(&prototype) {
-                return Err(ScriptError::type_error(
-                    "constructor prototype is not an object",
-                ));
-            }
-            let mut cursor = self.prototype_of(&left);
-            for _ in 0..MAX_DEPTH {
-                self.tick()?;
-                let Some(value) = cursor else {
-                    return Ok(Value::Bool(false));
-                };
-                if value == prototype {
-                    return Ok(Value::Bool(true));
-                }
-                cursor = self.prototype_of(&value);
-            }
-            return Err(ScriptError::resource("prototype chain limit exceeded"));
+            return self.instance_of(left, right, false, doc).map(Value::Bool);
         }
         if op == "in" {
             if !js_object(&right) {
@@ -4145,11 +4145,13 @@ impl Runtime {
                     "in right-hand side is not an object",
                 ));
             }
-            let key = self.string_hint(left, doc)?;
-            if let Value::Style(id) = right {
-                return self.style_has(id, &key, doc).map(Value::Bool);
+            let key = self.property_key(left, doc)?;
+            if let Value::Style(id) = right
+                && let PropertyKey::String(key) = &key
+            {
+                return self.style_has(id, key, doc).map(Value::Bool);
             }
-            return Ok(Value::Bool(self.find_property(&right, &key)?.is_some()));
+            return Ok(Value::Bool(self.find_property_key(&right, &key)?.is_some()));
         }
         if matches!(op, "===" | "!==") {
             let equal = left == right;
@@ -4187,7 +4189,7 @@ impl Runtime {
         base: &Value,
         value: Value,
         doc: &mut Document,
-    ) -> Result<JsString> {
+    ) -> Result<PropertyKey> {
         // ToObject's only observable primitive effect here is rejecting null
         // and undefined. Keep the original primitive receiver for accessors.
         if matches!(base, Value::Null | Value::Undefined) {
@@ -4195,7 +4197,7 @@ impl Runtime {
                 "cannot access property of null or undefined",
             ));
         }
-        self.string_hint(value, doc)
+        self.property_key(value, doc)
     }
     fn read_reference(&mut self, reference: &mut Reference, doc: &mut Document) -> Result<Value> {
         match reference {
@@ -4216,8 +4218,8 @@ impl Runtime {
             Reference::Binding(env, name, _) => self.binding_value(*env, name, doc),
             Reference::Property(object, name, _) => {
                 let key = self.reference_key(object, name.clone(), doc)?;
-                *name = Value::String(key.clone());
-                self.get_key(object.clone(), &key, doc)
+                *name = key.value();
+                self.get_property_key(object.clone(), &key, doc)
             }
         }
     }
@@ -4244,7 +4246,7 @@ impl Runtime {
             }
             Reference::Property(object, key, strict) => {
                 let key = self.reference_key(&object, key, doc)?;
-                self.set_key_strict(object, &key, value, strict, doc)
+                self.set_property_key(object, &key, value, strict, doc)
             }
         }
     }
@@ -4346,6 +4348,7 @@ impl Runtime {
             Value::String(_) => "String",
             Value::Number(_) => "Number",
             Value::Bool(_) => "Boolean",
+            Value::Symbol(_) => "Symbol",
             Value::Null | Value::Undefined => return None,
             _ => "Object",
         };
@@ -4417,7 +4420,7 @@ impl Runtime {
                 .map(Binding::property);
         }
         if let Some(id) = self.property_object(receiver)
-            && let Some(property) = self.objects[id].values.get(key)
+            && let Some(property) = self.objects[id].values.get(&key.into())
         {
             let mut property = property.clone();
             if let Some((env, name)) = self.objects[id].parameter_map.get(key)
@@ -4539,7 +4542,13 @@ impl Runtime {
                     .map(|key| key.byte_len() + 32)
                     .sum(),
             )?;
-            keys.extend(self.objects[id].order.iter().cloned());
+            keys.extend(
+                self.objects[id]
+                    .order
+                    .iter()
+                    .filter_map(PropertyKey::as_string)
+                    .cloned(),
+            );
         } else if js_object(receiver) {
             return Err(ScriptError::unsupported(
                 "host own-property enumeration is not implemented",
@@ -4612,26 +4621,40 @@ impl Runtime {
         key: &JsString,
         desc: PropertyDescriptor,
     ) -> Result<bool> {
-        self.work(1 + key.len() / 8)?;
+        self.define_own_key(receiver, &key.into(), desc)
+    }
+    fn define_own_key(
+        &mut self,
+        receiver: &Value,
+        key: &PropertyKey,
+        desc: PropertyDescriptor,
+    ) -> Result<bool> {
+        self.work(1 + key.byte_len() / 2 / 8)?;
         let tracked_global = if receiver == &Value::Window {
-            TrackedGlobal::from_key(key)
+            key.as_string().and_then(TrackedGlobal::from_key)
         } else {
             None
         };
-        let object_id = self.property_object(receiver);
+        let object_id = if matches!(key, PropertyKey::Symbol(_)) {
+            self.ensure_symbol_property_object(receiver)?
+        } else {
+            self.property_object(receiver)
+        };
         if object_id.is_none() && tracked_global.is_none() {
             return Err(ScriptError::unsupported(
                 "host property definition is not implemented",
             ));
         }
         if matches!(receiver, Value::Array(_))
-            && (key == &JsString::from("length") || json_array_index(key).is_some())
+            && key.as_string().is_some_and(|key| {
+                key == &JsString::from("length") || json_array_index(key).is_some()
+            })
         {
             return Err(ScriptError::unsupported(
                 "array indexed/length descriptor mutation is not implemented",
             ));
         }
-        let current = self.own_property(receiver, key);
+        let current = self.own_property_key(receiver, key);
         if let Some(current) = &current {
             if !current.configurable {
                 if desc.configurable == Some(true)
@@ -4673,7 +4696,10 @@ impl Runtime {
         } else if object_id.is_some_and(|id| self.objects[id].non_extensible) {
             return Ok(false);
         }
-        let mapping = object_id.and_then(|id| self.objects[id].parameter_map.get(key).cloned());
+        let mapping = object_id.and_then(|id| {
+            key.as_string()
+                .and_then(|key| self.objects[id].parameter_map.get(key).cloned())
+        });
         let mapped_value = desc.value.clone();
         let sever_mapping = desc.accessor() || desc.writable == Some(false);
         let mut property =
@@ -4730,7 +4756,7 @@ impl Runtime {
                     .unwrap()
                     .value = value;
             }
-            if sever_mapping {
+            if sever_mapping && let Some(key) = key.as_string() {
                 self.objects[id].parameter_map.remove(key);
             }
         }
@@ -4778,20 +4804,20 @@ impl Runtime {
     ) -> Result<()> {
         let properties = self.coerce_object(properties)?;
         let mut descriptors = Vec::new();
-        for key in self.own_keys(&properties)? {
+        for key in self.own_property_keys(&properties)? {
             if !self
-                .own_property(&properties, &key)
+                .own_property_key(&properties, &key)
                 .is_some_and(|p| p.enumerable)
             {
                 continue;
             }
-            let value = self.get_key(properties.clone(), &key, doc)?;
+            let value = self.get_property_key(properties.clone(), &key, doc)?;
             let desc = self.property_descriptor(value, doc)?;
             self.charge(256 + key.byte_len())?;
             descriptors.push((key, desc));
         }
         for (key, desc) in descriptors {
-            if !self.define_own(&object, &key, desc)? {
+            if !self.define_own_key(&object, &key, desc)? {
                 return Err(ScriptError::type_error("incompatible property definition"));
             }
         }
@@ -4836,7 +4862,7 @@ impl Runtime {
         }
         if let Some(id) = self.property_object(&receiver) {
             self.work(1 + self.objects[id].order.len() / 8)?;
-            self.objects[id].remove(key);
+            self.objects[id].remove(&key.into());
             self.objects[id].parameter_map.remove(key);
         }
         Ok(true)
@@ -5266,6 +5292,11 @@ impl Runtime {
         Ok(Value::String(JsString::from(units[start..].to_vec())))
     }
     fn primitive_number_value(&mut self, value: Value) -> Result<f64> {
+        if matches!(value, Value::Symbol(_)) {
+            return Err(ScriptError::type_error(
+                "cannot convert a symbol to a number",
+            ));
+        }
         if let Value::String(text) = &value {
             // Trimming, ASCII validation/copy and decimal/radix parsing make
             // bounded passes over the code units. Cover temporary ASCII
@@ -5278,6 +5309,9 @@ impl Runtime {
     fn number_value(&mut self, value: Value, doc: &mut Document) -> Result<f64> {
         if !js_object(&value) {
             return self.primitive_number_value(value);
+        }
+        if let Some(primitive) = self.exotic_primitive(&value, "number", doc)? {
+            return self.primitive_number_value(primitive);
         }
         for key in ["valueOf", "toString"] {
             self.charge(64)?;
@@ -5377,6 +5411,11 @@ impl Runtime {
                             | "URIError"
                     ) =>
             {
+                if native.name == "String" && matches!(arguments.first(), Some(Value::Symbol(_))) {
+                    return Err(ScriptError::type_error(
+                        "cannot convert a symbol to a string",
+                    ));
+                }
                 let boxed = matches!(native.name.as_str(), "String" | "Number" | "Boolean");
                 let result = self.call(constructor, arguments, Value::Window, doc)?;
                 if boxed {
@@ -5485,7 +5524,7 @@ impl Runtime {
                     return Self::failed_write(strict);
                 }
             } else {
-                if let Some(property) = self.objects[id].values.get_mut(key) {
+                if let Some(property) = self.objects[id].values.get_mut(&key.into()) {
                     if let PropertyValue::Data { value: old, .. } = &mut property.value {
                         *old = value.clone();
                     }
@@ -5856,6 +5895,21 @@ impl Runtime {
         Ok(Value::Undefined)
     }
 
+    // Legacy host/display conversions still use Display. A Symbol adds an
+    // author-sized description to that path; charge its scan and UTF-8 storage
+    // before formatting, just as explicit Symbol.prototype.toString does.
+    fn display_value(&mut self, value: &Value) -> Result<String> {
+        if let Value::Symbol(symbol) = value {
+            let length = symbol
+                .description()
+                .map_or(0, JsString::len)
+                .saturating_add(8);
+            self.work(1 + length / 8)?;
+            self.charge(length.saturating_mul(3) + 32)?;
+        }
+        Ok(value.to_string())
+    }
+
     fn set(&mut self, receiver: Value, key: &str, value: Value, doc: &mut Document) -> Result<()> {
         // Host writes may decode strings or parse array lengths. Charge their
         // linear work even when the string itself is an existing shared value.
@@ -5871,7 +5925,7 @@ impl Runtime {
             }
             Value::Array(id) => {
                 if key == "length" {
-                    let n = value.number();
+                    let n = self.number_value(value, doc)?;
                     if !n.is_finite() || n < 0.0 || n.fract() != 0.0 {
                         return Err(ScriptError::range_error("invalid array length"));
                     }
@@ -5934,7 +5988,7 @@ impl Runtime {
                     id
                 };
                 self.ensure_dom_capacity(doc, 1)?;
-                let text = value.to_string();
+                let text = self.display_value(&value)?;
                 self.charge(text.len())?;
                 self.charge_dom_clear(id, doc)?;
                 doc.set_text_content(id, &text);
@@ -5967,7 +6021,7 @@ impl Runtime {
                     if key == "value" && doc.tag(id) == Some("textarea") && value == Value::Null {
                         String::new()
                     } else {
-                        value.to_string()
+                        self.display_value(&value)?
                     };
                 self.charge(text.len())?;
                 match key {
@@ -6344,7 +6398,11 @@ impl Runtime {
     fn json_keys(&mut self, id: usize) -> Result<Vec<JsString>> {
         let object = &self.objects[id];
         let count = object.order.len();
-        let bytes = object.order.iter().map(JsString::byte_len).sum::<usize>();
+        let bytes = object
+            .order
+            .iter()
+            .map(PropertyKey::byte_len)
+            .sum::<usize>();
         self.work(1 + count.saturating_mul(1 + count.checked_ilog2().unwrap_or(0) as usize) / 8)?;
         self.charge(bytes.saturating_add(count.saturating_mul(32)))?;
         let mut keys: Vec<_> = self.objects[id]
@@ -6356,6 +6414,7 @@ impl Runtime {
                     .get(*key)
                     .is_some_and(|p| p.enumerable)
             })
+            .filter_map(PropertyKey::as_string)
             .cloned()
             .collect();
         keys.sort_by_key(|key| {
@@ -6401,8 +6460,11 @@ impl Runtime {
         output.extend_from_slice(text.units());
         Ok(())
     }
-    fn string_hint(&mut self, value: Value, doc: &mut Document) -> Result<JsString> {
+    fn string_primitive(&mut self, value: Value, doc: &mut Document) -> Result<Value> {
         let mut primitive = value.clone();
+        if let Some(primitive) = self.exotic_primitive(&value, "string", doc)? {
+            return Ok(primitive);
+        }
         if js_object(&value) {
             for key in ["toString", "valueOf"] {
                 self.charge(64)?;
@@ -6420,6 +6482,15 @@ impl Runtime {
                 ));
             }
         }
+        Ok(primitive)
+    }
+    fn string_hint(&mut self, value: Value, doc: &mut Document) -> Result<JsString> {
+        let primitive = self.string_primitive(value, doc)?;
+        if matches!(primitive, Value::Symbol(_)) {
+            return Err(ScriptError::type_error(
+                "cannot convert a symbol to a string",
+            ));
+        }
         if !matches!(primitive, Value::String(_)) {
             self.charge(1024)?;
         }
@@ -6432,62 +6503,71 @@ impl Runtime {
         arrays: &mut Vec<usize>,
     ) -> Result<JsString> {
         self.json_enter()?;
-        let result = (|| match value {
-            Value::String(text) => {
-                self.charge(text.byte_len())?;
-                Ok(text)
+        let result = (|| {
+            if let Some(primitive) = self.exotic_primitive(&value, "string", doc)? {
+                return self.json_text(primitive, doc, arrays);
             }
-            Value::Number(number) => Ok(json_number(number).into()),
-            Value::Object(id) => {
-                for key in ["toString", "valueOf"] {
-                    let convert = self.get(Value::Object(id), key, doc)?;
-                    if json_callable(&convert) {
-                        let converted = self.call(convert, Vec::new(), Value::Object(id), doc)?;
-                        if json_primitive(&converted) {
-                            return self.json_text(converted, doc, arrays);
+            match value {
+                Value::Symbol(_) => Err(ScriptError::type_error(
+                    "cannot convert a symbol to a string",
+                )),
+                Value::String(text) => {
+                    self.charge(text.byte_len())?;
+                    Ok(text)
+                }
+                Value::Number(number) => Ok(json_number(number).into()),
+                Value::Object(id) => {
+                    for key in ["toString", "valueOf"] {
+                        let convert = self.get(Value::Object(id), key, doc)?;
+                        if json_callable(&convert) {
+                            let converted =
+                                self.call(convert, Vec::new(), Value::Object(id), doc)?;
+                            if json_primitive(&converted) {
+                                return self.json_text(converted, doc, arrays);
+                            }
                         }
                     }
+                    Err(ScriptError::type_error(
+                        "JSON input cannot be converted to a primitive string",
+                    ))
                 }
-                Err(ScriptError::type_error(
-                    "JSON input cannot be converted to a primitive string",
-                ))
-            }
-            Value::Array(id) => {
-                if arrays.contains(&id) {
-                    return Ok(JsString::default());
-                }
-                arrays.push(id);
-                let mut text = Vec::<u16>::new();
-                let length = self.arrays[id].len();
-                for index in 0..length {
-                    self.tick()?;
-                    let value = self.arrays[id]
-                        .get(index)
-                        .cloned()
-                        .unwrap_or(Value::Undefined);
-                    let part = if matches!(value, Value::Null | Value::Undefined) {
-                        JsString::default()
-                    } else {
-                        self.json_text(value, doc, arrays)?
-                    };
-                    if text
-                        .len()
-                        .saturating_add(part.len())
-                        .saturating_add(usize::from(index > 0))
-                        > MAX_STRING
-                    {
-                        return Err(ScriptError::resource("JSON source limit exceeded"));
+                Value::Array(id) => {
+                    if arrays.contains(&id) {
+                        return Ok(JsString::default());
                     }
-                    self.charge(part.byte_len() + usize::from(index > 0) * 2)?;
-                    if index > 0 {
-                        text.push(44);
+                    arrays.push(id);
+                    let mut text = Vec::<u16>::new();
+                    let length = self.arrays[id].len();
+                    for index in 0..length {
+                        self.tick()?;
+                        let value = self.arrays[id]
+                            .get(index)
+                            .cloned()
+                            .unwrap_or(Value::Undefined);
+                        let part = if matches!(value, Value::Null | Value::Undefined) {
+                            JsString::default()
+                        } else {
+                            self.json_text(value, doc, arrays)?
+                        };
+                        if text
+                            .len()
+                            .saturating_add(part.len())
+                            .saturating_add(usize::from(index > 0))
+                            > MAX_STRING
+                        {
+                            return Err(ScriptError::resource("JSON source limit exceeded"));
+                        }
+                        self.charge(part.byte_len() + usize::from(index > 0) * 2)?;
+                        if index > 0 {
+                            text.push(44);
+                        }
+                        text.extend_from_slice(part.units());
                     }
-                    text.extend_from_slice(part.units());
+                    arrays.pop();
+                    Ok(text.into())
                 }
-                arrays.pop();
-                Ok(text.into())
+                _ => Ok(value.js_string()),
             }
-            _ => Ok(value.js_string()),
         })();
         self.json_depth -= 1;
         self.stack_units -= 1;
@@ -6729,7 +6809,9 @@ impl Runtime {
         doc: &mut Document,
     ) -> Result<bool> {
         match &value {
-            Value::Undefined | Value::Function(_) | Value::Native(_) => return Ok(false),
+            Value::Undefined | Value::Symbol(_) | Value::Function(_) | Value::Native(_) => {
+                return Ok(false);
+            }
             Value::Null => self.json_append(writer, "null")?,
             Value::Bool(value) => {
                 self.json_append(writer, if *value { "true" } else { "false" })?
@@ -6771,7 +6853,7 @@ impl Runtime {
                     let child = self.json_prepare(value.clone(), &key, &writer.replacer, doc)?;
                     let omitted = matches!(
                         child,
-                        Value::Undefined | Value::Function(_) | Value::Native(_)
+                        Value::Undefined | Value::Symbol(_) | Value::Function(_) | Value::Native(_)
                     );
                     if omitted && !array {
                         continue;
@@ -8054,6 +8136,9 @@ impl Runtime {
             native
         };
         let name = native.name.as_str();
+        if name == "Symbol" || name.starts_with("Symbol.") {
+            return self.symbol_native(name, native.receiver.clone(), &args, doc);
+        }
         if let Some(method) = name.strip_prefix("RegExp.") {
             return self.regexp_native(method, native.receiver.clone(), &args, doc);
         }
@@ -8151,6 +8236,11 @@ impl Runtime {
                 });
                 return Ok(Value::Function(id));
             }
+            "Function.hasInstance" => {
+                return self
+                    .instance_of(arg(0), native.receiver.clone(), true, doc)
+                    .map(Value::Bool);
+            }
             "Function.call" | "Function.apply" => {
                 if !json_callable(&native.receiver) {
                     return Err(ScriptError::type_error("function receiver is not callable"));
@@ -8169,7 +8259,7 @@ impl Runtime {
                     if let Value::String(text) = &length {
                         self.work(1 + text.len() / 16)?;
                     }
-                    let length = integer_or_infinity(length.number()).max(0.0);
+                    let length = integer_or_infinity(self.number_value(length, doc)?).max(0.0);
                     if length > 65536.0 {
                         return Err(ScriptError::resource("apply argument limit exceeded"));
                     }
@@ -8185,6 +8275,27 @@ impl Runtime {
                 return self.call(native.receiver.clone(), parameters, receiver, doc);
             }
             "Object.toString" => {
+                if !matches!(native.receiver, Value::Null | Value::Undefined) {
+                    let key = self.well_known_key("toStringTag");
+                    if let Value::String(tag) =
+                        self.get_property_key(native.receiver.clone(), &key, doc)?
+                    {
+                        let length = tag.len().saturating_add(9);
+                        if length > MAX_STRING {
+                            return Err(ScriptError::resource("object tag string limit exceeded"));
+                        }
+                        self.work(1 + length / 8)?;
+                        self.charge(length.saturating_mul(4) + 32)?;
+                        let mut units = Vec::new();
+                        units
+                            .try_reserve_exact(length)
+                            .map_err(|_| ScriptError::resource("object tag allocation failed"))?;
+                        units.extend("[object ".encode_utf16());
+                        units.extend_from_slice(tag.units());
+                        units.push(u16::from(b']'));
+                        return Ok(Value::String(units.into()));
+                    }
+                }
                 let tag = match &native.receiver {
                     Value::Undefined => "Undefined",
                     Value::Null => "Null",
@@ -8231,14 +8342,15 @@ impl Runtime {
             }
             "Object.valueOf" => return self.coerce_object(native.receiver.clone()),
             "Object.hasOwnProperty" | "Object.propertyIsEnumerable" => {
-                let key = self.json_text(arg(0), doc, &mut Vec::new())?;
+                let key = self.property_key(arg(0), doc)?;
                 let object = self.coerce_object(native.receiver.clone())?;
-                if self.property_object(&object).is_none() {
+                if self.property_object(&object).is_none() && matches!(key, PropertyKey::String(_))
+                {
                     return Err(ScriptError::unsupported(
                         "host own-property reflection is not implemented",
                     ));
                 }
-                let property = self.own_property(&object, &key);
+                let property = self.own_property_key(&object, &key);
                 return Ok(Value::Bool(if name.ends_with("propertyIsEnumerable") {
                     property.is_some_and(|p| p.enumerable)
                 } else {
@@ -8252,9 +8364,9 @@ impl Runtime {
                         "defineProperty target must be an object",
                     ));
                 }
-                let key = self.string_hint(arg(1), doc)?;
+                let key = self.property_key(arg(1), doc)?;
                 let desc = self.property_descriptor(arg(2), doc)?;
-                if !self.define_own(&object, &key, desc)? {
+                if !self.define_own_key(&object, &key, desc)? {
                     return Err(ScriptError::type_error("incompatible property definition"));
                 }
                 return Ok(object);
@@ -8271,8 +8383,10 @@ impl Runtime {
             }
             "Object.getOwnPropertyDescriptor" => {
                 let object = self.coerce_object(arg(0))?;
-                let key = self.string_hint(arg(1), doc)?;
-                let property = if matches!(object, Value::Window) {
+                let key = self.property_key(arg(1), doc)?;
+                let property = if matches!(object, Value::Window)
+                    && let Some(key) = key.as_string()
+                {
                     // Global object bindings are authoritative property records. Do not read through the host getter/prototype
                     // fallback or expose the separate lexical environment.
                     let comparisons = 1 + self.environments[0]
@@ -8301,13 +8415,15 @@ impl Runtime {
                         Err(_) => None,
                     }
                 } else {
-                    if self.property_object(&object).is_none() {
+                    if self.property_object(&object).is_none()
+                        && matches!(key, PropertyKey::String(_))
+                    {
                         return Err(ScriptError::unsupported(
                             "host own-property reflection is not implemented",
                         ));
                     }
-                    self.work(1 + key.len() / 8)?;
-                    self.own_property(&object, &key)
+                    self.work(1 + key.byte_len() / 16)?;
+                    self.own_property_key(&object, &key)
                 };
                 let Some(property) = property else {
                     return Ok(Value::Undefined);
@@ -8391,6 +8507,27 @@ impl Runtime {
                 }
                 self.set_object_prototype(&object, prototype)?;
                 return Ok(object);
+            }
+            "Object.getOwnPropertySymbols" | "Reflect.ownKeys" => {
+                let keys = if name == "Reflect.ownKeys" {
+                    let target = arg(0);
+                    if !js_object(&target) {
+                        return Err(ScriptError::type_error(
+                            "Reflect.ownKeys target must be an object",
+                        ));
+                    }
+                    self.own_property_keys(&target)?
+                } else {
+                    let target = self.coerce_object(arg(0))?;
+                    self.own_symbol_keys(&target)?
+                };
+                self.charge(keys.len().saturating_mul(std::mem::size_of::<Value>()) + 32)?;
+                let mut values = Vec::new();
+                values
+                    .try_reserve_exact(keys.len())
+                    .map_err(|_| ScriptError::resource("property key array allocation failed"))?;
+                values.extend(keys.iter().map(PropertyKey::value));
+                return self.array(values);
             }
             "Object.keys" | "Object.values" | "Object.getOwnPropertyNames" => {
                 let object = self.coerce_object(arg(0))?;
@@ -8534,6 +8671,8 @@ impl Runtime {
                     "String" => {
                         let text = if args.is_empty() {
                             JsString::default()
+                        } else if let Value::Symbol(symbol) = value {
+                            self.symbol_text(&symbol)?
                         } else {
                             self.json_text(value, doc, &mut Vec::new())?
                         };
@@ -8546,7 +8685,7 @@ impl Runtime {
             Value::Console => {
                 let mut line = String::new();
                 for (index, value) in args.iter().enumerate() {
-                    let text = value.to_string();
+                    let text = self.display_value(value)?;
                     if line.len().saturating_add(text.len()).saturating_add(1) > MAX_STRING {
                         return Err(ScriptError::resource(
                             "console message length limit exceeded",
@@ -8565,16 +8704,45 @@ impl Runtime {
                 return Ok(Value::Undefined);
             }
             Value::Math => {
-                let a = arg(0).number();
-                let b = arg(1).number();
+                if matches!(name, "min" | "max") {
+                    let minimum = name == "min";
+                    let mut result = if minimum {
+                        f64::INFINITY
+                    } else {
+                        f64::NEG_INFINITY
+                    };
+                    for value in args {
+                        let number = self.number_value(value.clone(), doc)?;
+                        if number.is_nan() || result.is_nan() {
+                            result = f64::NAN;
+                        } else if (minimum && number < result)
+                            || (!minimum && number > result)
+                            || (number == 0.0
+                                && result == 0.0
+                                && (number.is_sign_negative() == minimum))
+                        {
+                            result = number;
+                        }
+                    }
+                    return Ok(Value::Number(result));
+                }
+                let a = self.number_value(arg(0), doc)?;
                 let value = match name {
                     "abs" => a.abs(),
                     "floor" => a.floor(),
                     "ceil" => a.ceil(),
-                    "round" => (a + 0.5).floor(),
+                    "round" => {
+                        if (-0.5..0.0).contains(&a) {
+                            -0.0
+                        } else if a.fract() == 0.0 || !a.is_finite() {
+                            a
+                        } else {
+                            (a + 0.5).floor()
+                        }
+                    }
                     "trunc" => a.trunc(),
                     "sqrt" => a.sqrt(),
-                    "pow" => a.powf(b),
+                    "pow" => a.powf(self.number_value(arg(1), doc)?),
                     "sin" => a.sin(),
                     "cos" => a.cos(),
                     "tan" => a.tan(),
@@ -8587,23 +8755,6 @@ impl Runtime {
                             a.signum()
                         }
                     }
-                    "min" => args.iter().map(Value::number).fold(f64::INFINITY, |a, b| {
-                        if a.is_nan() || b.is_nan() {
-                            f64::NAN
-                        } else {
-                            a.min(b)
-                        }
-                    }),
-                    "max" => args
-                        .iter()
-                        .map(Value::number)
-                        .fold(f64::NEG_INFINITY, |a, b| {
-                            if a.is_nan() || b.is_nan() {
-                                f64::NAN
-                            } else {
-                                a.max(b)
-                            }
-                        }),
                     _ => return Err(ScriptError::new("unsupported Math method")),
                 };
                 return Ok(Value::Number(value));
@@ -8645,13 +8796,14 @@ impl Runtime {
                         });
                     }
                     "join" => {
+                        let length = self.arrays[id].len();
                         let separator = if matches!(arg(0), Value::Undefined) {
                             JsString::from(",")
                         } else {
-                            arg(0).js_string()
+                            self.string_hint(arg(0), doc)?
                         };
                         let mut result = Vec::new();
-                        for index in 0..self.arrays[id].len() {
+                        for index in 0..length {
                             let value = self.arrays[id]
                                 .get(index)
                                 .cloned()
@@ -8696,13 +8848,40 @@ impl Runtime {
                     }
                     "slice" => {
                         let len = self.arrays[id].len();
-                        let start = relative_index(arg(0).number(), len);
-                        let end = args
-                            .get(1)
-                            .map(|v| relative_index(v.number(), len))
-                            .unwrap_or(len)
-                            .max(start);
-                        return self.array(self.arrays[id][start..end].to_vec());
+                        let start = relative_index(self.number_value(arg(0), doc)?, len);
+                        let end = if matches!(arg(1), Value::Undefined) {
+                            len
+                        } else {
+                            relative_index(self.number_value(arg(1), doc)?, len)
+                        }
+                        .max(start);
+                        self.charge(
+                            (end - start).saturating_mul(std::mem::size_of::<Value>() + 32),
+                        )?;
+                        let mut values = Vec::new();
+                        values
+                            .try_reserve_exact(end - start)
+                            .map_err(|_| ScriptError::resource("slice allocation failed"))?;
+                        let mut holes = BTreeSet::new();
+                        for index in start..end {
+                            self.tick()?;
+                            let key = index.to_string();
+                            if self
+                                .find_property(&Value::Array(id), &key.as_str().into())?
+                                .is_some()
+                            {
+                                values.push(self.get(Value::Array(id), &key, doc)?);
+                            } else {
+                                holes.insert(index - start);
+                                values.push(Value::Undefined);
+                            }
+                        }
+                        let result = self.array(values)?;
+                        let Value::Array(result_id) = result else {
+                            unreachable!()
+                        };
+                        self.array_holes[result_id] = holes;
+                        return Ok(result);
                     }
                     "forEach" | "map" | "filter" => {
                         let callback = arg(0);
@@ -8934,7 +9113,7 @@ impl Runtime {
                     .split_whitespace()
                     .map(str::to_owned)
                     .collect();
-                let token = arg(0).to_string();
+                let token = self.display_value(&arg(0))?;
                 if name == "contains" {
                     return Ok(Value::Bool(classes.contains(&token)));
                 }
@@ -8950,7 +9129,7 @@ impl Runtime {
                     }
                 } else {
                     for value in args {
-                        let token = value.to_string();
+                        let token = self.display_value(&value)?;
                         if token.is_empty() || token.chars().any(char::is_whitespace) {
                             return Err(ScriptError::new("invalid class token"));
                         }
@@ -8983,7 +9162,7 @@ impl Runtime {
         .contains(&name)
         {
             self.work(1 + doc.nodes.len() / 8)?;
-            let input = arg(0).to_string();
+            let input = self.display_value(&arg(0))?;
             let selector = match name {
                 "getElementsByClassName" => format!(
                     ".{}",
@@ -9016,7 +9195,7 @@ impl Runtime {
             };
         }
         if name == "createElement" {
-            let tag = arg(0).to_string();
+            let tag = self.display_value(&arg(0))?;
             if tag.is_empty()
                 || !tag
                     .chars()
@@ -9035,7 +9214,7 @@ impl Runtime {
             return Ok(Value::Node(doc.create_element(&tag.to_ascii_lowercase())));
         }
         if name == "createTextNode" {
-            let text = arg(0).to_string();
+            let text = self.display_value(&arg(0))?;
             self.ensure_dom_capacity(doc, 1)?;
             self.charge(text.len())?;
             return Ok(Value::Node(doc.create_text_node(&text)));
@@ -9052,17 +9231,19 @@ impl Runtime {
                         .map(Value::Node);
                 }
                 "getAttribute" => {
-                    return match doc.attr(id, &arg(0).to_string()) {
+                    return match doc.attr(id, &self.display_value(&arg(0))?) {
                         Some(value) => self.string(value),
                         None => Ok(Value::Null),
                     };
                 }
                 "hasAttribute" => {
-                    return Ok(Value::Bool(doc.attr(id, &arg(0).to_string()).is_some()));
+                    return Ok(Value::Bool(
+                        doc.attr(id, &self.display_value(&arg(0))?).is_some(),
+                    ));
                 }
                 "setAttribute" => {
-                    let key = arg(0).to_string();
-                    let text = arg(1).to_string();
+                    let key = self.display_value(&arg(0))?;
+                    let text = self.display_value(&arg(1))?;
                     self.charge(key.len() + text.len() + 64)?;
                     let work = doc.base_attribute_work(id, &key);
                     self.work(work.saturating_add(if work > 0 { text.len() } else { 0 }))?;
@@ -9072,7 +9253,7 @@ impl Runtime {
                     return Ok(Value::Undefined);
                 }
                 "removeAttribute" => {
-                    let key = arg(0).to_string();
+                    let key = self.display_value(&arg(0))?;
                     self.work(doc.base_attribute_work(id, &key))?;
                     self.charge_details_attribute(id, &key, 0, doc)?;
                     doc.remove_attr(id, &key);
@@ -9101,7 +9282,7 @@ impl Runtime {
                         let child = if let Value::Node(child) = value {
                             child
                         } else {
-                            let text = value.to_string();
+                            let text = self.display_value(&value)?;
                             self.ensure_dom_capacity(doc, 1)?;
                             self.charge(text.len())?;
                             doc.create_text_node(&text)
@@ -9397,7 +9578,12 @@ fn js_object(value: &Value) -> bool {
 fn json_primitive(value: &Value) -> bool {
     matches!(
         value,
-        Value::Undefined | Value::Null | Value::Bool(_) | Value::Number(_) | Value::String(_)
+        Value::Undefined
+            | Value::Null
+            | Value::Bool(_)
+            | Value::Number(_)
+            | Value::String(_)
+            | Value::Symbol(_)
     )
 }
 fn json_same_value(left: &Value, right: &Value) -> bool {
@@ -17982,7 +18168,7 @@ mod tests {
         let mut runtime = Runtime::new();
         let properties = runtime.native_properties["Number"];
         let key = JsString::from("EPSILON");
-        runtime.objects[properties].remove(&key);
+        runtime.objects[properties].remove(&(&key).into());
         let objects = runtime.objects.len();
         let registry = runtime.native_properties.len();
         runtime.allocated = MAX_HEAP;

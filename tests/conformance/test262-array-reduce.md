@@ -1,5 +1,11 @@
 # Pinned Test262 reduce and reduceRight selection
 
+Current update: [Symbol properties and observable Math/JSON tags](symbols.md)
+add eight passing modes. The complete inventory now has **856 passed / 8 failed /
+170 unsupported**, with all 128 controls verified. Date accounts for the remaining
+failures. The passing-case baseline is updated; the original measurements below
+remain historical evidence.
+
 This isolated profile imports both complete direct directories at Test262
 revision `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`:
 

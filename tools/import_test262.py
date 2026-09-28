@@ -48,7 +48,34 @@ URI_DIRECTORIES = {'encodeURI':31, 'encodeURIComponent':31, 'decodeURI':55, 'dec
 RELATIONAL_DIRECTORIES = {'expressions/less-than':45, 'expressions/greater-than':49, 'expressions/less-than-or-equal':47, 'expressions/greater-than-or-equal':43}
 EQUALITY_DIRECTORIES = {'expressions/equals':47, 'expressions/does-not-equals':38, 'expressions/strict-equals':30, 'expressions/strict-does-not-equals':30}
 LABELS_DIRECTORIES = {'statements/labeled':24, 'statements/break':20, 'statements/continue':24}
-PROFILES = {'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
+SYMBOL_DIRECTORIES = {
+    'Object/getOwnPropertySymbols': 12,
+    'Reflect/ownKeys': 13,
+    'Symbol': 12,
+    'Symbol/asyncDispose': 3,
+    'Symbol/asyncIterator': 2,
+    'Symbol/dispose': 3,
+    'Symbol/for': 9,
+    'Symbol/hasInstance': 2,
+    'Symbol/isConcatSpreadable': 2,
+    'Symbol/iterator': 2,
+    'Symbol/keyFor': 8,
+    'Symbol/match': 2,
+    'Symbol/matchAll': 2,
+    'Symbol/prototype': 3,
+    'Symbol/prototype/Symbol.toPrimitive': 9,
+    'Symbol/prototype/description': 7,
+    'Symbol/prototype/toString': 8,
+    'Symbol/prototype/valueOf': 8,
+    'Symbol/replace': 2,
+    'Symbol/search': 2,
+    'Symbol/species': 4,
+    'Symbol/split': 2,
+    'Symbol/toPrimitive': 2,
+    'Symbol/toStringTag': 2,
+    'Symbol/unscopables': 2,
+}
+PROFILES = {'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
             'rest-parameters': REST_PARAMETER_DIRECTORIES,
             'is-prototype-of': IS_PROTOTYPE_OF_DIRECTORIES,
@@ -59,7 +86,7 @@ PROFILES = {'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'numeric-parsing': NUMERIC_PARSING_DIRECTORIES,
             'compound-assignment': COMPOUND_ASSIGNMENT_DIRECTORIES,
             'addition': ADDITION_DIRECTORIES, 'logical-assignment': LOGICAL_ASSIGNMENT_DIRECTORIES, 'uri': URI_DIRECTORIES, 'relational': RELATIONAL_DIRECTORIES, 'equality': EQUALITY_DIRECTORIES, 'labels': LABELS_DIRECTORIES}
-PROFILE_ROOTS = {'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
+PROFILE_ROOTS = {'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
                  'template-literal': 'test/language', 'functions': 'test/language',
                  'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins',
                  'global-values': 'test/built-ins', 'array-sort': 'test/built-ins',
@@ -189,7 +216,7 @@ def import_corpus(output, profile='string-json'):
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
         sources = dict(zip(paths, pool.map(lambda path: fetch(raw + path), paths)))
     harness = {'assert.js', 'sta.js'}
-    if profile in {'template-literal', 'functions', 'rest-parameters', 'is-prototype-of', 'identifiers', 'compound-assignment', 'addition', 'logical-assignment', 'uri', 'relational', 'equality', 'labels'}:
+    if profile in {'symbols', 'template-literal', 'functions', 'rest-parameters', 'is-prototype-of', 'identifiers', 'compound-assignment', 'addition', 'logical-assignment', 'uri', 'relational', 'equality', 'labels'}:
         # These unchanged helpers support the assertion-integrity preflight,
         # even when no selected test requests them directly.
         harness.update({'propertyHelper.js', 'compareArray.js'})
@@ -211,6 +238,7 @@ def import_corpus(output, profile='string-json'):
     if sum(map(len, sources.values())) > MAX_TOTAL:
         raise ValueError('Test262 selection exceeds aggregate import limit')
     scope = {
+        'symbols': 'all .js files in the complete built-ins/Symbol tree and direct files in Object/getOwnPropertySymbols and Reflect/ownKeys; no implementation',
         'string-json': 'all direct .js files in nine built-ins directories; no implementation',
         'regexp': 'all direct .js files in four RegExp prototype directories; no implementation',
         'template-literal': 'all direct .js files in language/expressions/template-literal; no implementation',

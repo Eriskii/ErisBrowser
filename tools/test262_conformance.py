@@ -38,7 +38,14 @@ URI_FEATURES = SUPPORTED_FEATURES.copy()
 RELATIONAL_FEATURES = SUPPORTED_FEATURES.copy()
 EQUALITY_FEATURES = SUPPORTED_FEATURES.copy()
 LABELS_FEATURES = SUPPORTED_FEATURES.copy()
-PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+SYMBOL_FEATURES = SUPPORTED_FEATURES | {
+    'Symbol', 'Symbol.asyncIterator', 'Symbol.hasInstance', 'Symbol.isConcatSpreadable',
+    'Symbol.iterator', 'Symbol.match', 'Symbol.matchAll', 'Symbol.replace', 'Symbol.search',
+    'Symbol.species', 'Symbol.split', 'Symbol.toPrimitive', 'Symbol.toStringTag',
+    'Symbol.unscopables', 'Symbol.prototype.description', 'Reflect', 'Reflect.ownKeys',
+    'computed-property-names', 'object-methods',
+}
+PROFILE_FEATURES = {'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
                     'is-prototype-of': IS_PROTOTYPE_OF_FEATURES,
@@ -950,6 +957,21 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
             ('identifier-normalization', r"var é=3,é=4;assert.sameValue(e\u0301,4);", r'\u00E9', '3', '4'),
             ('identifier-keyword-properties', r"var o={\u0069f:7,\u0074his:8,\u006eull:9};assert.sameValue(o.if,7);assert.sameValue(o.\u0074his,8);", 'o.null', '9', '8'),
             ('identifier-whitespace-literals', "\ufeffvar x\u00a0=\u202f1;if(true){x+=2;}assert.sameValue(false,false);assert.sameValue(null,null);", 'x', '3', '4'),
+        ]
+        for mode in ('sloppy', 'strict'):
+            for name, setup, actual, good, bad in pairs:
+                for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                    variants.append((name + suffix, setup + f'assert.sameValue({actual},{value});', expected, mode))
+    if profile == 'symbols':
+        pairs = [
+            ('symbol-identity', "var a=Symbol('x'),b=Symbol('x');", 'a===b', 'false', 'true'),
+            ('symbol-registry', "var a=Symbol.for('x'),b=Symbol.for('x');", 'a===b', 'true', 'false'),
+            ('symbol-key', "var a=Symbol('x'),b=Symbol('x'),o={};o[a]=3;o[b]=4;", 'o[a]', '3', '4'),
+            ('symbol-reflection', "var a=Symbol(),o={x:1};o[a]=2;var keys=Reflect.ownKeys(o);", 'keys[1]===a', 'true', 'false'),
+            ('symbol-primitive', "var o={};o[Symbol.toPrimitive]=function(hint){return hint==='number'?7:8;};", '+o', '7', '8'),
+            ('symbol-tag', "var o={};o[Symbol.toStringTag]='Custom';", 'Object.prototype.toString.call(o)', "'[object Custom]'", "'[object Object]'"),
+            ('symbol-instance', "var o={};o[Symbol.hasInstance]=function(v){return v===3;};", '3 instanceof o', 'true', 'false'),
+            ('symbol-json', "var o={x:Symbol()};o[Symbol()]=1;", 'JSON.stringify(o)', "'{}'", "'{x:1}'"),
         ]
         for mode in ('sloppy', 'strict'):
             for name, setup, actual, good, bad in pairs:

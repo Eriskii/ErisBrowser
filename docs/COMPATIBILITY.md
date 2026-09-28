@@ -1,5 +1,12 @@
 # Compatibility status
 
+[Symbol primitives and property keys](../tests/conformance/symbols.md) now include
+identity, registry/description behavior, descriptors, computed keys, JSON omission,
+`Symbol.toPrimitive`, `Symbol.toStringTag`, `Symbol.hasInstance`,
+`Object.getOwnPropertySymbols` and `Reflect.ownKeys`. The complete new profile
+records 166 passed, six failed and 70 unsupported modes. Iteration, RegExp dispatch,
+species, other realms and most Reflect methods remain incomplete.
+
 This is an implementation inventory, not a conformance certificate. A feature listed as partial supports specific cases; it does not imply passing that specification's full tests. Unsupported syntax is generally ignored by HTML/CSS or reported by the script interpreter.
 
 | Area | Implemented subset | Missing or incomplete |
@@ -101,14 +108,14 @@ The six [compound bitwise assignments](../tests/conformance/compound-assignment.
 reuse a single evaluated reference, with ordered getter/RHS/conversion/setter
 behavior, strict writes and masked 32-bit shifts. Their complete inventory has
 606 passes and 180 unsupported modes.
-BigInt/Symbol behavior remains incomplete.
+BigInt behavior remains incomplete; Symbol numeric conversion now throws TypeError.
 
 The three [logical assignments](../tests/conformance/logical-assignment.md)
 read their reference once and skip both RHS and write when their condition
 does not select assignment. Taken identifier assignments infer names for
 anonymous function/arrow expressions; member targets retain unnamed functions.
 Strict/readonly/const rules apply only to actual writes. The complete profile
-retains 72 passes, twelve class/Symbol failures and 48 unsupported modes, with
+retains 78 passes, six class failures and 48 unsupported modes, with
 104 verified controls.
 
 [Declaration traversal](../tests/conformance/scope-walk.md) uses bounded borrowed
@@ -156,16 +163,15 @@ and HTMLDDA remain gaps.
 in source order before choosing UTF-16 string or numeric ordering. Live hooks,
 boxed strings, abrupt completion and unordered NaN are covered. The four complete
 upstream directories retain 300 passes and 64 unsupported variants, with 128
-controls. BigInt, Symbol and broader exotic conversions remain incomplete.
+controls. BigInt and broader exotic conversions remain incomplete. Symbol conversion hooks and numeric rejection now have separate coverage.
 
 [Ordinary addition](../tests/conformance/addition.md) converts both saved operands
 left-to-right before selecting numeric addition or UTF-16 concatenation. Live
 valueOf/toString hooks, boxed values, exact exceptions and += reference order are
 preserved. The complete addition profile has 65 passes, two missing-Date failures
-and 28 unsupported modes, with 64 verified controls. Date, Symbol.toPrimitive
-and BigInt/Symbol addition remain incomplete.
+and 28 unsupported modes, with 64 verified controls. Symbol.toPrimitive now participates in conversion and primitive Symbol addition throws TypeError. Date and BigInt addition remain incomplete; the existing profile policy is unchanged.
 
-Object initializers preserve computed-key evaluation/coercion order, UTF-16 names, method/accessor descriptors and the special static `__proto__` form. Symbols, spread, async/generator methods and `super` remain unsupported; see [object literal coverage](../tests/conformance/object-literals.md).
+Object initializers preserve computed-key evaluation/coercion order, UTF-16 names, method/accessor descriptors and the special static `__proto__` form. Symbol keys and inferred method/accessor names now work. Spread, async/generator methods and `super` remain unsupported; see [object literal coverage](../tests/conformance/object-literals.md).
 
 Array reversal uses bounded ordinary property operations, preserving holes, inherited indices, accessor order and abrupt completion on supported receivers. Number radix formatting adds exact finite safe integers for bases 2–36; nondecimal fractions and larger magnitudes remain explicitly unsupported. See [Array/Number method coverage](../tests/conformance/array-number-methods.md).
 
@@ -175,8 +181,7 @@ without coercion, including subnormal values, negative zero and rounded large
 integers. Saved aliases retain native identity through method/global replacement.
 Number and the global isFinite/isNaN functions now perform
 [ordinary numeric conversion](../tests/conformance/numeric-conversion.md),
-preserving live hooks, receiver identity and abrupt effects. Symbol/BigInt
-conversion and general constructor infrastructure remain incomplete.
+preserving live hooks, receiver identity and abrupt effects. Symbol numeric conversion now throws TypeError; BigInt conversion and general constructor infrastructure remain incomplete.
 The global parseInt/parseFloat functions use ordinary string-hint conversion,
 and [Number parsing aliases](../tests/conformance/numeric-parsing.md) share
 the same intrinsic identities. The
@@ -231,8 +236,7 @@ records value grammar, shorthand limitations and serialization gaps.
 Computed JavaScript property keys use string-hint conversion. Plain assignment
 defers conversion until after its right-hand side; compound assignments and
 updates retain the key converted for their read. Null/undefined bases fail
-before key conversion. Symbols, proxies and the broader missing ECMAScript
-features remain unsupported.
+before key conversion. Converted symbol keys retain identity. Proxies and broader missing ECMAScript features remain unsupported.
 
 HTML disclosures keep closed content in the DOM, script/style/resource lifecycle and form serialization while excluding it from paint, hits and native editing. Named groups enforce one open member per ordinary tree. The first direct summary and generated default affordance support activation. Toggle delivery uses bounded host checkpoints, exact reentrant task/tracker cleanup, and native idle continuation; complete HTML event-loop timing remains unsupported. Quota failure suspends automatic notification dispatch until reload. See [disclosure behavior](../tests/conformance/details.md).
 

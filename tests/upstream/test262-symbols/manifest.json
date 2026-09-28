@@ -1,0 +1,964 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all .js files in the complete built-ins/Symbol tree and direct files in Object/getOwnPropertySymbols and Reflect/ownKeys; no implementation",
+  "directories": {
+    "Object/getOwnPropertySymbols": [
+      "length.js",
+      "name.js",
+      "non-object-argument-invalid.js",
+      "non-object-argument-valid.js",
+      "not-a-constructor.js",
+      "object-contains-symbol-property-with-description.js",
+      "object-contains-symbol-property-without-description.js",
+      "order-after-define-property.js",
+      "proxy-invariant-absent-not-configurable-string-key.js",
+      "proxy-invariant-duplicate-string-entry.js",
+      "proxy-invariant-not-extensible-absent-string-key.js",
+      "proxy-invariant-not-extensible-extra-string-key.js"
+    ],
+    "Reflect/ownKeys": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "order-after-define-property.js",
+      "ownKeys.js",
+      "return-abrupt-from-result.js",
+      "return-array-with-own-keys-only.js",
+      "return-empty-array.js",
+      "return-non-enumerable-keys.js",
+      "return-on-corresponding-order-large-index.js",
+      "return-on-corresponding-order.js",
+      "target-is-not-object-throws.js",
+      "target-is-symbol-throws.js"
+    ],
+    "Symbol": [
+      "auto-boxing-non-strict.js",
+      "auto-boxing-strict.js",
+      "constructor.js",
+      "desc-to-string-symbol.js",
+      "desc-to-string.js",
+      "invoked-with-new.js",
+      "is-constructor.js",
+      "length.js",
+      "name.js",
+      "not-callable.js",
+      "symbol.js",
+      "uniqueness.js"
+    ],
+    "Symbol/asyncDispose": [
+      "cross-realm.js",
+      "no-key.js",
+      "prop-desc.js"
+    ],
+    "Symbol/asyncIterator": [
+      "cross-realm.js",
+      "prop-desc.js"
+    ],
+    "Symbol/dispose": [
+      "cross-realm.js",
+      "no-key.js",
+      "prop-desc.js"
+    ],
+    "Symbol/for": [
+      "create-value.js",
+      "cross-realm.js",
+      "description.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "retrieve-value.js",
+      "to-string-err.js"
+    ],
+    "Symbol/hasInstance": [
+      "cross-realm.js",
+      "prop-desc.js"
+    ],
+    "Symbol/isConcatSpreadable": [
+      "cross-realm.js",
+      "prop-desc.js"
+    ],
+    "Symbol/iterator": [
+      "cross-realm.js",
+      "prop-desc.js"
+    ],
+    "Symbol/keyFor": [
+      "arg-non-symbol.js",
+      "arg-symbol-registry-hit.js",
+      "arg-symbol-registry-miss.js",
+      "cross-realm.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js"
+    ],
+    "Symbol/match": [
+      "cross-realm.js",
+      "prop-desc.js"
+    ],
+    "Symbol/matchAll": [
+      "cross-realm.js",
+      "prop-desc.js"
+    ],
+    "Symbol/prototype": [
+      "Symbol.toStringTag.js",
+      "constructor.js",
+      "intrinsic.js"
+    ],
+    "Symbol/prototype/Symbol.toPrimitive": [
+      "length.js",
+      "name.js",
+      "prop-desc.js",
+      "redefined-symbol-wrapper-ordinary-toprimitive.js",
+      "removed-symbol-wrapper-ordinary-toprimitive.js",
+      "this-val-non-obj.js",
+      "this-val-obj-non-symbol-wrapper.js",
+      "this-val-obj-symbol-wrapper.js",
+      "this-val-symbol.js"
+    ],
+    "Symbol/prototype/description": [
+      "description-symboldescriptivestring.js",
+      "descriptor.js",
+      "get.js",
+      "is-not-own-property.js",
+      "this-val-non-symbol.js",
+      "this-val-symbol.js",
+      "wrapper.js"
+    ],
+    "Symbol/prototype/toString": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "toString-default-attributes-non-strict.js",
+      "toString-default-attributes-strict.js",
+      "toString.js",
+      "undefined.js"
+    ],
+    "Symbol/prototype/valueOf": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-val-non-obj.js",
+      "this-val-obj-non-symbol.js",
+      "this-val-obj-symbol.js",
+      "this-val-symbol.js"
+    ],
+    "Symbol/replace": [
+      "cross-realm.js",
+      "prop-desc.js"
+    ],
+    "Symbol/search": [
+      "cross-realm.js",
+      "prop-desc.js"
+    ],
+    "Symbol/species": [
+      "basic.js",
+      "builtin-getter-name.js",
+      "cross-realm.js",
+      "subclassing.js"
+    ],
+    "Symbol/split": [
+      "cross-realm.js",
+      "prop-desc.js"
+    ],
+    "Symbol/toPrimitive": [
+      "cross-realm.js",
+      "prop-desc.js"
+    ],
+    "Symbol/toStringTag": [
+      "cross-realm.js",
+      "prop-desc.js"
+    ],
+    "Symbol/unscopables": [
+      "cross-realm.js",
+      "prop-desc.js"
+    ]
+  },
+  "test_files": 123,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/built-ins/Object/getOwnPropertySymbols/length.js",
+      "upstream_path": "test/built-ins/Object/getOwnPropertySymbols/length.js",
+      "bytes": 1097,
+      "sha256": "52e2e3fd6b039162c61a2b08bc650862a034992578fd29d86509776e246f47ce"
+    },
+    {
+      "path": "test/built-ins/Object/getOwnPropertySymbols/name.js",
+      "upstream_path": "test/built-ins/Object/getOwnPropertySymbols/name.js",
+      "bytes": 892,
+      "sha256": "17f4be1a3209c84d9a716e2023112f7ae006f5b9ca4daa1d91a95b1c28162dcb"
+    },
+    {
+      "path": "test/built-ins/Object/getOwnPropertySymbols/non-object-argument-invalid.js",
+      "upstream_path": "test/built-ins/Object/getOwnPropertySymbols/non-object-argument-invalid.js",
+      "bytes": 1043,
+      "sha256": "8e2a38409aa56941ea1cfc5142536df4165d7f056eed761299bd94b9819c8eb5"
+    },
+    {
+      "path": "test/built-ins/Object/getOwnPropertySymbols/non-object-argument-valid.js",
+      "upstream_path": "test/built-ins/Object/getOwnPropertySymbols/non-object-argument-valid.js",
+      "bytes": 1411,
+      "sha256": "c8676ef7f548d1dab6ba0ff44512c8036ddc65cedb8b5a0109f26a7d57f856dd"
+    },
+    {
+      "path": "test/built-ins/Object/getOwnPropertySymbols/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Object/getOwnPropertySymbols/not-a-constructor.js",
+      "bytes": 930,
+      "sha256": "e3dd69e2f6f9bda71f9073b281da7c69404f288cc44b56c1403e059502da9195"
+    },
+    {
+      "path": "test/built-ins/Object/getOwnPropertySymbols/object-contains-symbol-property-with-description.js",
+      "upstream_path": "test/built-ins/Object/getOwnPropertySymbols/object-contains-symbol-property-with-description.js",
+      "bytes": 606,
+      "sha256": "d6bd3354061fa806c6175f0f175ef5bbd4814d3f1a2a22f2bf78b8c2825c93d2"
+    },
+    {
+      "path": "test/built-ins/Object/getOwnPropertySymbols/object-contains-symbol-property-without-description.js",
+      "upstream_path": "test/built-ins/Object/getOwnPropertySymbols/object-contains-symbol-property-without-description.js",
+      "bytes": 600,
+      "sha256": "d033dc59be4aaaf7cda8092bb55d74fc9e15b0b5be9d12a600a50936280265f1"
+    },
+    {
+      "path": "test/built-ins/Object/getOwnPropertySymbols/order-after-define-property.js",
+      "upstream_path": "test/built-ins/Object/getOwnPropertySymbols/order-after-define-property.js",
+      "bytes": 1188,
+      "sha256": "45c56d788c2b0c469e9bf84fa243cf5a06c5093cdbc2237d94523524275654a6"
+    },
+    {
+      "path": "test/built-ins/Object/getOwnPropertySymbols/proxy-invariant-absent-not-configurable-string-key.js",
+      "upstream_path": "test/built-ins/Object/getOwnPropertySymbols/proxy-invariant-absent-not-configurable-string-key.js",
+      "bytes": 1509,
+      "sha256": "c70e89eb7abb9b42e06b7b22525fa0613f7ad4392b4572f7591275a71606ee2d"
+    },
+    {
+      "path": "test/built-ins/Object/getOwnPropertySymbols/proxy-invariant-duplicate-string-entry.js",
+      "upstream_path": "test/built-ins/Object/getOwnPropertySymbols/proxy-invariant-duplicate-string-entry.js",
+      "bytes": 902,
+      "sha256": "48b5d9259fc253db0f43429190447f87c264faab231fe53e982ac5e8e44e80b1"
+    },
+    {
+      "path": "test/built-ins/Object/getOwnPropertySymbols/proxy-invariant-not-extensible-absent-string-key.js",
+      "upstream_path": "test/built-ins/Object/getOwnPropertySymbols/proxy-invariant-not-extensible-absent-string-key.js",
+      "bytes": 1445,
+      "sha256": "aa43c22cadeb59b6787d5d009eef1006fceed7361ca17ff8240d1d5149c66e17"
+    },
+    {
+      "path": "test/built-ins/Object/getOwnPropertySymbols/proxy-invariant-not-extensible-extra-string-key.js",
+      "upstream_path": "test/built-ins/Object/getOwnPropertySymbols/proxy-invariant-not-extensible-extra-string-key.js",
+      "bytes": 1363,
+      "sha256": "c890b948fb8c675ab8c38e745af356ae62e4f916a9dee0a322b2010f87a02773"
+    },
+    {
+      "path": "test/built-ins/Reflect/ownKeys/length.js",
+      "upstream_path": "test/built-ins/Reflect/ownKeys/length.js",
+      "bytes": 407,
+      "sha256": "fc139d6fd80155e4c97a57828a7a38163969882514aa7ba4640b3f6fa1a6d13e"
+    },
+    {
+      "path": "test/built-ins/Reflect/ownKeys/name.js",
+      "upstream_path": "test/built-ins/Reflect/ownKeys/name.js",
+      "bytes": 500,
+      "sha256": "4571b80aa73312c4392287cb3cc444d87dedb09150718b27b3f1873019fb84a5"
+    },
+    {
+      "path": "test/built-ins/Reflect/ownKeys/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Reflect/ownKeys/not-a-constructor.js",
+      "bytes": 871,
+      "sha256": "6a8b1f333725c388f4327f4310637eae44f7d7f6748c85e4bb11373f71b7909a"
+    },
+    {
+      "path": "test/built-ins/Reflect/ownKeys/order-after-define-property.js",
+      "upstream_path": "test/built-ins/Reflect/ownKeys/order-after-define-property.js",
+      "bytes": 1354,
+      "sha256": "17e77a80123a03378a4520fce2ad2715f9305de9317d7fa1b8126620b7959bbb"
+    },
+    {
+      "path": "test/built-ins/Reflect/ownKeys/ownKeys.js",
+      "upstream_path": "test/built-ins/Reflect/ownKeys/ownKeys.js",
+      "bytes": 485,
+      "sha256": "289edac2b53e9322e5b2b9a61aab946937d4f59bee244d5222fa45614afca251"
+    },
+    {
+      "path": "test/built-ins/Reflect/ownKeys/return-abrupt-from-result.js",
+      "upstream_path": "test/built-ins/Reflect/ownKeys/return-abrupt-from-result.js",
+      "bytes": 562,
+      "sha256": "d0f14b48b58188798e5d86d4a84f6dd538e08d12e93a96cea295bf0d268c0c07"
+    },
+    {
+      "path": "test/built-ins/Reflect/ownKeys/return-array-with-own-keys-only.js",
+      "upstream_path": "test/built-ins/Reflect/ownKeys/return-array-with-own-keys-only.js",
+      "bytes": 637,
+      "sha256": "98123b583adb66b3834841eb24cf44b22de123e82c2b132694f9d7fe0c0e1ce6"
+    },
+    {
+      "path": "test/built-ins/Reflect/ownKeys/return-empty-array.js",
+      "upstream_path": "test/built-ins/Reflect/ownKeys/return-empty-array.js",
+      "bytes": 576,
+      "sha256": "07d99a3c4ba407af9cf1e682515e3969e8e63dcdf1b49e03213f910d5efee162"
+    },
+    {
+      "path": "test/built-ins/Reflect/ownKeys/return-non-enumerable-keys.js",
+      "upstream_path": "test/built-ins/Reflect/ownKeys/return-non-enumerable-keys.js",
+      "bytes": 864,
+      "sha256": "01c792161dee9d6f584ef7cec209db126db393fc074865ba2eaff6477ea8372c"
+    },
+    {
+      "path": "test/built-ins/Reflect/ownKeys/return-on-corresponding-order-large-index.js",
+      "upstream_path": "test/built-ins/Reflect/ownKeys/return-on-corresponding-order-large-index.js",
+      "bytes": 2283,
+      "sha256": "098bc8f84e522ed348c9722b2a1cf66cddee9e46cb376196367f64342521f78e"
+    },
+    {
+      "path": "test/built-ins/Reflect/ownKeys/return-on-corresponding-order.js",
+      "upstream_path": "test/built-ins/Reflect/ownKeys/return-on-corresponding-order.js",
+      "bytes": 1377,
+      "sha256": "a012e60d1625ccd8e5f3136b58d7d6f151dc1c0eb6f3debd367e88d4ea471c7c"
+    },
+    {
+      "path": "test/built-ins/Reflect/ownKeys/target-is-not-object-throws.js",
+      "upstream_path": "test/built-ins/Reflect/ownKeys/target-is-not-object-throws.js",
+      "bytes": 638,
+      "sha256": "c3de82a816907394d445fc19b5ceba709045e272efd20366fa9a9370dbcbc409"
+    },
+    {
+      "path": "test/built-ins/Reflect/ownKeys/target-is-symbol-throws.js",
+      "upstream_path": "test/built-ins/Reflect/ownKeys/target-is-symbol-throws.js",
+      "bytes": 441,
+      "sha256": "9c9709d949c84f4624cee95286f67356b84368ba3f21409591e640c361678c18"
+    },
+    {
+      "path": "test/built-ins/Symbol/asyncDispose/cross-realm.js",
+      "upstream_path": "test/built-ins/Symbol/asyncDispose/cross-realm.js",
+      "bytes": 466,
+      "sha256": "3c7e9ba6998455105879d4835c8ab5db6db08b26a9f14557e50d0c746cbc54e1"
+    },
+    {
+      "path": "test/built-ins/Symbol/asyncDispose/no-key.js",
+      "upstream_path": "test/built-ins/Symbol/asyncDispose/no-key.js",
+      "bytes": 362,
+      "sha256": "800ac84aa7f38bafe175f0973dadd3422eb17c1cd4a3d7c0a931b1c98eece359"
+    },
+    {
+      "path": "test/built-ins/Symbol/asyncDispose/prop-desc.js",
+      "upstream_path": "test/built-ins/Symbol/asyncDispose/prop-desc.js",
+      "bytes": 599,
+      "sha256": "dd490ef6732368767dfae52d4a2b2f433558175e1831615d3bbc12a08e9fb539"
+    },
+    {
+      "path": "test/built-ins/Symbol/asyncIterator/cross-realm.js",
+      "upstream_path": "test/built-ins/Symbol/asyncIterator/cross-realm.js",
+      "bytes": 461,
+      "sha256": "d02ccf9d6f1e6571275c07901b899151b3e143ca6e0cd4727bfaf426d2a0b6fd"
+    },
+    {
+      "path": "test/built-ins/Symbol/asyncIterator/prop-desc.js",
+      "upstream_path": "test/built-ins/Symbol/asyncIterator/prop-desc.js",
+      "bytes": 591,
+      "sha256": "d7b9cbf514a98f12e074016d68df6fb23c7b231b6abd08f0d655d4ee2c0fc9df"
+    },
+    {
+      "path": "test/built-ins/Symbol/auto-boxing-non-strict.js",
+      "upstream_path": "test/built-ins/Symbol/auto-boxing-non-strict.js",
+      "bytes": 666,
+      "sha256": "08a6964429b9939005d2b6e4dd08e8f8e228f4d8460de5419da80a49adc69952"
+    },
+    {
+      "path": "test/built-ins/Symbol/auto-boxing-strict.js",
+      "upstream_path": "test/built-ins/Symbol/auto-boxing-strict.js",
+      "bytes": 505,
+      "sha256": "a81ab965aa3c420b321518c3564c7b7601e63bf18ab5c7759e6096c49093d154"
+    },
+    {
+      "path": "test/built-ins/Symbol/constructor.js",
+      "upstream_path": "test/built-ins/Symbol/constructor.js",
+      "bytes": 561,
+      "sha256": "a2228d73ebc0ac6292fb39509f4091664871acedc7d114e1e18881d0a68b24f7"
+    },
+    {
+      "path": "test/built-ins/Symbol/desc-to-string-symbol.js",
+      "upstream_path": "test/built-ins/Symbol/desc-to-string-symbol.js",
+      "bytes": 639,
+      "sha256": "a78de86de5f64063b95a2185a4588ed6de40a7806e4f62af9f0897199391c72e"
+    },
+    {
+      "path": "test/built-ins/Symbol/desc-to-string.js",
+      "upstream_path": "test/built-ins/Symbol/desc-to-string.js",
+      "bytes": 1837,
+      "sha256": "19da3b9a189b630233972dd3164144b8e0768316547bdafae120689746b80549"
+    },
+    {
+      "path": "test/built-ins/Symbol/dispose/cross-realm.js",
+      "upstream_path": "test/built-ins/Symbol/dispose/cross-realm.js",
+      "bytes": 451,
+      "sha256": "99ed433a357d8ed9aee2050a2ae5fb3ce015a71e1e2767b261ccb46555619f2a"
+    },
+    {
+      "path": "test/built-ins/Symbol/dispose/no-key.js",
+      "upstream_path": "test/built-ins/Symbol/dispose/no-key.js",
+      "bytes": 362,
+      "sha256": "800ac84aa7f38bafe175f0973dadd3422eb17c1cd4a3d7c0a931b1c98eece359"
+    },
+    {
+      "path": "test/built-ins/Symbol/dispose/prop-desc.js",
+      "upstream_path": "test/built-ins/Symbol/dispose/prop-desc.js",
+      "bytes": 579,
+      "sha256": "8f8a30d08820ee923bb2382a6bf6c980f67bf0bcee57eb479aa45f0c28a3a938"
+    },
+    {
+      "path": "test/built-ins/Symbol/for/create-value.js",
+      "upstream_path": "test/built-ins/Symbol/for/create-value.js",
+      "bytes": 927,
+      "sha256": "5fab9c921059060c488a0e139f240b7a7b0b4a99629e44018fea94dc5f1f4b82"
+    },
+    {
+      "path": "test/built-ins/Symbol/for/cross-realm.js",
+      "upstream_path": "test/built-ins/Symbol/for/cross-realm.js",
+      "bytes": 720,
+      "sha256": "e673ec2add6fa10cdad2e1110eaf1851eba169a942be6e1f54945bd8b704fe60"
+    },
+    {
+      "path": "test/built-ins/Symbol/for/description.js",
+      "upstream_path": "test/built-ins/Symbol/for/description.js",
+      "bytes": 601,
+      "sha256": "6a5985c9739ef1e43f65cb131b495e1001af0bf6c890c85ec0ec17721a1923fa"
+    },
+    {
+      "path": "test/built-ins/Symbol/for/length.js",
+      "upstream_path": "test/built-ins/Symbol/for/length.js",
+      "bytes": 1040,
+      "sha256": "dfec7a938571c939977089c3ab4830bc14e3825f965be25c08747aed6df76873"
+    },
+    {
+      "path": "test/built-ins/Symbol/for/name.js",
+      "upstream_path": "test/built-ins/Symbol/for/name.js",
+      "bytes": 799,
+      "sha256": "8163731091c65318e536d4d9da44aa20098f4906db271a84451d1b60bbae50e8"
+    },
+    {
+      "path": "test/built-ins/Symbol/for/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Symbol/for/not-a-constructor.js",
+      "bytes": 848,
+      "sha256": "fa6541396448f0a7e849a806d0a975ce9d972aedd22deb350ed97dee96f541e1"
+    },
+    {
+      "path": "test/built-ins/Symbol/for/prop-desc.js",
+      "upstream_path": "test/built-ins/Symbol/for/prop-desc.js",
+      "bytes": 615,
+      "sha256": "5299067eb67221b379aaf76bf8f716235bed8cd0e15091a5e90ad7e02cadc346"
+    },
+    {
+      "path": "test/built-ins/Symbol/for/retrieve-value.js",
+      "upstream_path": "test/built-ins/Symbol/for/retrieve-value.js",
+      "bytes": 883,
+      "sha256": "c8dcaba245006fa00dba2755bfd39a8939f28a41eebf9f33711166e2a62fc2df"
+    },
+    {
+      "path": "test/built-ins/Symbol/for/to-string-err.js",
+      "upstream_path": "test/built-ins/Symbol/for/to-string-err.js",
+      "bytes": 545,
+      "sha256": "8cb38ad4185d8176b3e9ed832628c2e9fce3663f8ec678bf16fb599cac85715d"
+    },
+    {
+      "path": "test/built-ins/Symbol/hasInstance/cross-realm.js",
+      "upstream_path": "test/built-ins/Symbol/hasInstance/cross-realm.js",
+      "bytes": 464,
+      "sha256": "2d418a6190f30582578174e3ea887673dc0274e9f195ce3e3f48d825945afecc"
+    },
+    {
+      "path": "test/built-ins/Symbol/hasInstance/prop-desc.js",
+      "upstream_path": "test/built-ins/Symbol/hasInstance/prop-desc.js",
+      "bytes": 545,
+      "sha256": "33b51957029e975f88a22c7eba0cfe22ccb78a2c45a8b46460ffd686eaabbebc"
+    },
+    {
+      "path": "test/built-ins/Symbol/invoked-with-new.js",
+      "upstream_path": "test/built-ins/Symbol/invoked-with-new.js",
+      "bytes": 460,
+      "sha256": "067027efcb7a714eabe7360dfcdd77b9b0722e696e43f780bc0599f9d8e58fc1"
+    },
+    {
+      "path": "test/built-ins/Symbol/is-constructor.js",
+      "upstream_path": "test/built-ins/Symbol/is-constructor.js",
+      "bytes": 666,
+      "sha256": "b37a7d944d431720eb365e60b542f467c1d8379398700b82c8f85b1f629d8dde"
+    },
+    {
+      "path": "test/built-ins/Symbol/isConcatSpreadable/cross-realm.js",
+      "upstream_path": "test/built-ins/Symbol/isConcatSpreadable/cross-realm.js",
+      "bytes": 492,
+      "sha256": "dcbe66d27b5a16a1ec7004405bfab16a812bf124f617171904255bfd21afdacb"
+    },
+    {
+      "path": "test/built-ins/Symbol/isConcatSpreadable/prop-desc.js",
+      "upstream_path": "test/built-ins/Symbol/isConcatSpreadable/prop-desc.js",
+      "bytes": 566,
+      "sha256": "c2eb9ceb98cb99850a22dc1fe1259665c50f3c76659d94dfa9b184cb49c13b97"
+    },
+    {
+      "path": "test/built-ins/Symbol/iterator/cross-realm.js",
+      "upstream_path": "test/built-ins/Symbol/iterator/cross-realm.js",
+      "bytes": 452,
+      "sha256": "b53c2fe53367676126ceb3b3cf5c49f0c8a2aea0c3bdfa6bae51c2520b12e96e"
+    },
+    {
+      "path": "test/built-ins/Symbol/iterator/prop-desc.js",
+      "upstream_path": "test/built-ins/Symbol/iterator/prop-desc.js",
+      "bytes": 560,
+      "sha256": "d30d19b1e64b8092a03b3e8a9b132d0808b438e962a6268a8c259fd71165847f"
+    },
+    {
+      "path": "test/built-ins/Symbol/keyFor/arg-non-symbol.js",
+      "upstream_path": "test/built-ins/Symbol/keyFor/arg-non-symbol.js",
+      "bytes": 1062,
+      "sha256": "ef8275addda66000e9cd9b67e4a71361b62c4350b46562aacb54472937799843"
+    },
+    {
+      "path": "test/built-ins/Symbol/keyFor/arg-symbol-registry-hit.js",
+      "upstream_path": "test/built-ins/Symbol/keyFor/arg-symbol-registry-hit.js",
+      "bytes": 573,
+      "sha256": "c8a2c65fbefac4f5e695152cbc9d77dc128905a047b072cbff9fe370c5d0be20"
+    },
+    {
+      "path": "test/built-ins/Symbol/keyFor/arg-symbol-registry-miss.js",
+      "upstream_path": "test/built-ins/Symbol/keyFor/arg-symbol-registry-miss.js",
+      "bytes": 846,
+      "sha256": "51a108b4f76799bd1c06d5d8eae97b1b31b83e3505cdf7f8a77d223caf7f7b35"
+    },
+    {
+      "path": "test/built-ins/Symbol/keyFor/cross-realm.js",
+      "upstream_path": "test/built-ins/Symbol/keyFor/cross-realm.js",
+      "bytes": 735,
+      "sha256": "09cc1f4a55c2c82472b65f417945d4253cecbc515637e144e2a6964b6385db73"
+    },
+    {
+      "path": "test/built-ins/Symbol/keyFor/length.js",
+      "upstream_path": "test/built-ins/Symbol/keyFor/length.js",
+      "bytes": 1049,
+      "sha256": "ef86ec4b4fd104a46deefff6067baeae3c82b29d9d4dc74026bb9f2ab26cf24c"
+    },
+    {
+      "path": "test/built-ins/Symbol/keyFor/name.js",
+      "upstream_path": "test/built-ins/Symbol/keyFor/name.js",
+      "bytes": 814,
+      "sha256": "2461ed8e76b11f212efc5acb76de835ba6a2505e044d0f909f0f54e444d02c2e"
+    },
+    {
+      "path": "test/built-ins/Symbol/keyFor/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Symbol/keyFor/not-a-constructor.js",
+      "bytes": 868,
+      "sha256": "6572960a15bfa8c4c43f1b1c55764f5d3b731d832c5a131fc71b178b4ac72b14"
+    },
+    {
+      "path": "test/built-ins/Symbol/keyFor/prop-desc.js",
+      "upstream_path": "test/built-ins/Symbol/keyFor/prop-desc.js",
+      "bytes": 624,
+      "sha256": "d0e810ac1f788e1293d01571f3893b99e05f2b3c9589c7c67f2acb59df37ef9a"
+    },
+    {
+      "path": "test/built-ins/Symbol/length.js",
+      "upstream_path": "test/built-ins/Symbol/length.js",
+      "bytes": 440,
+      "sha256": "af994d4c13cd79354abff43f7d47b2d590b1251843f02e05d6d8d08b81b1febe"
+    },
+    {
+      "path": "test/built-ins/Symbol/match/cross-realm.js",
+      "upstream_path": "test/built-ins/Symbol/match/cross-realm.js",
+      "bytes": 440,
+      "sha256": "058a47d5c9888a57114415ee242c4c03f91885b1af52d3a7dd580455da92253a"
+    },
+    {
+      "path": "test/built-ins/Symbol/match/prop-desc.js",
+      "upstream_path": "test/built-ins/Symbol/match/prop-desc.js",
+      "bytes": 548,
+      "sha256": "b1dcd0181ac26ef5024f67b79db81df4e0f66ae38ace6051466552922e99587c"
+    },
+    {
+      "path": "test/built-ins/Symbol/matchAll/cross-realm.js",
+      "upstream_path": "test/built-ins/Symbol/matchAll/cross-realm.js",
+      "bytes": 428,
+      "sha256": "7008bf7c9e84759e0e79f0e1b02dfaf5d63b4dc2a0279029d766b3853c3c14aa"
+    },
+    {
+      "path": "test/built-ins/Symbol/matchAll/prop-desc.js",
+      "upstream_path": "test/built-ins/Symbol/matchAll/prop-desc.js",
+      "bytes": 546,
+      "sha256": "ab701f257421e28843011de4b611dfad303a6a0ad51f0f8cd9f7b5169a4d59fe"
+    },
+    {
+      "path": "test/built-ins/Symbol/name.js",
+      "upstream_path": "test/built-ins/Symbol/name.js",
+      "bytes": 385,
+      "sha256": "10bd4b999adc9f9d2f33e4f9991a41bdc41b42b5b6f0ebbc8f489537f2ee3c0b"
+    },
+    {
+      "path": "test/built-ins/Symbol/not-callable.js",
+      "upstream_path": "test/built-ins/Symbol/not-callable.js",
+      "bytes": 836,
+      "sha256": "c5f01d515d32facc8b8ceb7ce3154f6e8f94b724db8f034065ecaf835f7b7054"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/length.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/length.js",
+      "bytes": 963,
+      "sha256": "7899ebb817d9c705ec7d3d48eeeb79f638eace0929c9ae73f17195d388b0d76e"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/name.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/name.js",
+      "bytes": 769,
+      "sha256": "df310b299d95725e4598e604de0730ea083dcfb1ecea9efbbd97fd6b6631f55b"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/prop-desc.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/prop-desc.js",
+      "bytes": 541,
+      "sha256": "a0be76e738e94bd51626e822b57cce9a829b75ba91e64f6e8a35558b1f12a368"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/redefined-symbol-wrapper-ordinary-toprimitive.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/redefined-symbol-wrapper-ordinary-toprimitive.js",
+      "bytes": 1314,
+      "sha256": "4f03ae2286fad92879c99e64266e563510e941b2cb6692cc387950330605b6af"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/removed-symbol-wrapper-ordinary-toprimitive.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/removed-symbol-wrapper-ordinary-toprimitive.js",
+      "bytes": 3041,
+      "sha256": "b292ade8c4c90a9aff0c7d2f6a49abc93b8fe61b26dcc3b49e81f023775a8333"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/this-val-non-obj.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/this-val-non-obj.js",
+      "bytes": 959,
+      "sha256": "18cc7a1b0867151c04b50d48d30d1aa246a1552738a43151d15c1a5615cd3894"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/this-val-obj-non-symbol-wrapper.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/this-val-obj-non-symbol-wrapper.js",
+      "bytes": 626,
+      "sha256": "31150a312e20b2cdecdd836f03fc52eef5e33a2a37e8933fd90a6151f1e6dcaf"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/this-val-obj-symbol-wrapper.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/this-val-obj-symbol-wrapper.js",
+      "bytes": 687,
+      "sha256": "d63b2673220f061e75b6250812a33cc275616e5bb78d7875a9bdd00a5ba34790"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/this-val-symbol.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/Symbol.toPrimitive/this-val-symbol.js",
+      "bytes": 409,
+      "sha256": "8b54ac50d67ae86dc8256ab2292e3688d50e5166f6be31f63c2c522281f62cb6"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/Symbol.toStringTag.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/Symbol.toStringTag.js",
+      "bytes": 684,
+      "sha256": "dc24ae877b9e93b450b466fd53a7456d90f8518a1ce988fff271cb3a84c9ff20"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/constructor.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/constructor.js",
+      "bytes": 659,
+      "sha256": "65594b889719e8072431e7b82ee157e2e741e5ae801080bea7607cd5baeba50b"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/description/description-symboldescriptivestring.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/description/description-symboldescriptivestring.js",
+      "bytes": 900,
+      "sha256": "63faeb40397d26014d4b3ca50ff171379e96a0860d78aa2da24f6eb5a6a1c5dc"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/description/descriptor.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/description/descriptor.js",
+      "bytes": 898,
+      "sha256": "ab4e0056e44d52f3c4e24b15cf48b3626b3cf47b5bad3097435c2a53d0259d02"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/description/get.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/description/get.js",
+      "bytes": 939,
+      "sha256": "4b22919567614711c28246a49faf54006ac54a69d96e561b014f64983e18e977"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/description/is-not-own-property.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/description/is-not-own-property.js",
+      "bytes": 419,
+      "sha256": "a3d532e1845f22083bb84f95190c75f1c01955c69bb8e580296cd7fdf6374f19"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/description/this-val-non-symbol.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/description/this-val-non-symbol.js",
+      "bytes": 1272,
+      "sha256": "efb4db8bb20cee68b3c07be89847cce419874aa4f1dd6fdf20fc98b81617a00a"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/description/this-val-symbol.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/description/this-val-symbol.js",
+      "bytes": 1460,
+      "sha256": "f3f71714eec58dcbb3091435c46aa689ea480f53d20333babec3ab3a7bc94adf"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/description/wrapper.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/description/wrapper.js",
+      "bytes": 968,
+      "sha256": "930722bb9cdf1f5243e412de55c0663d392fffa3839f2901e1b9441cc3435fb1"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/intrinsic.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/intrinsic.js",
+      "bytes": 368,
+      "sha256": "6cecef7182883024a2574ca70d3a6bd5faa7a2ec3b35dcae44c5fba5ffcad66b"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/toString/length.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/toString/length.js",
+      "bytes": 1081,
+      "sha256": "4ae2caeebab3476ffbaa5ca2142009a0e542766b163060b0314b87a27ca3688c"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/toString/name.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/toString/name.js",
+      "bytes": 850,
+      "sha256": "5af5d6b06a3022204b83e16bbf0464426914b08e9eb06b1f074c46af4b36b4b4"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/toString/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/toString/not-a-constructor.js",
+      "bytes": 929,
+      "sha256": "d8d7097b846df22e20f4642ef819c0a282c6fabff2cd933f91d5eba3e5d9da50"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/toString/prop-desc.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/toString/prop-desc.js",
+      "bytes": 661,
+      "sha256": "c59f80a62e10cb3ac695af588176dbc6333d8fea30853f6b0ee7c1c78a8ebe4b"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/toString/toString-default-attributes-non-strict.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/toString/toString-default-attributes-non-strict.js",
+      "bytes": 563,
+      "sha256": "bfa84dc53f081750ebae622d164f05874b21aca7958fe374a202a3d75ba83442"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/toString/toString-default-attributes-strict.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/toString/toString-default-attributes-strict.js",
+      "bytes": 406,
+      "sha256": "dedf777f66a32a83e0b2c8995d1ce480480a9cbcd503d5716c49b3fb696be871"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/toString/toString.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/toString/toString.js",
+      "bytes": 754,
+      "sha256": "f6e9cfe113ef351bd1f6f1a99aa66a82c650b0583d0b9708c0b3c8276ebe63e7"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/toString/undefined.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/toString/undefined.js",
+      "bytes": 1019,
+      "sha256": "cf71cc0f7f3668302268bbaf04f9cd01bdb5d99793fab0972e3a327920d0d4e0"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/valueOf/length.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/valueOf/length.js",
+      "bytes": 1078,
+      "sha256": "a3c4b80db7b84f9351a97496c1a66e300b5cf85ea532a3630386f9aaa01d61ad"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/valueOf/name.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/valueOf/name.js",
+      "bytes": 845,
+      "sha256": "df473b6db715aa6c2c4ecca6e79ec5ab16862f6839a6cc34a4418937b8e0fba8"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/valueOf/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/valueOf/not-a-constructor.js",
+      "bytes": 925,
+      "sha256": "e9e5c4ee841aaff2c77f30690482a459f609328945d67778d476caae00401fc9"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/valueOf/prop-desc.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/valueOf/prop-desc.js",
+      "bytes": 658,
+      "sha256": "7830d1acf5b0b56f81689962eb6d2f22755ee6e0c4b0a2aa04f5eb17f9b3489f"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/valueOf/this-val-non-obj.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/valueOf/this-val-non-obj.js",
+      "bytes": 751,
+      "sha256": "4bff124186db29e1fa4da2742314265556bf8f4ef9304aa706d8e3b3c68ca577"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/valueOf/this-val-obj-non-symbol.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/valueOf/this-val-obj-non-symbol.js",
+      "bytes": 797,
+      "sha256": "e7012b4fe0fdecebdee773b7cc7d981f30e7bfff1db253d86844d219fb4e40f0"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/valueOf/this-val-obj-symbol.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/valueOf/this-val-obj-symbol.js",
+      "bytes": 686,
+      "sha256": "6abd741ccf02cd5141d69132d83167516def73f423a40eb7780b4ce9b2c68a0d"
+    },
+    {
+      "path": "test/built-ins/Symbol/prototype/valueOf/this-val-symbol.js",
+      "upstream_path": "test/built-ins/Symbol/prototype/valueOf/this-val-symbol.js",
+      "bytes": 436,
+      "sha256": "048767e9f06ef540fe8bc066b8312ed5ed688982523aa9bd65ddf1ccc118213f"
+    },
+    {
+      "path": "test/built-ins/Symbol/replace/cross-realm.js",
+      "upstream_path": "test/built-ins/Symbol/replace/cross-realm.js",
+      "bytes": 448,
+      "sha256": "60b3139c96dc9e8c8fbca5c69db4f4330510d67981de71458fce1d9293c75a8d"
+    },
+    {
+      "path": "test/built-ins/Symbol/replace/prop-desc.js",
+      "upstream_path": "test/built-ins/Symbol/replace/prop-desc.js",
+      "bytes": 556,
+      "sha256": "2832ad4a5389b73d5abdb3b70921413ca4afee17f0cf1f9cafb6aaf3b4b13631"
+    },
+    {
+      "path": "test/built-ins/Symbol/search/cross-realm.js",
+      "upstream_path": "test/built-ins/Symbol/search/cross-realm.js",
+      "bytes": 444,
+      "sha256": "b087efc32c7f100ebe09492bb2b80b6a6101edc10235e137ac0e3a1647709943"
+    },
+    {
+      "path": "test/built-ins/Symbol/search/prop-desc.js",
+      "upstream_path": "test/built-ins/Symbol/search/prop-desc.js",
+      "bytes": 552,
+      "sha256": "a7cfb405a90f31eeae1b96a2fe202004b7c90610aef052c319addef07b982aa4"
+    },
+    {
+      "path": "test/built-ins/Symbol/species/basic.js",
+      "upstream_path": "test/built-ins/Symbol/species/basic.js",
+      "bytes": 490,
+      "sha256": "b0d042c6a4fe2e81e05af92d15fcdbb663d1c67cfe32f1e60a5cc6f044f5fda1"
+    },
+    {
+      "path": "test/built-ins/Symbol/species/builtin-getter-name.js",
+      "upstream_path": "test/built-ins/Symbol/species/builtin-getter-name.js",
+      "bytes": 842,
+      "sha256": "68386a34310603b7aec0f3db44771b836ad5c5abb55bc4fea1e3fe67e133d017"
+    },
+    {
+      "path": "test/built-ins/Symbol/species/cross-realm.js",
+      "upstream_path": "test/built-ins/Symbol/species/cross-realm.js",
+      "bytes": 448,
+      "sha256": "9b862cbd87c9e65661364317ec69626977c79888d9f39cd54259cad9651e3356"
+    },
+    {
+      "path": "test/built-ins/Symbol/species/subclassing.js",
+      "upstream_path": "test/built-ins/Symbol/species/subclassing.js",
+      "bytes": 342,
+      "sha256": "82ad06118a2c69ab988acacb37e689a272ee00c91058aed8edf780d1cc5fad4e"
+    },
+    {
+      "path": "test/built-ins/Symbol/split/cross-realm.js",
+      "upstream_path": "test/built-ins/Symbol/split/cross-realm.js",
+      "bytes": 440,
+      "sha256": "c26987a95493e356e19944485560b63af448ed7ba8d578f2a7f818c176ceea4a"
+    },
+    {
+      "path": "test/built-ins/Symbol/split/prop-desc.js",
+      "upstream_path": "test/built-ins/Symbol/split/prop-desc.js",
+      "bytes": 549,
+      "sha256": "5c7ba2a3485aad3bf3fe2ae26f1841c0c8a3c6dcc1991cbfd77ecf103a579dcd"
+    },
+    {
+      "path": "test/built-ins/Symbol/symbol.js",
+      "upstream_path": "test/built-ins/Symbol/symbol.js",
+      "bytes": 463,
+      "sha256": "a5b41246e84f1604e77b7c8a8132bb55da4f20b4a81667c76702d064ba021220"
+    },
+    {
+      "path": "test/built-ins/Symbol/toPrimitive/cross-realm.js",
+      "upstream_path": "test/built-ins/Symbol/toPrimitive/cross-realm.js",
+      "bytes": 446,
+      "sha256": "a75f0798109f67c02acede916bda4149c2aff82e9f38973f2c42ea0bf4aa8cf7"
+    },
+    {
+      "path": "test/built-ins/Symbol/toPrimitive/prop-desc.js",
+      "upstream_path": "test/built-ins/Symbol/toPrimitive/prop-desc.js",
+      "bytes": 573,
+      "sha256": "a7f4058613679264b5856cadfc6ef2a13f03ce9d3743e2ce164eb6a62905a927"
+    },
+    {
+      "path": "test/built-ins/Symbol/toStringTag/cross-realm.js",
+      "upstream_path": "test/built-ins/Symbol/toStringTag/cross-realm.js",
+      "bytes": 464,
+      "sha256": "7722965c510504858f32aebe2f5cfc17dba58f2726446181c4de2e5fe57fa881"
+    },
+    {
+      "path": "test/built-ins/Symbol/toStringTag/prop-desc.js",
+      "upstream_path": "test/built-ins/Symbol/toStringTag/prop-desc.js",
+      "bytes": 573,
+      "sha256": "f0c1d96915dc87d50293776eeb8d8183cf631a6f9284d9be38425b6e8eeffe69"
+    },
+    {
+      "path": "test/built-ins/Symbol/uniqueness.js",
+      "upstream_path": "test/built-ins/Symbol/uniqueness.js",
+      "bytes": 783,
+      "sha256": "becd4ea881689d15d8605e33799619a7bf9c54c41233769a4788b2ee571b53ee"
+    },
+    {
+      "path": "test/built-ins/Symbol/unscopables/cross-realm.js",
+      "upstream_path": "test/built-ins/Symbol/unscopables/cross-realm.js",
+      "bytes": 464,
+      "sha256": "96d34a609c644574b7d2d2d611e2cc64db14ad7040e1fb92a0aa86548deeb56d"
+    },
+    {
+      "path": "test/built-ins/Symbol/unscopables/prop-desc.js",
+      "upstream_path": "test/built-ins/Symbol/unscopables/prop-desc.js",
+      "bytes": 563,
+      "sha256": "a2138a8fd89dca2a73051f04b466587397eb630ab0030a0dc1442d06f2f3f61f"
+    }
+  ]
+}

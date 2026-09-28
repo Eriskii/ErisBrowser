@@ -1,5 +1,9 @@
 # Object literal implementation and focused checks
 
+Subsequent [Symbol support](symbols.md) adds identity-preserving computed keys,
+method/accessor names and Symbol.toPrimitive key conversion. The initial scope
+and measurements below predate that extension.
+
 The custom parser and interpreter support ordinary object literals with literal
 and computed string property names, identifier shorthand, concise methods,
 getters/setters, and the special static `__proto__` colon form. This is a bounded
