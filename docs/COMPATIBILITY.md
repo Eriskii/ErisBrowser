@@ -123,9 +123,11 @@ as typed IDs within immutable shared units. Escaping closures and cross-script
 callbacks retain their own units. Token pages avoid relocating the accumulated
 token prefix. [Shared execution continuations](../tests/conformance/statement-frames.md)
 now cover expressions, references and supported statements, including loops and
-try/finally. Function activation/defaults and the parser still use guarded native
-recursion. Existing depth counters remain, so these stages do not establish
-deeper source or call acceptance.
+try/finally. [Ordinary activation and defaults](../tests/conformance/activation-frames.md)
+also use the driver: retained shallow ordinary/default probes now complete 32
+calls, with call 33 stopped by the existing logical ceiling. Native callback and
+constructor bridges remain guarded. Parser recursion still blocks the retained
+32-nested-IIFE test; this execution improvement does not establish deeper parsing.
 
 [Labeled break and continue](../tests/conformance/labels.md) resolve ordinary
 statement/loop targets, propagate through nested loops and switches, and preserve

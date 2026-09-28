@@ -107,7 +107,7 @@ borrowed statements. It visits control-flow bodies in source order and stops at
 function boundaries. Switch scopes use borrowed case statements, and parsing
 records whether a scope contains lexical declarations to skip unnecessary name
 analysis. This removes recursive declaration walks and temporary syntax clones;
-temporary parser syntax and evaluator execution still have recursive paths.
+temporary parser syntax and native callback bridges still have recursive paths.
 Declaration-name validation uses borrowed record lists and a fallible iterative
 merge sort. Growth, scratch storage, copies and UTF-8 comparisons consume the
 compile ledger. Stable ordering retains source-order duplicate diagnostics;
@@ -125,9 +125,12 @@ select bodies without copying them. Ordinary errors unwind to try continuations;
 resource/unsupported termination bypasses catch/finally. Reentrant drives preserve
 their outer frame boundary and restore counters without allocating during cleanup.
 Frame growth consumes cumulative work/storage allowances before checked reservation.
-Function activation/default initialization and native callback bridges still use
-guarded recursion. Existing expression/statement, logical-call and work guards
-remain until the remaining activation paths are converted and verified.
+Ordinary activation, defaults and bound forwarding also use that driver. Queued
+invocations own their logical-call count after a successful push; native callback
+entries keep their externally owned count and stack guard. Iterative JavaScript
+uses charged continuation storage instead of native-depth charges. Constructors,
+native callbacks, JSON and other native helpers retain weighted guards, while all
+invocations share the existing logical-call and work limits.
 
 Token storage uses 128-record pages, so appending tokens moves page descriptors
 rather than the complete prefix. Page growth and lexical rescans share cumulative

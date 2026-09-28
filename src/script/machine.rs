@@ -1,30 +1,32 @@
-//! Resumable expression, reference and statement evaluation. Ordinary calls and
-//! default initialization still use guarded native bridges.
+//! Resumable JavaScript execution. Ordinary calls, defaults and bodies share
+//! one driver; native callbacks and constructors retain guarded bridges.
 use super::{
-    Document, Flow, JsString, MAX_DEPTH, MAX_STACK_UNITS, PropertyDescriptor, Reference, Result,
-    Runtime, ScriptError, TrackedGlobal, Value, code, js_object, to_i32,
+    Document, Flow, JsString, MAX_CALLS, MAX_HEAP, PropertyDescriptor, Reference, Result, Runtime,
+    ScriptError, TrackedGlobal, Value, code, js_object, to_i32,
 };
 use std::collections::BTreeSet;
 use std::rc::Rc;
 
+mod calls;
 mod statements;
 pub(super) use statements::ListOwner;
 
-// Each guarded expression/statement can suspend one reference/list job. The
-// program's root list needs one extra slot. Reentrant function lists have the
-// existing four-unit native-call guard. No execution-depth ceiling changes.
-const MAX_FRAMES: usize = 2 * MAX_STACK_UNITS + 1;
+// Continuation storage is bounded by the existing runtime heap allowance,
+// independently of parser recursion or a guessed source-tree path length.
+// Geometric growth also prepays relocation work and all retained capacity.
+const MAX_FRAMES: usize = MAX_HEAP / std::mem::size_of::<Frame>();
 const INITIAL_FRAMES: usize = 8;
 
 pub(super) enum Frame {
     Expression(ExprFrame),
     Statement(statements::Frame),
+    Call(calls::Frame),
 }
 impl Frame {
     fn weights(&self) -> (usize, usize) {
         match self {
-            Self::Expression(frame) if !frame.reference => (1, 1),
-            Self::Statement(frame) if frame.is_statement() => (0, 1),
+            Self::Expression(frame) if !frame.reference => (1, 0),
+            Self::Call(frame) if frame.owns_call() => (0, 1),
             _ => (0, 0),
         }
     }
@@ -135,17 +137,18 @@ fn push(runtime: &mut Runtime, frame: Frame) -> Result<()> {
     Ok(())
 }
 fn enter_frame(runtime: &mut Runtime, frame: Frame) -> Result<()> {
-    let (expressions, stack) = frame.weights();
-    if expressions != 0 && runtime.eval_depth >= MAX_DEPTH {
-        return Err(ScriptError::resource(
-            "expression evaluation nesting limit exceeded",
-        ));
+    let (expressions, calls) = frame.weights();
+    if calls != 0 {
+        runtime.tick()?;
+        if runtime.calls >= MAX_CALLS {
+            return Err(ScriptError::resource("script call stack limit exceeded"));
+        }
     }
-    if stack != 0 {
-        runtime.enter_stack(stack)?;
-        runtime.eval_depth += expressions;
-    }
-    push(runtime, frame)
+    // Failed reservation must not acquire a logical-call cleanup obligation.
+    push(runtime, frame)?;
+    runtime.eval_depth += expressions;
+    runtime.calls += calls;
+    Ok(())
 }
 fn enter(runtime: &mut Runtime, frame: ExprFrame) -> Result<()> {
     enter_frame(runtime, Frame::Expression(frame))
@@ -185,6 +188,7 @@ fn reference_child(
     frame.phase = phase;
     child(runtime, frame, expression, true)
 }
+#[cfg(test)]
 pub(super) fn evaluate(
     runtime: &mut Runtime,
     unit: &Rc<code::Unit>,
@@ -246,22 +250,44 @@ pub(super) fn evaluate_statements(
         _ => unreachable!("statement-list root"),
     }
 }
+pub(super) fn invoke_preentered(
+    runtime: &mut Runtime,
+    function: Value,
+    arguments: Vec<Value>,
+    receiver: Value,
+    doc: &mut Document,
+) -> Result<Value> {
+    // Runtime::call owns this entry's tick, logical count and native guard.
+    match drive(
+        runtime,
+        Frame::Call(calls::Frame::new(function, arguments, receiver, true)),
+        doc,
+    )? {
+        Output::Value(value) => Ok(value),
+        _ => unreachable!("invocation root"),
+    }
+}
 fn drive(runtime: &mut Runtime, root: Frame, doc: &mut Document) -> Result<Output> {
     let base = runtime.frames.len();
     let depth = runtime.eval_depth;
     let stack = runtime.stack_units;
+    let saved_calls = runtime.calls;
     let result = (|| {
         enter_frame(runtime, root)?;
         let mut output: Option<Result<Output>> = None;
         while runtime.frames.len() > base {
             let frame = runtime.frames.pop().unwrap();
-            let (expressions, stack) = frame.weights();
+            let (expressions, calls) = frame.weights();
             let result = match frame {
                 Frame::Expression(frame) => match output.take().transpose() {
                     Ok(output) => step(runtime, frame, output, doc),
                     Err(error) => Err(error),
                 },
                 Frame::Statement(frame) => statements::step(runtime, frame, output.take(), doc),
+                Frame::Call(frame) => match output.take().transpose() {
+                    Ok(output) => calls::step(runtime, frame, output, doc),
+                    Err(error) => Err(error),
+                },
             };
             output = match result {
                 Ok(None) => continue,
@@ -272,7 +298,7 @@ fn drive(runtime: &mut Runtime, root: Frame, doc: &mut Document) -> Result<Outpu
                 Err(error) => Some(Err(error)),
             };
             runtime.eval_depth -= expressions;
-            runtime.stack_units -= stack;
+            runtime.calls -= calls;
         }
         output.expect("completed execution drive")
     })();
@@ -280,6 +306,7 @@ fn drive(runtime: &mut Runtime, root: Frame, doc: &mut Document) -> Result<Outpu
     runtime.frames.truncate(base);
     runtime.eval_depth = depth;
     runtime.stack_units = stack;
+    runtime.calls = saved_calls;
     result
 }
 fn step(
@@ -912,18 +939,25 @@ fn arguments_next(
             *expression,
         );
     }
-    let value = if matches!(unit.expr(frame.expression), code::Expr::New(..)) {
-        runtime.construct(function, arguments, doc)?
-    } else {
-        runtime.call(function, arguments, receiver, doc)?
-    };
-    Ok(Some(Output::Value(value)))
+    if matches!(unit.expr(frame.expression), code::Expr::New(..)) {
+        return runtime
+            .construct(function, arguments, doc)
+            .map(|value| Some(Output::Value(value)));
+    }
+    let mut frame = frame;
+    frame.phase = Phase::Identity;
+    push(runtime, Frame::Expression(frame))?;
+    enter_frame(
+        runtime,
+        Frame::Call(calls::Frame::new(function, arguments, receiver, false)),
+    )?;
+    Ok(None)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::script::{Expr, MAX_HEAP, MAX_STEPS, Parser, Stmt};
+    use crate::script::{Expr, MAX_DEPTH, MAX_HEAP, MAX_STEPS, Parser, Stmt};
 
     fn expression(source: &str) -> (Rc<code::Unit>, code::ExprId) {
         let unit = code::compile(Parser::program(source).unwrap()).unwrap();
@@ -1179,7 +1213,7 @@ mod tests {
     }
 
     #[test]
-    fn expression_execution_uses_small_native_stack_and_keeps_existing_depth_guards() {
+    fn expression_execution_uses_small_native_stack_without_native_depth_charges() {
         // Parsing is verified on the normal test stack. Build equivalent code
         // directly inside the small-stack thread, isolating execution from the
         // still-recursive parser. This is not deeper call or parser acceptance.
@@ -1202,11 +1236,9 @@ mod tests {
                 );
                 clean(&runtime);
                 let (unit, id) = unary_unit(MAX_DEPTH);
-                assert!(
-                    runtime
-                        .eval(&unit, &id, 0, &mut document)
-                        .unwrap_err()
-                        .is_resource_limit()
+                assert_eq!(
+                    runtime.eval(&unit, &id, 0, &mut document).unwrap(),
+                    Value::Bool(true)
                 );
                 clean(&runtime);
             })

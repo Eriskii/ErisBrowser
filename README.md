@@ -212,10 +212,11 @@ The remaining resource stops prevent a healthy regression baseline.
 The [architecture notes](docs/ARCHITECTURE.md) describe the page pipeline and native process boundaries.
 The [development docket](docs/ROADMAP.md) includes a planned Vulkan rendering backend. An independent [Vulkan transfer probe](tools/vulkan-probe/README.md) checks exact offscreen uploads/readback with its own pinned dependencies; the browser still uses software painting and presentation.
 
-JavaScript uses flat executable units and [shared expression/statement continuations](tests/conformance/statement-frames.md).
-Function invocation and default initializers still use guarded native recursion.
-The continuation stages preserve all 6,879 selected upstream observations and the
-existing parser/call depth frontiers without raising execution limits.
+JavaScript uses flat executable units and [shared execution continuations](tests/conformance/activation-frames.md),
+including ordinary calls and default initializers. Retained shallow recursion
+probes now complete 32 calls, reaching the existing logical ceiling at call 33.
+Native callbacks remain guarded; the nested-IIFE parser limit remains. All 6,879
+selected upstream observations are preserved.
 
 | Module | Responsibility |
 |---|---|

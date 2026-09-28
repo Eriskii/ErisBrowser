@@ -123,9 +123,6 @@ impl Frame {
             phase: Phase::Start,
         }
     }
-    pub(super) fn is_statement(&self) -> bool {
-        matches!(self.kind, Kind::Statement(..))
-    }
     fn id(&self) -> code::StmtId {
         match self.kind {
             Kind::Statement(id, _) => id,
@@ -1037,7 +1034,7 @@ mod tests {
     }
 
     #[test]
-    fn statement_chains_use_small_native_stack_and_keep_old_depth_refusal() {
+    fn statement_chains_use_small_native_stack_with_independent_traversal_refusal() {
         std::thread::Builder::new()
             .stack_size(128 * 1024)
             .spawn(|| {
@@ -1048,7 +1045,9 @@ mod tests {
                 for (blocks, succeeds) in [
                     (80, true),
                     (MAX_STACK_UNITS - 2, true),
-                    (MAX_STACK_UNITS - 1, false),
+                    (MAX_STACK_UNITS - 1, true),
+                    (MAX_STACK_UNITS, true),
+                    (MAX_STACK_UNITS + 1, false),
                 ] {
                     let mut statement = Stmt::Expr(Expr::Literal(Value::Number(7.0)));
                     for _ in 0..blocks {
@@ -1062,15 +1061,15 @@ mod tests {
                     } else {
                         let error = result.unwrap_err();
                         assert!(error.is_resource_limit());
-                        assert_eq!(error.message, "combined script nesting limit exceeded");
+                        assert_eq!(error.message, "statement traversal depth exceeded");
                     }
                     clean(&runtime);
                     let weak = Rc::downgrade(&unit);
                     drop(unit);
                     assert!(weak.upgrade().is_none());
                 }
-                assert_eq!(runtime.frames.capacity(), super::super::MAX_FRAMES);
-                assert_eq!(runtime.frames.capacity(), 193);
+                assert!(runtime.frames.capacity() >= 193);
+                assert!(runtime.frames.capacity() <= super::super::MAX_FRAMES);
             })
             .unwrap()
             .join()

@@ -3192,6 +3192,7 @@ pub struct Runtime {
     steps: usize,
     allocated: usize,
     calls: usize,
+    // Diagnostic active-expression count; iterative JavaScript uses frame storage.
     eval_depth: usize,
     frames: Vec<machine::Frame>,
     json_depth: usize,
@@ -5618,6 +5619,7 @@ impl Runtime {
         let constructor = self.get(value.clone(), "constructor", doc)?;
         Ok((constructor == Self::native(name, Value::Window)).then_some(name))
     }
+    #[cfg(test)]
     fn eval(
         &mut self,
         unit: &Rc<code::Unit>,
@@ -6015,208 +6017,11 @@ impl Runtime {
         }
         self.enter_stack(4)?;
         self.calls += 1;
-        let result = self.call_inner(function, arguments, receiver, doc);
+        let result = machine::invoke_preentered(self, function, arguments, receiver, doc);
         self.calls -= 1;
         self.stack_units -= 4;
         result
     }
-    fn call_inner(
-        &mut self,
-        function: Value,
-        arguments: Vec<Value>,
-        receiver: Value,
-        doc: &mut Document,
-    ) -> Result<Value> {
-        match function {
-            Value::Function(id) => {
-                // Release the immutable arena borrow before charging the copy.
-                // Code records are shared by the immutable unit handle. The existing
-                // conservative metadata allowance remains for each activation.
-                let parameters = self.functions[id].code.params.len();
-                self.work(1 + parameters)?;
-                let code = &self.functions[id].code;
-                let text_bytes = code.params.iter().fold(0usize, |size, parameter| {
-                    size.saturating_add(parameter.name.len())
-                });
-                let name_bytes = code.name.as_ref().map_or(0, String::len);
-                let bound_bytes = self.functions[id].bound.as_ref().map_or(0, |bound| {
-                    bound
-                        .arguments
-                        .len()
-                        .saturating_mul(std::mem::size_of::<Value>())
-                });
-                self.work(1 + text_bytes.saturating_add(name_bytes) / 8)?;
-                self.charge(
-                    128usize
-                        .saturating_add(parameters.saturating_mul(std::mem::size_of::<Parameter>()))
-                        .saturating_add(text_bytes)
-                        .saturating_add(name_bytes)
-                        .saturating_add(bound_bytes),
-                )?;
-                let function = self.functions[id].clone();
-                let unit = &function.code.unit;
-                if let Some(bound) = function.bound {
-                    self.charge(
-                        (bound.arguments.len() + arguments.len())
-                            .saturating_mul(std::mem::size_of::<Value>()),
-                    )?;
-                    let mut combined = bound.arguments;
-                    combined.extend(arguments);
-                    return self.call(bound.target, combined, bound.receiver, doc);
-                }
-                let env = self.environment(function.environment)?;
-                self.environments[env].function_scope = true;
-                self.environments[env].strict = function.code.strict;
-                if !function.code.arrow {
-                    let receiver = if function.code.strict {
-                        receiver
-                    } else if matches!(receiver, Value::Undefined | Value::Null) {
-                        Value::Window
-                    } else {
-                        self.coerce_object(receiver)?
-                    };
-                    self.define(env, "this", receiver, false)?;
-                }
-                let parameter_expressions = function.code.has_parameter_expressions();
-                // Every formal binding exists before the first initializer.
-                // Lists with expressions remain in their TDZ until initialized
-                // in source order, even when an argument exists. Rest-only
-                // initialization has no author callbacks or expressions.
-                for parameter in &function.code.params {
-                    if !self.environments[env]
-                        .bindings
-                        .contains_key(&parameter.name)
-                    {
-                        self.define(env, &parameter.name, Value::Undefined, true)?;
-                        self.environments[env]
-                            .bindings
-                            .get_mut(&parameter.name)
-                            .unwrap()
-                            .initialized = !parameter_expressions;
-                    }
-                }
-                let shadows_arguments = function.code.params.iter().any(|p| p.name == "arguments")
-                    || !parameter_expressions && function.code.body.iter().any(|s| matches!(unit.stmt(*s), code::Stmt::Function(name, _) if name == "arguments")
-                        || matches!(unit.stmt(*s), code::Stmt::Var(bindings, kind) if *kind != DeclarationKind::Var && bindings.iter().any(|(name, _)| name == "arguments")));
-                let arguments_binding = !function.code.arrow && !shadows_arguments;
-                if arguments_binding {
-                    let unmapped = function.code.strict || !function.code.has_simple_parameters();
-                    let args = self.arguments_object(&arguments, unmapped, Value::Function(id))?;
-                    if !unmapped {
-                        let Value::Object(id) = args else {
-                            unreachable!()
-                        };
-                        let mut seen = BTreeSet::new();
-                        for (index, parameter) in function.code.params.iter().enumerate().rev() {
-                            let name = &parameter.name;
-                            if seen.insert(name) && index < arguments.len() {
-                                self.charge(96 + name.len())?;
-                                self.objects[id]
-                                    .parameter_map
-                                    .insert(index.to_string().into(), (env, name.clone()));
-                            }
-                        }
-                    }
-                    self.define(env, "arguments", args, true)?;
-                }
-                for (index, parameter) in function.code.params.iter().enumerate() {
-                    self.tick()?;
-                    let mut value = if parameter.rest {
-                        self.rest_arguments(&arguments[index.min(arguments.len())..])?
-                    } else {
-                        arguments.get(index).cloned().unwrap_or(Value::Undefined)
-                    };
-                    if matches!(value, Value::Undefined)
-                        && let Some(initializer) = &parameter.initializer
-                    {
-                        value = self.eval(unit, initializer, env, doc)?;
-                        if unit.anonymous(*initializer) {
-                            self.charge(parameter.name.len().saturating_mul(4))?;
-                            self.set_function_name(
-                                &value,
-                                &JsString::from(parameter.name.as_str()),
-                                None,
-                            )?;
-                        }
-                    }
-                    let binding = self.environments[env]
-                        .bindings
-                        .get_mut(&parameter.name)
-                        .unwrap();
-                    binding.value = value;
-                    binding.initialized = true;
-                }
-                let body_env = if parameter_expressions {
-                    // Initializer closures capture env. Body var/function and
-                    // lexical declarations live in its child, and therefore
-                    // cannot become visible to those closures retroactively.
-                    let body_env = self.environment(env)?;
-                    self.environments[body_env].function_scope = true;
-                    self.hoist_vars(unit, &function.code.body, body_env)?;
-                    for parameter in &function.code.params {
-                        self.tick()?;
-                        if self.environments[body_env]
-                            .bindings
-                            .contains_key(&parameter.name)
-                        {
-                            let value = self.binding_value(env, &parameter.name, doc)?;
-                            self.environments[body_env]
-                                .bindings
-                                .get_mut(&parameter.name)
-                                .unwrap()
-                                .value = value;
-                        }
-                    }
-                    if arguments_binding
-                        && self.environments[body_env]
-                            .bindings
-                            .contains_key("arguments")
-                    {
-                        let value = self.binding_value(env, "arguments", doc)?;
-                        self.environments[body_env]
-                            .bindings
-                            .get_mut("arguments")
-                            .unwrap()
-                            .value = value;
-                    }
-                    body_env
-                } else {
-                    env
-                };
-                match machine::evaluate_statements(
-                    self,
-                    unit,
-                    machine::ListOwner::Function(function.code.id()),
-                    body_env,
-                    doc,
-                )? {
-                    Flow::Return(value) => Ok(value),
-                    Flow::Normal(_) => Ok(Value::Undefined),
-                    _ => Err(ScriptError::new("loop control outside loop")),
-                }
-            }
-            Value::Native(native) => {
-                if NumberPredicate::from_name(&native.name).is_some() {
-                    // These intrinsics ignore thisArgument; retain the native
-                    // record instead of cloning a name just to replace this.
-                    self.native_call(&native, arguments, doc)
-                } else if native.name.contains('.') {
-                    self.native_call(
-                        &Native {
-                            name: native.name.clone(),
-                            receiver,
-                        },
-                        arguments,
-                        doc,
-                    )
-                } else {
-                    self.native_call(&native, arguments, doc)
-                }
-            }
-            _ => Err(ScriptError::type_error("value is not callable")),
-        }
-    }
-
     fn property_object(&self, value: &Value) -> Option<usize> {
         match value {
             Value::Object(id) => Some(*id),
@@ -8212,9 +8017,9 @@ impl Runtime {
         Ok(id)
     }
 
-    // Expression evaluation, statement nesting, native callbacks and JSON can
-    // recurse into one another. Independent limits do not bound their combined
-    // Rust stack; calls reserve extra units for the native dispatcher frames.
+    // Native callbacks, constructors, event dispatch and JSON can recurse into
+    // one another. Their retained Rust frames share this weighted guard. Fully
+    // iterative JavaScript is bounded by continuation storage and logical calls.
     fn enter_stack(&mut self, units: usize) -> Result<()> {
         if self.stack_units.saturating_add(units) > MAX_STACK_UNITS {
             return Err(ScriptError::resource(
@@ -16178,7 +15983,7 @@ mod tests {
     }
 
     #[test]
-    fn statement_nesting_and_function_calls_share_the_native_stack_budget() {
+    fn deeply_nested_function_bodies_keep_shared_call_and_work_limits() {
         let source = format!(
             "function recur(){{{}return recur();{}}}recur();",
             "{".repeat(40),

@@ -1,6 +1,77 @@
 # Validation record
 
+## Ordinary activation and default continuations
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **944 Rust tests** pass with `--include-ignored`: 762 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 53 pipeline, one declaration-name matrix, nine completion
+and 44 confined-worker tests. None remain ignored. All **151 Python checks**
+and **57 exact pixel references** pass.
+
+[Ordinary activations, defaults and bound forwarding](../tests/conformance/activation-frames.md)
+now share the expression/statement driver. Queued invocations own their logical
+count after a successful reservation; native callback roots retain their external
+count and guard. Parameter environments, TDZ, argument mapping, default closures
+and body completion preserve their behavior. Bound arguments use one checked,
+precharged copy; parameter evaluation drops its actual-value buffer before body
+execution. Native helpers and constructors remain guarded bridges.
+
+Fully iterative JavaScript no longer consumes obsolete native-depth charges.
+Continuation storage now derives its ceiling from the unchanged 8 MiB allowance
+and actual record size, with growth work/storage prepaid. The 32-call, 100,000-work,
+96-native-stack-unit and parser constants remain. This changes depth behavior:
+the [480-case inventory](../tests/conformance/activation-frames-depth.json) gains
+**72 successful runs**, while **32 resource diagnostics** change to the logical
+call ceiling. These exact ordinary/default sources now complete **32 calls**
+instead of 13/15, with call 33 refused. All parsing and nested-IIFE observations
+remain unchanged; the original upstream 32-nested-IIFE source still stops in parsing.
+
+Seven new groups cover strict/sloppy call boundaries, every work cutoff in eight
+activation fixtures, storage refusal, bound/preentered ownership, TDZ/closures,
+finally identity and native recursion. A thread requesting a **128 KiB native
+stack** completes directly constructed 32-call ordinary/default fixtures in both
+modes and refuses call 33. Equivalent source parsing is checked separately.
+The prior 96-unary and 95/96-block fixtures now complete; 97 blocks stops through
+the independent declaration-traversal limit. Exhausted growth preserves queued
+frames and the caller's count. Refused charges remain in the cumulative ledger.
+
+All **20 Test262 profiles / 6,879 modes / 1,680 controls** retain identical case
+identities, policies and every observation. All controls verify; fifteen healthy
+baseline gates pass. Five resource-stopped profiles remain nonpassing observations,
+with no new baselines. HTML stays at 3,868 matches, two mismatches and six unsupported
+modes. The **15,000-case** mutation smoke run has zero caught panics or invariant
+failures: 5,000 accepted HTML, 623 accepted/4,377 rejected scripts and 3,347 accepted/
+1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and display-list size
+1,173 commands; 17 cases stop within paint limits.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+| --- | --- |
+| `eris-browser` | `a3c76c013ae8fcab2180a794f7e393cb6574af606b2812ab6673aed7268b9568` |
+| `eris-js` | `7dd5587f39f42f26c629ac3f195825b4f171a93c2cade8337c980e6dc50f540c` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `4cb0c8a03832268c1c8ca88f22eb7dc91ba38ee276dd2ef1394f62f5c64aeeef` |
+
+Source-input SHA-256:
+`832ffcee3212595a1b67dbb8fa5ef75a15adf444dbf9c87abd05fb3d3aae88aa`.
+Local records are `artifacts/*activation-frames*`; the
+[public comparison](../tests/conformance/activation-frames.json) preserves provenance
+and all profile checks. Initial private-test failures came from an unsupported
+String.repeat call in a fixture and an incorrect assumption that refused charges
+were absent from the ledger; corrected checks retain exact expected output and
+verify actual retained capacity. Parser ownership/accounting and native recursion
+remain separate work. Agent sessions remain unavailable, so no independent-agent
+review is assigned. No native-window, Vulkan or Chromium performance result is
+assigned. Full compatibility, production security and the requested performance
+threshold remain unverified.
+
 ## Shared statement continuations
+
+Published checkpoint `3564451` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36467482921),
+including all existing conformance gates, Rust 1.88 and the Vulkan probe.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **937 Rust tests** pass with `--include-ignored`: 755 library,
