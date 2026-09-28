@@ -3,7 +3,7 @@
 //! This implements the useful core of block, inline, flex and grid layout. It is
 //! deliberately explicit about its limits: it is not a complete CSS formatter.
 use crate::css::{ComputedStyle, Display, Length};
-use crate::dom::{Document, NodeId, NodeKind};
+use crate::dom::{Document, Namespace, NodeId, NodeKind};
 use crate::graphics::{Color, DrawCommand, Fonts, Rect};
 use std::cell::Cell as Counter;
 
@@ -114,7 +114,7 @@ pub fn layout(
         width: finite(width, 800.0).clamp(1.0, 100_000.0),
         height: finite(height, 600.0).clamp(1.0, 100_000.0),
     };
-    let html = doc.query_selector("html");
+    let html = doc.first_html_element("html");
     let canvas_background_node = html
         .filter(|id| {
             styles
@@ -122,7 +122,7 @@ pub fn layout(
                 .is_some_and(|style| style.background_color.a > 0)
         })
         .or_else(|| {
-            doc.query_selector("body").filter(|id| {
+            doc.first_html_element("body").filter(|id| {
                 styles.get(*id).is_some_and(|style| {
                     style.display != Display::None && style.background_color.a > 0
                 })
@@ -183,13 +183,26 @@ pub fn layout(
 }
 
 impl Engine<'_> {
+    fn html_tag(&self, id: NodeId) -> Option<&str> {
+        (self.doc.namespace(id) == Some(Namespace::Html))
+            .then(|| self.doc.tag(id))
+            .flatten()
+    }
+    /// Element-specific layout is available for HTML and SVG viewport roots.
+    fn layout_tag(&self, id: NodeId) -> &str {
+        match (self.doc.namespace(id), self.doc.tag(id)) {
+            (Some(Namespace::Svg), Some("svg")) => "svg",
+            (Some(Namespace::Html), Some(tag)) if tag != "svg" => tag,
+            _ => "",
+        }
+    }
     fn style(&self, id: NodeId) -> &ComputedStyle {
         self.styles.get(id).unwrap_or(&self.fallback)
     }
 
     fn is_hidden(&self, id: NodeId) -> bool {
         self.style(id).display == Display::None
-            || self.doc.tag(id) == Some("input")
+            || self.html_tag(id) == Some("input")
                 && self
                     .doc
                     .attr(id, "type")
@@ -270,7 +283,7 @@ impl Engine<'_> {
         } else {
             extra
         };
-        let tag = self.doc.tag(id).unwrap_or("");
+        let tag = self.layout_tag(id);
         let mut width = resolve(style.width, containing_width)
             .map(|value| value + css_to_border)
             .unwrap_or_else(|| match tag {
@@ -388,7 +401,7 @@ impl Engine<'_> {
         } else {
             None
         };
-        let tag = self.doc.tag(id).unwrap_or("").to_owned();
+        let tag = self.layout_tag(id).to_owned();
         let children = self.doc.nodes[id].children.clone();
         let natural_height = if matches!(tag.as_str(), "img" | "svg" | "canvas" | "video") {
             self.paint_replaced(id, &tag, inner_x, inner_y, inner_width)
@@ -721,7 +734,7 @@ impl Engine<'_> {
                 self.tokenize(id, owner, &text, output);
             }
             NodeKind::Element(_) => {
-                let tag = self.doc.tag(id).unwrap_or("");
+                let tag = self.layout_tag(id);
                 if tag == "br" {
                     output.push(InlineItem {
                         node: id,
@@ -1521,7 +1534,7 @@ impl Engine<'_> {
             if self.is_hidden(id) {
                 continue;
             }
-            match self.doc.tag(id) {
+            match self.html_tag(id) {
                 Some("tr") => rows.push(id),
                 Some("caption") => captions.push(id),
                 Some("thead" | "tbody" | "tfoot") => {
@@ -1546,7 +1559,7 @@ impl Engine<'_> {
         for (row, &id) in rows.iter().enumerate() {
             let mut column = 0usize;
             for &node in &self.doc.nodes[id].children {
-                if self.is_hidden(node) || !matches!(self.doc.tag(node), Some("td" | "th")) {
+                if self.is_hidden(node) || !matches!(self.html_tag(node), Some("td" | "th")) {
                     continue;
                 }
                 while column < occupied.len() && occupied[column] > 0 {
@@ -1732,8 +1745,8 @@ impl Engine<'_> {
             return extent(width + extra);
         }
         if matches!(
-            self.doc.tag(id),
-            Some("img" | "svg" | "canvas" | "video" | "input" | "textarea")
+            self.layout_tag(id),
+            "img" | "svg" | "canvas" | "video" | "input" | "textarea"
         ) {
             return self.width_for(id, available, available);
         }
@@ -1941,7 +1954,7 @@ impl Engine<'_> {
                 if count > 4096 {
                     break;
                 }
-                if self.doc.tag(node) == Some("option") {
+                if self.html_tag(node) == Some("option") {
                     if first.is_none() {
                         first = Some(node);
                     }
@@ -2012,7 +2025,7 @@ impl Engine<'_> {
                         if child == id {
                             break;
                         }
-                        if self.doc.tag(child) == Some("li") {
+                        if self.html_tag(child) == Some("li") {
                             number += 1;
                         }
                     }
@@ -2314,6 +2327,59 @@ fn fit_text(text: &str, width: f32, measure: impl Fn(&str) -> f32) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn foreign_lookalikes_use_text_flow_and_only_svg_roots_are_replaced() {
+        let mut document = Document::parse(
+            "<style>#foreign{display:block}</style><math><input id=foreign type=hidden value=secret>foreign text</input><svg id=mathsvg width=20 height=20>math svg text</svg></math><input type=hidden value=hidden><svg id=actual width=20 height=20></svg>",
+        );
+        let body = document.query_selector("body").unwrap();
+        for (namespace, tag, text) in [
+            (Namespace::Html, "svg", "html svg text"),
+            (Namespace::Svg, "img", "svg img text"),
+            (Namespace::MathMl, "table", "math table text"),
+        ] {
+            let node = document.create_element_ns(namespace, tag);
+            document.set_attr(node, "style", "display:block");
+            document.set_attr(node, "src", "must-not-load.png");
+            document.set_text_content(node, text);
+            document.append_child(body, node);
+        }
+        let styles = crate::css::compute_styles(&document, &document.stylesheets(), 400.0, 300.0);
+        let result = layout(&document, &styles, 400.0, 300.0, &Fonts::new());
+        let text = result
+            .commands
+            .iter()
+            .filter_map(|command| match command {
+                DrawCommand::Text { text, .. } => Some(text.as_str()),
+                _ => None,
+            })
+            .collect::<String>();
+        for expected in [
+            "foreign text",
+            "math svg text",
+            "html svg text",
+            "svg img text",
+            "math table text",
+        ] {
+            assert!(text.contains(expected), "{expected}: {text}");
+        }
+        assert!(!text.contains("secret"));
+        let images = result
+            .commands
+            .iter()
+            .filter_map(|command| match command {
+                DrawCommand::Image { key, .. } => Some(key.as_str()),
+                _ => None,
+            })
+            .collect::<Vec<_>>();
+        assert_eq!(
+            images,
+            [format!(
+                "eris-inline-svg:{}",
+                document.query_selector("#actual").unwrap()
+            )]
+        );
+    }
 
     fn render(source: &str, width: f32) -> (Document, LayoutResult) {
         let document = Document::parse(source);

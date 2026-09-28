@@ -1,6 +1,6 @@
 use crate::edit::Selection;
 use eris::{
-    dom::NodeId,
+    dom::{Namespace, NodeId},
     graphics::{Canvas, Color, DrawCommand, Fonts, Rect},
     page::Navigation,
     worker::{Command, Snapshot, WorkerClient},
@@ -632,13 +632,23 @@ impl Browser {
             .map(|h| h.node)
     }
     fn ancestor_with_tag(&self, mut id: NodeId, tags: &[&str]) -> Option<NodeId> {
-        let doc = &self.snapshot.as_ref()?.document;
-        loop {
-            if doc.tag(id).is_some_and(|tag| tags.contains(&tag)) {
+        let snapshot = self
+            .snapshot
+            .as_ref()
+            .filter(|snapshot| snapshot.generation == self.generation())?;
+        let doc = &snapshot.document;
+        if doc.interaction_blocked(id) {
+            return None;
+        }
+        for _ in 0..eris::dom::MAX_DEPTH {
+            if doc.namespace(id) == Some(Namespace::Html)
+                && doc.tag(id).is_some_and(|tag| tags.contains(&tag))
+            {
                 return Some(id);
             }
             id = doc.nodes.get(id)?.parent?;
         }
+        None
     }
     fn focus_input(&mut self, node: NodeId) {
         let Some(s) = self
@@ -648,7 +658,7 @@ impl Browser {
         else {
             return;
         };
-        if s.document.attr(node, "disabled").is_some() {
+        if !s.document.can_focus_control(node) {
             return;
         }
         self.focused = Some(node);
@@ -660,7 +670,7 @@ impl Browser {
         };
         self.selection.end(&self.input_value);
         if let Some(w) = &self.window {
-            w.set_ime_allowed(true);
+            w.set_ime_allowed(s.document.can_edit_control(node));
         }
         self.redraw();
     }
@@ -713,12 +723,7 @@ impl Browser {
             let text: String = text.chars().filter(|c| !c.is_control()).collect();
             self.selection.replace(&mut self.address, &text, 8192);
         } else if let Some(node) = self.focused {
-            if !self.editable(node)
-                || self
-                    .snapshot
-                    .as_ref()
-                    .is_some_and(|s| s.document.attr(node, "readonly").is_some())
-            {
+            if !self.editable(node) {
                 return;
             }
             let multiline = self
@@ -759,12 +764,7 @@ impl Browser {
         if self.address_focused {
             self.selection.erase(&mut self.address, backward);
         } else if let Some(node) = self.focused {
-            if !self.editable(node)
-                || self
-                    .snapshot
-                    .as_ref()
-                    .is_some_and(|s| s.document.attr(node, "readonly").is_some())
-            {
+            if !self.editable(node) {
                 return;
             }
             if self.selection.erase(&mut self.input_value, backward) {
@@ -794,24 +794,16 @@ impl Browser {
         self.snapshot
             .as_ref()
             .filter(|snapshot| snapshot.generation == self.generation())
-            .is_some_and(|s| match s.document.tag(node) {
-                Some("textarea") => true,
-                Some("input") => !matches!(
-                    s.document
-                        .attr(node, "type")
-                        .unwrap_or("text")
-                        .to_ascii_lowercase()
-                        .as_str(),
-                    "checkbox" | "radio" | "submit" | "button" | "reset" | "hidden" | "file"
-                ),
-                _ => false,
-            })
+            .is_some_and(|s| s.document.can_edit_control(node))
     }
     fn password_focused(&self) -> bool {
         !self.address_focused
             && self.focused.is_some_and(|node| {
                 self.snapshot.as_ref().is_some_and(|snapshot| {
                     snapshot.generation == self.generation()
+                        && snapshot.document.namespace(node) == Some(Namespace::Html)
+                        && snapshot.document.tag(node) == Some("input")
+                        && snapshot.document.can_focus_control(node)
                         && snapshot
                             .document
                             .attr(node, "type")
@@ -834,15 +826,26 @@ impl Browser {
         }
     }
     fn reconcile_input(&mut self, snapshot: &Snapshot) {
-        if self.address_focused
-            || snapshot.generation != self.generation()
-            || snapshot.processed_edit_sequence < self.edit_sequence
-        {
+        if self.address_focused || snapshot.generation != self.generation() {
             return;
         }
         let Some(node) = self.focused else {
             return;
         };
+        if !snapshot.document.can_focus_control(node)
+            || self.editable(node) && !snapshot.document.can_edit_control(node)
+        {
+            self.focused = None;
+            self.input_value.clear();
+            self.selection = Selection::default();
+            if let Some(window) = &self.window {
+                window.set_ime_allowed(false);
+            }
+            return;
+        }
+        if snapshot.processed_edit_sequence < self.edit_sequence {
+            return;
+        }
         let value = match snapshot.document.tag(node) {
             Some("textarea") => snapshot.document.text_content(node),
             Some("input") => snapshot
@@ -1154,12 +1157,7 @@ impl Browser {
             .document
             .query_selector_all("input, textarea, button, a[href]")
             .into_iter()
-            .filter(|&n| {
-                !s.document
-                    .attr(n, "type")
-                    .is_some_and(|kind| kind.eq_ignore_ascii_case("hidden"))
-                    && s.document.attr(n, "disabled").is_none()
-            })
+            .filter(|&n| s.document.can_focus_control(n))
             .collect::<Vec<_>>();
         if inputs.is_empty() {
             return;
@@ -2138,6 +2136,138 @@ mod tests {
         assert!(browser.password_focused());
         browser.address_focused = true;
         assert!(!browser.password_focused());
+        assert!(browser.clipboard.is_none());
+    }
+
+    #[test]
+    fn native_focus_ignores_foreign_template_inert_and_disabled_controls() {
+        let mut browser = editing_browser(
+            "<svg><input id=foreign value=svg /></svg><math><input id=math value=math /></math><template><input id=template></template><div inert><input id=inert></div><fieldset disabled><legend><input id=legend value=allowed></legend><input id=blocked><legend><input id=later></legend></fieldset><input id=normal value=normal>",
+        );
+        for name in ["foreign", "math", "template", "inert", "blocked", "later"] {
+            let node = browser
+                .snapshot
+                .as_ref()
+                .unwrap()
+                .document
+                .query_selector(&format!("#{name}"))
+                .unwrap();
+            assert!(!browser.editable(node), "{name}");
+            browser.focus_input(node);
+            assert!(browser.focused.is_none(), "{name}");
+            browser.send_edit(node);
+        }
+        assert!(!browser.tx.has_pending());
+        let legend = browser
+            .snapshot
+            .as_ref()
+            .unwrap()
+            .document
+            .query_selector("#legend")
+            .unwrap();
+        let normal = browser
+            .snapshot
+            .as_ref()
+            .unwrap()
+            .document
+            .query_selector("#normal")
+            .unwrap();
+        browser.tab_focus();
+        assert_eq!(browser.focused, Some(legend));
+        assert!(browser.editable(legend));
+        browser.tab_focus();
+        assert_eq!(browser.focused, Some(normal));
+        assert!(browser.clipboard.is_none());
+    }
+
+    #[test]
+    fn readonly_range_and_color_controls_cannot_queue_native_text_edits() {
+        let mut browser = editing_browser(
+            "<input id=readonly readonly value=kept><textarea id=textarea readonly>kept</textarea><input id=range type=RANGE value=5><input id=color type=COLOR value=red>",
+        );
+        for name in ["readonly", "textarea", "range", "color"] {
+            let node = browser
+                .snapshot
+                .as_ref()
+                .unwrap()
+                .document
+                .query_selector(&format!("#{name}"))
+                .unwrap();
+            browser.focus_input(node);
+            assert_eq!(browser.focused, Some(node));
+            let initial = browser.input_value.clone();
+            assert!(!browser.editable(node));
+            assert!(!browser.has_text_focus());
+            browser.insert_text("blocked");
+            browser.erase_text(true);
+            browser.send_edit(node);
+            assert_eq!(browser.input_value, initial);
+            assert!(!browser.tx.has_pending());
+        }
+        assert!(browser.clipboard.is_none());
+    }
+
+    #[test]
+    fn accepted_snapshot_revokes_editing_before_ack_when_control_policy_changes() {
+        for change in ["readonly", "disabled", "inert", "detached", "foreign"] {
+            let mut browser = editing_browser("<input id=field value=base>");
+            let node = browser
+                .snapshot
+                .as_ref()
+                .unwrap()
+                .document
+                .query_selector("#field")
+                .unwrap();
+            browser.focus_input(node);
+            browser.insert_text("-pending");
+            assert!(matches!(
+                browser.tx.recv(),
+                Some(Request::Edit { sequence: 1, .. })
+            ));
+            let mut document = browser.snapshot.as_ref().unwrap().document.clone();
+            match change {
+                "detached" => document.remove_child(document.nodes[node].parent.unwrap(), node),
+                "foreign" => {
+                    let eris::dom::NodeKind::Element(element) = &mut document.nodes[node].kind
+                    else {
+                        unreachable!()
+                    };
+                    element.namespace = Namespace::Svg;
+                }
+                attribute => document.set_attr(node, attribute, ""),
+            }
+            let snapshot = acknowledgement(&browser, 0, document);
+            browser.accept_snapshot(snapshot);
+            assert!(browser.focused.is_none(), "{change}");
+            assert!(browser.input_value.is_empty(), "{change}");
+            assert!(!browser.editable(node), "{change}");
+            browser.insert_text("must not queue");
+            browser.send_edit(node);
+            assert!(!browser.tx.has_pending(), "{change}");
+            assert!(browser.clipboard.is_none());
+        }
+    }
+
+    #[test]
+    fn obsolete_snapshot_policy_cannot_revoke_current_control_focus() {
+        let mut browser = editing_browser("<input id=field value=current>");
+        let node = browser
+            .snapshot
+            .as_ref()
+            .unwrap()
+            .document
+            .query_selector("#field")
+            .unwrap();
+        browser.snapshot.as_mut().unwrap().processed_edit_sequence = 2;
+        browser.edit_sequence = 2;
+        browser.focus_input(node);
+        let mut document = browser.snapshot.as_ref().unwrap().document.clone();
+        document.set_attr(node, "readonly", "");
+        let snapshot = acknowledgement(&browser, 1, document);
+        browser.accept_snapshot(snapshot);
+        assert_eq!(browser.focused, Some(node));
+        assert!(browser.editable(node));
+        assert_eq!(browser.input_value, "current");
         assert!(browser.clipboard.is_none());
     }
 

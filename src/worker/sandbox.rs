@@ -1,4 +1,4 @@
-//! Page-process restrictions: Landlock, resource caps and a seccomp denylist.
+//! Renderer and broker process restrictions: Landlock, resource caps and a seccomp denylist.
 //! This reduces the exposed kernel surface; it is not a complete syscall allowlist.
 use std::path::Path;
 
@@ -39,7 +39,15 @@ pub fn check_inherited_descriptors() -> Result<(), String> {
 }
 
 #[cfg(target_os = "linux")]
-pub fn restrict(root: Option<&Path>) -> Result<(), String> {
+pub fn restrict_broker(root: Option<&Path>) -> Result<(), String> {
+    restrict_with_role(root, false)
+}
+#[cfg(target_os = "linux")]
+pub fn restrict_renderer() -> Result<(), String> {
+    restrict_with_role(None, true)
+}
+#[cfg(target_os = "linux")]
+fn restrict_with_role(root: Option<&Path>, renderer: bool) -> Result<(), String> {
     use landlock::{
         ABI, Access, AccessFs, AccessNet, CompatLevel, Compatible, PathBeneath, PathFd, Ruleset,
         RulesetAttr, RulesetCreatedAttr, RulesetStatus, Scope,
@@ -50,7 +58,11 @@ pub fn restrict(root: Option<&Path>) -> Result<(), String> {
         .set_compatibility(CompatLevel::HardRequirement)
         .handle_access(AccessFs::from_all(abi))
         .map_err(|e| e.to_string())?
-        .handle_access(AccessNet::BindTcp)
+        .handle_access(if renderer {
+            AccessNet::from_all(abi)
+        } else {
+            AccessNet::BindTcp.into()
+        })
         .map_err(|e| e.to_string())?
         .scope(Scope::from_all(abi))
         .map_err(|e| e.to_string())?
@@ -72,7 +84,9 @@ pub fn restrict(root: Option<&Path>) -> Result<(), String> {
     .iter()
     .map(Path::new)
     .collect();
-    if let Some(root) = root {
+    if renderer {
+        paths.clear();
+    } else if let Some(root) = root {
         paths.push(root);
     }
     for path in paths {
@@ -111,12 +125,17 @@ pub fn restrict(root: Option<&Path>) -> Result<(), String> {
         )
         .map_err(|e| e.to_string())?;
     }
-    install_syscall_filter()
+    install_syscall_filter(renderer)
 }
 
 #[cfg(not(target_os = "linux"))]
-pub fn restrict(_: Option<&Path>) -> Result<(), String> {
+pub fn restrict_broker(_: Option<&Path>) -> Result<(), String> {
     Err("native page sandbox currently requires Linux with Landlock ABI 6".into())
+}
+
+#[cfg(not(target_os = "linux"))]
+pub fn restrict_renderer() -> Result<(), String> {
+    Err("native renderer sandbox requires Linux".into())
 }
 
 #[cfg(all(
@@ -128,14 +147,14 @@ pub fn restrict(_: Option<&Path>) -> Result<(), String> {
         target_arch = "riscv64"
     )
 ))]
-fn syscall_filter() -> Result<seccompiler::BpfProgram, String> {
+fn syscall_filter(renderer: bool) -> Result<seccompiler::BpfProgram, String> {
     use seccompiler::{
         SeccompAction, SeccompCmpArgLen, SeccompCmpOp, SeccompCondition, SeccompFilter, SeccompRule,
     };
     use std::collections::BTreeMap;
-    // Page execution is single-threaded. Reject process/thread creation, new
+    // Both children run single-threaded. Reject process/thread creation, new
     // executables and namespace changes, including io_uring's alternative path
-    // to socket operations. DNS and HTTP retain ordinary INET/INET6 sockets.
+    // to socket operations. Only the broker retains sockets for DNS and HTTP.
     let mut rules: BTreeMap<i64, Vec<SeccompRule>> = [
         libc::SYS_clone,
         libc::SYS_clone3,
@@ -185,6 +204,32 @@ fn syscall_filter() -> Result<seccompiler::BpfProgram, String> {
         libc::SYS_seccomp,
         // No page operation needs a new local IPC pair, regardless of family.
         libc::SYS_socketpair,
+        // Landlock does not mediate System V IPC. No worker operation needs
+        // shared memory, semaphores, or message queues shared with other apps.
+        libc::SYS_shmget,
+        libc::SYS_shmat,
+        libc::SYS_shmdt,
+        libc::SYS_shmctl,
+        libc::SYS_msgget,
+        libc::SYS_msgsnd,
+        libc::SYS_msgrcv,
+        libc::SYS_msgctl,
+        libc::SYS_semget,
+        libc::SYS_semop,
+        libc::SYS_semtimedop,
+        libc::SYS_semctl,
+        libc::SYS_mq_open,
+        libc::SYS_mq_unlink,
+        libc::SYS_mq_timedsend,
+        libc::SYS_mq_timedreceive,
+        libc::SYS_mq_notify,
+        libc::SYS_mq_getsetattr,
+        // A same-user process may lower another process's limits/priority.
+        libc::SYS_setpriority,
+        libc::SYS_sched_setaffinity,
+        libc::SYS_sched_setscheduler,
+        libc::SYS_sched_setparam,
+        libc::SYS_sched_setattr,
         // Landlock's read/write restrictions do not cover these metadata
         // mutations, including pathname operations outside readable roots.
         libc::SYS_fchmod,
@@ -240,7 +285,11 @@ fn syscall_filter() -> Result<seccompiler::BpfProgram, String> {
     .map_err(|error| error.to_string())?;
     rules.insert(
         libc::SYS_socket,
-        vec![SeccompRule::new(vec![unix]).map_err(|error| error.to_string())?],
+        if renderer {
+            Vec::new()
+        } else {
+            vec![SeccompRule::new(vec![unix]).map_err(|error| error.to_string())?]
+        },
     );
     // ioctl can mutate filesystem metadata through read-only descriptors.
     // The worker only needs nonblocking mode and bytes-available queries.
@@ -260,6 +309,18 @@ fn syscall_filter() -> Result<seccompiler::BpfProgram, String> {
     rules.insert(
         libc::SYS_ioctl,
         vec![SeccompRule::new(forbidden_ioctl).map_err(|error| error.to_string())?],
+    );
+    // Querying limits is harmless and used by diagnostics. Reject a non-null
+    // new_limit pointer, including requests targeting another same-user task.
+    rules.insert(
+        libc::SYS_prlimit64,
+        vec![
+            SeccompRule::new(vec![
+                SeccompCondition::new(2, SeccompCmpArgLen::Qword, SeccompCmpOp::Ne, 0)
+                    .map_err(|error| error.to_string())?,
+            ])
+            .map_err(|error| error.to_string())?,
+        ],
     );
     let filter = SeccompFilter::new(
         rules,
@@ -315,10 +376,10 @@ fn syscall_filter() -> Result<seccompiler::BpfProgram, String> {
         target_arch = "riscv64"
     )
 ))]
-fn install_syscall_filter() -> Result<(), String> {
+fn install_syscall_filter(renderer: bool) -> Result<(), String> {
     // The kernel copies the generated program; the safe wrapper installs it on
     // this thread before the worker loads any page or creates any other thread.
-    let program = syscall_filter()?;
+    let program = syscall_filter(renderer)?;
     seccompiler::apply_filter(&program)
         .map_err(|error| format!("required page syscall filter: {error}"))
 }
@@ -334,13 +395,161 @@ fn install_syscall_filter() -> Result<(), String> {
         )
     ))
 ))]
-fn install_syscall_filter() -> Result<(), String> {
+fn install_syscall_filter(_renderer: bool) -> Result<(), String> {
     Err("page syscall filtering requires little-endian x86_64, aarch64 or riscv64".into())
 }
 
 #[cfg(all(test, target_os = "linux"))]
 mod tests {
     use super::*;
+    #[test]
+    #[ignore = "requires Linux Landlock ABI 6; probes renderer access in a separate process"]
+    fn renderer_has_no_direct_file_or_socket_access() {
+        const CHILD: &str = "ERIS_RENDERER_SANDBOX_PROBE";
+        if let Some(path) = std::env::var_os(CHILD) {
+            let path = std::path::PathBuf::from(path);
+            assert_eq!(std::fs::read_to_string(&path).unwrap(), "document");
+            let resolver = std::fs::read("/etc/resolv.conf").is_ok();
+            let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+            let address = listener.local_addr().unwrap();
+            drop(std::net::TcpStream::connect(address).expect("TCP client preflight"));
+            drop(listener);
+            drop(std::net::UdpSocket::bind("127.0.0.1:0").expect("UDP preflight"));
+            drop(std::os::unix::net::UnixStream::pair().expect("Unix IPC preflight"));
+            restrict_renderer().expect("renderer confinement fully enforced");
+            assert_eq!(
+                std::fs::read(&path).unwrap_err().kind(),
+                std::io::ErrorKind::PermissionDenied
+            );
+            assert!(std::fs::read_dir(path.parent().unwrap()).is_err());
+            assert!(std::fs::write(&path, "forbidden").is_err());
+            if resolver {
+                assert_eq!(
+                    std::fs::read("/etc/resolv.conf").unwrap_err().kind(),
+                    std::io::ErrorKind::PermissionDenied
+                );
+            }
+            assert_eq!(
+                std::net::TcpStream::connect(address)
+                    .unwrap_err()
+                    .raw_os_error(),
+                Some(libc::EPERM)
+            );
+            assert_eq!(
+                std::net::UdpSocket::bind("127.0.0.1:0")
+                    .unwrap_err()
+                    .raw_os_error(),
+                Some(libc::EPERM)
+            );
+            assert_eq!(
+                std::os::unix::net::UnixStream::pair()
+                    .unwrap_err()
+                    .raw_os_error(),
+                Some(libc::EPERM)
+            );
+            return;
+        }
+        let directory =
+            std::env::temp_dir().join(format!("eris-renderer-probe-{}", std::process::id()));
+        std::fs::create_dir(&directory).unwrap();
+        let path = directory.join("page.html");
+        std::fs::write(&path, "document").unwrap();
+        let output = std::process::Command::new(std::env::current_exe().unwrap())
+            .args([
+                "--exact",
+                "worker::sandbox::tests::renderer_has_no_direct_file_or_socket_access",
+                "--include-ignored",
+                "--nocapture",
+            ])
+            .env(CHILD, &path)
+            .output()
+            .unwrap();
+        assert_eq!(std::fs::read_to_string(&path).unwrap(), "document");
+        std::fs::remove_dir_all(directory).unwrap();
+        assert!(
+            output.status.success(),
+            "{}\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+    }
+
+    #[cfg(target_arch = "x86_64")]
+    #[test]
+    fn renderer_filter_denies_every_socket_family() {
+        let program = syscall_filter(true).unwrap();
+        for family in [
+            libc::AF_UNIX,
+            libc::AF_INET,
+            libc::AF_INET6,
+            libc::AF_NETLINK,
+            libc::AF_PACKET,
+            0,
+        ] {
+            for argument in [family as u64, (family as u64) | (1u64 << 32)] {
+                assert_eq!(
+                    evaluate(&program, libc::SYS_socket as u32, 0xc000_003e, argument),
+                    libc::SECCOMP_RET_ERRNO | libc::EPERM as u32
+                );
+            }
+        }
+    }
+    #[cfg(target_arch = "x86_64")]
+    #[test]
+    fn both_roles_deny_system_ipc_and_mutating_other_process_limits() {
+        let denied = libc::SECCOMP_RET_ERRNO | libc::EPERM as u32;
+        for renderer in [false, true] {
+            let program = syscall_filter(renderer).unwrap();
+            for syscall in [
+                libc::SYS_shmget,
+                libc::SYS_shmat,
+                libc::SYS_shmdt,
+                libc::SYS_shmctl,
+                libc::SYS_msgget,
+                libc::SYS_msgsnd,
+                libc::SYS_msgrcv,
+                libc::SYS_msgctl,
+                libc::SYS_semget,
+                libc::SYS_semop,
+                libc::SYS_semtimedop,
+                libc::SYS_semctl,
+                libc::SYS_mq_open,
+                libc::SYS_mq_unlink,
+                libc::SYS_mq_timedsend,
+                libc::SYS_mq_timedreceive,
+                libc::SYS_mq_notify,
+                libc::SYS_mq_getsetattr,
+                libc::SYS_setpriority,
+                libc::SYS_sched_setaffinity,
+                libc::SYS_sched_setscheduler,
+                libc::SYS_sched_setparam,
+                libc::SYS_sched_setattr,
+            ] {
+                assert_eq!(
+                    evaluate(&program, syscall as u32, 0xc000_003e, 0),
+                    denied,
+                    "syscall {syscall}, renderer={renderer}"
+                );
+            }
+            for new_limit in [0, 1, 1 << 32, u64::MAX] {
+                assert_eq!(
+                    evaluate_three_arguments(
+                        &program,
+                        libc::SYS_prlimit64 as u32,
+                        0xc000_003e,
+                        12345,
+                        0,
+                        new_limit
+                    ),
+                    if new_limit == 0 {
+                        libc::SECCOMP_RET_ALLOW
+                    } else {
+                        denied
+                    }
+                );
+            }
+        }
+    }
     #[test]
     #[ignore = "requires Linux Landlock ABI 6; launches a separately confined test process"]
     fn filesystem_restrictions_in_a_separate_process() {
@@ -373,7 +582,7 @@ mod tests {
                 std::os::unix::net::UnixStream::connect(&socket_path)
                     .expect("Unix connection preflight"),
             );
-            restrict(Some(&root)).expect("sandbox must be fully enforced");
+            restrict_broker(Some(&root)).expect("sandbox must be fully enforced");
             assert_eq!(
                 std::fs::read_to_string(root.join("page.html")).unwrap(),
                 "allowed"
@@ -503,7 +712,7 @@ mod tests {
     #[cfg(target_arch = "x86_64")]
     #[test]
     fn filter_checks_native_architecture_x32_and_truncated_socket_arguments() {
-        let program = syscall_filter().unwrap();
+        let program = syscall_filter(false).unwrap();
         let native = 0xc000_003e; // AUDIT_ARCH_X86_64, Linux audit UAPI.
         let denied = libc::SECCOMP_RET_ERRNO | libc::EPERM as u32;
         for syscall in [
@@ -569,7 +778,7 @@ mod tests {
     #[cfg(target_arch = "x86_64")]
     #[test]
     fn filter_blocks_metadata_mutation_and_limits_ioctl_requests() {
-        let program = syscall_filter().unwrap();
+        let program = syscall_filter(false).unwrap();
         let native = 0xc000_003e;
         let denied = libc::SECCOMP_RET_ERRNO | libc::EPERM as u32;
         for syscall in [
@@ -657,11 +866,23 @@ mod tests {
         arg0: u64,
         arg1: u64,
     ) -> u32 {
+        evaluate_three_arguments(program, syscall, architecture, arg0, arg1, 0)
+    }
+    #[cfg(target_arch = "x86_64")]
+    fn evaluate_three_arguments(
+        program: &[seccompiler::sock_filter],
+        syscall: u32,
+        architecture: u32,
+        arg0: u64,
+        arg1: u64,
+        arg2: u64,
+    ) -> u32 {
         let mut data = [0u8; 64];
         data[..4].copy_from_slice(&syscall.to_le_bytes());
         data[4..8].copy_from_slice(&architecture.to_le_bytes());
         data[16..24].copy_from_slice(&arg0.to_le_bytes());
         data[24..32].copy_from_slice(&arg1.to_le_bytes());
+        data[32..40].copy_from_slice(&arg2.to_le_bytes());
         let mut accumulator = 0;
         let mut pc = 0;
         for _ in 0..program.len() {

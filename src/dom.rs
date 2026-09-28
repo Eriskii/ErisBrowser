@@ -7,10 +7,64 @@ pub const MAX_DEPTH: usize = 256;
 const MAX_TEXT: usize = 8 * 1024 * 1024;
 pub const MAX_DOM_BYTES: usize = 32 * 1024 * 1024;
 
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub enum Namespace {
+    #[default]
+    Html,
+    Svg,
+    MathMl,
+}
+impl Namespace {
+    pub fn uri(self) -> &'static str {
+        match self {
+            Self::Html => "http://www.w3.org/1999/xhtml",
+            Self::Svg => "http://www.w3.org/2000/svg",
+            Self::MathMl => "http://www.w3.org/1998/Math/MathML",
+        }
+    }
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum AttributeNamespace {
+    XLink,
+    Xml,
+    Xmlns,
+}
+impl AttributeNamespace {
+    pub fn uri(self) -> &'static str {
+        match self {
+            Self::XLink => "http://www.w3.org/1999/xlink",
+            Self::Xml => "http://www.w3.org/XML/1998/namespace",
+            Self::Xmlns => "http://www.w3.org/2000/xmlns/",
+        }
+    }
+    /// Namespace adjustments defined by the HTML foreign-content parser.
+    pub fn from_qualified_name(name: &str) -> Option<Self> {
+        match name {
+            "xlink:actuate" | "xlink:arcrole" | "xlink:href" | "xlink:role" | "xlink:show"
+            | "xlink:title" | "xlink:type" => Some(Self::XLink),
+            "xml:lang" | "xml:space" => Some(Self::Xml),
+            "xmlns" | "xmlns:xlink" => Some(Self::Xmlns),
+            _ => None,
+        }
+    }
+}
 #[derive(Debug, Clone)]
 pub struct Element {
+    pub namespace: Namespace,
     pub tag: String,
     pub attrs: BTreeMap<String, String>,
+    pub attr_namespaces: BTreeMap<String, AttributeNamespace>,
+}
+impl Element {
+    fn retained_bytes(&self) -> usize {
+        self.tag.len()
+            + self
+                .attrs
+                .iter()
+                .map(|(name, value)| name.len() + value.len())
+                .sum::<usize>()
+            + self.attr_namespaces.keys().map(String::len).sum::<usize>()
+    }
 }
 #[derive(Debug, Clone)]
 pub struct Doctype {
@@ -77,11 +131,13 @@ impl Document {
                     if el.attrs.len() > 1024 {
                         return Err("snapshot element attribute limit exceeded".into());
                     }
-                    el.tag.len()
-                        + el.attrs
-                            .iter()
-                            .map(|(k, v)| k.len() + v.len())
-                            .sum::<usize>()
+                    if el.attr_namespaces.iter().any(|(name, namespace)| {
+                        !el.attrs.contains_key(name)
+                            || AttributeNamespace::from_qualified_name(name) != Some(*namespace)
+                    }) {
+                        return Err("invalid snapshot attribute namespace".into());
+                    }
+                    el.retained_bytes()
                 }
                 NodeKind::Text(s) | NodeKind::Comment(s) => s.len(),
                 NodeKind::Doctype(d) => {
@@ -154,13 +210,22 @@ impl Document {
     }
     pub fn attr(&self, id: NodeId, name: &str) -> Option<&str> {
         match &self.nodes.get(id)?.kind {
-            NodeKind::Element(el) => el.attrs.get(&name.to_ascii_lowercase()).map(String::as_str),
+            NodeKind::Element(el) if el.namespace == Namespace::Html => {
+                el.attrs.get(&name.to_ascii_lowercase()).map(String::as_str)
+            }
+            NodeKind::Element(el) => el.attrs.get(name).map(String::as_str),
             _ => None,
         }
     }
     pub fn tag(&self, id: NodeId) -> Option<&str> {
         match &self.nodes.get(id)?.kind {
             NodeKind::Element(el) => Some(&el.tag),
+            _ => None,
+        }
+    }
+    pub fn namespace(&self, id: NodeId) -> Option<Namespace> {
+        match &self.nodes.get(id)?.kind {
+            NodeKind::Element(el) => Some(el.namespace),
             _ => None,
         }
     }
@@ -232,15 +297,28 @@ impl Document {
         }
     }
     pub fn create_element(&mut self, tag: &str) -> NodeId {
+        self.create_element_with_case(Namespace::Html, tag, true)
+    }
+    pub fn create_element_ns(&mut self, namespace: Namespace, tag: &str) -> NodeId {
+        self.create_element_with_case(namespace, tag, false)
+    }
+    fn create_element_with_case(
+        &mut self,
+        namespace: Namespace,
+        tag: &str,
+        lowercase: bool,
+    ) -> NodeId {
         if self.nodes.len() >= MAX_NODES {
             return self.root;
         }
-        let tag = tag
+        let mut tag = tag
             .chars()
             .filter(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | ':' | '_'))
             .take(256)
-            .collect::<String>()
-            .to_ascii_lowercase();
+            .collect::<String>();
+        if lowercase {
+            tag.make_ascii_lowercase();
+        }
         if tag.len() > MAX_DOM_BYTES.saturating_sub(self.retained_bytes) {
             return self.root;
         }
@@ -250,8 +328,10 @@ impl Document {
             parent: None,
             children: vec![],
             kind: NodeKind::Element(Element {
+                namespace,
                 tag,
                 attrs: BTreeMap::new(),
+                attr_namespaces: BTreeMap::new(),
             }),
         });
         id
@@ -374,31 +454,72 @@ impl Document {
         }
     }
     pub fn set_attr(&mut self, id: NodeId, name: &str, value: &str) {
-        let name = name[..floor_boundary(name, name.len().min(1024))].to_ascii_lowercase();
+        let mut name = name[..floor_boundary(name, name.len().min(1024))].to_owned();
+        if self.namespace(id) == Some(Namespace::Html) {
+            name.make_ascii_lowercase();
+        }
+        let namespace = match self.nodes.get(id).map(|node| &node.kind) {
+            Some(NodeKind::Element(el)) => el.attr_namespaces.get(&name).copied(),
+            _ => None,
+        };
+        self.set_attribute(id, &name, value, namespace);
+    }
+    /// Set one of the namespaced attributes supported by HTML foreign-content parsing.
+    pub fn set_attr_ns(
+        &mut self,
+        id: NodeId,
+        namespace: AttributeNamespace,
+        name: &str,
+        value: &str,
+    ) {
+        if AttributeNamespace::from_qualified_name(name) == Some(namespace) {
+            self.set_attribute(id, name, value, Some(namespace));
+        }
+    }
+    fn set_attribute(
+        &mut self,
+        id: NodeId,
+        name: &str,
+        value: &str,
+        namespace: Option<AttributeNamespace>,
+    ) {
         if let Some(Node {
             kind: NodeKind::Element(el),
             ..
         }) = self.nodes.get_mut(id)
         {
-            if el.attrs.len() >= 1024 && !el.attrs.contains_key(&name) {
+            if el.attrs.len() >= 1024 && !el.attrs.contains_key(name) {
                 return;
             }
-            let old = el.attrs.get(&name);
-            let old_size = old.map(|v| v.len() + name.len()).unwrap_or(0);
+            let old = el.attrs.get(name);
+            let old_size = old.map(|v| v.len() + name.len()).unwrap_or(0)
+                + if el.attr_namespaces.contains_key(name) {
+                    name.len()
+                } else {
+                    0
+                };
+            let name_size = name.len() * if namespace.is_some() { 2 } else { 1 };
             let remaining =
                 MAX_DOM_BYTES.saturating_sub(self.retained_bytes.saturating_sub(old_size));
-            if remaining < name.len() {
+            if remaining < name_size {
                 return;
             }
             let value = &value
-                [..floor_boundary(value, value.len().min(MAX_TEXT).min(remaining - name.len()))];
+                [..floor_boundary(value, value.len().min(MAX_TEXT).min(remaining - name_size))];
             self.retained_bytes =
-                self.retained_bytes.saturating_sub(old_size) + name.len() + value.len();
-            el.attrs.insert(name, value.into());
+                self.retained_bytes.saturating_sub(old_size) + name_size + value.len();
+            el.attrs.insert(name.into(), value.into());
+            if let Some(namespace) = namespace {
+                el.attr_namespaces.insert(name.into(), namespace);
+            }
         }
     }
     pub fn remove_attr(&mut self, id: NodeId, name: &str) {
-        let name = name.to_ascii_lowercase();
+        let name = if self.namespace(id) == Some(Namespace::Html) {
+            name.to_ascii_lowercase()
+        } else {
+            name.to_owned()
+        };
         if let Some(Node {
             kind: NodeKind::Element(el),
             ..
@@ -406,6 +527,9 @@ impl Document {
             && let Some(old) = el.attrs.remove(&name)
         {
             self.retained_bytes = self.retained_bytes.saturating_sub(name.len() + old.len());
+            if el.attr_namespaces.remove(&name).is_some() {
+                self.retained_bytes = self.retained_bytes.saturating_sub(name.len());
+            }
         }
     }
     pub fn retained_bytes(&self) -> usize {
@@ -446,13 +570,167 @@ impl Document {
     pub fn stylesheets(&self) -> Vec<String> {
         self.query_selector_all("style")
             .into_iter()
+            .filter(|id| {
+                matches!(self.namespace(*id), Some(Namespace::Html | Namespace::Svg))
+                    && self.is_active_node(*id)
+            })
             .map(|id| self.text_content(id))
             .collect()
     }
+    /// Attached nodes outside HTML template content can contribute document metadata and resources.
+    pub fn is_active_node(&self, id: NodeId) -> bool {
+        let mut current = Some(id);
+        for _ in 0..MAX_DEPTH {
+            let Some(id) = current else {
+                return false;
+            };
+            if id == self.root {
+                return true;
+            }
+            if self.namespace(id) == Some(Namespace::Html) && self.tag(id) == Some("template") {
+                return false;
+            }
+            current = self.nodes.get(id).and_then(|node| node.parent);
+        }
+        false
+    }
+    fn html_control_tag(&self, id: NodeId) -> Option<&str> {
+        (self.namespace(id) == Some(Namespace::Html))
+            .then(|| self.tag(id))
+            .flatten()
+    }
+    fn is_descendant_of(&self, mut node: NodeId, ancestor: NodeId) -> bool {
+        for _ in 0..crate::dom::MAX_DEPTH {
+            if node == ancestor {
+                return true;
+            }
+            let Some(parent) = self.nodes.get(node).and_then(|node| node.parent) else {
+                return false;
+            };
+            node = parent;
+        }
+        false
+    }
+    pub fn disabled_control(&self, node: NodeId) -> bool {
+        let tag = self.html_control_tag(node).unwrap_or("");
+        if !matches!(
+            tag,
+            "input" | "button" | "select" | "textarea" | "option" | "optgroup"
+        ) {
+            return false;
+        }
+        if self.attr(node, "disabled").is_some() {
+            return true;
+        }
+        let mut ancestor = self.nodes.get(node).and_then(|node| node.parent);
+        for _ in 0..crate::dom::MAX_DEPTH {
+            let Some(id) = ancestor else {
+                break;
+            };
+            if tag == "option"
+                && self.html_control_tag(id) == Some("optgroup")
+                && self.attr(id, "disabled").is_some()
+            {
+                return true;
+            }
+            if self.html_control_tag(id) == Some("fieldset") && self.attr(id, "disabled").is_some()
+            {
+                let first_legend = self.nodes[id]
+                    .children
+                    .iter()
+                    .copied()
+                    .find(|&child| self.html_control_tag(child) == Some("legend"));
+                if !first_legend.is_some_and(|legend| self.is_descendant_of(node, legend)) {
+                    return true;
+                }
+            }
+            ancestor = self.nodes.get(id).and_then(|node| node.parent);
+        }
+        false
+    }
+    pub fn interaction_blocked(&self, node: NodeId) -> bool {
+        if !self.is_active_node(node) {
+            return true;
+        }
+        let mut ancestor = Some(node);
+        for _ in 0..crate::dom::MAX_DEPTH {
+            let Some(id) = ancestor else {
+                return false;
+            };
+            if self.attr(id, "inert").is_some() || self.disabled_control(id) {
+                return true;
+            }
+            ancestor = self.nodes.get(id).and_then(|node| node.parent);
+        }
+        true
+    }
+    pub fn can_edit_control(&self, node: NodeId) -> bool {
+        if self.interaction_blocked(node) || self.attr(node, "readonly").is_some() {
+            return false;
+        }
+        match self.html_control_tag(node) {
+            Some("textarea") => true,
+            Some("input") => !matches!(
+                self.attr(node, "type")
+                    .unwrap_or("text")
+                    .to_ascii_lowercase()
+                    .as_str(),
+                "checkbox"
+                    | "radio"
+                    | "submit"
+                    | "button"
+                    | "reset"
+                    | "hidden"
+                    | "file"
+                    | "range"
+                    | "color"
+            ),
+            _ => false,
+        }
+    }
+    /// DOM policy for the native UI's supported focusable controls; CSS visibility is separate.
+    pub fn can_focus_control(&self, node: NodeId) -> bool {
+        if self.interaction_blocked(node) {
+            return false;
+        }
+        match self.html_control_tag(node) {
+            Some("input") => !self
+                .attr(node, "type")
+                .is_some_and(|kind| kind.eq_ignore_ascii_case("hidden")),
+            Some("textarea" | "button") => true,
+            Some("a") => self.attr(node, "href").is_some(),
+            _ => false,
+        }
+    }
     pub fn title(&self) -> String {
-        self.query_selector("title")
+        self.first_html_element("title")
             .map(|id| self.text_content(id))
             .unwrap_or_default()
+    }
+    /// Find document metadata without scanning past the first applicable HTML element.
+    pub fn first_html_element(&self, tag: &str) -> Option<NodeId> {
+        let mut pending = vec![self.root];
+        let mut visited = BTreeSet::new();
+        while let Some(id) = pending.pop() {
+            if !visited.insert(id) || visited.len() > MAX_NODES {
+                continue;
+            }
+            let Some(node) = self.nodes.get(id) else {
+                continue;
+            };
+            if let NodeKind::Element(element) = &node.kind
+                && element.namespace == Namespace::Html
+            {
+                if element.tag == "template" {
+                    continue;
+                }
+                if element.tag == tag {
+                    return Some(id);
+                }
+            }
+            pending.extend(node.children.iter().rev().copied());
+        }
+        None
     }
     /// Serialize the attached subtree without recursion, retaining at most 8 MiB.
     pub fn outer_html(&self, id: NodeId) -> String {
@@ -516,22 +794,24 @@ impl Document {
                     push_serialized(&mut out, ">");
                 }
                 NodeKind::Text(text) => {
-                    if node
-                        .parent
-                        .and_then(|parent| self.tag(parent))
-                        .is_some_and(|tag| {
-                            tag == "noscript" && self.scripting_enabled
-                                || matches!(
-                                    tag,
-                                    "script"
-                                        | "style"
-                                        | "xmp"
-                                        | "iframe"
-                                        | "noembed"
-                                        | "noframes"
-                                        | "plaintext"
-                                )
-                        })
+                    if node.parent.and_then(|parent| self.namespace(parent))
+                        == Some(Namespace::Html)
+                        && node
+                            .parent
+                            .and_then(|parent| self.tag(parent))
+                            .is_some_and(|tag| {
+                                tag == "noscript" && self.scripting_enabled
+                                    || matches!(
+                                        tag,
+                                        "script"
+                                            | "style"
+                                            | "xmp"
+                                            | "iframe"
+                                            | "noembed"
+                                            | "noframes"
+                                            | "plaintext"
+                                    )
+                            })
                     {
                         push_serialized(&mut out, text);
                     } else {
@@ -558,7 +838,7 @@ impl Document {
                         }
                     }
                     push_serialized(&mut out, ">");
-                    if !is_void(&element.tag) {
+                    if element.namespace != Namespace::Html || !is_void(&element.tag) {
                         pending.push((id, true));
                         pending.extend(node.children.iter().rev().map(|id| (*id, false)));
                     }
@@ -722,6 +1002,7 @@ struct HtmlTokenizer<'a> {
     raw: Option<(String, bool)>,
     skip_lf: bool,
     foreign: bool,
+    foreign_characters: bool,
 }
 impl<'a> HtmlTokenizer<'a> {
     fn new(source: &'a str) -> Self {
@@ -731,6 +1012,7 @@ impl<'a> HtmlTokenizer<'a> {
             raw: None,
             skip_lf: false,
             foreign: false,
+            foreign_characters: false,
         }
     }
     fn next(&mut self) -> HtmlToken {
@@ -807,9 +1089,12 @@ impl<'a> HtmlTokenizer<'a> {
             while self.position < bytes.len() && bytes[self.position] != b'<' {
                 self.position += 1;
             }
-            return HtmlToken::Characters(decode_entities(
-                &self.source[start..self.position].replace('\0', ""),
-            ));
+            let data = &self.source[start..self.position];
+            return HtmlToken::Characters(if self.foreign_characters {
+                decode_entities(data)
+            } else {
+                decode_entities(&data.replace('\0', ""))
+            });
         }
         if self.source[start..].starts_with("<!--") {
             self.position += 4;
@@ -830,7 +1115,14 @@ impl<'a> HtmlTokenizer<'a> {
                 .map(|offset| begin + offset)
                 .unwrap_or(bytes.len());
             self.position = (end + 3).min(bytes.len());
-            return HtmlToken::Characters(self.source[begin..end].replace('\0', "\u{fffd}"));
+            return HtmlToken::Characters(self.source[begin..end].replace(
+                '\0',
+                if self.foreign_characters {
+                    "\u{fffd}"
+                } else {
+                    ""
+                },
+            ));
         }
         if self.source[start..].starts_with("<?") {
             self.position += 2;
@@ -1294,26 +1586,129 @@ impl TreeBuilder {
         self.stack.last().copied().unwrap_or(self.doc.root)
     }
     fn current_tag(&self) -> &str {
-        self.doc.tag(self.current()).unwrap_or("")
+        self.html_tag(self.current()).unwrap_or("")
+    }
+    fn html_tag(&self, id: NodeId) -> Option<&str> {
+        (self.doc.namespace(id) == Some(Namespace::Html))
+            .then(|| self.doc.tag(id))
+            .flatten()
     }
     fn foreign(&self) -> bool {
-        self.stack
-            .iter()
-            .rev()
-            .find_map(|id| match self.doc.tag(*id) {
-                Some("svg" | "math") => Some(true),
-                Some("foreignobject" | "desc") => Some(false),
-                _ => None,
-            })
-            .unwrap_or(false)
+        self.doc
+            .namespace(self.current())
+            .is_some_and(|ns| ns != Namespace::Html)
+    }
+    fn math_text_integration(&self, id: NodeId) -> bool {
+        self.doc.namespace(id) == Some(Namespace::MathMl)
+            && matches!(self.doc.tag(id), Some("mi" | "mo" | "mn" | "ms" | "mtext"))
+    }
+    fn html_integration(&self, id: NodeId) -> bool {
+        match self.doc.namespace(id) {
+            Some(Namespace::Svg) => {
+                matches!(self.doc.tag(id), Some("foreignObject" | "desc" | "title"))
+            }
+            Some(Namespace::MathMl) if self.doc.tag(id) == Some("annotation-xml") => {
+                self.doc.attr(id, "encoding").is_some_and(|value| {
+                    value.eq_ignore_ascii_case("text/html")
+                        || value.eq_ignore_ascii_case("application/xhtml+xml")
+                })
+            }
+            _ => false,
+        }
+    }
+    fn foreign_characters(&self) -> bool {
+        self.foreign()
+            && !self.math_text_integration(self.current())
+            && !self.html_integration(self.current())
+    }
+    fn dispatch_foreign(&self, token: &HtmlToken) -> bool {
+        if !self.foreign() || matches!(token, HtmlToken::Eof) {
+            return false;
+        }
+        if matches!(token, HtmlToken::Characters(_)) {
+            return self.foreign_characters();
+        }
+        if token.is_start()
+            && (self.math_text_integration(self.current())
+                && !matches!(token.tag(), "mglyph" | "malignmark")
+                || self.html_integration(self.current())
+                || self.doc.namespace(self.current()) == Some(Namespace::MathMl)
+                    && self.doc.tag(self.current()) == Some("annotation-xml")
+                    && token.tag() == "svg")
+        {
+            return false;
+        }
+        true
+    }
+    fn foreign_scope_boundary(&self, id: NodeId) -> bool {
+        match self.doc.namespace(id) {
+            Some(Namespace::MathMl) => {
+                self.math_text_integration(id) || self.doc.tag(id) == Some("annotation-xml")
+            }
+            Some(Namespace::Svg) => self.html_integration(id),
+            _ => false,
+        }
+    }
+    fn special_node(&self, id: NodeId) -> bool {
+        self.html_tag(id).is_some_and(special_html) || self.foreign_scope_boundary(id)
+    }
+    /// Returns false when foreign recovery must use the current HTML insertion mode.
+    fn in_foreign(&mut self, token: &HtmlToken) -> bool {
+        match token {
+            HtmlToken::Characters(text) => self.text(text, false),
+            HtmlToken::Comment(text) => self.comment(text, None),
+            HtmlToken::ProcessingInstruction { target, data } => {
+                let id = self.doc.create_processing_instruction(target, data);
+                self.doc.append_child(self.current(), id);
+            }
+            HtmlToken::Doctype(_) | HtmlToken::Eof => {}
+            _ if foreign_breakout(token) => {
+                while self.foreign()
+                    && !self.math_text_integration(self.current())
+                    && !self.html_integration(self.current())
+                {
+                    if !self.spend(1) {
+                        return true;
+                    }
+                    self.stack.pop();
+                }
+                return false;
+            }
+            HtmlToken::Start { self_closing, .. } => {
+                if let Some(namespace) = self.doc.namespace(self.current()) {
+                    self.element_ns(token, namespace, false, !self_closing);
+                }
+            }
+            HtmlToken::End(tag) => {
+                for index in (1..self.stack.len()).rev() {
+                    if !self.spend(1) {
+                        return true;
+                    }
+                    let id = self.stack[index];
+                    if self
+                        .doc
+                        .tag(id)
+                        .is_some_and(|name| name.eq_ignore_ascii_case(tag))
+                    {
+                        self.stack.truncate(index);
+                        return true;
+                    }
+                    if self.doc.namespace(self.stack[index - 1]) == Some(Namespace::Html) {
+                        return false;
+                    }
+                }
+            }
+        }
+        true
     }
     fn scope(&self, tags: &[&str], table: bool) -> Option<usize> {
         for (index, id) in self.stack.iter().enumerate().rev() {
-            let tag = self.doc.tag(*id).unwrap_or("");
+            let tag = self.html_tag(*id).unwrap_or("");
             if tags.contains(&tag) {
                 return Some(index);
             }
-            if matches!(tag, "html" | "table" | "template")
+            if !table && self.foreign_scope_boundary(*id)
+                || matches!(tag, "html" | "table" | "template")
                 || !table
                     && matches!(
                         tag,
@@ -1333,8 +1728,7 @@ impl TreeBuilder {
     fn close_in_scope(&mut self, tags: &[&str], table: bool) -> bool {
         if let Some(index) = self.scope(tags, table) {
             let clear_formatting = self
-                .doc
-                .tag(self.stack[index])
+                .html_tag(self.stack[index])
                 .is_some_and(formatting_marker);
             self.stack.truncate(index);
             if clear_formatting {
@@ -1350,7 +1744,7 @@ impl TreeBuilder {
             .stack
             .iter()
             .rev()
-            .find_map(|id| match self.doc.tag(*id) {
+            .find_map(|id| match self.html_tag(*id) {
                 Some("td" | "th") => Some(InsertionMode::InCell),
                 Some("tr") => Some(InsertionMode::InRow),
                 Some("tbody" | "thead" | "tfoot") => Some(InsertionMode::InTableBody),
@@ -1369,17 +1763,17 @@ impl TreeBuilder {
     fn location_for(&mut self, current: NodeId, foster: bool) -> (NodeId, Option<usize>) {
         if foster
             && matches!(
-                self.doc.tag(current),
+                self.html_tag(current),
                 Some("table" | "tbody" | "tfoot" | "thead" | "tr")
             )
         {
             if let Some(index) = self
                 .stack
                 .iter()
-                .rposition(|id| matches!(self.doc.tag(*id), Some("table" | "template")))
+                .rposition(|id| matches!(self.html_tag(*id), Some("table" | "template")))
             {
                 let table = self.stack[index];
-                if self.doc.tag(table) == Some("template") {
+                if self.html_tag(table) == Some("template") {
                     return (table, None);
                 }
                 if let Some(parent) = self.doc.nodes[table].parent {
@@ -1414,8 +1808,22 @@ impl TreeBuilder {
         }
     }
     fn element(&mut self, token: &HtmlToken, foster: bool, push: bool) -> NodeId {
+        self.element_ns(token, Namespace::Html, foster, push)
+    }
+    fn element_ns(
+        &mut self,
+        token: &HtmlToken,
+        namespace: Namespace,
+        foster: bool,
+        push: bool,
+    ) -> NodeId {
         let HtmlToken::Start { tag, attrs, .. } = token else {
             return self.doc.root;
+        };
+        let tag = if namespace == Namespace::Svg {
+            adjust_svg_tag(tag)
+        } else {
+            tag
         };
         if self.doc.nodes.len() >= MAX_NODES
             || tag.len() > MAX_DOM_BYTES.saturating_sub(self.doc.retained_bytes)
@@ -1429,18 +1837,32 @@ impl TreeBuilder {
             parent: None,
             children: vec![],
             kind: NodeKind::Element(Element {
-                tag: tag.clone(),
+                namespace,
+                tag: tag.into(),
                 attrs: BTreeMap::new(),
+                attr_namespaces: BTreeMap::new(),
             }),
         });
         for (name, value) in attrs {
-            self.doc.set_attr(id, name, value);
+            let name = match namespace {
+                Namespace::Html => name.as_str(),
+                Namespace::Svg => adjust_svg_attribute(name),
+                Namespace::MathMl if name == "definitionurl" => "definitionURL",
+                Namespace::MathMl => name.as_str(),
+            };
+            if namespace != Namespace::Html
+                && let Some(namespace) = AttributeNamespace::from_qualified_name(name)
+            {
+                self.doc.set_attr_ns(id, namespace, name, value);
+            } else {
+                self.doc.set_attr(id, name, value);
+            }
         }
         let (parent, before) = self.location(foster);
         self.attach(id, parent, before);
         if push && self.stack.len() < MAX_DEPTH - 3 && self.doc.nodes[id].parent.is_some() {
             self.stack.push(id);
-            if formatting_marker(tag) {
+            if namespace == Namespace::Html && formatting_marker(tag) {
                 self.formatting.push(None);
             }
         }
@@ -1468,7 +1890,7 @@ impl TreeBuilder {
                 return None;
             }
             let id = self.formatting[index]?;
-            if self.doc.tag(id) == Some(subject) {
+            if self.html_tag(id) == Some(subject) {
                 return Some(index);
             }
         }
@@ -1479,21 +1901,23 @@ impl TreeBuilder {
             if *id == target {
                 return true;
             }
-            if self.doc.tag(*id).is_some_and(|tag| {
-                matches!(
-                    tag,
-                    "applet"
-                        | "caption"
-                        | "html"
-                        | "table"
-                        | "td"
-                        | "th"
-                        | "marquee"
-                        | "object"
-                        | "select"
-                        | "template"
-                )
-            }) {
+            if self.foreign_scope_boundary(*id)
+                || self.html_tag(*id).is_some_and(|tag| {
+                    matches!(
+                        tag,
+                        "applet"
+                            | "caption"
+                            | "html"
+                            | "table"
+                            | "td"
+                            | "th"
+                            | "marquee"
+                            | "object"
+                            | "select"
+                            | "template"
+                    )
+                })
+            {
                 return false;
             }
         }
@@ -1549,12 +1973,7 @@ impl TreeBuilder {
         let NodeKind::Element(element) = &self.doc.nodes.get(original)?.kind else {
             return None;
         };
-        let bytes = element.tag.len()
-            + element
-                .attrs
-                .iter()
-                .map(|(name, value)| name.len() + value.len())
-                .sum::<usize>();
+        let bytes = element.retained_bytes();
         let cost = bytes.saturating_add(element.attrs.len()).saturating_add(1);
         if cost > self.work
             || bytes > MAX_DOM_BYTES.saturating_sub(self.doc.retained_bytes)
@@ -1723,12 +2142,12 @@ impl TreeBuilder {
     }
     fn generic_end(&mut self, subject: &str) {
         for index in (0..self.stack.len()).rev() {
-            let current = self.doc.tag(self.stack[index]).unwrap_or("");
+            let current = self.html_tag(self.stack[index]).unwrap_or("");
             if current == subject {
                 self.stack.truncate(index);
                 return;
             }
-            if special_html(current) {
+            if self.special_node(self.stack[index]) {
                 return;
             }
         }
@@ -1762,7 +2181,7 @@ impl TreeBuilder {
                 return;
             }
             let Some(block_index) = (stack_index + 1..self.stack.len())
-                .find(|index| self.doc.tag(self.stack[*index]).is_some_and(special_html))
+                .find(|index| self.special_node(self.stack[*index]))
             else {
                 self.stack.truncate(stack_index);
                 self.formatting.remove(format_index);
@@ -1929,7 +2348,7 @@ impl TreeBuilder {
                         self.doc.push_text(node, text.clone());
                         return;
                     }
-                    HtmlToken::End(tag) if self.doc.tag(node) == Some(tag) => {
+                    HtmlToken::End(tag) if self.html_tag(node) == Some(tag) => {
                         if self.stack.last() == Some(&node) {
                             self.stack.pop();
                         }
@@ -1947,6 +2366,9 @@ impl TreeBuilder {
                     }
                     _ => {}
                 }
+            }
+            if self.dispatch_foreign(&token) && self.in_foreign(&token) {
+                return;
             }
             if let HtmlToken::ProcessingInstruction { target, data } = &token {
                 let parent = match self.mode {
@@ -2639,7 +3061,7 @@ impl TreeBuilder {
                     && !self
                         .stack
                         .iter()
-                        .any(|id| self.doc.tag(*id) == Some("template"))
+                        .any(|id| self.html_tag(*id) == Some("template"))
                 {
                     return;
                 }
@@ -2661,7 +3083,7 @@ impl TreeBuilder {
                             .stack
                             .iter()
                             .rev()
-                            .find(|node| self.doc.tag(**node) == Some("nobr"))
+                            .find(|node| self.html_tag(**node) == Some("nobr"))
                             .is_some_and(|node| self.node_in_scope(*node))
                     {
                         self.adoption_agency("nobr", foster);
@@ -2733,8 +3155,16 @@ impl TreeBuilder {
                         return;
                     }
                 }
-                let foreign = matches!(tag, "svg" | "math") || self.foreign();
-                let id = self.element(token, foster, !(is_void(tag) || *self_closing && foreign));
+                if matches!(tag, "svg" | "math") {
+                    let namespace = if tag == "svg" {
+                        Namespace::Svg
+                    } else {
+                        Namespace::MathMl
+                    };
+                    self.element_ns(token, namespace, foster, !self_closing);
+                    return;
+                }
+                let id = self.element(token, foster, !is_void(tag));
                 if tag == "form" {
                     self.form = Some(id);
                 }
@@ -2792,7 +3222,7 @@ impl TreeBuilder {
                     if let Some(index) = self
                         .stack
                         .iter()
-                        .rposition(|id| self.doc.tag(*id) == Some("template"))
+                        .rposition(|id| self.html_tag(*id) == Some("template"))
                     {
                         self.stack.truncate(index);
                         self.clear_formatting();
@@ -2843,6 +3273,168 @@ impl TreeBuilder {
                 self.generic_end(tag);
             }
         }
+    }
+}
+fn foreign_breakout(token: &HtmlToken) -> bool {
+    match token {
+        HtmlToken::End(tag) => matches!(tag.as_str(), "br" | "p"),
+        HtmlToken::Start { tag, attrs, .. } => {
+            matches!(
+                tag.as_str(),
+                "b" | "big"
+                    | "blockquote"
+                    | "body"
+                    | "br"
+                    | "center"
+                    | "code"
+                    | "dd"
+                    | "div"
+                    | "dl"
+                    | "dt"
+                    | "em"
+                    | "embed"
+                    | "h1"
+                    | "h2"
+                    | "h3"
+                    | "h4"
+                    | "h5"
+                    | "h6"
+                    | "head"
+                    | "hr"
+                    | "i"
+                    | "img"
+                    | "li"
+                    | "listing"
+                    | "menu"
+                    | "meta"
+                    | "nobr"
+                    | "ol"
+                    | "p"
+                    | "pre"
+                    | "ruby"
+                    | "s"
+                    | "small"
+                    | "span"
+                    | "strong"
+                    | "strike"
+                    | "sub"
+                    | "sup"
+                    | "table"
+                    | "tt"
+                    | "u"
+                    | "ul"
+                    | "var"
+            ) || tag == "font"
+                && ["color", "face", "size"]
+                    .iter()
+                    .any(|name| attrs.contains_key(*name))
+        }
+        _ => false,
+    }
+}
+fn adjust_svg_tag(tag: &str) -> &str {
+    match tag {
+        "altglyph" => "altGlyph",
+        "altglyphdef" => "altGlyphDef",
+        "altglyphitem" => "altGlyphItem",
+        "animatecolor" => "animateColor",
+        "animatemotion" => "animateMotion",
+        "animatetransform" => "animateTransform",
+        "clippath" => "clipPath",
+        "feblend" => "feBlend",
+        "fecolormatrix" => "feColorMatrix",
+        "fecomponenttransfer" => "feComponentTransfer",
+        "fecomposite" => "feComposite",
+        "feconvolvematrix" => "feConvolveMatrix",
+        "fediffuselighting" => "feDiffuseLighting",
+        "fedisplacementmap" => "feDisplacementMap",
+        "fedistantlight" => "feDistantLight",
+        "fedropshadow" => "feDropShadow",
+        "feflood" => "feFlood",
+        "fefunca" => "feFuncA",
+        "fefuncb" => "feFuncB",
+        "fefuncg" => "feFuncG",
+        "fefuncr" => "feFuncR",
+        "fegaussianblur" => "feGaussianBlur",
+        "feimage" => "feImage",
+        "femerge" => "feMerge",
+        "femergenode" => "feMergeNode",
+        "femorphology" => "feMorphology",
+        "feoffset" => "feOffset",
+        "fepointlight" => "fePointLight",
+        "fespecularlighting" => "feSpecularLighting",
+        "fespotlight" => "feSpotLight",
+        "fetile" => "feTile",
+        "feturbulence" => "feTurbulence",
+        "foreignobject" => "foreignObject",
+        "glyphref" => "glyphRef",
+        "lineargradient" => "linearGradient",
+        "radialgradient" => "radialGradient",
+        "textpath" => "textPath",
+        _ => tag,
+    }
+}
+fn adjust_svg_attribute(name: &str) -> &str {
+    match name {
+        "attributename" => "attributeName",
+        "attributetype" => "attributeType",
+        "basefrequency" => "baseFrequency",
+        "baseprofile" => "baseProfile",
+        "calcmode" => "calcMode",
+        "clippathunits" => "clipPathUnits",
+        "diffuseconstant" => "diffuseConstant",
+        "edgemode" => "edgeMode",
+        "filterunits" => "filterUnits",
+        "glyphref" => "glyphRef",
+        "gradienttransform" => "gradientTransform",
+        "gradientunits" => "gradientUnits",
+        "kernelmatrix" => "kernelMatrix",
+        "kernelunitlength" => "kernelUnitLength",
+        "keypoints" => "keyPoints",
+        "keysplines" => "keySplines",
+        "keytimes" => "keyTimes",
+        "lengthadjust" => "lengthAdjust",
+        "limitingconeangle" => "limitingConeAngle",
+        "markerheight" => "markerHeight",
+        "markerunits" => "markerUnits",
+        "markerwidth" => "markerWidth",
+        "maskcontentunits" => "maskContentUnits",
+        "maskunits" => "maskUnits",
+        "numoctaves" => "numOctaves",
+        "pathlength" => "pathLength",
+        "patterncontentunits" => "patternContentUnits",
+        "patterntransform" => "patternTransform",
+        "patternunits" => "patternUnits",
+        "pointsatx" => "pointsAtX",
+        "pointsaty" => "pointsAtY",
+        "pointsatz" => "pointsAtZ",
+        "preservealpha" => "preserveAlpha",
+        "preserveaspectratio" => "preserveAspectRatio",
+        "primitiveunits" => "primitiveUnits",
+        "refx" => "refX",
+        "refy" => "refY",
+        "repeatcount" => "repeatCount",
+        "repeatdur" => "repeatDur",
+        "requiredextensions" => "requiredExtensions",
+        "requiredfeatures" => "requiredFeatures",
+        "specularconstant" => "specularConstant",
+        "specularexponent" => "specularExponent",
+        "spreadmethod" => "spreadMethod",
+        "startoffset" => "startOffset",
+        "stddeviation" => "stdDeviation",
+        "stitchtiles" => "stitchTiles",
+        "surfacescale" => "surfaceScale",
+        "systemlanguage" => "systemLanguage",
+        "tablevalues" => "tableValues",
+        "targetx" => "targetX",
+        "targety" => "targetY",
+        "textlength" => "textLength",
+        "viewbox" => "viewBox",
+        "viewtarget" => "viewTarget",
+        "xchannelselector" => "xChannelSelector",
+        "ychannelselector" => "yChannelSelector",
+        "zoomandpan" => "zoomAndPan",
+        _ => name,
     }
 }
 fn is_formatting(tag: &str) -> bool {
@@ -3007,6 +3599,7 @@ pub fn parse_with_scripting(source: &str, scripting: bool) -> Document {
         tokenizer.raw = builder.raw.take();
         tokenizer.skip_lf = std::mem::take(&mut builder.skip_lf);
         tokenizer.foreign = builder.foreign();
+        tokenizer.foreign_characters = builder.foreign_characters();
         if eof || builder.work == 0 || builder.doc.nodes.len() >= MAX_NODES {
             break;
         }
@@ -5544,7 +6137,11 @@ fn matches_compound(doc: &Document, id: NodeId, s: &str, depth: usize, budget: &
     } else {
         let end = ident_end(s, 0);
         if end > 0 {
-            if !tag.eq_ignore_ascii_case(&s[..end]) {
+            if if doc.namespace(id) == Some(Namespace::Html) {
+                !tag.eq_ignore_ascii_case(&s[..end])
+            } else {
+                tag != &s[..end]
+            } {
                 return false;
             }
             i = end;
@@ -5654,26 +6251,30 @@ fn matches_compound(doc: &Document, id: NodeId, s: &str, depth: usize, budget: &
                     "last-child" => siblings().last() == Some(&id),
                     "only-child" => siblings() == vec![id],
                     "first-of-type" => {
-                        siblings().into_iter().find(|n| doc.tag(*n) == Some(tag)) == Some(id)
+                        siblings().into_iter().find(|n| {
+                            doc.tag(*n) == Some(tag) && doc.namespace(*n) == doc.namespace(id)
+                        }) == Some(id)
                     }
                     "last-of-type" => {
-                        siblings()
-                            .into_iter()
-                            .rev()
-                            .find(|n| doc.tag(*n) == Some(tag))
-                            == Some(id)
+                        siblings().into_iter().rev().find(|n| {
+                            doc.tag(*n) == Some(tag) && doc.namespace(*n) == doc.namespace(id)
+                        }) == Some(id)
                     }
                     "only-of-type" => {
                         siblings()
                             .into_iter()
-                            .filter(|n| doc.tag(*n) == Some(tag))
+                            .filter(|n| {
+                                doc.tag(*n) == Some(tag) && doc.namespace(*n) == doc.namespace(id)
+                            })
                             .count()
                             == 1
                     }
                     "nth-child" | "nth-last-child" | "nth-of-type" | "nth-last-of-type" => {
                         let mut all = siblings();
                         if name.contains("of-type") {
-                            all.retain(|n| doc.tag(*n) == Some(tag));
+                            all.retain(|n| {
+                                doc.tag(*n) == Some(tag) && doc.namespace(*n) == doc.namespace(id)
+                            });
                         }
                         if name.contains("last") {
                             all.reverse();
@@ -5691,28 +6292,53 @@ fn matches_compound(doc: &Document, id: NodeId, s: &str, depth: usize, budget: &
                             _ => true,
                         }),
                     "checked" => {
-                        doc.attr(id, "checked").is_some() || doc.attr(id, "selected").is_some()
+                        doc.namespace(id) == Some(Namespace::Html)
+                            && (tag == "input" && doc.attr(id, "checked").is_some()
+                                || tag == "option" && doc.attr(id, "selected").is_some())
                     }
-                    "disabled" => doc.attr(id, "disabled").is_some(),
+                    "disabled" => {
+                        doc.namespace(id) == Some(Namespace::Html)
+                            && matches!(
+                                tag,
+                                "input"
+                                    | "select"
+                                    | "textarea"
+                                    | "button"
+                                    | "option"
+                                    | "optgroup"
+                                    | "fieldset"
+                            )
+                            && doc.attr(id, "disabled").is_some()
+                    }
                     "enabled" => {
-                        matches!(
-                            tag,
-                            "input"
-                                | "select"
-                                | "textarea"
-                                | "button"
-                                | "option"
-                                | "optgroup"
-                                | "fieldset"
-                        ) && doc.attr(id, "disabled").is_none()
+                        doc.namespace(id) == Some(Namespace::Html)
+                            && matches!(
+                                tag,
+                                "input"
+                                    | "select"
+                                    | "textarea"
+                                    | "button"
+                                    | "option"
+                                    | "optgroup"
+                                    | "fieldset"
+                            )
+                            && doc.attr(id, "disabled").is_none()
                     }
-                    "required" => doc.attr(id, "required").is_some(),
+                    "required" => {
+                        doc.namespace(id) == Some(Namespace::Html)
+                            && matches!(tag, "input" | "select" | "textarea")
+                            && doc.attr(id, "required").is_some()
+                    }
                     "optional" => {
-                        matches!(tag, "input" | "select" | "textarea")
+                        doc.namespace(id) == Some(Namespace::Html)
+                            && matches!(tag, "input" | "select" | "textarea")
                             && doc.attr(id, "required").is_none()
                     }
                     "link" | "any-link" => {
-                        matches!(tag, "a" | "area" | "link") && doc.attr(id, "href").is_some()
+                        (doc.namespace(id) == Some(Namespace::Html)
+                            && matches!(tag, "a" | "area" | "link")
+                            || doc.namespace(id) == Some(Namespace::Svg) && tag == "a")
+                            && doc.attr(id, "href").is_some()
                     }
                     "lang" => {
                         let lang = argument.trim_matches(['\'', '"']);
@@ -5720,7 +6346,16 @@ fn matches_compound(doc: &Document, id: NodeId, s: &str, depth: usize, budget: &
                         let mut found = false;
                         let mut count = 0;
                         while let Some(p) = n {
-                            if let Some(v) = doc.attr(p, "lang") {
+                            let xml_language = match doc.nodes.get(p).map(|node| &node.kind) {
+                                Some(NodeKind::Element(el))
+                                    if el.attr_namespaces.get("xml:lang")
+                                        == Some(&AttributeNamespace::Xml) =>
+                                {
+                                    el.attrs.get("xml:lang").map(String::as_str)
+                                }
+                                _ => None,
+                            };
+                            if let Some(v) = xml_language.or_else(|| doc.attr(p, "lang")) {
                                 if v.len() > *budget {
                                     *budget = 0;
                                     return false;
@@ -5880,6 +6515,205 @@ fn nth_matches(s: &str, index: usize) -> bool {
 mod tests {
     use super::*;
     #[test]
+    fn foreign_namespaces_case_adjustments_and_attribute_identity() {
+        let d = parse(
+            "<svg id=s VIEWBOX='0 0 10 10' xmlns='wrong' xml:lang=en xml:base=/ xlink:href='#a'><linearGradient id=g gradientUnits=userSpaceOnUse /><foreignObject id=f><DIV ID=h>HTML</DIV></foreignObject></svg><math id=m definitionurl=foo><mi id=i><mglyph id=glyph /><span id=span>text</span></mi></math>",
+        );
+        for (selector, namespace, tag) in [
+            ("#s", Namespace::Svg, "svg"),
+            ("#g", Namespace::Svg, "linearGradient"),
+            ("#f", Namespace::Svg, "foreignObject"),
+            ("#h", Namespace::Html, "div"),
+            ("#m", Namespace::MathMl, "math"),
+            ("#i", Namespace::MathMl, "mi"),
+            ("#glyph", Namespace::MathMl, "mglyph"),
+            ("#span", Namespace::Html, "span"),
+        ] {
+            let id = d.query_selector(selector).unwrap();
+            assert_eq!(d.namespace(id), Some(namespace), "{selector}");
+            assert_eq!(d.tag(id), Some(tag));
+        }
+        let svg = d.query_selector("#s").unwrap();
+        assert_eq!(d.attr(svg, "viewBox"), Some("0 0 10 10"));
+        assert_eq!(d.attr(svg, "viewbox"), None);
+        let NodeKind::Element(element) = &d.nodes[svg].kind else {
+            unreachable!()
+        };
+        assert_eq!(
+            element.attr_namespaces.get("xmlns"),
+            Some(&AttributeNamespace::Xmlns)
+        );
+        assert_eq!(
+            element.attr_namespaces.get("xml:lang"),
+            Some(&AttributeNamespace::Xml)
+        );
+        assert_eq!(
+            element.attr_namespaces.get("xlink:href"),
+            Some(&AttributeNamespace::XLink)
+        );
+        assert!(!element.attr_namespaces.contains_key("xml:base"));
+        assert_eq!(
+            d.attr(d.query_selector("#m").unwrap(), "definitionURL"),
+            Some("foo")
+        );
+        assert!(d.query_selector("linearGradient[gradientUnits]").is_some());
+        assert!(d.query_selector("lineargradient").is_none());
+        assert!(d.query_selector("linearGradient[gradientunits]").is_none());
+        assert_bounded_forest(&d);
+    }
+    #[test]
+    fn mathml_and_svg_integration_points_dispatch_by_namespace_and_token_kind() {
+        let d = parse(
+            "<math><mtext><mglyph id=mg /><malignmark id=mark /><x id=x></x></mtext><annotation-xml id=a encoding='APPLICATION/XHTML+XML'><p id=p>html</p></annotation-xml><annotation-xml id=b><svg id=s><desc><em id=e>html</em></desc><title><b id=t>html</b></title></svg></annotation-xml><annotation-xml id=c encoding=' text/html'><x id=foreign /></annotation-xml></math>",
+        );
+        for (selector, namespace) in [
+            ("#mg", Namespace::MathMl),
+            ("#mark", Namespace::MathMl),
+            ("#x", Namespace::Html),
+            ("#a", Namespace::MathMl),
+            ("#p", Namespace::Html),
+            ("#b", Namespace::MathMl),
+            ("#s", Namespace::Svg),
+            ("#e", Namespace::Html),
+            ("#t", Namespace::Html),
+            ("#c", Namespace::MathMl),
+            ("#foreign", Namespace::MathMl),
+        ] {
+            assert_eq!(
+                d.namespace(d.query_selector(selector).unwrap()),
+                Some(namespace),
+                "{selector}"
+            );
+        }
+        assert_eq!(d.title(), "");
+        assert_bounded_forest(&d);
+    }
+    #[test]
+    fn foreign_breakout_and_case_insensitive_end_tags_reprocess_in_html_mode() {
+        let d = parse(
+            "<svg id=s><g><font id=f>foreign</font><font color=red id=h>html</font><p id=p>p</svg><math><mrow></p><span id=after>after",
+        );
+        let svg = d.query_selector("#s").unwrap();
+        let body = d.query_selector("body").unwrap();
+        assert_eq!(
+            d.namespace(d.query_selector("#f").unwrap()),
+            Some(Namespace::Svg)
+        );
+        for selector in ["#h", "#p", "#after"] {
+            let id = d.query_selector(selector).unwrap();
+            assert_eq!(d.namespace(id), Some(Namespace::Html));
+        }
+        assert_eq!(d.nodes[svg].parent, Some(body));
+        assert_eq!(d.nodes[d.query_selector("#h").unwrap()].parent, Some(body));
+        let d = parse(
+            "<svg><linearGradient><stop /></LINEARGRADIENT><path id=path /></svg><p id=outside>outside",
+        );
+        let path = d.query_selector("#path").unwrap();
+        assert_eq!(d.tag(d.nodes[path].parent.unwrap()), Some("svg"));
+        assert_eq!(
+            d.namespace(d.query_selector("#outside").unwrap()),
+            Some(Namespace::Html)
+        );
+    }
+    #[test]
+    fn foreign_cdata_nuls_and_script_text_do_not_use_html_raw_text_rules() {
+        let d = parse(
+            "<svg><g id=g><![CDATA[<&amp;\0]]>\0</g><script id=s><x />a &lt; b</script><title id=t><![CDATA[a\0b]]><b>bold</b></title></svg>",
+        );
+        assert_eq!(
+            d.text_content(d.query_selector("#g").unwrap()),
+            "<&amp;\u{fffd}\u{fffd}"
+        );
+        let script = d.query_selector("#s").unwrap();
+        assert_eq!(
+            d.namespace(d.nodes[script].children[0]),
+            Some(Namespace::Svg)
+        );
+        assert_eq!(d.text_content(script), "a < b");
+        assert_eq!(
+            d.outer_html(script),
+            "<script id=\"s\"><x></x>a &lt; b</script>"
+        );
+        assert_eq!(d.text_content(d.query_selector("#t").unwrap()), "abbold");
+        assert!(d.query_selector("title > b").is_some());
+    }
+    #[test]
+    fn namespaced_dom_mutation_and_snapshots_preserve_byte_accounting() {
+        let mut d = parse("<div xlink:href=html></div>");
+        let svg = d.create_element_ns(Namespace::Svg, "linearGradient");
+        d.append_child(d.query_selector("body").unwrap(), svg);
+        d.set_attr(svg, "viewBox", "0 0 1 1");
+        d.set_attr_ns(svg, AttributeNamespace::XLink, "xlink:href", "#one");
+        d.set_attr(svg, "xlink:href", "#two");
+        let before = d.retained_bytes();
+        assert_eq!(d.attr(svg, "viewBox"), Some("0 0 1 1"));
+        assert_eq!(d.attr(svg, "viewbox"), None);
+        assert!(Document::from_snapshot(d.nodes.clone(), d.root, false).is_ok());
+        d.remove_attr(svg, "xlink:href");
+        assert_eq!(
+            d.retained_bytes(),
+            before - "xlink:href".len() * 2 - "#two".len()
+        );
+        let rebuilt = Document::from_snapshot(d.nodes.clone(), d.root, false).unwrap();
+        assert_eq!(rebuilt.retained_bytes(), d.retained_bytes());
+        let mut invalid = d.nodes;
+        let NodeKind::Element(element) = &mut invalid[svg].kind else {
+            unreachable!()
+        };
+        element
+            .attr_namespaces
+            .insert("viewBox".into(), AttributeNamespace::Xml);
+        assert!(Document::from_snapshot(invalid, d.root, false).is_err());
+    }
+    #[test]
+    fn mixed_namespace_boundaries_remain_bounded_and_cycle_free() {
+        for pattern in [
+            "<svg><foreignObject><math><mtext>",
+            "<b><svg><desc><p></b>",
+            "<math><annotation-xml><svg><g></p>",
+        ] {
+            let d = parse(&pattern.repeat(2000));
+            assert_bounded_forest(&d);
+            assert!(Document::from_snapshot(d.nodes.clone(), d.root, false).is_ok());
+        }
+    }
+    #[test]
+    fn document_metadata_excludes_only_html_template_content_and_foreign_lookalikes() {
+        let mut d = parse(
+            "<template><title>inert title</title><style>inert css</style></template><svg><title>svg title</title><style>svg css</style><template><foreignObject><title>active title</title><style>html css</style></foreignObject></template></svg><math><style>math text</style></math>",
+        );
+        assert_eq!(d.title(), "active title");
+        assert_eq!(d.stylesheets(), ["svg css", "html css"]);
+        let templates = d.query_selector_all("template");
+        assert_eq!(templates.len(), 2);
+        assert!(!d.is_active_node(templates[0]));
+        assert!(d.is_active_node(templates[1]));
+        let detached = d.create_element("style");
+        d.set_text_content(detached, "detached css");
+        assert!(!d.is_active_node(detached));
+        assert_eq!(d.stylesheets(), ["svg css", "html css"]);
+    }
+    #[test]
+    fn selector_control_states_language_and_sibling_types_keep_namespace_identity() {
+        let mut d = parse(
+            "<svg xml:lang=fr-CA><input id=foreign checked disabled required /><g id=language /></svg><input id=html checked disabled required>",
+        );
+        for selector in ["input:checked", "input:disabled", "input:required"] {
+            assert_eq!(
+                d.query_selector_all(selector),
+                vec![d.query_selector("#html").unwrap()]
+            );
+        }
+        assert!(d.query_selector("#foreign:enabled").is_none());
+        assert!(d.query_selector("#foreign:optional").is_none());
+        assert!(d.query_selector("#language:lang(fr)").is_some());
+        let body = d.query_selector("body").unwrap();
+        let foreign = d.create_element_ns(Namespace::MathMl, "input");
+        d.append_child(body, foreign);
+        assert!(matches_selector(&d, foreign, "input:first-of-type"));
+        assert!(matches_selector(&d, foreign, "input:only-of-type"));
+    }
+    #[test]
     fn snapshot_validation_accepts_detached_forests_and_recomputes_bytes() {
         let mut original = parse_with_scripting(
             "<!doctype html><!--before--><p><b>one<i>two</b>three</i></p><?step done>",
@@ -5914,8 +6748,10 @@ mod tests {
         cycle[parent].children.retain(|id| *id != paragraph);
         cycle[paragraph].parent = Some(text);
         cycle[text].kind = NodeKind::Element(Element {
+            namespace: Namespace::Html,
             tag: "span".into(),
             attrs: BTreeMap::new(),
+            attr_namespaces: BTreeMap::new(),
         });
         cycle[text].children.push(paragraph);
         assert!(Document::from_snapshot(cycle, original.root, false).is_err());
@@ -5955,8 +6791,10 @@ mod tests {
                     vec![index + 1]
                 },
                 kind: NodeKind::Element(Element {
+                    namespace: Namespace::Html,
                     tag: "div".into(),
                     attrs: BTreeMap::new(),
+                    attr_namespaces: BTreeMap::new(),
                 }),
             });
         }
@@ -6420,7 +7258,7 @@ mod tests {
         assert_eq!(d.nodes[svg].children.len(), 3);
         assert_eq!(
             d.outer_html(svg),
-            "<svg viewbox=\"0 0 20 20\"><g></g><rect width=\"10\"></rect><text>&amp;&lt;</text></svg>"
+            "<svg viewBox=\"0 0 20 20\"><g></g><rect width=\"10\"></rect><text>&amp;&lt;</text></svg>"
         );
         assert_eq!(
             d.outer_html(d.query_selector("input").unwrap()),
@@ -6475,13 +7313,7 @@ mod tests {
             .iter()
             .map(|n| match &n.kind {
                 NodeKind::Text(s) | NodeKind::Comment(s) => s.len(),
-                NodeKind::Element(e) => {
-                    e.tag.len()
-                        + e.attrs
-                            .iter()
-                            .map(|(k, v)| k.len() + v.len())
-                            .sum::<usize>()
-                }
+                NodeKind::Element(e) => e.retained_bytes(),
                 NodeKind::Doctype(d) => {
                     d.name.len()
                         + d.public_id.as_ref().map_or(0, String::len)

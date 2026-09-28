@@ -10,6 +10,23 @@ import html_conformance as runner
 
 
 class CorpusParsingTests(unittest.TestCase):
+    def test_report_cannot_overwrite_a_baseline_or_its_symlink_alias(self):
+        with tempfile.TemporaryDirectory(prefix='eris-baseline-') as temporary:
+            baseline = Path(temporary) / 'baseline.json'
+            baseline.write_bytes(b'preserved baseline')
+            alias = Path(temporary) / 'report.json'
+            alias.symlink_to(baseline)
+            hardlink = Path(temporary) / 'hardlink.json'
+            hardlink.hardlink_to(baseline)
+            for flag in ('--baseline', '--record-baseline'):
+                for output in (baseline, alias, hardlink):
+                    result = subprocess.run([sys.executable, str(runner.ROOT / 'tools/html_conformance.py'),
+                                             flag, str(baseline), '--output', str(output)],
+                                            capture_output=True, timeout=5)
+                    self.assertEqual(result.returncode, 2)
+                    self.assertIn(b'separate from the baseline', result.stderr)
+                    self.assertEqual(baseline.read_bytes(), b'preserved baseline')
+
     def test_input_line_endings_and_multiline_tree_data_are_preserved(self):
         source = '#data\na\r\nb\n#errors\none\n#new-errors\ntwo\n#document\n| "a\nb"\n'
         count, cases = runner.parse_cases(source, 'sample.dat')
@@ -106,6 +123,40 @@ class CorpusParsingTests(unittest.TestCase):
             self.assertEqual(result.returncode, 1, result.stderr)
             self.assertEqual(baseline.read_text(), 'original')
             self.assertEqual(json.loads((root / 'report.json').read_text())['counts'], {'error': 2})
+
+    def test_changed_adapter_cannot_publish_a_report_or_replace_a_baseline(self):
+        with tempfile.TemporaryDirectory(prefix='eris-changing-adapter-') as temporary:
+            root = Path(temporary)
+            data = b'#data\nx\n#errors\n#script-off\n#document\n| "x"\n'
+            (root / 'sample.dat').write_bytes(data)
+            manifest = dict(repository='test', revision='test', files=[dict(
+                path='sample.dat', bytes=len(data), sha256=hashlib.sha256(data).hexdigest())])
+            (root / 'manifest.json').write_text(json.dumps(manifest))
+            adapter = root / 'adapter'
+            adapter.write_text(
+                '#!/usr/bin/env python3\n'
+                'from pathlib import Path\n'
+                'import sys\n'
+                'sys.stdout.write(\'| "x"\\n\')\n'
+                'with Path(__file__).open("a") as output:\n'
+                '    output.write("\\n# adapter changed during execution\\n")\n')
+            adapter.chmod(0o700)
+            baseline = root / 'baseline.json'
+            baseline.write_text('original baseline')
+            report = root / 'report.json'
+            report.write_text('original report')
+            for flag in (None, '--baseline', '--record-baseline'):
+                with self.subTest(flag=flag):
+                    command = [sys.executable, str(Path(runner.__file__)),
+                               '--binary', str(adapter), '--corpus', str(root),
+                               '--output', str(report), '--jobs', '1']
+                    if flag:
+                        command.extend([flag, str(baseline)])
+                    result = subprocess.run(command, capture_output=True, timeout=5)
+                    self.assertEqual(result.returncode, 2, result.stderr)
+                    self.assertIn(b'adapter binary changed during the run', result.stderr)
+                    self.assertEqual(baseline.read_text(), 'original baseline')
+                    self.assertEqual(report.read_text(), 'original report')
 
 
 if __name__ == '__main__':

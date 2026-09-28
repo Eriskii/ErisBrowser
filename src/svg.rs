@@ -5,7 +5,7 @@
 //! evaluated. This module does not implement the complete SVG specification.
 
 use crate::css::parse_color;
-use crate::dom::{Document, NodeId};
+use crate::dom::{Document, Namespace, NodeId};
 use crate::graphics::{Color, RasterImage};
 use ab_glyph::{Font, FontArc, PxScale, ScaleFont, point};
 use std::collections::BTreeMap;
@@ -236,10 +236,12 @@ pub fn render(source: &str, width: Option<u32>, height: Option<u32>) -> Result<R
         return Err("SVG element limit exceeded".into());
     }
     let root = document
-        .query_selector("svg")
+        .query_selector_all("svg")
+        .into_iter()
+        .find(|&id| document.namespace(id) == Some(Namespace::Svg))
         .ok_or("SVG root element is missing")?;
     let viewbox = document
-        .attr(root, "viewbox")
+        .attr(root, "viewBox")
         .map(numbers)
         .transpose()?
         .filter(|v| v.len() == 4 && v[2] > 0.0 && v[3] > 0.0);
@@ -268,7 +270,7 @@ pub fn render(source: &str, width: Option<u32>, height: Option<u32>) -> Result<R
         let sx = width as f32 / v[2];
         let sy = height as f32 / v[3];
         let aspect = document
-            .attr(root, "preserveaspectratio")
+            .attr(root, "preserveAspectRatio")
             .unwrap_or("xMidYMid meet");
         if aspect.trim() == "none" {
             matrix = Matrix::scale(sx, sy).multiply(Matrix::translate(-v[0], -v[1]));
@@ -344,19 +346,22 @@ impl Painter {
         if depth > 96 {
             return Err("SVG nesting limit exceeded".into());
         }
+        if doc.namespace(id) != Some(Namespace::Svg) {
+            return Ok(());
+        }
         let Some(tag) = doc.tag(id) else {
             return Ok(());
         };
         if [
             "defs",
             "symbol",
-            "clippath",
+            "clipPath",
             "mask",
             "filter",
-            "lineargradient",
-            "radialgradient",
+            "linearGradient",
+            "radialGradient",
             "script",
-            "foreignobject",
+            "foreignObject",
             "title",
             "desc",
             "metadata",
@@ -1231,6 +1236,30 @@ mod tests {
         assert_eq!(pixel(&image, 20, 20), [255, 0, 0, 255]);
         assert_eq!(pixel(&image, 70, 70), [0, 255, 0, 255]);
         assert_eq!(pixel(&image, 0, 0), [0, 0, 0, 0]);
+    }
+    #[test]
+    fn adjusted_foreign_names_control_scaling_and_skip_definition_subtrees() {
+        let image = render("<svg width=40 height=20 viewBox='0 0 10 10' preserveAspectRatio=none><rect width=10 height=10 fill=red /></svg>", None, None).unwrap();
+        assert_eq!(pixel(&image, 1, 10), [255, 0, 0, 255]);
+        assert_eq!(pixel(&image, 38, 10), [255, 0, 0, 255]);
+        for tag in [
+            "clipPath",
+            "linearGradient",
+            "radialGradient",
+            "foreignObject",
+        ] {
+            let source = format!(
+                "<svg width=10 height=10><{tag}><rect width=10 height=10 fill=red /></{tag}></svg>"
+            );
+            assert!(
+                render(&source, None, None)
+                    .unwrap()
+                    .rgba
+                    .iter()
+                    .all(|&v| v == 0),
+                "{tag}"
+            );
+        }
     }
     #[test]
     fn transforms_curves_and_evenodd_holes() {

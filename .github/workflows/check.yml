@@ -17,4 +17,6 @@ jobs:
       - run: python3 -m unittest discover -s tools -p 'test_*.py'
       - name: Preserve matching upstream HTML trees
         run: python3 tools/html_conformance.py --baseline tests/conformance/html-tree-current.json
+      - name: Preserve passing cases in the pinned Test262 selection
+        run: python3 tools/test262_conformance.py --baseline tests/conformance/test262-current.json
       - run: timeout 180s target/release/eris-stress 5000

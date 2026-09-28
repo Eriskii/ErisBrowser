@@ -16,6 +16,11 @@ ROOT = Path(__file__).resolve().parents[1]
 SECTIONS = {'#errors', '#new-errors', '#document-fragment', '#script-off', '#script-on', '#document'}
 
 
+def paths_alias(first, second):
+    return (first.resolve() == second.resolve()
+            or first.exists() and second.exists() and first.samefile(second))
+
+
 def parse_cases(text, filename):
     # splitlines()/universal-newline decoding would corrupt the CR input cases.
     lines = text.split('\n')
@@ -193,16 +198,21 @@ def main():
     args = parser.parse_args()
     if args.baseline and args.record_baseline:
         parser.error('--baseline and --record-baseline are mutually exclusive; a regression check never rewrites its baseline')
+    if any(path is not None and paths_alias(path, args.output)
+           for path in (args.baseline, args.record_baseline)):
+        parser.error('report output must be separate from the baseline path')
     if not 1 <= args.jobs <= 16 or not 0 < args.timeout <= 60:
         parser.error('jobs must be 1..16 and timeout must be (0,60] seconds')
     started = time.monotonic()
     try:
         manifest, source_count, cases = load_corpus(args.corpus)
         binary = args.binary.resolve()
+        binary_hash = hashlib.sha256(binary.read_bytes()).hexdigest()
         with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as pool:
             results = list(pool.map(lambda case: run_case(case, binary, args.timeout, args.legacy_no_scripting_flag), cases))
         counts = dict(Counter(case['status'] for case in results))
-        binary_hash = hashlib.sha256(binary.read_bytes()).hexdigest()
+        if hashlib.sha256(binary.read_bytes()).hexdigest() != binary_hash:
+            raise ValueError('adapter binary changed during the run; repeat with a stable build')
         corpus_hash = hashlib.sha256((args.corpus / 'manifest.json').read_bytes()).hexdigest()
         baseline = dict(revision=manifest['revision'], adapter_scope='DOM tree only', binary_sha256=binary_hash,
                         corpus_manifest_sha256=corpus_hash,

@@ -16,21 +16,29 @@ pub const MAX_RESOURCES: usize = 48;
 pub const MAX_FORM_BODY_BYTES: usize = 1024 * 1024;
 
 thread_local! {
-    static SYNCHRONOUS_PAGE_DNS: Cell<bool> = const { Cell::new(false) };
+    static PAGE_FETCH_BRIDGE: Cell<Option<FetchBridge>> = const { Cell::new(None) };
+    static SYNCHRONOUS_BROKER_DNS: Cell<bool> = const { Cell::new(false) };
 }
 
-/// A confined page process cannot create the timeout thread used by ureq's
+pub(crate) type FetchBridge =
+    fn(&Url, Option<&Url>, ResourceKind, Option<&str>) -> Result<Resource, String>;
+/// Install a pipe-only fetch path before executing untrusted page code.
+pub(crate) fn use_page_fetch_bridge(bridge: FetchBridge) {
+    PAGE_FETCH_BRIDGE.set(Some(bridge));
+}
+
+/// The confined resource broker cannot create the timeout thread used by ureq's
 /// default resolver. Its parent enforces cancellation and a process deadline,
 /// including time spent in synchronous system DNS. Other threads keep ureq's
 /// ordinary resolver timeout behavior.
-pub(crate) fn use_synchronous_dns_for_page_process() {
-    SYNCHRONOUS_PAGE_DNS.set(true);
+pub(crate) fn use_synchronous_dns_for_broker() {
+    SYNCHRONOUS_BROKER_DNS.set(true);
 }
 
 #[derive(Debug)]
-struct PageProcessResolver;
+struct BrokerResolver;
 
-impl ureq::unversioned::resolver::Resolver for PageProcessResolver {
+impl ureq::unversioned::resolver::Resolver for BrokerResolver {
     fn resolve(
         &self,
         uri: &ureq::http::Uri,
@@ -82,7 +90,9 @@ impl Resource {
 }
 
 pub struct Fetcher {
-    agent: ureq::Agent,
+    agent: Option<ureq::Agent>,
+    bridge: Option<FetchBridge>,
+    broker_origin_lock: bool,
     local_root: Option<PathBuf>,
     total: usize,
     count: usize,
@@ -95,30 +105,46 @@ impl Default for Fetcher {
 }
 impl Fetcher {
     pub fn new(local_root: Option<PathBuf>) -> Self {
-        let config = ureq::Agent::config_builder()
-            .max_redirects(0)
-            .http_status_as_error(false)
-            .timeout_global(Some(Duration::from_secs(12)))
-            .user_agent("ErisBrowser/0.1 (independent experimental engine)")
-            .build();
-        let agent = if SYNCHRONOUS_PAGE_DNS.get() {
-            ureq::Agent::with_parts(
-                config,
-                ureq::unversioned::transport::DefaultConnector::default(),
-                PageProcessResolver,
-            )
-        } else {
-            config.into()
-        };
+        let bridge = PAGE_FETCH_BRIDGE.get();
+        let agent = bridge.is_none().then(|| {
+            let config = ureq::Agent::config_builder()
+                .max_redirects(0)
+                .http_status_as_error(false)
+                .timeout_global(Some(Duration::from_secs(12)))
+                .user_agent("ErisBrowser/0.1 (independent experimental engine)")
+                .build();
+            if SYNCHRONOUS_BROKER_DNS.get() {
+                ureq::Agent::with_parts(
+                    config,
+                    ureq::unversioned::transport::DefaultConnector::default(),
+                    BrokerResolver,
+                )
+            } else {
+                config.into()
+            }
+        });
         Self {
             agent,
+            bridge,
+            broker_origin_lock: false,
             local_root,
             total: 0,
             count: 0,
             started: Instant::now(),
         }
     }
+    pub(crate) fn for_broker(local_root: Option<PathBuf>) -> Self {
+        let mut fetcher = Self::new(local_root);
+        // Resource kinds come from an untrusted renderer. Until cross-origin
+        // images have an opaque decoding boundary, no kind may expose bytes
+        // from another network origin. validate() rechecks every redirect.
+        fetcher.broker_origin_lock = true;
+        fetcher
+    }
     pub fn for_document(url: &Url) -> Self {
+        if PAGE_FETCH_BRIDGE.get().is_some() {
+            return Self::new(None);
+        }
         let root = url
             .to_file_path()
             .ok()
@@ -157,6 +183,9 @@ impl Fetcher {
         kind: ResourceKind,
         mut form_body: Option<&str>,
     ) -> Result<Resource, String> {
+        if let Some(bridge) = self.bridge {
+            return bridge(url, initiator, kind, form_body);
+        }
         self.count += 1;
         if self.count > MAX_RESOURCES || self.started.elapsed() > Duration::from_secs(30) {
             return Err("page resource or time budget exceeded".into());
@@ -174,8 +203,12 @@ impl Fetcher {
                     let timeout = Some(remaining_time.min(Duration::from_secs(12)));
                     let mut request_url = target.clone();
                     request_url.set_fragment(None);
+                    let agent = self
+                        .agent
+                        .as_ref()
+                        .ok_or("direct network access unavailable")?;
                     let mut response = if let Some(body) = form_body {
-                        self.agent
+                        agent
                             .post(request_url.as_str())
                             .header("Content-Type", "application/x-www-form-urlencoded")
                             .config()
@@ -183,7 +216,7 @@ impl Fetcher {
                             .build()
                             .send(body.as_bytes())
                     } else {
-                        self.agent
+                        agent
                             .get(request_url.as_str())
                             .config()
                             .timeout_global(timeout)
@@ -318,6 +351,15 @@ impl Fetcher {
             return Err(format!("unsupported scheme: {}", url.scheme()));
         }
         if let Some(source) = initiator {
+            if self.broker_origin_lock
+                && kind != ResourceKind::Document
+                && matches!(url.scheme(), "http" | "https")
+                && source.origin() != url.origin()
+            {
+                return Err(
+                    "cross-origin broker subresource blocked pending opaque image decoding".into(),
+                );
+            }
             if url.scheme() == "file" && source.scheme() != "file" {
                 return Err("remote documents cannot load local files".into());
             }

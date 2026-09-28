@@ -2,7 +2,10 @@
 //! attacker-declared collection before checking its count and remaining bytes.
 use super::{Command, Init, Reply, Snapshot};
 use crate::{
-    dom::{Doctype, Document, Element, MAX_DOM_BYTES, MAX_NODES, Node, NodeKind},
+    dom::{
+        AttributeNamespace, Doctype, Document, Element, MAX_DOM_BYTES, MAX_NODES, Namespace, Node,
+        NodeKind,
+    },
     graphics::{Color, DrawCommand, ImageStore, RasterImage, Rect},
     layout::{HitRegion, LayoutResult},
     page::Navigation,
@@ -18,7 +21,7 @@ pub(super) const MAX_REQUEST: usize = 18 * 1024 * 1024;
 const MAX_STRING: usize = 16 * 1024 * 1024;
 const MAX_IMAGES: usize = 64 * 1024 * 1024;
 const MAX_COMMANDS: usize = 200_000;
-const MAGIC: &[u8] = b"ERW1";
+const MAGIC: &[u8] = b"ERW2";
 type Result<T> = std::result::Result<T, String>;
 
 pub(super) fn read_frame(input: &mut impl Read, limit: usize) -> Result<Vec<u8>> {
@@ -239,12 +242,6 @@ pub(super) fn encode_init(init: &Init) -> Result<Vec<u8>> {
     let mut e = Encoder::new(0);
     e.boolean(init.scripts);
     e.u64(init.generation);
-    let root = init
-        .root
-        .as_ref()
-        .map(|p| p.to_str().ok_or("local directory path is not UTF-8"))
-        .transpose()?;
-    e.optional_string(root);
     e.finish()
 }
 pub(super) fn decode_init(bytes: &[u8]) -> Result<Init> {
@@ -252,15 +249,7 @@ pub(super) fn decode_init(bytes: &[u8]) -> Result<Init> {
     let init = Init {
         scripts: d.boolean()?,
         generation: d.u64()?,
-        root: d.optional_string(65_536)?.map(PathBuf::from),
     };
-    if init
-        .root
-        .as_ref()
-        .is_some_and(|p| !p.is_absolute() || !p.is_dir())
-    {
-        return Err("invalid sandbox root".into());
-    }
     d.end()?;
     Ok(init)
 }
@@ -395,11 +384,25 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
             NodeKind::Document => e.byte(0),
             NodeKind::Element(el) => {
                 e.byte(1);
+                e.byte(match el.namespace {
+                    Namespace::Html => 0,
+                    Namespace::Svg => 1,
+                    Namespace::MathMl => 2,
+                });
                 e.string(&el.tag);
                 e.u32(el.attrs.len());
                 for (k, v) in &el.attrs {
                     e.string(k);
                     e.string(v);
+                }
+                e.u32(el.attr_namespaces.len());
+                for (name, namespace) in &el.attr_namespaces {
+                    e.string(name);
+                    e.byte(match namespace {
+                        AttributeNamespace::XLink => 0,
+                        AttributeNamespace::Xml => 1,
+                        AttributeNamespace::Xmlns => 2,
+                    });
                 }
             }
             NodeKind::Text(s) => {
@@ -545,6 +548,12 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
         let kind = match d.byte()? {
             0 => NodeKind::Document,
             1 => {
+                let namespace = match d.byte()? {
+                    0 => Namespace::Html,
+                    1 => Namespace::Svg,
+                    2 => Namespace::MathMl,
+                    _ => return Err("unknown IPC element namespace".into()),
+                };
                 let tag = d.budget_string(&mut dom_bytes)?;
                 let mut attrs = BTreeMap::new();
                 let count = d.count(attrs_left.min(1024))?;
@@ -556,7 +565,32 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
                         return Err("duplicate IPC attribute".into());
                     }
                 }
-                NodeKind::Element(Element { tag, attrs })
+                let mut attr_namespaces = BTreeMap::new();
+                // Namespace metadata must refer to an already bounded attribute;
+                // reject impossible maps before allocating their entries.
+                for _ in 0..d.count(attrs.len())? {
+                    let name = d.budget_string(&mut dom_bytes)?;
+                    let namespace = match d.byte()? {
+                        0 => AttributeNamespace::XLink,
+                        1 => AttributeNamespace::Xml,
+                        2 => AttributeNamespace::Xmlns,
+                        _ => return Err("unknown IPC attribute namespace".into()),
+                    };
+                    if !attrs.contains_key(&name)
+                        || AttributeNamespace::from_qualified_name(&name) != Some(namespace)
+                    {
+                        return Err("invalid IPC attribute namespace binding".into());
+                    }
+                    if attr_namespaces.insert(name, namespace).is_some() {
+                        return Err("duplicate IPC attribute namespace".into());
+                    }
+                }
+                NodeKind::Element(Element {
+                    namespace,
+                    tag,
+                    attrs,
+                    attr_namespaces,
+                })
             }
             2 => NodeKind::Text(d.budget_string(&mut dom_bytes)?),
             3 => NodeKind::Comment(d.budget_string(&mut dom_bytes)?),
@@ -737,9 +771,299 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
     })
 }
 
+pub(super) fn is_fetch_request(bytes: &[u8]) -> bool {
+    bytes.get(..4) == Some(MAGIC) && bytes.get(4) == Some(&3)
+}
+pub(super) fn encode_broker_init(init: &super::broker::BrokerInit) -> Result<Vec<u8>> {
+    let mut e = Encoder::new(5);
+    e.navigation(&init.navigation);
+    e.optional_string(
+        init.root
+            .as_ref()
+            .map(|p| p.to_str().ok_or("broker root is not UTF-8"))
+            .transpose()?,
+    );
+    e.finish()
+}
+pub(super) fn decode_broker_init(bytes: &[u8]) -> Result<super::broker::BrokerInit> {
+    let mut d = Decoder::new(bytes, 5)?;
+    let navigation = d.navigation()?;
+    let root = d.optional_string(65_536)?.map(PathBuf::from);
+    d.end()?;
+    if root
+        .as_ref()
+        .is_some_and(|p| !p.is_absolute() || !p.is_dir())
+    {
+        return Err("invalid broker file root".into());
+    }
+    Ok(super::broker::BrokerInit { navigation, root })
+}
+pub(super) fn encode_fetch_request(request: &super::broker::FetchRequest) -> Result<Vec<u8>> {
+    use crate::net::ResourceKind;
+    let mut e = Encoder::new(3);
+    e.string(request.url.as_str());
+    e.byte(match request.kind {
+        ResourceKind::Document => 0,
+        ResourceKind::Style => 1,
+        ResourceKind::Script => 2,
+        ResourceKind::Image => 3,
+    });
+    e.optional_string(request.form_body.as_deref());
+    let bytes = e.finish()?;
+    if bytes.len() > MAX_REQUEST {
+        return Err("resource request exceeds IPC budget".into());
+    }
+    Ok(bytes)
+}
+pub(super) fn decode_fetch_request(bytes: &[u8]) -> Result<super::broker::FetchRequest> {
+    use crate::net::ResourceKind;
+    let mut d = Decoder::new(bytes, 3)?;
+    let url = url::Url::parse(&d.string(MAX_STRING)?).map_err(|e| e.to_string())?;
+    let kind = match d.byte()? {
+        0 => ResourceKind::Document,
+        1 => ResourceKind::Style,
+        2 => ResourceKind::Script,
+        3 => ResourceKind::Image,
+        _ => return Err("unknown resource kind".into()),
+    };
+    let form_body = d.optional_string(crate::net::MAX_FORM_BODY_BYTES)?;
+    d.end()?;
+    Ok(super::broker::FetchRequest {
+        url,
+        kind,
+        form_body,
+    })
+}
+pub(super) fn encode_resource(
+    resource: &std::result::Result<crate::net::Resource, String>,
+) -> Result<Vec<u8>> {
+    let mut e = Encoder::new(4);
+    e.boolean(resource.is_ok());
+    match resource {
+        Err(error) => e.string(&error.chars().take(2048).collect::<String>()),
+        Ok(r) => {
+            if r.bytes.len() > crate::net::MAX_RESOURCE_BYTES
+                || r.headers.len() > 1024
+                || r.headers
+                    .iter()
+                    .map(|(k, v)| k.len() + v.len())
+                    .sum::<usize>()
+                    > 256 * 1024
+            {
+                return Err("broker response budget exceeded".into());
+            }
+            e.string(r.url.as_str());
+            e.u32(r.status as usize);
+            e.string(&r.content_type);
+            e.u32(r.headers.len());
+            for (k, v) in &r.headers {
+                e.string(k);
+                e.string(v);
+            }
+            e.u32(r.bytes.len());
+            e.raw(&r.bytes);
+        }
+    }
+    e.finish()
+}
+pub(super) fn decode_resource(
+    bytes: &[u8],
+) -> Result<std::result::Result<crate::net::Resource, String>> {
+    let mut d = Decoder::new(bytes, 4)?;
+    let result = if d.boolean()? {
+        let url = url::Url::parse(&d.string(MAX_STRING)?).map_err(|e| e.to_string())?;
+        let status = d.count(599)? as u16;
+        if status < 100 {
+            return Err("invalid response status".into());
+        }
+        let content_type = d.string(8192)?;
+        let mut headers = BTreeMap::new();
+        let mut budget = 256 * 1024;
+        for _ in 0..d.count(1024)? {
+            let key = d.budget_string(&mut budget)?;
+            let value = d.budget_string(&mut budget)?;
+            if key.is_empty()
+                || !key
+                    .bytes()
+                    .all(|c| c.is_ascii_alphanumeric() || b"!#$%&'*+-.^_`|~".contains(&c))
+            {
+                return Err("invalid response header name".into());
+            }
+            if headers.insert(key.to_ascii_lowercase(), value).is_some() {
+                return Err("duplicate response header".into());
+            }
+        }
+        let length = d.count(crate::net::MAX_RESOURCE_BYTES)?;
+        let bytes = d.raw(length)?.to_vec();
+        Ok(crate::net::Resource {
+            url,
+            status,
+            content_type,
+            headers,
+            bytes,
+        })
+    } else {
+        Err(d.string(8192)?)
+    };
+    d.end()?;
+    Ok(result)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn resource_protocol_preserves_authority_fields_and_rejects_truncated_payloads() {
+        use crate::net::{Resource, ResourceKind};
+        let request = super::super::broker::FetchRequest {
+            url: url::Url::parse("https://example.test/submit?x=1").unwrap(),
+            kind: ResourceKind::Document,
+            form_body: Some("q=%F0%9F%A6%80".into()),
+        };
+        let bytes = encode_fetch_request(&request).unwrap();
+        let decoded = decode_fetch_request(&bytes).unwrap();
+        assert_eq!(decoded.url, request.url);
+        assert_eq!(decoded.kind, request.kind);
+        assert_eq!(decoded.form_body, request.form_body);
+        for cut in 0..bytes.len() {
+            assert!(decode_fetch_request(&bytes[..cut]).is_err());
+        }
+        let resource = Resource {
+            url: url::Url::parse("https://other.test/final").unwrap(),
+            status: 200,
+            content_type: "text/html; charset=utf-8".into(),
+            headers: BTreeMap::from([(
+                "content-security-policy".into(),
+                "default-src 'none'".into(),
+            )]),
+            bytes: b"<p>broker response</p>".to_vec(),
+        };
+        let encoded = encode_resource(&Ok(resource)).unwrap();
+        let decoded = decode_resource(&encoded).unwrap().unwrap();
+        assert_eq!(decoded.url.as_str(), "https://other.test/final");
+        assert_eq!(decoded.status, 200);
+        assert_eq!(
+            decoded.headers.get("content-security-policy").unwrap(),
+            "default-src 'none'"
+        );
+        assert_eq!(decoded.bytes, b"<p>broker response</p>");
+        for cut in 0..encoded.len() {
+            assert!(decode_resource(&encoded[..cut]).is_err());
+        }
+        let mut extra = encoded;
+        extra.push(0);
+        assert!(decode_resource(&extra).is_err());
+        let error = encode_resource(&Err("fetch rejected".into())).unwrap();
+        assert_eq!(
+            decode_resource(&error).unwrap().unwrap_err(),
+            "fetch rejected"
+        );
+    }
+
+    #[test]
+    fn resource_protocol_rejects_header_aliases_and_declared_oversized_bodies() {
+        for headers in [
+            vec![
+                ("Content-Type", "text/html"),
+                ("content-type", "text/plain"),
+            ],
+            vec![("bad\r\nname", "value")],
+        ] {
+            let mut e = Encoder::new(4);
+            e.boolean(true);
+            e.string("https://example.test/");
+            e.u32(200);
+            e.string("text/html");
+            e.u32(headers.len());
+            for (key, value) in headers {
+                e.string(key);
+                e.string(value);
+            }
+            e.u32(0);
+            assert!(decode_resource(&e.finish().unwrap()).is_err());
+        }
+        let mut e = Encoder::new(4);
+        e.boolean(true);
+        e.string("https://example.test/");
+        e.u32(200);
+        e.string("text/html");
+        e.u32(0);
+        e.u32(crate::net::MAX_RESOURCE_BYTES + 1);
+        assert!(
+            decode_resource(&e.finish().unwrap())
+                .unwrap_err()
+                .contains("limit")
+        );
+    }
+
+    #[test]
+    fn foreign_namespaces_survive_snapshot_validation() {
+        let r = reply_with_html(
+            "<svg viewBox='0 0 4 4'><linearGradient id=gradient xlink:href='#x'/></svg><math><mi id=math>x</mi></math>",
+        );
+        let snapshot = decode_reply(&encode_reply(&r).unwrap())
+            .unwrap()
+            .snapshot
+            .unwrap();
+        let doc = snapshot.document;
+        let svg = doc.query_selector("svg").unwrap();
+        let gradient = doc.query_selector("#gradient").unwrap();
+        assert_eq!(doc.namespace(svg), Some(Namespace::Svg));
+        assert_eq!(doc.attr(svg, "viewBox"), Some("0 0 4 4"));
+        assert_eq!(doc.tag(gradient), Some("linearGradient"));
+        if let NodeKind::Element(element) = &doc.nodes[gradient].kind {
+            assert_eq!(
+                element.attr_namespaces.get("xlink:href"),
+                Some(&AttributeNamespace::XLink)
+            );
+        } else {
+            panic!("gradient element missing");
+        }
+        assert_eq!(
+            doc.namespace(doc.query_selector("#math").unwrap()),
+            Some(Namespace::MathMl)
+        );
+    }
+    #[test]
+    fn namespace_metadata_requires_existing_attributes_before_allocation() {
+        let mut e = Encoder::new(99);
+        e.u64(1); // generation
+        e.u64(0); // edit sequence
+        e.string("");
+        e.string("about:blank");
+        e.f64(0.0);
+        e.u32(0); // diagnostics
+        e.u32(0); // root
+        e.boolean(false);
+        e.u32(1); // nodes
+        e.boolean(false); // parent
+        e.u32(0); // children
+        e.byte(1); // element
+        e.byte(1); // SVG
+        e.string("g");
+        e.u32(0); // no attributes
+        e.u32(1024); // impossible namespace metadata, no payload supplied
+        let bytes = e.finish().unwrap();
+        let mut d = Decoder::new(&bytes, 99).unwrap();
+        let error = match decode_snapshot(&mut d) {
+            Ok(_) => panic!("impossible namespace map accepted"),
+            Err(error) => error,
+        };
+        assert_eq!(error, "IPC collection limit exceeded");
+        let mut r = reply_with_html("<svg xlink:href='#x'/>");
+        let doc = &mut r.snapshot.as_mut().unwrap().document;
+        let id = doc.query_selector("svg").unwrap();
+        if let NodeKind::Element(element) = &mut doc.nodes[id].kind {
+            element
+                .attr_namespaces
+                .insert("xlink:href".into(), AttributeNamespace::Xml);
+        }
+        let error = match decode_reply(&encode_reply(&r).unwrap()) {
+            Ok(_) => panic!("wrong attribute namespace accepted"),
+            Err(error) => error,
+        };
+        assert_eq!(error, "invalid IPC attribute namespace binding");
+    }
     fn reply() -> Reply {
         reply_with_html("<p>Hello</p>")
     }

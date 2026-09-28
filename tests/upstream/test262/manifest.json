@@ -1,0 +1,2353 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all direct .js files in nine built-ins directories; no implementation",
+  "directories": {
+    "JSON/parse": [
+      "15.12.1.1-0-1.js",
+      "15.12.1.1-0-2.js",
+      "15.12.1.1-0-3.js",
+      "15.12.1.1-0-4.js",
+      "15.12.1.1-0-5.js",
+      "15.12.1.1-0-6.js",
+      "15.12.1.1-0-8.js",
+      "15.12.1.1-0-9.js",
+      "15.12.1.1-g1-1.js",
+      "15.12.1.1-g1-2.js",
+      "15.12.1.1-g1-3.js",
+      "15.12.1.1-g1-4.js",
+      "15.12.1.1-g2-1.js",
+      "15.12.1.1-g2-2.js",
+      "15.12.1.1-g2-3.js",
+      "15.12.1.1-g2-4.js",
+      "15.12.1.1-g2-5.js",
+      "15.12.1.1-g4-1.js",
+      "15.12.1.1-g4-2.js",
+      "15.12.1.1-g4-3.js",
+      "15.12.1.1-g4-4.js",
+      "15.12.1.1-g5-1.js",
+      "15.12.1.1-g5-2.js",
+      "15.12.1.1-g5-3.js",
+      "15.12.1.1-g6-1.js",
+      "15.12.1.1-g6-2.js",
+      "15.12.1.1-g6-3.js",
+      "15.12.1.1-g6-4.js",
+      "15.12.1.1-g6-5.js",
+      "15.12.1.1-g6-6.js",
+      "15.12.1.1-g6-7.js",
+      "15.12.2-2-1.js",
+      "15.12.2-2-10.js",
+      "15.12.2-2-2.js",
+      "15.12.2-2-3.js",
+      "15.12.2-2-4.js",
+      "15.12.2-2-5.js",
+      "15.12.2-2-6.js",
+      "15.12.2-2-7.js",
+      "15.12.2-2-8.js",
+      "15.12.2-2-9.js",
+      "S15.12.2_A1.js",
+      "builtin.js",
+      "duplicate-proto.js",
+      "invalid-whitespace.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "revived-proxy-revoked.js",
+      "revived-proxy.js",
+      "reviver-array-define-prop-err.js",
+      "reviver-array-delete-err.js",
+      "reviver-array-get-prop-from-prototype.js",
+      "reviver-array-length-coerce-err.js",
+      "reviver-array-length-get-err.js",
+      "reviver-array-non-configurable-prop-create.js",
+      "reviver-array-non-configurable-prop-delete.js",
+      "reviver-call-args-after-forward-modification.js",
+      "reviver-call-err.js",
+      "reviver-call-order.js",
+      "reviver-context-source-array-literal.js",
+      "reviver-context-source-object-literal.js",
+      "reviver-context-source-primitive-literal.js",
+      "reviver-forward-modifies-object.js",
+      "reviver-get-name-err.js",
+      "reviver-object-define-prop-err.js",
+      "reviver-object-delete-err.js",
+      "reviver-object-get-prop-from-prototype.js",
+      "reviver-object-non-configurable-prop-create.js",
+      "reviver-object-non-configurable-prop-delete.js",
+      "reviver-object-own-keys-err.js",
+      "reviver-wrapper.js",
+      "text-negative-zero.js",
+      "text-non-string-primitive.js",
+      "text-object-abrupt.js",
+      "text-object.js"
+    ],
+    "JSON/stringify": [
+      "builtin.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "property-order.js",
+      "replacer-array-abrupt.js",
+      "replacer-array-duplicates.js",
+      "replacer-array-empty.js",
+      "replacer-array-number-object.js",
+      "replacer-array-number.js",
+      "replacer-array-order.js",
+      "replacer-array-proxy-revoked-realm.js",
+      "replacer-array-proxy-revoked.js",
+      "replacer-array-proxy.js",
+      "replacer-array-string-object.js",
+      "replacer-array-undefined.js",
+      "replacer-array-wrong-type.js",
+      "replacer-function-abrupt.js",
+      "replacer-function-arguments.js",
+      "replacer-function-array-circular.js",
+      "replacer-function-object-circular.js",
+      "replacer-function-object-deleted-property.js",
+      "replacer-function-result-undefined.js",
+      "replacer-function-result.js",
+      "replacer-function-tojson.js",
+      "replacer-function-wrapper.js",
+      "replacer-wrong-type.js",
+      "space-number-float.js",
+      "space-number-object.js",
+      "space-number-range.js",
+      "space-number.js",
+      "space-string-object.js",
+      "space-string-range.js",
+      "space-string.js",
+      "space-wrong-type.js",
+      "value-array-abrupt.js",
+      "value-array-circular.js",
+      "value-array-proxy-revoked.js",
+      "value-array-proxy.js",
+      "value-bigint-cross-realm.js",
+      "value-bigint-order.js",
+      "value-bigint-replacer.js",
+      "value-bigint-tojson-receiver.js",
+      "value-bigint-tojson.js",
+      "value-bigint.js",
+      "value-boolean-object.js",
+      "value-function.js",
+      "value-number-negative-zero.js",
+      "value-number-non-finite.js",
+      "value-number-object.js",
+      "value-object-abrupt.js",
+      "value-object-circular.js",
+      "value-object-proxy-revoked.js",
+      "value-object-proxy.js",
+      "value-primitive-top-level.js",
+      "value-string-escape-ascii.js",
+      "value-string-escape-unicode.js",
+      "value-string-object.js",
+      "value-symbol.js",
+      "value-tojson-abrupt.js",
+      "value-tojson-arguments.js",
+      "value-tojson-array-circular.js",
+      "value-tojson-not-function.js",
+      "value-tojson-object-circular.js",
+      "value-tojson-result.js"
+    ],
+    "String/prototype/charAt": [
+      "S15.5.4.4_A1.1.js",
+      "S15.5.4.4_A10.js",
+      "S15.5.4.4_A11.js",
+      "S15.5.4.4_A1_T1.js",
+      "S15.5.4.4_A1_T10.js",
+      "S15.5.4.4_A1_T2.js",
+      "S15.5.4.4_A1_T4.js",
+      "S15.5.4.4_A1_T5.js",
+      "S15.5.4.4_A1_T6.js",
+      "S15.5.4.4_A1_T7.js",
+      "S15.5.4.4_A1_T8.js",
+      "S15.5.4.4_A1_T9.js",
+      "S15.5.4.4_A2.js",
+      "S15.5.4.4_A3.js",
+      "S15.5.4.4_A4_T1.js",
+      "S15.5.4.4_A4_T2.js",
+      "S15.5.4.4_A4_T3.js",
+      "S15.5.4.4_A5.js",
+      "S15.5.4.4_A6.js",
+      "S15.5.4.4_A7.js",
+      "S15.5.4.4_A8.js",
+      "S15.5.4.4_A9.js",
+      "S9.4_A1.js",
+      "S9.4_A2.js",
+      "name.js",
+      "not-a-constructor.js",
+      "pos-coerce-err.js",
+      "pos-coerce-string.js",
+      "pos-rounding.js",
+      "this-value-not-obj-coercible.js"
+    ],
+    "String/prototype/charCodeAt": [
+      "S15.5.4.5_A1.1.js",
+      "S15.5.4.5_A10.js",
+      "S15.5.4.5_A11.js",
+      "S15.5.4.5_A1_T1.js",
+      "S15.5.4.5_A1_T10.js",
+      "S15.5.4.5_A1_T2.js",
+      "S15.5.4.5_A1_T4.js",
+      "S15.5.4.5_A1_T5.js",
+      "S15.5.4.5_A1_T6.js",
+      "S15.5.4.5_A1_T7.js",
+      "S15.5.4.5_A1_T8.js",
+      "S15.5.4.5_A1_T9.js",
+      "S15.5.4.5_A2.js",
+      "S15.5.4.5_A3.js",
+      "S15.5.4.5_A4.js",
+      "S15.5.4.5_A6.js",
+      "S15.5.4.5_A7.js",
+      "S15.5.4.5_A8.js",
+      "S15.5.4.5_A9.js",
+      "name.js",
+      "not-a-constructor.js",
+      "pos-coerce-err.js",
+      "pos-coerce-string.js",
+      "pos-rounding.js",
+      "this-value-not-obj-coercible.js"
+    ],
+    "String/prototype/codePointAt": [
+      "codePointAt.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "return-abrupt-from-object-pos-to-integer.js",
+      "return-abrupt-from-symbol-pos-to-integer.js",
+      "return-abrupt-from-this-as-symbol.js",
+      "return-abrupt-from-this.js",
+      "return-code-unit-coerced-position.js",
+      "return-first-code-unit.js",
+      "return-single-code-unit.js",
+      "return-utf16-decode.js",
+      "returns-undefined-on-position-equal-or-more-than-size.js",
+      "returns-undefined-on-position-less-than-zero.js",
+      "this-is-null-throws.js",
+      "this-is-undefined-throws.js"
+    ],
+    "String/prototype/slice": [
+      "S15.5.4.13_A10.js",
+      "S15.5.4.13_A11.js",
+      "S15.5.4.13_A1_T1.js",
+      "S15.5.4.13_A1_T10.js",
+      "S15.5.4.13_A1_T11.js",
+      "S15.5.4.13_A1_T12.js",
+      "S15.5.4.13_A1_T13.js",
+      "S15.5.4.13_A1_T14.js",
+      "S15.5.4.13_A1_T15.js",
+      "S15.5.4.13_A1_T2.js",
+      "S15.5.4.13_A1_T4.js",
+      "S15.5.4.13_A1_T5.js",
+      "S15.5.4.13_A1_T6.js",
+      "S15.5.4.13_A1_T7.js",
+      "S15.5.4.13_A1_T8.js",
+      "S15.5.4.13_A1_T9.js",
+      "S15.5.4.13_A2_T1.js",
+      "S15.5.4.13_A2_T2.js",
+      "S15.5.4.13_A2_T3.js",
+      "S15.5.4.13_A2_T4.js",
+      "S15.5.4.13_A2_T5.js",
+      "S15.5.4.13_A2_T6.js",
+      "S15.5.4.13_A2_T7.js",
+      "S15.5.4.13_A2_T8.js",
+      "S15.5.4.13_A2_T9.js",
+      "S15.5.4.13_A3_T1.js",
+      "S15.5.4.13_A3_T2.js",
+      "S15.5.4.13_A3_T3.js",
+      "S15.5.4.13_A3_T4.js",
+      "S15.5.4.13_A6.js",
+      "S15.5.4.13_A7.js",
+      "S15.5.4.13_A8.js",
+      "S15.5.4.13_A9.js",
+      "name.js",
+      "not-a-constructor.js",
+      "this-value-not-obj-coercible.js",
+      "this-value-tostring-throws-symbol.js",
+      "this-value-tostring-throws-toprimitive.js"
+    ],
+    "String/prototype/substring": [
+      "S15.5.4.15_A10.js",
+      "S15.5.4.15_A11.js",
+      "S15.5.4.15_A1_T1.js",
+      "S15.5.4.15_A1_T10.js",
+      "S15.5.4.15_A1_T11.js",
+      "S15.5.4.15_A1_T12.js",
+      "S15.5.4.15_A1_T13.js",
+      "S15.5.4.15_A1_T14.js",
+      "S15.5.4.15_A1_T15.js",
+      "S15.5.4.15_A1_T2.js",
+      "S15.5.4.15_A1_T4.js",
+      "S15.5.4.15_A1_T5.js",
+      "S15.5.4.15_A1_T6.js",
+      "S15.5.4.15_A1_T7.js",
+      "S15.5.4.15_A1_T8.js",
+      "S15.5.4.15_A1_T9.js",
+      "S15.5.4.15_A2_T1.js",
+      "S15.5.4.15_A2_T10.js",
+      "S15.5.4.15_A2_T2.js",
+      "S15.5.4.15_A2_T3.js",
+      "S15.5.4.15_A2_T4.js",
+      "S15.5.4.15_A2_T5.js",
+      "S15.5.4.15_A2_T6.js",
+      "S15.5.4.15_A2_T7.js",
+      "S15.5.4.15_A2_T8.js",
+      "S15.5.4.15_A2_T9.js",
+      "S15.5.4.15_A3_T1.js",
+      "S15.5.4.15_A3_T10.js",
+      "S15.5.4.15_A3_T11.js",
+      "S15.5.4.15_A3_T2.js",
+      "S15.5.4.15_A3_T3.js",
+      "S15.5.4.15_A3_T4.js",
+      "S15.5.4.15_A3_T5.js",
+      "S15.5.4.15_A3_T6.js",
+      "S15.5.4.15_A3_T7.js",
+      "S15.5.4.15_A3_T8.js",
+      "S15.5.4.15_A3_T9.js",
+      "S15.5.4.15_A6.js",
+      "S15.5.4.15_A7.js",
+      "S15.5.4.15_A8.js",
+      "S15.5.4.15_A9.js",
+      "name.js",
+      "not-a-constructor.js",
+      "this-value-not-obj-coercible.js",
+      "this-value-tostring-throws-symbol.js",
+      "this-value-tostring-throws-toprimitive.js"
+    ],
+    "String/fromCharCode": [
+      "S15.5.3.2_A1.js",
+      "S15.5.3.2_A2.js",
+      "S15.5.3.2_A3_T1.js",
+      "S15.5.3.2_A3_T2.js",
+      "S15.5.3.2_A4.js",
+      "S9.7_A1.js",
+      "S9.7_A2.1.js",
+      "S9.7_A2.2.js",
+      "S9.7_A3.1_T1.js",
+      "S9.7_A3.1_T2.js",
+      "S9.7_A3.1_T3.js",
+      "S9.7_A3.1_T4.js",
+      "S9.7_A3.2_T1.js",
+      "name.js",
+      "not-a-constructor.js",
+      "touint16-tonumber-throws-bigint.js",
+      "touint16-tonumber-throws-valueof.js"
+    ],
+    "String/fromCodePoint": [
+      "argument-is-Symbol.js",
+      "argument-is-not-integer.js",
+      "argument-not-coercible.js",
+      "arguments-is-empty.js",
+      "fromCodePoint.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "number-is-out-of-range.js",
+      "return-string-value.js",
+      "to-number-conversions.js"
+    ]
+  },
+  "test_files": 326,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-0-1.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-0-1.js",
+      "bytes": 389,
+      "sha256": "db4713276ffbff94b8d1dfab034da1e36c2f78de6517861df015cded3115b915"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-0-2.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-0-2.js",
+      "bytes": 380,
+      "sha256": "0d9cac9c7243507d2fddc53185697c1b96151549d6c18b8305fc96a78521b387"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-0-3.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-0-3.js",
+      "bytes": 380,
+      "sha256": "efd1f899fa91953f2eae3212cae40787ae076ccdb7499f6fb59b9360b6ce19de"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-0-4.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-0-4.js",
+      "bytes": 382,
+      "sha256": "1ee706449cd122635bddb624093a2b8114d0799ad91f578a5b4b3bc12f4151c9"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-0-5.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-0-5.js",
+      "bytes": 383,
+      "sha256": "532114dc37868ee7a64ca756879bbf412078f452ca43349b510e8ec5a744be42"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-0-6.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-0-6.js",
+      "bytes": 382,
+      "sha256": "6cff9e4a372953ace45845cead4674c65eeb860d973b0cff408a06f6ed1b21c9"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-0-8.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-0-8.js",
+      "bytes": 400,
+      "sha256": "f6e241b4178b87a3b33a3b45f48560415528031ddc194311d9eaf1bfacc45e75"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-0-9.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-0-9.js",
+      "bytes": 477,
+      "sha256": "3f698c9045969a4247ea6b2975c00e6be3c52b03181baae1e2de6905d38c0b74"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g1-1.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g1-1.js",
+      "bytes": 467,
+      "sha256": "413748fdc41f1d50598357a7078eba477c34846ac7966170a9766fccac73ced8"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g1-2.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g1-2.js",
+      "bytes": 464,
+      "sha256": "0c811f6f7857b6bfbf5d69a92e8a3cedf570fd6131b491e02d6e529b71549a6b"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g1-3.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g1-3.js",
+      "bytes": 464,
+      "sha256": "a230413718b0be0b56ee9e7f38819a29c2d62835c98cfb92eb7aeec0c14f369c"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g1-4.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g1-4.js",
+      "bytes": 462,
+      "sha256": "714fdf2715aaa1c396f64b86f539999f2af06b257deae8e40fa9684dac70a740"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g2-1.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g2-1.js",
+      "bytes": 302,
+      "sha256": "a79bbadf783af08afcb7fd0b41e17cfd2f66ac112ad7818633dbe93cc30a73d8"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g2-2.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g2-2.js",
+      "bytes": 302,
+      "sha256": "a350288e47d9515f6483105d9cb0b13359b914846ba12aedf0a267a93f8635a3"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g2-3.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g2-3.js",
+      "bytes": 322,
+      "sha256": "d6f63ce5bb5fb51844c305ec88441da4630669362c6ef3112fcc87326609e794"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g2-4.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g2-4.js",
+      "bytes": 310,
+      "sha256": "a861f88358642ec7f2d4fb7f33085f588e3685ced6d6af9e1435ec50509e6e69"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g2-5.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g2-5.js",
+      "bytes": 326,
+      "sha256": "23996bb5c4925c0a6f195107a414fc62a81979db0b7b5964aa8411dfaa9a6dd7"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g4-1.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g4-1.js",
+      "bytes": 484,
+      "sha256": "8bca8f642f8ddc4bbf9b6ef6daa36b5408dd6217f935bb0e7cbc47636978f5cd"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g4-2.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g4-2.js",
+      "bytes": 484,
+      "sha256": "c741632d491dd4016827d6fc126e919ea54c93add4da138d24dcc1b480929a0f"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g4-3.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g4-3.js",
+      "bytes": 484,
+      "sha256": "b824c863324b8515b1509d7302f52496243d0b6554a81d068f46c42b007c1d80"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g4-4.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g4-4.js",
+      "bytes": 484,
+      "sha256": "6b27d37e2d36e376ffe83623eebf0dcef350d1f9cba12a027ab3de2167881a0e"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g5-1.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g5-1.js",
+      "bytes": 344,
+      "sha256": "182f766fd54c7ea509ed71679f86725ca274803f4c87010f14150205d38dd037"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g5-2.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g5-2.js",
+      "bytes": 347,
+      "sha256": "cfc63550a5c6a135d07e019f4d05801bfabcc694902b6ee4d8372182807ad483"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g5-3.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g5-3.js",
+      "bytes": 346,
+      "sha256": "b3f5db35f2dec019195707abf4dea347c070b5a7dac538366d5f44d90d538032"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g6-1.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g6-1.js",
+      "bytes": 349,
+      "sha256": "16d46c09d06af77dddb9f828638a41267947755a20cceac1907a7269192429be"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g6-2.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g6-2.js",
+      "bytes": 351,
+      "sha256": "f636d58f61ec7c2dd47ced34f2bf20aa0391140dcfd7c21f1787571956c1e65a"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g6-3.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g6-3.js",
+      "bytes": 350,
+      "sha256": "cbf0b016938a9bfccbab08021ab13c02c805cb71bce353ce5932e76b74626f5d"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g6-4.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g6-4.js",
+      "bytes": 350,
+      "sha256": "345c4d254871c2a320d36b2d671ef10ed056202ba406f0ffcab9e0b164704225"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g6-5.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g6-5.js",
+      "bytes": 350,
+      "sha256": "0d2f808fa54e0ff663852a05bb12b6103d9e62067b3c5b5b0914993d0987c59e"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g6-6.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g6-6.js",
+      "bytes": 350,
+      "sha256": "62ab6d4d5c483f25acff36ae5d387169c01be2c6354e9abdadaa6b01467cddd3"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.1.1-g6-7.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.1.1-g6-7.js",
+      "bytes": 350,
+      "sha256": "e17a5d954919313e7d9779b1151798c9322886e860b279da83b35b2ef3016447"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.2-2-1.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.2-2-1.js",
+      "bytes": 1391,
+      "sha256": "77b5eb59c8bdb2217ceb9965d8cafcd3ecede3b2304f61a3721b44824341c451"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.2-2-10.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.2-2-10.js",
+      "bytes": 1417,
+      "sha256": "ac0437c49bc36d59ec855c1f6e2d096575dab413b6fe5b8a97d02a3952d23f86"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.2-2-2.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.2-2-2.js",
+      "bytes": 1409,
+      "sha256": "bc909e3cfc831ef6f5db095c9d162d17afe7c9057080a036ca6bb99fb8338c48"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.2-2-3.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.2-2-3.js",
+      "bytes": 1406,
+      "sha256": "90a9ef5f7cb6f6755fd33835b9af927f5775623d51006078ea3158198e7bd190"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.2-2-4.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.2-2-4.js",
+      "bytes": 1436,
+      "sha256": "cdc5f917975a95add95ae44903a28d47d86a1a27247f1db406f69808c8a38494"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.2-2-5.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.2-2-5.js",
+      "bytes": 1415,
+      "sha256": "4d5adabdb8d531050322cc647b14f7ba19fd87ac90eddbc1b64974fd50da5c19"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.2-2-6.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.2-2-6.js",
+      "bytes": 1392,
+      "sha256": "a7c46a69a60883bff563ffd9f5f417e9897f87e8ec5e0857da3de55fb40bfe0e"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.2-2-7.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.2-2-7.js",
+      "bytes": 1410,
+      "sha256": "2abd93a4bb0d0c73a1bb7fa8de04ce108268d7541be66a38ad92224111aa6ce7"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.2-2-8.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.2-2-8.js",
+      "bytes": 1408,
+      "sha256": "8b32cdb8128c95ef712922e6bcf86e816415c24c39256ecbdc8f4810c90ba48f"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/15.12.2-2-9.js",
+      "upstream_path": "test/built-ins/JSON/parse/15.12.2-2-9.js",
+      "bytes": 1438,
+      "sha256": "3549b2b1c7673ff732bc09b3bc8efb8ab50064e517fc269bddccb9e75c30bc53"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/S15.12.2_A1.js",
+      "upstream_path": "test/built-ins/JSON/parse/S15.12.2_A1.js",
+      "bytes": 595,
+      "sha256": "0d9cb588f6deb268741ef06d655141e535d3f6e91885c15f701c0755dfae9d24"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/builtin.js",
+      "upstream_path": "test/built-ins/JSON/parse/builtin.js",
+      "bytes": 948,
+      "sha256": "7db71410ac14bcce145601d2afc33dcafbb88fbdd76b91df6de926f326837618"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/duplicate-proto.js",
+      "upstream_path": "test/built-ins/JSON/parse/duplicate-proto.js",
+      "bytes": 729,
+      "sha256": "8f8c30416f47cc81226c3ca11ba7d9dfe7df2c790cbd8749e72ed9afd25ec544"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/invalid-whitespace.js",
+      "upstream_path": "test/built-ins/JSON/parse/invalid-whitespace.js",
+      "bytes": 1610,
+      "sha256": "9beae6a39dae02f089061118eb9c189a7b687cff6d0792d6421499e7632d6ee4"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/length.js",
+      "upstream_path": "test/built-ins/JSON/parse/length.js",
+      "bytes": 669,
+      "sha256": "9d88fc2a42c5f884ee4c9863986b49d17d89fe98f6250fba3bcbcbbfbbc74229"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/name.js",
+      "upstream_path": "test/built-ins/JSON/parse/name.js",
+      "bytes": 805,
+      "sha256": "d153a7c9df1ba30774394b7b0f8d92e4a0094e78c4ed2da1c3e9e8a972cc2f62"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/not-a-constructor.js",
+      "upstream_path": "test/built-ins/JSON/parse/not-a-constructor.js",
+      "bytes": 844,
+      "sha256": "f00514d73dce0b7a488046cfd5c7277c0baa6390ab9c0d7552c24bac67112752"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/prop-desc.js",
+      "upstream_path": "test/built-ins/JSON/parse/prop-desc.js",
+      "bytes": 596,
+      "sha256": "a9d069b336762f6f81b39501bdb69483b5d9438cc735acc49dc0e1a3db0df933"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/revived-proxy-revoked.js",
+      "upstream_path": "test/built-ins/JSON/parse/revived-proxy-revoked.js",
+      "bytes": 1313,
+      "sha256": "3531d990825812bb4196420c0ce56f86135c495b6fad5362c228b02d7f1e0ce9"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/revived-proxy.js",
+      "upstream_path": "test/built-ins/JSON/parse/revived-proxy.js",
+      "bytes": 2086,
+      "sha256": "4d506afb6f4cd2f4fc3aaffd80e4011e3144ee79102d33c803948c5e9d72b87a"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-array-define-prop-err.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-array-define-prop-err.js",
+      "bytes": 1350,
+      "sha256": "496f975f69e465683d4beddecf344f11c0f96cbb53bed6ec923817e10af37869"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-array-delete-err.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-array-delete-err.js",
+      "bytes": 1183,
+      "sha256": "0833eef0f5c7e4ebbd711118f82904389585eee13b5432f8ef72784ee615de13"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-array-get-prop-from-prototype.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-array-get-prop-from-prototype.js",
+      "bytes": 1176,
+      "sha256": "ff6613d829f490a8d37b0b1c1343785b27d254e6fd319be14a7cde2affa2cd4c"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-array-length-coerce-err.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-array-length-coerce-err.js",
+      "bytes": 1065,
+      "sha256": "9310ebcf26baf38cc14f4facba4857e3c35c2c94aadcccc265614ffd99224d56"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-array-length-get-err.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-array-length-get-err.js",
+      "bytes": 985,
+      "sha256": "a352e809fd42e1bb8b240bdf7a082607d456143299c1ffb168b4112895b66806"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-array-non-configurable-prop-create.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-array-non-configurable-prop-create.js",
+      "bytes": 1314,
+      "sha256": "2d6c1dd2030e0856e259d175799299784fdc140e637999ff7c0f5c91e86c2ace"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-array-non-configurable-prop-delete.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-array-non-configurable-prop-delete.js",
+      "bytes": 1303,
+      "sha256": "85e1ad418781c995809f606c314180e522274a3988f0a1d8a985c469c4defae0"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-call-args-after-forward-modification.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-call-args-after-forward-modification.js",
+      "bytes": 1369,
+      "sha256": "2c88dd43dafc7185de23f0fb03ea2bfd8e6e932c94cb9bfdb938817bf54e1456"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-call-err.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-call-err.js",
+      "bytes": 672,
+      "sha256": "4f634a900304566b5949eefea5caa939e03ddf721154be7abdf352ee822441e2"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-call-order.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-call-order.js",
+      "bytes": 520,
+      "sha256": "a93935e02c98404293788f82f15c0c73641bdac39f464645232cdf7f899a4257"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-context-source-array-literal.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-context-source-array-literal.js",
+      "bytes": 2387,
+      "sha256": "ea84b49e993be6e1b7b8617903daa54cc19dcf8b27cc6db0a0247a358f350a84"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-context-source-object-literal.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-context-source-object-literal.js",
+      "bytes": 3177,
+      "sha256": "ed57958a6dde5b80e545731ddda59924b8ee3eacdef2fd18ec24f2b683fcb1ac"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-context-source-primitive-literal.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-context-source-primitive-literal.js",
+      "bytes": 2868,
+      "sha256": "e82dd30f25f9238152a3b67c12f192bd0a6ea0cdd32194b36b1766e76daf7b1c"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-forward-modifies-object.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-forward-modifies-object.js",
+      "bytes": 4490,
+      "sha256": "1c96ce668352708285464eda7db0868e7b49f7cccdce4526018deb71292483d8"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-get-name-err.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-get-name-err.js",
+      "bytes": 736,
+      "sha256": "0982623e337203f59b178ad88eb77970838461b0b6c76321372f222687629c0f"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-object-define-prop-err.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-object-define-prop-err.js",
+      "bytes": 1304,
+      "sha256": "46d5fddcc77877421e166d0ec130b0023dbe6064db50fced7e1793102cc70993"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-object-delete-err.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-object-delete-err.js",
+      "bytes": 1165,
+      "sha256": "4c5f90d6c7663de45dbb924d63b9b0088301b7f1b82a298ac0e7862f4488a3a9"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-object-get-prop-from-prototype.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-object-get-prop-from-prototype.js",
+      "bytes": 1241,
+      "sha256": "fec837450824d1829be4cd79ed4d22b7f6da010fc0b838319505faf98525868c"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-object-non-configurable-prop-create.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-object-non-configurable-prop-create.js",
+      "bytes": 1380,
+      "sha256": "0765f5092eede7a0f6a4c9b0cd9b6b9968bae0ae44cb57f8517b82cdbf4ef5f0"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-object-non-configurable-prop-delete.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-object-non-configurable-prop-delete.js",
+      "bytes": 1369,
+      "sha256": "a09681803625617741fcb14e48cb27f6e0915d899b88bc149eb0bac52ff2b2fe"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-object-own-keys-err.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-object-own-keys-err.js",
+      "bytes": 944,
+      "sha256": "43b30b733caf32bb2c6eb017857cb55f5e90ad9aff6fc5346581e72aecc61fbd"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/reviver-wrapper.js",
+      "upstream_path": "test/built-ins/JSON/parse/reviver-wrapper.js",
+      "bytes": 1058,
+      "sha256": "1601cebd99f56e08167fe98916934e91ca87eaa03d19ab991181f129a6c362cb"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/text-negative-zero.js",
+      "upstream_path": "test/built-ins/JSON/parse/text-negative-zero.js",
+      "bytes": 760,
+      "sha256": "efc3fcd94a0601af715a237f9c11e6df3f03e4a85b05ccbe2cb4a088dc523aac"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/text-non-string-primitive.js",
+      "upstream_path": "test/built-ins/JSON/parse/text-non-string-primitive.js",
+      "bytes": 971,
+      "sha256": "3c129fc30c6254035571755df3bcc185f1577c1a139b5d7fccb13d4611934671"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/text-object-abrupt.js",
+      "upstream_path": "test/built-ins/JSON/parse/text-object-abrupt.js",
+      "bytes": 592,
+      "sha256": "783e8f9b18bb08dfc28ec3402cfa79c56294b62b7d422e96954c5ccd5815d73f"
+    },
+    {
+      "path": "test/built-ins/JSON/parse/text-object.js",
+      "upstream_path": "test/built-ins/JSON/parse/text-object.js",
+      "bytes": 701,
+      "sha256": "f14d06f1527302b1a8010c72e65988b31ffcec69072338604bf75617eeca3778"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/builtin.js",
+      "upstream_path": "test/built-ins/JSON/stringify/builtin.js",
+      "bytes": 963,
+      "sha256": "fe5d3ae867616814a0b4cd2f39847cddd88b6eaf45f3eaeff0cb4a909bd8c8c8"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/length.js",
+      "upstream_path": "test/built-ins/JSON/stringify/length.js",
+      "bytes": 703,
+      "sha256": "7e4d827dc9ee7e9a31bbb0a724895e135672229f12e86e15156d288129c1b1bf"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/name.js",
+      "upstream_path": "test/built-ins/JSON/stringify/name.js",
+      "bytes": 843,
+      "sha256": "fec32512851ed2740b4880463eda1ab89de679218e376fb6491ef77ae8448288"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/not-a-constructor.js",
+      "upstream_path": "test/built-ins/JSON/stringify/not-a-constructor.js",
+      "bytes": 858,
+      "sha256": "01f6025f83de0321182b490a7e2bfb7df287340c7e21ebdf9711a2dc752c1f9f"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/prop-desc.js",
+      "upstream_path": "test/built-ins/JSON/stringify/prop-desc.js",
+      "bytes": 608,
+      "sha256": "b303c43940be0b895e01eaf26a47b81116afff7d5869fba3182f4c716a19b5b2"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/property-order.js",
+      "upstream_path": "test/built-ins/JSON/stringify/property-order.js",
+      "bytes": 775,
+      "sha256": "6c59e47f5e5a8b8591ac4cc8b709dc5ad597fdc208c66f73c4e9dd306b9e859d"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-array-abrupt.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-array-abrupt.js",
+      "bytes": 1259,
+      "sha256": "777a144f706ab95c842b84d116fbfb39d6aa676f5ed275fc92960d25ae697010"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-array-duplicates.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-array-duplicates.js",
+      "bytes": 775,
+      "sha256": "96eddcddc1deb1302a8f9d6f05bdddee6c88aea2ee8550eef07e6b9155ccc5cc"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-array-empty.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-array-empty.js",
+      "bytes": 874,
+      "sha256": "a5ca60e336fff16841bc06aa83f1c138a5efb7ab0b73d84f1eec9a7ef7db3d82"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-array-number-object.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-array-number-object.js",
+      "bytes": 895,
+      "sha256": "300cadfec9693d6b56137c3a7783b6fcff1029043346081febff145891a454d1"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-array-number.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-array-number.js",
+      "bytes": 750,
+      "sha256": "102523940797c30c95acbbd5a3aba5132b5f359ea4794f4402e3ff9f7e2cc077"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-array-order.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-array-order.js",
+      "bytes": 900,
+      "sha256": "bae85ab5fd563f632a360e6e3a7160755f3b77849fc2a3645a1a3683fa602441"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-array-proxy-revoked-realm.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-array-proxy-revoked-realm.js",
+      "bytes": 1012,
+      "sha256": "8399da92967e3f80f3824c6c86d33c88047b8d8fb941a83878ecb30f7e8f4c5b"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-array-proxy-revoked.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-array-proxy-revoked.js",
+      "bytes": 906,
+      "sha256": "3b3bd262f84ad2353b6b7941f195f58f7895cc089aa69d70abd2f229588c8d54"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-array-proxy.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-array-proxy.js",
+      "bytes": 947,
+      "sha256": "8344f98e42d001059d4b1e78f999a28c66591834c2cfa38ebd5c8ad4ea11687b"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-array-string-object.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-array-string-object.js",
+      "bytes": 899,
+      "sha256": "65ce333752c3ecc6dbfa58432903abd42685a6b35d200518ef01a854f9996d2b"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-array-undefined.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-array-undefined.js",
+      "bytes": 863,
+      "sha256": "44d2e523de78311fc4429e57143ef4af17dff9d0466e917f851ff76b0c985eef"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-array-wrong-type.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-array-wrong-type.js",
+      "bytes": 921,
+      "sha256": "5526ed1f8fc9d991c9e38f84a994a3ed2b6537622e80a64cdd98ee2158d0e814"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-function-abrupt.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-function-abrupt.js",
+      "bytes": 778,
+      "sha256": "b1ae22d8c2f44b6260700a241ea8507ac323bec8c92e9558c2dab4479ce039d9"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-function-arguments.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-function-arguments.js",
+      "bytes": 1378,
+      "sha256": "0e440db50fd3a74ba7d6064de402c7d6673ca28a0c372835e9770d1f8130f150"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-function-array-circular.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-function-array-circular.js",
+      "bytes": 1048,
+      "sha256": "20492167fd972601fa287b0f7c688726ac7d8fb5f6345220bd1c7759a787fe61"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-function-object-circular.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-function-object-circular.js",
+      "bytes": 1233,
+      "sha256": "a06e28a360693589c8669153aac0b3a8f0cf9d6d3ffc65f8db42ded2673c730f"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-function-object-deleted-property.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-function-object-deleted-property.js",
+      "bytes": 1058,
+      "sha256": "1ba9fe5656818c6f6f350009e791f758ec554fda1c4a8d54323d6bb1d399e9dd"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-function-result-undefined.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-function-result-undefined.js",
+      "bytes": 1046,
+      "sha256": "c3d0a95a594ab584c21007bafe76727a3c930e15c2f7c073f7cab9111116772c"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-function-result.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-function-result.js",
+      "bytes": 1170,
+      "sha256": "ea042114b0e6437f752168701918a1c93c570ec3ce8caf927622033288cfa57c"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-function-tojson.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-function-tojson.js",
+      "bytes": 1317,
+      "sha256": "c56c42c37b481c4e32572b1ec8dbb952eb28930efac4d025db19df24018002c7"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-function-wrapper.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-function-wrapper.js",
+      "bytes": 1026,
+      "sha256": "75f9cf0c2dc65c920e3f6009d015a9fe2a5a7c2ca60bd094d378747c2b342196"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/replacer-wrong-type.js",
+      "upstream_path": "test/built-ins/JSON/stringify/replacer-wrong-type.js",
+      "bytes": 1080,
+      "sha256": "545fa4ff4f0997e8ff2ffc167695ca5d949e94ec04034489a174e6a5b9399630"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/space-number-float.js",
+      "upstream_path": "test/built-ins/JSON/stringify/space-number-float.js",
+      "bytes": 791,
+      "sha256": "436750263b27deda68d31fe06b40c7611e6f8441fb9a5e90e6480e61a84c5a8b"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/space-number-object.js",
+      "upstream_path": "test/built-ins/JSON/stringify/space-number-object.js",
+      "bytes": 1118,
+      "sha256": "be97c44613cade569073d4ee357d538dc7d59bc91ae1577e54d37384de525618"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/space-number-range.js",
+      "upstream_path": "test/built-ins/JSON/stringify/space-number-range.js",
+      "bytes": 841,
+      "sha256": "dbdadc07a578d7f01d3bf8a5795fd41095f1cba3c43b671c8d4d5a5d4be098f7"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/space-number.js",
+      "upstream_path": "test/built-ins/JSON/stringify/space-number.js",
+      "bytes": 854,
+      "sha256": "ea8e33806654a1ea0a133cbea01d127b42dad49569c963168b5b2d3456f26236"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/space-string-object.js",
+      "upstream_path": "test/built-ins/JSON/stringify/space-string-object.js",
+      "bytes": 1164,
+      "sha256": "a993ca055fbc2c908770f0f53ba594cf40b155b160b987f1fd18d30a328169e2"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/space-string-range.js",
+      "upstream_path": "test/built-ins/JSON/stringify/space-string-range.js",
+      "bytes": 736,
+      "sha256": "66bcf5d2b3e2dc7d7506e129cf638ba36a90c24e02e98a1dbd1eb9f1bd0efeec"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/space-string.js",
+      "upstream_path": "test/built-ins/JSON/stringify/space-string.js",
+      "bytes": 919,
+      "sha256": "87779db0a3965a0bbcdf89c6a544d35bed7b03a25f6eb00f07ff20234b65919a"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/space-wrong-type.js",
+      "upstream_path": "test/built-ins/JSON/stringify/space-wrong-type.js",
+      "bytes": 859,
+      "sha256": "7adfc05186dab24b4c11c90966135aac6e5d684b9d060564c1a61ddc67df2f0e"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-array-abrupt.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-array-abrupt.js",
+      "bytes": 1432,
+      "sha256": "fe2670fe62425b23edf6e619be0589cc897391d590f275539c516023e41d02f8"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-array-circular.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-array-circular.js",
+      "bytes": 941,
+      "sha256": "129c94b36b0c9309aa8b5a553d3440d859ac23a55537849d511d179a2cf67af6"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-array-proxy-revoked.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-array-proxy-revoked.js",
+      "bytes": 955,
+      "sha256": "292c836267a100f43730409643e7f9d719bd6767020a6686070e40da05498edd"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-array-proxy.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-array-proxy.js",
+      "bytes": 1304,
+      "sha256": "b0e5e9ee3f3526856c8e1e2bf8d8e3df7ec24caf200cf7e7037922b770691884"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-bigint-cross-realm.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-bigint-cross-realm.js",
+      "bytes": 679,
+      "sha256": "2cab6161a605a562b0090add65df44e0d60dd137c832b08b077e030a79c13d50"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-bigint-order.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-bigint-order.js",
+      "bytes": 1303,
+      "sha256": "7e6531bd5ce035c7483399d6d03009cdce68f9fca78fa80d88d9d428baa5981c"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-bigint-replacer.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-bigint-replacer.js",
+      "bytes": 690,
+      "sha256": "cafd9e9791f204bb1efc971d9ecfa6b61fd4f99d36a87b4f6612bf14471406a8"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-bigint-tojson-receiver.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-bigint-tojson-receiver.js",
+      "bytes": 798,
+      "sha256": "29feda9115f4a6b18137dea6283e4d80d7aae6cda2e086c4f43e62e3710712e2"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-bigint-tojson.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-bigint-tojson.js",
+      "bytes": 604,
+      "sha256": "68ad0b222423646f35141117de96910ff25c8c3b91b7cbacbd1b4fa29ec6ce5e"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-bigint.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-bigint.js",
+      "bytes": 396,
+      "sha256": "40cf5ac386eecc3008915da97786367eb6e3e3baa3ea48fbeef6c0341bd26083"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-boolean-object.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-boolean-object.js",
+      "bytes": 1000,
+      "sha256": "78fbff88eedcf93ac93b608afd1355374f327f2154fc0641bedf836eecb6e0ee"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-function.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-function.js",
+      "bytes": 696,
+      "sha256": "8c97718ab16dc2747771cfb130cd6b535deebcae085103bb4919d087aabace4c"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-number-negative-zero.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-number-negative-zero.js",
+      "bytes": 757,
+      "sha256": "37abdf5aa752c2057f4be49c889a23317df6dab26bf9983ae9a48a43c097342b"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-number-non-finite.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-number-non-finite.js",
+      "bytes": 845,
+      "sha256": "1424ebc5f91d75e3157e27d00bcbbb72b3c2620c59991009eb4d1732356b96ef"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-number-object.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-number-object.js",
+      "bytes": 1389,
+      "sha256": "1f0874144be1df9da88d4583ecfad719a432b70dc1de0eda3188881a7ff5d91b"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-object-abrupt.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-object-abrupt.js",
+      "bytes": 562,
+      "sha256": "796db36af4bc7f473278a43da0318a9e2b226ee1f3c1d886ed6a387c3c5479b2"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-object-circular.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-object-circular.js",
+      "bytes": 952,
+      "sha256": "ab483984e301f98d6f7264f2be8325b3e565fe45fc967ad26151e7a7346822b4"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-object-proxy-revoked.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-object-proxy-revoked.js",
+      "bytes": 937,
+      "sha256": "1f1b955b0f9ac575cdb108563f1a9ed82119573cb1b407829cf807ac95b44b3b"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-object-proxy.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-object-proxy.js",
+      "bytes": 1484,
+      "sha256": "bfd17d2228f37ac678b142833592342cc90a3ae521f0eaf44d86e73f596e722a"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-primitive-top-level.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-primitive-top-level.js",
+      "bytes": 1033,
+      "sha256": "8829b6686a5bc3399edc7a23bf4abe02f5706b0b712d9eec3590e5785c2bc6e8"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-string-escape-ascii.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-string-escape-ascii.js",
+      "bytes": 1735,
+      "sha256": "8185a70c7e050b19f02491618f462f53796bccde59463dfa2fc4dfd0dfd1eb50"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-string-escape-unicode.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-string-escape-unicode.js",
+      "bytes": 1776,
+      "sha256": "a95921cf6d7579ab39c645d41ebd954dadb340cb95a739101ed81ffd2fdebef2"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-string-object.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-string-object.js",
+      "bytes": 1398,
+      "sha256": "a40019566aa1ddaf840e2982977934ca36949aebf1e45e6d680e525dd059405a"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-symbol.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-symbol.js",
+      "bytes": 734,
+      "sha256": "13fd1cb41b67b0f876c6fcb5309540bf5469150bb69db138cb92b9a4bc44f841"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-tojson-abrupt.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-tojson-abrupt.js",
+      "bytes": 850,
+      "sha256": "645a4276d756b95753a93229e3d1b0b0ca5d031844a2f35af1627c448b5986d2"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-tojson-arguments.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-tojson-arguments.js",
+      "bytes": 1188,
+      "sha256": "70b168004784bfcb7ad549cffae8854a8865fe607a5428db52424b5de4ed5f19"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-tojson-array-circular.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-tojson-array-circular.js",
+      "bytes": 1088,
+      "sha256": "88e4838a16bb8a811a7843836d32688e00d1e51614514cf35d3fe3b3ca7422ed"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-tojson-not-function.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-tojson-not-function.js",
+      "bytes": 861,
+      "sha256": "0207ba9ecec0650b33c105c6d46b03b39e1149247eb25dfaf99633d64f0c7c92"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-tojson-object-circular.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-tojson-object-circular.js",
+      "bytes": 1050,
+      "sha256": "1f5384d8fde63369a52d5a5a4949880387d8f2f4bf22213f5cda97abcee30662"
+    },
+    {
+      "path": "test/built-ins/JSON/stringify/value-tojson-result.js",
+      "upstream_path": "test/built-ins/JSON/stringify/value-tojson-result.js",
+      "bytes": 1061,
+      "sha256": "c858bd7398bfa2c77879c51ab296396cde127e674f2c5446edaad9d25f96c85c"
+    },
+    {
+      "path": "test/built-ins/String/fromCharCode/S15.5.3.2_A1.js",
+      "upstream_path": "test/built-ins/String/fromCharCode/S15.5.3.2_A1.js",
+      "bytes": 1344,
+      "sha256": "54e28eddf7243cee34daa745dfb087b9d57566f4d6e00a96da87aa5cfcf43ebc"
+    },
+    {
+      "path": "test/built-ins/String/fromCharCode/S15.5.3.2_A2.js",
+      "upstream_path": "test/built-ins/String/fromCharCode/S15.5.3.2_A2.js",
+      "bytes": 575,
+      "sha256": "00c1ff6fca5d85474287b723fef641ede36f3c6adeb77a2a002493afe26314ff"
+    },
+    {
+      "path": "test/built-ins/String/fromCharCode/S15.5.3.2_A3_T1.js",
+      "upstream_path": "test/built-ins/String/fromCharCode/S15.5.3.2_A3_T1.js",
+      "bytes": 669,
+      "sha256": "3641b08365ac03e7c23b11e7ece561a485572ef7d05f5528b74dc919b0ae2461"
+    },
+    {
+      "path": "test/built-ins/String/fromCharCode/S15.5.3.2_A3_T2.js",
+      "upstream_path": "test/built-ins/String/fromCharCode/S15.5.3.2_A3_T2.js",
+      "bytes": 860,
+      "sha256": "e040aaef48340718ba8c9c3ce93cf43349b39725e2f7424c69ac5dbf176c8ad5"
+    },
+    {
+      "path": "test/built-ins/String/fromCharCode/S15.5.3.2_A4.js",
+      "upstream_path": "test/built-ins/String/fromCharCode/S15.5.3.2_A4.js",
+      "bytes": 773,
+      "sha256": "7bcb3bd2f94cdf45e3d39de84214cea3cc378526a24119a4d4d78f9c91a2a495"
+    },
+    {
+      "path": "test/built-ins/String/fromCharCode/S9.7_A1.js",
+      "upstream_path": "test/built-ins/String/fromCharCode/S9.7_A1.js",
+      "bytes": 2725,
+      "sha256": "fa33134023600d2a8b6e16a09d4501f698ea516b884e98f1296663dae424deaf"
+    },
+    {
+      "path": "test/built-ins/String/fromCharCode/S9.7_A2.1.js",
+      "upstream_path": "test/built-ins/String/fromCharCode/S9.7_A2.1.js",
+      "bytes": 2233,
+      "sha256": "be9763e7a0e81b907445e4d29ebbe86913643618dbbb14070c88f97f302d7bbc"
+    },
+    {
+      "path": "test/built-ins/String/fromCharCode/S9.7_A2.2.js",
+      "upstream_path": "test/built-ins/String/fromCharCode/S9.7_A2.2.js",
+      "bytes": 2805,
+      "sha256": "02a15dd67d2ded2935e45e6de2eceb82fd02c78be8683e059905247bcc5042f6"
+    },
+    {
+      "path": "test/built-ins/String/fromCharCode/S9.7_A3.1_T1.js",
+      "upstream_path": "test/built-ins/String/fromCharCode/S9.7_A3.1_T1.js",
+      "bytes": 667,
+      "sha256": "d2b6a856d46745796a05dbd716dffeef99576f9a02a86aabe64d2a2997b27df2"
+    },
+    {
+      "path": "test/built-ins/String/fromCharCode/S9.7_A3.1_T2.js",
+      "upstream_path": "test/built-ins/String/fromCharCode/S9.7_A3.1_T2.js",
+      "bytes": 665,
+      "sha256": "9f21313c401ed21a9f67c4d65015316427f9680c91fef77cf2525a6e52135742"
+    },
+    {
+      "path": "test/built-ins/String/fromCharCode/S9.7_A3.1_T3.js",
+      "upstream_path": "test/built-ins/String/fromCharCode/S9.7_A3.1_T3.js",
+      "bytes": 671,
+      "sha256": "c7093934890602f1cae419848bcf4396c37f89b77d9d9f416ef5458a9bcb2a31"
+    },
+    {
+      "path": "test/built-ins/String/fromCharCode/S9.7_A3.1_T4.js",
+      "upstream_path": "test/built-ins/String/fromCharCode/S9.7_A3.1_T4.js",
+      "bytes": 3868,
+      "sha256": "fafd56283acebde68181d7044c15257b2209264f6aed2ff5cd0cdffaf5c5ef09"
+    },
+    {
+      "path": "test/built-ins/String/fromCharCode/S9.7_A3.2_T1.js",
+      "upstream_path": "test/built-ins/String/fromCharCode/S9.7_A3.2_T1.js",
+      "bytes": 712,
+      "sha256": "710e9597085c35277b2e21eb8ac82180fb1b406c43dcbae780886153e5763d31"
+    },
+    {
+      "path": "test/built-ins/String/fromCharCode/name.js",
+      "upstream_path": "test/built-ins/String/fromCharCode/name.js",
+      "bytes": 834,
+      "sha256": "1766f0b2d281075da4f2158dd3939d5ad896b774966dc66d9839f3d2e33ef102"
+    },
+    {
+      "path": "test/built-ins/String/fromCharCode/not-a-constructor.js",
+      "upstream_path": "test/built-ins/String/fromCharCode/not-a-constructor.js",
+      "bytes": 876,
+      "sha256": "e6fe8169bf16fb310b078e021e8acc6059b3d464f34dfca3e1301da2b009846d"
+    },
+    {
+      "path": "test/built-ins/String/fromCharCode/touint16-tonumber-throws-bigint.js",
+      "upstream_path": "test/built-ins/String/fromCharCode/touint16-tonumber-throws-bigint.js",
+      "bytes": 852,
+      "sha256": "374745aaea996a4a354b403edbc1ed8a3e6fed99ec451d0c04d8b50265e463a3"
+    },
+    {
+      "path": "test/built-ins/String/fromCharCode/touint16-tonumber-throws-valueof.js",
+      "upstream_path": "test/built-ins/String/fromCharCode/touint16-tonumber-throws-valueof.js",
+      "bytes": 920,
+      "sha256": "1c7d02432cadc671aea390cb69d20f3d129d40a15c2c4c3b6494707a1bcf2840"
+    },
+    {
+      "path": "test/built-ins/String/fromCodePoint/argument-is-Symbol.js",
+      "upstream_path": "test/built-ins/String/fromCodePoint/argument-is-Symbol.js",
+      "bytes": 751,
+      "sha256": "04bc20a3c9d4e278dbdb022549fef0d48893583a9b2326405e19ef5f068696b9"
+    },
+    {
+      "path": "test/built-ins/String/fromCodePoint/argument-is-not-integer.js",
+      "upstream_path": "test/built-ins/String/fromCodePoint/argument-is-not-integer.js",
+      "bytes": 1036,
+      "sha256": "3f56d61be33a58c4f490c32d14bade901b5d8357a972abab3269c8f0f7997c9d"
+    },
+    {
+      "path": "test/built-ins/String/fromCodePoint/argument-not-coercible.js",
+      "upstream_path": "test/built-ins/String/fromCodePoint/argument-not-coercible.js",
+      "bytes": 1160,
+      "sha256": "44d96c7373d12253da59ac2f98acb956ae846a31180dedd6dfe98ee2f7627ae9"
+    },
+    {
+      "path": "test/built-ins/String/fromCodePoint/arguments-is-empty.js",
+      "upstream_path": "test/built-ins/String/fromCodePoint/arguments-is-empty.js",
+      "bytes": 555,
+      "sha256": "1537e8856c73456e41ff1285d1f22813acab08b46f9ab46cc3f516689c67b23b"
+    },
+    {
+      "path": "test/built-ins/String/fromCodePoint/fromCodePoint.js",
+      "upstream_path": "test/built-ins/String/fromCodePoint/fromCodePoint.js",
+      "bytes": 486,
+      "sha256": "582476b8aab649b02a6824333e10f46d04d4bfd12b26f7c4a026a71bc962bef4"
+    },
+    {
+      "path": "test/built-ins/String/fromCodePoint/length.js",
+      "upstream_path": "test/built-ins/String/fromCodePoint/length.js",
+      "bytes": 439,
+      "sha256": "4b144c39fcfebecd30180d0ad8097ab60d29af88f8f409b091261d7e8a492c79"
+    },
+    {
+      "path": "test/built-ins/String/fromCodePoint/name.js",
+      "upstream_path": "test/built-ins/String/fromCodePoint/name.js",
+      "bytes": 503,
+      "sha256": "f7f7bd006bf169ddabf2175b5bc37282e8ee3f05d2906d3479563e106b27038c"
+    },
+    {
+      "path": "test/built-ins/String/fromCodePoint/not-a-constructor.js",
+      "upstream_path": "test/built-ins/String/fromCodePoint/not-a-constructor.js",
+      "bytes": 880,
+      "sha256": "663768f6e34b690530de3085ca3e112d9fdeb0830a111235457f92bca2021413"
+    },
+    {
+      "path": "test/built-ins/String/fromCodePoint/number-is-out-of-range.js",
+      "upstream_path": "test/built-ins/String/fromCodePoint/number-is-out-of-range.js",
+      "bytes": 908,
+      "sha256": "d1be2894720fdedaa794f9ba81db43670e08d91f2872fd9bf77d7298ee734a78"
+    },
+    {
+      "path": "test/built-ins/String/fromCodePoint/return-string-value.js",
+      "upstream_path": "test/built-ins/String/fromCodePoint/return-string-value.js",
+      "bytes": 1061,
+      "sha256": "d0326b936b917badb773fee801308c08cd980b6047afad958dc6f9f85dbe3e15"
+    },
+    {
+      "path": "test/built-ins/String/fromCodePoint/to-number-conversions.js",
+      "upstream_path": "test/built-ins/String/fromCodePoint/to-number-conversions.js",
+      "bytes": 1223,
+      "sha256": "310517c74177f724342809dc23e6a60a8eb6e2e9a9a846d3cfe52da2d3020b0f"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A1.1.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A1.1.js",
+      "bytes": 805,
+      "sha256": "6ec0285b1d3d0a09a69c90071b7ad0730cd4732d32d71cebf11aab85afc94ceb"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A10.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A10.js",
+      "bytes": 1340,
+      "sha256": "8607b4fd68060c64ecbc3b5f0d8cac43c17a8857632ce39c2ad69262a0b9b998"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A11.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A11.js",
+      "bytes": 989,
+      "sha256": "2a0d300077349135cc13e240d000cb9cc0e5aec14920f71eb60afc6f40fd052f"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A1_T1.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A1_T1.js",
+      "bytes": 885,
+      "sha256": "1688cacdb6e9c1611e095c3ab1527dc7dc67afbb0cdb3fd2d5201ef458e0ba40"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A1_T10.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A1_T10.js",
+      "bytes": 708,
+      "sha256": "a1fe78dfbf221c1ec947d4270cb8cf4b3bfa0ba69bbac176efe1de0fd324e83e"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A1_T2.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A1_T2.js",
+      "bytes": 986,
+      "sha256": "202889ff16f8e775f8a95ecfe4d16e440816935cfab75b65094287c721bcfd4a"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A1_T4.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A1_T4.js",
+      "bytes": 650,
+      "sha256": "5b69e2580d17931baf5c9780a1372f863d52077e7e75eae8d8f9f5e09e633a14"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A1_T5.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A1_T5.js",
+      "bytes": 774,
+      "sha256": "dba9bd4da8930a45ae8b3707ba0c1fef042f5174e05b0710114070809481cf5e"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A1_T6.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A1_T6.js",
+      "bytes": 768,
+      "sha256": "b14b70a655583b0ded0c50c08fa0168f1f0d1af98fe9bc537690f78762cc8882"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A1_T7.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A1_T7.js",
+      "bytes": 732,
+      "sha256": "9f9e11e908365fa55a64b9f8e3939a278a750e5a8c1afb665dcd875e0bdb5612"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A1_T8.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A1_T8.js",
+      "bytes": 698,
+      "sha256": "d135f31449a5f4407eea6ce41d850234e43d60326d8119511561e94a19a7a2ef"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A1_T9.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A1_T9.js",
+      "bytes": 769,
+      "sha256": "7f1f1a8b025817f7de2c782f884f6c478513f8b56dec6701e3b40a0e1272ce29"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A2.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A2.js",
+      "bytes": 768,
+      "sha256": "cfab7369316861ab84206c57dc01a99af9ee147f4710b3c467b681ace853b297"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A3.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A3.js",
+      "bytes": 738,
+      "sha256": "0f63095bd236f95a05d2d4ae42d1bab6481b5bafad97f4c62787013210bd6a19"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A4_T1.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A4_T1.js",
+      "bytes": 946,
+      "sha256": "f1f5209224233c438c0761f76c04653701ed690e35b3f15bc08f93b0836cf715"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A4_T2.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A4_T2.js",
+      "bytes": 992,
+      "sha256": "35d441611e2c8dc4a0351ded31b1c493f7e8a8fb68ffb713ad701c0ff94562fc"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A4_T3.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A4_T3.js",
+      "bytes": 996,
+      "sha256": "54c1da05ef5e176794d83f00d1e132743c0cd3dd39219e7e56574dbab8e3dd20"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A5.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A5.js",
+      "bytes": 999,
+      "sha256": "402a50c10f7c99462aafffd07a07046561e7de326324f7a245181dbfad6f2a3d"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A6.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A6.js",
+      "bytes": 633,
+      "sha256": "dfb6cf9eeb15f95e97b88691728f4dc94a676e2c46374d0be6f8862d1f986484"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A7.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A7.js",
+      "bytes": 655,
+      "sha256": "79b023a66d8bb6a5a4f113c4cf3355b6b7253cf1145d1f1af96b21ac79629ad2"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A8.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A8.js",
+      "bytes": 1566,
+      "sha256": "dfc42b6e2b4d8c932778078ff5af7294a66e30ccdb5c2c2c3f0eaef1921685d2"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A9.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S15.5.4.4_A9.js",
+      "bytes": 1477,
+      "sha256": "de430c5a92f574963a4a16623f96c1dc9a81caa0f8efef5e24dfae5e96ae72ac"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S9.4_A1.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S9.4_A1.js",
+      "bytes": 627,
+      "sha256": "5df5b9b1420a1152c0a37f2a60d603e29655a91fe953a733450e024cd9ac3966"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/S9.4_A2.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/S9.4_A2.js",
+      "bytes": 642,
+      "sha256": "400757d1b861aa01636ef29370ebf57deb9903a7eb514542024b27d6f3d25e56"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/name.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/name.js",
+      "bytes": 825,
+      "sha256": "d30ceb1332cbf217d825e2b35aef8c07cb625c7d2f46dcb0eaecd3fa4b3da73d"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/not-a-constructor.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/not-a-constructor.js",
+      "bytes": 900,
+      "sha256": "eeaf511dad653c3d36eea57354c84a5fc454db491c54187fbac881f0bce1fe23"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/pos-coerce-err.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/pos-coerce-err.js",
+      "bytes": 483,
+      "sha256": "494d088f6cb7c1151c48d0e9d41a6ef3d3e5cf4019c6857fe093197bafe3f759"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/pos-coerce-string.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/pos-coerce-string.js",
+      "bytes": 430,
+      "sha256": "0222e335b684f9c86da1e1a312f25d6f9f6b32d1e2480e57f5ae985a42a26743"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/pos-rounding.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/pos-rounding.js",
+      "bytes": 906,
+      "sha256": "09f5e3a97acd6adefd6aaea782a0f09487c3d95935014e0727a8b3b0bd8609b2"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charAt/this-value-not-obj-coercible.js",
+      "upstream_path": "test/built-ins/String/prototype/charAt/this-value-not-obj-coercible.js",
+      "bytes": 544,
+      "sha256": "464552ae7ad6072410b1d5a081f08dd6c0774f56981093f22da55a1b83e3d7f1"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A1.1.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A1.1.js",
+      "bytes": 879,
+      "sha256": "f7d11626996387c73cbbfdaaec24516772da9fd72cf958918cc8ec592acba2b3"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A10.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A10.js",
+      "bytes": 1388,
+      "sha256": "6eb886eca66d3051633014acfe505ee9784f9cf1ee5d16f658f093b2e04c80dc"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A11.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A11.js",
+      "bytes": 1021,
+      "sha256": "3d107233815c10d60a5bf198c48915cfa905811a09daabbaebecd5317b598c9c"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A1_T1.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A1_T1.js",
+      "bytes": 947,
+      "sha256": "7b8856b1f5911f1ac540b6eba3c5ed0aa555b9b2b07b62c9e2306d9dfcb9a901"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A1_T10.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A1_T10.js",
+      "bytes": 730,
+      "sha256": "d9b1c52ac8f73be5b0c4e39d7e492bafa24cdadb74b06503e4fbb3da66e31402"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A1_T2.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A1_T2.js",
+      "bytes": 1602,
+      "sha256": "e21fa72ba83b8000c615d101d4a838709144fdce499cb728b6db8e0dd6d04504"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A1_T4.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A1_T4.js",
+      "bytes": 685,
+      "sha256": "43ae2001be3f3f602209d778f20f209dd0bf7096bd07c0e5c0b8713d38a59ebf"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A1_T5.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A1_T5.js",
+      "bytes": 760,
+      "sha256": "9234be5d614b68bef9de01bea5011c95a710d563e0d71db88f2ff50fd2ed4f50"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A1_T6.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A1_T6.js",
+      "bytes": 802,
+      "sha256": "8755dff3d46c6c0ce17f261f8541ca6613c6baf3a9e0329b88d52a5347499ae7"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A1_T7.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A1_T7.js",
+      "bytes": 766,
+      "sha256": "db261622d446903e8675e41b10365e0ffd7310e5ff16836324b34f6e20346d2e"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A1_T8.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A1_T8.js",
+      "bytes": 732,
+      "sha256": "24725d28ed0fde8e425827513ac2f6bd51e3567bbe7ad93939b3bca458764454"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A1_T9.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A1_T9.js",
+      "bytes": 803,
+      "sha256": "7e43de6923ff6354bcfe35ba52c7c417c741920e3124f0bf0343ad60f9bac763"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A2.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A2.js",
+      "bytes": 495,
+      "sha256": "7eb1cf593c5577dd67fbf38d834956db36bb9c509c007067da3fcecf58139d4b"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A3.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A3.js",
+      "bytes": 424,
+      "sha256": "cfa660c6d75de0fc672d9091f9db92c783d5caf10218295b23ca41aa4fb0255c"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A4.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A4.js",
+      "bytes": 932,
+      "sha256": "96601102e0e2c9f088671ee013d843f52c010d69e199d75eefeea843d37b68ef"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A6.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A6.js",
+      "bytes": 653,
+      "sha256": "f79e2afa462ef0eb87e3b5d8932a7ee747e28318e628878b94d7edde6fc092a1"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A7.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A7.js",
+      "bytes": 581,
+      "sha256": "d455ccc5957d5e40e45795fda8e8536b044c22cba2769eb975d91283ab63a0ba"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A8.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A8.js",
+      "bytes": 1605,
+      "sha256": "fb43a65ebd164d53633193ac3b5599bd0281ff30647bd8e4c177ee6233302987"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A9.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/S15.5.4.5_A9.js",
+      "bytes": 1521,
+      "sha256": "bc9ae268beed4a9fd3cdc56fd7a5a93f5e970cd849746a749aae23bff4b306e0"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/name.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/name.js",
+      "bytes": 845,
+      "sha256": "a7c8dbe5b17a0e967680b2c55fa961cb6504191a31f8800cb5457834a46f8154"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/not-a-constructor.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/not-a-constructor.js",
+      "bytes": 916,
+      "sha256": "d6bdf6a988bcca9db2882e4891107e7a44343947ace5ae03092cfc65ecd5550a"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/pos-coerce-err.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/pos-coerce-err.js",
+      "bytes": 491,
+      "sha256": "ae49212c7d02d8804cdf9a442d56172020b7f8c8b38729e14c17a3b77b9e6401"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/pos-coerce-string.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/pos-coerce-string.js",
+      "bytes": 457,
+      "sha256": "bbfab35f15f7b86d54c77259365199c92535df80dddd51c8c1cbee67bbdadac3"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/pos-rounding.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/pos-rounding.js",
+      "bytes": 979,
+      "sha256": "e1a10338edd67a2cdf64e9e8478a3c9a27556a28976df5933f5d49b2139fdaa5"
+    },
+    {
+      "path": "test/built-ins/String/prototype/charCodeAt/this-value-not-obj-coercible.js",
+      "upstream_path": "test/built-ins/String/prototype/charCodeAt/this-value-not-obj-coercible.js",
+      "bytes": 568,
+      "sha256": "6a8751c48e7c883d1348b3d969e1fcd1f14df6d7bd20867302a407052369a0e0"
+    },
+    {
+      "path": "test/built-ins/String/prototype/codePointAt/codePointAt.js",
+      "upstream_path": "test/built-ins/String/prototype/codePointAt/codePointAt.js",
+      "bytes": 589,
+      "sha256": "56adc68f9d6ba91d808ceb23a7f56c73918fc20861fb1dd37f9e2523567880fd"
+    },
+    {
+      "path": "test/built-ins/String/prototype/codePointAt/length.js",
+      "upstream_path": "test/built-ins/String/prototype/codePointAt/length.js",
+      "bytes": 506,
+      "sha256": "4b82ab01e27295c2689b95a0060f63f431637f648bc183263936d6333f566299"
+    },
+    {
+      "path": "test/built-ins/String/prototype/codePointAt/name.js",
+      "upstream_path": "test/built-ins/String/prototype/codePointAt/name.js",
+      "bytes": 514,
+      "sha256": "086cd96e8c1d17a6780af349d05f10015b36e0fc05c0c98a05d7b3f2be221308"
+    },
+    {
+      "path": "test/built-ins/String/prototype/codePointAt/not-a-constructor.js",
+      "upstream_path": "test/built-ins/String/prototype/codePointAt/not-a-constructor.js",
+      "bytes": 920,
+      "sha256": "92a5f8b26f527feb3724b59294ef7d3ac2353e19ff283ae4a3e9dedfeb54a914"
+    },
+    {
+      "path": "test/built-ins/String/prototype/codePointAt/return-abrupt-from-object-pos-to-integer.js",
+      "upstream_path": "test/built-ins/String/prototype/codePointAt/return-abrupt-from-object-pos-to-integer.js",
+      "bytes": 585,
+      "sha256": "2d13e016f6f608adadae70f82d779ea1305ca586fbeec85804f589db0c26ed16"
+    },
+    {
+      "path": "test/built-ins/String/prototype/codePointAt/return-abrupt-from-symbol-pos-to-integer.js",
+      "upstream_path": "test/built-ins/String/prototype/codePointAt/return-abrupt-from-symbol-pos-to-integer.js",
+      "bytes": 550,
+      "sha256": "8eed28fbb5c8792bacbab98cb22c52395bd466704aea1514bcabb07752230012"
+    },
+    {
+      "path": "test/built-ins/String/prototype/codePointAt/return-abrupt-from-this-as-symbol.js",
+      "upstream_path": "test/built-ins/String/prototype/codePointAt/return-abrupt-from-this-as-symbol.js",
+      "bytes": 523,
+      "sha256": "17053862ac685bc6ee8e4fe5917c93d0420505357b8225f6d7c9946a8e0a7999"
+    },
+    {
+      "path": "test/built-ins/String/prototype/codePointAt/return-abrupt-from-this.js",
+      "upstream_path": "test/built-ins/String/prototype/codePointAt/return-abrupt-from-this.js",
+      "bytes": 538,
+      "sha256": "0c0a91ba19ab6025f5433d340d8c233c66fbc88c60a3fa3746f9b49dea60fc42"
+    },
+    {
+      "path": "test/built-ins/String/prototype/codePointAt/return-code-unit-coerced-position.js",
+      "upstream_path": "test/built-ins/String/prototype/codePointAt/return-code-unit-coerced-position.js",
+      "bytes": 935,
+      "sha256": "7240a5a919f9561de06b1a9f0d82585726435e5ed203e9c5201cd83f4ec968b6"
+    },
+    {
+      "path": "test/built-ins/String/prototype/codePointAt/return-first-code-unit.js",
+      "upstream_path": "test/built-ins/String/prototype/codePointAt/return-first-code-unit.js",
+      "bytes": 1335,
+      "sha256": "db55154534eea222f5d0a07ac6727bfb03105cc4e4475738f08251a3e7f410a5"
+    },
+    {
+      "path": "test/built-ins/String/prototype/codePointAt/return-single-code-unit.js",
+      "upstream_path": "test/built-ins/String/prototype/codePointAt/return-single-code-unit.js",
+      "bytes": 1272,
+      "sha256": "633ea983d8a6d0e19a6eea5cf1eb86da8afd25a88b6fe6ed60bf7f5395f20759"
+    },
+    {
+      "path": "test/built-ins/String/prototype/codePointAt/return-utf16-decode.js",
+      "upstream_path": "test/built-ins/String/prototype/codePointAt/return-utf16-decode.js",
+      "bytes": 1670,
+      "sha256": "3ab42fb5ae478fb230f2d2197fa432aa8eaffe03f34865daf4a29d7cec226c41"
+    },
+    {
+      "path": "test/built-ins/String/prototype/codePointAt/returns-undefined-on-position-equal-or-more-than-size.js",
+      "upstream_path": "test/built-ins/String/prototype/codePointAt/returns-undefined-on-position-equal-or-more-than-size.js",
+      "bytes": 710,
+      "sha256": "f1b02e76f433e28a6f6b2f1a299e15fb38fc50ff570a1c26917a171ab72b3310"
+    },
+    {
+      "path": "test/built-ins/String/prototype/codePointAt/returns-undefined-on-position-less-than-zero.js",
+      "upstream_path": "test/built-ins/String/prototype/codePointAt/returns-undefined-on-position-less-than-zero.js",
+      "bytes": 660,
+      "sha256": "c66bcc050ac6c05bf020190fa70c7f371cfdae9bde36d77f51980e0cb40354c2"
+    },
+    {
+      "path": "test/built-ins/String/prototype/codePointAt/this-is-null-throws.js",
+      "upstream_path": "test/built-ins/String/prototype/codePointAt/this-is-null-throws.js",
+      "bytes": 443,
+      "sha256": "2911935bb153979ae0c0d71cc5432ab19363e15c1c04bfe4cfe3b35952d7b7a7"
+    },
+    {
+      "path": "test/built-ins/String/prototype/codePointAt/this-is-undefined-throws.js",
+      "upstream_path": "test/built-ins/String/prototype/codePointAt/this-is-undefined-throws.js",
+      "bytes": 453,
+      "sha256": "bfb381c9104c129d855289df9e212130af6ef142f3420ed2f4be98ecfc71a7ca"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A10.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A10.js",
+      "bytes": 1329,
+      "sha256": "44475616f76f920fef2bdb566184b2f27790212f101fc49430cc3ecf51a10ed6"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A11.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A11.js",
+      "bytes": 982,
+      "sha256": "9aa3c5015ee2ee6c4d208a4a1c04994d096e713ca977daa04b868b64aa80b481"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T1.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T1.js",
+      "bytes": 763,
+      "sha256": "27684c90efb303825651129284260457b3557896b3d119e1edd26be416a0d558"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T10.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T10.js",
+      "bytes": 961,
+      "sha256": "49bb1a7040d9fb6c78dbd27852ee9af71b534aedd2f5755ae6d2a690ae3e9440"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T11.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T11.js",
+      "bytes": 938,
+      "sha256": "437d381d320892035f6d695bb5bc76d9ba7b7d847e7f834dce184b907692c641"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T12.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T12.js",
+      "bytes": 1102,
+      "sha256": "d0f763509def1aae45b6eba38a3e6442ecebedffea4a355770623127dc9c958d"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T13.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T13.js",
+      "bytes": 1031,
+      "sha256": "db70acec1b783e1deb4f80ba42ad530ff89f59fe8e97aa167a3d0c5807a16fba"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T14.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T14.js",
+      "bytes": 633,
+      "sha256": "1391b8cff3a159c7e877946ecba9ca74204e2153818dec6b876713c87e154683"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T15.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T15.js",
+      "bytes": 774,
+      "sha256": "ace9b2d678bce3c309027bfaeea5df0c090297baa9962689118dda166a746263"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T2.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T2.js",
+      "bytes": 886,
+      "sha256": "fdae4080045133d5ed8a0779692154c1f89d422ccbf1fb2965b7fceb49f56749"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T4.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T4.js",
+      "bytes": 760,
+      "sha256": "1f67b7089a1e53f850b6ceb962193f49d8a2c114fc37a0377ac6553108c83ac0"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T5.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T5.js",
+      "bytes": 969,
+      "sha256": "88c5cd7873892684e25279cdd836e80df26d8239c2bcdafb0bd6f46b97463460"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T6.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T6.js",
+      "bytes": 718,
+      "sha256": "65f8381d2fc6001438cc4f2c0eae969503ad9b1606afc93fb695f72e6c8fd9eb"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T7.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T7.js",
+      "bytes": 681,
+      "sha256": "8f9479e1ecb43683d9fb087c31dea6ec08c2691425f0fa3efd90936bbd1cd87e"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T8.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T8.js",
+      "bytes": 790,
+      "sha256": "e7cf2615aa4ac4b91746603c2b11b306ec3c1dc8435b4cb359a726539ac39d61"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T9.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A1_T9.js",
+      "bytes": 938,
+      "sha256": "cc71e23c5356b35ac48f8e048f93fc890663cb2341b66be0eb433e473b9eda8c"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A2_T1.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A2_T1.js",
+      "bytes": 712,
+      "sha256": "a67639c745e163b519ca8111f07f7ba7f7ebf325300b8ef6e864c1854d210005"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A2_T2.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A2_T2.js",
+      "bytes": 771,
+      "sha256": "d194c8e5097ec8c48124352e33a583d7445eefb5c34a4c80e609dfae5f319732"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A2_T3.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A2_T3.js",
+      "bytes": 655,
+      "sha256": "ac1a43599747c474e0667a72cb22bf3d3a82eb90ecb296e24f02bc2587e055da"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A2_T4.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A2_T4.js",
+      "bytes": 723,
+      "sha256": "0047b2f6cac0838d5c3dc1d365571d36f85e0959bdb13cd7ee1ac127a782c021"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A2_T5.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A2_T5.js",
+      "bytes": 743,
+      "sha256": "4b48d7a5736c5b3cd56a9d4f7b27cfe068d39e41bf1e7f2b0589f0c556a4eb1a"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A2_T6.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A2_T6.js",
+      "bytes": 718,
+      "sha256": "2a16e34c2ba7641f624522e410742aa4a90b6afedf7efb3bee267bd1d5d86aa0"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A2_T7.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A2_T7.js",
+      "bytes": 809,
+      "sha256": "a73f6d370749e123fceefd3333f92e7506e848a293bd74d3425685c89a3a0a5a"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A2_T8.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A2_T8.js",
+      "bytes": 760,
+      "sha256": "23a836fa78fd14172c505203cfe0c05612ac579721c6253dff3a2839122078f4"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A2_T9.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A2_T9.js",
+      "bytes": 751,
+      "sha256": "29179f9094db2774895e27bc69ed123b92fa7f67b9cc9690554e38ae68042337"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A3_T1.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A3_T1.js",
+      "bytes": 776,
+      "sha256": "1cf62741843ca28dde5caa70a6d98219ca1c6d3156188df96764f52dd9a63cfe"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A3_T2.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A3_T2.js",
+      "bytes": 907,
+      "sha256": "ce29a1e997eb489dd21e73667a1e60cc9ed76ef54511133bf711948d94f37898"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A3_T3.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A3_T3.js",
+      "bytes": 952,
+      "sha256": "1339ae3befbc075485a54a711904b274eb804d68f6ddc2c7301d18e16f5660ac"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A3_T4.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A3_T4.js",
+      "bytes": 937,
+      "sha256": "e072fe525528ee743453378f80d7b682e6751122249ca64d066ace892d58c0f5"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A6.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A6.js",
+      "bytes": 629,
+      "sha256": "dcde81fcad5cd5d592d10742fc365970c190a5475a4d4d9659ebc58e53211718"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A7.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A7.js",
+      "bytes": 394,
+      "sha256": "d2d7a7b8a402bf9e6034ca2c6f4fd4ea91348b653901fe52c5983e009751eca0"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A8.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A8.js",
+      "bytes": 1482,
+      "sha256": "7595f95bcb1b1b82fb59f61cb28aaa4061bbc885f5c91abf2262273cf40b41b2"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/S15.5.4.13_A9.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/S15.5.4.13_A9.js",
+      "bytes": 1467,
+      "sha256": "07ea195af6f8706927ab11f4d641e01be7290941e5e753857ac490303c57998c"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/name.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/name.js",
+      "bytes": 828,
+      "sha256": "311e4f6f9cfb7cb46dc0c6f363408ae7a17736acbe14e3d04daf0b1e61149269"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/not-a-constructor.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/not-a-constructor.js",
+      "bytes": 896,
+      "sha256": "4d4608a7274a710615243bdb9976eac79c3a7712127ac346007345a41fd7f29e"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/this-value-not-obj-coercible.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/this-value-not-obj-coercible.js",
+      "bytes": 538,
+      "sha256": "0a722e32d02bdba6d06955677915f10f0e50555e09d1b56f09951c6017a5916b"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/this-value-tostring-throws-symbol.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/this-value-tostring-throws-symbol.js",
+      "bytes": 671,
+      "sha256": "697c9e0c61f14eeae92e8ffcc9308657f1bd1da23884f00bffcc85c862ee6ee4"
+    },
+    {
+      "path": "test/built-ins/String/prototype/slice/this-value-tostring-throws-toprimitive.js",
+      "upstream_path": "test/built-ins/String/prototype/slice/this-value-tostring-throws-toprimitive.js",
+      "bytes": 669,
+      "sha256": "4b399549ca97b9dcc4725be7d1e1d0186d9c4ac73f4695888d76767be3342d12"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A10.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A10.js",
+      "bytes": 1377,
+      "sha256": "0fd2593a1d09c2fed2d0fde795953666b549cc211e52f4fe4b02b8b3d6a903e7"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A11.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A11.js",
+      "bytes": 1014,
+      "sha256": "309fc56f918641cea205443e8611a6da95a2fbcaadbb7aea954fdad5eb916e48"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T1.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T1.js",
+      "bytes": 795,
+      "sha256": "2603cf7cc25760eea2d9356d664e32e195f4f8307984837093c52e8af2d1b230"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T10.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T10.js",
+      "bytes": 982,
+      "sha256": "ed87831b1d38e8201af7e99e712503c07a35c9830897f4a51e5b395e52a58b02"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T11.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T11.js",
+      "bytes": 947,
+      "sha256": "2482bde491c0f52a8996022e3ca6d462f62a74ed35d5c9a06bb76676222b00ca"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T12.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T12.js",
+      "bytes": 1110,
+      "sha256": "ab1994a85defc8f299ec0ecadaa89f825d27d7ed916faea0eae305712cf54717"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T13.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T13.js",
+      "bytes": 1067,
+      "sha256": "b25e3e2e852b84f2e09bff5cbe312a3064a749031e80b506bfff709d966cfed2"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T14.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T14.js",
+      "bytes": 649,
+      "sha256": "1cb5d8880c0056b4781e8be56f4af96adc1dd22a6b16b7f46079db839b61837e"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T15.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T15.js",
+      "bytes": 818,
+      "sha256": "8e8abd972420111b8012def17f90a405d470c874ea2b32c73c03cab301b256f3"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T2.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T2.js",
+      "bytes": 918,
+      "sha256": "32ebc620ad67eacd50d619da1812075eeb95e1ddf8ea2bff204fdd18178472b2"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T4.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T4.js",
+      "bytes": 734,
+      "sha256": "9bf9c2c32206d9b3c6af0ca156e8b87d7d3978153a803ffaaedaac7e9a04e5bb"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T5.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T5.js",
+      "bytes": 949,
+      "sha256": "767ea009dd9b382eecc480a2b557a4768054c87e777beb0e6c77614757e27d9f"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T6.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T6.js",
+      "bytes": 697,
+      "sha256": "1498ceda0dac32bdf9313d0019498fff8173efd5f51b2895d126f8109c644563"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T7.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T7.js",
+      "bytes": 666,
+      "sha256": "254e3923f0cd22da8e9624b831a8b276705717905190993e86cce8518d956203"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T8.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T8.js",
+      "bytes": 793,
+      "sha256": "30d57077494ec179eef585f752812da1d431af68f4b3b6e351f7888f604b86ae"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T9.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A1_T9.js",
+      "bytes": 949,
+      "sha256": "70273c2a3835f8eb3cecd39cf34bb963fdca18dcac913a1d4242d448fbd5e08d"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A2_T1.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A2_T1.js",
+      "bytes": 732,
+      "sha256": "73ec790bf646ea8b64714d820283ea77482c607642e90fc6ab8d6e67623dec37"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A2_T10.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A2_T10.js",
+      "bytes": 719,
+      "sha256": "6222339d5c7d7d9da9d16c62d947da37996f8ae328a6c04dde6c9fc3863777ef"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A2_T2.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A2_T2.js",
+      "bytes": 787,
+      "sha256": "c2173dd03b3cb36aca80a84fdfe423113d005160758416b94782c53fdb9d9024"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A2_T3.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A2_T3.js",
+      "bytes": 675,
+      "sha256": "458bd1b9545c733227ca1d47f1bf76447e4a1a2ab92d721b84148839389890ce"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A2_T4.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A2_T4.js",
+      "bytes": 785,
+      "sha256": "857fa3ca86f72013fe3d6d2cf189c562e1d8e91ccc53eee185695d9d646f2f9b"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A2_T5.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A2_T5.js",
+      "bytes": 759,
+      "sha256": "075699782b106541783896551af652fe2ede0f84572f851e9402669a28232b56"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A2_T6.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A2_T6.js",
+      "bytes": 734,
+      "sha256": "5a14cb7ff60ceea223eb2e630e33428fe8d1275ec70ed99865f7f3ce30c58f0d"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A2_T7.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A2_T7.js",
+      "bytes": 825,
+      "sha256": "3ff3e00b1ac826f8028c24fda0935f161c3c54fbe2e6b2ed5ae12d15bc47fa03"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A2_T8.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A2_T8.js",
+      "bytes": 822,
+      "sha256": "6e729759e301ba7943ba95660dc2396ed06e0b05765abbe3cb84fedb8ce4e341"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A2_T9.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A2_T9.js",
+      "bytes": 767,
+      "sha256": "853e8ac85659553b64324793e310c50097c2c5750c500588a3bd8ced004e050b"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T1.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T1.js",
+      "bytes": 983,
+      "sha256": "38ea6c8872be0f1376e2d6521f452bc03a20a031177d03abf0c98361506fca1f"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T10.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T10.js",
+      "bytes": 978,
+      "sha256": "0cf4ae9361496fe235319b74bd8e40aa5b053bfcd46b022ce49244a9006cb630"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T11.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T11.js",
+      "bytes": 987,
+      "sha256": "a668421a7783b78c1f1474ffbfe0a9170700618e0abf01adab3b997941fa9396"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T2.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T2.js",
+      "bytes": 955,
+      "sha256": "64b182a1bde35bc4f82dd39b7a4401b6cf44665ede91d0487d98db8299b9da0e"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T3.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T3.js",
+      "bytes": 936,
+      "sha256": "f4696bc1ca6922145f55a2d4f04d6dae945f73f46c3ef35a4860cd7a24fe414f"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T4.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T4.js",
+      "bytes": 928,
+      "sha256": "aa4428218c12ea6cd48e1e1cf78605c8f4cb0ac28e29ffb30dacc830390e8b66"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T5.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T5.js",
+      "bytes": 902,
+      "sha256": "77bdb143d1779ac6245cea95306f16e0df5c81d89f46aecc0505dac13cc97bd5"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T6.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T6.js",
+      "bytes": 1006,
+      "sha256": "a71110bf770cfbce30b0ce3d2ee3113eeb8d7a78225ac8f5de29456cfb29059c"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T7.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T7.js",
+      "bytes": 1021,
+      "sha256": "aabc57df4a1cec6114be1babd676e176febd58318c72226832f64b2f0d9b0522"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T8.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T8.js",
+      "bytes": 937,
+      "sha256": "25ed4b9b1502901e8d14d56e45e62c25bed80dc7d8c986183e8ebc4ede004944"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T9.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A3_T9.js",
+      "bytes": 909,
+      "sha256": "b07dd3fc35c2290dc6b728a77af894fd4ba7dba4fd82826abea972c6694a8e8e"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A6.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A6.js",
+      "bytes": 649,
+      "sha256": "f80218e129ac918cfcc395939af5d7c36d15b8943ad3efe3185d58c05b38f671"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A7.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A7.js",
+      "bytes": 668,
+      "sha256": "c298920bbb9b3cacbd84285fb30830a2926dcd7e75eee3c5139169ebd37444ad"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A8.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A8.js",
+      "bytes": 1517,
+      "sha256": "6e04d82906a416fed8108be22e4a6c2727c4ae5ee8412feb9614feb0c4e513c4"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/S15.5.4.15_A9.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/S15.5.4.15_A9.js",
+      "bytes": 1511,
+      "sha256": "5313633ef461e5bc850e59a78758c8cb8c890fcfac6394cb8c35a67cf161dad2"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/name.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/name.js",
+      "bytes": 848,
+      "sha256": "947047c5547d61facab1e12670e3feded527f1f504cfb06666fca4a5f21b5d25"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/not-a-constructor.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/not-a-constructor.js",
+      "bytes": 912,
+      "sha256": "8663d3711492f125c04e4cc77e21f29d0615d59301029be2b5612262a7655939"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/this-value-not-obj-coercible.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/this-value-not-obj-coercible.js",
+      "bytes": 568,
+      "sha256": "ad1ec5e003d3652c6e20c57eb90db2d28c4ef9c152695c7c58e4db8ece1e5f5d"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/this-value-tostring-throws-symbol.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/this-value-tostring-throws-symbol.js",
+      "bytes": 691,
+      "sha256": "6542a2c1d0059cad4eb36f58e78970c12ec7dc439ae13d368938669e400c333c"
+    },
+    {
+      "path": "test/built-ins/String/prototype/substring/this-value-tostring-throws-toprimitive.js",
+      "upstream_path": "test/built-ins/String/prototype/substring/this-value-tostring-throws-toprimitive.js",
+      "bytes": 689,
+      "sha256": "8c9c746cb4aa81a37e99b90ddb8607733140db0060d0a2ca18ed12ecfbf427f1"
+    }
+  ]
+}

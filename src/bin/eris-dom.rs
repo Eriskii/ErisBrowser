@@ -1,5 +1,5 @@
 //! Tree-only conformance adapter. Input is never executed or fetched.
-use eris::dom::{Document, MAX_NODES, NodeKind};
+use eris::dom::{AttributeNamespace, Document, MAX_NODES, Namespace, NodeKind};
 use std::io::{self, Read, Write};
 
 fn main() {
@@ -68,8 +68,31 @@ fn serialize(document: &Document) -> Result<String, String> {
         match &node.kind {
             NodeKind::Document => return Err("nested document node".into()),
             NodeKind::Element(element) => {
-                writeln!(out, "{prefix}<{}>", element.tag).map_err(|e| e.to_string())?;
-                let mut attributes = element.attrs.iter().collect::<Vec<_>>();
+                let namespace = match element.namespace {
+                    Namespace::Html => "",
+                    Namespace::Svg => "svg ",
+                    Namespace::MathMl => "math ",
+                };
+                writeln!(out, "{prefix}<{namespace}{}>", element.tag).map_err(|e| e.to_string())?;
+                let mut attributes = element
+                    .attrs
+                    .iter()
+                    .map(|(name, value)| {
+                        let (namespace, local_name) = match element.attr_namespaces.get(name) {
+                            Some(AttributeNamespace::XLink) => {
+                                ("xlink ", name.strip_prefix("xlink:").unwrap_or(name))
+                            }
+                            Some(AttributeNamespace::Xml) => {
+                                ("xml ", name.strip_prefix("xml:").unwrap_or(name))
+                            }
+                            Some(AttributeNamespace::Xmlns) => {
+                                ("xmlns ", name.strip_prefix("xmlns:").unwrap_or(name))
+                            }
+                            None => ("", name.as_str()),
+                        };
+                        (format!("{namespace}{local_name}"), value)
+                    })
+                    .collect::<Vec<_>>();
                 attributes
                     .sort_by(|(left, _), (right, _)| left.encode_utf16().cmp(right.encode_utf16()));
                 for (name, value) in attributes {
@@ -106,6 +129,17 @@ fn serialize(document: &Document) -> Result<String, String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn foreign_namespaces_and_adjusted_attribute_names_are_sorted_exactly() {
+        let document = Document::parse(
+            "<svg xml:base xml:lang xml:space xml:baaah definitionurl xmlns='u' xmlns:xlink='x'><foreignObject><p>html</p></foreignObject></svg>",
+        );
+        let dump = serialize(&document).unwrap();
+        assert_eq!(
+            dump,
+            "| <html>\n|   <head>\n|   <body>\n|     <svg svg>\n|       definitionurl=\"\"\n|       xml lang=\"\"\n|       xml space=\"\"\n|       xml:baaah=\"\"\n|       xml:base=\"\"\n|       xmlns xlink=\"x\"\n|       xmlns xmlns=\"u\"\n|       <svg foreignObject>\n|         <p>\n|           \"html\"\n"
+        );
+    }
     #[test]
     fn serializer_does_not_escape_or_discard_node_data() {
         let mut document = Document::parse("");

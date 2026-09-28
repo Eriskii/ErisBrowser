@@ -8,7 +8,7 @@
 
 use eris::{
     css::{self, ComputedStyle, Length},
-    dom::Document,
+    dom::{AttributeNamespace, Document, NodeKind},
     graphics::{Canvas, Color, DrawCommand, Fonts, ImageStore, Rect},
     layout,
     script::Runtime,
@@ -27,6 +27,10 @@ const DEFAULT_SEED: u64 = 0xe215_2026;
 const SCRIPT_DOCUMENT: &str = "<!doctype html><body><button id='go'>Go</button><div id='out'>Initial</div><input id='field' value='test'></body>";
 
 const HTML_SEEDS: &[&str] = &[
+    "<svg xmlns='http://www.w3.org/2000/svg' viewbox='0 0 120 80' preserveaspectratio='xMidYMid meet'><g xml:lang='en'><foreignobject x=4 y=4 width=100 height=60><p>HTML <b>integration</b><svg><title>Nested SVG</title><circle r=5 /></svg></p></foreignobject></g></svg><p>After SVG</p>",
+    "<math><mi>x<b>HTML text integration</b><mglyph src='none' /></mi><annotation-xml encoding='TEXT/HTML'><p>Annotation <svg><desc><em>HTML inside SVG description</em></desc></svg></p></annotation-xml><mtext><span>text</span></mtext></math>",
+    "<svg><g><![CDATA[<& raw text \0 and 🦀]]><title>title &amp; text</title></g><p>HTML breakout</p></svg><math><mrow><![CDATA[<math & data>]]></mrow><font color=red>Breakout</font></math>",
+    "<svg xmlns:xlink='http://www.w3.org/1999/xlink'><defs><lineargradient id=paint gradientunits=userSpaceOnUse gradienttransform='rotate(5)' xlink:href='#base'><stop offset='0'/></lineargradient></defs><text textlength=30 lengthadjust=spacingAndGlyphs xml:space=preserve>A B</text></svg><math definitionurl='example' xml:lang=fr><mi>x</mi></math>",
     "<!DOCTYPE html PUBLIC 'example' 'system'><!--before--><?eris check?><table>fostered<tr><td>one<td>two</table><noscript><p>fallback</p></noscript><!--after-->",
     "<style>body{margin:0}.clip{overflow:hidden;width:100px;height:50px;padding:3px;background:#eee}.wide{width:240px;height:90px;background:#d93}.inner{overflow:clip;width:40px;height:20px}</style><div class=clip><div class=wide><div class=inner><a href='/next'>Clipped text content</a></div></div></div>",
     "<!doctype html><style>body{margin:8px;background:#eef}h1{font-size:24px}p{color:#135;line-height:1.4}</style><h1>Render 🦀</h1><p>Hello <strong>bold</strong> café &amp; 日本語</p>",
@@ -39,6 +43,9 @@ const HTML_SEEDS: &[&str] = &[
     "<style>.a{position:relative;left:-2px;top:3px;width:90%;max-width:150px;min-height:20px}.b{font-size:125%;vertical-align:middle}a[href^='https']{color:rebeccapurple}</style><p class=a>Text <span class=b>large</span> <a href=https://example.com>link</a></p><img width=16 height=16 alt=missing>",
 ];
 const SCRIPT_SEEDS: &[&str] = &[
+    "function Palette(n){this.step=n;} Palette.prototype.advance=function(){this.step++;switch(this.step%3){case 0:return 'seafoam';case 1:return 'amber';default:return 'iris';}}; const palette=new Palette(0);document.getElementById('go').onclick=function(){document.getElementById('out').textContent=palette.advance()+' '+(palette instanceof Palette)+' '+(Object.getPrototypeOf(palette)===Palette.prototype);};",
+    "let names=[];try{throw new TypeError('explicit');}catch(error){names.push(error.name);names.push(error instanceof Error);}try{null.property;}catch(error){names.push(error.constructor===TypeError);}try{const values=[];values.length=-1;}catch(error){names.push(error.name);}finally{document.getElementById('out').textContent=names.join('/');}",
+    "document.getElementById('out').innerHTML='<svg viewBox=\"0 0 20 20\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"><g xml:lang=\"en\"><circle id=\"dot\" r=\"8\" xlink:href=\"#self\" /></g></svg><math><mi>x</mi></math>';const dot=document.getElementById('dot');dot.setAttribute('fill','coral');dot.setAttribute('xlink:href','#changed');document.getElementById('field').value=dot.namespaceURI;",
     r#"const decoded = JSON.parse('{"message":"héllo","values":[1,2,null]}', function(key,value){if(key==='message'){return value.toUpperCase();}return value;}); document.getElementById('out').textContent=JSON.stringify(decoded,null,2);"#,
     "let value = ''; try { throw {name:'test', number:4}; } catch (error) { value = error.name; } finally { value += '-done'; } document.getElementById('out').textContent = value;",
     "let sum = 0; for (let i = 0; i < 6; i++) { sum += i; } document.getElementById('out').textContent = String(sum);",
@@ -51,6 +58,8 @@ const SCRIPT_SEEDS: &[&str] = &[
     "let n = 4; while (n > 0) { n--; } const text = '12.5e2 trailing'; document.querySelector('#out').textContent = parseFloat(text);",
 ];
 const SVG_SEEDS: &[&str] = &[
+    "<svg width='128' height='96' viewBox='0 0 20 20' preserveAspectRatio='xMaxYMin slice' xmlns:xlink='http://www.w3.org/1999/xlink'><desc><![CDATA[foreign < & text]]></desc><g xml:lang='en'><rect width='20' height='20' fill='#246'/><circle cx='10' cy='10' r='6' fill='gold' xlink:href='#unused'/></g></svg>",
+    "<svg width='128' height='96' viewBox='0 0 40 10' preserveAspectRatio='none'><rect width='40' height='10' fill='#def'/><foreignObject width='20' height='10'><p>HTML integration</p></foreignObject><path d='M0 0 L40 10' stroke='#123' fill='none'/></svg>",
     "<svg width='128' height='96' viewBox='0 0 128 96'><rect x='4' y='4' width='120' height='88' rx='8' fill='#243'/><circle cx='64' cy='48' r='28' fill='orange'/></svg>",
     "<svg width='128' height='96'><g transform='translate(10 8) rotate(5)' fill='blue' opacity='.6'><rect width='50' height='40'/><ellipse cx='70' cy='55' rx='30' ry='20' fill='red'/></g></svg>",
     "<svg width='128' height='96'><path d='M8 48 C8 0 120 0 120 48 Q64 96 8 48Z' fill='coral' stroke='black' stroke-width='2'/></svg>",
@@ -284,6 +293,15 @@ fn dom_invariants(document: &Document) -> Result<(), String> {
     }
     let mut incoming = vec![0usize; document.nodes.len()];
     for (id, node) in document.nodes.iter().enumerate() {
+        if let NodeKind::Element(element) = &node.kind {
+            for (name, namespace) in &element.attr_namespaces {
+                if !element.attrs.contains_key(name)
+                    || AttributeNamespace::from_qualified_name(name) != Some(*namespace)
+                {
+                    return Err(format!("inconsistent attribute namespace on DOM node {id}"));
+                }
+            }
+        }
         for child in &node.children {
             if *child >= document.nodes.len()
                 || *child == id
@@ -596,4 +614,36 @@ fn run() -> Result<(), String> {
         rejected[2]
     );
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn namespace_invariants_reject_orphaned_and_mismatched_metadata() {
+        let document = Document::parse(
+            "<svg xmlns:xlink='http://www.w3.org/1999/xlink'><g xml:lang=en xlink:href='#x'/></svg>",
+        );
+        assert!(dom_invariants(&document).is_ok());
+        let group = document.query_selector("g").unwrap();
+        for orphaned in [false, true] {
+            let mut invalid = document.clone();
+            let NodeKind::Element(element) = &mut invalid.nodes[group].kind else {
+                unreachable!();
+            };
+            if orphaned {
+                element.attrs.remove("xlink:href");
+            } else {
+                element
+                    .attr_namespaces
+                    .insert("xlink:href".into(), AttributeNamespace::Xml);
+            }
+            assert!(
+                dom_invariants(&invalid)
+                    .unwrap_err()
+                    .contains("attribute namespace")
+            );
+        }
+    }
 }

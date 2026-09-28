@@ -39,6 +39,88 @@ fn script_click_flows_through_dom_style_layout_and_pixels() {
     );
     assert_eq!(c.pixels[20 * 200 + 20], 0x0000ff);
 }
+
+#[test]
+fn namespace_demo_rebuilds_svg_with_a_prototype_switch_and_paints_each_palette() {
+    use eris::dom::Namespace;
+
+    let mut p = Page::from_html(
+        Url::parse("https://example.test/namespaces.html").unwrap(),
+        include_str!("../examples/namespaces.html"),
+        true,
+    );
+    assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+    let initial_svg = p.document.query_selector("#scene").unwrap();
+    let initial_key = format!("eris-inline-svg:{initial_svg}");
+    let initial_image = &p.images[&initial_key];
+    assert_eq!((initial_image.width, initial_image.height), (760, 240));
+    // The 380:160 viewBox meets a 760:240 viewport with transparent side bands.
+    // This checks that the adjusted preserveAspectRatio attribute reaches SVG paint.
+    let side_pixel = (120 * 760 + 40) * 4;
+    assert_eq!(&initial_image.rgba[side_pixel..side_pixel + 4], &[0; 4]);
+    let center_pixel = (120 * 760 + 215) * 4;
+    assert_eq!(
+        &initial_image.rgba[center_pixel..center_pixel + 4],
+        &[0x5b, 0xd4, 0xba, 255]
+    );
+
+    let button = p.document.query_selector("#advance").unwrap();
+    let fonts = Fonts::new();
+    let mut canvas = Canvas::new(960, 900).unwrap();
+    for (step, name, fill, rgb) in [
+        (1, "Amber", "#ffc46b", 0xffc46b),
+        (2, "Iris", "#b7a5f5", 0xb7a5f5),
+        (3, "Seafoam", "#5bd4ba", 0x5bd4ba),
+    ] {
+        assert!(p.click(button).is_none());
+        assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+        let svg = p.document.query_selector("#scene").unwrap();
+        let accent = p.document.query_selector("#accent").unwrap();
+        assert_ne!(svg, initial_svg);
+        assert_eq!(p.document.namespace(svg), Some(Namespace::Svg));
+        assert_eq!(p.document.namespace(accent), Some(Namespace::Svg));
+        assert_eq!(p.document.attr(svg, "viewBox"), Some("0 0 380 160"));
+        assert_eq!(p.document.attr(svg, "viewbox"), None);
+        assert_eq!(
+            p.document.attr(svg, "preserveAspectRatio"),
+            Some("xMidYMid meet")
+        );
+        assert_eq!(p.document.attr(accent, "fill"), Some(fill));
+        for (selector, expected) in [
+            ("#state", format!("{name} / update {step}")),
+            ("#namespace", Namespace::Svg.uri().to_owned()),
+            ("#viewport", "0 0 380 160 / xMidYMid meet".to_owned()),
+            (
+                "#runtime",
+                format!(
+                    "SceneCycle instance: true / prototype method / switch case {}",
+                    step % 3
+                ),
+            ),
+        ] {
+            assert_eq!(
+                p.document
+                    .text_content(p.document.query_selector(selector).unwrap()),
+                expected
+            );
+        }
+        assert!(!p.images.contains_key(&initial_key));
+        assert_eq!(p.images.len(), 1, "removed SVG rasters must be released");
+        canvas.clear(Color::WHITE);
+        canvas.paint(
+            &p.layout(960.0, 900.0, &fonts).commands,
+            &fonts,
+            &p.images,
+            0.0,
+            0.0,
+        );
+        assert!(
+            canvas.pixels.iter().filter(|pixel| **pixel == rgb).count() > 8_000,
+            "the {name} SVG palette must reach the page canvas"
+        );
+    }
+}
+
 #[test]
 fn form_get_serializes_successful_controls_and_clicks_do_not_submit_text_inputs() {
     let mut p = page(

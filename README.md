@@ -12,6 +12,7 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 ./run.sh ./examples/forms.html
 ./run.sh ./examples/standards.html
 ./run.sh ./examples/unicode.html
+./run.sh ./examples/namespaces.html
 ```
 
 The launcher builds the release executable and exposes installed desktop libraries on NixOS. Rust, Cargo, Python 3, and a Wayland or X11 desktop are required. Native browsing currently requires Linux with Landlock ABI 6 enabled (normally kernel 6.12 or newer), mounted procfs, and seccomp support; sandbox setup fails closed. The validated platform is x86-64 Linux. Fonts are bundled. On a conventional desktop with the shared libraries available:
@@ -47,7 +48,7 @@ cargo run --locked --release -- --benchmark 100 --output artifacts/benchmark.png
 
 `--dump-dom` prints the resulting DOM. `--window-screenshot artifacts/window.png --exit-after 5` captures the browser's own framebuffer during a short native-window smoke test. Run `--help` for CLI details.
 
-The native UI loads each document in a fresh child process. Its address bar, clipboard and software painter stay in the UI process; only validated document and drawing snapshots cross the pipe. See [the security boundary](docs/SECURITY.md) for remaining gaps.
+The native UI loads each document in a fresh child process. Its address bar, clipboard and software painter stay in the UI process; a separate broker supplies resources and authoritative redirect URLs, while validated document and drawing snapshots return from the renderer. The renderer cannot directly read files or open sockets. See [the security boundary](docs/SECURITY.md) for remaining gaps.
 
 For a JSON report covering the home, gallery, and form fixtures, run `python3 tools/benchmark.py`.
 
@@ -63,15 +64,18 @@ cargo test --locked -- --include-ignored
 cargo build --locked --release
 python3 tools/reftest.py --binary target/release/eris-browser
 python3 tools/html_conformance.py --baseline tests/conformance/html-tree-current.json
+python3 tools/test262_conformance.py --baseline tests/conformance/test262-current.json
 python3 -m unittest discover -s tools -p 'test_*.py'
 cargo run --locked --release --bin eris-stress -- 5000
 ```
 
 Network and sandbox integration tests explicitly opt in: they bind temporary loopback HTTP servers or require the Linux sandbox features above. They require no public network. Other tests cover parser recovery, selectors and cascade, box layout, DOM/script interaction, script exhaustion, file scopes, geometry and raster limits. Reference tests compare independently constructed pages pixel-for-pixel with this renderer. They are a small self-authored suite, not a claim to pass the Web Platform Tests. The deterministic stress harness mutates HTML/CSS, script, and SVG seeds and checks bounded-output invariants; it is smoke fuzzing, not coverage-guided fuzzing.
 
-The [validation record](docs/VALIDATION.md) lists observed results and their limits. A pinned upstream HTML tree corpus now provides exact-tree comparisons and a regression baseline; [its documentation](tests/conformance/README.md) records all mismatches, unsupported modes, and untested semantics. It is not a full WPT runner or platform-wide pass rate.
+The [validation record](docs/VALIDATION.md) lists observed results and their limits. A pinned upstream HTML tree corpus now provides exact-tree comparisons and a regression baseline; [its documentation](tests/conformance/README.md) records all mismatches, unsupported modes, and untested semantics. A pinned [Test262 selection](tests/conformance/test262.md) runs unchanged upstream tests and assertion harnesses with explicit failure/unsupported categories. Neither runner establishes platform-wide compatibility.
 
 ## Implementation
+
+The [architecture notes](docs/ARCHITECTURE.md) describe the page pipeline and native process boundaries.
 
 | Module | Responsibility |
 |---|---|
@@ -90,4 +94,4 @@ The [validation record](docs/VALIDATION.md) lists observed results and their lim
 
 Infrastructure dependencies provide TLS/HTTP (`ureq`/`rustls`), URLs (`url`), character encodings, font outline rasterization (`ab_glyph`), image codecs (`image`), native clipboard access (`arboard`), window events (`winit`), a pixel surface (`softbuffer`), and OS confinement wrappers (`landlock`, `rustix`, `seccompiler`). These are not web layout or script engines. Their transitive dependencies remain part of the security surface. The source forbids application-level `unsafe` Rust; dependencies can contain unsafe code.
 
-Fonts are DejaVu; redistribution notices are in [assets/FONTS-LICENSE.txt](assets/FONTS-LICENSE.txt). Project code is MIT licensed. Vendored WPT test data retains its [upstream BSD license](tests/upstream/wpt-html/LICENSE.md).
+Fonts are DejaVu; redistribution notices are in [assets/FONTS-LICENSE.txt](assets/FONTS-LICENSE.txt). Project code is MIT licensed. Vendored WPT test data retains its [upstream BSD license](tests/upstream/wpt-html/LICENSE.md); Test262 data retains its [upstream license](tests/upstream/test262/LICENSE).

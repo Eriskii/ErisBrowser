@@ -1,5 +1,7 @@
 //! Independent CSS parsing, selector cascade, inheritance and computed values.
-use crate::dom::{Document, NodeId, NodeKind, matches_selector_with_budget, split_top_level};
+use crate::dom::{
+    Document, Namespace, NodeId, NodeKind, matches_selector_with_budget, split_top_level,
+};
 use crate::graphics::Color;
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::sync::Arc;
@@ -771,7 +773,7 @@ pub fn compute_styles_with_rules(
         let mut cascade: CascadedProperties = BTreeMap::new();
         if !tag.is_empty() {
             let mut candidates = BTreeSet::new();
-            for key in ["*".to_owned(), format!("t:{tag}")] {
+            for key in ["*".to_owned(), format!("t:{}", tag.to_ascii_lowercase())] {
                 if let Some(r) = by_key.get(&key) {
                     let take = r
                         .len()
@@ -889,13 +891,15 @@ pub fn compute_styles_with_rules(
                     height,
                 );
             }
-            if tag == "html" {
+            if tag == "html" && doc.namespace(id) == Some(Namespace::Html) {
                 root_font = style.font_size;
             }
             if let Some(value) = resolved.get("color") {
                 apply_property(&mut style, "color", value, parent, root_font, width, height);
             }
-            if !matches!(tag, "button" | "input" | "select" | "textarea" | "hr") {
+            let native_border = doc.namespace(id) == Some(Namespace::Html)
+                && matches!(tag, "button" | "input" | "select" | "textarea" | "hr");
+            if !native_border {
                 style.border_color = style.color;
             }
             for (name, value) in &resolved {
@@ -913,13 +917,7 @@ pub fn compute_styles_with_rules(
                 let border_style = resolved
                     .get(&format!("border-{side}-style"))
                     .map(String::as_str)
-                    .unwrap_or(
-                        if matches!(tag, "button" | "input" | "select" | "textarea" | "hr") {
-                            "solid"
-                        } else {
-                            "none"
-                        },
-                    );
+                    .unwrap_or(if native_border { "solid" } else { "none" });
                 if matches!(border_style, "none" | "hidden") {
                     *edge_mut(&mut style.border_width, side) = 0.0;
                 }
@@ -1206,6 +1204,33 @@ fn resolve_vars(value: &str, variables: &BTreeMap<String, String>, depth: usize)
     resolve_vars(&new, variables, depth + 1)
 }
 fn apply_user_agent(s: &mut ComputedStyle, doc: &Document, id: NodeId, tag: &str) {
+    if doc.namespace(id) != Some(Namespace::Html) {
+        if doc.namespace(id) == Some(Namespace::Svg) {
+            if tag == "svg" {
+                s.display = Display::InlineBlock;
+                if let Some(width) = doc
+                    .attr(id, "width")
+                    .and_then(|value| parse_length(value, s.font_size, 16.0, 800.0, 600.0))
+                {
+                    s.width = width;
+                }
+                if let Some(height) = doc
+                    .attr(id, "height")
+                    .and_then(|value| parse_length(value, s.font_size, 16.0, 800.0, 600.0))
+                {
+                    s.height = height;
+                }
+            } else if matches!(
+                tag,
+                "title" | "desc" | "style" | "script" | "metadata" | "defs"
+            ) {
+                // These SVG elements are non-rendering; foreign lookalikes do
+                // not inherit the behavior of HTML metadata or controls.
+                s.display = Display::None;
+            }
+        }
+        return;
+    }
     s.display = match tag {
         "noscript" if doc.scripting_enabled() => Display::None,
         "html" | "body" | "div" | "p" | "section" | "article" | "main" | "header" | "footer"
@@ -1216,7 +1241,7 @@ fn apply_user_agent(s: &mut ComputedStyle, doc: &Document, id: NodeId, tag: &str
         "head" | "title" | "style" | "script" | "meta" | "link" | "base" | "template"
         | "source" | "track" => Display::None,
         "button" | "input" | "select" | "textarea" | "img" | "canvas" | "video" | "audio"
-        | "iframe" | "svg" => Display::InlineBlock,
+        | "iframe" => Display::InlineBlock,
         _ => s.display,
     };
     match tag {
@@ -2160,6 +2185,48 @@ impl<T> TransposeOption<T> for Option<Option<T>> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn foreign_type_candidates_preserve_case_sensitive_matching() {
+        let doc =
+            Document::parse("<svg><linearGradient id=g gradientUnits=userSpaceOnUse /></svg>");
+        let sheets = vec!["linearGradient { color:#123456 } lineargradient { color:red } linearGradient[gradientUnits] { background:#abcdef } linearGradient[gradientunits] { background:red }".into()];
+        let styles = compute_styles(&doc, &sheets, 400.0, 300.0);
+        let gradient = doc.query_selector("#g").unwrap();
+        assert_eq!(styles[gradient].color, Color::rgb(0x12, 0x34, 0x56));
+        assert_eq!(
+            styles[gradient].background_color,
+            Color::rgb(0xab, 0xcd, 0xef)
+        );
+    }
+    #[test]
+    fn user_agent_defaults_distinguish_html_controls_and_svg_metadata() {
+        let mut doc = Document::parse(
+            "<svg id=s width=24 height=16><input id=si type=hidden hidden bgcolor=red width=99 style='border-width:4px' /><title id=st>svg</title></svg><math><input id=mi type=hidden hidden bgcolor=red width=99>foreign</input><title id=mt>math</title><style id=ms>text</style></math><input id=hi type=hidden>",
+        );
+        let html_svg = doc.create_element("svg");
+        doc.append_child(doc.query_selector("body").unwrap(), html_svg);
+        let styles = compute_styles(&doc, &[], 400.0, 300.0);
+        for selector in ["#si", "#mi", "#mt", "#ms"] {
+            let style = &styles[doc.query_selector(selector).unwrap()];
+            assert_eq!(style.display, Display::Inline, "{selector}");
+            assert_eq!(style.width, Length::Auto, "{selector}");
+            assert_eq!(style.border_width.top, 0.0, "{selector}");
+            assert_eq!(style.background_color, Color::TRANSPARENT, "{selector}");
+        }
+        assert_eq!(
+            styles[doc.query_selector("#st").unwrap()].display,
+            Display::None
+        );
+        assert_eq!(
+            styles[doc.query_selector("#hi").unwrap()].display,
+            Display::None
+        );
+        let svg = &styles[doc.query_selector("#s").unwrap()];
+        assert_eq!(svg.display, Display::InlineBlock);
+        assert_eq!(svg.width, Length::Px(24.0));
+        assert_eq!(svg.height, Length::Px(16.0));
+        assert_eq!(styles[html_svg].display, Display::Inline);
+    }
 
     #[test]
     fn flex_item_order_alignment_and_global_keywords() {

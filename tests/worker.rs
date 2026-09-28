@@ -118,16 +118,223 @@ fn isolated_load_render_returns_valid_snapshot_from_distinct_process() {
     assert!(!snapshot.layout.commands.is_empty());
     assert!(snapshot.layout.content_height.is_finite());
     assert!(!snapshot.images.is_empty());
+    let broker_pid = client
+        .broker_pid()
+        .expect("local document uses the resource broker");
+    assert_ne!(broker_pid, pid);
+    assert!(process_exists(broker_pid));
     assert!(snapshot.diagnostics.iter().any(|message| {
         message.starts_with(&format!("Page process {pid}:")) && message.contains("Landlock ABI 6")
     }));
     drop(client);
     assert!(!process_exists(pid), "Drop must reap the worker process");
+    assert!(
+        !process_exists(broker_pid),
+        "Drop must reap the resource broker"
+    );
+}
+
+fn accept_request(listener: &TcpListener, expected_path: &str) -> std::net::TcpStream {
+    accept_form_request(listener, "GET", expected_path, None)
+}
+fn accept_form_request(
+    listener: &TcpListener,
+    method: &str,
+    expected_path: &str,
+    expected_body: Option<&str>,
+) -> std::net::TcpStream {
+    let deadline = Instant::now() + Duration::from_secs(5);
+    let mut stream = loop {
+        match listener.accept() {
+            Ok((stream, _)) => break stream,
+            Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
+                assert!(
+                    Instant::now() < deadline,
+                    "fixture received no request for {expected_path}"
+                );
+                thread::sleep(Duration::from_millis(5));
+            }
+            Err(error) => panic!("accept fixture request: {error}"),
+        }
+    };
+    stream
+        .set_write_timeout(Some(Duration::from_secs(2)))
+        .unwrap();
+    let mut request = Vec::new();
+    let deadline = Instant::now() + Duration::from_secs(2);
+    while !request.ends_with(b"\r\n\r\n") {
+        assert!(request.len() < 16_384);
+        let remaining = deadline.saturating_duration_since(Instant::now());
+        assert!(!remaining.is_zero(), "fixture header deadline");
+        stream.set_read_timeout(Some(remaining)).unwrap();
+        let mut byte = [0];
+        stream.read_exact(&mut byte).unwrap();
+        request.push(byte[0]);
+    }
+    let headers = String::from_utf8(request).unwrap();
+    assert!(headers.starts_with(&format!("{method} {expected_path} HTTP/1.1\r\n")));
+    if let Some(body) = expected_body {
+        let lower = headers.to_ascii_lowercase();
+        assert!(lower.contains("content-type: application/x-www-form-urlencoded\r\n"));
+        assert!(lower.contains(&format!("content-length: {}\r\n", body.len())));
+        let mut received = vec![0; body.len()];
+        stream.read_exact(&mut received).unwrap();
+        assert_eq!(received, body.as_bytes());
+    }
+    stream
 }
 
 #[test]
-#[ignore = "requires Linux Landlock ABI 6 and the confined worker's permitted loopback TCP client"]
-fn confined_http_load_resolves_and_fetches_without_spawning_threads() {
+#[ignore = "requires Linux Landlock ABI 6 and a bounded HTTP form fixture"]
+fn broker_submits_only_the_authorized_form_body_and_commits_redirect() {
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    listener.set_nonblocking(true).unwrap();
+    let base = format!("http://{}", listener.local_addr().unwrap());
+    let body = "q=hello+world&symbol=%F0%9F%A6%80";
+    let navigation = Navigation {
+        address: format!("{base}/submit?fixed=1"),
+        form_body: Some(body.into()),
+    };
+    let mut client = WorkerClient::spawn_at(Path::new(BINARY), true, &navigation, 107).unwrap();
+    let mut wrong = navigation.clone();
+    wrong.form_body = Some("q=unauthorized".into());
+    assert!(
+        client
+            .exchange(WorkerCommand::Load { navigation: wrong }, || false)
+            .err()
+            .expect("unauthorized form body must fail")
+            .contains("authorized")
+    );
+    assert!(client.broker_pid().is_none());
+    let server = thread::spawn(move || {
+        let mut stream = accept_form_request(&listener, "POST", "/submit?fixed=1", Some(body));
+        write!(stream, "HTTP/1.1 303 See Other\r\nLocation: /complete\r\nContent-Length: 0\r\nConnection: close\r\n\r\n").unwrap();
+        drop(stream);
+        let mut stream = accept_request(&listener, "/complete");
+        let html = "<!doctype html><title>Authorized form</title><p>Received</p>";
+        write!(stream, "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{html}", html.len()).unwrap();
+    });
+    load(&mut client, &navigation);
+    let snapshot = render(&mut client);
+    assert_eq!(snapshot.title, "Authorized form");
+    assert_eq!(snapshot.url, format!("{base}/complete"));
+    server.join().unwrap();
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6 and two bounded loopback HTTP origins"]
+fn broker_commits_cross_origin_redirect_and_enforces_the_final_origin() {
+    let initial = TcpListener::bind("127.0.0.1:0").unwrap();
+    let destination = TcpListener::bind("127.0.0.1:0").unwrap();
+    initial.set_nonblocking(true).unwrap();
+    destination.set_nonblocking(true).unwrap();
+    let initial_address = initial.local_addr().unwrap();
+    let final_address = destination.local_addr().unwrap();
+    let navigation = Navigation::get(format!("http://{initial_address}/start"));
+    let final_url = format!("http://{final_address}/final/page");
+    let redirect_url = final_url.clone();
+    let server = thread::spawn(move || {
+        let mut stream = accept_request(&initial, "/start");
+        write!(stream, "HTTP/1.1 302 Found\r\nLocation: {redirect_url}\r\nContent-Length: 0\r\nConnection: close\r\n\r\n").unwrap();
+        drop(stream);
+        let mut stream = accept_request(&destination, "/final/page");
+        let body = format!(
+            "<!doctype html><title>Broker redirect</title><p id=result>initial</p><script src=after.js></script><script src='http://{initial_address}/forbidden.js'></script><img src='/redirect-image'><img src='http://{initial_address}/direct-image'>"
+        );
+        write!(stream, "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}", body.len()).unwrap();
+        drop(stream);
+        let mut stream = accept_request(&destination, "/final/after.js");
+        let body = "document.getElementById('result').textContent='final origin script';";
+        write!(stream, "HTTP/1.1 200 OK\r\nContent-Type: text/javascript\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}", body.len()).unwrap();
+        drop(stream);
+        let mut stream = accept_request(&destination, "/redirect-image");
+        write!(stream, "HTTP/1.1 302 Found\r\nLocation: http://{initial_address}/private.json\r\nContent-Length: 0\r\nConnection: close\r\n\r\n").unwrap();
+        initial
+    });
+    let mut client = WorkerClient::spawn_at(Path::new(BINARY), true, &navigation, 105).unwrap();
+    load(&mut client, &navigation);
+    let snapshot = render(&mut client);
+    let initial = server.join().unwrap();
+    assert_eq!(snapshot.url, final_url);
+    assert_eq!(snapshot.title, "Broker redirect");
+    assert_eq!(
+        snapshot
+            .document
+            .text_content(snapshot.document.query_selector("#result").unwrap()),
+        "final origin script"
+    );
+    assert!(
+        snapshot
+            .diagnostics
+            .iter()
+            .any(|d| d.contains("cross-origin")),
+        "{:?}",
+        snapshot.diagnostics
+    );
+    assert_eq!(
+        initial.accept().unwrap_err().kind(),
+        std::io::ErrorKind::WouldBlock,
+        "blocked scripts/images/redirects must not reach the previous origin"
+    );
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6 and a bounded stalled HTTP fixture"]
+fn cancellation_during_broker_io_reaps_both_processes() {
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    listener.set_nonblocking(true).unwrap();
+    let navigation = Navigation::get(format!("http://{}/stall", listener.local_addr().unwrap()));
+    let (accepted_tx, accepted_rx) = std::sync::mpsc::channel();
+    let server = thread::spawn(move || {
+        let mut stream = accept_request(&listener, "/stall");
+        stream
+            .set_read_timeout(Some(Duration::from_secs(3)))
+            .unwrap();
+        accepted_tx.send(()).unwrap();
+        let mut byte = [0];
+        assert_eq!(
+            stream.read(&mut byte).unwrap(),
+            0,
+            "broker cancellation closes its HTTP socket"
+        );
+    });
+    let mut client = WorkerClient::spawn_at(Path::new(BINARY), false, &navigation, 106).unwrap();
+    let renderer_pid = client.pid();
+    let broker_pid = Cell::new(None);
+    let started = Instant::now();
+    let result = client.exchange(WorkerCommand::Load { navigation }, || {
+        // Children belong to the task which spawned them, so this remains
+        // deterministic even while other integration tests run in parallel.
+        for pid in fs::read_to_string("/proc/thread-self/children")
+            .unwrap()
+            .split_whitespace()
+        {
+            if let Ok(arguments) = fs::read(format!("/proc/{pid}/cmdline"))
+                && arguments
+                    .split(|&b| b == 0)
+                    .any(|arg| arg == b"--resource-broker")
+            {
+                broker_pid.set(Some(pid.parse::<u32>().unwrap()));
+            }
+        }
+        // Cancellation is intentionally a one-shot notification. Observing it
+        // inside a broker exchange must also cancel the outer renderer request.
+        accepted_rx.try_recv().is_ok() || started.elapsed() > Duration::from_secs(4)
+    });
+    assert!(result.is_err());
+    assert!(started.elapsed() < Duration::from_secs(3));
+    let broker_pid = broker_pid
+        .get()
+        .expect("the request reached a resource broker");
+    assert!(!process_exists(renderer_pid));
+    assert!(!process_exists(broker_pid));
+    assert!(client.broker_pid().is_none());
+    server.join().unwrap();
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6 and the confined broker's permitted loopback TCP client"]
+fn broker_http_load_resolves_and_fetches_without_spawning_threads() {
     let listener = TcpListener::bind(("127.0.0.1", 0)).unwrap();
     listener.set_nonblocking(true).unwrap();
     let address = listener.local_addr().unwrap();

@@ -1,7 +1,7 @@
 //! Page lifecycle connecting independent parsing, scripting, layout and paint.
 use crate::{
     css,
-    dom::{Document, NodeId},
+    dom::{Document, Namespace, NodeId},
     graphics::{Fonts, ImageStore, RasterImage},
     layout::{self, LayoutResult},
     net::{self, Fetcher, ResourceKind},
@@ -110,7 +110,7 @@ impl Page {
             if !page.is_active_node(id) {
                 continue;
             }
-            let tag = page.document.tag(id).unwrap_or("");
+            let tag = page.html_tag(id).unwrap_or("");
             let (href, kind) = match tag {
                 "link"
                     if page.document.attr(id, "rel").is_some_and(|r| {
@@ -268,7 +268,8 @@ impl Page {
             .query_selector_all("meta")
             .into_iter()
             .any(|id| {
-                self.is_active_node(id)
+                self.html_tag(id) == Some("meta")
+                    && self.is_active_node(id)
                     && self
                         .document
                         .attr(id, "http-equiv")
@@ -285,21 +286,13 @@ impl Page {
         }
         self.diagnostics.push("CSP present: scripts, author styles and external resources disabled by conservative policy".into());
     }
+    fn html_tag(&self, id: NodeId) -> Option<&str> {
+        (self.document.namespace(id) == Some(Namespace::Html))
+            .then(|| self.document.tag(id))
+            .flatten()
+    }
     fn is_active_node(&self, id: NodeId) -> bool {
-        let mut current = Some(id);
-        for _ in 0..crate::dom::MAX_DEPTH {
-            let Some(id) = current else {
-                return false;
-            };
-            if id == self.document.root {
-                return true;
-            }
-            if self.document.tag(id) == Some("template") {
-                return false;
-            }
-            current = self.document.nodes.get(id).and_then(|n| n.parent);
-        }
-        false
+        self.document.is_active_node(id)
     }
     fn attach_image(&mut self, id: NodeId, key: String, image: Arc<RasterImage>) {
         self.document
@@ -322,13 +315,15 @@ impl Page {
         let mut source_bytes = 0usize;
         let mut count = 0usize;
         for id in self.document.query_selector_all("svg") {
-            if !self.is_active_node(id) {
+            if !self.is_active_node(id) || self.document.namespace(id) != Some(Namespace::Svg) {
                 continue;
             }
             let mut ancestor = self.document.nodes[id].parent;
             let mut nested = false;
             while let Some(node) = ancestor {
-                if self.document.tag(node) == Some("svg") {
+                if self.document.namespace(node) == Some(Namespace::Svg)
+                    && self.document.tag(node) == Some("svg")
+                {
                     nested = true;
                     break;
                 }
@@ -383,7 +378,8 @@ impl Page {
         let mut source_bytes = 0usize;
         let mut count = 0usize;
         for id in self.document.query_selector_all("script") {
-            if !self.is_active_node(id) {
+            // SVG script execution is not implemented by this HTML script loader.
+            if self.html_tag(id) != Some("script") || !self.is_active_node(id) {
                 continue;
             }
             if count >= 64 {
@@ -429,9 +425,18 @@ impl Page {
             if !self.is_active_node(id) {
                 continue;
             }
-            let source: Arc<str> = if self.document.tag(id) == Some("style") {
+            let style_element = self.document.tag(id) == Some("style")
+                && matches!(
+                    self.document.namespace(id),
+                    Some(Namespace::Html | Namespace::Svg)
+                );
+            let source: Arc<str> = if style_element {
                 self.document.text_content(id).into()
-            } else if let Some(source) = self.external_styles.get(&id) {
+            } else if let Some(source) = self
+                .external_styles
+                .get(&id)
+                .filter(|_| self.html_tag(id) == Some("link"))
+            {
                 source.clone()
             } else {
                 continue;
@@ -462,71 +467,11 @@ impl Page {
             title
         }
     }
-    fn is_descendant_of(&self, mut node: NodeId, ancestor: NodeId) -> bool {
-        for _ in 0..crate::dom::MAX_DEPTH {
-            if node == ancestor {
-                return true;
-            }
-            let Some(parent) = self.document.nodes.get(node).and_then(|node| node.parent) else {
-                return false;
-            };
-            node = parent;
-        }
-        false
-    }
     fn disabled_control(&self, node: NodeId) -> bool {
-        let tag = self.document.tag(node).unwrap_or("");
-        if !matches!(
-            tag,
-            "input" | "button" | "select" | "textarea" | "option" | "optgroup"
-        ) {
-            return false;
-        }
-        if self.document.attr(node, "disabled").is_some() {
-            return true;
-        }
-        let mut ancestor = self.document.nodes.get(node).and_then(|node| node.parent);
-        for _ in 0..crate::dom::MAX_DEPTH {
-            let Some(id) = ancestor else {
-                break;
-            };
-            if tag == "option"
-                && self.document.tag(id) == Some("optgroup")
-                && self.document.attr(id, "disabled").is_some()
-            {
-                return true;
-            }
-            if self.document.tag(id) == Some("fieldset")
-                && self.document.attr(id, "disabled").is_some()
-            {
-                let first_legend = self.document.nodes[id]
-                    .children
-                    .iter()
-                    .copied()
-                    .find(|&child| self.document.tag(child) == Some("legend"));
-                if !first_legend.is_some_and(|legend| self.is_descendant_of(node, legend)) {
-                    return true;
-                }
-            }
-            ancestor = self.document.nodes.get(id).and_then(|node| node.parent);
-        }
-        false
+        self.document.disabled_control(node)
     }
     fn interaction_blocked(&self, node: NodeId) -> bool {
-        if !self.is_active_node(node) {
-            return true;
-        }
-        let mut ancestor = Some(node);
-        for _ in 0..crate::dom::MAX_DEPTH {
-            let Some(id) = ancestor else {
-                return false;
-            };
-            if self.document.attr(id, "inert").is_some() || self.disabled_control(id) {
-                return true;
-            }
-            ancestor = self.document.nodes.get(id).and_then(|node| node.parent);
-        }
-        true
+        self.document.interaction_blocked(node)
     }
     pub fn click(&mut self, id: NodeId) -> Option<Navigation> {
         let original_id = id;
@@ -547,7 +492,7 @@ impl Page {
         }
         let mut node = Some(id);
         while let Some(id) = node {
-            if self.document.tag(id) == Some("input") {
+            if self.html_tag(id) == Some("input") {
                 match self
                     .document
                     .attr(id, "type")
@@ -567,7 +512,8 @@ impl Page {
                         let name = self.document.attr(id, "name").unwrap_or("").to_owned();
                         let form = self.ancestor_form(id);
                         for radio in self.document.query_selector_all("input") {
-                            if self.is_active_node(radio)
+                            if self.html_tag(radio) == Some("input")
+                                && self.is_active_node(radio)
                                 && !name.is_empty()
                                 && self
                                     .document
@@ -590,7 +536,7 @@ impl Page {
                     _ => return None,
                 }
             }
-            if self.document.tag(id) == Some("button") {
+            if self.html_tag(id) == Some("button") {
                 if self
                     .document
                     .attr(id, "type")
@@ -603,10 +549,10 @@ impl Page {
                 }
                 return None;
             }
-            if self.document.tag(id) == Some("form") && original_id == id {
+            if self.html_tag(id) == Some("form") && original_id == id {
                 return self.submit_form(id, None);
             }
-            if self.document.tag(id) == Some("a")
+            if self.html_tag(id) == Some("a")
                 && let Some(href) = self.document.attr(id, "href")
             {
                 return self.resolve_navigation(href).ok().map(Navigation::get);
@@ -616,33 +562,11 @@ impl Page {
         None
     }
     pub fn can_edit_control(&self, node: NodeId) -> bool {
-        if self.interaction_blocked(node) || self.document.attr(node, "readonly").is_some() {
-            return false;
-        }
-        match self.document.tag(node) {
-            Some("textarea") => true,
-            Some("input") => !matches!(
-                self.document
-                    .attr(node, "type")
-                    .unwrap_or("text")
-                    .to_ascii_lowercase()
-                    .as_str(),
-                "checkbox"
-                    | "radio"
-                    | "submit"
-                    | "button"
-                    | "reset"
-                    | "hidden"
-                    | "file"
-                    | "range"
-                    | "color"
-            ),
-            _ => false,
-        }
+        self.document.can_edit_control(node)
     }
     fn ancestor_form(&self, mut node: NodeId) -> Option<NodeId> {
         for _ in 0..crate::dom::MAX_DEPTH {
-            if self.document.tag(node) == Some("form") {
+            if self.html_tag(node) == Some("form") {
                 return Some(node);
             }
             node = self.document.nodes.get(node)?.parent?;
@@ -650,7 +574,7 @@ impl Page {
         None
     }
     pub fn submit_form(&mut self, form: NodeId, submitter: Option<NodeId>) -> Option<Navigation> {
-        if self.document.tag(form) != Some("form")
+        if self.html_tag(form) != Some("form")
             || self.interaction_blocked(form)
             || submitter.is_some_and(|node| {
                 self.interaction_blocked(node) || self.ancestor_form(node) != Some(form)
@@ -717,7 +641,8 @@ impl Page {
             .document
             .query_selector_all("input, textarea, select, button")
         {
-            if !self.is_active_node(node)
+            if self.html_tag(node).is_none()
+                || !self.is_active_node(node)
                 || self.ancestor_form(node) != Some(form)
                 || self.disabled_control(node)
             {
@@ -734,7 +659,7 @@ impl Page {
             if matches!(kind.as_str(), "reset" | "button" | "file") {
                 continue;
             }
-            if (kind == "submit" || self.document.tag(node) == Some("button"))
+            if (kind == "submit" || self.html_tag(node) == Some("button"))
                 && submitter != Some(node)
             {
                 continue;
@@ -744,18 +669,18 @@ impl Page {
             {
                 continue;
             }
-            let value = if self.document.tag(node) == Some("textarea") {
+            let value = if self.html_tag(node) == Some("textarea") {
                 self.document.text_content(node)
-            } else if self.document.tag(node) == Some("select") {
+            } else if self.html_tag(node) == Some("select") {
                 let mut options = Vec::new();
                 let mut pending = self.document.nodes[node].children.clone();
                 pending.reverse();
                 while let Some(child) = pending.pop() {
-                    if self.document.tag(child) == Some("option") {
+                    if self.html_tag(child) == Some("option") {
                         if !self.disabled_control(child) && self.is_active_node(child) {
                             options.push(child);
                         }
-                    } else if self.document.tag(child) == Some("optgroup") {
+                    } else if self.html_tag(child) == Some("optgroup") {
                         pending.extend(self.document.nodes[child].children.iter().rev().copied());
                     }
                 }
@@ -977,6 +902,34 @@ mod tests {
     #[test]
     fn plaintext_escaping() {
         assert_eq!(escape_html("<script>&\""), "&lt;script&gt;&amp;&quot;");
+    }
+    #[test]
+    fn foreign_elements_do_not_acquire_html_script_form_or_metadata_behavior() {
+        let mut page = Page::from_html(
+            Url::parse("https://example.test/").unwrap(),
+            "<svg><title>SVG label</title><script>document.title='wrong';</script><form id=foreign-form><input id=foreign-input name=leak value=no /></form></svg><title>HTML title</title><p id=result>ready</p><script>document.getElementById('result').textContent='html ran';</script>",
+            true,
+        );
+        assert_eq!(page.title(), "HTML title");
+        assert_eq!(
+            page.document
+                .text_content(page.document.query_selector("#result").unwrap()),
+            "html ran"
+        );
+        let input = page.document.query_selector("#foreign-input").unwrap();
+        let form = page.document.query_selector("#foreign-form").unwrap();
+        assert_eq!(page.document.namespace(input), Some(Namespace::Svg));
+        assert!(!page.can_edit_control(input));
+        assert!(page.submit_form(form, None).is_none());
+        let body = page.document.query_selector("body").unwrap();
+        let html_svg = page.document.create_element("svg");
+        page.document.append_child(body, html_svg);
+        page.refresh_inline_svg();
+        assert!(
+            !page
+                .images
+                .contains_key(&format!("eris-inline-svg:{html_svg}"))
+        );
     }
     #[test]
     fn repeated_cached_stylesheets_have_a_bounded_cascade_input() {
