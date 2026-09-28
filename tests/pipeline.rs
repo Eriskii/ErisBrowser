@@ -43,6 +43,11 @@ fn global_value_properties_preserve_private_realm_and_event_identity() {
 }
 
 #[test]
+fn stable_array_sort_preserves_holes_identity_and_callback_effects() {
+    assert_six_scripted_samples(include_str!("fixtures/array-sort.html"));
+}
+
+#[test]
 fn window_self_state_survives_fragment_navigation_and_resets_in_a_new_page() {
     let source = include_str!("fixtures/window-self.html");
     let mut p = page(source);

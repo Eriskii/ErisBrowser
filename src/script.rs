@@ -9,6 +9,7 @@
 use crate::dom::{Document, Namespace, NodeId, NodeKind};
 use crate::js_string::{JsString, is_js_whitespace, radix_number};
 use crate::regexp::{self, RegExp};
+use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
 use std::rc::Rc;
@@ -2921,6 +2922,7 @@ impl Runtime {
             ("Array", "indexOf", 1),
             ("Array", "slice", 2),
             ("Array", "reverse", 0),
+            ("Array", "sort", 1),
             ("Number", "toString", 1),
         ] {
             let full = format!("{name}.{key}");
@@ -6528,6 +6530,195 @@ impl Runtime {
         self.objects[id].boxed = Some(value);
         Ok(result)
     }
+    fn array_sort(
+        &mut self,
+        receiver: Value,
+        comparator: Value,
+        doc: &mut Document,
+    ) -> Result<Value> {
+        self.tick()?;
+        // Validation precedes ToObject and every receiver/length property read.
+        if comparator != Value::Undefined && !json_callable(&comparator) {
+            return Err(ScriptError::type_error(
+                "sort comparator must be callable or undefined",
+            ));
+        }
+        let object = self.coerce_object(receiver)?;
+        if self.property_object(&object).is_none() {
+            return Err(ScriptError::unsupported(
+                "host array-like sort is not implemented",
+            ));
+        }
+        let length = self.get(object.clone(), "length", doc)?;
+        let length = integer_or_infinity(self.number_value(length, doc)?)
+            .clamp(0.0, 9_007_199_254_740_991.0);
+        if length > 65_536.0 {
+            return Err(ScriptError::resource("array-like length limit exceeded"));
+        }
+        let length = length as usize;
+        let mut items = Vec::new();
+        if length != 0 {
+            let bytes = length
+                .checked_mul(std::mem::size_of::<Value>())
+                .and_then(|bytes| bytes.checked_add(32))
+                .ok_or_else(|| {
+                    ScriptError::resource("sort collection allocation limit exceeded")
+                })?;
+            self.charge(bytes)?;
+            items
+                .try_reserve_exact(length)
+                .map_err(|_| ScriptError::resource("sort collection allocation failed"))?;
+        }
+        // Collect through live properties. Getter effects can change later
+        // presence/values, but the saved length remains the traversal boundary.
+        for index in 0..length {
+            let key = self.sort_index_key(index)?;
+            if self.find_property(&object, &key)?.is_some() {
+                items.push(self.get_key(object.clone(), &key, doc)?);
+            }
+        }
+        let order = if items.len() > 1 {
+            Some(self.sort_order(&items, &comparator, doc)?)
+        } else {
+            None
+        };
+        // No intrinsic receiver writes occur until all collection/comparison
+        // succeeds. Commit is deliberately sequential, not a transaction:
+        // a later setter/delete failure preserves prior successful effects.
+        for index in 0..items.len() {
+            let source = order.as_ref().map_or(index, |order| order[index]);
+            let key = self.sort_index_key(index)?;
+            self.set_key_strict(object.clone(), &key, items[source].clone(), true, doc)?;
+        }
+        for index in items.len()..length {
+            let key = self.sort_index_key(index)?;
+            if !self.delete_property(object.clone(), &key)? {
+                return Err(ScriptError::type_error("sort cannot delete property"));
+            }
+        }
+        Ok(object)
+    }
+    fn sort_index_key(&mut self, mut index: usize) -> Result<JsString> {
+        if index >= 65_536 {
+            return Err(ScriptError::resource("sort index limit exceeded"));
+        }
+        // Format directly into bounded UTF-16 scratch: no decimal String/Vec.
+        // Cover all five digit operations and the one small retained Rc slice.
+        self.work(6)?;
+        self.charge(64)?;
+        let mut digits = [0u16; 5];
+        let mut start = digits.len();
+        loop {
+            start -= 1;
+            digits[start] = u16::from(b'0') + (index % 10) as u16;
+            index /= 10;
+            if index == 0 {
+                break;
+            }
+        }
+        Ok(JsString::from(&digits[start..]))
+    }
+    fn sort_compare(
+        &mut self,
+        left: &Value,
+        right: &Value,
+        comparator: &Value,
+        doc: &mut Document,
+    ) -> Result<Ordering> {
+        self.tick()?;
+        match (left, right) {
+            (Value::Undefined, Value::Undefined) => return Ok(Ordering::Equal),
+            (Value::Undefined, _) => return Ok(Ordering::Greater),
+            (_, Value::Undefined) => return Ok(Ordering::Less),
+            _ => {}
+        }
+        if comparator != &Value::Undefined {
+            self.charge(32 + 2 * std::mem::size_of::<Value>())?;
+            let mut arguments = Vec::new();
+            arguments
+                .try_reserve_exact(2)
+                .map_err(|_| ScriptError::resource("sort callback allocation failed"))?;
+            arguments.push(left.clone());
+            arguments.push(right.clone());
+            let result = self.call(comparator.clone(), arguments, Value::Undefined, doc)?;
+            let number = self.number_value(result, doc)?;
+            return Ok(if number < 0.0 {
+                Ordering::Less
+            } else if number > 0.0 {
+                Ordering::Greater
+            } else {
+                Ordering::Equal
+            });
+        }
+        // Conversion order is observable; never precompute/cache author hooks.
+        let left = self.string_hint(left.clone(), doc)?;
+        let right = self.string_hint(right.clone(), doc)?;
+        self.work(1 + left.len().saturating_add(right.len()) / 8)?;
+        Ok(left.units().cmp(right.units()))
+    }
+    fn sort_order(
+        &mut self,
+        items: &[Value],
+        comparator: &Value,
+        doc: &mut Document,
+    ) -> Result<Vec<usize>> {
+        let count = items.len();
+        if count > 65_536 {
+            return Err(ScriptError::resource("sort item limit exceeded"));
+        }
+        let bytes = count
+            .checked_mul(2 * std::mem::size_of::<usize>())
+            .and_then(|bytes| bytes.checked_add(64))
+            .ok_or_else(|| ScriptError::resource("sort index allocation limit exceeded"))?;
+        self.work(count.saturating_mul(2).saturating_add(1))?;
+        self.charge(bytes)?;
+        let mut order = Vec::new();
+        let mut scratch = Vec::new();
+        order
+            .try_reserve_exact(count)
+            .map_err(|_| ScriptError::resource("sort index allocation failed"))?;
+        scratch
+            .try_reserve_exact(count)
+            .map_err(|_| ScriptError::resource("sort merge allocation failed"))?;
+        order.extend(0..count);
+        scratch.resize(count, 0);
+        let mut width = 1usize;
+        while width < count {
+            let stride = width
+                .checked_mul(2)
+                .ok_or_else(|| ScriptError::resource("sort merge width overflow"))?;
+            let mut begin = 0;
+            while begin < count {
+                let middle = begin.checked_add(width).unwrap_or(count).min(count);
+                let end = begin.checked_add(stride).unwrap_or(count).min(count);
+                let (mut left, mut right) = (begin, middle);
+                for destination in &mut scratch[begin..end] {
+                    self.tick()?;
+                    // Each iteration advances one cursor, regardless of whether
+                    // the author comparator defines a consistent ordering.
+                    if left < middle
+                        && (right == end
+                            || self.sort_compare(
+                                &items[order[left]],
+                                &items[order[right]],
+                                comparator,
+                                doc,
+                            )? != Ordering::Greater)
+                    {
+                        *destination = order[left];
+                        left += 1;
+                    } else {
+                        *destination = order[right];
+                        right += 1;
+                    }
+                }
+                begin = end;
+            }
+            std::mem::swap(&mut order, &mut scratch);
+            width = stride;
+        }
+        Ok(order)
+    }
     fn array_reverse(&mut self, receiver: Value, doc: &mut Document) -> Result<Value> {
         let object = self.coerce_object(receiver)?;
         if self.property_object(&object).is_none() {
@@ -9168,6 +9359,13 @@ impl Runtime {
         args: Vec<Value>,
         doc: &mut Document,
     ) -> Result<Value> {
+        if native.name == "Array.sort" {
+            return self.array_sort(
+                native.receiver.clone(),
+                args.first().cloned().unwrap_or(Value::Undefined),
+                doc,
+            );
+        }
         if matches!(native.name.as_str(), "Window.get.self" | "Window.set.self") {
             self.tick()?;
             if !matches!(
@@ -16011,6 +16209,429 @@ mod tests {
         );
         assert_eq!(document.nodes.len(), before);
         assert!(!document.has_pending_details_toggles());
+    }
+
+    #[test]
+    fn array_sort_metadata_aliases_and_comparator_validation_order() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var sort=Array.prototype.sort;
+            verifyProperty(Array.prototype,'sort',{value:sort,writable:true,enumerable:false,configurable:true});
+            verifyProperty(sort,'name',{value:'sort',writable:false,enumerable:false,configurable:true});
+            verifyProperty(sort,'length',{value:1,writable:false,enumerable:false,configurable:true});
+            assert.sameValue(Object.getPrototypeOf(sort),Function.prototype);assert.sameValue(sort.hasOwnProperty('prototype'),false);
+            assert.throws(TypeError,function(){new sort();});
+            var reads=0,coerced=0,o={get length(){reads++;throw 'length';}};
+            var invalid=[null,0,'undefined',{},[],{toString(){coerced++;return 'function';},valueOf(){coerced++;return 1;}}];
+            for(var i=0;i<invalid.length;i++){assert.throws(TypeError,function(){sort.call(o,invalid[i]);});}
+            assert.sameValue(reads,0);assert.sameValue(coerced,0);
+            assert.throws(TypeError,function(){sort.call(null);});assert.throws(TypeError,function(){sort.call(undefined);});
+            var seen;try{sort.call(o,undefined);}catch(e){seen=e;}assert.sameValue(seen,'length');assert.sameValue(reads,1);
+            var a=[2,1],extras=0;
+            assert.sameValue(sort.call(a,undefined,{toString(){throw 'extra';}},extras++),a);
+            assert.sameValue(extras,1);assert.sameValue(a.join(','),'1,2');
+            Array.prototype.sort=function(){return 'changed';};assert.sameValue(a.sort(),'changed');
+            a=[3,1,2];assert.sameValue(sort.apply(a,[]),a);assert.sameValue(a.join(','),'1,2,3');
+            delete Array.prototype.sort;a=[2,1];assert.sameValue(sort.bind(a)(),a);assert.sameValue(a.join(','),'1,2');
+        "#,&mut document).unwrap();
+    }
+
+    #[test]
+    fn array_sort_length_conversion_boxing_and_readonly_single_item_copy_back() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var sort=Array.prototype.sort,log='';
+            var o={get length(){log+='l';return {valueOf(){log+='n';return 3.9;}};},set length(v){throw 'length write';},0:3,1:1,2:2,3:'outside'};
+            assert.sameValue(sort.call(o),o);assert.sameValue(log,'ln');
+            assert.sameValue(o[0],1);assert.sameValue(o[1],2);assert.sameValue(o[2],3);assert.sameValue(o[3],'outside');
+            var lengths=[undefined,NaN,-1,-Infinity,'bad',0];
+            for(var i=0;i<lengths.length;i++){var empty={length:lengths[i],0:'unchanged'};sort.call(empty);assert.sameValue(empty[0],'unchanged');}
+            var text={length:'2',0:'b',1:'a'};sort.call(text);assert.sameValue(text[0],'a');
+            assert.sameValue(sort.call('').valueOf(),'');assert.sameValue(sort.call(2).valueOf(),2);assert.sameValue(sort.call(false).valueOf(),false);
+            assert.throws(TypeError,function(){sort.call('a');});assert.throws(TypeError,function(){sort.call('ab');});
+            log='';var one={length:1,get 0(){log+='g';return 7;},set 0(v){log+='s'+v;}};
+            sort.call(one,function(){throw 'one comparison';});assert.sameValue(log,'gs7');
+            var reason={},seen;try{sort.call({get length(){throw reason;}});}catch(e){seen=e;}assert.sameValue(seen,reason);
+            seen=undefined;try{sort.call({length:{valueOf(){throw reason;}}});}catch(e){seen=e;}assert.sameValue(seen,reason);
+        "#,&mut document).unwrap();
+    }
+
+    #[test]
+    fn array_sort_default_utf16_order_and_stable_comparators() {
+        for strict in [false, true] {
+            let (mut runtime, mut document) = property_harness();
+            let source = r#"
+                var a=[10,2,1,-1,NaN,Infinity,null,false,true];assert.sameValue(a.sort(),a);
+                assert.sameValue(a.map(function(value){return String(value);}).join(','),'-1,1,10,2,Infinity,NaN,false,null,true');
+                var unicode=['\uE000','\uD800\uDC00','\uD800','\uDC00','a','','\u0000'];unicode.sort();
+                assert.compareArray(unicode,['','\u0000','a','\uD800','\uD800\uDC00','\uDC00','\uE000']);
+                var records=[];for(var i=0;i<37;i++)records.push({rank:i%4,id:i});
+                records.sort(function(a,b){return a.rank-b.rank;});
+                for(var j=1;j<records.length;j++){
+                    assert.sameValue(records[j-1].rank<=records[j].rank,true);
+                    if(records[j-1].rank===records[j].rank)assert.sameValue(records[j-1].id<records[j].id,true);
+                }
+                var zero=[{id:1},{id:2},{id:3},{id:4},{id:5}];
+                zero.sort(function(){return NaN;});assert.sameValue(zero.map(function(v){return v.id;}).join(','),'1,2,3,4,5');
+                zero.sort(function(){return -0;});assert.sameValue(zero.map(function(v){return v.id;}).join(','),'1,2,3,4,5');
+                zero.sort(function(){return null;});assert.sameValue(zero.map(function(v){return v.id;}).join(','),'1,2,3,4,5');
+                var equal=[{id:1,toString(){return 'x';}},{id:2,toString(){return 'x';}},{id:3,toString(){return 'x';}}];
+                equal.sort();assert.sameValue(equal.map(function(v){return v.id;}).join(','),'1,2,3');
+            "#;
+            if strict {
+                runtime.execute_strict(source, &mut document)
+            } else {
+                runtime.execute(source, &mut document)
+            }
+            .unwrap();
+        }
+    }
+
+    #[test]
+    fn array_sort_distinguishes_undefined_holes_and_inherited_indices() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var sort=Array.prototype.sort,a=[,undefined,3,,1,undefined],calls=0;
+            a.sort(function(x,y){calls++;assert.notSameValue(x,undefined);assert.notSameValue(y,undefined);return x-y;});
+            assert.sameValue(calls>0,true);assert.sameValue(a.length,6);
+            assert.sameValue(a[0],1);assert.sameValue(a[1],3);assert.sameValue(a[2],undefined);assert.sameValue(a[3],undefined);
+            assert.sameValue(a.hasOwnProperty('2'),true);assert.sameValue(a.hasOwnProperty('3'),true);
+            assert.sameValue(a.hasOwnProperty('4'),false);assert.sameValue(a.hasOwnProperty('5'),false);
+            var p={1:2},o=Object.create(p);o.length=3;o[0]=3;o[2]=1;
+            sort.call(o,function(a,b){return a-b;});assert.sameValue(o[0],1);assert.sameValue(o[1],2);assert.sameValue(o[2],3);
+            assert.sameValue(o.hasOwnProperty('1'),true);assert.sameValue(p[1],2);
+            var inherited={2:undefined},tail=Object.create(inherited);tail.length=3;tail[0]=1;
+            sort.call(tail);assert.sameValue(tail.hasOwnProperty('1'),true);assert.sameValue(tail.hasOwnProperty('2'),false);
+            assert.sameValue(2 in tail,true);assert.sameValue(tail[2],undefined);
+            var allHoles=[];allHoles.length=4;sort.call(allHoles,function(){throw 'holes comparison';});
+            assert.sameValue(allHoles.length,4);assert.sameValue(Object.keys(allHoles).length,0);
+            var hidden={length:2,1:1};Object.defineProperty(hidden,'0',{value:2,writable:true,enumerable:false,configurable:true});
+            sort.call(hidden);assert.sameValue(hidden[0],1);assert.sameValue(hidden[1],2);
+            assert.sameValue(Object.getOwnPropertyDescriptor(hidden,'0').enumerable,false);
+            var received,counter=0,setterOnly={length:2,set 0(v){received=v;},1:1};
+            sort.call(setterOnly,function(){counter++;throw 'undefined callback';});
+            assert.sameValue(counter,0);assert.sameValue(received,1);assert.sameValue(setterOnly[1],undefined);
+        "#,&mut document).unwrap();
+    }
+
+    #[test]
+    fn array_sort_collects_live_properties_before_comparing_or_writing() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var sort=Array.prototype.sort,reads='',writes='',comparisons=0;
+            var o={length:4,get 0(){reads+='0';return 3;},set 0(v){writes+='0='+v+';';},get 1(){reads+='1';delete this[2];Object.defineProperty(this,'3',{get:function(){reads+='3';return 4;},configurable:true});return 1;},set 1(v){writes+='1='+v+';';},2:2};
+            sort.call(o,function(a,b){comparisons++;assert.sameValue(reads,'013');assert.sameValue(writes,'');return a-b;});
+            assert.sameValue(comparisons>0,true);assert.sameValue(writes,'0=1;1=3;');assert.sameValue(o[2],4);
+            assert.sameValue(o.hasOwnProperty('3'),false);assert.sameValue(reads,'013');
+            var proto={1:9},changing=Object.create(proto);changing.length=2;
+            Object.defineProperty(changing,'0',{get:function(){delete proto[1];return 1;},set:function(v){writes=String(v);},configurable:true});
+            sort.call(changing);assert.sameValue(writes,'1');assert.sameValue(changing.hasOwnProperty('1'),false);
+            var reason={},seen,log='',broken={length:3,get 0(){log+='0';return 3;},set 0(v){log+='write';},get 1(){log+='1';throw reason;},get 2(){log+='2';return 1;}};
+            try{sort.call(broken,function(){log+='compare';});}catch(e){seen=e;}
+            assert.sameValue(seen,reason);assert.sameValue(log,'01');
+            var shrinking={length:3,get 0(){this.length=1;this[2]=1;return 2;},set 0(v){writes=String(v);},1:3};
+            sort.call(shrinking);assert.sameValue(shrinking.length,1);assert.sameValue(writes,'1');assert.sameValue(shrinking[2],3);
+        "#,&mut document).unwrap();
+    }
+
+    #[test]
+    fn array_sort_default_conversion_is_live_ordered_and_fallible() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var log='',left={toString(){log+='L';return 'b';},valueOf(){throw 'wrong hint';}},right={toString(){log+='R';return 'a';}};
+            var a=[left,right];a.sort();assert.sameValue(log,'LR');assert.sameValue(a[0],right);assert.sameValue(a[1],left);
+            log='';var reason={},seen,stop={toString(){log+='L';throw reason;}},never={toString(){log+='R';return 'x';}};
+            a=[stop,never];try{a.sort();}catch(e){seen=e;}assert.sameValue(seen,reason);assert.sameValue(log,'L');assert.sameValue(a[0],stop);
+            log='';var fallback={toString(){log+='s';return {};},valueOf(){log+='v';return 'a';}},other={toString(){log+='o';return 'b';}};
+            a=[fallback,other];a.sort();assert.sameValue(log,'svo');
+            var invalid={toString(){return {};},valueOf(){return {};}};assert.throws(TypeError,function(){[invalid,'x'].sort();});
+            var array=[],fn=function(){};array.toString=function(){return 'z';};fn.toString=function(){return 'a';};
+            a=[array,fn];a.sort();assert.sameValue(a[0],fn);assert.sameValue(a[1],array);
+            var conversions=0,shared={toString(){conversions++;return 'same';}};
+            a=[shared,shared,shared,shared];a.sort();assert.sameValue(conversions>4,true);
+            var target=[{toString(){target[2]='author';return 'c';}},{toString(){return 'a';}},{toString(){return 'b';}}];
+            var original=target[2];target.sort();assert.sameValue(target[1],original);
+        "#,&mut document).unwrap();
+    }
+
+    #[test]
+    fn array_sort_comparator_receivers_results_and_abrupt_effects_are_preserved() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var calls=0,a=[3,1,2];a.sort(function(x,y){assert.sameValue(this,window);assert.sameValue(arguments.length,2);calls++;return x-y;});
+            assert.sameValue(calls>0,true);assert.sameValue(a.join(','),'1,2,3');
+            a=[3,1,2];a.sort(function(x,y){'use strict';assert.sameValue(this,undefined);return x-y;});assert.sameValue(a.join(','),'1,2,3');
+            var context={sign:-1};a.sort(function(x,y){return this.sign*(x-y);}.bind(context));assert.sameValue(a.join(','),'3,2,1');
+            function arrow(){var receiver=this;return (x,y)=>{assert.sameValue(this,receiver);return x-y;};}
+            a.sort(arrow.call(context));assert.sameValue(a.join(','),'1,2,3');
+            var conversions=0;a=[3,2,1];a.sort(function(x,y){return {valueOf(){conversions++;return String(x-y);},toString(){throw 'wrong number hint';}};});
+            assert.sameValue(conversions>0,true);assert.sameValue(a.join(','),'1,2,3');
+            var reason={},seen,attempts=0;a=[3,2,1];
+            try{a.sort(function(){attempts++;a[0]=9;throw reason;});}catch(e){seen=e;}
+            assert.sameValue(seen,reason);assert.sameValue(attempts,1);assert.sameValue(a.join(','),'9,2,1');
+            attempts=0;seen=undefined;a=[3,2,1];
+            try{a.sort(function(){attempts++;return {valueOf(){a[0]=8;throw reason;}};});}catch(e){seen=e;}
+            assert.sameValue(seen,reason);assert.sameValue(attempts,1);assert.sameValue(a.join(','),'8,2,1');
+            var log='',o={length:2,get 0(){return 2;},set 0(v){log+='set0';},1:1};
+            try{Array.prototype.sort.call(o,function(){throw reason;});}catch(e){seen=e;}
+            assert.sameValue(log,'');assert.sameValue(o[1],1);
+        "#,&mut document).unwrap();
+    }
+
+    #[test]
+    fn array_sort_mutating_length_and_reentrant_sort_use_the_collected_snapshot() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var a=[3,1,2],first=true;
+            a.sort(function(x,y){if(first){first=false;a.length=0;}return x-y;});
+            assert.sameValue(a.join(','),'1,2,3');assert.sameValue(a.length,3);
+            var sparse=[3,,1,,];sparse.length=5;first=true;
+            sparse.sort(function(x,y){if(first){first=false;sparse.length=0;}return x-y;});
+            assert.sameValue(sparse.join(','),'1,3');assert.sameValue(sparse.length,2);
+            a=[3,1,2];first=true;a.sort(function(x,y){if(first){first=false;a[8]='outside';}return x-y;});
+            assert.sameValue(a.length,9);assert.sameValue(a[8],'outside');assert.sameValue(a[0],1);
+            var nested=[3,2,1],entered=false;
+            nested.sort(function(x,y){if(!entered){entered=true;nested.sort(function(a,b){return b-a;});}return x-y;});
+            assert.sameValue(nested.join(','),'1,2,3');
+            var values=[3,2,1];first=true;values.sort(function(x,y){if(first){first=false;values[0]='changed';delete values[1];values.push(0);}return x-y;});
+            assert.sameValue(values.join(','),'1,2,3,0');
+        "#,&mut document).unwrap();
+    }
+
+    #[test]
+    fn array_sort_strict_copy_back_and_deletion_keep_partial_effects() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var sort=Array.prototype.sort,log='',o={length:3,get 0(){return 3;},set 0(v){log+='0='+v+';';},get 1(){return 1;},set 1(v){log+='1='+v+';';},get 2(){return 2;},set 2(v){log+='2='+v+';';}};
+            sort.call(o);assert.sameValue(log,'0=1;1=2;2=3;');
+            var locked={length:3,0:3,1:2,2:1};Object.defineProperty(locked,'1',{writable:false});
+            assert.throws(TypeError,function(){sort.call(locked);});
+            assert.sameValue(locked[0],1);assert.sameValue(locked[1],2);assert.sameValue(locked[2],1);
+            var reason={},seen,setter={length:3,0:3,get 1(){return 2;},set 1(v){throw reason;},2:1};
+            try{sort.call(setter);}catch(e){seen=e;}assert.sameValue(seen,reason);assert.sameValue(setter[0],1);assert.sameValue(setter[2],1);
+            var fixedTail={length:4,1:2};Object.defineProperty(fixedTail,'3',{value:1,writable:true,configurable:false});
+            assert.throws(TypeError,function(){sort.call(fixedTail);});
+            assert.sameValue(fixedTail[0],1);assert.sameValue(fixedTail[1],2);assert.sameValue(fixedTail[3],1);
+            var nonextensible=Object.preventExtensions({length:3,1:2,2:1});
+            assert.throws(TypeError,function(){sort.call(nonextensible);});assert.sameValue(nonextensible[1],2);assert.sameValue(nonextensible[2],1);
+            var proto={set 0(v){log=String(v);}},child=Object.create(proto);child.length=2;child[1]=1;
+            sort.call(child);assert.sameValue(log,'1');assert.sameValue(child.hasOwnProperty('0'),false);assert.sameValue(child[1],undefined);
+            var deletion={length:5,2:'b',4:'a'};
+            Object.defineProperty(deletion,'0',{set:function(v){this[2]='temporary';},configurable:true});
+            Object.defineProperty(deletion,'4',{configurable:false});
+            assert.throws(TypeError,function(){sort.call(deletion);});
+            assert.sameValue(deletion[1],'b');assert.sameValue(deletion[2],undefined);
+            assert.sameValue(deletion.hasOwnProperty('3'),false);assert.sameValue(deletion[4],'a');
+        "#,&mut document).unwrap();
+    }
+
+    #[test]
+    fn array_sort_generic_arguments_functions_and_explicit_exotic_limits() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var sort=Array.prototype.sort;
+            function mapped(a,b){sort.call(arguments);return a+'|'+b;}
+            function strict(a,b){'use strict';sort.call(arguments);return a+'|'+b+'|'+arguments[0];}
+            function defaults(a=2,b=1){sort.call(arguments);return a+'|'+b+'|'+arguments[0];}
+            assert.sameValue(mapped(2,1),'1|2');assert.sameValue(strict(2,1),'2|1|1');assert.sameValue(defaults(2,1),'2|1|1');
+            function object(a,b,c){}object[0]=3;object[1]=1;object[2]=2;
+            assert.sameValue(sort.call(object),object);assert.sameValue(object[0],1);assert.sameValue(object[1],2);assert.sameValue(object[2],3);
+            assert.sameValue(object.length,3);
+            var empty={};assert.sameValue(sort.call(empty),empty);assert.sameValue(Object.keys(empty).length,0);
+        "#,&mut document).unwrap();
+        for source in [
+            "Array.prototype.sort.call(window)",
+            "Array.prototype.sort.call(document)",
+            "Object.defineProperty([],'0',{value:1})",
+        ] {
+            assert!(run(source).unwrap_err().is_unsupported(), "{source}");
+        }
+    }
+
+    #[test]
+    fn array_sort_work_heap_callbacks_and_collection_limits_remain_uncatchable() {
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        let error=runtime.execute("var log='',caught=false,o={get length(){log+='l';return {valueOf(){log+='n';return Infinity;}};},get 0(){log+='index';return 1;}};try{Array.prototype.sort.call(o);}catch(e){caught=true;}",&mut document).unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(
+            runtime
+                .execute("log+'|'+caught", &mut document)
+                .unwrap()
+                .to_string(),
+            "ln|false"
+        );
+        for source in [
+            "var a=[2,1];function comparator(){return a.sort(comparator);}try{a.sort(comparator);}catch(e){throw 'caught';}",
+            "var o={length:2,get 0(){Array.prototype.sort.call(o);return 1;}};try{Array.prototype.sort.call(o);}catch(e){throw 'caught';}",
+            "var a=[{toString(){a.sort();return 'a';}},'b'];try{a.sort();}catch(e){throw 'caught';}",
+            "var a=[2,1];try{a.sort(function(){while(true){};});}catch(e){throw 'caught';}",
+            "var o={length:65536};try{Array.prototype.sort.call(o);}catch(e){throw 'caught';}",
+            "var a=[4,3,2,1];try{for(var i=0;i<10000;i++)a.sort();}catch(e){throw 'caught';}",
+        ] {
+            assert!(run(source).unwrap_err().is_resource_limit(), "{source}");
+        }
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        let text = Value::String(JsString::from("x".repeat(MAX_STRING)));
+        let items = vec![text.clone(), text.clone(), text.clone(), text];
+        assert!(
+            runtime
+                .sort_order(&items, &Value::Undefined, &mut document)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        let object = runtime
+            .object_ordered([("length".into(), Value::Number(0.0))])
+            .unwrap();
+        runtime.steps = 10;
+        assert_eq!(
+            runtime
+                .native_call(
+                    &Native {
+                        name: "Array.sort".into(),
+                        receiver: object.clone()
+                    },
+                    vec![
+                        Value::Undefined,
+                        Value::String(JsString::from("x".repeat(MAX_STRING)))
+                    ],
+                    &mut document
+                )
+                .unwrap(),
+            object
+        );
+        runtime.allocated = MAX_HEAP;
+        runtime.steps = 10;
+        assert_eq!(
+            runtime
+                .array_sort(Value::Number(1.0), Value::Number(0.0), &mut document)
+                .unwrap_err()
+                .name(),
+            "TypeError"
+        );
+        assert!(
+            runtime
+                .array_sort(Value::Number(1.0), Value::Undefined, &mut document)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+    }
+
+    #[test]
+    fn array_sort_private_scratch_failures_preserve_receiver_and_prior_author_effects() {
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        runtime.execute("var touched=0,o={length:2,get 0(){touched++;return 2;},set 0(v){touched+=10;},1:1};",&mut document).unwrap();
+        let object = runtime.lookup(1, "o").unwrap().1;
+        runtime.allocated = MAX_HEAP;
+        assert!(
+            runtime
+                .array_sort(object.clone(), Value::Undefined, &mut document)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(runtime.lookup(1, "touched").unwrap().1, Value::Number(0.0));
+        assert!(matches!(
+            runtime.own_property(&object, &"1".into()).unwrap().value,
+            PropertyValue::Data {
+                value: Value::Number(1.0),
+                ..
+            }
+        ));
+        let items = vec![Value::Number(2.0), Value::Number(1.0)];
+        assert!(
+            runtime
+                .sort_order(&items, &Value::Undefined, &mut document)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(items, vec![Value::Number(2.0), Value::Number(1.0)]);
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        let error = runtime.execute(
+            "var reads=0,writes=0,o={length:2,get 0(){reads++;this[1]=9;return {toString(){while(true){}}};},set 0(v){writes++;},1:1};Array.prototype.sort.call(o);",
+            &mut document,
+        ).unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(runtime.lookup(1, "reads").unwrap().1, Value::Number(1.0));
+        assert_eq!(runtime.lookup(1, "writes").unwrap().1, Value::Number(0.0));
+        let object = runtime.lookup(1, "o").unwrap().1;
+        assert!(matches!(
+            runtime.own_property(&object, &"1".into()).unwrap().value,
+            PropertyValue::Data {
+                value: Value::Number(9.0),
+                ..
+            }
+        ));
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        runtime.execute("var a=[3,2,1];", &mut document).unwrap();
+        let Value::Array(id) = runtime.lookup(1, "a").unwrap().1 else {
+            panic!("array")
+        };
+        let original = runtime.arrays[id].clone();
+        runtime.steps = 15;
+        assert!(
+            runtime
+                .array_sort(Value::Array(id), Value::Undefined, &mut document)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(runtime.arrays[id], original);
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        runtime
+            .execute(
+                "var calls=0;function comparator(){calls++;return 0;}",
+                &mut document,
+            )
+            .unwrap();
+        let comparator = runtime.lookup(1, "comparator").unwrap().1;
+        runtime.allocated = MAX_HEAP;
+        assert!(
+            runtime
+                .sort_compare(
+                    &Value::Number(2.0),
+                    &Value::Number(1.0),
+                    &comparator,
+                    &mut document
+                )
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(runtime.lookup(1, "calls").unwrap().1, Value::Number(0.0));
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        let object = runtime
+            .object_ordered([("length".into(), Value::Number(2.0))])
+            .unwrap();
+        let id = runtime.property_object(&object).unwrap();
+        runtime.objects[id].prototype = Some(object.clone());
+        assert!(
+            runtime
+                .array_sort(object, Value::Undefined, &mut document)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+    }
+
+    #[test]
+    fn array_sort_executes_unchanged_pinned_closure_case_in_both_modes() {
+        let source = include_str!(
+            "../tests/upstream/test262-functions/test/language/statements/function/S13.2.1_A5_T1.js"
+        );
+        for strict in [false, true] {
+            let (mut runtime, mut document) = upstream_harness();
+            if strict {
+                runtime.execute_strict(source, &mut document)
+            } else {
+                runtime.execute(source, &mut document)
+            }
+            .unwrap();
+        }
     }
 
     #[test]

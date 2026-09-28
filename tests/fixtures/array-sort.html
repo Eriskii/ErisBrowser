@@ -1,0 +1,55 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Stable array sorting and callback effects</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#metadata{left:0}#lexical{left:50px}#stable{left:100px}#sparse{left:150px}#generic{left:200px}#effects{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="metadata" class="sample"></div><div id="lexical" class="sample"></div>
+<div id="stable" class="sample"></div><div id="sparse" class="sample"></div>
+<div id="generic" class="sample"></div><div id="effects" class="sample"></div>
+<button id="change" type="button">Sort by descending rank</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color='green'){document.getElementById(id).style.backgroundColor=color;}
+function ids(values){let text='';for(let i=0;i<values.length;i++)text+=values[i].id;return text;}
+const sort=Array.prototype.sort;
+const descriptor=Object.getOwnPropertyDescriptor(Array.prototype,'sort');
+check(descriptor.value===sort&&descriptor.writable&&!descriptor.enumerable&&descriptor.configurable,'method descriptor');
+check(sort.name==='sort'&&sort.length===1,'method metadata');mark('metadata');
+const numbers=[10,2,1];
+check(numbers.sort()===numbers&&numbers.join(',')==='1,10,2','default lexical sort and identity');
+const units=['\uE000','\uD800\uDC00','a'];units.sort();
+check(units[0]==='a'&&units[1]==='\uD800\uDC00'&&units[2]==='\uE000','UTF-16 order');mark('lexical');
+const records=[{rank:2,id:'a'},{rank:1,id:'b'},{rank:2,id:'c'},{rank:1,id:'d'}];
+let comparisons=0;
+records.sort(function(a,b){'use strict';check(this===undefined,'strict comparator receiver');comparisons++;return a.rank-b.rank;});
+check(ids(records)==='bdac'&&comparisons>0,'stable equal ranks');mark('stable');
+const sparse=[,undefined,3,,1,undefined];
+sparse.sort(function(a,b){check(a!==undefined&&b!==undefined,'undefined bypasses comparator');return a-b;});
+check(sparse.length===6&&sparse[0]===1&&sparse[1]===3,'sparse values');
+check(2 in sparse&&3 in sparse&&sparse[2]===undefined&&sparse[3]===undefined,'retained undefined');
+check(!(4 in sparse)&&!(5 in sparse),'holes follow present values');mark('sparse');
+const proto={1:2};const arrayLike=Object.create(proto);
+arrayLike.length=3;arrayLike[0]=3;arrayLike[2]=1;
+check(sort.call(arrayLike,(a,b)=>a-b)===arrayLike,'generic receiver identity');
+check(arrayLike[0]===1&&arrayLike[1]===2&&arrayLike[2]===3,'inherited input value');
+check(Object.getOwnPropertyDescriptor(arrayLike,'1').value===2&&proto[1]===2,'own copy-back preserves prototype');mark('generic');
+const sentinel={};const interrupted=[3,2,1];let caught=false;
+try{interrupted.sort(function(){interrupted[0]=9;throw sentinel;});}catch(error){caught=error===sentinel;}
+check(caught&&interrupted.join(',')==='9,2,1','comparator effects survive without sort copy-back');
+const locked={0:3,1:2,2:1,length:3};Object.defineProperty(locked,'1',{writable:false});
+caught=false;try{sort.call(locked,(a,b)=>a-b);}catch(error){caught=error instanceof TypeError;}
+check(caught&&locked[0]===1&&locked[1]===2&&locked[2]===1,'strict writes retain earlier successful effects');mark('effects');
+document.getElementById('result').textContent=ids(records);document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  check(ids(records)==='bdac','sorted records survive page checkpoints');
+  records.sort(function(a,b){check(this===window,'sloppy comparator receiver');return b.rank-a.rank;});
+  check(ids(records)==='acbd','stable descending callback sort');
+  document.getElementById('result').textContent=ids(records);
+  mark('metadata','blue');mark('lexical','blue');mark('stable','blue');
+  mark('sparse','blue');mark('generic','blue');mark('effects','blue');
+  document.body.className='clicked';
+};
+</script>

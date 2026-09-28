@@ -25,11 +25,12 @@ FUNCTION_FEATURES = SUPPORTED_FEATURES | {'default-parameters', 'object-methods'
 REST_PARAMETER_FEATURES = FUNCTION_FEATURES | {'rest-parameters'}
 IS_PROTOTYPE_OF_FEATURES = SUPPORTED_FEATURES.copy()
 GLOBAL_VALUE_FEATURES = SUPPORTED_FEATURES | {'globalThis'}
+ARRAY_SORT_FEATURES = SUPPORTED_FEATURES | {'stable-array-sort'}
 PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
                     'is-prototype-of': IS_PROTOTYPE_OF_FEATURES,
-                    'global-values': GLOBAL_VALUE_FEATURES}
+                    'global-values': GLOBAL_VALUE_FEATURES, 'array-sort': ARRAY_SORT_FEATURES}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -372,6 +373,32 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                 ('global-values-this-lexical-mismatch', "let globalThis='lexical';assert.sameValue(this.globalThis,globalThis);", 'failed'),
             ]
             variants += [(name, source, expected, mode) for name, source, expected in checks]
+    if profile == 'array-sort':
+        # A missing .sort/.call can throw the very TypeError an error-focused
+        # check expects. Assert availability and a successful call outside each
+        # assert.throws callback; a wrong partner alone never proves health.
+        guard = ("assert.sameValue(typeof Array.prototype.sort,'function');"
+                 "var smoke=[2,1];assert.sameValue(smoke.sort(),smoke);"
+                 "assert.sameValue(smoke[0],1);assert.sameValue(smoke[1],2);")
+        pairs = [
+            ('basic', "var a=[10,2,1];var result=a.sort();assert.sameValue(result,a);assert.compareArray(a,[1,10,2]);", "a[1]", '10', '2'),
+            ('stability', "var a={key:2},b={key:1},c={key:2},d={key:1};var items=[a,b,c,d];items.sort(function(x,y){return x.key-y.key;});assert.sameValue(items[0],b);assert.sameValue(items[1],d);assert.sameValue(items[3],c);", 'items[2]', 'a', 'c'),
+            ('undefined-holes', "var a=[undefined,3,,1,,undefined],calls=0;a.sort(function(x,y){calls++;assert.notSameValue(x,undefined);assert.notSameValue(y,undefined);return x-y;});assert(calls>0);assert.sameValue(a.length,6);assert.compareArray(a.slice(0,4),[1,3,undefined,undefined]);assert.sameValue(3 in a,true);assert.sameValue(5 in a,false);", '4 in a', 'false', 'true'),
+            ('validation-order', "var reads=0,o={};Object.defineProperty(o,'length',{get:function(){reads++;throw new RangeError();}});assert.throws(TypeError,function(){Array.prototype.sort.call(o,{});});assert.throws(TypeError,function(){Array.prototype.sort.call(null);});", 'reads', '0', '1'),
+            ('callback-coercion', "var calls=0,conversions=0,a=[3,1,2];a.sort(function(x,y){'use strict';assert.sameValue(this,undefined);assert.sameValue(arguments.length,2);calls++;return {valueOf:function(){conversions++;return x-y;}};});assert(calls>0);assert.sameValue(conversions,calls);assert.compareArray(a,[1,2,3]);var equal=[2,1];equal.sort(function(){return NaN;});", 'equal[0]', '2', '1'),
+            ('default-conversion', "var calls=0,x={toString:function(){calls++;return 'x';}};[x,x].sort();assert(calls>=2);var a=['\\uE000','\\uD800\\uDC00'];a.sort();", 'a[0]', "'\\uD800\\uDC00'", "'\\uE000'"),
+            ('generic-length', "var reads=0,o={0:3,1:1,2:9};Object.defineProperty(o,'length',{get:function(){reads++;return 2.9;}});assert.sameValue(Array.prototype.sort.call(o),o);assert.sameValue(o[0],1);assert.sameValue(o[1],3);assert.sameValue(o[2],9);var negative={0:3,1:1,length:-1};Array.prototype.sort.call(negative);assert.sameValue(negative[0],3);assert.sameValue(negative.length,-1);", 'reads', '1', '2'),
+            ('collection-order', "var log='',writes=[],o={length:2};Object.defineProperty(o,'0',{get:function(){log+='a';o[2]=0;o.length=3;return 3;},set:function(v){log+='x';writes.push(v);}});Object.defineProperty(o,'1',{get:function(){log+='b';return 1;},set:function(v){log+='y';writes.push(v);}});Array.prototype.sort.call(o,function(a,b){log+='c';return a-b;});assert.sameValue(log.slice(0,2),'ab');assert.sameValue(log.slice(-2),'xy');assert.compareArray(writes,[1,3]);assert.sameValue(o[2],0);", 'log.charAt(2)', "'c'", "'x'"),
+            ('inherited-index', "var stored=0,p={};Object.defineProperty(p,'0',{get:function(){return 3;},set:function(v){stored=v;}});var o=Object.create(p);o[1]=1;o.length=2;assert.sameValue(Array.prototype.sort.call(o),o);assert.sameValue(stored,1);assert.sameValue(o[1],3);", "Object.prototype.hasOwnProperty.call(o,'0')", 'false', 'true'),
+            ('abrupt-comparator', "var reason={},caught=false,calls=0,a=[3,2,1];try{a.sort(function(){calls++;throw reason;});}catch(e){caught=true;assert.sameValue(e,reason);}assert(caught);assert(calls>0);assert.compareArray(a,[3,2,1]);", 'a[0]', '3', '1'),
+            ('throwing-write-delete', "var o={0:3,1:1,length:2};Object.defineProperty(o,'1',{writable:false});assert.throws(TypeError,function(){Array.prototype.sort.call(o);});assert.sameValue(o[0],1);var sparse={length:2};Object.defineProperty(sparse,'1',{value:7,writable:true,configurable:false});assert.throws(TypeError,function(){Array.prototype.sort.call(sparse);});assert.sameValue(sparse[0],7);", 'sparse[1]', '7', 'undefined'),
+            ('property-metadata', "var m=Array.prototype.sort;verifyProperty(Array.prototype,'sort',{value:m,writable:true,enumerable:false,configurable:true},{restore:true});verifyProperty(m,'length',{value:1,writable:false,enumerable:false,configurable:true},{restore:true});verifyProperty(m,'name',{value:'sort',writable:false,enumerable:false,configurable:true},{restore:true});assert.sameValue(Object.getPrototypeOf(m),Function.prototype);assert.sameValue(Object.prototype.hasOwnProperty.call(m,'prototype'),false);assert.throws(TypeError,function(){new m();});", 'm.length', '1', '2'),
+        ]
+        for mode in ('sloppy', 'strict'):
+            for name, setup, actual, good, bad in pairs:
+                for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                    source = guard + setup + f'assert.sameValue({actual},{value});'
+                    variants.append(('array-sort-' + name + suffix, source, expected, mode))
     outcomes = []
     for name, source, expected, mode in variants:
         includes = ['propertyHelper.js'] if 'property-' in name else []

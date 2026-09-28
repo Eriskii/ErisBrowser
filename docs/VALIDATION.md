@@ -1,6 +1,108 @@
 # Validation record
 
+## Stable array sorting
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **762 Rust tests** pass with `--include-ignored`: 615 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 40 pipeline and 32 confined-worker tests. None remain
+ignored. All **68 Python checks** and **57 exact pixel references** pass.
+
+The [custom sort implementation](../tests/conformance/array-sort.md) collects
+live indexed values, performs stable iterative comparison, then applies strict
+ordered writes and tail deletions. Thirteen new script groups cover generic
+receivers, inherited indices, holes versus undefined, UTF-16 default order,
+comparator conversion/receivers, abrupt completion, reentrant mutation and
+resource accounting. Collection and merge buffers, index keys and callback
+arguments are charged before allocation. Earlier callback effects and successful
+write-back operations survive later exceptions or resource failure.
+
+Direct Page and real confined-worker fixtures produce six green samples and
+six blue samples after an event callback sorts the retained records by descending
+rank. They check metadata, UTF-16 ordering, stable ties, sparse entries, inherited
+ordinary-object values, comparator exceptions and partial strict write failure.
+Worker pixels match the direct Page output, with no script diagnostics.
+
+Independent frozen-release review matches **170 unchanged expected outcomes**:
+148 normal completions, ten explicitly unsupported controls and twelve
+uncatchable resource stops. Both private scratch/prior-effect and work/heap/
+recursion groups pass under 512 MiB, three-second CPU and eight-second wall
+limits. Before/candidate source, assertion-helper, mode and expectation
+fingerprints match, and all recorded source/binary hashes remain frozen.
+Static review found no concrete new defect in the collection, comparison,
+callback, allocation or copy-back paths. Receiver-mutating comparator probes
+are identified as engine invariants where the specification leaves ordering
+implementation-defined.
+
+The complete [pinned sort directory](../tests/conformance/test262-array-sort.md)
+retains all 54 sources, 107 modes and six unchanged harness files. It moves
+from **zero passed / 61 failed / 46 unsupported** to **53 passed / six failed /
+46 unsupported / two resource stops**, with all **80 preflights verified**.
+All 107 case and 80 corrected preflight fingerprints, manifest and policy match
+between frozen adapters. The 46 unsupported observations retain their exact
+diagnostics. The six failures now reach missing reduce calls in the 5-, 11-
+and 513-element stability files. Both modes of the unchanged 2,048-element
+file reach the instruction limit; those failed-to-resource transitions are
+explicit in the [full report](../tests/conformance/test262-array-sort-latest.json).
+They are not passing tests. A requested healthy baseline was refused because
+resource outcomes remain, and no sort baseline or passing CI gate was added.
+
+One new metadata preflight initially misused the unchanged property helper:
+it checked a configurable property and then read it after the helper deleted it.
+Only the new paired setup gained the helper's documented restore option.
+Both frozen adapters were rerun with the same corrected contract; all earlier
+profiles stayed unchanged. The
+[correction record](../tests/conformance/test262-array-sort-preflight-correction.json)
+and both preliminary full reports retain the four changed preflight fingerprints
+and original setup failures. Full Python and prior-profile checks were rerun
+after this tooling correction; no engine rebuild or changed expectation was
+needed for the independent semantic matrix.
+
+The complete functions inventory improves to **503 passed / 620 unsupported /
+six failed / two resource stops**. Both modes of the unchanged closure case
+`statements/function/S13.2.1_A5_T1.js` newly pass, with no lost passes and all
+48 preflights verified. The
+[full comparison](../tests/conformance/test262-functions-sort.json) preserves
+all 1,131 identities and the policy. Six identifier-escape failures and both
+original nested-function parser stops remain; there is still no healthy
+functions baseline.
+
+Earlier regression gates retain their outcomes: HTML **3,868 matched /
+two mismatched / six unsupported**, String/JSON **536 passed / 116 unsupported**,
+RegExp **250 / 40**, templates **82 / 32**, rest parameters **16 / six**,
+prototype membership **ten / ten**, and global values **38 passed / ten failed /
+40 unsupported**. All earlier inventories, policies, assertions and baselines
+remain unchanged.
+
+The **15,000-case** mutation smoke run has zero caught panics or invariant
+failures: 5,000 accepted HTML, 627 accepted/4,373 rejected scripts, and
+3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and
+display-list size is 1,173 commands; 17 cases stop within paint limits. The new
+sort seed changes the inventory, so acceptance counts are not a comparison
+against the previous run.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+|---|---|
+| `eris-browser` | `580e75688c07d916a3caf326731ed788becad6ef6b442fc3cffaa87290e82fcc` |
+| `eris-js` | `c039eb6be9360342f9cec2fd8da08cd0efc4245a04370bca0c114e1ff812825c` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `de77d3948aa0486c326d92aaab251c32dd21571e209b18c82543b02c28ea0ace` |
+
+The final source-input digest is
+`dce62370c4dbfa806975d8c207bc38ad955997f89d653357848bc2e1b36a148c`.
+Session logs use `sort-final` under `artifacts/`; independent review records
+remain session scratch files. General Array exotic/host semantics, reduce,
+Proxy, typed arrays and larger workloads remain incomplete. No new native-window
+or Chromium performance measurement is assigned to this increment. Full web
+compatibility and independently audited security remain unverified.
+
 ## Global value properties
+
+Published checkpoint `cbe6efa` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36412306983),
+including the new global-value regression gate, Rust 1.88 and the Vulkan probe.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **747 Rust tests** pass with `--include-ignored`: 602 library,

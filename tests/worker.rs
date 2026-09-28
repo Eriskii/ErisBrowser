@@ -134,6 +134,12 @@ fn global_value_properties_preserve_pixels_and_events_through_the_worker() {
 
 #[test]
 #[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn stable_array_sort_preserves_pixels_and_callbacks_through_the_worker() {
+    assert_six_scripted_samples_through_worker(include_str!("fixtures/array-sort.html"), 137);
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
 fn window_self_persists_across_fragments_and_resets_in_a_fresh_worker() {
     let fixture = Fixture::new(include_str!("fixtures/window-self.html"));
     let mut client = fixture.spawn(true, 130);

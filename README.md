@@ -104,8 +104,8 @@ The [validation record](docs/VALIDATION.md) lists observed results and their lim
 
 A separate [function inventory](tests/conformance/test262-functions.md) retains
 663 unchanged Test262 sources and 1,131 required variants. Default parameters,
-prototype membership and the Window.self correction bring it to 501 passing
-variants, 151 more than the initial measurement with no lost passes. Failures,
+prototype membership, Window.self and array sorting bring it to 503 passing
+variants, 153 more than the initial measurement with no lost passes. Failures,
 unsupported features and two parser-limit stops remain; it is not yet a healthy
 regression gate.
 
@@ -121,6 +121,11 @@ The complete [global-value directories](tests/conformance/test262-global-values.
 retain 88 variants: 38 pass, ten fail on missing Date/URI functions, and 40 remain
 unsupported. Corrected global-property behavior adds six passes and verifies all
 64 assertion preflights; CI preserves those passes and the unchanged inventory.
+
+The complete [array-sort directory](tests/conformance/test262-array-sort.md)
+retains 107 variants: 53 pass, 46 remain unsupported, six fail on missing reduce,
+and two exceed the instruction budget. Those resource stops prevent a healthy
+regression baseline; the full inventory remains part of local measurements.
 
 ## Implementation
 

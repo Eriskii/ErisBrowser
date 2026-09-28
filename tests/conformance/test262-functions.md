@@ -14,8 +14,9 @@ at the same pinned Test262 revision as the existing selections:
 All **663 source files** and five unchanged harness files are present. Metadata
 requires **1,131 variants**: 616 sloppy and 515 strict. There are no standalone
 fixture files; 179 source tests produce 313 parse-negative variants, all
-requiring intrinsic `SyntaxError`. Async/generator methods, rest parameters and
-other unimplemented features remain in the inventory and denominator.
+requiring intrinsic `SyntaxError`. Async/generator methods, rest-parameter
+variants and other tests outside this profile's admitted features remain in the
+inventory and denominator.
 
 The importer verifies pinned Git blob identities and records paths, byte sizes
 and SHA-256 values. The runner verifies complete directory inventories, hashes,
@@ -118,6 +119,27 @@ Release adapter SHA-256:
 `073e46ca2273fb55e458432d2b17c4edac6b6f6110f61a83d79b3eaeb2bc6d8b`.
 Source-input digest:
 `5e4cfb6d251433ae56cc1900fd3380dc19e8b759de5bc2a162a45ac3efddcab2`.
+
+## Array sorting checkpoint
+
+The [complete sorting report](test262-functions-sort.json) records
+**503 passed / 620 unsupported / six failed / two resource stops**. Both modes
+of `statements/function/S13.2.1_A5_T1.js` now pass: its unchanged comparator
+closure reaches the custom Array.prototype.sort implementation. All 1,131
+source/harness/mode identities, the execution policy and 48 verified preflights
+match the previous report. There are two gained passes and no lost passes.
+The intervening global-value checkpoint retained the prior 501-pass result.
+
+The six remaining failures exercise identifier escapes; both original nested
+function parser stops remain. No healthy functions baseline is recorded.
+The [sort implementation](array-sort.md) and separate
+[complete method inventory](test262-array-sort.md) document ordinary receiver
+support and the independent descriptor, reduce and resource limitations.
+
+Release adapter SHA-256:
+`c039eb6be9360342f9cec2fd8da08cd0efc4245a04370bca0c114e1ff812825c`.
+Source-input digest:
+`dce62370c4dbfa806975d8c207bc38ad955997f89d653357848bc2e1b36a148c`.
 
 This selection is broader than default-parameter syntax and deliberately keeps
 unrelated function tests. It is not full Test262, Web Platform Tests, or web

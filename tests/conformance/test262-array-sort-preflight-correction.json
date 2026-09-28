@@ -1,0 +1,67 @@
+{
+  "reason": "Pinned verifyProperty deletes configurable properties unless options.restore is true; the supplemental metadata preflight read m.length after deletion. Only the new metadata pair now passes {restore:true} to the three helper calls. No upstream source/harness or engine changed.",
+  "changed_preflight_fingerprints": [
+    {
+      "name": "array-sort-property-metadata",
+      "mode": "sloppy",
+      "before_case_sha256": "cfb1c3d11b529587f416bdb238e10c75206c2376891297117d271d7d01f61bab",
+      "after_case_sha256": "d5c08fc5a1d3259ae18a3433a1c21c1ac9ffb30a94f2ea9bccb7e6898500b473",
+      "before_source_sha256": "49dba5e6344feaa5caa94b13321d43daf4b85983ac782ce0e6fc6b473caefb3c",
+      "after_source_sha256": "f52cdd6b3dca5886b6ce2897efe66f218554fe754d13e5cdc7c92e920ff00973"
+    },
+    {
+      "name": "array-sort-property-metadata-mismatch",
+      "mode": "sloppy",
+      "before_case_sha256": "c5bd6600ad3883405aaad7fd2473e70cd8134c5f1310846eca07c73d3859caf5",
+      "after_case_sha256": "20b9e6720df3a3d5b59a8c2ea256e5621ae9a1cc4961582b8e47ef7b06d98dd1",
+      "before_source_sha256": "55b4ed0efb7b4c81084f8ec193f31c904ae5dc1bd82bad03ba54b573f1bbd6dd",
+      "after_source_sha256": "1cdd88860c7643659c42772242ee97161befb6b4bde74eabb588fa5cd096f1d7"
+    },
+    {
+      "name": "array-sort-property-metadata",
+      "mode": "strict",
+      "before_case_sha256": "bd68131c455749c35d6188f17ef1668407ba201b438e7261a05f5ef393fefa6c",
+      "after_case_sha256": "4948bfb8b3bbee767ba2a6ea7289414e9f8c787411a007b0a12c3000d6e72eab",
+      "before_source_sha256": "49dba5e6344feaa5caa94b13321d43daf4b85983ac782ce0e6fc6b473caefb3c",
+      "after_source_sha256": "f52cdd6b3dca5886b6ce2897efe66f218554fe754d13e5cdc7c92e920ff00973"
+    },
+    {
+      "name": "array-sort-property-metadata-mismatch",
+      "mode": "strict",
+      "before_case_sha256": "64a6112c72b31635f4321fc843b143d9abde62ccccf6ba204f0e1f7561f85a62",
+      "after_case_sha256": "9e6e540a98a4f637aa5dc962731bdd37844ac0cd66d6442f9f8ba035991558ce",
+      "before_source_sha256": "55b4ed0efb7b4c81084f8ec193f31c904ae5dc1bd82bad03ba54b573f1bbd6dd",
+      "after_source_sha256": "1cdd88860c7643659c42772242ee97161befb6b4bde74eabb588fa5cd096f1d7"
+    }
+  ],
+  "unchanged_corpus_cases": 107,
+  "unchanged_old_profile_cases": 2317,
+  "unchanged_old_profile_preflights": 360,
+  "before_tooling_sha256": {
+    "tools/import_test262.py": "dba573fbcba4c602112fbe61900e1bcd928fdb1e1c2c610e4efcd38294a520ba",
+    "tools/test262_conformance.py": "18dcc82a5c97e2db3bd6d00fa9d3acf8d148247f0094276967af349583d16ac3",
+    "tools/test_test262_conformance.py": "0d364d756ebd730aa58b8cc31a052a36559cdcf0fb08c4f532675a88de8d26b3",
+    "tests/upstream/test262-array-sort/manifest.json": "d6f43dd379ae49ae08f959596852e28e6bd33a0420eb699d763ff696b0e961d2",
+    "tests/conformance/test262-array-sort-initial.json": "a93df8838d289a1407eeaeebd33b583b2ed5b58d9f59d6d8c7ffa89418f313cf"
+  },
+  "after_tooling_sha256": {
+    "tools/import_test262.py": "dba573fbcba4c602112fbe61900e1bcd928fdb1e1c2c610e4efcd38294a520ba",
+    "tools/test262_conformance.py": "34ff932f3224b0e01ec4414fa7cab6bf5ccc1e5b44f3e8bce8daf97299964119",
+    "tools/test_test262_conformance.py": "7f97f1497ab0e60ed3d7e4c10103969d7affb3ebc882d65b1624042435c9bdd2",
+    "tests/upstream/test262-array-sort/manifest.json": "d6f43dd379ae49ae08f959596852e28e6bd33a0420eb699d763ff696b0e961d2"
+  },
+  "preliminary_reports": {
+    "initial": {
+      "report": "test262-array-sort-preliminary-initial.json",
+      "sha256": "cb9be4ab791410c6c0c912b5f107ace78b586a3648878be8e933c9855627a7d6"
+    },
+    "latest": {
+      "report": "test262-array-sort-preliminary-latest.json",
+      "sha256": "9a24c51e9dde6281e61f6b04e8b00127d4b009d712243bfc440ad62126ebfb5e"
+    }
+  },
+  "corrected_reports": {
+    "initial": "test262-array-sort-initial.json",
+    "latest": "test262-array-sort-latest.json"
+  }
+}

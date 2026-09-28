@@ -43,6 +43,19 @@ Proxy traps and complete host prototype behavior remain unsupported. See
 [prototype membership](../tests/conformance/is-prototype-of.md) and its
 [pinned upstream inventory](../tests/conformance/test262-is-prototype-of.md).
 
+`Array.prototype.sort` implements stable sorting for arrays and supported
+ordinary array-like receivers. It distinguishes absent entries from undefined,
+includes inherited values, compares default strings as UTF-16 code units, and
+uses live author comparators and conversion hooks. Collection and comparison
+precede ordered strict writes/deletes; exceptions preserve earlier author and
+write-back effects. The [bounded sort implementation](../tests/conformance/array-sort.md)
+does not add indexed-array descriptor mutation, reduce, Proxy, typed-array or
+general host receiver support. Its work/heap limits can stop large inputs.
+The [complete pinned sort directory](../tests/conformance/test262-array-sort.md)
+records 53 passed, 46 unsupported, six failed on missing reduce, and two
+instruction-limit stops across 107 modes. The 2,048-element stability test is
+retained in both modes, and no healthy sort baseline is recorded.
+
 Strictness follows exact unescaped directive prologues and lexical function inheritance. Supported code checks restricted names, duplicate simple parameters, legacy literals and identifier deletion; strict calls preserve the supplied `this`, and failed writes/deletes throw. Strict arguments and arguments of functions with defaults or rest parameters are unmapped and have a throwing `callee` accessor; supported sloppy functions with simple parameter lists retain aliases until deletion or descriptor changes detach them. Lexical bindings include initialization checks, declaration conflicts and per-iteration loop environments. This does not implement the complete ECMAScript grammar or all Annex B behaviors. Unsupported dynamic eval, tagged templates, destructured parameters and labeled control flow are reported explicitly.
 
 Identifier default parameters run left to right for omitted or undefined values,
