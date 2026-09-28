@@ -2040,6 +2040,7 @@ struct Binding {
     initialized: bool,
     strict_immutable: bool,
     global_property: bool,
+    enumerable: bool,
     deletable: bool,
 }
 struct Environment {
@@ -2124,6 +2125,7 @@ struct ScriptObject {
     event: Option<usize>,
     event_target: bool,
     abort: Option<AbortSlot>,
+    namespace: Option<&'static str>,
 }
 impl ScriptObject {
     fn get(&self, key: impl Into<JsString>) -> Option<&Value> {
@@ -2307,6 +2309,7 @@ impl Runtime {
                     initialized: true,
                     strict_immutable: false,
                     global_property: name != "this",
+                    enumerable: true,
                     deletable: false,
                 },
             );
@@ -2347,6 +2350,7 @@ impl Runtime {
                     initialized: true,
                     strict_immutable: false,
                     global_property: true,
+                    enumerable: true,
                     deletable: true,
                 },
             );
@@ -2720,6 +2724,24 @@ impl Runtime {
             );
         }
         self.initialize_events()?;
+        let supports = self.intrinsic_function("CSS.supports", "supports", 1)?;
+        let namespace = self.object_ordered([("supports".into(), supports)])?;
+        if let Value::Object(id) = namespace {
+            self.objects[id].namespace = Some("CSS");
+        }
+        self.charge(128)?;
+        self.environments[0].bindings.insert(
+            "CSS".into(),
+            Binding {
+                value: namespace,
+                mutable: true,
+                initialized: true,
+                strict_immutable: false,
+                global_property: true,
+                enumerable: false,
+                deletable: true,
+            },
+        );
         // Give every stored intrinsic method a stable ordinary property bag.
         let mut methods = Vec::new();
         for object in &self.objects {
@@ -4098,6 +4120,7 @@ impl Runtime {
                 initialized: true,
                 strict_immutable: !mutable,
                 global_property: env == 0,
+                enumerable: true,
                 deletable: false,
             },
         );
@@ -4157,6 +4180,7 @@ impl Runtime {
                             initialized: false,
                             strict_immutable: *kind == DeclarationKind::Const,
                             global_property: false,
+                            enumerable: true,
                             deletable: false,
                         },
                     );
@@ -5464,7 +5488,7 @@ impl Runtime {
                 .bindings
                 .get(&key)
                 .filter(|b| b.global_property)
-                .map(|b| Property::data(b.value.clone(), b.mutable, true, b.deletable));
+                .map(|b| Property::data(b.value.clone(), b.mutable, b.enumerable, b.deletable));
         }
         if let Some(id) = self.property_object(receiver)
             && let Some(property) = self.objects[id].values.get(key)
@@ -8174,12 +8198,74 @@ impl Runtime {
         self.array(values)
     }
 
+    fn css_supports(&mut self, args: &[Value], doc: &mut Document) -> Result<Value> {
+        let Some(first) = args.first() else {
+            return Err(ScriptError::type_error(
+                "CSS.supports requires at least one argument",
+            ));
+        };
+        // Web IDL selects the overload by argument count, then converts its
+        // arguments left to right. An invalid property must not skip the value
+        // conversion, and additional arguments are not converted by this API.
+        let first = self.string_hint(first.clone(), doc)?;
+        let second = args
+            .get(1)
+            .map(|value| self.string_hint(value.clone(), doc))
+            .transpose()?;
+        let first = self.cssom_source(&first)?;
+        let second = second
+            .as_ref()
+            .map(|text| self.cssom_source(text))
+            .transpose()?;
+        let (Some(first), second) = (first, second) else {
+            return Ok(Value::Bool(false));
+        };
+        if matches!(second, Some(None)) {
+            return Ok(Value::Bool(false));
+        }
+        let second = second.flatten();
+        let bytes = first
+            .len()
+            .saturating_add(second.as_ref().map_or(0, String::len));
+        if bytes > crate::css::MAX_SUPPORTS_BYTES {
+            return Ok(Value::Bool(false));
+        }
+        // Covers token-vector growth, normalized strings and nested selector
+        // scratch, proportional to this input rather than the maximum query.
+        self.charge(bytes.saturating_mul(256).saturating_add(4096))?;
+        let supported = if let Some(second) = second {
+            crate::css::supports_declaration_with_budget(&first, &second, &mut self.steps)
+        } else {
+            crate::css::supports_matches_with_budget(&first, true, &mut self.steps)
+        };
+        if self.steps == 0 {
+            return Err(ScriptError::resource("script instruction limit exceeded"));
+        }
+        Ok(Value::Bool(supported))
+    }
+
+    fn cssom_source(&mut self, text: &JsString) -> Result<Option<String>> {
+        // CSSOM permits either DOMString or USVString. This boundary chooses
+        // USVString: paired surrogates survive, isolated ones become U+FFFD.
+        // All author conversions have already completed before size rejection.
+        self.work(text.len().saturating_add(1))?;
+        if text.len() > crate::css::MAX_SUPPORTS_BYTES {
+            return Ok(None);
+        }
+        self.charge(text.len().saturating_mul(3).saturating_add(24))?;
+        let source = text.to_utf8_lossy();
+        Ok((source.len() <= crate::css::MAX_SUPPORTS_BYTES).then_some(source))
+    }
+
     fn native_call(
         &mut self,
         native: &Native,
         args: Vec<Value>,
         doc: &mut Document,
     ) -> Result<Value> {
+        if native.name == "CSS.supports" {
+            return self.css_supports(&args, doc);
+        }
         if native.name.starts_with("AbortController.") || native.name.starts_with("AbortSignal.") {
             return self.abort_native(&native.name, native.receiver.clone(), &args, doc);
         }
@@ -8457,6 +8543,9 @@ impl Runtime {
                         "AbortSignal"
                     }
                     Value::Object(id) if self.objects[*id].event_target => "EventTarget",
+                    Value::Object(id) if self.objects[*id].namespace.is_some() => {
+                        self.objects[*id].namespace.unwrap()
+                    }
                     Value::Object(id) => match self.objects[*id].boxed {
                         Some(Value::String(_)) => "String",
                         Some(Value::Number(_)) => "Number",
@@ -10026,6 +10115,204 @@ mod tests {
     use super::*;
     fn run(source: &str) -> Result<Value> {
         Runtime::new().execute(source, &mut Document::parse("<body></body>"))
+    }
+
+    #[test]
+    fn css_supports_namespace_function_and_overload_metadata() {
+        let runtime = Runtime::new();
+        let global = runtime.own_property(&Value::Window, &"CSS".into()).unwrap();
+        assert!(!global.enumerable);
+        assert!(global.configurable);
+        assert!(matches!(
+            global.value,
+            PropertyValue::Data { writable: true, .. }
+        ));
+        assert_eq!(
+            run(r#"
+                var method = CSS.supports;
+                var property = Object.getOwnPropertyDescriptor(CSS, 'supports');
+                var length = Object.getOwnPropertyDescriptor(method, 'length');
+                var name = Object.getOwnPropertyDescriptor(method, 'name');
+                var missing = false, constructed = false;
+                try { method(); } catch (error) { missing = error instanceof TypeError; }
+                try { new method('(display:grid)'); }
+                catch (error) { constructed = error instanceof TypeError; }
+                typeof CSS === 'object' && CSS === window.CSS && CSS === globalThis.CSS &&
+                Object.getPrototypeOf(CSS) === Object.prototype &&
+                Object.prototype.toString.call(CSS) === '[object CSS]' &&
+                Object.getPrototypeOf(method) === Function.prototype &&
+                name.value === 'supports' && !name.writable && !name.enumerable && name.configurable &&
+                length.value === 1 && !length.writable && !length.enumerable && length.configurable &&
+                property.value === method && property.writable && property.enumerable && property.configurable &&
+                !method.hasOwnProperty('prototype') && missing && constructed &&
+                method.call(null, 'display', 'grid') && method.call(17, 'display:grid') &&
+                !method(undefined) && !method(null) && !method('display:grid', undefined);
+            "#).unwrap(),
+            Value::Bool(true)
+        );
+        assert_eq!(
+            run(r#"
+                var saved = CSS, method = CSS.supports;
+                CSS.supports = 3;
+                var replaced = CSS.supports === 3;
+                delete CSS.supports;
+                CSS.extra = 7;
+                CSS = null;
+                var assigned = window.CSS === null;
+                window.CSS = saved;
+                var removed = delete window.CSS;
+                replaced && assigned && removed && typeof CSS === 'undefined' &&
+                !saved.hasOwnProperty('supports') && saved.extra === 7 && method('display:grid');
+            "#)
+            .unwrap(),
+            Value::Bool(true)
+        );
+    }
+
+    #[test]
+    fn css_supports_converts_left_to_right_without_skipping_or_extra_coercions() {
+        assert_eq!(
+            run(r#"
+                var trace = '', sentinel = {}, same = false;
+                function argument(label, result) {
+                    trace += 'evaluate-' + label + ';';
+                    return {toString() { trace += 'convert-' + label + ';'; return result; }};
+                }
+                var supported = CSS.supports(argument('property', 'display'),
+                    argument('value', 'grid'), argument('extra', 'never'));
+                var ordered = trace === 'evaluate-property;evaluate-value;evaluate-extra;convert-property;convert-value;';
+                trace = '';
+                try { CSS.supports({toString(){trace += 'first'; throw sentinel;}},
+                    {toString(){trace += 'second'; return 'grid';}}); }
+                catch (error) { same = error === sentinel; }
+                var firstThrow = same && trace === 'first';
+                trace = '';
+                try { CSS.supports('not-a-property', {toString(){trace += 'value'; throw sentinel;}}); }
+                catch (error) { same = error === sentinel; }
+                var invalidConverted = same && trace === 'value';
+                var array = ['incorrect'];
+                array.toString = function(){ return '(display:grid)'; };
+                var fallback = {toString(){return {};}, valueOf(){return 'display:grid';}};
+                supported && ordered && firstThrow && invalidConverted &&
+                CSS.supports(array) && CSS.supports(fallback) &&
+                !CSS.supports(true) && !CSS.supports(17) &&
+                CSS.supports('display', {toString(){return 'grid';}},
+                    {toString(){throw 'extra argument was converted';}});
+            "#).unwrap(),
+            Value::Bool(true)
+        );
+        assert_eq!(
+            run("CSS.supports({toString(){return {};}, valueOf(){return {};}})")
+                .unwrap_err()
+                .name(),
+            "TypeError"
+        );
+        assert_eq!(run(r#"
+            var trace = '';
+            var condition = {
+                get toString(){trace += 'get-string;'; return function(){trace += 'call-string;'; return {};};},
+                get valueOf(){trace += 'get-value;'; return function(){trace += 'call-value;'; return 'display:grid';};}
+            };
+            CSS.supports(condition) && trace === 'get-string;call-string;get-value;call-value;';
+        "#).unwrap(), Value::Bool(true));
+    }
+
+    #[test]
+    fn css_supports_separates_properties_values_and_condition_grammars() {
+        assert_eq!(
+            run(r#"
+                CSS.supports('display:grid') && CSS.supports('(display:grid)') &&
+                CSS.supports('DiSpLaY', ' /* before */ grid /* after */ ') &&
+                CSS.supports('display:grid !important') &&
+                CSS.supports('selector(div/**/.item)') &&
+                CSS.supports('not selector(div/**/span)') &&
+                !CSS.supports('not selector(svg|rect)') &&
+                !CSS.supports('selector(div) or selector(svg|rect)') &&
+                !CSS.supports(' display', 'grid') && !CSS.supports('display ', 'grid') &&
+                !CSS.supports('display/**/', 'grid') && !CSS.supports('dis\\play', 'grid') &&
+                !CSS.supports('display', 'grid !important') &&
+                !CSS.supports('display', 'grid; color:red') &&
+                !CSS.supports('display', 'grid) or (color:red') &&
+                !CSS.supports('display:grid) or (color', 'red') &&
+                !CSS.supports('display', 'g/**/rid') &&
+                !CSS.supports('width', '1 px') &&
+                !CSS.supports('--theme', 'blue') && !CSS.supports('position', 'sticky') &&
+                CSS.supports('selector([data-name="\ud800"])') &&
+                CSS.supports('selector([data-name="\ud800"])') ===
+                    CSS.supports('selector([data-name="\ufffd"])') &&
+                CSS.supports('selector([data-name="\ud83d\ude00"])');
+            "#)
+            .unwrap(),
+            Value::Bool(true)
+        );
+    }
+
+    #[test]
+    fn css_supports_uses_shared_work_heap_and_string_limits() {
+        let mut runtime = Runtime::new();
+        let mut doc = Document::parse("<body></body>");
+        assert_eq!(runtime.execute(
+            "var count = 0; for(var i=0;i<100;i++){if(CSS.supports('display','grid')) count++;} count;",
+            &mut doc).unwrap(), Value::Number(100.0));
+        let oversized = "x".repeat(crate::css::MAX_SUPPORTS_BYTES + 1);
+        assert_eq!(runtime.execute(&format!(
+            "var converted = false; var accepted = CSS.supports('{oversized}', {{toString(){{converted=true;return 'grid';}}}}); !accepted && converted;"
+        ), &mut doc).unwrap(), Value::Bool(true));
+
+        let query = format!("(display:grid){}", " ".repeat(4096));
+        let mut runtime = Runtime::new();
+        let error = runtime.execute(&format!(
+            "var caught = false; try {{ for(var i=0;i<100;i++) CSS.supports('{query}'); }} catch(error) {{caught=true;}}"
+        ), &mut doc).unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(runtime.lookup(1, "caught").unwrap().1, Value::Bool(false));
+        assert_eq!(runtime.calls, 0);
+        assert_eq!(runtime.stack_units, 0);
+
+        let mut runtime = Runtime::new();
+        runtime.steps = 20;
+        let error = runtime
+            .css_supports(&[Value::String("display:grid".into())], &mut doc)
+            .unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(runtime.steps, 0);
+        let mut runtime = Runtime::new();
+        runtime.allocated = MAX_HEAP - 64;
+        assert!(
+            runtime
+                .css_supports(&[Value::String("display:grid".into())], &mut doc)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        let mut runtime = Runtime::new();
+        let error = runtime.execute(
+            "var recursive={toString(){return CSS.supports(recursive);}}; CSS.supports(recursive);",
+            &mut doc,
+        ).unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(runtime.calls, 0);
+        assert_eq!(runtime.stack_units, 0);
+    }
+
+    #[test]
+    fn css_supports_drives_dom_changes_and_event_callbacks() {
+        let mut doc = Document::parse("<button id=probe>Probe</button><output id=result></output>");
+        let mut runtime = Runtime::new();
+        runtime.execute(r#"
+            var result = document.getElementById('result');
+            result.textContent = CSS.supports('display', 'grid') ? 'grid available' : 'fallback';
+            document.getElementById('probe').addEventListener('click', function(){
+                result.className = CSS.supports('selector(output/**/.ready)') ? 'ready' : 'fallback';
+                result.textContent = CSS.supports('position', 'sticky') ? 'sticky' : 'static';
+            });
+        "#, &mut doc).unwrap();
+        let result = doc.query_selector("#result").unwrap();
+        assert_eq!(doc.text_content(result), "grid available");
+        runtime
+            .dispatch_click(doc.query_selector("#probe").unwrap(), &mut doc)
+            .unwrap();
+        assert_eq!(doc.attr(result, "class"), Some("ready"));
+        assert_eq!(doc.text_content(result), "static");
     }
 
     #[test]

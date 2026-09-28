@@ -1,4 +1,10 @@
-# Synthetic image allocation fixtures
+# Original test fixtures
+
+`css-supports.html` uses script feature queries to select a green initial box
+and blue clicked box. Pipeline and confined-worker tests compare the visible
+result and reject injected property/value syntax. It loads no external assets.
+
+## Synthetic image allocation fixtures
 
 These original fixtures are 1×1 RGBA PNGs, with valid chunk CRCs and 4,096 bytes
 of synthetic ancillary metadata. They contain no external image or profile data.

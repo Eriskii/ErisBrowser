@@ -1,5 +1,54 @@
 # Validation record
 
+## JavaScript feature-query API
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **637 Rust tests** pass with `--include-ignored`: 515 library,
+35 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 29 pipeline and 22 real-worker tests. None remain ignored.
+The existing **47 Python checks** and **51 exact pixel references** also pass.
+
+`CSS.supports` exposes both overloads through the existing conservative
+feature-query evaluator. Independent review checked argument evaluation and
+ordered string conversion, literal property names, separate value parsing,
+function/namespace descriptors and shared work/allocation limits. Five new
+runtime groups and two CSS groups cover exceptions, surplus arguments, invalid
+syntax, UTF-16 conversion, repeated calls and uncatchable resource failures.
+All **124 script tests** pass. This is focused implementation coverage, not an
+unchanged upstream WPT run or complete CSSOM/Web IDL conformance; the
+[API record](../tests/conformance/css-supports-api.md) lists the remaining gaps.
+
+A new original HTML fixture selects green initial pixels and blue clicked
+pixels through feature queries. Direct Page and confined-worker execution
+agree exactly, without diagnostics; disabling scripts prevents the state
+changes. Property/value injection probes remain false, and undeclared selector
+namespaces invalidate the complete condition through negation.
+
+Pinned upstream outcomes are unchanged: HTML **3,868 matched / two mismatched /
+six unsupported**; Test262 **536 passed / 116 unsupported**, RegExp **250 / 40**,
+and templates **82 / 32**. All assertion preflights pass. Source inventories,
+runner policies and baselines are unchanged; no prior pass regresses. The
+15,000-case deterministic mutation run reports zero caught panics or invariant
+failures, with the same seeds and acceptance/output counts as the preceding
+checkpoint. Existing performance measurements retain their historical build
+identities; this API checkpoint adds no new performance or Chromium claim.
+
+Final release SHA-256 values:
+
+| Binary | SHA-256 |
+|---|---|
+| `eris-browser` | `b1834e4dbbbe3e0ef00ef68b80dfe0287b0adae31db46068383845fb3e3dedf4` |
+| `eris-js` | `fb9215d17c8cff5e8f0593065983d7185c9d3e1272f1f2c1009597b31d6f8147` |
+| `eris-dom` | `ecf9052c43c5a3a968596c31c43a6baca92a4bdd3b309d127ebe23058d64bafc` |
+| `eris-stress` | `00bf46bad353886c718ec2b518414db54c75e118bd3e2e65ad5984f8748000f3` |
+
+The source-input digest is
+`33bc844220ee8758d7a60176d08914a96a97dc4fdd13049c9f016a66719b6d8a`,
+using the benchmark tool's documented input inventory. Adapter report hashes
+match these final binaries. Session reports use the `css-supports-final` suffix
+under `artifacts/`. Full web compatibility, independently audited security and
+the requested performance threshold remain unfulfilled.
+
 ## Selector tokens and bounded native task continuation
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release

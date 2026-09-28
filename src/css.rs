@@ -1333,7 +1333,7 @@ pub fn supports_matches(query: &str) -> bool {
     let mut work = MAX_SUPPORTS_WORK;
     supports_matches_with_budget(query, false, &mut work)
 }
-const MAX_SUPPORTS_BYTES: usize = 16 * 1024;
+pub(crate) const MAX_SUPPORTS_BYTES: usize = 16 * 1024;
 const MAX_SUPPORTS_WORK: usize = 256 * 1024;
 const MAX_SUPPORTS_TERMS: usize = 64;
 
@@ -1365,6 +1365,64 @@ pub(crate) fn supports_matches_with_budget(
     *work -= available - evaluator.work;
     result == Ok(true) && !evaluator.exhausted
 }
+/// The bounded two-argument CSS.supports(property, value) capability check.
+/// The property is a literal name; the value is parsed independently.
+pub fn supports_declaration(property: &str, value: &str) -> bool {
+    let mut work = MAX_SUPPORTS_WORK;
+    supports_declaration_with_budget(property, value, &mut work)
+}
+pub(crate) fn supports_declaration_with_budget(
+    property: &str,
+    value: &str,
+    work: &mut usize,
+) -> bool {
+    use crate::selectors::Kind;
+    // These are the same positive-declaration bounds as @supports. Check them
+    // before token storage or normalized strings can be allocated.
+    if property.is_empty() || property.len() > 256 || value.len() > 4096 {
+        return false;
+    }
+    let available = (*work).min(MAX_SUPPORTS_WORK);
+    let mut evaluator = SupportsEvaluator {
+        work: available,
+        terms: MAX_SUPPORTS_TERMS,
+        exhausted: false,
+    };
+    let result: Result<bool, ()> = (|| {
+        evaluator.spend((property.len() + value.len()).saturating_mul(8) + 1)?;
+        // CSS Conditional 3 forbids whitespace/escape processing of the
+        // property argument. A comment is not part of any supported name either.
+        let names = crate::selectors::tokens(property, &mut evaluator.work).map_err(|_| ())?;
+        if names.len() != 1
+            || names[0].kind != Kind::Ident
+            || names[0].raw != property
+            || property.contains(['\\', '\0'])
+        {
+            return Ok(false);
+        }
+        let tokens = crate::selectors::tokens(value, &mut evaluator.work).map_err(|_| ())?;
+        evaluator.tokens(&tokens)?;
+        if tokens.iter().any(|token| {
+            matches!(
+                token.kind,
+                Kind::Delim('!' | ';') | Kind::Open('{') | Kind::Close('}')
+            ) || token.raw.contains(['\\', '\0'])
+        }) {
+            return Ok(false);
+        }
+        // Keep comment/token separation consistent with the current property
+        // parsers. No property/value concatenation or condition parsing occurs.
+        let clean = strip_comments(value);
+        let clean = media_trim(&clean);
+        if clean.is_empty() {
+            return Ok(false);
+        }
+        Ok(supports_property(&property.to_ascii_lowercase(), clean))
+    })();
+    *work -= available - evaluator.work;
+    result == Ok(true) && !evaluator.exhausted
+}
+
 struct SupportsEvaluator {
     work: usize,
     terms: usize,
@@ -4499,6 +4557,104 @@ impl<T> TransposeOption<T> for Option<Option<T>> {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn supports_two_arguments_validate_names_and_standalone_values_without_injection() {
+        for (property, value) in [
+            ("display", "flex"),
+            ("DISPLAY", "grid"),
+            ("width", " 10px "),
+            ("color", "/*before*/rgb(1,2,3)/*after*/"),
+            ("margin", "1px/**/2px"),
+            ("opacity", ".5"),
+            ("color", "red/* ; !important ) { "),
+            ("grid-template-columns", "repeat(2, minmax(10px,1fr))"),
+            ("height", "inherit"),
+        ] {
+            assert!(
+                supports_declaration(property, value),
+                "{property:?} {value:?}"
+            );
+        }
+        for property in [
+            "",
+            " width",
+            "width ",
+            "width/**/",
+            "wi/**/dth",
+            r"w\69 dth",
+            "width:0",
+            "width) or (display",
+            "--theme",
+            "--",
+            "unknown",
+        ] {
+            assert!(!supports_declaration(property, "1px"), "{property:?}");
+        }
+        for (property, value) in [
+            ("display", "flex !important"),
+            ("display", "flex!important"),
+            ("display", "flex !/**/important"),
+            ("display", "flex;"),
+            ("display", "flex; color:red"),
+            ("display", "flex) or (display:grid"),
+            ("display", "flex{}"),
+            ("display", "flex junk"),
+            ("display", "fl/**/ex"),
+            ("width", "1/**/px"),
+            ("color", "#/**/fff"),
+            ("color", "rgb/**/(1,2,3)"),
+            ("width", r"\31 px"),
+            ("color", "rgb(1,2,3"),
+            ("color", "red; (display:grid)"),
+            ("color", "red\0"),
+            ("--theme", "red"),
+            ("width", "var(--theme)"),
+            ("width", ""),
+            ("color", "/*empty*/"),
+        ] {
+            assert!(
+                !supports_declaration(property, value),
+                "{property:?} {value:?}"
+            );
+        }
+        assert!(supports_matches("(display:flex!important)"));
+        assert!(!supports_declaration("display", "flex!important"));
+        let doc = Document::parse("<p id=x style='margin:1px/**/2px;color:rgb(1,2,3)'></p>");
+        let styles = compute_styles(&doc, &[], 400.0, 300.0);
+        let style = &styles[doc.query_selector("#x").unwrap()];
+        assert_eq!(style.margin.left, Length::Px(2.0));
+        assert_eq!(style.color, Color::rgb(1, 2, 3));
+    }
+
+    #[test]
+    fn supports_two_arguments_share_work_and_preallocation_limits() {
+        let mut work = 1;
+        assert!(!supports_declaration_with_budget(
+            "display", "flex", &mut work
+        ));
+        assert_eq!(work, 0);
+        let mut work = 10000;
+        assert!(supports_declaration_with_budget(
+            "display", "flex", &mut work
+        ));
+        assert!(work < 10000);
+        assert!(!supports_declaration(&"x".repeat(257), "1px"));
+        assert!(!supports_declaration("color", &" ".repeat(4097)));
+        assert!(!supports_declaration(
+            "color",
+            &format!("{}red{}", "rgb(".repeat(17), ")".repeat(17))
+        ));
+        for value in [
+            "url(foo bar)",
+            "rgb(1,2,3) trailing",
+            "{x}",
+            "[x]",
+            "red\n'bad\n'",
+        ] {
+            assert!(!supports_declaration("color", value));
+        }
+    }
+
     #[test]
     fn supports_comment_tokens_agree_across_queries_blocks_and_actual_selectors() {
         for (selector, valid) in [

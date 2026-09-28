@@ -13,6 +13,27 @@ fn page(source: &str) -> Page {
 }
 
 #[test]
+fn css_supports_drives_visible_styles_without_crossing_argument_boundaries() {
+    let mut p = page(include_str!("fixtures/css-supports.html"));
+    let fonts = Fonts::new();
+    for (state, color) in [("ready", 0x008000), ("clicked", 0x0000ff)] {
+        if state == "clicked" {
+            let button = p.document.query_selector("#check").unwrap();
+            assert!(p.click(button).is_none());
+        }
+        assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+        let body = p.document.query_selector("body").unwrap();
+        assert_eq!(p.document.attr(body, "class"), Some(state));
+        let layout = p.layout(320.0, 240.0, &fonts);
+        let mut canvas = Canvas::new(320, 240).unwrap();
+        canvas.clear(Color::WHITE);
+        canvas.paint(&layout.commands, &fonts, &p.images, 0.0, 0.0);
+        assert!(!canvas.exhausted());
+        assert_eq!(canvas.pixels[10 * 320 + 10], color);
+    }
+}
+
+#[test]
 fn disclosure_notes_preserve_dom_state_and_reflow_only_the_open_group_member() {
     let mut p = page(include_str!("../examples/disclosures.html"));
     let fonts = Fonts::new();

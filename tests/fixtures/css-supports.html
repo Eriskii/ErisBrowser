@@ -1,0 +1,27 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Script feature queries</title>
+<style>
+body { margin: 0 }
+#sample { width: 40px; height: 40px; background: red }
+body.ready #sample { background: green }
+body.clicked #sample { background: blue }
+@supports not selector(missing|div) { #sample { background: red } }
+</style>
+<div id="sample"></div>
+<button id="check" type="button">Check again</button>
+<script>
+const condition = 'selector(div/**/.ready)';
+if (CSS.supports('display', 'grid') && CSS.supports(condition) &&
+    !CSS.supports('position', 'sticky') &&
+    !CSS.supports('not selector(missing|div)')) {
+  document.body.className = 'ready';
+}
+document.getElementById('check').onclick = function () {
+  if (CSS.supports('color', 'rgb(0, 0, 255)') &&
+      !CSS.supports('display', 'grid; color:red') &&
+      !CSS.supports('display) or (color', 'red')) {
+    document.body.className = 'clicked';
+  }
+};
+</script>
