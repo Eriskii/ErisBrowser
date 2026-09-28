@@ -131,8 +131,6 @@ def case_fingerprint(case):
 def unsupported_reason(case):
     metadata = case['metadata']
     flags = set(metadata['flags'])
-    if case['mode'] == 'strict':
-        return 'strict-mode execution is not implemented'
     if case['mode'] == 'module' or (metadata['negative'] or {}).get('phase') == 'resolution':
         return 'module parsing/resolution is not implemented'
     if metadata['negative'] and metadata['negative']['type'] not in INTRINSIC_ERRORS:
@@ -252,10 +250,20 @@ def harness_preflight(files, binary, timeout):
         ('property-enumerable', "verifyProperty({x: 1}, 'x', {enumerable: false});", 'failed'),
         ('property-configurable', "verifyProperty({x: 1}, 'x', {configurable: false});", 'failed'),
     ]
+    variants = [(name, source, expected, 'sloppy') for name, source, expected in scripts]
+    variants += [('strict-' + name, source, expected, 'strict') for name, source, expected in scripts]
+    variants += [
+        ('strict-receiver', "function f(){return this;} assert.sameValue(f(),undefined); assert.sameValue(f.call(null),null); assert.sameValue(f.call(3),3);", 'passed', 'strict'),
+        ('strict-unbound-write', "assert.throws(ReferenceError,function(){missing=1;});", 'passed', 'strict'),
+        ('strict-readonly-write', "var o={};Object.defineProperty(o,'x',{value:1});assert.throws(TypeError,function(){o.x=2;});", 'passed', 'strict'),
+        ('strict-delete', "var o={};Object.defineProperty(o,'x',{value:1});assert.throws(TypeError,function(){delete o.x;});", 'passed', 'strict'),
+        ('strict-arguments', "function f(a){arguments[0]=2;assert.sameValue(a,1);assert.throws(TypeError,()=>arguments.callee);}f(1);", 'passed', 'strict'),
+        ('strict-tdz', "assert.throws(ReferenceError,function(){typeof x;let x;});", 'passed', 'strict'),
+    ]
     outcomes = []
-    for name, source, expected in scripts:
-        includes = ['propertyHelper.js'] if name.startswith('property-') else []
-        case = dict(id=f'harness-preflight:{name}', file='<preflight>', mode='sloppy',
+    for name, source, expected, mode in variants:
+        includes = ['propertyHelper.js'] if 'property-' in name else []
+        case = dict(id=f'harness-preflight:{name}', file='<preflight>', mode=mode,
                     metadata=dict(flags=[], includes=includes, features=[], locale=[], negative=None),
                     source=source.encode(), harness=[(item, files[f'harness/{item}']) for item in ['assert.js', 'sta.js'] + includes])
         case['case_sha256'] = case_fingerprint(case)
@@ -313,7 +321,7 @@ def main():
             results = list(pool.map(lambda case: run_case(case, binary, args.timeout), cases))
         counts = dict(Counter(result['status'] for result in results))
         policy = dict(format=2, supported_features=sorted(SUPPORTED_FEATURES),
-                      negative_intrinsic_errors=sorted(INTRINSIC_ERRORS), strict=False,
+                      negative_intrinsic_errors=sorted(INTRINSIC_ERRORS), strict=True,
                       modules=False, async_completion=False, host_hooks=False,
                       timeout_seconds=args.timeout)
         policy_hash = digest(json.dumps(policy, sort_keys=True).encode())

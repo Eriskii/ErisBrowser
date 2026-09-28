@@ -69,8 +69,8 @@ negative:
             with self.subTest(metadata=metadata), self.assertRaises(ValueError):
                 importer.parse_metadata('/*---\n' + metadata + '\n---*/')
 
-    def test_strict_async_module_host_and_unimplemented_features_are_visible(self):
-        for metadata in ('flags: [onlyStrict]', 'flags: [async]', 'flags: [module]',
+    def test_async_module_host_and_unimplemented_features_are_visible(self):
+        for metadata in ('flags: [async]', 'flags: [module]',
                          'features: [Reflect.construct]', 'features: [cross-realm]',
                          'features: [Symbol]', 'flags: [FutureFlag]'):
             case = sample(('/*---\n' + metadata + '\n---*/\n').encode())
@@ -80,11 +80,14 @@ negative:
         case = sample(b'/*---\n---*/\n$262.createRealm();')
         self.assertIn('host hooks', runner.unsupported_reason(case))
 
-    def test_for_in_order_feature_is_executed_without_relaxing_strict_policy(self):
+    def test_strict_and_for_in_order_modes_are_executed_with_explicit_adapter_mode(self):
         case = sample(b'/*---\nfeatures: [for-in-order]\n---*/\nfor(var x in {}) {}')
         self.assertIsNone(runner.unsupported_reason(case))
         case['mode'] = 'strict'
-        self.assertIn('strict', runner.unsupported_reason(case))
+        self.assertIsNone(runner.unsupported_reason(case))
+        self.assertEqual(runner.encode_request(case)[5], 1)
+        case = sample(b'/*---\nflags: [onlyStrict]\n---*/\nvar value=1;', 'strict')
+        self.assertIsNone(runner.unsupported_reason(case))
 
     def test_request_framing_preserves_cr_unicode_and_harness_bytes(self):
         source = b'/*---\r\n---*/\r\n"\r\n";' + '\U0001f980'.encode()

@@ -168,9 +168,8 @@ def run_case(case, binary, timeout, legacy):
     result['case_sha256'] = case_fingerprint(case)
     if case['fragment'] is not None:
         result['context'] = case['fragment']
-    if case['fragment'] is not None and (legacy or case['fragment'] == 'template'):
-        reason = 'baseline parser has no fragment API' if legacy else 'template fragment content representation'
-        return dict(result, status='unsupported', reason=reason, context=case['fragment'])
+    if case['fragment'] is not None and legacy:
+        return dict(result, status='unsupported', reason='baseline parser has no fragment API', context=case['fragment'])
     if Path(case['file']).name.startswith('scripted_'):
         return dict(result, status='unsupported', reason='synchronous parser script execution')
     if legacy and case['scripting'] == 'enabled':
@@ -231,7 +230,7 @@ def main():
                       repository=manifest['repository'], revision=manifest['revision'], corpus_manifest_sha256=corpus_hash, source_cases=source_count,
                       mode_cases=len(results), counts=counts, seconds=round(time.monotonic() - started, 3),
                       measured=['exact DOM tree serialization'],
-                      not_measured=['parse-error counts', 'document compatibility/quirks mode', 'encoding detection', 'template fragment contexts', 'synchronous script execution', 'document.write input modes', 'full WPT testharness behavior'],
+                      not_measured=['parse-error counts', 'document compatibility/quirks mode assertions', 'encoding detection', 'synchronous script execution', 'document.write input modes', 'full WPT testharness behavior'],
                       binary=str(binary), binary_sha256=binary_hash,
                       regressions=regressions, improvements=improvements, cases=results)
         args.output.parent.mkdir(parents=True, exist_ok=True)

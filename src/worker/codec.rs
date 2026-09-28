@@ -3,8 +3,8 @@
 use super::{Command, Init, Reply, Snapshot};
 use crate::{
     dom::{
-        AttributeNamespace, Doctype, Document, Element, MAX_DOM_BYTES, MAX_NODES, Namespace, Node,
-        NodeKind,
+        AttributeNamespace, Doctype, Document, DocumentMode, Element, MAX_DOM_BYTES, MAX_NODES,
+        Namespace, Node, NodeKind,
     },
     graphics::{Color, DrawCommand, ImageStore, RasterImage, Rect},
     layout::{HitRegion, LayoutResult},
@@ -21,7 +21,7 @@ pub(super) const MAX_REQUEST: usize = 18 * 1024 * 1024;
 const MAX_STRING: usize = 16 * 1024 * 1024;
 const MAX_IMAGES: usize = 64 * 1024 * 1024;
 const MAX_COMMANDS: usize = 200_000;
-const MAGIC: &[u8] = b"ERW3";
+const MAGIC: &[u8] = b"ERW4";
 type Result<T> = std::result::Result<T, String>;
 
 pub(super) fn read_frame(input: &mut impl Read, limit: usize) -> Result<Vec<u8>> {
@@ -370,6 +370,12 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
     }
     e.u32(s.document.root);
     e.boolean(s.document.scripting_enabled());
+    e.byte(match s.document.mode() {
+        DocumentMode::NoQuirks => 0,
+        DocumentMode::LimitedQuirks => 1,
+        DocumentMode::Quirks => 2,
+    });
+    e.string(s.document.character_set());
     e.u32(s.document.nodes.len());
     for node in &s.document.nodes {
         e.boolean(node.parent.is_some());
@@ -382,6 +388,13 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
         }
         match &node.kind {
             NodeKind::Document => e.byte(0),
+            NodeKind::DocumentFragment { host } => {
+                e.byte(6);
+                e.boolean(host.is_some());
+                if let Some(host) = host {
+                    e.u32(*host);
+                }
+            }
             NodeKind::Element(el) => {
                 e.byte(1);
                 e.byte(match el.namespace {
@@ -403,6 +416,10 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
                         AttributeNamespace::Xml => 1,
                         AttributeNamespace::Xmlns => 2,
                     });
+                }
+                e.boolean(el.template_contents.is_some());
+                if let Some(contents) = el.template_contents {
+                    e.u32(contents);
                 }
             }
             NodeKind::Text(s) => {
@@ -528,6 +545,16 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
     }
     let root = d.count(MAX_NODES - 1)?;
     let scripting = d.boolean()?;
+    let mode = match d.byte()? {
+        0 => DocumentMode::NoQuirks,
+        1 => DocumentMode::LimitedQuirks,
+        2 => DocumentMode::Quirks,
+        _ => return Err("unknown IPC document mode".into()),
+    };
+    let encoding_name = d.string(64)?;
+    let encoding = encoding_rs::Encoding::for_label(encoding_name.as_bytes())
+        .filter(|encoding| encoding.name() == encoding_name)
+        .ok_or("invalid IPC document encoding")?;
     let count = d.count(MAX_NODES)?;
     let mut nodes = Vec::new();
     let mut dom_bytes = MAX_DOM_BYTES;
@@ -590,6 +617,11 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
                     tag,
                     attrs,
                     attr_namespaces,
+                    template_contents: if d.boolean()? {
+                        Some(d.count(MAX_NODES - 1)?)
+                    } else {
+                        None
+                    },
                 })
             }
             2 => NodeKind::Text(d.budget_string(&mut dom_bytes)?),
@@ -617,6 +649,13 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
                 target: d.budget_string(&mut dom_bytes)?,
                 data: d.budget_string(&mut dom_bytes)?,
             },
+            6 => NodeKind::DocumentFragment {
+                host: if d.boolean()? {
+                    Some(d.count(count.saturating_sub(1))?)
+                } else {
+                    None
+                },
+            },
             _ => return Err("unknown IPC DOM node kind".into()),
         };
         nodes.push(Node {
@@ -625,7 +664,8 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
             kind,
         });
     }
-    let document = Document::from_snapshot(nodes, root, scripting)?;
+    let mut document = Document::from_snapshot(nodes, root, scripting, mode)?;
+    document.set_encoding(encoding);
     let mut images = ImageStore::new();
     let mut rasters = Vec::new();
     let mut image_bytes = MAX_IMAGES;
@@ -1221,6 +1261,8 @@ mod tests {
         e.u32(0); // diagnostics
         e.u32(0); // root
         e.boolean(false);
+        e.byte(0); // no-quirks mode
+        e.string("UTF-8");
         e.u32(1); // nodes
         e.boolean(false); // parent
         e.u32(0); // children
@@ -1252,6 +1294,70 @@ mod tests {
     }
     fn reply() -> Reply {
         reply_with_html("<p>Hello</p>")
+    }
+    #[test]
+    fn template_fragments_mode_and_encoding_roundtrip_with_graph_validation() {
+        let mut r = reply_with_html(
+            "<!doctype html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'x'><template id=t><b id=x>inert</b><template id=n><i>nested</i></template></template><p>live</p>",
+        );
+        r.snapshot
+            .as_mut()
+            .unwrap()
+            .document
+            .set_encoding(encoding_rs::SHIFT_JIS);
+        let mut doc = decode_reply(&encode_reply(&r).unwrap())
+            .unwrap()
+            .snapshot
+            .unwrap()
+            .document;
+        assert_eq!(doc.mode(), DocumentMode::LimitedQuirks);
+        assert_eq!(doc.character_set(), "Shift_JIS");
+        assert!(doc.query_selector("#x").is_none());
+        let template = doc.query_selector("#t").unwrap();
+        assert!(doc.nodes[template].children.is_empty());
+        let contents = doc.template_contents(template).unwrap();
+        assert!(
+            matches!(doc.nodes[contents].kind, NodeKind::DocumentFragment { host: Some(id) } if id == template)
+        );
+        let child = doc.query_selector_from(contents, "#x").unwrap();
+        assert_eq!(doc.text_content(child), "inert");
+        let body = doc.query_selector("body").unwrap();
+        doc.append_child(body, contents);
+        assert!(doc.query_selector("#x").is_some());
+        assert!(doc.nodes[contents].children.is_empty());
+
+        // A compromised renderer must not send host ownership cycles or aliases.
+        let snapshot = r.snapshot.as_mut().unwrap();
+        let template = snapshot.document.query_selector("#t").unwrap();
+        let contents = snapshot.document.template_contents(template).unwrap();
+        snapshot.document.nodes[contents].kind = NodeKind::DocumentFragment {
+            host: Some(contents),
+        };
+        assert!(decode_reply(&encode_reply(&r).unwrap()).is_err());
+    }
+    #[test]
+    fn snapshot_mode_and_encoding_are_validated_before_node_allocation() {
+        for (mode, encoding, expected) in [
+            (3, "UTF-8", "unknown IPC document mode"),
+            (0, "unknown", "invalid IPC document encoding"),
+            (0, "utf8", "invalid IPC document encoding"),
+        ] {
+            let mut e = Encoder::new(99);
+            e.u64(1);
+            e.u64(0);
+            e.string("");
+            e.string("about:blank");
+            e.f64(0.0);
+            e.u32(0);
+            e.u32(0);
+            e.boolean(false);
+            e.byte(mode);
+            e.string(encoding);
+            // No node count/payload supplied: rejection must happen first.
+            let bytes = e.finish().unwrap();
+            let mut d = Decoder::new(&bytes, 99).unwrap();
+            assert!(matches!(decode_snapshot(&mut d), Err(error) if error == expected));
+        }
     }
     fn reply_with_html(html: &str) -> Reply {
         let page =

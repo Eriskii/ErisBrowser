@@ -7,7 +7,7 @@
 //! from the intentionally bounded script/SVG implementations are expected.
 
 use eris::{
-    css::{self, ComputedStyle, Length},
+    css::{self, ComputedStyle, GridBreadth, Length},
     dom::{AttributeNamespace, Document, NodeKind},
     graphics::{Canvas, Color, DrawCommand, Fonts, ImageStore, Rect},
     layout,
@@ -27,6 +27,8 @@ const DEFAULT_SEED: u64 = 0xe215_2026;
 const SCRIPT_DOCUMENT: &str = "<!doctype html><body><button id='go'>Go</button><div id='out'>Initial</div><input id='field' value='test'></body>";
 
 const HTML_SEEDS: &[&str] = &[
+    "<style>main{display:grid;grid-template-columns:minmax(20px,1fr) 2fr;grid-template-rows:30px auto;grid-auto-rows:20px 40px;grid-auto-columns:min-content 50px;grid-auto-flow:row dense;gap:3px 7px}i{padding:2px}#wide{grid-column:span 2}#past{grid-column:-5;grid-row:4 / span 2}</style><main><i id=wide>Spanning text</i><i>Auto</i><i id=past>Implicit</i><i style='order:-1;align-self:end'>Ordered</i></main>",
+    "<!doctype html><template id=outer><table><tr><td>Hosted cell</td></tr></table><template id=nested><svg><foreignObject><p>Nested content</p></foreignObject></svg></template></template><main><p>Active sibling</p><template><select><option>Inert choice</option></select></template></main><script>const t=document.createElement('template');t.innerHTML='<section><template><b>nested</b></template><i>fragment</i></section>';document.body.appendChild(t.content.cloneNode(true));</script>",
     "<style>body{margin:0}.left{float:left;width:32%;margin:2px;padding:3px;background:coral}.right{float:right;width:40px;height:50px}.clear{clear:both}.isolate{display:flow-root;overflow:hidden}</style><div class=left>Floating <b>text</b></div><div class=right>Right</div><p>Lines around two floats with different heights and margins.</p><section class=isolate><span class=left>Nested float</span>Separate context</section><p class=clear>After floats</p>",
     "<style>.clip{overflow:clip;width:60px;height:30px}a{float:left;min-width:20px;max-width:110px;padding:10%;margin-right:3px;background:#135;color:white}p{clear:left}</style><div class=clip><a href='#done'>Oversize float with wrapped words</a></div><p id=done>Clearance</p>",
     "<svg xmlns='http://www.w3.org/2000/svg' viewbox='0 0 120 80' preserveaspectratio='xMidYMid meet'><g xml:lang='en'><foreignobject x=4 y=4 width=100 height=60><p>HTML <b>integration</b><svg><title>Nested SVG</title><circle r=5 /></svg></p></foreignobject></g></svg><p>After SVG</p>",
@@ -45,6 +47,8 @@ const HTML_SEEDS: &[&str] = &[
     "<style>.a{position:relative;left:-2px;top:3px;width:90%;max-width:150px;min-height:20px}.b{font-size:125%;vertical-align:middle}a[href^='https']{color:rebeccapurple}</style><p class=a>Text <span class=b>large</span> <a href=https://example.com>link</a></p><img width=16 height=16 alt=missing>",
 ];
 const SCRIPT_SEEDS: &[&str] = &[
+    "x=0;function remove(){delete globalThis.x;return 1;}x=remove();document.getElementById('out').textContent=String(x);",
+    "'use strict';function inspect(value){arguments[0]=9;return value+':'+arguments[0];}let result='';try{result+=typeof later;let later=2;}catch(error){result+=error.name;}const t=document.createElement('template');t.innerHTML='<section><b>Cloned</b><template><i>Nested</i></template></section>';const clone=t.content.cloneNode(true);document.getElementById('out').appendChild(clone);document.getElementById('field').value=result+':'+inspect(3);",
     "let saved=3;const object={};Object.defineProperty(object,'value',{get:function(){return saved;},set:function(x){saved=x;},enumerable:true,configurable:true});object.value=7;const child=Object.create(object);child.own=2;let result='';for(let key in child){result+=key+':'+child[key]+';';}const descriptor=Object.getOwnPropertyDescriptor(object,'value');document.getElementById('out').textContent=result+descriptor.enumerable;delete object.value;",
     "function Item(x){this.value=x;}const Bound=Item.bind(null,4);const instance=new Bound();const object={};Object.defineProperty(object,'locked',{value:8});try{Object.defineProperty(object,'locked',{value:9});}catch(error){document.getElementById('out').textContent=error.name+':'+instance.value+':'+Object.keys(object).length;}const values=[1,,3];let keys='';for(let key in values){keys+=key;}document.getElementById('field').value=keys;",
     "const table=document.createElement('table');document.getElementById('out').appendChild(table);table.innerHTML='<tr><td>First<td>Second';const row=table.querySelector('tr');row.innerHTML='<td>Changed<td><b>Bold</b>';const select=document.createElement('select');select.innerHTML='<option>Alpha<option>Beta';document.getElementById('out').appendChild(select);",
@@ -266,6 +270,8 @@ fn style_invariants(style: &ComputedStyle) -> Result<(), String> {
         style.max_width,
         style.max_height,
         style.flex_basis,
+        style.row_gap,
+        style.column_gap,
         style.top,
         style.right,
         style.bottom,
@@ -279,11 +285,24 @@ fn style_invariants(style: &ComputedStyle) -> Result<(), String> {
         style.padding.bottom,
         style.padding.left,
     ];
-    for length in lengths.iter().chain(&style.grid_template_columns) {
+    let track_lengths = [
+        &style.grid_template_columns,
+        &style.grid_template_rows,
+        &style.grid_auto_columns,
+        &style.grid_auto_rows,
+    ]
+    .into_iter()
+    .flat_map(|tracks| tracks.iter())
+    .flat_map(|track| [track.min, track.max])
+    .filter_map(|breadth| match breadth {
+        GridBreadth::Length(length) => Some(length),
+        _ => None,
+    });
+    for length in lengths.into_iter().chain(track_lengths) {
         match length {
             Length::Auto => {}
             Length::Px(value) | Length::Percent(value) | Length::Fr(value) => {
-                finite(&[*value], "CSS length")?
+                finite(&[value], "CSS length")?
             }
         }
     }
@@ -293,11 +312,60 @@ fn dom_invariants(document: &Document) -> Result<(), String> {
     if document.nodes.len() > 100_000 || document.retained_bytes() > 32 * 1024 * 1024 {
         return Err("DOM resource limit exceeded".into());
     }
-    if document.root >= document.nodes.len() || document.nodes[document.root].parent.is_some() {
+    if document.root >= document.nodes.len()
+        || document.nodes[document.root].parent.is_some()
+        || !matches!(document.nodes[document.root].kind, NodeKind::Document)
+    {
         return Err("invalid DOM root".into());
     }
     let mut incoming = vec![0usize; document.nodes.len()];
+    let mut owners = vec![None; document.nodes.len()];
     for (id, node) in document.nodes.iter().enumerate() {
+        match &node.kind {
+            NodeKind::Document if id != document.root => {
+                return Err("duplicate DOM document".into());
+            }
+            NodeKind::DocumentFragment { host } => {
+                if node.parent.is_some() {
+                    return Err("DOM fragment has an ordinary parent".into());
+                }
+                if let Some(host) = host {
+                    let Some(NodeKind::Element(element)) =
+                        document.nodes.get(*host).map(|node| &node.kind)
+                    else {
+                        return Err("invalid DOM fragment host".into());
+                    };
+                    if element.namespace != eris::dom::Namespace::Html
+                        || element.tag != "template"
+                        || element.template_contents != Some(id)
+                    {
+                        return Err("nonreciprocal DOM fragment host".into());
+                    }
+                }
+            }
+            NodeKind::Element(element) => {
+                let template =
+                    element.namespace == eris::dom::Namespace::Html && element.tag == "template";
+                if template != element.template_contents.is_some() {
+                    return Err("invalid DOM template ownership".into());
+                }
+                if let Some(contents) = element.template_contents
+                    && (!matches!(document.nodes.get(contents).map(|node|&node.kind),Some(NodeKind::DocumentFragment{host:Some(host)}) if *host==id)
+                        || owners[contents].replace(id).is_some())
+                {
+                    return Err("nonreciprocal or duplicate DOM template ownership".into());
+                }
+            }
+            _ => {}
+        }
+        if !node.children.is_empty()
+            && !matches!(
+                node.kind,
+                NodeKind::Document | NodeKind::DocumentFragment { .. } | NodeKind::Element(_)
+            )
+        {
+            return Err("DOM leaf has children".into());
+        }
         if let NodeKind::Element(element) = &node.kind {
             for (name, namespace) in &element.attr_namespaces {
                 if !element.attrs.contains_key(name)
@@ -310,6 +378,10 @@ fn dom_invariants(document: &Document) -> Result<(), String> {
         for child in &node.children {
             if *child >= document.nodes.len()
                 || *child == id
+                || matches!(
+                    document.nodes[*child].kind,
+                    NodeKind::Document | NodeKind::DocumentFragment { .. }
+                )
                 || document.nodes[*child].parent != Some(id)
             {
                 return Err("inconsistent DOM parent/child relationship".into());
@@ -331,20 +403,33 @@ fn dom_invariants(document: &Document) -> Result<(), String> {
         if incoming[id] != usize::from(node.parent.is_some()) {
             return Err("DOM parent does not contain child".into());
         }
-        if node.parent.is_none() {
-            roots.push(id);
+        if node.parent.is_none() && owners[id].is_none() {
+            roots.push((id, 0usize));
         }
     }
     let mut seen = vec![false; document.nodes.len()];
-    while let Some(id) = roots.pop() {
+    while let Some((id, depth)) = roots.pop() {
+        if depth > eris::dom::MAX_DEPTH {
+            return Err("host-inclusive DOM depth exceeded".into());
+        }
         if seen[id] {
             return Err("cycle in DOM".into());
         }
         seen[id] = true;
-        roots.extend(document.nodes[id].children.iter().copied());
+        roots.extend(
+            document.nodes[id]
+                .children
+                .iter()
+                .map(|child| (*child, depth + 1)),
+        );
+        if let NodeKind::Element(element) = &document.nodes[id].kind
+            && let Some(contents) = element.template_contents
+        {
+            roots.push((contents, depth + 1));
+        }
     }
     if seen.iter().any(|visited| !visited) {
-        return Err("cycle in detached DOM".into());
+        return Err("cycle in detached or hosted DOM".into());
     }
     Ok(())
 }
@@ -624,6 +709,79 @@ fn run() -> Result<(), String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn template_invariants_check_ownership_fragment_parents_and_host_cycles() {
+        let mut document = Document::parse(
+            "<template id=outer><b>Inert</b><template><i>Nested</i></template></template><template id=other></template>",
+        );
+        document.create_document_fragment();
+        assert!(dom_invariants(&document).is_ok());
+        let outer = document.query_selector("#outer").unwrap();
+        let contents = document.template_contents(outer).unwrap();
+        let other = document.query_selector("#other").unwrap();
+        let mut invalid = document.clone();
+        invalid.nodes[contents].parent = Some(outer);
+        assert!(
+            dom_invariants(&invalid)
+                .unwrap_err()
+                .contains("fragment has an ordinary parent")
+        );
+        let mut invalid = document.clone();
+        invalid.nodes[contents].kind = NodeKind::DocumentFragment { host: Some(other) };
+        assert!(dom_invariants(&invalid).is_err());
+        let mut invalid = document.clone();
+        let NodeKind::Element(element) = &mut invalid.nodes[other].kind else {
+            unreachable!()
+        };
+        element.template_contents = Some(contents);
+        assert!(dom_invariants(&invalid).is_err());
+        let mut invalid = document.clone();
+        let parent = invalid.nodes[outer].parent.take().unwrap();
+        invalid.nodes[parent]
+            .children
+            .retain(|child| *child != outer);
+        invalid.nodes[outer].parent = Some(contents);
+        invalid.nodes[contents].children.push(outer);
+        assert!(dom_invariants(&invalid).unwrap_err().contains("cycle"));
+    }
+
+    #[test]
+    fn template_invariants_limit_host_inclusive_depth_with_one_shared_walk() {
+        let mut document = Document::parse("<p>active</p>");
+        let mut previous = None;
+        for _ in 0..(eris::dom::MAX_DEPTH / 2 + 3) {
+            let template = document.create_element("template");
+            let contents = document.template_contents(template).unwrap();
+            if let Some(parent) = previous {
+                document.nodes[template].parent = Some(parent);
+                document.nodes[parent].children.push(template);
+            }
+            previous = Some(contents);
+        }
+        assert!(
+            dom_invariants(&document)
+                .unwrap_err()
+                .contains("host-inclusive DOM depth")
+        );
+    }
+
+    #[test]
+    fn grid_track_invariants_cover_implicit_rows_minmax_and_both_gaps() {
+        let document = Document::parse(
+            "<div style='display:grid;grid-template-rows:minmax(10px,2fr);grid-auto-columns:min-content 20%;grid-auto-rows:3em;gap:10% 20px'></div>",
+        );
+        let styles = css::compute_styles(&document, &[], 800.0, 600.0);
+        let style = &styles[document.query_selector("div").unwrap()];
+        assert!(style_invariants(style).is_ok());
+        let mut bad = style.clone();
+        std::sync::Arc::make_mut(&mut bad.grid_auto_rows)[0].min =
+            GridBreadth::Length(Length::Px(f32::INFINITY));
+        assert!(style_invariants(&bad).is_err());
+        let mut bad = style.clone();
+        bad.column_gap = Length::Percent(f32::NAN);
+        assert!(style_invariants(&bad).is_err());
+    }
 
     #[test]
     fn namespace_invariants_reject_orphaned_and_mismatched_metadata() {

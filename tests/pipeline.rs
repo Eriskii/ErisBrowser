@@ -538,6 +538,79 @@ fn fragment_identifiers_decode_utf8_without_form_plus_rules() {
 }
 
 #[test]
+fn html_bytes_select_encoding_and_reparse_late_declarations_before_scripts() {
+    use base64::Engine;
+    fn load(bytes: &[u8], mime: &str) -> Page {
+        let address = format!(
+            "data:{mime};base64,{}",
+            base64::engine::general_purpose::STANDARD.encode(bytes)
+        );
+        Page::load(&address, true).unwrap()
+    }
+    let p = load(b"<p id=x>caf\xe9", "text/html");
+    assert_eq!(p.document.character_set(), "windows-1252");
+    assert_eq!(
+        p.document
+            .text_content(p.document.query_selector("#x").unwrap()),
+        "café"
+    );
+    let p = load(b"<meta charset=utf-8><p id=x>caf\xc3\xa9", "text/html");
+    assert_eq!(p.document.character_set(), "UTF-8");
+    assert_eq!(
+        p.document
+            .text_content(p.document.query_selector("#x").unwrap()),
+        "café"
+    );
+    let p = load(
+        b"<meta charset=utf-8><p id=x>caf\xe9",
+        "text/html;charset=windows-1252",
+    );
+    assert_eq!(p.document.character_set(), "windows-1252");
+    assert_eq!(
+        p.document
+            .text_content(p.document.query_selector("#x").unwrap()),
+        "café"
+    );
+    for declaration in [
+        "<meta charset=utf-8>",
+        "<meta charset=utf&#45;8>",
+        "<template><meta charset=utf-8></template><meta charset=windows-1252>",
+        "<script>'<meta charset=shift_jis>';</script><meta charset=utf-8>",
+        "<meta charset=unknown><meta charset=utf-8><meta charset=shift_jis>",
+    ] {
+        let source = format!(
+            "<!doctype html><head><!--{}-->{declaration}</head><body><p id=x>café</p><p id=encoding></p><script>document.getElementById('x').textContent += '!'; document.getElementById('encoding').textContent = document.characterSet + '/' + document.charset + '/' + document.inputEncoding;</script>",
+            " ".repeat(1100)
+        );
+        let p = load(source.as_bytes(), "text/html");
+        assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+        assert_eq!(p.document.character_set(), "UTF-8", "{declaration}");
+        assert_eq!(
+            p.document
+                .text_content(p.document.query_selector("#x").unwrap()),
+            "café!",
+            "{declaration}"
+        );
+        assert_eq!(
+            p.document
+                .text_content(p.document.query_selector("#encoding").unwrap()),
+            "UTF-8/UTF-8/UTF-8"
+        );
+    }
+    let p = page("<meta charset=windows-1252><p id=x>café");
+    assert_eq!(
+        p.document.character_set(),
+        "UTF-8",
+        "string DOM APIs do not reinterpret bytes"
+    );
+    assert_eq!(
+        p.document
+            .text_content(p.document.query_selector("#x").unwrap()),
+        "café"
+    );
+}
+
+#[test]
 fn authoritative_control_edit_policy_blocks_inert_disabled_and_readonly_nodes() {
     let p = page(
         "<input id=a><input id=b readonly><fieldset disabled><input id=c></fieldset><template><input id=d></template><input id=e type=HIDDEN><input id=f type=PASSWORD><input id=g type=CHECKBOX><textarea id=h></textarea>",
@@ -548,12 +621,16 @@ fn authoritative_control_edit_policy_blocks_inert_disabled_and_readonly_nodes() 
             "{name}"
         );
     }
-    for name in ["b", "c", "d", "e", "g"] {
+    for name in ["b", "c", "e", "g"] {
         assert!(
             !p.can_edit_control(p.document.query_selector(&format!("#{name}")).unwrap()),
             "{name}"
         );
     }
+    let template = p.document.query_selector("template").unwrap();
+    let contents = p.document.template_contents(template).unwrap();
+    let inert = p.document.query_selector_from(contents, "#d").unwrap();
+    assert!(!p.can_edit_control(inert));
     assert!(!p.can_edit_control(usize::MAX));
 }
 
@@ -600,4 +677,57 @@ fn float_demo_descriptor_setter_updates_contextual_table_fragments_and_paint() {
         canvas.paint(&layout.commands, &fonts, &p.images, 0.0, 0.0);
         assert!(canvas.pixels.contains(&0x173f35));
     }
+}
+
+#[test]
+fn template_demo_strict_callbacks_clone_cards_and_reflow_grid() {
+    let mut p = page(include_str!("../examples/templates.html"));
+    assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+    let collection = p.document.query_selector("#collection").unwrap();
+    let template = p.document.query_selector("#note").unwrap();
+    let original = p.document.template_contents(template).unwrap();
+    assert_eq!(p.document.nodes[collection].children.len(), 5);
+    assert_eq!(p.document.nodes[original].children.len(), 1);
+    assert!(p.document.nodes[template].children.is_empty());
+    let fonts = Fonts::new();
+    let second = p.document.query_selector("#note-2").unwrap();
+    let first = p.document.query_selector("#note-1").unwrap();
+    let initial = p.layout(1100.0, 1100.0, &fonts);
+    let rect = |layout: &eris::layout::LayoutResult, node| {
+        layout
+            .hit_regions
+            .iter()
+            .find(|hit| hit.node == node)
+            .unwrap()
+            .rect
+    };
+    assert!((rect(&initial, first).y - rect(&initial, second).y).abs() < 0.1);
+    p.click(p.document.query_selector("#arrange").unwrap());
+    let compact = p.layout(1100.0, 1100.0, &fonts);
+    assert!(
+        rect(&compact, second).y >= rect(&compact, first).y + rect(&compact, first).height + 17.9
+    );
+    for count in 6..=9 {
+        p.click(p.document.query_selector("#add").unwrap());
+        assert_eq!(p.document.nodes[collection].children.len(), count);
+        assert_eq!(
+            p.document
+                .text_content(p.document.query_selector("#status").unwrap()),
+            format!("{count} notes in the collection")
+        );
+    }
+    p.click(p.document.query_selector("#add").unwrap());
+    assert_eq!(p.document.nodes[collection].children.len(), 9);
+    assert_eq!(p.document.nodes[original].children.len(), 1);
+    assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+    let mut canvas = Canvas::new(1100, 1100).unwrap();
+    canvas.paint(
+        &p.layout(1100.0, 1100.0, &fonts).commands,
+        &fonts,
+        &p.images,
+        0.0,
+        0.0,
+    );
+    assert!(canvas.pixels.contains(&0x263c38));
+    assert!(canvas.pixels.contains(&0xe0e7db));
 }

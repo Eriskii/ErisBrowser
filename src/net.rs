@@ -77,19 +77,11 @@ pub struct Resource {
 }
 impl Resource {
     pub fn text(&self) -> String {
-        let label = self.content_type.split(';').skip(1).find_map(|p| {
-            let (key, value) = p.trim().split_once('=')?;
-            key.eq_ignore_ascii_case("charset")
-                .then(|| value.trim_matches(['\'', '"', ' ']))
-        });
         let encoding = encoding_rs::Encoding::for_bom(&self.bytes)
             .map(|value| value.0)
-            .or_else(|| label.and_then(|label| encoding_rs::Encoding::for_label(label.as_bytes())));
-        if let Some(e) = encoding {
-            e.decode(&self.bytes).0.into_owned()
-        } else {
-            String::from_utf8_lossy(&self.bytes).into_owned()
-        }
+            .or_else(|| crate::text_encoding::transport_encoding(&self.content_type))
+            .unwrap_or(encoding_rs::UTF_8);
+        crate::text_encoding::decode(&self.bytes, encoding)
     }
 }
 

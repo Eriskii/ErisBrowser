@@ -45,6 +45,10 @@ across origins. Same-origin images and inline SVG remain in the renderer.
 Within the renderer, `Page` loads resources, parses HTML, runs the supported
 script subset and computes styles/layout. The DOM stores HTML, SVG and MathML
 namespace identity. Inline SVG is rasterized into the page's image store.
+HTML templates own separate hosted document fragments, which ordinary document
+queries and layout do not traverse. Cloning and fragment transfer preserve that
+distinction. Documents retain their parsing mode and canonical character encoding;
+fragment parsing inherits the owner's context.
 Interaction requests update the same document and interpreter, then return a
 new snapshot. A shared DOM control policy governs both native editor focus and
 page edits; navigation generations and edit acknowledgements prevent stale
@@ -53,7 +57,8 @@ results from replacing newer input.
 Snapshots contain the DOM, display list, hit regions, shared raster images and
 page metadata. The parent checks their graph structure, namespace bindings,
 storage limits, geometry and raster dimensions before publishing them to the
-UI. Resource traffic has separate request/response messages. All pipe channels
+UI. The ERW4 format also validates reciprocal template/fragment ownership,
+host-inclusive cycles/depth and canonical encoding metadata. Resource traffic has separate request/response messages. All pipe channels
 use bounded framing, nonblocking I/O and deadlines; cancellation remains latched
 across nested broker and decoder exchanges. Failure or replacement kills and reaps the
 corresponding children.
@@ -64,6 +69,14 @@ styles and layout. Rendering is CPU based, without a GPU compositor or general
 incremental invalidation. The existing warm-render benchmark excludes process
 startup, resource transfer and snapshot serialization, so it cannot measure the
 cost of this complete native path.
+
+HTML byte decoding chooses a BOM, transport charset, or bounded markup prescan,
+with windows-1252 as the current locale-independent fallback. A later accepted
+declaration can trigger one reparse of the cached response before resource loading
+or script execution; it never repeats the navigation request. CSS and classic
+scripts select their own encodings using the referring document as a fallback.
+The string-based DOM APIs already receive Unicode and never reinterpret bytes.
+See [encoding behavior](ENCODING.md) for precedence, tests and remaining limits.
 
 See [security](SECURITY.md) for exact grants, limits and remaining attack surface,
 [compatibility](COMPATIBILITY.md) for implemented subsets, and

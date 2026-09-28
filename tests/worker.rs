@@ -134,6 +134,59 @@ fn isolated_load_render_returns_valid_snapshot_from_distinct_process() {
     );
 }
 
+#[test]
+#[ignore = "requires Linux Landlock ABI 6 and launches the real confined browser worker"]
+fn template_fragments_strict_callbacks_and_encoding_survive_native_snapshots() {
+    let fixture = Fixture::new(include_str!("../examples/templates.html"));
+    let mut client = fixture.spawn(true, 76);
+    let pid = client.pid();
+    load(&mut client, &fixture.navigation);
+    let initial = render(&mut client);
+    assert_eq!(initial.document.mode(), eris::dom::DocumentMode::NoQuirks);
+    assert_eq!(initial.document.character_set(), "UTF-8");
+    assert_eq!(initial.title, "Eris · A collection of small things");
+    let collection = initial.document.query_selector("#collection").unwrap();
+    let template = initial.document.query_selector("#note").unwrap();
+    let contents = initial.document.template_contents(template).unwrap();
+    assert!(initial.document.nodes[template].children.is_empty());
+    assert_eq!(initial.document.nodes[contents].children.len(), 1);
+    assert_eq!(initial.document.nodes[collection].children.len(), 5);
+    for selector in ["#arrange", "#add"] {
+        exchange_empty(
+            &mut client,
+            WorkerCommand::Click {
+                node: initial.document.query_selector(selector).unwrap(),
+            },
+        );
+    }
+    let changed = render(&mut client);
+    assert_eq!(
+        changed.document.attr(collection, "class"),
+        Some("collection compact")
+    );
+    assert_eq!(changed.document.nodes[collection].children.len(), 6);
+    assert_eq!(changed.document.nodes[contents].children.len(), 1);
+    assert_eq!(
+        changed
+            .document
+            .text_content(changed.document.query_selector("#status").unwrap()),
+        "6 notes in the collection"
+    );
+    assert!(
+        changed
+            .diagnostics
+            .iter()
+            .all(|message| message.starts_with("Page process ")
+                || message.starts_with("Resource broker ")),
+        "{:?}",
+        changed.diagnostics
+    );
+    let broker_pid = client.broker_pid().unwrap();
+    drop(client);
+    assert!(!process_exists(pid));
+    assert!(!process_exists(broker_pid));
+}
+
 fn accept_request(listener: &TcpListener, expected_path: &str) -> std::net::TcpStream {
     accept_form_request(listener, "GET", expected_path, None)
 }
@@ -814,12 +867,12 @@ fn image_decoder_confines_decodes_once_and_exits_without_response_body_leaks() {
         let mut output = child.0.stdout.take().unwrap();
         let flags = rustix::fs::fcntl_getfl(&output).unwrap();
         rustix::fs::fcntl_setfl(&output, flags | rustix::fs::OFlags::NONBLOCK).unwrap();
-        send(&mut input, b"ERW3\x06");
-        assert_eq!(receive(&mut output), b"ERW3\x02\x01\x00\x00");
+        send(&mut input, b"ERW4\x06");
+        assert_eq!(receive(&mut output), b"ERW4\x02\x01\x00\x00");
         let status = fs::read_to_string(format!("/proc/{pid}/status")).unwrap();
         assert!(status.contains("NoNewPrivs:\t1"));
         assert!(status.contains("Seccomp:\t2"));
-        let mut request = b"ERW3\x07".to_vec();
+        let mut request = b"ERW4\x07".to_vec();
         request.extend_from_slice(&(mime.len() as u32).to_le_bytes());
         request.extend_from_slice(mime.as_bytes());
         request.extend_from_slice(&budget.to_le_bytes());
@@ -827,7 +880,7 @@ fn image_decoder_confines_decodes_once_and_exits_without_response_body_leaks() {
         request.extend_from_slice(body);
         send(&mut input, &request);
         let response = receive(&mut output);
-        assert_eq!(&response[..5], b"ERW3\x08");
+        assert_eq!(&response[..5], b"ERW4\x08");
         assert_eq!(response[5], u8::from(success));
         if success {
             assert_eq!(u32::from_le_bytes(response[6..10].try_into().unwrap()), 2);

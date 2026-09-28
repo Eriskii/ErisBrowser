@@ -27,7 +27,7 @@ fn run() -> Result<(), String> {
             }
             "--help" => {
                 println!(
-                    "Usage: eris-dom [--scripting enabled|disabled] [--fragment CONTEXT] < input.html\nOutputs the actual parsed tree in WPT tree-construction format.\nCONTEXT is an HTML local name, 'svg NAME', or 'math NAME'.\nSets the parser scripting flag; scripts are never executed.\nTemplate fragment contexts and parse-error reporting are not implemented."
+                    "Usage: eris-dom [--scripting enabled|disabled] [--fragment CONTEXT] < input.html\nOutputs the actual parsed tree in WPT tree-construction format.\nCONTEXT is an HTML local name, 'svg NAME', or 'math NAME'.\nSets the parser scripting flag; scripts are never executed.\nParse-error reporting is not implemented."
                 );
                 return Ok(());
             }
@@ -64,7 +64,8 @@ fn fragment_document(source: &str, context: &str, scripting: bool) -> Result<Doc
     if tag.is_empty() || tag.len() > 256 || tag.chars().any(char::is_whitespace) {
         return Err("invalid fragment context name".into());
     }
-    let mut document = Document::parse_with_scripting("", scripting);
+    // The fixture context is created in a standards-mode owner document.
+    let mut document = Document::parse_with_scripting("<!doctype html>", scripting);
     let element = document.create_element_ns(namespace, tag);
     if document.tag(element) != Some(tag) {
         return Err("invalid fragment context name".into());
@@ -94,6 +95,9 @@ fn serialize(document: &Document) -> Result<String, String> {
         let prefix = format!("| {}", "  ".repeat(depth));
         match &node.kind {
             NodeKind::Document => return Err("nested document node".into()),
+            NodeKind::DocumentFragment { .. } => {
+                writeln!(out, "{prefix}content").map_err(|e| e.to_string())?;
+            }
             NodeKind::Element(element) => {
                 let namespace = match element.namespace {
                     Namespace::Html => "",
@@ -149,6 +153,11 @@ fn serialize(document: &Document) -> Result<String, String> {
             return Err("tree serialization exceeds output limit".into());
         }
         pending.extend(node.children.iter().rev().map(|child| (*child, depth + 1)));
+        if let NodeKind::Element(element) = &node.kind
+            && let Some(content) = element.template_contents
+        {
+            pending.push((content, depth + 1));
+        }
     }
     Ok(out)
 }
@@ -179,9 +188,26 @@ mod tests {
             let document = fragment_document(source, context, false).unwrap();
             assert_eq!(serialize(&document).unwrap(), expected, "{context}");
         }
-        for invalid in ["", "svg ", "xml element", "div\nbody", "template"] {
+        for invalid in ["", "svg ", "xml element", "div\nbody"] {
             assert!(fragment_document("x", invalid, false).is_err(), "{invalid}");
         }
+    }
+    #[test]
+    fn template_serialization_visits_real_content_fragments() {
+        let document = Document::parse("<template><tr><td>x</template>");
+        let template = document.query_selector("template").unwrap();
+        let fragment = document.template_contents(template).unwrap();
+        assert!(document.nodes[template].children.is_empty());
+        assert!(document.nodes[fragment].parent.is_none());
+        assert_eq!(
+            serialize(&document).unwrap(),
+            "| <html>\n|   <head>\n|     <template>\n|       content\n|         <tr>\n|           <td>\n|             \"x\"\n|   <body>\n"
+        );
+        let fragment = fragment_document("<tr><td>x", "template", false).unwrap();
+        assert_eq!(
+            serialize(&fragment).unwrap(),
+            "| <tr>\n|   <td>\n|     \"x\"\n"
+        );
     }
     #[test]
     fn foreign_namespaces_and_adjusted_attribute_names_are_sorted_exactly() {

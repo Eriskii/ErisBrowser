@@ -2,7 +2,7 @@
 //!
 //! This implements the useful core of block, inline, flex and grid layout. It is
 //! deliberately explicit about its limits: it is not a complete CSS formatter.
-use crate::css::{ComputedStyle, Display, Length};
+use crate::css::{ComputedStyle, Display, GridBreadth, GridLine, GridTrack, Length};
 use crate::dom::{Document, Namespace, NodeId, NodeKind};
 use crate::graphics::{Color, DrawCommand, Fonts, Rect};
 use std::cell::Cell as Counter;
@@ -15,6 +15,785 @@ const MAX_FLEX_WORK: usize = 1_000_000;
 const MAX_FLOAT_WORK: usize = 1_000_000;
 const MAX_FLOATS: usize = 4096;
 const MAX_EXTENT: f32 = 1_000_000.0;
+
+// Grid occupancy is bounded independently from DOM size. Signed line numbers
+// are clamped before arithmetic; excessive author grids have a finite UA limit.
+const MAX_GRID_TRACKS: usize = 256;
+const MAX_GRID_ITEMS: usize = 4096;
+const MAX_GRID_WORK: usize = 2_000_000;
+
+#[derive(Clone, Copy, Default)]
+struct GridAxis {
+    start: Option<i32>,
+    span: usize,
+}
+#[derive(Clone, Copy, Default, Debug)]
+struct GridArea {
+    column: usize,
+    row: usize,
+    columns: usize,
+    rows: usize,
+}
+struct GridItem {
+    id: NodeId,
+    major: GridAxis,
+    minor: GridAxis,
+    area: Option<GridArea>,
+}
+struct GridPlan {
+    items: Vec<GridItem>,
+    columns: usize,
+    rows: usize,
+    column_origin: usize,
+    row_origin: usize,
+}
+
+fn grid_axis(start: GridLine, end: GridLine, explicit: usize) -> GridAxis {
+    let line = |value: i32| {
+        let line = if value > 0 {
+            i64::from(value) - 1
+        } else {
+            explicit as i64 + 1 + i64::from(value)
+        };
+        line.clamp(-128, 128) as i32
+    };
+    let span = |value: usize| value.clamp(1, MAX_GRID_TRACKS);
+    match (start, end) {
+        (GridLine::Line(a), GridLine::Line(b)) => {
+            let (a, b) = (line(a), line(b));
+            GridAxis {
+                start: Some(a.min(b)),
+                span: (a - b).unsigned_abs().max(1) as usize,
+            }
+        }
+        (GridLine::Line(a), b) => GridAxis {
+            start: Some(line(a)),
+            span: if let GridLine::Span(n) = b {
+                span(n)
+            } else {
+                1
+            },
+        },
+        (a, GridLine::Line(b)) => {
+            let span = if let GridLine::Span(n) = a {
+                span(n)
+            } else {
+                1
+            };
+            GridAxis {
+                start: Some((line(b) - span as i32).max(-128)),
+                span,
+            }
+        }
+        (GridLine::Span(n), _) | (_, GridLine::Span(n)) => GridAxis {
+            start: None,
+            span: span(n),
+        },
+        _ => GridAxis {
+            start: None,
+            span: 1,
+        },
+    }
+}
+
+fn grid_charge(work: &mut usize, cost: usize) -> bool {
+    if *work < cost {
+        *work = 0;
+        false
+    } else {
+        *work -= cost;
+        true
+    }
+}
+fn grid_occupied(
+    occupancy: &[bool],
+    major: usize,
+    minor: usize,
+    a: usize,
+    b: usize,
+    work: &mut usize,
+) -> bool {
+    if major + a > MAX_GRID_TRACKS || minor + b > MAX_GRID_TRACKS || !grid_charge(work, a * b + 1) {
+        return true;
+    }
+    (major..major + a).any(|row| {
+        occupancy[row * MAX_GRID_TRACKS + minor..row * MAX_GRID_TRACKS + minor + b]
+            .iter()
+            .any(|used| *used)
+    })
+}
+fn grid_place(
+    item: &mut GridItem,
+    occupancy: &mut [bool],
+    major: usize,
+    minor: usize,
+    transpose: bool,
+    work: &mut usize,
+) -> bool {
+    let (a, b) = (item.major.span, item.minor.span);
+    if major + a > MAX_GRID_TRACKS || minor + b > MAX_GRID_TRACKS || !grid_charge(work, a * b + 1) {
+        return false;
+    }
+    for row in major..major + a {
+        occupancy[row * MAX_GRID_TRACKS + minor..row * MAX_GRID_TRACKS + minor + b].fill(true);
+    }
+    item.area = Some(if transpose {
+        GridArea {
+            column: major,
+            row: minor,
+            columns: a,
+            rows: b,
+        }
+    } else {
+        GridArea {
+            column: minor,
+            row: major,
+            columns: b,
+            rows: a,
+        }
+    });
+    true
+}
+fn grid_plan(
+    ids: Vec<NodeId>,
+    styles: &[ComputedStyle],
+    style: &ComputedStyle,
+    work: &mut usize,
+) -> GridPlan {
+    if !grid_charge(work, ids.len().clamp(1, MAX_GRID_ITEMS)) {
+        return GridPlan {
+            items: Vec::new(),
+            columns: style.grid_template_columns.len().min(MAX_GRID_TRACKS),
+            rows: style.grid_template_rows.len().min(MAX_GRID_TRACKS),
+            column_origin: 0,
+            row_origin: 0,
+        };
+    }
+    let transpose = style
+        .grid_auto_flow
+        .split_whitespace()
+        .any(|v| v == "column");
+    let dense = style
+        .grid_auto_flow
+        .split_whitespace()
+        .any(|v| v == "dense");
+    let mut items = Vec::new();
+    for id in ids.into_iter().take(MAX_GRID_ITEMS) {
+        let Some(child) = styles.get(id) else {
+            continue;
+        };
+        if matches!(child.position.as_str(), "absolute" | "fixed") {
+            continue;
+        }
+        let col = grid_axis(
+            child.grid_column_start,
+            child.grid_column_end,
+            style.grid_template_columns.len(),
+        );
+        let row = grid_axis(
+            child.grid_row_start,
+            child.grid_row_end,
+            style.grid_template_rows.len(),
+        );
+        items.push(GridItem {
+            id,
+            major: if transpose { col } else { row },
+            minor: if transpose { row } else { col },
+            area: None,
+        });
+    }
+    items.sort_by_key(|item| styles[item.id].order);
+    let major_origin = items
+        .iter()
+        .filter_map(|item| item.major.start)
+        .min()
+        .unwrap_or(0)
+        .min(0)
+        .unsigned_abs() as usize;
+    let minor_origin = items
+        .iter()
+        .filter_map(|item| item.minor.start)
+        .min()
+        .unwrap_or(0)
+        .min(0)
+        .unsigned_abs() as usize;
+    let (major_explicit, minor_explicit) = if transpose {
+        (
+            style.grid_template_columns.len(),
+            style.grid_template_rows.len(),
+        )
+    } else {
+        (
+            style.grid_template_rows.len(),
+            style.grid_template_columns.len(),
+        )
+    };
+    let mut major_count = (major_origin + major_explicit).min(MAX_GRID_TRACKS);
+    let mut minor_count = (minor_origin + minor_explicit).clamp(1, MAX_GRID_TRACKS);
+    for item in &mut items {
+        for (axis, origin, count) in [
+            (&mut item.major, major_origin, &mut major_count),
+            (&mut item.minor, minor_origin, &mut minor_count),
+        ] {
+            axis.span = axis.span.clamp(1, MAX_GRID_TRACKS);
+            if let Some(start) = axis.start {
+                let start = (start + origin as i32).max(0) as usize;
+                let start = start.min(MAX_GRID_TRACKS - axis.span);
+                axis.start = Some(start as i32);
+                *count = (*count).max(start + axis.span);
+            }
+        }
+        minor_count = minor_count.max(item.minor.span);
+    }
+    if !items.is_empty() && !grid_charge(work, MAX_GRID_TRACKS) {
+        return GridPlan {
+            items: Vec::new(),
+            columns: 0,
+            rows: 0,
+            column_origin: 0,
+            row_origin: 0,
+        };
+    }
+    let mut occupancy = if items.is_empty() {
+        Vec::new()
+    } else {
+        vec![false; MAX_GRID_TRACKS * MAX_GRID_TRACKS]
+    };
+    // Definite items may overlap. They reserve their cells before any auto item.
+    for item in &mut items {
+        if let (Some(a), Some(b)) = (item.major.start, item.minor.start) {
+            grid_place(
+                item,
+                &mut occupancy,
+                a as usize,
+                b as usize,
+                transpose,
+                work,
+            );
+        }
+    }
+    let mut locked_cursor = [0usize; MAX_GRID_TRACKS];
+    for item in &mut items {
+        if item.area.is_some() || item.major.start.is_none() || item.minor.start.is_some() {
+            continue;
+        }
+        let major = item.major.start.unwrap_or(0) as usize;
+        let mut minor = if dense { 0 } else { locked_cursor[major] };
+        while *work > 0 && minor + item.minor.span <= MAX_GRID_TRACKS {
+            if !grid_occupied(
+                &occupancy,
+                major,
+                minor,
+                item.major.span,
+                item.minor.span,
+                work,
+            ) {
+                if grid_place(item, &mut occupancy, major, minor, transpose, work) {
+                    locked_cursor[major] = minor + item.minor.span;
+                    minor_count = minor_count.max(minor + item.minor.span);
+                    major_count = major_count.max(major + item.major.span);
+                }
+                break;
+            }
+            minor += 1;
+        }
+    }
+    let (mut cursor_major, mut cursor_minor) = (0usize, 0usize);
+    for item in &mut items {
+        if item.area.is_some() || item.major.start.is_some() {
+            continue;
+        }
+        if dense {
+            cursor_major = 0;
+            cursor_minor = 0;
+        }
+        if let Some(minor) = item.minor.start {
+            let minor = minor as usize;
+            if !dense && minor < cursor_minor {
+                cursor_major += 1;
+            }
+            cursor_minor = minor;
+            while *work > 0 && cursor_major + item.major.span <= MAX_GRID_TRACKS {
+                if !grid_occupied(
+                    &occupancy,
+                    cursor_major,
+                    cursor_minor,
+                    item.major.span,
+                    item.minor.span,
+                    work,
+                ) {
+                    break;
+                }
+                cursor_major += 1;
+            }
+        } else {
+            while *work > 0 && cursor_major + item.major.span <= MAX_GRID_TRACKS {
+                if cursor_minor + item.minor.span > minor_count {
+                    cursor_minor = 0;
+                    cursor_major += 1;
+                    continue;
+                }
+                if !grid_occupied(
+                    &occupancy,
+                    cursor_major,
+                    cursor_minor,
+                    item.major.span,
+                    item.minor.span,
+                    work,
+                ) {
+                    break;
+                }
+                cursor_minor += 1;
+            }
+        }
+        if *work > 0
+            && grid_place(
+                item,
+                &mut occupancy,
+                cursor_major,
+                cursor_minor,
+                transpose,
+                work,
+            )
+        {
+            major_count = major_count.max(cursor_major + item.major.span);
+        }
+    }
+    GridPlan {
+        items,
+        columns: if transpose { major_count } else { minor_count },
+        rows: if transpose { minor_count } else { major_count },
+        column_origin: if transpose {
+            major_origin
+        } else {
+            minor_origin
+        },
+        row_origin: if transpose {
+            minor_origin
+        } else {
+            major_origin
+        },
+    }
+}
+
+fn grid_track_list(
+    explicit: &[GridTrack],
+    implicit: &[GridTrack],
+    origin: usize,
+    count: usize,
+) -> Vec<GridTrack> {
+    let auto = [GridTrack::default()];
+    let implicit = if implicit.is_empty() {
+        &auto[..]
+    } else {
+        implicit
+    };
+    (0..count.min(MAX_GRID_TRACKS))
+        .map(|index| {
+            if index >= origin && index - origin < explicit.len() {
+                explicit[index - origin]
+            } else {
+                let index = if index < origin {
+                    (implicit.len() - (origin - index) % implicit.len()) % implicit.len()
+                } else {
+                    (index - origin - explicit.len()) % implicit.len()
+                };
+                implicit[index]
+            }
+        })
+        .collect()
+}
+/// Whitespace-only anonymous items do not generate grid/flex boxes. Eligibility
+/// scanning is source work too, and cannot be refunded when paint is discarded.
+fn has_inline_content(text: &str, source_work: &mut usize) -> bool {
+    for character in text.chars().take(*source_work) {
+        *source_work -= 1;
+        if !character.is_whitespace() {
+            return true;
+        }
+    }
+    false
+}
+
+fn grid_length(length: Length, reference: Option<f32>) -> Option<f32> {
+    match length {
+        Length::Percent(_) => reference.and_then(|r| resolve(length, r)),
+        _ => resolve(length, reference.unwrap_or(0.0)),
+    }
+}
+fn grid_breadth(breadth: GridBreadth, reference: Option<f32>) -> Option<f32> {
+    if let GridBreadth::Length(length) = breadth {
+        grid_length(length, reference).map(extent)
+    } else {
+        None
+    }
+}
+#[derive(Clone, Copy)]
+struct GridContribution {
+    start: usize,
+    span: usize,
+    min: f32,
+    max: f32,
+}
+#[derive(Clone, Copy)]
+struct GridTrackSize {
+    base: f32,
+    growth: f32,
+    growth_known: bool,
+    infinitely_growable: bool,
+    min: GridBreadth,
+    max: GridBreadth,
+    flex: f32,
+}
+
+// Distribute a required increase, freezing finite maxima. Planned increases are
+// combined by maximum within each equal-span group, so DOM order is immaterial.
+fn grid_grow(
+    values: &mut [f32],
+    limits: &[f32],
+    eligible: &[bool],
+    mut free: f32,
+    work: &mut usize,
+) {
+    for _ in 0..=values.len() {
+        if free <= 0.001 || !grid_charge(work, values.len().max(1)) {
+            break;
+        }
+        let count = values
+            .iter()
+            .zip(limits)
+            .zip(eligible)
+            .filter(|((value, limit), eligible)| **eligible && **value + 0.001 < **limit)
+            .count();
+        if count == 0 {
+            break;
+        }
+        let share = free / count as f32;
+        let mut used = 0.0;
+        for ((value, limit), eligible) in values.iter_mut().zip(limits).zip(eligible) {
+            if *eligible {
+                let add = share.min((*limit - *value).max(0.0));
+                *value += add;
+                used += add;
+            }
+        }
+        if used <= 0.001 {
+            break;
+        }
+        free -= used;
+    }
+}
+fn size_grid_tracks(
+    definitions: &[GridTrack],
+    reference: Option<f32>,
+    gap: f32,
+    contributions: &[GridContribution],
+    alignment: &str,
+    work: &mut usize,
+) -> Vec<f32> {
+    let mut tracks: Vec<GridTrackSize> = definitions
+        .iter()
+        .map(|track| {
+            let base = grid_breadth(track.min, reference).unwrap_or(0.0);
+            let fixed_max = grid_breadth(track.max, reference);
+            GridTrackSize {
+                base,
+                growth: fixed_max.unwrap_or(base).max(base),
+                growth_known: fixed_max.is_some(),
+                infinitely_growable: false,
+                min: track.min,
+                max: track.max,
+                flex: if let GridBreadth::Length(Length::Fr(n)) = track.max {
+                    extent(n)
+                } else {
+                    0.0
+                },
+            }
+        })
+        .collect();
+    let mut ordered = contributions.to_vec();
+    ordered.sort_by_key(|item| item.span);
+    // Resolve each span group completely before longer spans. In particular,
+    // a max-content limit established by a short item must constrain the base
+    // increase from a longer item; resolving all minima first loses that fact.
+    let mut first = 0;
+    while first < ordered.len() && *work > 0 {
+        let span = ordered[first].span;
+        let end = first + ordered[first..].partition_point(|item| item.span == span);
+        for phase in 0..4 {
+            let growth_phase = phase >= 2;
+            let max_content = phase == 1 || phase == 3;
+            let before: Vec<f32> = tracks
+                .iter()
+                .map(|track| {
+                    if growth_phase {
+                        track.growth
+                    } else {
+                        track.base
+                    }
+                })
+                .collect();
+            let mut planned = before.clone();
+            let mut touched = vec![false; tracks.len()];
+            for item in &ordered[first..end] {
+                let start = item.start;
+                let end = (start + item.span).min(tracks.len());
+                if start >= end || !grid_charge(work, end - start) {
+                    continue;
+                }
+                let slice = &tracks[start..end];
+                let crossing_flex = slice
+                    .iter()
+                    .any(|track| matches!(track.max, GridBreadth::Length(Length::Fr(_))));
+                let intrinsic_max = |track: &GridTrackSize| {
+                    grid_breadth(track.max, reference).is_none()
+                        && !matches!(track.max, GridBreadth::Length(Length::Fr(_)))
+                };
+                let content_max = |track: &GridTrackSize| {
+                    intrinsic_max(track) && track.max != GridBreadth::MinContent
+                };
+                let eligible: Vec<bool> = slice
+                    .iter()
+                    .map(|track| {
+                        if span > 1
+                            && crossing_flex
+                            && (!matches!(track.max, GridBreadth::Length(Length::Fr(_)))
+                                || phase >= 2)
+                        {
+                            false
+                        } else {
+                            match phase {
+                                0 => {
+                                    grid_breadth(track.min, reference).is_none()
+                                        && !(span > 1
+                                            && crossing_flex
+                                            && track.min == GridBreadth::Auto)
+                                }
+                                1 => track.min == GridBreadth::MaxContent,
+                                2 => intrinsic_max(track),
+                                _ => content_max(track),
+                            }
+                        }
+                    })
+                    .collect();
+                if !eligible.iter().any(|value| *value) {
+                    continue;
+                }
+                let required = if max_content { item.max } else { item.min };
+                let required = (required - gap * (end - start - 1) as f32).max(0.0);
+                let mut values = before[start..end].to_vec();
+                let limits: Vec<f32> = slice
+                    .iter()
+                    .map(|track| {
+                        if track.growth_known && !(growth_phase && track.infinitely_growable) {
+                            track.growth
+                        } else {
+                            MAX_EXTENT
+                        }
+                    })
+                    .collect();
+                let free = (required - values.iter().sum::<f32>()).max(0.0);
+                grid_grow(&mut values, &limits, &eligible, free, work);
+                // Prefer unused room in non-affected tracks before exceeding a
+                // previously established growth limit.
+                let others: Vec<bool> = eligible
+                    .iter()
+                    .map(|value| !(*value || span > 1 && crossing_flex))
+                    .collect();
+                let free = (required - values.iter().sum::<f32>()).max(0.0);
+                grid_grow(&mut values, &limits, &others, free, work);
+                let mut beyond: Vec<bool> = slice
+                    .iter()
+                    .zip(&eligible)
+                    .map(|(track, eligible)| {
+                        *eligible
+                            && if growth_phase || !max_content {
+                                intrinsic_max(track)
+                            } else {
+                                content_max(track)
+                            }
+                    })
+                    .collect();
+                if !growth_phase && !beyond.iter().any(|value| *value) {
+                    beyond.clone_from(&eligible);
+                }
+                let free = (required - values.iter().sum::<f32>()).max(0.0);
+                grid_grow(
+                    &mut values,
+                    &vec![MAX_EXTENT; end - start],
+                    &beyond,
+                    free,
+                    work,
+                );
+                for (offset, value) in values.into_iter().enumerate() {
+                    planned[start + offset] = planned[start + offset].max(value);
+                    touched[start + offset] |= eligible[offset] || value > before[start + offset];
+                }
+            }
+            for ((track, value), touched) in tracks.iter_mut().zip(planned).zip(touched) {
+                if growth_phase {
+                    track.growth = extent(value).max(track.base);
+                    if touched {
+                        track.infinitely_growable |= !track.growth_known;
+                        track.growth_known = true;
+                    }
+                } else {
+                    track.base = extent(value);
+                    track.growth = track.growth.max(track.base);
+                }
+            }
+        }
+        for track in &mut tracks {
+            track.infinitely_growable = false;
+        }
+        first = end;
+    }
+    let gap_total = gap * tracks.len().saturating_sub(1) as f32;
+    let mut values: Vec<f32> = tracks.iter().map(|track| track.base).collect();
+    if let Some(reference) = reference {
+        let free = (reference - gap_total - values.iter().sum::<f32>()).max(0.0);
+        let limits: Vec<f32> = tracks.iter().map(|track| track.growth).collect();
+        let eligible: Vec<bool> = tracks
+            .iter()
+            .map(|track| !matches!(track.max, GridBreadth::Length(Length::Fr(_))))
+            .collect();
+        grid_grow(&mut values, &limits, &eligible, free, work);
+        let mut frozen: Vec<bool> = tracks.iter().map(|track| track.flex == 0.0).collect();
+        for _ in 0..=tracks.len() {
+            if !grid_charge(work, tracks.len().max(1)) {
+                break;
+            }
+            let occupied: f32 = values
+                .iter()
+                .zip(&frozen)
+                .filter(|(_, frozen)| **frozen)
+                .map(|(v, _)| *v)
+                .sum();
+            let factors: f32 = tracks
+                .iter()
+                .zip(&frozen)
+                .filter(|(_, frozen)| !**frozen)
+                .map(|(t, _)| t.flex)
+                .sum();
+            let fraction = (reference - gap_total - occupied).max(0.0) / factors.max(1.0);
+            let mut changed = false;
+            for ((track, value), frozen) in tracks.iter().zip(&values).zip(&mut frozen) {
+                if !*frozen && *value > fraction * track.flex + 0.001 {
+                    *frozen = true;
+                    changed = true;
+                }
+            }
+            if !changed {
+                for ((track, value), frozen) in tracks.iter().zip(&mut values).zip(&frozen) {
+                    if !*frozen {
+                        *value = extent(fraction * track.flex).max(*value);
+                    }
+                }
+                break;
+            }
+        }
+        if matches!(alignment, "normal" | "stretch") {
+            let free = (reference - gap_total - values.iter().sum::<f32>()).max(0.0);
+            let eligible: Vec<bool> = tracks
+                .iter()
+                .map(|track| track.max == GridBreadth::Auto)
+                .collect();
+            grid_grow(
+                &mut values,
+                &vec![MAX_EXTENT; tracks.len()],
+                &eligible,
+                free,
+                work,
+            );
+        }
+    } else {
+        for (value, track) in values.iter_mut().zip(&tracks) {
+            if track.flex == 0.0 {
+                *value = track.growth;
+            }
+        }
+        let mut fraction = tracks
+            .iter()
+            .filter(|track| track.flex > 0.0)
+            .map(|track| track.base / track.flex.max(1.0))
+            .fold(0.0, f32::max);
+        for item in &ordered {
+            let start = item.start;
+            let end = (start + item.span).min(tracks.len());
+            if start >= end || !grid_charge(work, end - start) {
+                continue;
+            }
+            let factors: f32 = tracks[start..end].iter().map(|track| track.flex).sum();
+            if factors > 0.0 {
+                let fixed: f32 = tracks[start..end]
+                    .iter()
+                    .zip(&values[start..end])
+                    .filter(|(track, _)| track.flex == 0.0)
+                    .map(|(_, v)| *v)
+                    .sum();
+                fraction = fraction.max(
+                    (item.max - fixed - gap * (end - start - 1) as f32).max(0.0) / factors.max(1.0),
+                );
+            }
+        }
+        for (value, track) in values.iter_mut().zip(&tracks) {
+            if track.flex > 0.0 {
+                *value = value.max(extent(fraction * track.flex));
+            }
+        }
+    }
+    values
+}
+fn grid_positions(
+    sizes: &[f32],
+    gap: f32,
+    reference: Option<f32>,
+    alignment: &str,
+) -> (Vec<f32>, f32) {
+    let total = sizes.iter().sum::<f32>() + gap * sizes.len().saturating_sub(1) as f32;
+    let (start, between) = distribution(alignment, reference.unwrap_or(total) - total, sizes.len());
+    let mut cursor = start;
+    let positions = sizes
+        .iter()
+        .map(|size| {
+            let pos = cursor;
+            cursor += size + gap + between;
+            pos
+        })
+        .collect();
+    (positions, gap + between)
+}
+fn grid_area_size(sizes: &[f32], start: usize, span: usize, gap: f32) -> f32 {
+    extent(
+        sizes
+            .get(start..start + span)
+            .unwrap_or(&[])
+            .iter()
+            .sum::<f32>()
+            + gap * span.saturating_sub(1) as f32,
+    )
+}
+fn grid_alignment<'a>(
+    child: &'a ComputedStyle,
+    parent: &'a ComputedStyle,
+    horizontal: bool,
+) -> &'a str {
+    let (own, inherited) = if horizontal {
+        (&child.justify_self, &parent.justify_items)
+    } else {
+        (&child.align_self, &parent.align_items)
+    };
+    let alignment = if own == "auto" {
+        inherited.as_str()
+    } else {
+        own.as_str()
+    };
+    if alignment == "normal" {
+        "stretch"
+    } else {
+        alignment
+    }
+}
 
 #[derive(Debug, Clone)]
 pub struct HitRegion {
@@ -135,6 +914,8 @@ struct Engine<'a> {
     intrinsic_work_left: Counter<usize>,
     flex_work_left: usize,
     float_work_left: usize,
+    grid_work_left: usize,
+    grid_height_reference: Option<(NodeId, Option<f32>)>,
     floats_left: usize,
     floats: FloatContext,
     fragment_root: Option<NodeId>,
@@ -184,6 +965,8 @@ pub fn layout(
         intrinsic_work_left: Counter::new(MAX_GLYPHS),
         flex_work_left: MAX_FLEX_WORK,
         float_work_left: MAX_FLOAT_WORK,
+        grid_work_left: MAX_GRID_WORK,
+        grid_height_reference: None,
         floats_left: MAX_FLOATS,
         floats: FloatContext::default(),
         fragment_root: None,
@@ -522,9 +1305,15 @@ impl Engine<'_> {
         } else {
             extras
         };
+        let height_reference = self
+            .grid_height_reference
+            .filter(|(node, _)| *node == id)
+            .map(|(_, reference)| reference)
+            .unwrap_or(Some(self.viewport.height));
         let definite_height = forced.1.or_else(|| {
-            resolve(style.height, self.viewport.height).map(|height| {
-                let (min, max) = self.flex_limits(id, available, self.viewport.height, true);
+            grid_length(style.height, height_reference).map(|height| {
+                let (min, max) =
+                    self.flex_limits(id, available, height_reference.unwrap_or(0.0), true);
                 (height + css_to_border).clamp(min, max)
             })
         });
@@ -581,7 +1370,19 @@ impl Engine<'_> {
                 depth + 1,
             )
         } else if style.display == Display::Grid {
-            self.layout_grid(&children, inner_x, inner_y, inner_width, &style, depth + 1)
+            self.layout_grid(
+                &children,
+                inner_x,
+                inner_y,
+                Size {
+                    width: inner_width,
+                    height: definite_height
+                        .map(|h| (h - extras).max(0.0))
+                        .unwrap_or(-1.0),
+                },
+                &style,
+                depth + 1,
+            )
         } else if tag == "table" {
             self.layout_table(&children, inner_x, inner_y, inner_width, depth + 1)
         } else {
@@ -604,12 +1405,12 @@ impl Engine<'_> {
         }
         let mut height = definite_height.unwrap_or(natural_height + extras);
         if forced.1.is_none()
-            && let Some(max) = resolve(style.max_height, self.viewport.height)
+            && let Some(max) = grid_length(style.max_height, height_reference)
         {
             height = height.min(max + css_to_border);
         }
         if forced.1.is_none()
-            && let Some(min) = resolve(style.min_height, self.viewport.height)
+            && let Some(min) = grid_length(style.min_height, height_reference)
         {
             height = height.max(min + css_to_border);
         }
@@ -819,43 +1620,58 @@ impl Engine<'_> {
         }
         let flow_height = extent(cursor - y + previous_bottom);
         for child in positioned {
-            let style = self.style(child).clone();
-            let fixed = style.position == "fixed";
-            let reference_width = if fixed { self.viewport.width } else { width };
-            let reference_height = if fixed {
-                self.viewport.height
-            } else {
-                flow_height
-            };
-            let bx = if fixed { 0.0 } else { x };
-            let by = if fixed { 0.0 } else { y };
-            let left = resolve(style.left, reference_width);
-            let right = resolve(style.right, reference_width);
-            let mut child_width = self.width_for(child, reference_width, reference_width);
-            if matches!(style.width, Length::Auto) {
-                child_width = match (left, right) {
-                    (Some(l), Some(r)) => (reference_width - l - r).max(0.0),
-                    _ => self
-                        .intrinsic_width(child, reference_width)
-                        .min(reference_width),
-                };
-            }
-            let px = bx
-                + left.unwrap_or_else(|| {
-                    reference_width - right.unwrap_or(reference_width - child_width) - child_width
-                });
-            let top = resolve(style.top, reference_height);
-            let bottom = resolve(style.bottom, reference_height);
-            let fragment = self.fragment(child, reference_width, child_width, depth);
-            let py = by
-                + top.unwrap_or_else(|| {
-                    bottom
-                        .map(|b| reference_height - b - fragment.size.height)
-                        .unwrap_or(0.0)
-                });
-            self.append_fragment(fragment, px, py);
+            self.layout_positioned(
+                child,
+                x,
+                y,
+                Size {
+                    width,
+                    height: flow_height,
+                },
+                depth,
+            );
         }
         flow_height
+    }
+
+    fn layout_positioned(&mut self, child: NodeId, x: f32, y: f32, size: Size, depth: usize) {
+        let width = size.width;
+        let flow_height = size.height;
+        let style = self.style(child).clone();
+        let fixed = style.position == "fixed";
+        let reference_width = if fixed { self.viewport.width } else { width };
+        let reference_height = if fixed {
+            self.viewport.height
+        } else {
+            flow_height
+        };
+        let bx = if fixed { 0.0 } else { x };
+        let by = if fixed { 0.0 } else { y };
+        let left = resolve(style.left, reference_width);
+        let right = resolve(style.right, reference_width);
+        let mut child_width = self.width_for(child, reference_width, reference_width);
+        if matches!(style.width, Length::Auto) {
+            child_width = match (left, right) {
+                (Some(l), Some(r)) => (reference_width - l - r).max(0.0),
+                _ => self
+                    .intrinsic_width(child, reference_width)
+                    .min(reference_width),
+            };
+        }
+        let px = bx
+            + left.unwrap_or_else(|| {
+                reference_width - right.unwrap_or(reference_width - child_width) - child_width
+            });
+        let top = resolve(style.top, reference_height);
+        let bottom = resolve(style.bottom, reference_height);
+        let fragment = self.fragment(child, reference_width, child_width, depth);
+        let py = by
+            + top.unwrap_or_else(|| {
+                bottom
+                    .map(|b| reference_height - b - fragment.size.height)
+                    .unwrap_or(0.0)
+            });
+        self.append_fragment(fragment, px, py);
     }
 
     fn block_left(&self, id: NodeId, width: f32, box_width: f32, margin: Sides) -> f32 {
@@ -913,8 +1729,8 @@ impl Engine<'_> {
             translate(command, x, y);
         }
         for hit in &mut fragment.hits {
-            hit.rect.x += x;
-            hit.rect.y += y;
+            hit.rect.x = finite(hit.rect.x + x, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
+            hit.rect.y = finite(hit.rect.y + y, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
         }
         self.commands.extend(
             fragment
@@ -1615,8 +2431,11 @@ impl Engine<'_> {
         let width = available.width;
         let height = (available.height >= 0.0).then_some(available.height);
         let reverse = style.flex_direction.ends_with("reverse");
-        let gap = extent(style.gap);
-        if style.flex_direction.starts_with("column") {
+        let column = style.flex_direction.starts_with("column");
+        let row_gap = extent(grid_length(style.row_gap, height).unwrap_or(0.0));
+        let column_gap = extent(grid_length(style.column_gap, Some(width)).unwrap_or(0.0));
+        let gap = if column { row_gap } else { column_gap };
+        if column {
             let mut prepared = Vec::new();
             for id in items {
                 let margin = self.margins(id, width);
@@ -1783,7 +2602,7 @@ impl Engine<'_> {
         }
         let natural_height = extent(
             laid_out.iter().map(|(height, _)| *height).sum::<f32>()
-                + gap * laid_out.len().saturating_sub(1) as f32,
+                + row_gap * laid_out.len().saturating_sub(1) as f32,
         );
         let cross_size = height.unwrap_or(natural_height);
         let mut cross_cursor = 0.0;
@@ -1871,7 +2690,7 @@ impl Engine<'_> {
                 self.append_fragment(fragment, x + main_pos, y + row_y + margin.top + dy);
                 cursor += advance;
             }
-            cross_cursor += row_height + gap;
+            cross_cursor += row_height + row_gap;
         }
         natural_height
     }
@@ -1881,98 +2700,210 @@ impl Engine<'_> {
         children: &[NodeId],
         x: f32,
         y: f32,
-        width: f32,
+        available: Size,
         style: &ComputedStyle,
         depth: usize,
     ) -> f32 {
-        let items = self.flow_items(children);
-        let tracks = if style.grid_template_columns.is_empty() {
-            vec![Length::Auto]
-        } else {
-            style.grid_template_columns.clone()
-        };
-        let count = tracks.len().clamp(1, 1024);
-        let gap = extent(style.gap);
-        let available = (width - gap * count.saturating_sub(1) as f32).max(0.0);
-        let fixed: f32 = tracks
-            .iter()
-            .take(count)
-            .filter_map(|track| resolve(*track, width))
-            .map(|value| value.max(0.0))
-            .sum();
-        let autos = tracks
-            .iter()
-            .take(count)
-            .filter(|track| matches!(track, Length::Auto))
-            .count();
-        let fraction_total: f64 = tracks
-            .iter()
-            .take(count)
-            .filter_map(|track| match track {
-                Length::Fr(weight) => Some(f64::from(finite(*weight, 0.0).max(0.0))),
-                _ => None,
-            })
-            .sum();
-        let remaining = (available - fixed).max(0.0);
-        let auto_width = if fraction_total > 0.0 {
-            0.0
-        } else {
-            remaining / autos.max(1) as f32
-        };
-        let widths: Vec<f32> = tracks
-            .iter()
-            .take(count)
-            .map(|track| match track {
-                Length::Fr(weight) => {
-                    remaining
-                        * (f64::from(finite(*weight, 0.0).max(0.0)) / fraction_total.max(1.0))
-                            as f32
-                }
-                _ => resolve(*track, width).unwrap_or(auto_width).max(0.0),
-            })
-            .collect();
-        let mut cursor_y = y;
-        for (row_index, row) in items.chunks(count).enumerate() {
-            if row_index > 0 {
-                cursor_y += gap;
+        let width = available.width;
+        let height = (available.height >= 0.0).then_some(available.height);
+        let column_gap = extent(grid_length(style.column_gap, Some(width)).unwrap_or(0.0));
+        // Cyclic percentages contribute zero during intrinsic row sizing.
+        let row_gap = extent(grid_length(style.row_gap, height).unwrap_or(0.0));
+        let plan = grid_plan(
+            self.flow_items(children),
+            self.styles,
+            style,
+            &mut self.grid_work_left,
+        );
+        let columns = grid_track_list(
+            &style.grid_template_columns,
+            &style.grid_auto_columns,
+            plan.column_origin,
+            plan.columns,
+        );
+        let rows = grid_track_list(
+            &style.grid_template_rows,
+            &style.grid_auto_rows,
+            plan.row_origin,
+            plan.rows,
+        );
+        let mut contributions = Vec::new();
+        for item in &plan.items {
+            let Some(area) = item.area else {
+                continue;
+            };
+            if !grid_charge(&mut self.grid_work_left, 1) {
+                break;
             }
-            let mut fragments = Vec::new();
-            let mut row_height = 0.0f32;
-            for (column, &id) in row.iter().enumerate() {
-                let margin = self.margins(id, widths[column]);
-                let child_width = self.width_for(
-                    id,
-                    (widths[column] - margin.horizontal()).max(0.0),
-                    widths[column],
-                );
-                let fragment = self.fragment(id, widths[column], child_width, depth);
-                row_height = row_height.max(fragment.size.height + margin.vertical());
-                fragments.push((id, fragment, margin));
-            }
-            let mut cursor_x = x;
-            for (column, (id, mut fragment, margin)) in fragments.into_iter().enumerate() {
-                let offset = match style.align_items.as_str() {
-                    "center" => {
-                        (row_height - fragment.size.height - margin.vertical()).max(0.0) / 2.0
-                    }
-                    "end" | "flex-end" => {
-                        (row_height - fragment.size.height - margin.vertical()).max(0.0)
-                    }
-                    _ => 0.0,
-                };
-                if style.align_items == "stretch" && matches!(self.style(id).height, Length::Auto) {
-                    stretch_fragment(&mut fragment, row_height - margin.vertical());
-                }
-                self.append_fragment(
-                    fragment,
-                    cursor_x + margin.left,
-                    cursor_y + margin.top + offset,
-                );
-                cursor_x += widths[column] + gap;
-            }
-            cursor_y += row_height;
+            let (min, max) = self.preferred_widths(item.id, width, depth);
+            let (lower, upper) = self.flex_limits(item.id, width, width, false);
+            let margins = self.margins(item.id, width).horizontal();
+            contributions.push(GridContribution {
+                start: area.column,
+                span: area.columns,
+                min: extent(min.clamp(lower, upper) + margins),
+                max: extent(max.clamp(lower, upper) + margins),
+            });
         }
-        extent(cursor_y - y)
+        let widths = size_grid_tracks(
+            &columns,
+            Some(width),
+            column_gap,
+            &contributions,
+            &style.justify_content,
+            &mut self.grid_work_left,
+        );
+        let (column_positions, column_gap) =
+            grid_positions(&widths, column_gap, Some(width), &style.justify_content);
+        let mut prepared = Vec::new();
+        // Retain measured fragments when their used height is unchanged. This
+        // avoids exponential remeasurement of nested auto-sized grids. A changed
+        // height triggers reflow and refunds only that discarded paint output;
+        // visits and intrinsic/placement work always remain charged.
+        let old_reference = self.grid_height_reference;
+        let mut row_contributions = Vec::new();
+        for item in &plan.items {
+            let Some(area) = item.area else {
+                continue;
+            };
+            if !grid_charge(&mut self.grid_work_left, 1) {
+                break;
+            }
+            let area_width = grid_area_size(&widths, area.column, area.columns, column_gap);
+            let child = self.style(item.id);
+            let margin = self.margins(item.id, area_width);
+            let align = grid_alignment(child, style, true);
+            let auto_margin = matches!(child.margin.left, Length::Auto)
+                || matches!(child.margin.right, Length::Auto);
+            let space = (area_width - margin.horizontal()).max(0.0);
+            let child_width =
+                if matches!(child.width, Length::Auto) && (align != "stretch" || auto_margin) {
+                    let (min, max) = self.preferred_widths(item.id, area_width, depth);
+                    self.width_for(item.id, max.min(space).max(min), area_width)
+                } else {
+                    self.width_for(item.id, space, area_width)
+                };
+            self.grid_height_reference = Some((item.id, None));
+            let checkpoint = (self.commands_created, self.emitted_glyphs_left);
+            let fragment = self.fragment(item.id, area_width, child_width, depth);
+            let natural_height = fragment.size.height;
+            let paint_cost = (
+                self.commands_created.saturating_sub(checkpoint.0),
+                checkpoint.1.saturating_sub(self.emitted_glyphs_left),
+            );
+            row_contributions.push(GridContribution {
+                start: area.row,
+                span: area.rows,
+                min: extent(natural_height + margin.vertical()),
+                max: extent(natural_height + margin.vertical()),
+            });
+            prepared.push((
+                item.id,
+                area,
+                area_width,
+                child_width,
+                natural_height,
+                margin,
+                fragment,
+                paint_cost,
+            ));
+        }
+        self.grid_height_reference = old_reference;
+        let heights = size_grid_tracks(
+            &rows,
+            height,
+            row_gap,
+            &row_contributions,
+            &style.align_content,
+            &mut self.grid_work_left,
+        );
+        let natural_height =
+            extent(heights.iter().sum::<f32>() + row_gap * heights.len().saturating_sub(1) as f32);
+        // For an auto-height grid a percentage row-gap is resolved only after
+        // the content height is known, and can cause overflow without feeding
+        // back into that intrinsic height.
+        let final_row_gap =
+            extent(grid_length(style.row_gap, height.or(Some(natural_height))).unwrap_or(0.0));
+        let (row_positions, final_row_gap) =
+            grid_positions(&heights, final_row_gap, height, &style.align_content);
+        for (
+            id,
+            area,
+            area_width,
+            child_width,
+            measured_height,
+            margin,
+            mut fragment,
+            paint_cost,
+        ) in prepared
+        {
+            let area_height = grid_area_size(&heights, area.row, area.rows, final_row_gap);
+            let child = self.style(id);
+            let align_x = grid_alignment(child, style, true);
+            let align_y = grid_alignment(child, style, false);
+            let dx = cross_offset(
+                align_x,
+                area_width - child_width - margin.horizontal(),
+                matches!(child.margin.left, Length::Auto),
+                matches!(child.margin.right, Length::Auto),
+            );
+            let auto_y = matches!(child.margin.top, Length::Auto)
+                || matches!(child.margin.bottom, Length::Auto);
+            let extras = self.padding(id, area_width).vertical() + self.borders(id).vertical();
+            let (min, max) = self.flex_limits(id, area_width, area_height, true);
+            let child_height = if let Some(value) = grid_length(child.height, Some(area_height)) {
+                (value
+                    + if child.box_sizing == "border-box" {
+                        0.0
+                    } else {
+                        extras
+                    })
+                .clamp(min, max)
+            } else if align_y == "stretch" && !auto_y {
+                (area_height - margin.vertical()).clamp(min, max)
+            } else {
+                measured_height.clamp(min, max)
+            };
+            let dy = cross_offset(
+                align_y,
+                area_height - child_height - margin.vertical(),
+                matches!(child.margin.top, Length::Auto),
+                matches!(child.margin.bottom, Length::Auto),
+            );
+            if (child_height - measured_height).abs() > 0.001 {
+                drop(fragment);
+                self.commands_created = self.commands_created.saturating_sub(paint_cost.0);
+                self.emitted_glyphs_left =
+                    (self.emitted_glyphs_left + paint_cost.1).min(MAX_GLYPHS);
+                self.grid_height_reference = Some((id, Some(area_height)));
+                fragment =
+                    self.fragment_sized(id, area_width, child_width, Some(child_height), depth);
+                self.grid_height_reference = old_reference;
+            }
+            self.append_fragment(
+                fragment,
+                x + column_positions[area.column] + margin.left + dx,
+                y + row_positions[area.row] + margin.top + dy,
+            );
+        }
+        // Out-of-flow children neither reserve cells nor size implicit tracks.
+        for &id in children {
+            if !self.is_hidden(id)
+                && matches!(self.style(id).position.as_str(), "absolute" | "fixed")
+            {
+                self.layout_positioned(
+                    id,
+                    x,
+                    y,
+                    Size {
+                        width,
+                        height: height.unwrap_or(natural_height),
+                    },
+                    depth,
+                );
+            }
+        }
+        natural_height
     }
 
     fn layout_table(
@@ -2186,21 +3117,22 @@ impl Engine<'_> {
         extent(cursor - y)
     }
 
-    fn flow_items(&self, children: &[NodeId]) -> Vec<NodeId> {
-        children
-            .iter()
-            .copied()
-            .filter(|&id| {
-                if self.is_hidden(id) {
-                    return false;
-                }
-                match self.doc.nodes.get(id).map(|node| &node.kind) {
-                    Some(NodeKind::Text(text)) => !text.trim().is_empty(),
-                    Some(NodeKind::Element(_)) => true,
-                    _ => false,
-                }
-            })
-            .collect()
+    fn flow_items(&mut self, children: &[NodeId]) -> Vec<NodeId> {
+        let mut items = Vec::new();
+        for &id in children {
+            if self.is_hidden(id) {
+                continue;
+            }
+            let visible = match self.doc.nodes.get(id).map(|node| &node.kind) {
+                Some(NodeKind::Text(text)) => has_inline_content(text, &mut self.glyphs_left),
+                Some(NodeKind::Element(_)) => true,
+                _ => false,
+            };
+            if visible {
+                items.push(id);
+            }
+        }
+        items
     }
 
     fn intrinsic_width(&self, id: NodeId, available: f32) -> f32 {
@@ -2729,18 +3661,18 @@ fn translate(command: &mut DrawCommand, dx: f32, dy: f32) {
         DrawCommand::Rect { rect, .. }
         | DrawCommand::Image { rect, .. }
         | DrawCommand::PushClip { rect } => {
-            rect.x += dx;
-            rect.y += dy;
+            rect.x = finite(rect.x + dx, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
+            rect.y = finite(rect.y + dy, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
         }
         DrawCommand::Text { x, y, .. } => {
-            *x += dx;
-            *y += dy;
+            *x = finite(*x + dx, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
+            *y = finite(*y + dy, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
         }
         DrawCommand::Line { x1, y1, x2, y2, .. } => {
-            *x1 += dx;
-            *x2 += dx;
-            *y1 += dy;
-            *y2 += dy;
+            *x1 = finite(*x1 + dx, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
+            *x2 = finite(*x2 + dx, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
+            *y1 = finite(*y1 + dy, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
+            *y2 = finite(*y2 + dy, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
         }
         DrawCommand::PopClip => {}
     }
@@ -3309,6 +4241,373 @@ mod tests {
     }
 
     #[test]
+    fn grid_numeric_lines_spans_and_negative_lines_use_explicit_grid() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:grid;width:250px;grid-template-columns:50px 70px 90px;grid-template-rows:20px 30px;gap:5px 10px}#a{grid-column:2 / span 2;grid-row:2}#b{grid-column:-4 / -3;grid-row:1 / 3}#c{grid-column:3 / 2;grid-row:1}</style><main><i id=a></i><i id=b></i><i id=c></i></main>",
+            300.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a"), rect(60.0, 25.0, 170.0, 30.0));
+        assert_eq!(bounds(&doc, &result, "#b"), rect(0.0, 0.0, 50.0, 55.0));
+        assert_eq!(bounds(&doc, &result, "#c"), rect(60.0, 0.0, 70.0, 20.0));
+    }
+
+    #[test]
+    fn grid_implicit_tracks_repeat_on_both_sides_of_explicit_grid() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:grid;grid-template-columns:40px;grid-auto-columns:10px 20px;grid-auto-rows:15px 25px;justify-content:start;gap:3px 2px}i{grid-row:1}#a{grid-column:-4}#b{grid-column:-3}#c{grid-column:1}#d{grid-column:2}#e{grid-column:3;grid-row:3}</style><main><i id=a></i><i id=b></i><i id=c></i><i id=d></i><i id=e></i></main>",
+            300.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a"), rect(0.0, 0.0, 10.0, 15.0));
+        assert_eq!(bounds(&doc, &result, "#b"), rect(12.0, 0.0, 20.0, 15.0));
+        assert_eq!(bounds(&doc, &result, "#c"), rect(34.0, 0.0, 40.0, 15.0));
+        assert_eq!(bounds(&doc, &result, "#d"), rect(76.0, 0.0, 10.0, 15.0));
+        assert_eq!(bounds(&doc, &result, "#e"), rect(88.0, 46.0, 20.0, 15.0));
+    }
+
+    #[test]
+    fn grid_dense_fills_holes_and_sparse_cursor_keeps_order_in_each_axis() {
+        for (flow, expected) in [
+            ("row", (80.0, 20.0)),
+            ("row dense", (80.0, 0.0)),
+            ("column", (40.0, 40.0)),
+            ("column dense", (0.0, 40.0)),
+        ] {
+            let span = if flow.starts_with("column") {
+                "grid-row:span 2"
+            } else {
+                "grid-column:span 2"
+            };
+            let source = format!(
+                "<style>body{{margin:0}}main{{display:grid;grid-template-columns:repeat(3,40px);grid-template-rows:repeat(3,20px);grid-auto-columns:40px;grid-auto-rows:20px;grid-auto-flow:{flow}}}#a,#b{{{span}}}</style><main><i id=a></i><i id=b></i><i id=c></i></main>"
+            );
+            let (doc, result) = render(&source, 300.0);
+            let c = bounds(&doc, &result, "#c");
+            assert_eq!((c.x, c.y), expected, "{flow}");
+        }
+    }
+
+    #[test]
+    fn grid_auto_items_respect_definite_reservations_row_locks_and_order() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:grid;grid-template-columns:repeat(3,40px);grid-auto-rows:20px}#locked{grid-row:1;grid-column:2}#row{grid-row:1}#first{order:-1}#col{grid-column:2}</style><main><i id=auto></i><i id=locked></i><i id=row></i><i id=first></i><i id=col></i></main>",
+            300.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#row"), rect(0.0, 0.0, 40.0, 20.0));
+        assert_eq!(bounds(&doc, &result, "#first"), rect(80.0, 0.0, 40.0, 20.0));
+        assert_eq!(bounds(&doc, &result, "#auto"), rect(0.0, 20.0, 40.0, 20.0));
+        assert_eq!(bounds(&doc, &result, "#col"), rect(40.0, 20.0, 40.0, 20.0));
+        let parent = doc.query_selector("main").unwrap();
+        assert_eq!(doc.attr(doc.nodes[parent].children[0], "id"), Some("auto"));
+    }
+
+    #[test]
+    fn grid_explicit_overlaps_paint_in_order_modified_document_order() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:grid;grid-template-columns:50px;grid-template-rows:30px}i{grid-area:1 / 1 / 2 / 2}#a{order:2}</style><main><i id=a></i><i id=b></i></main>",
+            200.0,
+        );
+        assert_eq!(result.hit_test(20.0, 10.0), doc.query_selector("#a"));
+        assert_eq!(bounds(&doc, &result, "#a"), bounds(&doc, &result, "#b"));
+    }
+
+    #[test]
+    fn grid_minmax_fraction_tracks_freeze_at_intrinsic_and_explicit_minima() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:grid;width:300px;grid-template-columns:minmax(100px,1fr) minmax(0,2fr);column-gap:20px}i{height:20px}#a{min-width:140px}</style><main><i id=a></i><i id=b></i></main>",
+            350.0,
+        );
+        // A fixed 100px minimum does not enlarge from a larger item minimum:
+        // item a overflows its track. Its neighbor starts after that track+gap.
+        assert_eq!(bounds(&doc, &result, "#a").width, 140.0);
+        assert_eq!(bounds(&doc, &result, "#b"), rect(120.0, 0.0, 180.0, 20.0));
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:grid;width:300px;grid-template-columns:1fr 2fr;column-gap:20px}i{height:20px}#a{min-width:140px}</style><main><i id=a></i><i id=b></i></main>",
+            350.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a").width, 140.0);
+        assert_eq!(bounds(&doc, &result, "#b"), rect(160.0, 0.0, 140.0, 20.0));
+    }
+
+    #[test]
+    fn grid_spanning_contributions_size_intrinsic_tracks_and_do_not_depend_on_order() {
+        for reverse in [false, true] {
+            let items = if reverse {
+                "<i id=b></i><i id=a></i>"
+            } else {
+                "<i id=a></i><i id=b></i>"
+            };
+            let source = format!(
+                "<style>body{{margin:0}}main{{display:grid;grid-template-columns:auto auto auto;justify-content:start;column-gap:10px}}i{{height:20px;grid-row:1}}#a{{grid-column:1 / 3;width:110px}}#b{{grid-column:2 / 4;width:150px}}</style><main>{items}<b style='grid-column:1;grid-row:2;height:10px'></b><b style='grid-column:2;grid-row:2;height:10px'></b><b id=probe style='grid-column:3;grid-row:2;height:10px'></b></main>"
+            );
+            let (doc, result) = render(&source, 400.0);
+            assert_eq!(
+                bounds(&doc, &result, "#probe"),
+                rect(140.0, 20.0, 70.0, 10.0)
+            );
+        }
+    }
+
+    #[test]
+    fn grid_row_spans_size_auto_rows_and_explicit_rows_keep_their_size() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:grid;grid-template-columns:40px 40px;grid-template-rows:20px auto;row-gap:10px}#a{grid-row:1 / 3;height:80px}#b{grid-column:2;grid-row:2}</style><main><i id=a></i><i id=b></i></main>",
+            200.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#b"), rect(40.0, 30.0, 40.0, 50.0));
+        assert_eq!(bounds(&doc, &result, "main").height, 80.0);
+    }
+
+    #[test]
+    fn grid_indefinite_fractional_rows_use_content_not_viewport_or_fixed_tracks() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:grid;grid-template-columns:40px;grid-template-rows:100px 1fr 2fr;row-gap:5px}#b{height:20px}#c{height:30px}</style><main><i id=a></i><i id=b></i><i id=c></i></main>",
+            200.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a").height, 100.0);
+        assert_eq!(bounds(&doc, &result, "#b").y, 105.0);
+        assert_eq!(bounds(&doc, &result, "#c").y, 130.0);
+        assert_eq!(bounds(&doc, &result, "main").height, 170.0);
+    }
+
+    #[test]
+    fn grid_definite_rows_percentages_and_item_percent_height_use_grid_area() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:grid;width:200px;height:200px;grid-template-columns:1fr;grid-template-rows:25% minmax(20px,1fr);row-gap:10px}#a{height:50%;align-self:end}#b{padding:10px;box-sizing:border-box;min-height:80px}</style><main><i id=a></i><i id=b></i></main>",
+            250.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a"), rect(0.0, 25.0, 200.0, 25.0));
+        assert_eq!(bounds(&doc, &result, "#b"), rect(0.0, 60.0, 200.0, 140.0));
+    }
+
+    #[test]
+    fn grid_alignment_and_auto_margins_use_remaining_area_after_box_sizing() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:grid;width:300px;height:200px;grid-template-columns:80px 80px;grid-template-rows:60px;gap:10px;justify-content:space-between;align-content:center;justify-items:end;align-items:center}i{width:30px;height:20px;padding:5px;border:2px solid black;box-sizing:border-box}#b{margin-left:auto;margin-right:auto;align-self:end}</style><main><i id=a></i><i id=b></i></main>",
+            350.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a"), rect(50.0, 90.0, 30.0, 20.0));
+        assert_eq!(bounds(&doc, &result, "#b"), rect(245.0, 110.0, 30.0, 20.0));
+    }
+
+    #[test]
+    fn grid_out_of_flow_and_non_rendering_nodes_do_not_reserve_cells() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:grid;grid-template-columns:40px 40px;grid-auto-rows:20px}#overlay{position:absolute;width:5px;height:5px;left:150px}#hidden{display:none}</style><main><!--comment--><i id=a></i><i id=overlay></i><i id=hidden></i><template><i></i></template><i id=b></i></main>",
+            200.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#b"), rect(40.0, 0.0, 40.0, 20.0));
+        assert_eq!(bounds(&doc, &result, "main").height, 20.0);
+        assert_eq!(bounds(&doc, &result, "#overlay").x, 150.0);
+    }
+
+    #[test]
+    fn grid_spanning_flexible_tracks_does_not_enlarge_adjacent_auto_tracks() {
+        let definitions = [
+            GridTrack::single(GridBreadth::Length(Length::Fr(1.0))),
+            GridTrack::default(),
+        ];
+        let mut work = MAX_GRID_WORK;
+        assert_eq!(
+            size_grid_tracks(
+                &definitions,
+                Some(300.0),
+                0.0,
+                &[GridContribution {
+                    start: 0,
+                    span: 2,
+                    min: 200.0,
+                    max: 200.0
+                }],
+                "stretch",
+                &mut work
+            ),
+            vec![300.0, 0.0]
+        );
+    }
+
+    #[test]
+    fn separate_row_and_column_gaps_preserve_flex_axis_semantics() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:flex;flex-wrap:wrap;width:100px;gap:7px 20px}i{width:40px;height:10px}</style><main><i id=a></i><i id=b></i><i id=c></i></main>",
+            200.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#b"), rect(60.0, 0.0, 40.0, 10.0));
+        assert_eq!(bounds(&doc, &result, "#c"), rect(0.0, 17.0, 40.0, 10.0));
+    }
+
+    #[test]
+    fn grid_short_items_limit_spanning_growth_without_equalizing_tracks() {
+        let mut work = MAX_GRID_WORK;
+        let definitions = [GridTrack::default(); 2];
+        let contributions = [
+            GridContribution {
+                start: 0,
+                span: 1,
+                min: 10.0,
+                max: 10.0,
+            },
+            GridContribution {
+                start: 0,
+                span: 2,
+                min: 30.0,
+                max: 100.0,
+            },
+        ];
+        assert_eq!(
+            size_grid_tracks(
+                &definitions,
+                Some(200.0),
+                0.0,
+                &contributions,
+                "start",
+                &mut work
+            ),
+            vec![10.0, 90.0]
+        );
+        let definitions = [
+            GridTrack {
+                min: GridBreadth::Auto,
+                max: GridBreadth::Length(Length::Px(50.0)),
+            },
+            GridTrack::default(),
+        ];
+        assert_eq!(
+            size_grid_tracks(
+                &definitions,
+                Some(200.0),
+                0.0,
+                &[GridContribution {
+                    start: 0,
+                    span: 2,
+                    min: 200.0,
+                    max: 200.0
+                }],
+                "start",
+                &mut work
+            ),
+            vec![50.0, 150.0]
+        );
+    }
+
+    #[test]
+    fn anonymous_item_whitespace_scan_consumes_shared_nonrefundable_source_work() {
+        let text = format!("{}x", " ".repeat(20_000));
+        let mut source_work = 30_000;
+        assert!(has_inline_content(&text, &mut source_work));
+        assert_eq!(source_work, 9_999);
+        assert!(!has_inline_content(&text, &mut source_work));
+        assert_eq!(source_work, 0);
+        assert!(!has_inline_content("x", &mut source_work));
+    }
+
+    #[test]
+    fn nested_grid_reflow_cannot_replay_an_entire_whitespace_source_budget() {
+        let source = format!(
+            "<style>section{{display:grid;grid-template-rows:100px;padding:1px}}</style>{}{}x{}",
+            "<section>".repeat(14),
+            " ".repeat(500_000),
+            "</section>".repeat(14)
+        );
+        let (_, result) = render(&source, 320.0);
+        assert!(result.commands.len() < 1000);
+        assert!(
+            result
+                .commands
+                .iter()
+                .all(|command| !matches!(command,DrawCommand::Text{text,..} if text.contains('x')))
+        );
+    }
+
+    #[test]
+    fn grid_nested_measurement_reuses_fragments_and_preserves_clip_balance() {
+        let mut source = String::from(
+            "<style>body{margin:0}section{display:grid;overflow:hidden;grid-template-columns:minmax(0,1fr)}i{height:20px}</style>",
+        );
+        source.push_str(&"<section>".repeat(32));
+        source.push_str("<i id=leaf>Still rendered</i>");
+        source.push_str(&"</section>".repeat(32));
+        let (doc, result) = render(&source, 200.0);
+        assert_eq!(bounds(&doc, &result, "#leaf").height, 20.0);
+        assert!(
+            result
+                .commands
+                .iter()
+                .any(|command| matches!(command,DrawCommand::Text{text,..} if text=="Still"))
+        );
+        let mut balance = 0;
+        for command in &result.commands {
+            match command {
+                DrawCommand::PushClip { .. } => balance += 1,
+                DrawCommand::PopClip => {
+                    assert!(balance > 0);
+                    balance -= 1;
+                }
+                _ => {}
+            }
+        }
+        assert_eq!(balance, 0);
+        assert!(result.commands.len() < 500);
+    }
+
+    #[test]
+    fn grid_far_implicit_tracks_keep_translated_geometry_inside_engine_limits() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:grid;grid-template-columns:repeat(64,1000000px);grid-auto-rows:1000000px}i{grid-column:64;grid-row:64}</style><main><i id=far>Far</i></main>",
+            200.0,
+        );
+        let far = bounds(&doc, &result, "#far");
+        assert!(far.x.abs() <= MAX_EXTENT && far.y.abs() <= MAX_EXTENT);
+        assert!(result.commands.iter().all(|command| match command {
+            DrawCommand::Text { x, y, .. } => x.abs() <= MAX_EXTENT && y.abs() <= MAX_EXTENT,
+            _ => true,
+        }));
+    }
+
+    #[test]
+    fn grid_placement_extreme_indices_spans_and_scanning_have_shared_limits() {
+        let mut source = String::from(
+            "<style>body{margin:0}main{display:grid;grid-template-columns:repeat(64,1px);grid-auto-rows:1px;grid-auto-flow:dense}i{grid-column:span 999999}#negative{grid-area:-2147483648 / -2147483648 / 2147483647 / 2147483647}</style><main><i id=negative></i>",
+        );
+        source.push_str(&"<i></i>".repeat(5000));
+        source.push_str("</main>");
+        let doc = Document::parse(&source);
+        let styles = crate::css::compute_styles(&doc, &doc.stylesheets(), 300.0, 400.0);
+        let main = doc.query_selector("main").unwrap();
+        let mut work = MAX_GRID_WORK;
+        let plan = grid_plan(
+            doc.nodes[main].children.clone(),
+            &styles,
+            &styles[main],
+            &mut work,
+        );
+        assert!(plan.items.len() <= MAX_GRID_ITEMS);
+        assert!(plan.columns <= MAX_GRID_TRACKS && plan.rows <= MAX_GRID_TRACKS);
+        assert!(work < MAX_GRID_WORK);
+        for area in plan.items.iter().filter_map(|item| item.area) {
+            assert!(
+                area.column + area.columns <= MAX_GRID_TRACKS
+                    && area.row + area.rows <= MAX_GRID_TRACKS
+            );
+        }
+        let mut exhausted = 0;
+        let sizes = size_grid_tracks(
+            &[GridTrack::default(); 64],
+            Some(300.0),
+            10.0,
+            &[GridContribution {
+                start: 0,
+                span: 64,
+                min: 100.0,
+                max: 500.0,
+            }],
+            "stretch",
+            &mut exhausted,
+        );
+        assert_eq!(exhausted, 0);
+        assert!(sizes.iter().all(|v| v.is_finite()));
+    }
+
+    #[test]
     fn grid_places_rows_and_fixed_tracks() {
         let (doc, result) = render(
             "<style>body{margin:0}#grid{display:grid;grid-template-columns:80px 120px;gap:10px}#grid div{height:25px}</style><div id=grid><div id=a></div><div id=b></div><div id=c></div></div>",
@@ -3335,7 +4634,11 @@ mod tests {
             let b = bounds(&doc, &result, "#b");
             let c = bounds(&doc, &result, "#c");
             assert_eq!(grid.width, 316.0, "{tracks}");
-            assert_eq!(a.width, 90.0, "{tracks}");
+            if tracks.starts_with("1fr") {
+                assert_eq!(a.width, 90.0, "{tracks}");
+            } else {
+                assert!((a.width + b.width + c.width - 270.0).abs() < 0.001);
+            }
             assert_eq!(b.x - (a.x + a.width), 12.0, "{tracks}");
             assert_eq!(a.x, grid.x + 11.0, "{tracks}");
             assert_eq!(c.x + c.width, grid.x + grid.width - 11.0, "{tracks}");

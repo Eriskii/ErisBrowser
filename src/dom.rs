@@ -8,6 +8,14 @@ const MAX_TEXT: usize = 8 * 1024 * 1024;
 pub const MAX_DOM_BYTES: usize = 32 * 1024 * 1024;
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub enum DocumentMode {
+    #[default]
+    NoQuirks,
+    LimitedQuirks,
+    Quirks,
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub enum Namespace {
     #[default]
     Html,
@@ -54,6 +62,8 @@ pub struct Element {
     pub tag: String,
     pub attrs: BTreeMap<String, String>,
     pub attr_namespaces: BTreeMap<String, AttributeNamespace>,
+    /// A separate inert fragment, never an ordinary child of this element.
+    pub template_contents: Option<NodeId>,
 }
 impl Element {
     fn retained_bytes(&self) -> usize {
@@ -76,6 +86,7 @@ pub struct Doctype {
 #[derive(Debug, Clone)]
 pub enum NodeKind {
     Document,
+    DocumentFragment { host: Option<NodeId> },
     Element(Element),
     Text(String),
     Comment(String),
@@ -94,6 +105,9 @@ pub struct Document {
     pub root: NodeId,
     retained_bytes: usize,
     scripting_enabled: bool,
+    mode: DocumentMode,
+    encoding: &'static encoding_rs::Encoding,
+    encoding_declaration: Option<&'static encoding_rs::Encoding>,
 }
 
 impl Default for Document {
@@ -108,6 +122,7 @@ impl Document {
         nodes: Vec<Node>,
         root: NodeId,
         scripting_enabled: bool,
+        mode: DocumentMode,
     ) -> Result<Self, String> {
         if nodes.is_empty()
             || nodes.len() > MAX_NODES
@@ -127,7 +142,24 @@ impl Document {
                     }
                     0
                 }
+                NodeKind::DocumentFragment { host } => {
+                    if node.parent.is_some() || host.is_some_and(|host| {
+                        !matches!(nodes.get(host).map(|node| &node.kind), Some(NodeKind::Element(el)) if el.namespace == Namespace::Html && el.tag == "template" && el.template_contents == Some(id))
+                    }) {
+                        return Err("invalid snapshot fragment host".into());
+                    }
+                    0
+                }
                 NodeKind::Element(el) => {
+                    if el.namespace == Namespace::Html && el.tag == "template" {
+                        if !el.template_contents.is_some_and(|content| {
+                            matches!(nodes.get(content).map(|node| &node.kind), Some(NodeKind::DocumentFragment { host: Some(host) }) if *host == id)
+                        }) {
+                            return Err("invalid snapshot template contents".into());
+                        }
+                    } else if el.template_contents.is_some() {
+                        return Err("snapshot non-template has template contents".into());
+                    }
                     if el.attrs.len() > 1024 {
                         return Err("snapshot element attribute limit exceeded".into());
                     }
@@ -152,13 +184,17 @@ impl Document {
                 return Err("snapshot DOM byte budget exceeded".into());
             }
             if !node.children.is_empty()
-                && !matches!(node.kind, NodeKind::Document | NodeKind::Element(_))
+                && !matches!(
+                    node.kind,
+                    NodeKind::Document | NodeKind::DocumentFragment { .. } | NodeKind::Element(_)
+                )
             {
                 return Err("snapshot leaf has children".into());
             }
             for &child in &node.children {
                 if child >= nodes.len()
                     || child == root
+                    || matches!(nodes[child].kind, NodeKind::DocumentFragment { .. })
                     || incoming[child]
                     || nodes[child].parent != Some(id)
                     || matches!(nodes[child].kind, NodeKind::Doctype(_)) && id != root
@@ -179,7 +215,10 @@ impl Document {
         let mut pending: Vec<_> = nodes
             .iter()
             .enumerate()
-            .filter(|(_, n)| n.parent.is_none())
+            .filter(|(_, n)| {
+                n.parent.is_none()
+                    && !matches!(n.kind, NodeKind::DocumentFragment { host: Some(_) })
+            })
             .map(|(id, _)| (id, 0))
             .collect();
         while let Some((id, depth)) = pending.pop() {
@@ -187,7 +226,15 @@ impl Document {
                 return Err("snapshot DOM depth exceeded".into());
             }
             visited += 1;
+            if visited > nodes.len() {
+                return Err("cyclic snapshot template contents".into());
+            }
             pending.extend(nodes[id].children.iter().map(|&child| (child, depth + 1)));
+            if let NodeKind::Element(el) = &nodes[id].kind
+                && let Some(content) = el.template_contents
+            {
+                pending.push((content, depth + 1));
+            }
         }
         if visited != nodes.len() {
             return Err("cyclic snapshot DOM".into());
@@ -197,6 +244,9 @@ impl Document {
             root,
             retained_bytes: bytes,
             scripting_enabled,
+            mode,
+            encoding: encoding_rs::UTF_8,
+            encoding_declaration: None,
         })
     }
     pub fn parse(source: &str) -> Self {
@@ -207,9 +257,13 @@ impl Document {
     }
     /// Parse against an existing element without modifying its document. The
     /// returned arena's root directly contains the fragment children. Scripts
-    /// are never executed. Template content and document quirks inheritance
-    /// are not represented yet; supported contexts use no-quirks mode.
+    /// are never executed. The context's document mode is inherited; template
+    /// contents are separate fragment trees in the same bounded arena.
     pub fn parse_fragment(&self, context: NodeId, source: &str) -> Result<Self, String> {
+        let context = match self.nodes.get(context).map(|node| &node.kind) {
+            Some(NodeKind::DocumentFragment { host: Some(host) }) => *host,
+            _ => context,
+        };
         let Some(Node {
             kind: NodeKind::Element(element),
             ..
@@ -217,17 +271,20 @@ impl Document {
         else {
             return Err("fragment context must be an element".into());
         };
-        if element.namespace == Namespace::Html && element.tag == "template" {
-            return Err("template fragment context is not implemented".into());
-        }
         if element.retained_bytes() > MAX_DOM_BYTES / 2 || element.attrs.len() > 1024 {
             return Err("fragment context exceeds resource limit".into());
         }
         let mut form_ancestor = false;
+        let mut mode = self.mode;
         let mut ancestor = Some(context);
         for _ in 0..MAX_DEPTH {
             let Some(id) = ancestor else { break };
             let node = self.nodes.get(id).ok_or("invalid fragment ancestor")?;
+            if matches!(node.kind, NodeKind::DocumentFragment { host: Some(_) }) {
+                // Template contents have an inert owner document created in
+                // no-quirks mode, independent of the outer document's mode.
+                mode = DocumentMode::NoQuirks;
+            }
             if self.namespace(id) == Some(Namespace::Html) && self.tag(id) == Some("form") {
                 form_ancestor = true;
             }
@@ -237,17 +294,24 @@ impl Document {
             return Err("fragment context ancestry exceeds depth limit".into());
         }
         let mut builder = TreeBuilder::new(self.scripting_enabled);
-        builder.quirks = false;
+        builder.doc.mode = mode;
+        builder.doc.encoding = self.encoding;
         let html = builder.element(&HtmlToken::start("html"), false, true);
         builder.html = Some(html);
         let context_id = builder.doc.nodes.len();
         builder.doc.retained_bytes += element.retained_bytes();
+        let mut context_element = element.clone();
+        context_element.template_contents = None;
         builder.doc.nodes.push(Node {
             parent: None,
             children: vec![],
-            kind: NodeKind::Element(element.clone()),
+            kind: NodeKind::Element(context_element),
         });
+        builder.doc.establish_template_contents(context_id);
         builder.fragment_context = Some(context_id);
+        if element.namespace == Namespace::Html && element.tag == "template" {
+            builder.template_modes.push(InsertionMode::InTemplate);
+        }
         if form_ancestor {
             // This detached sentinel is not in scope, just as the real form
             // ancestor belongs to another document and is not on the stack.
@@ -279,6 +343,56 @@ impl Document {
     }
     pub fn scripting_enabled(&self) -> bool {
         self.scripting_enabled
+    }
+    pub fn mode(&self) -> DocumentMode {
+        self.mode
+    }
+    pub fn character_set(&self) -> &'static str {
+        self.encoding.name()
+    }
+    pub(crate) fn set_encoding(&mut self, encoding: &'static encoding_rs::Encoding) {
+        self.encoding = encoding;
+    }
+    pub(crate) fn encoding_declaration(&self) -> Option<&'static encoding_rs::Encoding> {
+        self.encoding_declaration
+    }
+    pub fn template_contents(&self, id: NodeId) -> Option<NodeId> {
+        match &self.nodes.get(id)?.kind {
+            NodeKind::Element(element) => element.template_contents,
+            _ => None,
+        }
+    }
+    pub fn create_document_fragment(&mut self) -> NodeId {
+        if self.nodes.len() >= MAX_NODES {
+            return self.root;
+        }
+        let id = self.nodes.len();
+        self.nodes.push(Node {
+            parent: None,
+            children: vec![],
+            kind: NodeKind::DocumentFragment { host: None },
+        });
+        id
+    }
+    fn establish_template_contents(&mut self, id: NodeId) {
+        if self.namespace(id) != Some(Namespace::Html) || self.tag(id) != Some("template") {
+            return;
+        }
+        let content = self.create_document_fragment();
+        if content == self.root {
+            return;
+        }
+        self.nodes[content].kind = NodeKind::DocumentFragment { host: Some(id) };
+        if let NodeKind::Element(element) = &mut self.nodes[id].kind {
+            element.template_contents = Some(content);
+        }
+    }
+    fn host_including_parent(&self, id: NodeId) -> Option<NodeId> {
+        let node = self.nodes.get(id)?;
+        node.parent.or(match node.kind {
+            NodeKind::DocumentFragment { host } => host,
+            _ => None,
+        })
     }
     pub fn attr(&self, id: NodeId, name: &str) -> Option<&str> {
         match &self.nodes.get(id)?.kind {
@@ -323,7 +437,7 @@ impl Document {
                     let left = MAX_TEXT.saturating_sub(result.len());
                     result.push_str(&s[..floor_boundary(s, left.min(s.len()))]);
                 }
-                NodeKind::Document | NodeKind::Element(_) => {
+                NodeKind::Document | NodeKind::DocumentFragment { .. } | NodeKind::Element(_) => {
                     pending.extend(node.children.iter().rev().copied())
                 }
                 _ => {}
@@ -358,14 +472,8 @@ impl Document {
             }
         }
         if !text.is_empty() && self.nodes.len() < MAX_NODES {
-            self.retained_bytes += text.len();
-            let child = self.nodes.len();
-            self.nodes.push(Node {
-                parent: Some(id),
-                children: vec![],
-                kind: NodeKind::Text(text.to_owned()),
-            });
-            self.nodes[id].children.push(child);
+            let child = self.create_text_node(text);
+            self.append_child(id, child);
         }
     }
     pub fn create_element(&mut self, tag: &str) -> NodeId {
@@ -391,6 +499,9 @@ impl Document {
         if lowercase {
             tag.make_ascii_lowercase();
         }
+        if namespace == Namespace::Html && tag == "template" && self.nodes.len() + 2 > MAX_NODES {
+            return self.root;
+        }
         if tag.len() > MAX_DOM_BYTES.saturating_sub(self.retained_bytes) {
             return self.root;
         }
@@ -404,8 +515,10 @@ impl Document {
                 tag,
                 attrs: BTreeMap::new(),
                 attr_namespaces: BTreeMap::new(),
+                template_contents: None,
             }),
         });
+        self.establish_template_contents(id);
         id
     }
     pub fn create_text_node(&mut self, text: &str) -> NodeId {
@@ -484,7 +597,7 @@ impl Document {
             || parent == child
             || !matches!(
                 self.nodes[parent].kind,
-                NodeKind::Document | NodeKind::Element(_)
+                NodeKind::Document | NodeKind::DocumentFragment { .. } | NodeKind::Element(_)
             )
             || matches!(self.nodes[child].kind, NodeKind::Doctype(_))
                 && !matches!(self.nodes[parent].kind, NodeKind::Document)
@@ -498,7 +611,7 @@ impl Document {
                 return;
             }
             ancestors += 1;
-            cursor = self.nodes.get(id).and_then(|n| n.parent);
+            cursor = self.host_including_parent(id);
         }
         let mut pending = vec![(child, 1usize)];
         let mut visited = 0;
@@ -509,7 +622,20 @@ impl Document {
             }
             if let Some(n) = self.nodes.get(id) {
                 pending.extend(n.children.iter().map(|n| (*n, depth + 1)));
+                if let NodeKind::Element(element) = &n.kind
+                    && let Some(content) = element.template_contents
+                {
+                    pending.push((content, depth + 1));
+                }
             }
+        }
+        if matches!(self.nodes[child].kind, NodeKind::DocumentFragment { .. }) {
+            let children = std::mem::take(&mut self.nodes[child].children);
+            for child in children {
+                self.nodes[child].parent = Some(parent);
+                self.nodes[parent].children.push(child);
+            }
+            return;
         }
         if let Some(old) = self.nodes[child].parent
             && let Some(n) = self.nodes.get_mut(old)
@@ -608,15 +734,27 @@ impl Document {
         self.retained_bytes
     }
     pub fn query_selector(&self, selector: &str) -> Option<NodeId> {
-        self.query_selector_impl(selector, true).into_iter().next()
+        self.query_selector_from(self.root, selector)
     }
     pub fn query_selector_all(&self, selector: &str) -> Vec<NodeId> {
-        self.query_selector_impl(selector, false)
+        self.query_selector_all_from(self.root, selector)
     }
-    fn query_selector_impl(&self, selector: &str, first: bool) -> Vec<NodeId> {
+    pub fn query_selector_from(&self, root: NodeId, selector: &str) -> Option<NodeId> {
+        self.query_selector_impl(root, selector, true)
+            .into_iter()
+            .next()
+    }
+    pub fn query_selector_all_from(&self, root: NodeId, selector: &str) -> Vec<NodeId> {
+        self.query_selector_impl(root, selector, false)
+    }
+    fn query_selector_impl(&self, root: NodeId, selector: &str, first: bool) -> Vec<NodeId> {
         let mut budget = 4_000_000usize;
         let mut result = vec![];
-        let mut pending = vec![self.root];
+        let mut pending = self
+            .nodes
+            .get(root)
+            .map(|node| node.children.iter().rev().copied().collect::<Vec<_>>())
+            .unwrap_or_default();
         let mut visited = BTreeSet::new();
         while let Some(id) = pending.pop() {
             if !visited.insert(id) || visited.len() > MAX_NODES {
@@ -828,7 +966,7 @@ impl Document {
                 continue;
             }
             match &node.kind {
-                NodeKind::Document => {
+                NodeKind::Document | NodeKind::DocumentFragment { .. } => {
                     pending.extend(node.children.iter().rev().map(|id| (*id, false)))
                 }
                 NodeKind::Comment(text) => {
@@ -912,7 +1050,11 @@ impl Document {
                     push_serialized(&mut out, ">");
                     if element.namespace != Namespace::Html || !is_void(&element.tag) {
                         pending.push((id, true));
-                        pending.extend(node.children.iter().rev().map(|id| (*id, false)));
+                        let children = element
+                            .template_contents
+                            .and_then(|id| self.nodes.get(id))
+                            .map_or(&node.children, |fragment| &fragment.children);
+                        pending.extend(children.iter().rev().map(|id| (*id, false)));
                     }
                 }
             }
@@ -1613,7 +1755,10 @@ enum InsertionMode {
     InTableBody,
     InRow,
     InCell,
+    InTemplate,
     InFrameset,
+    AfterFrameset,
+    AfterAfterFrameset,
     AfterBody,
     AfterAfterBody,
 }
@@ -1628,8 +1773,9 @@ struct TreeBuilder {
     form: Option<NodeId>,
     fragment_context: Option<NodeId>,
     mode: InsertionMode,
+    template_modes: Vec<InsertionMode>,
     scripting: bool,
-    quirks: bool,
+    frameset_ok: bool,
     raw: Option<(String, bool)>,
     raw_node: Option<(NodeId, InsertionMode)>,
     pending_table_text: String,
@@ -1648,6 +1794,9 @@ impl TreeBuilder {
                 root: 0,
                 retained_bytes: 0,
                 scripting_enabled: scripting,
+                mode: DocumentMode::NoQuirks,
+                encoding: encoding_rs::UTF_8,
+                encoding_declaration: None,
             },
             stack: vec![],
             formatting: vec![],
@@ -1657,8 +1806,9 @@ impl TreeBuilder {
             form: None,
             fragment_context: None,
             mode: InsertionMode::Initial,
+            template_modes: vec![],
             scripting,
-            quirks: true,
+            frameset_ok: true,
             raw: None,
             raw_node: None,
             pending_table_text: String::new(),
@@ -1746,7 +1896,12 @@ impl TreeBuilder {
     /// Returns false when foreign recovery must use the current HTML insertion mode.
     fn in_foreign(&mut self, token: &HtmlToken) -> bool {
         match token {
-            HtmlToken::Characters(text) => self.text(text, false),
+            HtmlToken::Characters(text) => {
+                if !text.bytes().all(is_space) {
+                    self.frameset_ok = false;
+                }
+                self.text(text, false);
+            }
             HtmlToken::Comment(text) => self.comment(text, None),
             HtmlToken::ProcessingInstruction { target, data } => {
                 let id = self.doc.create_processing_instruction(target, data);
@@ -1819,6 +1974,38 @@ impl TreeBuilder {
             self.stack.pop();
         }
     }
+    fn in_template(&self) -> bool {
+        self.fragment_context
+            .is_some_and(|id| self.html_tag(id) == Some("template"))
+            || self
+                .stack
+                .iter()
+                .any(|id| self.html_tag(*id) == Some("template"))
+    }
+    fn start_template(&mut self, token: &HtmlToken) {
+        let id = self.element(token, false, true);
+        if self.stack.last() == Some(&id) && self.doc.template_contents(id).is_some() {
+            self.frameset_ok = false;
+            self.template_modes.push(InsertionMode::InTemplate);
+            self.mode = InsertionMode::InTemplate;
+        }
+    }
+    fn close_template(&mut self) -> bool {
+        let Some(index) = self
+            .stack
+            .iter()
+            .rposition(|id| self.html_tag(*id) == Some("template"))
+        else {
+            return false;
+        };
+        // Thorough implied-end-tag generation and the subsequent pop have the
+        // same final stack here; this parser does not expose parse-error counts.
+        self.stack.truncate(index);
+        self.clear_formatting();
+        self.template_modes.pop();
+        self.reset_mode();
+        true
+    }
     fn close_in_scope(&mut self, tags: &[&str], table: bool) -> bool {
         if let Some(index) = self.scope(tags, table) {
             let clear_formatting = self
@@ -1852,7 +2039,8 @@ impl TreeBuilder {
                     Some("colgroup") => Some(InsertionMode::InColumnGroup),
                     Some("table") => Some(InsertionMode::InTable),
                     Some("head") if index != 0 => Some(InsertionMode::InHead),
-                    Some("body" | "template") => Some(InsertionMode::InBody),
+                    Some("body") => Some(InsertionMode::InBody),
+                    Some("template") => self.template_modes.last().copied(),
                     Some("frameset") => Some(InsertionMode::InFrameset),
                     Some("html") => Some(if self.head.is_none() {
                         InsertionMode::BeforeHead
@@ -1881,7 +2069,7 @@ impl TreeBuilder {
             {
                 let table = self.stack[index];
                 if self.html_tag(table) == Some("template") {
-                    return (table, None);
+                    return (self.doc.template_contents(table).unwrap_or(table), None);
                 }
                 if let Some(parent) = self.doc.nodes[table].parent {
                     let children = &self.doc.nodes[parent].children;
@@ -1895,11 +2083,12 @@ impl TreeBuilder {
                         }
                     }
                 }
-                return (self.stack[index.saturating_sub(1)], None);
+                let target = self.stack[index.saturating_sub(1)];
+                return (self.doc.template_contents(target).unwrap_or(target), None);
             }
             return (self.html.unwrap_or(self.doc.root), None);
         }
-        (current, None)
+        (self.doc.template_contents(current).unwrap_or(current), None)
     }
     fn attach(&mut self, node: NodeId, parent: NodeId, before: Option<usize>) {
         self.doc.append_child(parent, node);
@@ -1932,7 +2121,8 @@ impl TreeBuilder {
         } else {
             tag
         };
-        if self.doc.nodes.len() >= MAX_NODES
+        if self.doc.nodes.len()
+            >= MAX_NODES - usize::from(namespace == Namespace::Html && tag == "template")
             || tag.len() > MAX_DOM_BYTES.saturating_sub(self.doc.retained_bytes)
         {
             return self.doc.root;
@@ -1948,8 +2138,10 @@ impl TreeBuilder {
                 tag: tag.into(),
                 attrs: BTreeMap::new(),
                 attr_namespaces: BTreeMap::new(),
+                template_contents: None,
             }),
         });
+        self.doc.establish_template_contents(id);
         for (name, value) in attrs {
             let name = match namespace {
                 Namespace::Html => name.as_str(),
@@ -1967,6 +2159,18 @@ impl TreeBuilder {
         }
         let (parent, before) = self.location(foster);
         self.attach(id, parent, before);
+        if namespace == Namespace::Html
+            && tag == "meta"
+            && self.fragment_context.is_none()
+            && self.doc.encoding_declaration.is_none()
+            && self.doc.nodes[id].parent.is_some()
+        {
+            self.doc.encoding_declaration = crate::text_encoding::meta_encoding(
+                self.doc.attr(id, "charset"),
+                self.doc.attr(id, "http-equiv"),
+                self.doc.attr(id, "content"),
+            );
+        }
         if push && self.stack.len() < MAX_DEPTH - 3 && self.doc.nodes[id].parent.is_some() {
             self.stack.push(id);
             if namespace == Namespace::Html && formatting_marker(tag) {
@@ -2382,6 +2586,13 @@ impl TreeBuilder {
         }
     }
     fn merge_attrs(&mut self, id: Option<NodeId>, token: &HtmlToken) {
+        if self
+            .stack
+            .iter()
+            .any(|id| self.html_tag(*id) == Some("template"))
+        {
+            return;
+        }
         if let (Some(id), HtmlToken::Start { attrs, .. }) = (id, token) {
             for (name, value) in attrs {
                 if self.doc.attr(id, name).is_none() {
@@ -2417,7 +2628,10 @@ impl TreeBuilder {
     }
     fn comment(&mut self, text: &str, parent: Option<NodeId>) {
         let id = self.doc.create_comment(text);
-        self.doc.append_child(parent.unwrap_or(self.current()), id);
+        let (parent, before) = parent
+            .map(|parent| (parent, None))
+            .unwrap_or_else(|| self.location(false));
+        self.attach(id, parent, before);
     }
     fn raw_element(&mut self, token: &HtmlToken, foster: bool) {
         let id = self.element(token, foster, true);
@@ -2442,7 +2656,7 @@ impl TreeBuilder {
             self.text(&text, foster);
         }
         // Every reprocessing transition consumes budget; malformed input cannot spin indefinitely.
-        for _ in 0..32 {
+        for _ in 0..MAX_DEPTH + 32 {
             let cost = self.stack.len() + 1;
             if self.work < cost || self.doc.nodes.len() >= MAX_NODES {
                 self.work = 0;
@@ -2477,11 +2691,14 @@ impl TreeBuilder {
             if self.dispatch_foreign(&token) && self.in_foreign(&token) {
                 return;
             }
+            if matches!(token, HtmlToken::Eof) && self.close_template() {
+                continue;
+            }
             if let HtmlToken::ProcessingInstruction { target, data } = &token {
                 let parent = match self.mode {
-                    Initial | BeforeHtml | AfterAfterBody => self.doc.root,
+                    Initial | BeforeHtml | AfterAfterBody | AfterAfterFrameset => self.doc.root,
                     AfterBody => self.html.unwrap_or(self.doc.root),
-                    _ => self.current(),
+                    _ => self.location(false).0,
                 };
                 let id = self.doc.create_processing_instruction(target, data);
                 self.doc.append_child(parent, id);
@@ -2568,13 +2785,14 @@ impl TreeBuilder {
                         return;
                     }
                     HtmlToken::Doctype(doctype) => {
-                        self.quirks = doctype.force_quirks || doctype.name != "html";
+                        self.doc.mode = doctype_mode(doctype);
                         let id = self.doc.create_doctype(doctype.clone());
                         self.doc.append_child(self.doc.root, id);
                         self.mode = BeforeHtml;
                         return;
                     }
                     _ => {
+                        self.doc.mode = DocumentMode::Quirks;
                         self.mode = BeforeHtml;
                     }
                 },
@@ -2672,8 +2890,11 @@ impl TreeBuilder {
                         return;
                     }
                     _ if start && tag == "template" => {
-                        self.element(&token, false, true);
-                        self.mode = InBody;
+                        self.start_template(&token);
+                        return;
+                    }
+                    _ if end && tag == "template" => {
+                        self.close_template();
                         return;
                     }
                     _ if start && tag == "head"
@@ -2737,11 +2958,15 @@ impl TreeBuilder {
                         return;
                     }
                     HtmlToken::Doctype(_) => return,
+                    _ if end && tag == "template" => {
+                        self.close_template();
+                        return;
+                    }
                     _ if start && tag == "html" => {
                         self.merge_attrs(self.html, &token);
                         return;
                     }
-                    _ if start && tag == "frameset" && self.fragment_context.is_some() => {
+                    _ if start && tag == "frameset" => {
                         self.element(&token, false, true);
                         self.mode = InFrameset;
                         return;
@@ -2782,6 +3007,7 @@ impl TreeBuilder {
                             self.element(&HtmlToken::start("body"), false, true)
                         };
                         self.body = Some(id);
+                        self.frameset_ok = !(start && tag == "body");
                         self.mode = InBody;
                         if start && tag == "body" {
                             return;
@@ -3043,8 +3269,65 @@ impl TreeBuilder {
                         self.mode = InBody;
                     }
                 },
+                InTemplate => match &token {
+                    HtmlToken::Characters(_) | HtmlToken::Comment(_) | HtmlToken::Doctype(_) => {
+                        self.in_body(&token, false);
+                        return;
+                    }
+                    _ if start
+                        && matches!(
+                            tag,
+                            "base"
+                                | "basefont"
+                                | "bgsound"
+                                | "link"
+                                | "meta"
+                                | "noframes"
+                                | "script"
+                                | "style"
+                                | "template"
+                                | "title"
+                        )
+                        || end && tag == "template" =>
+                    {
+                        self.in_body(&token, false);
+                        return;
+                    }
+                    HtmlToken::Start { .. } => {
+                        let mode = match tag {
+                            "caption" | "colgroup" | "tbody" | "tfoot" | "thead" => InTable,
+                            "col" => InColumnGroup,
+                            "tr" => InTableBody,
+                            "td" | "th" => InRow,
+                            _ => InBody,
+                        };
+                        if let Some(current) = self.template_modes.last_mut() {
+                            *current = mode;
+                        }
+                        self.mode = mode;
+                    }
+                    _ => return,
+                },
                 InBody => {
                     self.in_body(&token, false);
+                    return;
+                }
+                AfterFrameset | AfterAfterFrameset => {
+                    match &token {
+                        HtmlToken::Characters(text) if token.whitespace() => self.text(text, false),
+                        HtmlToken::Comment(text) => {
+                            self.comment(
+                                text,
+                                (self.mode == AfterAfterFrameset).then_some(self.doc.root),
+                            );
+                        }
+                        _ if start && tag == "html" => self.merge_attrs(self.html, &token),
+                        _ if start && tag == "noframes" => self.raw_element(&token, false),
+                        _ if end && tag == "html" && self.mode == AfterFrameset => {
+                            self.mode = AfterAfterFrameset
+                        }
+                        _ => {}
+                    }
                     return;
                 }
                 InFrameset => {
@@ -3067,6 +3350,9 @@ impl TreeBuilder {
                         _ if start && tag == "noframes" => self.raw_element(&token, false),
                         _ if end && tag == "frameset" && self.current_tag() != "html" => {
                             self.stack.pop();
+                            if self.fragment_context.is_none() && self.current_tag() != "frameset" {
+                                self.mode = AfterFrameset;
+                            }
                         }
                         _ => {}
                     }
@@ -3145,9 +3431,11 @@ impl TreeBuilder {
                 self.element(token, false, false);
             }
             _ if start && tag == "form" => {
-                if self.form.is_none() {
+                if self.form.is_none() || self.in_template() {
                     let id = self.element(token, false, false);
-                    self.form = Some(id);
+                    if !self.in_template() {
+                        self.form = Some(id);
+                    }
                 }
             }
             _ => self.in_body(token, true),
@@ -3158,6 +3446,9 @@ impl TreeBuilder {
         use InsertionMode::*;
         match token {
             HtmlToken::Characters(text) => {
+                if !text.bytes().all(is_space) {
+                    self.frameset_ok = false;
+                }
                 if !text.is_empty() {
                     self.reconstruct_formatting(foster);
                 }
@@ -3168,9 +3459,15 @@ impl TreeBuilder {
             HtmlToken::Comment(text) => self.comment(text, None),
             HtmlToken::Doctype(_) | HtmlToken::Eof | HtmlToken::ProcessingInstruction { .. } => {}
             HtmlToken::Start {
-                tag, self_closing, ..
+                tag,
+                attrs,
+                self_closing,
             } => {
                 let tag = tag.as_str();
+                if tag == "template" {
+                    self.start_template(token);
+                    return;
+                }
                 if matches!(tag, "input" | "select")
                     && self
                         .fragment_context
@@ -3178,17 +3475,33 @@ impl TreeBuilder {
                 {
                     return;
                 }
-                if tag == "frameset"
-                    && (self.stack.len() < 2 || self.html_tag(self.stack[1]) != Some("body"))
-                {
+                if tag == "frameset" {
+                    if self.stack.len() < 2
+                        || self.html_tag(self.stack[1]) != Some("body")
+                        || !self.frameset_ok
+                    {
+                        return;
+                    }
+                    let body = self.stack[1];
+                    if let Some(parent) = self.doc.nodes[body].parent {
+                        self.doc.remove_child(parent, body);
+                    }
+                    self.stack.truncate(1);
+                    self.element(token, false, true);
+                    self.mode = InFrameset;
                     return;
                 }
                 if tag == "html" {
-                    self.merge_attrs(self.html, token);
+                    if !self.in_template() {
+                        self.merge_attrs(self.html, token);
+                    }
                     return;
                 }
                 if tag == "body" {
-                    self.merge_attrs(self.body, token);
+                    if !self.in_template() {
+                        self.frameset_ok = false;
+                        self.merge_attrs(self.body, token);
+                    }
                     return;
                 }
                 if tag == "head"
@@ -3203,18 +3516,44 @@ impl TreeBuilder {
                             | "th"
                             | "thead"
                             | "tr"
+                            | "frame"
                     )
                 {
                     return;
                 }
-                if tag == "form"
-                    && self.form.is_some()
-                    && !self
-                        .stack
-                        .iter()
-                        .any(|id| self.html_tag(*id) == Some("template"))
-                {
+                if tag == "form" && self.form.is_some() && !self.in_template() {
                     return;
+                }
+                if matches!(
+                    tag,
+                    "pre"
+                        | "listing"
+                        | "li"
+                        | "dd"
+                        | "dt"
+                        | "button"
+                        | "applet"
+                        | "marquee"
+                        | "object"
+                        | "table"
+                        | "area"
+                        | "br"
+                        | "embed"
+                        | "img"
+                        | "image"
+                        | "keygen"
+                        | "wbr"
+                        | "hr"
+                        | "textarea"
+                        | "xmp"
+                        | "iframe"
+                        | "select"
+                ) || tag == "input"
+                    && !attrs
+                        .get("type")
+                        .is_some_and(|value| value.eq_ignore_ascii_case("hidden"))
+                {
+                    self.frameset_ok = false;
                 }
                 if is_formatting(tag) {
                     if tag == "a"
@@ -3247,7 +3586,7 @@ impl TreeBuilder {
                     self.push_formatting(id);
                     return;
                 }
-                if closes_p(tag) && !(tag == "table" && self.quirks) {
+                if closes_p(tag) && !(tag == "table" && self.doc.mode == DocumentMode::Quirks) {
                     self.close_in_scope(&["p"], false);
                 }
                 let same = match tag {
@@ -3316,7 +3655,7 @@ impl TreeBuilder {
                     return;
                 }
                 let id = self.element(token, foster, !is_void(tag));
-                if tag == "form" {
+                if tag == "form" && !self.in_template() {
                     self.form = Some(id);
                 }
                 if matches!(tag, "pre" | "listing") {
@@ -3362,7 +3701,9 @@ impl TreeBuilder {
                     return;
                 }
                 if tag == "form" {
-                    if let Some(form) = self.form.take()
+                    if self.in_template() {
+                        self.close_in_scope(&["form"], false);
+                    } else if let Some(form) = self.form.take()
                         && let Some(index) = self.stack.iter().position(|id| *id == form)
                     {
                         self.stack.remove(index);
@@ -3370,15 +3711,7 @@ impl TreeBuilder {
                     return;
                 }
                 if tag == "template" {
-                    if let Some(index) = self
-                        .stack
-                        .iter()
-                        .rposition(|id| self.html_tag(*id) == Some("template"))
-                    {
-                        self.stack.truncate(index);
-                        self.clear_formatting();
-                        self.reset_mode();
-                    }
+                    self.close_template();
                     return;
                 }
                 if matches!(tag, "h1" | "h2" | "h3" | "h4" | "h5" | "h6") {
@@ -3733,6 +4066,98 @@ fn special_html(tag: &str) -> bool {
                 | "wbr"
                 | "xmp"
         )
+}
+
+/// WHATWG initial insertion-mode document compatibility classification.
+fn doctype_mode(doctype: &Doctype) -> DocumentMode {
+    let public = doctype.public_id.as_deref().unwrap_or("");
+    let system = doctype.system_id.as_deref().unwrap_or("");
+    let starts = |prefix: &str| {
+        public
+            .get(..prefix.len())
+            .is_some_and(|s| s.eq_ignore_ascii_case(prefix))
+    };
+    let html4 = starts("-//W3C//DTD HTML 4.01 Frameset//")
+        || starts("-//W3C//DTD HTML 4.01 Transitional//");
+    const QUIRKS_PREFIXES: &[&str] = &[
+        "+//Silmaril//dtd html Pro v0r11 19970101//",
+        "-//AS//DTD HTML 3.0 asWedit + extensions//",
+        "-//AdvaSoft Ltd//DTD HTML 3.0 asWedit + extensions//",
+        "-//IETF//DTD HTML 2.0 Level 1//",
+        "-//IETF//DTD HTML 2.0 Level 2//",
+        "-//IETF//DTD HTML 2.0 Strict Level 1//",
+        "-//IETF//DTD HTML 2.0 Strict Level 2//",
+        "-//IETF//DTD HTML 2.0 Strict//",
+        "-//IETF//DTD HTML 2.0//",
+        "-//IETF//DTD HTML 2.1E//",
+        "-//IETF//DTD HTML 3.0//",
+        "-//IETF//DTD HTML 3.2 Final//",
+        "-//IETF//DTD HTML 3.2//",
+        "-//IETF//DTD HTML 3//",
+        "-//IETF//DTD HTML Level 0//",
+        "-//IETF//DTD HTML Level 1//",
+        "-//IETF//DTD HTML Level 2//",
+        "-//IETF//DTD HTML Level 3//",
+        "-//IETF//DTD HTML Strict Level 0//",
+        "-//IETF//DTD HTML Strict Level 1//",
+        "-//IETF//DTD HTML Strict Level 2//",
+        "-//IETF//DTD HTML Strict Level 3//",
+        "-//IETF//DTD HTML Strict//",
+        "-//IETF//DTD HTML//",
+        "-//Metrius//DTD Metrius Presentational//",
+        "-//Microsoft//DTD Internet Explorer 2.0 HTML Strict//",
+        "-//Microsoft//DTD Internet Explorer 2.0 HTML//",
+        "-//Microsoft//DTD Internet Explorer 2.0 Tables//",
+        "-//Microsoft//DTD Internet Explorer 3.0 HTML Strict//",
+        "-//Microsoft//DTD Internet Explorer 3.0 HTML//",
+        "-//Microsoft//DTD Internet Explorer 3.0 Tables//",
+        "-//Netscape Comm. Corp.//DTD HTML//",
+        "-//Netscape Comm. Corp.//DTD Strict HTML//",
+        "-//O'Reilly and Associates//DTD HTML 2.0//",
+        "-//O'Reilly and Associates//DTD HTML Extended 1.0//",
+        "-//O'Reilly and Associates//DTD HTML Extended Relaxed 1.0//",
+        "-//SQ//DTD HTML 2.0 HoTMetaL + extensions//",
+        "-//SoftQuad Software//DTD HoTMetaL PRO 6.0::19990601::extensions to HTML 4.0//",
+        "-//SoftQuad//DTD HoTMetaL PRO 4.0::19971010::extensions to HTML 4.0//",
+        "-//Spyglass//DTD HTML 2.0 Extended//",
+        "-//Sun Microsystems Corp.//DTD HotJava HTML//",
+        "-//Sun Microsystems Corp.//DTD HotJava Strict HTML//",
+        "-//W3C//DTD HTML 3 1995-03-24//",
+        "-//W3C//DTD HTML 3.2 Draft//",
+        "-//W3C//DTD HTML 3.2 Final//",
+        "-//W3C//DTD HTML 3.2//",
+        "-//W3C//DTD HTML 3.2S Draft//",
+        "-//W3C//DTD HTML 4.0 Frameset//",
+        "-//W3C//DTD HTML 4.0 Transitional//",
+        "-//W3C//DTD HTML Experimental 19960712//",
+        "-//W3C//DTD HTML Experimental 970421//",
+        "-//W3C//DTD W3 HTML//",
+        "-//W3O//DTD W3 HTML 3.0//",
+        "-//WebTechs//DTD Mozilla HTML 2.0//",
+        "-//WebTechs//DTD Mozilla HTML//",
+    ];
+    if doctype.force_quirks
+        || doctype.name != "html"
+        || [
+            "-//W3O//DTD W3 HTML Strict 3.0//EN//",
+            "-/W3C/DTD HTML 4.0 Transitional/EN",
+            "HTML",
+        ]
+        .iter()
+        .any(|id| public.eq_ignore_ascii_case(id))
+        || system.eq_ignore_ascii_case("http://www.ibm.com/data/dtd/v11/ibmxhtml1-transitional.dtd")
+        || QUIRKS_PREFIXES.iter().any(|prefix| starts(prefix))
+        || html4 && system.is_empty()
+    {
+        DocumentMode::Quirks
+    } else if html4
+        || starts("-//W3C//DTD XHTML 1.0 Frameset//")
+        || starts("-//W3C//DTD XHTML 1.0 Transitional//")
+    {
+        DocumentMode::LimitedQuirks
+    } else {
+        DocumentMode::NoQuirks
+    }
 }
 
 pub fn parse(source: &str) -> Document {
@@ -6866,13 +7291,8 @@ mod tests {
         let mut owner = Document::parse("");
         assert!(owner.parse_fragment(owner.root, "x").is_err());
         assert!(owner.parse_fragment(usize::MAX, "x").is_err());
-        let template = owner.create_element("template");
-        assert!(
-            owner
-                .parse_fragment(template, "x")
-                .unwrap_err()
-                .contains("template")
-        );
+        let unhosted = owner.create_document_fragment();
+        assert!(owner.parse_fragment(unhosted, "x").is_err());
         let context = owner.create_element("div");
         owner.nodes[context].parent = Some(context);
         assert!(owner.parse_fragment(context, "x").is_err());
@@ -7020,13 +7440,17 @@ mod tests {
         let before = d.retained_bytes();
         assert_eq!(d.attr(svg, "viewBox"), Some("0 0 1 1"));
         assert_eq!(d.attr(svg, "viewbox"), None);
-        assert!(Document::from_snapshot(d.nodes.clone(), d.root, false).is_ok());
+        assert!(
+            Document::from_snapshot(d.nodes.clone(), d.root, false, DocumentMode::NoQuirks).is_ok()
+        );
         d.remove_attr(svg, "xlink:href");
         assert_eq!(
             d.retained_bytes(),
             before - "xlink:href".len() * 2 - "#two".len()
         );
-        let rebuilt = Document::from_snapshot(d.nodes.clone(), d.root, false).unwrap();
+        let rebuilt =
+            Document::from_snapshot(d.nodes.clone(), d.root, false, DocumentMode::NoQuirks)
+                .unwrap();
         assert_eq!(rebuilt.retained_bytes(), d.retained_bytes());
         let mut invalid = d.nodes;
         let NodeKind::Element(element) = &mut invalid[svg].kind else {
@@ -7035,7 +7459,7 @@ mod tests {
         element
             .attr_namespaces
             .insert("viewBox".into(), AttributeNamespace::Xml);
-        assert!(Document::from_snapshot(invalid, d.root, false).is_err());
+        assert!(Document::from_snapshot(invalid, d.root, false, DocumentMode::NoQuirks).is_err());
     }
     #[test]
     fn mixed_namespace_boundaries_remain_bounded_and_cycle_free() {
@@ -7046,7 +7470,10 @@ mod tests {
         ] {
             let d = parse(&pattern.repeat(2000));
             assert_bounded_forest(&d);
-            assert!(Document::from_snapshot(d.nodes.clone(), d.root, false).is_ok());
+            assert!(
+                Document::from_snapshot(d.nodes.clone(), d.root, false, DocumentMode::NoQuirks)
+                    .is_ok()
+            );
         }
     }
     #[test]
@@ -7095,7 +7522,9 @@ mod tests {
         let parent = original.nodes[paragraph].parent.unwrap();
         original.remove_child(parent, paragraph);
         let expected_bytes = original.retained_bytes();
-        let rebuilt = Document::from_snapshot(original.nodes, original.root, true).unwrap();
+        let rebuilt =
+            Document::from_snapshot(original.nodes, original.root, true, DocumentMode::NoQuirks)
+                .unwrap();
         assert_eq!(rebuilt.retained_bytes(), expected_bytes);
         assert!(rebuilt.scripting_enabled());
         assert_eq!(rebuilt.text_content(paragraph), "onetwothree");
@@ -7109,13 +7538,21 @@ mod tests {
         let text = original.nodes[paragraph].children[0];
         let mut duplicate = original.nodes.clone();
         duplicate[parent].children.push(paragraph);
-        assert!(Document::from_snapshot(duplicate, original.root, false).is_err());
+        assert!(
+            Document::from_snapshot(duplicate, original.root, false, DocumentMode::NoQuirks)
+                .is_err()
+        );
         let mut dangling = original.nodes.clone();
         dangling[paragraph].parent = Some(usize::MAX);
-        assert!(Document::from_snapshot(dangling, original.root, false).is_err());
+        assert!(
+            Document::from_snapshot(dangling, original.root, false, DocumentMode::NoQuirks)
+                .is_err()
+        );
         let mut leaf = original.nodes.clone();
         leaf[paragraph].kind = NodeKind::Comment("forged".into());
-        assert!(Document::from_snapshot(leaf, original.root, false).is_err());
+        assert!(
+            Document::from_snapshot(leaf, original.root, false, DocumentMode::NoQuirks).is_err()
+        );
         let mut cycle = original.nodes.clone();
         cycle[parent].children.retain(|id| *id != paragraph);
         cycle[paragraph].parent = Some(text);
@@ -7124,9 +7561,12 @@ mod tests {
             tag: "span".into(),
             attrs: BTreeMap::new(),
             attr_namespaces: BTreeMap::new(),
+            template_contents: None,
         });
         cycle[text].children.push(paragraph);
-        assert!(Document::from_snapshot(cycle, original.root, false).is_err());
+        assert!(
+            Document::from_snapshot(cycle, original.root, false, DocumentMode::NoQuirks).is_err()
+        );
         let mut doctype = original.nodes;
         doctype[text].kind = NodeKind::Doctype(Doctype {
             name: "html".into(),
@@ -7134,7 +7574,9 @@ mod tests {
             system_id: None,
             force_quirks: false,
         });
-        assert!(Document::from_snapshot(doctype, original.root, false).is_err());
+        assert!(
+            Document::from_snapshot(doctype, original.root, false, DocumentMode::NoQuirks).is_err()
+        );
     }
     #[test]
     fn snapshot_validation_enforces_attribute_and_detached_depth_limits() {
@@ -7143,12 +7585,23 @@ mod tests {
         for index in 0..1024 {
             original.set_attr(paragraph, &format!("a{index}"), "");
         }
-        assert!(Document::from_snapshot(original.nodes.clone(), original.root, false).is_ok());
+        assert!(
+            Document::from_snapshot(
+                original.nodes.clone(),
+                original.root,
+                false,
+                DocumentMode::NoQuirks
+            )
+            .is_ok()
+        );
         let NodeKind::Element(element) = &mut original.nodes[paragraph].kind else {
             unreachable!()
         };
         element.attrs.insert("extra".into(), String::new());
-        assert!(Document::from_snapshot(original.nodes, original.root, false).is_err());
+        assert!(
+            Document::from_snapshot(original.nodes, original.root, false, DocumentMode::NoQuirks)
+                .is_err()
+        );
         let mut nodes = vec![Node {
             parent: None,
             children: vec![],
@@ -7167,10 +7620,11 @@ mod tests {
                     tag: "div".into(),
                     attrs: BTreeMap::new(),
                     attr_namespaces: BTreeMap::new(),
+                    template_contents: None,
                 }),
             });
         }
-        assert!(Document::from_snapshot(nodes, 0, false).is_err());
+        assert!(Document::from_snapshot(nodes, 0, false, DocumentMode::NoQuirks).is_err());
     }
     fn assert_bounded_forest(document: &Document) {
         assert!(document.nodes.len() <= MAX_NODES);
@@ -7180,7 +7634,10 @@ mod tests {
             .nodes
             .iter()
             .enumerate()
-            .filter(|(_, node)| node.parent.is_none())
+            .filter(|(_, node)| {
+                node.parent.is_none()
+                    && !matches!(node.kind, NodeKind::DocumentFragment { host: Some(_) })
+            })
             .map(|(id, _)| (id, 1usize))
             .collect();
         while let Some((id, depth)) = pending.pop() {
@@ -7191,11 +7648,311 @@ mod tests {
                 assert_eq!(document.nodes[*child].parent, Some(id));
                 pending.push((*child, depth + 1));
             }
+            if let Some(content) = document.template_contents(id) {
+                assert!(
+                    matches!(document.nodes[content].kind, NodeKind::DocumentFragment { host: Some(host) } if host == id)
+                );
+                assert!(document.nodes[content].parent.is_none());
+                pending.push((content, depth + 1));
+            }
         }
         assert!(
             seen.into_iter().all(|visited| visited),
             "cycle detached from every root"
         );
+    }
+    #[test]
+    fn template_contents_are_separate_inert_fragment_trees() {
+        let d = Document::parse(
+            "<!doctype html><template id=t><!--inside--><div id=x>text<template id=n><b id=y>nested</b></template></div></template><p id=active>live</p>",
+        );
+        let template = d.query_selector("#t").unwrap();
+        let content = d.template_contents(template).unwrap();
+        assert!(d.nodes[template].children.is_empty());
+        assert!(d.nodes[content].parent.is_none());
+        assert!(
+            matches!(d.nodes[content].kind, NodeKind::DocumentFragment { host: Some(host) } if host == template)
+        );
+        assert!(d.query_selector("#x").is_none());
+        assert!(d.query_selector("#n").is_none());
+        let child = d.query_selector_from(content, "#x").unwrap();
+        let nested = d.query_selector_from(content, "#n").unwrap();
+        assert!(d.query_selector_from(content, "#y").is_none());
+        assert!(!d.is_active_node(child));
+        assert_eq!(d.text_content(template), "");
+        assert_eq!(d.text_content(content), "text");
+        assert_eq!(
+            d.text_content(d.template_contents(nested).unwrap()),
+            "nested"
+        );
+        assert!(
+            d.outer_html(template)
+                .contains("<template id=\"n\"><b id=\"y\">nested</b></template>")
+        );
+        assert_bounded_forest(&d);
+        assert!(Document::from_snapshot(d.nodes.clone(), d.root, false, d.mode()).is_ok());
+    }
+    #[test]
+    fn template_insertion_modes_recover_tables_forms_and_foreign_content() {
+        for (inside, expected) in [
+            ("<tr><td>cell", "<tr><td>cell</td></tr>"),
+            ("<td>cell", "<td>cell</td>"),
+            ("<col><col>", "<col><col>"),
+            ("<tbody><tr><td>x", "<tbody><tr><td>x</td></tr></tbody>"),
+            (
+                "<table>foster<tr><td>x</table>",
+                "foster<table><tbody><tr><td>x</td></tr></tbody></table>",
+            ),
+            (
+                "<form id=a><form id=b>x</form>y</form>",
+                "<form id=\"a\"><form id=\"b\">x</form>y</form>",
+            ),
+        ] {
+            let d = Document::parse(&format!(
+                "<form id=outer><template>{inside}</template><input></form>"
+            ));
+            let t = d.query_selector("template").unwrap();
+            assert_eq!(
+                d.outer_html(d.template_contents(t).unwrap()),
+                expected,
+                "{inside}"
+            );
+            assert_eq!(
+                d.nodes[d.query_selector("input").unwrap()].parent,
+                d.query_selector("#outer")
+            );
+            assert_bounded_forest(&d);
+        }
+        let d = Document::parse(
+            "<template><svg><foreignObject><template><math><mi>x</mi></math></template></foreignObject></svg></template>",
+        );
+        let outer = d
+            .template_contents(d.query_selector("template").unwrap())
+            .unwrap();
+        let inner = d.query_selector_from(outer, "template").unwrap();
+        let content = d.template_contents(inner).unwrap();
+        assert_eq!(
+            d.namespace(d.query_selector_from(content, "mi").unwrap()),
+            Some(Namespace::MathMl)
+        );
+        assert_bounded_forest(&d);
+    }
+    #[test]
+    fn template_fragments_initialize_the_template_mode_stack() {
+        let mut owner = Document::parse("<!doctype html>");
+        let template = owner.create_element("template");
+        let content = owner.template_contents(template).unwrap();
+        for context in [template, content] {
+            let d = owner
+                .parse_fragment(context, "<tr><td>x</td></tr><template><col></template>")
+                .unwrap();
+            assert_eq!(
+                d.outer_html(d.root),
+                "<tr><td>x</td></tr><template><col></template>"
+            );
+            assert_eq!(d.mode(), DocumentMode::NoQuirks);
+            assert_bounded_forest(&d);
+        }
+        assert!(owner.nodes[content].children.is_empty());
+        for (source, expected) in [
+            (
+                "<form id=a><form id=b>x</form>y</form>",
+                "<form id=\"a\"><form id=\"b\">x</form>y</form>",
+            ),
+            ("<form><div></form>after", "<form><div></div></form>after"),
+        ] {
+            let fragment = owner.parse_fragment(template, source).unwrap();
+            assert_eq!(fragment.outer_html(fragment.root), expected);
+            assert_bounded_forest(&fragment);
+        }
+    }
+    #[test]
+    fn template_recovery_preserves_document_frameset_and_attribute_state() {
+        let d = Document::parse("<body><template><frameset><frame><p>text</template><p>active");
+        let content = d
+            .template_contents(d.query_selector("template").unwrap())
+            .unwrap();
+        assert_eq!(d.outer_html(content), "<p>text</p>");
+        assert!(d.query_selector("frameset").is_none());
+        let d = Document::parse("<head><template></template></head><p><frameset><frame>");
+        assert!(d.query_selector("body").is_none());
+        assert!(d.query_selector("html > frameset > frame").is_some());
+        let d = Document::parse("<template><col><html data-leak=yes></template>");
+        assert_eq!(d.attr(d.query_selector("html").unwrap(), "data-leak"), None);
+        let d = Document::parse("<template><table><form id=a><tr><td>cell</table></template>");
+        let content = d
+            .template_contents(d.query_selector("template").unwrap())
+            .unwrap();
+        assert_eq!(
+            d.outer_html(content),
+            "<table><form id=\"a\"></form><tbody><tr><td>cell</td></tr></tbody></table>"
+        );
+        assert_bounded_forest(&d);
+    }
+    #[test]
+    fn encoding_hints_follow_accepted_tokens_and_fragments_inherit_encoding() {
+        let mut d = Document::parse(
+            "<meta charset=invalid><svg><![CDATA[<meta charset=shift_jis>]]></svg><style><meta charset=windows-1251></style><meta charset=windows-1252><meta charset=utf-8><div id=context></div>",
+        );
+        assert_eq!(d.encoding_declaration(), Some(encoding_rs::WINDOWS_1252));
+        assert_eq!(d.character_set(), "UTF-8");
+        d.set_encoding(encoding_rs::WINDOWS_1251);
+        let fragment = d
+            .parse_fragment(
+                d.query_selector("#context").unwrap(),
+                "<meta charset=utf-8>",
+            )
+            .unwrap();
+        assert_eq!(fragment.character_set(), "windows-1251");
+        assert_eq!(fragment.encoding_declaration(), None);
+        let declaration = Document::parse(
+            "<meta content='text/html;charset=shift_jis'><meta http-equiv=CONTENT-TYPE content='text/html;charset=windows-1252'>",
+        );
+        assert_eq!(
+            declaration.encoding_declaration(),
+            Some(encoding_rs::WINDOWS_1252)
+        );
+        // Template contents are inert, but their meta tokens still use the
+        // parser's in-head encoding-change rules before author execution.
+        let declaration =
+            Document::parse("<template><meta charset=windows-1251></template><meta charset=utf-8>");
+        assert_eq!(
+            declaration.encoding_declaration(),
+            Some(encoding_rs::WINDOWS_1251)
+        );
+    }
+    #[test]
+    fn compatibility_modes_classify_doctypes_and_are_inherited_by_fragments() {
+        for (doctype, expected) in [
+            ("", DocumentMode::Quirks),
+            ("<!doctype html>", DocumentMode::NoQuirks),
+            (
+                "<!doctype html system 'about:legacy-compat'>",
+                DocumentMode::NoQuirks,
+            ),
+            ("<!doctype svg>", DocumentMode::Quirks),
+            (
+                "<!doctype html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>",
+                DocumentMode::Quirks,
+            ),
+            (
+                "<!doctype html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' ''>",
+                DocumentMode::Quirks,
+            ),
+            (
+                "<!doctype html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'legacy.dtd'>",
+                DocumentMode::LimitedQuirks,
+            ),
+            (
+                "<!doctype html PUBLIC '-//w3c//dtd xhtml 1.0 frameset//EN'>",
+                DocumentMode::LimitedQuirks,
+            ),
+            (
+                "<!doctype html PUBLIC '-//W3C//DTD HTML 3.2 Final//EN'>",
+                DocumentMode::Quirks,
+            ),
+            (
+                "<!doctype html system 'HTTP://WWW.IBM.COM/DATA/DTD/V11/IBMXHTML1-TRANSITIONAL.DTD'>",
+                DocumentMode::Quirks,
+            ),
+            ("<!doctype html PUBLIC 'unknown'>", DocumentMode::NoQuirks),
+        ] {
+            let owner = Document::parse(&format!("{doctype}<div id=context></div>"));
+            assert_eq!(owner.mode(), expected, "{doctype}");
+            let d = owner
+                .parse_fragment(
+                    owner.query_selector("#context").unwrap(),
+                    "<p><table></table>",
+                )
+                .unwrap();
+            assert_eq!(d.mode(), expected);
+            let table = d.query_selector("table").unwrap();
+            assert_eq!(
+                d.tag(d.nodes[table].parent.unwrap()) == Some("p"),
+                expected == DocumentMode::Quirks,
+                "{doctype}"
+            );
+        }
+        let owner = Document::parse("<template><div></div></template>");
+        let content = owner
+            .template_contents(owner.query_selector("template").unwrap())
+            .unwrap();
+        let context = owner.query_selector_from(content, "div").unwrap();
+        assert_eq!(
+            owner.parse_fragment(context, "<p><table>").unwrap().mode(),
+            DocumentMode::NoQuirks
+        );
+    }
+    #[test]
+    fn fragment_transfer_and_template_host_cycles_preserve_dom_invariants() {
+        let mut d = Document::parse("<body><template><div><template></template></div></template>");
+        let body = d.query_selector("body").unwrap();
+        let outer = d.query_selector("template").unwrap();
+        let content = d.template_contents(outer).unwrap();
+        let inner = d.query_selector_from(content, "template").unwrap();
+        let inner_content = d.template_contents(inner).unwrap();
+        let before = d.outer_html(d.root);
+        d.append_child(inner_content, outer);
+        d.append_child(inner_content, content);
+        assert_eq!(d.outer_html(d.root), before);
+        d.append_child(body, content);
+        assert!(d.nodes[content].children.is_empty());
+        assert!(d.nodes[content].parent.is_none());
+        assert!(d.query_selector("body > div > template").is_some());
+        assert!(d.template_contents(outer).is_some());
+        let normal = d.create_element("i");
+        d.append_child(outer, normal);
+        assert_eq!(d.nodes[outer].children, vec![normal]);
+        assert!(d.outer_html(outer).ends_with("></template>"));
+        assert_bounded_forest(&d);
+        assert!(Document::from_snapshot(d.nodes.clone(), d.root, false, d.mode()).is_ok());
+    }
+    #[test]
+    fn snapshot_rejects_template_host_aliases_and_host_including_cycles() {
+        let d = Document::parse("<template><template></template></template>");
+        let outer = d.query_selector("template").unwrap();
+        let content = d.template_contents(outer).unwrap();
+        let inner = d.query_selector_from(content, "template").unwrap();
+        let inner_content = d.template_contents(inner).unwrap();
+        let mut wrong_host = d.nodes.clone();
+        wrong_host[content].kind = NodeKind::DocumentFragment { host: Some(inner) };
+        assert!(Document::from_snapshot(wrong_host, d.root, false, d.mode()).is_err());
+        let mut missing = d.nodes.clone();
+        if let NodeKind::Element(el) = &mut missing[outer].kind {
+            el.template_contents = None;
+        }
+        assert!(Document::from_snapshot(missing, d.root, false, d.mode()).is_err());
+        let mut cycle = d.nodes.clone();
+        let old_parent = cycle[outer].parent.unwrap();
+        cycle[old_parent].children.retain(|id| *id != outer);
+        cycle[outer].parent = Some(inner_content);
+        cycle[inner_content].children.push(outer);
+        assert!(Document::from_snapshot(cycle, d.root, false, d.mode()).is_err());
+        let mut attached_fragment = d.nodes.clone();
+        attached_fragment[content].parent = Some(outer);
+        attached_fragment[outer].children.push(content);
+        assert!(Document::from_snapshot(attached_fragment, d.root, false, d.mode()).is_err());
+    }
+    #[test]
+    fn adversarial_nested_template_recovery_obeys_host_depth_and_node_budgets() {
+        for source in [
+            "<template><table><b><tr><td><template>".repeat(1000),
+            format!(
+                "{}{}",
+                "<template><b><div>".repeat(500),
+                "</b></template>".repeat(500)
+            ),
+        ] {
+            let d = Document::parse(&source);
+            assert_bounded_forest(&d);
+            assert!(Document::from_snapshot(d.nodes.clone(), d.root, false, d.mode()).is_ok());
+        }
+        let mut d = Document::parse("");
+        while d.nodes.len() < MAX_NODES - 1 {
+            d.create_comment("");
+        }
+        assert_eq!(d.create_element("temp!late"), d.root);
+        assert!(Document::from_snapshot(d.nodes.clone(), d.root, false, d.mode()).is_ok());
     }
     #[test]
     fn formatting_reconstruction_reopens_misnested_inline_elements() {
@@ -7692,7 +8449,7 @@ mod tests {
                         + d.system_id.as_ref().map_or(0, String::len)
                 }
                 NodeKind::ProcessingInstruction { target, data } => target.len() + data.len(),
-                NodeKind::Document => 0,
+                NodeKind::Document | NodeKind::DocumentFragment { .. } => 0,
             })
             .sum();
         assert_eq!(actual, d.retained_bytes());

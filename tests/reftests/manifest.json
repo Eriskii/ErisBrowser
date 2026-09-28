@@ -116,6 +116,48 @@
       "description": "Monospace text wraps into two shortened lines followed by a full-width line, compared with independently positioned complete text lines.",
       "test": "float-text-lines.html",
       "reference": "float-text-lines-ref.html"
+    },
+    {
+      "name": "grid-explicit-spans",
+      "description": "Signed explicit lines and row/column spans determine distinct areas.",
+      "test": "grid-explicit-spans.html",
+      "reference": "grid-explicit-spans-ref.html"
+    },
+    {
+      "name": "grid-dense-placement",
+      "description": "Dense placement fills earlier holes left by two-column spans.",
+      "test": "grid-dense-placement.html",
+      "reference": "grid-dense-placement-ref.html"
+    },
+    {
+      "name": "grid-column-implicit",
+      "description": "Column auto-placement adds tracks using grid-auto-columns while preserving row spans.",
+      "test": "grid-column-implicit.html",
+      "reference": "grid-column-implicit-ref.html"
+    },
+    {
+      "name": "grid-minmax-fraction",
+      "description": "A minimum freezes the first fractional column; fixed-height fractional rows divide remaining space.",
+      "test": "grid-minmax-fraction.html",
+      "reference": "grid-minmax-fraction-ref.html"
+    },
+    {
+      "name": "grid-intrinsic-spans",
+      "description": "Overlapping spanning contributions determine intrinsic track widths before item placement.",
+      "test": "grid-intrinsic-spans.html",
+      "reference": "grid-intrinsic-spans-ref.html"
+    },
+    {
+      "name": "grid-track-item-alignment",
+      "description": "Content alignment moves tracks; self alignment and auto margins position border-box items inside them.",
+      "test": "grid-track-item-alignment.html",
+      "reference": "grid-track-item-alignment-ref.html"
+    },
+    {
+      "name": "grid-implicit-negative",
+      "description": "Implicit tracks before and after the explicit grid cycle through the declared track sizes.",
+      "test": "grid-implicit-negative.html",
+      "reference": "grid-implicit-negative-ref.html"
     }
   ]
 }

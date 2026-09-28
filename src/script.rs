@@ -178,6 +178,11 @@ impl ScriptError {
             intrinsic_name: None,
         }
     }
+    fn syntax(message: impl Into<String>) -> Self {
+        let mut error = Self::new(message);
+        error.kind = ErrorKind::Runtime("SyntaxError");
+        error
+    }
     fn range_error(message: impl Into<String>) -> Self {
         Self {
             message: message.into(),
@@ -258,6 +263,9 @@ struct Token {
     kind: TokenKind,
     offset: usize,
     line_break_before: bool,
+    string_literal: bool,
+    use_strict: bool,
+    legacy_literal: bool,
 }
 
 fn lex(source: &str) -> Result<Vec<Token>> {
@@ -290,6 +298,7 @@ fn lex(source: &str) -> Result<Vec<Token>> {
             continue;
         }
         let start = pos;
+        let mut legacy_literal = false;
         let kind = if ch == '\'' || ch == '"' || ch == '`' {
             let quote = ch;
             pos += 1;
@@ -303,9 +312,8 @@ fn lex(source: &str) -> Result<Vec<Token>> {
                     break;
                 }
                 if quote == '`' && c == '$' && source[pos..].starts_with('{') {
-                    return Err(ScriptError::at(
-                        "template interpolation is not supported",
-                        pos - 1,
+                    return Err(ScriptError::unsupported(
+                        "template interpolation is not implemented",
                     ));
                 }
                 if c == '\\' {
@@ -321,7 +329,28 @@ fn lex(source: &str) -> Result<Vec<Token>> {
                         'b' => value.push(8),
                         'f' => value.push(12),
                         'v' => value.push(11),
-                        '0' => value.push(0),
+                        '0'..='7' => {
+                            let mut n = e as u16 - '0' as u16;
+                            let mut count = 1;
+                            while count < if e <= '3' { 3 } else { 2 }
+                                && source
+                                    .as_bytes()
+                                    .get(pos)
+                                    .is_some_and(|b| (b'0'..=b'7').contains(b))
+                            {
+                                n = n * 8 + u16::from(source.as_bytes()[pos] - b'0');
+                                pos += 1;
+                                count += 1;
+                            }
+                            legacy_literal |= e != '0'
+                                || count > 1
+                                || source.as_bytes().get(pos).is_some_and(u8::is_ascii_digit);
+                            value.push(n);
+                        }
+                        '8' | '9' => {
+                            legacy_literal = true;
+                            value.push(e as u16);
+                        }
                         '\n' | '\u{2028}' | '\u{2029}' => {}
                         '\r' => {
                             if source.as_bytes().get(pos) == Some(&b'\n') {
@@ -399,6 +428,12 @@ fn lex(source: &str) -> Result<Vec<Token>> {
             if !closed {
                 return Err(ScriptError::at("unterminated string", start));
             }
+            if quote == '`' && legacy_literal {
+                return Err(ScriptError::at(
+                    "legacy escapes are forbidden in template literals",
+                    start,
+                ));
+            }
             TokenKind::String(JsString::from(value))
         } else if ch.is_ascii_digit()
             || (ch == '.'
@@ -439,10 +474,16 @@ fn lex(source: &str) -> Result<Vec<Token>> {
                         pos += 1;
                     }
                 }
+                let raw = &source[start..pos];
+                legacy_literal =
+                    raw.len() > 1 && raw.starts_with('0') && raw.as_bytes()[1].is_ascii_digit();
                 TokenKind::Number(
-                    source[start..pos]
-                        .parse()
-                        .map_err(|_| ScriptError::at("invalid number", start))?,
+                    if legacy_literal && raw.bytes().all(|b| (b'0'..=b'7').contains(&b)) {
+                        raw.bytes().fold(0.0, |n, b| n * 8.0 + f64::from(b - b'0'))
+                    } else {
+                        raw.parse()
+                            .map_err(|_| ScriptError::at("invalid number", start))?
+                    },
                 )
             }
         } else if ch.is_alphabetic() || ch == '_' || ch == '$' {
@@ -478,6 +519,9 @@ fn lex(source: &str) -> Result<Vec<Token>> {
             kind,
             offset: start,
             line_break_before,
+            string_literal: matches!(ch, '\'' | '"'),
+            use_strict: matches!(&source[start..pos], "\"use strict\"" | "'use strict'"),
+            legacy_literal,
         });
         line_break_before = false;
         if tokens.len() > MAX_TOKENS {
@@ -488,6 +532,9 @@ fn lex(source: &str) -> Result<Vec<Token>> {
         kind: TokenKind::End,
         offset: source.len(),
         line_break_before,
+        string_literal: false,
+        use_strict: false,
+        legacy_literal: false,
     });
     Ok(tokens)
 }
@@ -500,6 +547,12 @@ struct FunctionCode {
     arrow: bool,
     self_name: bool,
     constructable: bool,
+    strict: bool,
+}
+#[derive(Debug)]
+struct Program {
+    body: Vec<Stmt>,
+    strict: bool,
 }
 #[derive(Clone, Debug)]
 enum Expr {
@@ -516,6 +569,7 @@ enum Expr {
     Call(Box<Expr>, Vec<Expr>),
     New(Box<Expr>, Vec<Expr>),
     Function(FunctionCode),
+    Sequence(Vec<Expr>),
 }
 #[derive(Clone, Debug)]
 enum ObjectEntry {
@@ -566,12 +620,13 @@ struct Parser {
     loop_depth: usize,
     switch_depth: usize,
     allow_in: bool,
+    strict: bool,
 }
 impl Parser {
-    fn program(source: &str) -> Result<Vec<Stmt>> {
-        Self::program_context(source, false)
+    fn program(source: &str) -> Result<Program> {
+        Self::program_context(source, false, false)
     }
-    fn program_context(source: &str, function: bool) -> Result<Vec<Stmt>> {
+    fn program_context(source: &str, function: bool, strict: bool) -> Result<Program> {
         let mut parser = Self {
             tokens: lex(source)?,
             pos: 0,
@@ -580,24 +635,47 @@ impl Parser {
             loop_depth: 0,
             switch_depth: 0,
             allow_in: true,
+            strict,
         };
-        let mut statements = Vec::new();
-        while !parser.done() {
-            statements.push(parser.statement()?);
-        }
-        Self::check_directives(&statements)?;
-        Ok(statements)
+        let body = parser.directive_body(false)?;
+        Self::check_scope(&body, false)?;
+        Ok(Program {
+            body,
+            strict: parser.strict,
+        })
     }
-    fn check_directives(body: &[Stmt]) -> Result<()> {
-        for statement in body {
-            let Stmt::Expr(Expr::Literal(Value::String(text))) = statement else {
-                break;
-            };
-            if text == &JsString::from("use strict") {
-                return Err(ScriptError::unsupported("strict mode is not implemented"));
+    fn directive_body(&mut self, block: bool) -> Result<Vec<Stmt>> {
+        let mut body = Vec::new();
+        let mut prologue = true;
+        let start = self.pos;
+        while !(if block { self.eat("}") } else { self.done() }) {
+            if self.done() {
+                return Err(self.error("unterminated function body"));
             }
+            let token = self.tokens[self.pos].clone();
+            let before = self.pos;
+            let statement = self.statement()?;
+            let bare_string = token.string_literal
+                && matches!(&statement, Stmt::Expr(Expr::Literal(Value::String(_))))
+                && (self.pos == before + 1
+                    || self.pos == before + 2
+                        && matches!(&self.tokens[before + 1].kind, TokenKind::Symbol(s) if s == ";"));
+            if prologue && bare_string {
+                if token.use_strict {
+                    self.strict = true;
+                    if self.tokens[start..self.pos]
+                        .iter()
+                        .any(|token| token.legacy_literal)
+                    {
+                        return Err(self.error("legacy escapes are forbidden in strict directives"));
+                    }
+                }
+            } else {
+                prologue = false;
+            }
+            body.push(statement);
         }
-        Ok(())
+        Ok(body)
     }
     fn done(&self) -> bool {
         matches!(self.tokens[self.pos].kind, TokenKind::End)
@@ -637,6 +715,96 @@ impl Parser {
             Err(self.error("expected identifier"))
         }
     }
+    fn binding_identifier(&mut self) -> Result<String> {
+        if self.is("{") || self.is("[") || self.is(".") {
+            return Err(ScriptError::unsupported(
+                "destructuring and rest bindings are not implemented",
+            ));
+        }
+        let name = self.identifier()?;
+        self.validate_identifier(&name, true)?;
+        Ok(name)
+    }
+    fn validate_identifier(&self, name: &str, binding: bool) -> Result<()> {
+        if matches!(
+            name,
+            "break"
+                | "case"
+                | "catch"
+                | "class"
+                | "const"
+                | "continue"
+                | "debugger"
+                | "default"
+                | "delete"
+                | "do"
+                | "else"
+                | "enum"
+                | "export"
+                | "extends"
+                | "false"
+                | "finally"
+                | "for"
+                | "function"
+                | "if"
+                | "import"
+                | "in"
+                | "instanceof"
+                | "new"
+                | "null"
+                | "return"
+                | "super"
+                | "switch"
+                | "this"
+                | "throw"
+                | "true"
+                | "try"
+                | "typeof"
+                | "var"
+                | "void"
+                | "while"
+                | "with"
+        ) || self.strict
+            && (matches!(
+                name,
+                "implements"
+                    | "interface"
+                    | "let"
+                    | "package"
+                    | "private"
+                    | "protected"
+                    | "public"
+                    | "static"
+                    | "yield"
+            ) || binding && matches!(name, "eval" | "arguments"))
+        {
+            return Err(self.error(format!(
+                "invalid {} '{name}'",
+                if binding { "binding" } else { "identifier" }
+            )));
+        }
+        Ok(())
+    }
+    fn assignment_target(&self, target: &Expr) -> Result<()> {
+        if !matches!(target, Expr::Ident(name) if name != "this")
+            && !matches!(target, Expr::Member(..))
+        {
+            return Err(self.error("invalid assignment target"));
+        }
+        if self.strict
+            && matches!(target, Expr::Ident(name) if matches!(name.as_str(), "eval"|"arguments"))
+        {
+            return Err(self.error("strict assignment to eval or arguments"));
+        }
+        Ok(())
+    }
+    fn semicolon(&mut self) -> Result<()> {
+        if self.eat(";") || self.done() || self.is("}") || self.tokens[self.pos].line_break_before {
+            Ok(())
+        } else {
+            Err(self.error("expected ';'"))
+        }
+    }
     fn enter(&mut self) -> Result<()> {
         self.depth += 1;
         if self.depth > MAX_DEPTH {
@@ -650,6 +818,24 @@ impl Parser {
         self.depth -= 1;
         result
     }
+    fn controlled_statement(&mut self) -> Result<Stmt> {
+        let statement = self.statement()?;
+        if matches!(
+            statement,
+            Stmt::Var(_, DeclarationKind::Let | DeclarationKind::Const)
+        ) {
+            return Err(self.error("lexical declarations require a statement list"));
+        }
+        if matches!(statement, Stmt::Function(..)) {
+            if self.strict {
+                return Err(self.error("strict function declarations require a statement list"));
+            }
+            return Err(ScriptError::unsupported(
+                "legacy conditional function declarations are not implemented",
+            ));
+        }
+        Ok(statement)
+    }
     fn statement_inner(&mut self) -> Result<Stmt> {
         if self.eat(";") {
             return Ok(Stmt::Empty);
@@ -659,12 +845,16 @@ impl Parser {
         }
         if self.is("let") || self.is("const") || self.is("var") {
             let declaration = self.declaration()?;
-            self.eat(";");
+            self.semicolon()?;
             return Ok(declaration);
         }
         if self.eat("function") {
-            let name = self.identifier()?;
+            let name = self.binding_identifier()?;
             let mut code = self.function()?;
+            let saved = self.strict;
+            self.strict = code.strict;
+            self.validate_identifier(&name, true)?;
+            self.strict = saved;
             code.name = Some(name.clone());
             return Ok(Stmt::Function(name, code));
         }
@@ -699,26 +889,39 @@ impl Parser {
                 cases.push((condition, body));
             }
             self.switch_depth -= 1;
+            let combined = cases
+                .iter()
+                .flat_map(|(_, body)| body.iter().cloned())
+                .collect::<Vec<_>>();
+            Self::check_scope(&combined, true)?;
             return Ok(Stmt::Switch(value, cases));
         }
         if self.eat("if") {
             self.expect("(")?;
-            let condition = self.expression()?;
+            let condition = self.sequence()?;
             self.expect(")")?;
-            let yes = Box::new(self.statement()?);
+            let yes = Box::new(self.controlled_statement()?);
             let no = if self.eat("else") {
-                Some(Box::new(self.statement()?))
+                Some(Box::new(self.controlled_statement()?))
             } else {
                 None
             };
+            if self.strict
+                && (matches!(&*yes, Stmt::Function(..))
+                    || no
+                        .as_deref()
+                        .is_some_and(|s| matches!(s, Stmt::Function(..))))
+            {
+                return Err(self.error("strict function declarations require a statement list"));
+            }
             return Ok(Stmt::If(condition, yes, no));
         }
         if self.eat("while") {
             self.expect("(")?;
-            let condition = self.expression()?;
+            let condition = self.sequence()?;
             self.expect(")")?;
             self.loop_depth += 1;
-            let body = self.statement()?;
+            let body = self.controlled_statement()?;
             self.loop_depth -= 1;
             return Ok(Stmt::While(condition, Box::new(body)));
         }
@@ -731,7 +934,7 @@ impl Parser {
             } else if self.is("let") || self.is("const") || self.is("var") {
                 Some(Box::new(self.declaration()?))
             } else {
-                Some(Box::new(Stmt::Expr(self.expression()?)))
+                Some(Box::new(Stmt::Expr(self.sequence()?)))
             };
             self.allow_in = saved_in;
             if self.eat("in") {
@@ -742,33 +945,57 @@ impl Parser {
                         ForBinding::Declaration(bindings.remove(0).0, kind)
                     }
                     Some(Stmt::Expr(target @ (Expr::Ident(_) | Expr::Member(..)))) => {
+                        self.assignment_target(&target)?;
                         ForBinding::Target(target)
                     }
                     _ => return Err(self.error("invalid for-in binding")),
                 };
-                let object = self.expression()?;
+                let object = self.sequence()?;
                 self.expect(")")?;
                 self.loop_depth += 1;
-                let body = self.statement()?;
+                let body = self.controlled_statement()?;
                 self.loop_depth -= 1;
+                if let ForBinding::Declaration(name, kind) = &binding
+                    && *kind != DeclarationKind::Var
+                {
+                    let mut vars = BTreeSet::new();
+                    Self::var_names(&body, &mut vars);
+                    if vars.contains(name.as_str()) {
+                        return Err(self.error("for-in lexical binding conflicts with var"));
+                    }
+                }
                 return Ok(Stmt::ForIn(binding, object, Box::new(body)));
             }
             self.expect(";")?;
             let test = if self.is(";") {
                 None
             } else {
-                Some(self.expression()?)
+                Some(self.sequence()?)
             };
             self.expect(";")?;
             let update = if self.is(")") {
                 None
             } else {
-                Some(self.expression()?)
+                Some(self.sequence()?)
             };
             self.expect(")")?;
             self.loop_depth += 1;
-            let body = self.statement()?;
+            let body = self.controlled_statement()?;
             self.loop_depth -= 1;
+            if let Some(init) = &init
+                && let Stmt::Var(bindings, kind) = &**init
+                && *kind != DeclarationKind::Var
+            {
+                let mut vars = BTreeSet::new();
+                Self::var_names(&body, &mut vars);
+                if bindings
+                    .iter()
+                    .any(|(name, _)| vars.contains(name.as_str()))
+                {
+                    return Err(self.error("for lexical binding conflicts with var"));
+                }
+                Self::check_scope(std::slice::from_ref(&**init), false)?;
+            }
             return Ok(Stmt::For(init, test, update, Box::new(body)));
         }
         if self.eat("return") {
@@ -782,17 +1009,17 @@ impl Parser {
             {
                 None
             } else {
-                Some(self.expression()?)
+                Some(self.sequence()?)
             };
-            self.eat(";");
+            self.semicolon()?;
             return Ok(Stmt::Return(result));
         }
         if self.eat("throw") {
             if self.tokens[self.pos].line_break_before {
                 return Err(self.error("line break is not allowed after throw"));
             }
-            let value = self.expression()?;
-            self.eat(";");
+            let value = self.sequence()?;
+            self.semicolon()?;
             return Ok(Stmt::Throw(value));
         }
         if self.eat("try") {
@@ -800,17 +1027,18 @@ impl Parser {
             let body = Box::new(Stmt::Block(self.block()?));
             let handler = if self.eat("catch") {
                 let binding = if self.eat("(") {
-                    let name = self.identifier()?;
+                    let name = self.binding_identifier()?;
                     self.expect(")")?;
                     Some(name)
                 } else {
                     None
                 };
                 self.expect("{")?;
-                Some(CatchClause {
-                    binding,
-                    body: self.block()?,
-                })
+                let body = self.block()?;
+                if let Some(name) = &binding {
+                    Self::check_parameter_lexicals(std::slice::from_ref(name), &body)?;
+                }
+                Some(CatchClause { binding, body })
             } else {
                 None
             };
@@ -829,14 +1057,28 @@ impl Parser {
             if self.loop_depth == 0 && self.switch_depth == 0 {
                 return Err(self.error("break outside loop or switch"));
             }
-            self.eat(";");
+            if !self.tokens[self.pos].line_break_before
+                && matches!(self.tokens[self.pos].kind, TokenKind::Word(_))
+            {
+                return Err(ScriptError::unsupported(
+                    "labeled control flow is not implemented",
+                ));
+            }
+            self.semicolon()?;
             return Ok(Stmt::Break);
         }
         if self.eat("continue") {
             if self.loop_depth == 0 {
                 return Err(self.error("continue outside loop"));
             }
-            self.eat(";");
+            if !self.tokens[self.pos].line_break_before
+                && matches!(self.tokens[self.pos].kind, TokenKind::Word(_))
+            {
+                return Err(ScriptError::unsupported(
+                    "labeled control flow is not implemented",
+                ));
+            }
+            self.semicolon()?;
             return Ok(Stmt::Continue);
         }
         for unsupported in [
@@ -844,13 +1086,26 @@ impl Parser {
             "yield",
         ] {
             if self.is(unsupported) {
+                if self.strict && matches!(unsupported, "with" | "yield") {
+                    return Err(self.error(format!("'{unsupported}' is forbidden in strict code")));
+                }
                 return Err(ScriptError::unsupported(format!(
                     "'{unsupported}' is not supported"
                 )));
             }
         }
-        let expression = self.expression()?;
-        self.eat(";");
+        if matches!(self.tokens[self.pos].kind, TokenKind::Word(_))
+            && self
+                .tokens
+                .get(self.pos + 1)
+                .is_some_and(|t| matches!(&t.kind, TokenKind::Symbol(s) if s == ":"))
+        {
+            return Err(ScriptError::unsupported(
+                "labeled statements are not implemented",
+            ));
+        }
+        let expression = self.sequence()?;
+        self.semicolon()?;
         Ok(Stmt::Expr(expression))
     }
     fn declaration(&mut self) -> Result<Stmt> {
@@ -864,7 +1119,10 @@ impl Parser {
         };
         let mut bindings = Vec::new();
         loop {
-            let name = self.identifier()?;
+            let name = self.binding_identifier()?;
+            if kind != DeclarationKind::Var && name == "let" {
+                return Err(self.error("lexical declaration cannot bind let"));
+            }
             let value = if self.eat("=") {
                 Some(self.expression()?)
             } else {
@@ -888,9 +1146,110 @@ impl Parser {
             }
             body.push(self.statement()?);
         }
+        Self::check_scope(&body, true)?;
         Ok(body)
     }
+    fn check_scope(body: &[Stmt], block_functions: bool) -> Result<()> {
+        let mut lexical = BTreeSet::new();
+        for statement in body {
+            match statement {
+                Stmt::Var(bindings, kind) if *kind != DeclarationKind::Var => {
+                    for (name, _) in bindings {
+                        if !lexical.insert(name.as_str()) {
+                            return Err(ScriptError::at(
+                                format!("duplicate lexical binding '{name}'"),
+                                0,
+                            ));
+                        }
+                    }
+                }
+                Stmt::Function(name, _) if block_functions && !lexical.insert(name.as_str()) => {
+                    return Err(ScriptError::at(
+                        format!("duplicate block binding '{name}'"),
+                        0,
+                    ));
+                }
+                _ => {}
+            }
+        }
+        let mut vars = BTreeSet::new();
+        for statement in body {
+            Self::var_names(statement, &mut vars);
+        }
+        if !block_functions {
+            for statement in body {
+                if let Stmt::Function(name, _) = statement {
+                    vars.insert(name.as_str());
+                }
+            }
+        }
+        if let Some(name) = lexical.intersection(&vars).next() {
+            return Err(ScriptError::at(
+                format!("lexical and var declarations conflict for '{name}'"),
+                0,
+            ));
+        }
+        Ok(())
+    }
+    fn var_names<'a>(statement: &'a Stmt, names: &mut BTreeSet<&'a str>) {
+        match statement {
+            Stmt::Var(bindings, DeclarationKind::Var) => {
+                names.extend(bindings.iter().map(|(name, _)| name.as_str()))
+            }
+            Stmt::Block(body) => {
+                for statement in body {
+                    Self::var_names(statement, names);
+                }
+            }
+            Stmt::If(_, yes, no) => {
+                Self::var_names(yes, names);
+                if let Some(no) = no {
+                    Self::var_names(no, names);
+                }
+            }
+            Stmt::While(_, body) => Self::var_names(body, names),
+            Stmt::For(init, _, _, body) => {
+                if let Some(init) = init {
+                    Self::var_names(init, names);
+                }
+                Self::var_names(body, names);
+            }
+            Stmt::ForIn(binding, _, body) => {
+                if let ForBinding::Declaration(name, DeclarationKind::Var) = binding {
+                    names.insert(name);
+                }
+                Self::var_names(body, names);
+            }
+            Stmt::Switch(_, cases) => {
+                for (_, body) in cases {
+                    for statement in body {
+                        Self::var_names(statement, names);
+                    }
+                }
+            }
+            Stmt::Try(body, handler, finalizer) => {
+                Self::var_names(body, names);
+                if let Some(handler) = handler {
+                    for statement in &handler.body {
+                        Self::var_names(statement, names);
+                    }
+                }
+                if let Some(finalizer) = finalizer {
+                    Self::var_names(finalizer, names);
+                }
+            }
+            _ => {}
+        }
+    }
     fn object_key(&mut self) -> Result<JsString> {
+        if self.is("[") {
+            return Err(ScriptError::unsupported(
+                "computed object literal keys are not implemented",
+            ));
+        }
+        if self.strict && self.tokens[self.pos].legacy_literal {
+            return Err(self.error("legacy literals are forbidden in strict code"));
+        }
         let key = match self.tokens[self.pos].kind.clone() {
             TokenKind::Word(value) => value.into(),
             TokenKind::String(value) => value,
@@ -905,7 +1264,12 @@ impl Parser {
         let mut params = Vec::new();
         if !self.eat(")") {
             loop {
-                params.push(self.identifier()?);
+                params.push(self.binding_identifier()?);
+                if self.is("=") {
+                    return Err(ScriptError::unsupported(
+                        "default parameters are not implemented",
+                    ));
+                }
                 if self.eat(")") {
                     break;
                 }
@@ -913,15 +1277,33 @@ impl Parser {
             }
         }
         self.expect("{")?;
-        let saved = (self.loop_depth, self.switch_depth, self.allow_in);
+        let saved = (
+            self.loop_depth,
+            self.switch_depth,
+            self.allow_in,
+            self.strict,
+        );
         self.loop_depth = 0;
         self.switch_depth = 0;
         self.allow_in = true;
         self.function_depth += 1;
-        let body = self.block()?;
+        let body = self.directive_body(true)?;
+        Self::check_scope(&body, false)?;
         self.function_depth -= 1;
-        (self.loop_depth, self.switch_depth, self.allow_in) = saved;
-        Self::check_directives(&body)?;
+        let strict = self.strict;
+        for param in &params {
+            self.validate_identifier(param, true)?;
+        }
+        if strict && params.iter().collect::<BTreeSet<_>>().len() != params.len() {
+            return Err(self.error("duplicate strict function parameter"));
+        }
+        Self::check_parameter_lexicals(&params, &body)?;
+        (
+            self.loop_depth,
+            self.switch_depth,
+            self.allow_in,
+            self.strict,
+        ) = saved;
         Ok(FunctionCode {
             params,
             body: Rc::new(body),
@@ -929,22 +1311,41 @@ impl Parser {
             arrow: false,
             self_name: false,
             constructable: true,
+            strict,
         })
     }
     fn arrow(&mut self, params: Vec<String>) -> Result<Expr> {
-        let saved = (self.loop_depth, self.switch_depth, self.allow_in);
+        let saved = (
+            self.loop_depth,
+            self.switch_depth,
+            self.allow_in,
+            self.strict,
+        );
         self.loop_depth = 0;
         self.switch_depth = 0;
         self.allow_in = true;
         self.function_depth += 1;
         let body = if self.eat("{") {
-            self.block()?
+            self.directive_body(true)?
         } else {
             vec![Stmt::Return(Some(self.expression()?))]
         };
-        Self::check_directives(&body)?;
+        let strict = self.strict;
+        Self::check_scope(&body, false)?;
+        Self::check_parameter_lexicals(&params, &body)?;
+        for param in &params {
+            self.validate_identifier(param, true)?;
+        }
+        if params.iter().collect::<BTreeSet<_>>().len() != params.len() {
+            return Err(self.error("duplicate arrow parameter"));
+        }
         self.function_depth -= 1;
-        (self.loop_depth, self.switch_depth, self.allow_in) = saved;
+        (
+            self.loop_depth,
+            self.switch_depth,
+            self.allow_in,
+            self.strict,
+        ) = saved;
         Ok(Expr::Function(FunctionCode {
             params,
             body: Rc::new(body),
@@ -952,6 +1353,7 @@ impl Parser {
             arrow: true,
             self_name: false,
             constructable: false,
+            strict,
         }))
     }
     fn expression(&mut self) -> Result<Expr> {
@@ -959,6 +1361,34 @@ impl Parser {
         let result = self.assignment();
         self.depth -= 1;
         result
+    }
+    fn check_parameter_lexicals(params: &[String], body: &[Stmt]) -> Result<()> {
+        for statement in body {
+            if let Stmt::Var(bindings, kind) = statement
+                && *kind != DeclarationKind::Var
+                && bindings.iter().any(|(name, _)| params.contains(name))
+            {
+                return Err(ScriptError::at(
+                    "parameter conflicts with lexical declaration",
+                    0,
+                ));
+            }
+        }
+        Ok(())
+    }
+    fn sequence(&mut self) -> Result<Expr> {
+        let first = self.expression()?;
+        if !self.eat(",") {
+            return Ok(first);
+        }
+        let mut items = vec![first];
+        loop {
+            items.push(self.expression()?);
+            if !self.eat(",") {
+                break;
+            }
+        }
+        Ok(Expr::Sequence(items))
     }
     fn assignment(&mut self) -> Result<Expr> {
         let mut left = self.binary(1)?;
@@ -970,9 +1400,7 @@ impl Parser {
         }
         for operator in ["=", "+=", "-=", "*=", "/=", "%=", "**="] {
             if self.eat(operator) {
-                if !matches!(left, Expr::Ident(_) | Expr::Member(_, _)) {
-                    return Err(self.error("invalid assignment target"));
-                }
+                self.assignment_target(&left)?;
                 return Ok(Expr::Assign(
                     operator.to_owned(),
                     Box::new(left),
@@ -1036,7 +1464,14 @@ impl Parser {
     fn unary_inner(&mut self) -> Result<Expr> {
         for op in ["!", "-", "+", "~", "typeof", "void", "delete"] {
             if self.eat(op) {
-                return Ok(Expr::Unary(op.to_owned(), Box::new(self.unary()?)));
+                let value = self.unary()?;
+                if self.strict
+                    && op == "delete"
+                    && matches!(&value, Expr::Ident(name) if name != "this")
+                {
+                    return Err(self.error("strict code cannot delete an identifier"));
+                }
+                return Ok(Expr::Unary(op.to_owned(), Box::new(value)));
             }
         }
         if self.is("++") || self.is("--") {
@@ -1046,7 +1481,9 @@ impl Parser {
                 self.pos += 1;
                 -1.0
             };
-            return Ok(Expr::Update(Box::new(self.unary()?), delta, true));
+            let value = self.unary()?;
+            self.assignment_target(&value)?;
+            return Ok(Expr::Update(Box::new(value), delta, true));
         }
         let mut value = self.new_expression()?;
         let mut chain = 0;
@@ -1081,9 +1518,11 @@ impl Parser {
                 break;
             }
         }
-        if self.eat("++") {
+        if !self.tokens[self.pos].line_break_before && self.eat("++") {
+            self.assignment_target(&value)?;
             value = Expr::Update(Box::new(value), 1.0, false);
-        } else if self.eat("--") {
+        } else if !self.tokens[self.pos].line_break_before && self.eat("--") {
+            self.assignment_target(&value)?;
             value = Expr::Update(Box::new(value), -1.0, false);
         }
         Ok(value)
@@ -1112,7 +1551,7 @@ impl Parser {
                 return self.arrow(params);
             }
             self.pos = saved;
-            let value = self.expression()?;
+            let value = self.sequence()?;
             self.expect(")")?;
             return Ok(value);
         }
@@ -1157,18 +1596,22 @@ impl Parser {
                     ObjectEntry::Accessor(code, setter)
                 } else if self.is("(") {
                     let mut code = self.function()?;
+                    if code.params.iter().collect::<BTreeSet<_>>().len() != code.params.len() {
+                        return Err(self.error("duplicate method parameter"));
+                    }
                     code.name = Some(key.to_string());
                     code.constructable = false;
                     ObjectEntry::Data(Expr::Function(code))
                 } else {
-                    let mut expression =
-                        if self.eat(":") {
-                            self.expression()?
-                        } else {
-                            Expr::Ident(key.to_utf8().map_err(|_| {
-                                self.error("object shorthand requires an identifier")
-                            })?)
-                        };
+                    let mut expression = if self.eat(":") {
+                        self.expression()?
+                    } else {
+                        let name = key
+                            .to_utf8()
+                            .map_err(|_| self.error("object shorthand requires an identifier"))?;
+                        self.validate_identifier(&name, false)?;
+                        Expr::Ident(name)
+                    };
                     if let Expr::Function(code) = &mut expression
                         && code.name.is_none()
                     {
@@ -1187,20 +1630,35 @@ impl Parser {
         }
         if self.eat("function") {
             let name = if matches!(self.tokens[self.pos].kind, TokenKind::Word(_)) {
-                Some(self.identifier()?)
+                Some(self.binding_identifier()?)
             } else {
                 None
             };
             let mut code = self.function()?;
+            if let Some(name) = &name {
+                let saved = self.strict;
+                self.strict = code.strict;
+                self.validate_identifier(name, true)?;
+                self.strict = saved;
+            }
             code.name = name;
             code.self_name = code.name.is_some();
             return Ok(Expr::Function(code));
         }
         let token = self.tokens[self.pos].clone();
+        if self.strict && token.legacy_literal {
+            return Err(ScriptError::at(
+                "legacy literals are forbidden in strict code",
+                token.offset,
+            ));
+        }
         if !self.done() {
             self.pos += 1;
         }
         match token.kind {
+            TokenKind::Symbol(s) if s == "/" => Err(ScriptError::unsupported(
+                "regular expression literals are not implemented",
+            )),
             TokenKind::Number(n) => Ok(Expr::Literal(Value::Number(n))),
             TokenKind::String(s) => Ok(Expr::Literal(Value::String(s))),
             TokenKind::Word(s) if s == "true" || s == "false" => {
@@ -1211,6 +1669,9 @@ impl Parser {
                 if self.eat("=>") {
                     self.arrow(vec![s])
                 } else {
+                    if s != "this" {
+                        self.validate_identifier(&s, false)?;
+                    }
                     Ok(Expr::Ident(s))
                 }
             }
@@ -1266,11 +1727,16 @@ impl Parser {
 struct Binding {
     value: Value,
     mutable: bool,
+    initialized: bool,
+    strict_immutable: bool,
+    global_property: bool,
+    deletable: bool,
 }
 struct Environment {
     bindings: BTreeMap<String, Binding>,
     parent: Option<usize>,
     function_scope: bool,
+    strict: bool,
 }
 #[derive(Clone)]
 struct Function {
@@ -1292,8 +1758,9 @@ enum Flow {
     Continue,
 }
 enum Reference {
-    Binding(usize, String),
-    Property(Value, JsString),
+    Binding(usize, String, bool),
+    Unresolvable(String, bool),
+    Property(Value, JsString, bool),
 }
 
 #[derive(Clone, Debug)]
@@ -1341,6 +1808,8 @@ struct ScriptObject {
     boxed: Option<Value>,
     non_extensible: bool,
     intrinsic_error: Option<&'static str>,
+    parameter_map: BTreeMap<JsString, (usize, String)>,
+    arguments: bool,
 }
 impl ScriptObject {
     fn get(&self, key: impl Into<JsString>) -> Option<&Value> {
@@ -1450,6 +1919,10 @@ impl Runtime {
                 Binding {
                     value,
                     mutable: false,
+                    initialized: true,
+                    strict_immutable: false,
+                    global_property: name != "this",
+                    deletable: false,
                 },
             );
         }
@@ -1471,21 +1944,35 @@ impl Runtime {
             "RangeError",
             "EvalError",
             "URIError",
+            "eval",
         ] {
             bindings.insert(
                 name.to_owned(),
                 Binding {
                     value: Self::native(name, Value::Window),
-                    mutable: false,
+                    mutable: true,
+                    initialized: true,
+                    strict_immutable: false,
+                    global_property: true,
+                    deletable: true,
                 },
             );
         }
         let mut runtime = Self {
-            environments: vec![Environment {
-                bindings,
-                parent: None,
-                function_scope: true,
-            }],
+            environments: vec![
+                Environment {
+                    bindings,
+                    parent: None,
+                    function_scope: true,
+                    strict: false,
+                },
+                Environment {
+                    bindings: BTreeMap::new(),
+                    parent: Some(0),
+                    function_scope: false,
+                    strict: false,
+                },
+            ],
             functions: Vec::new(),
             arrays: Vec::new(),
             array_properties: Vec::new(),
@@ -1515,6 +2002,11 @@ impl Runtime {
 
     pub fn parse_only(source: &str) -> Result<()> {
         Parser::program(source).map(|_| ())
+    }
+    /// Parse a script using a caller-supplied strict parse goal without altering
+    /// its source bytes (used by the unchanged Test262 mode adapter).
+    pub fn parse_only_strict(source: &str) -> Result<()> {
+        Parser::program_context(source, false, true).map(|_| ())
     }
 
     fn initialize_intrinsics(&mut self) -> Result<()> {
@@ -1558,6 +2050,7 @@ impl Runtime {
                 arrow: true,
                 self_name: false,
                 constructable: false,
+                strict: true,
             },
             environment: 0,
             properties: self.prototypes["Function"],
@@ -1567,6 +2060,20 @@ impl Runtime {
             .insert_hidden("name".into(), Value::String(JsString::default()));
         self.objects[self.prototypes["Function"]]
             .insert_hidden("length".into(), Value::Number(0.0));
+        let thrower = Self::native("ThrowTypeError", Value::Undefined);
+        for name in ["caller", "arguments"] {
+            self.objects[self.prototypes["Function"]].insert_property(
+                name.into(),
+                Property {
+                    value: PropertyValue::Accessor {
+                        get: thrower.clone(),
+                        set: thrower.clone(),
+                    },
+                    enumerable: false,
+                    configurable: true,
+                },
+            );
+        }
         let Value::Array(array_prototype) = self.array(Vec::new())? else {
             unreachable!()
         };
@@ -1802,9 +2309,25 @@ impl Runtime {
 
     pub fn execute(&mut self, source: &str, document: &mut Document) -> Result<Value> {
         let program = Parser::program(source)?;
+        self.execute_program(source, program, document)
+    }
+    pub fn execute_strict(&mut self, source: &str, document: &mut Document) -> Result<Value> {
+        let program = Parser::program_context(source, false, true)?;
+        self.execute_program(source, program, document)
+    }
+    fn execute_program(
+        &mut self,
+        source: &str,
+        program: Program,
+        document: &mut Document,
+    ) -> Result<Value> {
         self.charge(source.len().saturating_mul(3))?;
         self.steps = MAX_STEPS;
-        match self.statements(&program, 0, document)? {
+        let saved = self.environments[1].strict;
+        self.environments[1].strict = program.strict;
+        let completion = self.statements(&program.body, 1, document);
+        self.environments[1].strict = saved;
+        match completion? {
             Flow::Normal(value) => Ok(value),
             Flow::Return(_) => Err(ScriptError::new("return outside function")),
             _ => Err(ScriptError::new("loop control outside loop")),
@@ -1881,12 +2404,14 @@ impl Runtime {
                 .map(str::to_owned)
             {
                 self.charge(source.len().saturating_mul(3))?;
-                let program = Parser::program_context(&source, true)?;
-                let env = self.environment(0)?;
+                let program = Parser::program_context(&source, true, false)?;
+                let env = self.environment(1)?;
+                self.environments[env].strict = program.strict;
+                self.environments[env].function_scope = true;
                 self.define(env, "event", event.clone(), false)?;
                 self.define(env, "this", Value::Node(id), false)?;
                 if let Flow::Return(Value::Bool(false)) =
-                    self.statements(&program, env, document)?
+                    self.statements(&program.body, env, document)?
                 {
                     self.last_default_prevented = true;
                 }
@@ -1960,6 +2485,37 @@ impl Runtime {
         self.array_holes.push(BTreeSet::new());
         Ok(Value::Array(id))
     }
+    fn arguments_object(&mut self, values: &[Value], strict: bool, callee: Value) -> Result<Value> {
+        let object = self.object_ordered(
+            values
+                .iter()
+                .enumerate()
+                .map(|(i, value)| (i.to_string().into(), value.clone())),
+        )?;
+        let Value::Object(id) = object else {
+            unreachable!()
+        };
+        self.objects[id].arguments = true;
+        self.charge(320)?;
+        self.objects[id].insert_hidden("length".into(), Value::Number(values.len() as f64));
+        if strict {
+            let thrower = Self::native("ThrowTypeError", Value::Undefined);
+            self.objects[id].insert_property(
+                "callee".into(),
+                Property {
+                    value: PropertyValue::Accessor {
+                        get: thrower.clone(),
+                        set: thrower,
+                    },
+                    enumerable: false,
+                    configurable: false,
+                },
+            );
+        } else {
+            self.objects[id].insert_hidden("callee".into(), callee);
+        }
+        Ok(object)
+    }
     fn object(&mut self, values: BTreeMap<String, Value>) -> Result<Value> {
         self.object_ordered(values.into_iter().map(|(key, value)| (key.into(), value)))
     }
@@ -1987,6 +2543,7 @@ impl Runtime {
             bindings: BTreeMap::new(),
             parent: Some(parent),
             function_scope: false,
+            strict: self.environments[parent].strict,
         });
         Ok(id)
     }
@@ -1998,9 +2555,17 @@ impl Runtime {
                 "cannot redeclare constant '{name}'"
             )));
         }
-        self.environments[env]
-            .bindings
-            .insert(name.into(), Binding { value, mutable });
+        self.environments[env].bindings.insert(
+            name.into(),
+            Binding {
+                value,
+                mutable,
+                initialized: true,
+                strict_immutable: !mutable,
+                global_property: env == 0,
+                deletable: false,
+            },
+        );
         Ok(())
     }
     fn lookup(&self, mut env: usize, name: &str) -> Option<(usize, Value)> {
@@ -2010,6 +2575,60 @@ impl Runtime {
             }
             env = self.environments[env].parent?;
         }
+    }
+    fn binding_value(&self, env: usize, name: &str) -> Result<Value> {
+        let binding = self.environments[env]
+            .bindings
+            .get(name)
+            .ok_or_else(|| ScriptError::reference(format!("'{name}' is not defined")))?;
+        if !binding.initialized {
+            return Err(ScriptError::reference(format!(
+                "cannot access '{name}' before initialization"
+            )));
+        }
+        Ok(binding.value.clone())
+    }
+    fn instantiate_lexical(&mut self, body: &[Stmt], env: usize) -> Result<()> {
+        for statement in body {
+            if let Stmt::Var(bindings, kind) = statement
+                && *kind != DeclarationKind::Var
+            {
+                for (name, _) in bindings {
+                    if self.environments[env].bindings.contains_key(name)
+                        || env == 1
+                            && self.environments[0]
+                                .bindings
+                                .get(name)
+                                .is_some_and(|b| !b.deletable)
+                    {
+                        return Err(ScriptError::syntax(format!(
+                            "duplicate lexical binding '{name}'"
+                        )));
+                    }
+                }
+            }
+        }
+        for statement in body {
+            if let Stmt::Var(bindings, kind) = statement
+                && *kind != DeclarationKind::Var
+            {
+                for (name, _) in bindings {
+                    self.charge(name.len() + 128)?;
+                    self.environments[env].bindings.insert(
+                        name.clone(),
+                        Binding {
+                            value: Value::Undefined,
+                            mutable: *kind != DeclarationKind::Const,
+                            initialized: false,
+                            strict_immutable: *kind == DeclarationKind::Const,
+                            global_property: false,
+                            deletable: false,
+                        },
+                    );
+                }
+            }
+        }
+        Ok(())
     }
     fn var_scope(&self, mut env: usize) -> usize {
         while !self.environments[env].function_scope {
@@ -2035,6 +2654,11 @@ impl Runtime {
         match statement {
             Stmt::Var(bindings, DeclarationKind::Var) => {
                 for (name, _) in bindings {
+                    if owner == 0 && self.environments[1].bindings.contains_key(name) {
+                        return Err(ScriptError::syntax(format!(
+                            "global lexical binding conflicts with var '{name}'"
+                        )));
+                    }
                     if !self.environments[owner].bindings.contains_key(name) {
                         self.define(owner, name, Value::Undefined, true)?;
                     }
@@ -2107,6 +2731,11 @@ impl Runtime {
         {
             let scope = self.environment(environment)?;
             self.define(scope, name, Value::Function(id), false)?;
+            self.environments[scope]
+                .bindings
+                .get_mut(name)
+                .unwrap()
+                .strict_immutable = false;
             self.functions[id].environment = scope;
         }
         if code.constructable {
@@ -2127,11 +2756,17 @@ impl Runtime {
     }
 
     fn statements(&mut self, body: &[Stmt], env: usize, doc: &mut Document) -> Result<Flow> {
+        self.instantiate_lexical(body, env)?;
         self.hoist_vars(body, env)?;
         for statement in body {
             if let Stmt::Function(name, code) = statement {
+                if env == 1 && self.environments[1].bindings.contains_key(name) {
+                    return Err(ScriptError::syntax(format!(
+                        "global lexical binding conflicts with function '{name}'"
+                    )));
+                }
                 let function = self.function_value(code, env)?;
-                self.define(env, name, function, true)?;
+                self.define(if env == 1 { 0 } else { env }, name, function, true)?;
             }
         }
         let mut last = Value::Undefined;
@@ -2166,10 +2801,7 @@ impl Runtime {
                     env
                 };
                 for (name, expression) in bindings {
-                    if *kind == DeclarationKind::Var
-                        && expression.is_none()
-                        && self.environments[owner].bindings.contains_key(name)
-                    {
+                    if *kind == DeclarationKind::Var && expression.is_none() {
                         continue;
                     }
                     let value = if let Some(expression) = expression {
@@ -2177,7 +2809,26 @@ impl Runtime {
                     } else {
                         Value::Undefined
                     };
-                    self.define(owner, name, value, *kind != DeclarationKind::Const)?;
+                    if *kind == DeclarationKind::Var {
+                        let target = self.lookup(env, name).map_or(owner, |(owner, _)| owner);
+                        self.write_reference(
+                            Reference::Binding(target, name.clone(), self.environments[env].strict),
+                            value,
+                            doc,
+                        )?;
+                    } else if let Some(binding) = self.environments[owner].bindings.get_mut(name)
+                        && !binding.initialized
+                    {
+                        binding.value = value;
+                        binding.initialized = true;
+                    } else {
+                        self.define(owner, name, value, *kind != DeclarationKind::Const)?;
+                        self.environments[owner]
+                            .bindings
+                            .get_mut(name)
+                            .unwrap()
+                            .global_property = false;
+                    }
                 }
             }
             Stmt::Block(body) => {
@@ -2203,59 +2854,20 @@ impl Runtime {
                 }
             }
             Stmt::For(init, condition, update, body) => {
-                let child = self.environment(env)?;
-                if let Some(init) = init {
-                    self.statement(init, child, doc)?;
-                }
-                loop {
-                    self.tick()?;
-                    if let Some(condition) = condition
-                        && !self.eval(condition, child, doc)?.truthy()
-                    {
-                        break;
-                    }
-                    match self.statement(body, child, doc)? {
-                        Flow::Break => break,
-                        Flow::Return(value) => return Ok(Flow::Return(value)),
-                        _ => {}
-                    }
-                    if let Some(update) = update {
-                        self.eval(update, child, doc)?;
-                    }
-                }
+                return self.for_loop(
+                    init.as_deref(),
+                    condition.as_ref(),
+                    update.as_ref(),
+                    body,
+                    env,
+                    doc,
+                );
             }
             Stmt::ForIn(binding, expression, body) => {
                 return self.for_in(binding, expression, body, env, doc);
             }
             Stmt::Switch(expression, cases) => {
-                let value = self.eval(expression, env, doc)?;
-                let mut default = None;
-                let mut start = None;
-                for (index, (condition, _)) in cases.iter().enumerate() {
-                    self.tick()?;
-                    if let Some(condition) = condition {
-                        let case = self.eval(condition, env, doc)?;
-                        if self.binary_value("===", value.clone(), case, doc)? == Value::Bool(true)
-                        {
-                            start = Some(index);
-                            break;
-                        }
-                    } else {
-                        default = Some(index);
-                    }
-                }
-                if let Some(start) = start.or(default) {
-                    let child = self.environment(env)?;
-                    let mut last = Value::Undefined;
-                    for (_, body) in &cases[start..] {
-                        match self.statements(body, child, doc)? {
-                            Flow::Normal(value) => last = value,
-                            Flow::Break => return Ok(Flow::Normal(last)),
-                            abrupt => return Ok(abrupt),
-                        }
-                    }
-                    return Ok(Flow::Normal(last));
-                }
+                return self.switch_statement(expression, cases, env, doc);
             }
             Stmt::Return(expression) => {
                 return Ok(Flow::Return(if let Some(expression) = expression {
@@ -2314,6 +2926,110 @@ impl Runtime {
         }
         Ok(Flow::Normal(Value::Undefined))
     }
+    fn for_loop(
+        &mut self,
+        init: Option<&Stmt>,
+        condition: Option<&Expr>,
+        update: Option<&Expr>,
+        body: &Stmt,
+        env: usize,
+        doc: &mut Document,
+    ) -> Result<Flow> {
+        let mut child = self.environment(env)?;
+        let mut names = Vec::new();
+        if let Some(init) = init {
+            self.instantiate_lexical(std::slice::from_ref(init), child)?;
+            self.statement(init, child, doc)?;
+            if let Stmt::Var(bindings, DeclarationKind::Let) = init {
+                names.extend(bindings.iter().map(|(name, _)| name.clone()));
+            }
+        }
+        if !names.is_empty() {
+            child = self.iteration_environment(child, env, &names)?;
+        }
+        loop {
+            self.tick()?;
+            if let Some(condition) = condition
+                && !self.eval(condition, child, doc)?.truthy()
+            {
+                break;
+            }
+            match self.statement(body, child, doc)? {
+                Flow::Break => break,
+                flow @ Flow::Return(_) => return Ok(flow),
+                _ => {}
+            }
+            if !names.is_empty() {
+                child = self.iteration_environment(child, env, &names)?;
+            }
+            if let Some(update) = update {
+                self.eval(update, child, doc)?;
+            }
+        }
+        Ok(Flow::Normal(Value::Undefined))
+    }
+    fn iteration_environment(
+        &mut self,
+        previous: usize,
+        parent: usize,
+        names: &[String],
+    ) -> Result<usize> {
+        let next = self.environment(parent)?;
+        for name in names {
+            self.charge(128 + name.len())?;
+            let binding = self.environments[previous].bindings[name].clone();
+            self.environments[next]
+                .bindings
+                .insert(name.clone(), binding);
+        }
+        Ok(next)
+    }
+    fn switch_statement(
+        &mut self,
+        expression: &Expr,
+        cases: &[(Option<Expr>, Vec<Stmt>)],
+        env: usize,
+        doc: &mut Document,
+    ) -> Result<Flow> {
+        let value = self.eval(expression, env, doc)?;
+        let child = self.environment(env)?;
+        for (_, body) in cases {
+            self.instantiate_lexical(body, child)?;
+            for statement in body {
+                if let Stmt::Function(name, code) = statement {
+                    let function = self.function_value(code, child)?;
+                    self.define(child, name, function, true)?;
+                }
+            }
+        }
+        let mut default = None;
+        let mut start = None;
+        for (index, (condition, _)) in cases.iter().enumerate() {
+            self.tick()?;
+            if let Some(condition) = condition {
+                let case = self.eval(condition, child, doc)?;
+                if self.binary_value("===", value.clone(), case, doc)? == Value::Bool(true) {
+                    start = Some(index);
+                    break;
+                }
+            } else {
+                default = Some(index);
+            }
+        }
+        let mut last = Value::Undefined;
+        if let Some(start) = start.or(default) {
+            for (_, body) in &cases[start..] {
+                for statement in body {
+                    match self.statement(statement, child, doc)? {
+                        Flow::Normal(value) => last = value,
+                        Flow::Break => return Ok(Flow::Normal(last)),
+                        abrupt => return Ok(abrupt),
+                    }
+                }
+            }
+        }
+        Ok(Flow::Normal(last))
+    }
     fn for_in(
         &mut self,
         binding: &ForBinding,
@@ -2322,7 +3038,26 @@ impl Runtime {
         env: usize,
         doc: &mut Document,
     ) -> Result<Flow> {
-        let value = self.eval(expression, env, doc)?;
+        let expression_env = if let ForBinding::Declaration(name, kind) = binding
+            && *kind != DeclarationKind::Var
+        {
+            let child = self.environment(env)?;
+            self.define(
+                child,
+                name,
+                Value::Undefined,
+                *kind != DeclarationKind::Const,
+            )?;
+            self.environments[child]
+                .bindings
+                .get_mut(name)
+                .unwrap()
+                .initialized = false;
+            child
+        } else {
+            env
+        };
+        let value = self.eval(expression, expression_env, doc)?;
         if matches!(value, Value::Null | Value::Undefined) {
             return Ok(Flow::Normal(Value::Undefined));
         }
@@ -2456,10 +3191,19 @@ impl Runtime {
         self.tick()?;
         match expression {
             Expr::Literal(value) => Ok(value.clone()),
-            Expr::Ident(name) => self
-                .lookup(env, name)
-                .map(|(_, value)| value)
-                .ok_or_else(|| ScriptError::reference(format!("'{name}' is not defined"))),
+            Expr::Ident(name) => {
+                let (owner, _) = self
+                    .lookup(env, name)
+                    .ok_or_else(|| ScriptError::reference(format!("'{name}' is not defined")))?;
+                self.binding_value(owner, name)
+            }
+            Expr::Sequence(items) => {
+                let mut last = Value::Undefined;
+                for item in items {
+                    last = self.eval(item, env, doc)?;
+                }
+                Ok(last)
+            }
             Expr::Array(items) => {
                 let mut values = Vec::new();
                 let mut holes = BTreeSet::new();
@@ -2512,9 +3256,26 @@ impl Runtime {
                             let object = self.eval(object, env, doc)?;
                             let value = self.eval(key, env, doc)?;
                             let key = self.json_text(value, doc, &mut Vec::new())?;
-                            Ok(Value::Bool(self.delete_property(object, &key)?))
+                            let deleted = self.delete_property(object, &key)?;
+                            if !deleted && self.environments[env].strict {
+                                return Err(ScriptError::type_error(
+                                    "cannot delete a non-configurable property",
+                                ));
+                            }
+                            Ok(Value::Bool(deleted))
                         }
-                        Expr::Ident(name) => Ok(Value::Bool(self.lookup(env, name).is_none())),
+                        Expr::Ident(name) if name == "this" => Ok(Value::Bool(true)),
+                        Expr::Ident(name) => {
+                            if let Some((owner, _)) = self.lookup(env, name) {
+                                let removable = self.environments[owner].bindings[name].deletable;
+                                if removable {
+                                    self.environments[owner].bindings.remove(name);
+                                }
+                                Ok(Value::Bool(removable))
+                            } else {
+                                Ok(Value::Bool(true))
+                            }
+                        }
                         _ => {
                             self.eval(expression, env, doc)?;
                             Ok(Value::Bool(true))
@@ -2609,7 +3370,7 @@ impl Runtime {
                     let property = self.json_text(value, doc, &mut Vec::new())?;
                     (self.get_key(receiver.clone(), &property, doc)?, receiver)
                 } else {
-                    (self.eval(callee, env, doc)?, Value::Window)
+                    (self.eval(callee, env, doc)?, Value::Undefined)
                 };
                 let arguments = arguments
                     .iter()
@@ -2764,27 +3525,33 @@ impl Runtime {
     ) -> Result<Reference> {
         match expression {
             Expr::Ident(name) => {
-                let owner = self
-                    .lookup(env, name)
-                    .map(|(owner, _)| owner)
-                    .ok_or_else(|| ScriptError::reference(format!("'{name}' is not defined")))?;
-                Ok(Reference::Binding(owner, name.clone()))
+                let strict = self.environments[env].strict;
+                Ok(if let Some((owner, _)) = self.lookup(env, name) {
+                    Reference::Binding(owner, name.clone(), strict)
+                } else {
+                    Reference::Unresolvable(name.clone(), strict)
+                })
             }
             Expr::Member(object, property) => {
                 let object = self.eval(object, env, doc)?;
                 let value = self.eval(property, env, doc)?;
                 let property = self.json_text(value, doc, &mut Vec::new())?;
-                Ok(Reference::Property(object, property))
+                Ok(Reference::Property(
+                    object,
+                    property,
+                    self.environments[env].strict,
+                ))
             }
             _ => Err(ScriptError::type_error("invalid assignment target")),
         }
     }
     fn read_reference(&mut self, reference: &Reference, doc: &mut Document) -> Result<Value> {
         match reference {
-            Reference::Binding(env, name) => {
-                Ok(self.environments[*env].bindings[name].value.clone())
+            Reference::Binding(env, name, _) => self.binding_value(*env, name),
+            Reference::Unresolvable(name, _) => {
+                Err(ScriptError::reference(format!("'{name}' is not defined")))
             }
-            Reference::Property(object, key) => self.get_key(object.clone(), key, doc),
+            Reference::Property(object, key, _) => self.get_key(object.clone(), key, doc),
         }
     }
     fn write_reference(
@@ -2794,17 +3561,50 @@ impl Runtime {
         doc: &mut Document,
     ) -> Result<()> {
         match reference {
-            Reference::Binding(env, name) => {
-                let binding = self.environments[env].bindings.get_mut(&name).unwrap();
-                if !binding.mutable {
-                    return Err(ScriptError::type_error(format!(
-                        "cannot assign to constant '{name}'"
+            Reference::Binding(env, name, strict) => {
+                // A global object binding can disappear while evaluating the
+                // RHS or ToNumber/valueOf for an update. The reference retains
+                // its environment, not a guaranteed-live map entry. Follow
+                // Object Environment Record SetMutableBinding: strict writes
+                // to a removed binding throw; sloppy writes recreate it.
+                let Some(binding) = self.environments[env].bindings.get_mut(&name) else {
+                    if env != 0 || strict {
+                        return Err(ScriptError::reference(format!("'{name}' is not defined")));
+                    }
+                    return self.write_reference(Reference::Unresolvable(name, false), value, doc);
+                };
+                if !binding.initialized {
+                    return Err(ScriptError::reference(format!(
+                        "cannot assign to '{name}' before initialization"
                     )));
+                }
+                if !binding.mutable {
+                    return if strict || binding.strict_immutable {
+                        Err(ScriptError::type_error(format!(
+                            "cannot assign to constant '{name}'"
+                        )))
+                    } else {
+                        Ok(())
+                    };
                 }
                 binding.value = value;
                 Ok(())
             }
-            Reference::Property(object, key) => self.set_key(object, &key, value, doc),
+            Reference::Unresolvable(name, strict) => {
+                if strict {
+                    return Err(ScriptError::reference(format!("'{name}' is not defined")));
+                }
+                self.define(0, &name, value, true)?;
+                self.environments[0]
+                    .bindings
+                    .get_mut(&name)
+                    .unwrap()
+                    .deletable = true;
+                Ok(())
+            }
+            Reference::Property(object, key, strict) => {
+                self.set_key_strict(object, &key, value, strict, doc)
+            }
         }
     }
     fn call(
@@ -2846,15 +3646,16 @@ impl Runtime {
                 }
                 let env = self.environment(function.environment)?;
                 self.environments[env].function_scope = true;
+                self.environments[env].strict = function.code.strict;
                 if !function.code.arrow {
-                    let receiver = if matches!(receiver, Value::Undefined | Value::Null) {
+                    let receiver = if function.code.strict {
+                        receiver
+                    } else if matches!(receiver, Value::Undefined | Value::Null) {
                         Value::Window
                     } else {
                         self.coerce_object(receiver)?
                     };
                     self.define(env, "this", receiver, false)?;
-                    let args = self.array(arguments.clone())?;
-                    self.define(env, "arguments", args, true)?;
                 }
                 for (i, parameter) in function.code.params.iter().enumerate() {
                     self.define(
@@ -2863,6 +3664,31 @@ impl Runtime {
                         arguments.get(i).cloned().unwrap_or(Value::Undefined),
                         true,
                     )?;
+                }
+                let shadows_arguments = function.code.params.iter().any(|p| p == "arguments")
+                    || function.code.body.iter().any(|s| matches!(s, Stmt::Function(name, _) if name == "arguments")
+                        || matches!(s, Stmt::Var(bindings, kind) if *kind != DeclarationKind::Var && bindings.iter().any(|(name, _)| name == "arguments")));
+                if !function.code.arrow && !shadows_arguments {
+                    let args = self.arguments_object(
+                        &arguments,
+                        function.code.strict,
+                        Value::Function(id),
+                    )?;
+                    if !function.code.strict {
+                        let Value::Object(id) = args else {
+                            unreachable!()
+                        };
+                        let mut seen = BTreeSet::new();
+                        for (index, name) in function.code.params.iter().enumerate().rev() {
+                            if seen.insert(name) && index < arguments.len() {
+                                self.charge(96 + name.len())?;
+                                self.objects[id]
+                                    .parameter_map
+                                    .insert(index.to_string().into(), (env, name.clone()));
+                            }
+                        }
+                    }
+                    self.define(env, "arguments", args, true)?;
                 }
                 match self.statements(&function.code.body, env, doc)? {
                     Flow::Return(value) => Ok(value),
@@ -2916,10 +3742,24 @@ impl Runtime {
         self.prototypes.get(name).copied().map(Value::Object)
     }
     fn own_property(&self, receiver: &Value, key: &JsString) -> Option<Property> {
+        if matches!(receiver, Value::Window) {
+            let key = key.to_utf8().ok()?;
+            return self.environments[0]
+                .bindings
+                .get(&key)
+                .filter(|b| b.global_property)
+                .map(|b| Property::data(b.value.clone(), b.mutable, true, b.deletable));
+        }
         if let Some(id) = self.property_object(receiver)
             && let Some(property) = self.objects[id].values.get(key)
         {
-            return Some(property.clone());
+            let mut property = property.clone();
+            if let Some((env, name)) = self.objects[id].parameter_map.get(key)
+                && let PropertyValue::Data { value, .. } = &mut property.value
+            {
+                *value = self.environments[*env].bindings[name].value.clone();
+            }
+            return Some(property);
         }
         if let Value::Array(id) = receiver {
             if key == &JsString::from("length") {
@@ -3159,6 +3999,9 @@ impl Runtime {
         } else if self.objects[id].non_extensible {
             return Ok(false);
         }
+        let mapping = self.objects[id].parameter_map.get(key).cloned();
+        let mapped_value = desc.value.clone();
+        let sever_mapping = desc.accessor() || desc.writable == Some(false);
         let mut property =
             current.unwrap_or_else(|| Property::data(Value::Undefined, false, false, false));
         if desc.accessor() && matches!(property.value, PropertyValue::Data { .. }) {
@@ -3200,6 +4043,18 @@ impl Runtime {
             self.charge(256 + key.byte_len().saturating_mul(2))?;
         }
         self.objects[id].insert_property(key.clone(), property);
+        if let Some((env, name)) = mapping {
+            if let Some(value) = mapped_value {
+                self.environments[env]
+                    .bindings
+                    .get_mut(&name)
+                    .unwrap()
+                    .value = value;
+            }
+            if sever_mapping {
+                self.objects[id].parameter_map.remove(key);
+            }
+        }
         Ok(true)
     }
     fn define_properties(
@@ -3247,6 +4102,12 @@ impl Runtime {
         if !property.configurable {
             return Ok(false);
         }
+        if matches!(receiver, Value::Window) {
+            if let Ok(key) = key.to_utf8() {
+                self.environments[0].bindings.remove(&key);
+            }
+            return Ok(true);
+        }
         if let Value::Array(id) = receiver
             && let Some(index) = json_array_index(key)
         {
@@ -3258,6 +4119,7 @@ impl Runtime {
         if let Some(id) = self.property_object(&receiver) {
             self.work(1 + self.objects[id].order.len() / 8)?;
             self.objects[id].remove(key);
+            self.objects[id].parameter_map.remove(key);
         }
         Ok(true)
     }
@@ -3393,7 +4255,24 @@ impl Runtime {
         value: Value,
         doc: &mut Document,
     ) -> Result<()> {
+        self.set_key_strict(receiver, key, value, false, doc)
+    }
+    fn set_key_strict(
+        &mut self,
+        receiver: Value,
+        key: &JsString,
+        value: Value,
+        strict: bool,
+        doc: &mut Document,
+    ) -> Result<()> {
         self.work(1 + key.len() / 8)?;
+        if matches!(receiver, Value::Document)
+            && ["characterSet", "charset", "inputEncoding", "compatMode"]
+                .iter()
+                .any(|name| key == &JsString::from(*name))
+        {
+            return Self::failed_write(strict);
+        }
         if let Some(property) = self.find_property(&receiver, key)? {
             match property.value {
                 PropertyValue::Accessor {
@@ -3402,7 +4281,7 @@ impl Runtime {
                 }
                 | PropertyValue::Data {
                     writable: false, ..
-                } => return Ok(()),
+                } => return Self::failed_write(strict),
                 PropertyValue::Accessor { set, .. } => {
                     self.call(set, vec![value], receiver, doc)?;
                     return Ok(());
@@ -3415,29 +4294,49 @@ impl Runtime {
                 && (key == &JsString::from("length") || json_array_index(key).is_some());
             if indexed {
                 if self.own_property(&receiver, key).is_none() && self.objects[id].non_extensible {
-                    return Ok(());
+                    return Self::failed_write(strict);
                 }
             } else {
                 if let Some(property) = self.objects[id].values.get_mut(key) {
                     if let PropertyValue::Data { value: old, .. } = &mut property.value {
-                        *old = value;
+                        *old = value.clone();
+                    }
+                    if let Some((env, name)) = self.objects[id].parameter_map.get(key) {
+                        self.environments[*env]
+                            .bindings
+                            .get_mut(name)
+                            .unwrap()
+                            .value = value;
                     }
                     return Ok(());
                 }
                 if self.objects[id].non_extensible {
-                    return Ok(());
+                    return Self::failed_write(strict);
                 }
                 self.charge(256 + key.byte_len().saturating_mul(2))?;
                 self.objects[id].insert(key.clone(), value);
                 return Ok(());
             }
         } else if !js_object(&receiver) && !matches!(receiver, Value::Null | Value::Undefined) {
-            return Ok(());
+            return Self::failed_write(strict);
         }
         let key = key
             .to_utf8()
             .map_err(|_| ScriptError::type_error("non-scalar host property name is unsupported"))?;
+        if matches!(receiver, Value::Window)
+            && let Some(binding) = self.environments[0].bindings.get(&key)
+            && binding.global_property
+        {
+            return self.write_reference(Reference::Binding(0, key, strict), value, doc);
+        }
         self.set(receiver, &key, value, doc)
+    }
+    fn failed_write(strict: bool) -> Result<()> {
+        if strict {
+            Err(ScriptError::type_error("property cannot be assigned"))
+        } else {
+            Ok(())
+        }
     }
     fn get(&mut self, receiver: Value, key: &str, doc: &mut Document) -> Result<Value> {
         if let Some(value) = self.lookup_property(&receiver, &key.into(), doc)? {
@@ -3563,6 +4462,16 @@ impl Runtime {
                 }
             }
             Value::Document => match key {
+                "characterSet" | "charset" | "inputEncoding" => {
+                    return self.string(doc.character_set());
+                }
+                "compatMode" => {
+                    return self.string(if doc.mode() == crate::dom::DocumentMode::Quirks {
+                        "BackCompat"
+                    } else {
+                        "CSS1Compat"
+                    });
+                }
                 "body" | "head" => {
                     return Ok(html_document_child(doc, key)
                         .map(Value::Node)
@@ -3584,6 +4493,7 @@ impl Runtime {
                 | "getElementsByClassName"
                 | "createElement"
                 | "createTextNode"
+                | "createDocumentFragment"
                 | "addEventListener"
                 | "removeEventListener" => return Ok(Self::native(key, receiver)),
                 _ => {}
@@ -3594,6 +4504,9 @@ impl Runtime {
                     return Err(ScriptError::new("invalid DOM node"));
                 }
                 match key {
+                    "content" if doc.template_contents(id).is_some() => {
+                        return Ok(Value::Node(doc.template_contents(id).unwrap()));
+                    }
                     "textContent" | "innerText" => return self.string(doc.text_content(id)),
                     "innerHTML" => return self.string(serialize_children(doc, id)),
                     "outerHTML" => return self.string(serialize_node(doc, id, 0)),
@@ -3609,6 +4522,7 @@ impl Runtime {
                     "className" => return self.string(doc.attr(id, "class").unwrap_or("")),
                     "tagName" | "nodeName" => {
                         return self.string(match &doc.nodes[id].kind {
+                            NodeKind::DocumentFragment { .. } => "#document-fragment".into(),
                             NodeKind::Document => "#document".into(),
                             NodeKind::Text(_) => "#text".into(),
                             NodeKind::Comment(_) => "#comment".into(),
@@ -3628,6 +4542,7 @@ impl Runtime {
                     }
                     "nodeType" => {
                         return Ok(Value::Number(match doc.nodes[id].kind {
+                            NodeKind::DocumentFragment { .. } => 11.0,
                             NodeKind::Document => 9.0,
                             NodeKind::Element(_) => 1.0,
                             NodeKind::Text(_) => 3.0,
@@ -3689,6 +4604,7 @@ impl Runtime {
                     | "removeAttribute"
                     | "querySelector"
                     | "querySelectorAll" => return Ok(Self::native(key, receiver)),
+                    "cloneNode" => return Ok(Self::native(key, receiver)),
                     _ => {}
                 }
             }
@@ -3775,9 +4691,14 @@ impl Runtime {
             }
             Value::Window => {
                 if let Some((env, _)) = self.lookup(0, key) {
-                    self.write_reference(Reference::Binding(env, key.into()), value, doc)?;
+                    self.write_reference(Reference::Binding(env, key.into(), false), value, doc)?;
                 } else {
                     self.define(0, key, value, true)?;
+                    self.environments[0]
+                        .bindings
+                        .get_mut(key)
+                        .unwrap()
+                        .deletable = true;
                 }
             }
             Value::Document if key == "title" => {
@@ -3887,6 +4808,75 @@ impl Runtime {
         self.charge(count.saturating_mul(128))
     }
 
+    // append_child validates the entire host-inclusive subtree, walks the
+    // destination's host-inclusive ancestors, and removes the old sibling
+    // entry. Account for all that work before it changes either child list.
+    fn charge_dom_append(&mut self, parent: NodeId, child: NodeId, doc: &Document) -> Result<()> {
+        self.tick()?;
+        if parent >= doc.nodes.len()
+            || child >= doc.nodes.len()
+            || child == doc.root
+            || parent == child
+            || !matches!(
+                doc.nodes[parent].kind,
+                NodeKind::Document | NodeKind::DocumentFragment { .. } | NodeKind::Element(_)
+            )
+            || matches!(doc.nodes[child].kind, NodeKind::Doctype(_))
+                && !matches!(doc.nodes[parent].kind, NodeKind::Document)
+        {
+            return Ok(());
+        }
+        let mut cursor = Some(parent);
+        let mut ancestors = 0;
+        while let Some(id) = cursor {
+            self.tick()?;
+            if id == child || ancestors >= crate::dom::MAX_DEPTH {
+                return Ok(());
+            }
+            ancestors += 1;
+            cursor = doc.nodes[id].parent.or(match doc.nodes[id].kind {
+                NodeKind::DocumentFragment { host } => host,
+                _ => None,
+            });
+        }
+        self.charge(32)?;
+        let mut pending = vec![(child, 1usize)];
+        let mut visited = 0;
+        while let Some((id, depth)) = pending.pop() {
+            self.tick()?;
+            visited += 1;
+            if ancestors + depth > crate::dom::MAX_DEPTH || visited > MAX_NODES {
+                return Ok(());
+            }
+            let children = &doc.nodes[id].children;
+            let contents = doc.template_contents(id);
+            let edges = children.len() + usize::from(contents.is_some());
+            self.work(edges)?;
+            // Both this preflight and the DOM validation allocate a traversal
+            // stack. Charge before growing either one.
+            self.charge(edges.saturating_mul(32))?;
+            pending.extend(children.iter().map(|id| (*id, depth + 1)));
+            if let Some(contents) = contents {
+                pending.push((contents, depth + 1));
+            }
+        }
+        let inserted = if matches!(doc.nodes[child].kind, NodeKind::DocumentFragment { .. }) {
+            let count = doc.nodes[child].children.len();
+            self.work(count)?;
+            count
+        } else {
+            if let Some(old) = doc.nodes[child].parent {
+                self.work(doc.nodes[old].children.len())?;
+            }
+            1
+        };
+        self.charge(inserted.saturating_mul(2 * std::mem::size_of::<NodeId>()))
+    }
+
+    fn charge_dom_remove(&mut self, parent: NodeId, doc: &Document) -> Result<()> {
+        self.work(doc.nodes[parent].children.len())
+    }
+
     fn set_inner_html(&mut self, id: NodeId, source: &str, doc: &mut Document) -> Result<()> {
         if source.len() > MAX_SOURCE {
             return Err(ScriptError::resource("HTML fragment source limit exceeded"));
@@ -3894,7 +4884,30 @@ impl Runtime {
         let fragment = doc
             .parse_fragment(id, source)
             .map_err(ScriptError::unsupported)?;
+        if fragment.retained_bytes()
+            > crate::dom::MAX_DOM_BYTES.saturating_sub(doc.retained_bytes())
+        {
+            return Err(ScriptError::resource("DOM fragment storage limit exceeded"));
+        }
+        let mut pending = vec![(fragment.root, 0usize)];
+        while let Some((node, depth)) = pending.pop() {
+            self.tick()?;
+            if depth > 96 {
+                return Err(ScriptError::resource("DOM fragment nesting limit exceeded"));
+            }
+            self.charge(fragment.nodes[node].children.len().saturating_mul(16))?;
+            pending.extend(
+                fragment.nodes[node]
+                    .children
+                    .iter()
+                    .map(|child| (*child, depth + 1)),
+            );
+            if let Some(contents) = fragment.template_contents(node) {
+                pending.push((contents, depth));
+            }
+        }
         self.ensure_dom_capacity(doc, fragment.nodes.len())?;
+        let id = doc.template_contents(id).unwrap_or(id);
         for child in doc.nodes[id].children.clone() {
             doc.nodes[child].parent = None;
         }
@@ -3903,6 +4916,100 @@ impl Runtime {
             import_node(doc, id, &fragment, child, 0);
         }
         Ok(())
+    }
+    fn clone_dom_node(&mut self, source: NodeId, deep: bool, doc: &mut Document) -> Result<NodeId> {
+        let root = self.clone_dom_shallow(source, doc)?;
+        if !deep {
+            return Ok(root);
+        }
+        let mut pending = vec![(source, root, 0usize)];
+        self.charge(24)?;
+        while let Some((old, new, depth)) = pending.pop() {
+            if depth >= 96 {
+                return Err(ScriptError::resource("DOM clone nesting limit exceeded"));
+            }
+            self.tick()?;
+            self.charge(doc.nodes[old].children.len().saturating_mul(32))?;
+            let children = doc.nodes[old].children.clone();
+            for child in children {
+                let copy = self.clone_dom_shallow(child, doc)?;
+                doc.append_child(new, copy);
+                pending.push((child, copy, depth + 1));
+            }
+            if let Some(old_content) = doc.template_contents(old)
+                && let Some(new_content) = doc.template_contents(new)
+            {
+                self.charge(24)?;
+                pending.push((old_content, new_content, depth + 1));
+            }
+        }
+        Ok(root)
+    }
+    fn clone_dom_shallow(&mut self, source: NodeId, doc: &mut Document) -> Result<NodeId> {
+        let node = doc
+            .nodes
+            .get(source)
+            .ok_or_else(|| ScriptError::type_error("invalid DOM clone source"))?;
+        let bytes = match &node.kind {
+            NodeKind::Element(element) => {
+                element.tag.len()
+                    + element
+                        .attrs
+                        .iter()
+                        .map(|(k, v)| k.len() + v.len() + 96)
+                        .sum::<usize>()
+            }
+            NodeKind::Text(text) | NodeKind::Comment(text) => text.len(),
+            NodeKind::ProcessingInstruction { target, data } => target.len() + data.len(),
+            NodeKind::Doctype(value) => {
+                value.name.len()
+                    + value.public_id.as_ref().map_or(0, String::len)
+                    + value.system_id.as_ref().map_or(0, String::len)
+            }
+            NodeKind::DocumentFragment { .. } => 0,
+            NodeKind::Document => {
+                return Err(ScriptError::unsupported(
+                    "Document cloning is not implemented",
+                ));
+            }
+        };
+        let count = if doc.template_contents(source).is_some() {
+            2
+        } else {
+            1
+        };
+        if bytes > crate::dom::MAX_DOM_BYTES.saturating_sub(doc.retained_bytes()) {
+            return Err(ScriptError::resource("DOM clone storage limit exceeded"));
+        }
+        self.work(1 + bytes / 16)?;
+        self.charge(bytes.saturating_mul(2))?;
+        self.ensure_dom_capacity(doc, count)?;
+        let kind = doc.nodes[source].kind.clone();
+        let id = match kind {
+            NodeKind::Document => unreachable!(),
+            NodeKind::DocumentFragment { .. } => doc.create_document_fragment(),
+            NodeKind::Text(text) => doc.create_text_node(&text),
+            NodeKind::Comment(text) => doc.create_comment(&text),
+            NodeKind::ProcessingInstruction { target, data } => {
+                doc.create_processing_instruction(&target, &data)
+            }
+            NodeKind::Doctype(value) => doc.create_doctype(value),
+            NodeKind::Element(element) => {
+                let id = doc.create_element_ns(element.namespace, &element.tag);
+                for (key, value) in element.attrs {
+                    if let Some(namespace) = element.attr_namespaces.get(&key) {
+                        doc.set_attr_ns(id, *namespace, &key, &value);
+                    } else {
+                        doc.set_attr(id, &key, &value);
+                    }
+                }
+                id
+            }
+        };
+        if id == doc.root {
+            return Err(ScriptError::resource("DOM clone storage limit exceeded"));
+        }
+        Ok(id)
     }
 
     // Expression evaluation, statement nesting, native callbacks and JSON can
@@ -4463,6 +5570,14 @@ impl Runtime {
             native
         };
         let name = native.name.as_str();
+        if name == "ThrowTypeError" {
+            return Err(ScriptError::type_error(
+                "restricted function or arguments property",
+            ));
+        }
+        if name == "eval" {
+            return Err(ScriptError::unsupported("dynamic eval is not implemented"));
+        }
         let mut units = 1usize;
         for value in args.iter().chain(std::iter::once(&native.receiver)) {
             units = units.saturating_add(match value {
@@ -4536,6 +5651,7 @@ impl Runtime {
                         arrow: true,
                         self_name: false,
                         constructable: false,
+                        strict: true,
                     },
                     environment: 0,
                     properties,
@@ -4589,6 +5705,7 @@ impl Runtime {
                     Value::String(_) => "String",
                     Value::Number(_) => "Number",
                     Value::Bool(_) => "Boolean",
+                    Value::Object(id) if self.objects[*id].arguments => "Arguments",
                     Value::Object(id) => match self.objects[*id].boxed {
                         Some(Value::String(_)) => "String",
                         Some(Value::Number(_)) => "Number",
@@ -5447,22 +6564,20 @@ impl Runtime {
                 ),
                 _ => input.clone(),
             };
+            let root = if let Value::Node(id) = native.receiver {
+                id
+            } else {
+                doc.root
+            };
             let candidates = if name == "getElementById" {
-                doc.query_selector_all("*")
+                doc.query_selector_all_from(root, "*")
                     .into_iter()
                     .filter(|id| doc.attr(*id, "id") == Some(input.as_str()))
                     .collect::<Vec<_>>()
             } else {
-                doc.query_selector_all(&selector)
+                doc.query_selector_all_from(root, &selector)
             };
             self.charge(candidates.len() * 8)?;
-            let candidates: Vec<NodeId> = candidates
-                .into_iter()
-                .filter(|id| match native.receiver {
-                    Value::Node(parent) => is_descendant(doc, *id, parent),
-                    _ => true,
-                })
-                .collect();
             return if ["querySelector", "getElementById"].contains(&name) {
                 Ok(candidates
                     .first()
@@ -5482,7 +6597,14 @@ impl Runtime {
             {
                 return Err(ScriptError::new("invalid element tag name"));
             }
-            self.ensure_dom_capacity(doc, 1)?;
+            self.ensure_dom_capacity(
+                doc,
+                if tag.eq_ignore_ascii_case("template") {
+                    2
+                } else {
+                    1
+                },
+            )?;
             return Ok(Value::Node(doc.create_element(&tag.to_ascii_lowercase())));
         }
         if name == "createTextNode" {
@@ -5491,8 +6613,17 @@ impl Runtime {
             self.charge(text.len())?;
             return Ok(Value::Node(doc.create_text_node(&text)));
         }
+        if name == "createDocumentFragment" {
+            self.ensure_dom_capacity(doc, 1)?;
+            return Ok(Value::Node(doc.create_document_fragment()));
+        }
         if let Value::Node(id) = native.receiver {
             match name {
+                "cloneNode" => {
+                    return self
+                        .clone_dom_node(id, arg(0).truthy(), doc)
+                        .map(Value::Node);
+                }
                 "getAttribute" => {
                     return match doc.attr(id, &arg(0).to_string()) {
                         Some(value) => self.string(value),
@@ -5506,7 +6637,7 @@ impl Runtime {
                     let key = arg(0).to_string();
                     let text = arg(1).to_string();
                     self.charge(key.len() + text.len() + 64)?;
-                    doc.set_attr(id, &key.to_ascii_lowercase(), &text);
+                    doc.set_attr(id, &key, &text);
                     return Ok(Value::Undefined);
                 }
                 "removeAttribute" => {
@@ -5518,11 +6649,13 @@ impl Runtime {
                         return Err(ScriptError::new("expected DOM node"));
                     };
                     if name == "appendChild" {
+                        self.charge_dom_append(id, child, doc)?;
                         doc.append_child(id, child);
                     } else {
                         if doc.nodes.get(child).and_then(|node| node.parent) != Some(id) {
                             return Err(ScriptError::new("node is not a child"));
                         }
+                        self.charge_dom_remove(id, doc)?;
                         doc.nodes[id].children.retain(|item| *item != child);
                         doc.nodes[child].parent = None;
                     }
@@ -5538,12 +6671,14 @@ impl Runtime {
                             self.charge(text.len())?;
                             doc.create_text_node(&text)
                         };
+                        self.charge_dom_append(id, child, doc)?;
                         doc.append_child(id, child);
                     }
                     return Ok(Value::Undefined);
                 }
                 "remove" => {
                     if let Some(parent) = doc.nodes[id].parent {
+                        self.charge_dom_remove(parent, doc)?;
                         doc.nodes[parent].children.retain(|child| *child != id);
                         doc.nodes[id].parent = None;
                     }
@@ -6037,19 +7172,6 @@ fn style_set(doc: &mut Document, id: NodeId, key: &str, value: &str) {
     }
     doc.set_attr(id, "style", &styles.join("; "));
 }
-fn is_descendant(doc: &Document, child: NodeId, parent: NodeId) -> bool {
-    let mut cursor = doc.nodes.get(child).and_then(|node| node.parent);
-    for _ in 0..256 {
-        let Some(id) = cursor else {
-            return false;
-        };
-        if id == parent {
-            return true;
-        }
-        cursor = doc.nodes.get(id).and_then(|node| node.parent);
-    }
-    false
-}
 fn document_element(doc: &Document) -> Option<NodeId> {
     doc.nodes
         .get(doc.root)?
@@ -6079,6 +7201,12 @@ fn import_node(doc: &mut Document, parent: NodeId, source: &Document, node: Node
     }
     let id = match &source.nodes[node].kind {
         NodeKind::Document => return,
+        NodeKind::DocumentFragment { .. } => {
+            for child in &source.nodes[node].children {
+                import_node(doc, parent, source, *child, depth + 1);
+            }
+            return;
+        }
         NodeKind::Text(text) => doc.create_text_node(text),
         NodeKind::Comment(text) => doc.create_comment(text),
         NodeKind::ProcessingInstruction { target, data } => {
@@ -6104,6 +7232,13 @@ fn import_node(doc: &mut Document, parent: NodeId, source: &Document, node: Node
     for child in &source.nodes[node].children {
         import_node(doc, id, source, *child, depth + 1);
     }
+    if let Some(source_contents) = source.template_contents(node)
+        && let Some(contents) = doc.template_contents(id)
+    {
+        for child in &source.nodes[source_contents].children {
+            import_node(doc, contents, source, *child, depth + 1);
+        }
+    }
 }
 fn escape_html(text: &str, attribute: bool) -> String {
     let mut result = text
@@ -6124,7 +7259,9 @@ fn serialize_node(doc: &Document, id: NodeId, depth: usize) -> String {
         NodeKind::Comment(text) => format!("<!--{text}-->"),
         NodeKind::ProcessingInstruction { .. } => doc.outer_html(id),
         NodeKind::Doctype(_) => doc.outer_html(id),
-        NodeKind::Document => serialize_children_at(doc, id, depth),
+        NodeKind::Document | NodeKind::DocumentFragment { .. } => {
+            serialize_children_at(doc, id, depth)
+        }
         NodeKind::Element(element) => {
             let mut result = format!("<{}", element.tag);
             for (key, value) in &element.attrs {
@@ -6146,6 +7283,7 @@ fn serialize_node(doc: &Document, id: NodeId, depth: usize) -> String {
     }
 }
 fn serialize_children_at(doc: &Document, id: NodeId, depth: usize) -> String {
+    let id = doc.template_contents(id).unwrap_or(id);
     let mut result = String::new();
     for child in &doc.nodes[id].children {
         let piece = serialize_node(doc, *child, depth + 1);
@@ -6259,12 +7397,7 @@ mod tests {
                 .message
                 .contains("not defined")
         );
-        assert!(
-            run("eval('1 + 1')")
-                .unwrap_err()
-                .message
-                .contains("not defined")
-        );
+        assert!(run("eval('1 + 1')").unwrap_err().is_unsupported());
         assert!(
             run("const x = 1; x = 2")
                 .unwrap_err()
@@ -6887,8 +8020,8 @@ mod tests {
             );
             let error = runtime.execute(&source, &mut document).unwrap_err();
             assert!(error.is_resource_limit(), "{body}: {error}");
-            assert_eq!(runtime.lookup(0, "caught").unwrap().1, Value::Bool(false));
-            assert_eq!(runtime.lookup(0, "cleaned").unwrap().1, Value::Bool(false));
+            assert_eq!(runtime.lookup(1, "caught").unwrap().1, Value::Bool(false));
+            assert_eq!(runtime.lookup(1, "cleaned").unwrap().1, Value::Bool(false));
             assert_eq!(runtime.json_depth, 0);
             assert_eq!(runtime.calls, 0);
             assert_eq!(runtime.eval_depth, 0);
@@ -7248,7 +8381,7 @@ mod tests {
                     .unwrap_err()
                     .is_resource_limit()
             );
-            assert_eq!(runtime.lookup(0, "caught").unwrap().1, Value::Bool(false));
+            assert_eq!(runtime.lookup(1, "caught").unwrap().1, Value::Bool(false));
         }
     }
 
@@ -7270,9 +8403,9 @@ mod tests {
                     .unwrap_err()
                     .is_resource_limit()
             );
-            assert_eq!(runtime.lookup(0, "caught").unwrap().1, Value::Bool(false));
+            assert_eq!(runtime.lookup(1, "caught").unwrap().1, Value::Bool(false));
             let attempts = runtime
-                .lookup(0, "attempts")
+                .lookup(1, "attempts")
                 .unwrap()
                 .1
                 .as_number()
@@ -7367,12 +8500,12 @@ mod tests {
         let error = runtime.execute("function F(){}let text='a';for(let i=0;i<15;i++)text+=text;Object.defineProperty(F,'name',{value:text});const item=new F();let attempts=0;let caught=0;while(true){attempts++;try{throw item;}catch(e){caught++;}}", &mut document).unwrap_err();
         assert!(error.is_resource_limit());
         let attempts = runtime
-            .lookup(0, "attempts")
+            .lookup(1, "attempts")
             .unwrap()
             .1
             .as_number()
             .unwrap();
-        let caught = runtime.lookup(0, "caught").unwrap().1.as_number().unwrap();
+        let caught = runtime.lookup(1, "caught").unwrap().1.as_number().unwrap();
         assert!((1.0..100.0).contains(&attempts));
         assert_eq!(caught, attempts - 1.0);
     }
@@ -7405,7 +8538,16 @@ mod tests {
             "foreign"
         );
         assert_eq!(
-            document.text_content(document.query_selector("#template-title").unwrap()),
+            document.text_content(
+                document
+                    .query_selector_from(
+                        document
+                            .template_contents(document.query_selector("template").unwrap())
+                            .unwrap(),
+                        "#template-title"
+                    )
+                    .unwrap()
+            ),
             "inactive"
         );
         let html = document_element(&document).unwrap();
@@ -7500,19 +8642,17 @@ mod tests {
         assert_eq!(document.namespace(paint), Some(Namespace::Svg));
         assert_eq!(document.tag(paint), Some("linearGradient"));
         assert_eq!(document.attr(paint, "viewBox"), Some("0 0 1 1"));
-        assert!(
-            runtime
-                .execute(
-                    "document.getElementById('unsupported').innerHTML='changed';",
-                    &mut document
-                )
-                .unwrap_err()
-                .is_unsupported()
-        );
-        assert_eq!(
-            document.text_content(document.query_selector("#unsupported").unwrap()),
-            "kept"
-        );
+        runtime
+            .execute(
+                "document.getElementById('unsupported').innerHTML='<b>changed</b>';",
+                &mut document,
+            )
+            .unwrap();
+        let template = document.query_selector("#unsupported").unwrap();
+        let content = document.template_contents(template).unwrap();
+        assert_eq!(document.text_content(content), "changed");
+        assert!(document.nodes[template].children.is_empty());
+        assert!(document.query_selector("#unsupported b").is_none());
     }
 
     #[test]
@@ -7683,7 +8823,7 @@ mod tests {
                     .unwrap_err()
                     .is_resource_limit()
             );
-            assert_eq!(runtime.lookup(0, "caught").unwrap().1, Value::Bool(false));
+            assert_eq!(runtime.lookup(1, "caught").unwrap().1, Value::Bool(false));
             assert_eq!(runtime.stack_units, 0);
             assert_eq!(runtime.calls, 0);
         }
@@ -7770,16 +8910,8 @@ mod tests {
 
     #[test]
     fn prototype_cycles_strict_directives_and_constructor_quotas_are_explicit() {
-        assert!(
-            Runtime::parse_only("'use strict'; 1")
-                .unwrap_err()
-                .is_unsupported()
-        );
-        assert!(
-            Runtime::parse_only("function f(){'use strict';return 1;}")
-                .unwrap_err()
-                .is_unsupported()
-        );
+        Runtime::parse_only("'use strict'; 1").unwrap();
+        Runtime::parse_only("function f(){'use strict';return 1;}").unwrap();
         assert_eq!(run("const a={};const b=Object.create(a);let name;try{Object.setPrototypeOf(a,b);}catch(e){name=e.name;}name").unwrap().to_string(), "TypeError");
         assert!(
             run("function Recur(){return new Recur();}new Recur();")
@@ -7791,5 +8923,355 @@ mod tests {
                 .unwrap(),
             Value::Bool(true)
         );
+    }
+    #[test]
+    fn strict_directives_are_raw_lexical_and_do_not_leak_between_programs() {
+        for source in [
+            "'use strict'; missing=1;",
+            "'other'; 'use strict'; missing=1;",
+            "function f(){'use strict';return function(){missing=1;};}f()();",
+        ] {
+            assert_eq!(
+                run(source).unwrap_err().name(),
+                "ReferenceError",
+                "{source}"
+            );
+        }
+        for source in [
+            "('use strict'); missing=1;",
+            "'use\\x20strict';missing=1;",
+            "`use strict`;missing=1;",
+            "0;'use strict';missing=1;",
+            "{ 'use strict';missing=1; }",
+        ] {
+            assert_eq!(run(source).unwrap(), Value::Number(1.0), "{source}");
+        }
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        runtime
+            .execute(
+                "'use strict';function strict(){return this;}",
+                &mut document,
+            )
+            .unwrap();
+        assert_eq!(
+            runtime.execute("loose=1;strict()", &mut document).unwrap(),
+            Value::Undefined
+        );
+        assert_eq!(
+            runtime.execute("this.loose", &mut document).unwrap(),
+            Value::Number(1.0)
+        );
+        assert_eq!(
+            runtime
+                .execute("'use strict';this===globalThis", &mut document)
+                .unwrap(),
+            Value::Bool(true)
+        );
+    }
+    #[test]
+    fn strict_early_errors_validate_bindings_targets_and_legacy_literals() {
+        for source in [
+            "'use strict';var eval;",
+            "function f(arguments){'use strict';}",
+            "function eval(){'use strict';}",
+            "function f(a,a){'use strict';}",
+            "'use strict';function f(a,a){}",
+            "'use strict';eval=1;",
+            "'use strict';arguments++;",
+            "'use strict';delete x;",
+            "'use strict';with({}){}",
+            "'use strict';var interface;",
+            "'use strict';010;",
+            "'use strict';08;",
+            "'use strict';'\\1';",
+            "'\\1';'use strict';",
+            "'use strict';'\\8';",
+            "(a,a)=>a;",
+            "({method(a,a){}});",
+            "let x;let x;",
+            "let x;{var x;}",
+            "function f(x){let x;}",
+            "try{}catch(x){let x;}",
+            "for(let x=0;x<1;x++){var x;}",
+            "for(let x in {}){var x;}",
+            "'use strict';if(true)function f(){}",
+        ] {
+            let error = Runtime::parse_only(source).unwrap_err();
+            assert!(error.is_parse_error(), "{source}: {error}");
+        }
+        for source in [
+            "function f(a,a){}",
+            "var eval;",
+            "var interface;",
+            "010;",
+            "'\\1';",
+            "'use strict';'\\0';",
+            "'use strict';delete this;",
+        ] {
+            Runtime::parse_only(source).unwrap();
+        }
+        assert_eq!(run("010").unwrap(), Value::Number(8.0));
+    }
+    #[test]
+    fn strict_receivers_and_property_failures_follow_the_callee_and_reference() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            function strict(){'use strict';return this;}
+            function loose(){return this;}
+            assert.sameValue(strict(),undefined);
+            assert.sameValue(strict.call(null),null);
+            assert.sameValue(strict.call(7),7);
+            assert.sameValue(loose.call(null),globalThis);
+            assert.sameValue(typeof loose.call(7),'object');
+            function inherited(){'use strict';return ()=>this;}
+            assert.sameValue(inherited.call(9).call(2),9);
+            var frozen={};Object.defineProperty(frozen,'x',{value:1});
+            function writes(){'use strict';frozen.x=2;}
+            function deletes(){'use strict';delete frozen.x;}
+            assert.throws(TypeError,writes);assert.throws(TypeError,deletes);
+            frozen.x=2;assert.sameValue(frozen.x,1);assert.sameValue(delete frozen.x,false);
+            assert.throws(TypeError,function(){'use strict';(1).x=2;});
+            assert.throws(TypeError,function(){'use strict';NaN=1;});
+            NaN=1;assert.sameValue(NaN,NaN);
+            var empty={};Object.preventExtensions(empty);
+            assert.throws(TypeError,function(){'use strict';empty.x=1;});
+            var accessor={set x(v){'use strict';assert.sameValue(this,accessor);this.saved=v;}};
+            function assign(){'use strict';accessor.x=4;}assign();assert.sameValue(accessor.saved,4);
+            stray=1;assert.sameValue(globalThis.stray,1);assert.sameValue(delete stray,true);
+            assert.sameValue(typeof stray,'undefined');
+        "#,&mut document).unwrap();
+    }
+    #[test]
+    fn captured_globals_can_be_deleted_during_rhs_or_numeric_coercion() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            x=0;function remove(){delete globalThis.x;return 1;}
+            assert.sameValue(x=remove(),1);assert.sameValue(x,1);
+            x=2;assert.sameValue(x+=remove(),3);assert.sameValue(x,3);
+            x={valueOf(){delete globalThis.x;return 4;}};
+            assert.sameValue(x++,4);assert.sameValue(x,5);
+            x={valueOf(){delete globalThis.x;return 7;}};
+            assert.sameValue(--x,6);assert.sameValue(x,6);
+            function strictAssign(){'use strict';x=remove();}
+            function strictCompound(){'use strict';x+=remove();}
+            function strictUpdate(){'use strict';x++;}
+            x=0;assert.throws(ReferenceError,strictAssign);assert.sameValue(typeof x,'undefined');
+            x=0;assert.throws(ReferenceError,strictCompound);assert.sameValue(typeof x,'undefined');
+            x={valueOf(){delete globalThis.x;return 8;}};
+            assert.throws(ReferenceError,strictUpdate);assert.sameValue(typeof x,'undefined');
+            // A property reference is distinct: strict PutValue can create a
+            // missing property on an extensible receiver after RHS deletion.
+            x=0;function propertyAssign(){'use strict';globalThis.x=remove();}
+            propertyAssign();assert.sameValue(x,1);assert.sameValue(delete x,true);
+            var permanent=2;
+            function keep(){assert.sameValue(delete globalThis.permanent,false);return 3;}
+            permanent=keep();assert.sameValue(permanent,3);
+            function local(a){a={valueOf(){assert.sameValue(delete a,false);return 4;}};a++;return a;}
+            assert.sameValue(local(1),5);
+        "#,&mut document).unwrap();
+        runtime.execute("transient=1;", &mut document).unwrap();
+        assert_eq!(
+            runtime
+                .execute(
+                    "var transient;delete globalThis.transient;var transient;typeof transient",
+                    &mut document
+                )
+                .unwrap(),
+            Value::String("undefined".into())
+        );
+    }
+    #[test]
+    fn repeated_dom_moves_charge_template_subtrees_and_leave_failed_moves_unapplied() {
+        for method in ["appendChild", "append"] {
+            let mut document = Document::parse(&format!(
+                "<main id=left><section id=group><template>{}</template></section></main><aside id=right></aside>",
+                "<i></i>".repeat(1500)
+            ));
+            let group = document.query_selector("#group").unwrap();
+            let left = document.query_selector("#left").unwrap();
+            let right = document.query_selector("#right").unwrap();
+            let template = document.query_selector("template").unwrap();
+            let contents = document.template_contents(template).unwrap();
+            let mut runtime = Runtime::new();
+            let error = runtime
+                .execute(
+                    &format!(
+                        r#"
+                var caught=false;var moved=0;
+                var group=document.getElementById('group');
+                var target=document.getElementById('right');
+                var other=document.getElementById('left');
+                try {{ for(var i=0;i<1000;i++) {{
+                    target.{method}(group);moved++;
+                    var swap=target;target=other;other=swap;
+                }} }} catch(e) {{caught=true;}}
+            "#
+                    ),
+                    &mut document,
+                )
+                .unwrap_err();
+            assert!(error.is_resource_limit(), "{method}: {error}");
+            assert_eq!(
+                runtime.execute("caught", &mut document).unwrap(),
+                Value::Bool(false)
+            );
+            let Value::Number(moved) = runtime.execute("moved", &mut document).unwrap() else {
+                panic!("move counter is numeric");
+            };
+            assert!(moved > 0.0 && moved < 100.0, "{method}: {moved}");
+            let (last, other) = if moved as usize % 2 == 1 {
+                (right, left)
+            } else {
+                (left, right)
+            };
+            assert_eq!(document.nodes[group].parent, Some(last));
+            assert_eq!(document.nodes[last].children, vec![group]);
+            assert!(document.nodes[other].children.is_empty());
+            assert_eq!(document.nodes[contents].children.len(), 1500);
+        }
+    }
+    #[test]
+    fn fragment_transfer_and_sibling_removal_preflight_before_mutation() {
+        let mut document = Document::parse("<main><p></p></main><aside></aside>");
+        let source = document.query_selector("main").unwrap();
+        let target = document.query_selector("aside").unwrap();
+        let child = document.query_selector("p").unwrap();
+        let fragment = document.create_document_fragment();
+        for _ in 0..64 {
+            let node = document.create_element("i");
+            document.append_child(fragment, node);
+        }
+        let children = document.nodes[fragment].children.clone();
+        let mut runtime = Runtime::new();
+        // The subtree can be inspected, but the final child transfer cannot.
+        runtime.steps = 150;
+        let error = runtime
+            .native_call(
+                &Native {
+                    name: "appendChild".into(),
+                    receiver: Value::Node(target),
+                },
+                vec![Value::Node(fragment)],
+                &mut document,
+            )
+            .unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(document.nodes[fragment].children, children);
+        assert!(document.nodes[target].children.is_empty());
+        assert!(
+            children
+                .iter()
+                .all(|id| document.nodes[*id].parent == Some(fragment))
+        );
+        // A tiny moved subtree can still require scanning a wide old parent.
+        for _ in 0..64 {
+            let sibling = document.create_element("i");
+            document.append_child(source, sibling);
+        }
+        for method in ["appendChild", "removeChild", "remove"] {
+            runtime.steps = 16;
+            let receiver = if method == "appendChild" {
+                target
+            } else if method == "removeChild" {
+                source
+            } else {
+                child
+            };
+            let error = runtime
+                .native_call(
+                    &Native {
+                        name: method.into(),
+                        receiver: Value::Node(receiver),
+                    },
+                    vec![Value::Node(child)],
+                    &mut document,
+                )
+                .unwrap_err();
+            assert!(error.is_resource_limit(), "{method}: {error}");
+            assert_eq!(document.nodes[child].parent, Some(source));
+            assert_eq!(document.nodes[source].children.len(), 65);
+            assert!(document.nodes[target].children.is_empty());
+        }
+    }
+    #[test]
+    fn arguments_are_unmapped_in_strict_code_and_mapped_with_descriptor_detachment_otherwise() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            function strict(a){'use strict';
+                assert.sameValue(Array.isArray(arguments),false);
+                assert.sameValue(Object.prototype.toString.call(arguments),'[object Arguments]');
+                arguments[0]=2;assert.sameValue(a,1);a=3;assert.sameValue(arguments[0],2);
+                assert.throws(TypeError,()=>arguments.callee);
+                assert.throws(TypeError,()=>{arguments.callee=1;});
+                verifyProperty(arguments,'callee',{enumerable:false,configurable:false});
+            }strict(1);
+            function loose(a){
+                a=2;assert.sameValue(arguments[0],2);arguments[0]=3;assert.sameValue(a,3);
+                Object.defineProperty(arguments,'0',{value:4});assert.sameValue(a,4);
+                Object.defineProperty(arguments,'0',{writable:false});a=5;assert.sameValue(arguments[0],4);
+                assert.sameValue(arguments.callee,loose);
+            }loose(1);
+            function removed(a){delete arguments[0];a=2;assert.sameValue(arguments[0],undefined);}removed(1);
+            function duplicates(a,a){arguments[0]=8;assert.sameValue(a,2);arguments[1]=9;assert.sameValue(a,9);}duplicates(1,2);
+            assert.throws(TypeError,()=>strict.caller);assert.throws(TypeError,()=>strict.arguments);
+        "#,&mut document).unwrap();
+    }
+    #[test]
+    fn lexical_tdz_global_separation_and_iteration_closures_are_preserved() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            assert.throws(ReferenceError,function(){'use strict';typeof x;let x;});
+            assert.throws(ReferenceError,function(){'use strict';x=1;let x;});
+            assert.throws(ReferenceError,function(){'use strict';let x=x;});
+            assert.throws(ReferenceError,function(){'use strict';for(let x in x){}});
+            assert.throws(ReferenceError,function(){'use strict';switch(1){case x:let x=1;}});
+            let privateName=3;globalThis.privateName=9;
+            assert.sameValue(privateName,3);assert.sameValue(globalThis.privateName,9);
+            var closures=[];for(let i=0;i<3;i++){closures.push(()=>i);}
+            assert.sameValue(closures[0](),0);assert.sameValue(closures[2](),2);
+            var keys=[];for(let key in {a:1,b:2}){keys.push(()=>key);}
+            assert.sameValue(keys[0](),'a');assert.sameValue(keys[1](),'b');
+            function f(){'use strict';{function block(){return 1;}assert.sameValue(block(),1);}assert.sameValue(typeof block,'undefined');}f();
+        "#,&mut document).unwrap();
+    }
+    #[test]
+    fn template_fragments_clone_query_and_move_without_activating_nested_content() {
+        let mut document = Document::parse(
+            "<!doctype html><template id=card><article><b class=label>first</b><svg viewBox='0 0 3 3'><circle r=1/></svg><template id=nested><i>hidden</i></template></article></template><main id=out></main>",
+        );
+        let (mut runtime, _) = property_harness();
+        runtime.execute(r#"
+            'use strict';
+            var template=document.getElementById('card');
+            assert.sameValue(template.content.nodeType,11);
+            assert.sameValue(template.content.nodeName,'#document-fragment');
+            assert.sameValue(template.content.parentNode,null);
+            assert.sameValue(template.childNodes.length,0);
+            assert.sameValue(template.textContent,'');
+            assert.sameValue(document.querySelector('.label'),null);
+            var copy=template.content.cloneNode(true);
+            copy.querySelector('.label').textContent='second';
+            assert.sameValue(template.content.querySelector('.label').textContent,'first');
+            assert.sameValue(copy.querySelector('svg').getAttribute('viewBox'),'0 0 3 3');
+            copy.querySelector('svg').setAttribute('viewBox','0 0 4 4');
+            assert.sameValue(copy.querySelector('svg').getAttribute('viewBox'),'0 0 4 4');
+            assert.sameValue(copy.querySelector('i'),null);
+            assert.sameValue(copy.querySelector('#nested').content.querySelector('i').textContent,'hidden');
+            document.getElementById('out').appendChild(copy);
+            assert.sameValue(copy.childNodes.length,0);
+            assert.sameValue(document.querySelector('.label').textContent,'second');
+            assert.sameValue(document.querySelector('i'),null);
+            var clonedTemplate=template.cloneNode(true);
+            assert.sameValue(clonedTemplate.content.querySelector('.label').textContent,'first');
+            assert.sameValue(template.cloneNode(false).content.childNodes.length,0);
+            template.innerHTML='<template><em>deep</em></template><p>replacement</p>';
+            assert.sameValue(template.content.querySelector('p').textContent,'replacement');
+            assert.sameValue(template.content.querySelector('template').content.querySelector('em').textContent,'deep');
+            assert.sameValue(document.characterSet,'UTF-8');
+            assert.sameValue(document.charset,document.inputEncoding);
+            assert.sameValue(document.compatMode,'CSS1Compat');
+            assert.throws(TypeError,function(){document.characterSet='windows-1252';});
+        "#,&mut document).unwrap();
     }
 }

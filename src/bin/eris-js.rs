@@ -170,24 +170,24 @@ fn error_outcome(error: ScriptError, phase: &'static str, harness: &str) -> Outc
 }
 
 fn evaluate(request: Request) -> Outcome {
-    if matches!(request.mode, 1 | 3) {
+    if request.mode == 3 {
         return Outcome {
             status: "unsupported",
             phase: "mode",
             error_type: String::new(),
             error_identity: String::new(),
-            message: if request.mode == 1 {
-                "strict execution is not implemented"
-            } else {
-                "module execution is not implemented"
-            }
-            .into(),
+            message: "module execution is not implemented".into(),
             harness: String::new(),
         };
     }
     // Parse source before evaluating anything. A runtime SyntaxError cannot be
     // confused with an early error, and parse-negative tests are never run.
-    if let Err(error) = Runtime::parse_only(&request.source) {
+    let parse = if request.mode == 1 {
+        Runtime::parse_only_strict(&request.source)
+    } else {
+        Runtime::parse_only(&request.source)
+    };
+    if let Err(error) = parse {
         return error_outcome(error, "parse", "");
     }
     if request.parse_only {
@@ -207,7 +207,12 @@ fn evaluate(request: Request) -> Outcome {
             return error_outcome(error, "harness", &name);
         }
     }
-    match runtime.execute(&request.source, &mut document) {
+    let completion = if request.mode == 1 {
+        runtime.execute_strict(&request.source, &mut document)
+    } else {
+        runtime.execute(&request.source, &mut document)
+    };
+    match completion {
         Ok(_) => Outcome {
             status: "complete",
             phase: "runtime",
@@ -263,12 +268,31 @@ mod tests {
     }
 
     #[test]
-    fn strict_and_module_modes_are_never_reported_as_complete() {
-        for mode in [1, 3] {
-            let mut test = request("");
-            test.mode = mode;
-            assert_eq!(evaluate(test).status, "unsupported");
-        }
+    fn strict_mode_changes_early_errors_and_runtime_receivers_without_changing_harness_mode() {
+        let mut test = request(
+            "function f(){return this;}if(f()!==undefined)throw 1; if(loose()!==globalThis)throw 2;",
+        );
+        test.mode = 1;
+        test.harness
+            .push(("setup.js".into(), "function loose(){return this;}".into()));
+        assert_eq!(evaluate(test).status, "complete");
+        let mut early = request("var eval;");
+        early.mode = 1;
+        let early = evaluate(early);
+        assert_eq!(
+            (early.status, early.phase, early.error_identity.as_str()),
+            ("exception", "parse", "SyntaxError")
+        );
+        let mut write = request("missing=1;");
+        write.mode = 1;
+        let write = evaluate(write);
+        assert_eq!(
+            (write.status, write.phase, write.error_identity.as_str()),
+            ("exception", "runtime", "ReferenceError")
+        );
+        let mut module = request("");
+        module.mode = 3;
+        assert_eq!(evaluate(module).status, "unsupported");
     }
 
     #[test]

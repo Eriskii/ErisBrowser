@@ -12,7 +12,7 @@ import html_conformance as runner
 
 class CorpusParsingTests(unittest.TestCase):
     def test_fragment_context_and_scripting_flag_reach_the_adapter_unchanged(self):
-        for context in ('table', 'textarea', 'svg foreignObject', 'math mi'):
+        for context in ('table', 'textarea', 'template', 'svg foreignObject', 'math mi'):
             source = f'#data\nfragment\n#errors\n#document-fragment\n{context}\n#script-on\n#document\n| "fragment"\n'
             _, cases = runner.parse_cases(source, 'sample.dat')
             with mock.patch.object(runner, 'bounded_process', return_value=(0, b'| "fragment"\n', b'')) as process:
@@ -21,15 +21,14 @@ class CorpusParsingTests(unittest.TestCase):
             process.assert_called_once_with(
                 ['/adapter', '--scripting', 'enabled', '--fragment', context], b'fragment', 2)
 
-    def test_unimplemented_fragment_contexts_remain_in_the_inventory(self):
+    def test_template_fragment_cases_run_in_both_modes_and_legacy_inventory_stays_explicit(self):
         _, cases = runner.parse_cases('#data\nx\n#errors\n#document-fragment\ntemplate\n#document\n| "x"\n', 'sample.dat')
-        with mock.patch.object(runner, 'bounded_process') as process:
+        with mock.patch.object(runner, 'bounded_process', return_value=(0, b'| "x"\n', b'')) as process:
             results = [runner.run_case(case, Path('/adapter'), 2, False) for case in cases]
-        process.assert_not_called()
+        self.assertEqual(process.call_count, 2)
         self.assertEqual(len(results), 2)
-        self.assertTrue(all(result['status'] == 'unsupported' for result in results))
+        self.assertTrue(all(result['status'] == 'matched' for result in results))
         self.assertTrue(all(result['context'] == 'template' for result in results))
-        self.assertTrue(all('template' in result['reason'] for result in results))
         with mock.patch.object(runner, 'bounded_process') as process:
             result = runner.run_case(dict(cases[0], fragment='svg svg'), Path('/adapter'), 2, True)
         process.assert_not_called()

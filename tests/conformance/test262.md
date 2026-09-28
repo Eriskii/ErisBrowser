@@ -21,8 +21,10 @@ from these nine `test/built-ins/` directories:
 | `String/fromCodePoint` | 11 |
 
 All 326 files lack execution flags, so the required default inventory contains
-652 variants: one sloppy and one strict variant per source. Strict variants stay
-in the report as unsupported until strict execution is implemented. No test is
+652 variants: one sloppy and one strict variant per source. Both modes execute.
+The adapter selects a strict parse/execution goal equivalent to the required
+leading strict directive while preserving the imported source bytes. Harness
+sources retain their own directives and are evaluated separately. No test is
 removed because of its result. This selection contains no frontmatter-negative
 tests; parse/runtime negative handling is covered by runner and adapter
 regressions. `_FIXTURE` files, if added in a future selection,
@@ -66,11 +68,13 @@ requesting other constructors are explicitly unsupported until their identities
 can be checked. The framed adapter response keeps identity separate from the
 diagnostic name.
 
-A thirteen-case preflight runs the upstream assertion and property-helper implementations, including
-deliberate failures, signed zero, expected exceptions with matching and differing
-constructors, mismatched arrays, and deliberately incorrect writable, enumerable
-and configurable descriptors. Failure of this preflight makes the run
-unhealthy and prevents recording a baseline.
+A 32-case preflight runs the original thirteen assertion/property-helper checks
+in both sloppy and strict modes, then checks strict receivers, unresolved writes,
+readonly properties, deletion, arguments and lexical initialization. The unchanged
+upstream helpers must accept successes and reject deliberate failures, signed-zero
+mismatches, wrong exception constructors, mismatched arrays and incorrect
+property descriptors. Failure makes the run unhealthy and prevents recording a
+baseline.
 
 The current declared-feature support policy permits `arrow-function`,
 `String.fromCodePoint`, `well-formed-json-stringify`, and `for-in-order`. Other declared features
@@ -106,22 +110,41 @@ python3 tools/test262_conformance.py --record-baseline tests/conformance/test262
 python3 tools/test262_conformance.py --baseline tests/conformance/test262-current.json
 ```
 
-The recorded release measurement contains **265 passed, 5 failed and 382
-unsupported variants**, with all thirteen preflights verified and no harness,
-resource, timeout or adapter errors. All 326 strict variants are unsupported.
-The unchanged `propertyHelper.js` now executes using ordinary property
-descriptors, accessors, deletion, `for...in`, and bound functions. Before recording,
-the previous feature policy preserved all 108 previous passing cases and added
-155; enabling `for-in-order` added two more. All 652 source/mode/harness
-fingerprints remain unchanged. The freshly recorded baseline gate passes with
-zero regressions. CI runs this gate after building the release adapter.
+The recorded release measurement contains **532 passed and 120 unsupported
+variants**, with all 32 preflights verified and no failed, harness, resource,
+timeout or adapter outcomes. Each execution mode has 266 passes and 60
+unsupported cases. Before changing the strict-mode runner policy, the old policy
+gate preserved all 265 previous passes and added the comma-expression slice
+case. A subsequent explicit comparison preserved all 652 source/mode/harness
+fingerprints and all prior passes while enabling strict execution. The freshly
+recorded baseline gate has zero regressions. CI runs it after building the
+release adapter.
+
+The four remaining previously failing sources require template interpolation,
+regular-expression literals or dynamic eval; both variants of each are now
+explicitly unsupported. These are missing general language capabilities, not
+replaced test bodies. Other unsupported outcomes retain their declared-feature
+or interpreter reasons, including Reflect, Proxy, Symbol, BigInt, complete
+JSON source-context semantics, dynamic Function construction and array descriptor
+mutation.
+
+Strict code retains exact raw directives, inherits strictness lexically, checks
+restricted bindings/assignments and duplicate simple parameters, rejects legacy
+literals and identifier deletion, preserves the supplied receiver, and throws
+on unresolved or failed property writes. Strict arguments are unmapped with a
+restricted callee accessor; supported sloppy arguments map indices to parameters
+until deletion or descriptor changes detach them. Lexical bindings include
+initialization checks, declaration conflicts and per-iteration loop environments.
+The implementation remains a subset: classes/modules, destructuring/default/rest
+parameters, dynamic eval/Function, regular expressions, labeled control flow,
+complete Annex B behavior and other grammar/runtime features are absent.
 
 Ordinary object descriptors support writable, enumerable and configurable data
 properties and getter/setter properties. Array indexed/length descriptor
 mutation, array extensibility restrictions and host-object reflection are
-explicitly unsupported. Strict-mode assignment failures, full lexical binding
-rules, proxies, symbols and other exotic objects remain incomplete. Passing
-this selected corpus does not establish full ECMAScript conformance.
+explicitly unsupported. Proxies, symbols and other exotic objects remain
+incomplete. Passing this selected corpus does not establish full ECMAScript
+conformance.
 
 Recording and checking are mutually exclusive. A baseline binds the upstream
 revision, manifest bytes, runner feature policy and timeout, and every case's
@@ -133,9 +156,9 @@ retained as `harness-error` limitations, distinct from transport errors.
 Report output cannot overwrite the baseline, including through a symlink alias.
 The adapter executable's hash must remain unchanged throughout the measurement.
 Runner policy format 2 records intrinsic error identities and supported declared
-features. This baseline also enables `for-in-order`; the previous-policy gate
-and the subsequent feature-policy comparison both preserved all prior passes.
-The pinned source inventory remains unchanged.
+features. This baseline enables strict execution in addition to `for-in-order`;
+the previous-policy gate and subsequent explicit policy comparison preserved all
+prior passes. The pinned source inventory remains unchanged.
 
 The pinned data can be reimported deliberately with
 `python3 tools/import_test262.py`. A different upstream revision requires editing

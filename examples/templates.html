@@ -1,0 +1,51 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Eris · A collection of small things</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f2f0e8;color:#263c38;font-family:sans-serif;font-size:16px;line-height:1.45}
+main{max-width:1020px;margin:0 auto;padding:38px 40px}header{border-bottom:2px solid #263c38;padding-bottom:24px;margin-bottom:26px}
+.eyebrow{font-size:12px;letter-spacing:2px;color:#65756c;margin:0 0 12px}h1{font-size:43px;line-height:1.15;margin:0 0 16px}.intro{max-width:690px;margin:0;color:#62726b}
+.toolbar{display:flex;gap:12px;align-items:center;margin-bottom:24px}button{background:#263c38;color:#fdfbf2;border:0;padding:11px 17px;font-size:14px;cursor:pointer}#add{background:#d8b86e;color:#263c38}.status{margin:0;color:#63746b;font-size:13px}
+.collection{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:165px;gap:18px;grid-auto-flow:row dense}.collection.compact{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card{background:#e0e7db;border:1px solid #c4cfbd;padding:22px}.card.featured{grid-column:span 2;background:#263c38;color:#f8f3df}.number{font-size:11px;color:#768773;margin:0 0 12px}.featured .number{color:#d8b86e}.card h2{font-size:23px;line-height:1.2;margin:0 0 12px}.card p{margin:0;font-size:14px}.card .number{margin:0 0 12px;font-size:11px}
+footer{border-top:1px solid #b6c2b2;margin-top:28px;padding-top:18px;font-size:12px;color:#63746b}
+@media(max-width:680px){main{padding:24px}h1{font-size:32px}.collection{grid-template-columns:repeat(2,minmax(0,1fr))}.toolbar{flex-wrap:wrap}}
+</style>
+<main>
+<header><p class="eyebrow">ERIS / FIELD NOTES 02</p><h1>A collection of small things</h1><p class="intro">A place for observations, unfinished ideas, and things worth returning to. Add a note, then give the collection a different shape.</p></header>
+<div class="toolbar"><button id="arrange">Change arrangement</button><button id="add">Add a note</button><p id="status" class="status"></p></div>
+<section id="collection" class="collection"></section>
+<footer>Small observations. Room to grow.</footer>
+</main>
+<template id="note"><article class="card"><p class="number"></p><h2></h2><p class="description"></p></article></template>
+<script>
+'use strict';
+const collection = document.getElementById('collection');
+const template = document.getElementById('note');
+let count = 0;
+let compact = false;
+function addNote(title, description) {
+  const fragment = template.content.cloneNode(true);
+  const card = fragment.querySelector('article');
+  count++;
+  card.id = 'note-' + count;
+  if (count === 1) { card.className = 'card featured'; }
+  fragment.querySelector('.number').textContent = 'NOTE / 0' + count;
+  fragment.querySelector('h2').textContent = title;
+  fragment.querySelector('.description').textContent = description;
+  collection.appendChild(fragment);
+  document.getElementById('status').textContent = count + ' notes in the collection';
+}
+addNote('Notice the spaces between.', 'A little room changes the way we see what is already here.');
+addNote('Morning light', 'The same window, a different color every day.');
+addNote('Keep a sketchbook', 'An idea does not need to be finished to be worth keeping.');
+addNote('Take the long way', 'There might be something you have not noticed yet.');
+addNote('Make room', 'Leave a space for the next thing.');
+document.getElementById('arrange').onclick = function () {
+  compact = !compact;
+  collection.className = compact ? 'collection compact' : 'collection';
+};
+document.getElementById('add').onclick = function () {
+  if (count < 9) { addNote('A new observation', 'There is always room for another small thing.'); }
+};
+</script>

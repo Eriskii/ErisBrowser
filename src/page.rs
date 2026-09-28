@@ -81,8 +81,10 @@ impl Page {
             .unwrap_or("")
             .trim()
             .to_ascii_lowercase();
-        let html = if mime == "text/html" || mime.is_empty() {
-            response.text()
+        let html_encoding = (mime == "text/html" || mime.is_empty())
+            .then(|| crate::text_encoding::html_encoding(&response.bytes, &response.content_type));
+        let html = if let Some(selected) = html_encoding {
+            crate::text_encoding::decode(&response.bytes, selected.encoding)
         } else if mime.starts_with("image/") {
             format!(
                 "<!doctype html><title>Image</title><body><img src=\"{}\"></body>",
@@ -95,10 +97,30 @@ impl Page {
             )
         };
         let mut page = Self::unexecuted(response.url, &html, scripts_enabled);
+        if let Some(selected) = html_encoding {
+            let mut encoding = selected.encoding;
+            if !selected.certain
+                && encoding != encoding_rs::UTF_16LE
+                && encoding != encoding_rs::UTF_16BE
+                && let Some(declared) = page.document.encoding_declaration()
+                && declared != encoding
+            {
+                // Reparse cached bytes before any author code or resource loads.
+                // The original navigation (including POST) is never repeated.
+                let decoded = crate::text_encoding::decode(&response.bytes, declared);
+                page = Self::unexecuted(page.url, &decoded, scripts_enabled);
+                encoding = declared;
+            }
+            page.document.set_encoding(encoding);
+        }
+        let environment_encoding =
+            encoding_rs::Encoding::for_label(page.document.character_set().as_bytes())
+                .expect("document encoding is canonical");
         page.apply_author_policy(csp);
         let ids = page.document.query_selector_all("link, script, img");
         let mut script_sources: HashMap<NodeId, Arc<str>> = HashMap::new();
-        let mut text_cache: HashMap<(ResourceKind, String), Arc<str>> = HashMap::new();
+        let mut text_cache: HashMap<(ResourceKind, String, &'static str), Arc<str>> =
+            HashMap::new();
         let mut image_cache: HashMap<String, (Arc<RasterImage>, bool)> = HashMap::new();
         let mut failed = HashSet::new();
         let mut decoded_bytes = 0usize;
@@ -144,6 +166,15 @@ impl Page {
             };
             target.set_fragment(None);
             let key = target.to_string();
+            let fallback_encoding = if kind == ResourceKind::Script {
+                page.document
+                    .attr(id, "charset")
+                    .and_then(|label| encoding_rs::Encoding::for_label(label.as_bytes()))
+                    .unwrap_or(environment_encoding)
+            } else {
+                environment_encoding
+            };
+            let text_key = (kind, key.clone(), fallback_encoding.name());
             if failed.contains(&(kind, key.clone())) {
                 continue;
             }
@@ -152,7 +183,7 @@ impl Page {
                     page.attach_image(id, href, image, origin_clean);
                     continue;
                 }
-            } else if let Some(source) = text_cache.get(&(kind, key.clone())).cloned() {
+            } else if let Some(source) = text_cache.get(&text_key).cloned() {
                 if kind == ResourceKind::Style {
                     page.external_styles.insert(id, source);
                 } else {
@@ -171,7 +202,21 @@ impl Page {
             };
             match kind {
                 ResourceKind::Style | ResourceKind::Script => {
-                    let source = resource.text();
+                    let encoding = if kind == ResourceKind::Style {
+                        crate::text_encoding::css_encoding(
+                            &resource.bytes,
+                            &resource.content_type,
+                            environment_encoding,
+                        )
+                    } else {
+                        crate::text_encoding::script_encoding(
+                            &resource.bytes,
+                            &resource.content_type,
+                            None,
+                            fallback_encoding,
+                        )
+                    };
+                    let source = crate::text_encoding::decode(&resource.bytes, encoding);
                     let (used, limit) = if kind == ResourceKind::Style {
                         (&mut style_bytes, MAX_STYLE_BYTES)
                     } else {
@@ -191,7 +236,7 @@ impl Page {
                     }
                     *used += source.len();
                     let source: Arc<str> = source.into();
-                    text_cache.insert((kind, key), source.clone());
+                    text_cache.insert(text_key, source.clone());
                     if kind == ResourceKind::Style {
                         page.external_styles.insert(id, source);
                     } else {

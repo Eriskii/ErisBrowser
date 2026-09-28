@@ -24,7 +24,7 @@ After the parser, JSON and flex compatibility increment, the same fixture/viewpo
 
 After the broker, namespace and Test262 increment, the same warm-render configuration recorded medians of 4.399 ms (home), 7.053 ms (gallery), and 5.203 ms (forms); p95 values were 4.542, 7.519 and 5.273 ms. [This record](benchmark-broker.json) retains the measured build/input hashes. It still excludes native process startup and IPC, so these timings do not measure the new broker's overhead or establish a Chromium comparison.
 
-`python3 tools/benchmark.py` records timings for three local fixtures in `artifacts/benchmark.json`, including source/assets/dependency input hashes, binary hash, CPU, OS, compiler and excluded phases.
+`python3 tools/benchmark.py` records timings for four local fixtures in `artifacts/benchmark.json`, including source/assets/dependency input hashes, binary hash, CPU, OS, compiler and excluded phases. The template/Grid fixture uses its initially populated document; cloning and click handlers execute outside the measured warm-render loop.
 
 ## Required comparison design
 
@@ -45,3 +45,13 @@ of 4.457 ms (home), 7.118 ms (gallery), and 5.291 ms (forms), with p95 values of
 hashes. These uncontrolled local timings exclude image decoding, process startup,
 IPC and native presentation; they do not establish the cost of isolated image
 loading or performance relative to Chromium.
+
+The template/strict-mode/Grid/encoding checkpoint recorded medians of 4.459 ms
+(home), 7.086 ms (gallery), 5.340 ms (forms), and 1.085 ms (the new template/Grid
+fixture). The corresponding p95 values were 4.540, 7.299, 5.769 and 1.119 ms.
+These use the same 100-iteration, 1180×880 configuration. The final measurement
+ran after the native smoke-test window closed, and its source and binary hashes
+were checked against the frozen build. [The recorded JSON](benchmark-templates-grid.json)
+contains the complete environment and phase definitions. It is an uncontrolled
+local observation; the new fixture has no earlier recorded comparison, and none
+of these measurements establish Chromium-relative performance.

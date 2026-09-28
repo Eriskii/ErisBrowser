@@ -159,6 +159,109 @@ fn response(status: &str, mime: &str, headers: &str, body: &str) -> String {
     )
 }
 
+fn byte_response(mime: &str, body: &[u8]) -> Vec<u8> {
+    let mut response = format!("HTTP/1.1 200 OK\r\nContent-Type: {mime}\r\nContent-Length: {}\r\nConnection: close\r\n\r\n", body.len()).into_bytes();
+    response.extend_from_slice(body);
+    response
+}
+
+#[test]
+#[ignore = "requires permission to bind a loopback test server"]
+fn late_encoding_reparse_does_not_repeat_post_and_subresources_inherit_encoding() {
+    use eris::graphics::{Canvas, Fonts};
+    let source = format!(
+        "<!doctype html><head><!--{}--><meta charset=shift_jis><link rel=stylesheet href=/style></head><body><div id=x class=日本>初</div><script src=/code></script>",
+        " ".repeat(1100)
+    );
+    let (html, _, errors) = encoding_rs::SHIFT_JIS.encode(&source);
+    assert!(!errors);
+    let (style, _, errors) = encoding_rs::SHIFT_JIS
+        .encode("body{margin:0}.日本{width:80px;height:40px;background:blue}");
+    assert!(!errors);
+    let (script, _, errors) =
+        encoding_rs::SHIFT_JIS.encode("document.getElementById('x').textContent='日本';");
+    assert!(!errors);
+    let s = Server::new_bytes(vec![
+        ("/post", byte_response("text/html", &html)),
+        ("/style", byte_response("text/css", &style)),
+        ("/code", byte_response("text/javascript", &script)),
+    ]);
+    let p = Page::load_navigation(
+        &Navigation {
+            address: s.base.join("post").unwrap().to_string(),
+            form_body: Some("word=one".into()),
+        },
+        true,
+    )
+    .unwrap();
+    assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+    assert_eq!(p.document.character_set(), "Shift_JIS");
+    let x = p.document.query_selector("#x").unwrap();
+    assert_eq!(p.document.text_content(x), "日本");
+    assert_eq!(p.document.attr(x, "class"), Some("日本"));
+    let fonts = Fonts::new();
+    let mut canvas = Canvas::new(150, 100).unwrap();
+    canvas.paint(
+        &p.layout(150.0, 100.0, &fonts).commands,
+        &fonts,
+        &p.images,
+        0.0,
+        0.0,
+    );
+    assert_eq!(canvas.pixels[30 * 150 + 60], 0x0000ff);
+    let requests = s.requests();
+    assert_eq!(requests.len(), 3);
+    assert_eq!(requests[0].method, "POST");
+    assert_eq!(requests[0].body, b"word=one");
+    assert_eq!(
+        requests
+            .iter()
+            .filter(|request| request.path == "/post")
+            .count(),
+        1
+    );
+}
+
+#[test]
+#[ignore = "requires permission to bind a loopback test server"]
+fn script_charset_cache_and_stylesheet_charset_choose_their_own_encodings() {
+    let html = "<!doctype html><meta charset=utf-8><link rel=stylesheet href=/style><div id=x class=café></div><script>var decoded='';</script><script src=/code charset=windows-1252></script><script src=/code charset=utf-8></script><script>document.getElementById('x').textContent=decoded;</script>";
+    let s = Server::new_bytes(vec![
+        ("/page", byte_response("text/html", html.as_bytes())),
+        (
+            "/style",
+            byte_response(
+                "text/css",
+                b"@charset \"windows-1252\";.caf\xe9{background:red}",
+            ),
+        ),
+        (
+            "/code",
+            byte_response("text/javascript", b"decoded += '\xc3\xa9';"),
+        ),
+    ]);
+    let p = Page::load(s.base.join("page").unwrap().as_str(), true).unwrap();
+    assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+    assert_eq!(
+        p.document
+            .text_content(p.document.query_selector("#x").unwrap()),
+        "Ã©é"
+    );
+    assert!(
+        p.stylesheets()
+            .iter()
+            .any(|sheet| sheet.contains(".café{background:red}"))
+    );
+    let fonts = eris::graphics::Fonts::new();
+    let layout = p.layout(200.0, 100.0, &fonts);
+    let mut canvas = eris::graphics::Canvas::new(200, 100).unwrap();
+    canvas.paint(&layout.commands, &fonts, &p.images, 0.0, 0.0);
+    assert!(
+        canvas.pixels.contains(&0xff0000),
+        "decoded CSS selector must reach painting"
+    );
+}
+
 #[test]
 #[ignore = "requires permission to bind a loopback test server"]
 fn redirects_revalidate_file_policy_and_cycles_stop() {

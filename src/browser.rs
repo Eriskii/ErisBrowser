@@ -2187,13 +2187,15 @@ mod tests {
             "<svg><input id=foreign value=svg /></svg><math><input id=math value=math /></math><template><input id=template></template><div inert><input id=inert></div><fieldset disabled><legend><input id=legend value=allowed></legend><input id=blocked><legend><input id=later></legend></fieldset><input id=normal value=normal>",
         );
         for name in ["foreign", "math", "template", "inert", "blocked", "later"] {
-            let node = browser
-                .snapshot
-                .as_ref()
-                .unwrap()
-                .document
-                .query_selector(&format!("#{name}"))
-                .unwrap();
+            let document = &browser.snapshot.as_ref().unwrap().document;
+            let node = if name == "template" {
+                assert!(document.query_selector("#template").is_none());
+                let template = document.query_selector("template").unwrap();
+                let contents = document.template_contents(template).unwrap();
+                document.query_selector_from(contents, "#template").unwrap()
+            } else {
+                document.query_selector(&format!("#{name}")).unwrap()
+            };
             assert!(!browser.editable(node), "{name}");
             browser.focus_input(node);
             assert!(browser.focused.is_none(), "{name}");

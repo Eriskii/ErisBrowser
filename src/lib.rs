@@ -10,4 +10,5 @@ pub mod net;
 pub mod page;
 pub mod script;
 pub mod svg;
+mod text_encoding;
 pub mod worker;

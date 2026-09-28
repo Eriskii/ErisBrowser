@@ -1,6 +1,6 @@
 # Focused rendering reference tests
 
-These nineteen self-authored cases compare Eris rendering against independently
+These twenty-six self-authored cases compare Eris rendering against independently
 expressed reference layouts at 320 × 240 pixels. They exercise specific HTML/CSS
 behaviors; they are not the Web Platform Tests, a browser compatibility score, or
 a Chromium performance comparison. Passing a pair cannot detect a defect shared
@@ -22,3 +22,7 @@ no case is silently skipped. `manifest.json` describes each assertion.
 
 The six float cases and the associated geometry coverage are described in
 [`floats.md`](floats.md), including the remaining formatting limitations.
+
+The seven additional grid cases and the associated geometry coverage are
+described in [`grid.md`](grid.md), including supported syntax and remaining
+sizing and placement limitations.

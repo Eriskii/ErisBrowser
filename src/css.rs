@@ -4,7 +4,7 @@ use crate::dom::{
 };
 use crate::graphics::Color;
 use std::collections::{BTreeMap, BTreeSet, HashMap};
-use std::sync::Arc;
+use std::sync::{Arc, LazyLock};
 
 #[derive(Debug, Clone, Copy, Default, PartialEq)]
 pub enum Length {
@@ -23,6 +23,104 @@ impl Length {
             Self::Percent(v) => Some(reference * v / 100.0),
         }
     }
+}
+/// Track minima and maxima stay distinct until the grid has a containing size.
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
+pub enum GridBreadth {
+    #[default]
+    Auto,
+    MinContent,
+    MaxContent,
+    Length(Length),
+}
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
+pub struct GridTrack {
+    pub min: GridBreadth,
+    pub max: GridBreadth,
+}
+impl GridTrack {
+    pub fn single(value: GridBreadth) -> Self {
+        Self {
+            min: if matches!(value, GridBreadth::Length(Length::Fr(_))) {
+                GridBreadth::Auto
+            } else {
+                value
+            },
+            max: value,
+        }
+    }
+}
+// Defaults and explicitly inherited lists share immutable storage. Computed
+// styles can number in the tens of thousands even for a small stylesheet.
+static EMPTY_GRID_TRACKS: LazyLock<Arc<[GridTrack]>> = LazyLock::new(|| Arc::from([]));
+static AUTO_GRID_TRACKS: LazyLock<Arc<[GridTrack]>> =
+    LazyLock::new(|| Arc::from([GridTrack::default()]));
+
+const MAX_RETAINED_GRID_BYTES: usize = 4 * 1024 * 1024;
+
+#[derive(Default)]
+struct GridTrackPool {
+    lists: HashMap<Vec<u32>, Arc<[GridTrack]>>,
+    bytes: usize,
+}
+impl GridTrackPool {
+    fn intern(&mut self, tracks: &mut Arc<[GridTrack]>, implicit: bool) {
+        // Shared candidates are initial values or inherit an array already
+        // interned for an ancestor during this same style computation.
+        if Arc::strong_count(tracks) > 1 {
+            return;
+        }
+        let mut key = Vec::with_capacity(tracks.len() * 4);
+        for track in tracks.iter() {
+            for breadth in [track.min, track.max] {
+                let (tag, bits) = match breadth {
+                    GridBreadth::Auto => (0, 0),
+                    GridBreadth::MinContent => (1, 0),
+                    GridBreadth::MaxContent => (2, 0),
+                    GridBreadth::Length(Length::Auto) => (3, 0),
+                    GridBreadth::Length(Length::Px(n)) => (4, n.to_bits()),
+                    GridBreadth::Length(Length::Percent(n)) => (5, n.to_bits()),
+                    GridBreadth::Length(Length::Fr(n)) => (6, n.to_bits()),
+                };
+                key.extend([tag, bits]);
+            }
+        }
+        if let Some(shared) = self.lists.get(&key) {
+            *tracks = Arc::clone(shared);
+            return;
+        }
+        let bytes = std::mem::size_of_val(tracks.as_ref());
+        // Empty arrays otherwise consume no charged bytes but still grow the
+        // hash table; canonicalize them to the shared initial empty list.
+        if tracks.is_empty() {
+            *tracks = Arc::clone(&EMPTY_GRID_TRACKS);
+            return;
+        }
+        if bytes > MAX_RETAINED_GRID_BYTES.saturating_sub(self.bytes) {
+            *tracks = Arc::clone(if implicit {
+                &AUTO_GRID_TRACKS
+            } else {
+                &EMPTY_GRID_TRACKS
+            });
+            return;
+        }
+        self.bytes += bytes;
+        self.lists.insert(key, Arc::clone(tracks));
+    }
+    fn style(&mut self, style: &mut ComputedStyle) {
+        self.intern(&mut style.grid_template_columns, false);
+        self.intern(&mut style.grid_template_rows, false);
+        self.intern(&mut style.grid_auto_columns, true);
+        self.intern(&mut style.grid_auto_rows, true);
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub enum GridLine {
+    #[default]
+    Auto,
+    Line(i32),
+    Span(usize),
 }
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Edges<T> {
@@ -97,7 +195,20 @@ pub struct ComputedStyle {
     pub flex_grow: f32,
     pub flex_shrink: f32,
     pub flex_basis: Length,
-    pub grid_template_columns: Vec<Length>,
+    pub row_gap: Length,
+    pub column_gap: Length,
+    pub grid_template_columns: Arc<[GridTrack]>,
+    pub grid_template_rows: Arc<[GridTrack]>,
+    pub grid_auto_columns: Arc<[GridTrack]>,
+    pub grid_auto_rows: Arc<[GridTrack]>,
+    pub grid_column_start: GridLine,
+    pub grid_column_end: GridLine,
+    pub grid_row_start: GridLine,
+    pub grid_row_end: GridLine,
+    pub grid_auto_flow: String,
+    pub justify_items: String,
+    pub justify_self: String,
+    pub align_content: String,
     pub position: String,
     pub top: Length,
     pub right: Length,
@@ -147,7 +258,20 @@ impl Default for ComputedStyle {
             flex_grow: 0.0,
             flex_shrink: 1.0,
             flex_basis: Length::Auto,
-            grid_template_columns: vec![],
+            row_gap: Length::Px(0.0),
+            column_gap: Length::Px(0.0),
+            grid_template_columns: Arc::clone(&EMPTY_GRID_TRACKS),
+            grid_template_rows: Arc::clone(&EMPTY_GRID_TRACKS),
+            grid_auto_columns: Arc::clone(&AUTO_GRID_TRACKS),
+            grid_auto_rows: Arc::clone(&AUTO_GRID_TRACKS),
+            grid_column_start: GridLine::Auto,
+            grid_column_end: GridLine::Auto,
+            grid_row_start: GridLine::Auto,
+            grid_row_end: GridLine::Auto,
+            grid_auto_flow: "row".into(),
+            justify_items: "stretch".into(),
+            justify_self: "auto".into(),
+            align_content: "normal".into(),
             position: "static".into(),
             top: Length::Auto,
             right: Length::Auto,
@@ -468,6 +592,28 @@ pub fn parse_declarations(source: &str) -> Vec<Declaration> {
                 continue;
             }
         }
+        if !value.contains("var(")
+            && !matches!(
+                value.to_ascii_lowercase().as_str(),
+                "inherit" | "initial" | "unset" | "revert"
+            )
+        {
+            let valid = match name.as_str() {
+                "grid-template-columns"
+                | "grid-template-rows"
+                | "grid-auto-columns"
+                | "grid-auto-rows" => parse_grid_tracks(value, 16.0, 16.0, 800.0, 600.0)
+                    .is_some_and(|tracks| !name.starts_with("grid-auto-") || !tracks.is_empty()),
+                "grid-column-start" | "grid-column-end" | "grid-row-start" | "grid-row-end" => {
+                    parse_grid_line(value).is_some()
+                }
+                "grid-auto-flow" => valid_grid_auto_flow(value),
+                _ => true,
+            };
+            if !valid {
+                continue;
+            }
+        }
         expand_declaration(&name, value, important, &mut declarations);
     }
     declarations
@@ -518,6 +664,12 @@ fn words(source: &str) -> Vec<&str> {
     result
 }
 fn expand_declaration(name: &str, value: &str, important: bool, out: &mut Vec<Declaration>) {
+    let normalized = (!value.to_ascii_lowercase().contains("var(")
+        && (name.starts_with("grid-")
+            || name.starts_with("place-")
+            || matches!(name, "gap" | "row-gap" | "column-gap")))
+    .then(|| value.to_ascii_lowercase());
+    let value = normalized.as_deref().unwrap_or(value);
     let add = |out: &mut Vec<Declaration>, name: &str, value: &str| {
         out.push(Declaration {
             name: name.into(),
@@ -525,7 +677,66 @@ fn expand_declaration(name: &str, value: &str, important: bool, out: &mut Vec<De
             important,
         })
     };
-    if matches!(
+    if matches!(name, "gap" | "grid-gap") {
+        let values = words(value);
+        if (1..=2).contains(&values.len()) {
+            if !value.contains("var(") && values.iter().any(|part| !matches!(*part,"normal"|"inherit"|"initial"|"unset"|"revert") && !matches!(parse_length(part,16.0,16.0,800.0,600.0),Some(Length::Px(n)|Length::Percent(n)) if n>=0.0)) { return; }
+            if values.len() == 2
+                && values
+                    .iter()
+                    .any(|part| matches!(*part, "inherit" | "initial" | "unset" | "revert"))
+            {
+                return;
+            }
+            add(out, "row-gap", values[0]);
+            add(out, "column-gap", values.get(1).unwrap_or(&values[0]));
+        }
+    } else if matches!(name, "grid-row" | "grid-column" | "grid-area") {
+        let values = split_top_level(value, '/');
+        let count = if name == "grid-area" { 4 } else { 2 };
+        if values.is_empty() || values.len() > count {
+            return;
+        }
+        let global = matches!(value, "inherit" | "initial" | "unset" | "revert");
+        if !global
+            && !value.contains("var(")
+            && values.iter().any(|v| parse_grid_line(v.trim()).is_none())
+        {
+            return;
+        }
+        let names: &[&str] = match name {
+            "grid-row" => &["grid-row-start", "grid-row-end"],
+            "grid-column" => &["grid-column-start", "grid-column-end"],
+            _ => &[
+                "grid-row-start",
+                "grid-column-start",
+                "grid-row-end",
+                "grid-column-end",
+            ],
+        };
+        for (i, name) in names.iter().enumerate() {
+            add(
+                out,
+                name,
+                if global {
+                    value
+                } else {
+                    values.get(i).map(|v| v.trim()).unwrap_or("auto")
+                },
+            );
+        }
+    } else if matches!(name, "place-items" | "place-self" | "place-content") {
+        let values = words(value);
+        if (1..=2).contains(&values.len()) {
+            let suffix = name.strip_prefix("place-").unwrap_or("items");
+            add(out, &format!("align-{suffix}"), values[0]);
+            add(
+                out,
+                &format!("justify-{suffix}"),
+                values.get(1).unwrap_or(&values[0]),
+            );
+        }
+    } else if matches!(
         name,
         "margin" | "padding" | "border-width" | "border-color" | "border-style" | "inset"
     ) {
@@ -693,6 +904,8 @@ fn expand_declaration(name: &str, value: &str, important: bool, out: &mut Vec<De
             "padding-inline-end" => "padding-right",
             "padding-block-start" => "padding-top",
             "padding-block-end" => "padding-bottom",
+            "grid-row-gap" => "row-gap",
+            "grid-column-gap" => "column-gap",
             "inline-size" => "width",
             "block-size" => "height",
             "text-decoration-line" => "text-decoration",
@@ -756,6 +969,7 @@ pub fn compute_styles_with_rules(
     let mut visited = vec![false; doc.nodes.len()];
     let mut work = 20_000_000usize;
     let mut retained_variable_bytes = 0usize;
+    let mut grid_tracks = GridTrackPool::default();
     let mut root_font = 16.0;
     while let Some(id) = pending.pop() {
         let Some(node) = doc.nodes.get(id) else {
@@ -950,6 +1164,7 @@ pub fn compute_styles_with_rules(
             style.display = Display::Block;
         }
         variables[id] = vars;
+        grid_tracks.style(&mut style);
         styles[id] = style;
         pending.extend(node.children.iter().rev().copied());
     }
@@ -1011,6 +1226,17 @@ fn supported_property(name: &str) -> bool {
                 | "flex-shrink"
                 | "flex-basis"
                 | "grid-template-columns"
+                | "grid-template-rows"
+                | "grid-auto-columns"
+                | "grid-auto-rows"
+                | "grid-auto-flow"
+                | "grid-column-start"
+                | "grid-column-end"
+                | "grid-row-start"
+                | "grid-row-end"
+                | "justify-items"
+                | "justify-self"
+                | "align-content"
                 | "position"
                 | "top"
                 | "right"
@@ -1419,7 +1645,18 @@ fn apply_property(
     width: f32,
     height: f32,
 ) {
-    let keyword = matches!(name, "float" | "clear").then(|| value.trim().to_ascii_lowercase());
+    let keyword = (name.starts_with("grid-")
+        || matches!(
+            name,
+            "float"
+                | "clear"
+                | "row-gap"
+                | "column-gap"
+                | "justify-items"
+                | "justify-self"
+                | "align-content"
+        ))
+    .then(|| value.trim().to_ascii_lowercase());
     let value = keyword.as_deref().unwrap_or_else(|| value.trim());
     if value.len() > 256
         && matches!(
@@ -1429,6 +1666,10 @@ fn apply_property(
                 | "justify-content"
                 | "align-items"
                 | "align-self"
+                | "justify-items"
+                | "justify-self"
+                | "align-content"
+                | "grid-auto-flow"
                 | "list-style-type"
                 | "vertical-align"
         )
@@ -1687,13 +1928,21 @@ fn apply_property(
                 s.order = order;
             }
         }
-        "gap" | "row-gap" | "column-gap" => {
-            if let Some(v) = words(value)
-                .first()
-                .and_then(|v| parse_length(v, s.font_size, root_font, width, height))
-                .and_then(|v| v.resolve(width))
+        "row-gap" | "column-gap" => {
+            let parsed = if value == "normal" {
+                Some(Length::Px(0.0))
+            } else {
+                length()
+            };
+            if let Some(v @ (Length::Px(_) | Length::Percent(_))) = parsed
+                && v.resolve(width).is_some_and(|v| v >= 0.0)
             {
-                s.gap = v.max(0.0);
+                if name == "row-gap" {
+                    s.row_gap = v;
+                    s.gap = v.resolve(width).unwrap_or(0.0);
+                } else {
+                    s.column_gap = v;
+                }
             }
         }
         "flex-grow" => {
@@ -1711,10 +1960,40 @@ fn apply_property(
                 s.flex_basis = v;
             }
         }
-        "grid-template-columns" => {
-            s.grid_template_columns =
-                parse_grid_tracks(value, s.font_size, root_font, width, height)
+        "grid-template-columns" | "grid-template-rows" | "grid-auto-columns" | "grid-auto-rows" => {
+            if name.starts_with("grid-auto-") && value.contains("repeat(") {
+                return;
+            }
+            if let Some(tracks) = parse_grid_tracks(value, s.font_size, root_font, width, height) {
+                match name {
+                    "grid-template-columns" => s.grid_template_columns = tracks.into(),
+                    "grid-template-rows" => s.grid_template_rows = tracks.into(),
+                    "grid-auto-columns" if !tracks.is_empty() => {
+                        s.grid_auto_columns = tracks.into()
+                    }
+                    "grid-auto-rows" if !tracks.is_empty() => s.grid_auto_rows = tracks.into(),
+                    _ => {}
+                }
+            }
         }
+        "grid-column-start" | "grid-column-end" | "grid-row-start" | "grid-row-end" => {
+            if let Some(line) = parse_grid_line(value) {
+                match name {
+                    "grid-column-start" => s.grid_column_start = line,
+                    "grid-column-end" => s.grid_column_end = line,
+                    "grid-row-start" => s.grid_row_start = line,
+                    _ => s.grid_row_end = line,
+                }
+            }
+        }
+        "grid-auto-flow" => {
+            if valid_grid_auto_flow(value) {
+                s.grid_auto_flow = value.into();
+            }
+        }
+        "justify-items" => s.justify_items = value.into(),
+        "justify-self" => s.justify_self = value.into(),
+        "align-content" => s.align_content = value.into(),
         "position" => {
             if matches!(
                 value,
@@ -1820,6 +2099,23 @@ fn copy_property(s: &mut ComputedStyle, p: &ComputedStyle, name: &str) {
         "flex-grow" => s.flex_grow = p.flex_grow,
         "flex-shrink" => s.flex_shrink = p.flex_shrink,
         "flex-basis" => s.flex_basis = p.flex_basis,
+        "row-gap" => {
+            s.row_gap = p.row_gap;
+            s.gap = p.gap;
+        }
+        "column-gap" => s.column_gap = p.column_gap,
+        "grid-template-columns" => s.grid_template_columns = p.grid_template_columns.clone(),
+        "grid-template-rows" => s.grid_template_rows = p.grid_template_rows.clone(),
+        "grid-auto-columns" => s.grid_auto_columns = p.grid_auto_columns.clone(),
+        "grid-auto-rows" => s.grid_auto_rows = p.grid_auto_rows.clone(),
+        "grid-column-start" => s.grid_column_start = p.grid_column_start,
+        "grid-column-end" => s.grid_column_end = p.grid_column_end,
+        "grid-row-start" => s.grid_row_start = p.grid_row_start,
+        "grid-row-end" => s.grid_row_end = p.grid_row_end,
+        "grid-auto-flow" => s.grid_auto_flow = p.grid_auto_flow.clone(),
+        "justify-items" => s.justify_items = p.justify_items.clone(),
+        "justify-self" => s.justify_self = p.justify_self.clone(),
+        "align-content" => s.align_content = p.align_content.clone(),
         "top" => s.top = p.top,
         "right" => s.right = p.right,
         "bottom" => s.bottom = p.bottom,
@@ -1944,35 +2240,124 @@ fn parse_calc(
         Length::Px(total)
     })
 }
-fn parse_grid_tracks(value: &str, font: f32, root: f32, width: f32, height: f32) -> Vec<Length> {
-    let expanded = if let Some(inner) = value
-        .strip_prefix("repeat(")
-        .and_then(|x| x.strip_suffix(')'))
-    {
-        let args = split_top_level(inner, ',');
-        let n = args
-            .first()
-            .and_then(|n| n.trim().parse::<usize>().ok())
-            .unwrap_or(1)
-            .min(64);
-        args.get(1)
-            .map(|v| vec![*v; n].join(" "))
-            .unwrap_or_default()
-    } else {
-        value.into()
-    };
-    let tokens = words(&expanded);
-    tokens
-        .into_iter()
-        .take(64)
-        .filter_map(|s| {
-            if let Some(n) = s.strip_suffix("fr").and_then(finite_number) {
-                (n >= 0.0).then_some(Length::Fr(n))
-            } else {
-                parse_length(s, font, root, width, height)
+fn parse_grid_line(value: &str) -> Option<GridLine> {
+    let lower = value.trim().to_ascii_lowercase();
+    if lower == "auto" {
+        return Some(GridLine::Auto);
+    }
+    let parts = words(&lower);
+    if parts.len() == 2 && parts.contains(&"span") {
+        let n = parts
+            .iter()
+            .find(|v| **v != "span")?
+            .parse::<usize>()
+            .ok()?;
+        return (n > 0).then_some(GridLine::Span(n.min(256)));
+    }
+    let n = lower.parse::<i32>().ok()?;
+    (n != 0).then_some(GridLine::Line(n))
+}
+fn valid_grid_auto_flow(value: &str) -> bool {
+    let lower = value.to_ascii_lowercase();
+    let parts = words(&lower);
+    (1..=2).contains(&parts.len())
+        && parts
+            .iter()
+            .all(|v| matches!(*v, "row" | "column" | "dense"))
+        && parts
+            .iter()
+            .filter(|v| matches!(**v, "row" | "column"))
+            .count()
+            <= 1
+        && parts.iter().filter(|v| **v == "dense").count() <= 1
+}
+fn parse_grid_tracks(
+    value: &str,
+    font: f32,
+    root: f32,
+    width: f32,
+    height: f32,
+) -> Option<Vec<GridTrack>> {
+    fn breadth(value: &str, units: [f32; 4]) -> Option<GridBreadth> {
+        match value.trim() {
+            "auto" => Some(GridBreadth::Auto),
+            "min-content" => Some(GridBreadth::MinContent),
+            "max-content" => Some(GridBreadth::MaxContent),
+            v => {
+                let length = if let Some(n) = v.strip_suffix("fr") {
+                    Length::Fr(finite_number(n)?)
+                } else {
+                    parse_length(v, units[0], units[1], units[2], units[3])?
+                };
+                match length {
+                    Length::Px(n) | Length::Percent(n) | Length::Fr(n) if n >= 0.0 => {
+                        Some(GridBreadth::Length(length))
+                    }
+                    _ => None,
+                }
             }
-        })
-        .collect()
+        }
+    }
+    fn list(value: &str, units: [f32; 4], depth: usize) -> Option<Vec<GridTrack>> {
+        if depth > 8 {
+            return None;
+        }
+        let mut tracks = Vec::new();
+        for token in words(value) {
+            if let Some(inner) = token
+                .strip_prefix("repeat(")
+                .and_then(|s| s.strip_suffix(')'))
+            {
+                if depth > 0 {
+                    return None;
+                }
+                let args = split_top_level(inner, ',');
+                if args.len() != 2 {
+                    return None;
+                }
+                let count = args[0].trim().parse::<usize>().ok()?.min(64);
+                if count == 0 {
+                    return None;
+                }
+                let repeated = list(args[1].trim(), units, depth + 1)?;
+                for _ in 0..count {
+                    tracks.extend(
+                        repeated
+                            .iter()
+                            .copied()
+                            .take(64usize.saturating_sub(tracks.len())),
+                    );
+                }
+            } else if let Some(inner) = token
+                .strip_prefix("minmax(")
+                .and_then(|s| s.strip_suffix(')'))
+            {
+                let args = split_top_level(inner, ',');
+                if args.len() != 2 {
+                    return None;
+                }
+                let min = breadth(args[0], units)?;
+                let max = breadth(args[1], units)?;
+                if matches!(min, GridBreadth::Length(Length::Fr(_))) {
+                    return None;
+                }
+                if tracks.len() < 64 {
+                    tracks.push(GridTrack { min, max });
+                }
+            } else {
+                let track = GridTrack::single(breadth(token, units)?);
+                if tracks.len() < 64 {
+                    tracks.push(track);
+                }
+            }
+        }
+        (!tracks.is_empty()).then_some(tracks)
+    }
+    let value = value.trim().to_ascii_lowercase();
+    if value == "none" {
+        return Some(Vec::new());
+    }
+    list(&value, [font, root, width, height], 0)
 }
 
 pub fn parse_color(value: &str) -> Option<Color> {
@@ -2348,14 +2733,216 @@ mod tests {
         }
     }
     #[test]
+    fn repeated_explicit_grid_lists_are_interned_after_unit_resolution() {
+        let implicit = "minmax(2px,1fr) ".repeat(64);
+        let source = format!(
+            "<style>i{{grid-template-columns:repeat(64,1em);grid-template-rows:repeat(64,1fr);grid-auto-columns:{implicit};grid-auto-rows:{implicit}}}#different{{font-size:20px}}</style>{}<i id=different></i>",
+            "<i></i>".repeat(1000)
+        );
+        let doc = Document::parse(&source);
+        let styles = compute_styles(&doc, &doc.stylesheets(), 800.0, 600.0);
+        let ids = doc.query_selector_all("i");
+        let first = &styles[ids[0]];
+        for &id in &ids[..1000] {
+            let child = &styles[id];
+            for (own, shared) in [
+                (&child.grid_template_columns, &first.grid_template_columns),
+                (&child.grid_template_rows, &first.grid_template_rows),
+                (&child.grid_auto_columns, &first.grid_auto_columns),
+                (&child.grid_auto_rows, &first.grid_auto_rows),
+            ] {
+                assert_eq!(own.len(), 64);
+                assert!(Arc::ptr_eq(own, shared));
+            }
+        }
+        let different = &styles[doc.query_selector("#different").unwrap()];
+        assert!(!Arc::ptr_eq(
+            &different.grid_template_columns,
+            &first.grid_template_columns
+        ));
+        assert_eq!(
+            different.grid_template_columns[0],
+            GridTrack::single(GridBreadth::Length(Length::Px(20.0)))
+        );
+        assert!(Arc::ptr_eq(
+            &different.grid_template_rows,
+            &first.grid_template_rows
+        ));
+    }
+
+    #[test]
+    fn unique_computed_grid_storage_has_a_retained_byte_cap() {
+        let mut pool = GridTrackPool::default();
+        let mut retained = Vec::new();
+        let count = MAX_RETAINED_GRID_BYTES / (64 * std::mem::size_of::<GridTrack>());
+        for index in 0..count + 2 {
+            let mut tracks: Arc<[GridTrack]> =
+                vec![GridTrack::single(GridBreadth::Length(Length::Px(index as f32))); 64].into();
+            pool.intern(&mut tracks, false);
+            retained.push(tracks);
+        }
+        assert_eq!(pool.bytes, MAX_RETAINED_GRID_BYTES);
+        assert_eq!(pool.lists.len(), count);
+        assert!(retained[count].is_empty() && retained[count + 1].is_empty());
+        let mut implicit: Arc<[GridTrack]> =
+            vec![GridTrack::single(GridBreadth::Length(Length::Px(999_999.0))); 64].into();
+        pool.intern(&mut implicit, true);
+        assert!(Arc::ptr_eq(&implicit, &AUTO_GRID_TRACKS));
+        let mut duplicate: Arc<[GridTrack]> =
+            vec![GridTrack::single(GridBreadth::Length(Length::Px(0.0))); 64].into();
+        pool.intern(&mut duplicate, false);
+        assert!(Arc::ptr_eq(&duplicate, &retained[0]));
+    }
+
+    #[test]
+    fn grid_shorthands_preserve_case_sensitive_custom_property_references() {
+        let doc = Document::parse(
+            "<div style='--Track:70px;--track:10px;grid-template-columns:var(--Track);gap:var(--Track)'></div>",
+        );
+        let styles = compute_styles(&doc, &[], 300.0, 200.0);
+        let style = &styles[doc.query_selector("div").unwrap()];
+        assert_eq!(
+            style.grid_template_columns[0],
+            GridTrack::single(GridBreadth::Length(Length::Px(70.0)))
+        );
+        assert_eq!(style.row_gap, Length::Px(70.0));
+        assert_eq!(style.column_gap, Length::Px(70.0));
+    }
+
+    #[test]
+    fn inherited_grid_track_lists_share_storage_and_overrides_remain_independent() {
+        let implicit = "1fr ".repeat(64);
+        let source = format!(
+            "<style>body{{grid-template-columns:repeat(64,1fr);grid-template-rows:repeat(64,2fr);grid-auto-columns:{implicit};grid-auto-rows:{implicit}}}i{{grid-template-columns:inherit;grid-template-rows:inherit;grid-auto-columns:inherit;grid-auto-rows:inherit}}#override{{grid-template-columns:25px}}</style>{}<i id=override></i>",
+            "<i></i>".repeat(5000)
+        );
+        let doc = Document::parse(&source);
+        let styles = compute_styles(&doc, &doc.stylesheets(), 800.0, 600.0);
+        let parent = &styles[doc.query_selector("body").unwrap()];
+        let mut siblings = 0;
+        for id in doc.query_selector_all("i") {
+            if doc.attr(id, "id") == Some("override") {
+                continue;
+            }
+            let child = &styles[id];
+            siblings += 1;
+            for (own, inherited) in [
+                (&child.grid_template_columns, &parent.grid_template_columns),
+                (&child.grid_template_rows, &parent.grid_template_rows),
+                (&child.grid_auto_columns, &parent.grid_auto_columns),
+                (&child.grid_auto_rows, &parent.grid_auto_rows),
+            ] {
+                assert_eq!(own.len(), 64);
+                assert!(Arc::ptr_eq(own, inherited));
+            }
+        }
+        assert_eq!(siblings, 5000);
+        let own = &styles[doc.query_selector("#override").unwrap()];
+        assert_eq!(own.grid_template_columns.len(), 1);
+        assert!(!Arc::ptr_eq(
+            &own.grid_template_columns,
+            &parent.grid_template_columns
+        ));
+        assert_eq!(parent.grid_template_columns.len(), 64);
+        let first = ComputedStyle::default();
+        let second = ComputedStyle::default();
+        assert!(Arc::ptr_eq(
+            &first.grid_auto_rows,
+            &second.grid_auto_columns
+        ));
+        assert!(Arc::ptr_eq(
+            &first.grid_template_columns,
+            &second.grid_template_rows
+        ));
+    }
+
+    #[test]
+    fn grid_tracks_preserve_minmax_repeat_and_reject_invalid_overrides() {
+        let doc = Document::parse(
+            "<div style='grid-template-columns:20px repeat(2,minmax(10px,1fr) max-content);grid-template-columns:minmax(1fr,10px);grid-template-rows:30% auto;grid-auto-rows:12px 24px;grid-auto-columns:minmax(min-content,60px)'></div>",
+        );
+        let styles = compute_styles(&doc, &[], 400.0, 300.0);
+        let style = &styles[doc.query_selector("div").unwrap()];
+        assert_eq!(style.grid_template_columns.len(), 5);
+        assert_eq!(
+            style.grid_template_columns[1],
+            GridTrack {
+                min: GridBreadth::Length(Length::Px(10.0)),
+                max: GridBreadth::Length(Length::Fr(1.0))
+            }
+        );
+        assert_eq!(
+            style.grid_template_columns[4],
+            GridTrack::single(GridBreadth::MaxContent)
+        );
+        assert_eq!(
+            style.grid_template_rows[0],
+            GridTrack::single(GridBreadth::Length(Length::Percent(30.0)))
+        );
+        assert_eq!(style.grid_auto_rows.len(), 2);
+        assert_eq!(style.grid_auto_columns[0].min, GridBreadth::MinContent);
+        for invalid in [
+            "repeat(0,1fr)",
+            "minmax(1fr,10px)",
+            "10px bogus",
+            "minmax(-10px,auto)",
+            "repeat(2,none)",
+        ] {
+            assert!(
+                parse_grid_tracks(invalid, 16.0, 16.0, 400.0, 300.0).is_none(),
+                "{invalid}"
+            );
+        }
+    }
+    #[test]
+    fn grid_keywords_and_gaps_are_case_insensitive_and_invalid_shorthands_are_atomic() {
+        let doc = Document::parse(
+            "<div style='gap:5px 9px;gap:-3px 20px;grid-auto-flow:COLUMN DENSE;grid-row:SPAN 2;grid-template-columns:20px;grid-template-columns:repeat(2,repeat(2,1fr))'></div>",
+        );
+        let styles = compute_styles(&doc, &[], 300.0, 200.0);
+        let style = &styles[doc.query_selector("div").unwrap()];
+        assert_eq!(style.row_gap, Length::Px(5.0));
+        assert_eq!(style.column_gap, Length::Px(9.0));
+        assert_eq!(style.grid_auto_flow, "column dense");
+        assert_eq!(style.grid_row_start, GridLine::Span(2));
+        assert_eq!(style.grid_template_columns.len(), 1);
+    }
+
+    #[test]
+    fn grid_shorthands_expand_before_cascade_and_global_values_copy_all_fields() {
+        let doc = Document::parse(
+            "<main style='gap:4px 8px;grid-area:2 / -3 / span 2 / -1;grid-column-start:3;grid-auto-flow:column dense;place-items:center end;grid-auto-rows:30px'><i style='grid-area:inherit;gap:inherit;grid-auto-rows:inherit;justify-items:inherit'></i></main>",
+        );
+        let styles = compute_styles(&doc, &[], 400.0, 300.0);
+        let parent = &styles[doc.query_selector("main").unwrap()];
+        let child = &styles[doc.query_selector("i").unwrap()];
+        assert_eq!(parent.row_gap, Length::Px(4.0));
+        assert_eq!(parent.column_gap, Length::Px(8.0));
+        assert_eq!(parent.grid_column_start, GridLine::Line(3));
+        assert_eq!(parent.grid_column_end, GridLine::Line(-1));
+        assert_eq!(parent.grid_row_start, GridLine::Line(2));
+        assert_eq!(parent.grid_row_end, GridLine::Span(2));
+        assert_eq!(parent.grid_auto_flow, "column dense");
+        assert_eq!(parent.align_items, "center");
+        assert_eq!(child.justify_items, "end");
+        assert_eq!(child.row_gap, parent.row_gap);
+        assert_eq!(child.column_gap, parent.column_gap);
+        assert_eq!(child.grid_column_start, parent.grid_column_start);
+        assert_eq!(child.grid_auto_rows, parent.grid_auto_rows);
+        assert_eq!(parse_grid_line("0"), None);
+        assert_eq!(parse_grid_line("span -2"), None);
+        assert_eq!(parse_grid_line("2 span"), Some(GridLine::Span(2)));
+    }
+
+    #[test]
     fn fractional_grid_tracks_remain_distinct_from_percentages() {
         assert_eq!(
-            parse_grid_tracks("100px 25% 1fr 2fr", 16.0, 16.0, 800.0, 600.0),
+            parse_grid_tracks("100px 25% 1fr 2fr", 16.0, 16.0, 800.0, 600.0).unwrap(),
             vec![
-                Length::Px(100.0),
-                Length::Percent(25.0),
-                Length::Fr(1.0),
-                Length::Fr(2.0)
+                GridTrack::single(GridBreadth::Length(Length::Px(100.0))),
+                GridTrack::single(GridBreadth::Length(Length::Percent(25.0))),
+                GridTrack::single(GridBreadth::Length(Length::Fr(1.0))),
+                GridTrack::single(GridBreadth::Length(Length::Fr(2.0)))
             ]
         );
         assert_eq!(Length::Fr(2.0).resolve(800.0), None);
@@ -2399,7 +2986,7 @@ mod tests {
             "{}(display:block)",
             "not ".repeat(1000)
         )));
-        let tracks = parse_grid_tracks("repeat(999999,1fr)", 16.0, 16.0, 800.0, 600.0);
+        let tracks = parse_grid_tracks("repeat(999999,1fr)", 16.0, 16.0, 800.0, 600.0).unwrap();
         assert_eq!(tracks.len(), 64);
     }
     #[test]
