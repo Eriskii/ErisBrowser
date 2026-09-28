@@ -73,10 +73,13 @@ The planned progression is:
    and comparisons. Temporary parser trees still have recursive ownership and
    incomplete allocation accounting. Preserve their existing limits during the
    remaining parser work.
-2. Move ordinary expression, statement and function execution to an explicit
-   continuation stack. Preserve evaluation order, lexical environments,
-   return/throw/finally behavior and quota cleanup. Keep logical call limits and
-   guards on native helpers that can call author code.
+2. Expression and reference evaluation now uses [explicit continuations](../tests/conformance/expression-frames.md),
+   including frame-base preservation across reentrant callbacks and precharged
+   frame/payload growth. Existing depth counters remain. Move statements,
+   function bodies and default initialization into the same driver next. Preserve
+   evaluation order, lexical environments, return/throw/finally behavior and quota
+   cleanup. Keep logical call limits and guards on native helpers that can call
+   author code.
 3. Convert the recursive parser paths to bounded continuations with flat syntax
    ownership. Preserve strict-context checks, RegExp/template lexical goals,
    early errors and safe destruction of partially parsed input.
@@ -84,6 +87,8 @@ The planned progression is:
 Each stage needs independent allocation, callback, cleanup and small-native-stack
 checks. Keep the original 32-function test and all previous passing cases in the
 inventory throughout; only the combined parser and runtime work can establish
-that test's improved result. Flat executable ownership and bounded declaration
-traversal are implemented; explicit execution continuations and an iterative
-parser remain unimplemented.
+that test's improved result. Flat executable ownership, bounded declaration
+traversal and expression/reference continuations are implemented. Statement/call
+continuations and an iterative parser remain unimplemented. The recorded
+[480 depth observations](../tests/conformance/expression-frames-depth.json) retain
+the existing parser and call frontiers through this first continuation stage.

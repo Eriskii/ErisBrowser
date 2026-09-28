@@ -17,6 +17,7 @@ use std::fmt;
 use std::rc::Rc;
 
 mod code;
+mod machine;
 mod names;
 mod tokens;
 
@@ -2971,8 +2972,13 @@ impl Flow {
     }
 }
 enum Reference {
+    CodeName {
+        unit: Rc<code::Unit>,
+        expression: code::ExprId,
+        owner: Option<usize>,
+        strict: bool,
+    },
     Binding(usize, String, bool),
-    Unresolvable(String, bool),
     // Computed names stay uncoerced until GetValue/PutValue. A successful read
     // replaces the name with a String so compound assignments convert once.
     Property(Value, Value, bool),
@@ -3187,6 +3193,7 @@ pub struct Runtime {
     allocated: usize,
     calls: usize,
     eval_depth: usize,
+    frames: Vec<machine::Frame>,
     json_depth: usize,
     stack_units: usize,
     pub console: Vec<String>,
@@ -3316,12 +3323,15 @@ impl Runtime {
                     .sum::<usize>(),
             calls: 0,
             eval_depth: 0,
+            frames: Vec::new(),
             json_depth: 0,
             stack_units: 0,
             console: Vec::new(),
             last_default_prevented: false,
             tracked_global_keys: TrackedGlobal::ALL.map(|kind| kind.name().into()),
         };
+        machine::initialize(&mut runtime)
+            .expect("fixed expression frame bootstrap fits runtime limits");
         runtime
             .initialize_intrinsics()
             .expect("fixed intrinsic bootstrap fits runtime limits");
@@ -5035,8 +5045,10 @@ impl Runtime {
     }
     fn array(&mut self, values: Vec<Value>) -> Result<Value> {
         self.charge(32 + values.len() * std::mem::size_of::<Value>())?;
+        self.array_reserved(values)
+    }
+    fn array_reserved(&mut self, values: Vec<Value>) -> Result<Value> {
         let id = self.arrays.len();
-        self.arrays.push(values);
         let Value::Object(properties) = self.object_ordered([])? else {
             unreachable!()
         };
@@ -5044,6 +5056,7 @@ impl Runtime {
             .array_prototype
             .map(Value::Array)
             .or_else(|| self.prototypes.get("Array").copied().map(Value::Object));
+        self.arrays.push(values);
         self.array_properties.push(properties);
         self.array_holes.push(BTreeSet::new());
         Ok(Value::Array(id))
@@ -6054,308 +6067,7 @@ impl Runtime {
         env: usize,
         doc: &mut Document,
     ) -> Result<Value> {
-        if self.eval_depth >= MAX_DEPTH {
-            return Err(ScriptError::resource(
-                "expression evaluation nesting limit exceeded",
-            ));
-        }
-        self.enter_stack(1)?;
-        self.eval_depth += 1;
-        let result = self.eval_inner(unit, expression, env, doc);
-        self.eval_depth -= 1;
-        self.stack_units -= 1;
-        result
-    }
-    fn eval_inner(
-        &mut self,
-        unit: &Rc<code::Unit>,
-        expression: &code::ExprId,
-        env: usize,
-        doc: &mut Document,
-    ) -> Result<Value> {
-        self.tick()?;
-        match unit.expr(*expression) {
-            code::Expr::Literal(value) => Ok(value.clone()),
-            code::Expr::Template(head, tail) => {
-                let mut output = Vec::new();
-                self.append_template_text(&mut output, head)?;
-                for (expression, text) in tail {
-                    let value = self.eval(unit, expression, env, doc)?;
-                    let cooked = self.string_hint(value, doc)?;
-                    self.append_template_text(&mut output, &cooked)?;
-                    self.append_template_text(&mut output, text)?;
-                }
-                self.string(output)
-            }
-            code::Expr::RegExp(pattern) => self.regexp_object(pattern.clone()),
-            code::Expr::Ident(name) => {
-                let owner = self
-                    .resolve_binding(env, name)?
-                    .ok_or_else(|| ScriptError::reference(format!("'{name}' is not defined")))?;
-                self.binding_value(owner, name, doc)
-            }
-            code::Expr::Sequence(items) => {
-                let mut last = Value::Undefined;
-                for item in items {
-                    last = self.eval(unit, item, env, doc)?;
-                }
-                Ok(last)
-            }
-            code::Expr::Array(items) => {
-                let mut values = Vec::new();
-                let mut holes = BTreeSet::new();
-                for (index, item) in items.iter().enumerate() {
-                    values.push(if let Some(item) = item {
-                        self.eval(unit, item, env, doc)?
-                    } else {
-                        holes.insert(index);
-                        Value::Undefined
-                    });
-                }
-                self.charge(holes.len().saturating_mul(32))?;
-                let array = self.array(values)?;
-                let Value::Array(id) = array else {
-                    unreachable!()
-                };
-                self.array_holes[id] = holes;
-                Ok(array)
-            }
-            code::Expr::Object(items) => {
-                let object = self.object_ordered([])?;
-                for (key, entry) in items {
-                    if let code::ObjectEntry::Prototype(expression) = entry {
-                        let prototype = self.eval(unit, expression, env, doc)?;
-                        if js_object(&prototype) || prototype == Value::Null {
-                            self.set_object_prototype(&object, prototype)?;
-                        }
-                        continue;
-                    }
-                    // ToPropertyKey precedes RHS evaluation and function
-                    // creation. This runtime's supported keys are strings.
-                    let key = match key {
-                        code::PropertyName::Literal(key) => key.clone(),
-                        code::PropertyName::Computed(expression) => {
-                            let value = self.eval(unit, expression, env, doc)?;
-                            self.string_hint(value, doc)?
-                        }
-                    };
-                    let mut desc = PropertyDescriptor {
-                        enumerable: Some(true),
-                        configurable: Some(true),
-                        ..PropertyDescriptor::default()
-                    };
-                    match entry {
-                        code::ObjectEntry::Data(expression) => {
-                            let value = self.eval(unit, expression, env, doc)?;
-                            if unit.anonymous(*expression) {
-                                self.set_function_name(&value, &key, None)?;
-                            }
-                            desc.value = Some(value);
-                            desc.writable = Some(true);
-                        }
-                        code::ObjectEntry::Method(code) => {
-                            let function =
-                                self.function_value(&code::FunctionRef::new(unit, *code), env)?;
-                            self.set_function_name(&function, &key, None)?;
-                            desc.value = Some(function);
-                            desc.writable = Some(true);
-                        }
-                        code::ObjectEntry::Accessor(code, setter) => {
-                            let function =
-                                self.function_value(&code::FunctionRef::new(unit, *code), env)?;
-                            self.set_function_name(
-                                &function,
-                                &key,
-                                Some(if *setter { "set" } else { "get" }),
-                            )?;
-                            if *setter {
-                                desc.set = Some(function);
-                            } else {
-                                desc.get = Some(function);
-                            }
-                        }
-                        code::ObjectEntry::Prototype(_) => unreachable!(),
-                    }
-                    self.define_own(&object, &key, desc)?;
-                }
-                Ok(object)
-            }
-            code::Expr::Unary(op, expression) => {
-                if op == "delete" {
-                    return match unit.expr(*expression) {
-                        code::Expr::Member(object, key) => {
-                            let object = self.eval(unit, object, env, doc)?;
-                            let value = self.eval(unit, key, env, doc)?;
-                            let key = self.reference_key(&object, value, doc)?;
-                            let deleted = self.delete_property(object, &key)?;
-                            if !deleted && self.environments[env].strict {
-                                return Err(ScriptError::type_error(
-                                    "cannot delete a non-configurable property",
-                                ));
-                            }
-                            Ok(Value::Bool(deleted))
-                        }
-                        code::Expr::Ident(name) if name == "this" => Ok(Value::Bool(true)),
-                        code::Expr::Ident(name) => {
-                            if let Some(owner) = self.resolve_binding(env, name)? {
-                                if owner == 0
-                                    && let Some(kind) = TrackedGlobal::from_name(name)
-                                {
-                                    let key = self.global_key(kind);
-                                    return self
-                                        .delete_property(Value::Window, &key)
-                                        .map(Value::Bool);
-                                }
-                                let removable = self.environments[owner].bindings[name].deletable;
-                                if removable {
-                                    self.environments[owner].bindings.remove(name);
-                                }
-                                Ok(Value::Bool(removable))
-                            } else {
-                                Ok(Value::Bool(true))
-                            }
-                        }
-                        _ => {
-                            self.eval(unit, expression, env, doc)?;
-                            Ok(Value::Bool(true))
-                        }
-                    };
-                }
-                if op == "typeof"
-                    && let code::Expr::Ident(name) = unit.expr(*expression)
-                    && self.resolve_binding(env, name)?.is_none()
-                {
-                    return self.string("undefined");
-                }
-                let value = self.eval(unit, expression, env, doc)?;
-                if let Value::String(text) = &value {
-                    self.work(1 + text.len() / 8)?;
-                }
-                match op.as_str() {
-                    "!" => Ok(Value::Bool(!value.truthy())),
-                    "-" => Ok(Value::Number(-self.number_value(value, doc)?)),
-                    "+" => Ok(Value::Number(self.number_value(value, doc)?)),
-                    "~" => Ok(Value::Number(
-                        (!to_i32(self.number_value(value, doc)?)) as f64,
-                    )),
-                    "void" => Ok(Value::Undefined),
-                    "typeof" => self.string(match value {
-                        Value::Undefined => "undefined",
-                        Value::Bool(_) => "boolean",
-                        Value::Number(_) => "number",
-                        Value::String(_) => "string",
-                        Value::Function(_) | Value::Native(_) => "function",
-                        _ => "object",
-                    }),
-                    _ => Err(ScriptError::new("unknown unary operator")),
-                }
-            }
-            code::Expr::BinaryChain(left, operations) => {
-                let mut left = self.eval(unit, left, env, doc)?;
-                for (op, right) in operations {
-                    self.tick()?;
-                    if op == "&&" && !left.truthy()
-                        || op == "||" && left.truthy()
-                        || op == "??" && !matches!(left, Value::Undefined | Value::Null)
-                    {
-                        continue;
-                    }
-                    let right = self.eval(unit, right, env, doc)?;
-                    left = if matches!(op.as_str(), "&&" | "||" | "??") {
-                        right
-                    } else {
-                        self.binary_value(op, left, right, doc)?
-                    };
-                }
-                Ok(left)
-            }
-            code::Expr::Conditional(condition, yes, no) => {
-                if self.eval(unit, condition, env, doc)?.truthy() {
-                    self.eval(unit, yes, env, doc)
-                } else {
-                    self.eval(unit, no, env, doc)
-                }
-            }
-            code::Expr::Assign(op, left, right) => {
-                let mut reference = self.reference(unit, left, env, doc)?;
-                if matches!(op.as_str(), "&&=" | "||=" | "??=") {
-                    let old = self.read_reference(&mut reference, doc)?;
-                    if op == "&&=" && !old.truthy()
-                        || op == "||=" && old.truthy()
-                        || op == "??=" && !matches!(old, Value::Undefined | Value::Null)
-                    {
-                        return Ok(old);
-                    }
-                    let value = self.eval(unit, right, env, doc)?;
-                    if let code::Expr::Ident(name) = unit.expr(*left)
-                        && unit.anonymous(*right)
-                    {
-                        // UTF-8 to UTF-16 may retain a Vec while copying to Rc.
-                        // Skip this work entirely on the short-circuit path.
-                        self.work(1 + name.len() / 8)?;
-                        self.charge(64 + name.len().saturating_mul(4))?;
-                        self.set_function_name(&value, &name.as_str().into(), None)?;
-                    }
-                    self.write_reference(reference, value.clone(), doc)?;
-                    return Ok(value);
-                }
-                let old = if op != "=" {
-                    Some(self.read_reference(&mut reference, doc)?)
-                } else {
-                    None
-                };
-                let mut value = self.eval(unit, right, env, doc)?;
-                if let Some(old) = old {
-                    value = self.binary_value(&op[..op.len() - 1], old, value, doc)?;
-                }
-                self.write_reference(reference, value.clone(), doc)?;
-                Ok(value)
-            }
-            code::Expr::Update(target, delta, prefix) => {
-                let mut reference = self.reference(unit, target, env, doc)?;
-                let previous = self.read_reference(&mut reference, doc)?;
-                if let Value::String(text) = &previous {
-                    self.work(1 + text.len() / 8)?;
-                }
-                let old = self.number_value(previous, doc)?;
-                let value = Value::Number(old + delta);
-                self.write_reference(reference, value.clone(), doc)?;
-                Ok(if *prefix { value } else { Value::Number(old) })
-            }
-            code::Expr::Member(object, property) => {
-                let object = self.eval(unit, object, env, doc)?;
-                let value = self.eval(unit, property, env, doc)?;
-                let property = self.reference_key(&object, value, doc)?;
-                self.get_key(object, &property, doc)
-            }
-            code::Expr::Call(callee, arguments) => {
-                let (function, receiver) =
-                    if let code::Expr::Member(object, property) = unit.expr(*callee) {
-                        let receiver = self.eval(unit, object, env, doc)?;
-                        let value = self.eval(unit, property, env, doc)?;
-                        let property = self.reference_key(&receiver, value, doc)?;
-                        (self.get_key(receiver.clone(), &property, doc)?, receiver)
-                    } else {
-                        (self.eval(unit, callee, env, doc)?, Value::Undefined)
-                    };
-                let arguments = arguments
-                    .iter()
-                    .map(|argument| self.eval(unit, argument, env, doc))
-                    .collect::<Result<Vec<_>>>()?;
-                self.call(function, arguments, receiver, doc)
-            }
-            code::Expr::New(callee, arguments) => {
-                let constructor = self.eval(unit, callee, env, doc)?;
-                let arguments = arguments
-                    .iter()
-                    .map(|argument| self.eval(unit, argument, env, doc))
-                    .collect::<Result<Vec<_>>>()?;
-                self.construct(constructor, arguments, doc)
-            }
-            code::Expr::Function(code) => {
-                self.function_value(&code::FunctionRef::new(unit, *code), env)
-            }
-        }
+        machine::evaluate(self, unit, *expression, env, doc)
     }
     fn number_hint_primitive(&mut self, value: Value, doc: &mut Document) -> Result<Value> {
         if !js_object(&value) {
@@ -6606,26 +6318,7 @@ impl Runtime {
         env: usize,
         doc: &mut Document,
     ) -> Result<Reference> {
-        match unit.expr(*expression) {
-            code::Expr::Ident(name) => {
-                let strict = self.environments[env].strict;
-                Ok(if let Some(owner) = self.resolve_binding(env, name)? {
-                    Reference::Binding(owner, name.clone(), strict)
-                } else {
-                    Reference::Unresolvable(name.clone(), strict)
-                })
-            }
-            code::Expr::Member(object, property) => {
-                let object = self.eval(unit, object, env, doc)?;
-                let value = self.eval(unit, property, env, doc)?;
-                Ok(Reference::Property(
-                    object,
-                    value,
-                    self.environments[env].strict,
-                ))
-            }
-            _ => Err(ScriptError::type_error("invalid assignment target")),
-        }
+        machine::evaluate_reference(self, unit, *expression, env, doc)
     }
     fn reference_key(
         &mut self,
@@ -6644,10 +6337,21 @@ impl Runtime {
     }
     fn read_reference(&mut self, reference: &mut Reference, doc: &mut Document) -> Result<Value> {
         match reference {
-            Reference::Binding(env, name, _) => self.binding_value(*env, name, doc),
-            Reference::Unresolvable(name, _) => {
-                Err(ScriptError::reference(format!("'{name}' is not defined")))
+            Reference::CodeName {
+                unit,
+                expression,
+                owner,
+                ..
+            } => {
+                let code::Expr::Ident(name) = unit.expr(*expression) else {
+                    unreachable!("identifier reference")
+                };
+                match owner {
+                    Some(env) => self.binding_value(*env, name, doc),
+                    None => Err(ScriptError::reference(format!("'{name}' is not defined"))),
+                }
             }
+            Reference::Binding(env, name, _) => self.binding_value(*env, name, doc),
             Reference::Property(object, name, _) => {
                 let key = self.reference_key(object, name.clone(), doc)?;
                 *name = Value::String(key.clone());
@@ -6662,27 +6366,47 @@ impl Runtime {
         doc: &mut Document,
     ) -> Result<()> {
         match reference {
-            Reference::Binding(env, name, strict) => {
-                if env == 0
-                    && let Some(kind) = TrackedGlobal::from_name(&name)
-                {
-                    let key = self.global_key(kind);
-                    if strict && self.find_property(&Value::Window, &key)?.is_none() {
-                        return Err(ScriptError::reference(format!("'{name}' is not defined")));
-                    }
-                    return self.set_key_strict(Value::Window, &key, value, strict, doc);
-                }
-                // A global object binding can disappear while evaluating the
-                // RHS or ToNumber/valueOf for an update. The reference retains
-                // its environment, not a guaranteed-live map entry. Follow
-                // Object Environment Record SetMutableBinding: strict writes
-                // to a removed binding throw; sloppy writes recreate it.
-                let Some(binding) = self.environments[env].bindings.get_mut(&name) else {
-                    if env != 0 || strict {
-                        return Err(ScriptError::reference(format!("'{name}' is not defined")));
-                    }
-                    return self.write_reference(Reference::Unresolvable(name, false), value, doc);
+            Reference::CodeName {
+                unit,
+                expression,
+                owner,
+                strict,
+            } => {
+                let code::Expr::Ident(name) = unit.expr(expression) else {
+                    unreachable!("identifier reference")
                 };
+                self.write_name(owner, name, strict, value, doc)
+            }
+            Reference::Binding(env, name, strict) => {
+                self.write_name(Some(env), &name, strict, value, doc)
+            }
+            Reference::Property(object, key, strict) => {
+                let key = self.reference_key(&object, key, doc)?;
+                self.set_key_strict(object, &key, value, strict, doc)
+            }
+        }
+    }
+    fn write_name(
+        &mut self,
+        owner: Option<usize>,
+        name: &str,
+        strict: bool,
+        value: Value,
+        doc: &mut Document,
+    ) -> Result<()> {
+        if let Some(env) = owner {
+            if env == 0
+                && let Some(kind) = TrackedGlobal::from_name(name)
+            {
+                let key = self.global_key(kind);
+                if strict && self.find_property(&Value::Window, &key)?.is_none() {
+                    return Err(ScriptError::reference(format!("'{name}' is not defined")));
+                }
+                return self.set_key_strict(Value::Window, &key, value, strict, doc);
+            }
+            // RHS evaluation may delete a captured global binding. Recreate it
+            // only for a sloppy global write; preserve TDZ/immutable behavior.
+            if let Some(binding) = self.environments[env].bindings.get_mut(name) {
                 if !binding.initialized {
                     return Err(ScriptError::reference(format!(
                         "cannot assign to '{name}' before initialization"
@@ -6698,29 +6422,26 @@ impl Runtime {
                     };
                 }
                 binding.value = value;
-                Ok(())
+                return Ok(());
             }
-            Reference::Unresolvable(name, strict) => {
-                if strict {
-                    return Err(ScriptError::reference(format!("'{name}' is not defined")));
-                }
-                if let Some(kind) = TrackedGlobal::from_name(&name) {
-                    let key = self.global_key(kind);
-                    return self.set_key_strict(Value::Window, &key, value, false, doc);
-                }
-                self.define(0, &name, value, true)?;
-                self.environments[0]
-                    .bindings
-                    .get_mut(&name)
-                    .unwrap()
-                    .deletable = true;
-                Ok(())
-            }
-            Reference::Property(object, key, strict) => {
-                let key = self.reference_key(&object, key, doc)?;
-                self.set_key_strict(object, &key, value, strict, doc)
+            if env != 0 || strict {
+                return Err(ScriptError::reference(format!("'{name}' is not defined")));
             }
         }
+        if strict {
+            return Err(ScriptError::reference(format!("'{name}' is not defined")));
+        }
+        if let Some(kind) = TrackedGlobal::from_name(name) {
+            let key = self.global_key(kind);
+            return self.set_key_strict(Value::Window, &key, value, false, doc);
+        }
+        self.define(0, name, value, true)?;
+        self.environments[0]
+            .bindings
+            .get_mut(name)
+            .unwrap()
+            .deletable = true;
+        Ok(())
     }
     fn call(
         &mut self,

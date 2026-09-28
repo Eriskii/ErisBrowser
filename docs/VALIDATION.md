@@ -1,6 +1,65 @@
 # Validation record
 
+## Expression and reference continuations
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **932 Rust tests** pass with `--include-ignored`: 750 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 53 pipeline, one declaration-name matrix, nine completion
+and 44 confined-worker tests. None remain ignored. All **151 Python checks**
+and **57 exact pixel references** pass.
+
+[Expression/reference frames](../tests/conformance/expression-frames.md) retain
+code units, environments and pending values in a checked runtime vector. Reentrant
+native callbacks preserve their outer frame boundary. Work/storage refusal drops
+only the current drive's frames and restores depth counters without fresh quotas.
+Identifier references retain code rather than copying names. Array and argument
+payloads are precharged; property allocation failure cannot leave the parallel
+array arenas out of sync. Statements, function bodies/defaults and native bridges
+remain guarded native recursion. No limits were raised.
+
+Six private test groups cover resource cutoffs, growth/reuse, code release,
+callback order and identity, global references and allocation refusal. Directly
+constructed 80- and 95-unary chains execute on a thread requesting a 128 KiB native
+stack; 96 hits the retained guard. Parsing is checked separately. The
+[480-case depth record](../tests/conformance/expression-frames-depth.json) preserves
+all previous observations: these ordinary-call sources first stop at 14 calls,
+default-initializer sources at 16 and nested IIFEs at parser depth eleven. This
+stage establishes no deeper-call acceptance.
+
+All **20 Test262 profiles / 6,879 modes / 1,680 controls** retain identical case
+identities, policies and every observation. All controls verify; fifteen healthy
+baseline gates pass. Five resource-stopped profiles remain nonpassing observations,
+with no new baselines. HTML stays at 3,868 matches, two mismatches and six unsupported
+modes. The **15,000-case** mutation smoke run has zero caught panics or invariant
+failures: 5,000 accepted HTML, 623 accepted/4,377 rejected scripts and 3,347 accepted/
+1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and display-list size
+1,173 commands; 17 cases stop within paint limits.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+| --- | --- |
+| `eris-browser` | `22ce7be21f1c7e761e3122444e68d7d442ed23394db17da636ef67d4444f46bd` |
+| `eris-js` | `4c9fbe276d4fd08006b692613513d6e5d3479c969d5ea389439a50e650d80081` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `1670858039f7d22dd3e88c8b2cd7fbb895f75596ca2edc0dd21ebc698fa835ee` |
+
+Source-input SHA-256:
+`cbd36365629468ceb6322490c597fc068966802abde992f16488423a1a8dcd23`.
+Local records are `artifacts/*expression-frames*`; the
+[public comparison](../tests/conformance/expression-frames.json) preserves provenance
+and all profile checks. The parser remains recursive and incompletely accounted;
+this is not a total memory bound. Agent sessions remain unavailable, so no
+independent-agent review is assigned. No native-window, Vulkan or Chromium
+performance result is assigned. Full compatibility, production security and the
+requested performance threshold remain unverified.
+
 ## Flat executable ownership and paged tokens
+
+Published checkpoint `58a0ef7` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36461625132),
+including all existing conformance gates, Rust 1.88 and the Vulkan probe.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **926 Rust tests** pass with `--include-ignored`: 744 library,

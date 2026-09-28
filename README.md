@@ -212,6 +212,11 @@ The remaining resource stops prevent a healthy regression baseline.
 The [architecture notes](docs/ARCHITECTURE.md) describe the page pipeline and native process boundaries.
 The [development docket](docs/ROADMAP.md) includes a planned Vulkan rendering backend. An independent [Vulkan transfer probe](tools/vulkan-probe/README.md) checks exact offscreen uploads/readback with its own pinned dependencies; the browser still uses software painting and presentation.
 
+JavaScript uses flat executable units and [expression/reference continuations](tests/conformance/expression-frames.md).
+Statements, function bodies and default initializers still use guarded native
+recursion. This first continuation stage preserves all 6,879 selected upstream
+observations and the existing parser/call depth frontiers without raising limits.
+
 | Module | Responsibility |
 |---|---|
 | `dom.rs` | Bounded HTML tree construction, arena DOM, entities, selector matching, serialization |
