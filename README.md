@@ -96,6 +96,7 @@ python3 tools/test262_conformance.py --profile compound-assignment --baseline te
 python3 tools/test262_conformance.py --profile addition --baseline tests/conformance/test262-addition-current.json
 python3 tools/test262_conformance.py --profile logical-assignment --baseline tests/conformance/test262-logical-assignment-current.json
 python3 tools/test262_conformance.py --profile relational --baseline tests/conformance/test262-relational-current.json
+python3 tools/test262_conformance.py --profile equality --baseline tests/conformance/test262-equality-current.json
 python3 -m unittest discover -s tools -p 'test_*.py'
 cargo run --locked --release --bin eris-stress -- 5000
 ```
@@ -173,6 +174,11 @@ The complete [logical-assignment directory](tests/conformance/test262-logical-as
 retains 132 variants: 72 pass, twelve fail on class/Symbol prerequisites and 48
 remain unsupported. The three short-circuit assignments add 54 passes without
 losses. All 104 assertion controls verify; CI preserves the complete baseline.
+
+The four complete [equality directories](tests/conformance/test262-equality.md)
+retain 286 variants: 190 pass and 96 require exotic values or dynamic eval.
+Ordinary coercion and nullish dispatch add 44 passes. All 128 assertion controls
+verify; CI preserves the gains and complete inventory.
 
 The four complete [relational comparison directories](tests/conformance/test262-relational.md)
 retain 364 variants: 300 pass and 64 require BigInt, Symbol or dynamic eval.

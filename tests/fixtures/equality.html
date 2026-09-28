@@ -1,0 +1,33 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Ordinary equality and conversion hooks</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#loose{left:0}#nullish{left:50px}#strict{left:100px}#identity{left:150px}#order{left:200px}#utf16{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="loose" class="sample"></div><div id="nullish" class="sample"></div>
+<div id="strict" class="sample"></div><div id="identity" class="sample"></div>
+<div id="order" class="sample"></div><div id="utf16" class="sample"></div>
+<button id="change" type="button">Compare through callbacks</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+function apply(color){
+  check(new Number(1)==1&&new String('1')==true&&[]==false,'ordinary loose conversion');mark('loose',color);
+  check(null==undefined&&false!=null&&null!=0&&undefined!=false,'nullish rules');mark('nullish',color);
+  const object={get valueOf(){throw new Error('unused');},get toString(){throw new Error('unused');}};
+  check(object!==1&&new Number(1)!==1&&null!==undefined,'strict comparison');mark('strict',color);
+  check(object==object&&object!={}&&object!=null&&undefined!=object,'identity skips hooks');mark('identity',color);
+  let trace='';const value={valueOf(){trace+='L';return '1';}};
+  function first(){trace+='A';return value;}function second(){trace+='B';return 1;}
+  check(first()==second()&&trace==='ABL','expression and hook order');mark('order',color);
+  check(new String('\uD800')=='\uD800'&&new String('\uD800')!='\uDC00','UTF16 equality');
+  check(new String('\u00E9')!='e\u0301','no normalization');mark('utf16',color);
+}
+apply('green');document.getElementById('result').textContent='ready';document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  apply('blue');const count=Number(new Number(1)==1)+Number(false!=null)+Number(new String('x')=='x');
+  check(count===3,'callback comparisons');document.getElementById('result').textContent=String(count);document.body.className='clicked';
+};
+</script>

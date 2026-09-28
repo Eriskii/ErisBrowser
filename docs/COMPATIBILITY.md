@@ -111,6 +111,13 @@ Strict/readonly/const rules apply only to actual writes. The complete profile
 retains 72 passes, twelve class/Symbol failures and 48 unsupported modes, with
 104 verified controls.
 
+[Loose equality](../tests/conformance/equality.md) follows ordinary primitive
+conversion and Boolean/Number/String dispatch. Null and undefined remain unequal
+to false and zero; object identity and nullish comparisons skip conversion hooks.
+Strict equality remains noncoercing. All four complete upstream directories
+retain 190 passes and 96 unsupported variants, with 128 controls. Exotic values
+and HTMLDDA remain gaps.
+
 [Relational comparisons](../tests/conformance/relational.md) convert both operands
 in source order before choosing UTF-16 string or numeric ordering. Live hooks,
 boxed strings, abrupt completion and unordered NaN are covered. The four complete

@@ -1,0 +1,1070 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all direct .js files in language/expressions/equals, does-not-equals, strict-equals and strict-does-not-equals; no implementation",
+  "directories": {
+    "expressions/equals": [
+      "S11.9.1_A1.js",
+      "S11.9.1_A2.1_T1.js",
+      "S11.9.1_A2.1_T2.js",
+      "S11.9.1_A2.1_T3.js",
+      "S11.9.1_A2.4_T1.js",
+      "S11.9.1_A2.4_T2.js",
+      "S11.9.1_A2.4_T3.js",
+      "S11.9.1_A2.4_T4.js",
+      "S11.9.1_A3.1.js",
+      "S11.9.1_A3.2.js",
+      "S11.9.1_A3.3.js",
+      "S11.9.1_A4.1_T1.js",
+      "S11.9.1_A4.1_T2.js",
+      "S11.9.1_A4.2.js",
+      "S11.9.1_A4.3.js",
+      "S11.9.1_A5.1.js",
+      "S11.9.1_A5.2.js",
+      "S11.9.1_A5.3.js",
+      "S11.9.1_A6.1.js",
+      "S11.9.1_A6.2_T1.js",
+      "S11.9.1_A6.2_T2.js",
+      "S11.9.1_A7.1.js",
+      "S11.9.1_A7.2.js",
+      "S11.9.1_A7.3.js",
+      "S11.9.1_A7.4.js",
+      "S11.9.1_A7.5.js",
+      "S11.9.1_A7.6.js",
+      "S11.9.1_A7.7.js",
+      "S11.9.1_A7.8.js",
+      "S11.9.1_A7.9.js",
+      "S9.1_A1_T3.js",
+      "bigint-and-bigint.js",
+      "bigint-and-boolean.js",
+      "bigint-and-incomparable-primitive.js",
+      "bigint-and-non-finite.js",
+      "bigint-and-number-extremes.js",
+      "bigint-and-number.js",
+      "bigint-and-object.js",
+      "bigint-and-string.js",
+      "coerce-symbol-to-prim-err.js",
+      "coerce-symbol-to-prim-invocation.js",
+      "coerce-symbol-to-prim-return-obj.js",
+      "coerce-symbol-to-prim-return-prim.js",
+      "get-symbol-to-prim-err.js",
+      "symbol-abstract-equality-comparison.js",
+      "symbol-strict-equality-comparison.js",
+      "to-prim-hint.js"
+    ],
+    "expressions/does-not-equals": [
+      "S11.9.2_A1.js",
+      "S11.9.2_A2.1_T1.js",
+      "S11.9.2_A2.1_T2.js",
+      "S11.9.2_A2.1_T3.js",
+      "S11.9.2_A2.4_T1.js",
+      "S11.9.2_A2.4_T2.js",
+      "S11.9.2_A2.4_T3.js",
+      "S11.9.2_A2.4_T4.js",
+      "S11.9.2_A3.1.js",
+      "S11.9.2_A3.2.js",
+      "S11.9.2_A3.3.js",
+      "S11.9.2_A4.1_T1.js",
+      "S11.9.2_A4.1_T2.js",
+      "S11.9.2_A4.2.js",
+      "S11.9.2_A4.3.js",
+      "S11.9.2_A5.1.js",
+      "S11.9.2_A5.2.js",
+      "S11.9.2_A5.3.js",
+      "S11.9.2_A6.1.js",
+      "S11.9.2_A6.2_T1.js",
+      "S11.9.2_A6.2_T2.js",
+      "S11.9.2_A7.1.js",
+      "S11.9.2_A7.2.js",
+      "S11.9.2_A7.3.js",
+      "S11.9.2_A7.4.js",
+      "S11.9.2_A7.5.js",
+      "S11.9.2_A7.6.js",
+      "S11.9.2_A7.7.js",
+      "S11.9.2_A7.8.js",
+      "S11.9.2_A7.9.js",
+      "bigint-and-bigint.js",
+      "bigint-and-boolean.js",
+      "bigint-and-incomparable-primitive.js",
+      "bigint-and-non-finite.js",
+      "bigint-and-number-extremes.js",
+      "bigint-and-number.js",
+      "bigint-and-object.js",
+      "bigint-and-string.js"
+    ],
+    "expressions/strict-equals": [
+      "S11.9.4_A1.js",
+      "S11.9.4_A2.1_T1.js",
+      "S11.9.4_A2.1_T2.js",
+      "S11.9.4_A2.1_T3.js",
+      "S11.9.4_A2.4_T1.js",
+      "S11.9.4_A2.4_T2.js",
+      "S11.9.4_A2.4_T3.js",
+      "S11.9.4_A2.4_T4.js",
+      "S11.9.4_A3.js",
+      "S11.9.4_A4.1_T1.js",
+      "S11.9.4_A4.1_T2.js",
+      "S11.9.4_A4.2.js",
+      "S11.9.4_A4.3.js",
+      "S11.9.4_A5.js",
+      "S11.9.4_A6.1.js",
+      "S11.9.4_A6.2.js",
+      "S11.9.4_A7.js",
+      "S11.9.4_A8_T1.js",
+      "S11.9.4_A8_T2.js",
+      "S11.9.4_A8_T3.js",
+      "S11.9.4_A8_T4.js",
+      "S11.9.4_A8_T5.js",
+      "bigint-and-bigint.js",
+      "bigint-and-boolean.js",
+      "bigint-and-incomparable-primitive.js",
+      "bigint-and-non-finite.js",
+      "bigint-and-number-extremes.js",
+      "bigint-and-number.js",
+      "bigint-and-object.js",
+      "bigint-and-string.js"
+    ],
+    "expressions/strict-does-not-equals": [
+      "S11.9.5_A1.js",
+      "S11.9.5_A2.1_T1.js",
+      "S11.9.5_A2.1_T2.js",
+      "S11.9.5_A2.1_T3.js",
+      "S11.9.5_A2.4_T1.js",
+      "S11.9.5_A2.4_T2.js",
+      "S11.9.5_A2.4_T3.js",
+      "S11.9.5_A2.4_T4.js",
+      "S11.9.5_A3.js",
+      "S11.9.5_A4.1_T1.js",
+      "S11.9.5_A4.1_T2.js",
+      "S11.9.5_A4.2.js",
+      "S11.9.5_A4.3.js",
+      "S11.9.5_A5.js",
+      "S11.9.5_A6.1.js",
+      "S11.9.5_A6.2.js",
+      "S11.9.5_A7.js",
+      "S11.9.5_A8_T1.js",
+      "S11.9.5_A8_T2.js",
+      "S11.9.5_A8_T3.js",
+      "S11.9.5_A8_T4.js",
+      "S11.9.5_A8_T5.js",
+      "bigint-and-bigint.js",
+      "bigint-and-boolean.js",
+      "bigint-and-incomparable-primitive.js",
+      "bigint-and-non-finite.js",
+      "bigint-and-number-extremes.js",
+      "bigint-and-number.js",
+      "bigint-and-object.js",
+      "bigint-and-string.js"
+    ]
+  },
+  "test_files": 145,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A1.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A1.js",
+      "bytes": 1799,
+      "sha256": "0ef371e484fd71f2fd517a4642a2258a7afea71894b19f0844df6c6c3db606e9"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A2.1_T1.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A2.1_T1.js",
+      "bytes": 1039,
+      "sha256": "c7e6e2a8369a14f4d0a05746d8b3f1999fa61bebe1840102c38c0754f6355a82"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A2.1_T2.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A2.1_T2.js",
+      "bytes": 524,
+      "sha256": "939d33ea31eb04077f69f43bc1a58ad7fc76625c804c9bdcfdb592023517206c"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A2.1_T3.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A2.1_T3.js",
+      "bytes": 501,
+      "sha256": "351e6dfb7081f9d47d307d11d85a1c1805b384c0e9fcec69ccd8f13bcc157d2d"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A2.4_T1.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A2.4_T1.js",
+      "bytes": 518,
+      "sha256": "ed9be4c53124ce9cf9e6b3487dfc2cd91fdbcb1ddc06097c2ee82876327a567b"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A2.4_T2.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A2.4_T2.js",
+      "bytes": 863,
+      "sha256": "1f475de389a2f11f080f1cf0cb0ebef4059c1b0caf25b6c089a1845378e3b80c"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A2.4_T3.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A2.4_T3.js",
+      "bytes": 575,
+      "sha256": "46daec4788b15af068fca45fe2d6ca00b0276f1801eab0803cde63a881aacf19"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A2.4_T4.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A2.4_T4.js",
+      "bytes": 408,
+      "sha256": "d0f631c36506839599d8634dad089e74353e66915655387d3609a8b937427bc2"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A3.1.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A3.1.js",
+      "bytes": 717,
+      "sha256": "5addd7aef35412dc67dcc3118af0b2c3f0f5a6114f678a5938d3acb1db5f52af"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A3.2.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A3.2.js",
+      "bytes": 823,
+      "sha256": "bc0f89a1d6d975e8a86e52bb21ccfd5421c20acab68292ce7b39a8b77311438d"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A3.3.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A3.3.js",
+      "bytes": 833,
+      "sha256": "bed9969f98d1e4d0706dab7ac1040a0b634a7ee1e0c19f5d7a6c09b73a265ceb"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A4.1_T1.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A4.1_T1.js",
+      "bytes": 1300,
+      "sha256": "c4763c72efd2fe8509ce45402853e8adcc0bafee813fab3b47e6d411cdf7382f"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A4.1_T2.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A4.1_T2.js",
+      "bytes": 1302,
+      "sha256": "98bd69537db8e799515be7bf21fbc1a919ad4ab4fbe104764a4d4cd167579bab"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A4.2.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A4.2.js",
+      "bytes": 444,
+      "sha256": "fa0307c679a54359fa305d708c160a1b9ae12df35176c11c846f20511e389b4e"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A4.3.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A4.3.js",
+      "bytes": 1021,
+      "sha256": "eb3171b3573cb01ae8f85f5cf35c8423bd3edf6fc0119e5ef66b20377dee9938"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A5.1.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A5.1.js",
+      "bytes": 1087,
+      "sha256": "62dfbeccb84c8185a40dc9b7e3664f598325ce9c9dd0f1f1bff6a4e3315ef65b"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A5.2.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A5.2.js",
+      "bytes": 834,
+      "sha256": "968a301b550e07e4104f740675eb9a069e3cfd3cd0cdb2f718e1c59a8997e532"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A5.3.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A5.3.js",
+      "bytes": 759,
+      "sha256": "2574db9f9873303a111b804c2f7de878155facaadc07462145aeba0751dfbd2c"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A6.1.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A6.1.js",
+      "bytes": 967,
+      "sha256": "44ef1ed02c3594fb94b0dce8b77a1a1e8ae01347008416764e75df4abfcda33b"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A6.2_T1.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A6.2_T1.js",
+      "bytes": 1139,
+      "sha256": "cbc813947b1f675992c889b90cefa1620ce321b4b17275c6edcb3d6aada4431b"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A6.2_T2.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A6.2_T2.js",
+      "bytes": 1159,
+      "sha256": "842752f2f497cbda7c6ec932faf3b138c63680d9ea692042cbf7dbcdb4ae9343"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A7.1.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A7.1.js",
+      "bytes": 1523,
+      "sha256": "6c9fa2d20d22cca1fa7980fa35391b7193cbd146a3a2e86e6357cfb814d0f834"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A7.2.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A7.2.js",
+      "bytes": 676,
+      "sha256": "572a2731cd3045df9d0f8fba90de0ca1430d463e16f3bccc468af2e94b05450c"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A7.3.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A7.3.js",
+      "bytes": 678,
+      "sha256": "87c01a817280efae34fb33374834b6c978054031797c641c4a764cf14aa6e2a8"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A7.4.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A7.4.js",
+      "bytes": 664,
+      "sha256": "216bf7b4e440eed3108e8d1c618936d70fcc12b1d431de42ae9bc4d398988996"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A7.5.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A7.5.js",
+      "bytes": 664,
+      "sha256": "b6f57da20ca77366ffda34969259a8a4dc91bcae9b422b45680089cd73793b0e"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A7.6.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A7.6.js",
+      "bytes": 672,
+      "sha256": "fa4f491a468febf3bb6386dfd211a261f196febba3a79687d10123590acc23c2"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A7.7.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A7.7.js",
+      "bytes": 672,
+      "sha256": "7bc6ebedc32b7c56025a6433eb51751daaa4ebff41c9852da707a319b99cf093"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A7.8.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A7.8.js",
+      "bytes": 2948,
+      "sha256": "ed16ee925eaaf2482a2928bc6fb1f26a5a402a69c7701486b4d019252faa0001"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/S11.9.2_A7.9.js",
+      "upstream_path": "test/language/expressions/does-not-equals/S11.9.2_A7.9.js",
+      "bytes": 3169,
+      "sha256": "9901dae52b0eb6dcf8d037c5846371f857c71bfcd7d9b0598844c6ef67fae055"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/bigint-and-bigint.js",
+      "upstream_path": "test/language/expressions/does-not-equals/bigint-and-bigint.js",
+      "bytes": 4443,
+      "sha256": "0c0a34710b52eef4f3f168ff4eb4c38cacfeb94711cc027a7609b2b0d4feb39f"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/bigint-and-boolean.js",
+      "upstream_path": "test/language/expressions/does-not-equals/bigint-and-boolean.js",
+      "bytes": 1887,
+      "sha256": "28b3b416925caa280b8a24f16a0daa9acde1f024acdbfcc34d04f8bfd22dc68b"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/bigint-and-incomparable-primitive.js",
+      "upstream_path": "test/language/expressions/does-not-equals/bigint-and-incomparable-primitive.js",
+      "bytes": 1522,
+      "sha256": "9bb2de7ecca4c9647eef8cd01df4f9b676c9fedabe24aaf3f7a7825d4ef9744d"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/bigint-and-non-finite.js",
+      "upstream_path": "test/language/expressions/does-not-equals/bigint-and-non-finite.js",
+      "bytes": 1889,
+      "sha256": "70184b0e337fef33d905325bfbbf3bcfea29ed824d962da2a465cba26a8e0061"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/bigint-and-number-extremes.js",
+      "upstream_path": "test/language/expressions/does-not-equals/bigint-and-number-extremes.js",
+      "bytes": 4624,
+      "sha256": "91d436128ee12e8afa2e1d269629e029b652982d53c39b278b0066cad8ff09e9"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/bigint-and-number.js",
+      "upstream_path": "test/language/expressions/does-not-equals/bigint-and-number.js",
+      "bytes": 2182,
+      "sha256": "9dc7829fe5662f7a5d6406ecbb662b4cba72b57b4cc1d1a1e77b54e12908e76b"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/bigint-and-object.js",
+      "upstream_path": "test/language/expressions/does-not-equals/bigint-and-object.js",
+      "bytes": 5286,
+      "sha256": "190e0779eac55f9c694003aeb163d46498fc6c59ddd61c98bfe178a45742f23f"
+    },
+    {
+      "path": "test/language/expressions/does-not-equals/bigint-and-string.js",
+      "upstream_path": "test/language/expressions/does-not-equals/bigint-and-string.js",
+      "bytes": 3320,
+      "sha256": "0e91d5f278906838fbd6156dca0580ce7e95e67d18dc178f559e385f307f32a7"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A1.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A1.js",
+      "bytes": 1779,
+      "sha256": "21983615ef843115362113720d092b6a3ce80597635b706bb8d4f5dd01e2b505"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A2.1_T1.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A2.1_T1.js",
+      "bytes": 1029,
+      "sha256": "ac8aebed230c980081b4425b20164305ee9e7d6521016b6c6538f2fd2e0c64e8"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A2.1_T2.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A2.1_T2.js",
+      "bytes": 524,
+      "sha256": "2b2792faf2504c9c6d7acc5dc314920830a82a449368ddeaa88bbf1647088bfe"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A2.1_T3.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A2.1_T3.js",
+      "bytes": 524,
+      "sha256": "4c77ae1639698acb8db9c8a45420150517c7b9fad11a121e66789e14c003dc9c"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A2.4_T1.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A2.4_T1.js",
+      "bytes": 518,
+      "sha256": "8d1925b61e4f601cf233b9471ea08e26c6aea7f5129517d0cf745474d3bb446f"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A2.4_T2.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A2.4_T2.js",
+      "bytes": 863,
+      "sha256": "765c3f62e1d4fe986394dcb4b8f452aa10145f4234751e358b4a34f25d8d4214"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A2.4_T3.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A2.4_T3.js",
+      "bytes": 575,
+      "sha256": "e30644f9d9c0bf390b3f3409c8eb1179008f1662a98c6a94d2b6ba346841f33f"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A2.4_T4.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A2.4_T4.js",
+      "bytes": 406,
+      "sha256": "7ffd0b20d501932254d5c5100f03cbd62d711f9834fae5c3a24f9c54cb2265c5"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A3.1.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A3.1.js",
+      "bytes": 717,
+      "sha256": "b7564c96e971e4dd88675ef8a633703f62bda6898450dc431e958b4040facf01"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A3.2.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A3.2.js",
+      "bytes": 529,
+      "sha256": "0276d7fbaef15da10c2b2d8a1b145957c5cd048894fecd95c1647d93e951c882"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A3.3.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A3.3.js",
+      "bytes": 529,
+      "sha256": "99c937c27cb527c7ce38377eae376b9ee69a34cedfafb9bcf94b1ec2e6b4f3d8"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A4.1_T1.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A4.1_T1.js",
+      "bytes": 1319,
+      "sha256": "849ae7c5cb119ddab5a3db2b413e0ddc400e118bd4257082fabe0362bd3d7e77"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A4.1_T2.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A4.1_T2.js",
+      "bytes": 1321,
+      "sha256": "14a61e6b127dd6694e0b80caf3ae815cc0b858ad14febec2fd41d5398243bac0"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A4.2.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A4.2.js",
+      "bytes": 439,
+      "sha256": "cfe9bbd8355bfc5ad86cfa2a240300cb123c751acdf9ca656aae6a3468c7909d"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A4.3.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A4.3.js",
+      "bytes": 1015,
+      "sha256": "ebcaf1d2ea85c2a5b8dedff1d5b52297612a7fc9db8af7a953ba1f72716054f4"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A5.1.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A5.1.js",
+      "bytes": 1088,
+      "sha256": "696643c51131837f59e11de74d1161fb5c601fa21ac4f38d36372bf30f03f52d"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A5.2.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A5.2.js",
+      "bytes": 828,
+      "sha256": "8f3c88fda2a1243f939838065fafa2dad3abc1574901ce1d9f49fe2c06e08ef3"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A5.3.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A5.3.js",
+      "bytes": 755,
+      "sha256": "84c7453b37be171f11871e5b6bcb345a37deaef376ff7c8d1ec4904c23dbd5b7"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A6.1.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A6.1.js",
+      "bytes": 955,
+      "sha256": "b4d3049544e92b8e9d13be3f41c8b4fc12556d9878baf526fc2460b62dece32e"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A6.2_T1.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A6.2_T1.js",
+      "bytes": 1155,
+      "sha256": "21735a32289898e163c468238957cb852d2bb385dc22ecc9f9c9495f9b09abe8"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A6.2_T2.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A6.2_T2.js",
+      "bytes": 1175,
+      "sha256": "d8b0f043fb235e2a234f92b9c92d144b0e690779577d71c5b20d8d5e65a14af1"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A7.1.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A7.1.js",
+      "bytes": 1535,
+      "sha256": "31c1a9b976e9f3614d68081591cd86afe0c405c785255c4c4cc671bbb4c90295"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A7.2.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A7.2.js",
+      "bytes": 670,
+      "sha256": "d00d1c4a48662f9bd1db2620abb895678ce8872db1353f1d489235cfc0679076"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A7.3.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A7.3.js",
+      "bytes": 672,
+      "sha256": "b8087f07b6aec6395020900b028898680fad99af7e4fe7df8e0d19be919e6bed"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A7.4.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A7.4.js",
+      "bytes": 658,
+      "sha256": "aeff23c24e14ca84fd8d4df7bf32f3f4ae1f38d1f560d000e70059f3af73c7c7"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A7.5.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A7.5.js",
+      "bytes": 658,
+      "sha256": "890b2902bdd3690d39bf02ae0d7e9a2b554bff7e61c0c2c069b34446a09b00d7"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A7.6.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A7.6.js",
+      "bytes": 666,
+      "sha256": "0246590f8ed33b46a11835254dccbe6cfe94154d90103fcfc697e97fe7eed7af"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A7.7.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A7.7.js",
+      "bytes": 666,
+      "sha256": "9457177ca4a8d6b9479022df8768b4e0d5c3626e31fda890a1402ad8ba058d56"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A7.8.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A7.8.js",
+      "bytes": 3159,
+      "sha256": "eadac7040408ba82755d6eccdb952a8a9c2ba28e853e2b89dea4b1a4a4781ceb"
+    },
+    {
+      "path": "test/language/expressions/equals/S11.9.1_A7.9.js",
+      "upstream_path": "test/language/expressions/equals/S11.9.1_A7.9.js",
+      "bytes": 3159,
+      "sha256": "e003f0602e6f05ed5c4ea147ce06ef9bb3be1b62478457c6f9519ea055f2a1cf"
+    },
+    {
+      "path": "test/language/expressions/equals/S9.1_A1_T3.js",
+      "upstream_path": "test/language/expressions/equals/S9.1_A1_T3.js",
+      "bytes": 937,
+      "sha256": "6e27f7260450cb5413dd4f413ec52a23f8c8b7f2f6ab88c75b05d637d96d3100"
+    },
+    {
+      "path": "test/language/expressions/equals/bigint-and-bigint.js",
+      "upstream_path": "test/language/expressions/equals/bigint-and-bigint.js",
+      "bytes": 4483,
+      "sha256": "de536aab7659c9116627de539dbcd0402f2aab03d0ab60be9d192e64d4536996"
+    },
+    {
+      "path": "test/language/expressions/equals/bigint-and-boolean.js",
+      "upstream_path": "test/language/expressions/equals/bigint-and-boolean.js",
+      "bytes": 1901,
+      "sha256": "4471b5c8bc58acce19e12a9c13a1ba1ad8d2b12721958894b33be253be632705"
+    },
+    {
+      "path": "test/language/expressions/equals/bigint-and-incomparable-primitive.js",
+      "upstream_path": "test/language/expressions/equals/bigint-and-incomparable-primitive.js",
+      "bytes": 1485,
+      "sha256": "1ea5fb372a24d77674ae99382736460b509433c92df48c11ddf8b99848997bf6"
+    },
+    {
+      "path": "test/language/expressions/equals/bigint-and-non-finite.js",
+      "upstream_path": "test/language/expressions/equals/bigint-and-non-finite.js",
+      "bytes": 1923,
+      "sha256": "bfb212f60d70e1f8bf7be5ad84ff773db25a5c315f47a247097923caa17367a4"
+    },
+    {
+      "path": "test/language/expressions/equals/bigint-and-number-extremes.js",
+      "upstream_path": "test/language/expressions/equals/bigint-and-number-extremes.js",
+      "bytes": 4652,
+      "sha256": "f1737a1e92e866e936bcab12012ff24d551f711307a280c6685cd7b6d383d138"
+    },
+    {
+      "path": "test/language/expressions/equals/bigint-and-number.js",
+      "upstream_path": "test/language/expressions/equals/bigint-and-number.js",
+      "bytes": 2214,
+      "sha256": "e9ae9358c4f247aee01f4a6fa42d70e063df5c8b50d234a0c638047d523c579f"
+    },
+    {
+      "path": "test/language/expressions/equals/bigint-and-object.js",
+      "upstream_path": "test/language/expressions/equals/bigint-and-object.js",
+      "bytes": 5292,
+      "sha256": "7630ee8703933c8f4a99abb0863bc9711ca7d85f27fba6f1404d67a2e8daf189"
+    },
+    {
+      "path": "test/language/expressions/equals/bigint-and-string.js",
+      "upstream_path": "test/language/expressions/equals/bigint-and-string.js",
+      "bytes": 3342,
+      "sha256": "95fee6e6d5b77393c6449f75e287eca0219e9c829bb2257d878a3a02bf8beba7"
+    },
+    {
+      "path": "test/language/expressions/equals/coerce-symbol-to-prim-err.js",
+      "upstream_path": "test/language/expressions/equals/coerce-symbol-to-prim-err.js",
+      "bytes": 1075,
+      "sha256": "04cab797ed9519cfe509366f39729e0fb28fef2be8a1905b1c54e95fdd902800"
+    },
+    {
+      "path": "test/language/expressions/equals/coerce-symbol-to-prim-invocation.js",
+      "upstream_path": "test/language/expressions/equals/coerce-symbol-to-prim-invocation.js",
+      "bytes": 1426,
+      "sha256": "3ebb6d86cac3a6dd2a9027421104185c0ceb34677b1219e000a3482ad70b2bcf"
+    },
+    {
+      "path": "test/language/expressions/equals/coerce-symbol-to-prim-return-obj.js",
+      "upstream_path": "test/language/expressions/equals/coerce-symbol-to-prim-return-obj.js",
+      "bytes": 1307,
+      "sha256": "05949abebba18a0df1af12677c5aa4231a1efbb0dda742547d4be7365062c079"
+    },
+    {
+      "path": "test/language/expressions/equals/coerce-symbol-to-prim-return-prim.js",
+      "upstream_path": "test/language/expressions/equals/coerce-symbol-to-prim-return-prim.js",
+      "bytes": 1495,
+      "sha256": "721b367d7983a5c716d77473324e10bdbc5a644d10d78fb1751f7460f7d31216"
+    },
+    {
+      "path": "test/language/expressions/equals/get-symbol-to-prim-err.js",
+      "upstream_path": "test/language/expressions/equals/get-symbol-to-prim-err.js",
+      "bytes": 949,
+      "sha256": "0c902f0fb0cd373e957e52ae3ee7e055a1d9d0ff246b77f2e76bb8d4d8d856b0"
+    },
+    {
+      "path": "test/language/expressions/equals/symbol-abstract-equality-comparison.js",
+      "upstream_path": "test/language/expressions/equals/symbol-abstract-equality-comparison.js",
+      "bytes": 935,
+      "sha256": "f9a5fec74b32e5d481c4d97ee99cee10100a9c86cff705bcd8bdd555057612bb"
+    },
+    {
+      "path": "test/language/expressions/equals/symbol-strict-equality-comparison.js",
+      "upstream_path": "test/language/expressions/equals/symbol-strict-equality-comparison.js",
+      "bytes": 946,
+      "sha256": "381c00bbb540124eb962ced36d23b897eb8443ea0ea34a98de1a39089958002e"
+    },
+    {
+      "path": "test/language/expressions/equals/to-prim-hint.js",
+      "upstream_path": "test/language/expressions/equals/to-prim-hint.js",
+      "bytes": 1041,
+      "sha256": "61e2ce94f83690867f426d2256f714216eedf7955bbb8f5d86f01f1cffba426e"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A1.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A1.js",
+      "bytes": 1541,
+      "sha256": "f7d235e2045e198b61752f611247e346b60b632dbf22fd0f4d49dd531a56d63a"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A2.1_T1.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A2.1_T1.js",
+      "bytes": 930,
+      "sha256": "dd6797f00e6689e69173388c0de2f1bde9faf8391087348fb02c9903aa7b0892"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A2.1_T2.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A2.1_T2.js",
+      "bytes": 529,
+      "sha256": "c784806768ef237c112037f17d206be97c0a8245fecf0242d0075cc2b5dc15ad"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A2.1_T3.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A2.1_T3.js",
+      "bytes": 529,
+      "sha256": "e33d048eea6b1aa354c95ddb4bac243a18f5fcd9324d180b64c1131a8ed7232b"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A2.4_T1.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A2.4_T1.js",
+      "bytes": 479,
+      "sha256": "883337657135db1eda122a77a64005b80eab485e8325a9e889b74a8c98fcb4ad"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A2.4_T2.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A2.4_T2.js",
+      "bytes": 870,
+      "sha256": "01769583869c248ac5233352e8824996737fb89f94248561a1d72fb0d7e38b69"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A2.4_T3.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A2.4_T3.js",
+      "bytes": 574,
+      "sha256": "d66b332d341c5c53e4cc572668d9840f9f8e2f5309a14329a57fb00bd2a545f5"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A2.4_T4.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A2.4_T4.js",
+      "bytes": 381,
+      "sha256": "174efb0072d6b89d6b9e41bc9df8adf584454eb89bb38143b94df8c51b6a82f8"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A3.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A3.js",
+      "bytes": 672,
+      "sha256": "be0edb442e148dd513803f282e1b2dec9a69258b6f949a86384f4a17dc8fcf59"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A4.1_T1.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A4.1_T1.js",
+      "bytes": 1147,
+      "sha256": "a5d3682f2b1648c8d14318c62ed80f18244a3bacc769b421bb799218dd0da106"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A4.1_T2.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A4.1_T2.js",
+      "bytes": 1149,
+      "sha256": "79952f69b5feaa670b2106ba7f3a2e164fc175db3097945187ffb49eb3477faf"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A4.2.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A4.2.js",
+      "bytes": 400,
+      "sha256": "dd1f08f9b0f7169ab2e135f97d1abb41834184d31d3a875832acd932e6e18dd9"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A4.3.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A4.3.js",
+      "bytes": 1224,
+      "sha256": "f589ab1d259bfeac6c7abe71fa1e461d5561ea3b11ec6cc51127c81e81225408"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A5.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A5.js",
+      "bytes": 783,
+      "sha256": "ae1832da3567b90586cb8628b20140efb04977b4fdd5b18a3f9ccd7d8cc5fa64"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A6.1.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A6.1.js",
+      "bytes": 576,
+      "sha256": "4cab2b09e539eed4e8b5cb0c3fc88787164c8d9b4e20c4449a6a93fd083b461d"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A6.2.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A6.2.js",
+      "bytes": 326,
+      "sha256": "51611a9622d30c0835c6c708871cd101514aafb9fab134d7f3dd4e164e45be40"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A7.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A7.js",
+      "bytes": 1370,
+      "sha256": "a9d8887944b1eb4af79e525372d32abb4e63b7d3939bd78c617a81d96ddee439"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A8_T1.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A8_T1.js",
+      "bytes": 1400,
+      "sha256": "a404a95eb41a500562eea37fce79e0d96caf04506c0b81b5e271e33b0d193adf"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A8_T2.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A8_T2.js",
+      "bytes": 1291,
+      "sha256": "07b903e3e2acb5dbac26299a77b951fe66bd78d669c4e185a9c8668465812322"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A8_T3.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A8_T3.js",
+      "bytes": 1375,
+      "sha256": "621c28d5d04d52a4e66ab0d05cc70ba314ceebd7777804faf15601a47e625a9c"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A8_T4.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A8_T4.js",
+      "bytes": 1572,
+      "sha256": "684d2d4bcb96fd93606a7c078729bbcbbca6257d099eeb7b508a43fea39f22bd"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/S11.9.5_A8_T5.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/S11.9.5_A8_T5.js",
+      "bytes": 579,
+      "sha256": "e565ba8abdd6f63bfb5746e4973adbc812d4dfc20831f47bf26d0e3f91f8d379"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/bigint-and-bigint.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/bigint-and-bigint.js",
+      "bytes": 4524,
+      "sha256": "689e88aad746a9a502a7f8c3f4d6054f38fa76ae9267751cfdbc2cd761279847"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/bigint-and-boolean.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/bigint-and-boolean.js",
+      "bytes": 1571,
+      "sha256": "404c93282f626bd28eb0c7d51f5b7f420e010a8564ac8cd1f095cd6c0926f464"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/bigint-and-incomparable-primitive.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/bigint-and-incomparable-primitive.js",
+      "bytes": 1363,
+      "sha256": "2b80e8717f0e91d7307ccaa8f3f125f7b3e16d5baf5c0e72f00b99fab9303a36"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/bigint-and-non-finite.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/bigint-and-non-finite.js",
+      "bytes": 1817,
+      "sha256": "afd208191e7ef213e62a23e57c2fc31cde91b0fb91178c275f4da82016211175"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/bigint-and-number-extremes.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/bigint-and-number-extremes.js",
+      "bytes": 4496,
+      "sha256": "7be3456c40e78d11ae59788b76982fc3b52712f0c7aa9f4c89220c929a965e8a"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/bigint-and-number.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/bigint-and-number.js",
+      "bytes": 2066,
+      "sha256": "5dcc761e0fc648c3bf736be5a4e2eb4d18871b733b0bfa3fad4426ccfd951e58"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/bigint-and-object.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/bigint-and-object.js",
+      "bytes": 4699,
+      "sha256": "fd0238add0c297bc66816e6060ae91447693afdf50c86038048c567c9333061e"
+    },
+    {
+      "path": "test/language/expressions/strict-does-not-equals/bigint-and-string.js",
+      "upstream_path": "test/language/expressions/strict-does-not-equals/bigint-and-string.js",
+      "bytes": 3362,
+      "sha256": "5a503697231b40d1a606db21daf9b7b64a943b92859bf791fa2df7ca07d90209"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A1.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A1.js",
+      "bytes": 1571,
+      "sha256": "5865e6b0e875459e0c1f9545ad164e77b835b03e3093e9235a0fed3c6cf4a93b"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A2.1_T1.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A2.1_T1.js",
+      "bytes": 945,
+      "sha256": "e06dd961c6d39d5040a2b0bf25d0024c7658576ca521746a320a4ec61d15dd38"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A2.1_T2.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A2.1_T2.js",
+      "bytes": 529,
+      "sha256": "3fc412d733cd8e59d448f844ecaaa204a778fbfaa5311f946f0400febcabf3ce"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A2.1_T3.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A2.1_T3.js",
+      "bytes": 529,
+      "sha256": "e73391ed47494972c0074bbb34aa71f0b0b0cf97e563c41ae94bf46d4c8083c9"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A2.4_T1.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A2.4_T1.js",
+      "bytes": 479,
+      "sha256": "5d52840386a71e17961005aeaa1cdfd19fc41fae3d464752b3b2dae02d4ac2d1"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A2.4_T2.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A2.4_T2.js",
+      "bytes": 870,
+      "sha256": "e7c7a9c9c867d4aff0b7b8bc7bd20fc714e0cae51af1203a2cf52abad5111b83"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A2.4_T3.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A2.4_T3.js",
+      "bytes": 579,
+      "sha256": "e389070ebd8dad33bafb1dcff04c73f6ea8ab48611ef240be550684e56cbfa2b"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A2.4_T4.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A2.4_T4.js",
+      "bytes": 389,
+      "sha256": "722d7f4328c4b6eca21f48b891c1730f37cd354c1ac33168e785953284fa0d9c"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A3.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A3.js",
+      "bytes": 673,
+      "sha256": "5c18a4dcbe6f4b69ccf735ff4cf55d83b81a2549b8a66d885a0d641fcfb8d30a"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A4.1_T1.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A4.1_T1.js",
+      "bytes": 1121,
+      "sha256": "38ff7f466dc921f0ea125d67521ee55d0269b1569d13fdf4a82daa159bcb91a6"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A4.1_T2.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A4.1_T2.js",
+      "bytes": 1123,
+      "sha256": "90cf113121badf7277cb87680f60fb138606424c0a2aad859ec785c2d8eb331a"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A4.2.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A4.2.js",
+      "bytes": 405,
+      "sha256": "aa7b85c4f2cc59247a4e844f9ff72bd12c11fbeebda287f4317f21fd717dc208"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A4.3.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A4.3.js",
+      "bytes": 1245,
+      "sha256": "8b475beb99ad052fa3010504fa5006c2fa959e9e6aa3511dd933acbcee3a8a9d"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A5.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A5.js",
+      "bytes": 786,
+      "sha256": "9312204e89369a31d38cf35f5eed75e93ce1dd79109ecf271b35ad193949fc11"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A6.1.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A6.1.js",
+      "bytes": 584,
+      "sha256": "b72596650bd3d7e932fe8524bdb457075d4494f7b649086ba9cd0254aaa27857"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A6.2.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A6.2.js",
+      "bytes": 328,
+      "sha256": "80cee3925093ae44a443b5736565e49100a70e1db41a81209947107eb4f326a8"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A7.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A7.js",
+      "bytes": 1352,
+      "sha256": "3ec7a9fdf5b4d1b6e680671ad84f1b774acc87af7eb72d9c00c1e93767746b2a"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A8_T1.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A8_T1.js",
+      "bytes": 1368,
+      "sha256": "7d0a4d0a73c04995642ab7b98037b07381c5ba4769e5aa11083013e99c743772"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A8_T2.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A8_T2.js",
+      "bytes": 1259,
+      "sha256": "88372f9270d1f496ee5d431492b46576c0abdade8adb5eedeabed571a14fc66f"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A8_T3.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A8_T3.js",
+      "bytes": 1343,
+      "sha256": "e9b808e35ae2d94b00c053b2b7cfbd876aa70ef045ed504206d13461731e8b5f"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A8_T4.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A8_T4.js",
+      "bytes": 1531,
+      "sha256": "d54a8f381df1296ac441c73e822fb2fa3ecaf635ef6c0b14d779bb7ad0030d60"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/S11.9.4_A8_T5.js",
+      "upstream_path": "test/language/expressions/strict-equals/S11.9.4_A8_T5.js",
+      "bytes": 579,
+      "sha256": "f8a1005914836645ae18fb676f84027d51908e7e3db9752ea65583d8435813b3"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/bigint-and-bigint.js",
+      "upstream_path": "test/language/expressions/strict-equals/bigint-and-bigint.js",
+      "bytes": 4564,
+      "sha256": "1d644a0322ad828429905a1c0d8d3d735e5c405ddb954a53d80dac70ee8745a4"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/bigint-and-boolean.js",
+      "upstream_path": "test/language/expressions/strict-equals/bigint-and-boolean.js",
+      "bytes": 1601,
+      "sha256": "96e1f9fada76fb055869dbc8e5dd2cf88287a8c89e3cb18c0f86ea1913cf1875"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/bigint-and-incomparable-primitive.js",
+      "upstream_path": "test/language/expressions/strict-equals/bigint-and-incomparable-primitive.js",
+      "bytes": 1385,
+      "sha256": "f1ada0a761b3a9e23a1ffc79cfafb60076efdfbe059eaed84d2b303f87bd4948"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/bigint-and-non-finite.js",
+      "upstream_path": "test/language/expressions/strict-equals/bigint-and-non-finite.js",
+      "bytes": 1851,
+      "sha256": "6be3e63924a122b521a8201d93680dee776ccd310a43ebd5af7810a08a0ed137"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/bigint-and-number-extremes.js",
+      "upstream_path": "test/language/expressions/strict-equals/bigint-and-number-extremes.js",
+      "bytes": 4531,
+      "sha256": "b5a0124121cdba307ff546390c3d753ff9fd6cecce2269b0ccb1d4c885a708f7"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/bigint-and-number.js",
+      "upstream_path": "test/language/expressions/strict-equals/bigint-and-number.js",
+      "bytes": 2122,
+      "sha256": "4cefa70644f53b9eae2083d3bcec4665656351e10d6d06e387751f3c4dc8355c"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/bigint-and-object.js",
+      "upstream_path": "test/language/expressions/strict-equals/bigint-and-object.js",
+      "bytes": 4761,
+      "sha256": "f41329b02bf1522cf94c705821d1996a15203922f9b0b1973a62608209bb7d54"
+    },
+    {
+      "path": "test/language/expressions/strict-equals/bigint-and-string.js",
+      "upstream_path": "test/language/expressions/strict-equals/bigint-and-string.js",
+      "bytes": 3432,
+      "sha256": "1e53e38c78dfee4b2403a2ebebe11afcc8747a9a39a2522491506ce54771d5d4"
+    }
+  ]
+}

@@ -6119,6 +6119,53 @@ impl Runtime {
             less == Some(true)
         }))
     }
+    fn loosely_equal(
+        &mut self,
+        mut left: Value,
+        mut right: Value,
+        doc: &mut Document,
+    ) -> Result<bool> {
+        // Each continuation removes an object or Boolean conversion. Keep the
+        // abstract algorithm iterative; author callbacks use the shared budget.
+        loop {
+            match (&left, &right) {
+                (Value::String(a), Value::String(b)) => {
+                    self.work(1 + a.len() / 8)?;
+                    self.work(1 + b.len() / 8)?;
+                    return Ok(a == b);
+                }
+                (Value::Undefined, Value::Undefined)
+                | (Value::Null, Value::Null)
+                | (Value::Bool(_), Value::Bool(_))
+                | (Value::Number(_), Value::Number(_)) => return Ok(left == right),
+                (Value::Null, Value::Undefined) | (Value::Undefined, Value::Null) => {
+                    return Ok(true);
+                }
+                (Value::Number(number), Value::String(_)) => {
+                    return Ok(*number == self.primitive_number_value(right)?);
+                }
+                (Value::String(_), Value::Number(number)) => {
+                    return Ok(*number == self.primitive_number_value(left)?);
+                }
+                (Value::Bool(value), _) => {
+                    self.tick()?;
+                    left = Value::Number(f64::from(*value));
+                }
+                (_, Value::Bool(value)) => {
+                    self.tick()?;
+                    right = Value::Number(f64::from(*value));
+                }
+                (Value::String(_) | Value::Number(_), object) if js_object(object) => {
+                    right = self.number_hint_primitive(right, doc)?;
+                }
+                (object, Value::String(_) | Value::Number(_)) if js_object(object) => {
+                    left = self.number_hint_primitive(left, doc)?;
+                }
+                (a, b) if js_object(a) && js_object(b) => return Ok(left == right),
+                _ => return Ok(false),
+            }
+        }
+    }
     fn binary_value(
         &mut self,
         op: &str,
@@ -6131,6 +6178,10 @@ impl Runtime {
         }
         if matches!(op, "<" | ">" | "<=" | ">=") {
             return self.relational_value(op, left, right, doc);
+        }
+        if matches!(op, "==" | "!=") {
+            let equal = self.loosely_equal(right, left, doc)?;
+            return Ok(Value::Bool(if op == "!=" { !equal } else { equal }));
         }
         for value in [&left, &right] {
             if let Value::String(text) = value {
@@ -6192,25 +6243,9 @@ impl Runtime {
             }
             return Ok(Value::Bool(self.find_property(&right, &key)?.is_some()));
         }
-        if ["==", "!=", "===", "!=="].contains(&op) {
-            let strict = op.len() == 3;
-            let equal = left == right
-                || !strict
-                    && (matches!(
-                        (&left, &right),
-                        (Value::Null, Value::Undefined) | (Value::Undefined, Value::Null)
-                    ) || matches!(
-                        (&left, &right),
-                        (Value::Number(_), Value::String(_))
-                            | (Value::String(_), Value::Number(_))
-                            | (Value::Bool(_), _)
-                            | (_, Value::Bool(_))
-                    ) && left.number() == right.number());
-            return Ok(Value::Bool(if op.starts_with('!') {
-                !equal
-            } else {
-                equal
-            }));
+        if matches!(op, "===" | "!==") {
+            let equal = left == right;
+            return Ok(Value::Bool(if op == "!==" { !equal } else { equal }));
         }
         let a = self.number_value(left, doc)?;
         let b = self.number_value(right, doc)?;
@@ -17624,6 +17659,258 @@ mod tests {
                 runtime.execute(source, &mut document)
             };
             result.unwrap_or_else(|error| panic!("strict={strict}: {error}"));
+        }
+    }
+
+    fn equality_modes(source: &str) {
+        for (op, equal, unequal) in [("==", "true", "false"), ("!=", "false", "true")] {
+            for strict in [false, true] {
+                let (mut runtime, mut doc) = upstream_harness();
+                let source = source
+                    .replace("@OP@", op)
+                    .replace("@EQ@", equal)
+                    .replace("@NE@", unequal);
+                let result = if strict {
+                    runtime.execute_strict(&source, &mut doc)
+                } else {
+                    runtime.execute(&source, &mut doc)
+                };
+                result.unwrap_or_else(|e| panic!("{op} strict={strict}: {e}"));
+            }
+        }
+    }
+
+    #[test]
+    fn equality_ordinary_type_lattice_preserves_nullish_and_numeric_rules() {
+        equality_modes(
+            r#"
+            assert.sameValue(null@OP@undefined,@EQ@);assert.sameValue(undefined@OP@null,@EQ@);
+            assert.sameValue(false@OP@null,@NE@);assert.sameValue(null@OP@false,@NE@);
+            assert.sameValue(0@OP@null,@NE@);assert.sameValue(''@OP@null,@NE@);
+            assert.sameValue(undefined@OP@false,@NE@);assert.sameValue(false@OP@undefined,@NE@);
+            assert.sameValue(false@OP@'',@EQ@);assert.sameValue('0'@OP@false,@EQ@);
+            assert.sameValue(true@OP@'1',@EQ@);assert.sameValue(' 1 '@OP@1,@EQ@);
+            assert.sameValue(16@OP@'0x10',@EQ@);assert.sameValue('0b10'@OP@2,@EQ@);
+            assert.sameValue('0o10'@OP@8,@EQ@);assert.sameValue('no number'@OP@0,@NE@);
+            assert.sameValue(NaN@OP@NaN,@NE@);assert.sameValue(NaN@OP@'NaN',@NE@);
+            assert.sameValue(-0@OP@0,@EQ@);assert.sameValue(Infinity@OP@'Infinity',@EQ@);
+            assert.sameValue('01'@OP@'1',@NE@);assert.sameValue('01'@OP@1,@EQ@);
+            assert.sameValue(new String('1')@OP@1,@EQ@);assert.sameValue(1@OP@new String('1'),@EQ@);
+            assert.sameValue(new Number(0)@OP@false,@EQ@);assert.sameValue(new Boolean(false)@OP@'0',@EQ@);
+            assert.sameValue([]@OP@false,@EQ@);assert.sameValue([1]@OP@true,@EQ@);
+            assert.sameValue({valueOf:function(){return false;}}@OP@0,@EQ@);
+            assert.sameValue({valueOf:function(){return null;}}@OP@0,@NE@);
+            assert.sameValue({valueOf:function(){return undefined;}}@OP@0,@NE@);
+        "#,
+        );
+    }
+
+    #[test]
+    fn equality_live_conversion_uses_original_receiver_after_both_expressions() {
+        equality_modes(
+            r#"
+            var trace='',object={get valueOf(){trace+='L';return function(){assert.sameValue(this,object);trace+='l';
+                Object.defineProperty(object,'toString',{get:function(){trace+='T';return function(){assert.sameValue(this,object);trace+='t';return '1';};},configurable:true});return {};};}};
+            function a(){trace+='A';return object;}function b(){trace+='B';return 1;}
+            assert.sameValue(a()@OP@b(),@EQ@);assert.sameValue(trace,'ABLlTt');
+            trace='';assert.sameValue(b()@OP@a(),@EQ@);assert.sameValue(trace,'BALlTt');
+            object={valueOf:function(){throw 'stale';}};trace='';
+            function update(){trace+='B';object.valueOf=function(){trace+='L';return 1;};return 1;}
+            assert.sameValue(a()@OP@update(),@EQ@);assert.sameValue(trace,'ABL');
+            var saved=object;function replace(){trace+='B';object={valueOf:function(){throw 'unused';}};return 1;}
+            trace='';assert.sameValue(a()@OP@replace(),@EQ@);assert.sameValue(trace,'ABL');
+            var n=0,value={valueOf:function(){n++;return 1;}};
+            assert.sameValue(value@OP@1,@EQ@);assert.sameValue(n,1);
+            trace='';object={valueOf:function(){trace+='L';return 1;}};
+            function c(){trace+='C';return {valueOf:function(){trace+='V';return 1;}};}
+            assert.sameValue(a()@OP@b()@OP@c(),true);assert.sameValue(trace,'ABLCV');
+        "#,
+        );
+    }
+
+    #[test]
+    fn equality_abrupt_completion_and_failed_primitive_conversion_preserve_identity() {
+        equality_modes(
+            r#"
+            var trace='',reason={},seen,object={get valueOf(){trace+='L';throw reason;}};
+            function rhs(){trace+='B';return 1;}
+            try{object@OP@rhs();}catch(e){seen=e;}assert.sameValue(seen,reason);assert.sameValue(trace,'BL');
+            trace='';seen=undefined;try{rhs()@OP@object;}catch(e){seen=e;}assert.sameValue(seen,reason);assert.sameValue(trace,'BL');
+            trace='';seen=undefined;try{object@OP@(function(){trace+='B';throw reason;})();}catch(e){seen=e;}
+            assert.sameValue(seen,reason);assert.sameValue(trace,'B');
+            object={valueOf:function(){return {};},get toString(){throw reason;}};
+            seen=undefined;try{object@OP@false;}catch(e){seen=e;}assert.sameValue(seen,reason);
+            assert.throws(TypeError,function(){return Object.create(null)@OP@1;});
+            assert.throws(TypeError,function(){return 1@OP@{valueOf:function(){return {};},toString:function(){return {};}};});
+            assert.sameValue({valueOf:null,toString:function(){return '1';}}@OP@true,@EQ@);
+        "#,
+        );
+    }
+
+    #[test]
+    fn equality_identity_and_nullish_pairs_never_read_conversion_hooks() {
+        equality_modes(
+            r#"
+            var object={get valueOf(){throw 'unused';},get toString(){throw 'unused';}},array=[],fn=function(){};
+            assert.sameValue(object@OP@object,@EQ@);assert.sameValue(object@OP@{},@NE@);
+            assert.sameValue(object@OP@null,@NE@);assert.sameValue(null@OP@object,@NE@);
+            assert.sameValue(object@OP@undefined,@NE@);assert.sameValue(undefined@OP@object,@NE@);
+            assert.sameValue(array@OP@array,@EQ@);assert.sameValue(array@OP@[],@NE@);
+            assert.sameValue(fn@OP@fn,@EQ@);assert.sameValue(fn@OP@function(){},@NE@);
+            assert.sameValue(new Number(1)@OP@new Number(1),@NE@);
+            var nan=new Number(NaN);assert.sameValue(nan@OP@nan,@EQ@);assert.sameValue(nan@OP@NaN,@NE@);
+        "#,
+        );
+    }
+
+    #[test]
+    fn equality_utf16_and_strict_operators_do_not_coerce_or_normalize() {
+        equality_modes(
+            r#"
+            assert.sameValue(new String('\uD800')@OP@'\uD800',@EQ@);
+            assert.sameValue('\uDC00'@OP@new String('\uDC00'),@EQ@);
+            assert.sameValue(new String('\uD800')@OP@'\uDC00',@NE@);
+            assert.sameValue(new String('\uD800\uDC00')@OP@'\uD800\uDC00',@EQ@);
+            assert.sameValue(new String('\u00E9')@OP@'e\u0301',@NE@);
+            assert.sameValue(new String('a\0b')@OP@'a\0b',@EQ@);
+            assert.sameValue('\uD800'@OP@0,@NE@);
+        "#,
+        );
+        for (op, equal, unequal) in [("===", "true", "false"), ("!==", "false", "true")] {
+            for strict in [false, true] {
+                let (mut runtime, mut doc) = upstream_harness();
+                let source=r#"
+                    var object={get valueOf(){throw 'unused';},get toString(){throw 'unused';}};
+                    assert.sameValue(object@OP@1,@NE@);assert.sameValue(false@OP@object,@NE@);
+                    assert.sameValue(null@OP@object,@NE@);assert.sameValue(object@OP@object,@EQ@);
+                    assert.sameValue(1@OP@'1',@NE@);assert.sameValue(null@OP@undefined,@NE@);
+                    assert.sameValue(new Number(1)@OP@1,@NE@);assert.sameValue(false@OP@null,@NE@);
+                    assert.sameValue(NaN@OP@NaN,@NE@);assert.sameValue(-0@OP@0,@EQ@);
+                    assert.sameValue('\uD800'@OP@'\uD800',@EQ@);assert.sameValue('\uD800'@OP@'\uDC00',@NE@);
+                    var trace='';function a(){trace+='A';return object;}function b(){trace+='B';return 1;}
+                    assert.sameValue(a()@OP@b(),@NE@);assert.sameValue(trace,'AB');
+                "#.replace("@OP@",op).replace("@EQ@",equal).replace("@NE@",unequal);
+                let result = if strict {
+                    runtime.execute_strict(&source, &mut doc)
+                } else {
+                    runtime.execute(&source, &mut doc)
+                };
+                result.unwrap_or_else(|e| panic!("{op} strict={strict}: {e}"));
+            }
+        }
+    }
+
+    #[test]
+    fn equality_charges_only_required_string_work_and_numeric_storage() {
+        let mut runtime = Runtime::new();
+        let mut doc = Document::parse("");
+        let a = Value::String(JsString::from(vec![97; 32]));
+        let b = a.clone();
+        runtime.allocated = MAX_HEAP;
+        runtime.steps = 9;
+        assert!(
+            runtime
+                .loosely_equal(a.clone(), b.clone(), &mut doc)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        runtime.steps = 10;
+        assert!(runtime.loosely_equal(a, b, &mut doc).unwrap());
+        assert_eq!((runtime.steps, runtime.allocated), (0, MAX_HEAP));
+        let large = Value::String(JsString::from(vec![97; MAX_STRING]));
+        assert!(
+            !runtime
+                .loosely_equal(large.clone(), Value::Null, &mut doc)
+                .unwrap()
+        );
+        assert!(
+            !runtime
+                .loosely_equal(Value::Undefined, large, &mut doc)
+                .unwrap()
+        );
+        assert_eq!((runtime.steps, runtime.allocated), (0, MAX_HEAP));
+        runtime.steps = 2;
+        runtime.allocated = MAX_HEAP - 36;
+        assert!(
+            runtime
+                .loosely_equal(Value::String("12".into()), Value::Number(12.0), &mut doc)
+                .unwrap()
+        );
+        assert_eq!((runtime.steps, runtime.allocated), (0, MAX_HEAP));
+        runtime.steps = 2;
+        assert!(
+            runtime
+                .loosely_equal(Value::Number(12.0), Value::String("12".into()), &mut doc)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(runtime.allocated, MAX_HEAP + 36);
+        runtime.steps = 1;
+        assert!(
+            runtime
+                .loosely_equal(Value::Bool(false), Value::Number(0.0), &mut doc)
+                .unwrap()
+        );
+        assert_eq!(runtime.steps, 0);
+    }
+
+    #[test]
+    fn equality_conversion_precedes_large_string_limit_and_shares_callback_budget() {
+        for reverse in [false, true] {
+            let mut runtime = Runtime::new();
+            let mut doc = Document::parse("");
+            runtime
+                .execute(
+                    "var seen=false;var object={valueOf:function(){seen=true;return 'x';}};",
+                    &mut doc,
+                )
+                .unwrap();
+            let object = runtime.environments[0].bindings["object"].value.clone();
+            let text = Value::String(JsString::from(vec![97; MAX_STRING]));
+            runtime.steps = 1024;
+            let (left, right) = if reverse {
+                (object, text)
+            } else {
+                (text, object)
+            };
+            assert!(
+                runtime
+                    .loosely_equal(left, right, &mut doc)
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(
+                runtime.environments[0].bindings["seen"].value,
+                Value::Bool(true)
+            );
+            assert_eq!((runtime.calls, runtime.stack_units), (0, 0));
+        }
+        for op in ["==", "!="] {
+            for body in ["while(true){}".to_owned(), format!("return object{op}1;")] {
+                let mut runtime = Runtime::new();
+                let mut doc = Document::parse("");
+                runtime
+                    .execute("var caught=false,finished=false;", &mut doc)
+                    .unwrap();
+                let source = format!(
+                    "var object={{valueOf:function(){{{body}}}}};try{{object{op}1;finished=true;}}catch(e){{caught=true;}}"
+                );
+                assert!(
+                    runtime
+                        .execute(&source, &mut doc)
+                        .unwrap_err()
+                        .is_resource_limit()
+                );
+                assert_eq!(
+                    runtime.environments[0].bindings["caught"].value,
+                    Value::Bool(false)
+                );
+                assert_eq!(
+                    runtime.environments[0].bindings["finished"].value,
+                    Value::Bool(false)
+                );
+                assert_eq!((runtime.calls, runtime.stack_units), (0, 0));
+            }
         }
     }
 

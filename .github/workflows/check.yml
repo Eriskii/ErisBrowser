@@ -58,6 +58,8 @@ jobs:
         run: python3 tools/test262_conformance.py --profile logical-assignment --baseline tests/conformance/test262-logical-assignment-current.json --output artifacts/test262-logical-assignment-gate.json
       - name: Preserve passing cases in the complete relational comparison directories
         run: python3 tools/test262_conformance.py --profile relational --baseline tests/conformance/test262-relational-current.json --output artifacts/test262-relational-gate.json
+      - name: Preserve passing cases in the complete equality directories
+        run: python3 tools/test262_conformance.py --profile equality --baseline tests/conformance/test262-equality-current.json --output artifacts/test262-equality-gate.json
       - run: timeout 180s target/release/eris-stress 5000
   vulkan-probe:
     runs-on: ubuntu-latest

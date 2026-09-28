@@ -1,6 +1,65 @@
 # Validation record
 
+## Ordinary equality conversion
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **887 Rust tests** pass with `--include-ignored`: 717 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 52 pipeline and 43 confined-worker tests. None remain
+ignored. All **145 Python checks** and **57 exact pixel references** pass.
+
+The [implementation](../tests/conformance/equality.md) adds iterative type
+dispatch for == and !=, including ordinary object conversion and Boolean,
+Number and String coercion. It fixes false == null while preserving null/undefined
+equivalence and ordinary object identity. Strict equality, object/object and
+object/nullish pairs do not run conversion hooks. String work and numeric scratch
+storage are charged before use; no resource ceiling changes. Seven focused
+groups and the page/worker fixtures cover coercion order, exact exceptions,
+UTF-16, skipped hooks and resource boundaries. A repeated-getter test was fixed
+to declare its redefined property configurable; no runtime relaxation was made.
+
+The [complete equality inventory](../tests/conformance/test262-equality.md)
+retains **145 sources / 286 modes / 128 preflights**. It moves from **146 passed /
+44 failed / 96 unsupported** to **190 passed / 96 unsupported**, with all 128
+controls. The gains are 20 equals and 24 does-not-equals modes; strict-operator
+observations are unchanged. Exotic-value metadata and dynamic-eval prerequisites
+remain explicit. There are no resource stops, harness errors, timeouts or adapter
+errors in this profile. Actual recording and a subsequent gate reproduce every
+candidate observation; CI now preserves the gains and complete inventory.
+
+All eighteen previous profiles preserve every observation, all **6,468 case
+and 1,472 preflight fingerprints**, and their policies. Existing resource stops
+remain nonpassing. HTML stays at 3,868 matches, two mismatches and six unsupported
+modes.
+
+The **15,000-case** mutation smoke run reports zero caught panics or invariant
+failures: 5,000 accepted HTML, 623 accepted/4,377 rejected scripts and
+3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and
+display-list size is 1,173 commands; 17 cases stop within paint limits. The new
+seed changes the inventory, so counts are not acceptance-rate comparisons.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+| --- | --- |
+| `eris-browser` | `b871833f233728553ebc26170bbfbfc3f4ed48dba7c8ecac37c300448924e65c` |
+| `eris-js` | `5663f74effc73282db269e77aeede8ece73795c324713a4646a2e4c73df0dfb8` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `65c696ecf715332851d48771a4a9bef628d61486b9ebb6ef8d3f19fc6fca122c` |
+
+Source-input SHA-256:
+`816e4c1ee47a2096de279c92b7ac0b7b55ddf14283ad0590ee92d1141e70f2f4`.
+Local records are `artifacts/*equality*`. Agent sessions remain unavailable;
+this is local validation, not independent-agent review. No native window,
+Vulkan or Chromium performance measurement is assigned to this checkpoint.
+Full compatibility, production security and the requested performance threshold
+remain unverified.
+
 ## Ordinary relational comparisons
+
+Published checkpoint `9adf86a` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36446347264),
+including the comparison gate, Rust 1.88 and the Vulkan probe.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **878 Rust tests** pass with `--include-ignored`: 710 library,

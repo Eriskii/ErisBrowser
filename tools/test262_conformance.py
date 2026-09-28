@@ -36,6 +36,7 @@ ADDITION_FEATURES = SUPPORTED_FEATURES.copy()
 LOGICAL_ASSIGNMENT_FEATURES = SUPPORTED_FEATURES | {'logical-assignment-operators'}
 URI_FEATURES = SUPPORTED_FEATURES.copy()
 RELATIONAL_FEATURES = SUPPORTED_FEATURES.copy()
+EQUALITY_FEATURES = SUPPORTED_FEATURES.copy()
 PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -46,7 +47,7 @@ PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES
                     'numeric-conversion': NUMERIC_CONVERSION_FEATURES,
                     'numeric-parsing': NUMERIC_PARSING_FEATURES,
                     'compound-assignment': COMPOUND_ASSIGNMENT_FEATURES,
-                    'addition': ADDITION_FEATURES, 'logical-assignment': LOGICAL_ASSIGNMENT_FEATURES, 'uri': URI_FEATURES, 'relational': RELATIONAL_FEATURES}
+                    'addition': ADDITION_FEATURES, 'logical-assignment': LOGICAL_ASSIGNMENT_FEATURES, 'uri': URI_FEATURES, 'relational': RELATIONAL_FEATURES, 'equality': EQUALITY_FEATURES}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -415,6 +416,64 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                 for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
                     source = guard + setup + f'assert.sameValue({actual},{value});'
                     variants.append(('array-sort-' + name + suffix, source, expected, mode))
+    if profile == 'equality':
+        for operator, label, strict, equal, unequal in (
+                ('==','eq',False,'true','false'), ('!=','ne',False,'false','true'),
+                ('===','strict-eq',True,'true','false'), ('!==','strict-ne',True,'false','true')):
+            guard = "assert.sameValue(new Number(1)==1,true);"
+            if strict:
+                pairs = [
+                    ('types', f"assert.sameValue(false{operator}null,{unequal});"
+                     f"assert.sameValue(new Number(1){operator}1,{unequal});"
+                     f"assert.sameValue(null{operator}undefined,{unequal});",
+                     f"1{operator}'1'", unequal, equal),
+                    ('no-hooks', "var calls=0,object={get valueOf(){calls++;throw 'unused';},get toString(){calls++;throw 'unused';}};"
+                     f"assert.sameValue(object{operator}1,{unequal});assert.sameValue(object{operator}object,{equal});"
+                     f"assert.sameValue(null{operator}object,{unequal});",
+                     'calls', '0', '1'),
+                    ('identity', "var a={},b={},f=function(){},g=function(){};"
+                     f"assert.sameValue(a{operator}b,{unequal});assert.sameValue(f{operator}g,{unequal});"
+                     f"assert.sameValue(f{operator}f,{equal});", f'a{operator}a', equal, unequal),
+                    ('utf16', f"assert.sameValue('\\uD800'{operator}'\\uDC00',{unequal});"
+                     f"assert.sameValue('\\u00E9'{operator}'e\\u0301',{unequal});",
+                     f"'\\uD800\\uDC00'{operator}'\\uD800\\uDC00'", equal, unequal),
+                    ('numbers', f"assert.sameValue(NaN{operator}NaN,{unequal});"
+                     f"assert.sameValue(Infinity{operator}Infinity,{equal});",
+                     f'-0{operator}0', equal, unequal),
+                    ('evaluation', "var trace='',object={valueOf:function(){throw 'unused';}};"
+                     "function a(){trace+='A';return object;}function b(){trace+='B';return 1;}"
+                     f"assert.sameValue(a(){operator}b(),{unequal});", 'trace', "'AB'", "'BA'"),
+                ]
+            else:
+                pairs = [
+                    ('types', f"assert.sameValue(false{operator}null,{unequal});"
+                     f"assert.sameValue(null{operator}undefined,{equal});"
+                     f"assert.sameValue(new Boolean(false){operator}'0',{equal});",
+                     f"new String('1'){operator}1", equal, unequal),
+                    ('live-order', "var trace='',object={get valueOf(){trace+='L';return function(){assert.sameValue(this,object);trace+='l';"
+                     "Object.defineProperty(object,'toString',{get:function(){trace+='T';return function(){assert.sameValue(this,object);trace+='t';return '1';};}});return {};};}};"
+                     "function a(){trace+='A';return object;}function b(){trace+='B';return 1;}"
+                     f"assert.sameValue(a(){operator}b(),{equal});", 'trace', "'ABLlTt'", "'ALlTtB'"),
+                    ('abrupt', "var trace='',reason={},seen,object={get valueOf(){trace+='L';throw reason;}};"
+                     "function b(){trace+='B';return 1;}"
+                     f"try{{object{operator}b();}}catch(e){{seen=e;}}assert.sameValue(seen,reason);",
+                     'trace', "'BL'", "'LB'"),
+                    ('no-hooks', "var calls=0,object={get valueOf(){calls++;throw 'unused';}};"
+                     f"assert.sameValue(object{operator}object,{equal});assert.sameValue(object{operator}{{}},{unequal});"
+                     f"assert.sameValue(object{operator}null,{unequal});assert.sameValue(undefined{operator}object,{unequal});",
+                     'calls', '0', '1'),
+                    ('utf16', f"assert.sameValue(new String('\\uD800'){operator}'\\uDC00',{unequal});"
+                     f"assert.sameValue(new String('\\u00E9'){operator}'e\\u0301',{unequal});",
+                     f"new String('\\uD800'){operator}'\\uD800'", equal, unequal),
+                    ('fallback', f"assert.throws(TypeError,function(){{return Object.create(null){operator}1;}});"
+                     f"assert.sameValue({{valueOf:null,toString:function(){{return '1';}}}}{operator}true,{equal});",
+                     f"false{operator}''", equal, unequal),
+                ]
+            for mode in ('sloppy','strict'):
+                for name,setup,actual,good,bad in pairs:
+                    for suffix,value,expected in (('',good,'passed'),('-mismatch',bad,'failed')):
+                        variants.append(('equality-'+label+'-'+name+suffix,
+                                         guard+setup+f'assert.sameValue({actual},{value});',expected,mode))
     if profile == 'relational':
         for operator, label, lexical, numeric in (
                 ('<','lt','false','true'), ('>','gt','true','false'),
