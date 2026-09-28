@@ -51,9 +51,10 @@ UnsupportedFeature. An ordinary own property found before such a node still
 works. The scoped walker prevents an uncharged generic host lookup fallback.
 This does not add Proxy, Symbol, BigInt, typed-array/resizable-buffer behavior,
 or indexed/length descriptor definitions on actual Arrays. Ordinary-object
-accessor descriptors remain supported. Number.MAX_SAFE_INTEGER and Date are
-independent missing prerequisites in some unchanged upstream tests; neither is
-introduced here.
+accessor descriptors remain supported. At the reduction checkpoint,
+Number.MAX_SAFE_INTEGER and Date were independent missing prerequisites in some
+unchanged upstream tests. The later [Number static builtin increment](number-statics.md)
+supplies the constant; Date remains unimplemented.
 
 Fourteen focused groups cover descriptors/aliases, call and conversion order,
 initial presence, sparse/inherited/undefined values, primitive boxing and UTF-16

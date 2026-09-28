@@ -90,6 +90,7 @@ python3 tools/test262_conformance.py --profile rest-parameters --baseline tests/
 python3 tools/test262_conformance.py --profile is-prototype-of --baseline tests/conformance/test262-is-prototype-of-current.json
 python3 tools/test262_conformance.py --profile global-values --baseline tests/conformance/test262-global-values-current.json
 python3 tools/test262_conformance.py --profile array-reduce --baseline tests/conformance/test262-array-reduce-current.json
+python3 tools/test262_conformance.py --profile number-statics --baseline tests/conformance/test262-number-statics-current.json
 python3 -m unittest discover -s tools -p 'test_*.py'
 cargo run --locked --release --bin eris-stress -- 5000
 ```
@@ -131,10 +132,16 @@ both modes. Those resource stops prevent a healthy
 regression baseline; the full inventory remains part of local measurements.
 
 The complete paired [reduce/reduceRight directories](tests/conformance/test262-array-reduce.md)
-retain 1,034 variants: 846 pass, 18 fail on remaining prerequisites and 170
-remain unsupported. Both methods now execute in the custom runtime, adding 762
+retain 1,034 variants: 848 pass, 16 fail on remaining prerequisites and 170
+remain unsupported. Both methods and Number.MAX_SAFE_INTEGER add 764
 passes with no losses. All 128 assertion checks verify; CI preserves the passing
 cases and the full unchanged inventory.
+
+The [Number static builtin inventory](tests/conformance/test262-number-statics.md)
+retains 340 variants: 234 pass, 14 fail on constructor conversion/parsing aliases
+and 92 remain unsupported. Five missing constants and four non-coercing
+predicates add 76 passes with no losses. All 104 assertion checks verify, and
+the complete regression baseline runs in CI.
 
 The complete [identifier and whitespace directories](tests/conformance/test262-identifiers.md)
 retain 669 variants: 507 pass, 154 remain unsupported and eight reach compile

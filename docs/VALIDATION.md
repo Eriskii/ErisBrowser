@@ -1,6 +1,86 @@
 # Validation record
 
+## Number constants and non-coercing predicates
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **811 Rust tests** pass with `--include-ignored`: 657 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 44 pipeline and 35 confined-worker tests. None remain
+ignored. All **97 Python checks** and **57 exact pixel references** pass.
+
+The [Number implementation](../tests/conformance/number-statics.md) adds five
+constants and four static predicates, preserving the three existing constants.
+MIN_VALUE is the smallest positive binary64 subnormal; integer classification
+handles the actual rounded value without an integer cast. Predicates borrow
+their first argument and do not coerce objects, inspect ignored arguments or
+allocate result storage. New bootstrap metadata is precharged; shared work,
+heap and stack limits remain unchanged.
+
+Ten focused script groups check exact bits, descriptors, strict/sloppy writes,
+boundaries, noncoercion, aliases, argument effects and accounting. Private tests
+call the actual native path at the heap ceiling with prebuilt large string/array
+arguments; the same fixed work suffices and failure cleans call/stack guards.
+Page and real confined-worker fixtures retain six green then six blue pixel
+samples, including native aliases called after method replacement and restoration.
+
+The complete [Number inventory](../tests/conformance/test262-number-statics.md)
+retains **170 sources / 340 variants / 104 preflights**. It moves from **158
+passed / 90 failed / 92 unsupported** to **234 passed / 14 failed / 92
+unsupported**, adding 76 passes without losses. Every preflight verifies and
+there are no resources, timeouts or adapter errors. Ten remaining failure modes
+exercise Number constructor conversion; four exercise parsing aliases. The
+unsupported inventory retains 90 metadata exclusions and two host-reflection
+outcomes. Actual baseline recording and a subsequent gate preserve identical
+observations. CI checks the new complete regression baseline, including its
+nonpassing inventory.
+
+All ten prior profiles retain **4,127 case and 656 preflight fingerprints**.
+The [reduction comparison](../tests/conformance/test262-array-reduce-number-statics.json)
+adds two passes for the unchanged near-safe-integer source in strict and sloppy
+modes: **848 passed / 16 failed / 170 unsupported**, with all 128 preflights.
+Its updated baseline protects both gains. Every other earlier profile preserves
+all passing cases and reported outcomes, including the retained function, sort
+and identifier resource stops. HTML retains 3,868 matches, two mismatches and
+six unsupported modes.
+
+A separate local check derives expected classification from binary64 exponent
+and significand fields, rather than using floating-point truncation. It maps
+**2,300 bit patterns** to numeric literals, including 2,048 deterministic random
+patterns and targeted boundaries. NaN payloads map to the same JavaScript NaN.
+The adapter passes **18,400 predicate assertions** across both modes in 144
+bounded batches; a deliberately wrong control throws Test262Error. The frozen
+before adapter fails all 144 batches at method-availability checks. These are
+sampled local checks, not exhaustive binary64 or independent-agent review.
+Inputs SHA-256:
+`d2b60045ddcefe6c3f4f3340767ac72145c1bbfc473b6e9f98ac53a9a389287e`.
+
+The **15,000-case** mutation smoke run reports zero caught panics or invariant
+failures: 5,000 accepted HTML, 609 accepted/4,391 rejected scripts and
+3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and
+display-list size is 1,173 commands; 17 cases stop within paint limits. The new
+seed changes the inventory; these counts are not an acceptance-rate comparison.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+|---|---|
+| `eris-browser` | `5a1b85733ffdd20cdd50860278efa8baafe257765d31d9718e2f7358f2fde3ad` |
+| `eris-js` | `f6ee32dffda7d56c3197cac56586cb9442134f141af1ed69528baf15d8e23675` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `29182360b91d9e31870ee50a8766143f4c38064852fa25459e1bfab07a64a233` |
+
+Source-input SHA-256:
+`f9f8fbdd7b40a1a276b7eb493113639e9bd9478913571e7543e4141b8ed324a5`.
+Local records are `artifacts/*number-statics*`; the bit-field oracle script is
+retained in session scratch storage. No native-window, GPU or Chromium
+performance measurement is assigned to this checkpoint. Full web compatibility,
+production security and the requested performance threshold remain unverified.
+
 ## Streaming array reductions
+
+Published checkpoint `58c027a` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36420373943),
+including the new reduction gate, Rust 1.88 and the Vulkan probe.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **799 Rust tests** pass with `--include-ignored`: 647 library,

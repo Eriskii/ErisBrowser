@@ -58,6 +58,11 @@ fn array_reductions_preserve_direction_live_values_and_accumulator_identity() {
 }
 
 #[test]
+fn number_statics_preserve_boundaries_and_native_aliases_in_callbacks() {
+    assert_six_scripted_samples(include_str!("fixtures/number-statics.html"));
+}
+
+#[test]
 fn invalid_identifier_scripts_leave_no_effects_and_later_scripts_still_run() {
     for invalid in [
         r"var \u0069f=1;",

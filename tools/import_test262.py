@@ -34,17 +34,24 @@ GLOBAL_VALUE_DIRECTORIES = {'global': 29, 'undefined': 8, 'NaN': 6, 'Infinity': 
 ARRAY_SORT_DIRECTORIES = {'Array/prototype/sort': 54}
 IDENTIFIER_DIRECTORIES = {'identifiers': 268, 'white-space': 67}
 ARRAY_REDUCE_DIRECTORIES = {'Array/prototype/reduce': 260, 'Array/prototype/reduceRight': 260}
+NUMBER_STATIC_DIRECTORIES = {
+    'Number': 120, 'Number/MAX_VALUE': 4, 'Number/MIN_VALUE': 4,
+    'Number/NEGATIVE_INFINITY': 4, 'Number/POSITIVE_INFINITY': 4,
+    'Number/isFinite': 8, 'Number/isInteger': 9, 'Number/isNaN': 7, 'Number/isSafeInteger': 10,
+}
 PROFILES = {'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
             'rest-parameters': REST_PARAMETER_DIRECTORIES,
             'is-prototype-of': IS_PROTOTYPE_OF_DIRECTORIES,
             'global-values': GLOBAL_VALUE_DIRECTORIES, 'array-sort': ARRAY_SORT_DIRECTORIES,
-            'identifiers': IDENTIFIER_DIRECTORIES, 'array-reduce': ARRAY_REDUCE_DIRECTORIES}
+            'identifiers': IDENTIFIER_DIRECTORIES, 'array-reduce': ARRAY_REDUCE_DIRECTORIES,
+            'number-statics': NUMBER_STATIC_DIRECTORIES}
 PROFILE_ROOTS = {'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
                  'template-literal': 'test/language', 'functions': 'test/language',
                  'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins',
                  'global-values': 'test/built-ins', 'array-sort': 'test/built-ins',
-                 'identifiers': 'test/language', 'array-reduce': 'test/built-ins'}
+                 'identifiers': 'test/language', 'array-reduce': 'test/built-ins',
+                 'number-statics': 'test/built-ins'}
 
 
 def corpus_name(profile):
@@ -200,6 +207,7 @@ def import_corpus(output, profile='string-json'):
         'array-sort': 'all direct .js files in built-ins/Array/prototype/sort; no implementation',
         'identifiers': 'all direct .js files in language/identifiers and language/white-space; no implementation',
         'array-reduce': 'all direct .js files in built-ins/Array/prototype/reduce and reduceRight; no implementation',
+        'number-statics': 'all direct .js files in built-ins/Number and eight Number constant/predicate directories; no implementation',
     }[profile]
     manifest = dict(format=1, repository=f'https://github.com/{REPOSITORY}', revision=REVISION,
                     scope=scope,

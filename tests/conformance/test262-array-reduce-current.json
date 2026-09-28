@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "77ee716188d99fdba64adbe151ef4efd915fbaa6345b2b0ec8fe3550efb5ec24",
   "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
-  "binary_sha256": "2b0e59686ff8fb8db409c8a54b8f92df592f00668fcd9ff00da2de0b3585705a",
+  "binary_sha256": "f6ee32dffda7d56c3197cac56586cb9442134f141af1ed69528baf15d8e23675",
   "cases": {
     "test/built-ins/Array/prototype/reduce/15.4.4.21-1-1.js:sloppy": {
       "status": "passed",
@@ -5095,12 +5095,12 @@
       "source_sha256": "ab9ee4597044628a3dc5c970b0c4e6621530f7397dd963a43f5d638289d9b051"
     },
     "test/built-ins/Array/prototype/reduceRight/length-near-integer-limit.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "9c807221aa58a247924616821e2735ad11a3c252f4f28260a69879818c505c14",
       "source_sha256": "d13d55ebdaa4b5394745a7cd3f0aaad9ce712585fe7e83b618b376d70a927dbb"
     },
     "test/built-ins/Array/prototype/reduceRight/length-near-integer-limit.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "4b1710f5d74d4d5da5fdf307d766f7f22b9a3d2ce9fbd5dfe35bb8139263db79",
       "source_sha256": "d13d55ebdaa4b5394745a7cd3f0aaad9ce712585fe7e83b618b376d70a927dbb"
     },

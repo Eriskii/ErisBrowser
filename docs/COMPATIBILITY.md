@@ -101,6 +101,16 @@ Object initializers preserve computed-key evaluation/coercion order, UTF-16 name
 
 Array reversal uses bounded ordinary property operations, preserving holes, inherited indices, accessor order and abrupt completion on supported receivers. Number radix formatting adds exact finite safe integers for bases 2–36; nondecimal fractions and larger magnitudes remain explicitly unsupported. See [Array/Number method coverage](../tests/conformance/array-number-methods.md).
 
+All eight Number constants now have their standard values and immutable flags.
+Number.isFinite, isNaN, isInteger and isSafeInteger classify primitive numbers
+without coercion, including subnormal values, negative zero and rounded large
+integers. Saved aliases retain native identity through method/global replacement.
+Number constructor conversion and parsing aliases remain incomplete. The
+[static builtin scope](../tests/conformance/number-statics.md) and
+[complete pinned inventory](../tests/conformance/test262-number-statics.md)
+record 234 passes, 14 failures and 92 unsupported variants, with all 104
+assertion checks verified.
+
 Untagged template literals support nested substitutions, cooked escapes and multiline text. Each substitution uses string-hint conversion before the next expression executes; tagged templates remain unsupported. See [template literal coverage](../tests/conformance/template-literals.md) and the separate [57-source upstream inventory](../tests/conformance/test262-template-literal.md), which retains 82 passing and 32 unsupported variants.
 
 JavaScript strings retain UTF-16 code units, including unpaired surrogates. Length, indexed access, `charAt`, `charCodeAt`, `codePointAt`, `slice`, `substring`, string searches, `match`, `search`, `replace`, string/RegExp `split`, array `join`, trimming, selected case conversion and `String.fromCharCode`/`fromCodePoint` operate on this representation. String-to-number conversion recognizes ECMAScript whitespace and decimal, hexadecimal, binary and octal forms. This is a bounded subset: normalization, locale-sensitive operations, Symbol-based RegExp dispatch/species and complete generic receiver/prototype behavior are absent. Each string is limited to 262,144 code units (512 KiB of backing storage), within the cumulative estimated 8 MiB script allocation budget.

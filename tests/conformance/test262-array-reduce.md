@@ -48,9 +48,10 @@ not added by this profile.
 
 Four complete sources / eight modes use `Date`. The unchanged
 `reduceRight/length-near-integer-limit.js` uses `Number.MAX_SAFE_INTEGER` and
-examines descending indices near the safe-integer limit. These sources have no
-new exclusion: missing globals/constants and actual execution outcomes remain
-visible. Array indexed/length descriptor definitions also retain their existing
+examines descending indices near the safe-integer limit. The later Number
+checkpoint below resolves that constant prerequisite. These sources have no
+new exclusion; missing globals and actual execution outcomes remain visible.
+Array indexed/length descriptor definitions also retain their existing
 unsupported outcome; ordinary-object descriptor tests are executed. Sources
 are neither rewritten nor shortened to remove prerequisites or resource work.
 
@@ -108,6 +109,22 @@ source digests, isolated policy and retained dependencies, failed assertion
 identity, guarded paired setup, metadata restoration, corrupted/incomplete
 imports and preservation of every previous profile contract. The focused
 module has **57 passing tests** at this checkpoint.
+
+## Later Number static builtin checkpoint
+
+The [complete later comparison](test262-array-reduce-number-statics.json)
+preserves all 1,034 case and 128 preflight identities. Number.MAX_SAFE_INTEGER
+enables `reduceRight/length-near-integer-limit.js` in both modes: **848 passed /
+16 failed / 170 unsupported**, with no lost passes, resources, timeouts or adapter
+errors. All 128 preflights verify. The remaining failures still concern Date and
+Math/JSON tags. Baseline recording and its gate both pass with identical results;
+the [current baseline](test262-array-reduce-current.json) now protects the two gains.
+
+Candidate adapter SHA-256:
+`f6ee32dffda7d56c3197cac56586cb9442134f141af1ed69528baf15d8e23675`.
+Current baseline SHA-256:
+`0eeff1f9bdccb1a035ed2d5e888390352f1f9a2704511a4f979085a26ed79c76`.
+The original reduction measurements below remain historical evidence.
 
 ## Frozen initial measurement
 
@@ -215,7 +232,7 @@ were added to improve this profile's count.
 The runner's existing measurement-health conditions permit a regression
 baseline: every preflight verifies, there are no resource stops, timeouts or
 adapter errors, and no earlier pass is lost. An actual recording command
-returned 0 and wrote [the proposed current baseline](test262-array-reduce-current.json).
+returned 0 and wrote [the original reduction baseline](https://github.com/Eriskii/ErisBrowser/blob/58c027ac3a203b3295429dbaf6a10e7d5f31c68c/tests/conformance/test262-array-reduce-current.json).
 A subsequent actual `--baseline` invocation returned 0 with **zero regressions
 and zero new passes**; its case/preflight observations exactly match both the
 first candidate run and baseline-recording run. The baseline records **all
@@ -231,5 +248,5 @@ Runtime source SHA-256:
 `745171c379a51aca6b10b1f5904f8e95c29dde675b1d2d39d09f9c68041b7983`.
 Sanitized full candidate-report SHA-256:
 `108cb3b7315e7199e7db678687157bbd7d569740bd5961f63f297519c4d751c7`.
-Current baseline SHA-256:
+Original reduction baseline SHA-256:
 `6d57a0d72dc750c9ec90d6e6392111df96af3612ec3765a2be1b9406a7876108`.

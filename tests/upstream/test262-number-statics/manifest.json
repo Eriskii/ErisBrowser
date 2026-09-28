@@ -1,0 +1,1255 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all direct .js files in built-ins/Number and eight Number constant/predicate directories; no implementation",
+  "directories": {
+    "Number": [
+      "15.7.3-1.js",
+      "15.7.3-2.js",
+      "15.7.4-1.js",
+      "EPSILON.js",
+      "MAX_SAFE_INTEGER.js",
+      "MIN_SAFE_INTEGER.js",
+      "NaN.js",
+      "S15.7.1.1_A1.js",
+      "S15.7.1.1_A2.js",
+      "S15.7.2.1_A1.js",
+      "S15.7.2.1_A2.js",
+      "S15.7.2.1_A3.js",
+      "S15.7.2.1_A4.js",
+      "S15.7.3_A1.js",
+      "S15.7.3_A2.js",
+      "S15.7.3_A3.js",
+      "S15.7.3_A4.js",
+      "S15.7.3_A5.js",
+      "S15.7.3_A6.js",
+      "S15.7.3_A7.js",
+      "S15.7.3_A8.js",
+      "S15.7.5_A1_T01.js",
+      "S15.7.5_A1_T02.js",
+      "S15.7.5_A1_T03.js",
+      "S15.7.5_A1_T04.js",
+      "S15.7.5_A1_T05.js",
+      "S15.7.5_A1_T06.js",
+      "S15.7.5_A1_T07.js",
+      "S8.12.8_A3.js",
+      "S8.12.8_A4.js",
+      "S9.1_A1_T1.js",
+      "S9.3.1_A1.js",
+      "S9.3.1_A10.js",
+      "S9.3.1_A11.js",
+      "S9.3.1_A12.js",
+      "S9.3.1_A13.js",
+      "S9.3.1_A14.js",
+      "S9.3.1_A15.js",
+      "S9.3.1_A16.js",
+      "S9.3.1_A17.js",
+      "S9.3.1_A18.js",
+      "S9.3.1_A19.js",
+      "S9.3.1_A2.js",
+      "S9.3.1_A20.js",
+      "S9.3.1_A21.js",
+      "S9.3.1_A22.js",
+      "S9.3.1_A23.js",
+      "S9.3.1_A24.js",
+      "S9.3.1_A25.js",
+      "S9.3.1_A26.js",
+      "S9.3.1_A27.js",
+      "S9.3.1_A28.js",
+      "S9.3.1_A29.js",
+      "S9.3.1_A2_U180E.js",
+      "S9.3.1_A30.js",
+      "S9.3.1_A31.js",
+      "S9.3.1_A32.js",
+      "S9.3.1_A3_T1.js",
+      "S9.3.1_A3_T1_U180E.js",
+      "S9.3.1_A3_T2.js",
+      "S9.3.1_A3_T2_U180E.js",
+      "S9.3.1_A4_T1.js",
+      "S9.3.1_A4_T2.js",
+      "S9.3.1_A5_T1.js",
+      "S9.3.1_A5_T2.js",
+      "S9.3.1_A5_T3.js",
+      "S9.3.1_A6_T1.js",
+      "S9.3.1_A6_T2.js",
+      "S9.3.1_A7.js",
+      "S9.3.1_A8.js",
+      "S9.3.1_A9.js",
+      "S9.3_A1_T1.js",
+      "S9.3_A2_T1.js",
+      "S9.3_A3_T1.js",
+      "S9.3_A4.1_T1.js",
+      "S9.3_A4.2_T1.js",
+      "S9.3_A5_T1.js",
+      "bigint-conversion.js",
+      "is-a-constructor.js",
+      "parseFloat.js",
+      "parseInt.js",
+      "prop-desc.js",
+      "proto-from-ctor-realm.js",
+      "return-abrupt-tonumber-value-symbol.js",
+      "return-abrupt-tonumber-value.js",
+      "string-binary-literal-invalid.js",
+      "string-binary-literal.js",
+      "string-hex-literal-invalid.js",
+      "string-numeric-separator-literal-bil-bd-nsl-bd.js",
+      "string-numeric-separator-literal-bil-bd-nsl-bds.js",
+      "string-numeric-separator-literal-bil-bds-nsl-bd.js",
+      "string-numeric-separator-literal-bil-bds-nsl-bds.js",
+      "string-numeric-separator-literal-dd-dot-dd-ep-sign-minus-dd-nsl-dd.js",
+      "string-numeric-separator-literal-dd-dot-dd-ep-sign-minus-dds-nsl-dd.js",
+      "string-numeric-separator-literal-dd-dot-dd-ep-sign-plus-dd-nsl-dd.js",
+      "string-numeric-separator-literal-dd-dot-dd-ep-sign-plus-dds-nsl-dd.js",
+      "string-numeric-separator-literal-dd-nsl-dd-one-of.js",
+      "string-numeric-separator-literal-dds-dot-dd-nsl-dd-ep-dd.js",
+      "string-numeric-separator-literal-dds-nsl-dd.js",
+      "string-numeric-separator-literal-dot-dd-nsl-dd-ep.js",
+      "string-numeric-separator-literal-dot-dd-nsl-dds-ep.js",
+      "string-numeric-separator-literal-dot-dds-nsl-dd-ep.js",
+      "string-numeric-separator-literal-dot-dds-nsl-dds-ep.js",
+      "string-numeric-separator-literal-hil-hd-nsl-hd.js",
+      "string-numeric-separator-literal-hil-hd-nsl-hds.js",
+      "string-numeric-separator-literal-hil-hds-nsl-hd.js",
+      "string-numeric-separator-literal-hil-hds-nsl-hds.js",
+      "string-numeric-separator-literal-hil-od-nsl-od-one-of.js",
+      "string-numeric-separator-literal-nzd-nsl-dd-one-of.js",
+      "string-numeric-separator-literal-nzd-nsl-dd.js",
+      "string-numeric-separator-literal-nzd-nsl-dds.js",
+      "string-numeric-separator-literal-oil-od-nsl-od-one-of.js",
+      "string-numeric-separator-literal-oil-od-nsl-od.js",
+      "string-numeric-separator-literal-oil-od-nsl-ods.js",
+      "string-numeric-separator-literal-oil-ods-nsl-od.js",
+      "string-numeric-separator-literal-oil-ods-nsl-ods.js",
+      "string-numeric-separator-literal-sign-minus-dds-nsl-dd.js",
+      "string-numeric-separator-literal-sign-plus-dds-nsl-dd.js",
+      "string-octal-literal-invald.js",
+      "string-octal-literal.js"
+    ],
+    "Number/MAX_VALUE": [
+      "S15.7.3.2_A2.js",
+      "S15.7.3.2_A3.js",
+      "S15.7.3.2_A4.js",
+      "value.js"
+    ],
+    "Number/MIN_VALUE": [
+      "S15.7.3.3_A2.js",
+      "S15.7.3.3_A3.js",
+      "S15.7.3.3_A4.js",
+      "value.js"
+    ],
+    "Number/NEGATIVE_INFINITY": [
+      "S15.7.3.5_A1.js",
+      "S15.7.3.5_A2.js",
+      "prop-desc.js",
+      "value.js"
+    ],
+    "Number/POSITIVE_INFINITY": [
+      "S15.7.3.6_A1.js",
+      "S15.7.3.6_A2.js",
+      "prop-desc.js",
+      "value.js"
+    ],
+    "Number/isFinite": [
+      "arg-is-not-number.js",
+      "finite-numbers.js",
+      "infinity.js",
+      "length.js",
+      "name.js",
+      "nan.js",
+      "not-a-constructor.js",
+      "prop-desc.js"
+    ],
+    "Number/isInteger": [
+      "arg-is-not-number.js",
+      "infinity.js",
+      "integers.js",
+      "length.js",
+      "name.js",
+      "nan.js",
+      "non-integers.js",
+      "not-a-constructor.js",
+      "prop-desc.js"
+    ],
+    "Number/isNaN": [
+      "arg-is-not-number.js",
+      "length.js",
+      "name.js",
+      "nan.js",
+      "not-a-constructor.js",
+      "not-nan.js",
+      "prop-desc.js"
+    ],
+    "Number/isSafeInteger": [
+      "arg-is-not-number.js",
+      "infinity.js",
+      "length.js",
+      "name.js",
+      "nan.js",
+      "not-a-constructor.js",
+      "not-integer.js",
+      "not-safe-integer.js",
+      "prop-desc.js",
+      "safe-integers.js"
+    ]
+  },
+  "test_files": 170,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/built-ins/Number/15.7.3-1.js",
+      "upstream_path": "test/built-ins/Number/15.7.3-1.js",
+      "bytes": 356,
+      "sha256": "024748ba9507f15c64c379a30ca83e735982558d55c79e2249d1ce41ea8d0754"
+    },
+    {
+      "path": "test/built-ins/Number/15.7.3-2.js",
+      "upstream_path": "test/built-ins/Number/15.7.3-2.js",
+      "bytes": 365,
+      "sha256": "faa3d6029d90dcfdedde847882cd4288b246ba2120ca3e50e1a3a8001666627a"
+    },
+    {
+      "path": "test/built-ins/Number/15.7.4-1.js",
+      "upstream_path": "test/built-ins/Number/15.7.4-1.js",
+      "bytes": 386,
+      "sha256": "b3dfb1dff45de074744ccf59fbb140d99a334c6988f365f07b5f231aad699243"
+    },
+    {
+      "path": "test/built-ins/Number/EPSILON.js",
+      "upstream_path": "test/built-ins/Number/EPSILON.js",
+      "bytes": 846,
+      "sha256": "ad41c3c641de4fae943ba610b10c9f2158a2a80672175417c725b0895fba6d88"
+    },
+    {
+      "path": "test/built-ins/Number/MAX_SAFE_INTEGER.js",
+      "upstream_path": "test/built-ins/Number/MAX_SAFE_INTEGER.js",
+      "bytes": 881,
+      "sha256": "bb6c82435711b39b2d1394e820298197b7f21d608c43569de1ccea8b239b6e1e"
+    },
+    {
+      "path": "test/built-ins/Number/MAX_VALUE/S15.7.3.2_A2.js",
+      "upstream_path": "test/built-ins/Number/MAX_VALUE/S15.7.3.2_A2.js",
+      "bytes": 526,
+      "sha256": "d8405558e318d2e52ab1bae7db75005d40a6def881285cd14af857728966248c"
+    },
+    {
+      "path": "test/built-ins/Number/MAX_VALUE/S15.7.3.2_A3.js",
+      "upstream_path": "test/built-ins/Number/MAX_VALUE/S15.7.3.2_A3.js",
+      "bytes": 551,
+      "sha256": "d6b7e1baabec9e7ca830fac2574b0dbf30727e1b9df432a38b074024a1402b59"
+    },
+    {
+      "path": "test/built-ins/Number/MAX_VALUE/S15.7.3.2_A4.js",
+      "upstream_path": "test/built-ins/Number/MAX_VALUE/S15.7.3.2_A4.js",
+      "bytes": 564,
+      "sha256": "e042bc43f2d855d217d7ab801e131398d6f5a1ad0862f7c4d4ad5817d7169570"
+    },
+    {
+      "path": "test/built-ins/Number/MAX_VALUE/value.js",
+      "upstream_path": "test/built-ins/Number/MAX_VALUE/value.js",
+      "bytes": 855,
+      "sha256": "2b9f755761e913f987c1f3cae75b770ee878972ea4f3926423a7a97d9538d64d"
+    },
+    {
+      "path": "test/built-ins/Number/MIN_SAFE_INTEGER.js",
+      "upstream_path": "test/built-ins/Number/MIN_SAFE_INTEGER.js",
+      "bytes": 885,
+      "sha256": "52d94c679cd340ba007830029f38c4d20f0d4b3cd5531ca20a70c2c4763d01f0"
+    },
+    {
+      "path": "test/built-ins/Number/MIN_VALUE/S15.7.3.3_A2.js",
+      "upstream_path": "test/built-ins/Number/MIN_VALUE/S15.7.3.3_A2.js",
+      "bytes": 526,
+      "sha256": "e603e1e959da272a1759fdb29169d308af0dc3fe477f2f9540534052b0486e31"
+    },
+    {
+      "path": "test/built-ins/Number/MIN_VALUE/S15.7.3.3_A3.js",
+      "upstream_path": "test/built-ins/Number/MIN_VALUE/S15.7.3.3_A3.js",
+      "bytes": 540,
+      "sha256": "937f9605472165a8902e04bdd6da4e6ca0232e9e29b96e9fe3c0c6f581f5e87d"
+    },
+    {
+      "path": "test/built-ins/Number/MIN_VALUE/S15.7.3.3_A4.js",
+      "upstream_path": "test/built-ins/Number/MIN_VALUE/S15.7.3.3_A4.js",
+      "bytes": 564,
+      "sha256": "6e1b86f4e3bab90df444cc001fc70150ecf01755ea57293b6bca1f0a900a2e34"
+    },
+    {
+      "path": "test/built-ins/Number/MIN_VALUE/value.js",
+      "upstream_path": "test/built-ins/Number/MIN_VALUE/value.js",
+      "bytes": 950,
+      "sha256": "3f49c7a0703192a961ac79acc6706c6386e15aac4535542101f687d85043306b"
+    },
+    {
+      "path": "test/built-ins/Number/NEGATIVE_INFINITY/S15.7.3.5_A1.js",
+      "upstream_path": "test/built-ins/Number/NEGATIVE_INFINITY/S15.7.3.5_A1.js",
+      "bytes": 395,
+      "sha256": "0c11ac553bd140d189831c41cb4405da4a8727c8359c80918ab355d5b0698f73"
+    },
+    {
+      "path": "test/built-ins/Number/NEGATIVE_INFINITY/S15.7.3.5_A2.js",
+      "upstream_path": "test/built-ins/Number/NEGATIVE_INFINITY/S15.7.3.5_A2.js",
+      "bytes": 543,
+      "sha256": "9eae29848c893b30014c04e29cd6f6b3eff23b8b09238f103bd0f32f240d6632"
+    },
+    {
+      "path": "test/built-ins/Number/NEGATIVE_INFINITY/prop-desc.js",
+      "upstream_path": "test/built-ins/Number/NEGATIVE_INFINITY/prop-desc.js",
+      "bytes": 569,
+      "sha256": "ef1c4d1dec71f66d9201397ebffe8e390bc0a69216dfa51e305da1777be71dba"
+    },
+    {
+      "path": "test/built-ins/Number/NEGATIVE_INFINITY/value.js",
+      "upstream_path": "test/built-ins/Number/NEGATIVE_INFINITY/value.js",
+      "bytes": 395,
+      "sha256": "2d1fd7b9141213ae4c72060d98d3c2941db688f8e45dee948d01a95b1d82e2bb"
+    },
+    {
+      "path": "test/built-ins/Number/NaN.js",
+      "upstream_path": "test/built-ins/Number/NaN.js",
+      "bytes": 578,
+      "sha256": "f916a01848264fb11bfedc39d45e837694c92b86911d593eac20606d57caa3c4"
+    },
+    {
+      "path": "test/built-ins/Number/POSITIVE_INFINITY/S15.7.3.6_A1.js",
+      "upstream_path": "test/built-ins/Number/POSITIVE_INFINITY/S15.7.3.6_A1.js",
+      "bytes": 395,
+      "sha256": "88c59fc46bbc336a521ca0f820130766f24e166429a8bfceb639d14f47d7eb40"
+    },
+    {
+      "path": "test/built-ins/Number/POSITIVE_INFINITY/S15.7.3.6_A2.js",
+      "upstream_path": "test/built-ins/Number/POSITIVE_INFINITY/S15.7.3.6_A2.js",
+      "bytes": 543,
+      "sha256": "073cbbfa6542b16b62dc674cef9b1b66c7f75a4788b849d0b97dc1808e769772"
+    },
+    {
+      "path": "test/built-ins/Number/POSITIVE_INFINITY/prop-desc.js",
+      "upstream_path": "test/built-ins/Number/POSITIVE_INFINITY/prop-desc.js",
+      "bytes": 569,
+      "sha256": "1ca0d5bc1bffadf1687387f520bb096b190073245c32f372c211843d6f466146"
+    },
+    {
+      "path": "test/built-ins/Number/POSITIVE_INFINITY/value.js",
+      "upstream_path": "test/built-ins/Number/POSITIVE_INFINITY/value.js",
+      "bytes": 394,
+      "sha256": "3e3ea562554cce91088fa08c194d3543f6262ac7824ab6bf8e8b6db978d6d04c"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.1.1_A1.js",
+      "upstream_path": "test/built-ins/Number/S15.7.1.1_A1.js",
+      "bytes": 1105,
+      "sha256": "394e8bf248470b4cdd592ab15085da9a0a3537816363296e5db3c7b72c0ef03e"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.1.1_A2.js",
+      "upstream_path": "test/built-ins/Number/S15.7.1.1_A2.js",
+      "bytes": 397,
+      "sha256": "d3e3bde2bc3e0344f44a326557f03c5ab489b77407a8b069025809836445f612"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.2.1_A1.js",
+      "upstream_path": "test/built-ins/Number/S15.7.2.1_A1.js",
+      "bytes": 1273,
+      "sha256": "35823c35126012dec9c348c3f281a9335c334fd3a9a05ff6d6ec5c28817ca9f0"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.2.1_A2.js",
+      "upstream_path": "test/built-ins/Number/S15.7.2.1_A2.js",
+      "bytes": 910,
+      "sha256": "aa59f4916f98b2dbe6a18349172237db9d5a0965e0a64d91f2bfa7133aed9efe"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.2.1_A3.js",
+      "upstream_path": "test/built-ins/Number/S15.7.2.1_A3.js",
+      "bytes": 530,
+      "sha256": "75fd945d40ccf067856547d844e118fbbe4c9b5f5445d28e7eda7177eb8ab2a5"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.2.1_A4.js",
+      "upstream_path": "test/built-ins/Number/S15.7.2.1_A4.js",
+      "bytes": 467,
+      "sha256": "5f3311b3ccfbf3fda5efa3c6d8224f6b855ad2c3284fdba9be1b2c37e7efdb49"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.3_A1.js",
+      "upstream_path": "test/built-ins/Number/S15.7.3_A1.js",
+      "bytes": 379,
+      "sha256": "536feda6e041a6b5b51f74c0dcc47ed054b6221c1a64cd37592df9b4b2a495b5"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.3_A2.js",
+      "upstream_path": "test/built-ins/Number/S15.7.3_A2.js",
+      "bytes": 379,
+      "sha256": "d77730610eadf64e4b048f1b5e52d5c9c93f65b3682dc44db599f1ca7be3221c"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.3_A3.js",
+      "upstream_path": "test/built-ins/Number/S15.7.3_A3.js",
+      "bytes": 379,
+      "sha256": "1db7a6531ad7d9b78b74aa57330032f3fa43896c83c793af45fcbeb547156893"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.3_A4.js",
+      "upstream_path": "test/built-ins/Number/S15.7.3_A4.js",
+      "bytes": 355,
+      "sha256": "50a3c34b4c457cdb1797b543ca7f09777c6b3e3c7414c35a28ea39dd822d85d0"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.3_A5.js",
+      "upstream_path": "test/built-ins/Number/S15.7.3_A5.js",
+      "bytes": 417,
+      "sha256": "6e54cae84bd327a5632ce7e9d68020b31695cb09b906dc6b4d0cddbaaaf11b76"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.3_A6.js",
+      "upstream_path": "test/built-ins/Number/S15.7.3_A6.js",
+      "bytes": 417,
+      "sha256": "da88c758e769f9a89facf6b279d4700a98cedff6c2cc017fbcde1e7effddf125"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.3_A7.js",
+      "upstream_path": "test/built-ins/Number/S15.7.3_A7.js",
+      "bytes": 466,
+      "sha256": "cd1953dd5a2a28c9bcb4c9feb50b1a873630cad4018913e508d329f1e9c4d43e"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.3_A8.js",
+      "upstream_path": "test/built-ins/Number/S15.7.3_A8.js",
+      "bytes": 448,
+      "sha256": "13fbcf2e71df75c4fc3019e583f83ce6cb3f7b1425d78d9c1594468141905360"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.5_A1_T01.js",
+      "upstream_path": "test/built-ins/Number/S15.7.5_A1_T01.js",
+      "bytes": 661,
+      "sha256": "8447ab4685c1671d00144ddfd8a85bbcd08bd7924033c2ee5d1c760acea546cf"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.5_A1_T02.js",
+      "upstream_path": "test/built-ins/Number/S15.7.5_A1_T02.js",
+      "bytes": 640,
+      "sha256": "5d7c4eb33158ce65b486108b8c461dc458bc67d7d814c6a9fd0f92f9412e3601"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.5_A1_T03.js",
+      "upstream_path": "test/built-ins/Number/S15.7.5_A1_T03.js",
+      "bytes": 682,
+      "sha256": "7851ad71a112eda3cfa22e617ad28b3de7f5b0bfff7b4194b4a0e069ef065c7f"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.5_A1_T04.js",
+      "upstream_path": "test/built-ins/Number/S15.7.5_A1_T04.js",
+      "bytes": 633,
+      "sha256": "39765fd52e02dbd3ba9152d20313d6f338e4b9cb8773fc4cc411ab03bf0b43f5"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.5_A1_T05.js",
+      "upstream_path": "test/built-ins/Number/S15.7.5_A1_T05.js",
+      "bytes": 633,
+      "sha256": "d5fadcce32f842fe803cea70be862522226645397870d845be9cc7c00f3ab15f"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.5_A1_T06.js",
+      "upstream_path": "test/built-ins/Number/S15.7.5_A1_T06.js",
+      "bytes": 675,
+      "sha256": "7a116d47d8ffb890ee21cc6e96819d4c773a9f3b3cd68a41ce272679f447aedd"
+    },
+    {
+      "path": "test/built-ins/Number/S15.7.5_A1_T07.js",
+      "upstream_path": "test/built-ins/Number/S15.7.5_A1_T07.js",
+      "bytes": 661,
+      "sha256": "4ff52dd83da8f696e241ca034c97d5bebf86fc64b054fcc7e017a8390d356d95"
+    },
+    {
+      "path": "test/built-ins/Number/S8.12.8_A3.js",
+      "upstream_path": "test/built-ins/Number/S8.12.8_A3.js",
+      "bytes": 900,
+      "sha256": "4788dd68d22f1cc25007ac64474421ccb0a4c739d619409e3e0addc22348bff5"
+    },
+    {
+      "path": "test/built-ins/Number/S8.12.8_A4.js",
+      "upstream_path": "test/built-ins/Number/S8.12.8_A4.js",
+      "bytes": 953,
+      "sha256": "4544294538b6a8730298cccacd81dba050d74e688f55d7ea538246cab72a1451"
+    },
+    {
+      "path": "test/built-ins/Number/S9.1_A1_T1.js",
+      "upstream_path": "test/built-ins/Number/S9.1_A1_T1.js",
+      "bytes": 861,
+      "sha256": "c12c8ff01e4d32b1f014fee7b7b5d316e28cf564fcc978f8c2651d7a2b8f8447"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A1.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A1.js",
+      "bytes": 347,
+      "sha256": "34b85e3e2bf5f31e30c2f5e5a237e77bc9d2ac41fee3497a34c88bbe33a9b580"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A10.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A10.js",
+      "bytes": 457,
+      "sha256": "16a5702c662f890126b28087f4a4e992568077c86b03e4f73a7d35831f45634f"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A11.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A11.js",
+      "bytes": 624,
+      "sha256": "bf23e27332ae7e40d84d1172f6b95f9817ff999c3b96c13da3ef662ef0cc080d"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A12.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A12.js",
+      "bytes": 647,
+      "sha256": "e649aa9264cf7ccb481bc20a3d91234b5ae6a3f07af9b069aba29746ef7849e8"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A13.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A13.js",
+      "bytes": 621,
+      "sha256": "91182a17cfdf9661586ef444fae5b42c0472d10a171e580a3c3bf9c5f92d83ff"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A14.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A14.js",
+      "bytes": 406,
+      "sha256": "0c3b87139f32470195f04860bb6536d0050192cd6c2fd9ecf4a3515d209ab2ce"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A15.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A15.js",
+      "bytes": 451,
+      "sha256": "e8d42d29ff8e41449d3bdadd5c7793cb453c14e0bbee03fac551401198879c3a"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A16.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A16.js",
+      "bytes": 493,
+      "sha256": "b78580a990febcdd022b9a110372c3d83fac86f9867a546b5ffd76d5ffc6d044"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A17.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A17.js",
+      "bytes": 493,
+      "sha256": "42be905ede75043b8682b80d49e5c6c8cbee14fb6ae9c40cf9ef7d71b37d0bf4"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A18.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A18.js",
+      "bytes": 493,
+      "sha256": "7ac40ed6963754f9af4e03480270f115540f6e031e7b47c7275d21225e2e6c63"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A19.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A19.js",
+      "bytes": 493,
+      "sha256": "cc83f7c22a54ff7f14fa13154ad1f127e91826bee6b14e6e18a2f0706ee4f07f"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A2.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A2.js",
+      "bytes": 2705,
+      "sha256": "5335d0334896ae7ac81eb9cdaa916d914a9dce570525bd5d9a7689a23fca8b10"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A20.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A20.js",
+      "bytes": 493,
+      "sha256": "e25ba73a3c10c7d0f5c469333f2cd2e6109d49f493a7b846e333a0ccdbae4443"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A21.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A21.js",
+      "bytes": 493,
+      "sha256": "f0f4011f004347118087f2e0c1775807d3c1193da259f7c6e9741dcf948d49f6"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A22.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A22.js",
+      "bytes": 493,
+      "sha256": "67bd6a86058d3462320c6d8862d9b0e5c785b68557b5569c31d795333e83b1f8"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A23.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A23.js",
+      "bytes": 493,
+      "sha256": "5eb3d38394dfa8f5b78934e2869d8dcd5e715166886252c53d858197d8eec7b9"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A24.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A24.js",
+      "bytes": 493,
+      "sha256": "eddcf2b1cfd7c2ba0c847aaba92315447eee5dba8d19ae8d880f99527b18ed32"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A25.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A25.js",
+      "bytes": 493,
+      "sha256": "1316990d1676131a30f1c3722f7d6715fe766c311a6d4e9b63afaa348c6a32b5"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A26.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A26.js",
+      "bytes": 610,
+      "sha256": "d0f3e781448b2dc65647d01540c1e26efc5a3b84793a57fcc7817f4c0bc457f5"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A27.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A27.js",
+      "bytes": 610,
+      "sha256": "2ce993560354d4a8e4fee8c86c151675da9d34c2c1796ec6879c1927a2b46654"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A28.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A28.js",
+      "bytes": 610,
+      "sha256": "72d8b6f961272824fed065692e9653caa71aaab01729530767d98848b5dc6e0a"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A29.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A29.js",
+      "bytes": 610,
+      "sha256": "8dad81de1e2336fadeff675851c4b120bb059b0569ff7645fd5833560f11812c"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A2_U180E.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A2_U180E.js",
+      "bytes": 935,
+      "sha256": "532af221b0dce9f17df064de9e67a89e3eacfae50acfa8928737d72608654dca"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A30.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A30.js",
+      "bytes": 610,
+      "sha256": "81f4236d1f87cdf25fbfa5dfed6ad8adfb6cb27b4318f68564e664cec2881163"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A31.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A31.js",
+      "bytes": 610,
+      "sha256": "574dba7b9d9886bb1faa54f95eda5a5b94acfaa2a3988e16ab22b24361c82abf"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A32.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A32.js",
+      "bytes": 1244,
+      "sha256": "f46d3d25f6a2b4476cc7a32c02cd7fd202204019285ebaa49ea1753984974b65"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A3_T1.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A3_T1.js",
+      "bytes": 1591,
+      "sha256": "3520599e74e3700fa61fbd1447099f1f3f21ec1ed32ce653449ce4f10db46405"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A3_T1_U180E.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A3_T1_U180E.js",
+      "bytes": 1236,
+      "sha256": "68b9827a13610405d866e36f5d66181fa886effa8578999ba715e983b57ef7f7"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A3_T2.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A3_T2.js",
+      "bytes": 1454,
+      "sha256": "5a36aad60d3cb75cc27f4b1449166f12a3e54f9cc27923502e21705abe91f3e3"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A3_T2_U180E.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A3_T2_U180E.js",
+      "bytes": 1385,
+      "sha256": "df8f76eb9d52726f76b404f60ba8086f312c605cb962a1d6c66f22f89dfdb9b6"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A4_T1.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A4_T1.js",
+      "bytes": 833,
+      "sha256": "b9d95662b13bed4234f5aa909ca158d013254b10b8c477fabd5e11642cab27b1"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A4_T2.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A4_T2.js",
+      "bytes": 947,
+      "sha256": "6d5ab8b433190959b91ae30c9df35ece3ff424d06d6a9f40b9618b4cdbd4a2ca"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A5_T1.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A5_T1.js",
+      "bytes": 936,
+      "sha256": "8b56440d046326c4db3f6478de3976fc7f056b5af116ec2c44315fd8baa96cb8"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A5_T2.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A5_T2.js",
+      "bytes": 2166,
+      "sha256": "32b7255dd4a7662a71bf7555b234b14caf791f897ecb8223d4ce22462d8056e3"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A5_T3.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A5_T3.js",
+      "bytes": 1223,
+      "sha256": "88a9e43319eecadb65ad99515f6e94de4ddc48c1353e1d7a31eb1138d717be10"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A6_T1.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A6_T1.js",
+      "bytes": 892,
+      "sha256": "1ae9df8e54f2550b853383b5a1afbc0279c0cd984468fd0c0db5c30db8b9b427"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A6_T2.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A6_T2.js",
+      "bytes": 1128,
+      "sha256": "a3d20efefb1926b4781279ba9da8b5740dcc18ed870d8858fa94245c97c7bf64"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A7.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A7.js",
+      "bytes": 635,
+      "sha256": "92771b6369a3bf3cd4553f294d20e37ef8053776618fd0fd8a63c88f1124da1e"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A8.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A8.js",
+      "bytes": 617,
+      "sha256": "36f6b37c32a9c38ba36b22116bebfaa7bc95e9f76e0d9dd2dfd90ef4506f8750"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3.1_A9.js",
+      "upstream_path": "test/built-ins/Number/S9.3.1_A9.js",
+      "bytes": 1066,
+      "sha256": "ee83a4c4bcd9d622d1ffef0c00cd658ef88b67e7edf46ed02306ac3444a2f288"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3_A1_T1.js",
+      "upstream_path": "test/built-ins/Number/S9.3_A1_T1.js",
+      "bytes": 335,
+      "sha256": "fcbdfbe9aa72ee937fb45993fce18a022bc238f0abfd0bbe033530a6dcd5c0db"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3_A2_T1.js",
+      "upstream_path": "test/built-ins/Number/S9.3_A2_T1.js",
+      "bytes": 346,
+      "sha256": "fdcc56650335e1a4c2096afa6299ff8e4fc13453bb5bf1222b6530a565ad3fcb"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3_A3_T1.js",
+      "upstream_path": "test/built-ins/Number/S9.3_A3_T1.js",
+      "bytes": 473,
+      "sha256": "00778de5a3600592ddff6213354aefd2e20e019823b631b8f9d5e713df0d9b0a"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3_A4.1_T1.js",
+      "upstream_path": "test/built-ins/Number/S9.3_A4.1_T1.js",
+      "bytes": 676,
+      "sha256": "4f08a7fd71e72dc06e01adf249e7880a13ab1eedea4d0be3c8280aa758a45b66"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3_A4.2_T1.js",
+      "upstream_path": "test/built-ins/Number/S9.3_A4.2_T1.js",
+      "bytes": 1200,
+      "sha256": "fdf435ae47263f0372cce90bf25eb8ddae8d0abdc9dce30d4a3b098727a9ce6b"
+    },
+    {
+      "path": "test/built-ins/Number/S9.3_A5_T1.js",
+      "upstream_path": "test/built-ins/Number/S9.3_A5_T1.js",
+      "bytes": 2925,
+      "sha256": "b9491b7f30c1aa771f103bf64f9bd26f724c2c2cfeb75180e13e2ea42df171b0"
+    },
+    {
+      "path": "test/built-ins/Number/bigint-conversion.js",
+      "upstream_path": "test/built-ins/Number/bigint-conversion.js",
+      "bytes": 915,
+      "sha256": "61cdbbe4912c48083578a2e8e6e81921786aacb6eac6019baa1a880604ad9a62"
+    },
+    {
+      "path": "test/built-ins/Number/is-a-constructor.js",
+      "upstream_path": "test/built-ins/Number/is-a-constructor.js",
+      "bytes": 816,
+      "sha256": "558635e4508ae24004516ceb6d89707c2ef094acab3700e155907e16f7c045b6"
+    },
+    {
+      "path": "test/built-ins/Number/isFinite/arg-is-not-number.js",
+      "upstream_path": "test/built-ins/Number/isFinite/arg-is-not-number.js",
+      "bytes": 890,
+      "sha256": "060d9e445b3101518dc8c761d3ef8b2c1a1b3840951eaeeeaeed08644c48048b"
+    },
+    {
+      "path": "test/built-ins/Number/isFinite/finite-numbers.js",
+      "upstream_path": "test/built-ins/Number/isFinite/finite-numbers.js",
+      "bytes": 956,
+      "sha256": "65a3f57e374f1b5ff326191662ba5d6d2c5befb1f17c6282c88e9178c6f1824e"
+    },
+    {
+      "path": "test/built-ins/Number/isFinite/infinity.js",
+      "upstream_path": "test/built-ins/Number/isFinite/infinity.js",
+      "bytes": 482,
+      "sha256": "84c6c62a2dab7912f8c7cbb35e8f6e871ae3bfd967ebdb657320d66ed959b339"
+    },
+    {
+      "path": "test/built-ins/Number/isFinite/length.js",
+      "upstream_path": "test/built-ins/Number/isFinite/length.js",
+      "bytes": 1039,
+      "sha256": "68f56f79e3847355b40c974aeda0c021f56a676e8b690abc98b9a6a1ae4addc5"
+    },
+    {
+      "path": "test/built-ins/Number/isFinite/name.js",
+      "upstream_path": "test/built-ins/Number/isFinite/name.js",
+      "bytes": 808,
+      "sha256": "83416770fd5d644d33f08eab67194512dbab8c97151d08443c176a831820d011"
+    },
+    {
+      "path": "test/built-ins/Number/isFinite/nan.js",
+      "upstream_path": "test/built-ins/Number/isFinite/nan.js",
+      "bytes": 380,
+      "sha256": "2933049ebe4e856914f7de9f472c3d6e8106cf689490da132b5d7129479d0c7c"
+    },
+    {
+      "path": "test/built-ins/Number/isFinite/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Number/isFinite/not-a-constructor.js",
+      "bytes": 860,
+      "sha256": "5ca71905f2f5d8bb5283b836bc0bd1136607f9e7dbcb0348dfa57e552007ebf0"
+    },
+    {
+      "path": "test/built-ins/Number/isFinite/prop-desc.js",
+      "upstream_path": "test/built-ins/Number/isFinite/prop-desc.js",
+      "bytes": 609,
+      "sha256": "805d02449c748940df08661ae3dbf209f9303d0eea8b8707b7ca288c627a1d78"
+    },
+    {
+      "path": "test/built-ins/Number/isInteger/arg-is-not-number.js",
+      "upstream_path": "test/built-ins/Number/isInteger/arg-is-not-number.js",
+      "bytes": 901,
+      "sha256": "fd7a0b131c4abb574eed1fab513dacaffef9b51d9c40ecb4a0de5bc0c9a1136c"
+    },
+    {
+      "path": "test/built-ins/Number/isInteger/infinity.js",
+      "upstream_path": "test/built-ins/Number/isInteger/infinity.js",
+      "bytes": 382,
+      "sha256": "816b4686aebcd0f4ceb7fe01fb4670358e3092f6f60c69493ae6f15a3fa42c17"
+    },
+    {
+      "path": "test/built-ins/Number/isInteger/integers.js",
+      "upstream_path": "test/built-ins/Number/isInteger/integers.js",
+      "bytes": 801,
+      "sha256": "c0e1e232f1a012d379ccb4460a1704002c43bf2b42ff7b356baf563990db77fd"
+    },
+    {
+      "path": "test/built-ins/Number/isInteger/length.js",
+      "upstream_path": "test/built-ins/Number/isInteger/length.js",
+      "bytes": 1042,
+      "sha256": "08334d896782923cce4c80aa469be2173618e31521bfaeb5416dde48b1db8bc6"
+    },
+    {
+      "path": "test/built-ins/Number/isInteger/name.js",
+      "upstream_path": "test/built-ins/Number/isInteger/name.js",
+      "bytes": 813,
+      "sha256": "0970ac1286e9baffeec7ea30d7f36272f7933bf46145cc8c34712af1420623e3"
+    },
+    {
+      "path": "test/built-ins/Number/isInteger/nan.js",
+      "upstream_path": "test/built-ins/Number/isInteger/nan.js",
+      "bytes": 318,
+      "sha256": "0ba7ffe8adc9f6ed43e8889aa8b30edfb4793e464804333fe1d812643988fadf"
+    },
+    {
+      "path": "test/built-ins/Number/isInteger/non-integers.js",
+      "upstream_path": "test/built-ins/Number/isInteger/non-integers.js",
+      "bytes": 498,
+      "sha256": "e56bd2108a0812bd79c0311b3de01cb370658347eca3c1a8e2ae043cf250a2d1"
+    },
+    {
+      "path": "test/built-ins/Number/isInteger/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Number/isInteger/not-a-constructor.js",
+      "bytes": 864,
+      "sha256": "a14a4547934ff3c6d47f15f605428f197b9753c83ccd16e3abb37755f50abe22"
+    },
+    {
+      "path": "test/built-ins/Number/isInteger/prop-desc.js",
+      "upstream_path": "test/built-ins/Number/isInteger/prop-desc.js",
+      "bytes": 612,
+      "sha256": "65257fb32822557e1e0ba0f6d5f4ee81788e56bde4bbc2c161c39ba0ee5c16d5"
+    },
+    {
+      "path": "test/built-ins/Number/isNaN/arg-is-not-number.js",
+      "upstream_path": "test/built-ins/Number/isNaN/arg-is-not-number.js",
+      "bytes": 852,
+      "sha256": "ff77e7f611376eb64cdf07a055dd51921ee27ac019d2f91c64e84724364e5fc3"
+    },
+    {
+      "path": "test/built-ins/Number/isNaN/length.js",
+      "upstream_path": "test/built-ins/Number/isNaN/length.js",
+      "bytes": 1030,
+      "sha256": "70fb304e8e534b6374018ffbff4ef78a99f94a79462117e9e2ab9337a430a3ad"
+    },
+    {
+      "path": "test/built-ins/Number/isNaN/name.js",
+      "upstream_path": "test/built-ins/Number/isNaN/name.js",
+      "bytes": 793,
+      "sha256": "ad61781c8993798a09692241eaf81d95b434090b106578ccf151cffe767e1a3d"
+    },
+    {
+      "path": "test/built-ins/Number/isNaN/nan.js",
+      "upstream_path": "test/built-ins/Number/isNaN/nan.js",
+      "bytes": 304,
+      "sha256": "d513a909b333f40762bc08a9e2d1435d4ca097ed8b6da76497d0201a7264589e"
+    },
+    {
+      "path": "test/built-ins/Number/isNaN/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Number/isNaN/not-a-constructor.js",
+      "bytes": 848,
+      "sha256": "93b102b5b251a4ccf3fb26a1a2796f793f431ab31540214d204acdf83fcc663c"
+    },
+    {
+      "path": "test/built-ins/Number/isNaN/not-nan.js",
+      "upstream_path": "test/built-ins/Number/isNaN/not-nan.js",
+      "bytes": 800,
+      "sha256": "741c85bd58225d78d046ee41edc322dd6bd5e1076e509abb82f12bbe50d2127c"
+    },
+    {
+      "path": "test/built-ins/Number/isNaN/prop-desc.js",
+      "upstream_path": "test/built-ins/Number/isNaN/prop-desc.js",
+      "bytes": 600,
+      "sha256": "88e95bf162b6107e680acb932b6994e9bd4dffcf5270446c8bd6f8303b305b37"
+    },
+    {
+      "path": "test/built-ins/Number/isSafeInteger/arg-is-not-number.js",
+      "upstream_path": "test/built-ins/Number/isSafeInteger/arg-is-not-number.js",
+      "bytes": 945,
+      "sha256": "cd5fe762ebcef5368960b9c8039a4d8a765505d39d4f896a89d3075f6acd4b3f"
+    },
+    {
+      "path": "test/built-ins/Number/isSafeInteger/infinity.js",
+      "upstream_path": "test/built-ins/Number/isSafeInteger/infinity.js",
+      "bytes": 497,
+      "sha256": "44c4ad7d3c96aed8b5eddbad2f9253a4fd52fc1b8c6700bfdff477fc1ff72982"
+    },
+    {
+      "path": "test/built-ins/Number/isSafeInteger/length.js",
+      "upstream_path": "test/built-ins/Number/isSafeInteger/length.js",
+      "bytes": 1054,
+      "sha256": "780772925cf52814e92baae24f2c67ddb6da47d8183fdfa85c2ce310da675bf1"
+    },
+    {
+      "path": "test/built-ins/Number/isSafeInteger/name.js",
+      "upstream_path": "test/built-ins/Number/isSafeInteger/name.js",
+      "bytes": 833,
+      "sha256": "52894ee4cead5550f166df0719e50367e895f54191ad00fdea5dad7458d99a12"
+    },
+    {
+      "path": "test/built-ins/Number/isSafeInteger/nan.js",
+      "upstream_path": "test/built-ins/Number/isSafeInteger/nan.js",
+      "bytes": 395,
+      "sha256": "05d7b0034439daabe4a8c69b446c9b4ce9ec11aba9467b39b5cd56ab5cddafb4"
+    },
+    {
+      "path": "test/built-ins/Number/isSafeInteger/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Number/isSafeInteger/not-a-constructor.js",
+      "bytes": 880,
+      "sha256": "e0d1bb86488724c7e40ca88eb99ce075bed652c446b1c512340afeabb48734a8"
+    },
+    {
+      "path": "test/built-ins/Number/isSafeInteger/not-integer.js",
+      "upstream_path": "test/built-ins/Number/isSafeInteger/not-integer.js",
+      "bytes": 657,
+      "sha256": "e8c148642afaf052f1316660b465bce7a5b154932df296aa163bcccd213e7d69"
+    },
+    {
+      "path": "test/built-ins/Number/isSafeInteger/not-safe-integer.js",
+      "upstream_path": "test/built-ins/Number/isSafeInteger/not-safe-integer.js",
+      "bytes": 620,
+      "sha256": "7c72743b2928edaf07b49d945c7dea24beedc795a8c65da927e62ba3fada42c2"
+    },
+    {
+      "path": "test/built-ins/Number/isSafeInteger/prop-desc.js",
+      "upstream_path": "test/built-ins/Number/isSafeInteger/prop-desc.js",
+      "bytes": 624,
+      "sha256": "51c9b2ea021173866d5babb3521fb3965c640cca7696f3c89b9ebf3e7bdada20"
+    },
+    {
+      "path": "test/built-ins/Number/isSafeInteger/safe-integers.js",
+      "upstream_path": "test/built-ins/Number/isSafeInteger/safe-integers.js",
+      "bytes": 831,
+      "sha256": "c0ffc8fb43abb762f4454e7c78217ca79c09aff837e816b018f16069860009ad"
+    },
+    {
+      "path": "test/built-ins/Number/parseFloat.js",
+      "upstream_path": "test/built-ins/Number/parseFloat.js",
+      "bytes": 885,
+      "sha256": "56ea4a72e93d7122bdad9c34492448cea9161c47af7d7624487cd59edb2dad65"
+    },
+    {
+      "path": "test/built-ins/Number/parseInt.js",
+      "upstream_path": "test/built-ins/Number/parseInt.js",
+      "bytes": 869,
+      "sha256": "a56bf47c394d27906bc3ddadb35186b6201a8ac2d35ad4c81c26266c016836ae"
+    },
+    {
+      "path": "test/built-ins/Number/prop-desc.js",
+      "upstream_path": "test/built-ins/Number/prop-desc.js",
+      "bytes": 621,
+      "sha256": "c5a22879019d97a2c932c9549d68af86a8d7f1f9c35c4a797fcd8d028ce5423f"
+    },
+    {
+      "path": "test/built-ins/Number/proto-from-ctor-realm.js",
+      "upstream_path": "test/built-ins/Number/proto-from-ctor-realm.js",
+      "bytes": 931,
+      "sha256": "b135e91b03bc08ca29a77450396e672423de4825e433ff027fc18aba2849ced7"
+    },
+    {
+      "path": "test/built-ins/Number/return-abrupt-tonumber-value-symbol.js",
+      "upstream_path": "test/built-ins/Number/return-abrupt-tonumber-value-symbol.js",
+      "bytes": 603,
+      "sha256": "2071c37efb60c6872c2f2d750bc0a66967dc74ee8261ba820fd3228241a3bcf2"
+    },
+    {
+      "path": "test/built-ins/Number/return-abrupt-tonumber-value.js",
+      "upstream_path": "test/built-ins/Number/return-abrupt-tonumber-value.js",
+      "bytes": 952,
+      "sha256": "236d0e95a9a183918e858387d2a367bac1809f2eabf5828aa1b79a339a190dd5"
+    },
+    {
+      "path": "test/built-ins/Number/string-binary-literal-invalid.js",
+      "upstream_path": "test/built-ins/Number/string-binary-literal-invalid.js",
+      "bytes": 941,
+      "sha256": "af1a24911e3e42abd1ce29b43d31f1595295f4d431934ea654c275cb71b786f5"
+    },
+    {
+      "path": "test/built-ins/Number/string-binary-literal.js",
+      "upstream_path": "test/built-ins/Number/string-binary-literal.js",
+      "bytes": 2090,
+      "sha256": "cf6ab44f0f8d282cb61fb26bc3c67f3c4fe3b4a2589529bd5b5bb1061481a6a8"
+    },
+    {
+      "path": "test/built-ins/Number/string-hex-literal-invalid.js",
+      "upstream_path": "test/built-ins/Number/string-hex-literal-invalid.js",
+      "bytes": 919,
+      "sha256": "c22371bfb0d7a30eaf25d7197a76b38653f196e0738f06dfc507b1f3a26a0ea9"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-bil-bd-nsl-bd.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-bil-bd-nsl-bd.js",
+      "bytes": 743,
+      "sha256": "0e6577ac78c726d854996d22e066221016e6dd210e3e03e4b6875093ae6f7d63"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-bil-bd-nsl-bds.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-bil-bd-nsl-bds.js",
+      "bytes": 747,
+      "sha256": "284551b3edfc0d65e87f79fd7b0b4f00db4128406f8f7ff0b5371e8651491106"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-bil-bds-nsl-bd.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-bil-bds-nsl-bd.js",
+      "bytes": 748,
+      "sha256": "ac1fab58e4a08856141294d36d6960502f6f45d3ce68013e4b8bc8df6c6001fe"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-bil-bds-nsl-bds.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-bil-bds-nsl-bds.js",
+      "bytes": 752,
+      "sha256": "11e7c184a24ee94802d990d4269fe950211d4436e8a96eb740e88a4d284c3a53"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-dd-dot-dd-ep-sign-minus-dd-nsl-dd.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-dd-dot-dd-ep-sign-minus-dd-nsl-dd.js",
+      "bytes": 713,
+      "sha256": "079b30024c8d0a10dedfdcbbd8a82bdce386c9ca306673480eea4c699a22fc76"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-dd-dot-dd-ep-sign-minus-dds-nsl-dd.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-dd-dot-dd-ep-sign-minus-dds-nsl-dd.js",
+      "bytes": 715,
+      "sha256": "96e51644a600c76b58f74abbc754a5bd590ac87e795fddbd7c7ebc0fe623dbed"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-dd-dot-dd-ep-sign-plus-dd-nsl-dd.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-dd-dot-dd-ep-sign-plus-dd-nsl-dd.js",
+      "bytes": 713,
+      "sha256": "1a9b50a10a43d0ff76459899d543bd048fcf5f625a554cf37c839482349aa40f"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-dd-dot-dd-ep-sign-plus-dds-nsl-dd.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-dd-dot-dd-ep-sign-plus-dds-nsl-dd.js",
+      "bytes": 715,
+      "sha256": "73263a4d209cdbc11bb4e8b330c18ae174cba5d25c85391af0f70a5bde4df9bf"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-dd-nsl-dd-one-of.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-dd-nsl-dd-one-of.js",
+      "bytes": 1060,
+      "sha256": "c08f3623d3e9fdcd5a72cb9d74046e033115fd1c84ffa35d2e56c4d22c9969cd"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-dds-dot-dd-nsl-dd-ep-dd.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-dds-dot-dd-nsl-dd-ep-dd.js",
+      "bytes": 706,
+      "sha256": "5ed2cf3a4e0e0355370528d1d9793fd409846a62314868963d411eb163be5347"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-dds-nsl-dd.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-dds-nsl-dd.js",
+      "bytes": 1021,
+      "sha256": "9744e116bedbdc61f2843643013487f5be8f549e1212f28236a02a4cb8936bba"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-dot-dd-nsl-dd-ep.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-dot-dd-nsl-dd-ep.js",
+      "bytes": 683,
+      "sha256": "2aa9da2930233b78fa2c00fb6eed6e3270798da917382c47380d1d922097cdfe"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-dot-dd-nsl-dds-ep.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-dot-dd-nsl-dds-ep.js",
+      "bytes": 686,
+      "sha256": "31f6de5d1efe98b385e906d0a6c6b75e55f9a730bb6802e377d8f097865610de"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-dot-dds-nsl-dd-ep.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-dot-dds-nsl-dd-ep.js",
+      "bytes": 686,
+      "sha256": "137c877cb9966c45d30ce80e2f56e3ef100fd08b9cdc9901c8b5215e8f0465f0"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-dot-dds-nsl-dds-ep.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-dot-dds-nsl-dds-ep.js",
+      "bytes": 689,
+      "sha256": "1861c1cd1eb1481777e60b641b66fced7367b4249a457861b173f3a52f7b9592"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-hil-hd-nsl-hd.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-hil-hd-nsl-hd.js",
+      "bytes": 745,
+      "sha256": "d2ebc476e5c690ebd160e1afd5a6369e373d7c96c27ca1c963c2d10a6a980051"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-hil-hd-nsl-hds.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-hil-hd-nsl-hds.js",
+      "bytes": 749,
+      "sha256": "c08d62409e034a926846ea06b58ef06c1a8e5c8ef024350ad7f3b9bb31ddefcb"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-hil-hds-nsl-hd.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-hil-hds-nsl-hd.js",
+      "bytes": 750,
+      "sha256": "5a792fef10ca3f1561afdd1195aacb04612d6e044e02d7413b7caed1009020e2"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-hil-hds-nsl-hds.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-hil-hds-nsl-hds.js",
+      "bytes": 754,
+      "sha256": "bc621f747acdeec2c8045e54d14b53b1592e0506bda9f437bf997d286e58777b"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-hil-od-nsl-od-one-of.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-hil-od-nsl-od-one-of.js",
+      "bytes": 1725,
+      "sha256": "6011e1ebb46bbb26824f82b61a7be369853da66c1e1029fb48aac1f434e6ad3c"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-nzd-nsl-dd-one-of.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-nzd-nsl-dd-one-of.js",
+      "bytes": 1107,
+      "sha256": "935270b80acfb8126fad62ae75fa359da9c50c04700966bb27e00f5d0339e86c"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-nzd-nsl-dd.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-nzd-nsl-dd.js",
+      "bytes": 674,
+      "sha256": "3a1d064a0bbcba4dc479900e1de8f8f9b28ba5d2f2669f51083079bfb0ba77a0"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-nzd-nsl-dds.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-nzd-nsl-dds.js",
+      "bytes": 692,
+      "sha256": "11b35f9e907ab5c8a56f5561264eda22e07ec8d8f16a47cff8f7e8af3be3b967"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-oil-od-nsl-od-one-of.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-oil-od-nsl-od-one-of.js",
+      "bytes": 1037,
+      "sha256": "1fde2a1ee0660e296772e250a7a21912cc40d31fd34d2580ee10f6461b4f2628"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-oil-od-nsl-od.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-oil-od-nsl-od.js",
+      "bytes": 743,
+      "sha256": "fbe5c170b15030583c2e754fa5110d664799d270c1c8fc9f6f994f7c0a23e969"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-oil-od-nsl-ods.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-oil-od-nsl-ods.js",
+      "bytes": 747,
+      "sha256": "67bfab116d19d3e336f7e11db1319492b0dbb0b9b1e44635408db734d78d8932"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-oil-ods-nsl-od.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-oil-ods-nsl-od.js",
+      "bytes": 748,
+      "sha256": "ab30e8ab0325909a65a771887587222c01db1bd95f27b81579737fd60af1a876"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-oil-ods-nsl-ods.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-oil-ods-nsl-ods.js",
+      "bytes": 752,
+      "sha256": "5ac2ee4ddde5d335c0eb44a04d60299ed53679c3816a9c282204bceeaa626a8b"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-sign-minus-dds-nsl-dd.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-sign-minus-dds-nsl-dd.js",
+      "bytes": 1097,
+      "sha256": "763471561922d44c27a7e34e68c11e3a1c4df88064734414af558e0e88d36f6f"
+    },
+    {
+      "path": "test/built-ins/Number/string-numeric-separator-literal-sign-plus-dds-nsl-dd.js",
+      "upstream_path": "test/built-ins/Number/string-numeric-separator-literal-sign-plus-dds-nsl-dd.js",
+      "bytes": 1106,
+      "sha256": "67194dd382101d11bc0f067abe8755e4978fb83f71e368e69137d516168030d6"
+    },
+    {
+      "path": "test/built-ins/Number/string-octal-literal-invald.js",
+      "upstream_path": "test/built-ins/Number/string-octal-literal-invald.js",
+      "bytes": 947,
+      "sha256": "6c00f538348faa9f5e1d1f34a831b611d55dc57670063fb04af38e1a6d184b97"
+    },
+    {
+      "path": "test/built-ins/Number/string-octal-literal.js",
+      "upstream_path": "test/built-ins/Number/string-octal-literal.js",
+      "bytes": 2597,
+      "sha256": "940d0461d02141f9027b52d916d5da157bfacecbb13d20357b123f1294fa787e"
+    }
+  ]
+}

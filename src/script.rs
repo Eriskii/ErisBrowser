@@ -54,6 +54,42 @@ pub struct Native {
     receiver: Value,
 }
 
+#[derive(Clone, Copy)]
+enum NumberPredicate {
+    Finite,
+    Nan,
+    Integer,
+    SafeInteger,
+}
+
+impl NumberPredicate {
+    fn from_name(name: &str) -> Option<Self> {
+        Some(match name {
+            "Number.isFinite" => Self::Finite,
+            "Number.isNaN" => Self::Nan,
+            "Number.isInteger" => Self::Integer,
+            "Number.isSafeInteger" => Self::SafeInteger,
+            _ => return None,
+        })
+    }
+
+    fn test(self, value: Option<&Value>) -> bool {
+        let Some(Value::Number(number)) = value else {
+            return false;
+        };
+        match self {
+            Self::Finite => number.is_finite(),
+            Self::Nan => number.is_nan(),
+            Self::Integer => number.is_finite() && number.trunc() == *number,
+            Self::SafeInteger => {
+                number.is_finite()
+                    && number.trunc() == *number
+                    && number.abs() <= 9_007_199_254_740_991.0
+            }
+        }
+    }
+}
+
 impl Value {
     pub fn as_number(&self) -> Option<f64> {
         if let Self::Number(n) = self {
@@ -3309,6 +3345,7 @@ impl Runtime {
             let value = self.intrinsic_function(&full, key, length)?;
             self.objects[self.native_properties[owner]].insert_hidden(key.into(), value);
         }
+        self.initialize_number_statics()?;
         for name in ["JSON", "Math"] {
             let Value::Object(id) = self.object_ordered([])? else {
                 unreachable!()
@@ -3418,6 +3455,40 @@ impl Runtime {
                 ..PropertyDescriptor::default()
             },
         )?;
+        Ok(())
+    }
+
+    fn initialize_number_statics(&mut self) -> Result<()> {
+        let properties = self.native_properties["Number"];
+        for (key, value) in [
+            ("EPSILON", f64::EPSILON),
+            ("MAX_SAFE_INTEGER", 9_007_199_254_740_991.0),
+            ("MIN_SAFE_INTEGER", -9_007_199_254_740_991.0),
+            ("MAX_VALUE", f64::MAX),
+            // ECMAScript MIN_VALUE is the smallest positive subnormal here.
+            ("MIN_VALUE", f64::from_bits(1)),
+        ] {
+            self.work(1 + key.len())?;
+            self.charge(288 + key.len() * 4)?;
+            self.objects[properties].insert_property(
+                key.into(),
+                Property::data(Value::Number(value), false, false, false),
+            );
+        }
+        for (key, full) in [
+            ("isFinite", "Number.isFinite"),
+            ("isNaN", "Number.isNaN"),
+            ("isInteger", "Number.isInteger"),
+            ("isSafeInteger", "Number.isSafeInteger"),
+        ] {
+            // Before construction, cover literal UTF-16 keys/name, the Native
+            // record and its string, and registry/constructor property entries.
+            // intrinsic_function separately charges its ordinary property bag.
+            self.work(1 + full.len() + key.len())?;
+            self.charge(1024 + full.len() * 2 + key.len() * 4)?;
+            let value = self.intrinsic_function(full, key, 1)?;
+            self.objects[properties].insert_hidden(key.into(), value);
+        }
         Ok(())
     }
 
@@ -6322,7 +6393,11 @@ impl Runtime {
                 }
             }
             Value::Native(native) => {
-                if native.name.contains('.') {
+                if NumberPredicate::from_name(&native.name).is_some() {
+                    // These intrinsics ignore thisArgument; retain the native
+                    // record instead of cloning a name just to replace this.
+                    self.native_call(&native, arguments, doc)
+                } else if native.name.contains('.') {
                     self.native_call(
                         &Native {
                             name: native.name.clone(),
@@ -9828,6 +9903,11 @@ impl Runtime {
         args: Vec<Value>,
         doc: &mut Document,
     ) -> Result<Value> {
+        if let Some(predicate) = NumberPredicate::from_name(&native.name) {
+            self.work(4)?;
+            // No coercion, argument-content scan, receiver lookup or allocation.
+            return Ok(Value::Bool(predicate.test(args.first())));
+        }
         if matches!(native.name.as_str(), "Array.reduce" | "Array.reduceRight") {
             return self.array_reduce(
                 native.receiver.clone(),
@@ -17329,6 +17409,327 @@ mod tests {
         );
         assert_eq!(document.nodes.len(), before);
         assert!(!document.has_pending_details_toggles());
+    }
+
+    fn number_static_modes(source: &str) {
+        for strict in [false, true] {
+            let (mut runtime, mut document) = upstream_harness();
+            let result = if strict {
+                runtime.execute_strict(source, &mut document)
+            } else {
+                runtime.execute(source, &mut document)
+            };
+            result.unwrap_or_else(|error| panic!("strict={strict}: {error}"));
+        }
+    }
+
+    #[test]
+    fn number_statics_constants_have_exact_values_and_descriptors() {
+        number_static_modes(
+            r#"
+            var names=['EPSILON','MAX_VALUE','MIN_VALUE','MAX_SAFE_INTEGER','MIN_SAFE_INTEGER',
+                       'NaN','POSITIVE_INFINITY','NEGATIVE_INFINITY'];
+            var values=[2.220446049250313e-16,1.7976931348623157e308,5e-324,
+                        9007199254740991,-9007199254740991,NaN,Infinity,-Infinity];
+            for(var i=0;i<names.length;i++){
+                assert.sameValue(Number[names[i]],values[i]);
+                var d=Object.getOwnPropertyDescriptor(Number,names[i]);
+                assert.sameValue(d.value,values[i]);assert.sameValue(d.writable,false);
+                assert.sameValue(d.enumerable,false);assert.sameValue(d.configurable,false);
+                Object.defineProperty(Number,names[i],{value:values[i]});
+                assert.throws(TypeError,function(){Object.defineProperty(Number,names[i],{value:7});});
+                assert.throws(TypeError,function(){Object.defineProperty(Number,names[i],{writable:true});});
+                assert.throws(TypeError,function(){Object.defineProperty(Number,names[i],{enumerable:true});});
+                assert.throws(TypeError,function(){Object.defineProperty(Number,names[i],{configurable:true});});
+                assert.sameValue(Number[names[i]],values[i]);
+            }
+            assert.sameValue(Number.MIN_VALUE/2,0);assert.sameValue(-Number.MIN_VALUE/2,-0);
+            assert.sameValue(Number.MIN_VALUE*2,1e-323);
+            assert.sameValue(Number.MAX_VALUE*2,Infinity);
+            assert.sameValue(1+Number.EPSILON,1.0000000000000002);
+            assert.sameValue(1+Number.EPSILON/2,1);
+            assert.sameValue(Number.MAX_SAFE_INTEGER+1,Number.MAX_SAFE_INTEGER+2);
+        "#,
+        );
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        for (name, bits) in [
+            ("EPSILON", 0x3cb0_0000_0000_0000),
+            ("MAX_VALUE", 0x7fef_ffff_ffff_ffff),
+            ("MIN_VALUE", 1),
+            ("MAX_SAFE_INTEGER", 0x433f_ffff_ffff_ffff),
+            ("MIN_SAFE_INTEGER", 0xc33f_ffff_ffff_ffff),
+        ] {
+            let Value::Number(value) = runtime
+                .get_key(
+                    Runtime::native("Number", Value::Window),
+                    &name.into(),
+                    &mut document,
+                )
+                .unwrap()
+            else {
+                panic!("missing {name}")
+            };
+            assert_eq!(value.to_bits(), bits, "{name}");
+        }
+    }
+
+    #[test]
+    fn number_statics_constants_resist_strict_and_sloppy_writes() {
+        let source = r#"
+            var names=['EPSILON','MAX_VALUE','MIN_VALUE','MAX_SAFE_INTEGER','MIN_SAFE_INTEGER',
+                       'NaN','POSITIVE_INFINITY','NEGATIVE_INFINITY'];
+            for(var i=0;i<names.length;i++){
+                var value=Number[names[i]];assert.sameValue(typeof value,'number');
+                if(strict){
+                    assert.throws(TypeError,function(){Number[names[i]]=0;});
+                    assert.throws(TypeError,function(){delete Number[names[i]];});
+                }else{Number[names[i]]=0;assert.sameValue(delete Number[names[i]],false);}
+                assert.sameValue(Number[names[i]],value);
+            }
+        "#;
+        for strict in [false, true] {
+            let (mut runtime, mut document) = upstream_harness();
+            runtime
+                .execute(&format!("var strict={strict};"), &mut document)
+                .unwrap();
+            if strict {
+                runtime.execute_strict(source, &mut document)
+            } else {
+                runtime.execute(source, &mut document)
+            }
+            .unwrap();
+        }
+    }
+
+    #[test]
+    fn number_statics_classify_binary64_edges_without_integer_casts() {
+        number_static_modes(
+            r#"
+            var methods=[Number.isFinite,Number.isNaN,Number.isInteger,Number.isSafeInteger];
+            var cases=[
+                [0,true,false,true,true],[-0,true,false,true,true],
+                [NaN,false,true,false,false],[Infinity,false,false,false,false],[-Infinity,false,false,false,false],
+                [5e-324,true,false,false,false],[-5e-324,true,false,false,false],
+                [2.2250738585072014e-308,true,false,false,false],
+                [1.5,true,false,false,false],[-1.5,true,false,false,false],
+                [9007199254740991,true,false,true,true],[-9007199254740991,true,false,true,true],
+                [9007199254740992,true,false,true,false],[-9007199254740992,true,false,true,false],
+                [9007199254740993,true,false,true,false],
+                [1.7976931348623157e308,true,false,true,false],[-1.7976931348623157e308,true,false,true,false],
+                [4500000000000000.1,true,false,true,true],[4500000000000000.5,true,false,false,false],
+                [1.0000000000000002,true,false,false,false],[0.9999999999999999,true,false,false,false]
+            ];
+            for(var m=0;m<methods.length;m++){
+                assert.sameValue(typeof methods[m],'function');
+                for(var i=0;i<cases.length;i++)assert.sameValue(methods[m](cases[i][0]),cases[i][m+1]);
+            }
+            assert.sameValue(1/cases[1][0],-Infinity);
+        "#,
+        );
+    }
+
+    #[test]
+    fn number_statics_do_not_coerce_nonnumbers_or_inspect_receivers() {
+        number_static_modes(
+            r#"
+            var reads=0,bomb={get valueOf(){reads++;throw 1;},get toString(){reads++;throw 2;}};
+            var inputs=[undefined,null,true,false,'1','NaN','',[],[1],{},Object.create(null),
+                        new Number(1),new Number(NaN),Number.prototype,function(){},bomb,window,document,Math,JSON];
+            var methods=[Number.isFinite,Number.isNaN,Number.isInteger,Number.isSafeInteger];
+            for(var m=0;m<methods.length;m++){
+                var fn=methods[m],positive=m===1?NaN:1;
+                assert.sameValue(typeof fn,'function');assert.sameValue(fn(positive),true);
+                for(var i=0;i<inputs.length;i++)assert.sameValue(fn(inputs[i]),false);
+                assert.sameValue(fn(),false);assert.sameValue(fn(positive,bomb),true);
+                assert.sameValue(fn.call(bomb,positive),true);assert.sameValue(fn.call(null,positive),true);
+                assert.sameValue(fn.apply(undefined,[positive,bomb]),true);
+                assert.sameValue(fn.bind(bomb,positive)(),true);
+            }
+            assert.sameValue(reads,0);
+            assert.sameValue(isFinite('1'),true);assert.sameValue(Number.isFinite('1'),false);
+            assert.sameValue(isNaN(undefined),true);assert.sameValue(Number.isNaN(undefined),false);
+        "#,
+        );
+    }
+
+    #[test]
+    fn number_statics_metadata_and_saved_aliases_survive_mutation() {
+        number_static_modes(
+            r#"
+            var owner=Number,names=['isFinite','isNaN','isInteger','isSafeInteger'];
+            for(var i=0;i<names.length;i++){
+                var name=names[i],fn=owner[name],positive=i===1?NaN:1;
+                assert.sameValue(typeof fn,'function');assert.sameValue(fn(positive),true);
+                var d=Object.getOwnPropertyDescriptor(owner,name);
+                assert.sameValue(d.value,fn);assert.sameValue(d.writable,true);
+                assert.sameValue(d.enumerable,false);assert.sameValue(d.configurable,true);
+                assert.sameValue(Object.getPrototypeOf(fn),Function.prototype);
+                assert.sameValue(Object.getOwnPropertyDescriptor(fn,'prototype'),undefined);
+                assert.throws(TypeError,function(){new fn(positive);});
+                var n=Object.getOwnPropertyDescriptor(fn,'name'),l=Object.getOwnPropertyDescriptor(fn,'length');
+                assert.sameValue(n.value,name);assert.sameValue(n.writable,false);
+                assert.sameValue(n.enumerable,false);assert.sameValue(n.configurable,true);
+                assert.sameValue(l.value,1);assert.sameValue(l.writable,false);
+                assert.sameValue(l.enumerable,false);assert.sameValue(l.configurable,true);
+                Object.defineProperty(fn,'name',{value:'changed'});assert.sameValue(fn(positive),true);
+                owner[name]=function(){throw 7;};assert.sameValue(fn(positive),true);
+                assert.sameValue(delete owner[name],true);assert.sameValue(owner[name],undefined);
+                Number={};assert.sameValue(fn.call({},positive),true);Number=owner;
+                Object.defineProperty(owner,name,d);Object.defineProperty(fn,'name',n);
+                assert.sameValue(owner[name],fn);
+            }
+        "#,
+        );
+    }
+
+    #[test]
+    fn number_statics_preserve_argument_evaluation_and_abrupt_identity() {
+        number_static_modes(
+            r#"
+            var methods=[Number.isFinite,Number.isNaN,Number.isInteger,Number.isSafeInteger];
+            for(var i=0;i<methods.length;i++){
+                var fn=methods[i],positive=i===1?NaN:1,trace='',reason={},seen;
+                assert.sameValue(typeof fn,'function');assert.sameValue(fn(positive),true);
+                function first(){trace+='a';return positive;}function second(){trace+='b';return {};}
+                assert.sameValue(fn(first(),second()),true);assert.sameValue(trace,'ab');
+                trace='';try{fn(first(),(function(){trace+='t';throw reason;})());}catch(error){seen=error;}
+                assert.sameValue(seen,reason);assert.sameValue(trace,'at');
+            }
+        "#,
+        );
+    }
+
+    #[test]
+    fn number_statics_private_calls_have_constant_work_and_no_heap() {
+        for name in ["isFinite", "isNaN", "isInteger", "isSafeInteger"] {
+            let mut runtime = Runtime::new();
+            let mut document = Document::parse("");
+            let function = runtime
+                .get_key(
+                    Runtime::native("Number", Value::Window),
+                    &name.into(),
+                    &mut document,
+                )
+                .unwrap();
+            let huge = Value::String(JsString::from(vec![120; MAX_STRING]));
+            let array = runtime.array(vec![Value::Undefined; 65_536]).unwrap();
+            let arguments = vec![
+                Value::Number(if name == "isNaN" { f64::NAN } else { 1.0 }),
+                huge.clone(),
+                array.clone(),
+            ];
+            runtime.allocated = MAX_HEAP;
+            runtime.steps = 5;
+            assert_eq!(
+                runtime
+                    .call(function.clone(), arguments, Value::Window, &mut document)
+                    .unwrap(),
+                Value::Bool(true)
+            );
+            assert_eq!(
+                (
+                    runtime.allocated,
+                    runtime.steps,
+                    runtime.calls,
+                    runtime.stack_units
+                ),
+                (MAX_HEAP, 0, 0, 0)
+            );
+            for value in [huge, array, Value::Document] {
+                runtime.steps = 5;
+                assert_eq!(
+                    runtime
+                        .call(function.clone(), vec![value], Value::Null, &mut document)
+                        .unwrap(),
+                    Value::Bool(false)
+                );
+                assert_eq!(
+                    (
+                        runtime.allocated,
+                        runtime.steps,
+                        runtime.calls,
+                        runtime.stack_units
+                    ),
+                    (MAX_HEAP, 0, 0, 0)
+                );
+            }
+            runtime.steps = 4;
+            assert!(
+                runtime
+                    .call(
+                        function,
+                        vec![Value::Number(1.0)],
+                        Value::Null,
+                        &mut document
+                    )
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(
+                (
+                    runtime.allocated,
+                    runtime.steps,
+                    runtime.calls,
+                    runtime.stack_units
+                ),
+                (MAX_HEAP, 0, 0, 0)
+            );
+        }
+    }
+
+    #[test]
+    fn number_statics_bootstrap_precharges_before_new_metadata() {
+        let mut runtime = Runtime::new();
+        let properties = runtime.native_properties["Number"];
+        let key = JsString::from("EPSILON");
+        runtime.objects[properties].remove(&key);
+        let objects = runtime.objects.len();
+        let registry = runtime.native_properties.len();
+        runtime.allocated = MAX_HEAP;
+        assert!(
+            runtime
+                .initialize_number_statics()
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert!(
+            runtime
+                .own_property(&Runtime::native("Number", Value::Window), &key)
+                .is_none()
+        );
+        assert_eq!(
+            (runtime.objects.len(), runtime.native_properties.len()),
+            (objects, registry)
+        );
+    }
+
+    #[test]
+    fn number_statics_keep_shared_exhaustion_uncatchable() {
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        runtime.execute("var caught=false;", &mut document).unwrap();
+        assert!(
+            runtime
+                .execute(
+                    "try{while(true){Number.isFinite(1);}}catch(e){caught=true;}",
+                    &mut document
+                )
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(
+            runtime.environments[0].bindings["caught"].value,
+            Value::Bool(false)
+        );
+        assert_eq!((runtime.calls, runtime.stack_units), (0, 0));
+    }
+
+    #[test]
+    fn number_statics_enable_the_unchanged_reduce_right_safe_limit_source() {
+        number_static_modes(include_str!(
+            "../tests/upstream/test262-array-reduce/test/built-ins/Array/prototype/reduceRight/length-near-integer-limit.js"
+        ));
     }
 
     fn reduction_modes(source: &str) {

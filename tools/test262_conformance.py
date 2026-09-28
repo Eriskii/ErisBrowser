@@ -28,12 +28,14 @@ GLOBAL_VALUE_FEATURES = SUPPORTED_FEATURES | {'globalThis'}
 ARRAY_SORT_FEATURES = SUPPORTED_FEATURES | {'stable-array-sort'}
 IDENTIFIER_FEATURES = SUPPORTED_FEATURES | {'u180e'}
 ARRAY_REDUCE_FEATURES = SUPPORTED_FEATURES.copy()
+NUMBER_STATIC_FEATURES = SUPPORTED_FEATURES.copy()
 PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
                     'is-prototype-of': IS_PROTOTYPE_OF_FEATURES,
                     'global-values': GLOBAL_VALUE_FEATURES, 'array-sort': ARRAY_SORT_FEATURES,
-                    'identifiers': IDENTIFIER_FEATURES, 'array-reduce': ARRAY_REDUCE_FEATURES}
+                    'identifiers': IDENTIFIER_FEATURES, 'array-reduce': ARRAY_REDUCE_FEATURES,
+                    'number-statics': NUMBER_STATIC_FEATURES}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -402,6 +404,85 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                 for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
                     source = guard + setup + f'assert.sameValue({actual},{value});'
                     variants.append(('array-sort-' + name + suffix, source, expected, mode))
+    if profile == 'number-statics':
+        # Validate actual callable execution before nonconstructor/descriptor
+        # checks; an absent method's TypeError is never positive evidence.
+        checks = {
+            'isFinite': [('0', True), ('-0', True), ('1.5', True), ('5e-324', True),
+                         ('1.7976931348623157e308', True), ('Infinity', False), ('-Infinity', False), ('NaN', False)],
+            'isInteger': [('0', True), ('-0', True), ('1', True), ('-1', True),
+                          ('9007199254740992', True), ('1.7976931348623157e308', True),
+                          ('1.5', False), ('5e-324', False), ('Infinity', False), ('NaN', False)],
+            'isNaN': [('NaN', True), ('0/0', True), ('0', False), ('-0', False),
+                      ('1.5', False), ('Infinity', False), ('-Infinity', False)],
+            'isSafeInteger': [('0', True), ('-0', True), ('9007199254740991', True),
+                              ('-9007199254740991', True), ('9007199254740992', False),
+                              ('-9007199254740992', False), ('1.5', False), ('5e-324', False),
+                              ('1.7976931348623157e308', False), ('Infinity', False), ('NaN', False)],
+        }
+        for method, values in checks.items():
+            canonical = 'NaN' if method == 'isNaN' else '1'
+            guard = (f"var m=Number.{method};assert.sameValue(typeof m,'function');"
+                     f"assert.sameValue(m({canonical}),true);")
+            pairs = [
+                ('classification', ''.join(f'assert.sameValue(m({value}),{str(expected).lower()});'
+                                           for value, expected in values),
+                 f'm({canonical})', 'true', 'false'),
+                ('noncoercion', "var reads=0,bomb={};Object.defineProperty(bomb,'valueOf',{get:function(){reads++;throw 7;}});"
+                 "Object.defineProperty(bomb,'toString',{get:function(){reads++;throw 8;}});"
+                 "var inputs=[undefined,null,true,false,'','1','NaN',[],[1],{},new Number(1),function(){},bomb];"
+                 "for(var i=0;i<inputs.length;i++){assert.sameValue(m(inputs[i]),false);}assert.sameValue(m(),false);"
+                 f"assert.sameValue(m.call(bomb,{canonical}),true);assert.sameValue(m({canonical},bomb),true);",
+                 'reads', '0', '1'),
+                ('property-metadata', f"verifyProperty(Number,'{method}',{{value:m,writable:true,enumerable:false,configurable:true}},{{restore:true}});"
+                 "verifyProperty(m,'length',{value:1,writable:false,enumerable:false,configurable:true},{restore:true});"
+                 f"verifyProperty(m,'name',{{value:'{method}',writable:false,enumerable:false,configurable:true}},{{restore:true}});"
+                 "assert.sameValue(Object.getPrototypeOf(m),Function.prototype);assert.sameValue(Object.prototype.hasOwnProperty.call(m,'prototype'),false);"
+                 "assert.throws(TypeError,function(){new m();});"
+                 f"Number.{method}=function(){{return false;}};assert.sameValue(m.apply(null,[{canonical}]),true);"
+                 f"delete Number.{method};assert.sameValue(m.bind({{}})({canonical}),true);",
+                 'm.length', '1', '2'),
+            ]
+            for mode in ('sloppy', 'strict'):
+                for name, setup, actual, good, bad in pairs:
+                    for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                        variants.append(('number-statics-' + method + '-' + name + suffix,
+                                         guard + setup + f'assert.sameValue({actual},{value});', expected, mode))
+        constants = [('EPSILON', '2.220446049250313e-16'), ('MAX_SAFE_INTEGER', '9007199254740991'),
+                     ('MIN_SAFE_INTEGER', '-9007199254740991'), ('MAX_VALUE', '1.7976931348623157e308'),
+                     ('MIN_VALUE', '5e-324'), ('NaN', 'NaN'),
+                     ('NEGATIVE_INFINITY', '-Infinity'), ('POSITIVE_INFINITY', 'Infinity')]
+        constant_guard = ''.join(f"assert.sameValue(typeof Number.{name},'number');assert.sameValue(Number.{name},{value});"
+                                 for name, value in constants)
+        constant_pairs = [
+            ('special-values', "assert.sameValue(typeof Number.NaN,'number');assert.sameValue(Number.NaN,NaN);"
+             "assert.sameValue(Number.NEGATIVE_INFINITY,-Infinity);assert.sameValue(Number.POSITIVE_INFINITY,Infinity);"
+             "assert.sameValue(1/Number.NEGATIVE_INFINITY,-0);",
+             '1/Number.POSITIVE_INFINITY', '0', '-0'),
+            ('finite-extremes', "assert.sameValue(Number.MAX_VALUE,1.7976931348623157e308);assert.sameValue(Number.MIN_VALUE,5e-324);"
+             "assert.sameValue(Number.MAX_VALUE*2,Infinity);assert.sameValue(Number.MIN_VALUE/2,0);assert.sameValue(Number.MIN_VALUE*2,1e-323);",
+             'Number.MIN_VALUE', '5e-324', '2.2250738585072014e-308'),
+            ('epsilon', "assert.sameValue(Number.EPSILON,2.220446049250313e-16);assert.notSameValue(1+Number.EPSILON,1);",
+             '1+Number.EPSILON/2', '1', '2'),
+            ('safe-limits', "assert.sameValue(Number.MAX_SAFE_INTEGER,9007199254740991);assert.sameValue(Number.MIN_SAFE_INTEGER,-9007199254740991);"
+             "assert.sameValue(Number.MAX_SAFE_INTEGER+1,9007199254740992);",
+             'Number.MIN_SAFE_INTEGER', '-9007199254740991', '-9007199254740992'),
+            ('property-constants', constant_guard + ''.join(
+                f"verifyProperty(Number,'{name}',{{value:{value},writable:false,enumerable:false,configurable:false}},{{restore:true}});"
+                for name, value in constants),
+             'Number.MAX_SAFE_INTEGER', '9007199254740991', '0'),
+            ('constant-immutability', "assert.sameValue(Number.EPSILON,2.220446049250313e-16);@WRITES@"
+             "assert.throws(TypeError,function(){Object.defineProperty(Number,'EPSILON',{value:0});});",
+             'Number.EPSILON', '2.220446049250313e-16', '0'),
+        ]
+        for mode in ('sloppy', 'strict'):
+            writes = ("assert.throws(TypeError,function(){Number.EPSILON=0;});assert.throws(TypeError,function(){delete Number.EPSILON;});"
+                      if mode == 'strict' else "Number.EPSILON=0;assert.sameValue(delete Number.EPSILON,false);")
+            for name, setup, actual, good, bad in constant_pairs:
+                setup = setup.replace('@WRITES@', writes)
+                for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                    variants.append(('number-statics-' + name + suffix,
+                                     setup + f'assert.sameValue({actual},{value});', expected, mode))
     if profile == 'array-reduce':
         # Both directions prove successful method execution before any error
         # assertion: an absent method's TypeError is not validation evidence.

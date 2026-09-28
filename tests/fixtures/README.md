@@ -35,6 +35,11 @@ arguments and abrupt effects. Page and confined-worker tests compare six green
 initial samples and blue clicked samples, including an object accumulator
 retained through the event callback. It loads no external assets.
 
+`number-statics.html` checks exact constants, subnormals and safe-integer
+boundaries, non-coercing predicates, descriptors and native aliases retained
+after method replacement. Page and confined-worker tests compare six green
+initial samples and six blue samples after a callback. It loads no external assets.
+
 `calc-resize.html` uses mixed length-percentage widths and margins. Page and
 confined-worker tests verify exact geometry and pixels at 320 and 520 pixels,
 then repeat after CSSOM mutation, including a resize back to the smaller viewport.

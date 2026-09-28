@@ -1,0 +1,53 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Number constants and non-coercing predicates</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#constants{left:0}#finite{left:50px}#nan{left:100px}#integer{left:150px}#safe{left:200px}#contracts{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="constants" class="sample"></div><div id="finite" class="sample"></div>
+<div id="nan" class="sample"></div><div id="integer" class="sample"></div>
+<div id="safe" class="sample"></div><div id="contracts" class="sample"></div>
+<button id="change" type="button">Check retained predicates</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color='green'){document.getElementById(id).style.backgroundColor=color;}
+const names=['isFinite','isNaN','isInteger','isSafeInteger'];
+const aliases=[Number.isFinite,Number.isNaN,Number.isInteger,Number.isSafeInteger];
+for(let i=0;i<aliases.length;i++)check(typeof aliases[i]==='function','predicate availability');
+check(Number.EPSILON===2.220446049250313e-16&&1+Number.EPSILON>1&&1+Number.EPSILON/2===1,'epsilon');
+check(Number.MIN_VALUE===5e-324&&Number.MIN_VALUE>0&&Number.MIN_VALUE/2===0,'smallest subnormal');
+check(Number.MAX_VALUE===1.7976931348623157e308&&Number.MAX_VALUE*2===Infinity,'maximum finite');
+check(Number.MAX_SAFE_INTEGER===9007199254740991&&Number.MIN_SAFE_INTEGER===-9007199254740991,'safe bounds');mark('constants');
+check(Number.isFinite(-0)&&Number.isFinite(Number.MIN_VALUE)&&Number.isFinite(Number.MAX_VALUE),'finite numbers');
+check(!Number.isFinite(Infinity)&&!Number.isFinite(NaN)&&!Number.isFinite('1')&&!Number.isFinite(null),'finite exclusions');mark('finite');
+check(Number.isNaN(NaN)&&Number.isNaN(0/0)&&!Number.isNaN('NaN')&&!Number.isNaN(undefined)&&!Number.isNaN(new Number(NaN)),'NaN type check');mark('nan');
+check(Number.isInteger(-0)&&Number.isInteger(9007199254740992)&&Number.isInteger(Number.MAX_VALUE),'integer numbers');
+check(!Number.isInteger(Number.MIN_VALUE)&&!Number.isInteger(1.5)&&!Number.isInteger(Infinity)&&!Number.isInteger('2'),'integer exclusions');mark('integer');
+check(Number.isSafeInteger(Number.MAX_SAFE_INTEGER)&&Number.isSafeInteger(Number.MIN_SAFE_INTEGER)&&Number.isSafeInteger(-0),'safe endpoints');
+check(!Number.isSafeInteger(9007199254740992)&&!Number.isSafeInteger(-9007199254740992)&&!Number.isSafeInteger(new Number(1)),'unsafe values');mark('safe');
+let coerced=0;const poison={valueOf(){coerced++;throw 'valueOf';},toString(){coerced++;throw 'toString';}};
+for(let i=0;i<aliases.length;i++){
+  const fn=aliases[i],d=Object.getOwnPropertyDescriptor(Number,names[i]);
+  check(d.value===fn&&d.writable&&!d.enumerable&&d.configurable,'method property');
+  check(fn.name===names[i]&&fn.length===1&&Object.getOwnPropertyDescriptor(fn,'prototype')===undefined,'function metadata');
+  check(fn(poison)===false&&fn()===false,'no coercion');
+}
+const constant=Object.getOwnPropertyDescriptor(Number,'EPSILON');
+check(!constant.writable&&!constant.enumerable&&!constant.configurable,'constant flags');
+check(Number.isFinite.call(poison,1,poison)&&coerced===0,'ignored receiver and extra argument');mark('contracts');
+const finiteDescriptor=Object.getOwnPropertyDescriptor(Number,'isFinite');
+document.getElementById('result').textContent='ready';document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  Number.isFinite=function(){throw 'replacement';};
+  check(aliases[0](Number.MAX_VALUE)&&aliases[1](NaN)&&aliases[2](-0)&&aliases[3](Number.MIN_SAFE_INTEGER),'retained native aliases');
+  Object.defineProperty(Number,'isFinite',finiteDescriptor);
+  const count=[0,1,1.5,Number.MAX_SAFE_INTEGER,9007199254740992,'2'].reduce(function(total,value){return total+(aliases[3](value)?1:0);},0);
+  check(count===3&&coerced===0,'predicate in author callback');
+  document.getElementById('result').textContent=String(count);
+  mark('constants','blue');mark('finite','blue');mark('nan','blue');
+  mark('integer','blue');mark('safe','blue');mark('contracts','blue');
+  document.body.className='clicked';
+};
+</script>
