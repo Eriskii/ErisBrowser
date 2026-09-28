@@ -1,5 +1,37 @@
 # Validation record
 
+## Isolated Vulkan transfer probe
+
+Recorded September 28, 2026 UTC. The independently built
+[`tools/vulkan-probe`](../tools/vulkan-probe/README.md) passes three Rust checks,
+12 Python runner checks, formatting and strict Clippy on the installed Rust
+1.95 toolchain. These counts are separate from the engine suite below. The
+standalone crate pins its own wgpu 30.0.1 resolution; browser dependencies and
+rendering behavior are unchanged. A separate Rust 1.88 CI job is configured;
+that compiler was not installed or executed for this local host record.
+
+The published source performs **18 exact comparisons across three adapters**:
+NVIDIA RTX 4070 SUPER, AMD integrated RADV and CPU llvmpipe. Each adapter receives
+three changed frames at 320×240 and three at 319×239. Uploads/readbacks preserve
+all **5,509,476 compared RGBA bytes**, including alpha, changed frames and
+non-aligned source rows. Enumeration and all device processes exit successfully
+within their separate 25-second deadlines, with empty stderr logs. The runner
+rejects changed adapter identities, missing/duplicate results, nonzero exits,
+timeouts and excessive combined output; fake-process tests verify descendant
+cleanup on success, timeout, interruption and read failure.
+
+The [compact host evidence](../tools/vulkan-probe/evidence/host-transfer.json)
+binds these results to final source, lockfile, runner, tests and binary hashes,
+independently rechecked against the raw local run. The existing Vulkan loader
+needed a subprocess-local library directory override; no host setting changed.
+The probe forbids unsafe Rust in its source but uses native driver/library
+implementations. Its explicit payload sizes exclude staging and driver storage;
+process termination cannot guarantee recovery from uninterruptible kernel work.
+
+This checks offscreen transfers only. No surface, shader, browser integration,
+native presentation, custom GPU rasterization or performance comparison is
+exercised. The [Vulkan rendering milestones](vulkan-rendering.md) remain open.
+
 ## JavaScript feature-query API
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release

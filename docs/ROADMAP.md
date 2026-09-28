@@ -13,8 +13,11 @@ backend for rasterization and compositing.
 
 The [Vulkan milestone design](vulkan-rendering.md) records the host device
 probe, separates upload/presentation from custom GPU rasterization, and compares
-bindings. It recommends an optional Vulkan-only wgpu path for evaluation;
-no graphics dependency or Vulkan backend has been added.
+bindings. The standalone [Vulkan transfer probe](../tools/vulkan-probe/README.md)
+pins wgpu 30.0.1 in its own crate and lockfile. Its bounded offscreen uploads and
+readbacks preserve the tested bytes on the NVIDIA, AMD and software Vulkan
+adapters. No graphics dependency or Vulkan backend has been added to the browser;
+native presentation and custom GPU rasterization remain separate milestones.
 
 Acceptance work:
 
@@ -32,6 +35,7 @@ Acceptance work:
   costs, memory and frame latency. Vulkan alone does not establish a Chromium
   performance result.
 
-Vulkan is planned, not implemented. Driver requirements, platform coverage and
-the Rust Vulkan binding have not been selected. Ongoing standards and security
-work continues alongside preparation for this backend.
+The Vulkan browser backend remains planned. The isolated probe evaluates one
+binding and transfer path; production driver requirements, platform coverage
+and binding adoption remain undecided. Ongoing standards and security work
+continues alongside preparation for this backend.

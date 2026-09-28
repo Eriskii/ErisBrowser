@@ -1,0 +1,258 @@
+{
+  "schema": 1,
+  "recorded_at_utc": "2026-09-28T08:19:05.739665+00:00",
+  "scope": "Isolated offscreen Vulkan RGBA8 upload/readback; no native surface, shader, browser backend or performance result.",
+  "source_path_base": "tools/vulkan-probe",
+  "source_sha256": {
+    "Cargo.toml": "82c5e2636bc5746eb7dee500bd57bc3f9903452259b467ec1c81efe6a3f3aa99",
+    "Cargo.lock": "79d44f39411dcdef8e3d10c4259a85e240615584bbf2c77012bb38746ae0a320",
+    "src/main.rs": "dd301635e318cf2bcec6c357c983533b69b0bc3774466af7357b7a1c3e752f09",
+    "run_host.py": "e984e7d282d26df677d2ec8f35a7e3915466a274c6915070f971fb36a8e68da6",
+    "test_run_host.py": "ce8eacde52699219a73b57ce8fbb98f910f570d03d8fcf6a1fab60d23fed80d5"
+  },
+  "binary_sha256": "9c429c01b6d120be7ed0ffd2963bbc247f934c2fdf894f954c868efcd0ef1e12",
+  "build_profile": "dev, debug=0",
+  "rustc": "rustc 1.95.0 (59807616e 2026-04-14)",
+  "host_target": "x86_64-unknown-linux-gnu",
+  "rust_1_88_compilation_tested": false,
+  "loader": {
+    "version": "1.4.357",
+    "existing_directory_supplied": true,
+    "override_scope": "Linux subprocess LD_LIBRARY_PATH only; no host settings modified"
+  },
+  "source_unit_tests_passed": 3,
+  "runner_unit_tests_passed": 12,
+  "strict_all_target_clippy_passed": true,
+  "enumeration_returncode": 0,
+  "adapter_count": 3,
+  "total_exact_comparisons": 18,
+  "total_pixel_bytes_compared": 5509476,
+  "adapters": [
+    {
+      "index": 0,
+      "vendor": "0x10de",
+      "device": "0x2783",
+      "type": "DiscreteGpu",
+      "backend": "Vulkan",
+      "name": "NVIDIA GeForce RTX 4070 SUPER",
+      "driver": "NVIDIA",
+      "driver_info": "595.99.02",
+      "status": "passed",
+      "returncode": 0,
+      "process_deadline_seconds": 25.0,
+      "reported_wgpu_errors": false,
+      "checks": [
+        {
+          "width": 320,
+          "height": 240,
+          "frame": 0,
+          "compared_bytes": 307200,
+          "packed_row_bytes": 1280,
+          "readback_row_bytes": 1280,
+          "readback_buffer_bytes": 307200
+        },
+        {
+          "width": 320,
+          "height": 240,
+          "frame": 1,
+          "compared_bytes": 307200,
+          "packed_row_bytes": 1280,
+          "readback_row_bytes": 1280,
+          "readback_buffer_bytes": 307200
+        },
+        {
+          "width": 320,
+          "height": 240,
+          "frame": 2,
+          "compared_bytes": 307200,
+          "packed_row_bytes": 1280,
+          "readback_row_bytes": 1280,
+          "readback_buffer_bytes": 307200
+        },
+        {
+          "width": 319,
+          "height": 239,
+          "frame": 0,
+          "compared_bytes": 304964,
+          "packed_row_bytes": 1276,
+          "readback_row_bytes": 1280,
+          "readback_buffer_bytes": 305920
+        },
+        {
+          "width": 319,
+          "height": 239,
+          "frame": 1,
+          "compared_bytes": 304964,
+          "packed_row_bytes": 1276,
+          "readback_row_bytes": 1280,
+          "readback_buffer_bytes": 305920
+        },
+        {
+          "width": 319,
+          "height": 239,
+          "frame": 2,
+          "compared_bytes": 304964,
+          "packed_row_bytes": 1276,
+          "readback_row_bytes": 1280,
+          "readback_buffer_bytes": 305920
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "vendor": "0x1002",
+      "device": "0x164e",
+      "type": "IntegratedGpu",
+      "backend": "Vulkan",
+      "name": "AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)",
+      "driver": "radv",
+      "driver_info": "Mesa 26.2.3",
+      "status": "passed",
+      "returncode": 0,
+      "process_deadline_seconds": 25.0,
+      "reported_wgpu_errors": false,
+      "checks": [
+        {
+          "width": 320,
+          "height": 240,
+          "frame": 0,
+          "compared_bytes": 307200,
+          "packed_row_bytes": 1280,
+          "readback_row_bytes": 1280,
+          "readback_buffer_bytes": 307200
+        },
+        {
+          "width": 320,
+          "height": 240,
+          "frame": 1,
+          "compared_bytes": 307200,
+          "packed_row_bytes": 1280,
+          "readback_row_bytes": 1280,
+          "readback_buffer_bytes": 307200
+        },
+        {
+          "width": 320,
+          "height": 240,
+          "frame": 2,
+          "compared_bytes": 307200,
+          "packed_row_bytes": 1280,
+          "readback_row_bytes": 1280,
+          "readback_buffer_bytes": 307200
+        },
+        {
+          "width": 319,
+          "height": 239,
+          "frame": 0,
+          "compared_bytes": 304964,
+          "packed_row_bytes": 1276,
+          "readback_row_bytes": 1280,
+          "readback_buffer_bytes": 305920
+        },
+        {
+          "width": 319,
+          "height": 239,
+          "frame": 1,
+          "compared_bytes": 304964,
+          "packed_row_bytes": 1276,
+          "readback_row_bytes": 1280,
+          "readback_buffer_bytes": 305920
+        },
+        {
+          "width": 319,
+          "height": 239,
+          "frame": 2,
+          "compared_bytes": 304964,
+          "packed_row_bytes": 1276,
+          "readback_row_bytes": 1280,
+          "readback_buffer_bytes": 305920
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "vendor": "0x10005",
+      "device": "0x0",
+      "type": "Cpu",
+      "backend": "Vulkan",
+      "name": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "driver": "llvmpipe",
+      "driver_info": "Mesa 26.2.3 (LLVM 21.1.8)",
+      "status": "passed",
+      "returncode": 0,
+      "process_deadline_seconds": 25.0,
+      "reported_wgpu_errors": false,
+      "checks": [
+        {
+          "width": 320,
+          "height": 240,
+          "frame": 0,
+          "compared_bytes": 307200,
+          "packed_row_bytes": 1280,
+          "readback_row_bytes": 1280,
+          "readback_buffer_bytes": 307200
+        },
+        {
+          "width": 320,
+          "height": 240,
+          "frame": 1,
+          "compared_bytes": 307200,
+          "packed_row_bytes": 1280,
+          "readback_row_bytes": 1280,
+          "readback_buffer_bytes": 307200
+        },
+        {
+          "width": 320,
+          "height": 240,
+          "frame": 2,
+          "compared_bytes": 307200,
+          "packed_row_bytes": 1280,
+          "readback_row_bytes": 1280,
+          "readback_buffer_bytes": 307200
+        },
+        {
+          "width": 319,
+          "height": 239,
+          "frame": 0,
+          "compared_bytes": 304964,
+          "packed_row_bytes": 1276,
+          "readback_row_bytes": 1280,
+          "readback_buffer_bytes": 305920
+        },
+        {
+          "width": 319,
+          "height": 239,
+          "frame": 1,
+          "compared_bytes": 304964,
+          "packed_row_bytes": 1276,
+          "readback_row_bytes": 1280,
+          "readback_buffer_bytes": 305920
+        },
+        {
+          "width": 319,
+          "height": 239,
+          "frame": 2,
+          "compared_bytes": 304964,
+          "packed_row_bytes": 1276,
+          "readback_row_bytes": 1280,
+          "readback_buffer_bytes": 305920
+        }
+      ]
+    }
+  ],
+  "limits": {
+    "maximum_dimensions": [
+      320,
+      240
+    ],
+    "per_api_wait_seconds": 5,
+    "per_process_deadline_seconds": 25,
+    "captured_output_limit_bytes": 262144,
+    "explicit_texture_and_readback_payload_bytes_maximum": 614400
+  },
+  "caveats": [
+    "Driver/native calls and teardown can block beyond application waits; external process termination cannot guarantee recovery from uninterruptible kernel work.",
+    "Allocation figures exclude wgpu staging, allocator blocks, mapping, driver memory and residency.",
+    "Declared dependency MSRVs were inspected; Rust1.88 was not installed or executed locally.",
+    "Software llvmpipe is explicitly a CPU Vulkan device; successful transfer is not GPU-rasterization or speed evidence."
+  ]
+}

@@ -1,0 +1,20 @@
+[package]
+name = "eris-vulkan-probe"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.88"
+publish = false
+license = "MIT"
+description = "Isolated bounded Vulkan pixel transfer probe for Eris"
+
+# This is deliberately independent of the browser package and lockfile.
+[workspace]
+
+[dependencies]
+wgpu = { version = "=30.0.1", default-features = false, features = ["std", "vulkan", "wgsl"] }
+
+[profile.dev]
+debug = 0
+
+[lints.rust]
+unsafe_code = "forbid"

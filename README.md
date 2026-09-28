@@ -100,7 +100,7 @@ The [validation record](docs/VALIDATION.md) lists observed results and their lim
 ## Implementation
 
 The [architecture notes](docs/ARCHITECTURE.md) describe the page pipeline and native process boundaries.
-The [development docket](docs/ROADMAP.md) includes a planned Vulkan rendering backend.
+The [development docket](docs/ROADMAP.md) includes a planned Vulkan rendering backend. An independent [Vulkan transfer probe](tools/vulkan-probe/README.md) checks exact offscreen uploads/readback with its own pinned dependencies; the browser still uses software painting and presentation.
 
 | Module | Responsibility |
 |---|---|

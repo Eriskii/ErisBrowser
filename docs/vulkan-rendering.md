@@ -1,7 +1,9 @@
 # Vulkan rendering milestones
 
-Status: design and host inventory, recorded September 28, 2026. No Vulkan
-backend or graphics dependency has been added. This document expands the
+Status: design, host inventory and an isolated transfer probe, recorded
+September 28, 2026. No Vulkan backend or graphics dependency has been added to
+the browser. The standalone [`tools/vulkan-probe`](../tools/vulkan-probe/README.md)
+crate has its own pinned wgpu dependency and lockfile. This document expands the
 [Vulkan docket](ROADMAP.md#vulkan-rendering-backend). The requested custom GPU
 rasterizer and compositor remain future work; uploading software-rendered
 pixels is an intermediate presentation milestone. No GPU speedup or Chromium
@@ -63,6 +65,29 @@ This result proves basic host loader/device initialization only. It does not
 prove Wayland or X11 presentation, any particular surface format/usage, shader
 execution, validation-layer availability, GPU recovery, CI availability or
 performance. The host API versions are observations, not minimum requirements.
+
+### Reproducible offscreen transfer probe
+
+The independent [Vulkan probe](../tools/vulkan-probe/README.md) now exercises
+safe Rust wgpu 30.0.1 APIs with only its `std`, `vulkan` and `wgsl` features.
+Each of the three observed adapters passed six exact RGBA8 upload/readback
+comparisons: three changed frames at 320×240 and three at 319×239, with the
+second size exercising padded readback rows. The
+[compact evidence](../tools/vulkan-probe/evidence/host-transfer.json) binds the
+results to the published source and lockfile hashes.
+
+The probe uses finite application waits and a separate process deadline per
+adapter. It has no surfaces, shaders or browser integration, and establishes no
+GPU rasterization, presentation or speed result. The existing host loader was
+not discoverable by basename, so the successful run supplied its directory only
+to the probe subprocess environment. The portable runner accepts an optional
+loader directory; it contains no hardcoded host path. Driver calls and teardown
+can still block beyond application waits, as documented in the probe README.
+
+The pinned Linux graph has 58 dependencies. Declared MSRVs are compatible with
+1.88, but ten packages omit that field; the recorded build used the installed
+Rust 1.95 toolchain, not 1.88. This is an isolated dependency evaluation, not a
+change to the browser's dependency graph or completion of milestone A.
 
 ## Milestone A: Vulkan presentation
 
@@ -182,7 +207,8 @@ and retain application resources through its completion notifications. See
 
 ## Binding evaluation and recommendation
 
-**Recommendation, not an adopted dependency:** implement the first slice using
+**Recommendation for browser integration, not yet adopted by the browser:**
+implement the first slice using
 wgpu 30.0.1 with defaults disabled and only `std`, `vulkan` and `wgsl` enabled,
 behind an optional Eris feature. Select `Backends::VULKAN` explicitly at runtime.
 Keep application `unsafe_code = "forbid"` and use the checked public APIs; do
@@ -232,7 +258,9 @@ completion handling, and retain the driver-hang limitation stated above.
 
 Read-only inspection found cached source/archive copies of the wgpu 30.0.1
 family, Naga, ash and allocation support. Vulkano and shaderc were not cached.
-No dependency was added or built for this comparison.
+No dependency was added or built for that initial package-size comparison. The
+subsequent standalone transfer probe compiled its own pinned graph as described
+above; it did not change the browser's dependencies.
 
 | Inspected material | Compressed archive bytes | Unpacked/source bytes |
 | --- | ---: | ---: |

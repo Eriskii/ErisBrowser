@@ -28,3 +28,17 @@ jobs:
       - name: Preserve passing cases in the pinned template literal selection
         run: python3 tools/test262_conformance.py --profile template-literal --baseline tests/conformance/test262-template-literal-current.json --output artifacts/test262-template-literal-gate.json
       - run: timeout 180s target/release/eris-stress 5000
+  vulkan-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      RUSTUP_TOOLCHAIN: 1.88.0
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup toolchain install 1.88.0 --profile minimal --component rustfmt --component clippy
+      - run: cargo fmt --manifest-path tools/vulkan-probe/Cargo.toml -- --check
+      - run: cargo clippy --locked --manifest-path tools/vulkan-probe/Cargo.toml --all-targets -- -D warnings
+      - run: cargo test --locked --manifest-path tools/vulkan-probe/Cargo.toml
+      - run: python3 -m unittest discover -s tools/vulkan-probe -p 'test_*.py'
+      # GPU execution is an explicit host check; CI must not label an absent
+      # adapter as a successful transfer or browser rendering result.

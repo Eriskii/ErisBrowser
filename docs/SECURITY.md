@@ -20,6 +20,13 @@ Linux address-space, descriptor and core-dump limits apply separately to every c
 
 ## Implemented controls
 
+The standalone [Vulkan development probe](../tools/vulkan-probe/README.md) uses
+host device/driver access with fixed synthetic pixels and no page content. It
+does not change the browser's dependency graph or renderer authority. Its finite
+process deadlines and output bounds are test controls, not a GPU sandbox or a
+hard limit on driver allocations. Native driver calls and teardown can outlast
+application waits; the browser has no Vulkan backend yet.
+
 - The application forbids unsafe Rust. Parser, layout, interpreter, and software-paint code are custom Rust. Platform/codec/crypto dependencies have their own security surface and may use unsafe code.
 - Script code cannot call host filesystem, networking, process, clipboard, native eval, or FFI APIs. Native clipboard access is initiated only by explicit user keyboard shortcuts. Unsupported features produce errors. Scripts have DOM access within the current page.
 - The script interpreter bounds source, tokens, AST nesting, expression depth, call depth, instructions and allocation accounting. Per-page script count/source are also capped. Template text scanning, parser-directed rescans, substitution coercion and output copying consume compile/runtime budgets; nested templates retain the shared stack guard. Owned function parameter/name copies are charged before retention and temporary call copies; immutable bodies are shared. Generic array reversal and radix conversion retain shared work/heap/coercion limits. Long-lived pages can exhaust its arena; there is no garbage collector. Quota termination is a distinct, uncatchable error and cannot be bypassed by finally blocks. Calls, expressions, statements/hoisting and JSON traversal share a weighted nesting budget, preventing nested callbacks from multiplying individually permitted recursion limits.

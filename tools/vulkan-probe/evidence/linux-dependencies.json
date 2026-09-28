@@ -1,0 +1,475 @@
+{
+  "schema": 1,
+  "target": "x86_64-unknown-linux-gnu",
+  "cargo_lock_sha256": "79d44f39411dcdef8e3d10c4259a85e240615584bbf2c77012bb38746ae0a320",
+  "declared_package_rust_version": "1.88",
+  "tested_rust_version": "1.95.0",
+  "rust_1_88_compilation_tested": false,
+  "registry_packages_all_targets": 96,
+  "active_dependencies": 58,
+  "undeclared_rust_versions": 10,
+  "caveat": "Declared manifest MSRVs and a Rust 1.95 build do not prove compilation on Rust 1.88; no 1.88 toolchain was installed.",
+  "packages": [
+    {
+      "name": "allocator-api2",
+      "version": "0.2.21",
+      "declared_rust_version": "1.63",
+      "features": [
+        "alloc"
+      ]
+    },
+    {
+      "name": "arrayvec",
+      "version": "0.7.8",
+      "declared_rust_version": "1.51",
+      "features": []
+    },
+    {
+      "name": "ash",
+      "version": "0.38.0+1.3.281",
+      "declared_rust_version": "1.69.0",
+      "features": [
+        "debug",
+        "default",
+        "libloading",
+        "loaded",
+        "std"
+      ]
+    },
+    {
+      "name": "autocfg",
+      "version": "1.5.1",
+      "declared_rust_version": "1.0",
+      "features": []
+    },
+    {
+      "name": "bit-set",
+      "version": "0.10.0",
+      "declared_rust_version": "1.82",
+      "features": []
+    },
+    {
+      "name": "bit-vec",
+      "version": "0.9.1",
+      "declared_rust_version": "1.82",
+      "features": []
+    },
+    {
+      "name": "bitflags",
+      "version": "2.13.2",
+      "declared_rust_version": "1.56.0",
+      "features": [
+        "std"
+      ]
+    },
+    {
+      "name": "bytemuck",
+      "version": "1.25.2",
+      "declared_rust_version": null,
+      "features": [
+        "bytemuck_derive",
+        "derive",
+        "extern_crate_alloc",
+        "min_const_generics"
+      ]
+    },
+    {
+      "name": "bytemuck_derive",
+      "version": "1.12.1",
+      "declared_rust_version": "1.71",
+      "features": []
+    },
+    {
+      "name": "cfg-if",
+      "version": "1.0.5",
+      "declared_rust_version": "1.32",
+      "features": []
+    },
+    {
+      "name": "cfg_aliases",
+      "version": "0.2.2",
+      "declared_rust_version": null,
+      "features": []
+    },
+    {
+      "name": "codespan-reporting",
+      "version": "0.13.1",
+      "declared_rust_version": "1.67",
+      "features": []
+    },
+    {
+      "name": "document-features",
+      "version": "0.2.12",
+      "declared_rust_version": "1.56",
+      "features": [
+        "default"
+      ]
+    },
+    {
+      "name": "equivalent",
+      "version": "1.0.2",
+      "declared_rust_version": "1.6",
+      "features": []
+    },
+    {
+      "name": "foldhash",
+      "version": "0.2.0",
+      "declared_rust_version": "1.60",
+      "features": []
+    },
+    {
+      "name": "gpu-allocator",
+      "version": "0.28.0",
+      "declared_rust_version": "1.71",
+      "features": [
+        "hashbrown",
+        "vulkan"
+      ]
+    },
+    {
+      "name": "half",
+      "version": "2.7.1",
+      "declared_rust_version": "1.81",
+      "features": [
+        "num-traits"
+      ]
+    },
+    {
+      "name": "hashbrown",
+      "version": "0.16.1",
+      "declared_rust_version": "1.65.0",
+      "features": [
+        "allocator-api2",
+        "default",
+        "default-hasher",
+        "equivalent",
+        "inline-more",
+        "raw-entry"
+      ]
+    },
+    {
+      "name": "hashbrown",
+      "version": "0.17.1",
+      "declared_rust_version": "1.85.0",
+      "features": [
+        "default-hasher",
+        "inline-more"
+      ]
+    },
+    {
+      "name": "indexmap",
+      "version": "2.14.2",
+      "declared_rust_version": "1.85",
+      "features": []
+    },
+    {
+      "name": "libc",
+      "version": "0.2.189",
+      "declared_rust_version": "1.65",
+      "features": [
+        "default",
+        "std"
+      ]
+    },
+    {
+      "name": "libloading",
+      "version": "0.8.9",
+      "declared_rust_version": "1.71.0",
+      "features": []
+    },
+    {
+      "name": "libm",
+      "version": "0.2.16",
+      "declared_rust_version": "1.63",
+      "features": [
+        "arch",
+        "default"
+      ]
+    },
+    {
+      "name": "litrs",
+      "version": "1.0.0",
+      "declared_rust_version": "1.56",
+      "features": []
+    },
+    {
+      "name": "lock_api",
+      "version": "0.4.14",
+      "declared_rust_version": "1.71.0",
+      "features": [
+        "atomic_usize",
+        "default"
+      ]
+    },
+    {
+      "name": "log",
+      "version": "0.4.34",
+      "declared_rust_version": "1.71.0",
+      "features": []
+    },
+    {
+      "name": "naga",
+      "version": "30.0.1",
+      "declared_rust_version": "1.87",
+      "features": [
+        "default",
+        "spv-out",
+        "wgsl-in"
+      ]
+    },
+    {
+      "name": "naga-types",
+      "version": "30.0.1",
+      "declared_rust_version": null,
+      "features": [
+        "std"
+      ]
+    },
+    {
+      "name": "num-traits",
+      "version": "0.2.19",
+      "declared_rust_version": "1.60",
+      "features": [
+        "libm"
+      ]
+    },
+    {
+      "name": "once_cell",
+      "version": "1.21.4",
+      "declared_rust_version": "1.65",
+      "features": [
+        "alloc",
+        "race",
+        "std"
+      ]
+    },
+    {
+      "name": "ordered-float",
+      "version": "5.3.0",
+      "declared_rust_version": "1.63",
+      "features": []
+    },
+    {
+      "name": "parking_lot",
+      "version": "0.12.5",
+      "declared_rust_version": "1.71",
+      "features": [
+        "default"
+      ]
+    },
+    {
+      "name": "parking_lot_core",
+      "version": "0.9.12",
+      "declared_rust_version": "1.71.0",
+      "features": []
+    },
+    {
+      "name": "presser",
+      "version": "0.3.1",
+      "declared_rust_version": "1.64",
+      "features": []
+    },
+    {
+      "name": "proc-macro2",
+      "version": "1.0.107",
+      "declared_rust_version": "1.71",
+      "features": [
+        "default",
+        "proc-macro"
+      ]
+    },
+    {
+      "name": "profiling",
+      "version": "1.0.18",
+      "declared_rust_version": "1.60",
+      "features": []
+    },
+    {
+      "name": "quote",
+      "version": "1.0.47",
+      "declared_rust_version": "1.71",
+      "features": [
+        "default",
+        "proc-macro"
+      ]
+    },
+    {
+      "name": "raw-window-handle",
+      "version": "0.6.2",
+      "declared_rust_version": "1.64",
+      "features": [
+        "alloc",
+        "std"
+      ]
+    },
+    {
+      "name": "renderdoc-sys",
+      "version": "1.1.0",
+      "declared_rust_version": null,
+      "features": []
+    },
+    {
+      "name": "rustc-hash",
+      "version": "1.1.0",
+      "declared_rust_version": null,
+      "features": []
+    },
+    {
+      "name": "scopeguard",
+      "version": "1.2.0",
+      "declared_rust_version": null,
+      "features": []
+    },
+    {
+      "name": "smallvec",
+      "version": "1.16.2",
+      "declared_rust_version": null,
+      "features": [
+        "union"
+      ]
+    },
+    {
+      "name": "spirv",
+      "version": "0.4.0+sdk-1.4.341.0",
+      "declared_rust_version": null,
+      "features": []
+    },
+    {
+      "name": "static_assertions",
+      "version": "1.1.0",
+      "declared_rust_version": null,
+      "features": []
+    },
+    {
+      "name": "syn",
+      "version": "2.0.119",
+      "declared_rust_version": "1.71",
+      "features": [
+        "clone-impls",
+        "default",
+        "derive",
+        "full",
+        "parsing",
+        "printing",
+        "proc-macro"
+      ]
+    },
+    {
+      "name": "syn",
+      "version": "3.0.6",
+      "declared_rust_version": "1.71",
+      "features": [
+        "clone-impls",
+        "default",
+        "derive",
+        "extra-traits",
+        "full",
+        "parsing",
+        "printing",
+        "proc-macro",
+        "visit",
+        "visit-mut"
+      ]
+    },
+    {
+      "name": "thiserror",
+      "version": "2.0.21",
+      "declared_rust_version": "1.77",
+      "features": []
+    },
+    {
+      "name": "thiserror-impl",
+      "version": "2.0.21",
+      "declared_rust_version": "1.77",
+      "features": []
+    },
+    {
+      "name": "unicode-ident",
+      "version": "1.0.26",
+      "declared_rust_version": "1.71",
+      "features": []
+    },
+    {
+      "name": "unicode-width",
+      "version": "0.2.2",
+      "declared_rust_version": "1.66",
+      "features": [
+        "cjk",
+        "default"
+      ]
+    },
+    {
+      "name": "wgpu",
+      "version": "30.0.1",
+      "declared_rust_version": "1.87.0",
+      "features": [
+        "std",
+        "vulkan",
+        "wgsl"
+      ]
+    },
+    {
+      "name": "wgpu-core",
+      "version": "30.0.1",
+      "declared_rust_version": "1.87",
+      "features": [
+        "default",
+        "portable-atomic",
+        "renderdoc",
+        "std",
+        "vulkan",
+        "wgpu-core-deps-windows-linux-android",
+        "wgsl"
+      ]
+    },
+    {
+      "name": "wgpu-core-deps-windows-linux-android",
+      "version": "30.0.1",
+      "declared_rust_version": "1.76",
+      "features": [
+        "renderdoc",
+        "vulkan"
+      ]
+    },
+    {
+      "name": "wgpu-hal",
+      "version": "30.0.1",
+      "declared_rust_version": "1.87",
+      "features": [
+        "portable-atomic",
+        "renderdoc",
+        "vulkan"
+      ]
+    },
+    {
+      "name": "wgpu-naga-bridge",
+      "version": "30.0.1",
+      "declared_rust_version": "1.87",
+      "features": []
+    },
+    {
+      "name": "wgpu-types",
+      "version": "30.0.1",
+      "declared_rust_version": "1.87",
+      "features": [
+        "std"
+      ]
+    },
+    {
+      "name": "zerocopy",
+      "version": "0.8.59",
+      "declared_rust_version": "1.56.0",
+      "features": [
+        "derive",
+        "simd",
+        "zerocopy-derive"
+      ]
+    },
+    {
+      "name": "zerocopy-derive",
+      "version": "0.8.59",
+      "declared_rust_version": null,
+      "features": []
+    }
+  ]
+}
