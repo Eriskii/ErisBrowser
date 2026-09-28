@@ -44,7 +44,7 @@ and browser chrome; no compositor capture or Vulkan backend is involved.
 Nine existing 1180×880 views remain pixel-identical to frozen commit `738f492`.
 This comparison measures decoded pixels only, not speed.
 
-Final release SHA-256 values:
+Release SHA-256 values for checkpoint `3491721`:
 
 | Binary | SHA-256 |
 |---|---|
@@ -57,8 +57,11 @@ The source-input digest is
 `5fb0934ebb83e25d634853caac2d6ef133aaa1458313a4bcfe182acc063dcb14`,
 using the benchmark tool's documented inventory. Session logs and reports use
 the `cssom-final` suffix or `cssom-native` / `cssom-pixels` directories under
-`artifacts/`. Local checks used Rust 1.95. A new engine CI job checks all targets
-with the declared Rust 1.88 minimum; its result must be observed separately.
+`artifacts/`. Local checks used Rust 1.95. The new engine CI job
+[passed all-target checking with Rust 1.88](https://github.com/Eriskii/ErisBrowser/actions/runs/36401843150/job/108861294379).
+That run's newer stable Clippy rejected one constant-size `chunks_exact` call;
+a subsequent equivalent `as_chunks` rewrite addresses the lint. The hashes
+above identify the locally validated pre-rewrite build, not a later binary.
 The previous software-presenter checkpoint passed
 [GitHub CI](https://github.com/Eriskii/ErisBrowser/actions/runs/36399652737).
 Full web compatibility, independently audited security and the requested

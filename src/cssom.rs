@@ -472,7 +472,13 @@ fn shorthand_value(name: &str, values: &[&str]) -> String {
             }
         }
         "background" => values[0].into(),
-        "border" if values.chunks_exact(3).all(|chunk| chunk == &values[..3]) => {
+        "border"
+            if values
+                .as_chunks::<3>()
+                .0
+                .iter()
+                .all(|chunk| chunk == &values[..3]) =>
+        {
             values[..3].join(" ")
         }
         "border-top" | "border-right" | "border-bottom" | "border-left" | "flex" | "flex-flow"
