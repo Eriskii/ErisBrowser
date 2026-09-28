@@ -98,6 +98,47 @@ fn scripts_disabled_and_template_content_inert() {
             .any(|c| matches!(c,DrawCommand::Text{text,..} if text.contains("template")))
     );
 }
+
+#[test]
+fn noscript_parsing_and_rendering_follow_the_page_scripting_flag() {
+    let source = "<!doctype html><body><p id=main>Page</p><noscript><p id=fallback>Fallback content</p><script>document.getElementById('main').textContent='wrong';</script></noscript>";
+    let enabled = Page::from_html(Url::parse("https://example.test/").unwrap(), source, true);
+    let disabled = Page::from_html(Url::parse("https://example.test/").unwrap(), source, false);
+    assert!(enabled.document.query_selector("#fallback").is_none());
+    assert!(disabled.document.query_selector("#fallback").is_some());
+    assert_eq!(
+        enabled
+            .document
+            .text_content(enabled.document.query_selector("#main").unwrap()),
+        "Page"
+    );
+    let fonts = Fonts::new();
+    let has_fallback = |p: &Page| {
+        p.layout(400.0, 200.0, &fonts).commands.iter().any(
+            |command| matches!(command,DrawCommand::Text{text,..} if text.contains("Fallback")),
+        )
+    };
+    assert!(!has_fallback(&enabled));
+    assert!(has_fallback(&disabled));
+    assert!(enabled.diagnostics.is_empty(), "{:?}", enabled.diagnostics);
+}
+
+#[test]
+fn json_demo_reads_a_textarea_runs_callbacks_and_updates_the_document() {
+    let mut page = Page::from_html(
+        Url::parse("https://example.test/standards.html").unwrap(),
+        include_str!("../examples/standards.html"),
+        true,
+    );
+    let button = page.document.query_selector("#format").unwrap();
+    assert!(page.click(button).is_none());
+    let output = page.document.query_selector("#result").unwrap();
+    assert_eq!(
+        page.document.text_content(output),
+        "{\n  \"title\": \"Custom engine\",\n  \"count\": 14,\n  \"items\": [\n    2,\n    4,\n    6\n  ]\n}"
+    );
+    assert!(page.diagnostics.is_empty(), "{:?}", page.diagnostics);
+}
 #[test]
 fn file_resource_loading_preserves_stylesheet_order_and_script_events() {
     let path = std::env::temp_dir().join(format!("eris-pipeline-{}", std::process::id()));

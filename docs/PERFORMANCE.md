@@ -20,6 +20,8 @@ The recorded development baseline used an AMD Ryzen 7 7800X3D, Linux x86-64, Rus
 
 These are machine-specific development observations in an uncontrolled desktop environment, not portable scores or a comparison with Chromium. [The recorded JSON](benchmark-baseline.json) includes build/input hashes and exclusions. Re-run after changes and record hardware, operating system, Rust version, profile, viewport, fixture revision, number of iterations, and precisely included phases.
 
+After the parser, JSON and flex compatibility increment, the same fixture/viewport/iteration configuration recorded medians of 4.475 ms (home), 7.047 ms (gallery), and 5.263 ms (forms); p95 values were 4.929, 7.402 and 5.615 ms. [The later record](benchmark-compatibility.json) retains its own hashes. These two uncontrolled observations are insufficient to establish a speed regression or improvement, and neither measures Chromium.
+
 `python3 tools/benchmark.py` records timings for three local fixtures in `artifacts/benchmark.json`, including source/assets/dependency input hashes, binary hash, CPU, OS, compiler and excluded phases.
 
 ## Required comparison design

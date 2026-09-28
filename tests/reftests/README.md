@@ -1,6 +1,6 @@
 # Focused rendering reference tests
 
-These ten self-authored cases compare Eris rendering against independently
+These thirteen self-authored cases compare Eris rendering against independently
 expressed reference layouts at 320 × 240 pixels. They exercise specific HTML/CSS
 behaviors; they are not the Web Platform Tests, a browser compatibility score, or
 a Chromium performance comparison. Passing a pair cannot detect a defect shared

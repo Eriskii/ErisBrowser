@@ -11,6 +11,7 @@ const MAX_DEPTH: usize = 128;
 const MAX_VISITS: usize = 100_000;
 const MAX_COMMANDS: usize = 200_000;
 const MAX_GLYPHS: usize = 500_000;
+const MAX_FLEX_WORK: usize = 1_000_000;
 const MAX_EXTENT: f32 = 1_000_000.0;
 
 #[derive(Debug, Clone)]
@@ -94,6 +95,7 @@ struct Engine<'a> {
     visits: usize,
     glyphs_left: usize,
     intrinsic_work_left: Counter<usize>,
+    flex_work_left: usize,
     canvas_background_node: Option<NodeId>,
     fallback: ComputedStyle,
 }
@@ -135,6 +137,7 @@ pub fn layout(
         visits: 0,
         glyphs_left: MAX_GLYPHS,
         intrinsic_work_left: Counter::new(MAX_GLYPHS),
+        flex_work_left: MAX_FLEX_WORK,
         canvas_background_node,
         fallback: ComputedStyle::default(),
     };
@@ -295,10 +298,22 @@ impl Engine<'_> {
     fn layout_box(
         &mut self,
         id: NodeId,
+        x: f32,
+        y: f32,
+        available: f32,
+        forced_width: Option<f32>,
+        depth: usize,
+    ) -> Size {
+        self.layout_box_sized(id, x, y, available, (forced_width, None), depth)
+    }
+
+    fn layout_box_sized(
+        &mut self,
+        id: NodeId,
         mut x: f32,
         mut y: f32,
         available: f32,
-        forced_width: Option<f32>,
+        forced: (Option<f32>, Option<f32>),
         depth: usize,
     ) -> Size {
         if !self.enter(id, depth) || self.is_hidden(id) {
@@ -313,12 +328,25 @@ impl Engine<'_> {
         }
         let padding = self.padding(id, available);
         let border = self.borders(id);
-        let width = forced_width
+        let width = forced
+            .0
             .map(extent)
             .unwrap_or_else(|| self.width_for(id, available, available));
         let inner_width = (width - padding.horizontal() - border.horizontal()).max(0.0);
         let inner_x = x + border.left + padding.left;
         let inner_y = y + border.top + padding.top;
+        let extras = padding.vertical() + border.vertical();
+        let css_to_border = if style.box_sizing == "border-box" {
+            0.0
+        } else {
+            extras
+        };
+        let definite_height = forced.1.or_else(|| {
+            resolve(style.height, self.viewport.height).map(|height| {
+                let (min, max) = self.flex_limits(id, available, self.viewport.height, true);
+                (height + css_to_border).clamp(min, max)
+            })
+        });
         let paint_start = self.commands.len();
         // Reserve paint slots before descendants, then fill in the height.
         for _ in 0..5 {
@@ -358,7 +386,19 @@ impl Engine<'_> {
                 depth + 1,
             )
         } else if style.display == Display::Flex {
-            self.layout_flex(&children, inner_x, inner_y, inner_width, &style, depth + 1)
+            self.layout_flex(
+                &children,
+                inner_x,
+                inner_y,
+                Size {
+                    width: inner_width,
+                    height: definite_height
+                        .map(|h| (h - extras).max(0.0))
+                        .unwrap_or(-1.0),
+                },
+                &style,
+                depth + 1,
+            )
         } else if style.display == Display::Grid {
             self.layout_grid(&children, inner_x, inner_y, inner_width, &style, depth + 1)
         } else if tag == "table" {
@@ -373,19 +413,15 @@ impl Engine<'_> {
                 depth + 1,
             )
         };
-        let extras = padding.vertical() + border.vertical();
-        let css_to_border = if style.box_sizing == "border-box" {
-            0.0
-        } else {
-            extras
-        };
-        let mut height = resolve(style.height, self.viewport.height)
-            .map(|value| value + css_to_border)
-            .unwrap_or(natural_height + extras);
-        if let Some(max) = resolve(style.max_height, self.viewport.height) {
+        let mut height = definite_height.unwrap_or(natural_height + extras);
+        if forced.1.is_none()
+            && let Some(max) = resolve(style.max_height, self.viewport.height)
+        {
             height = height.min(max + css_to_border);
         }
-        if let Some(min) = resolve(style.min_height, self.viewport.height) {
+        if forced.1.is_none()
+            && let Some(min) = resolve(style.min_height, self.viewport.height)
+        {
             height = height.max(min + css_to_border);
         }
         height = extent(height).max(extras);
@@ -594,9 +630,20 @@ impl Engine<'_> {
     }
 
     fn fragment(&mut self, id: NodeId, available: f32, width: f32, depth: usize) -> Fragment {
+        self.fragment_sized(id, available, width, None, depth)
+    }
+
+    fn fragment_sized(
+        &mut self,
+        id: NodeId,
+        available: f32,
+        width: f32,
+        height: Option<f32>,
+        depth: usize,
+    ) -> Fragment {
         let command_start = self.commands.len();
         let hit_start = self.hits.len();
-        let size = self.layout_box(id, 0.0, 0.0, available, Some(width), depth);
+        let size = self.layout_box_sized(id, 0.0, 0.0, available, (Some(width), height), depth);
         Fragment {
             size,
             commands: self.commands.split_off(command_start),
@@ -978,71 +1025,210 @@ impl Engine<'_> {
         height
     }
 
+    /// Border-box min/max bounds, with minimums winning conflicting limits.
+    fn flex_limits(&self, id: NodeId, width: f32, main: f32, column: bool) -> (f32, f32) {
+        let style = self.style(id);
+        let padding = self.padding(id, width);
+        let border = self.borders(id);
+        let extra = if column {
+            padding.vertical() + border.vertical()
+        } else {
+            padding.horizontal() + border.horizontal()
+        };
+        let adjustment = if style.box_sizing == "border-box" {
+            0.0
+        } else {
+            extra
+        };
+        let (min, max) = if column {
+            (style.min_height, style.max_height)
+        } else {
+            (style.min_width, style.max_width)
+        };
+        let min = extent(resolve(min, main).map(|v| v + adjustment).unwrap_or(extra)).max(extra);
+        let max = extent(
+            resolve(max, main)
+                .map(|v| v + adjustment)
+                .unwrap_or(MAX_EXTENT),
+        )
+        .max(min);
+        (min, max)
+    }
+
+    fn flex_metrics(
+        &self,
+        id: NodeId,
+        width: f32,
+        main: Option<f32>,
+        column: bool,
+        natural: f32,
+    ) -> FlexSize {
+        let style = self.style(id);
+        let padding = self.padding(id, width);
+        let border = self.borders(id);
+        let extra = if column {
+            padding.vertical() + border.vertical()
+        } else {
+            padding.horizontal() + border.horizontal()
+        };
+        let adjustment = if style.box_sizing == "border-box" {
+            0.0
+        } else {
+            extra
+        };
+        // A percentage basis in an indefinite main axis behaves as content.
+        let resolve_main = |length| match length {
+            Length::Percent(_) => main.and_then(|v| resolve(length, v)),
+            _ => resolve(length, main.unwrap_or(0.0)),
+        };
+        let preferred = if column { style.height } else { style.width };
+        let base = extent(
+            resolve_main(style.flex_basis)
+                .or_else(|| resolve_main(preferred))
+                .map(|v| v + adjustment)
+                .unwrap_or(natural),
+        );
+        let (min, max) = self.flex_limits(id, width, main.unwrap_or(0.0), column);
+        FlexSize {
+            base,
+            inner: (base - extra).max(0.0),
+            min,
+            max,
+            grow: extent(style.flex_grow),
+            shrink: extent(style.flex_shrink),
+        }
+    }
+
     fn layout_flex(
         &mut self,
         children: &[NodeId],
         x: f32,
         y: f32,
-        width: f32,
+        available: Size,
         style: &ComputedStyle,
         depth: usize,
     ) -> f32 {
         let mut items = self.flow_items(children);
-        if style.flex_direction.ends_with("reverse") {
-            items.reverse();
-        }
+        // Stable visual order never changes the DOM or sequential navigation order.
+        items.sort_by_key(|id| self.style(*id).order);
+        let width = available.width;
+        let height = (available.height >= 0.0).then_some(available.height);
+        let reverse = style.flex_direction.ends_with("reverse");
         let gap = extent(style.gap);
         if style.flex_direction.starts_with("column") {
-            let mut cursor = y;
-            for (index, id) in items.into_iter().enumerate() {
-                if index > 0 {
-                    cursor += gap;
-                }
+            let mut prepared = Vec::new();
+            for id in items {
                 let margin = self.margins(id, width);
-                let available = (width - margin.horizontal()).max(0.0);
-                let child_width = if style.align_items == "stretch" {
-                    self.width_for(id, available, width)
-                } else {
-                    self.intrinsic_width(id, available).min(available)
-                };
-                let offset = match style.align_items.as_str() {
-                    "center" => (available - child_width) / 2.0,
-                    "flex-end" | "end" => available - child_width,
-                    _ => 0.0,
-                };
-                cursor += margin.top;
-                let size = self.layout_box(
-                    id,
-                    x + margin.left + offset,
-                    cursor,
-                    width,
-                    Some(child_width),
-                    depth,
-                );
-                cursor += size.height + margin.bottom;
-            }
-            return extent(cursor - y);
-        }
-        let bases: Vec<f32> = items
-            .iter()
-            .map(|&id| {
                 let child = self.style(id);
-                resolve(child.flex_basis, width)
-                    .unwrap_or_else(|| {
-                        if matches!(child.width, Length::Auto) {
-                            self.intrinsic_width(id, width)
-                        } else {
-                            self.width_for(id, width, width)
-                        }
-                    })
-                    .max(0.0)
-            })
-            .collect();
-        let mut rows = Vec::<Vec<(NodeId, f32)>>::new();
+                let align = flex_alignment(child, style);
+                let space = (width - margin.horizontal()).max(0.0);
+                let auto_margin = matches!(child.margin.left, Length::Auto)
+                    || matches!(child.margin.right, Length::Auto);
+                let child_width =
+                    if align == "stretch" && !auto_margin || !matches!(child.width, Length::Auto) {
+                        self.width_for(id, space, width)
+                    } else {
+                        let (min, max) = self.flex_limits(id, width, width, false);
+                        self.intrinsic_width(id, space).min(space).clamp(min, max)
+                    };
+                let definite_basis = matches!(child.flex_basis, Length::Px(_))
+                    || height.is_some() && matches!(child.flex_basis, Length::Percent(_))
+                    || matches!(child.height, Length::Px(_))
+                    || height.is_some() && matches!(child.height, Length::Percent(_));
+                let natural = if definite_basis {
+                    None
+                } else {
+                    Some(self.fragment(id, width, child_width, depth))
+                };
+                let metrics = self.flex_metrics(
+                    id,
+                    width,
+                    height,
+                    true,
+                    natural.as_ref().map(|f| f.size.height).unwrap_or(0.0),
+                );
+                prepared.push((id, margin, child_width, metrics, natural));
+            }
+            let gaps = gap * prepared.len().saturating_sub(1) as f32;
+            let margins: f32 = prepared.iter().map(|(_, m, _, _, _)| m.vertical()).sum();
+            let main = height.unwrap_or_else(|| {
+                extent(
+                    prepared
+                        .iter()
+                        .map(|(_, _, _, m, _)| m.hypothetical())
+                        .sum::<f32>()
+                        + margins
+                        + gaps,
+                )
+            });
+            let metrics: Vec<_> = prepared.iter().map(|(_, _, _, m, _)| *m).collect();
+            let targets =
+                resolve_flexible_lengths(&metrics, main - margins - gaps, &mut self.flex_work_left);
+            let free = main - margins - gaps - targets.iter().sum::<f32>();
+            let auto_count: usize = prepared
+                .iter()
+                .map(|(id, _, _, _, _)| {
+                    let m = self.style(*id).margin;
+                    usize::from(matches!(m.top, Length::Auto))
+                        + usize::from(matches!(m.bottom, Length::Auto))
+                })
+                .sum();
+            let auto_space = if auto_count > 0 {
+                free.max(0.0) / auto_count as f32
+            } else {
+                0.0
+            };
+            let (offset, between) = distribution(
+                &style.justify_content,
+                if auto_count > 0 { free.min(0.0) } else { free },
+                prepared.len(),
+            );
+            let mut cursor = offset;
+            for ((id, mut margin, child_width, _, natural), target) in
+                prepared.into_iter().zip(targets)
+            {
+                let child = self.style(id);
+                if matches!(child.margin.top, Length::Auto) {
+                    margin.top = auto_space;
+                }
+                if matches!(child.margin.bottom, Length::Auto) {
+                    margin.bottom = auto_space;
+                }
+                let align = flex_alignment(child, style);
+                let cross = width - child_width - margin.horizontal();
+                let dx = cross_offset(
+                    align,
+                    cross,
+                    matches!(child.margin.left, Length::Auto),
+                    matches!(child.margin.right, Length::Auto),
+                );
+                let main_pos = if reverse {
+                    main - cursor - margin.bottom - target
+                } else {
+                    cursor + margin.top
+                };
+                let fragment = match natural {
+                    Some(fragment) if (fragment.size.height - target).abs() < 0.001 => fragment,
+                    _ => self.fragment_sized(id, width, child_width, Some(target), depth),
+                };
+                self.append_fragment(fragment, x + margin.left + dx, y + main_pos);
+                cursor += target + margin.vertical() + gap + between;
+            }
+            return main;
+        }
+        let mut rows = Vec::new();
         let mut row = Vec::new();
         let mut used = 0.0;
-        for (id, base) in items.into_iter().zip(bases) {
-            let outer = base + self.margins(id, width).horizontal();
+        for id in items {
+            let metrics = self.flex_metrics(
+                id,
+                width,
+                Some(width),
+                false,
+                self.intrinsic_width(id, width),
+            );
+            let margin = self.margins(id, width);
+            let outer = metrics.hypothetical() + margin.horizontal();
             if style.flex_wrap != "nowrap" && !row.is_empty() && used + gap + outer > width {
                 rows.push(std::mem::take(&mut row));
                 used = 0.0;
@@ -1050,79 +1236,143 @@ impl Engine<'_> {
             if !row.is_empty() {
                 used += gap;
             }
-            row.push((id, base));
+            row.push((id, metrics, margin));
             used += outer;
         }
         if !row.is_empty() {
             rows.push(row);
         }
-        if style.flex_wrap == "wrap-reverse" {
-            rows.reverse();
-        }
-        let mut cursor_y = y;
-        for (row_index, row) in rows.into_iter().enumerate() {
-            if row_index > 0 {
-                cursor_y += gap;
-            }
+        let single_line = style.flex_wrap == "nowrap";
+        let mut laid_out = Vec::new();
+        for row in rows {
             let gaps = gap * row.len().saturating_sub(1) as f32;
-            let total = row
-                .iter()
-                .map(|(id, base)| base + self.margins(*id, width).horizontal())
-                .sum::<f32>()
-                + gaps;
-            let free = width - total;
-            let grow: f32 = row
-                .iter()
-                .map(|(id, _)| extent(self.style(*id).flex_grow))
-                .sum();
-            let shrink: f32 = row
-                .iter()
-                .map(|(id, base)| extent(self.style(*id).flex_shrink) * base)
-                .sum();
+            let margins: f32 = row.iter().map(|(_, _, m)| m.horizontal()).sum();
+            let metrics: Vec<_> = row.iter().map(|(_, m, _)| *m).collect();
+            let targets = resolve_flexible_lengths(
+                &metrics,
+                width - margins - gaps,
+                &mut self.flex_work_left,
+            );
             let mut fragments = Vec::new();
-            let mut row_height = 0.0f32;
-            let mut row_width = gaps;
-            for (id, base) in row {
+            let mut row_height = if single_line {
+                height.unwrap_or(0.0)
+            } else {
+                0.0
+            };
+            for ((id, _, margin), target) in row.into_iter().zip(targets) {
                 let child = self.style(id);
-                let adjustment = if free > 0.0 && grow > 0.0 {
-                    free * extent(child.flex_grow) / grow
-                } else if free < 0.0 && shrink > 0.0 {
-                    free * extent(child.flex_shrink) * base / shrink
-                } else {
-                    0.0
-                };
-                let margin = self.margins(id, width);
-                let fragment = self.fragment(id, width, (base + adjustment).max(0.0), depth);
-                row_height = row_height.max(fragment.size.height + margin.vertical());
-                row_width += fragment.size.width + margin.horizontal();
+                let stretched = (single_line
+                    && flex_alignment(child, style) == "stretch"
+                    && matches!(child.height, Length::Auto)
+                    && !matches!(child.margin.top, Length::Auto)
+                    && !matches!(child.margin.bottom, Length::Auto))
+                .then_some(height)
+                .flatten()
+                .map(|h| {
+                    let (min, max) = self.flex_limits(id, width, h, true);
+                    (h - margin.vertical()).clamp(min, max)
+                });
+                let fragment = self.fragment_sized(id, width, target, stretched, depth);
+                if !single_line || height.is_none() {
+                    row_height = row_height.max(fragment.size.height + margin.vertical());
+                }
                 fragments.push((id, fragment, margin));
             }
-            let remaining = (width - row_width).max(0.0);
-            let (offset, between) =
-                distribution(&style.justify_content, remaining, fragments.len());
-            let mut cursor_x = x + offset;
-            for (id, mut fragment, margin) in fragments {
-                let align = style.align_items.as_str();
-                let free_cross = (row_height - fragment.size.height - margin.vertical()).max(0.0);
-                let y_offset = match align {
-                    "center" => free_cross * 0.5,
-                    "end" | "flex-end" => free_cross,
-                    _ => 0.0,
-                };
-                if align == "stretch" && matches!(self.style(id).height, Length::Auto) {
-                    stretch_fragment(&mut fragment, row_height - margin.vertical());
-                }
-                let advance = fragment.size.width + margin.horizontal();
-                self.append_fragment(
-                    fragment,
-                    cursor_x + margin.left,
-                    cursor_y + margin.top + y_offset,
-                );
-                cursor_x += advance + gap + between;
-            }
-            cursor_y += row_height;
+            laid_out.push((row_height, fragments));
         }
-        extent(cursor_y - y)
+        let natural_height = extent(
+            laid_out.iter().map(|(height, _)| *height).sum::<f32>()
+                + gap * laid_out.len().saturating_sub(1) as f32,
+        );
+        let cross_size = height.unwrap_or(natural_height);
+        let mut cross_cursor = 0.0;
+        for (row_height, fragments) in laid_out {
+            let row_y = if style.flex_wrap == "wrap-reverse" {
+                cross_size - cross_cursor - row_height
+            } else {
+                cross_cursor
+            };
+            let free = width
+                - fragments
+                    .iter()
+                    .map(|(_, f, m)| f.size.width + m.horizontal())
+                    .sum::<f32>()
+                - gap * fragments.len().saturating_sub(1) as f32;
+            let auto_count: usize = fragments
+                .iter()
+                .map(|(id, _, _)| {
+                    let m = self.style(*id).margin;
+                    usize::from(matches!(m.left, Length::Auto))
+                        + usize::from(matches!(m.right, Length::Auto))
+                })
+                .sum();
+            let auto_space = if auto_count > 0 {
+                free.max(0.0) / auto_count as f32
+            } else {
+                0.0
+            };
+            let (offset, between) = distribution(
+                &style.justify_content,
+                if auto_count > 0 { free.min(0.0) } else { free },
+                fragments.len(),
+            );
+            let mut cursor = offset;
+            for (id, mut fragment, mut margin) in fragments {
+                let child = self.style(id);
+                let align = flex_alignment(child, style);
+                if matches!(child.margin.left, Length::Auto) {
+                    margin.left = auto_space;
+                }
+                if matches!(child.margin.right, Length::Auto) {
+                    margin.right = auto_space;
+                }
+                let auto_top = matches!(child.margin.top, Length::Auto);
+                let auto_bottom = matches!(child.margin.bottom, Length::Auto);
+                if align == "stretch"
+                    && matches!(child.height, Length::Auto)
+                    && !auto_top
+                    && !auto_bottom
+                {
+                    let (min, max) = self.flex_limits(id, width, row_height, true);
+                    let target = (row_height - margin.vertical()).clamp(min, max);
+                    if (target - fragment.size.height).abs() > 0.001 {
+                        // Relayout restores descendant clipping and gives nested flexboxes their used size.
+                        fragment = self.fragment_sized(
+                            id,
+                            width,
+                            fragment.size.width,
+                            Some(target),
+                            depth,
+                        );
+                    }
+                }
+                let child = self.style(id);
+                let mut align = flex_alignment(child, style);
+                if style.flex_wrap == "wrap-reverse" {
+                    align = match align {
+                        "flex-start" | "stretch" | "normal" => "flex-end",
+                        "flex-end" => "flex-start",
+                        _ => align,
+                    };
+                }
+                let dy = cross_offset(
+                    align,
+                    row_height - fragment.size.height - margin.vertical(),
+                    auto_top,
+                    auto_bottom,
+                );
+                let main_pos = if reverse {
+                    width - cursor - margin.right - fragment.size.width
+                } else {
+                    cursor + margin.left
+                };
+                let advance = fragment.size.width + margin.horizontal() + gap + between;
+                self.append_fragment(fragment, x + main_pos, y + row_y + margin.top + dy);
+                cursor += advance;
+            }
+            cross_cursor += row_height + gap;
+        }
+        natural_height
     }
 
     fn layout_grid(
@@ -1445,8 +1695,8 @@ impl Engine<'_> {
                 }
                 match self.doc.nodes.get(id).map(|node| &node.kind) {
                     Some(NodeKind::Text(text)) => !text.trim().is_empty(),
-                    Some(_) => true,
-                    None => false,
+                    Some(NodeKind::Element(_)) => true,
+                    _ => false,
                 }
             })
             .collect()
@@ -1824,13 +2074,151 @@ fn collapsed_margin(previous: f32, next: f32) -> f32 {
     previous.max(next).max(0.0) + previous.min(next).min(0.0)
 }
 
+#[derive(Clone, Copy)]
+struct FlexSize {
+    base: f32,
+    inner: f32,
+    min: f32,
+    max: f32,
+    grow: f32,
+    shrink: f32,
+}
+
+impl FlexSize {
+    fn hypothetical(self) -> f32 {
+        self.base.clamp(self.min, self.max)
+    }
+}
+
+/// CSS Flexbox §9.7. The shared work budget also bounds adversarial sequences
+/// in which only one item freezes per iteration. All arithmetic sums use f64.
+fn resolve_flexible_lengths(items: &[FlexSize], available: f32, work: &mut usize) -> Vec<f32> {
+    let available = f64::from(available);
+    let grow = items
+        .iter()
+        .map(|item| f64::from(item.hypothetical()))
+        .sum::<f64>()
+        < available;
+    let factor = |item: &FlexSize| f64::from(if grow { item.grow } else { item.shrink });
+    let mut targets: Vec<f64> = items.iter().map(|item| f64::from(item.base)).collect();
+    let mut frozen: Vec<bool> = items
+        .iter()
+        .map(|item| {
+            factor(item) == 0.0
+                || if grow {
+                    item.base > item.hypothetical()
+                } else {
+                    item.base < item.hypothetical()
+                }
+        })
+        .collect();
+    for ((target, frozen), item) in targets.iter_mut().zip(&frozen).zip(items) {
+        if *frozen {
+            *target = f64::from(item.hypothetical());
+        }
+    }
+    let initial = available - targets.iter().sum::<f64>();
+    loop {
+        if frozen.iter().all(|v| *v) {
+            break;
+        }
+        if *work < items.len() {
+            break;
+        }
+        *work -= items.len();
+        let mut remaining = available;
+        let mut factors = 0.0;
+        let mut scaled = 0.0;
+        for (index, item) in items.iter().enumerate() {
+            remaining -= if frozen[index] {
+                targets[index]
+            } else {
+                f64::from(item.base)
+            };
+            if !frozen[index] {
+                factors += factor(item);
+                scaled += factor(item) * f64::from(item.inner);
+            }
+        }
+        if factors < 1.0 && (initial * factors).abs() < remaining.abs() {
+            remaining = initial * factors;
+        }
+        let mut violations = vec![0.0; items.len()];
+        let mut total = 0.0;
+        for (index, item) in items.iter().enumerate() {
+            if frozen[index] {
+                continue;
+            }
+            let adjustment = if grow && factors > 0.0 {
+                remaining * factor(item) / factors
+            } else if !grow && scaled > 0.0 {
+                -remaining.abs() * factor(item) * f64::from(item.inner) / scaled
+            } else {
+                0.0
+            };
+            let raw = f64::from(item.base) + adjustment;
+            targets[index] = raw.clamp(f64::from(item.min), f64::from(item.max));
+            violations[index] = targets[index] - raw;
+            total += violations[index];
+        }
+        let mut progress = false;
+        for index in 0..items.len() {
+            if !frozen[index]
+                && (total.abs() < 1e-7
+                    || total > 0.0 && violations[index] > 0.0
+                    || total < 0.0 && violations[index] < 0.0)
+            {
+                frozen[index] = true;
+                progress = true;
+            }
+        }
+        if !progress {
+            break;
+        }
+    }
+    targets
+        .into_iter()
+        .zip(items)
+        .map(|(target, item)| (target as f32).clamp(item.min, item.max))
+        .collect()
+}
+
+fn flex_alignment<'a>(child: &'a ComputedStyle, parent: &'a ComputedStyle) -> &'a str {
+    let align = if child.align_self == "auto" {
+        parent.align_items.as_str()
+    } else {
+        child.align_self.as_str()
+    };
+    if align == "normal" { "stretch" } else { align }
+}
+
+fn cross_offset(align: &str, free: f32, start_auto: bool, end_auto: bool) -> f32 {
+    if start_auto || end_auto {
+        return if start_auto {
+            free.max(0.0) / if end_auto { 2.0 } else { 1.0 }
+        } else {
+            0.0
+        };
+    }
+    match align {
+        "center" => free * 0.5,
+        "end" | "self-end" | "flex-end" => free,
+        _ => 0.0,
+    }
+}
+
 fn distribution(justify: &str, free: f32, count: usize) -> (f32, f32) {
     match justify {
         "center" => (free * 0.5, 0.0),
         "end" | "flex-end" => (free, 0.0),
-        "space-between" if count > 1 => (0.0, free / (count - 1) as f32),
-        "space-around" if count > 0 => (free / count as f32 / 2.0, free / count as f32),
-        "space-evenly" if count > 0 => (free / (count + 1) as f32, free / (count + 1) as f32),
+        "space-between" if count > 1 => (0.0, free.max(0.0) / (count - 1) as f32),
+        "space-around" if count > 0 && free >= 0.0 => {
+            (free / count as f32 / 2.0, free / count as f32)
+        }
+        "space-evenly" if count > 0 && free >= 0.0 => {
+            (free / (count + 1) as f32, free / (count + 1) as f32)
+        }
+        "space-around" | "space-evenly" => (free * 0.5, 0.0),
         _ => (0.0, 0.0),
     }
 }
@@ -1923,6 +2311,140 @@ mod tests {
             .find(|hit| hit.node == node)
             .expect("element is laid out")
             .rect
+    }
+
+    #[test]
+    fn flex_grow_redistributes_after_maximum_freezes() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:flex;width:300px}i{flex:1 1 50px;height:20px}#a{max-width:60px}</style><main><i id=a></i><i id=b></i><i id=c></i></main>",
+            400.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a").width, 60.0);
+        assert_eq!(bounds(&doc, &result, "#b").width, 120.0);
+        assert_eq!(bounds(&doc, &result, "#c").x, 180.0);
+    }
+
+    #[test]
+    fn flex_shrink_redistributes_after_minimum_freezes() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:flex;width:180px}i{width:100px;height:20px;min-width:0}#a{min-width:90px}</style><main><i id=a></i><i id=b></i><i id=c></i></main>",
+            400.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a").width, 90.0);
+        assert_eq!(bounds(&doc, &result, "#b").width, 45.0);
+        assert_eq!(bounds(&doc, &result, "#c").x, 135.0);
+    }
+
+    #[test]
+    fn flex_shrink_weights_use_inner_basis_without_padding() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:flex;width:240px}i{height:20px;min-width:0}#a{width:100px;padding:0 20px}#b{width:200px}</style><main><i id=a></i><i id=b></i></main>",
+            400.0,
+        );
+        let a = bounds(&doc, &result, "#a");
+        let b = bounds(&doc, &result, "#b");
+        assert!((a.width - 106.66667).abs() < 0.001, "{a:?}");
+        assert!((b.width - 133.33333).abs() < 0.001, "{b:?}");
+        assert!((b.x + b.width - 240.0).abs() < 0.001);
+    }
+
+    #[test]
+    fn fractional_flex_factors_can_leave_free_space_or_overflow() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:flex;width:200px}i{flex:.25 1 0px;height:20px}section{display:flex;width:100px}b{width:100px;height:20px;flex-shrink:.25;min-width:0}</style><main><i id=a></i><i id=b></i></main><section><b id=c></b><b id=d></b></section>",
+            400.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a").width, 50.0);
+        assert_eq!(bounds(&doc, &result, "#b").x, 50.0);
+        assert_eq!(bounds(&doc, &result, "#c").width, 75.0);
+        assert_eq!(bounds(&doc, &result, "#d").x, 75.0);
+    }
+
+    #[test]
+    fn flex_reverse_starts_at_main_end_and_preserves_paint_order() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:flex;flex-direction:row-reverse;width:300px;gap:10px}i{width:40px;height:20px}#b{width:60px}section{display:flex;flex-direction:row-reverse;width:200px}b{width:80px;height:20px}#d{margin-right:-40px}</style><main><i id=a></i><i id=b></i></main><section><b id=c></b><b id=d></b></section>",
+            400.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a").x, 260.0);
+        assert_eq!(bounds(&doc, &result, "#b").x, 190.0);
+        assert_eq!(result.hit_test(130.0, 25.0), doc.query_selector("#d"));
+    }
+
+    #[test]
+    fn flex_order_is_stable_and_does_not_mutate_dom_order() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:flex;gap:10px}i{width:40px;height:20px}#b{order:-1}#c{order:1}</style><main><i id=a></i><!-- no flex item --><i id=b></i><i id=c></i><i id=d></i></main>",
+            400.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#b").x, 0.0);
+        assert_eq!(bounds(&doc, &result, "#a").x, 50.0);
+        assert_eq!(bounds(&doc, &result, "#d").x, 100.0);
+        assert_eq!(bounds(&doc, &result, "#c").x, 150.0);
+        assert!(doc.query_selector("#a").unwrap() < doc.query_selector("#b").unwrap());
+        assert!(result.hit_regions.iter().all(|h| !matches!(
+            doc.nodes[h.node].kind,
+            NodeKind::Comment(_) | NodeKind::Doctype(_)
+        )));
+    }
+
+    #[test]
+    fn flex_column_reverse_resolves_growth_and_nested_definite_height() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:flex;flex-direction:column-reverse;width:100px;height:300px}section{display:flex;flex-direction:column;flex:1 1 50px;min-height:0}#a{max-height:80px}i{flex:1 1 0px;min-height:0}</style><main><section id=a><i id=inner></i></section><section id=b></section></main>",
+            400.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a").height, 80.0);
+        assert_eq!(bounds(&doc, &result, "#a").y, 220.0);
+        assert_eq!(bounds(&doc, &result, "#b").height, 220.0);
+        assert_eq!(bounds(&doc, &result, "#b").y, 0.0);
+        assert_eq!(bounds(&doc, &result, "#inner").height, 80.0);
+    }
+
+    #[test]
+    fn flex_align_self_and_cross_axis_limits_use_container_height() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:flex;height:100px}i{width:50px}#a{height:20px;align-self:center}#b{max-height:40px}#c{height:10px;align-self:flex-end}#d{height:20px;margin-top:auto;margin-bottom:auto}</style><main><i id=a></i><i id=b></i><i id=c></i><i id=d></i></main>",
+            400.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a").y, 40.0);
+        assert_eq!(bounds(&doc, &result, "#b").height, 40.0);
+        assert_eq!(bounds(&doc, &result, "#c").y, 90.0);
+        assert_eq!(bounds(&doc, &result, "#d").y, 40.0);
+    }
+
+    #[test]
+    fn flex_wrap_uses_hypothetical_size_and_auto_margins_use_remainder() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:flex;flex-wrap:wrap;width:100px;gap:10px}i{flex-basis:0;min-width:80px;height:20px}section{display:flex;width:200px}b{width:40px;height:20px}#d{margin-left:auto}</style><main><i id=a></i><i id=b></i></main><section><b id=c></b><b id=d></b></section>",
+            400.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a").width, 80.0);
+        assert_eq!(bounds(&doc, &result, "#b").y, 30.0);
+        assert_eq!(bounds(&doc, &result, "#d").x, 160.0);
+    }
+
+    #[test]
+    fn flexible_length_solver_is_bounded_even_with_no_work_left() {
+        let items = vec![
+            FlexSize {
+                base: 100.0,
+                inner: 100.0,
+                min: 20.0,
+                max: 80.0,
+                grow: 1.0,
+                shrink: 1.0
+            };
+            1000
+        ];
+        let mut work = 0;
+        let sizes = resolve_flexible_lengths(&items, 20_000.0, &mut work);
+        assert!(
+            sizes
+                .iter()
+                .all(|size| size.is_finite() && *size >= 20.0 && *size <= 80.0)
+        );
+        assert_eq!(work, 0);
     }
 
     #[test]

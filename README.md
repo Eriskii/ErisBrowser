@@ -10,6 +10,7 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 ./run.sh
 ./run.sh https://example.com
 ./run.sh ./examples/forms.html
+./run.sh ./examples/standards.html
 ```
 
 The launcher builds the release executable and exposes installed desktop libraries on NixOS. Rust, Cargo, Python 3, and a Wayland or X11 desktop are required for this launcher on Linux. Fonts are bundled. On a conventional desktop with the shared libraries available:
@@ -58,12 +59,14 @@ cargo test --locked
 cargo test --locked --test network -- --include-ignored
 cargo build --locked --release
 python3 tools/reftest.py --binary target/release/eris-browser
+python3 tools/html_conformance.py --baseline tests/conformance/html-tree-current.json
+python3 -m unittest discover -s tools -p 'test_*.py'
 cargo run --locked --release --bin eris-stress -- 5000
 ```
 
 Network integration tests explicitly opt in because they bind temporary loopback HTTP servers. They require no public network. Other tests cover parser recovery, selectors and cascade, box layout, DOM/script interaction, script exhaustion, file scopes, geometry and raster limits. Reference tests compare independently constructed pages pixel-for-pixel with this renderer. They are a small self-authored suite, not a claim to pass the Web Platform Tests. The deterministic stress harness mutates HTML/CSS, script, and SVG seeds and checks bounded-output invariants; it is smoke fuzzing, not coverage-guided fuzzing.
 
-The initial implementation's [validation record](docs/VALIDATION.md) lists the observed results and what they do not establish.
+The [validation record](docs/VALIDATION.md) lists observed results and their limits. A pinned upstream HTML tree corpus now provides exact-tree comparisons and a regression baseline; [its documentation](tests/conformance/README.md) records all mismatches, unsupported modes, and untested semantics. It is not a full WPT runner or platform-wide pass rate.
 
 ## Implementation
 
@@ -82,4 +85,4 @@ The initial implementation's [validation record](docs/VALIDATION.md) lists the o
 
 Infrastructure dependencies provide TLS/HTTP (`ureq`/`rustls`), URLs (`url`), character encodings, font outline rasterization (`ab_glyph`), image codecs (`image`), native clipboard access (`arboard`), window events (`winit`), and a pixel surface (`softbuffer`). These are not web layout or script engines. Their transitive dependencies remain part of the security surface. The source forbids application-level `unsafe` Rust; dependencies can contain unsafe code.
 
-Fonts are DejaVu; redistribution notices are in [assets/FONTS-LICENSE.txt](assets/FONTS-LICENSE.txt). Project code is MIT licensed.
+Fonts are DejaVu; redistribution notices are in [assets/FONTS-LICENSE.txt](assets/FONTS-LICENSE.txt). Project code is MIT licensed. Vendored WPT test data retains its [upstream BSD license](tests/upstream/wpt-html/LICENSE.md).

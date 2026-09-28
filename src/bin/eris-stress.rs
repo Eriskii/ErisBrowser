@@ -27,6 +27,7 @@ const DEFAULT_SEED: u64 = 0xe215_2026;
 const SCRIPT_DOCUMENT: &str = "<!doctype html><body><button id='go'>Go</button><div id='out'>Initial</div><input id='field' value='test'></body>";
 
 const HTML_SEEDS: &[&str] = &[
+    "<!DOCTYPE html PUBLIC 'example' 'system'><!--before--><?eris check?><table>fostered<tr><td>one<td>two</table><noscript><p>fallback</p></noscript><!--after-->",
     "<style>body{margin:0}.clip{overflow:hidden;width:100px;height:50px;padding:3px;background:#eee}.wide{width:240px;height:90px;background:#d93}.inner{overflow:clip;width:40px;height:20px}</style><div class=clip><div class=wide><div class=inner><a href='/next'>Clipped text content</a></div></div></div>",
     "<!doctype html><style>body{margin:8px;background:#eef}h1{font-size:24px}p{color:#135;line-height:1.4}</style><h1>Render 🦀</h1><p>Hello <strong>bold</strong> café &amp; 日本語</p>",
     "<style>.row{display:flex;gap:4px;flex-wrap:wrap}.row div{padding:6px;border:1px solid #963;width:44px}</style><main class=row><div>first</div><div>second</div><div>third</div></main>",
@@ -38,6 +39,7 @@ const HTML_SEEDS: &[&str] = &[
     "<style>.a{position:relative;left:-2px;top:3px;width:90%;max-width:150px;min-height:20px}.b{font-size:125%;vertical-align:middle}a[href^='https']{color:rebeccapurple}</style><p class=a>Text <span class=b>large</span> <a href=https://example.com>link</a></p><img width=16 height=16 alt=missing>",
 ];
 const SCRIPT_SEEDS: &[&str] = &[
+    r#"const decoded = JSON.parse('{"message":"héllo","values":[1,2,null]}', function(key,value){if(key==='message'){return value.toUpperCase();}return value;}); document.getElementById('out').textContent=JSON.stringify(decoded,null,2);"#,
     "let value = ''; try { throw {name:'test', number:4}; } catch (error) { value = error.name; } finally { value += '-done'; } document.getElementById('out').textContent = value;",
     "let sum = 0; for (let i = 0; i < 6; i++) { sum += i; } document.getElementById('out').textContent = String(sum);",
     "let count = 0; document.getElementById('go').addEventListener('click', () => { count++; document.getElementById('out').textContent = count; });",

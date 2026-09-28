@@ -62,6 +62,24 @@
       "description": "A matching screen-width media rule selects a custom property used by the background shorthand.",
       "test": "media-custom-properties.html",
       "reference": "media-custom-properties-ref.html"
+    },
+    {
+      "name": "flex-min-max-freezing",
+      "description": "Min/max constraints redistribute growth and shrinkage; scaled shrink excludes padding.",
+      "test": "flex-min-max-freezing.html",
+      "reference": "flex-min-max-freezing-ref.html"
+    },
+    {
+      "name": "flex-reverse-order-alignment",
+      "description": "Row reversal starts at the right edge; order is stable and align-self overrides container alignment.",
+      "test": "flex-reverse-order-alignment.html",
+      "reference": "flex-reverse-order-alignment-ref.html"
+    },
+    {
+      "name": "flex-column-reverse-freezing",
+      "description": "Column reversal places constrained grown items from the bottom and applies per-item cross alignment.",
+      "test": "flex-column-reverse-freezing.html",
+      "reference": "flex-column-reverse-freezing-ref.html"
     }
   ]
 }

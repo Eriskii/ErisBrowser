@@ -13,10 +13,20 @@ pub struct Element {
     pub attrs: BTreeMap<String, String>,
 }
 #[derive(Debug, Clone)]
+pub struct Doctype {
+    pub name: String,
+    pub public_id: Option<String>,
+    pub system_id: Option<String>,
+    pub force_quirks: bool,
+}
+#[derive(Debug, Clone)]
 pub enum NodeKind {
     Document,
     Element(Element),
     Text(String),
+    Comment(String),
+    Doctype(Doctype),
+    ProcessingInstruction { target: String, data: String },
 }
 #[derive(Debug, Clone)]
 pub struct Node {
@@ -29,6 +39,7 @@ pub struct Document {
     pub nodes: Vec<Node>,
     pub root: NodeId,
     retained_bytes: usize,
+    scripting_enabled: bool,
 }
 
 impl Default for Document {
@@ -39,6 +50,12 @@ impl Default for Document {
 impl Document {
     pub fn parse(source: &str) -> Self {
         parse(source)
+    }
+    pub fn parse_with_scripting(source: &str, scripting: bool) -> Self {
+        parse_with_scripting(source, scripting)
+    }
+    pub fn scripting_enabled(&self) -> bool {
+        self.scripting_enabled
     }
     pub fn attr(&self, id: NodeId, name: &str) -> Option<&str> {
         match &self.nodes.get(id)?.kind {
@@ -64,26 +81,40 @@ impl Document {
                 continue;
             };
             match &node.kind {
-                NodeKind::Text(s) => {
+                NodeKind::ProcessingInstruction { data, .. } if n == id => {
+                    let left = MAX_TEXT.saturating_sub(result.len());
+                    result.push_str(&data[..floor_boundary(data, left.min(data.len()))]);
+                }
+                NodeKind::Text(s) | NodeKind::Comment(s)
+                    if n == id || matches!(node.kind, NodeKind::Text(_)) =>
+                {
                     let left = MAX_TEXT.saturating_sub(result.len());
                     result.push_str(&s[..floor_boundary(s, left.min(s.len()))]);
                 }
-                _ => pending.extend(node.children.iter().rev().copied()),
+                NodeKind::Document | NodeKind::Element(_) => {
+                    pending.extend(node.children.iter().rev().copied())
+                }
+                _ => {}
             }
         }
         result
     }
     pub fn set_text_content(&mut self, id: NodeId, text: &str) {
-        if id >= self.nodes.len() {
+        if id >= self.nodes.len() || matches!(self.nodes[id].kind, NodeKind::Doctype(_)) {
             return;
         }
         let old_bytes = match &self.nodes[id].kind {
-            NodeKind::Text(t) => t.len(),
+            NodeKind::Text(t)
+            | NodeKind::Comment(t)
+            | NodeKind::ProcessingInstruction { data: t, .. } => t.len(),
             _ => 0,
         };
         let available = MAX_DOM_BYTES.saturating_sub(self.retained_bytes.saturating_sub(old_bytes));
         let text = &text[..floor_boundary(text, text.len().min(MAX_TEXT).min(available))];
-        if let NodeKind::Text(t) = &mut self.nodes[id].kind {
+        if let NodeKind::Text(t)
+        | NodeKind::Comment(t)
+        | NodeKind::ProcessingInstruction { data: t, .. } = &mut self.nodes[id].kind
+        {
             self.retained_bytes = self.retained_bytes.saturating_sub(t.len()) + text.len();
             *t = text.to_owned();
             return;
@@ -131,6 +162,12 @@ impl Document {
         id
     }
     pub fn create_text_node(&mut self, text: &str) -> NodeId {
+        self.create_character_data(text, false)
+    }
+    pub fn create_comment(&mut self, text: &str) -> NodeId {
+        self.create_character_data(text, true)
+    }
+    fn create_character_data(&mut self, text: &str, comment: bool) -> NodeId {
         if self.nodes.len() >= MAX_NODES {
             return self.root;
         }
@@ -141,7 +178,55 @@ impl Document {
         self.nodes.push(Node {
             parent: None,
             children: vec![],
-            kind: NodeKind::Text(text.into()),
+            kind: if comment {
+                NodeKind::Comment(text.into())
+            } else {
+                NodeKind::Text(text.into())
+            },
+        });
+        id
+    }
+    pub fn create_doctype(&mut self, mut doctype: Doctype) -> NodeId {
+        if self.nodes.len() >= MAX_NODES {
+            return self.root;
+        }
+        let mut available = MAX_DOM_BYTES
+            .saturating_sub(self.retained_bytes)
+            .min(MAX_TEXT);
+        for value in std::iter::once(&mut doctype.name)
+            .chain(doctype.public_id.iter_mut())
+            .chain(doctype.system_id.iter_mut())
+        {
+            value.truncate(floor_boundary(value, value.len().min(available)));
+            available -= value.len();
+            self.retained_bytes += value.len();
+        }
+        let id = self.nodes.len();
+        self.nodes.push(Node {
+            parent: None,
+            children: vec![],
+            kind: NodeKind::Doctype(doctype),
+        });
+        id
+    }
+    pub fn create_processing_instruction(&mut self, target: &str, data: &str) -> NodeId {
+        if self.nodes.len() >= MAX_NODES {
+            return self.root;
+        }
+        let available = MAX_DOM_BYTES
+            .saturating_sub(self.retained_bytes)
+            .min(MAX_TEXT);
+        let target = &target[..floor_boundary(target, target.len().min(available))];
+        let data = &data[..floor_boundary(data, data.len().min(available - target.len()))];
+        self.retained_bytes += target.len() + data.len();
+        let id = self.nodes.len();
+        self.nodes.push(Node {
+            parent: None,
+            children: vec![],
+            kind: NodeKind::ProcessingInstruction {
+                target: target.into(),
+                data: data.into(),
+            },
         });
         id
     }
@@ -150,7 +235,12 @@ impl Document {
             || child >= self.nodes.len()
             || child == self.root
             || parent == child
-            || matches!(self.nodes[parent].kind, NodeKind::Text(_))
+            || !matches!(
+                self.nodes[parent].kind,
+                NodeKind::Document | NodeKind::Element(_)
+            )
+            || matches!(self.nodes[child].kind, NodeKind::Doctype(_))
+                && !matches!(self.nodes[parent].kind, NodeKind::Document)
         {
             return;
         }
@@ -296,21 +386,56 @@ impl Document {
                 NodeKind::Document => {
                     pending.extend(node.children.iter().rev().map(|id| (*id, false)))
                 }
+                NodeKind::Comment(text) => {
+                    push_serialized(&mut out, "<!--");
+                    push_serialized(&mut out, text);
+                    push_serialized(&mut out, "-->");
+                }
+                NodeKind::Doctype(doctype) => {
+                    push_serialized(&mut out, "<!DOCTYPE ");
+                    push_serialized(&mut out, &doctype.name);
+                    if let Some(public) = &doctype.public_id {
+                        push_serialized(&mut out, " PUBLIC \"");
+                        push_serialized(&mut out, public);
+                        push_serialized(&mut out, "\"");
+                    }
+                    if let Some(system) = &doctype.system_id {
+                        push_serialized(
+                            &mut out,
+                            if doctype.public_id.is_some() {
+                                " \""
+                            } else {
+                                " SYSTEM \""
+                            },
+                        );
+                        push_serialized(&mut out, system);
+                        push_serialized(&mut out, "\"");
+                    }
+                    push_serialized(&mut out, ">");
+                }
+                NodeKind::ProcessingInstruction { target, data } => {
+                    push_serialized(&mut out, "<?");
+                    push_serialized(&mut out, target);
+                    push_serialized(&mut out, " ");
+                    push_serialized(&mut out, data);
+                    push_serialized(&mut out, ">");
+                }
                 NodeKind::Text(text) => {
                     if node
                         .parent
                         .and_then(|parent| self.tag(parent))
                         .is_some_and(|tag| {
-                            matches!(
-                                tag,
-                                "script"
-                                    | "style"
-                                    | "xmp"
-                                    | "iframe"
-                                    | "noembed"
-                                    | "noframes"
-                                    | "plaintext"
-                            )
+                            tag == "noscript" && self.scripting_enabled
+                                || matches!(
+                                    tag,
+                                    "script"
+                                        | "style"
+                                        | "xmp"
+                                        | "iframe"
+                                        | "noembed"
+                                        | "noframes"
+                                        | "plaintext"
+                                )
                         })
                     {
                         push_serialized(&mut out, text);
@@ -354,14 +479,15 @@ impl Document {
         if text.is_empty() {
             return;
         }
-        self.retained_bytes += text.len();
         if let Some(last) = self.nodes[parent].children.last().copied()
             && let NodeKind::Text(s) = &mut self.nodes[last].kind
         {
+            self.retained_bytes += text.len();
             s.push_str(&text);
             return;
         }
         if self.nodes.len() < MAX_NODES {
+            self.retained_bytes += text.len();
             let id = self.nodes.len();
             self.nodes.push(Node {
                 parent: Some(parent),
@@ -421,21 +547,6 @@ fn is_void(tag: &str) -> bool {
             | "wbr"
     )
 }
-fn is_head(tag: &str) -> bool {
-    matches!(
-        tag,
-        "base"
-            | "basefont"
-            | "bgsound"
-            | "link"
-            | "meta"
-            | "title"
-            | "style"
-            | "script"
-            | "noscript"
-            | "template"
-    )
-}
 fn closes_p(tag: &str) -> bool {
     matches!(
         tag,
@@ -468,103 +579,196 @@ fn closes_p(tag: &str) -> bool {
     )
 }
 
-pub fn parse(source: &str) -> Document {
-    let source = &source[..floor_boundary(source, source.len().min(MAX_TEXT))];
-    let mut doc = Document {
-        nodes: vec![Node {
-            parent: None,
-            children: vec![],
-            kind: NodeKind::Document,
-        }],
-        root: 0,
-        retained_bytes: 0,
-    };
-    let html = doc.create_element("html");
-    doc.append_child(0, html);
-    let head = doc.create_element("head");
-    doc.append_child(html, head);
-    let body = doc.create_element("body");
-    doc.append_child(html, body);
-    let mut stack = vec![html];
-    let mut body_started = false;
-    let mut in_head = false;
-    let bytes = source.as_bytes();
-    let mut i = 0;
-    while i < bytes.len() && doc.nodes.len() < MAX_NODES {
-        if bytes[i] != b'<' {
-            let start = i;
-            while i < bytes.len() && bytes[i] != b'<' {
-                i += 1;
+#[derive(Debug)]
+enum HtmlToken {
+    Characters(String),
+    Comment(String),
+    Doctype(Doctype),
+    ProcessingInstruction {
+        target: String,
+        data: String,
+    },
+    Start {
+        tag: String,
+        attrs: BTreeMap<String, String>,
+        self_closing: bool,
+    },
+    End(String),
+    Eof,
+}
+impl HtmlToken {
+    fn start(tag: &str) -> Self {
+        Self::Start {
+            tag: tag.into(),
+            attrs: BTreeMap::new(),
+            self_closing: false,
+        }
+    }
+    fn tag(&self) -> &str {
+        match self {
+            Self::Start { tag, .. } | Self::End(tag) => tag,
+            _ => "",
+        }
+    }
+    fn is_start(&self) -> bool {
+        matches!(self, Self::Start { .. })
+    }
+    fn is_end(&self) -> bool {
+        matches!(self, Self::End(_))
+    }
+    fn whitespace(&self) -> bool {
+        matches!(self, Self::Characters(text) if text.bytes().all(is_space))
+    }
+}
+
+struct HtmlTokenizer<'a> {
+    source: &'a str,
+    position: usize,
+    raw: Option<(String, bool)>,
+    skip_lf: bool,
+    foreign: bool,
+}
+impl<'a> HtmlTokenizer<'a> {
+    fn new(source: &'a str) -> Self {
+        Self {
+            source,
+            position: 0,
+            raw: None,
+            skip_lf: false,
+            foreign: false,
+        }
+    }
+    fn next(&mut self) -> HtmlToken {
+        let bytes = self.source.as_bytes();
+        if self.skip_lf {
+            if bytes.get(self.position) == Some(&b'\n') {
+                self.position += 1;
             }
-            let text = decode_entities(&source[start..i]);
-            if stack.len() == 1 && !body_started && text.trim().is_empty() {
-                continue;
-            }
-            if stack.len() == 1 {
-                if in_head && !text.trim().is_empty() {
-                    in_head = false;
+            self.skip_lf = false;
+        }
+        if let Some((tag, entities)) = self.raw.take() {
+            let start = self.position;
+            let close = format!("</{tag}");
+            let mut script_escape = 0u8;
+            while self.position < bytes.len() {
+                if tag == "script" {
+                    if script_escape == 0 && bytes[self.position..].starts_with(b"<!--") {
+                        script_escape = 1;
+                        self.position += 4;
+                        continue;
+                    }
+                    if script_escape != 0 && bytes[self.position..].starts_with(b"-->") {
+                        script_escape = 0;
+                        self.position += 3;
+                        continue;
+                    }
+                    let marker = if script_escape == 1 {
+                        "<script"
+                    } else {
+                        "</script"
+                    };
+                    if script_escape != 0
+                        && self
+                            .source
+                            .get(self.position..self.position + marker.len())
+                            .is_some_and(|s| s.eq_ignore_ascii_case(marker))
+                        && bytes
+                            .get(self.position + marker.len())
+                            .is_some_and(|b| is_space(*b) || matches!(b, b'/' | b'>'))
+                    {
+                        script_escape = if script_escape == 1 { 2 } else { 1 };
+                        self.position += marker.len();
+                        continue;
+                    }
                 }
-                let target = if in_head { head } else { body };
-                if !in_head {
-                    body_started = true;
+                if script_escape != 2
+                    && bytes[self.position] == b'<'
+                    && self
+                        .source
+                        .get(self.position..self.position.saturating_add(close.len()))
+                        .is_some_and(|text| text.eq_ignore_ascii_case(&close))
+                    && bytes
+                        .get(self.position + close.len())
+                        .is_some_and(|b| is_space(*b) || matches!(b, b'>' | b'/'))
+                {
+                    break;
                 }
-                doc.push_text(target, text);
-            } else {
-                doc.push_text(*stack.last().unwrap_or(&body), text);
+                self.position += 1;
             }
-            continue;
+            if self.position != start {
+                let raw = &self.source[start..self.position];
+                return HtmlToken::Characters(if entities {
+                    decode_entities(raw)
+                } else {
+                    raw.replace('\0', "\u{fffd}")
+                });
+            }
         }
-        if source[i..].starts_with("<!--") {
-            i = source[i + 4..]
-                .find("-->")
-                .map(|n| i + 4 + n + 3)
+        if self.position >= bytes.len() {
+            return HtmlToken::Eof;
+        }
+        let start = self.position;
+        if bytes[start] != b'<' {
+            while self.position < bytes.len() && bytes[self.position] != b'<' {
+                self.position += 1;
+            }
+            return HtmlToken::Characters(decode_entities(
+                &self.source[start..self.position].replace('\0', ""),
+            ));
+        }
+        if self.source[start..].starts_with("<!--") {
+            self.position += 4;
+            return HtmlToken::Comment(self.comment());
+        }
+        if self
+            .source
+            .get(start..start + 9)
+            .is_some_and(|text| text.eq_ignore_ascii_case("<!doctype"))
+        {
+            self.position += 9;
+            return HtmlToken::Doctype(self.doctype());
+        }
+        if self.foreign && self.source[start..].starts_with("<![CDATA[") {
+            let begin = start + 9;
+            let end = self.source[begin..]
+                .find("]]>")
+                .map(|offset| begin + offset)
                 .unwrap_or(bytes.len());
-            continue;
+            self.position = (end + 3).min(bytes.len());
+            return HtmlToken::Characters(self.source[begin..end].replace('\0', "\u{fffd}"));
         }
-        if source[i..].starts_with("<!") || source[i..].starts_with("<?") {
-            i = source[i..]
-                .find('>')
-                .map(|n| i + n + 1)
-                .unwrap_or(bytes.len());
-            continue;
+        if self.source[start..].starts_with("<?") {
+            self.position += 2;
+            return self.processing_instruction();
         }
-        let closing = bytes.get(i + 1) == Some(&b'/');
-        let mut p = i + if closing { 2 } else { 1 };
+        if self.source[start..].starts_with("<!") {
+            self.position += 2;
+            return HtmlToken::Comment(self.bogus_comment());
+        }
+        let closing = bytes.get(start + 1) == Some(&b'/');
+        let mut p = start + if closing { 2 } else { 1 };
         if !bytes.get(p).is_some_and(u8::is_ascii_alphabetic) {
-            let parent = *stack.last().filter(|_| stack.len() > 1).unwrap_or(&body);
-            doc.push_text(parent, "<".into());
-            i += 1;
-            continue;
+            if closing && bytes.get(p) == Some(&b'>') {
+                self.position = p + 1;
+                return HtmlToken::Characters(String::new());
+            }
+            if closing && p < bytes.len() {
+                self.position = p;
+                return HtmlToken::Comment(self.bogus_comment());
+            }
+            self.position += 1;
+            return HtmlToken::Characters("<".into());
         }
-        let start = p;
+        let begin = p;
         while p < bytes.len() && !is_space(bytes[p]) && !matches!(bytes[p], b'/' | b'>') {
             p += 1;
         }
-        let tag = source[start..p].to_ascii_lowercase();
-        if closing {
-            i = source[p..]
-                .find('>')
-                .map(|n| p + n + 1)
-                .unwrap_or(bytes.len());
-            if tag == "head" {
-                in_head = false;
-                stack.truncate(1);
-                continue;
-            }
-            if matches!(tag.as_str(), "body" | "html") {
-                stack.truncate(1);
-                body_started = true;
-                continue;
-            }
-            if let Some(index) = stack.iter().rposition(|id| doc.tag(*id) == Some(&tag))
-                && index > 0
-            {
-                stack.truncate(index);
-            }
-            continue;
-        }
+        let tag = self.source[begin..p]
+            .replace('\0', "\u{fffd}")
+            .to_ascii_lowercase();
         let mut attrs = BTreeMap::new();
         let mut self_closing = false;
+        let mut complete = false;
         while p < bytes.len() {
             while p < bytes.len() && is_space(bytes[p]) {
                 p += 1;
@@ -574,23 +778,30 @@ pub fn parse(source: &str) -> Document {
             }
             if bytes[p] == b'>' {
                 p += 1;
+                complete = true;
                 break;
             }
             if bytes[p] == b'/' {
-                self_closing = true;
                 p += 1;
+                if bytes.get(p) == Some(&b'>') {
+                    p += 1;
+                    self_closing = true;
+                    complete = true;
+                    break;
+                }
                 continue;
             }
-            let start = p;
+            let begin = p;
+            if bytes[p] == b'=' {
+                p += 1;
+            }
             while p < bytes.len() && !is_space(bytes[p]) && !matches!(bytes[p], b'=' | b'>' | b'/')
             {
                 p += 1;
             }
-            if start == p {
-                p += 1;
-                continue;
-            }
-            let name = source[start..p].to_ascii_lowercase();
+            let name = self.source[begin..p]
+                .replace('\0', "\u{fffd}")
+                .to_ascii_lowercase();
             while p < bytes.len() && is_space(bytes[p]) {
                 p += 1;
             }
@@ -602,160 +813,1503 @@ pub fn parse(source: &str) -> Document {
                 }
                 if let Some(quote @ (b'\'' | b'"')) = bytes.get(p).copied() {
                     p += 1;
-                    let start = p;
+                    let begin = p;
                     while p < bytes.len() && bytes[p] != quote {
                         p += 1;
                     }
-                    value = decode_entities_context(&source[start..p], true);
+                    value = decode_entities_context(&self.source[begin..p], true);
                     if p < bytes.len() {
                         p += 1;
                     }
                 } else {
-                    let start = p;
+                    let begin = p;
                     while p < bytes.len() && !is_space(bytes[p]) && bytes[p] != b'>' {
                         p += 1;
                     }
-                    value = decode_entities_context(&source[start..p], true);
+                    value = decode_entities_context(&self.source[begin..p], true);
                 }
             }
             if attrs.len() < 1024 {
                 attrs.entry(name).or_insert(value);
             }
         }
-        i = p;
-        if matches!(tag.as_str(), "html" | "head" | "body") {
-            let target = match tag.as_str() {
-                "html" => html,
-                "head" => {
-                    in_head = !body_started;
-                    head
-                }
-                _ => {
-                    body_started = true;
-                    in_head = false;
-                    body
-                }
-            };
-            for (k, v) in attrs {
-                if doc.attr(target, &k).is_none() {
-                    doc.set_attr(target, &k, &v);
-                }
-            }
-            stack.truncate(1);
-            continue;
+        self.position = p;
+        if !complete {
+            return HtmlToken::Eof;
         }
-        if closes_p(&tag)
-            && let Some(index) = stack.iter().rposition(|id| doc.tag(*id) == Some("p"))
-        {
-            stack.truncate(index);
-        }
-        let close_same = match tag.as_str() {
-            "li" => Some("li"),
-            "dt" | "dd" => Some("dt,dd"),
-            "tr" => Some("tr"),
-            "td" | "th" => Some("td,th"),
-            "option" => Some("option"),
-            "h1" | "h2" | "h3" | "h4" | "h5" | "h6" => Some("h1,h2,h3,h4,h5,h6"),
-            "a" => Some("a"),
-            "button" => Some("button"),
-            _ => None,
-        };
-        if let Some(tags) = close_same
-            && let Some(index) = stack.iter().rposition(|id| {
-                doc.tag(*id)
-                    .is_some_and(|t| tags.split(',').any(|x| x == t))
-            })
-            && index > 0
-        {
-            stack.truncate(index);
-        }
-        if stack.is_empty() {
-            stack.push(html);
-        }
-        let parent = if stack.len() > 1 {
-            *stack.last().unwrap_or(&body)
-        } else if !body_started && is_head(&tag) {
-            head
+        if closing {
+            HtmlToken::End(tag)
         } else {
-            body_started = true;
-            in_head = false;
-            body
-        };
-        // The table row-group wrapper is implied by HTML's table insertion mode.
-        let parent = if tag == "tr" && doc.tag(parent) == Some("table") {
-            let rowgroup = doc.create_element("tbody");
-            doc.append_child(parent, rowgroup);
-            if stack.len() < MAX_DEPTH - 2 {
-                stack.push(rowgroup);
+            HtmlToken::Start {
+                tag,
+                attrs,
+                self_closing,
             }
-            rowgroup
-        } else {
-            parent
-        };
-        let id = doc.create_element(&tag);
-        if id == doc.root {
-            break;
-        }
-        for (name, value) in attrs {
-            doc.set_attr(id, &name, &value);
-        }
-        doc.append_child(parent, id);
-        let in_foreign_content = matches!(tag.as_str(), "svg" | "math")
-            || stack
-                .iter()
-                .rev()
-                .find_map(|id| match doc.tag(*id) {
-                    Some("svg" | "math") => Some(true),
-                    Some("foreignobject") => Some(false),
-                    _ => None,
-                })
-                .unwrap_or(false);
-        if matches!(
-            tag.as_str(),
-            "script" | "style" | "title" | "textarea" | "xmp" | "iframe" | "noembed" | "noframes"
-        ) {
-            let close = format!("</{tag}");
-            let mut end = i;
-            while end < bytes.len() {
-                if bytes[end] == b'<'
-                    && source
-                        .get(end..end + close.len())
-                        .is_some_and(|s| s.eq_ignore_ascii_case(&close))
-                    && bytes
-                        .get(end + close.len())
-                        .is_none_or(|b| is_space(*b) || *b == b'>')
-                {
-                    break;
-                }
-                end += 1;
-            }
-            let raw = &source[i..end];
-            doc.push_text(
-                id,
-                if matches!(tag.as_str(), "title" | "textarea") {
-                    decode_entities(raw)
-                } else {
-                    raw.to_owned()
-                },
-            );
-            i = if end < bytes.len() {
-                source[end..]
-                    .find('>')
-                    .map(|n| end + n + 1)
-                    .unwrap_or(bytes.len())
-            } else {
-                end
-            };
-        } else if tag == "plaintext" {
-            doc.push_text(id, source[i..].to_owned());
-            i = bytes.len();
-        } else if !(is_void(&tag) || self_closing && in_foreign_content)
-            && stack.len() < MAX_DEPTH - 3
-        {
-            stack.push(id);
         }
     }
-    doc
+    fn bogus_comment(&mut self) -> String {
+        let start = self.position;
+        let end = self.source[start..]
+            .find('>')
+            .map(|offset| start + offset)
+            .unwrap_or(self.source.len());
+        self.position = (end + 1).min(self.source.len());
+        self.source[start..end].replace('\0', "\u{fffd}")
+    }
+    fn processing_instruction(&mut self) -> HtmlToken {
+        let bytes = self.source.as_bytes();
+        let begin = self.position;
+        if self.position == bytes.len() {
+            return HtmlToken::Eof;
+        }
+        if !bytes[self.position].is_ascii_alphabetic() && bytes[self.position] != b'_' {
+            self.position = begin - 1;
+            return HtmlToken::Comment(self.bogus_comment());
+        }
+        while self.position < bytes.len()
+            && (bytes[self.position].is_ascii_alphanumeric()
+                || matches!(bytes[self.position], b'-' | b'_'))
+        {
+            self.position += 1;
+        }
+        if self.position == bytes.len() {
+            return HtmlToken::Eof;
+        }
+        let target = &self.source[begin..self.position];
+        if !(is_space(bytes[self.position]) || matches!(bytes[self.position], b'?' | b'>'))
+            || target.eq_ignore_ascii_case("xml")
+            || target.eq_ignore_ascii_case("xml-stylesheet")
+        {
+            self.position = begin - 1;
+            return HtmlToken::Comment(self.bogus_comment());
+        }
+        while bytes.get(self.position).is_some_and(|b| is_space(*b)) {
+            self.position += 1;
+        }
+        let data_begin = self.position;
+        let Some(offset) = self.source[data_begin..].find('>') else {
+            self.position = bytes.len();
+            return HtmlToken::Eof;
+        };
+        let end = data_begin + offset;
+        let data_end = if end > data_begin && bytes[end - 1] == b'?' {
+            end - 1
+        } else {
+            end
+        };
+        self.position = end + 1;
+        HtmlToken::ProcessingInstruction {
+            target: target.into(),
+            data: self.source[data_begin..data_end].into(),
+        }
+    }
+    fn comment(&mut self) -> String {
+        // These states mirror the comment tokenizer, including abrupt and nested endings.
+        #[derive(Clone, Copy)]
+        enum State {
+            Start,
+            StartDash,
+            Data,
+            Less,
+            Bang,
+            BangDash,
+            BangDashDash,
+            EndDash,
+            End,
+            EndBang,
+        }
+        let mut state = State::Start;
+        let mut out = String::new();
+        while self.position < self.source.len() {
+            let c = self.source[self.position..]
+                .chars()
+                .next()
+                .unwrap_or('\u{fffd}');
+            let mut consume = true;
+            match state {
+                State::Start => match c {
+                    '-' => state = State::StartDash,
+                    '>' => {
+                        self.position += 1;
+                        break;
+                    }
+                    _ => {
+                        state = State::Data;
+                        consume = false;
+                    }
+                },
+                State::StartDash => match c {
+                    '-' => state = State::End,
+                    '>' => {
+                        self.position += 1;
+                        break;
+                    }
+                    _ => {
+                        out.push('-');
+                        state = State::Data;
+                        consume = false;
+                    }
+                },
+                State::Data => match c {
+                    '<' => {
+                        out.push('<');
+                        state = State::Less;
+                    }
+                    '-' => state = State::EndDash,
+                    '\0' => out.push('\u{fffd}'),
+                    _ => out.push(c),
+                },
+                State::Less => match c {
+                    '!' => {
+                        out.push('!');
+                        state = State::Bang;
+                    }
+                    '<' => out.push('<'),
+                    _ => {
+                        state = State::Data;
+                        consume = false;
+                    }
+                },
+                State::Bang => {
+                    if c == '-' {
+                        state = State::BangDash;
+                    } else {
+                        state = State::Data;
+                        consume = false;
+                    }
+                }
+                State::BangDash => {
+                    if c == '-' {
+                        state = State::BangDashDash;
+                    } else {
+                        state = State::EndDash;
+                        consume = false;
+                    }
+                }
+                State::BangDashDash => {
+                    state = State::End;
+                    consume = false;
+                }
+                State::EndDash => {
+                    if c == '-' {
+                        state = State::End;
+                    } else {
+                        out.push('-');
+                        state = State::Data;
+                        consume = false;
+                    }
+                }
+                State::End => match c {
+                    '>' => {
+                        self.position += 1;
+                        break;
+                    }
+                    '!' => state = State::EndBang,
+                    '-' => out.push('-'),
+                    _ => {
+                        out.push_str("--");
+                        state = State::Data;
+                        consume = false;
+                    }
+                },
+                State::EndBang => match c {
+                    '-' => {
+                        out.push_str("--!");
+                        state = State::EndDash;
+                    }
+                    '>' => {
+                        self.position += 1;
+                        break;
+                    }
+                    _ => {
+                        out.push_str("--!");
+                        state = State::Data;
+                        consume = false;
+                    }
+                },
+            }
+            if consume {
+                self.position += c.len_utf8();
+            }
+        }
+        out
+    }
+    fn doctype(&mut self) -> Doctype {
+        let bytes = self.source.as_bytes();
+        let mut result = Doctype {
+            name: String::new(),
+            public_id: None,
+            system_id: None,
+            force_quirks: false,
+        };
+        while bytes.get(self.position).is_some_and(|b| is_space(*b)) {
+            self.position += 1;
+        }
+        let start = self.position;
+        while self.position < bytes.len()
+            && !is_space(bytes[self.position])
+            && bytes[self.position] != b'>'
+        {
+            self.position += 1;
+        }
+        result.name = self.source[start..self.position]
+            .replace('\0', "\u{fffd}")
+            .to_ascii_lowercase();
+        if result.name.is_empty() {
+            result.force_quirks = true;
+        }
+        while bytes.get(self.position).is_some_and(|b| is_space(*b)) {
+            self.position += 1;
+        }
+        if bytes.get(self.position) == Some(&b'>') {
+            self.position += 1;
+            return result;
+        }
+        if self.position == bytes.len() {
+            result.force_quirks = true;
+            return result;
+        }
+        let public = self
+            .source
+            .get(self.position..self.position + 6)
+            .is_some_and(|s| s.eq_ignore_ascii_case("public"));
+        let system = self
+            .source
+            .get(self.position..self.position + 6)
+            .is_some_and(|s| s.eq_ignore_ascii_case("system"));
+        if !(public || system) {
+            result.force_quirks = true;
+            self.bogus_comment();
+            return result;
+        }
+        self.position += 6;
+        for identifier in 0..if public { 2 } else { 1 } {
+            while bytes.get(self.position).is_some_and(|b| is_space(*b)) {
+                self.position += 1;
+            }
+            if public && identifier == 1 && bytes.get(self.position) == Some(&b'>') {
+                self.position += 1;
+                return result;
+            }
+            let Some(quote @ (b'\'' | b'"')) = bytes.get(self.position).copied() else {
+                result.force_quirks = true;
+                self.bogus_comment();
+                return result;
+            };
+            self.position += 1;
+            let begin = self.position;
+            while self.position < bytes.len()
+                && bytes[self.position] != quote
+                && bytes[self.position] != b'>'
+            {
+                self.position += 1;
+            }
+            let value = Some(self.source[begin..self.position].replace('\0', "\u{fffd}"));
+            if public && identifier == 0 {
+                result.public_id = value;
+            } else {
+                result.system_id = value;
+            }
+            if bytes.get(self.position) != Some(&quote) {
+                result.force_quirks = true;
+                if self.position < bytes.len() {
+                    self.position += 1;
+                }
+                return result;
+            }
+            self.position += 1;
+        }
+        while bytes.get(self.position).is_some_and(|b| is_space(*b)) {
+            self.position += 1;
+        }
+        if self.position == bytes.len() {
+            result.force_quirks = true;
+        }
+        self.bogus_comment();
+        result
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum InsertionMode {
+    Initial,
+    BeforeHtml,
+    BeforeHead,
+    InHead,
+    InHeadNoscript,
+    AfterHead,
+    InBody,
+    InTable,
+    InCaption,
+    InColumnGroup,
+    InTableBody,
+    InRow,
+    InCell,
+    AfterBody,
+    AfterAfterBody,
+}
+struct TreeBuilder {
+    doc: Document,
+    stack: Vec<NodeId>,
+    html: Option<NodeId>,
+    head: Option<NodeId>,
+    body: Option<NodeId>,
+    form: Option<NodeId>,
+    mode: InsertionMode,
+    scripting: bool,
+    quirks: bool,
+    raw: Option<(String, bool)>,
+    raw_node: Option<(NodeId, InsertionMode)>,
+    pending_table_text: String,
+    skip_lf: bool,
+    work: usize,
+}
+impl TreeBuilder {
+    fn new(scripting: bool) -> Self {
+        Self {
+            doc: Document {
+                nodes: vec![Node {
+                    parent: None,
+                    children: vec![],
+                    kind: NodeKind::Document,
+                }],
+                root: 0,
+                retained_bytes: 0,
+                scripting_enabled: scripting,
+            },
+            stack: vec![],
+            html: None,
+            head: None,
+            body: None,
+            form: None,
+            mode: InsertionMode::Initial,
+            scripting,
+            quirks: true,
+            raw: None,
+            raw_node: None,
+            pending_table_text: String::new(),
+            skip_lf: false,
+            work: 50_000_000,
+        }
+    }
+    fn current(&self) -> NodeId {
+        self.stack.last().copied().unwrap_or(self.doc.root)
+    }
+    fn current_tag(&self) -> &str {
+        self.doc.tag(self.current()).unwrap_or("")
+    }
+    fn foreign(&self) -> bool {
+        self.stack
+            .iter()
+            .rev()
+            .find_map(|id| match self.doc.tag(*id) {
+                Some("svg" | "math") => Some(true),
+                Some("foreignobject" | "desc") => Some(false),
+                _ => None,
+            })
+            .unwrap_or(false)
+    }
+    fn scope(&self, tags: &[&str], table: bool) -> Option<usize> {
+        for (index, id) in self.stack.iter().enumerate().rev() {
+            let tag = self.doc.tag(*id).unwrap_or("");
+            if tags.contains(&tag) {
+                return Some(index);
+            }
+            if matches!(tag, "html" | "table" | "template")
+                || !table
+                    && matches!(
+                        tag,
+                        "applet" | "caption" | "td" | "th" | "marquee" | "object" | "button"
+                    )
+            {
+                return None;
+            }
+        }
+        None
+    }
+    fn clear_to(&mut self, tags: &[&str]) {
+        while self.stack.len() > 1 && !tags.contains(&self.current_tag()) {
+            self.stack.pop();
+        }
+    }
+    fn close_in_scope(&mut self, tags: &[&str], table: bool) -> bool {
+        if let Some(index) = self.scope(tags, table) {
+            self.stack.truncate(index);
+            true
+        } else {
+            false
+        }
+    }
+    fn reset_mode(&mut self) {
+        self.mode = self
+            .stack
+            .iter()
+            .rev()
+            .find_map(|id| match self.doc.tag(*id) {
+                Some("td" | "th") => Some(InsertionMode::InCell),
+                Some("tr") => Some(InsertionMode::InRow),
+                Some("tbody" | "thead" | "tfoot") => Some(InsertionMode::InTableBody),
+                Some("caption") => Some(InsertionMode::InCaption),
+                Some("colgroup") => Some(InsertionMode::InColumnGroup),
+                Some("table") => Some(InsertionMode::InTable),
+                Some("head") => Some(InsertionMode::InHead),
+                Some("body" | "template") => Some(InsertionMode::InBody),
+                _ => None,
+            })
+            .unwrap_or(InsertionMode::InBody);
+    }
+    fn location(&mut self, foster: bool) -> (NodeId, Option<usize>) {
+        let current = self.current();
+        if foster
+            && matches!(
+                self.doc.tag(current),
+                Some("table" | "tbody" | "tfoot" | "thead" | "tr")
+            )
+        {
+            if let Some(index) = self
+                .stack
+                .iter()
+                .rposition(|id| matches!(self.doc.tag(*id), Some("table" | "template")))
+            {
+                let table = self.stack[index];
+                if self.doc.tag(table) == Some("template") {
+                    return (table, None);
+                }
+                if let Some(parent) = self.doc.nodes[table].parent {
+                    let children = &self.doc.nodes[parent].children;
+                    for (index, id) in children.iter().enumerate().rev() {
+                        if self.work == 0 {
+                            return (parent, None);
+                        }
+                        self.work -= 1;
+                        if *id == table {
+                            return (parent, Some(index));
+                        }
+                    }
+                }
+                return (self.stack[index.saturating_sub(1)], None);
+            }
+            return (self.html.unwrap_or(self.doc.root), None);
+        }
+        (current, None)
+    }
+    fn attach(&mut self, node: NodeId, parent: NodeId, before: Option<usize>) {
+        self.doc.append_child(parent, node);
+        if self.doc.nodes.get(node).and_then(|n| n.parent) == Some(parent)
+            && let Some(before) = before
+        {
+            let children = &mut self.doc.nodes[parent].children;
+            if before < children.len().saturating_sub(1) {
+                self.work = self.work.saturating_sub(children.len() - before);
+                children.pop();
+                children.insert(before, node);
+            }
+        }
+    }
+    fn element(&mut self, token: &HtmlToken, foster: bool, push: bool) -> NodeId {
+        let HtmlToken::Start { tag, attrs, .. } = token else {
+            return self.doc.root;
+        };
+        if self.doc.nodes.len() >= MAX_NODES
+            || tag.len() > MAX_DOM_BYTES.saturating_sub(self.doc.retained_bytes)
+        {
+            return self.doc.root;
+        }
+        // Tokenized HTML names need not satisfy createElement's author-facing name filter.
+        self.doc.retained_bytes += tag.len();
+        let id = self.doc.nodes.len();
+        self.doc.nodes.push(Node {
+            parent: None,
+            children: vec![],
+            kind: NodeKind::Element(Element {
+                tag: tag.clone(),
+                attrs: BTreeMap::new(),
+            }),
+        });
+        for (name, value) in attrs {
+            self.doc.set_attr(id, name, value);
+        }
+        let (parent, before) = self.location(foster);
+        self.attach(id, parent, before);
+        if push && self.stack.len() < MAX_DEPTH - 3 && self.doc.nodes[id].parent.is_some() {
+            self.stack.push(id);
+        }
+        id
+    }
+    fn merge_attrs(&mut self, id: Option<NodeId>, token: &HtmlToken) {
+        if let (Some(id), HtmlToken::Start { attrs, .. }) = (id, token) {
+            for (name, value) in attrs {
+                if self.doc.attr(id, name).is_none() {
+                    self.doc.set_attr(id, name, value);
+                }
+            }
+        }
+    }
+    fn text(&mut self, text: &str, foster: bool) {
+        if text.is_empty() {
+            return;
+        }
+        let (parent, before) = self.location(foster);
+        if let Some(index) = before {
+            let previous = index
+                .checked_sub(1)
+                .and_then(|index| self.doc.nodes[parent].children.get(index))
+                .copied();
+            if let Some(previous) = previous
+                && let NodeKind::Text(value) = &mut self.doc.nodes[previous].kind
+            {
+                let available = MAX_DOM_BYTES.saturating_sub(self.doc.retained_bytes);
+                let text = &text[..floor_boundary(text, text.len().min(available))];
+                value.push_str(text);
+                self.doc.retained_bytes += text.len();
+            } else {
+                let node = self.doc.create_text_node(text);
+                self.attach(node, parent, before);
+            }
+        } else {
+            self.doc.push_text(parent, text.into());
+        }
+    }
+    fn comment(&mut self, text: &str, parent: Option<NodeId>) {
+        let id = self.doc.create_comment(text);
+        self.doc.append_child(parent.unwrap_or(self.current()), id);
+    }
+    fn raw_element(&mut self, token: &HtmlToken, foster: bool) {
+        let id = self.element(token, foster, true);
+        self.raw_node = Some((id, self.mode));
+        self.raw = Some((
+            token.tag().into(),
+            matches!(token.tag(), "title" | "textarea"),
+        ));
+        self.skip_lf = token.tag() == "textarea";
+    }
+    fn process(&mut self, mut token: HtmlToken) {
+        use InsertionMode::*;
+        if !matches!(token, HtmlToken::Characters(_)) && !self.pending_table_text.is_empty() {
+            let text = std::mem::take(&mut self.pending_table_text);
+            let foster = !text.bytes().all(is_space);
+            self.text(&text, foster);
+        }
+        // Every reprocessing transition consumes budget; malformed input cannot spin indefinitely.
+        for _ in 0..32 {
+            let cost = self.stack.len() + 1;
+            if self.work < cost || self.doc.nodes.len() >= MAX_NODES {
+                self.work = 0;
+                return;
+            }
+            self.work -= cost;
+            if let Some((node, original_mode)) = self.raw_node {
+                match &token {
+                    HtmlToken::Characters(text) => {
+                        self.doc.push_text(node, text.clone());
+                        return;
+                    }
+                    HtmlToken::End(tag) if self.doc.tag(node) == Some(tag) => {
+                        if self.stack.last() == Some(&node) {
+                            self.stack.pop();
+                        }
+                        self.raw_node = None;
+                        self.mode = original_mode;
+                        return;
+                    }
+                    HtmlToken::Eof => {
+                        if self.stack.last() == Some(&node) {
+                            self.stack.pop();
+                        }
+                        self.raw_node = None;
+                        self.mode = original_mode;
+                        continue;
+                    }
+                    _ => {}
+                }
+            }
+            if let HtmlToken::ProcessingInstruction { target, data } = &token {
+                let parent = match self.mode {
+                    Initial | BeforeHtml | AfterAfterBody => self.doc.root,
+                    AfterBody => self.html.unwrap_or(self.doc.root),
+                    _ => self.current(),
+                };
+                let id = self.doc.create_processing_instruction(target, data);
+                self.doc.append_child(parent, id);
+                return;
+            }
+            if let HtmlToken::Characters(text) = &mut token {
+                if matches!(self.mode, InTable | InTableBody | InRow)
+                    && matches!(
+                        self.current_tag(),
+                        "table" | "tbody" | "template" | "tfoot" | "thead" | "tr"
+                    )
+                {
+                    let available = MAX_DOM_BYTES
+                        .saturating_sub(self.doc.retained_bytes)
+                        .saturating_sub(self.pending_table_text.len());
+                    self.pending_table_text
+                        .push_str(&text[..floor_boundary(text, text.len().min(available))]);
+                    return;
+                }
+                if matches!(
+                    self.current_tag(),
+                    "script"
+                        | "style"
+                        | "title"
+                        | "textarea"
+                        | "xmp"
+                        | "iframe"
+                        | "noembed"
+                        | "noframes"
+                        | "plaintext"
+                ) || self.scripting && self.current_tag() == "noscript"
+                {
+                    self.text(text, false);
+                    return;
+                }
+                if matches!(
+                    self.mode,
+                    Initial
+                        | BeforeHtml
+                        | BeforeHead
+                        | InHead
+                        | InHeadNoscript
+                        | AfterHead
+                        | InColumnGroup
+                ) {
+                    let leading = text.bytes().take_while(|b| is_space(*b)).count();
+                    if leading > 0 {
+                        if !matches!(self.mode, Initial | BeforeHtml | BeforeHead) {
+                            self.text(&text[..leading], false);
+                        }
+                        text.drain(..leading);
+                    }
+                    if text.is_empty() {
+                        return;
+                    }
+                }
+            }
+            let tag = token.tag();
+            let start = token.is_start();
+            let end = token.is_end();
+            // Raw text consumes its end tag before ordinary insertion-mode dispatch.
+            if end
+                && tag == self.current_tag()
+                && matches!(
+                    tag,
+                    "script"
+                        | "style"
+                        | "title"
+                        | "textarea"
+                        | "xmp"
+                        | "iframe"
+                        | "noembed"
+                        | "noframes"
+                )
+            {
+                self.stack.pop();
+                return;
+            }
+            match self.mode {
+                Initial => match &token {
+                    HtmlToken::Characters(_) if token.whitespace() => return,
+                    HtmlToken::Comment(text) => {
+                        self.comment(text, Some(self.doc.root));
+                        return;
+                    }
+                    HtmlToken::Doctype(doctype) => {
+                        self.quirks = doctype.force_quirks || doctype.name != "html";
+                        let id = self.doc.create_doctype(doctype.clone());
+                        self.doc.append_child(self.doc.root, id);
+                        self.mode = BeforeHtml;
+                        return;
+                    }
+                    _ => {
+                        self.mode = BeforeHtml;
+                    }
+                },
+                BeforeHtml => match &token {
+                    HtmlToken::Doctype(_) => return,
+                    HtmlToken::Characters(_) if token.whitespace() => return,
+                    HtmlToken::Comment(text) => {
+                        self.comment(text, Some(self.doc.root));
+                        return;
+                    }
+                    _ if end && !matches!(tag, "head" | "body" | "html" | "br") => return,
+                    _ => {
+                        let id = if start && tag == "html" {
+                            self.element(&token, false, true)
+                        } else {
+                            self.element(&HtmlToken::start("html"), false, true)
+                        };
+                        self.html = Some(id);
+                        self.mode = BeforeHead;
+                        if start && tag == "html" {
+                            return;
+                        }
+                    }
+                },
+                BeforeHead => match &token {
+                    HtmlToken::Doctype(_) => return,
+                    HtmlToken::Characters(_) if token.whitespace() => return,
+                    HtmlToken::Comment(text) => {
+                        self.comment(text, None);
+                        return;
+                    }
+                    _ if start && tag == "html" => {
+                        self.merge_attrs(self.html, &token);
+                        return;
+                    }
+                    _ if end && !matches!(tag, "head" | "body" | "html" | "br") => return,
+                    _ => {
+                        let id = if start && tag == "head" {
+                            self.element(&token, false, true)
+                        } else {
+                            self.element(&HtmlToken::start("head"), false, true)
+                        };
+                        self.head = Some(id);
+                        self.mode = InHead;
+                        if start && tag == "head" {
+                            return;
+                        }
+                    }
+                },
+                InHead => match &token {
+                    HtmlToken::Characters(text)
+                        if token.whitespace()
+                            || matches!(
+                                self.current_tag(),
+                                "script" | "style" | "title" | "noframes" | "noscript"
+                            ) =>
+                    {
+                        self.text(text, false);
+                        return;
+                    }
+                    HtmlToken::Comment(text) => {
+                        self.comment(text, None);
+                        return;
+                    }
+                    HtmlToken::Doctype(_) => return,
+                    _ if start && tag == "html" => {
+                        self.merge_attrs(self.html, &token);
+                        return;
+                    }
+                    _ if start
+                        && matches!(tag, "base" | "basefont" | "bgsound" | "link" | "meta") =>
+                    {
+                        self.element(&token, false, false);
+                        return;
+                    }
+                    _ if start && matches!(tag, "title" | "style" | "noframes" | "script") => {
+                        self.raw_element(&token, false);
+                        return;
+                    }
+                    _ if start && tag == "noscript" => {
+                        if self.scripting {
+                            self.raw_element(&token, false);
+                        } else {
+                            self.element(&token, false, true);
+                            self.mode = InHeadNoscript;
+                        }
+                        return;
+                    }
+                    _ if end
+                        && tag == "noscript"
+                        && self.scripting
+                        && self.current_tag() == "noscript" =>
+                    {
+                        self.stack.pop();
+                        return;
+                    }
+                    _ if start && tag == "template" => {
+                        self.element(&token, false, true);
+                        self.mode = InBody;
+                        return;
+                    }
+                    _ if start && tag == "head"
+                        || end && !matches!(tag, "head" | "body" | "html" | "br" | "template") =>
+                    {
+                        return;
+                    }
+                    _ => {
+                        self.clear_to(&["head", "html"]);
+                        if self.current_tag() == "head" {
+                            self.stack.pop();
+                        }
+                        self.mode = AfterHead;
+                        if end && tag == "head" {
+                            return;
+                        }
+                    }
+                },
+                InHeadNoscript => match &token {
+                    _ if end && tag == "noscript" => {
+                        self.stack.pop();
+                        self.mode = InHead;
+                        return;
+                    }
+                    _ if start && matches!(tag, "head" | "noscript") || end && tag != "br" => {
+                        return;
+                    }
+                    HtmlToken::Doctype(_) => return,
+                    HtmlToken::Comment(text) => {
+                        self.comment(text, None);
+                        return;
+                    }
+                    HtmlToken::Characters(text) if token.whitespace() => {
+                        self.text(text, false);
+                        return;
+                    }
+                    _ if start && matches!(tag, "basefont" | "bgsound" | "link" | "meta") => {
+                        self.element(&token, false, false);
+                        return;
+                    }
+                    _ if start && matches!(tag, "style" | "noframes") => {
+                        self.raw_element(&token, false);
+                        return;
+                    }
+                    _ if start && tag == "html" => {
+                        self.merge_attrs(self.html, &token);
+                        return;
+                    }
+                    _ => {
+                        self.stack.pop();
+                        self.mode = InHead;
+                    }
+                },
+                AfterHead => match &token {
+                    HtmlToken::Characters(text) if token.whitespace() => {
+                        self.text(text, false);
+                        return;
+                    }
+                    HtmlToken::Comment(text) => {
+                        self.comment(text, None);
+                        return;
+                    }
+                    HtmlToken::Doctype(_) => return,
+                    _ if start && tag == "html" => {
+                        self.merge_attrs(self.html, &token);
+                        return;
+                    }
+                    _ if start
+                        && matches!(
+                            tag,
+                            "base"
+                                | "basefont"
+                                | "bgsound"
+                                | "link"
+                                | "meta"
+                                | "noframes"
+                                | "script"
+                                | "style"
+                                | "template"
+                                | "title"
+                        ) =>
+                    {
+                        if let Some(head) = self.head {
+                            self.stack.push(head);
+                            self.in_body(&token, false);
+                            if let Some(index) = self.stack.iter().position(|id| *id == head) {
+                                self.stack.remove(index);
+                            }
+                        }
+                        return;
+                    }
+                    _ if start && tag == "head"
+                        || end && !matches!(tag, "body" | "html" | "br" | "template") =>
+                    {
+                        return;
+                    }
+                    _ => {
+                        let id = if start && tag == "body" {
+                            self.element(&token, false, true)
+                        } else {
+                            self.element(&HtmlToken::start("body"), false, true)
+                        };
+                        self.body = Some(id);
+                        self.mode = InBody;
+                        if start && tag == "body" {
+                            return;
+                        }
+                    }
+                },
+                InTable => {
+                    if self.in_table(&token) {
+                        continue;
+                    }
+                    return;
+                }
+                InCaption => {
+                    if end && tag == "caption"
+                        || start
+                            && matches!(
+                                tag,
+                                "caption"
+                                    | "col"
+                                    | "colgroup"
+                                    | "tbody"
+                                    | "td"
+                                    | "tfoot"
+                                    | "th"
+                                    | "thead"
+                                    | "tr"
+                            )
+                        || end && tag == "table"
+                    {
+                        if !self.close_in_scope(&["caption"], true) {
+                            return;
+                        }
+                        self.mode = InTable;
+                        if end && tag == "caption" {
+                            return;
+                        }
+                    } else if end
+                        && matches!(
+                            tag,
+                            "body"
+                                | "col"
+                                | "colgroup"
+                                | "html"
+                                | "tbody"
+                                | "td"
+                                | "tfoot"
+                                | "th"
+                                | "thead"
+                                | "tr"
+                        )
+                    {
+                        return;
+                    } else {
+                        self.in_body(&token, false);
+                        return;
+                    }
+                }
+                InColumnGroup => match &token {
+                    HtmlToken::Characters(text) if token.whitespace() => {
+                        self.text(text, false);
+                        return;
+                    }
+                    HtmlToken::Comment(text) => {
+                        self.comment(text, None);
+                        return;
+                    }
+                    HtmlToken::Doctype(_) => return,
+                    _ if start && tag == "html" => {
+                        self.merge_attrs(self.html, &token);
+                        return;
+                    }
+                    _ if start && tag == "col" => {
+                        self.element(&token, false, false);
+                        return;
+                    }
+                    _ if end && tag == "col" => return,
+                    _ if tag == "template" => {
+                        self.in_body(&token, false);
+                        return;
+                    }
+                    _ => {
+                        if self.current_tag() != "colgroup" {
+                            return;
+                        }
+                        self.stack.pop();
+                        self.mode = InTable;
+                        if end && tag == "colgroup" {
+                            return;
+                        }
+                    }
+                },
+                InTableBody => {
+                    if start && tag == "tr" {
+                        self.clear_to(&["tbody", "tfoot", "thead", "template", "html"]);
+                        self.element(&token, false, true);
+                        self.mode = InRow;
+                        return;
+                    }
+                    if start && matches!(tag, "td" | "th") {
+                        self.clear_to(&["tbody", "tfoot", "thead", "template", "html"]);
+                        self.element(&HtmlToken::start("tr"), false, true);
+                        self.mode = InRow;
+                        continue;
+                    }
+                    if end && matches!(tag, "tbody" | "tfoot" | "thead") {
+                        if self.scope(&[tag], true).is_some() {
+                            self.clear_to(&["tbody", "tfoot", "thead", "template", "html"]);
+                            self.stack.pop();
+                            self.mode = InTable;
+                        }
+                        return;
+                    }
+                    if start
+                        && matches!(
+                            tag,
+                            "caption" | "col" | "colgroup" | "tbody" | "tfoot" | "thead"
+                        )
+                        || end && tag == "table"
+                    {
+                        if self.scope(&["tbody", "thead", "tfoot"], true).is_none() {
+                            return;
+                        }
+                        self.clear_to(&["tbody", "tfoot", "thead", "template", "html"]);
+                        self.stack.pop();
+                        self.mode = InTable;
+                        continue;
+                    }
+                    if end
+                        && matches!(
+                            tag,
+                            "body" | "caption" | "col" | "colgroup" | "html" | "td" | "th" | "tr"
+                        )
+                    {
+                        return;
+                    }
+                    if self.in_table(&token) {
+                        continue;
+                    }
+                    return;
+                }
+                InRow => {
+                    if start && matches!(tag, "td" | "th") {
+                        self.clear_to(&["tr", "template", "html"]);
+                        self.element(&token, false, true);
+                        self.mode = InCell;
+                        return;
+                    }
+                    if end && tag == "tr" {
+                        if self.close_in_scope(&["tr"], true) {
+                            self.mode = InTableBody;
+                        }
+                        return;
+                    }
+                    if start
+                        && matches!(
+                            tag,
+                            "caption" | "col" | "colgroup" | "tbody" | "tfoot" | "thead" | "tr"
+                        )
+                        || end && matches!(tag, "table" | "tbody" | "tfoot" | "thead")
+                    {
+                        if end && tag != "table" && self.scope(&[tag], true).is_none() {
+                            return;
+                        }
+                        if !self.close_in_scope(&["tr"], true) {
+                            return;
+                        }
+                        self.mode = InTableBody;
+                        continue;
+                    }
+                    if end
+                        && matches!(
+                            tag,
+                            "body" | "caption" | "col" | "colgroup" | "html" | "td" | "th"
+                        )
+                    {
+                        return;
+                    }
+                    if self.in_table(&token) {
+                        continue;
+                    }
+                    return;
+                }
+                InCell => {
+                    if end && matches!(tag, "td" | "th") {
+                        if self.close_in_scope(&[tag], true) {
+                            self.mode = InRow;
+                        }
+                        return;
+                    }
+                    if start
+                        && matches!(
+                            tag,
+                            "caption"
+                                | "col"
+                                | "colgroup"
+                                | "tbody"
+                                | "td"
+                                | "tfoot"
+                                | "th"
+                                | "thead"
+                                | "tr"
+                        )
+                        || end && matches!(tag, "table" | "tbody" | "tfoot" | "thead" | "tr")
+                    {
+                        if end && self.scope(&[tag], true).is_none() {
+                            return;
+                        }
+                        if !self.close_in_scope(&["td", "th"], true) {
+                            return;
+                        }
+                        self.mode = InRow;
+                        continue;
+                    }
+                    if end && matches!(tag, "body" | "caption" | "col" | "colgroup" | "html") {
+                        return;
+                    }
+                    self.in_body(&token, false);
+                    return;
+                }
+                AfterBody => match &token {
+                    HtmlToken::Characters(_) if token.whitespace() => {
+                        self.in_body(&token, false);
+                        return;
+                    }
+                    HtmlToken::Comment(text) => {
+                        self.comment(text, self.html);
+                        return;
+                    }
+                    HtmlToken::Doctype(_) | HtmlToken::Eof => return,
+                    _ if start && tag == "html" => {
+                        self.merge_attrs(self.html, &token);
+                        return;
+                    }
+                    _ if end && tag == "html" => {
+                        self.mode = AfterAfterBody;
+                        return;
+                    }
+                    _ => {
+                        self.mode = InBody;
+                    }
+                },
+                AfterAfterBody => match &token {
+                    HtmlToken::Comment(text) => {
+                        self.comment(text, Some(self.doc.root));
+                        return;
+                    }
+                    HtmlToken::Doctype(_) | HtmlToken::Eof => return,
+                    HtmlToken::Characters(_) if token.whitespace() => {
+                        self.in_body(&token, false);
+                        return;
+                    }
+                    _ if start && tag == "html" => {
+                        self.merge_attrs(self.html, &token);
+                        return;
+                    }
+                    _ => {
+                        self.mode = InBody;
+                    }
+                },
+                InBody => {
+                    self.in_body(&token, false);
+                    return;
+                }
+            }
+        }
+    }
+    // Returns true only when the same token must be reprocessed in a changed mode.
+    fn in_table(&mut self, token: &HtmlToken) -> bool {
+        use InsertionMode::*;
+        let tag = token.tag();
+        let start = token.is_start();
+        let end = token.is_end();
+        match token {
+            HtmlToken::Characters(text)
+                if matches!(
+                    self.current_tag(),
+                    "table" | "tbody" | "template" | "tfoot" | "thead" | "tr"
+                ) =>
+            {
+                self.text(text, !token.whitespace());
+            }
+            HtmlToken::Comment(text) => self.comment(text, None),
+            HtmlToken::Doctype(_) | HtmlToken::Eof | HtmlToken::ProcessingInstruction { .. } => {}
+            _ if start && matches!(tag, "caption" | "colgroup" | "tbody" | "tfoot" | "thead") => {
+                self.clear_to(&["table", "template", "html"]);
+                self.element(token, false, true);
+                self.mode = match tag {
+                    "caption" => InCaption,
+                    "colgroup" => InColumnGroup,
+                    _ => InTableBody,
+                };
+            }
+            _ if start && tag == "col" => {
+                self.clear_to(&["table", "template", "html"]);
+                self.element(&HtmlToken::start("colgroup"), false, true);
+                self.mode = InColumnGroup;
+                return true;
+            }
+            _ if start && matches!(tag, "td" | "th" | "tr") => {
+                self.clear_to(&["table", "template", "html"]);
+                self.element(&HtmlToken::start("tbody"), false, true);
+                self.mode = InTableBody;
+                return true;
+            }
+            _ if tag == "table" => {
+                if self.close_in_scope(&["table"], true) {
+                    self.reset_mode();
+                    return start;
+                }
+            }
+            _ if end
+                && matches!(
+                    tag,
+                    "body"
+                        | "caption"
+                        | "col"
+                        | "colgroup"
+                        | "html"
+                        | "tbody"
+                        | "td"
+                        | "tfoot"
+                        | "th"
+                        | "thead"
+                        | "tr"
+                ) => {}
+            _ if start && matches!(tag, "style" | "script") => self.raw_element(token, false),
+            _ if tag == "template" => self.in_body(token, false),
+            HtmlToken::Start { attrs, .. }
+                if tag == "input"
+                    && attrs
+                        .get("type")
+                        .is_some_and(|value| value.eq_ignore_ascii_case("hidden")) =>
+            {
+                self.element(token, false, false);
+            }
+            _ if start && tag == "form" => {
+                if self.form.is_none() {
+                    let id = self.element(token, false, false);
+                    self.form = Some(id);
+                }
+            }
+            _ => self.in_body(token, true),
+        }
+        false
+    }
+    fn in_body(&mut self, token: &HtmlToken, foster: bool) {
+        use InsertionMode::*;
+        match token {
+            HtmlToken::Characters(text) => self.text(text, foster),
+            HtmlToken::Comment(text) => self.comment(text, None),
+            HtmlToken::Doctype(_) | HtmlToken::Eof | HtmlToken::ProcessingInstruction { .. } => {}
+            HtmlToken::Start {
+                tag, self_closing, ..
+            } => {
+                let tag = tag.as_str();
+                if tag == "html" {
+                    self.merge_attrs(self.html, token);
+                    return;
+                }
+                if tag == "body" {
+                    self.merge_attrs(self.body, token);
+                    return;
+                }
+                if tag == "head"
+                    || matches!(
+                        tag,
+                        "caption"
+                            | "col"
+                            | "colgroup"
+                            | "tbody"
+                            | "td"
+                            | "tfoot"
+                            | "th"
+                            | "thead"
+                            | "tr"
+                    )
+                {
+                    return;
+                }
+                if tag == "form"
+                    && self.form.is_some()
+                    && !self
+                        .stack
+                        .iter()
+                        .any(|id| self.doc.tag(*id) == Some("template"))
+                {
+                    return;
+                }
+                if closes_p(tag) && !(tag == "table" && self.quirks) {
+                    self.close_in_scope(&["p"], false);
+                }
+                let same = match tag {
+                    "li" => Some(&["li"][..]),
+                    "dt" | "dd" => Some(&["dt", "dd"][..]),
+                    "option" => Some(&["option"][..]),
+                    "a" => Some(&["a"][..]),
+                    "button" => Some(&["button"][..]),
+                    _ => None,
+                };
+                if let Some(tags) = same {
+                    self.close_in_scope(tags, false);
+                }
+                if matches!(tag, "h1" | "h2" | "h3" | "h4" | "h5" | "h6")
+                    && matches!(self.current_tag(), "h1" | "h2" | "h3" | "h4" | "h5" | "h6")
+                {
+                    self.stack.pop();
+                }
+                if tag == "image" {
+                    self.element(&HtmlToken::start("img"), foster, false);
+                    return;
+                }
+                if matches!(
+                    tag,
+                    "script"
+                        | "style"
+                        | "title"
+                        | "textarea"
+                        | "xmp"
+                        | "iframe"
+                        | "noembed"
+                        | "noframes"
+                ) || tag == "noscript" && self.scripting
+                {
+                    self.raw_element(token, foster);
+                    return;
+                }
+                if tag == "plaintext" {
+                    self.element(token, foster, true);
+                    self.raw = Some(("\0never".into(), false));
+                    return;
+                }
+                let foreign = matches!(tag, "svg" | "math") || self.foreign();
+                let id = self.element(token, foster, !(is_void(tag) || *self_closing && foreign));
+                if tag == "form" {
+                    self.form = Some(id);
+                }
+                if matches!(tag, "pre" | "listing") {
+                    self.skip_lf = true;
+                }
+                if tag == "table" {
+                    self.mode = InTable;
+                }
+            }
+            HtmlToken::End(tag) => {
+                let tag = tag.as_str();
+                if matches!(tag, "body" | "html") {
+                    if self.scope(&["body"], false).is_some() {
+                        self.mode = if tag == "html" {
+                            AfterAfterBody
+                        } else {
+                            AfterBody
+                        };
+                    }
+                    return;
+                }
+                if tag == "p" {
+                    if self.scope(&["p"], false).is_none() {
+                        self.element(&HtmlToken::start("p"), foster, true);
+                    }
+                    self.close_in_scope(&["p"], false);
+                    return;
+                }
+                if tag == "br" {
+                    self.element(&HtmlToken::start("br"), foster, false);
+                    return;
+                }
+                if tag == "form" {
+                    if let Some(form) = self.form.take()
+                        && let Some(index) = self.stack.iter().position(|id| *id == form)
+                    {
+                        self.stack.remove(index);
+                    }
+                    return;
+                }
+                if tag == "template" {
+                    if let Some(index) = self
+                        .stack
+                        .iter()
+                        .rposition(|id| self.doc.tag(*id) == Some("template"))
+                    {
+                        self.stack.truncate(index);
+                        self.reset_mode();
+                    }
+                    return;
+                }
+                if matches!(tag, "h1" | "h2" | "h3" | "h4" | "h5" | "h6") {
+                    self.close_in_scope(&["h1", "h2", "h3", "h4", "h5", "h6"], false);
+                    return;
+                }
+                if matches!(
+                    tag,
+                    "address"
+                        | "article"
+                        | "aside"
+                        | "blockquote"
+                        | "button"
+                        | "center"
+                        | "details"
+                        | "dialog"
+                        | "dir"
+                        | "div"
+                        | "dl"
+                        | "fieldset"
+                        | "figcaption"
+                        | "figure"
+                        | "footer"
+                        | "header"
+                        | "hgroup"
+                        | "listing"
+                        | "main"
+                        | "menu"
+                        | "nav"
+                        | "ol"
+                        | "pre"
+                        | "search"
+                        | "section"
+                        | "summary"
+                        | "ul"
+                        | "li"
+                        | "dd"
+                        | "dt"
+                ) {
+                    self.close_in_scope(&[tag], false);
+                    return;
+                }
+                for index in (0..self.stack.len()).rev() {
+                    let current = self.doc.tag(self.stack[index]).unwrap_or("");
+                    if current == tag {
+                        self.stack.truncate(index);
+                        return;
+                    }
+                    if special_html(current) {
+                        return;
+                    }
+                }
+            }
+        }
+    }
+}
+fn special_html(tag: &str) -> bool {
+    closes_p(tag)
+        || matches!(
+            tag,
+            "html"
+                | "head"
+                | "body"
+                | "applet"
+                | "button"
+                | "caption"
+                | "col"
+                | "colgroup"
+                | "dd"
+                | "dt"
+                | "li"
+                | "marquee"
+                | "object"
+                | "select"
+                | "tbody"
+                | "td"
+                | "tfoot"
+                | "th"
+                | "thead"
+                | "tr"
+                | "template"
+        )
+}
+
+pub fn parse(source: &str) -> Document {
+    parse_with_scripting(source, false)
+}
+pub fn parse_with_scripting(source: &str, scripting: bool) -> Document {
+    let source = &source[..floor_boundary(source, source.len().min(MAX_TEXT))];
+    let normalized = source.replace("\r\n", "\n").replace('\r', "\n");
+    let mut tokenizer = HtmlTokenizer::new(&normalized);
+    let mut builder = TreeBuilder::new(scripting);
+    loop {
+        let token = tokenizer.next();
+        let eof = matches!(token, HtmlToken::Eof);
+        builder.process(token);
+        tokenizer.raw = builder.raw.take();
+        tokenizer.skip_lf = std::mem::take(&mut builder.skip_lf);
+        tokenizer.foreign = builder.foreign();
+        if eof || builder.work == 0 || builder.doc.nodes.len() >= MAX_NODES {
+            break;
+        }
+    }
+    builder.doc
 }
 
 pub fn decode_entities(s: &str) -> String {
@@ -3429,7 +4983,11 @@ fn matches_compound(doc: &Document, id: NodeId, s: &str, depth: usize, budget: &
                     "empty" => doc.nodes[id]
                         .children
                         .iter()
-                        .all(|n| matches!(&doc.nodes[*n].kind,NodeKind::Text(t) if t.is_empty())),
+                        .all(|n| match &doc.nodes[*n].kind {
+                            NodeKind::Text(t) => t.is_empty(),
+                            NodeKind::Element(_) => false,
+                            _ => true,
+                        }),
                     "checked" => {
                         doc.attr(id, "checked").is_some() || doc.attr(id, "selected").is_some()
                     }
@@ -3620,6 +5178,217 @@ fn nth_matches(s: &str, index: usize) -> bool {
 mod tests {
     use super::*;
     #[test]
+    fn comments_doctypes_and_processing_instructions_keep_tree_positions() {
+        let d = parse(
+            "<!--before--><!DOCTYPE HTML PUBLIC 'public' 'system'><?build version?><html><!--html--><head><!--head--></head><!--between--><body>x<!--body--><?step done?></body><!--afterbody--></html><!--afterhtml-->",
+        );
+        assert_eq!(
+            d.outer_html(d.root),
+            "<!--before--><!DOCTYPE html PUBLIC \"public\" \"system\"><?build version><html><!--html--><head><!--head--></head><!--between--><body>x<!--body--><?step done></body><!--afterbody--></html><!--afterhtml-->"
+        );
+        assert_eq!(d.text_content(d.root), "x");
+        assert!(
+            matches!(&d.nodes[d.nodes[d.root].children[1]].kind, NodeKind::Doctype(Doctype { name, public_id: Some(public), system_id: Some(system), force_quirks: false }) if name == "html" && public == "public" && system == "system")
+        );
+    }
+    #[test]
+    fn malformed_comments_recover_without_swallowing_following_nodes() {
+        for (source, expected) in [
+            ("<!-->x", ""),
+            ("<!--->x", ""),
+            ("<!--a--!>x", "a"),
+            ("<!--a<!--b-->x", "a<!--b"),
+            ("<!--a\0-->x", "a�"),
+            ("<!bogus>x", "bogus"),
+            ("<?xml version='1'?>x", "?xml version='1'?"),
+            ("<!--a--", "a"),
+        ] {
+            let d = parse(source);
+            let comment = d
+                .nodes
+                .iter()
+                .find_map(|node| match &node.kind {
+                    NodeKind::Comment(data) => Some(data.as_str()),
+                    _ => None,
+                })
+                .unwrap();
+            assert_eq!(comment, expected, "{source:?}");
+            if source.ends_with('x') {
+                assert_eq!(d.text_content(d.query_selector("body").unwrap()), "x");
+            }
+        }
+    }
+    #[test]
+    fn processing_instruction_eof_and_targets_follow_tokenizer_rules() {
+        for input in [
+            "<?",
+            "<?start",
+            "<?start?",
+            "<?start ",
+            "<?start data",
+            "<?start ? ?",
+        ] {
+            let d = parse(input);
+            assert_eq!(d.nodes.len(), 4, "{input:?}");
+        }
+        let d = parse("<?Build\t ? data ??><body><?_step?><!DOCTYPE ignored>");
+        assert!(
+            matches!(&d.nodes[1].kind, NodeKind::ProcessingInstruction { target, data } if target == "Build" && data == "? data ?")
+        );
+        assert_eq!(d.text_content(1), "? data ?");
+        assert!(
+            !d.nodes
+                .iter()
+                .any(|node| matches!(node.kind, NodeKind::Doctype(_)))
+        );
+    }
+    #[test]
+    fn non_container_mutations_and_retained_character_data_are_bounded() {
+        let mut d = parse("<div><!--x--><?step value></div>");
+        let div = d.query_selector("div").unwrap();
+        assert_eq!(d.query_selector("div:empty"), Some(div));
+        let comment = d.nodes[div].children[0];
+        let pi = d.nodes[div].children[1];
+        let doctype = d.create_doctype(Doctype {
+            name: "html".into(),
+            public_id: None,
+            system_id: None,
+            force_quirks: false,
+        });
+        let text = d.create_text_node("child");
+        for parent in [comment, pi, doctype] {
+            d.append_child(parent, text);
+            assert!(d.nodes[parent].children.is_empty());
+        }
+        d.append_child(div, doctype);
+        assert!(d.nodes[doctype].parent.is_none());
+        let before = d.retained_bytes();
+        d.set_text_content(comment, "new comment");
+        d.set_text_content(pi, "new data");
+        d.set_text_content(doctype, "ignored");
+        assert_eq!(
+            d.retained_bytes(),
+            before - "x".len() - "value".len() + "new comment".len() + "new data".len()
+        );
+        assert_eq!(d.text_content(div), "");
+        assert_eq!(d.text_content(comment), "new comment");
+        let payload = "🦀".repeat(MAX_TEXT / 4 + 1);
+        let large = d.create_comment(&payload);
+        assert_eq!(d.text_content(large).len(), MAX_TEXT);
+        assert!(d.outer_html(d.root).len() <= MAX_TEXT);
+    }
+    #[test]
+    fn table_foster_parenting_preserves_text_order_and_implies_wrappers() {
+        let d = parse("before<table> alpha <div>beta</div> gamma <tr><td>A<td>B</table>after");
+        let body = d.query_selector("body").unwrap();
+        assert_eq!(
+            d.outer_html(body),
+            "<body>before alpha <div>beta</div> gamma <table><tbody><tr><td>A</td><td>B</td></tr></tbody></table>after</body>"
+        );
+        assert_eq!(d.query_selector_all("table > tbody > tr > td").len(), 2);
+        let d = parse("<table> \n <tr> \t <td>x</table>");
+        let table = d.query_selector("table").unwrap();
+        assert!(
+            matches!(&d.nodes[d.nodes[table].children[0]].kind, NodeKind::Text(text) if text == " \n ")
+        );
+        // The '<' before a non-tag is a separate tokenizer character token;
+        // all pending table characters must still move as one run.
+        let d = parse("<table> \n <3</table>");
+        assert_eq!(
+            d.outer_html(d.query_selector("body").unwrap()),
+            "<body> \n &lt;3<table></table></body>"
+        );
+    }
+    #[test]
+    fn table_modes_close_cells_rows_captions_and_column_groups() {
+        let d = parse("<table><caption>C<col class=c><tbody><td>A<tr><th>B<tfoot><td>C</table>");
+        assert_eq!(
+            d.outer_html(d.query_selector("table").unwrap()),
+            "<table><caption>C</caption><colgroup><col class=\"c\"></colgroup><tbody><tr><td>A</td></tr><tr><th>B</th></tr></tbody><tfoot><tr><td>C</td></tr></tfoot></table>"
+        );
+        let d = parse(
+            "<table><!--keep--><input type=HiDdEn><form id=f><input id=outside><tr><td>x</table>",
+        );
+        let table = d.query_selector("table").unwrap();
+        assert!(matches!(
+            d.nodes[d.nodes[table].children[0]].kind,
+            NodeKind::Comment(_)
+        ));
+        assert_eq!(
+            d.nodes[d.query_selector("input[type=HiDdEn]").unwrap()].parent,
+            Some(table)
+        );
+        assert_eq!(d.nodes[d.query_selector("#f").unwrap()].parent, Some(table));
+        assert_eq!(
+            d.nodes[d.query_selector("#outside").unwrap()].parent,
+            d.query_selector("body")
+        );
+    }
+    #[test]
+    fn nested_tables_and_stray_structural_end_tags_reprocess_safely() {
+        let d = parse(
+            "<table></body></caption></td><td>first<table><td>nested</table><td>second</table><table><table>",
+        );
+        assert_eq!(d.query_selector_all("body > table").len(), 3);
+        assert_eq!(d.query_selector_all("td > table").len(), 1);
+        assert_eq!(
+            d.query_selector_all("body > table > tbody > tr > td").len(),
+            2
+        );
+        let mut builder = TreeBuilder::new(false);
+        builder.work = 1;
+        builder.process(HtmlToken::start("td"));
+        assert_eq!(builder.work, 0);
+    }
+    #[test]
+    fn scripting_flag_raw_text_newlines_and_script_escape_states() {
+        let input = "<head><noscript><meta name=x></noscript></head><body><noscript><b>fallback</b></noscript><pre>\r\none\rtwo</pre><textarea>\n&lt;x&gt;</textarea>";
+        let disabled = Document::parse_with_scripting(input, false);
+        let enabled = Document::parse_with_scripting(input, true);
+        assert!(!disabled.scripting_enabled());
+        assert!(enabled.scripting_enabled());
+        assert_eq!(disabled.query_selector_all("meta").len(), 1);
+        assert!(enabled.query_selector("meta").is_none());
+        assert_eq!(disabled.query_selector_all("b").len(), 1);
+        assert!(enabled.query_selector("b").is_none());
+        assert_eq!(
+            disabled.text_content(disabled.query_selector("pre").unwrap()),
+            "one\ntwo"
+        );
+        assert_eq!(
+            disabled.text_content(disabled.query_selector("textarea").unwrap()),
+            "<x>"
+        );
+        let d = parse("<script><!--<script </script/");
+        assert_eq!(
+            d.text_content(d.query_selector("script").unwrap()),
+            "<!--<script </script/"
+        );
+        let d = parse("<script><!--<script>x</script>--></script><p>after");
+        assert_eq!(
+            d.text_content(d.query_selector("script").unwrap()),
+            "<!--<script>x</script>-->"
+        );
+        assert_eq!(d.text_content(d.query_selector("p").unwrap()), "after");
+        let d = parse("<head></head><style>unclosed");
+        assert_eq!(
+            d.outer_html(d.root),
+            "<html><head><style>unclosed</style></head><body></body></html>"
+        );
+        assert_eq!(
+            enabled.outer_html(enabled.query_selector_all("noscript")[1]),
+            "<noscript><b>fallback</b></noscript>"
+        );
+    }
+    #[test]
+    fn many_ignored_end_tags_use_iteration_and_node_limits_stop_comments() {
+        let d = parse(&format!("{}<p>done", "</>".repeat(100_000)));
+        assert_eq!(d.text_content(d.query_selector("p").unwrap()), "done");
+        let d = parse(&"<!--x-->".repeat(MAX_NODES + 1));
+        assert_eq!(d.nodes.len(), MAX_NODES);
+        assert!(d.retained_bytes() <= MAX_DOM_BYTES);
+    }
+    #[test]
     fn serialization_escapes_markup_and_preserves_foreign_siblings() {
         let d = parse(
             "<svg viewBox='0 0 20 20'><g/><rect width='10'/><text>&amp;&lt;</text></svg><input value='&quot;&amp;'><script>a < b && c</script>",
@@ -3682,7 +5451,7 @@ mod tests {
             .nodes
             .iter()
             .map(|n| match &n.kind {
-                NodeKind::Text(s) => s.len(),
+                NodeKind::Text(s) | NodeKind::Comment(s) => s.len(),
                 NodeKind::Element(e) => {
                     e.tag.len()
                         + e.attrs
@@ -3690,6 +5459,12 @@ mod tests {
                             .map(|(k, v)| k.len() + v.len())
                             .sum::<usize>()
                 }
+                NodeKind::Doctype(d) => {
+                    d.name.len()
+                        + d.public_id.as_ref().map_or(0, String::len)
+                        + d.system_id.as_ref().map_or(0, String::len)
+                }
+                NodeKind::ProcessingInstruction { target, data } => target.len() + data.len(),
                 NodeKind::Document => 0,
             })
             .sum();

@@ -243,7 +243,7 @@ impl Page {
     fn unexecuted(url: Url, html: &str, scripts_enabled: bool) -> Self {
         Self {
             url,
-            document: Document::parse(html),
+            document: Document::parse_with_scripting(html, scripts_enabled),
             runtime: Runtime::new(),
             images: HashMap::new(),
             diagnostics: Vec::new(),

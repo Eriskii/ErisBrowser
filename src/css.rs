@@ -86,6 +86,8 @@ pub struct ComputedStyle {
     pub flex_wrap: String,
     pub justify_content: String,
     pub align_items: String,
+    pub align_self: String,
+    pub order: i32,
     pub gap: f32,
     pub flex_grow: f32,
     pub flex_shrink: f32,
@@ -131,6 +133,8 @@ impl Default for ComputedStyle {
             flex_wrap: "nowrap".into(),
             justify_content: "normal".into(),
             align_items: "stretch".into(),
+            align_self: "auto".into(),
+            order: 0,
             gap: 0.0,
             flex_grow: 0.0,
             flex_shrink: 1.0,
@@ -745,6 +749,11 @@ pub fn compute_styles_with_rules(
         let mut style = ComputedStyle::inherited(parent);
         if matches!(node.kind, NodeKind::Document) {
             style.display = Display::Block;
+        } else if matches!(
+            node.kind,
+            NodeKind::Comment(_) | NodeKind::Doctype(_) | NodeKind::ProcessingInstruction { .. }
+        ) {
+            style.display = Display::None;
         }
         let tag = doc.tag(id).unwrap_or("");
         apply_user_agent(&mut style, doc, id, tag);
@@ -967,6 +976,8 @@ fn supported_property(name: &str) -> bool {
                 | "flex-wrap"
                 | "justify-content"
                 | "align-items"
+                | "align-self"
+                | "order"
                 | "gap"
                 | "row-gap"
                 | "column-gap"
@@ -1196,6 +1207,7 @@ fn resolve_vars(value: &str, variables: &BTreeMap<String, String>, depth: usize)
 }
 fn apply_user_agent(s: &mut ComputedStyle, doc: &Document, id: NodeId, tag: &str) {
     s.display = match tag {
+        "noscript" if doc.scripting_enabled() => Display::None,
         "html" | "body" | "div" | "p" | "section" | "article" | "main" | "header" | "footer"
         | "nav" | "aside" | "address" | "blockquote" | "figure" | "figcaption" | "h1" | "h2"
         | "h3" | "h4" | "h5" | "h6" | "ul" | "ol" | "li" | "dl" | "dt" | "dd" | "pre" | "form"
@@ -1362,6 +1374,7 @@ fn apply_property(
                 | "text-decoration"
                 | "justify-content"
                 | "align-items"
+                | "align-self"
                 | "list-style-type"
                 | "vertical-align"
         )
@@ -1563,6 +1576,29 @@ fn apply_property(
         }
         "justify-content" => s.justify_content = value.into(),
         "align-items" => s.align_items = value.into(),
+        "align-self" => {
+            if matches!(
+                value,
+                "auto"
+                    | "normal"
+                    | "stretch"
+                    | "start"
+                    | "end"
+                    | "self-start"
+                    | "self-end"
+                    | "flex-start"
+                    | "flex-end"
+                    | "center"
+                    | "baseline"
+            ) {
+                s.align_self = value.into();
+            }
+        }
+        "order" => {
+            if let Ok(order) = value.parse::<i32>() {
+                s.order = order;
+            }
+        }
         "gap" | "row-gap" | "column-gap" => {
             if let Some(v) = words(value)
                 .first()
@@ -1681,6 +1717,15 @@ fn copy_property(s: &mut ComputedStyle, p: &ComputedStyle, name: &str) {
         "position" => s.position = p.position.clone(),
         "opacity" => s.opacity = p.opacity,
         "box-sizing" => s.box_sizing = p.box_sizing.clone(),
+        "flex-direction" => s.flex_direction = p.flex_direction.clone(),
+        "flex-wrap" => s.flex_wrap = p.flex_wrap.clone(),
+        "justify-content" => s.justify_content = p.justify_content.clone(),
+        "align-items" => s.align_items = p.align_items.clone(),
+        "align-self" => s.align_self = p.align_self.clone(),
+        "order" => s.order = p.order,
+        "flex-grow" => s.flex_grow = p.flex_grow,
+        "flex-shrink" => s.flex_shrink = p.flex_shrink,
+        "flex-basis" => s.flex_basis = p.flex_basis,
         "top" => s.top = p.top,
         "right" => s.right = p.right,
         "bottom" => s.bottom = p.bottom,
@@ -2115,6 +2160,37 @@ impl<T> TransposeOption<T> for Option<Option<T>> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn flex_item_order_alignment_and_global_keywords() {
+        let doc = Document::parse(
+            "<style>main{order:3;align-self:center;flex-grow:2}#a{order:-2;align-self:flex-end}#b{order:inherit;align-self:inherit;flex-grow:inherit}#c{order:1.5;align-self:invalid}</style><main><i id=a></i><i id=b></i><i id=c></i><i id=d></i></main>",
+        );
+        let styles = compute_styles(&doc, &doc.stylesheets(), 400.0, 300.0);
+        let style = |selector| &styles[doc.query_selector(selector).unwrap()];
+        assert_eq!(style("#a").order, -2);
+        assert_eq!(style("#a").align_self, "flex-end");
+        assert_eq!(style("#b").order, 3);
+        assert_eq!(style("#b").align_self, "center");
+        assert_eq!(style("#b").flex_grow, 2.0);
+        assert_eq!(style("#c").order, 0);
+        assert_eq!(style("#c").align_self, "auto");
+        assert_eq!(style("#d").order, 0);
+        assert_eq!(style("#d").align_self, "auto");
+    }
+
+    #[test]
+    fn noscript_visibility_follows_document_scripting_flag() {
+        for scripting in [false, true] {
+            let doc = Document::parse_with_scripting(
+                "<body><noscript>Fallback</noscript></body>",
+                scripting,
+            );
+            let styles = compute_styles(&doc, &[], 400.0, 300.0);
+            let node = doc.query_selector("noscript").unwrap();
+            assert_eq!(styles[node].display == Display::None, scripting);
+        }
+    }
     #[test]
     fn fractional_grid_tracks_remain_distinct_from_percentages() {
         assert_eq!(

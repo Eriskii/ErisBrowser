@@ -3,6 +3,9 @@
 //! This is a custom language implementation, not an ECMAScript conformance claim.
 //! Every entry point enforces execution, nesting, source, and allocation limits.
 //! Scripts have DOM access but no filesystem, network, process, or host-eval access.
+//! JSON uses a separate strict parser, ordered properties, and bounded native
+//! traversal. Unpaired UTF-16 surrogates cannot be represented by this runtime's
+//! UTF-8 strings and are explicitly rejected instead of silently replaced.
 
 use crate::dom::{Document, NodeId, NodeKind};
 use std::collections::BTreeMap;
@@ -33,6 +36,7 @@ pub enum Value {
     Window,
     Console,
     Math,
+    Json,
     Style(NodeId),
     ClassList(NodeId),
     Native(Rc<Native>),
@@ -945,11 +949,54 @@ enum Reference {
     Property(Value, String),
 }
 
+#[derive(Default)]
+struct ScriptObject {
+    values: BTreeMap<String, Value>,
+    order: Vec<String>,
+}
+impl ScriptObject {
+    fn get(&self, key: &str) -> Option<&Value> {
+        self.values.get(key)
+    }
+    fn contains_key(&self, key: &str) -> bool {
+        self.values.contains_key(key)
+    }
+    fn insert(&mut self, key: String, value: Value) {
+        if !self.values.contains_key(&key) {
+            self.order.push(key.clone());
+        }
+        self.values.insert(key, value);
+    }
+    fn remove(&mut self, key: &str) {
+        self.values.remove(key);
+        self.order.retain(|item| item != key);
+    }
+}
+
+struct JsonRecord {
+    value: Value,
+    source: Option<String>,
+    children: BTreeMap<String, JsonRecord>,
+}
+struct JsonReader<'a> {
+    source: &'a str,
+    at: usize,
+    tokens: usize,
+    record: bool,
+}
+struct JsonWriter {
+    replacer: Option<Value>,
+    properties: Option<Vec<String>>,
+    gap: String,
+    stack: Vec<Value>,
+    output: String,
+}
+
 pub struct Runtime {
     environments: Vec<Environment>,
     functions: Vec<Function>,
     arrays: Vec<Vec<Value>>,
-    objects: Vec<BTreeMap<String, Value>>,
+    objects: Vec<ScriptObject>,
     handlers: BTreeMap<(NodeId, String), Vec<Value>>,
     property_handlers: BTreeMap<(NodeId, String), Value>,
     ready: Vec<(String, Value)>,
@@ -957,6 +1004,7 @@ pub struct Runtime {
     allocated: usize,
     calls: usize,
     eval_depth: usize,
+    json_depth: usize,
     pub console: Vec<String>,
     pub last_default_prevented: bool,
 }
@@ -980,6 +1028,7 @@ impl Runtime {
             ("this", Value::Window),
             ("console", Value::Console),
             ("Math", Value::Math),
+            ("JSON", Value::Json),
         ] {
             bindings.insert(
                 name.to_owned(),
@@ -1021,6 +1070,7 @@ impl Runtime {
             allocated: 2048,
             calls: 0,
             eval_depth: 0,
+            json_depth: 0,
             console: Vec::new(),
             last_default_prevented: false,
         }
@@ -1178,9 +1228,20 @@ impl Runtime {
         Ok(Value::Array(id))
     }
     fn object(&mut self, values: BTreeMap<String, Value>) -> Result<Value> {
-        self.charge(48 + values.len() * 128)?;
+        self.object_ordered(values)
+    }
+    fn object_ordered(
+        &mut self,
+        values: impl IntoIterator<Item = (String, Value)>,
+    ) -> Result<Value> {
+        self.charge(72)?;
+        let mut object = ScriptObject::default();
+        for (key, value) in values {
+            self.charge(160 + key.len().saturating_mul(2))?;
+            object.insert(key, value);
+        }
         let id = self.objects.len();
-        self.objects.push(values);
+        self.objects.push(object);
         Ok(Value::Object(id))
     }
     fn environment(&mut self, parent: usize) -> Result<usize> {
@@ -1401,11 +1462,11 @@ impl Runtime {
                 self.array(values)
             }
             Expr::Object(items) => {
-                let mut values = BTreeMap::new();
+                let mut values = Vec::new();
                 for (key, expression) in items {
-                    values.insert(key.clone(), self.eval(expression, env, doc)?);
+                    values.push((key.clone(), self.eval(expression, env, doc)?));
                 }
-                self.object(values)
+                self.object_ordered(values)
             }
             Expr::Unary(op, expression) => {
                 if op == "typeof"
@@ -1735,6 +1796,9 @@ impl Runtime {
             Value::Console if ["log", "warn", "error", "info", "debug"].contains(&key) => {
                 return Ok(Self::native(key, receiver));
             }
+            Value::Json if ["parse", "stringify"].contains(&key) => {
+                return Ok(Self::native(key, receiver));
+            }
             Value::Math => {
                 if key == "PI" {
                     return Ok(Value::Number(std::f64::consts::PI));
@@ -1792,18 +1856,34 @@ impl Runtime {
                     "textContent" | "innerText" => return self.string(doc.text_content(id)),
                     "innerHTML" => return self.string(serialize_children(doc, id)),
                     "outerHTML" => return self.string(serialize_node(doc, id, 0)),
+                    "value" if doc.tag(id) == Some("textarea") => {
+                        self.work(1 + doc.nodes.len() / 8)?;
+                        let text = doc.text_content(id);
+                        self.charge(text.len().saturating_mul(2))?;
+                        return self.string(text.replace("\r\n", "\n").replace('\r', "\n"));
+                    }
                     "id" | "title" | "value" | "href" | "src" | "type" => {
                         return self.string(doc.attr(id, key).unwrap_or(""));
                     }
                     "className" => return self.string(doc.attr(id, "class").unwrap_or("")),
                     "tagName" | "nodeName" => {
-                        return self.string(doc.tag(id).unwrap_or("#text").to_ascii_uppercase());
+                        return self.string(match &doc.nodes[id].kind {
+                            NodeKind::Document => "#document".into(),
+                            NodeKind::Text(_) => "#text".into(),
+                            NodeKind::Comment(_) => "#comment".into(),
+                            NodeKind::ProcessingInstruction { target, .. } => target.clone(),
+                            NodeKind::Doctype(doctype) => doctype.name.clone(),
+                            NodeKind::Element(element) => element.tag.to_ascii_uppercase(),
+                        });
                     }
                     "nodeType" => {
                         return Ok(Value::Number(match doc.nodes[id].kind {
                             NodeKind::Document => 9.0,
                             NodeKind::Element(_) => 1.0,
                             NodeKind::Text(_) => 3.0,
+                            NodeKind::Comment(_) => 8.0,
+                            NodeKind::ProcessingInstruction { .. } => 7.0,
+                            NodeKind::Doctype(_) => 10.0,
                         }));
                     }
                     "parentNode" | "parentElement" => {
@@ -1894,7 +1974,7 @@ impl Runtime {
         match receiver {
             Value::Object(id) => {
                 if !self.objects[id].contains_key(key) {
-                    self.charge(key.len() + 96)?;
+                    self.charge(key.len().saturating_mul(2) + 160)?;
                 }
                 self.objects[id].insert(key.into(), value);
             }
@@ -1974,7 +2054,12 @@ impl Runtime {
                     self.property_handlers.insert((id, key[2..].into()), value);
                     return Ok(());
                 }
-                let text = value.to_string();
+                let text =
+                    if key == "value" && doc.tag(id) == Some("textarea") && value == Value::Null {
+                        String::new()
+                    } else {
+                        value.to_string()
+                    };
                 self.charge(text.len())?;
                 match key {
                     "textContent" | "innerText" => {
@@ -1982,6 +2067,15 @@ impl Runtime {
                         doc.set_text_content(id, &text);
                     }
                     "innerHTML" => self.set_inner_html(id, &text, doc)?,
+                    "value" if doc.tag(id) == Some("textarea") => {
+                        // Until separate raw/default/dirty values exist, use
+                        // the same text storage as native editing and forms.
+                        self.ensure_dom_capacity(doc, 1)?;
+                        self.work(1 + text.len() / 16)?;
+                        self.charge(text.len().saturating_mul(2))?;
+                        let text = text.replace("\r\n", "\n").replace('\r', "\n");
+                        doc.set_text_content(id, &text);
+                    }
                     "className" => doc.set_attr(id, "class", &text),
                     "id" | "title" | "value" | "href" | "src" | "type" => {
                         doc.set_attr(id, key, &text)
@@ -2043,6 +2137,409 @@ impl Runtime {
         Ok(())
     }
 
+    fn json_enter(&mut self) -> Result<()> {
+        self.tick()?;
+        if self.json_depth >= MAX_DEPTH {
+            return Err(ScriptError::resource("JSON nesting limit exceeded"));
+        }
+        self.json_depth += 1;
+        Ok(())
+    }
+
+    fn json_keys(&mut self, id: usize) -> Result<Vec<String>> {
+        let object = &self.objects[id];
+        let count = object.order.len();
+        let bytes = object.order.iter().map(String::len).sum::<usize>();
+        self.work(1 + count.saturating_mul(1 + count.checked_ilog2().unwrap_or(0) as usize) / 8)?;
+        self.charge(bytes.saturating_add(count.saturating_mul(32)))?;
+        let mut keys = self.objects[id].order.clone();
+        keys.sort_by_key(|key| {
+            json_array_index(key)
+                .map(|index| (false, index))
+                .unwrap_or((true, 0))
+        });
+        Ok(keys)
+    }
+
+    fn json_parse(&mut self, input: Value, reviver: Value, doc: &mut Document) -> Result<Value> {
+        let text = self.json_text(input, doc, &mut Vec::new())?;
+        if text.len() > MAX_STRING {
+            return Err(ScriptError::resource("JSON source limit exceeded"));
+        }
+        self.work(1 + text.len() / 16)?;
+        self.charge(text.len().saturating_mul(2))?;
+        let revive = json_callable(&reviver);
+        let mut reader = JsonReader {
+            source: &text,
+            at: 0,
+            tokens: 0,
+            record: revive,
+        };
+        let (value, record) = reader.value(self)?;
+        reader.whitespace();
+        if reader.at != text.len() {
+            return Err(ScriptError::at(
+                "unexpected text after JSON value",
+                reader.at,
+            ));
+        }
+        if !revive {
+            return Ok(value);
+        }
+        let holder = self.object_ordered([(String::new(), value)])?;
+        self.json_revive(holder, "", &reviver, record.as_ref(), doc)
+    }
+
+    fn json_text(
+        &mut self,
+        value: Value,
+        doc: &mut Document,
+        arrays: &mut Vec<usize>,
+    ) -> Result<String> {
+        self.json_enter()?;
+        let result = (|| {
+            match value {
+                Value::String(text) => {
+                    self.charge(text.len())?;
+                    Ok(text.to_string())
+                }
+                Value::Number(number) => Ok(json_number(number)),
+                Value::Object(id) => {
+                    // OrdinaryToPrimitive with a string hint: the implicit
+                    // Object.prototype.toString returns a primitive first.
+                    if !self.objects[id].contains_key("toString") {
+                        return Ok("[object Object]".into());
+                    }
+                    for key in ["toString", "valueOf"] {
+                        let convert = self.get(Value::Object(id), key, doc)?;
+                        if json_callable(&convert) {
+                            let converted =
+                                self.call(convert, Vec::new(), Value::Object(id), doc)?;
+                            if json_primitive(&converted) {
+                                return self.json_text(converted, doc, arrays);
+                            }
+                        }
+                    }
+                    Err(ScriptError::type_error(
+                        "JSON input cannot be converted to a primitive string",
+                    ))
+                }
+                Value::Array(id) => {
+                    if arrays.contains(&id) {
+                        return Ok(String::new());
+                    }
+                    arrays.push(id);
+                    let mut text = String::new();
+                    let length = self.arrays[id].len();
+                    for index in 0..length {
+                        self.tick()?;
+                        let value = self.arrays[id]
+                            .get(index)
+                            .cloned()
+                            .unwrap_or(Value::Undefined);
+                        let part = if matches!(value, Value::Null | Value::Undefined) {
+                            String::new()
+                        } else {
+                            self.json_text(value, doc, arrays)?
+                        };
+                        if text
+                            .len()
+                            .saturating_add(part.len())
+                            .saturating_add(usize::from(index > 0))
+                            > MAX_STRING
+                        {
+                            return Err(ScriptError::resource("JSON source limit exceeded"));
+                        }
+                        self.charge(part.len() + usize::from(index > 0))?;
+                        if index > 0 {
+                            text.push(',');
+                        }
+                        text.push_str(&part);
+                    }
+                    arrays.pop();
+                    Ok(text)
+                }
+                _ => Ok(value.to_string()),
+            }
+        })();
+        self.json_depth -= 1;
+        result
+    }
+
+    fn json_revive(
+        &mut self,
+        holder: Value,
+        key: &str,
+        reviver: &Value,
+        record: Option<&JsonRecord>,
+        doc: &mut Document,
+    ) -> Result<Value> {
+        self.json_enter()?;
+        let result = (|| {
+            let value = self.get(holder.clone(), key, doc)?;
+            let record = record.filter(|record| json_same_value(&record.value, &value));
+            let context = if let Some(source) = record.and_then(|record| record.source.as_ref()) {
+                let source = self.string(source.clone())?;
+                self.object_ordered([("source".into(), source)])?
+            } else {
+                self.object(BTreeMap::new())?
+            };
+            let keys = match value {
+                Value::Object(id) => self.json_keys(id)?,
+                Value::Array(id) => {
+                    let len = self.arrays[id].len();
+                    self.charge(len.saturating_mul(32))?;
+                    (0..len).map(|i| i.to_string()).collect()
+                }
+                _ => Vec::new(),
+            };
+            for key in keys {
+                let child_record = record.and_then(|record| record.children.get(&key));
+                let child = self.json_revive(value.clone(), &key, reviver, child_record, doc)?;
+                if child == Value::Undefined {
+                    match value {
+                        Value::Object(id) => {
+                            self.work(1 + self.objects[id].order.len() / 8)?;
+                            self.objects[id].remove(&key);
+                        }
+                        Value::Array(id) => {
+                            if let Ok(index) = key.parse::<usize>()
+                                && let Some(slot) = self.arrays[id].get_mut(index)
+                            {
+                                *slot = Value::Undefined;
+                            }
+                        }
+                        _ => {}
+                    }
+                } else {
+                    self.set(value.clone(), &key, child, doc)?;
+                }
+            }
+            let key = self.string(key)?;
+            self.call(reviver.clone(), vec![key, value, context], holder, doc)
+        })();
+        self.json_depth -= 1;
+        result
+    }
+
+    fn json_stringify(
+        &mut self,
+        value: Value,
+        replacer: Value,
+        space: Value,
+        doc: &mut Document,
+    ) -> Result<Value> {
+        let properties = if let Value::Array(id) = replacer {
+            let len = self.arrays[id].len();
+            let mut seen = std::collections::BTreeSet::new();
+            let mut keys = Vec::new();
+            for index in 0..len {
+                self.tick()?;
+                let key = match &self.arrays[id][index] {
+                    Value::String(text) => Some(text.to_string()),
+                    Value::Number(number) => Some(json_number(*number)),
+                    _ => None,
+                };
+                if let Some(key) = key
+                    && !seen.contains(&key)
+                {
+                    self.charge(96 + key.len().saturating_mul(2))?;
+                    seen.insert(key.clone());
+                    keys.push(key);
+                }
+            }
+            Some(keys)
+        } else {
+            None
+        };
+        let gap = match space {
+            Value::Number(n) => " ".repeat(n.clamp(0.0, 10.0) as usize),
+            Value::String(text) => {
+                let units: Vec<u16> = text.encode_utf16().take(10).collect();
+                String::from_utf16(&units).map_err(|_| {
+                    ScriptError::type_error(
+                        "unpaired UTF-16 surrogate in JSON indentation is unsupported",
+                    )
+                })?
+            }
+            _ => String::new(),
+        };
+        let mut writer = JsonWriter {
+            replacer: json_callable(&replacer).then_some(replacer),
+            properties,
+            gap,
+            stack: Vec::new(),
+            output: String::new(),
+        };
+        let holder = self.object_ordered([(String::new(), value)])?;
+        let value = self.json_prepare(holder, "", &writer.replacer, doc)?;
+        if self.json_emit(value, &mut writer, 0, doc)? {
+            self.string(writer.output)
+        } else {
+            Ok(Value::Undefined)
+        }
+    }
+
+    fn json_prepare(
+        &mut self,
+        holder: Value,
+        key: &str,
+        replacer: &Option<Value>,
+        doc: &mut Document,
+    ) -> Result<Value> {
+        self.tick()?;
+        let mut value = self.get(holder.clone(), key, doc)?;
+        if !json_primitive(&value) {
+            let convert = self.get(value.clone(), "toJSON", doc)?;
+            if json_callable(&convert) {
+                let key = self.string(key)?;
+                value = self.call(convert, vec![key], value, doc)?;
+            }
+        }
+        if let Some(replacer) = replacer {
+            let key = self.string(key)?;
+            value = self.call(replacer.clone(), vec![key, value], holder, doc)?;
+        }
+        Ok(value)
+    }
+
+    fn json_append(&mut self, writer: &mut JsonWriter, text: &str) -> Result<()> {
+        if writer.output.len().saturating_add(text.len()) > MAX_STRING {
+            return Err(ScriptError::resource("JSON output string limit exceeded"));
+        }
+        self.work(1 + text.len() / 16)?;
+        self.charge(text.len())?;
+        writer.output.push_str(text);
+        Ok(())
+    }
+    fn json_quote(&mut self, writer: &mut JsonWriter, text: &str) -> Result<()> {
+        self.json_append(writer, "\"")?;
+        for character in text.chars() {
+            match character {
+                '"' => self.json_append(writer, "\\\"")?,
+                '\\' => self.json_append(writer, "\\\\")?,
+                '\u{8}' => self.json_append(writer, "\\b")?,
+                '\u{c}' => self.json_append(writer, "\\f")?,
+                '\n' => self.json_append(writer, "\\n")?,
+                '\r' => self.json_append(writer, "\\r")?,
+                '\t' => self.json_append(writer, "\\t")?,
+                c if c < '\u{20}' => self.json_append(writer, &format!("\\u{:04x}", c as u32))?,
+                c => {
+                    let mut buffer = [0; 4];
+                    self.json_append(writer, c.encode_utf8(&mut buffer))?;
+                }
+            }
+        }
+        self.json_append(writer, "\"")
+    }
+    fn json_indent(&mut self, writer: &mut JsonWriter, depth: usize) -> Result<()> {
+        if !writer.gap.is_empty() {
+            self.json_append(writer, "\n")?;
+            let gap = writer.gap.clone();
+            for _ in 0..depth {
+                self.json_append(writer, &gap)?;
+            }
+        }
+        Ok(())
+    }
+    fn json_emit(
+        &mut self,
+        value: Value,
+        writer: &mut JsonWriter,
+        depth: usize,
+        doc: &mut Document,
+    ) -> Result<bool> {
+        self.json_enter()?;
+        let result = self.json_emit_inner(value, writer, depth, doc);
+        self.json_depth -= 1;
+        result
+    }
+    fn json_emit_inner(
+        &mut self,
+        value: Value,
+        writer: &mut JsonWriter,
+        depth: usize,
+        doc: &mut Document,
+    ) -> Result<bool> {
+        match &value {
+            Value::Undefined | Value::Function(_) | Value::Native(_) => return Ok(false),
+            Value::Null => self.json_append(writer, "null")?,
+            Value::Bool(value) => {
+                self.json_append(writer, if *value { "true" } else { "false" })?
+            }
+            Value::Number(number) => self.json_append(
+                writer,
+                &if number.is_finite() {
+                    json_number(*number)
+                } else {
+                    "null".into()
+                },
+            )?,
+            Value::String(text) => self.json_quote(writer, text)?,
+            Value::Array(_) | Value::Object(_) | Value::Json | Value::Math => {
+                if writer.stack.contains(&value) {
+                    return Err(ScriptError::type_error(
+                        "cyclic value cannot be serialized as JSON",
+                    ));
+                }
+                writer.stack.push(value.clone());
+                let array = matches!(value, Value::Array(_));
+                self.json_append(writer, if array { "[" } else { "{" })?;
+                let keys = if let Value::Array(id) = value {
+                    let len = self.arrays[id].len();
+                    self.charge(len.saturating_mul(32))?;
+                    (0..len).map(|i| i.to_string()).collect::<Vec<_>>()
+                } else if let Some(properties) = &writer.properties {
+                    self.charge(properties.iter().map(|key| key.len() + 32).sum())?;
+                    properties.clone()
+                } else if let Value::Object(id) = value {
+                    self.json_keys(id)?
+                } else {
+                    Vec::new()
+                };
+                let mut count = 0;
+                for key in keys {
+                    let child = self.json_prepare(value.clone(), &key, &writer.replacer, doc)?;
+                    let omitted = matches!(
+                        child,
+                        Value::Undefined | Value::Function(_) | Value::Native(_)
+                    );
+                    if omitted && !array {
+                        continue;
+                    }
+                    if count > 0 {
+                        self.json_append(writer, ",")?;
+                    }
+                    self.json_indent(writer, depth + 1)?;
+                    if !array {
+                        self.json_quote(writer, &key)?;
+                        self.json_append(writer, ":")?;
+                        if !writer.gap.is_empty() {
+                            self.json_append(writer, " ")?;
+                        }
+                    }
+                    if omitted {
+                        self.json_append(writer, "null")?;
+                    } else {
+                        self.json_emit(child, writer, depth + 1, doc)?;
+                    }
+                    count += 1;
+                }
+                if count > 0 {
+                    self.json_indent(writer, depth)?;
+                }
+                self.json_append(writer, if array { "]" } else { "}" })?;
+                writer.stack.pop();
+            }
+            _ => {
+                return Err(ScriptError::type_error(
+                    "JSON serialization of host objects is unsupported",
+                ));
+            }
+        }
+        Ok(true)
+    }
+
     fn native_call(
         &mut self,
         native: &Native,
@@ -2061,6 +2558,12 @@ impl Runtime {
         self.work(units)?;
         let arg = |index: usize| args.get(index).cloned().unwrap_or(Value::Undefined);
         match &native.receiver {
+            Value::Json if name == "parse" => {
+                return self.json_parse(arg(0), arg(1), doc);
+            }
+            Value::Json if name == "stringify" => {
+                return self.json_stringify(arg(0), arg(1), arg(2), doc);
+            }
             Value::Window
                 if [
                     "String",
@@ -2580,6 +3083,359 @@ impl Runtime {
     }
 }
 
+impl JsonReader<'_> {
+    fn whitespace(&mut self) {
+        while self
+            .source
+            .as_bytes()
+            .get(self.at)
+            .is_some_and(|byte| matches!(byte, b' ' | b'\t' | b'\r' | b'\n'))
+        {
+            self.at += 1;
+        }
+    }
+    fn consume(&mut self, byte: u8) -> bool {
+        if self.source.as_bytes().get(self.at) == Some(&byte) {
+            self.at += 1;
+            true
+        } else {
+            false
+        }
+    }
+    fn token(&mut self) -> Result<()> {
+        self.tokens += 1;
+        if self.tokens > MAX_TOKENS {
+            Err(ScriptError::resource("JSON token limit exceeded"))
+        } else {
+            Ok(())
+        }
+    }
+    fn value(&mut self, runtime: &mut Runtime) -> Result<(Value, Option<JsonRecord>)> {
+        runtime.json_enter()?;
+        let result = self.value_inner(runtime);
+        runtime.json_depth -= 1;
+        result
+    }
+    fn value_inner(&mut self, runtime: &mut Runtime) -> Result<(Value, Option<JsonRecord>)> {
+        self.whitespace();
+        self.token()?;
+        let start = self.at;
+        let mut children = BTreeMap::new();
+        let value = match self.source.as_bytes().get(self.at).copied() {
+            Some(b'"') => {
+                let text = self.string()?;
+                runtime.string(text)?
+            }
+            Some(b'n') if self.source[self.at..].starts_with("null") => {
+                self.at += 4;
+                Value::Null
+            }
+            Some(b't') if self.source[self.at..].starts_with("true") => {
+                self.at += 4;
+                Value::Bool(true)
+            }
+            Some(b'f') if self.source[self.at..].starts_with("false") => {
+                self.at += 5;
+                Value::Bool(false)
+            }
+            Some(b'-' | b'0'..=b'9') => self.number()?,
+            Some(b'[') => {
+                self.at += 1;
+                self.whitespace();
+                let mut values = Vec::new();
+                if !self.consume(b']') {
+                    loop {
+                        let (value, record) = self.value(runtime)?;
+                        runtime.charge(64)?;
+                        if let Some(record) = record {
+                            children.insert(values.len().to_string(), record);
+                        }
+                        values.push(value);
+                        self.whitespace();
+                        if self.consume(b']') {
+                            break;
+                        }
+                        if !self.consume(b',') {
+                            return Err(ScriptError::at(
+                                "expected ',' or ']' in JSON array",
+                                self.at,
+                            ));
+                        }
+                    }
+                }
+                runtime.array(values)?
+            }
+            Some(b'{') => {
+                self.at += 1;
+                self.whitespace();
+                let mut entries = Vec::new();
+                if !self.consume(b'}') {
+                    loop {
+                        self.whitespace();
+                        self.token()?;
+                        let key = self.string()?;
+                        runtime.charge(160 + key.len().saturating_mul(2))?;
+                        self.whitespace();
+                        if !self.consume(b':') {
+                            return Err(ScriptError::at("expected ':' in JSON object", self.at));
+                        }
+                        let (value, record) = self.value(runtime)?;
+                        if let Some(record) = record {
+                            children.insert(key.clone(), record);
+                        }
+                        entries.push((key, value));
+                        self.whitespace();
+                        if self.consume(b'}') {
+                            break;
+                        }
+                        if !self.consume(b',') {
+                            return Err(ScriptError::at(
+                                "expected ',' or '}' in JSON object",
+                                self.at,
+                            ));
+                        }
+                    }
+                }
+                runtime.object_ordered(entries)?
+            }
+            _ => return Err(ScriptError::at("expected JSON value", self.at)),
+        };
+        let record = if self.record {
+            runtime.charge(192)?;
+            let source = if json_primitive(&value) {
+                runtime.charge(self.at - start + 24)?;
+                Some(self.source[start..self.at].to_owned())
+            } else {
+                None
+            };
+            Some(JsonRecord {
+                value: value.clone(),
+                source,
+                children,
+            })
+        } else {
+            None
+        };
+        Ok((value, record))
+    }
+    fn string(&mut self) -> Result<String> {
+        if !self.consume(b'"') {
+            return Err(ScriptError::at("expected quoted JSON string", self.at));
+        }
+        let mut text = String::new();
+        while let Some(character) = self.source[self.at..].chars().next() {
+            self.at += character.len_utf8();
+            match character {
+                '"' => return Ok(text),
+                '\\' => {
+                    let escape = self
+                        .source
+                        .as_bytes()
+                        .get(self.at)
+                        .copied()
+                        .ok_or_else(|| ScriptError::at("unfinished JSON escape", self.at))?;
+                    self.at += 1;
+                    match escape {
+                        b'"' => text.push('"'),
+                        b'\\' => text.push('\\'),
+                        b'/' => text.push('/'),
+                        b'b' => text.push('\u{8}'),
+                        b'f' => text.push('\u{c}'),
+                        b'n' => text.push('\n'),
+                        b'r' => text.push('\r'),
+                        b't' => text.push('\t'),
+                        b'u' => {
+                            let high = self.hex_unit()?;
+                            let scalar = if (0xd800..=0xdbff).contains(&high) {
+                                if !self.source[self.at..].starts_with("\\u") {
+                                    return Err(json_surrogate_error());
+                                }
+                                self.at += 2;
+                                let low = self.hex_unit()?;
+                                if !(0xdc00..=0xdfff).contains(&low) {
+                                    return Err(json_surrogate_error());
+                                }
+                                0x10000 + ((high as u32 - 0xd800) << 10) + (low as u32 - 0xdc00)
+                            } else if (0xdc00..=0xdfff).contains(&high) {
+                                return Err(json_surrogate_error());
+                            } else {
+                                high as u32
+                            };
+                            text.push(char::from_u32(scalar).ok_or_else(json_surrogate_error)?);
+                        }
+                        _ => return Err(ScriptError::at("invalid JSON escape", self.at - 1)),
+                    }
+                }
+                c if c < '\u{20}' => {
+                    return Err(ScriptError::at(
+                        "unescaped control character in JSON string",
+                        self.at - 1,
+                    ));
+                }
+                c => text.push(c),
+            }
+        }
+        Err(ScriptError::at("unterminated JSON string", self.at))
+    }
+    fn hex_unit(&mut self) -> Result<u16> {
+        let mut value = 0u16;
+        for _ in 0..4 {
+            let byte = self
+                .source
+                .as_bytes()
+                .get(self.at)
+                .copied()
+                .ok_or_else(|| ScriptError::at("unfinished JSON Unicode escape", self.at))?;
+            let digit = (byte as char)
+                .to_digit(16)
+                .ok_or_else(|| ScriptError::at("invalid JSON Unicode escape", self.at))?;
+            value = value * 16 + digit as u16;
+            self.at += 1;
+        }
+        Ok(value)
+    }
+    fn number(&mut self) -> Result<Value> {
+        let start = self.at;
+        self.consume(b'-');
+        if !self.consume(b'0') {
+            if !self
+                .source
+                .as_bytes()
+                .get(self.at)
+                .is_some_and(|byte| matches!(byte, b'1'..=b'9'))
+            {
+                return Err(ScriptError::at("invalid JSON number", self.at));
+            }
+            while self
+                .source
+                .as_bytes()
+                .get(self.at)
+                .is_some_and(u8::is_ascii_digit)
+            {
+                self.at += 1;
+            }
+        }
+        if self.consume(b'.') {
+            let digits = self.at;
+            while self
+                .source
+                .as_bytes()
+                .get(self.at)
+                .is_some_and(u8::is_ascii_digit)
+            {
+                self.at += 1;
+            }
+            if digits == self.at {
+                return Err(ScriptError::at(
+                    "expected fractional digit in JSON number",
+                    self.at,
+                ));
+            }
+        }
+        if self.consume(b'e') || self.consume(b'E') {
+            if !self.consume(b'+') {
+                self.consume(b'-');
+            }
+            let digits = self.at;
+            while self
+                .source
+                .as_bytes()
+                .get(self.at)
+                .is_some_and(u8::is_ascii_digit)
+            {
+                self.at += 1;
+            }
+            if digits == self.at {
+                return Err(ScriptError::at(
+                    "expected exponent digit in JSON number",
+                    self.at,
+                ));
+            }
+        }
+        let number = self.source[start..self.at]
+            .parse::<f64>()
+            .map_err(|_| ScriptError::at("invalid JSON number", start))?;
+        Ok(Value::Number(number))
+    }
+}
+
+fn json_surrogate_error() -> ScriptError {
+    ScriptError::type_error("unpaired UTF-16 surrogate in JSON string is unsupported")
+}
+fn json_callable(value: &Value) -> bool {
+    matches!(value, Value::Function(_) | Value::Native(_))
+}
+fn json_primitive(value: &Value) -> bool {
+    matches!(
+        value,
+        Value::Undefined | Value::Null | Value::Bool(_) | Value::Number(_) | Value::String(_)
+    )
+}
+fn json_same_value(left: &Value, right: &Value) -> bool {
+    match (left, right) {
+        (Value::Number(a), Value::Number(b)) => {
+            a.to_bits() == b.to_bits() || (a.is_nan() && b.is_nan())
+        }
+        _ => left == right,
+    }
+}
+fn json_array_index(key: &str) -> Option<u32> {
+    let index = key.parse::<u32>().ok()?;
+    (index != u32::MAX && index.to_string() == key).then_some(index)
+}
+// Rust supplies shortest round-trippable digits; ECMAScript chooses decimal
+// notation for exponents -6 through 20 and an explicit '+' for positive ones.
+fn json_number(number: f64) -> String {
+    if !number.is_finite() {
+        return Value::Number(number).to_string();
+    }
+    if number == 0.0 {
+        return "0".into();
+    }
+    let raw = number.abs().to_string();
+    let (mantissa, exponent) = raw
+        .split_once(['e', 'E'])
+        .map(|(m, e)| (m, e.parse::<i32>().unwrap_or(0)))
+        .unwrap_or((&raw, 0));
+    let decimal = mantissa.find('.').unwrap_or(mantissa.len()) as i32;
+    let digits: String = mantissa.chars().filter(|c| *c != '.').collect();
+    let leading = digits.bytes().take_while(|byte| *byte == b'0').count();
+    let digits = digits[leading..].trim_end_matches('0');
+    let position = decimal + exponent - leading as i32;
+    let power = position - 1;
+    let mut output = if number.is_sign_negative() {
+        "-".to_owned()
+    } else {
+        String::new()
+    };
+    if (-6..21).contains(&power) {
+        if position <= 0 {
+            output.push_str("0.");
+            output.push_str(&"0".repeat((-position) as usize));
+            output.push_str(digits);
+        } else if position as usize >= digits.len() {
+            output.push_str(digits);
+            output.push_str(&"0".repeat(position as usize - digits.len()));
+        } else {
+            output.push_str(&digits[..position as usize]);
+            output.push('.');
+            output.push_str(&digits[position as usize..]);
+        }
+    } else {
+        output.push_str(&digits[..1]);
+        if digits.len() > 1 {
+            output.push('.');
+            output.push_str(&digits[1..]);
+        }
+        output.push('e');
+        if power >= 0 {
+            output.push('+');
+        }
+        output.push_str(&power.to_string());
+    }
+    output
+}
+
 fn to_i32(number: f64) -> i32 {
     if !number.is_finite() || number == 0.0 {
         return 0;
@@ -2727,6 +3583,11 @@ fn import_node(doc: &mut Document, parent: NodeId, source: &Document, node: Node
     let id = match &source.nodes[node].kind {
         NodeKind::Document => return,
         NodeKind::Text(text) => doc.create_text_node(text),
+        NodeKind::Comment(text) => doc.create_comment(text),
+        NodeKind::ProcessingInstruction { target, data } => {
+            doc.create_processing_instruction(target, data)
+        }
+        NodeKind::Doctype(doctype) => doc.create_doctype(doctype.clone()),
         NodeKind::Element(element) => {
             let id = doc.create_element(&element.tag);
             for (key, value) in &element.attrs {
@@ -2759,6 +3620,9 @@ fn serialize_node(doc: &Document, id: NodeId, depth: usize) -> String {
     }
     match &doc.nodes[id].kind {
         NodeKind::Text(text) => escape_html(text, false),
+        NodeKind::Comment(text) => format!("<!--{text}-->"),
+        NodeKind::ProcessingInstruction { .. } => doc.outer_html(id),
+        NodeKind::Doctype(_) => doc.outer_html(id),
         NodeKind::Document => serialize_children_at(doc, id, depth),
         NodeKind::Element(element) => {
             let mut result = format!("<{}", element.tag);
@@ -2954,6 +3818,107 @@ mod tests {
     }
 
     #[test]
+    fn textarea_value_reads_initial_text_and_script_assignments_use_editor_storage() {
+        let mut doc = Document::parse(
+            r#"<textarea id=json value=ignored>{"label":"é🦀","count":2}</textarea>"#,
+        );
+        let mut runtime = Runtime::new();
+        assert_eq!(
+            runtime
+                .execute(
+                    "const field = document.getElementById('json'); JSON.parse(field.value).count;",
+                    &mut doc
+                )
+                .unwrap(),
+            Value::Number(2.0)
+        );
+        let node = doc.query_selector("#json").unwrap();
+        runtime.execute("let inputs = 0; field.addEventListener('input',function(){ inputs++; }); field.value = JSON.stringify({ done:true });",&mut doc).unwrap();
+        assert_eq!(doc.text_content(node), r#"{"done":true}"#);
+        assert_eq!(doc.attr(node, "value"), Some("ignored"));
+        assert_eq!(
+            runtime
+                .execute("JSON.parse(field.value).done", &mut doc)
+                .unwrap(),
+            Value::Bool(true)
+        );
+        assert_eq!(
+            runtime.execute("inputs", &mut doc).unwrap(),
+            Value::Number(0.0)
+        );
+        runtime
+            .execute("field.value = 'first\\r\\nsecond\\rthird\\n';", &mut doc)
+            .unwrap();
+        assert_eq!(doc.text_content(node), "first\nsecond\nthird\n");
+        assert_eq!(
+            runtime
+                .execute("field.value", &mut doc)
+                .unwrap()
+                .to_string(),
+            "first\nsecond\nthird\n"
+        );
+        runtime.execute("field.value = null;", &mut doc).unwrap();
+        assert!(doc.text_content(node).is_empty());
+        assert_eq!(
+            runtime
+                .execute("field.value", &mut doc)
+                .unwrap()
+                .to_string(),
+            ""
+        );
+        runtime.execute("field.value = 42;", &mut doc).unwrap();
+        assert_eq!(doc.text_content(node), "42");
+    }
+
+    #[test]
+    fn textarea_native_edit_input_script_and_form_values_stay_in_sync() {
+        let html = "<form action='/send'><textarea id=field name=body>initial</textarea><button id=send>Send</button></form><script>const field = document.getElementById('field'); let events = 0; field.addEventListener('input',function(event) { events++; event.target.value = event.target.value.toUpperCase(); });</script>";
+        let mut page = crate::page::Page::from_html(
+            url::Url::parse("https://example.test/").unwrap(),
+            html,
+            true,
+        );
+        assert!(page.diagnostics.is_empty(), "{:?}", page.diagnostics);
+        let node = page.document.query_selector("#field").unwrap();
+        let submit = page.document.query_selector("#send").unwrap();
+        assert!(page.can_edit_control(node));
+        for (sequence, typed, result) in [
+            (1, "é\nfirst", "É\nFIRST"),
+            (2, "É\nFIRST🦀b", "É\nFIRST🦀B"),
+        ] {
+            // This is the worker's textarea Edit storage and dispatch path;
+            // snapshots then read the same text for edit acknowledgements.
+            page.document.set_text_content(node, typed);
+            page.runtime
+                .dispatch_event(node, "input", &mut page.document)
+                .unwrap();
+            assert_eq!(page.document.text_content(node), result);
+            assert_eq!(
+                page.runtime
+                    .execute("field.value", &mut page.document)
+                    .unwrap()
+                    .to_string(),
+                result
+            );
+            assert_eq!(
+                page.runtime.execute("events", &mut page.document).unwrap(),
+                Value::Number(sequence as f64)
+            );
+            let snapshot = page.document.clone();
+            assert_eq!(snapshot.text_content(node), result);
+            let navigation = page.click(submit).unwrap();
+            let url = url::Url::parse(&navigation.address).unwrap();
+            assert_eq!(
+                url.query_pairs()
+                    .find(|(name, _)| name == "body")
+                    .unwrap()
+                    .1,
+                result.replace('\n', "\r\n")
+            );
+        }
+    }
+
+    #[test]
     fn large_ast_chains_and_native_output_are_bounded() {
         assert!(
             run(&format!("1{}", "+1".repeat(5000)))
@@ -3139,5 +4104,357 @@ mod tests {
             run("function value() { return\n 7; } value();").unwrap(),
             Value::Undefined
         );
+    }
+
+    #[test]
+    fn json_parses_strict_grammar_and_orders_object_properties() {
+        assert_eq!(run(r#"const value = JSON.parse('{"z":1,"2":"two","1":"one","a":true,"z":3,"__proto__":{"safe":7}}'); JSON.stringify(value);"#).unwrap().to_string(),r#"{"1":"one","2":"two","z":3,"a":true,"__proto__":{"safe":7}}"#);
+        assert_eq!(
+            run("JSON.stringify({ z:1, a:2, '10':10, '2':2 })")
+                .unwrap()
+                .to_string(),
+            r#"{"2":2,"10":10,"z":1,"a":2}"#
+        );
+        assert_eq!(
+            run("let value = { z:1 }; value.a = 2; value.z = 3; JSON.stringify(value);")
+                .unwrap()
+                .to_string(),
+            r#"{"z":3,"a":2}"#
+        );
+        assert_eq!(
+            run("JSON.parse(' \\t\\r\\n[null,true,false,-2.5e+2] ')[3]").unwrap(),
+            Value::Number(-250.0)
+        );
+        assert_eq!(run("JSON.parse(null)").unwrap(), Value::Null);
+        assert_eq!(run("JSON.parse(12)").unwrap(), Value::Number(12.0));
+        assert_eq!(run("JSON.parse([12])").unwrap(), Value::Number(12.0));
+        assert_eq!(run("JSON.parse([[true]])").unwrap(), Value::Bool(true));
+        assert_eq!(
+            run("JSON.parse({ toString:function() { return '17'; } })").unwrap(),
+            Value::Number(17.0)
+        );
+        assert_eq!(run("JSON.parse({ toString:function() { return {}; }, valueOf:function() { return '23'; } })").unwrap(),Value::Number(23.0));
+        assert!(matches!(
+            run("JSON.parse({ toString:1 })").unwrap_err().kind,
+            ErrorKind::Runtime("TypeError")
+        ));
+    }
+
+    #[test]
+    fn json_rejects_extensions_and_malformed_syntax() {
+        let mut document = Document::parse("");
+        for text in [
+            "",
+            "undefined",
+            "NaN",
+            "Infinity",
+            "+1",
+            "01",
+            "-01",
+            ".1",
+            "1.",
+            "1e",
+            "1e+",
+            "--1",
+            "0x10",
+            "true false",
+            "[1,]",
+            "[,1]",
+            "[1 2]",
+            "{a:1}",
+            "{'a':1}",
+            "{\"a\":1,}",
+            "{\"a\" 1}",
+            "/*comment*/1",
+            "//comment\n1",
+            "\u{feff}1",
+            "\u{a0}1",
+            "\"raw\nline\"",
+            "\"\\x41\"",
+            "\"\\v\"",
+            "\"\\u12gg\"",
+            "\"unfinished",
+            "\"\\🦀\"",
+            "[\"\\\"]",
+        ] {
+            let error = Runtime::new()
+                .json_parse(
+                    Value::String(Rc::from(text)),
+                    Value::Undefined,
+                    &mut document,
+                )
+                .unwrap_err();
+            assert!(
+                matches!(error.kind, ErrorKind::Runtime("SyntaxError")),
+                "{text:?}: {error}"
+            );
+        }
+        assert_eq!(
+            run("let name; try { JSON.parse('[1,]'); } catch (error) { name = error.name; } name;")
+                .unwrap()
+                .to_string(),
+            "SyntaxError"
+        );
+    }
+
+    #[test]
+    fn json_unicode_escapes_and_numbers_preserve_supported_values() {
+        let mut document = Document::parse("");
+        let mut runtime = Runtime::new();
+        let value = runtime
+            .json_parse(
+                Value::String(Rc::from(r#""\uD83E\uDD80\u0000\u2028é\/\b\f\n\r\t\"\\""#)),
+                Value::Undefined,
+                &mut document,
+            )
+            .unwrap();
+        assert_eq!(value.to_string(), "🦀\0\u{2028}é/\u{8}\u{c}\n\r\t\"\\");
+        let serialized = runtime
+            .json_stringify(value, Value::Undefined, Value::Undefined, &mut document)
+            .unwrap();
+        assert_eq!(
+            serialized.to_string(),
+            "\"🦀\\u0000\u{2028}é/\\b\\f\\n\\r\\t\\\"\\\\\""
+        );
+        for text in [r#""\ud800""#, r#""\udfff""#, r#""\ud800\u0041""#] {
+            let error = runtime
+                .json_parse(
+                    Value::String(Rc::from(text)),
+                    Value::Undefined,
+                    &mut document,
+                )
+                .unwrap_err();
+            assert!(matches!(error.kind, ErrorKind::Runtime("TypeError")));
+            assert!(error.message.contains("unpaired UTF-16"));
+        }
+        assert_eq!(
+            run("1 / JSON.parse('-0')").unwrap(),
+            Value::Number(f64::NEG_INFINITY)
+        );
+        assert_eq!(
+            run("JSON.parse('1e400')").unwrap(),
+            Value::Number(f64::INFINITY)
+        );
+        assert_eq!(
+            run("JSON.parse('9007199254740993')").unwrap(),
+            Value::Number(9007199254740992.0)
+        );
+        assert_eq!(
+            run("JSON.stringify([-0,NaN,Infinity,-Infinity,0.000001,0.0000001,1e20,1e21])")
+                .unwrap()
+                .to_string(),
+            "[0,null,null,null,0.000001,1e-7,100000000000000000000,1e+21]"
+        );
+        for (number, expected) in [
+            (f64::from_bits(1), "5e-324"),
+            (f64::MAX, "1.7976931348623157e+308"),
+            (-0.25, "-0.25"),
+            (120.0, "120"),
+            (1000000000000000100.0, "1000000000000000100"),
+        ] {
+            assert_eq!(json_number(number), expected);
+        }
+    }
+
+    #[test]
+    fn json_omits_unrepresentable_properties_and_rejects_cycles() {
+        assert_eq!(run("JSON.stringify(JSON)").unwrap().to_string(), "{}");
+        assert_eq!(
+            run("JSON.stringify(Math,['PI'])").unwrap().to_string(),
+            "{\"PI\":3.141592653589793}"
+        );
+        assert_eq!(run("JSON.stringify(undefined)").unwrap(), Value::Undefined);
+        assert_eq!(
+            run("JSON.stringify(function() {})").unwrap(),
+            Value::Undefined
+        );
+        assert_eq!(run("JSON.stringify({ missing:undefined, callable:function(){}, keep:null, values:[undefined,function(){},NaN] })").unwrap().to_string(),r#"{"keep":null,"values":[null,null,null]}"#);
+        assert_eq!(
+            run("const values = []; values.length = 3; JSON.stringify(values)")
+                .unwrap()
+                .to_string(),
+            "[null,null,null]"
+        );
+        assert_eq!(
+            run("const child = { x:1 }; JSON.stringify([child,child]);")
+                .unwrap()
+                .to_string(),
+            r#"[{"x":1},{"x":1}]"#
+        );
+        for source in [
+            "const value = {}; value.self = value; JSON.stringify(value);",
+            "const value = []; value.push(value); JSON.stringify(value);",
+        ] {
+            let error = run(source).unwrap_err();
+            assert!(matches!(error.kind, ErrorKind::Runtime("TypeError")));
+            assert!(error.message.contains("cyclic"));
+        }
+        assert_eq!(run("const value = {}; value.self=value; JSON.stringify(value,function(key,value) { if (key==='self') return undefined; return value; });").unwrap().to_string(),"{}");
+    }
+
+    #[test]
+    fn json_replacer_to_json_and_indentation_follow_callback_order() {
+        assert_eq!(run("let log = ''; const value = { toJSON:function(key) { log += 'toJSON:' + key + ';'; return { z:3,a:1 }; } }; const text = JSON.stringify(value,function(key,item) { log += 'replace:' + key + ';'; if (key === 'z') return item * 2; return item; },2); log + text;").unwrap().to_string(),"toJSON:;replace:;replace:z;replace:a;{\n  \"z\": 6,\n  \"a\": 1\n}");
+        assert_eq!(run("JSON.stringify({ a:1,b:2,nested:{a:3,b:4},arr:[1,2] },['b','nested','arr','b',true],1)").unwrap().to_string(),"{\n \"b\": 2,\n \"nested\": {\n  \"b\": 4\n },\n \"arr\": [\n  1,\n  2\n ]\n}");
+        assert_eq!(
+            run("JSON.stringify({ a:1, '2':2 },[2,'a',2],99)")
+                .unwrap()
+                .to_string(),
+            "{\n          \"2\": 2,\n          \"a\": 1\n}"
+        );
+        assert_eq!(
+            run("JSON.stringify([1],null,'abcdefghijk')")
+                .unwrap()
+                .to_string(),
+            "[\nabcdefghij1\n]"
+        );
+        assert!(
+            run("JSON.stringify([1],null,'123456789🦀')")
+                .unwrap_err()
+                .message
+                .contains("unpaired UTF-16")
+        );
+        assert_eq!(
+            run("JSON.stringify({a:1},false,true)").unwrap().to_string(),
+            r#"{"a":1}"#
+        );
+        assert_eq!(run("const value = { a:2 }; JSON.stringify(value,function(key,item) { if(key==='a') return this.a + 3; return item; });").unwrap().to_string(),r#"{"a":5}"#);
+        assert_eq!(
+            run("JSON.stringify(1,function(){return undefined;})").unwrap(),
+            Value::Undefined
+        );
+    }
+
+    #[test]
+    fn json_reviver_walks_children_deletes_and_exposes_original_source() {
+        assert_eq!(run(r#"let log = ''; const value = JSON.parse('{"b":2,"a":[1,2]}',function(key,item,context) { log += key + ';'; if (key==='b') return undefined; if (key==='0') return undefined; if (typeof item==='number') return item*3; return item; }); log + JSON.stringify(value);"#).unwrap().to_string(),r#"b;0;1;a;;{"a":[null,6]}"#);
+        assert_eq!(run(r#"JSON.parse('{"precise":9007199254740993}',function(key,item,context) { if (key==='precise') return context.source; return item; }).precise;"#).unwrap().to_string(),"9007199254740993");
+        assert_eq!(
+            run(r#"JSON.parse('  -0  ',function(key,item,context) { return context.source; });"#)
+                .unwrap()
+                .to_string(),
+            "-0"
+        );
+        assert_eq!(run(r#"JSON.parse('{"a":1,"b":2}',function(key,item,context) { if (key==='a') this.b=3; if (key==='b') return typeof context.source; return item; }).b;"#).unwrap().to_string(),"undefined");
+        assert_eq!(run(r#"JSON.parse('{"a":1,"b":0}',function(key,item,context) { if (key==='a') this.b=-0; if (key==='b') return typeof context.source; return item; }).b;"#).unwrap().to_string(),"undefined");
+        assert_eq!(run(r#"JSON.parse('{"a":1,"a":2}',function(key,item,context) { if(key==='a')return context.source; return item; }).a;"#).unwrap().to_string(),"2");
+        assert_eq!(
+            run("JSON.parse('3',function(){ return undefined; })").unwrap(),
+            Value::Undefined
+        );
+        assert_eq!(run("JSON.parse('true',false)").unwrap(), Value::Bool(true));
+        assert_eq!(run("let caught; try { JSON.parse('1',function(){ throw 'reviver failure'; }); } catch(error) { caught=error; } caught;").unwrap().to_string(),"reviver failure");
+    }
+
+    #[test]
+    fn json_limits_remain_uncatchable_in_callbacks_and_native_recursion() {
+        let mut document = Document::parse("");
+        for text in [
+            format!(
+                "{}0{}",
+                "[".repeat(MAX_DEPTH + 1),
+                "]".repeat(MAX_DEPTH + 1)
+            ),
+            format!("[{}0]", "0,".repeat(MAX_TOKENS)),
+            " ".repeat(MAX_STRING + 1),
+        ] {
+            let error = Runtime::new()
+                .json_parse(
+                    Value::String(Rc::from(text)),
+                    Value::Undefined,
+                    &mut document,
+                )
+                .unwrap_err();
+            assert!(error.is_resource_limit(), "{error}");
+        }
+        for body in [
+            "JSON.parse('1',function() { while(true) {} });",
+            "JSON.stringify(1,function() { while(true) {} });",
+            "function recur(key,value) { return JSON.stringify(value,recur); } JSON.stringify(1,recur);",
+            "let text='xxxxxxxx'; for(let i=0;i<13;i++)text+=text; const values=[text,text,text,text,text]; JSON.stringify(values);",
+        ] {
+            let mut runtime = Runtime::new();
+            let source = format!(
+                "let caught=false; let cleaned=false; try {{ {body} }} catch(error) {{ caught=true; }} finally {{ cleaned=true; }}"
+            );
+            let error = runtime.execute(&source, &mut document).unwrap_err();
+            assert!(error.is_resource_limit(), "{body}: {error}");
+            assert_eq!(runtime.lookup(0, "caught").unwrap().1, Value::Bool(false));
+            assert_eq!(runtime.lookup(0, "cleaned").unwrap().1, Value::Bool(false));
+            assert_eq!(runtime.json_depth, 0);
+        }
+        assert!(
+            run("JSON.stringify(document)")
+                .unwrap_err()
+                .message
+                .contains("host objects")
+        );
+        assert!(
+            run("JSON.parse('{\"__proto__\":{\"fetch\":1}}'); fetch('https://example.com');")
+                .unwrap_err()
+                .message
+                .contains("not defined")
+        );
+    }
+
+    #[test]
+    fn json_mutation_smoke_and_native_allocation_limits() {
+        let seeds = [
+            r#"{"x":[1,true,null,"é🦀"],"y":-1e-9}"#,
+            r#"[{},[],"\u0000\ud83e\udd80"]"#,
+            r#"{"__proto__":1,"__proto__":2}"#,
+        ];
+        let inserts = [
+            '{', '}', '[', ']', '"', '\\', ':', ',', '0', 'e', 'é', '🦀', '\0', '\n',
+        ];
+        let mut random = 0x1234_5678u32;
+        let mut document = Document::parse("");
+        for iteration in 0..500 {
+            let mut characters: Vec<char> = seeds[iteration % seeds.len()].chars().collect();
+            random ^= random << 13;
+            random ^= random >> 17;
+            random ^= random << 5;
+            let position = random as usize % characters.len();
+            match iteration % 3 {
+                0 => characters.insert(position, inserts[random as usize % inserts.len()]),
+                1 => {
+                    characters.remove(position);
+                }
+                _ => characters.truncate(position),
+            }
+            let source: String = characters.into_iter().collect();
+            let mut runtime = Runtime::new();
+            if let Ok(value) = runtime.json_parse(
+                Value::String(Rc::from(source)),
+                Value::Undefined,
+                &mut document,
+            ) {
+                let encoded = runtime
+                    .json_stringify(value, Value::Undefined, Value::Undefined, &mut document)
+                    .unwrap();
+                let value = runtime
+                    .json_parse(encoded.clone(), Value::Undefined, &mut document)
+                    .unwrap();
+                assert_eq!(
+                    runtime
+                        .json_stringify(value, Value::Undefined, Value::Undefined, &mut document)
+                        .unwrap(),
+                    encoded
+                );
+            }
+            assert_eq!(runtime.json_depth, 0);
+        }
+        let mut runtime = Runtime::new();
+        runtime.allocated = MAX_HEAP - 32;
+        let error = runtime
+            .json_parse(
+                Value::String(Rc::from("{\"a\":[1,2,3]}")),
+                Value::Undefined,
+                &mut document,
+            )
+            .unwrap_err();
+        assert!(error.is_resource_limit());
+        assert!(error.message.contains("allocation"));
+        assert_eq!(runtime.json_depth, 0);
     }
 }

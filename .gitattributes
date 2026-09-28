@@ -1,0 +1,2 @@
+# Preserve imported test bytes, including literal CR and NUL data.
+tests/upstream/wpt-html/** -text
