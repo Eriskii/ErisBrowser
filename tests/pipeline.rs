@@ -58,6 +58,11 @@ fn array_reductions_preserve_direction_live_values_and_accumulator_identity() {
 }
 
 #[test]
+fn logical_assignment_preserves_short_circuit_and_callback_pixels() {
+    assert_six_scripted_samples(include_str!("fixtures/logical-assignment.html"));
+}
+
+#[test]
 fn addition_preserves_conversions_utf16_and_compound_callback_pixels() {
     assert_six_scripted_samples(include_str!("fixtures/addition.html"));
 }

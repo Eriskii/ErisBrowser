@@ -1,6 +1,68 @@
 # Validation record
 
+## Short-circuit logical assignment
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **858 Rust tests** pass with `--include-ignored`: 694 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 49 pipeline and 40 confined-worker tests. None remain
+ignored. All **127 Python checks** and **57 exact pixel references** pass.
+
+The [implementation](../tests/conformance/logical-assignment.md) recognizes &&=,
+||= and ??=, reads a single saved reference and skips RHS/write when appropriate.
+Taken paths preserve original receivers, keys, exact right values and abrupt
+identity. Anonymous ordinary/arrow functions receive inferred names only for
+identifier targets; conversion storage is precharged. Eight focused groups
+cover truthiness without hooks, readonly and const skip/take paths, name flags,
+right association, early rejection, exhausted-allocation short circuits and
+uncatchable callback limits. Page and confined-worker fixtures verify six green
+then six blue samples. Resource ceilings remain unchanged.
+
+The [complete profile](../tests/conformance/test262-logical-assignment.md)
+retains **78 sources / 132 modes / 104 preflights**. It moves from **18 passed /
+66 failed / 48 unsupported** to **72 passed / twelve failed / 48 unsupported**,
+adding 54 passes without losses. All 104 controls verify, with no resources,
+harness errors, timeouts or adapter errors. Eighteen negative cases retain
+passes with specific target/binding diagnostics. Twelve failures now reach
+class syntax or missing Symbol; they remain explicit failures because their
+metadata does not declare those prerequisites. Every diagnostic change is
+retained. Actual baseline recording and a subsequent gate reproduce the full
+candidate observations; CI protects the complete baseline.
+
+All fifteen previous profiles retain **5,626 case and 1,112 preflight
+fingerprints**, policies and every observation. Existing resource outcomes in
+numeric parsing, identifiers, functions and sort remain nonpassing; no healthy
+baseline is assigned to them. HTML remains at 3,868 matches, two mismatches
+and six unsupported modes.
+
+The **15,000-case** mutation smoke run reports zero caught panics or invariant
+failures: 5,000 accepted HTML, 620 accepted/4,380 rejected scripts and
+3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and
+display-list size is 1,173 commands; 17 cases stop within paint limits. The new
+seed changes the inventory, so counts are not acceptance-rate comparisons.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+| --- | --- |
+| `eris-browser` | `112145418bf22b4d9a0e78b9b0cf277677a3edf88538bcc633475266273860bc` |
+| `eris-js` | `e9d33d19a55217d159ab6e337e6f4af21a69651a7325b762247505f7c3b5cdf4` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `9e457b906d96c731d00859d9b49979832a7943ad38e73ac22672117198002b6a` |
+
+Source-input SHA-256:
+`8c452cdea5acad7f74b0af769ec0686ed0f6eeda2ec67f47464a0230537dfbed`.
+Local records are `artifacts/*logical-assignment*`. Agent sessions remain
+unavailable; this is local validation, not independent-agent review. No native
+window, Vulkan or Chromium performance measurement is assigned to this
+checkpoint. Full compatibility, production security and the requested
+performance threshold remain unverified.
+
 ## Ordinary addition conversion
+
+Published checkpoint `789165b` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36440734155),
+including the addition gate, Rust 1.88 and the Vulkan probe.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **848 Rust tests** pass with `--include-ignored`: 686 library,

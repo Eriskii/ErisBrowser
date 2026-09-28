@@ -33,6 +33,7 @@ NUMERIC_CONVERSION_FEATURES = SUPPORTED_FEATURES.copy()
 NUMERIC_PARSING_FEATURES = SUPPORTED_FEATURES.copy()
 COMPOUND_ASSIGNMENT_FEATURES = SUPPORTED_FEATURES.copy()
 ADDITION_FEATURES = SUPPORTED_FEATURES.copy()
+LOGICAL_ASSIGNMENT_FEATURES = SUPPORTED_FEATURES | {'logical-assignment-operators'}
 PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -43,7 +44,7 @@ PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES
                     'numeric-conversion': NUMERIC_CONVERSION_FEATURES,
                     'numeric-parsing': NUMERIC_PARSING_FEATURES,
                     'compound-assignment': COMPOUND_ASSIGNMENT_FEATURES,
-                    'addition': ADDITION_FEATURES}
+                    'addition': ADDITION_FEATURES, 'logical-assignment': LOGICAL_ASSIGNMENT_FEATURES}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -412,6 +413,43 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                 for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
                     source = guard + setup + f'assert.sameValue({actual},{value});'
                     variants.append(('array-sort-' + name + suffix, source, expected, mode))
+    if profile == 'logical-assignment':
+        for operator, label, take, skip in (
+                ('&&=', 'and', '1', '0'), ('||=', 'or', '0', '1'),
+                ('??=', 'nullish', 'null', '0')):
+            guard = f'var enabled={take};assert.sameValue(enabled{operator}2,2);'
+            pairs = [
+                ('values', f'var a={take},b={skip},calls=0;function rhs(){{calls++;return "value";}}'
+                 f'assert.sameValue(a{operator}rhs(),"value");assert.sameValue(a,"value");'
+                 f'assert.sameValue(b{operator}rhs(),{skip});assert.sameValue(b,{skip});',
+                 'calls', '1', '2'),
+                ('skip-reference', f'var trace="",object={{get x(){{trace+="G";return {skip};}},set x(v){{throw "unused";}}}};'
+                 'function target(){trace+="O";return object;}function key(){trace+="K";return "x";}'
+                 f'assert.sameValue(target()[key()]{operator}(function(){{throw "unused";}})(),{skip});',
+                 'trace', '"OKG"', '"OKGS"'),
+                ('write-reference', f'var trace="",stored,other={{x:99}},object={{get x(){{trace+="G";return {take};}},'
+                 'set x(v){trace+="S";stored=v;}},selected=object;function target(){trace+="O";return selected;}'
+                 'function key(){trace+="K";return "x";}function rhs(){trace+="R";selected=other;return 7;}'
+                 f'assert.sameValue(target()[key()]{operator}rhs(),7);assert.sameValue(stored,7);assert.sameValue(other.x,99);',
+                 'trace', '"OKGRS"', '"OKGORS"'),
+                ('abrupt', f'var trace="",reason={{}},seen,object={{get x(){{trace+="G";return {take};}},'
+                 'set x(v){trace+="S";}};function rhs(){trace+="R";throw reason;}'
+                 f'try{{object.x{operator}rhs();}}catch(e){{seen=e;}}assert.sameValue(seen,reason);',
+                 'trace', '"GR"', '"GRS"'),
+                ('readonly', f'const held={skip};assert.sameValue(held{operator}(function(){{throw "unused";}})(),{skip});'
+                 f'const locked={take};var calls=0;function rhs(){{calls++;return 9;}}'
+                 f'assert.throws(TypeError,function(){{locked{operator}rhs();}});',
+                 'calls', '1', '0'),
+                ('name', f'var named={take};named{operator}function(){{}};'
+                 'var desc=Object.getOwnPropertyDescriptor(named,"name");assert.sameValue(desc.writable,false);'
+                 'assert.sameValue(desc.enumerable,false);assert.sameValue(desc.configurable,true);',
+                 'named.name', '"named"', '""'),
+            ]
+            for mode in ('sloppy', 'strict'):
+                for name, setup, actual, good, bad in pairs:
+                    for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                        variants.append(('logical-assignment-' + label + '-' + name + suffix,
+                                         guard + setup + f'assert.sameValue({actual},{value});', expected, mode))
     if profile == 'addition':
         guard = "assert.sameValue({valueOf:function(){return '1';}}+2,'12');"
         pairs = [

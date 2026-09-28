@@ -101,7 +101,15 @@ The six [compound bitwise assignments](../tests/conformance/compound-assignment.
 reuse a single evaluated reference, with ordered getter/RHS/conversion/setter
 behavior, strict writes and masked 32-bit shifts. Their complete inventory has
 606 passes and 180 unsupported modes.
-Logical assignment and BigInt/Symbol behavior remain separate gaps.
+BigInt/Symbol behavior remains incomplete.
+
+The three [logical assignments](../tests/conformance/logical-assignment.md)
+read their reference once and skip both RHS and write when their condition
+does not select assignment. Taken identifier assignments infer names for
+anonymous function/arrow expressions; member targets retain unnamed functions.
+Strict/readonly/const rules apply only to actual writes. The complete profile
+retains 72 passes, twelve class/Symbol failures and 48 unsupported modes, with
+104 verified controls.
 
 [Ordinary addition](../tests/conformance/addition.md) converts both saved operands
 left-to-right before selecting numeric addition or UTF-16 concatenation. Live

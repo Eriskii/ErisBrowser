@@ -1,0 +1,4457 @@
+{
+  "suite": "pinned-test262-logical-assignment-selection",
+  "full_test262_conformance": false,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "corpus_manifest_sha256": "a83f71b8a6b6a1523951d73a4711f024cf77ad3bf90e6698bc6224e7bfabf1a3",
+  "runner_policy": {
+    "format": 2,
+    "supported_features": [
+      "String.fromCodePoint",
+      "arrow-function",
+      "for-in-order",
+      "logical-assignment-operators",
+      "well-formed-json-stringify"
+    ],
+    "negative_intrinsic_errors": [
+      "Error",
+      "EvalError",
+      "RangeError",
+      "ReferenceError",
+      "SyntaxError",
+      "TypeError",
+      "URIError"
+    ],
+    "strict": true,
+    "modules": false,
+    "async_completion": false,
+    "host_hooks": false,
+    "timeout_seconds": 3.0
+  },
+  "runner_policy_sha256": "6f127a653c09ef49d48382570086b28407a0b1f6426fd888045621d72d3e89af",
+  "source_files": 78,
+  "source_tests": 78,
+  "negative_source_tests": 12,
+  "fixture_files": [],
+  "mode_cases": 132,
+  "counts": {
+    "unsupported": 48,
+    "passed": 18,
+    "failed": 66
+  },
+  "seconds": 0.168,
+  "binary_sha256": "c9e47a8245eaa6e14c60f1ae0874213bdef2b00a6dacb4648c845155fdb136a3",
+  "harness_preflight": [
+    {
+      "name": "success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:success",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "7fe7d94d9e84765c39e095ba88d5f54cb937df0d780785e185ff5dfd3bb74291",
+        "source_sha256": "2485acdeffa6a0eaa6c2483198a4384021f8b3dda5fbe0e31889ab4a21637849",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "assert-false",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:assert-false",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "6470c0827c0de6472342233bbb189008df60df75393ac98843660e2729be2e41",
+        "source_sha256": "d0d1f50a5cc28c1ea72f93a59ff43e2de631ed7fb9add9964dd1f29a38d065f4",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:same-value",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a4d7d481cb816dc706a6b8f84e7dbcea5f1d7c6393094ab35cb6d47ab0d39494",
+        "source_sha256": "22ae75695ff709309cb80f46b82cf58252826926b3bd8e3fadfae56c72c2f031",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "signed-zero",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:signed-zero",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "8e329999cda16ae14b530d61dcc7794f2b572e0809370e4c6b8ee9faff63d074",
+        "source_sha256": "862870d24485db4c8763181434fcc45886c6504cb6c14f24740f0f8107cf665a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "not-same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:not-same-value",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "738a0dd64663125af510063f604bec8e8f914f340be2cd3f430eaf1e5cf2cc0c",
+        "source_sha256": "524aa491b0239cd572a71a972f22557d333509659a55e3cb894bee0534ae8415",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "throws-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:throws-success",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "bdf648715c68784de062689b85db48546e44e14dc31df5644ff1e420e5623d1c",
+        "source_sha256": "06adf2351bff48eebd68184c6e4a9fb74e0c00f9acc6e14f4d35808a2a5017a7",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "throws-wrong-type",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:throws-wrong-type",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "d0f5b25203199d201f006e90e7bb6b78023d5bb7ea803581daf5caf2d52fcf9c",
+        "source_sha256": "99982c4b3bd8f707222e78c1742c855cbc5428ffb83171661392e6e461be1336",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "throws-missing",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:throws-missing",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "29bc8742a93e811f9680ef2098bfcb4984e86673ea3da41c377e907067cde255",
+        "source_sha256": "25cc89bd353c7f8aa2fb23afb2e1f2e52324e36a385647a498e157e5ccd29f5c",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "array-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:array-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a883850a23bc0f55e12bb5f3d09780b9935eb141e2af3892dabc5b5a35172096",
+        "source_sha256": "fccb44163731695919a45cb9cfbb1c99f5c508778937eac46f5fa5e97f5f60ea",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-success",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "b35a36c10460a813dbcc5a40b356d1ae07c2d54c272b35a717dd6bddf667c51e",
+        "source_sha256": "5f3a5de6c5896c29b489bec40463fbf565e86f993f00ca214a7e65241be28f04",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-writable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-writable",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "6cbcbbbcae8167c890124971bd07ceb81f6daf8e286ad12025bb4a82a0672944",
+        "source_sha256": "58e50c0eb345267a90f035e104dc54b60455d981e5364651b5e0c1e4fda0deb5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-enumerable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-enumerable",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "2a651b1aefd71f4a017d564e91b842569e6cd78d0145d03b20b48d0836c3c56d",
+        "source_sha256": "6a029d9d45542346ad7bf0b5036fa32346522b049c4925588dc40db894ea19a5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-configurable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-configurable",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "e18cf4dde2cd44993c84b43d6a01e68c021d56365f4e15673fe1fa2bdb774cd8",
+        "source_sha256": "f0ec83e690c6d34e68680b9d10a7931ee5b4fba6810ee920902881494202d2e6",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-success",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "3c5650218df0ef937e5a3ecd6f9c7460f960e61f0c9832515a63b77b832d78cd",
+        "source_sha256": "2485acdeffa6a0eaa6c2483198a4384021f8b3dda5fbe0e31889ab4a21637849",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-assert-false",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-assert-false",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "11fe2e709b0565e340d83176bc248895795e43c8d9eaa47619dcd939374937e7",
+        "source_sha256": "d0d1f50a5cc28c1ea72f93a59ff43e2de631ed7fb9add9964dd1f29a38d065f4",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-same-value",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "03efed7bd86096fb67e4d8e0941b4768e61e8f7068c95f9b5ac63c86a95ee96f",
+        "source_sha256": "22ae75695ff709309cb80f46b82cf58252826926b3bd8e3fadfae56c72c2f031",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-signed-zero",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-signed-zero",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "b4ce5d0baa51a09beb8d14cc65bf66e805a4f48e03ad306bd044f6bf0fba7631",
+        "source_sha256": "862870d24485db4c8763181434fcc45886c6504cb6c14f24740f0f8107cf665a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-not-same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-not-same-value",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "615fa57db6e08e455e124d6f3eaf118f2e4eab20161f51aab723923c9a0f8d36",
+        "source_sha256": "524aa491b0239cd572a71a972f22557d333509659a55e3cb894bee0534ae8415",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-throws-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-throws-success",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "bafcbdea8809ac7c1628fe502c6a060a0e2ad7ca9a8598faf3e902734673c4e4",
+        "source_sha256": "06adf2351bff48eebd68184c6e4a9fb74e0c00f9acc6e14f4d35808a2a5017a7",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-throws-wrong-type",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-throws-wrong-type",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "f83aeacb9dc37b65255ab7bfd51a0d8052e8da2915d8fb7fe06777292780b078",
+        "source_sha256": "99982c4b3bd8f707222e78c1742c855cbc5428ffb83171661392e6e461be1336",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-throws-missing",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-throws-missing",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "a6d552fcd92dddd52b6239ebe82177f95648349f2b07847a36307aada0579e35",
+        "source_sha256": "25cc89bd353c7f8aa2fb23afb2e1f2e52324e36a385647a498e157e5ccd29f5c",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-array-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-array-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "8f8086b6d6f7fc051eac7270c9ca4be3f85cbcb5ae935dabd4c6d264cc917338",
+        "source_sha256": "fccb44163731695919a45cb9cfbb1c99f5c508778937eac46f5fa5e97f5f60ea",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-success",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "a46db4f2087865126ceac90ba93407c3877f00c0c698d8f4e604111f395780ba",
+        "source_sha256": "5f3a5de6c5896c29b489bec40463fbf565e86f993f00ca214a7e65241be28f04",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-writable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-writable",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "412b91a8d1093f526f34b58ad29668225c387226712184ef8d79e36cd470bccd",
+        "source_sha256": "58e50c0eb345267a90f035e104dc54b60455d981e5364651b5e0c1e4fda0deb5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-enumerable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-enumerable",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "c571e812c4ddab362d7caabd07b4b3ed427f9962e91e728c61b272fe7f8004eb",
+        "source_sha256": "6a029d9d45542346ad7bf0b5036fa32346522b049c4925588dc40db894ea19a5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-configurable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-configurable",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "634b734df32d4d581162c58f74ddb831dc337fce988dd52d74f23fca1d93a126",
+        "source_sha256": "f0ec83e690c6d34e68680b9d10a7931ee5b4fba6810ee920902881494202d2e6",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-receiver",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-receiver",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "9e721632d9643b3489c411eb2d5a3f87a08c3bea9f9cf9a673ebb102b24a5974",
+        "source_sha256": "d0e7bb44576a0bf890774b1736e79cd0166a2e32fe030a3ba86e5015f2c244bf",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-unbound-write",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-unbound-write",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "2916d638664aa431071561dff0ba0337d5f005f08424cfe8c67d07c93c0cf792",
+        "source_sha256": "150659db8ea36d09b80df3f046ab341af7b1f64b691051fa9c866e2da4c5314d",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-readonly-write",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-readonly-write",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "937d5d1a945b824e6d6d60304aea3337db809214469240d437ba6081a9bec231",
+        "source_sha256": "a1cce38d2daa07cbcc33a2d2db74f0e720a5f0deee03767480c699db33b4882b",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-delete",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-delete",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "2c630739c1458f6444b889a03992a2be2de36b0e00dd56522bf0844fe2c54a2c",
+        "source_sha256": "cb997e967d015ba97c122c1ea746bdd0fbcb2659573645728918558d1349a965",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-arguments",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-arguments",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "54df002c837ca5ed70e5d5b49dc0375e40bbfb6b88580dfdc66b5ee7bec44171",
+        "source_sha256": "a77f7981af7c3910476440f16ac4c18b7ffaf381714ad33e70fa0d0d5c953887",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-tdz",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-tdz",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "cf503031beb1832405ad98ea6ca81c8b6de9bb1f90143829dac8788b2affbbfd",
+        "source_sha256": "2e0d83e7123f5fa749a3f10484c95aa95eac4140438da59faa19edfb82d1061f",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-values",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-values",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "9297299c94139da8d770dc8ed3d782da46694b118ae87c470e8eecb5d50b10c2",
+        "source_sha256": "2ffbb1f5cf0cde6a8b6e9c39bfedc347be3ab34ea5aec62ca30d58b66d5a4b1b",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-values-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-values-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "2f92599f4ccd47b45714787d2b1b1baf19cf516a096c934ead2bf01d0ea878b3",
+        "source_sha256": "8a77f49e870605c7956312cf9064ccd730496c85eb5b7459de6167f2501f691d",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-skip-reference",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-skip-reference",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "451e6d281e4824f7f5802b76b019765e9e51cda946be5475477a1c1c9fb71529",
+        "source_sha256": "b47f94dd96ee9aa37dbe6a0cab8505fb8e597156291ebae6b13a4cec8d1bea5a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-skip-reference-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-skip-reference-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "8ca3ea5d58b019d70b516e64a17964a3c89f1a9b70b7b116ca77bcfcccca6bd0",
+        "source_sha256": "f3b26fd7f55766adbd57020b5c245669bc5d4ea3139cbd991ec13eabc53c8ede",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-write-reference",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-write-reference",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "982d2a34f25781d689dd458a4d7d1ef0901ed6dbd4459d7133b5b401ebbb36fa",
+        "source_sha256": "87ac39183069754bd34daee2553379cccfe4d37a161ad96a3491d56659d4fcc0",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-write-reference-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-write-reference-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "9a02fdd7c7e8101c5987266e8da2b2afdfde062d419980c0831acd58819261ae",
+        "source_sha256": "5b5c5a606d636b52f63927fc180c988ddddf43b762274a33a662e3ff3790248b",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-abrupt",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-abrupt",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "eee1fc49de1a4df8f1924aa442da27a00771292d8569e498cbf0f6b3b56a28a0",
+        "source_sha256": "9c08c65eb213f70116ce4a9bdc1b4e184e4e33560f34eb106989119ad7a3f6c7",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-abrupt-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-abrupt-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "930b6a622d766c70598ebd01db07858bff7ebcdff7fce05b554084105edd78d0",
+        "source_sha256": "513e83d65daaaee1b956a0199a78424a8d6e6ada4b5eedcf7cb6d082349a6eba",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-readonly",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-readonly",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "6f2e01f5078f2ecd09dd035858b03432026ab77eaadde755cb8d6d73b110fb2b",
+        "source_sha256": "bb15bdfce89572ee51cbe1d0dd5584d171cc2cb79bd5d1900d8b50f64aba61ac",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-readonly-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-readonly-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "e3b4f8e15b7220b9340090f0457f381f4772550ff3c146f1ecbf2a4113dd57cd",
+        "source_sha256": "304538029d1733574d5fee1344364e0cef46538e393072cc8ff35d3bca3d9018",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-name",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-name",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "1cda52ae300da93ec2a28f95073b38f8ece3b4a389a2a677086b020f0339ccd3",
+        "source_sha256": "f7a6bf7320fed3be2306f6e8059704c1ad868a21987d39b42fe2c968dca61d55",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-name-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-name-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "225ff3b9b56967dd09c333cd114a550aec9167306db7ffb8da3fb10ad6798bf6",
+        "source_sha256": "3cff56f8f1afe2a112031f1d6332b0b2e58e90fd7334319938e71aefc0be2243",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-values",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-values",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "d791bd2e2e29c68e64c829a74b50b2ecf1ad2d888425d6e37e4413efe158d442",
+        "source_sha256": "2ffbb1f5cf0cde6a8b6e9c39bfedc347be3ab34ea5aec62ca30d58b66d5a4b1b",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-values-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-values-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "82ba962efe787e4fe43ae3fd455489ada4aa694787f239b253675ad5c3946b84",
+        "source_sha256": "8a77f49e870605c7956312cf9064ccd730496c85eb5b7459de6167f2501f691d",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-skip-reference",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-skip-reference",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "ec1c26e063b779ea98bfe807c95ac1caa412a57ccc4844202a437862bd2446c7",
+        "source_sha256": "b47f94dd96ee9aa37dbe6a0cab8505fb8e597156291ebae6b13a4cec8d1bea5a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-skip-reference-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-skip-reference-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "c874f2e0f927ece9a61a6267241c202558d4ff5bfb5a4c9d0d65faee594abaf4",
+        "source_sha256": "f3b26fd7f55766adbd57020b5c245669bc5d4ea3139cbd991ec13eabc53c8ede",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-write-reference",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-write-reference",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "76135671a64e7175a642c7e668acf409ef16ef5ce0b132f6e0ffc8056e465f63",
+        "source_sha256": "87ac39183069754bd34daee2553379cccfe4d37a161ad96a3491d56659d4fcc0",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-write-reference-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-write-reference-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "7285d7c96a5bc9e37666aaa2ba78b324b562f9085cbccd969aa714825b19dd72",
+        "source_sha256": "5b5c5a606d636b52f63927fc180c988ddddf43b762274a33a662e3ff3790248b",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-abrupt",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-abrupt",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "bc6140777c0c76dd117de01cf50ad3c7b571cdfc3f03d7897cc40b953ce023de",
+        "source_sha256": "9c08c65eb213f70116ce4a9bdc1b4e184e4e33560f34eb106989119ad7a3f6c7",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-abrupt-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-abrupt-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "472a8a2d0a59549bb402f6b4b3b703d96d6afe7013a5d458ae0bdab0816ab48d",
+        "source_sha256": "513e83d65daaaee1b956a0199a78424a8d6e6ada4b5eedcf7cb6d082349a6eba",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-readonly",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-readonly",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "19a4d8185fb104c12b12048ebf45e9a3b5f3300e3890882e4c604a3d28fb41a3",
+        "source_sha256": "bb15bdfce89572ee51cbe1d0dd5584d171cc2cb79bd5d1900d8b50f64aba61ac",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-readonly-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-readonly-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "01e4864516d8611310cb3a966cb24f400a9f3b42d7de5dc9d646cc7f1679768a",
+        "source_sha256": "304538029d1733574d5fee1344364e0cef46538e393072cc8ff35d3bca3d9018",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-name",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-name",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "8bf8dcb013c109280a4055bf819c4e45453832831378f7754d261d70841f7905",
+        "source_sha256": "f7a6bf7320fed3be2306f6e8059704c1ad868a21987d39b42fe2c968dca61d55",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-and-name-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-and-name-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "811399f01b6f65d3158c1ff7c234566244dc2370b737becd7fbf50805079d594",
+        "source_sha256": "3cff56f8f1afe2a112031f1d6332b0b2e58e90fd7334319938e71aefc0be2243",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-values",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-values",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "146587a6118a73e495fe754cbccc3e4fa3e5b396b7d0250da7261506f57ca1d5",
+        "source_sha256": "2850fc1d7266340add9b4354eae89dac171d80caf79354cf05bb6fbccc4d7e61",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-values-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-values-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "bf5ca4153369d324b02a74cae38d6986c23b024c787dd1d00c159c6e7b47ee31",
+        "source_sha256": "538262aa85dd3320f135956c4d84067ccb7bcfec0b29371ce88d3fd729fb313b",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-skip-reference",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-skip-reference",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "dddffb07acc57d2b4e599aea5246d935e6adf83c752f0cedbfffefdb35bb77ce",
+        "source_sha256": "be8c515698f645732b7297ca3cd6bc476d3d4212e16302a9c3631d6ae73b9922",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-skip-reference-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-skip-reference-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "f487c0828350583671037d6dc1f8e112712b49b970c40e4e0bb6f204532251e9",
+        "source_sha256": "568c9916c8b4ca4f379ff1f8fdb6627612cb5863248b616ceec039cd3c444bca",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-write-reference",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-write-reference",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "98fc83f797aaec74c7e32b6d48cceacde679330c9c44ef7a39e14469bf995d2a",
+        "source_sha256": "70af049ddb15b953abe707f04d6a8c004a9ca49914902a3c93cf3047217eb532",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-write-reference-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-write-reference-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "5b4e052df5b030ab1903d11900a9ee184ba8da1457735bc1b1b0df000ca31d4d",
+        "source_sha256": "7ad756e1facee354940c474f427b3b7fb5cce4efb36309ebbf8c1166f3f3a639",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-abrupt",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-abrupt",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "1b8c888253def60787cc6f2aa02646975b4f0d14d67d9b68fbcdf7e4866e99ed",
+        "source_sha256": "50ef0e670acf4ae152247f511b5b51b521256ddebe0f8ba2e4a52b8628d8199a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-abrupt-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-abrupt-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "fd40c9fbfe497fa04ca23e7bd8a6f90fc70c611cc804ca333c27fa416f0cdbd5",
+        "source_sha256": "59aa5aa592e1c6ca1b24494fe945a5b046ebda3c7e98a29d481ca8921ff9aaaf",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-readonly",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-readonly",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "d64c62f336267c0b513df30ea949dc320c7e84aa0804c29005d680b92b99ae7e",
+        "source_sha256": "a8850c89918dd1824c7a23852f289d22397c64c921974bc5c4f3ebdc02899eed",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-readonly-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-readonly-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "1f2a623bfd381dd0894b1d6617597955f6771e5b8706c5411aa5fec9449c7b51",
+        "source_sha256": "c0dfb2862213f8195b836198a5550a33d8d6467fa9d8b3b5e1cdeca8ba3c1ca9",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-name",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-name",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "851dd8e577f5d2b53365fc7614436dc7ec2935e0f3bc3f576f3515e5680cd19b",
+        "source_sha256": "db380b6edaa3a26f61fcba20528a0457986b0899587b52210e7f5aa2ae9d631b",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-name-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-name-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "ea190d7fbf61d032926283b464978f04e6c8491e3bd47c531aaeb22bcbdc674e",
+        "source_sha256": "3346f5dbf4b8560d4a3e3ecb16b4cc1eee1c7c83922888185ce5c0c14629f05b",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-values",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-values",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "405e701af474066d3124100b565907987cc6a871b61b210518b1b966ef7aa12f",
+        "source_sha256": "2850fc1d7266340add9b4354eae89dac171d80caf79354cf05bb6fbccc4d7e61",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-values-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-values-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "9a9e87f17fc985e50941f36699a0f4f1c6ed9c3796e1f359c0b6117f1ebbe6f4",
+        "source_sha256": "538262aa85dd3320f135956c4d84067ccb7bcfec0b29371ce88d3fd729fb313b",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-skip-reference",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-skip-reference",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "ca236e80b39414d8a2f8a6765a0f1047d5013d12c0aab090f5662a308cc95106",
+        "source_sha256": "be8c515698f645732b7297ca3cd6bc476d3d4212e16302a9c3631d6ae73b9922",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-skip-reference-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-skip-reference-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "65afde8e516891716fdaa2ad61aeff666f26696fd2401d6c47b919db709d5951",
+        "source_sha256": "568c9916c8b4ca4f379ff1f8fdb6627612cb5863248b616ceec039cd3c444bca",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-write-reference",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-write-reference",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "3a0426482563e41c333ed0dfe5a7226983e8a5d2ddbf6567700d248aea0ad18c",
+        "source_sha256": "70af049ddb15b953abe707f04d6a8c004a9ca49914902a3c93cf3047217eb532",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-write-reference-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-write-reference-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "87af7c7a0bcd3a6d96bccf9be03267f5e1f3406fb76f2f5a4cbd84e016dcb27c",
+        "source_sha256": "7ad756e1facee354940c474f427b3b7fb5cce4efb36309ebbf8c1166f3f3a639",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-abrupt",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-abrupt",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "a2444d3dfb9848115a205c697160ec77b37f1effa42bb765b2bb4f47ec09c67b",
+        "source_sha256": "50ef0e670acf4ae152247f511b5b51b521256ddebe0f8ba2e4a52b8628d8199a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-abrupt-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-abrupt-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "e0dc2c544a6bdf4cfd494ad882942af46188d7459b58d88f37990904dc0ef6a8",
+        "source_sha256": "59aa5aa592e1c6ca1b24494fe945a5b046ebda3c7e98a29d481ca8921ff9aaaf",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-readonly",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-readonly",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "741f0ec04c6e372afffd85200e0eb0cc70833a6586c3494c19bd078c0e9bc748",
+        "source_sha256": "a8850c89918dd1824c7a23852f289d22397c64c921974bc5c4f3ebdc02899eed",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-readonly-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-readonly-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "05915ee8531525525944757116c6a55563f6e43b611b9927a7e96239856353a6",
+        "source_sha256": "c0dfb2862213f8195b836198a5550a33d8d6467fa9d8b3b5e1cdeca8ba3c1ca9",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-name",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-name",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "0dfb4779ef18d48bb99f741db42cb642d12e4307a650900a2ede68b2744aae10",
+        "source_sha256": "db380b6edaa3a26f61fcba20528a0457986b0899587b52210e7f5aa2ae9d631b",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-or-name-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-or-name-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "7265f9066a991b8759c2b1ebc270ab74b3c9f4f4467c66e3364f558e679526f7",
+        "source_sha256": "3346f5dbf4b8560d4a3e3ecb16b4cc1eee1c7c83922888185ce5c0c14629f05b",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-values",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-values",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "4b20921b55d2d3e03330504f4ada0ce3da8bd0f43fe82035f802a6ca4c92156f",
+        "source_sha256": "5e3ccac263f4c5991aa238b811dd64b4008e83e386cfb7cba402099cbb0d9068",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-values-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-values-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "bc9a59d0de0a9a2d9cc894122b77c2a044dba535f97651ab57cc7b0e583847a7",
+        "source_sha256": "b85f89b26e4086e3252870d7f58ab60b184c814a52f51d99dbb23e5bd5fe5c1f",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-skip-reference",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-skip-reference",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "711437938416ebb6c4ba073408879de51051c614e3ff21f462a9f90df03b69e1",
+        "source_sha256": "31f5f6de85d565c69b87123298633679c4fb9f94890d8ca3afbeb90b14a4e69c",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-skip-reference-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-skip-reference-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "9e557856aa05c7d7cf3279f2e82aea33c3bca7f885b18968ebb86049791cbeec",
+        "source_sha256": "a8e8c91779ab1866c1edc0cd26b834bfa1100d85711e66d6145e3f00e3449056",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-write-reference",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-write-reference",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "645bc9b0c267c55efee90f7f8707fcc52a6f0c971a10fd56693fef4480a8ef8f",
+        "source_sha256": "8747283b9d8d49746bca941a5514dad3233b0bdf49c883220b2dc15eb68547bd",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-write-reference-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-write-reference-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "c89cb9a71bd34dd6b0cc80ed9e4df0429e17286b466555f514e6a598737bd5d3",
+        "source_sha256": "89452c124b42a7beafdaf6e8002303a2cbd06e51d00db7b0ba181e7cbf543843",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-abrupt",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-abrupt",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "7ea9ec3a2cbe46eebeb0d8e5816db406bdc8f4e0480b385f8e50fe2d06421e78",
+        "source_sha256": "3745fb628be01fe9eba4680f90096c86c4f88e4fbc573b4c7ea633de28290780",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-abrupt-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-abrupt-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "e058f8b2a6797f27f8c8e70c23ca3cc0efa10593f94ba667a92f4236835e615b",
+        "source_sha256": "610a5417bb16207d3bf3dc076d6512658ebe27d6ecb7b7d92a44a21290b354a5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-readonly",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-readonly",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "0a26dc3e7618a24e781544082352057b65096bfad3c2cccde2d336c06a1b6f25",
+        "source_sha256": "120ee343b57af888670826eef007829b678eab2f064cb0c430bbcc6c947c90b8",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-readonly-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-readonly-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "682422d8f888701d47c3edfd26079d1c4fd618a53b7dc2ae0bee2abfceb64a9d",
+        "source_sha256": "173182d16b258644a83097e7b115dc5ad3c87b52689787be5c51edd1e94001a0",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-name",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-name",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "66855ce41a19ebdddebfa5cc8a9cb3dedd5409f5d633cc3e09a5c4e4524deaa0",
+        "source_sha256": "65802b628d2542ef882d8a51f39726d37b83ad43c9e955876cd40496482e2672",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-name-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-name-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "47bc9a86e243a0206e867946bf38ab230e3fd60e2cf05a711281b5ba4b89f165",
+        "source_sha256": "25c77ed10645f651eb7daebb59121902a93cefca5e963af217a74233e60375ed",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-values",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-values",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "4e5b305d1a4b8c356ac948939c15fd06a996693ef7128b9fd9a6d35498332d30",
+        "source_sha256": "5e3ccac263f4c5991aa238b811dd64b4008e83e386cfb7cba402099cbb0d9068",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-values-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-values-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "ad95628e3aa48be130ef0db634f63bae887172cba9c313fd3ce3009fac9a0d13",
+        "source_sha256": "b85f89b26e4086e3252870d7f58ab60b184c814a52f51d99dbb23e5bd5fe5c1f",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-skip-reference",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-skip-reference",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "cab05281f45de4f978b82afee8adda278e128179ccb06691ac10e03ba263f6fa",
+        "source_sha256": "31f5f6de85d565c69b87123298633679c4fb9f94890d8ca3afbeb90b14a4e69c",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-skip-reference-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-skip-reference-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "084aa601bce77f4c1a902231aad03484d84b4f28d5a0e97430fb5409d7b81d8a",
+        "source_sha256": "a8e8c91779ab1866c1edc0cd26b834bfa1100d85711e66d6145e3f00e3449056",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-write-reference",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-write-reference",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "c65f1b0fa9fa31bd5b68a1636cb8d97641cf878396e7ffb592695f75c8f79e15",
+        "source_sha256": "8747283b9d8d49746bca941a5514dad3233b0bdf49c883220b2dc15eb68547bd",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-write-reference-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-write-reference-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "fbf7c1061234819b039fd73044e1e5a30c1871effefe877f09149e3e8d213d54",
+        "source_sha256": "89452c124b42a7beafdaf6e8002303a2cbd06e51d00db7b0ba181e7cbf543843",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-abrupt",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-abrupt",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "d1b9636b0178ec25d18ccddb62939026bb19acc9dd4b1e680d3c4f103e8bec92",
+        "source_sha256": "3745fb628be01fe9eba4680f90096c86c4f88e4fbc573b4c7ea633de28290780",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-abrupt-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-abrupt-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "8dd4509e57a2f005fb926bb2ce97d59e4d1fd5d088e9554e474cde46cca078a1",
+        "source_sha256": "610a5417bb16207d3bf3dc076d6512658ebe27d6ecb7b7d92a44a21290b354a5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-readonly",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-readonly",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "bd8d4df93092062d20c90d503642898016caeebd3f71ea17b08e5b576ccf0118",
+        "source_sha256": "120ee343b57af888670826eef007829b678eab2f064cb0c430bbcc6c947c90b8",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-readonly-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-readonly-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "05e9e84256c458337ff5c405ed473b8004c26db3e1ae4eec97caca7c623461d0",
+        "source_sha256": "173182d16b258644a83097e7b115dc5ad3c87b52689787be5c51edd1e94001a0",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-name",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-name",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "c4f80dee0d0e00e4b28bc2a4b32db73501f09e1bedb54e42acc8f44058260d80",
+        "source_sha256": "65802b628d2542ef882d8a51f39726d37b83ad43c9e955876cd40496482e2672",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "logical-assignment-nullish-name-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:logical-assignment-nullish-name-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "22000696acf5c025c705709baf7fbc0b0b1a19bc409f966de9777d12252fab42",
+        "source_sha256": "25c77ed10645f651eb7daebb59121902a93cefca5e963af217a74233e60375ed",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "expected expression",
+          "harness": ""
+        }
+      }
+    }
+  ],
+  "harness_preflight_passed": false,
+  "regressions": [],
+  "improvements": [],
+  "cases": [
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-and.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-and.js",
+      "mode": "sloppy",
+      "case_sha256": "70b164d8aed16e2257cbd2b8ed8bf8ea0b1c5cd277b18e28627913b3f35b244e",
+      "source_sha256": "5879c76447249abfebdd4e27aeafa2d75d82bba1264ae4c1bec28f0da159928a",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-and.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-and.js",
+      "mode": "strict",
+      "case_sha256": "9aa145aeec360e84d353a2a54ba5850f5a67f87c8ea3f55292ef1e62fc5eef0a",
+      "source_sha256": "5879c76447249abfebdd4e27aeafa2d75d82bba1264ae4c1bec28f0da159928a",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-nullish.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-nullish.js",
+      "mode": "sloppy",
+      "case_sha256": "45bb6cff1579fadc302223ddfcdd2418bee50155017c2d06ee26914e1df88238",
+      "source_sha256": "a3908e65c3cf3b7b223b80f2ec64e2e7d143d0d3136f3b64ec1f8a790f25b727",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-nullish.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-nullish.js",
+      "mode": "strict",
+      "case_sha256": "56da18ff8a4e846f9f20de898ff13f63648f8d4212d68d8b000256aa234482d4",
+      "source_sha256": "a3908e65c3cf3b7b223b80f2ec64e2e7d143d0d3136f3b64ec1f8a790f25b727",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-or.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-or.js",
+      "mode": "sloppy",
+      "case_sha256": "3a6581da0eac973dd317c849774863b219b12a66a64c8c8c134ff835501eb429",
+      "source_sha256": "90555cb84e7be833423653e590319556d80ff12ddbdc2d2eb25de85e090112de",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-or.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-or.js",
+      "mode": "strict",
+      "case_sha256": "a34c001b98ae74790b1879bf80aa53161588bf8a12b98b51514cdd13f3db1130",
+      "source_sha256": "90555cb84e7be833423653e590319556d80ff12ddbdc2d2eb25de85e090112de",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-and.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-and.js",
+      "mode": "sloppy",
+      "case_sha256": "79423f64cbb97184f6dc19698f2e0eb1254f6c97e92169fb353a088d37e72044",
+      "source_sha256": "db20764ba99a75a32a87d9a8b8f0bf49d02d58fa612669546ece14f31962f99c",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-and.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-and.js",
+      "mode": "strict",
+      "case_sha256": "0d8e4166ec6f034962887cfe58341557fa6d37998407a0fa05ba8a50d0514831",
+      "source_sha256": "db20764ba99a75a32a87d9a8b8f0bf49d02d58fa612669546ece14f31962f99c",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-nullish.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-nullish.js",
+      "mode": "sloppy",
+      "case_sha256": "121dc17a649bf4656d40ef3549a367650556cea1f72581bec2630ab822a397e5",
+      "source_sha256": "8a6acd316b7cdfa889930aed88c99c81e234870e150a42c1fd0508b79d3ff09a",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-nullish.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-nullish.js",
+      "mode": "strict",
+      "case_sha256": "8356c14f42edcc4245cf735d0f499583f7518157deed1578f4b6dcbfe0e78f6e",
+      "source_sha256": "8a6acd316b7cdfa889930aed88c99c81e234870e150a42c1fd0508b79d3ff09a",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-or.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-or.js",
+      "mode": "sloppy",
+      "case_sha256": "b8a00121dcadca287066252958d5767c34b4d28c9a6eb64266361212559d3212",
+      "source_sha256": "015b3f250d82ffd79219c04324774a34fa599bc3653b80ae21c05ebe52e000ac",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-or.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-or.js",
+      "mode": "strict",
+      "case_sha256": "ccca8ab53c3dde7425c8ac8f0bbb21b58171b23da7d6afd5f5e0a79c0fd39da5",
+      "source_sha256": "015b3f250d82ffd79219c04324774a34fa599bc3653b80ae21c05ebe52e000ac",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-and.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-and.js",
+      "mode": "sloppy",
+      "case_sha256": "ddea7fbc54e705535ab800aebfab7ee211712ab5c7f728624a84689c04eb9a2b",
+      "source_sha256": "a9e49b518ad38d76af16395fe93e1ca794783584d6e9b43c077c21ed068fe9db",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-and.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-and.js",
+      "mode": "strict",
+      "case_sha256": "80e0bcc7217f8a651db25faa44d11c54f064b44badf3ef3ae543071d9307c4eb",
+      "source_sha256": "a9e49b518ad38d76af16395fe93e1ca794783584d6e9b43c077c21ed068fe9db",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-nullish.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-nullish.js",
+      "mode": "sloppy",
+      "case_sha256": "30402fced422407c74de57f377d5735e72662e3c84081ca3765211f7d80eecde",
+      "source_sha256": "5fab7280d14d6c8dcac451d3b302746ff58c9726144c70dce0b1ba3c94fc83a0",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-nullish.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-nullish.js",
+      "mode": "strict",
+      "case_sha256": "e6440024ba29a233ebfbb51b5a451e71c4edbe6a155c67086801604d678ce503",
+      "source_sha256": "5fab7280d14d6c8dcac451d3b302746ff58c9726144c70dce0b1ba3c94fc83a0",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-or.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-or.js",
+      "mode": "sloppy",
+      "case_sha256": "ff95ae85caf36af8785d1b9a7da53b8256a909839f441e12766b2960c81db3e7",
+      "source_sha256": "89ef942907d79ebd02de2464e6704c48ed0bf12ddd21a63b468481a5a3c10333",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-or.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-or.js",
+      "mode": "strict",
+      "case_sha256": "90e79a14d24be0472a81f540eb426fcea5633a6a7d8535441332867aa9fcde7d",
+      "source_sha256": "89ef942907d79ebd02de2464e6704c48ed0bf12ddd21a63b468481a5a3c10333",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-and.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-and.js",
+      "mode": "sloppy",
+      "case_sha256": "8c70cd7ed9a56a3c0d7ae2a7e3fd9671a197027aeb84b5af86597ab10eecd2d9",
+      "source_sha256": "36255391d5fdd5976b3995c39703bbb27fcc95b8d2d1fc1b621cf0c3035a9a9c",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-and.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-and.js",
+      "mode": "strict",
+      "case_sha256": "1539de11831125b02a6f0e623b1a318b562034f80be27aff5bfe0ec7f1c7ec3b",
+      "source_sha256": "36255391d5fdd5976b3995c39703bbb27fcc95b8d2d1fc1b621cf0c3035a9a9c",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-nullish.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-nullish.js",
+      "mode": "sloppy",
+      "case_sha256": "74af2fa38f201b0ee3c825aa2efb54e216f0465e57aa513db968e14b952900ae",
+      "source_sha256": "018140e602014eac4752219ceb601723bd9ae7081aa51e79cdf389ae161f2d9e",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-nullish.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-nullish.js",
+      "mode": "strict",
+      "case_sha256": "8b2a8502afa1abb862faf6f9497a22c47533d58c8e74196eecaac25e2924425a",
+      "source_sha256": "018140e602014eac4752219ceb601723bd9ae7081aa51e79cdf389ae161f2d9e",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-or.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-or.js",
+      "mode": "sloppy",
+      "case_sha256": "d9632db68267e07b30b0dc06177d7602df91cd3559b3dd9fa1048f8356d6651f",
+      "source_sha256": "c354b884b020aedd6fbae76b44c2491aa8a71b288ee72d023902eb3f13fb5d78",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-or.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-or.js",
+      "mode": "strict",
+      "case_sha256": "433efc8cf4e34c4407e97e581e05306d59f1d561e6ea7b1547a1cbbd1e1c6020",
+      "source_sha256": "c354b884b020aedd6fbae76b44c2491aa8a71b288ee72d023902eb3f13fb5d78",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-and.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-and.js",
+      "mode": "sloppy",
+      "case_sha256": "511afb8362059b04c9fe597538251913917e6bc523af1a82ec76afa6d3d0e613",
+      "source_sha256": "91acc5f39907aaabb2c95e140a129b071dbb0d8c5651144e9c4a9ddb65caec27",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-and.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-and.js",
+      "mode": "strict",
+      "case_sha256": "38a2be1ce28d1b4a530c375c76007ae3829ea3e6668c618ccf50f8864890df92",
+      "source_sha256": "91acc5f39907aaabb2c95e140a129b071dbb0d8c5651144e9c4a9ddb65caec27",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-short-circuit-nullish.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-short-circuit-nullish.js",
+      "mode": "sloppy",
+      "case_sha256": "9b4855f26006fb9bf241b4be333a37e72d44a3ec9338aa3ec580341bb8821a77",
+      "source_sha256": "e64ae28e4768ba3a9c7cd366c4fe9e75626ae60f1be2101017ec824ad98b837a",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-short-circuit-nullish.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-short-circuit-nullish.js",
+      "mode": "strict",
+      "case_sha256": "4b198df1f0ebd020dfb39e0312f3b9cdf194d4720f74259ec501898ca8e4ce11",
+      "source_sha256": "e64ae28e4768ba3a9c7cd366c4fe9e75626ae60f1be2101017ec824ad98b837a",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-short-circuit-or.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-short-circuit-or.js",
+      "mode": "sloppy",
+      "case_sha256": "71705033da81720624a1b44145a93edcdd34d7e946c01f5b7db896cce28a8244",
+      "source_sha256": "e6ea19fa71d1e142d667706a0fe7e933c6773cbeb131dc8601c712d874b485f1",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-short-circuit-or.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-short-circuit-or.js",
+      "mode": "strict",
+      "case_sha256": "d960ca78871da18fefdc51870cc1275fdf6f93328b2e319532cbcffcb7d1b770",
+      "source_sha256": "e6ea19fa71d1e142d667706a0fe7e933c6773cbeb131dc8601c712d874b485f1",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-and.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-and.js",
+      "mode": "sloppy",
+      "case_sha256": "04d6959b6e26abfeccbef7b67889268c18e23523881e096a840491f8e8a7c9bd",
+      "source_sha256": "092483e50b61dd3be8b95b947e443e8d82d3973cda19fd7a0b93d752a50c7d8b",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-and.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-and.js",
+      "mode": "strict",
+      "case_sha256": "d45fa7c604dc2d14884adba9231aefb8eb439d73d659c43152106bd69292846b",
+      "source_sha256": "092483e50b61dd3be8b95b947e443e8d82d3973cda19fd7a0b93d752a50c7d8b",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-nullish.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-nullish.js",
+      "mode": "sloppy",
+      "case_sha256": "a7e9c29f2ccd506bde84168cd66b93fc215d22bc22c5656a15ace0a280f005e7",
+      "source_sha256": "be561eca1b96dcc5d94a4b9a7f191c204750872e2c93a444abed29db7241f5be",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-nullish.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-nullish.js",
+      "mode": "strict",
+      "case_sha256": "0aac7482b231236c08bd78cc1816a6c6980178c28496b636b56a2fb35b3ca47a",
+      "source_sha256": "be561eca1b96dcc5d94a4b9a7f191c204750872e2c93a444abed29db7241f5be",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-or.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-or.js",
+      "mode": "sloppy",
+      "case_sha256": "ccbd81c7652061fe175ed62badfd4cfaf25013e075dae3729a4e60f5f3ab47a4",
+      "source_sha256": "190951aa513496e6e553ef564814c3ed8caaeaf9f1deb9031b1d27b5ebc7c1e8",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-or.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-or.js",
+      "mode": "strict",
+      "case_sha256": "cdf7fc51325b4fa6aa6f1b9740aa3df507d7a10ccc5894c35d8bc95cf67f89d6",
+      "source_sha256": "190951aa513496e6e553ef564814c3ed8caaeaf9f1deb9031b1d27b5ebc7c1e8",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-and.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-and.js",
+      "mode": "sloppy",
+      "case_sha256": "b71a44eaa2b4e547ba892712bf34f455a3bc6d5e5c5a99851c85bbb02cf4094f",
+      "source_sha256": "be42639b02cc2ecbf1bc8e4970f1ecd7ce6951be2ccd5aa1d38c1cfb161e4500",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-and.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-and.js",
+      "mode": "strict",
+      "case_sha256": "dc07855485456cdfe77ac50c8fe09a989ed3f1415de543ea6a6dd844200d4851",
+      "source_sha256": "be42639b02cc2ecbf1bc8e4970f1ecd7ce6951be2ccd5aa1d38c1cfb161e4500",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-nullish.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-nullish.js",
+      "mode": "sloppy",
+      "case_sha256": "5483bc596cf99b0a2f919d957354c7a89fd6c03582e9a08c558bd0d8b70b8421",
+      "source_sha256": "a17f45fdcf1e89e9d1b33da095c9844a1f3346a948dde3237b18b192374882cd",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-nullish.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-nullish.js",
+      "mode": "strict",
+      "case_sha256": "45bafee7403921ef4b96e55993587af341ab0b3b526eb985c41095115da08e43",
+      "source_sha256": "a17f45fdcf1e89e9d1b33da095c9844a1f3346a948dde3237b18b192374882cd",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-or.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-or.js",
+      "mode": "sloppy",
+      "case_sha256": "0a9d0133a4741c3ab4f9169ecc12d042cb9131fc66dd40885e1a382d207767de",
+      "source_sha256": "159b7a57169b8361217d208073e95aa24f0639c4f9c9de71a174afff2f7f468c",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-or.js:strict",
+      "file": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-or.js",
+      "mode": "strict",
+      "case_sha256": "d1fccff5e524a1cfb66a9922c78ae8b14d11347357d84d5efda701d8b5b779b0",
+      "source_sha256": "159b7a57169b8361217d208073e95aa24f0639c4f9c9de71a174afff2f7f468c",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: class-fields-private"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-arguments-strict.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-arguments-strict.js",
+      "mode": "strict",
+      "case_sha256": "5c935a518ecf5c170300fba5dfee6b0309c26ab9f5beef2c7c8bfa37c1f6324c",
+      "source_sha256": "0712a159980488b194fe15497164fb329cc1192b3f0b7ea0b543847765ae0b34",
+      "expected_negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "status": "passed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-bigint.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-bigint.js",
+      "mode": "sloppy",
+      "case_sha256": "dcf160b312971e128b661dd07f5a9ada04f812c2026a242b657f73ad8d2ebb07",
+      "source_sha256": "fdce5667d06805d3834081afb41804854e913b2566fdf95dd5f4e8ec37197761",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-bigint.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-bigint.js",
+      "mode": "strict",
+      "case_sha256": "ea6eaccb73cd09af45ab189b514766e01bbf581d1aab6a031f5224496d26bae6",
+      "source_sha256": "fdce5667d06805d3834081afb41804854e913b2566fdf95dd5f4e8ec37197761",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-lhs-before-rhs.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-lhs-before-rhs.js",
+      "mode": "sloppy",
+      "case_sha256": "2c442778692dbe3cc7ca8a403640f696fa85a4ef37c56334acfaab36a1cb7ce8",
+      "source_sha256": "39a0a3482cca7b4605e8f691044c1e3fc6d1a87c430fc345d05025c6651ffee0",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-lhs-before-rhs.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-lhs-before-rhs.js",
+      "mode": "strict",
+      "case_sha256": "e9a2ab6c073eb389da54dfd6d2df19ccffea2bf2c77a97f092d9f0957c89c7c6",
+      "source_sha256": "39a0a3482cca7b4605e8f691044c1e3fc6d1a87c430fc345d05025c6651ffee0",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-arrow-function.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-arrow-function.js",
+      "mode": "sloppy",
+      "case_sha256": "242db907b3ce310169b9f8084892987736f0a13afe8265db8df4a5a238855272",
+      "source_sha256": "59f7b917a6c3e241e248d1370b79a1e697cbb34352c0e285e565b74e0299eabd",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-arrow-function.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-arrow-function.js",
+      "mode": "strict",
+      "case_sha256": "ba7b65321dab3d09a0010f9283e6e823c7968e6a4c15da709f32bef42cabca2f",
+      "source_sha256": "59f7b917a6c3e241e248d1370b79a1e697cbb34352c0e285e565b74e0299eabd",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-class-expression.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-class-expression.js",
+      "mode": "sloppy",
+      "case_sha256": "6f1d7a61b8b25b812d8cc31f72a2d246c7e53550d4bb25bce7b2729ff260d718",
+      "source_sha256": "ccf9276e4c91f4a0b5365f15b66fde5499b952f7b2ae5df937a33cac03c39ea2",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-class-expression.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-class-expression.js",
+      "mode": "strict",
+      "case_sha256": "0f45e3255821be60550b7154e1dacc77082e3d00bca66f0e0999ebd2707793c1",
+      "source_sha256": "ccf9276e4c91f4a0b5365f15b66fde5499b952f7b2ae5df937a33cac03c39ea2",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-function.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-function.js",
+      "mode": "sloppy",
+      "case_sha256": "79c9a44c538f2116b60cbf4ce475c5e99acd58be7953a02cb91f457b5151c155",
+      "source_sha256": "b4b03e2df453a0bf7b0e6df00edbda4b8608d044f966a6ca566b66c60f8ec9c1",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-function.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-function.js",
+      "mode": "strict",
+      "case_sha256": "110ad8c6a806274e4c9d1e4d2198602e51f9cd92f09a6222cb494d981fc216c7",
+      "source_sha256": "b4b03e2df453a0bf7b0e6df00edbda4b8608d044f966a6ca566b66c60f8ec9c1",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-no-set-put.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-no-set-put.js",
+      "mode": "strict",
+      "case_sha256": "09f83555380f39ecf7ad49c993adf604687a1e6ccff8bd891b8bb64877fada82",
+      "source_sha256": "82ae8ebaaf6a2ddf4764ee2f96a9de7de22b5855d49e12e1ea8d2083cfcecde7",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-no-set.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-no-set.js",
+      "mode": "strict",
+      "case_sha256": "ba0d8f7f4b6c9aa806114a3abb8d0147bb4163c2483e8ca0d9458984144f2c0e",
+      "source_sha256": "62bf3602965e204ce2dba9a01c5b9826c25361b13f3ed41f6d304ba118a23f32",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-extensible.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-extensible.js",
+      "mode": "strict",
+      "case_sha256": "229bd1560838fd22ecaa7749b9413b1c36e6a2fe5931d84d8d6803fd78195792",
+      "source_sha256": "525af6499a69e8b8b4540bd1e354078c5f21229ee9ef1c590d27121d57e62857",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-simple-lhs.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-simple-lhs.js",
+      "mode": "sloppy",
+      "case_sha256": "bdeb44a6eb3b910eb12a5c4cb0511902cd15159d9b43f0680736956c8c27c0d1",
+      "source_sha256": "b6a20fe597fbe47e61efbb1d5e42ee9efdeb326f6ba322cbf8f4bc7571d29b12",
+      "expected_negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "status": "passed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-simple-lhs.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-simple-lhs.js",
+      "mode": "strict",
+      "case_sha256": "6c4697a83e61edd6142afb566a90e1e2705791599b449163d385b1f762d11c67",
+      "source_sha256": "b6a20fe597fbe47e61efbb1d5e42ee9efdeb326f6ba322cbf8f4bc7571d29b12",
+      "expected_negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "status": "passed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-writeable-put.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-writeable-put.js",
+      "mode": "strict",
+      "case_sha256": "774d8261dc915941ec53c46c0cf0dceeaa2a853a7736df74dab96f47eefefa4b",
+      "source_sha256": "11a8fb2f5ba2ac9470802759709856fc19f5b58a2aa8eb55db628d843e27080c",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-writeable.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-writeable.js",
+      "mode": "strict",
+      "case_sha256": "40d751efba267f5db89a2b6ae2460bfa8b98c060e8c3681d65eabedc70b01bb8",
+      "source_sha256": "cdfcb82923ea4f0598f099fb0f01d2eda29024fe853b2443b342e16305c2e8a7",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-lhs.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-lhs.js",
+      "mode": "strict",
+      "case_sha256": "85cf378ab8e30c06eb441d1b7b10860926c76d3fa4593edfc7d1ff89669c10ee",
+      "source_sha256": "1ce909d81c07760ffb4933f2dc6429f3c21608a1bb3e02f222c5fedec4ddd998",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-rhs-put.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-rhs-put.js",
+      "mode": "sloppy",
+      "case_sha256": "f79e7adb926d5ab72540701eb5705e503c61a83692d4989a62a50987bafa1d03",
+      "source_sha256": "bc06236e433fb71012dfab4c49209d79ee0dca4c2592aa0bbc0eb8975943e998",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-rhs-put.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-rhs-put.js",
+      "mode": "strict",
+      "case_sha256": "ee104e0cc1ad2480351cf36173107f125db02451af5f12be93baa8b29b14c61b",
+      "source_sha256": "bc06236e433fb71012dfab4c49209d79ee0dca4c2592aa0bbc0eb8975943e998",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-rhs.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-rhs.js",
+      "mode": "sloppy",
+      "case_sha256": "887deb8ac0901d01799de4e880d3fd62d4e2ebc05d4fac7a6369a4d8db19bd8e",
+      "source_sha256": "b214f248c94b56d0b3c526c755c58f22fd751e67228eaed14c1488b8ea69b88f",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-rhs.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-rhs.js",
+      "mode": "strict",
+      "case_sha256": "01f152943765692f09f4f705fa14644064346cbda1272df4107ad8b7a78e31c6",
+      "source_sha256": "b214f248c94b56d0b3c526c755c58f22fd751e67228eaed14c1488b8ea69b88f",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js",
+      "mode": "sloppy",
+      "case_sha256": "10c676a52f208b03d6d1169cd48ac6ed8b5e55acf38299e03653b28313b94c02",
+      "source_sha256": "16d6f54b4ae2cb636dff5e5c6557d76d5f68428c8c2b2e51c773412afaddc02f",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js",
+      "mode": "strict",
+      "case_sha256": "1c1215e565a25c50143ba4fc26f5ddc5be66155b2c01cb8c62b460379e2b0989",
+      "source_sha256": "16d6f54b4ae2cb636dff5e5c6557d76d5f68428c8c2b2e51c773412afaddc02f",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-eval-strict.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-eval-strict.js",
+      "mode": "strict",
+      "case_sha256": "df2e90b76ca0aaf53e6735f05c19a97e9fa62f56cfac2d288fb6ab11295dc892",
+      "source_sha256": "9e8c31320c64c8ee8b21a2e014fa1d24889b3f962e8ef59e1af5eb6192f20cdd",
+      "expected_negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "status": "passed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-non-simple.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-non-simple.js",
+      "mode": "sloppy",
+      "case_sha256": "d64f2da29c8d3295c053d5d807aa12bebd50d5fed49e8fec9c4821e5464a051d",
+      "source_sha256": "3606e938d83aaa19e5b4ba12b8025a4a014a6ecfe1a7bc3944d314153c7db048",
+      "expected_negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "status": "passed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-non-simple.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-non-simple.js",
+      "mode": "strict",
+      "case_sha256": "69ac5d7e24af6c34d4cc3d9ec2d1af8c09493e0855dcb60c89df00b9c643eacc",
+      "source_sha256": "3606e938d83aaa19e5b4ba12b8025a4a014a6ecfe1a7bc3944d314153c7db048",
+      "expected_negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "status": "passed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-whitespace.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-whitespace.js",
+      "mode": "sloppy",
+      "case_sha256": "5fb787bba268ec1c6131cc3cae3b4e22ed6cd5e477a6934fa3c6f754b7a52e49",
+      "source_sha256": "7c44802574c033c2da495afb9e5df01c8c23e6ec74d8c887ea9d20146633c6eb",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-and-whitespace.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-and-whitespace.js",
+      "mode": "strict",
+      "case_sha256": "4aaf27399bcce3e509b0e10f6377a694c5236346dd056edd3f776e1df225fa04",
+      "source_sha256": "7c44802574c033c2da495afb9e5df01c8c23e6ec74d8c887ea9d20146633c6eb",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-arguments-strict.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-arguments-strict.js",
+      "mode": "strict",
+      "case_sha256": "6461c61092cb4c584c324e19588eb32cffbd79df16b1959d078a92e70841381c",
+      "source_sha256": "ece5b9f0ced5cfe429177f620188b664036705f3bbbbd013fb1c9232e98ddd6c",
+      "expected_negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "status": "passed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-bigint.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-bigint.js",
+      "mode": "sloppy",
+      "case_sha256": "5a0278deecb73244494b9d6ab70fc8d1191e8a3dfdcb09787dfc43cb5edfe215",
+      "source_sha256": "4257850019488510b1f9cb6b82bb3dbf663705d900864f750557c7d24f9455be",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-bigint.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-bigint.js",
+      "mode": "strict",
+      "case_sha256": "5f066f328b7b1fac5d7acf333a371a66d96e01aeb447bc0878ba5708c4e96839",
+      "source_sha256": "4257850019488510b1f9cb6b82bb3dbf663705d900864f750557c7d24f9455be",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-lhs-before-rhs.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-lhs-before-rhs.js",
+      "mode": "sloppy",
+      "case_sha256": "50eaf81fd48b96b810535ad9a0507ad849bdef37f650500c98fdce3994bd2c08",
+      "source_sha256": "08417d9b67db9872ce99247068a46f732e6f11043f3640e55afeb3533bdc17c0",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-lhs-before-rhs.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-lhs-before-rhs.js",
+      "mode": "strict",
+      "case_sha256": "4d48c8fdb765ad032b58f95829f1e132f4307d0e19c28367efd96cdcaea6e1e4",
+      "source_sha256": "08417d9b67db9872ce99247068a46f732e6f11043f3640e55afeb3533bdc17c0",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-arrow-function.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-arrow-function.js",
+      "mode": "sloppy",
+      "case_sha256": "175a2a0893c761a0e1031aa9f35f833f46ce28ec99c86a6f43e99eb0a7383d2f",
+      "source_sha256": "79f32d4d64391b94f1f8d73d0a8bfee3268376c86dece2c322c3ce06393ff56a",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-arrow-function.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-arrow-function.js",
+      "mode": "strict",
+      "case_sha256": "e1f5a3e92293f165984162102b3b33f0b079d88ad8313dccf3270e9b7767345e",
+      "source_sha256": "79f32d4d64391b94f1f8d73d0a8bfee3268376c86dece2c322c3ce06393ff56a",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-class-expression.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-class-expression.js",
+      "mode": "sloppy",
+      "case_sha256": "8257617891b0689d383fedd234d7a70aba81554c99d0ee343e20136057c22c15",
+      "source_sha256": "25fa9d89e7cc252206c88349e5a3766e90a66c427fdb3d0b23f4f23e67479f27",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-class-expression.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-class-expression.js",
+      "mode": "strict",
+      "case_sha256": "c95f6fcd60b6b59f1b62b608157e9ffb881182a5b2d6e945d898b5be3fc9f852",
+      "source_sha256": "25fa9d89e7cc252206c88349e5a3766e90a66c427fdb3d0b23f4f23e67479f27",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-function.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-function.js",
+      "mode": "sloppy",
+      "case_sha256": "df8cbebd58c65f0db9b3c22349f84f40387b374214a7f3839b10e7c62a56e2c1",
+      "source_sha256": "526549c8cd3d6c698dd4996e4a016bf6717344aa47f77747ef58c7bf5a0bed6e",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-function.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-function.js",
+      "mode": "strict",
+      "case_sha256": "b712a1bd1e9f6edb59767de8a841e5f802ca4b8baeaec45d966e79e642624b56",
+      "source_sha256": "526549c8cd3d6c698dd4996e4a016bf6717344aa47f77747ef58c7bf5a0bed6e",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-no-set-put.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-no-set-put.js",
+      "mode": "strict",
+      "case_sha256": "f8a23a82b7108c1037caf3fd42c2a9af56ec583cbf6b95c37fa55a0df8d09670",
+      "source_sha256": "353301b442a5fc7778f0d55923fe66c6198389f29293df3b9a55e4190fc281b8",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-no-set.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-no-set.js",
+      "mode": "strict",
+      "case_sha256": "add5e989869021f9fb0140ada4d803f53f9982042008044fcaefe900e4ef3501",
+      "source_sha256": "e72f78e7e2e1f6fe9dfe34f43aa24184faa8f5cd9fe3a18fc6fdd5c248889df8",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-extensible.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-extensible.js",
+      "mode": "strict",
+      "case_sha256": "9a643978aa6a9e446f5058e061a16b2bd3548e5e9d68589ca5e8073f3e2697a9",
+      "source_sha256": "64f73041bc404ffef2f94e9670d3579a40704abdcfe16cadc1121768c281d8b2",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-simple-lhs.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-simple-lhs.js",
+      "mode": "sloppy",
+      "case_sha256": "2d42e31b6d3c00680c87bd4edf0b297eb8ebc3bda09ae08f67ff190e9b328c3d",
+      "source_sha256": "e75e20378061dfce84512242dbe2ff8b0fcb4e9967257b94e3389104f8f61400",
+      "expected_negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "status": "passed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-simple-lhs.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-simple-lhs.js",
+      "mode": "strict",
+      "case_sha256": "1e08af25089fd36ad3e037b2c2fee5eff2eb53932e5848d5efca2c76f4751706",
+      "source_sha256": "e75e20378061dfce84512242dbe2ff8b0fcb4e9967257b94e3389104f8f61400",
+      "expected_negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "status": "passed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-writeable-put.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-writeable-put.js",
+      "mode": "strict",
+      "case_sha256": "39814dd3d627c2998090fd67f7dad8325cd8bb311ac9b1a03daa5be09720305c",
+      "source_sha256": "c3867a65448c15402c9d770c411a3cc6c0b9fce8c290d2fd5736413e8cf0a5c8",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-writeable.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-writeable.js",
+      "mode": "strict",
+      "case_sha256": "cf0483491b24a697b53704451ca4f28a4a9b78195bddae2d945c6d1f03e9b347",
+      "source_sha256": "717a356749931264d40ed192fe446069b65bd3d546a2a7ee124a75a42c12637c",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-lhs.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-lhs.js",
+      "mode": "strict",
+      "case_sha256": "690379a85c445de1cc2c1b45836a65bdb671009c26bcc8ffcac93c089b08b0a5",
+      "source_sha256": "0a98218b485ec248039051435cec2dc72adc4a87b4ec2f47c89fc02e81c958b5",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-rhs-put.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-rhs-put.js",
+      "mode": "sloppy",
+      "case_sha256": "abdadefc933688a404c1fa1b32045e25cc3039eadcd2eeeb387edfe558d9fcdd",
+      "source_sha256": "f5b43bd230484d3afbf131cfeb97b91e55b460d265e0547ad68b407e92cad87e",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-rhs-put.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-rhs-put.js",
+      "mode": "strict",
+      "case_sha256": "466e43314c3de5c447b5aabc1dd98f43ec31d0c2c3927628cb07bc130d22d1fb",
+      "source_sha256": "f5b43bd230484d3afbf131cfeb97b91e55b460d265e0547ad68b407e92cad87e",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-rhs.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-rhs.js",
+      "mode": "sloppy",
+      "case_sha256": "bd3701597c5497e55c51bbd050ac783699f91cb327c17bce83be188b1d85f987",
+      "source_sha256": "8750aafaa21c50c4e00f1de3f1944b0bb1f29d0d8c4ffe2420a6d72188e8b60e",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-rhs.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-rhs.js",
+      "mode": "strict",
+      "case_sha256": "c875fa0318d91999c08378bd73adbf87599148f77b3710093bc5387b4df1ee68",
+      "source_sha256": "8750aafaa21c50c4e00f1de3f1944b0bb1f29d0d8c4ffe2420a6d72188e8b60e",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js",
+      "mode": "sloppy",
+      "case_sha256": "73a0a0fc8c360920879cb6a3f41d87ea3e4ec715d7e094ad85e87c1ec2d822ab",
+      "source_sha256": "a75ca7efb0a81895c9823c391c98921fef3b5e381ff887bcae11fa34910071af",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js",
+      "mode": "strict",
+      "case_sha256": "320cf3883436ddecf843f243efebd8623063bd49fc5ed602439f52b796c57f04",
+      "source_sha256": "a75ca7efb0a81895c9823c391c98921fef3b5e381ff887bcae11fa34910071af",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-eval-strict.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-eval-strict.js",
+      "mode": "strict",
+      "case_sha256": "476106962ffbe328c689dab2f721f0dccc8194677361477a3fa191aa74b9c557",
+      "source_sha256": "bd99861bb7728af416d69a50a914d21b4cc11a8c82a68e0ffbed238885134249",
+      "expected_negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "status": "passed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-non-simple.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-non-simple.js",
+      "mode": "sloppy",
+      "case_sha256": "e253e08526d8f580ab75707fbe4024e0f2bb30ada03a7432b99a528f32524b5f",
+      "source_sha256": "a871111b6b7a0d1289a4a8cf39b2f36b23ccacc3171419ff2b6480a216f6e0ee",
+      "expected_negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "status": "passed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-non-simple.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-non-simple.js",
+      "mode": "strict",
+      "case_sha256": "b64362fc2b4d8532cdc6c5dbc25badf69204d57332135f882577b08839265266",
+      "source_sha256": "a871111b6b7a0d1289a4a8cf39b2f36b23ccacc3171419ff2b6480a216f6e0ee",
+      "expected_negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "status": "passed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-whitespace.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-whitespace.js",
+      "mode": "sloppy",
+      "case_sha256": "0999171b48f0472953c7092c337edac291635a5db17c020fd1b8975687fa4ed8",
+      "source_sha256": "5d2524e1b1a4dd2c40f7b5743395c734de32cfde33879f9514163497ec35e52d",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-nullish-whitespace.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-nullish-whitespace.js",
+      "mode": "strict",
+      "case_sha256": "deda322fcaed03e9378afe66c7cfef106d697327e9b781cc0493f21286330d11",
+      "source_sha256": "5d2524e1b1a4dd2c40f7b5743395c734de32cfde33879f9514163497ec35e52d",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-arguments-strict.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-arguments-strict.js",
+      "mode": "strict",
+      "case_sha256": "5bf2f48b80498c47528ddec699abde460d82709882639b465ff443d9d21cf0dd",
+      "source_sha256": "6d96e79fb35c826ce3ed0cc326297ebe3fdd382c2d8bd634dda75bfdd3292657",
+      "expected_negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "status": "passed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-bigint.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-bigint.js",
+      "mode": "sloppy",
+      "case_sha256": "96b5ad5331ed28ff1209452379d6c174673c4bcd0832947c060ad1924c107319",
+      "source_sha256": "e894232393b45f4f11da6a94c569312650b4ab0ee34978ba215898e0ee0e9233",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-bigint.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-bigint.js",
+      "mode": "strict",
+      "case_sha256": "1dd74f9d50d9ec75417166d2d7bb62e950a5ba4853e40045ca89a1a51f6869c9",
+      "source_sha256": "e894232393b45f4f11da6a94c569312650b4ab0ee34978ba215898e0ee0e9233",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-lhs-before-rhs.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-lhs-before-rhs.js",
+      "mode": "sloppy",
+      "case_sha256": "678e53f7c3a8685dbd24d99998a0ecffa15d06c4f9331dff1cdda333996bf37c",
+      "source_sha256": "3aedfa4fb22a5aca46fee0a691e7730b5c5d4039cf199e2769bac2e09ee74e8a",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-lhs-before-rhs.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-lhs-before-rhs.js",
+      "mode": "strict",
+      "case_sha256": "bae3c8c5679e1363fd98481b319a68004eb889170f24a96d2b0456776223c385",
+      "source_sha256": "3aedfa4fb22a5aca46fee0a691e7730b5c5d4039cf199e2769bac2e09ee74e8a",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-arrow-function.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-arrow-function.js",
+      "mode": "sloppy",
+      "case_sha256": "993706cd8e805e450b746d765baf5c946d3d7bec5db23524788d8bb608401bc0",
+      "source_sha256": "4376c7566d0457ff2142fa009c13c4d3fd20881b1fa717481a07605fa3230cdf",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-arrow-function.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-arrow-function.js",
+      "mode": "strict",
+      "case_sha256": "5a4a3ed1a38d08d951237750696bb28a399bcbf8f5de5fc69488d95bc88c3996",
+      "source_sha256": "4376c7566d0457ff2142fa009c13c4d3fd20881b1fa717481a07605fa3230cdf",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-class-expression.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-class-expression.js",
+      "mode": "sloppy",
+      "case_sha256": "9f1c414acca46aa3511aa3d515cc82763e3ef5812dff17e1ee3c57639c59ef3b",
+      "source_sha256": "04516a0e07bea663c1ed326c855b082043da0520269154152b0cdd1d0c3c10ff",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-class-expression.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-class-expression.js",
+      "mode": "strict",
+      "case_sha256": "cb5d74664940262796d60e91fe486396e2c2ee39928dbcdcd6cc91c5795a3bbc",
+      "source_sha256": "04516a0e07bea663c1ed326c855b082043da0520269154152b0cdd1d0c3c10ff",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-function.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-function.js",
+      "mode": "sloppy",
+      "case_sha256": "b7a8426ec7420ca6c0c152bcf10772e311199598e95ce1f92de7797196469c1c",
+      "source_sha256": "859e484be17956043eeeb3bfd3b2e23bad5d3fa0b9de8b9296df82e6f8bab279",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-function.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-function.js",
+      "mode": "strict",
+      "case_sha256": "ee615d8c8ed0cd032d558b40a23c210c1973e399f9c3331de5ba3cc296e9a6e3",
+      "source_sha256": "859e484be17956043eeeb3bfd3b2e23bad5d3fa0b9de8b9296df82e6f8bab279",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-no-set-put.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-no-set-put.js",
+      "mode": "strict",
+      "case_sha256": "52f84a34f9565279520c7a0f9491415406042d32e4a52678e374553adf81b1eb",
+      "source_sha256": "d4336006e749a6d3137460546f6f5ff74224c9fc554f85d0bcff580125382384",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-no-set.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-no-set.js",
+      "mode": "strict",
+      "case_sha256": "6c63dd29d0b27164700bcaa808a9111550405212d11ca4384318e40a29e3a147",
+      "source_sha256": "9aa10698aa1460791e8608250a2442311407d722576e0b0bf662bfe5ae3b0fd8",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-extensible.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-extensible.js",
+      "mode": "strict",
+      "case_sha256": "1bdabc3387d480469733dd74a4b28d65224f4699b3ffebc6f1b183eb76f0a3bd",
+      "source_sha256": "532670a68e6ced60e62ed891f12b020a58ba43dc26a7fa642ef6300b571e65a3",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-simple-lhs.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-simple-lhs.js",
+      "mode": "sloppy",
+      "case_sha256": "4abea1c6c870bffac09bfe700519a12db47caf038bed6b4685ce619d6501c545",
+      "source_sha256": "bb283e8996f2c05abea8d14a806328e624d98f853035fbfb2be8fd7d4c215c0f",
+      "expected_negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "status": "passed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-simple-lhs.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-simple-lhs.js",
+      "mode": "strict",
+      "case_sha256": "51911d95fae42aa04b31f64bdb774dad1cbdc1462ee7eafbf64e599ce3d4d446",
+      "source_sha256": "bb283e8996f2c05abea8d14a806328e624d98f853035fbfb2be8fd7d4c215c0f",
+      "expected_negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "status": "passed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-writeable-put.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-writeable-put.js",
+      "mode": "strict",
+      "case_sha256": "44b29506e64b3eb6bfe49d88dd955b84428cabd7eecc0e40b8a74d07fd3b6557",
+      "source_sha256": "f0ba8734fee11c2e48e128b155c4906da39d05aa280863802285cf51176d80f5",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-writeable.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-writeable.js",
+      "mode": "strict",
+      "case_sha256": "15c216490a51de1504d599666e4ede380878fdfc7960316330704ab9edf8426b",
+      "source_sha256": "c46800f37b81f2bfd1d3e3c94470a1980b96bdb4dbbf8b8211626b12dd1eabdf",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-lhs.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-lhs.js",
+      "mode": "strict",
+      "case_sha256": "9fc9fee9d84218eb16b5b0ec6896f693f32f2903ad06a7a0bc709b4b61416f40",
+      "source_sha256": "27e10f40ee86e0ab252e62bd102c5bdb61b885f06f9dd211e5546404cc17336f",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-rhs-put.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-rhs-put.js",
+      "mode": "sloppy",
+      "case_sha256": "bfeecc53a83953feaff777c3afd26b6a02ec7f0e7432c43badc639a174bf40e2",
+      "source_sha256": "20253b1ba3ec6ea6518189aed2c89d0640b151009e0a414ca81f66a4fdb3c50c",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-rhs-put.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-rhs-put.js",
+      "mode": "strict",
+      "case_sha256": "d9d95b8241a3f8c349d176af2b559c1cba9954f3da37b319619c4a1e7a79d11d",
+      "source_sha256": "20253b1ba3ec6ea6518189aed2c89d0640b151009e0a414ca81f66a4fdb3c50c",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-rhs.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-rhs.js",
+      "mode": "sloppy",
+      "case_sha256": "4a2af530ffa0896c3fba3d648ad9edcac9d6d3af2f858d50671459a5d0eb79ac",
+      "source_sha256": "5e04af66fb6ecd70bdce8f8ce61d8a742879095b586033aad635ee7cafae756b",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-rhs.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-rhs.js",
+      "mode": "strict",
+      "case_sha256": "6de19fade5ab96db226183bf349f2897a4e2e018d50aeea883dde776f74c15f4",
+      "source_sha256": "5e04af66fb6ecd70bdce8f8ce61d8a742879095b586033aad635ee7cafae756b",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js",
+      "mode": "sloppy",
+      "case_sha256": "ed69115a2b3da588565257c6a9c4930868c481f1045dd480e284b4c7978342ac",
+      "source_sha256": "d77746c5562967ea73b950e21359f0bb0839ff484f7eb55d12cc04e043f8ad01",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js",
+      "mode": "strict",
+      "case_sha256": "a77150a6877c7df05d7dd35405b4b63c829663a16bae17fa8fa97531ad367be8",
+      "source_sha256": "d77746c5562967ea73b950e21359f0bb0839ff484f7eb55d12cc04e043f8ad01",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-eval-strict.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-eval-strict.js",
+      "mode": "strict",
+      "case_sha256": "5ad3b7171a74c415be40867d0c2641d4bd932cfdaa08c2da18b16e7f2c894a8a",
+      "source_sha256": "8f8802e0fff03b80b4e79575062a4d481f8f1a0cccee4660feffba290fce5ac1",
+      "expected_negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "status": "passed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-non-simple.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-non-simple.js",
+      "mode": "sloppy",
+      "case_sha256": "03f9eebe20748b43cce83d82b98d107f835877c7cca8b560c01eb7b6fc5310c1",
+      "source_sha256": "ece92bda136f6ece4b5dab482476da893b4c589cba836c809656a5e8767ac920",
+      "expected_negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "status": "passed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-non-simple.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-non-simple.js",
+      "mode": "strict",
+      "case_sha256": "02e8ba733f1690c2a16cdc71f0fde034caa98647a13ed2f0ba4776233bdf2f76",
+      "source_sha256": "ece92bda136f6ece4b5dab482476da893b4c589cba836c809656a5e8767ac920",
+      "expected_negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "status": "passed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-whitespace.js:sloppy",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-whitespace.js",
+      "mode": "sloppy",
+      "case_sha256": "6f0dce6c8feffab9ffb409516bbd47d4da0c7fb8e0b984c5f9bb96485b793629",
+      "source_sha256": "625f56099e74e2ee8ad3cccef74f4237340b4edc852b7bea95d76de097a0d87f",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/expressions/logical-assignment/lgcl-or-whitespace.js:strict",
+      "file": "test/language/expressions/logical-assignment/lgcl-or-whitespace.js",
+      "mode": "strict",
+      "case_sha256": "9e6ecf35b4b3334496663f24c74647c6720d5a1cb8715a27f102c77e852f168b",
+      "source_sha256": "625f56099e74e2ee8ad3cccef74f4237340b4edc852b7bea95d76de097a0d87f",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "expected expression",
+        "harness": ""
+      }
+    }
+  ],
+  "source_input_sha256": "dc2e14d6e60eb413384ed88b7518a3207b5a79f1052f18be6549731a637d25a6",
+  "measured_commit": "789165bddc015e99d4c51c38b13ba25d3bcd90dd",
+  "baseline_recorded": false,
+  "triage": [
+    {
+      "observation": {
+        "observation": null,
+        "reason": "unimplemented declared features: BigInt",
+        "status": "unsupported"
+      },
+      "count": 6,
+      "case_ids": [
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-bigint.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-bigint.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-bigint.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-bigint.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-bigint.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-bigint.js:strict"
+      ]
+    },
+    {
+      "observation": {
+        "observation": null,
+        "reason": "unimplemented declared features: class-fields-private",
+        "status": "unsupported"
+      },
+      "count": 42,
+      "case_ids": [
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-and.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-and.js:strict",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-nullish.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-nullish.js:strict",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-or.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-or.js:strict",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-and.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-and.js:strict",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-nullish.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-nullish.js:strict",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-or.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-or.js:strict",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-and.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-and.js:strict",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-nullish.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-nullish.js:strict",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-or.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-or.js:strict",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-and.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-and.js:strict",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-nullish.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-nullish.js:strict",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-or.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-or.js:strict",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-and.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-and.js:strict",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-short-circuit-nullish.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-short-circuit-nullish.js:strict",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-short-circuit-or.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-short-circuit-or.js:strict",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-and.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-and.js:strict",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-nullish.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-nullish.js:strict",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-or.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-or.js:strict",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-and.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-and.js:strict",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-nullish.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-nullish.js:strict",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-or.js:sloppy",
+        "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-or.js:strict"
+      ]
+    },
+    {
+      "observation": {
+        "observation": {
+          "error_identity": "SyntaxError",
+          "error_type": "SyntaxError",
+          "harness": "",
+          "message": "expected expression",
+          "phase": "parse",
+          "status": "exception"
+        },
+        "reason": null,
+        "status": "failed"
+      },
+      "count": 66,
+      "case_ids": [
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-lhs-before-rhs.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-lhs-before-rhs.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-arrow-function.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-arrow-function.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-class-expression.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-class-expression.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-function.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-function.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-no-set-put.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-no-set.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-extensible.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-writeable-put.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-writeable.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-lhs.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-rhs-put.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-rhs-put.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-rhs.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-rhs.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-and-whitespace.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-and-whitespace.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-lhs-before-rhs.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-lhs-before-rhs.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-arrow-function.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-arrow-function.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-class-expression.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-class-expression.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-function.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-function.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-no-set-put.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-no-set.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-extensible.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-writeable-put.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-writeable.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-lhs.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-rhs-put.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-rhs-put.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-rhs.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-rhs.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-nullish-whitespace.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-nullish-whitespace.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-lhs-before-rhs.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-lhs-before-rhs.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-arrow-function.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-arrow-function.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-class-expression.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-class-expression.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-function.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-function.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-no-set-put.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-no-set.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-extensible.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-writeable-put.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-writeable.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-lhs.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-rhs-put.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-rhs-put.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-rhs.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-rhs.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js:strict",
+        "test/language/expressions/logical-assignment/lgcl-or-whitespace.js:sloppy",
+        "test/language/expressions/logical-assignment/lgcl-or-whitespace.js:strict"
+      ]
+    }
+  ]
+}

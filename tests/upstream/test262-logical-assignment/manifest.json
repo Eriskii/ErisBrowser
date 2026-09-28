@@ -1,0 +1,595 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all direct .js files in language/expressions/logical-assignment; no implementation",
+  "directories": {
+    "expressions/logical-assignment": [
+      "left-hand-side-private-reference-accessor-property-and.js",
+      "left-hand-side-private-reference-accessor-property-nullish.js",
+      "left-hand-side-private-reference-accessor-property-or.js",
+      "left-hand-side-private-reference-accessor-property-short-circuit-and.js",
+      "left-hand-side-private-reference-accessor-property-short-circuit-nullish.js",
+      "left-hand-side-private-reference-accessor-property-short-circuit-or.js",
+      "left-hand-side-private-reference-data-property-and.js",
+      "left-hand-side-private-reference-data-property-nullish.js",
+      "left-hand-side-private-reference-data-property-or.js",
+      "left-hand-side-private-reference-data-property-short-circuit-and.js",
+      "left-hand-side-private-reference-data-property-short-circuit-nullish.js",
+      "left-hand-side-private-reference-data-property-short-circuit-or.js",
+      "left-hand-side-private-reference-method-and.js",
+      "left-hand-side-private-reference-method-short-circuit-nullish.js",
+      "left-hand-side-private-reference-method-short-circuit-or.js",
+      "left-hand-side-private-reference-readonly-accessor-property-and.js",
+      "left-hand-side-private-reference-readonly-accessor-property-nullish.js",
+      "left-hand-side-private-reference-readonly-accessor-property-or.js",
+      "left-hand-side-private-reference-readonly-accessor-property-short-circuit-and.js",
+      "left-hand-side-private-reference-readonly-accessor-property-short-circuit-nullish.js",
+      "left-hand-side-private-reference-readonly-accessor-property-short-circuit-or.js",
+      "lgcl-and-arguments-strict.js",
+      "lgcl-and-assignment-operator-bigint.js",
+      "lgcl-and-assignment-operator-lhs-before-rhs.js",
+      "lgcl-and-assignment-operator-namedevaluation-arrow-function.js",
+      "lgcl-and-assignment-operator-namedevaluation-class-expression.js",
+      "lgcl-and-assignment-operator-namedevaluation-function.js",
+      "lgcl-and-assignment-operator-no-set-put.js",
+      "lgcl-and-assignment-operator-no-set.js",
+      "lgcl-and-assignment-operator-non-extensible.js",
+      "lgcl-and-assignment-operator-non-simple-lhs.js",
+      "lgcl-and-assignment-operator-non-writeable-put.js",
+      "lgcl-and-assignment-operator-non-writeable.js",
+      "lgcl-and-assignment-operator-unresolved-lhs.js",
+      "lgcl-and-assignment-operator-unresolved-rhs-put.js",
+      "lgcl-and-assignment-operator-unresolved-rhs.js",
+      "lgcl-and-assignment-operator.js",
+      "lgcl-and-eval-strict.js",
+      "lgcl-and-non-simple.js",
+      "lgcl-and-whitespace.js",
+      "lgcl-nullish-arguments-strict.js",
+      "lgcl-nullish-assignment-operator-bigint.js",
+      "lgcl-nullish-assignment-operator-lhs-before-rhs.js",
+      "lgcl-nullish-assignment-operator-namedevaluation-arrow-function.js",
+      "lgcl-nullish-assignment-operator-namedevaluation-class-expression.js",
+      "lgcl-nullish-assignment-operator-namedevaluation-function.js",
+      "lgcl-nullish-assignment-operator-no-set-put.js",
+      "lgcl-nullish-assignment-operator-no-set.js",
+      "lgcl-nullish-assignment-operator-non-extensible.js",
+      "lgcl-nullish-assignment-operator-non-simple-lhs.js",
+      "lgcl-nullish-assignment-operator-non-writeable-put.js",
+      "lgcl-nullish-assignment-operator-non-writeable.js",
+      "lgcl-nullish-assignment-operator-unresolved-lhs.js",
+      "lgcl-nullish-assignment-operator-unresolved-rhs-put.js",
+      "lgcl-nullish-assignment-operator-unresolved-rhs.js",
+      "lgcl-nullish-assignment-operator.js",
+      "lgcl-nullish-eval-strict.js",
+      "lgcl-nullish-non-simple.js",
+      "lgcl-nullish-whitespace.js",
+      "lgcl-or-arguments-strict.js",
+      "lgcl-or-assignment-operator-bigint.js",
+      "lgcl-or-assignment-operator-lhs-before-rhs.js",
+      "lgcl-or-assignment-operator-namedevaluation-arrow-function.js",
+      "lgcl-or-assignment-operator-namedevaluation-class-expression.js",
+      "lgcl-or-assignment-operator-namedevaluation-function.js",
+      "lgcl-or-assignment-operator-no-set-put.js",
+      "lgcl-or-assignment-operator-no-set.js",
+      "lgcl-or-assignment-operator-non-extensible.js",
+      "lgcl-or-assignment-operator-non-simple-lhs.js",
+      "lgcl-or-assignment-operator-non-writeable-put.js",
+      "lgcl-or-assignment-operator-non-writeable.js",
+      "lgcl-or-assignment-operator-unresolved-lhs.js",
+      "lgcl-or-assignment-operator-unresolved-rhs-put.js",
+      "lgcl-or-assignment-operator-unresolved-rhs.js",
+      "lgcl-or-assignment-operator.js",
+      "lgcl-or-eval-strict.js",
+      "lgcl-or-non-simple.js",
+      "lgcl-or-whitespace.js"
+    ]
+  },
+  "test_files": 78,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-and.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-and.js",
+      "bytes": 2129,
+      "sha256": "5879c76447249abfebdd4e27aeafa2d75d82bba1264ae4c1bec28f0da159928a"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-nullish.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-nullish.js",
+      "bytes": 2105,
+      "sha256": "a3908e65c3cf3b7b223b80f2ec64e2e7d143d0d3136f3b64ec1f8a790f25b727"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-or.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-or.js",
+      "bytes": 2124,
+      "sha256": "90555cb84e7be833423653e590319556d80ff12ddbdc2d2eb25de85e090112de"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-and.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-and.js",
+      "bytes": 2182,
+      "sha256": "db20764ba99a75a32a87d9a8b8f0bf49d02d58fa612669546ece14f31962f99c"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-nullish.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-nullish.js",
+      "bytes": 2162,
+      "sha256": "8a6acd316b7cdfa889930aed88c99c81e234870e150a42c1fd0508b79d3ff09a"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-or.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-short-circuit-or.js",
+      "bytes": 2177,
+      "sha256": "015b3f250d82ffd79219c04324774a34fa599bc3653b80ae21c05ebe52e000ac"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-and.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-and.js",
+      "bytes": 1897,
+      "sha256": "a9e49b518ad38d76af16395fe93e1ca794783584d6e9b43c077c21ed068fe9db"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-nullish.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-nullish.js",
+      "bytes": 1873,
+      "sha256": "5fab7280d14d6c8dcac451d3b302746ff58c9726144c70dce0b1ba3c94fc83a0"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-or.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-or.js",
+      "bytes": 1892,
+      "sha256": "89ef942907d79ebd02de2464e6704c48ed0bf12ddd21a63b468481a5a3c10333"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-and.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-and.js",
+      "bytes": 1952,
+      "sha256": "36255391d5fdd5976b3995c39703bbb27fcc95b8d2d1fc1b621cf0c3035a9a9c"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-nullish.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-nullish.js",
+      "bytes": 1932,
+      "sha256": "018140e602014eac4752219ceb601723bd9ae7081aa51e79cdf389ae161f2d9e"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-or.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-data-property-short-circuit-or.js",
+      "bytes": 1947,
+      "sha256": "c354b884b020aedd6fbae76b44c2491aa8a71b288ee72d023902eb3f13fb5d78"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-and.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-and.js",
+      "bytes": 1796,
+      "sha256": "91acc5f39907aaabb2c95e140a129b071dbb0d8c5651144e9c4a9ddb65caec27"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-short-circuit-nullish.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-short-circuit-nullish.js",
+      "bytes": 2014,
+      "sha256": "e64ae28e4768ba3a9c7cd366c4fe9e75626ae60f1be2101017ec824ad98b837a"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-short-circuit-or.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-method-short-circuit-or.js",
+      "bytes": 2023,
+      "sha256": "e6ea19fa71d1e142d667706a0fe7e933c6773cbeb131dc8601c712d874b485f1"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-and.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-and.js",
+      "bytes": 1839,
+      "sha256": "092483e50b61dd3be8b95b947e443e8d82d3973cda19fd7a0b93d752a50c7d8b"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-nullish.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-nullish.js",
+      "bytes": 1823,
+      "sha256": "be561eca1b96dcc5d94a4b9a7f191c204750872e2c93a444abed29db7241f5be"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-or.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-or.js",
+      "bytes": 1836,
+      "sha256": "190951aa513496e6e553ef564814c3ed8caaeaf9f1deb9031b1d27b5ebc7c1e8"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-and.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-and.js",
+      "bytes": 1981,
+      "sha256": "be42639b02cc2ecbf1bc8e4970f1ecd7ce6951be2ccd5aa1d38c1cfb161e4500"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-nullish.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-nullish.js",
+      "bytes": 1961,
+      "sha256": "a17f45fdcf1e89e9d1b33da095c9844a1f3346a948dde3237b18b192374882cd"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-or.js",
+      "upstream_path": "test/language/expressions/logical-assignment/left-hand-side-private-reference-readonly-accessor-property-short-circuit-or.js",
+      "bytes": 1976,
+      "sha256": "159b7a57169b8361217d208073e95aa24f0639c4f9c9de71a174afff2f7f468c"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-and-arguments-strict.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-and-arguments-strict.js",
+      "bytes": 481,
+      "sha256": "0712a159980488b194fe15497164fb329cc1192b3f0b7ea0b543847765ae0b34"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-bigint.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-bigint.js",
+      "bytes": 925,
+      "sha256": "fdce5667d06805d3834081afb41804854e913b2566fdf95dd5f4e8ec37197761"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-lhs-before-rhs.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-lhs-before-rhs.js",
+      "bytes": 1306,
+      "sha256": "39a0a3482cca7b4605e8f691044c1e3fc6d1a87c430fc345d05025c6651ffee0"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-arrow-function.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-arrow-function.js",
+      "bytes": 707,
+      "sha256": "59f7b917a6c3e241e248d1370b79a1e697cbb34352c0e285e565b74e0299eabd"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-class-expression.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-class-expression.js",
+      "bytes": 707,
+      "sha256": "ccf9276e4c91f4a0b5365f15b66fde5499b952f7b2ae5df937a33cac03c39ea2"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-function.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-namedevaluation-function.js",
+      "bytes": 712,
+      "sha256": "b4b03e2df453a0bf7b0e6df00edbda4b8608d044f966a6ca566b66c60f8ec9c1"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-no-set-put.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-no-set-put.js",
+      "bytes": 756,
+      "sha256": "82ae8ebaaf6a2ddf4764ee2f96a9de7de22b5855d49e12e1ea8d2083cfcecde7"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-no-set.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-no-set.js",
+      "bytes": 710,
+      "sha256": "62bf3602965e204ce2dba9a01c5b9826c25361b13f3ed41f6d304ba118a23f32"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-extensible.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-extensible.js",
+      "bytes": 611,
+      "sha256": "525af6499a69e8b8b4540bd1e354078c5f21229ee9ef1c590d27121d57e62857"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-simple-lhs.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-simple-lhs.js",
+      "bytes": 458,
+      "sha256": "b6a20fe597fbe47e61efbb1d5e42ee9efdeb326f6ba322cbf8f4bc7571d29b12"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-writeable-put.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-writeable-put.js",
+      "bytes": 731,
+      "sha256": "11a8fb2f5ba2ac9470802759709856fc19f5b58a2aa8eb55db628d843e27080c"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-writeable.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-non-writeable.js",
+      "bytes": 685,
+      "sha256": "cdfcb82923ea4f0598f099fb0f01d2eda29024fe853b2443b342e16305c2e8a7"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-lhs.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-lhs.js",
+      "bytes": 493,
+      "sha256": "1ce909d81c07760ffb4933f2dc6429f3c21608a1bb3e02f222c5fedec4ddd998"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-rhs-put.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-rhs-put.js",
+      "bytes": 575,
+      "sha256": "bc06236e433fb71012dfab4c49209d79ee0dca4c2592aa0bbc0eb8975943e998"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-rhs.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator-unresolved-rhs.js",
+      "bytes": 527,
+      "sha256": "b214f248c94b56d0b3c526c755c58f22fd751e67228eaed14c1488b8ea69b88f"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-and-assignment-operator.js",
+      "bytes": 1905,
+      "sha256": "16d6f54b4ae2cb636dff5e5c6557d76d5f68428c8c2b2e51c773412afaddc02f"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-and-eval-strict.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-and-eval-strict.js",
+      "bytes": 467,
+      "sha256": "9e8c31320c64c8ee8b21a2e014fa1d24889b3f962e8ef59e1af5eb6192f20cdd"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-and-non-simple.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-and-non-simple.js",
+      "bytes": 493,
+      "sha256": "3606e938d83aaa19e5b4ba12b8025a4a014a6ecfe1a7bc3944d314153c7db048"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-and-whitespace.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-and-whitespace.js",
+      "bytes": 1646,
+      "sha256": "7c44802574c033c2da495afb9e5df01c8c23e6ec74d8c887ea9d20146633c6eb"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-nullish-arguments-strict.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-nullish-arguments-strict.js",
+      "bytes": 481,
+      "sha256": "ece5b9f0ced5cfe429177f620188b664036705f3bbbbd013fb1c9232e98ddd6c"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-bigint.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-bigint.js",
+      "bytes": 910,
+      "sha256": "4257850019488510b1f9cb6b82bb3dbf663705d900864f750557c7d24f9455be"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-lhs-before-rhs.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-lhs-before-rhs.js",
+      "bytes": 1290,
+      "sha256": "08417d9b67db9872ce99247068a46f732e6f11043f3640e55afeb3533bdc17c0"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-arrow-function.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-arrow-function.js",
+      "bytes": 719,
+      "sha256": "79f32d4d64391b94f1f8d73d0a8bfee3268376c86dece2c322c3ce06393ff56a"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-class-expression.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-class-expression.js",
+      "bytes": 719,
+      "sha256": "25fa9d89e7cc252206c88349e5a3766e90a66c427fdb3d0b23f4f23e67479f27"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-function.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-namedevaluation-function.js",
+      "bytes": 724,
+      "sha256": "526549c8cd3d6c698dd4996e4a016bf6717344aa47f77747ef58c7bf5a0bed6e"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-no-set-put.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-no-set-put.js",
+      "bytes": 772,
+      "sha256": "353301b442a5fc7778f0d55923fe66c6198389f29293df3b9a55e4190fc281b8"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-no-set.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-no-set.js",
+      "bytes": 710,
+      "sha256": "e72f78e7e2e1f6fe9dfe34f43aa24184faa8f5cd9fe3a18fc6fdd5c248889df8"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-extensible.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-extensible.js",
+      "bytes": 651,
+      "sha256": "64f73041bc404ffef2f94e9670d3579a40704abdcfe16cadc1121768c281d8b2"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-simple-lhs.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-simple-lhs.js",
+      "bytes": 458,
+      "sha256": "e75e20378061dfce84512242dbe2ff8b0fcb4e9967257b94e3389104f8f61400"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-writeable-put.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-writeable-put.js",
+      "bytes": 747,
+      "sha256": "c3867a65448c15402c9d770c411a3cc6c0b9fce8c290d2fd5736413e8cf0a5c8"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-writeable.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-non-writeable.js",
+      "bytes": 685,
+      "sha256": "717a356749931264d40ed192fe446069b65bd3d546a2a7ee124a75a42c12637c"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-lhs.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-lhs.js",
+      "bytes": 493,
+      "sha256": "0a98218b485ec248039051435cec2dc72adc4a87b4ec2f47c89fc02e81c958b5"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-rhs-put.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-rhs-put.js",
+      "bytes": 591,
+      "sha256": "f5b43bd230484d3afbf131cfeb97b91e55b460d265e0547ad68b407e92cad87e"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-rhs.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator-unresolved-rhs.js",
+      "bytes": 527,
+      "sha256": "8750aafaa21c50c4e00f1de3f1944b0bb1f29d0d8c4ffe2420a6d72188e8b60e"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-nullish-assignment-operator.js",
+      "bytes": 1897,
+      "sha256": "a75ca7efb0a81895c9823c391c98921fef3b5e381ff887bcae11fa34910071af"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-nullish-eval-strict.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-nullish-eval-strict.js",
+      "bytes": 467,
+      "sha256": "bd99861bb7728af416d69a50a914d21b4cc11a8c82a68e0ffbed238885134249"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-nullish-non-simple.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-nullish-non-simple.js",
+      "bytes": 493,
+      "sha256": "a871111b6b7a0d1289a4a8cf39b2f36b23ccacc3171419ff2b6480a216f6e0ee"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-nullish-whitespace.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-nullish-whitespace.js",
+      "bytes": 1676,
+      "sha256": "5d2524e1b1a4dd2c40f7b5743395c734de32cfde33879f9514163497ec35e52d"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-or-arguments-strict.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-or-arguments-strict.js",
+      "bytes": 481,
+      "sha256": "6d96e79fb35c826ce3ed0cc326297ebe3fdd382c2d8bd634dda75bfdd3292657"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-bigint.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-bigint.js",
+      "bytes": 923,
+      "sha256": "e894232393b45f4f11da6a94c569312650b4ab0ee34978ba215898e0ee0e9233"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-lhs-before-rhs.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-lhs-before-rhs.js",
+      "bytes": 1290,
+      "sha256": "3aedfa4fb22a5aca46fee0a691e7730b5c5d4039cf199e2769bac2e09ee74e8a"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-arrow-function.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-arrow-function.js",
+      "bytes": 706,
+      "sha256": "4376c7566d0457ff2142fa009c13c4d3fd20881b1fa717481a07605fa3230cdf"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-class-expression.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-class-expression.js",
+      "bytes": 706,
+      "sha256": "04516a0e07bea663c1ed326c855b082043da0520269154152b0cdd1d0c3c10ff"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-function.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-namedevaluation-function.js",
+      "bytes": 711,
+      "sha256": "859e484be17956043eeeb3bfd3b2e23bad5d3fa0b9de8b9296df82e6f8bab279"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-no-set-put.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-no-set-put.js",
+      "bytes": 756,
+      "sha256": "d4336006e749a6d3137460546f6f5ff74224c9fc554f85d0bcff580125382384"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-no-set.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-no-set.js",
+      "bytes": 710,
+      "sha256": "9aa10698aa1460791e8608250a2442311407d722576e0b0bf662bfe5ae3b0fd8"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-extensible.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-extensible.js",
+      "bytes": 651,
+      "sha256": "532670a68e6ced60e62ed891f12b020a58ba43dc26a7fa642ef6300b571e65a3"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-simple-lhs.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-simple-lhs.js",
+      "bytes": 458,
+      "sha256": "bb283e8996f2c05abea8d14a806328e624d98f853035fbfb2be8fd7d4c215c0f"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-writeable-put.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-writeable-put.js",
+      "bytes": 731,
+      "sha256": "f0ba8734fee11c2e48e128b155c4906da39d05aa280863802285cf51176d80f5"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-writeable.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-non-writeable.js",
+      "bytes": 685,
+      "sha256": "c46800f37b81f2bfd1d3e3c94470a1980b96bdb4dbbf8b8211626b12dd1eabdf"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-lhs.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-lhs.js",
+      "bytes": 493,
+      "sha256": "27e10f40ee86e0ab252e62bd102c5bdb61b885f06f9dd211e5546404cc17336f"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-rhs-put.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-rhs-put.js",
+      "bytes": 575,
+      "sha256": "20253b1ba3ec6ea6518189aed2c89d0640b151009e0a414ca81f66a4fdb3c50c"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-rhs.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator-unresolved-rhs.js",
+      "bytes": 527,
+      "sha256": "5e04af66fb6ecd70bdce8f8ce61d8a742879095b586033aad635ee7cafae756b"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-or-assignment-operator.js",
+      "bytes": 1895,
+      "sha256": "d77746c5562967ea73b950e21359f0bb0839ff484f7eb55d12cc04e043f8ad01"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-or-eval-strict.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-or-eval-strict.js",
+      "bytes": 467,
+      "sha256": "8f8802e0fff03b80b4e79575062a4d481f8f1a0cccee4660feffba290fce5ac1"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-or-non-simple.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-or-non-simple.js",
+      "bytes": 493,
+      "sha256": "ece92bda136f6ece4b5dab482476da893b4c589cba836c809656a5e8767ac920"
+    },
+    {
+      "path": "test/language/expressions/logical-assignment/lgcl-or-whitespace.js",
+      "upstream_path": "test/language/expressions/logical-assignment/lgcl-or-whitespace.js",
+      "bytes": 1646,
+      "sha256": "625f56099e74e2ee8ad3cccef74f4237340b4edc852b7bea95d76de097a0d87f"
+    }
+  ]
+}

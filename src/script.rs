@@ -767,8 +767,8 @@ fn lex(source: &str, budget: &mut regexp::Budget) -> Result<Vec<Token>> {
             } else {
                 let operator = [
                     ">>>=", "===", "!==", ">>>", "**=", "<<=", ">>=", "=>", "==", "!=", "<=", ">=",
-                    "&&", "||", "??", "++", "--", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|=",
-                    "**", "<<", ">>",
+                    "&&=", "||=", "??=", "&&", "||", "??", "++", "--", "+=", "-=", "*=", "/=",
+                    "%=", "&=", "^=", "|=", "**", "<<", ">>",
                 ]
                 .into_iter()
                 .find(|op| source[pos..].starts_with(op));
@@ -1957,6 +1957,7 @@ impl<'source> Parser<'source> {
         }
         for operator in [
             "=", "+=", "-=", "*=", "/=", "%=", "**=", "<<=", ">>=", ">>>=", "&=", "^=", "|=",
+            "&&=", "||=", "??=",
         ] {
             if self.eat(operator) {
                 self.assignment_target(&left)?;
@@ -5923,6 +5924,27 @@ impl Runtime {
             }
             Expr::Assign(op, left, right) => {
                 let mut reference = self.reference(left, env, doc)?;
+                if matches!(op.as_str(), "&&=" | "||=" | "??=") {
+                    let old = self.read_reference(&mut reference, doc)?;
+                    if op == "&&=" && !old.truthy()
+                        || op == "||=" && old.truthy()
+                        || op == "??=" && !matches!(old, Value::Undefined | Value::Null)
+                    {
+                        return Ok(old);
+                    }
+                    let value = self.eval(right, env, doc)?;
+                    if let Expr::Ident(name) = &**left
+                        && matches!(&**right, Expr::Function(code) if code.name.is_none())
+                    {
+                        // UTF-8 to UTF-16 may retain a Vec while copying to Rc.
+                        // Skip this work entirely on the short-circuit path.
+                        self.work(1 + name.len() / 8)?;
+                        self.charge(64 + name.len().saturating_mul(4))?;
+                        self.set_function_name(&value, &name.as_str().into(), None)?;
+                    }
+                    self.write_reference(reference, value.clone(), doc)?;
+                    return Ok(value);
+                }
                 let old = if op != "=" {
                     Some(self.read_reference(&mut reference, doc)?)
                 } else {
@@ -17523,6 +17545,259 @@ mod tests {
                 runtime.execute(source, &mut document)
             };
             result.unwrap_or_else(|error| panic!("strict={strict}: {error}"));
+        }
+    }
+
+    fn logical_assignment_modes(source: &str) {
+        for (operator, take, skip) in [("&&=", "1", "0"), ("||=", "0", "1"), ("??=", "null", "0")] {
+            for strict in [false, true] {
+                let (mut runtime, mut document) = upstream_harness();
+                let source = source
+                    .replace("@OP@", operator)
+                    .replace("@TAKE@", take)
+                    .replace("@SKIP@", skip)
+                    .replace("@STRICT@", if strict { "true" } else { "false" });
+                let result = if strict {
+                    runtime.execute_strict(&source, &mut document)
+                } else {
+                    runtime.execute(&source, &mut document)
+                };
+                result.unwrap_or_else(|error| panic!("{operator} strict={strict}: {error}"));
+            }
+        }
+    }
+
+    #[test]
+    fn logical_assignment_checks_truthiness_without_conversion_and_retains_identity() {
+        number_static_modes(
+            r#"
+            var falsy=[undefined,null,false,0,-0,NaN,''],truthy=[true,1,-1,Infinity,'0',[],{},new Boolean(false)],rhs={};
+            for(var i=0;i<falsy.length;i++){
+                var value=falsy[i];assert.sameValue(value&&=(function(){throw 'unused';})(),falsy[i]);
+                assert.sameValue(value,falsy[i]);assert.sameValue(value||=rhs,rhs);assert.sameValue(value,rhs);
+            }
+            for(var i=0;i<truthy.length;i++){
+                var value=truthy[i];assert.sameValue(value||=(function(){throw 'unused';})(),truthy[i]);
+                assert.sameValue(value??=(function(){throw 'unused';})(),truthy[i]);
+                assert.sameValue(value&&=rhs,rhs);assert.sameValue(value,rhs);
+            }
+            for(var i=2;i<falsy.length;i++){
+                var value=falsy[i];assert.sameValue(value??=(function(){throw 'unused';})(),falsy[i]);
+            }
+            var value=null;assert.sameValue(value??=rhs,rhs);value=undefined;assert.sameValue(value??=rhs,rhs);
+            var object={get valueOf(){throw 'unused';},get toString(){throw 'unused';}};
+            value=object;assert.sameValue(value||=1,object);assert.sameValue(value??=1,object);assert.sameValue(value&&=rhs,rhs);
+        "#,
+        );
+    }
+
+    #[test]
+    fn logical_assignment_captures_reference_key_and_inherited_receiver_once() {
+        logical_assignment_modes(
+            r#"
+            var trace='',stored,other={x:99},prototype={get x(){assert.sameValue(this,object);trace+='G';return @TAKE@;},
+                set x(v){assert.sameValue(this,object);trace+='S';stored=v;}};
+            var object=Object.create(prototype),selected=object,result={};
+            function target(){trace+='O';return selected;}
+            function key(){trace+='K';return {toString:function(){trace+='C';return 'x';}};}
+            function rhs(){trace+='R';selected=other;return result;}
+            assert.sameValue(target()[key()]@OP@rhs(),result);assert.sameValue(stored,result);
+            assert.sameValue(trace,'OKCGRS');assert.sameValue(other.x,99);
+            Object.defineProperty(prototype,'x',{get:function(){trace+='G';return @SKIP@;},set:function(){throw 'unused';},configurable:true});
+            selected=object;trace='';assert.sameValue(target()[key()]@OP@rhs(),@SKIP@);assert.sameValue(trace,'OKCG');
+        "#,
+        );
+    }
+
+    #[test]
+    fn logical_assignment_short_circuit_avoids_readonly_writes_but_taken_path_does_not() {
+        logical_assignment_modes(
+            r#"
+            var calls=0;function rhs(){calls++;return 9;}
+            const held=@SKIP@;assert.sameValue(held@OP@rhs(),@SKIP@);assert.sameValue(calls,0);
+            const locked=@TAKE@;assert.throws(TypeError,function(){locked@OP@rhs();});assert.sameValue(calls,1);
+            var object={};Object.defineProperty(object,'x',{value:@SKIP@,writable:false,configurable:true});
+            assert.sameValue(object.x@OP@rhs(),@SKIP@);assert.sameValue(calls,1);
+            Object.defineProperty(object,'x',{value:@TAKE@});
+            if(@STRICT@)assert.throws(TypeError,function(){object.x@OP@rhs();});
+            else assert.sameValue(object.x@OP@rhs(),9);
+            assert.sameValue(object.x,@TAKE@);assert.sameValue(calls,2);
+            Object.defineProperty(object,'x',{get:function(){return @SKIP@;},configurable:true});
+            assert.sameValue(object.x@OP@rhs(),@SKIP@);assert.sameValue(calls,2);
+            assert.throws(ReferenceError,function(){missingLogical@OP@rhs();});assert.sameValue(calls,2);
+            assert.throws(ReferenceError,function(){early@OP@rhs();let early;});assert.sameValue(calls,2);
+        "#,
+        );
+    }
+
+    #[test]
+    fn logical_assignment_abrupt_stages_preserve_identity_and_prior_effects() {
+        logical_assignment_modes(
+            r#"
+            var reason={},seen,trace='',object={get x(){trace+='G';return @TAKE@;},set x(v){trace+='S';throw reason;}};
+            function rhs(){trace+='R';return 7;}
+            try{object.x@OP@rhs();}catch(e){seen=e;}assert.sameValue(seen,reason);assert.sameValue(trace,'GRS');
+            trace='';seen=undefined;function bad(){trace+='R';throw reason;}
+            try{object.x@OP@bad();}catch(e){seen=e;}assert.sameValue(seen,reason);assert.sameValue(trace,'GR');
+            Object.defineProperty(object,'x',{get:function(){trace+='G';throw reason;},configurable:true});
+            trace='';seen=undefined;try{object.x@OP@rhs();}catch(e){seen=e;}assert.sameValue(seen,reason);assert.sameValue(trace,'G');
+            trace='';seen=undefined;var key={toString:function(){trace+='K';throw reason;}};
+            try{object[key]@OP@rhs();}catch(e){seen=e;}assert.sameValue(seen,reason);assert.sameValue(trace,'K');
+            trace='';seen=undefined;function target(){trace+='O';throw reason;}
+            try{target()[key]@OP@rhs();}catch(e){seen=e;}assert.sameValue(seen,reason);assert.sameValue(trace,'O');
+        "#,
+        );
+    }
+
+    #[test]
+    fn logical_assignment_names_only_anonymous_identifier_rhs_functions() {
+        logical_assignment_modes(
+            r#"
+            var named=@TAKE@;named@OP@function(){};assert.sameValue(named.name,'named');
+            var descriptor=Object.getOwnPropertyDescriptor(named,'name');assert.sameValue(descriptor.writable,false);
+            assert.sameValue(descriptor.enumerable,false);assert.sameValue(descriptor.configurable,true);
+            var arrow=@TAKE@;arrow@OP@()=>7;assert.sameValue(arrow.name,'arrow');assert.sameValue(arrow(),7);
+            var wrapped=@TAKE@;(wrapped)@OP@(function(){});assert.sameValue(wrapped.name,'wrapped');
+            var explicit=@TAKE@;explicit@OP@function own(){};assert.sameValue(explicit.name,'own');
+            var indirect=@TAKE@;indirect@OP@(0,function(){});assert.sameValue(indirect.name,'');
+            var object={x:@TAKE@};object.x@OP@function(){};assert.sameValue(object.x.name,'');
+            var \u{10400}=@TAKE@;\u{10400}@OP@function(){};assert.sameValue(\u{10400}.name,'\uD801\uDC00');
+            var held=@SKIP@;assert.sameValue(held@OP@function(){},@SKIP@);
+        "#,
+        );
+    }
+
+    #[test]
+    fn logical_assignment_is_right_associative_and_preserves_expression_precedence() {
+        logical_assignment_modes(
+            r#"
+            var trace='',a={get x(){trace+='A';return @TAKE@;},set x(v){trace+='a';}},
+                b={get x(){trace+='B';return @TAKE@;},set x(v){trace+='b';}};
+            function rhs(){trace+='R';return 3;}
+            assert.sameValue(a.x@OP@b.x@OP@rhs(),3);assert.sameValue(trace,'ABRba');
+            var value=@TAKE@;assert.sameValue(value@OP@1+2*3,7);
+            value=@TAKE@;assert.sameValue(value@OP@false?2:4,4);
+            value=@TAKE@;value
+            @OP@
+            5;assert.sameValue(value,5);
+        "#,
+        );
+    }
+
+    #[test]
+    fn logical_assignment_rejects_invalid_targets_and_split_tokens_before_effects() {
+        for op in ["&&=", "||=", "??="] {
+            for target in ["1", "a+b", "fn()", "[x]", "({x})", "this"] {
+                let mut runtime = Runtime::new();
+                let mut doc = Document::parse("");
+                runtime.execute("var seen=false;", &mut doc).unwrap();
+                let error = runtime
+                    .execute(&format!("seen=true;{target}{op}1;"), &mut doc)
+                    .unwrap_err();
+                assert_eq!(error.name(), "SyntaxError");
+                assert_eq!(
+                    runtime.environments[0].bindings["seen"].value,
+                    Value::Bool(false)
+                );
+            }
+            for target in ["eval", "arguments"] {
+                let mut runtime = Runtime::new();
+                let mut doc = Document::parse("");
+                assert_eq!(
+                    runtime
+                        .execute_strict(&format!("{target}{op}1;"), &mut doc)
+                        .unwrap_err()
+                        .name(),
+                    "SyntaxError"
+                );
+            }
+            let mut runtime = Runtime::new();
+            let mut doc = Document::parse("");
+            assert_eq!(
+                runtime
+                    .execute(&format!("var a=1;a{} =2;", &op[..2]), &mut doc)
+                    .unwrap_err()
+                    .name(),
+                "SyntaxError"
+            );
+        }
+    }
+
+    #[test]
+    fn logical_assignment_skips_rhs_allocations_and_shares_callback_limits() {
+        for (op, skip, take) in [
+            ("&&=", Value::Number(0.0), Value::Number(1.0)),
+            ("||=", Value::Number(1.0), Value::Number(0.0)),
+            ("??=", Value::Number(0.0), Value::Null),
+        ] {
+            let mut runtime = Runtime::new();
+            let mut doc = Document::parse("");
+            runtime.execute("var held=0;", &mut doc).unwrap();
+            runtime.environments[0]
+                .bindings
+                .get_mut("held")
+                .unwrap()
+                .value = skip.clone();
+            let expr = Expr::Assign(
+                op.into(),
+                Box::new(Expr::Ident("held".into())),
+                Box::new(Expr::Object(Vec::new())),
+            );
+            runtime.steps = MAX_STEPS;
+            runtime.allocated = MAX_HEAP;
+            assert_eq!(runtime.eval(&expr, 0, &mut doc).unwrap(), skip);
+            assert_eq!(runtime.allocated, MAX_HEAP);
+            let short_steps = MAX_STEPS - runtime.steps;
+            runtime.steps = short_steps;
+            assert_eq!(runtime.eval(&expr, 0, &mut doc).unwrap(), skip);
+            assert_eq!(runtime.steps, 0);
+            runtime.steps = MAX_STEPS;
+            runtime.environments[0]
+                .bindings
+                .get_mut("held")
+                .unwrap()
+                .value = take;
+            assert!(
+                runtime
+                    .eval(&expr, 0, &mut doc)
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(
+                (runtime.calls, runtime.eval_depth, runtime.stack_units),
+                (0, 0, 0)
+            );
+        }
+        for op in ["&&=", "||=", "??="] {
+            for body in ["while(true){}", "return recurse();"] {
+                let mut runtime = Runtime::new();
+                let mut doc = Document::parse("");
+                let take = if op == "&&=" { "1" } else { "null" };
+                runtime
+                    .execute("var caught=false,wrote=false;", &mut doc)
+                    .unwrap();
+                let source = format!(
+                    "function recurse(){{{body}}}var object={{get x(){{return {take};}},set x(v){{wrote=true;}}}};try{{object.x{op}recurse();}}catch(e){{caught=true;}}"
+                );
+                assert!(
+                    runtime
+                        .execute(&source, &mut doc)
+                        .unwrap_err()
+                        .is_resource_limit()
+                );
+                assert_eq!(
+                    runtime.environments[0].bindings["wrote"].value,
+                    Value::Bool(false)
+                );
+                assert_eq!(
+                    runtime.environments[0].bindings["caught"].value,
+                    Value::Bool(false)
+                );
+                assert_eq!(
+                    (runtime.calls, runtime.eval_depth, runtime.stack_units),
+                    (0, 0, 0)
+                );
+            }
         }
     }
 

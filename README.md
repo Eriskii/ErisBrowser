@@ -94,6 +94,7 @@ python3 tools/test262_conformance.py --profile number-statics --baseline tests/c
 python3 tools/test262_conformance.py --profile numeric-conversion --baseline tests/conformance/test262-numeric-conversion-current.json
 python3 tools/test262_conformance.py --profile compound-assignment --baseline tests/conformance/test262-compound-assignment-current.json
 python3 tools/test262_conformance.py --profile addition --baseline tests/conformance/test262-addition-current.json
+python3 tools/test262_conformance.py --profile logical-assignment --baseline tests/conformance/test262-logical-assignment-current.json
 python3 -m unittest discover -s tools -p 'test_*.py'
 cargo run --locked --release --bin eris-stress -- 5000
 ```
@@ -166,6 +167,11 @@ The complete [addition directory](tests/conformance/test262-addition.md) retains
 95 variants: 65 pass, two fail on missing Date and 28 remain unsupported. Ordinary
 conversion adds 14 passes with no losses. All 64 assertion controls verify; CI
 preserves the full baseline and its remaining nonpassing cases.
+
+The complete [logical-assignment directory](tests/conformance/test262-logical-assignment.md)
+retains 132 variants: 72 pass, twelve fail on class/Symbol prerequisites and 48
+remain unsupported. The three short-circuit assignments add 54 passes without
+losses. All 104 assertion controls verify; CI preserves the complete baseline.
 
 The complete [identifier and whitespace directories](tests/conformance/test262-identifiers.md)
 retain 669 variants: 507 pass, 154 remain unsupported and eight reach compile

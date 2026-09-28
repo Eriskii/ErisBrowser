@@ -35,8 +35,10 @@ all six assignments, exact pixels and reference order before and after a click.
 
 The [complete pinned directory](test262-compound-assignment.md) includes other
 arithmetic assignments, private fields and existing unsupported prerequisites.
-This increment does not implement BigInt, Symbol, logical assignment, dynamic
-eval, super/private references, classes or complete arithmetic coercion. Loading
+This increment does not implement BigInt, Symbol, dynamic eval, super/private
+references, classes or complete arithmetic coercion. The later
+[logical-assignment increment](logical-assignment.md) adds the three short-circuit
+forms separately. Loading
 the hexadecimal helper enables its dependent parsing tests to reach their
 full loops; any subsequent resource stop remains a nonpassing observation.
 

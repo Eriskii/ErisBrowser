@@ -1,0 +1,34 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Logical assignment and skipped effects</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#and{left:0}#or{left:50px}#nullish{left:100px}#order{left:150px}#names{left:200px}#readonly{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="and" class="sample"></div><div id="or" class="sample"></div>
+<div id="nullish" class="sample"></div><div id="order" class="sample"></div>
+<div id="names" class="sample"></div><div id="readonly" class="sample"></div>
+<button id="change" type="button">Assign through callbacks</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+function unused(){throw new Error('skipped expression executed');}
+function apply(color){
+  let a=0;check((a&&=unused())===0,'and skip');a=1;check((a&&=7)===7&&a===7,'and write');mark('and',color);
+  let b=1;check((b||=unused())===1,'or skip');b=0;check((b||=7)===7&&b===7,'or write');mark('or',color);
+  let c=0;check((c??=unused())===0,'nullish skip');c=null;check((c??=7)===7&&c===7,'nullish write');mark('nullish',color);
+  let trace='',stored;const object={get x(){trace+='G';return null;},set x(value){trace+='S';stored=value;}};
+  function target(){trace+='O';return object;}function key(){trace+='K';return 'x';}function rhs(){trace+='R';return 7;}
+  check((target()[key()]??=rhs())===7&&stored===7&&trace==='OKGRS','single reference');mark('order',color);
+  let named=null;named??=function(){};let arrow=false;arrow||=()=>3;
+  check(named.name==='named'&&arrow.name==='arrow'&&arrow()===3,'function naming');mark('names',color);
+  const held=0;check((held&&=unused())===0&&(held??=unused())===0,'readonly skip');
+  let caught=false;try{held||=1;}catch(error){caught=error instanceof TypeError;}check(caught,'readonly taken');mark('readonly',color);
+}
+apply('green');document.getElementById('result').textContent='ready';document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  apply('blue');let count=null;count??=3;check(count===3,'callback assignment');
+  document.getElementById('result').textContent=String(count);document.body.className='clicked';
+};
+</script>
