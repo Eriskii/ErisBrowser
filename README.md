@@ -99,6 +99,10 @@ minimum Rust version, 1.88, using the checked-in lockfile.
 
 The [validation record](docs/VALIDATION.md) lists observed results and their limits. A pinned upstream HTML tree corpus now provides exact-tree comparisons and a regression baseline; [its documentation](tests/conformance/README.md) records all mismatches, unsupported modes, and untested semantics. A pinned [Test262 selection](tests/conformance/test262.md) runs unchanged upstream tests and assertion harnesses with explicit failure/unsupported categories. Neither runner establishes platform-wide compatibility.
 
+A separate [function inventory](tests/conformance/test262-functions.md) retains
+663 unchanged Test262 sources and 1,131 required variants. Its initial report
+includes failures and two parser-limit stops; it is not yet a healthy regression gate.
+
 ## Implementation
 
 The [architecture notes](docs/ARCHITECTURE.md) describe the page pipeline and native process boundaries.

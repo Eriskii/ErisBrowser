@@ -1,5 +1,24 @@
 # Validation record
 
+## Expanded upstream function inventory
+
+Recorded September 28, 2026 UTC. The new complete four-directory
+[function selection](../tests/conformance/test262-functions.md) imports 663
+unchanged Test262 files at the existing pinned revision. A frozen pre-change
+adapter records **350 passed / 718 unsupported / 61 failed / two resource stops**
+across 1,131 required variants. All 32 existing assertion preflights pass, but
+the resource outcomes prevent recording a healthy baseline. No cases are
+removed or limits raised to change that result. The report identifies every
+source, mode, expected negative, observation and source/harness fingerprint.
+
+Metadata handling now accepts common top-level indentation without rewriting
+upstream bytes. Inventory, negative-mode and feature-policy checks bring the
+Python suite to **50 passing checks**. The original three Test262 profile
+policies and baselines remain unchanged. The preceding CSSOM compatibility
+correction `cfee40f` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36402059569),
+including actual all-target compilation with Rust 1.88.
+
 ## Inline CSSOM and computed property references
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release

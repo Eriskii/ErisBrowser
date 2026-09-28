@@ -20,8 +20,10 @@ ROOT = Path(__file__).resolve().parents[1]
 SUPPORTED_FEATURES = {'arrow-function', 'String.fromCodePoint', 'well-formed-json-stringify', 'for-in-order'}
 REGEXP_FEATURES = SUPPORTED_FEATURES | {'regexp-dotall', 'regexp-match-indices', 'regexp-named-groups', 'regexp-sticky'}
 TEMPLATE_FEATURES = SUPPORTED_FEATURES | {'template', 'u180e'}
+FUNCTION_FEATURES = SUPPORTED_FEATURES | {'default-parameters', 'object-methods',
+                                          'computed-property-names', 'trailing-function-commas'}
 PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
-                    'template-literal': TEMPLATE_FEATURES}
+                    'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}

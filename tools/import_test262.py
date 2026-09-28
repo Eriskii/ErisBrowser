@@ -6,6 +6,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import textwrap
 import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,10 +24,14 @@ REGEXP_DIRECTORIES = {
     'RegExp/prototype/toString': 9, 'RegExp/prototype/source': 12,
 }
 TEMPLATE_DIRECTORIES = {'expressions/template-literal': 57}
+FUNCTION_DIRECTORIES = {
+    'expressions/function': 69, 'statements/function': 256,
+    'expressions/arrow-function': 55, 'expressions/object/method-definition': 283,
+}
 PROFILES = {'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
-            'template-literal': TEMPLATE_DIRECTORIES}
+            'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES}
 PROFILE_ROOTS = {'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
-                 'template-literal': 'test/language'}
+                 'template-literal': 'test/language', 'functions': 'test/language'}
 
 
 def corpus_name(profile):
@@ -80,7 +85,9 @@ def parse_metadata(source):
         raise ValueError('invalid Test262 frontmatter delimiters')
     fields = {}
     key = None
-    for line in source[start:end].split('\n'):
+    # YAML allows a common indentation on the entire top-level mapping. Only
+    # remove that shared prefix; nested execution fields keep their structure.
+    for line in textwrap.dedent(source[start:end]).split('\n'):
         match = re.fullmatch(r'([A-Za-z][A-Za-z0-9_-]*):[ \t]*(.*)\r?', line)
         if match:
             key, value = match.groups()
@@ -148,7 +155,7 @@ def import_corpus(output, profile='string-json'):
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
         sources = dict(zip(paths, pool.map(lambda path: fetch(raw + path), paths)))
     harness = {'assert.js', 'sta.js'}
-    if profile == 'template-literal':
+    if profile in {'template-literal', 'functions'}:
         # These unchanged helpers support the assertion-integrity preflight,
         # even when no selected test requests them directly.
         harness.update({'propertyHelper.js', 'compareArray.js'})
@@ -157,7 +164,10 @@ def import_corpus(output, profile='string-json'):
         if blob != entries[path]:
             raise ValueError(f'raw source differs from pinned Git blob: {path}')
         if '_FIXTURE' not in Path(path).name:
-            metadata = parse_metadata(data.decode('utf-8'))
+            try:
+                metadata = parse_metadata(data.decode('utf-8'))
+            except ValueError as error:
+                raise ValueError(f'{path}: {error}') from error
             harness.update(metadata['includes'])
             if 'async' in metadata['flags']:
                 harness.add('doneprintHandle.js')
@@ -170,6 +180,7 @@ def import_corpus(output, profile='string-json'):
         'string-json': 'all direct .js files in nine built-ins directories; no implementation',
         'regexp': 'all direct .js files in four RegExp prototype directories; no implementation',
         'template-literal': 'all direct .js files in language/expressions/template-literal; no implementation',
+        'functions': 'all direct .js files in four language function/arrow/object-method directories; no implementation',
     }[profile]
     manifest = dict(format=1, repository=f'https://github.com/{REPOSITORY}', revision=REVISION,
                     scope=scope,

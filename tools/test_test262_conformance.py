@@ -34,6 +34,19 @@ def response(status, phase='runtime', error_type='', message='', harness='', err
 
 
 class MetadataTests(unittest.TestCase):
+    def test_common_mapping_indentation_preserves_nested_execution_metadata(self):
+        plain = ('description: >\n  A folded description.\n'
+                 'flags: [onlyStrict]\nfeatures: [default-parameters]\n'
+                 'negative:\n  phase: parse\n  type: SyntaxError\n')
+        expected = importer.parse_metadata('/*---\n' + plain + '---*/')
+        indented = ''.join(' ' + line for line in plain.splitlines(keepends=True))
+        self.assertEqual(importer.parse_metadata('/*---\n' + indented + '---*/'), expected)
+        # An inconsistent root mapping or nested execution key remains invalid.
+        for bad in (' flags: [onlyStrict]\nfeatures: [default-parameters]',
+                    ' flags: [onlyStrict]\n features: [default-parameters]\n   negative: parse'):
+            with self.assertRaises(ValueError):
+                importer.parse_metadata('/*---\n' + bad + '\n---*/')
+
     def test_mode_variants_include_every_default_and_respect_flags(self):
         expected = [('', ['sloppy', 'strict']), ('noStrict', ['sloppy']),
                     ('onlyStrict', ['strict']), ('module', ['module']), ('raw', ['raw'])]
@@ -178,6 +191,36 @@ class ExecutionTests(unittest.TestCase):
 
 
 class IntegrityTests(unittest.TestCase):
+    def test_function_inventory_keeps_all_directories_modes_and_negative_tests(self):
+        directory = runner.ROOT / 'tests/upstream/test262-functions'
+        manifest, files, cases, fixtures, _ = runner.load_corpus(directory, 'functions')
+        self.assertEqual(manifest['test_files'], 663)
+        self.assertEqual(len(cases), 1131)
+        self.assertEqual(fixtures, [])
+        self.assertEqual(sum(case['mode'] == 'sloppy' for case in cases), 616)
+        self.assertEqual(sum(case['mode'] == 'strict' for case in cases), 515)
+        negatives = [case for case in cases if case['metadata']['negative']]
+        self.assertEqual(len(negatives), 313)
+        self.assertEqual(len({case['file'] for case in negatives}), 179)
+        self.assertTrue(all(case['metadata']['negative'] == dict(phase='parse', type='SyntaxError')
+                            for case in negatives))
+        indented = files['test/language/statements/function/13.2-30-s.js']
+        self.assertIn(b'/*---\n description: >', indented)
+        self.assertEqual(importer.parse_metadata(indented.decode())['flags'], [])
+        self.assertTrue({'harness/assert.js', 'harness/sta.js', 'harness/propertyHelper.js',
+                         'harness/compareArray.js'} <= files.keys())
+        with self.assertRaisesRegex(ValueError, 'inventory'):
+            runner.load_corpus(directory, 'template-literal')
+
+    def test_function_execution_policy_keeps_unimplemented_features_explicit(self):
+        case = sample(b'/*---\nfeatures: [default-parameters]\n---*/\nfunction f(a=1) {}')
+        self.assertIsNone(runner.unsupported_reason(case, runner.FUNCTION_FEATURES))
+        for policy in (runner.SUPPORTED_FEATURES, runner.REGEXP_FEATURES, runner.TEMPLATE_FEATURES):
+            self.assertIsNotNone(runner.unsupported_reason(case, policy))
+        for feature in ('rest-parameters', 'async-functions', 'generators', 'new.target', 'Symbol'):
+            unavailable = sample(('/*---\nfeatures: [' + feature + ']\n---*/\n').encode())
+            self.assertIn(feature, runner.unsupported_reason(unavailable, runner.FUNCTION_FEATURES))
+
     def test_language_profile_retains_all_sources_modes_and_parse_negatives(self):
         directory = runner.ROOT / 'tests/upstream/test262-template-literal'
         manifest, files, cases, fixtures, _ = runner.load_corpus(directory, 'template-literal')
