@@ -191,6 +191,137 @@ class ExecutionTests(unittest.TestCase):
 
 
 class IntegrityTests(unittest.TestCase):
+    def test_addition_retains_complete_directory_and_helpers(self):
+        manifest,files,cases,fixtures,manifest_hash=runner.load_corpus(
+            runner.ROOT/'tests/upstream/test262-addition','addition')
+        self.assertEqual({k:len(v) for k,v in manifest['directories'].items()},{'expressions/addition':48})
+        self.assertEqual(manifest_hash,'56088f55075e4d44da6915ca41383604182a8a72aaef8230af61369513cbdc0c')
+        self.assertEqual((manifest['test_files'],len(cases),fixtures),(48,95,[]))
+        self.assertEqual(sum(c['mode']=='sloppy' for c in cases),48)
+        self.assertEqual(sum(c['mode']=='strict' for c in cases),47)
+        self.assertEqual(sum(c['metadata']['flags']==['noStrict'] for c in cases),1)
+        self.assertTrue(all(c['metadata']['negative'] is None for c in cases))
+        self.assertEqual(sum(len(v) for p,v in files.items() if p.startswith('test/')),107338)
+        self.assertEqual(sum(map(len,files.values())),153034)
+        self.assertEqual({p for p in files if p.startswith('harness/')},
+                         {'harness/assert.js','harness/sta.js','harness/propertyHelper.js','harness/compareArray.js'})
+        _,old,_,_,_=runner.load_corpus(runner.ROOT/'tests/upstream/test262-compound-assignment','compound-assignment')
+        for path,data in files.items():
+            if not path.startswith('test/'):
+                self.assertEqual(data,old[path])
+
+    def test_addition_core_policy_preserves_complete_exotic_prerequisites(self):
+        self.assertEqual(runner.ADDITION_FEATURES,runner.SUPPORTED_FEATURES)
+        _,_,cases,_,_=runner.load_corpus(runner.ROOT/'tests/upstream/test262-addition','addition')
+        excluded=[c for c in cases if runner.unsupported_reason(c,runner.ADDITION_FEATURES)]
+        self.assertEqual((len(excluded),len({c['file'] for c in excluded})),(26,13))
+        self.assertTrue(all(set(c['metadata']['features']) & {'Symbol.toPrimitive','Symbol','BigInt'} for c in excluded))
+
+    def test_addition_pairs_guard_primitive_conversion_and_preserve_identical_setup(self):
+        _, files, _, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-addition', 'addition')
+        captured = []
+        def capture(case, *args):
+            captured.append(case)
+            return dict(status='passed')
+        with patch.object(runner, 'run_case', side_effect=capture):
+            runner.harness_preflight(files, Path('/fake'), 1, 'addition')
+        added = captured[32:]
+        self.assertEqual(len(added), 32)
+        self.assertEqual({c['mode'] for c in added}, {'strict', 'sloppy'})
+        guard = "assert.sameValue({valueOf:function(){return '1';}}+2,'12');"
+        for case in added:
+            self.assertTrue(case['source'].startswith(guard.encode()))
+            self.assertEqual([name for name, _ in case['harness']], ['assert.js','sta.js'])
+            if b'assert.throws' in case['source']:
+                self.assertGreater(case['source'].index(b'assert.throws'),len(guard)-1)
+        for offset in range(0, len(added), 2):
+            good, bad = added[offset:offset + 2]
+            self.assertEqual(good['source'].rsplit(b'assert.sameValue(', 1)[0],
+                             bad['source'].rsplit(b'assert.sameValue(', 1)[0])
+            self.assertNotEqual(good['source'], bad['source'])
+
+    def test_addition_preflights_require_actual_assertion_failures(self):
+        _, files, _, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-addition', 'addition')
+        with patch.object(runner, 'bounded_process', return_value=(0, response('complete'), b'')):
+            old = runner.harness_preflight(files, Path('/fake'), 1)
+            current = runner.harness_preflight(files, Path('/fake'), 1, 'addition')
+        self.assertEqual(current[:32], old)
+        self.assertEqual(len(current), 64)
+        self.assertEqual(sum(p['verified'] for p in current[32:]), 16)
+        for error_type in ('TypeError', 'ReferenceError', 'SyntaxError'):
+            with patch.object(runner, 'bounded_process', return_value=(
+                    0, response('exception', 'runtime', error_type), b'')):
+                wrong = runner.harness_preflight(files, Path('/fake'), 1, 'addition')
+            self.assertFalse(any(p['verified'] for p in wrong[32:]))
+        with patch.object(runner, 'bounded_process', return_value=(
+                0, response('exception', 'runtime', 'Test262Error'), b'')):
+            wrong = runner.harness_preflight(files, Path('/fake'), 1, 'addition')
+        self.assertTrue(all(p['verified'] == (p['expected'] == 'failed') for p in wrong[32:]))
+        self.assertFalse(all(p['verified'] for p in wrong))
+
+    def test_addition_import_checks_every_directory_and_source_blob(self):
+        _, files, _, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-addition', 'addition')
+        raw = f'https://raw.githubusercontent.com/{importer.REPOSITORY}/{importer.REVISION}/'
+        api = f'https://api.github.com/repos/{importer.REPOSITORY}/contents/test/language/'
+        listings = {name: [] for name in importer.ADDITION_DIRECTORIES}
+        for path, data in files.items():
+            if path.startswith('test/'):
+                directory = str(Path(path).parent).removeprefix('test/language/')
+                listings[directory].append(dict(type='file', name=Path(path).name,
+                    sha=importer.hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()))
+        def fetch(url):
+            if url.startswith(api):
+                name = url[len(api):].removesuffix('?ref=' + importer.REVISION)
+                return json.dumps(listings[name]).encode()
+            self.assertTrue(url.startswith(raw))
+            return files[url[len(raw):]]
+        with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch), contextlib.redirect_stdout(io.StringIO()):
+            importer.import_corpus(Path(temporary), 'addition')
+            _, imported, cases, fixtures, _ = runner.load_corpus(Path(temporary), 'addition')
+            self.assertEqual(imported, files)
+            self.assertEqual((len(cases), fixtures), (95, []))
+        for name in listings:
+            saved = listings[name][0]['sha']
+            listings[name][0]['sha'] = '0' * 40
+            with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch):
+                with self.assertRaisesRegex(ValueError, 'pinned Git blob'):
+                    importer.import_corpus(Path(temporary), 'addition')
+                self.assertFalse(any(Path(temporary).iterdir()))
+            listings[name][0]['sha'] = saved
+            item = listings[name].pop()
+            with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch):
+                with self.assertRaisesRegex(ValueError, 'inventory mismatch'):
+                    importer.import_corpus(Path(temporary), 'addition')
+                self.assertFalse(any(Path(temporary).iterdir()))
+            listings[name].append(item)
+
+    def test_addition_preserves_all_fourteen_prior_profile_contracts(self):
+        profiles = ('string-json', 'regexp', 'template-literal', 'functions', 'rest-parameters',
+                    'is-prototype-of', 'global-values', 'array-sort', 'identifiers', 'array-reduce', 'number-statics', 'numeric-conversion', 'numeric-parsing', 'compound-assignment')
+        retained = {}
+        for name in profiles:
+            _, files, cases, fixtures, manifest_hash = runner.load_corpus(
+                runner.ROOT / 'tests/upstream' / runner.corpus_name(name), name)
+            captured = []
+            def capture(case, *args):
+                captured.append(dict(name=case['id'], mode=case['mode'], case_sha256=case['case_sha256'],
+                                     source_sha256=runner.digest(case['source'])))
+                return dict(status='passed', mode=case['mode'], case_sha256=case['case_sha256'],
+                            source_sha256=runner.digest(case['source']))
+            with patch.object(runner, 'run_case', side_effect=capture):
+                runner.harness_preflight(files, Path('/fake'), 3, name)
+            retained[name] = dict(manifest_sha256=manifest_hash,
+                                 cases={c['id']: c['case_sha256'] for c in cases},
+                                 preflights=captured, fixtures=fixtures,
+                                 features=sorted(runner.PROFILE_FEATURES[name]))
+        self.assertEqual(sum(len(v['cases']) for v in retained.values()), 5531)
+        self.assertEqual(sum(len(v['preflights']) for v in retained.values()), 1048)
+        self.assertEqual(runner.digest(json.dumps(retained, sort_keys=True, separators=(',', ':')).encode()),
+                         'd63bb1ae7775ccd7b9fbde2fcd1bb6773e31a528f1f1eaf7bf85226ec3e23ff7')
+
     def test_compound_assignment_retains_complete_directory_and_helpers(self):
         manifest, files, cases, fixtures, manifest_hash = runner.load_corpus(
             runner.ROOT / 'tests/upstream/test262-compound-assignment', 'compound-assignment')

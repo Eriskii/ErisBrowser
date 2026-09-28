@@ -1,0 +1,35 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Ordinary addition and string concatenation</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#numbers{left:0}#strings{left:50px}#boxed{left:100px}#order{left:150px}#utf16{left:200px}#compound{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="numbers" class="sample"></div><div id="strings" class="sample"></div>
+<div id="boxed" class="sample"></div><div id="order" class="sample"></div>
+<div id="utf16" class="sample"></div><div id="compound" class="sample"></div>
+<button id="change" type="button">Add through conversion hooks</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+function apply(color){
+  check(new Number(2)+new Boolean(true)===3&&null+true===1,'numeric primitive addition');
+  check(1/(-0+-0)===-Infinity,'negative zero');mark('numbers',color);
+  check({valueOf(){return '1';}}+2==='12'&&2+{valueOf(){return '1';}}==='21','string selection after conversion');
+  check(''+(-0)==='0'&&'x'+null==='xnull','primitive formatting');mark('strings',color);
+  check(new String('a')+new String('b')==='ab'&&new String('a')+false==='afalse','boxed strings');mark('boxed',color);
+  let trace='';const left={valueOf(){trace+='L';return 'a';}},right={valueOf(){trace+='R';return 1;}};
+  function first(){trace+='A';return left;}function second(){trace+='B';return right;}
+  check(first()+second()==='a1'&&trace==='ABLR','expressions before hooks');mark('order',color);
+  const joined={valueOf(){return '\uD800';}}+{valueOf(){return '\uDC00';}};
+  check(joined.length===2&&joined.charCodeAt(0)===0xD800&&joined.charCodeAt(1)===0xDC00,'lossless units');mark('utf16',color);
+  trace='';let stored;const object={get x(){trace+='G';return left;},set x(value){trace+='S';stored=value;}};
+  const result=(object.x+=right);check(result==='a1'&&stored===result&&trace==='GLRS','compound reference');mark('compound',color);
+}
+apply('green');document.getElementById('result').textContent='ready';document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  apply('blue');const count={valueOf(){return 1;}}+{valueOf(){return 2;}};check(count===3,'callback number selection');
+  document.getElementById('result').textContent=String(count);document.body.className='clicked';
+};
+</script>

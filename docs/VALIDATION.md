@@ -1,6 +1,70 @@
 # Validation record
 
+## Ordinary addition conversion
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **848 Rust tests** pass with `--include-ignored`: 686 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 48 pipeline and 39 confined-worker tests. None remain
+ignored. All **121 Python checks** and **57 exact pixel references** pass.
+
+The [implementation](../tests/conformance/addition.md) converts saved operands
+left-to-right using live ordinary hooks before selecting numeric addition or
+UTF-16 string concatenation. Boxed values, original receivers, abrupt identity,
+left association and compound references retain their effects and order.
+Primitive formatting, copying work and simultaneous Vec/Rc storage are charged
+before allocation. Seven focused groups include exact resource boundaries,
+late result-size rejection after both hooks and uncatchable recursive/looping
+hooks. Existing instruction, allocation, string and nesting limits are unchanged.
+Page and confined-worker fixtures preserve six green then six blue samples.
+
+The [complete addition profile](../tests/conformance/test262-addition.md) retains
+**48 sources / 95 modes / 64 preflights**. It moves from **51 passed / 16 failed /
+28 unsupported** to **65 passed / two failed / 28 unsupported**, adding 14 passes
+without losses. All 64 controls verify, with no resources, harness errors,
+timeouts or adapter errors. Both remaining failures require Date; unsupported
+Symbol/BigInt prerequisites and dynamic eval remain explicit. Actual baseline
+recording and a subsequent gate reproduce every observation; CI protects the
+full baseline without presenting it as all-pass conformance.
+
+All fourteen prior profiles retain **5,531 case and 1,048 preflight fingerprints**.
+Every observation in thirteen is identical. The
+[compound-assignment comparison](../tests/conformance/test262-compound-assignment-addition.json)
+records all ten remaining += failures becoming passes: **606 passed /
+180 unsupported**, with 128 controls. Actual recording and gate verification
+protect the gains; historical evidence remains linked. Existing resource stops
+in numeric parsing, identifiers, functions and sort remain nonpassing and have
+no healthy baselines. HTML remains at 3,868 matches, two mismatches and six
+unsupported modes.
+
+The **15,000-case** mutation smoke run reports zero caught panics or invariant
+failures: 5,000 accepted HTML, 598 accepted/4,402 rejected scripts and
+3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and
+display-list size is 1,173 commands; 17 cases stop within paint limits. The new
+seed changes the inventory, so these counts are not acceptance-rate comparisons.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+| --- | --- |
+| `eris-browser` | `ba2f27941a6f25065d11c898da7d86bbd2bbcfd8ae868cb2f7da2ac17e56c5cf` |
+| `eris-js` | `c9e47a8245eaa6e14c60f1ae0874213bdef2b00a6dacb4648c845155fdb136a3` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `c9a60e9432b13016dbd77a126c319522e65a690f99a8514cf63f27761dec6d48` |
+
+Source-input SHA-256:
+`dc2e14d6e60eb413384ed88b7518a3207b5a79f1052f18be6549731a637d25a6`.
+Local records are `artifacts/*addition*`. Agent sessions remain unavailable;
+this is local validation, not independent-agent review. No native window,
+Vulkan or Chromium performance measurement is assigned to this checkpoint.
+Full compatibility, production security and the requested performance
+threshold remain unverified.
+
 ## Compound bitwise assignment
+
+Published checkpoint `09fe914` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36438219734),
+including the compound-assignment gate, Rust 1.88 and the Vulkan probe.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **839 Rust tests** pass with `--include-ignored`: 679 library,

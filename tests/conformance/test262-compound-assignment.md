@@ -62,7 +62,7 @@ cases. These prerequisites remain full original tests.
 
 Actual baseline recording and a subsequent CLI gate return zero and reproduce
 the complete candidate observations. The
-[current baseline](test262-compound-assignment-current.json) retains all ten
+[checkpoint baseline](https://github.com/Eriskii/ErisBrowser/blob/09fe914310df83f57e17c4af8e99f9378732fc82/tests/conformance/test262-compound-assignment-current.json) retains all ten
 failures and 180 unsupported outcomes while protecting passes. A plain run
 still returns one; the CI gate is not a claim of all-pass conformance.
 
@@ -87,8 +87,17 @@ python3 tools/test262_conformance.py --profile compound-assignment --baseline te
 | Candidate source input | `100da85dd37e4aee42d21f6b83afa7ff6459a21e87042cd4b9274a4a9e6f6931` |
 | Initial report | `611dd86904c245f46d8830f492849495302b24bceb25c07d675c25c2b4b3f68a` |
 | Candidate report | `ff7fe1bb8ca0f645e6f0feefa6c9371d827fb4a29fc78306d38a8547329fecd7` |
-| Current baseline | `75f029ea4ce4364b96fbba24f06cad70baec3cb8f5d71ca490b79e58ac419a81` |
+| Checkpoint baseline | `75f029ea4ce4364b96fbba24f06cad70baec3cb8f5d71ca490b79e58ac419a81` |
 | Parsing comparison | `bffcd9ab4898076622c1002fc11c3a6523eb1185981c27f44468ca7fb6520950` |
 
 The [implementation scope](compound-assignment.md) describes reference semantics
 and distinguishes the new Number operators from remaining language gaps.
+
+## Subsequent ordinary addition conversion
+
+The [addition increment](test262-addition.md) resolves all ten boxed/string +=
+failures, producing **606 passed / 180 unsupported** with all 128 controls.
+The [full comparison](test262-compound-assignment-addition.json) retains every
+case and records the ten gains. The
+[current baseline](test262-compound-assignment-current.json) protects them; the
+checkpoint baseline linked above preserves the earlier evidence.

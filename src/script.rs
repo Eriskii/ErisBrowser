@@ -5978,6 +5978,68 @@ impl Runtime {
             Expr::Function(code) => self.function_value(code, env),
         }
     }
+    fn addition_primitive(&mut self, value: Value, doc: &mut Document) -> Result<Value> {
+        if !js_object(&value) {
+            return Ok(value);
+        }
+        // Ordinary objects use the number hint for default-hint conversion.
+        // Read the fallback only after the first callable has returned.
+        for key in ["valueOf", "toString"] {
+            self.charge(64)?;
+            let method = self.get(value.clone(), key, doc)?;
+            if json_callable(&method) {
+                let primitive = self.call(method, Vec::new(), value.clone(), doc)?;
+                if !js_object(&primitive) {
+                    return Ok(primitive);
+                }
+            }
+        }
+        Err(ScriptError::type_error(
+            "object cannot be converted to a primitive",
+        ))
+    }
+    fn addition_text(&mut self, primitive: Value) -> Result<JsString> {
+        match primitive {
+            Value::String(text) => Ok(text),
+            Value::Number(_) => {
+                // json_number can format a full decimal intermediate before
+                // selecting ECMAScript notation; cover its bounded scratch.
+                self.work(128)?;
+                self.charge(1024)?;
+                Ok(primitive.js_string())
+            }
+            Value::Undefined | Value::Null | Value::Bool(_) => {
+                self.work(4)?;
+                self.charge(128)?;
+                Ok(primitive.js_string())
+            }
+            _ => unreachable!("addition converts both operands before formatting"),
+        }
+    }
+    fn addition_value(&mut self, left: Value, right: Value, doc: &mut Document) -> Result<Value> {
+        let left = self.addition_primitive(left, doc)?;
+        let right = self.addition_primitive(right, doc)?;
+        if !matches!(left, Value::String(_)) && !matches!(right, Value::String(_)) {
+            return Ok(Value::Number(left.number() + right.number()));
+        }
+        let left = self.addition_text(left)?;
+        let right = self.addition_text(right)?;
+        let length = left.len().saturating_add(right.len());
+        if length > MAX_STRING {
+            return Err(ScriptError::resource("script string limit exceeded"));
+        }
+        self.work(1 + length.saturating_mul(2) / 8)?;
+        // The exact-sized Vec and its conversion to an Rc slice can coexist.
+        // Charge both before allocation, including the retained result header.
+        self.charge(64 + length.saturating_mul(4))?;
+        let mut units = Vec::new();
+        units
+            .try_reserve_exact(length)
+            .map_err(|_| ScriptError::resource("addition string allocation failed"))?;
+        units.extend_from_slice(left.units());
+        units.extend_from_slice(right.units());
+        Ok(Value::String(JsString::from(units)))
+    }
     fn binary_value(
         &mut self,
         op: &str,
@@ -5985,6 +6047,9 @@ impl Runtime {
         right: Value,
         doc: &mut Document,
     ) -> Result<Value> {
+        if op == "+" {
+            return self.addition_value(left, right, doc);
+        }
         for value in [&left, &right] {
             if let Value::String(text) = value {
                 self.work(1 + text.len() / 8)?;
@@ -6045,18 +6110,6 @@ impl Runtime {
             }
             return Ok(Value::Bool(self.find_property(&right, &key)?.is_some()));
         }
-        if op == "+" && (matches!(left, Value::String(_)) || matches!(right, Value::String(_))) {
-            let a = left.js_string();
-            let b = right.js_string();
-            if a.len().saturating_add(b.len()) > MAX_STRING {
-                return Err(ScriptError::resource("script string limit exceeded"));
-            }
-            self.work(1 + (a.len() + b.len()) / 8)?;
-            let mut units = Vec::with_capacity(a.len() + b.len());
-            units.extend_from_slice(a.units());
-            units.extend_from_slice(b.units());
-            return self.string(units);
-        }
         if ["==", "!=", "===", "!=="].contains(&op) {
             let strict = op.len() == 3;
             let equal = left == right
@@ -6089,7 +6142,6 @@ impl Runtime {
         let a = self.number_value(left, doc)?;
         let b = self.number_value(right, doc)?;
         Ok(match op {
-            "+" => Value::Number(a + b),
             "-" => Value::Number(a - b),
             "*" => Value::Number(a * b),
             "/" => Value::Number(a / b),
@@ -17471,6 +17523,194 @@ mod tests {
                 runtime.execute(source, &mut document)
             };
             result.unwrap_or_else(|error| panic!("strict={strict}: {error}"));
+        }
+    }
+
+    #[test]
+    fn addition_selects_numeric_or_string_behavior_after_both_conversions() {
+        number_static_modes(
+            r#"
+            assert.sameValue({valueOf:function(){return '1';}}+2,'12');
+            assert.sameValue(2+{valueOf:function(){return '1';}},'21');
+            assert.sameValue(new String('a')+new String('b'),'ab');
+            assert.sameValue(new Number(2)+new Boolean(true),3);
+            assert.sameValue(new String('a')+null,'anull');assert.sameValue(undefined+new String('a'),'undefineda');
+            assert.sameValue([]+1,'1');assert.sameValue([1,2]+3,'1,23');assert.sameValue({}+1,'[object Object]1');
+            assert.sameValue(null+true,1);assert.sameValue(false+undefined,NaN);
+            assert.sameValue(-0+-0,-0);assert.sameValue(0+-0,0);assert.sameValue(Infinity+-Infinity,NaN);
+            assert.sameValue(''+(-0),'0');assert.sameValue(''+1e21,'1e+21');assert.sameValue(''+1e-7,'1e-7');
+            var calls=0,o={valueOf:function(){calls++;return 'x';},get toString(){throw 'unused';}};
+            assert.sameValue(o+'y','xy');assert.sameValue(calls,1);
+        "#,
+        );
+    }
+
+    #[test]
+    fn addition_preserves_expression_hook_order_and_left_association() {
+        number_static_modes(
+            r#"
+            var trace='',left={valueOf:function(){trace+='L';return 'a';}},right={valueOf:function(){trace+='R';return 1;}};
+            function a(){trace+='A';return left;}function b(){trace+='B';return right;}function c(){trace+='C';return 2;}
+            assert.sameValue(a()+b()+c(),'a12');assert.sameValue(trace,'ABLRC');
+            trace='';assert.sameValue(a()+(b()+c()),'a3');assert.sameValue(trace,'ABCRL');
+            trace='';left={get valueOf(){trace+='V';return function(){assert.sameValue(this,left);trace+='v';
+                Object.defineProperty(left,'toString',{get:function(){trace+='T';return function(){assert.sameValue(this,left);trace+='t';return 'x';};},configurable:true});
+                right.valueOf=function(){trace+='R';return 'y';};return {};};},toString:function(){throw 'stale';}};
+            right={valueOf:function(){throw 'stale';}};
+            assert.sameValue(left+right,'xy');assert.sameValue(trace,'VvTtR');
+            assert.sameValue({valueOf:null,toString:function(){return 'z';}}+false,'zfalse');
+            assert.throws(TypeError,function(){return Object.create(null)+1;});
+            assert.throws(TypeError,function(){return {valueOf:function(){return {};},toString:function(){return [];}}+1;});
+        "#,
+        );
+    }
+
+    #[test]
+    fn addition_abrupt_completion_preserves_exact_identity_and_stops_later_hooks() {
+        number_static_modes(
+            r#"
+            var reason={},seen,trace='',left={get valueOf(){trace+='L';throw reason;}},right={get valueOf(){trace+='R';throw 'unused';}};
+            function rhs(){trace+='B';return right;}
+            try{left+rhs();}catch(e){seen=e;}assert.sameValue(seen,reason);assert.sameValue(trace,'BL');
+            trace='';seen=undefined;left={valueOf:function(){trace+='L';return 'x';}};
+            right={get valueOf(){trace+='R';throw reason;}};
+            try{left+right;}catch(e){seen=e;}assert.sameValue(seen,reason);assert.sameValue(trace,'LR');
+            trace='';seen=undefined;try{left+(function(){trace+='B';throw reason;})();}catch(e){seen=e;}
+            assert.sameValue(seen,reason);assert.sameValue(trace,'B');
+            var object={get x(){trace+='G';return left;},set x(value){trace+='S';}};trace='';seen=undefined;
+            try{object.x+=right;}catch(e){seen=e;}assert.sameValue(seen,reason);assert.sameValue(trace,'GLR');
+        "#,
+        );
+    }
+
+    #[test]
+    fn addition_compound_reference_and_utf16_strings_remain_lossless() {
+        number_static_modes(
+            r#"
+            var trace='',stored,object={get x(){trace+='G';return {valueOf:function(){trace+='L';return '\uD800';}};},
+                set x(value){trace+='S';stored=value;}};
+            function target(){trace+='O';return object;}function key(){trace+='K';return 'x';}
+            function rhs(){trace+='R';return {valueOf:function(){trace+='V';return '\uDC00';}};}
+            var result=(target()[key()]+=rhs());assert.sameValue(result,'\uD800\uDC00');assert.sameValue(stored,result);
+            assert.sameValue(trace,'OKGRLVS');assert.sameValue(result.length,2);
+            assert.sameValue(result.charCodeAt(0),0xD800);assert.sameValue(result.charCodeAt(1),0xDC00);
+            assert.sameValue('\uDC00'+{valueOf:function(){return '\uD800';}},'\uDC00\uD800');
+            const fixed='x';trace='';assert.throws(TypeError,function(){fixed+=rhs();});assert.sameValue(trace,'RV');
+        "#,
+        );
+    }
+
+    #[test]
+    fn addition_precharges_copy_work_and_vec_rc_storage_before_allocation() {
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        let a = Value::String(JsString::from(vec![0xd800; 32]));
+        let b = Value::String(JsString::from(vec![0xdc00; 33]));
+        let before = runtime.allocated;
+        runtime.steps = 16;
+        assert!(
+            runtime
+                .addition_value(a.clone(), b.clone(), &mut document)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!((runtime.allocated, runtime.steps), (before, 0));
+        runtime.allocated = MAX_HEAP - 324;
+        runtime.steps = 17;
+        let Value::String(result) = runtime
+            .addition_value(a.clone(), b.clone(), &mut document)
+            .unwrap()
+        else {
+            panic!("string")
+        };
+        assert_eq!(result.len(), 65);
+        assert_eq!(&result.units()[..32], &[0xd800; 32]);
+        assert_eq!(&result.units()[32..], &[0xdc00; 33]);
+        assert_eq!((runtime.allocated, runtime.steps), (MAX_HEAP, 0));
+        runtime.steps = 17;
+        assert!(
+            runtime
+                .addition_value(a, b, &mut document)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(runtime.allocated, MAX_HEAP + 324);
+    }
+
+    #[test]
+    fn addition_preserves_both_hook_effects_before_heap_or_string_limit_failure() {
+        for length_limit in [false, true] {
+            let mut runtime = Runtime::new();
+            let mut document = Document::parse("");
+            runtime.execute("var text='',readL=false,readR=false;var left={valueOf:function(){readL=true;return text;}},right={valueOf:function(){readR=true;return 'x';}};",&mut document).unwrap();
+            runtime.environments[0]
+                .bindings
+                .get_mut("text")
+                .unwrap()
+                .value = Value::String(JsString::from(vec![
+                97;
+                if length_limit {
+                    MAX_STRING
+                } else {
+                    8192
+                }
+            ]));
+            let left = runtime.environments[0].bindings["left"].value.clone();
+            let right = runtime.environments[0].bindings["right"].value.clone();
+            if !length_limit {
+                runtime.allocated = MAX_HEAP - 4096;
+            }
+            runtime.steps = MAX_STEPS;
+            let error = runtime
+                .addition_value(left, right, &mut document)
+                .unwrap_err();
+            assert!(error.is_resource_limit());
+            assert!(
+                error.to_string().contains(if length_limit {
+                    "string limit"
+                } else {
+                    "allocation"
+                }),
+                "{error}"
+            );
+            assert_eq!(
+                runtime.environments[0].bindings["readL"].value,
+                Value::Bool(true)
+            );
+            assert_eq!(
+                runtime.environments[0].bindings["readR"].value,
+                Value::Bool(true)
+            );
+            assert_eq!((runtime.calls, runtime.stack_units), (0, 0));
+        }
+    }
+
+    #[test]
+    fn addition_recursive_and_looping_hooks_share_uncatchable_limits() {
+        for body in ["return object+1;", "while(true){}"] {
+            let mut runtime = Runtime::new();
+            let mut document = Document::parse("");
+            runtime
+                .execute("var wrote=false,caught=false;", &mut document)
+                .unwrap();
+            let source = format!(
+                "var object={{valueOf:function(){{{body}}}}},target={{get x(){{return object;}},set x(value){{wrote=true;}}}};try{{target.x+='x';}}catch(e){{caught=true;}}"
+            );
+            assert!(
+                runtime
+                    .execute(&source, &mut document)
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(
+                runtime.environments[0].bindings["wrote"].value,
+                Value::Bool(false)
+            );
+            assert_eq!(
+                runtime.environments[0].bindings["caught"].value,
+                Value::Bool(false)
+            );
+            assert_eq!((runtime.calls, runtime.stack_units), (0, 0));
         }
     }
 

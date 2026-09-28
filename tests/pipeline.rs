@@ -58,6 +58,11 @@ fn array_reductions_preserve_direction_live_values_and_accumulator_identity() {
 }
 
 #[test]
+fn addition_preserves_conversions_utf16_and_compound_callback_pixels() {
+    assert_six_scripted_samples(include_str!("fixtures/addition.html"));
+}
+
+#[test]
 fn compound_bitwise_assignments_preserve_pixels_and_reference_order() {
     assert_six_scripted_samples(include_str!("fixtures/compound-assignment.html"));
 }

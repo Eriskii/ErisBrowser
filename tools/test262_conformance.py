@@ -32,6 +32,7 @@ NUMBER_STATIC_FEATURES = SUPPORTED_FEATURES.copy()
 NUMERIC_CONVERSION_FEATURES = SUPPORTED_FEATURES.copy()
 NUMERIC_PARSING_FEATURES = SUPPORTED_FEATURES.copy()
 COMPOUND_ASSIGNMENT_FEATURES = SUPPORTED_FEATURES.copy()
+ADDITION_FEATURES = SUPPORTED_FEATURES.copy()
 PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -41,7 +42,8 @@ PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES
                     'number-statics': NUMBER_STATIC_FEATURES,
                     'numeric-conversion': NUMERIC_CONVERSION_FEATURES,
                     'numeric-parsing': NUMERIC_PARSING_FEATURES,
-                    'compound-assignment': COMPOUND_ASSIGNMENT_FEATURES}
+                    'compound-assignment': COMPOUND_ASSIGNMENT_FEATURES,
+                    'addition': ADDITION_FEATURES}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -410,6 +412,48 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                 for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
                     source = guard + setup + f'assert.sameValue({actual},{value});'
                     variants.append(('array-sort-' + name + suffix, source, expected, mode))
+    if profile == 'addition':
+        guard = "assert.sameValue({valueOf:function(){return '1';}}+2,'12');"
+        pairs = [
+            ('primitives', "assert.sameValue(null+true,1);assert.sameValue(undefined+0,NaN);assert.sameValue(Infinity+-Infinity,NaN);"
+             "assert.sameValue(-0+-0,-0);assert.sameValue(-0+0,0);assert.sameValue(''+(-0),'0');",
+             'true+true', '2', '3'),
+            ('boxed', "assert.sameValue(new String('1')+new String('2'),'12');assert.sameValue(new Number(1)+new String('2'),'12');"
+             "assert.sameValue(new Boolean(false)+new Number(2),2);",
+             "new String('a')+false", "'afalse'", "'a0'"),
+            ('evaluation-order', "var trace='',left={get valueOf(){trace+='L';return function(){assert.sameValue(this,left);trace+='l';return {};};},"
+             "get toString(){trace+='T';return function(){assert.sameValue(this,left);trace+='t';return 'x';};}},"
+             "right={get valueOf(){trace+='R';return function(){assert.sameValue(this,right);trace+='r';return 'y';};}};"
+             "function a(){trace+='A';return left;}function b(){trace+='B';return right;}assert.sameValue(a()+b(),'xy');",
+             'trace', "'ABLlTtRr'", "'ALlTtBRr'"),
+            ('live-conversion', "var trace='',right={valueOf:function(){throw 'stale';}},left={valueOf:function(){trace+='L';"
+             "right.valueOf=function(){trace+='R';return 'b';};return 'a';}};assert.sameValue(left+right,'ab');"
+             "assert.sameValue({valueOf:null,toString:function(){return 'x';}}+1,'x1');"
+             "assert.throws(TypeError,function(){return {valueOf:function(){return {};},toString:function(){return {};}}+1;});",
+             'trace', "'LR'", "'RL'"),
+            ('abrupt', "var reason={},seen,trace='',left={valueOf:function(){trace+='L';return 'x';}},"
+             "right={get valueOf(){trace+='R';throw reason;}};try{left+right;}catch(e){seen=e;}assert.sameValue(seen,reason);"
+             "seen=undefined;try{({get valueOf(){throw reason;}})+right;}catch(e){seen=e;}assert.sameValue(seen,reason);",
+             'trace', "'LR'", "'LRR'"),
+            ('utf16', "var a='\\uD800',b='\\uDC00';var joined={valueOf:function(){return a;}}+{valueOf:function(){return b;}};"
+             "assert.sameValue(joined.length,2);assert.sameValue(joined.charCodeAt(0),0xD800);assert.sameValue(joined.charCodeAt(1),0xDC00);"
+             "assert.sameValue('x'+null,'xnull');assert.sameValue('x'+undefined,'xundefined');",
+             'joined', "'\\uD800\\uDC00'", "'\\uFFFD\\uFFFD'"),
+            ('compound-reference', "var trace='',stored,object={get x(){trace+='G';return {valueOf:function(){trace+='L';return 'a';}};},"
+             "set x(value){trace+='S';stored=value;}};function target(){trace+='O';return object;}"
+             "function key(){trace+='K';return 'x';}function rhs(){trace+='R';return {valueOf:function(){trace+='V';return 'b';}};}"
+             "var returned=(target()[key()]+=rhs());assert.sameValue(returned,'ab');assert.sameValue(stored,returned);",
+             'trace', "'OKGRLVS'", "'OKGLRVS'"),
+            ('compound-abrupt', "var reason={},seen,wrote=false,trace='',object={get x(){trace+='G';return {valueOf:function(){trace+='L';return 'a';}};},"
+             "set x(value){wrote=true;}};try{object.x+={valueOf:function(){trace+='R';throw reason;}};}catch(e){seen=e;}"
+             "assert.sameValue(seen,reason);assert.sameValue(wrote,false);",
+             'trace', "'GLR'", "'GRL'"),
+        ]
+        for mode in ('sloppy', 'strict'):
+            for name, setup, actual, good, bad in pairs:
+                for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                    variants.append(('addition-' + name + suffix,
+                                     guard + setup + f'assert.sameValue({actual},{value});', expected, mode))
     if profile == 'compound-assignment':
         for operator, label, result, negative in (
                 ('<<=', 'left-shift', 18, -2), ('>>=', 'right-shift', 4, -1),

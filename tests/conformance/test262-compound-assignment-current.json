@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "edc2b04b5e9f810e1757a327f5d2a32c240f41d61e8a6d2a89cb35c3ec14f1d0",
   "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
-  "binary_sha256": "92710e2646cc80ba2d2839837941e5c6fe62242f6cad772396074bb880805d78",
+  "binary_sha256": "c9e47a8245eaa6e14c60f1ae0874213bdef2b00a6dacb4648c845155fdb136a3",
   "cases": {
     "test/language/expressions/compound-assignment/11.13.2-1-s.js:sloppy": {
       "status": "unsupported",
@@ -1605,12 +1605,12 @@
       "source_sha256": "e5f6928c8cabf7bb1f5b8295c45fe9e78a24188b06ac1ac913359ca36894b7fa"
     },
     "test/language/expressions/compound-assignment/S11.13.2_A4.4_T1.4.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "31285650b4fcffde6a4d3a6a42ed23ad846314d54ef41bc00930440a0b2d32f3",
       "source_sha256": "1ba5083356236c308484f4108cdab0989a7a70cb86dd4f93a994df3da299d3ea"
     },
     "test/language/expressions/compound-assignment/S11.13.2_A4.4_T1.4.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "26f3978112448fdf72c0b3417f65446094ec256b6149f00c10ff1c1d66a296b4",
       "source_sha256": "1ba5083356236c308484f4108cdab0989a7a70cb86dd4f93a994df3da299d3ea"
     },
@@ -1665,42 +1665,42 @@
       "source_sha256": "b01bc0d7694fd17afcb107501ecb891192b5f9cdf75f47518d7dfdf5419e3bae"
     },
     "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.6.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "d83ce0aa1db10d664809be9883aedd5df7e9794a2de32ff3d86adda4472d9a7a",
       "source_sha256": "ab9ba00c1c93830ef2d5de71e4107ff6d8135b0c7478bcea4d528e4574f1407d"
     },
     "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.6.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "707d0d746df0951476eb15d3b591d3c01fc504f7647ffa97be8854a4d36350e8",
       "source_sha256": "ab9ba00c1c93830ef2d5de71e4107ff6d8135b0c7478bcea4d528e4574f1407d"
     },
     "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.7.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "31eca1384f77ff58257dd2cea623bbb6043b1c4a82c890916ab9875334054f8b",
       "source_sha256": "9b839b8210c8341cea6f8da925aaac849d99edfd0774fb9bf1b19f86b22cd02c"
     },
     "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.7.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "87a1042c8bc6aa4cc9c2993f4e711f6f1f2f6f44d88e6f0e7f17c145af22dccf",
       "source_sha256": "9b839b8210c8341cea6f8da925aaac849d99edfd0774fb9bf1b19f86b22cd02c"
     },
     "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.8.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "43bc3ff1344182f5d69b81390a90dd5e5ca1cce2f95498f16284a148eda2affc",
       "source_sha256": "d37b29c61542470507fe2321f188fb33de5a153620bd724ce96c790a3d97d6bc"
     },
     "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.8.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "c862d658c8b977a70d138abfb7c92c7d8d946b952b01d69a88e875fa756cc1fe",
       "source_sha256": "d37b29c61542470507fe2321f188fb33de5a153620bd724ce96c790a3d97d6bc"
     },
     "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.9.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "06bf0fd67c5f719cb8437e0650054db26b7b6723920ef30cc406d2d0bbc84f79",
       "source_sha256": "aa6e8094adc5666ad13a4eea3b1331f5f6ee9f8420a50f84da9c5c0609c94088"
     },
     "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.9.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "314bc79f886692fa224bf1cab57fd38749a7aeb0f0e4a55c4b1180793f4690c3",
       "source_sha256": "aa6e8094adc5666ad13a4eea3b1331f5f6ee9f8420a50f84da9c5c0609c94088"
     },

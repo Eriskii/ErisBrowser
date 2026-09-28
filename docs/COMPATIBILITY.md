@@ -100,8 +100,15 @@ Script exception handling preserves explicitly thrown values and exposes ordinar
 The six [compound bitwise assignments](../tests/conformance/compound-assignment.md)
 reuse a single evaluated reference, with ordered getter/RHS/conversion/setter
 behavior, strict writes and masked 32-bit shifts. Their complete inventory has
-596 passes, ten existing addition-coercion failures and 180 unsupported modes.
+606 passes and 180 unsupported modes.
 Logical assignment and BigInt/Symbol behavior remain separate gaps.
+
+[Ordinary addition](../tests/conformance/addition.md) converts both saved operands
+left-to-right before selecting numeric addition or UTF-16 concatenation. Live
+valueOf/toString hooks, boxed values, exact exceptions and += reference order are
+preserved. The complete addition profile has 65 passes, two missing-Date failures
+and 28 unsupported modes, with 64 verified controls. Date, Symbol.toPrimitive
+and BigInt/Symbol addition remain incomplete.
 
 Object initializers preserve computed-key evaluation/coercion order, UTF-16 names, method/accessor descriptors and the special static `__proto__` form. Symbols, spread, async/generator methods and `super` remain unsupported; see [object literal coverage](../tests/conformance/object-literals.md).
 
