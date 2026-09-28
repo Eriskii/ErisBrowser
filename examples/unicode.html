@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Strings and recovery</title><style>
+body { max-width: 880px; margin: 28px auto; color: #203c4b; background: #f2f5f4; line-height: 1.5; }
+h1 { font-size: 34px; margin-bottom: 6px; } section { background: white; border: 1px solid #cedbd7; border-radius: 8px; padding: 20px; margin: 20px 0; }
+h2 { font-size: 21px; margin-top: 0; } pre { padding: 14px; background: #eaf1ee; white-space: pre-wrap; font-family: monospace; }
+button { background: #285d55; color: white; padding: 10px 18px; border: 0; border-radius: 4px; }
+@media(max-width:650px) { body { margin: 16px; } }
+</style></head><body>
+<h1>Strings and recovery</h1><p>Two examples using Eris's custom parser and script interpreter.</p>
+<section><h2>UTF-16 strings and JSON</h2><p>A character outside the basic multilingual plane occupies two code units. A lone surrogate stays intact inside JavaScript and is escaped when written as JSON.</p><button id="inspect">Inspect the strings</button><pre id="output">Press Inspect the strings.</pre><noscript>Scripting is disabled.</noscript></section>
+<section><h2>Recovering overlapping formatting</h2><p>The source closes the bold element before closing the italic element.</p><p><b>Bold, <i>bold and italic,</b> continuing in italic,</i> then plain text.</p><pre>&lt;b&gt;Bold, &lt;i&gt;bold and italic,&lt;/b&gt; continuing in italic,&lt;/i&gt; then plain text.</pre></section>
+<script>
+document.getElementById('inspect').addEventListener('click', function () {
+  const pair = String.fromCodePoint(0x1f600);
+  const lone = String.fromCharCode(0xd800);
+  const result = { length: pair.length, first: pair.charCodeAt(0), second: pair.charCodeAt(1), half: pair.slice(0, 1), lone: lone, roundTrip: JSON.parse(JSON.stringify(lone)) === lone };
+  document.getElementById('output').textContent = JSON.stringify(result, null, 2);
+});
+</script></body></html>

@@ -3,11 +3,11 @@
 //! This is a custom language implementation, not an ECMAScript conformance claim.
 //! Every entry point enforces execution, nesting, source, and allocation limits.
 //! Scripts have DOM access but no filesystem, network, process, or host-eval access.
-//! JSON uses a separate strict parser, ordered properties, and bounded native
-//! traversal. Unpaired UTF-16 surrogates cannot be represented by this runtime's
-//! UTF-8 strings and are explicitly rejected instead of silently replaced.
+//! Strings and ordinary property keys preserve UTF-16 code units. Conversion to
+//! UTF-8 is lossy only at the display/DOM boundary; JSON retains lone surrogates.
 
 use crate::dom::{Document, NodeId, NodeKind};
+use crate::js_string::{JsString, is_js_whitespace, radix_number};
 use std::collections::BTreeMap;
 use std::fmt;
 use std::rc::Rc;
@@ -27,7 +27,7 @@ pub enum Value {
     Null,
     Bool(bool),
     Number(f64),
-    String(Rc<str>),
+    String(JsString),
     Array(usize),
     Object(usize),
     Function(usize),
@@ -78,9 +78,16 @@ impl Value {
                     0.0
                 }
             }
-            Self::String(s) if s.trim().is_empty() => 0.0,
-            Self::String(s) => s.trim().parse().unwrap_or(f64::NAN),
+            Self::String(s) => s.number(),
             _ => f64::NAN,
+        }
+    }
+
+    fn js_string(&self) -> JsString {
+        match self {
+            Self::String(text) => text.clone(),
+            Self::Number(number) => JsString::from(json_number(*number)),
+            _ => JsString::from(self.to_string()),
         }
     }
 }
@@ -190,7 +197,7 @@ type Result<T> = std::result::Result<T, ScriptError>;
 enum TokenKind {
     Word(String),
     Number(f64),
-    String(Rc<str>),
+    String(JsString),
     Symbol(String),
     End,
 }
@@ -234,7 +241,7 @@ fn lex(source: &str) -> Result<Vec<Token>> {
         let kind = if ch == '\'' || ch == '"' || ch == '`' {
             let quote = ch;
             pos += 1;
-            let mut value = String::new();
+            let mut value = Vec::<u16>::new();
             let mut closed = false;
             while pos < source.len() {
                 let c = source[pos..].chars().next().unwrap();
@@ -256,15 +263,59 @@ fn lex(source: &str) -> Result<Vec<Token>> {
                         .ok_or_else(|| ScriptError::at("unterminated escape", pos))?;
                     pos += e.len_utf8();
                     match e {
-                        'n' => value.push('\n'),
-                        'r' => value.push('\r'),
-                        't' => value.push('\t'),
-                        'b' => value.push('\u{0008}'),
-                        'f' => value.push('\u{000c}'),
-                        'v' => value.push('\u{000b}'),
-                        '0' => value.push('\0'),
-                        '\n' => {}
+                        'n' => value.push(10),
+                        'r' => value.push(13),
+                        't' => value.push(9),
+                        'b' => value.push(8),
+                        'f' => value.push(12),
+                        'v' => value.push(11),
+                        '0' => value.push(0),
+                        '\n' | '\u{2028}' | '\u{2029}' => {}
+                        '\r' => {
+                            if source.as_bytes().get(pos) == Some(&b'\n') {
+                                pos += 1;
+                            }
+                        }
                         'u' | 'x' => {
+                            if e == 'u' && source.as_bytes().get(pos) == Some(&b'{') {
+                                pos += 1;
+                                let start = pos;
+                                while source
+                                    .as_bytes()
+                                    .get(pos)
+                                    .is_some_and(u8::is_ascii_hexdigit)
+                                {
+                                    pos += 1;
+                                }
+                                if start == pos
+                                    || pos - start > 6
+                                    || source.as_bytes().get(pos) != Some(&b'}')
+                                {
+                                    return Err(ScriptError::at(
+                                        "invalid Unicode code point escape",
+                                        start,
+                                    ));
+                                }
+                                let point =
+                                    u32::from_str_radix(&source[start..pos], 16).map_err(|_| {
+                                        ScriptError::at("invalid Unicode code point escape", start)
+                                    })?;
+                                if point > 0x10ffff {
+                                    return Err(ScriptError::at(
+                                        "Unicode code point exceeds range",
+                                        start,
+                                    ));
+                                }
+                                if point <= 0xffff {
+                                    value.push(point as u16);
+                                } else {
+                                    let point = point - 0x10000;
+                                    value.push(0xd800 + (point >> 10) as u16);
+                                    value.push(0xdc00 + (point & 0x3ff) as u16);
+                                }
+                                pos += 1;
+                                continue;
+                            }
                             let len = if e == 'u' { 4 } else { 2 };
                             let end = pos
                                 .checked_add(len)
@@ -277,22 +328,26 @@ fn lex(source: &str) -> Result<Vec<Token>> {
                                 .ok_or_else(|| ScriptError::at("invalid character escape", pos))?;
                             let n = u32::from_str_radix(hex, 16)
                                 .map_err(|_| ScriptError::at("invalid character escape", pos))?;
-                            value.push(char::from_u32(n).unwrap_or('\u{fffd}'));
+                            value.push(n as u16);
                             pos = end;
                         }
-                        _ => value.push(e),
+                        _ => {
+                            let mut units = [0; 2];
+                            value.extend_from_slice(e.encode_utf16(&mut units));
+                        }
                     }
                 } else {
-                    if c == '\n' && quote != '`' {
+                    if matches!(c, '\n' | '\r') && quote != '`' {
                         return Err(ScriptError::at("newline in string", pos));
                     }
-                    value.push(c);
+                    let mut units = [0; 2];
+                    value.extend_from_slice(c.encode_utf16(&mut units));
                 }
             }
             if !closed {
                 return Err(ScriptError::at("unterminated string", start));
             }
-            TokenKind::String(Rc::from(value))
+            TokenKind::String(JsString::from(value))
         } else if ch.is_ascii_digit()
             || (ch == '.'
                 && source
@@ -395,7 +450,7 @@ enum Expr {
     Literal(Value),
     Ident(String),
     Array(Vec<Expr>),
-    Object(Vec<(String, Expr)>),
+    Object(Vec<(JsString, Expr)>),
     Unary(String, Box<Expr>),
     Binary(String, Box<Expr>, Box<Expr>),
     Conditional(Box<Expr>, Box<Expr>, Box<Expr>),
@@ -790,7 +845,7 @@ impl Parser {
                 let property = self.identifier()?;
                 value = Expr::Member(
                     Box::new(value),
-                    Box::new(Expr::Literal(Value::String(Rc::from(property)))),
+                    Box::new(Expr::Literal(Value::String(JsString::from(property)))),
                 );
             } else if self.eat("[") {
                 let property = self.expression()?;
@@ -868,17 +923,20 @@ impl Parser {
             if !self.eat("}") {
                 loop {
                     let key = match self.tokens[self.pos].kind.clone() {
-                        TokenKind::Word(s) => s,
-                        TokenKind::String(s) => s.to_string(),
-                        TokenKind::Number(n) => n.to_string(),
+                        TokenKind::Word(s) => JsString::from(s),
+                        TokenKind::String(s) => s,
+                        TokenKind::Number(n) => JsString::from(json_number(n)),
                         _ => return Err(self.error("expected object property")),
                     };
                     self.pos += 1;
-                    let value = if self.eat(":") {
-                        self.expression()?
-                    } else {
-                        Expr::Ident(key.clone())
-                    };
+                    let value =
+                        if self.eat(":") {
+                            self.expression()?
+                        } else {
+                            Expr::Ident(key.to_utf8().map_err(|_| {
+                                self.error("object shorthand requires an identifier")
+                            })?)
+                        };
                     entries.push((key, value));
                     if self.eat("}") {
                         break;
@@ -946,28 +1004,28 @@ enum Flow {
 }
 enum Reference {
     Binding(usize, String),
-    Property(Value, String),
+    Property(Value, JsString),
 }
 
 #[derive(Default)]
 struct ScriptObject {
-    values: BTreeMap<String, Value>,
-    order: Vec<String>,
+    values: BTreeMap<JsString, Value>,
+    order: Vec<JsString>,
 }
 impl ScriptObject {
-    fn get(&self, key: &str) -> Option<&Value> {
-        self.values.get(key)
+    fn get(&self, key: impl Into<JsString>) -> Option<&Value> {
+        self.values.get(&key.into())
     }
-    fn contains_key(&self, key: &str) -> bool {
-        self.values.contains_key(key)
+    fn contains_key(&self, key: impl Into<JsString>) -> bool {
+        self.values.contains_key(&key.into())
     }
-    fn insert(&mut self, key: String, value: Value) {
+    fn insert(&mut self, key: JsString, value: Value) {
         if !self.values.contains_key(&key) {
             self.order.push(key.clone());
         }
         self.values.insert(key, value);
     }
-    fn remove(&mut self, key: &str) {
+    fn remove(&mut self, key: &JsString) {
         self.values.remove(key);
         self.order.retain(|item| item != key);
     }
@@ -975,21 +1033,21 @@ impl ScriptObject {
 
 struct JsonRecord {
     value: Value,
-    source: Option<String>,
-    children: BTreeMap<String, JsonRecord>,
+    source: Option<JsString>,
+    children: BTreeMap<JsString, JsonRecord>,
 }
 struct JsonReader<'a> {
-    source: &'a str,
+    source: &'a [u16],
     at: usize,
     tokens: usize,
     record: bool,
 }
 struct JsonWriter {
     replacer: Option<Value>,
-    properties: Option<Vec<String>>,
-    gap: String,
+    properties: Option<Vec<JsString>>,
+    gap: JsString,
     stack: Vec<Value>,
-    output: String,
+    output: Vec<u16>,
 }
 
 pub struct Runtime {
@@ -1092,7 +1150,7 @@ impl Runtime {
         let callbacks = std::mem::take(&mut self.ready);
         for (event_type, callback) in callbacks {
             let event = self.object(BTreeMap::from([
-                ("type".into(), Value::String(Rc::from(event_type))),
+                ("type".into(), Value::String(JsString::from(event_type))),
                 ("target".into(), Value::Document),
                 ("currentTarget".into(), Value::Document),
                 ("defaultPrevented".into(), Value::Bool(false)),
@@ -1130,7 +1188,7 @@ impl Runtime {
             cursor = document.nodes[id].parent;
         }
         let event = self.object(BTreeMap::from([
-            ("type".into(), Value::String(Rc::from(event_type))),
+            ("type".into(), Value::String(JsString::from(event_type))),
             ("target".into(), Value::Node(target)),
             ("defaultPrevented".into(), Value::Bool(false)),
             ("cancelBubble".into(), Value::Bool(false)),
@@ -1213,13 +1271,13 @@ impl Runtime {
         }
         Ok(())
     }
-    fn string(&mut self, text: impl Into<String>) -> Result<Value> {
+    fn string(&mut self, text: impl Into<JsString>) -> Result<Value> {
         let text = text.into();
         if text.len() > MAX_STRING {
             return Err(ScriptError::resource("script string limit exceeded"));
         }
-        self.charge(text.len() + 24)?;
-        Ok(Value::String(Rc::from(text)))
+        self.charge(text.byte_len() + 24)?;
+        Ok(Value::String(text))
     }
     fn array(&mut self, values: Vec<Value>) -> Result<Value> {
         self.charge(32 + values.len() * std::mem::size_of::<Value>())?;
@@ -1228,16 +1286,16 @@ impl Runtime {
         Ok(Value::Array(id))
     }
     fn object(&mut self, values: BTreeMap<String, Value>) -> Result<Value> {
-        self.object_ordered(values)
+        self.object_ordered(values.into_iter().map(|(key, value)| (key.into(), value)))
     }
     fn object_ordered(
         &mut self,
-        values: impl IntoIterator<Item = (String, Value)>,
+        values: impl IntoIterator<Item = (JsString, Value)>,
     ) -> Result<Value> {
         self.charge(72)?;
         let mut object = ScriptObject::default();
         for (key, value) in values {
-            self.charge(160 + key.len().saturating_mul(2))?;
+            self.charge(160 + key.byte_len().saturating_mul(2))?;
             object.insert(key, value);
         }
         let id = self.objects.len();
@@ -1374,6 +1432,9 @@ impl Runtime {
             }
             Stmt::Throw(expression) => {
                 let value = self.eval(expression, env, doc)?;
+                if let Value::String(text) = &value {
+                    self.work(1 + text.len() / 8)?;
+                }
                 return Err(ScriptError::thrown(value));
             }
             Stmt::Try(body, handler, finalizer) => {
@@ -1476,6 +1537,9 @@ impl Runtime {
                     return self.string("undefined");
                 }
                 let value = self.eval(expression, env, doc)?;
+                if let Value::String(text) = &value {
+                    self.work(1 + text.len() / 8)?;
+                }
                 match op.as_str() {
                     "!" => Ok(Value::Bool(!value.truthy())),
                     "-" => Ok(Value::Number(-value.number())),
@@ -1530,21 +1594,25 @@ impl Runtime {
             }
             Expr::Update(target, delta, prefix) => {
                 let reference = self.reference(target, env, doc)?;
-                let old = self.read_reference(&reference, doc)?.number();
+                let previous = self.read_reference(&reference, doc)?;
+                if let Value::String(text) = &previous {
+                    self.work(1 + text.len() / 8)?;
+                }
+                let old = previous.number();
                 let value = Value::Number(old + delta);
                 self.write_reference(reference, value.clone(), doc)?;
                 Ok(if *prefix { value } else { Value::Number(old) })
             }
             Expr::Member(object, property) => {
                 let object = self.eval(object, env, doc)?;
-                let property = self.eval(property, env, doc)?.to_string();
-                self.get(object, &property, doc)
+                let property = self.eval(property, env, doc)?.js_string();
+                self.get_key(object, &property, doc)
             }
             Expr::Call(callee, arguments) => {
                 let (function, receiver) = if let Expr::Member(object, property) = &**callee {
                     let receiver = self.eval(object, env, doc)?;
-                    let property = self.eval(property, env, doc)?.to_string();
-                    (self.get(receiver.clone(), &property, doc)?, receiver)
+                    let property = self.eval(property, env, doc)?.js_string();
+                    (self.get_key(receiver.clone(), &property, doc)?, receiver)
                 } else {
                     (self.eval(callee, env, doc)?, Value::Window)
                 };
@@ -1558,13 +1626,22 @@ impl Runtime {
         }
     }
     fn binary_value(&mut self, op: &str, left: Value, right: Value) -> Result<Value> {
+        for value in [&left, &right] {
+            if let Value::String(text) = value {
+                self.work(1 + text.len() / 8)?;
+            }
+        }
         if op == "+" && (matches!(left, Value::String(_)) || matches!(right, Value::String(_))) {
-            let a = left.to_string();
-            let b = right.to_string();
+            let a = left.js_string();
+            let b = right.js_string();
             if a.len().saturating_add(b.len()) > MAX_STRING {
                 return Err(ScriptError::resource("script string limit exceeded"));
             }
-            return self.string(a + &b);
+            self.work(1 + (a.len() + b.len()) / 8)?;
+            let mut units = Vec::with_capacity(a.len() + b.len());
+            units.extend_from_slice(a.units());
+            units.extend_from_slice(b.units());
+            return self.string(units);
         }
         if ["==", "!=", "===", "!=="].contains(&op) {
             let strict = op.len() == 3;
@@ -1633,7 +1710,7 @@ impl Runtime {
             }
             Expr::Member(object, property) => {
                 let object = self.eval(object, env, doc)?;
-                let property = self.eval(property, env, doc)?.to_string();
+                let property = self.eval(property, env, doc)?.js_string();
                 Ok(Reference::Property(object, property))
             }
             _ => Err(ScriptError::type_error("invalid assignment target")),
@@ -1644,7 +1721,7 @@ impl Runtime {
             Reference::Binding(env, name) => {
                 Ok(self.environments[*env].bindings[name].value.clone())
             }
-            Reference::Property(object, key) => self.get(object.clone(), key, doc),
+            Reference::Property(object, key) => self.get_key(object.clone(), key, doc),
         }
     }
     fn write_reference(
@@ -1664,7 +1741,7 @@ impl Runtime {
                 binding.value = value;
                 Ok(())
             }
-            Reference::Property(object, key) => self.set(object, &key, value, doc),
+            Reference::Property(object, key) => self.set_key(object, &key, value, doc),
         }
     }
     fn call(
@@ -1714,6 +1791,41 @@ impl Runtime {
         }
     }
 
+    fn get_key(&mut self, receiver: Value, key: &JsString, doc: &mut Document) -> Result<Value> {
+        self.work(1 + key.len() / 8)?;
+        if let Value::Object(id) = receiver
+            && let Some(value) = self.objects[id].get(key)
+        {
+            return Ok(value.clone());
+        }
+        match key.to_utf8() {
+            Ok(key) => self.get(receiver, &key, doc),
+            Err(_) if matches!(receiver, Value::Null | Value::Undefined) => Err(
+                ScriptError::type_error("cannot read property of null or undefined"),
+            ),
+            Err(_) => Ok(Value::Undefined),
+        }
+    }
+    fn set_key(
+        &mut self,
+        receiver: Value,
+        key: &JsString,
+        value: Value,
+        doc: &mut Document,
+    ) -> Result<()> {
+        self.work(1 + key.len() / 8)?;
+        if let Value::Object(id) = receiver {
+            if !self.objects[id].contains_key(key) {
+                self.charge(160 + key.byte_len().saturating_mul(2))?;
+            }
+            self.objects[id].insert(key.clone(), value);
+            return Ok(());
+        }
+        let key = key
+            .to_utf8()
+            .map_err(|_| ScriptError::type_error("non-scalar host property name is unsupported"))?;
+        self.set(receiver, &key, value, doc)
+    }
     fn get(&mut self, receiver: Value, key: &str, doc: &mut Document) -> Result<Value> {
         if matches!(receiver, Value::Document)
             || matches!(key, "textContent" | "innerText" | "innerHTML" | "outerHTML")
@@ -1755,11 +1867,13 @@ impl Runtime {
             }
             Value::String(text) => {
                 if key == "length" {
-                    return Ok(Value::Number(text.encode_utf16().count() as f64));
+                    return Ok(Value::Number(text.len() as f64));
                 }
-                if let Ok(index) = key.parse::<usize>() {
-                    return match text.chars().nth(index) {
-                        Some(c) => self.string(c.to_string()),
+                if let Ok(index) = key.parse::<usize>()
+                    && index.to_string() == key
+                {
+                    return match text.units().get(index) {
+                        Some(unit) => self.string(vec![*unit]),
                         None => Ok(Value::Undefined),
                     };
                 }
@@ -1775,12 +1889,19 @@ impl Runtime {
                     "substring",
                     "split",
                     "charAt",
+                    "charCodeAt",
+                    "codePointAt",
                     "toString",
                 ]
                 .contains(&key)
                 {
                     return Ok(Self::native(key, receiver));
                 }
+            }
+            Value::Native(native)
+                if native.name == "String" && matches!(key, "fromCharCode" | "fromCodePoint") =>
+            {
+                return Ok(Self::native(key, receiver));
             }
             Value::Number(_) | Value::Bool(_) if key == "toString" => {
                 return Ok(Self::native(key, receiver));
@@ -1971,6 +2092,11 @@ impl Runtime {
     }
 
     fn set(&mut self, receiver: Value, key: &str, value: Value, doc: &mut Document) -> Result<()> {
+        // Host writes may decode strings or parse array lengths. Charge their
+        // linear work even when the string itself is an existing shared value.
+        if let Value::String(text) = &value {
+            self.work(1 + text.len() / 16)?;
+        }
         match receiver {
             Value::Object(id) => {
                 if !self.objects[id].contains_key(key) {
@@ -2146,10 +2272,10 @@ impl Runtime {
         Ok(())
     }
 
-    fn json_keys(&mut self, id: usize) -> Result<Vec<String>> {
+    fn json_keys(&mut self, id: usize) -> Result<Vec<JsString>> {
         let object = &self.objects[id];
         let count = object.order.len();
-        let bytes = object.order.iter().map(String::len).sum::<usize>();
+        let bytes = object.order.iter().map(JsString::byte_len).sum::<usize>();
         self.work(1 + count.saturating_mul(1 + count.checked_ilog2().unwrap_or(0) as usize) / 8)?;
         self.charge(bytes.saturating_add(count.saturating_mul(32)))?;
         let mut keys = self.objects[id].order.clone();
@@ -2170,7 +2296,7 @@ impl Runtime {
         self.charge(text.len().saturating_mul(2))?;
         let revive = json_callable(&reviver);
         let mut reader = JsonReader {
-            source: &text,
+            source: text.units(),
             at: 0,
             tokens: 0,
             record: revive,
@@ -2178,16 +2304,13 @@ impl Runtime {
         let (value, record) = reader.value(self)?;
         reader.whitespace();
         if reader.at != text.len() {
-            return Err(ScriptError::at(
-                "unexpected text after JSON value",
-                reader.at,
-            ));
+            return Err(reader.error("unexpected text after JSON value"));
         }
         if !revive {
             return Ok(value);
         }
-        let holder = self.object_ordered([(String::new(), value)])?;
-        self.json_revive(holder, "", &reviver, record.as_ref(), doc)
+        let holder = self.object_ordered([(JsString::default(), value)])?;
+        self.json_revive(holder, &JsString::default(), &reviver, record.as_ref(), doc)
     }
 
     fn json_text(
@@ -2195,15 +2318,15 @@ impl Runtime {
         value: Value,
         doc: &mut Document,
         arrays: &mut Vec<usize>,
-    ) -> Result<String> {
+    ) -> Result<JsString> {
         self.json_enter()?;
         let result = (|| {
             match value {
                 Value::String(text) => {
-                    self.charge(text.len())?;
-                    Ok(text.to_string())
+                    self.charge(text.byte_len())?;
+                    Ok(text)
                 }
-                Value::Number(number) => Ok(json_number(number)),
+                Value::Number(number) => Ok(json_number(number).into()),
                 Value::Object(id) => {
                     // OrdinaryToPrimitive with a string hint: the implicit
                     // Object.prototype.toString returns a primitive first.
@@ -2226,10 +2349,10 @@ impl Runtime {
                 }
                 Value::Array(id) => {
                     if arrays.contains(&id) {
-                        return Ok(String::new());
+                        return Ok(JsString::default());
                     }
                     arrays.push(id);
-                    let mut text = String::new();
+                    let mut text = Vec::<u16>::new();
                     let length = self.arrays[id].len();
                     for index in 0..length {
                         self.tick()?;
@@ -2238,7 +2361,7 @@ impl Runtime {
                             .cloned()
                             .unwrap_or(Value::Undefined);
                         let part = if matches!(value, Value::Null | Value::Undefined) {
-                            String::new()
+                            JsString::default()
                         } else {
                             self.json_text(value, doc, arrays)?
                         };
@@ -2250,16 +2373,16 @@ impl Runtime {
                         {
                             return Err(ScriptError::resource("JSON source limit exceeded"));
                         }
-                        self.charge(part.len() + usize::from(index > 0))?;
+                        self.charge(part.byte_len() + usize::from(index > 0) * 2)?;
                         if index > 0 {
-                            text.push(',');
+                            text.push(44);
                         }
-                        text.push_str(&part);
+                        text.extend_from_slice(part.units());
                     }
                     arrays.pop();
-                    Ok(text)
+                    Ok(text.into())
                 }
-                _ => Ok(value.to_string()),
+                _ => Ok(value.js_string()),
             }
         })();
         self.json_depth -= 1;
@@ -2269,14 +2392,14 @@ impl Runtime {
     fn json_revive(
         &mut self,
         holder: Value,
-        key: &str,
+        key: &JsString,
         reviver: &Value,
         record: Option<&JsonRecord>,
         doc: &mut Document,
     ) -> Result<Value> {
         self.json_enter()?;
         let result = (|| {
-            let value = self.get(holder.clone(), key, doc)?;
+            let value = self.get_key(holder.clone(), key, doc)?;
             let record = record.filter(|record| json_same_value(&record.value, &value));
             let context = if let Some(source) = record.and_then(|record| record.source.as_ref()) {
                 let source = self.string(source.clone())?;
@@ -2289,7 +2412,7 @@ impl Runtime {
                 Value::Array(id) => {
                     let len = self.arrays[id].len();
                     self.charge(len.saturating_mul(32))?;
-                    (0..len).map(|i| i.to_string()).collect()
+                    (0..len).map(|i| JsString::from(i.to_string())).collect()
                 }
                 _ => Vec::new(),
             };
@@ -2303,7 +2426,7 @@ impl Runtime {
                             self.objects[id].remove(&key);
                         }
                         Value::Array(id) => {
-                            if let Ok(index) = key.parse::<usize>()
+                            if let Ok(index) = key.to_string().parse::<usize>()
                                 && let Some(slot) = self.arrays[id].get_mut(index)
                             {
                                 *slot = Value::Undefined;
@@ -2312,7 +2435,7 @@ impl Runtime {
                         _ => {}
                     }
                 } else {
-                    self.set(value.clone(), &key, child, doc)?;
+                    self.set_key(value.clone(), &key, child, doc)?;
                 }
             }
             let key = self.string(key)?;
@@ -2336,8 +2459,8 @@ impl Runtime {
             for index in 0..len {
                 self.tick()?;
                 let key = match &self.arrays[id][index] {
-                    Value::String(text) => Some(text.to_string()),
-                    Value::Number(number) => Some(json_number(*number)),
+                    Value::String(text) => Some(text.clone()),
+                    Value::Number(number) => Some(JsString::from(json_number(*number))),
                     _ => None,
                 };
                 if let Some(key) = key
@@ -2353,26 +2476,19 @@ impl Runtime {
             None
         };
         let gap = match space {
-            Value::Number(n) => " ".repeat(n.clamp(0.0, 10.0) as usize),
-            Value::String(text) => {
-                let units: Vec<u16> = text.encode_utf16().take(10).collect();
-                String::from_utf16(&units).map_err(|_| {
-                    ScriptError::type_error(
-                        "unpaired UTF-16 surrogate in JSON indentation is unsupported",
-                    )
-                })?
-            }
-            _ => String::new(),
+            Value::Number(n) => JsString::from(" ".repeat(n.clamp(0.0, 10.0) as usize)),
+            Value::String(text) => text.slice(0, text.len().min(10)),
+            _ => JsString::default(),
         };
         let mut writer = JsonWriter {
             replacer: json_callable(&replacer).then_some(replacer),
             properties,
             gap,
             stack: Vec::new(),
-            output: String::new(),
+            output: Vec::new(),
         };
-        let holder = self.object_ordered([(String::new(), value)])?;
-        let value = self.json_prepare(holder, "", &writer.replacer, doc)?;
+        let holder = self.object_ordered([(JsString::default(), value)])?;
+        let value = self.json_prepare(holder, &JsString::default(), &writer.replacer, doc)?;
         if self.json_emit(value, &mut writer, 0, doc)? {
             self.string(writer.output)
         } else {
@@ -2383,12 +2499,12 @@ impl Runtime {
     fn json_prepare(
         &mut self,
         holder: Value,
-        key: &str,
+        key: &JsString,
         replacer: &Option<Value>,
         doc: &mut Document,
     ) -> Result<Value> {
         self.tick()?;
-        let mut value = self.get(holder.clone(), key, doc)?;
+        let mut value = self.get_key(holder.clone(), key, doc)?;
         if !json_primitive(&value) {
             let convert = self.get(value.clone(), "toJSON", doc)?;
             if json_callable(&convert) {
@@ -2404,31 +2520,43 @@ impl Runtime {
     }
 
     fn json_append(&mut self, writer: &mut JsonWriter, text: &str) -> Result<()> {
-        if writer.output.len().saturating_add(text.len()) > MAX_STRING {
+        let units: Vec<u16> = text.encode_utf16().collect();
+        self.json_append_units(writer, &units)
+    }
+    fn json_append_units(&mut self, writer: &mut JsonWriter, units: &[u16]) -> Result<()> {
+        if writer.output.len().saturating_add(units.len()) > MAX_STRING {
             return Err(ScriptError::resource("JSON output string limit exceeded"));
         }
-        self.work(1 + text.len() / 16)?;
-        self.charge(text.len())?;
-        writer.output.push_str(text);
+        self.work(1 + units.len() / 8)?;
+        self.charge(units.len().saturating_mul(2))?;
+        writer.output.extend_from_slice(units);
         Ok(())
     }
-    fn json_quote(&mut self, writer: &mut JsonWriter, text: &str) -> Result<()> {
+    fn json_quote(&mut self, writer: &mut JsonWriter, text: &JsString) -> Result<()> {
         self.json_append(writer, "\"")?;
-        for character in text.chars() {
-            match character {
-                '"' => self.json_append(writer, "\\\"")?,
-                '\\' => self.json_append(writer, "\\\\")?,
-                '\u{8}' => self.json_append(writer, "\\b")?,
-                '\u{c}' => self.json_append(writer, "\\f")?,
-                '\n' => self.json_append(writer, "\\n")?,
-                '\r' => self.json_append(writer, "\\r")?,
-                '\t' => self.json_append(writer, "\\t")?,
-                c if c < '\u{20}' => self.json_append(writer, &format!("\\u{:04x}", c as u32))?,
-                c => {
-                    let mut buffer = [0; 4];
-                    self.json_append(writer, c.encode_utf8(&mut buffer))?;
+        let mut index = 0;
+        while let Some(&unit) = text.units().get(index) {
+            match unit {
+                34 => self.json_append(writer, "\\\"")?,
+                92 => self.json_append(writer, "\\\\")?,
+                8 => self.json_append(writer, "\\b")?,
+                12 => self.json_append(writer, "\\f")?,
+                10 => self.json_append(writer, "\\n")?,
+                13 => self.json_append(writer, "\\r")?,
+                9 => self.json_append(writer, "\\t")?,
+                0xd800..=0xdbff
+                    if text
+                        .units()
+                        .get(index + 1)
+                        .is_some_and(|low| (0xdc00..=0xdfff).contains(low)) =>
+                {
+                    self.json_append_units(writer, &text.units()[index..index + 2])?;
+                    index += 1;
                 }
+                0..=31 | 0xd800..=0xdfff => self.json_append(writer, &format!("\\u{unit:04x}"))?,
+                _ => self.json_append_units(writer, &[unit])?,
             }
+            index += 1;
         }
         self.json_append(writer, "\"")
     }
@@ -2437,7 +2565,7 @@ impl Runtime {
             self.json_append(writer, "\n")?;
             let gap = writer.gap.clone();
             for _ in 0..depth {
-                self.json_append(writer, &gap)?;
+                self.json_append_units(writer, gap.units())?;
             }
         }
         Ok(())
@@ -2488,7 +2616,9 @@ impl Runtime {
                 let keys = if let Value::Array(id) = value {
                     let len = self.arrays[id].len();
                     self.charge(len.saturating_mul(32))?;
-                    (0..len).map(|i| i.to_string()).collect::<Vec<_>>()
+                    (0..len)
+                        .map(|i| JsString::from(i.to_string()))
+                        .collect::<Vec<_>>()
                 } else if let Some(properties) = &writer.properties {
                     self.charge(properties.iter().map(|key| key.len() + 32).sum())?;
                     properties.clone()
@@ -2540,6 +2670,52 @@ impl Runtime {
         Ok(true)
     }
 
+    fn string_find(&mut self, text: &[u16], needle: &[u16], start: usize) -> Result<Option<usize>> {
+        if needle.is_empty() {
+            return Ok(Some(start.min(text.len())));
+        }
+        if needle.len() > text.len().saturating_sub(start) {
+            return Ok(None);
+        }
+        for index in start..=text.len() - needle.len() {
+            self.work(1 + needle.len() / 8)?;
+            if text[index..index + needle.len()] == *needle {
+                return Ok(Some(index));
+            }
+        }
+        Ok(None)
+    }
+    fn string_case(&mut self, text: &JsString, upper: bool) -> Result<Value> {
+        self.charge(text.byte_len().saturating_mul(3))?;
+        let mut output = Vec::new();
+        let mut segment = String::new();
+        for scalar in char::decode_utf16(text.units().iter().copied()) {
+            match scalar {
+                Ok(scalar) => segment.push(scalar),
+                Err(error) => {
+                    let mapped = if upper {
+                        segment.to_uppercase()
+                    } else {
+                        segment.to_lowercase()
+                    };
+                    output.extend(mapped.encode_utf16());
+                    segment.clear();
+                    output.push(error.unpaired_surrogate());
+                }
+            }
+            if output.len() > MAX_STRING {
+                return Err(ScriptError::resource("script string limit exceeded"));
+            }
+        }
+        let mapped = if upper {
+            segment.to_uppercase()
+        } else {
+            segment.to_lowercase()
+        };
+        output.extend(mapped.encode_utf16());
+        self.string(output)
+    }
+
     fn native_call(
         &mut self,
         native: &Native,
@@ -2578,11 +2754,14 @@ impl Runtime {
             {
                 let value = arg(0);
                 return match name {
-                    "String" => self.string(if args.is_empty() {
-                        String::new()
-                    } else {
-                        value.to_string()
-                    }),
+                    "String" => {
+                        let text = if args.is_empty() {
+                            JsString::default()
+                        } else {
+                            self.json_text(value, doc, &mut Vec::new())?
+                        };
+                        self.string(text)
+                    }
                     "Number" => Ok(Value::Number(if args.is_empty() {
                         0.0
                     } else {
@@ -2591,9 +2770,11 @@ impl Runtime {
                     "Boolean" => Ok(Value::Bool(value.truthy())),
                     "isNaN" => Ok(Value::Bool(value.number().is_nan())),
                     "isFinite" => Ok(Value::Bool(value.number().is_finite())),
-                    "parseFloat" => Ok(Value::Number(parse_float(&value.to_string()))),
+                    "parseFloat" => Ok(Value::Number(parse_float(
+                        &value.js_string().to_utf8_lossy(),
+                    ))),
                     "parseInt" => Ok(Value::Number(parse_int(
-                        &value.to_string(),
+                        &value.js_string().to_utf8_lossy(),
                         args.get(1).map(Value::number).unwrap_or(0.0),
                     ))),
                     _ => unreachable!(),
@@ -2688,29 +2869,36 @@ impl Runtime {
                         });
                     }
                     "join" => {
-                        let separator = args
-                            .first()
-                            .map(ToString::to_string)
-                            .unwrap_or_else(|| ",".into());
-                        let mut result = String::new();
-                        for (i, value) in self.arrays[id].iter().enumerate() {
+                        let separator = if matches!(arg(0), Value::Undefined) {
+                            JsString::from(",")
+                        } else {
+                            arg(0).js_string()
+                        };
+                        let mut result = Vec::new();
+                        for index in 0..self.arrays[id].len() {
+                            let value = self.arrays[id]
+                                .get(index)
+                                .cloned()
+                                .unwrap_or(Value::Undefined);
                             let text = if matches!(value, Value::Null | Value::Undefined) {
-                                String::new()
+                                JsString::default()
                             } else {
-                                value.to_string()
+                                self.json_text(value, doc, &mut vec![id])?
                             };
+                            let separator_len = if index > 0 { separator.len() } else { 0 };
                             if result
                                 .len()
                                 .saturating_add(text.len())
-                                .saturating_add(separator.len())
+                                .saturating_add(separator_len)
                                 > MAX_STRING
                             {
                                 return Err(ScriptError::resource("script string limit exceeded"));
                             }
-                            if i > 0 {
-                                result.push_str(&separator);
+                            self.charge((text.len() + separator_len) * 2)?;
+                            if index > 0 {
+                                result.extend_from_slice(separator.units());
                             }
-                            result.push_str(&text);
+                            result.extend_from_slice(text.units());
                         }
                         return self.string(result);
                     }
@@ -2772,78 +2960,178 @@ impl Runtime {
                 }
             }
             Value::String(text) => {
-                let needle = arg(0).to_string();
+                let needle = arg(0).js_string();
+                let units = text.units();
+                let len = text.len();
                 match name {
-                    "toUpperCase" => return self.string(text.to_uppercase()),
-                    "toLowerCase" => return self.string(text.to_lowercase()),
-                    "trim" => return self.string(text.trim()),
-                    "toString" => return Ok(native.receiver.clone()),
-                    "includes" => return Ok(Value::Bool(text.contains(&needle))),
-                    "startsWith" => return Ok(Value::Bool(text.starts_with(&needle))),
-                    "endsWith" => return Ok(Value::Bool(text.ends_with(&needle))),
-                    "indexOf" => {
-                        return Ok(Value::Number(
-                            text.find(&needle)
-                                .map(|i| text[..i].encode_utf16().count() as f64)
-                                .unwrap_or(-1.0),
-                        ));
+                    "toUpperCase" | "toLowerCase" => {
+                        return self.string_case(text, name == "toUpperCase");
                     }
-                    "charAt" => {
-                        return self.string(
-                            text.chars()
-                                .nth(arg(0).number().max(0.0) as usize)
-                                .map(|c| c.to_string())
-                                .unwrap_or_default(),
-                        );
+                    "trim" => return self.string(text.trimmed_units()),
+                    "toString" => return Ok(native.receiver.clone()),
+                    "includes" | "indexOf" => {
+                        let start =
+                            integer_or_infinity(arg(1).number()).clamp(0.0, len as f64) as usize;
+                        let found = self.string_find(units, needle.units(), start)?;
+                        return Ok(if name == "includes" {
+                            Value::Bool(found.is_some())
+                        } else {
+                            Value::Number(found.map(|i| i as f64).unwrap_or(-1.0))
+                        });
+                    }
+                    "startsWith" => {
+                        let start =
+                            integer_or_infinity(arg(1).number()).clamp(0.0, len as f64) as usize;
+                        self.work(1 + needle.len() / 8)?;
+                        return Ok(Value::Bool(units[start..].starts_with(needle.units())));
+                    }
+                    "endsWith" => {
+                        let end = if matches!(arg(1), Value::Undefined) {
+                            len
+                        } else {
+                            integer_or_infinity(arg(1).number()).clamp(0.0, len as f64) as usize
+                        };
+                        self.work(1 + needle.len() / 8)?;
+                        return Ok(Value::Bool(units[..end].ends_with(needle.units())));
+                    }
+                    "charAt" | "charCodeAt" | "codePointAt" => {
+                        let position = integer_or_infinity(arg(0).number());
+                        if position < 0.0 || position >= len as f64 {
+                            return if name == "charAt" {
+                                self.string("")
+                            } else {
+                                Ok(if name == "charCodeAt" {
+                                    Value::Number(f64::NAN)
+                                } else {
+                                    Value::Undefined
+                                })
+                            };
+                        }
+                        let index = position as usize;
+                        let unit = units[index];
+                        if name == "charAt" {
+                            return self.string(vec![unit]);
+                        }
+                        let point = if name == "codePointAt"
+                            && (0xd800..=0xdbff).contains(&unit)
+                            && units
+                                .get(index + 1)
+                                .is_some_and(|low| (0xdc00..=0xdfff).contains(low))
+                        {
+                            0x10000
+                                + ((unit as u32 - 0xd800) << 10)
+                                + (units[index + 1] as u32 - 0xdc00)
+                        } else {
+                            unit as u32
+                        };
+                        return Ok(Value::Number(point as f64));
                     }
                     "slice" | "substring" => {
-                        let characters: Vec<char> = text.chars().collect();
-                        let len = characters.len();
                         let mut start = if name == "slice" {
                             relative_index(arg(0).number(), len)
                         } else {
-                            arg(0).number().max(0.0).min(len as f64) as usize
+                            integer_or_infinity(arg(0).number()).clamp(0.0, len as f64) as usize
                         };
-                        let mut end = args
-                            .get(1)
-                            .map(|value| {
-                                if name == "slice" {
-                                    relative_index(value.number(), len)
-                                } else {
-                                    value.number().max(0.0).min(len as f64) as usize
-                                }
-                            })
-                            .unwrap_or(len);
+                        let mut end = if matches!(arg(1), Value::Undefined) {
+                            len
+                        } else if name == "slice" {
+                            relative_index(arg(1).number(), len)
+                        } else {
+                            integer_or_infinity(arg(1).number()).clamp(0.0, len as f64) as usize
+                        };
                         if name == "substring" && start > end {
                             std::mem::swap(&mut start, &mut end);
                         }
-                        return self
-                            .string(characters[start..end.max(start)].iter().collect::<String>());
+                        return self.string(&units[start..end.max(start)]);
                     }
                     "split" => {
-                        let limit = args
-                            .get(1)
-                            .map(|value| value.number().max(0.0) as usize)
-                            .unwrap_or(65536)
-                            .min(65536);
-                        let pieces: Vec<String> = if args.is_empty() {
-                            vec![text.to_string()]
-                        } else if needle.is_empty() {
-                            text.chars().take(limit).map(|c| c.to_string()).collect()
+                        let limit = if matches!(arg(1), Value::Undefined) {
+                            u32::MAX as usize
                         } else {
-                            text.split(&needle).take(limit).map(str::to_owned).collect()
+                            to_i32(arg(1).number()) as u32 as usize
                         };
+                        if limit == 0 {
+                            return self.array(Vec::new());
+                        }
+                        if matches!(arg(0), Value::Undefined) {
+                            return self.array(vec![native.receiver.clone()]);
+                        }
                         let mut values = Vec::new();
-                        for piece in pieces {
-                            values.push(self.string(piece)?);
+                        if needle.is_empty() {
+                            for &unit in units.iter().take(limit) {
+                                if values.len() >= 65536 {
+                                    return Err(ScriptError::resource(
+                                        "array length limit exceeded",
+                                    ));
+                                }
+                                values.push(self.string(vec![unit])?);
+                            }
+                        } else {
+                            let mut start = 0;
+                            while values.len() < limit {
+                                if values.len() >= 65536 {
+                                    return Err(ScriptError::resource(
+                                        "array length limit exceeded",
+                                    ));
+                                }
+                                if let Some(index) =
+                                    self.string_find(units, needle.units(), start)?
+                                {
+                                    values.push(self.string(&units[start..index])?);
+                                    start = index + needle.len();
+                                } else {
+                                    values.push(self.string(&units[start..])?);
+                                    break;
+                                }
+                            }
                         }
                         return self.array(values);
                     }
                     _ => {}
                 }
             }
+            Value::Native(constructor)
+                if constructor.name == "String"
+                    && matches!(name, "fromCharCode" | "fromCodePoint") =>
+            {
+                let mut units = Vec::new();
+                for value in &args {
+                    self.tick()?;
+                    let number = value.number();
+                    if name == "fromCharCode" {
+                        units.push((to_i32(number) as u32 & 0xffff) as u16);
+                    } else {
+                        if !number.is_finite()
+                            || number.fract() != 0.0
+                            || !(0.0..=0x10ffff as f64).contains(&number)
+                        {
+                            return Err(ScriptError::range_error("invalid Unicode code point"));
+                        }
+                        let point = number as u32;
+                        if point <= 0xffff {
+                            units.push(point as u16);
+                        } else {
+                            let point = point - 0x10000;
+                            units.push(0xd800 + (point >> 10) as u16);
+                            units.push(0xdc00 + (point & 0x3ff) as u16);
+                        }
+                    }
+                    if units.len() > MAX_STRING {
+                        return Err(ScriptError::resource("script string limit exceeded"));
+                    }
+                }
+                return self.string(units);
+            }
             Value::Number(_) | Value::Bool(_) if name == "toString" => {
-                return self.string(native.receiver.to_string());
+                if matches!(native.receiver, Value::Number(_))
+                    && !matches!(arg(0), Value::Undefined)
+                    && arg(0).number() != 10.0
+                {
+                    return Err(ScriptError::type_error(
+                        "non-decimal Number.toString radix is unsupported",
+                    ));
+                }
+                return self.string(native.receiver.js_string());
             }
             Value::Object(id) => {
                 if name == "preventDefault" {
@@ -3084,23 +3372,39 @@ impl Runtime {
 }
 
 impl JsonReader<'_> {
+    fn error(&self, message: &str) -> ScriptError {
+        ScriptError {
+            message: format!("{message} at UTF-16 offset {}", self.at),
+            offset: None,
+            kind: ErrorKind::Runtime("SyntaxError"),
+        }
+    }
     fn whitespace(&mut self) {
         while self
             .source
-            .as_bytes()
             .get(self.at)
-            .is_some_and(|byte| matches!(byte, b' ' | b'\t' | b'\r' | b'\n'))
+            .is_some_and(|u| matches!(*u, 9 | 10 | 13 | 32))
         {
             self.at += 1;
         }
     }
     fn consume(&mut self, byte: u8) -> bool {
-        if self.source.as_bytes().get(self.at) == Some(&byte) {
+        if self.source.get(self.at) == Some(&(byte as u16)) {
             self.at += 1;
             true
         } else {
             false
         }
+    }
+    fn starts(&self, text: &str) -> bool {
+        self.source
+            .get(self.at..self.at + text.len())
+            .is_some_and(|units| units.iter().copied().eq(text.bytes().map(u16::from)))
+    }
+    fn digit(&self) -> bool {
+        self.source
+            .get(self.at)
+            .is_some_and(|u| matches!(*u, 48..=57))
     }
     fn token(&mut self) -> Result<()> {
         self.tokens += 1;
@@ -3121,25 +3425,25 @@ impl JsonReader<'_> {
         self.token()?;
         let start = self.at;
         let mut children = BTreeMap::new();
-        let value = match self.source.as_bytes().get(self.at).copied() {
-            Some(b'"') => {
+        let value = match self.source.get(self.at).copied() {
+            Some(34) => {
                 let text = self.string()?;
                 runtime.string(text)?
             }
-            Some(b'n') if self.source[self.at..].starts_with("null") => {
+            Some(110) if self.starts("null") => {
                 self.at += 4;
                 Value::Null
             }
-            Some(b't') if self.source[self.at..].starts_with("true") => {
+            Some(116) if self.starts("true") => {
                 self.at += 4;
                 Value::Bool(true)
             }
-            Some(b'f') if self.source[self.at..].starts_with("false") => {
+            Some(102) if self.starts("false") => {
                 self.at += 5;
                 Value::Bool(false)
             }
-            Some(b'-' | b'0'..=b'9') => self.number()?,
-            Some(b'[') => {
+            Some(45 | 48..=57) => self.number()?,
+            Some(91) => {
                 self.at += 1;
                 self.whitespace();
                 let mut values = Vec::new();
@@ -3148,7 +3452,7 @@ impl JsonReader<'_> {
                         let (value, record) = self.value(runtime)?;
                         runtime.charge(64)?;
                         if let Some(record) = record {
-                            children.insert(values.len().to_string(), record);
+                            children.insert(JsString::from(values.len().to_string()), record);
                         }
                         values.push(value);
                         self.whitespace();
@@ -3156,16 +3460,13 @@ impl JsonReader<'_> {
                             break;
                         }
                         if !self.consume(b',') {
-                            return Err(ScriptError::at(
-                                "expected ',' or ']' in JSON array",
-                                self.at,
-                            ));
+                            return Err(self.error("expected ',' or ']' in JSON array"));
                         }
                     }
                 }
                 runtime.array(values)?
             }
-            Some(b'{') => {
+            Some(123) => {
                 self.at += 1;
                 self.whitespace();
                 let mut entries = Vec::new();
@@ -3174,10 +3475,10 @@ impl JsonReader<'_> {
                         self.whitespace();
                         self.token()?;
                         let key = self.string()?;
-                        runtime.charge(160 + key.len().saturating_mul(2))?;
+                        runtime.charge(160 + key.byte_len().saturating_mul(2))?;
                         self.whitespace();
                         if !self.consume(b':') {
-                            return Err(ScriptError::at("expected ':' in JSON object", self.at));
+                            return Err(self.error("expected ':' in JSON object"));
                         }
                         let (value, record) = self.value(runtime)?;
                         if let Some(record) = record {
@@ -3189,22 +3490,19 @@ impl JsonReader<'_> {
                             break;
                         }
                         if !self.consume(b',') {
-                            return Err(ScriptError::at(
-                                "expected ',' or '}' in JSON object",
-                                self.at,
-                            ));
+                            return Err(self.error("expected ',' or '}' in JSON object"));
                         }
                     }
                 }
                 runtime.object_ordered(entries)?
             }
-            _ => return Err(ScriptError::at("expected JSON value", self.at)),
+            _ => return Err(self.error("expected JSON value")),
         };
         let record = if self.record {
             runtime.charge(192)?;
             let source = if json_primitive(&value) {
-                runtime.charge(self.at - start + 24)?;
-                Some(self.source[start..self.at].to_owned())
+                runtime.charge((self.at - start) * 2 + 24)?;
+                Some(JsString::from(&self.source[start..self.at]))
             } else {
                 None
             };
@@ -3218,78 +3516,54 @@ impl JsonReader<'_> {
         };
         Ok((value, record))
     }
-    fn string(&mut self) -> Result<String> {
+    fn string(&mut self) -> Result<JsString> {
         if !self.consume(b'"') {
-            return Err(ScriptError::at("expected quoted JSON string", self.at));
+            return Err(self.error("expected quoted JSON string"));
         }
-        let mut text = String::new();
-        while let Some(character) = self.source[self.at..].chars().next() {
-            self.at += character.len_utf8();
-            match character {
-                '"' => return Ok(text),
-                '\\' => {
+        let mut units = Vec::new();
+        while let Some(&unit) = self.source.get(self.at) {
+            self.at += 1;
+            match unit {
+                34 => return Ok(units.into()),
+                92 => {
                     let escape = self
                         .source
-                        .as_bytes()
                         .get(self.at)
                         .copied()
-                        .ok_or_else(|| ScriptError::at("unfinished JSON escape", self.at))?;
+                        .ok_or_else(|| self.error("unfinished JSON escape"))?;
                     self.at += 1;
-                    match escape {
-                        b'"' => text.push('"'),
-                        b'\\' => text.push('\\'),
-                        b'/' => text.push('/'),
-                        b'b' => text.push('\u{8}'),
-                        b'f' => text.push('\u{c}'),
-                        b'n' => text.push('\n'),
-                        b'r' => text.push('\r'),
-                        b't' => text.push('\t'),
-                        b'u' => {
-                            let high = self.hex_unit()?;
-                            let scalar = if (0xd800..=0xdbff).contains(&high) {
-                                if !self.source[self.at..].starts_with("\\u") {
-                                    return Err(json_surrogate_error());
-                                }
-                                self.at += 2;
-                                let low = self.hex_unit()?;
-                                if !(0xdc00..=0xdfff).contains(&low) {
-                                    return Err(json_surrogate_error());
-                                }
-                                0x10000 + ((high as u32 - 0xd800) << 10) + (low as u32 - 0xdc00)
-                            } else if (0xdc00..=0xdfff).contains(&high) {
-                                return Err(json_surrogate_error());
-                            } else {
-                                high as u32
-                            };
-                            text.push(char::from_u32(scalar).ok_or_else(json_surrogate_error)?);
-                        }
-                        _ => return Err(ScriptError::at("invalid JSON escape", self.at - 1)),
-                    }
+                    units.push(match escape {
+                        34 | 92 | 47 => escape,
+                        98 => 8,
+                        102 => 12,
+                        110 => 10,
+                        114 => 13,
+                        116 => 9,
+                        117 => self.hex_unit()?,
+                        _ => return Err(self.error("invalid JSON escape")),
+                    });
                 }
-                c if c < '\u{20}' => {
-                    return Err(ScriptError::at(
-                        "unescaped control character in JSON string",
-                        self.at - 1,
-                    ));
-                }
-                c => text.push(c),
+                0..=31 => return Err(self.error("unescaped control character in JSON string")),
+                _ => units.push(unit),
             }
         }
-        Err(ScriptError::at("unterminated JSON string", self.at))
+        Err(self.error("unterminated JSON string"))
     }
     fn hex_unit(&mut self) -> Result<u16> {
-        let mut value = 0u16;
+        let mut value = 0;
         for _ in 0..4 {
-            let byte = self
+            let unit = self
                 .source
-                .as_bytes()
                 .get(self.at)
                 .copied()
-                .ok_or_else(|| ScriptError::at("unfinished JSON Unicode escape", self.at))?;
-            let digit = (byte as char)
-                .to_digit(16)
-                .ok_or_else(|| ScriptError::at("invalid JSON Unicode escape", self.at))?;
-            value = value * 16 + digit as u16;
+                .ok_or_else(|| self.error("unfinished JSON Unicode escape"))?;
+            let digit = match unit {
+                48..=57 => unit - 48,
+                65..=70 => unit - 55,
+                97..=102 => unit - 87,
+                _ => return Err(self.error("invalid JSON Unicode escape")),
+            };
+            value = value * 16 + digit;
             self.at += 1;
         }
         Ok(value)
@@ -3300,36 +3574,22 @@ impl JsonReader<'_> {
         if !self.consume(b'0') {
             if !self
                 .source
-                .as_bytes()
                 .get(self.at)
-                .is_some_and(|byte| matches!(byte, b'1'..=b'9'))
+                .is_some_and(|u| matches!(*u, 49..=57))
             {
-                return Err(ScriptError::at("invalid JSON number", self.at));
+                return Err(self.error("invalid JSON number"));
             }
-            while self
-                .source
-                .as_bytes()
-                .get(self.at)
-                .is_some_and(u8::is_ascii_digit)
-            {
+            while self.digit() {
                 self.at += 1;
             }
         }
         if self.consume(b'.') {
             let digits = self.at;
-            while self
-                .source
-                .as_bytes()
-                .get(self.at)
-                .is_some_and(u8::is_ascii_digit)
-            {
+            while self.digit() {
                 self.at += 1;
             }
             if digits == self.at {
-                return Err(ScriptError::at(
-                    "expected fractional digit in JSON number",
-                    self.at,
-                ));
+                return Err(self.error("expected fractional digit in JSON number"));
             }
         }
         if self.consume(b'e') || self.consume(b'E') {
@@ -3337,31 +3597,24 @@ impl JsonReader<'_> {
                 self.consume(b'-');
             }
             let digits = self.at;
-            while self
-                .source
-                .as_bytes()
-                .get(self.at)
-                .is_some_and(u8::is_ascii_digit)
-            {
+            while self.digit() {
                 self.at += 1;
             }
             if digits == self.at {
-                return Err(ScriptError::at(
-                    "expected exponent digit in JSON number",
-                    self.at,
-                ));
+                return Err(self.error("expected exponent digit in JSON number"));
             }
         }
-        let number = self.source[start..self.at]
-            .parse::<f64>()
-            .map_err(|_| ScriptError::at("invalid JSON number", start))?;
-        Ok(Value::Number(number))
+        let text: String = self.source[start..self.at]
+            .iter()
+            .map(|u| char::from(*u as u8))
+            .collect();
+        Ok(Value::Number(
+            text.parse()
+                .map_err(|_| self.error("invalid JSON number"))?,
+        ))
     }
 }
 
-fn json_surrogate_error() -> ScriptError {
-    ScriptError::type_error("unpaired UTF-16 surrogate in JSON string is unsupported")
-}
 fn json_callable(value: &Value) -> bool {
     matches!(value, Value::Function(_) | Value::Native(_))
 }
@@ -3379,7 +3632,8 @@ fn json_same_value(left: &Value, right: &Value) -> bool {
         _ => left == right,
     }
 }
-fn json_array_index(key: &str) -> Option<u32> {
+fn json_array_index(key: &JsString) -> Option<u32> {
+    let key = key.to_utf8().ok()?;
     let index = key.parse::<u32>().ok()?;
     (index != u32::MAX && index.to_string() == key).then_some(index)
 }
@@ -3443,6 +3697,7 @@ fn to_i32(number: f64) -> i32 {
     number.trunc().rem_euclid(4294967296.0) as u32 as i32
 }
 fn relative_index(number: f64, len: usize) -> usize {
+    let number = integer_or_infinity(number);
     if number.is_nan() {
         0
     } else if number < 0.0 {
@@ -3451,8 +3706,12 @@ fn relative_index(number: f64, len: usize) -> usize {
         number.min(len as f64) as usize
     }
 }
+fn integer_or_infinity(number: f64) -> f64 {
+    if number.is_nan() { 0.0 } else { number.trunc() }
+}
 fn parse_float(text: &str) -> f64 {
-    let text = text.trim_start();
+    let text =
+        text.trim_start_matches(|c: char| u16::try_from(c as u32).is_ok_and(is_js_whitespace));
     if text.starts_with("Infinity") || text.starts_with("+Infinity") {
         return f64::INFINITY;
     }
@@ -3494,10 +3753,11 @@ fn parse_float(text: &str) -> f64 {
     text[..end].parse().unwrap_or(f64::NAN)
 }
 fn parse_int(text: &str, radix: f64) -> f64 {
-    let text = text.trim_start();
+    let text =
+        text.trim_start_matches(|c: char| u16::try_from(c as u32).is_ok_and(is_js_whitespace));
     let sign = if text.starts_with('-') { -1.0 } else { 1.0 };
     let text = text.strip_prefix(['-', '+']).unwrap_or(text);
-    let mut radix = radix as u32;
+    let mut radix = to_i32(radix) as u32;
     let mut text = text;
     if radix == 0 {
         radix = if text.starts_with("0x") || text.starts_with("0X") {
@@ -3515,16 +3775,24 @@ fn parse_int(text: &str, radix: f64) -> f64 {
             .or_else(|| text.strip_prefix("0X"))
             .unwrap_or(text);
     }
-    let mut n = 0.0;
-    let mut count = 0;
-    for c in text.chars() {
-        let Some(digit) = c.to_digit(radix) else {
-            break;
-        };
-        n = n * radix as f64 + digit as f64;
-        count += 1;
+    let count = text
+        .bytes()
+        .take_while(|byte| (*byte as char).is_digit(radix))
+        .count();
+    if count == 0 {
+        return f64::NAN;
     }
-    if count == 0 { f64::NAN } else { sign * n }
+    let digits = &text[..count];
+    let number = if radix == 10 {
+        digits.parse::<f64>().unwrap_or(f64::INFINITY)
+    } else if radix.is_power_of_two() {
+        radix_number(digits.as_bytes(), radix.trailing_zeros() as usize)
+    } else {
+        digits.bytes().fold(0.0, |n, byte| {
+            n * radix as f64 + (byte as char).to_digit(radix).unwrap() as f64
+        })
+    };
+    sign * number
 }
 fn css_name(name: &str) -> String {
     let mut result = String::new();
@@ -4179,7 +4447,7 @@ mod tests {
         ] {
             let error = Runtime::new()
                 .json_parse(
-                    Value::String(Rc::from(text)),
+                    Value::String(JsString::from(text)),
                     Value::Undefined,
                     &mut document,
                 )
@@ -4203,7 +4471,9 @@ mod tests {
         let mut runtime = Runtime::new();
         let value = runtime
             .json_parse(
-                Value::String(Rc::from(r#""\uD83E\uDD80\u0000\u2028é\/\b\f\n\r\t\"\\""#)),
+                Value::String(JsString::from(
+                    r#""\uD83E\uDD80\u0000\u2028é\/\b\f\n\r\t\"\\""#,
+                )),
                 Value::Undefined,
                 &mut document,
             )
@@ -4216,16 +4486,19 @@ mod tests {
             serialized.to_string(),
             "\"🦀\\u0000\u{2028}é/\\b\\f\\n\\r\\t\\\"\\\\\""
         );
-        for text in [r#""\ud800""#, r#""\udfff""#, r#""\ud800\u0041""#] {
-            let error = runtime
+        for (text, expected) in [
+            (r#""\ud800""#, vec![0xd800]),
+            (r#""\udfff""#, vec![0xdfff]),
+            (r#""\ud800\u0041""#, vec![0xd800, 65]),
+        ] {
+            let value = runtime
                 .json_parse(
-                    Value::String(Rc::from(text)),
+                    Value::String(JsString::from(text)),
                     Value::Undefined,
                     &mut document,
                 )
-                .unwrap_err();
-            assert!(matches!(error.kind, ErrorKind::Runtime("TypeError")));
-            assert!(error.message.contains("unpaired UTF-16"));
+                .unwrap();
+            assert_eq!(value, Value::String(JsString::from(expected)));
         }
         assert_eq!(
             run("1 / JSON.parse('-0')").unwrap(),
@@ -4308,11 +4581,9 @@ mod tests {
                 .to_string(),
             "[\nabcdefghij1\n]"
         );
-        assert!(
-            run("JSON.stringify([1],null,'123456789🦀')")
-                .unwrap_err()
-                .message
-                .contains("unpaired UTF-16")
+        assert_eq!(
+            run("JSON.stringify([1],null,'123456789🦀').charCodeAt(11)").unwrap(),
+            Value::Number(0xd83e as f64)
         );
         assert_eq!(
             run("JSON.stringify({a:1},false,true)").unwrap().to_string(),
@@ -4360,7 +4631,7 @@ mod tests {
         ] {
             let error = Runtime::new()
                 .json_parse(
-                    Value::String(Rc::from(text)),
+                    Value::String(JsString::from(text)),
                     Value::Undefined,
                     &mut document,
                 )
@@ -4425,7 +4696,7 @@ mod tests {
             let source: String = characters.into_iter().collect();
             let mut runtime = Runtime::new();
             if let Ok(value) = runtime.json_parse(
-                Value::String(Rc::from(source)),
+                Value::String(JsString::from(source)),
                 Value::Undefined,
                 &mut document,
             ) {
@@ -4448,7 +4719,7 @@ mod tests {
         runtime.allocated = MAX_HEAP - 32;
         let error = runtime
             .json_parse(
-                Value::String(Rc::from("{\"a\":[1,2,3]}")),
+                Value::String(JsString::from("{\"a\":[1,2,3]}")),
                 Value::Undefined,
                 &mut document,
             )
@@ -4456,5 +4727,295 @@ mod tests {
         assert!(error.is_resource_limit());
         assert!(error.message.contains("allocation"));
         assert_eq!(runtime.json_depth, 0);
+    }
+
+    fn string_units(source: &str) -> Vec<u16> {
+        let Value::String(value) = run(source).unwrap() else {
+            panic!("expected string");
+        };
+        value.units().to_vec()
+    }
+
+    #[test]
+    fn utf16_literals_constructors_and_comparisons_preserve_code_units() {
+        assert_eq!(
+            string_units(r#"'\ud800\uD83E\uDD80\udfff'"#),
+            [0xd800, 0xd83e, 0xdd80, 0xdfff]
+        );
+        assert_eq!(
+            string_units(r#"'\u{1f980}\u{d800}'"#),
+            [0xd83e, 0xdd80, 0xd800]
+        );
+        assert_eq!(
+            run(r#"'\ud83e\udd80' === '🦀' && '\ud800' !== '�' && '🦀' < '\ue000'"#).unwrap(),
+            Value::Bool(true)
+        );
+        assert_eq!(
+            string_units("String.fromCharCode(55296,129408,-1,NaN)"),
+            [0xd800, 0xf980, 0xffff, 0]
+        );
+        assert_eq!(
+            string_units("String.fromCodePoint(129408,55296)"),
+            [0xd83e, 0xdd80, 0xd800]
+        );
+        assert!(matches!(
+            run("String.fromCodePoint(1114112)").unwrap_err().kind,
+            ErrorKind::Runtime("RangeError")
+        ));
+        assert!(run(r#"'\u{110000}'"#).is_err());
+        assert_eq!(string_units(r#"String('\ud800')"#), [0xd800]);
+    }
+
+    #[test]
+    fn utf16_indexing_slicing_and_position_arguments_use_code_units() {
+        assert_eq!(run("'A🦀Z'.length").unwrap(), Value::Number(4.0));
+        assert_eq!(string_units("'A🦀Z'[1]"), [0xd83e]);
+        assert_eq!(string_units("'A🦀Z'.charAt(2)"), [0xdd80]);
+        assert_eq!(
+            run("'A🦀Z'.charCodeAt(1)").unwrap(),
+            Value::Number(0xd83e as f64)
+        );
+        assert_eq!(
+            run("'A🦀Z'.codePointAt(1)").unwrap(),
+            Value::Number(129408.0)
+        );
+        assert_eq!(
+            run("'A🦀Z'.codePointAt(2)").unwrap(),
+            Value::Number(0xdd80 as f64)
+        );
+        assert_eq!(string_units("'A🦀Z'.slice(1,2)"), [0xd83e]);
+        assert_eq!(string_units("'A🦀Z'.substring(2,1)"), [0xd83e]);
+        assert_eq!(string_units("'A🦀Z'.slice(-2,-1)"), [0xdd80]);
+        assert_eq!(run("'abc'.slice(-0.5)").unwrap().to_string(), "abc");
+        assert_eq!(
+            run("'abc'.substring(NaN,undefined)").unwrap().to_string(),
+            "abc"
+        );
+        assert_eq!(run("'abc'.charAt(-0.5)").unwrap().to_string(), "a");
+        assert_eq!(run("'abc'.charAt(Infinity)").unwrap().to_string(), "");
+        assert!(
+            run("'abc'.charCodeAt(-1)")
+                .unwrap()
+                .as_number()
+                .unwrap()
+                .is_nan()
+        );
+        assert_eq!(run("'abc'.codePointAt(3)").unwrap(), Value::Undefined);
+        assert_eq!(run("'abc'['01']").unwrap(), Value::Undefined);
+    }
+
+    #[test]
+    fn utf16_search_split_join_case_and_concatenation_are_lossless() {
+        assert_eq!(run(r#"'🦀'.includes('\udd80') && '🦀'.startsWith('\udd80',1) && '🦀'.endsWith('\ud83e',1)"#).unwrap(),Value::Bool(true));
+        assert_eq!(
+            run(r#"'A🦀Z'.indexOf('\udd80')"#).unwrap(),
+            Value::Number(2.0)
+        );
+        assert_eq!(run("'abcabc'.indexOf('a',1)").unwrap(), Value::Number(3.0));
+        assert_eq!(
+            run("JSON.stringify('🦀'.split(''))").unwrap().to_string(),
+            r#"["\ud83e","\udd80"]"#
+        );
+        assert_eq!(
+            run("JSON.stringify('a,b,'.split(',',2))")
+                .unwrap()
+                .to_string(),
+            r#"["a","b"]"#
+        );
+        assert_eq!(
+            run("JSON.stringify('abc'.split(undefined))")
+                .unwrap()
+                .to_string(),
+            r#"["abc"]"#
+        );
+        assert_eq!(
+            run("JSON.stringify('abc'.split('',0))")
+                .unwrap()
+                .to_string(),
+            "[]"
+        );
+        assert_eq!(string_units(r#"'\ud83e'+'\udd80'"#), [0xd83e, 0xdd80]);
+        assert_eq!(
+            string_units(r#"['\ud800','\udfff'].join('\ud801')"#),
+            [0xd800, 0xd801, 0xdfff]
+        );
+        assert_eq!(string_units(r#"String([['\ud800']])"#), [0xd800]);
+        assert_eq!(
+            string_units(r#"'\ud800ßΣ\udfff'.toUpperCase()"#),
+            [0xd800, 83, 83, 0x3a3, 0xdfff]
+        );
+        assert_eq!(
+            string_units(r#"'ΟΣ\ud800'.toLowerCase()"#),
+            [0x3bf, 0x3c2, 0xd800]
+        );
+        assert_eq!(string_units(r#"'\ufeff \ud800 \u00a0'.trim()"#), [0xd800]);
+        assert_eq!(run("'\\u0085'.trim().length").unwrap(), Value::Number(1.0));
+    }
+
+    #[test]
+    fn utf16_property_keys_and_json_callbacks_do_not_alias_surrogates() {
+        assert_eq!(run(r#"const object={'\ud800':1,'\ud801':2}; object['\ud800']+=3; JSON.stringify(object);"#).unwrap().to_string(),r#"{"\ud800":4,"\ud801":2}"#);
+        assert_eq!(run(r#"const object=JSON.parse('{"\\ud800":1,"\\ud801":2}'); object['\ud800']+object['\ud801'];"#).unwrap(),Value::Number(3.0));
+        assert_eq!(
+            run(r#"JSON.stringify({'\ud800':1,'\ud801':2},['\ud801']);"#)
+                .unwrap()
+                .to_string(),
+            r#"{"\ud801":2}"#
+        );
+        assert_eq!(run(r#"JSON.stringify(JSON.parse('{"\\ud800":1}',function(key,value,context) { if(key.charCodeAt(0)===55296)return context.source;return value;}));"#).unwrap().to_string(),r#"{"\ud800":"1"}"#);
+        assert_eq!(
+            run(
+                r#"JSON.parse('"\\ud800"',function(key,value,context) { return context.source; });"#
+            )
+            .unwrap()
+            .to_string(),
+            r#""\ud800""#
+        );
+        assert_eq!(
+            run(r#"JSON.stringify('\ud800',function(key,value) { return value; })"#)
+                .unwrap()
+                .to_string(),
+            r#""\ud800""#
+        );
+    }
+
+    #[test]
+    fn every_utf16_code_unit_round_trips_through_json() {
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        let original = Value::String(JsString::from((0..=u16::MAX).collect::<Vec<_>>()));
+        let encoded = runtime
+            .json_stringify(
+                original.clone(),
+                Value::Undefined,
+                Value::Undefined,
+                &mut document,
+            )
+            .unwrap();
+        let decoded = runtime
+            .json_parse(encoded, Value::Undefined, &mut document)
+            .unwrap();
+        assert_eq!(decoded, original);
+        let raw = Value::String(JsString::from(vec![34, 0xd800, 34]));
+        assert_eq!(
+            runtime
+                .json_parse(raw, Value::Undefined, &mut document)
+                .unwrap(),
+            Value::String(JsString::from(vec![0xd800]))
+        );
+    }
+
+    #[test]
+    fn utf16_numeric_conversion_uses_ecmascript_whitespace_and_grammar() {
+        assert_eq!(
+            run("Number('\\ufeff +1.5e2\\u00a0')").unwrap(),
+            Value::Number(150.0)
+        );
+        assert_eq!(
+            run("Number('0x20000000000003')").unwrap(),
+            Value::Number(9007199254740996.0)
+        );
+        assert_eq!(
+            run("Number('0b101') + Number('0o77')").unwrap(),
+            Value::Number(68.0)
+        );
+        assert_eq!(
+            run("1 / Number('-0')").unwrap(),
+            Value::Number(f64::NEG_INFINITY)
+        );
+        for source in [
+            "Number('\\ud800')",
+            "Number('inf')",
+            "Number('\\u00851')",
+            "Number('+0x1')",
+            "parseFloat('\\u00851')",
+        ] {
+            assert!(
+                run(source).unwrap().as_number().unwrap().is_nan(),
+                "{source}"
+            );
+        }
+        assert_eq!(
+            run("parseFloat('\\ufeff12.5\\ud800')").unwrap(),
+            Value::Number(12.5)
+        );
+        assert_eq!(
+            run("parseInt('\\ufeff12\\ud800')").unwrap(),
+            Value::Number(12.0)
+        );
+        assert_eq!(
+            run("parseInt('900719925474099267')").unwrap(),
+            Value::Number(900719925474099300.0)
+        );
+        assert_eq!(
+            run("parseInt('20000000000003',16)").unwrap(),
+            Value::Number(9007199254740996.0)
+        );
+        assert_eq!(run("parseInt('12',Infinity)").unwrap(), Value::Number(12.0));
+        assert_eq!(run("String(1e21)").unwrap().to_string(), "1e+21");
+    }
+
+    #[test]
+    fn utf16_dom_boundary_is_explicitly_lossy_without_changing_script_values() {
+        let mut document = Document::parse("<p id=out></p>");
+        let mut runtime = Runtime::new();
+        let result=runtime.execute(r#"const original='\ud800🦀\udfff'; const out=document.getElementById('out'); out.textContent=original; original;"#,&mut document).unwrap();
+        assert_eq!(
+            result,
+            Value::String(JsString::from(vec![0xd800, 0xd83e, 0xdd80, 0xdfff]))
+        );
+        assert_eq!(
+            document.text_content(document.query_selector("#out").unwrap()),
+            "�🦀�"
+        );
+        assert_eq!(
+            runtime.execute("out.textContent", &mut document).unwrap(),
+            Value::String(JsString::from("�🦀�"))
+        );
+    }
+
+    #[test]
+    fn utf16_growth_and_expensive_native_search_remain_uncatchable() {
+        for body in [
+            "let text=String.fromCharCode(55296); while(true) {text+=text;}",
+            "let text='a';for(let i=0;i<15;i++)text+=text; let needle=text+'b';while(true){text.includes(needle.slice(1));}",
+            "let text='1';for(let i=0;i<15;i++)text+=text; while(true){ +text; }",
+        ] {
+            let mut runtime = Runtime::new();
+            let mut document = Document::parse("");
+            let source = format!("let caught=false;try {{{body}}} catch(error) {{caught=true;}}");
+            assert!(
+                runtime
+                    .execute(&source, &mut document)
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(runtime.lookup(0, "caught").unwrap().1, Value::Bool(false));
+        }
+    }
+
+    #[test]
+    fn utf16_repeated_host_writes_charge_linear_string_work() {
+        for assignment in ["array.length=text;", "out.textContent=text;"] {
+            let mut runtime = Runtime::new();
+            let mut document = Document::parse("<p id=out></p>");
+            let source = format!(
+                "let caught=false;let attempts=0;let text='0';for(let i=0;i<15;i++)text+=text;const array=[];const out=document.getElementById('out');try{{while(true){{attempts++;{assignment}}}}}catch(error){{caught=true;}}"
+            );
+            assert!(
+                runtime
+                    .execute(&source, &mut document)
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(runtime.lookup(0, "caught").unwrap().1, Value::Bool(false));
+            let attempts = runtime
+                .lookup(0, "attempts")
+                .unwrap()
+                .1
+                .as_number()
+                .unwrap();
+            assert!((1.0..100.0).contains(&attempts), "{attempts} host writes");
+        }
     }
 }

@@ -1,9 +1,9 @@
 use crate::edit::Selection;
 use eris::{
-    dom::{Document, NodeId},
-    graphics::{Canvas, Color, DrawCommand, Fonts, ImageStore, Rect},
-    layout::LayoutResult,
-    page::{Navigation, Page},
+    dom::NodeId,
+    graphics::{Canvas, Color, DrawCommand, Fonts, Rect},
+    page::Navigation,
+    worker::{Command, Snapshot, WorkerClient},
 };
 use std::{
     collections::VecDeque,
@@ -27,19 +27,12 @@ use winit::{
 
 const TOOLBAR: f32 = 76.0;
 const STATUS: f32 = 25.0;
-struct Snapshot {
-    generation: u64,
-    processed_edit_sequence: u64,
-    layout: LayoutResult,
-    images: ImageStore,
-    document: Document,
-    title: String,
-    url: String,
-    diagnostics: Vec<String>,
-    load_ms: f64,
-}
 enum Event {
     Ready,
+    Failed {
+        generation: u64,
+        error: String,
+    },
     Navigate {
         generation: u64,
         navigation: Navigation,
@@ -192,6 +185,15 @@ impl RequestQueue {
         let state = self.state.lock().unwrap_or_else(|error| error.into_inner());
         state.stopped || !state.pending.is_empty()
     }
+
+    fn cancelled(&self, generation: u64, current: &AtomicU64) -> bool {
+        generation != current.load(Ordering::Relaxed)
+            || self
+                .state
+                .lock()
+                .unwrap_or_else(|error| error.into_inner())
+                .stopped
+    }
 }
 
 /// At most one full document snapshot can wait for the UI. The event loop
@@ -226,6 +228,7 @@ impl<T> Latest<T> {
     }
 }
 
+/// The bridge owns IPC and the request queue; all page work runs in a child.
 fn worker(
     proxy: EventLoopProxy<Event>,
     requests: Arc<RequestQueue>,
@@ -233,29 +236,35 @@ fn worker(
     current: Arc<AtomicU64>,
     scripts: bool,
 ) {
-    let fonts = Fonts::new();
-    let mut page = Page::from_html(url::Url::parse("about:blank").unwrap(), "", false);
+    let mut client: Option<WorkerClient> = None;
     let mut generation = 0;
-    let mut processed_edit_sequence = 0;
+    let mut edit_sequence = 0;
     let mut width = 1180.0;
     let mut height = 739.0;
     while let Some(request) = requests.recv() {
-        match request {
+        let command = match request {
             Request::Stop => break,
             Request::Load {
                 generation: id,
                 navigation,
             } => {
-                if id != current.load(Ordering::Relaxed) {
+                if requests.cancelled(id, &current) {
                     continue;
                 }
+                // A new document always gets a fresh sandbox and process.
+                drop(client.take());
                 generation = id;
-                processed_edit_sequence = 0;
-                page = Page::load_navigation(&navigation, scripts)
-                    .unwrap_or_else(|e| Page::error(&navigation.address, &e));
-                if generation != current.load(Ordering::Relaxed) {
-                    continue;
+                edit_sequence = 0;
+                match WorkerClient::spawn(scripts, &navigation, generation) {
+                    Ok(worker) => client = Some(worker),
+                    Err(error) => {
+                        if !requests.cancelled(generation, &current) {
+                            let _ = proxy.send_event(Event::Failed { generation, error });
+                        }
+                        continue;
+                    }
                 }
+                Some(Command::Load { navigation })
             }
             Request::Resize {
                 width: w,
@@ -263,6 +272,7 @@ fn worker(
             } => {
                 width = w;
                 height = h;
+                None
             }
             Request::Click {
                 generation: id,
@@ -271,12 +281,7 @@ fn worker(
                 if id != generation {
                     continue;
                 }
-                if let Some(navigation) = page.click(node) {
-                    let _ = proxy.send_event(Event::Navigate {
-                        generation,
-                        navigation,
-                    });
-                }
+                Some(Command::Click { node })
             }
             Request::Edit {
                 generation: id,
@@ -284,11 +289,15 @@ fn worker(
                 node,
                 value,
             } => {
-                if id != generation || sequence <= processed_edit_sequence {
+                if id != generation || sequence <= edit_sequence {
                     continue;
                 }
-                processed_edit_sequence = sequence;
-                apply_edit(&mut page, node, &value);
+                edit_sequence = sequence;
+                Some(Command::Edit {
+                    sequence,
+                    node,
+                    value,
+                })
             }
             Request::Fragment {
                 generation: id,
@@ -297,58 +306,74 @@ fn worker(
                 if id != generation {
                     continue;
                 }
-                if let Ok(target) = url::Url::parse(&address) {
-                    let mut before = page.url.clone();
-                    before.set_fragment(None);
-                    let mut after = target.clone();
-                    after.set_fragment(None);
-                    if before == after {
-                        page.url = target;
-                    }
+                Some(Command::Fragment { address })
+            }
+        };
+        let Some(active) = client.as_mut() else {
+            continue;
+        };
+        let result = (|| -> Result<Option<Snapshot>, String> {
+            if let Some(command) = command {
+                let reply =
+                    active.exchange(command, || requests.cancelled(generation, &current))?;
+                if !requests.cancelled(generation, &current)
+                    && let Some(navigation) = reply.navigation
+                {
+                    let _ = proxy.send_event(Event::Navigate {
+                        generation,
+                        navigation,
+                    });
+                }
+            }
+            // Intermediate edits are acknowledged in the next rendered snapshot;
+            // they do not create a full-document IPC backlog.
+            if requests.cancelled(generation, &current) || requests.has_pending() {
+                return Ok(None);
+            }
+            let reply = active.exchange(Command::Render { width, height }, || {
+                requests.cancelled(generation, &current)
+            })?;
+            if let Some(navigation) = reply.navigation {
+                let _ = proxy.send_event(Event::Navigate {
+                    generation,
+                    navigation,
+                });
+            }
+            let snapshot = reply
+                .snapshot
+                .ok_or("Page process returned no rendered snapshot")?;
+            if snapshot.generation != generation || snapshot.processed_edit_sequence > edit_sequence
+            {
+                return Err("Page process returned an inconsistent document generation or edit acknowledgement".into());
+            }
+            Ok(Some(snapshot))
+        })();
+        match result {
+            Ok(Some(snapshot))
+                if !requests.cancelled(generation, &current) && !requests.has_pending() =>
+            {
+                if ready_snapshot.publish(snapshot) && proxy.send_event(Event::Ready).is_err() {
+                    break;
+                }
+            }
+            Ok(_) => {
+                if requests.cancelled(generation, &current) {
+                    drop(client.take());
+                }
+            }
+            Err(error) => {
+                drop(client.take());
+                if !requests.cancelled(generation, &current)
+                    && proxy
+                        .send_event(Event::Failed { generation, error })
+                        .is_err()
+                {
+                    break;
                 }
             }
         }
-        if generation != current.load(Ordering::Relaxed) || requests.has_pending() {
-            continue;
-        }
-        let layout = page.layout(width, height, &fonts);
-        if generation != current.load(Ordering::Relaxed) || requests.has_pending() {
-            continue;
-        }
-        page.diagnostics.truncate(256);
-        let snapshot = Snapshot {
-            generation,
-            processed_edit_sequence,
-            layout,
-            images: page.images.clone(),
-            document: page.document.clone(),
-            title: page.title().chars().take(512).collect(),
-            url: page.url.to_string(),
-            diagnostics: page.diagnostics.clone(),
-            load_ms: page.load_ms,
-        };
-        if ready_snapshot.publish(snapshot) && proxy.send_event(Event::Ready).is_err() {
-            break;
-        }
     }
-}
-
-fn apply_edit(page: &mut Page, node: NodeId, value: &str) {
-    if value.len() > 65_536 || !page.can_edit_control(node) {
-        return;
-    }
-    if page.document.tag(node) == Some("textarea") {
-        page.document.set_text_content(node, value);
-    } else {
-        page.document.set_attr(node, "value", value);
-    }
-    if page.scripts_enabled
-        && let Err(error) = page
-            .runtime
-            .dispatch_event(node, "input", &mut page.document)
-    {
-        page.diagnostics.push(format!("input: {error}"));
-    }
+    // WorkerClient::drop kills and reaps the child, including after Stop.
 }
 
 pub fn run(
@@ -367,8 +392,8 @@ pub fn run(
     let current = Arc::new(AtomicU64::new(0));
     let proxy = event_loop.create_proxy();
     let generation = current.clone();
-    thread::Builder::new()
-        .name("eris-page".into())
+    let bridge = thread::Builder::new()
+        .name("eris-page-ipc".into())
         .spawn(move || worker(proxy, rx, worker_snapshot, generation, scripts))
         .map_err(|e| e.to_string())?;
     let mut browser = Browser {
@@ -399,15 +424,21 @@ pub fn run(
         exit_after,
         capture,
         startup_error: None,
+        worker_error: None,
         clipboard: None,
         applied_fragment_generation: 0,
     };
     let result = event_loop.run_app(&mut browser).map_err(|e| e.to_string());
     let _ = browser.tx.send(Request::Stop);
+    let bridge_result = bridge
+        .join()
+        .map_err(|_| "Page IPC bridge stopped unexpectedly".to_owned());
     if let Some(error) = browser.startup_error {
         Err(error)
+    } else if let Some(error) = browser.worker_error {
+        Err(format!("Page process failed: {error}"))
     } else {
-        result
+        result.and(bridge_result)
     }
 }
 struct Browser {
@@ -438,6 +469,7 @@ struct Browser {
     exit_after: Option<f64>,
     capture: Option<PathBuf>,
     startup_error: Option<String>,
+    worker_error: Option<String>,
     clipboard: Option<arboard::Clipboard>,
     applied_fragment_generation: u64,
 }
@@ -522,6 +554,7 @@ impl Browser {
         self.focused = None;
         self.scroll = 0.0;
         self.loading = true;
+        self.worker_error = None;
         self.edit_sequence = 0;
         self.status = "Loading…".into();
         let generation = self.current.fetch_add(1, Ordering::Relaxed) + 1;
@@ -831,7 +864,8 @@ impl Browser {
         }
     }
     fn accept_snapshot(&mut self, mut snapshot: Snapshot) {
-        if snapshot.generation != self.generation()
+        if self.worker_error.is_some()
+            || snapshot.generation != self.generation()
             || self.snapshot.as_ref().is_some_and(|old| {
                 old.generation == snapshot.generation
                     && old.processed_edit_sequence > snapshot.processed_edit_sequence
@@ -872,6 +906,34 @@ impl Browser {
         self.clamp_scroll();
         if let Some(fragment) = loaded_fragment {
             self.jump_to(&fragment);
+        }
+        self.redraw();
+    }
+
+    fn accept_failure(&mut self, generation: u64, error: String) {
+        if generation != self.generation() {
+            return;
+        }
+        self.loading = false;
+        self.snapshot = None;
+        self.focused = None;
+        self.input_value.clear();
+        self.scroll = 0.0;
+        self.hover_clickable = false;
+        if !self.address_focused {
+            self.selection = Selection::default();
+        }
+        self.worker_error = Some(
+            error
+                .chars()
+                .map(|c| if c.is_control() { ' ' } else { c })
+                .take(1024)
+                .collect(),
+        );
+        self.status = "Page process stopped".into();
+        if let Some(window) = &self.window {
+            window.set_title("Page process stopped — Eris");
+            window.set_cursor(CursorIcon::Default);
         }
         self.redraw();
     }
@@ -1203,6 +1265,9 @@ impl Browser {
                 );
             }
         }
+        if let Some(error) = &self.worker_error {
+            paint_process_error(&mut canvas, &self.fonts, viewport, error);
+        }
         canvas.set_clip(Rect {
             x: 0.0,
             y: 0.0,
@@ -1363,6 +1428,8 @@ impl Browser {
         );
         let status = if self.loading {
             "Loading…".to_owned()
+        } else if self.worker_error.is_some() {
+            "Page process stopped".to_owned()
         } else if canvas.exhausted() {
             "Page painting limited: rendering work budget exceeded".to_owned()
         } else if !self.status.is_empty() {
@@ -1390,10 +1457,11 @@ impl Browser {
             false,
             false,
         );
-        if self
+        if (self
             .snapshot
             .as_ref()
             .is_some_and(|s| s.generation == self.generation())
+            || self.worker_error.is_some())
             && !self.loading
             && let Some(path) = self.capture.take()
         {
@@ -1458,6 +1526,7 @@ impl ApplicationHandler<Event> for Browser {
                 };
                 self.accept_snapshot(snapshot);
             }
+            Event::Failed { generation, error } => self.accept_failure(generation, error),
             Event::Navigate {
                 generation,
                 navigation,
@@ -1547,6 +1616,79 @@ impl ApplicationHandler<Event> for Browser {
         }
     }
 }
+/// A process error is trusted browser chrome. No HTML parsing, scripting, or
+/// page layout is performed in the native UI to present it.
+fn paint_process_error(canvas: &mut Canvas, fonts: &Fonts, viewport: Rect, error: &str) {
+    let x = viewport.x + 28.0;
+    let mut y = viewport.y + 32.0;
+    canvas.text(
+        fonts,
+        x,
+        y,
+        "Page process stopped",
+        24.0,
+        Color::rgb(160, 48, 43),
+        true,
+        false,
+        false,
+    );
+    y += 42.0;
+    let width = (viewport.width - 56.0).max(1.0);
+    let mut line = String::new();
+    for word in error.split_whitespace().take(128) {
+        let candidate = if line.is_empty() {
+            word.to_owned()
+        } else {
+            format!("{line} {word}")
+        };
+        if !line.is_empty() && fonts.measure(&candidate, 15.0, false, false, false) > width {
+            canvas.text(
+                fonts,
+                x,
+                y,
+                &line,
+                15.0,
+                Color::rgb(48, 52, 60),
+                false,
+                false,
+                false,
+            );
+            y += 21.0;
+            line = word.to_owned();
+        } else {
+            line = candidate;
+        }
+        if y > viewport.y + viewport.height - 50.0 {
+            break;
+        }
+    }
+    if !line.is_empty() {
+        canvas.text(
+            fonts,
+            x,
+            y,
+            &line,
+            15.0,
+            Color::rgb(48, 52, 60),
+            false,
+            false,
+            false,
+        );
+        y += 35.0;
+    }
+    canvas.text(
+        fonts,
+        x,
+        y,
+        "Reload the page or enter another address.",
+        14.0,
+        Color::rgb(94, 102, 119),
+        false,
+        false,
+        false,
+    );
+}
+
 fn scaled_command(command: &DrawCommand, z: f32) -> DrawCommand {
     let rect = |r: &Rect| Rect {
         x: r.x * z,
@@ -1610,6 +1752,9 @@ fn scaled_command(command: &DrawCommand, z: f32) -> DrawCommand {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use eris::{
+        dom::Document, graphics::ImageStore, layout::LayoutResult, page::Page, worker::apply_edit,
+    };
 
     fn editing_browser(html: &str) -> Browser {
         Browser {
@@ -1654,6 +1799,7 @@ mod tests {
             exit_after: None,
             capture: None,
             startup_error: None,
+            worker_error: None,
             clipboard: None,
             applied_fragment_generation: 0,
         }
@@ -1676,6 +1822,58 @@ mod tests {
             diagnostics: Vec::new(),
             load_ms: 0.0,
         }
+    }
+
+    #[test]
+    fn page_process_failure_discards_old_content_and_cannot_be_undone_by_a_queued_snapshot() {
+        let mut browser = editing_browser("<input id=field value=old>");
+        let old = acknowledgement(
+            &browser,
+            0,
+            browser.snapshot.as_ref().unwrap().document.clone(),
+        );
+        browser.loading = true;
+        browser.accept_failure(0, "stale process failed".into());
+        assert!(browser.loading);
+        assert!(browser.snapshot.is_some());
+        browser.accept_failure(1, "process exited\nwithout a reply".into());
+        assert!(!browser.loading);
+        assert!(browser.snapshot.is_none());
+        assert!(browser.focused.is_none());
+        assert!(
+            browser
+                .worker_error
+                .as_ref()
+                .unwrap()
+                .chars()
+                .all(|c| !c.is_control())
+        );
+        browser.accept_snapshot(old);
+        assert!(browser.snapshot.is_none());
+        browser.navigate("eris:home".into(), true);
+        assert!(browser.worker_error.is_none());
+        assert!(browser.loading);
+        assert_eq!(browser.generation(), 2);
+    }
+
+    #[test]
+    fn ipc_cancellation_ignores_pending_edits_but_honors_navigation_and_shutdown() {
+        let queue = RequestQueue::default();
+        let current = AtomicU64::new(7);
+        queue
+            .send(Request::Edit {
+                generation: 7,
+                sequence: 1,
+                node: 0,
+                value: "a".into(),
+            })
+            .unwrap();
+        assert!(!queue.cancelled(7, &current));
+        current.store(8, Ordering::Relaxed);
+        assert!(queue.cancelled(7, &current));
+        assert!(!queue.cancelled(8, &current));
+        queue.send(Request::Stop).unwrap();
+        assert!(queue.cancelled(8, &current));
     }
 
     #[test]

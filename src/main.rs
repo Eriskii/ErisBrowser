@@ -8,6 +8,12 @@ use eris::{
 use std::{path::PathBuf, time::Instant};
 
 fn main() {
+    if std::env::args().nth(1).as_deref() == Some("--page-worker") {
+        if eris::worker::serve().is_err() {
+            std::process::exit(1);
+        }
+        return;
+    }
     if let Err(error) = run() {
         eprintln!("eris-browser: {error}");
         std::process::exit(1);

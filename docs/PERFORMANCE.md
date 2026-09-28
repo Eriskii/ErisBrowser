@@ -8,7 +8,7 @@ Build once with `cargo build --locked --release`. Then:
 target/release/eris-browser eris:home --benchmark 100 --output artifacts/benchmark.png
 ```
 
-The reported median and p95 cover CSS parsing/computation, layout and software painting, using the already loaded DOM and a warmed glyph cache. Network requests, HTML parsing, JS execution, image decoding, PNG encoding, and native presentation are excluded. Source-level units are milliseconds. One cold render's total includes more work and is reported separately.
+The reported median and p95 cover CSS parsing/computation, layout and software painting, using the already loaded DOM and a warmed glyph cache. Network requests, HTML parsing, JS execution, image decoding, PNG encoding, native process startup, IPC encoding/validation/copying, and native presentation are excluded. Source-level units are milliseconds. One cold render's total includes more work and is reported separately.
 
 The recorded development baseline used an AMD Ryzen 7 7800X3D, Linux x86-64, Rust 1.95.0, the release profile, a 1180×880 viewport, and 100 iterations on September 28, 2026 UTC:
 

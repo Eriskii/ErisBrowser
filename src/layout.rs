@@ -94,6 +94,7 @@ struct Engine<'a> {
     hits: Vec<HitRegion>,
     visits: usize,
     glyphs_left: usize,
+    emitted_glyphs_left: usize,
     intrinsic_work_left: Counter<usize>,
     flex_work_left: usize,
     canvas_background_node: Option<NodeId>,
@@ -136,6 +137,7 @@ pub fn layout(
         hits: Vec::new(),
         visits: 0,
         glyphs_left: MAX_GLYPHS,
+        emitted_glyphs_left: MAX_GLYPHS,
         intrinsic_work_left: Counter::new(MAX_GLYPHS),
         flex_work_left: MAX_FLEX_WORK,
         canvas_background_node,
@@ -206,10 +208,26 @@ impl Engine<'_> {
         true
     }
 
-    fn push(&mut self, command: DrawCommand) {
-        if self.commands.len() < MAX_COMMANDS {
-            self.commands.push(command);
+    fn push(&mut self, mut command: DrawCommand) {
+        if self.commands.len() >= MAX_COMMANDS {
+            return;
         }
+        // Tokenization bounds source work; this separate budget also covers
+        // generated markers, controls, alt text, and expanded whitespace.
+        if let DrawCommand::Text { text, .. } = &mut command {
+            let mut end = 0;
+            let mut glyphs = 0;
+            for (offset, character) in text.char_indices().take(self.emitted_glyphs_left) {
+                end = offset + character.len_utf8();
+                glyphs += 1;
+            }
+            text.truncate(end);
+            self.emitted_glyphs_left -= glyphs;
+            if text.is_empty() {
+                return;
+            }
+        }
+        self.commands.push(command);
     }
 
     fn margins(&self, id: NodeId, reference: f32) -> Sides {
@@ -274,12 +292,12 @@ impl Engine<'_> {
                     16.0 + extra
                 }
                 "input" => {
-                    self.attr_number(id, "size").unwrap_or(20.0) * style.font_size * 0.55
+                    self.attr_number(id, "size").unwrap_or(20.0) * font_size(style) * 0.55
                         + 12.0
                         + extra
                 }
                 "textarea" => {
-                    self.attr_number(id, "cols").unwrap_or(20.0) * style.font_size * 0.6
+                    self.attr_number(id, "cols").unwrap_or(20.0) * font_size(style) * 0.6
                         + 12.0
                         + extra
                 }
@@ -710,7 +728,7 @@ impl Engine<'_> {
                         owner: id,
                         kind: InlineKind::Break,
                         width: 0.0,
-                        height: self.style(id).line_height,
+                        height: line_height(self.style(id)),
                         preserve: true,
                     });
                     return;
@@ -957,7 +975,8 @@ impl Engine<'_> {
             let is_space = matches!(item.kind, InlineKind::Space(_));
             match item.kind {
                 InlineKind::Text(text) | InlineKind::Space(text) => {
-                    let text_y = y + baseline - style.font_size * 0.95;
+                    let size = font_size(&style);
+                    let text_y = y + baseline - size * 0.95;
                     let item_rect = rect(
                         cursor,
                         y,
@@ -977,7 +996,7 @@ impl Engine<'_> {
                         x: cursor,
                         y: text_y,
                         text,
-                        size: font_size(&style),
+                        size,
                         color: faded(style.color, style.opacity),
                         bold: style.font_weight >= 600,
                         italic: style.font_style == "italic" || style.font_style == "oblique",
@@ -986,21 +1005,21 @@ impl Engine<'_> {
                     if style.text_decoration.contains("underline") {
                         self.push(DrawCommand::Line {
                             x1: cursor,
-                            y1: text_y + style.font_size * 1.12,
+                            y1: text_y + size * 1.12,
                             x2: cursor + item.width,
-                            y2: text_y + style.font_size * 1.12,
+                            y2: text_y + size * 1.12,
                             color: style.color,
-                            width: (style.font_size / 16.0).max(1.0),
+                            width: (size / 16.0).max(1.0),
                         });
                     }
                     if style.text_decoration.contains("line-through") {
                         self.push(DrawCommand::Line {
                             x1: cursor,
-                            y1: text_y + style.font_size * 0.65,
+                            y1: text_y + size * 0.65,
                             x2: cursor + item.width,
-                            y2: text_y + style.font_size * 0.65,
+                            y2: text_y + size * 0.65,
                             color: style.color,
-                            width: (style.font_size / 16.0).max(1.0),
+                            width: (size / 16.0).max(1.0),
                         });
                     }
                     self.hits.push(HitRegion {
@@ -2009,7 +2028,7 @@ impl Engine<'_> {
         };
         let marker_width = self.measure(&marker, style);
         self.push(DrawCommand::Text {
-            x: x - marker_width - style.font_size * 0.5,
+            x: x - marker_width - font_size(style) * 0.5,
             y,
             text: marker,
             size: font_size(style),
@@ -2040,7 +2059,7 @@ fn resolve(length: Length, reference: f32) -> Option<f32> {
 }
 
 fn font_size(style: &ComputedStyle) -> f32 {
-    finite(style.font_size, 16.0).clamp(1.0, 1024.0)
+    finite(style.font_size, 16.0).clamp(1.0, 512.0)
 }
 
 fn line_height(style: &ComputedStyle) -> f32 {

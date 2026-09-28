@@ -3,8 +3,10 @@
 pub mod css;
 pub mod dom;
 pub mod graphics;
+pub mod js_string;
 pub mod layout;
 pub mod net;
 pub mod page;
 pub mod script;
 pub mod svg;
+pub mod worker;

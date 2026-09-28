@@ -23,6 +23,8 @@ python3 tools/html_conformance.py --baseline tests/conformance/html-tree-current
 
 `--record-baseline PATH` explicitly writes a new status/hash inventory; it must not be used automatically to hide regressions. Recording and checking a baseline are mutually exclusive, and a run with process errors cannot record one. A baseline binds the corpus manifest and each case's source, expected tree, context and flag mode. A baseline run fails on these identities changing, inventory changes, process errors, or previously matched cases that no longer match. Newly matching trees are listed separately. `html-tree-initial.json` preserves the first measurement against the initial parser: 380 matched, 1,359 mismatched, 2,137 unsupported. That parser did not expose a scripting-flag API, so enabled-mode cases were explicitly unsupported. Compare disabled-mode results separately when assessing algorithmic improvement.
 
+After the formatting-recovery increment, the current baseline records 2,446 exact matches, 1,012 mismatches and 418 unsupported mode cases. The prior baseline gate passed with 194 newly matching trees and no regressions before this update was recorded. Disabled-mode matches are 1,233 and enabled-mode matches are 1,213.
+
 Regenerate the pinned source data only deliberately:
 
 ```sh

@@ -48,6 +48,101 @@ impl Default for Document {
     }
 }
 impl Document {
+    /// Rebuild an arena received across the page-process boundary. Private byte
+    /// accounting is recomputed; detached subtrees are checked as well.
+    pub(crate) fn from_snapshot(
+        nodes: Vec<Node>,
+        root: NodeId,
+        scripting_enabled: bool,
+    ) -> Result<Self, String> {
+        if nodes.is_empty()
+            || nodes.len() > MAX_NODES
+            || root >= nodes.len()
+            || !matches!(nodes[root].kind, NodeKind::Document)
+            || nodes[root].parent.is_some()
+        {
+            return Err("invalid snapshot document root".into());
+        }
+        let mut bytes = 0usize;
+        let mut incoming = vec![false; nodes.len()];
+        for (id, node) in nodes.iter().enumerate() {
+            let own = match &node.kind {
+                NodeKind::Document => {
+                    if id != root {
+                        return Err("duplicate document root".into());
+                    }
+                    0
+                }
+                NodeKind::Element(el) => {
+                    if el.attrs.len() > 1024 {
+                        return Err("snapshot element attribute limit exceeded".into());
+                    }
+                    el.tag.len()
+                        + el.attrs
+                            .iter()
+                            .map(|(k, v)| k.len() + v.len())
+                            .sum::<usize>()
+                }
+                NodeKind::Text(s) | NodeKind::Comment(s) => s.len(),
+                NodeKind::Doctype(d) => {
+                    d.name.len()
+                        + d.public_id.as_ref().map_or(0, String::len)
+                        + d.system_id.as_ref().map_or(0, String::len)
+                }
+                NodeKind::ProcessingInstruction { target, data } => target.len() + data.len(),
+            };
+            bytes = bytes.checked_add(own).ok_or("snapshot byte overflow")?;
+            if bytes > MAX_DOM_BYTES {
+                return Err("snapshot DOM byte budget exceeded".into());
+            }
+            if !node.children.is_empty()
+                && !matches!(node.kind, NodeKind::Document | NodeKind::Element(_))
+            {
+                return Err("snapshot leaf has children".into());
+            }
+            for &child in &node.children {
+                if child >= nodes.len()
+                    || child == root
+                    || incoming[child]
+                    || nodes[child].parent != Some(id)
+                    || matches!(nodes[child].kind, NodeKind::Doctype(_)) && id != root
+                {
+                    return Err("inconsistent snapshot parent/child links".into());
+                }
+                incoming[child] = true;
+            }
+        }
+        if nodes
+            .iter()
+            .enumerate()
+            .any(|(id, n)| n.parent.is_some() != incoming[id])
+        {
+            return Err("snapshot parent has no child link".into());
+        }
+        let mut visited = 0usize;
+        let mut pending: Vec<_> = nodes
+            .iter()
+            .enumerate()
+            .filter(|(_, n)| n.parent.is_none())
+            .map(|(id, _)| (id, 0))
+            .collect();
+        while let Some((id, depth)) = pending.pop() {
+            if depth > MAX_DEPTH {
+                return Err("snapshot DOM depth exceeded".into());
+            }
+            visited += 1;
+            pending.extend(nodes[id].children.iter().map(|&child| (child, depth + 1)));
+        }
+        if visited != nodes.len() {
+            return Err("cyclic snapshot DOM".into());
+        }
+        Ok(Self {
+            nodes,
+            root,
+            retained_bytes: bytes,
+            scripting_enabled,
+        })
+    }
     pub fn parse(source: &str) -> Self {
         parse(source)
     }
@@ -1151,6 +1246,8 @@ enum InsertionMode {
 struct TreeBuilder {
     doc: Document,
     stack: Vec<NodeId>,
+    // Entries refer to immutable parser-created attributes; None is a scope marker.
+    formatting: Vec<Option<NodeId>>,
     html: Option<NodeId>,
     head: Option<NodeId>,
     body: Option<NodeId>,
@@ -1178,6 +1275,7 @@ impl TreeBuilder {
                 scripting_enabled: scripting,
             },
             stack: vec![],
+            formatting: vec![],
             html: None,
             head: None,
             body: None,
@@ -1234,7 +1332,14 @@ impl TreeBuilder {
     }
     fn close_in_scope(&mut self, tags: &[&str], table: bool) -> bool {
         if let Some(index) = self.scope(tags, table) {
+            let clear_formatting = self
+                .doc
+                .tag(self.stack[index])
+                .is_some_and(formatting_marker);
             self.stack.truncate(index);
+            if clear_formatting {
+                self.clear_formatting();
+            }
             true
         } else {
             false
@@ -1259,7 +1364,9 @@ impl TreeBuilder {
             .unwrap_or(InsertionMode::InBody);
     }
     fn location(&mut self, foster: bool) -> (NodeId, Option<usize>) {
-        let current = self.current();
+        self.location_for(self.current(), foster)
+    }
+    fn location_for(&mut self, current: NodeId, foster: bool) -> (NodeId, Option<usize>) {
         if foster
             && matches!(
                 self.doc.tag(current),
@@ -1333,8 +1440,420 @@ impl TreeBuilder {
         self.attach(id, parent, before);
         if push && self.stack.len() < MAX_DEPTH - 3 && self.doc.nodes[id].parent.is_some() {
             self.stack.push(id);
+            if formatting_marker(tag) {
+                self.formatting.push(None);
+            }
         }
         id
+    }
+    fn spend(&mut self, amount: usize) -> bool {
+        if amount > self.work {
+            self.work = 0;
+            false
+        } else {
+            self.work -= amount;
+            true
+        }
+    }
+    fn clear_formatting(&mut self) {
+        while let Some(entry) = self.formatting.pop() {
+            if !self.spend(1) || entry.is_none() {
+                break;
+            }
+        }
+    }
+    fn formatting_index(&mut self, subject: &str) -> Option<usize> {
+        for index in (0..self.formatting.len()).rev() {
+            if !self.spend(1) {
+                return None;
+            }
+            let id = self.formatting[index]?;
+            if self.doc.tag(id) == Some(subject) {
+                return Some(index);
+            }
+        }
+        None
+    }
+    fn node_in_scope(&self, target: NodeId) -> bool {
+        for id in self.stack.iter().rev() {
+            if *id == target {
+                return true;
+            }
+            if self.doc.tag(*id).is_some_and(|tag| {
+                matches!(
+                    tag,
+                    "applet"
+                        | "caption"
+                        | "html"
+                        | "table"
+                        | "td"
+                        | "th"
+                        | "marquee"
+                        | "object"
+                        | "select"
+                        | "template"
+                )
+            }) {
+                return false;
+            }
+        }
+        false
+    }
+    fn push_formatting(&mut self, id: NodeId) {
+        if id == self.doc.root || !self.stack.contains(&id) {
+            return;
+        }
+        let mut identical = Vec::new();
+        for index in (0..self.formatting.len()).rev() {
+            let Some(other) = self.formatting[index] else {
+                break;
+            };
+            if !self.spend(1) {
+                return;
+            }
+            let (NodeKind::Element(element), NodeKind::Element(candidate)) =
+                (&self.doc.nodes[id].kind, &self.doc.nodes[other].kind)
+            else {
+                continue;
+            };
+            if element.tag != candidate.tag || element.attrs.len() != candidate.attrs.len() {
+                continue;
+            }
+            let cost = element.tag.len()
+                + element
+                    .attrs
+                    .iter()
+                    .map(|(name, value)| name.len() + value.len() + 1)
+                    .sum::<usize>();
+            if cost > self.work {
+                self.work = 0;
+                return;
+            }
+            self.work -= cost;
+            if element.attrs == candidate.attrs {
+                identical.push(index);
+            }
+        }
+        // The Noah's Ark rule keeps at most three identical entries after a marker.
+        if identical.len() >= 3 {
+            if !self.spend(self.formatting.len()) {
+                return;
+            }
+            self.formatting.remove(*identical.last().unwrap());
+        }
+        if self.formatting.len() < MAX_NODES {
+            self.formatting.push(Some(id));
+        }
+    }
+    fn clone_formatting(&mut self, original: NodeId) -> Option<NodeId> {
+        let NodeKind::Element(element) = &self.doc.nodes.get(original)?.kind else {
+            return None;
+        };
+        let bytes = element.tag.len()
+            + element
+                .attrs
+                .iter()
+                .map(|(name, value)| name.len() + value.len())
+                .sum::<usize>();
+        let cost = bytes.saturating_add(element.attrs.len()).saturating_add(1);
+        if cost > self.work
+            || bytes > MAX_DOM_BYTES.saturating_sub(self.doc.retained_bytes)
+            || self.doc.nodes.len() >= MAX_NODES
+        {
+            self.work = 0;
+            return None;
+        }
+        self.work -= cost;
+        let kind = NodeKind::Element(element.clone());
+        let id = self.doc.nodes.len();
+        self.doc.nodes.push(Node {
+            parent: None,
+            children: vec![],
+            kind,
+        });
+        self.doc.retained_bytes += bytes;
+        Some(id)
+    }
+    fn reconstruct_formatting(&mut self, foster: bool) {
+        let mut first = self.formatting.len();
+        while first > 0 {
+            if !self.spend(self.stack.len() + 1) {
+                return;
+            }
+            let Some(id) = self.formatting[first - 1] else {
+                break;
+            };
+            if self.stack.contains(&id) {
+                break;
+            }
+            first -= 1;
+        }
+        for index in first..self.formatting.len() {
+            if self.stack.len() >= MAX_DEPTH - 3 {
+                self.work = 0;
+                return;
+            }
+            let Some(original) = self.formatting[index] else {
+                continue;
+            };
+            let Some(id) = self.clone_formatting(original) else {
+                return;
+            };
+            let (parent, before) = self.location(foster);
+            if !self.reparent(id, parent, before) {
+                return;
+            }
+            self.stack.push(id);
+            self.formatting[index] = Some(id);
+        }
+    }
+    // Reparenting can revisit large subtrees. Charge every visited node and every
+    // sibling-vector operation before invoking the DOM's cycle/depth checks.
+    fn reparent(&mut self, node: NodeId, parent: NodeId, before: Option<usize>) -> bool {
+        if node == parent
+            || node == self.doc.root
+            || node >= self.doc.nodes.len()
+            || parent >= self.doc.nodes.len()
+        {
+            self.work = 0;
+            return false;
+        }
+        let reference =
+            before.and_then(|index| self.doc.nodes[parent].children.get(index).copied());
+        if reference == Some(node) {
+            return true;
+        }
+        let mut cursor = Some(parent);
+        let mut ancestors = 0;
+        while let Some(id) = cursor {
+            if !self.spend(1) || id == node || ancestors >= MAX_DEPTH {
+                self.work = 0;
+                return false;
+            }
+            ancestors += 1;
+            cursor = self.doc.nodes[id].parent;
+        }
+        let mut pending = vec![(node, 1usize)];
+        let mut visited = 0;
+        while let Some((id, depth)) = pending.pop() {
+            visited += 1;
+            if !self.spend(1) || visited > MAX_NODES || ancestors + depth > MAX_DEPTH {
+                self.work = 0;
+                return false;
+            }
+            pending.extend(
+                self.doc.nodes[id]
+                    .children
+                    .iter()
+                    .map(|child| (*child, depth + 1)),
+            );
+        }
+        let old_cost = self.doc.nodes[node]
+            .parent
+            .map_or(0, |id| self.doc.nodes[id].children.len());
+        let new_cost = if before.is_some() {
+            self.doc.nodes[parent].children.len().saturating_mul(2)
+        } else {
+            1
+        };
+        if !self.spend(old_cost.saturating_add(new_cost)) {
+            return false;
+        }
+        self.doc.append_child(parent, node);
+        if self.doc.nodes[node].parent != Some(parent) {
+            self.work = 0;
+            return false;
+        }
+        if let Some(reference) = reference {
+            let children = &mut self.doc.nodes[parent].children;
+            if let Some(index) = children.iter().position(|id| *id == reference) {
+                children.pop();
+                children.insert(index, node);
+            }
+        }
+        true
+    }
+    fn wrap_children(&mut self, parent: NodeId, wrapper: NodeId) -> bool {
+        if self.doc.nodes[wrapper].parent.is_some() || !self.doc.nodes[wrapper].children.is_empty()
+        {
+            self.work = 0;
+            return false;
+        }
+        let mut ancestors = 1usize; // The wrapper adds one level to every child.
+        let mut cursor = Some(parent);
+        while let Some(id) = cursor {
+            if !self.spend(1) || ancestors >= MAX_DEPTH {
+                self.work = 0;
+                return false;
+            }
+            ancestors += 1;
+            cursor = self.doc.nodes[id].parent;
+        }
+        if !self.spend(self.doc.nodes[parent].children.len()) {
+            return false;
+        }
+        let mut pending: Vec<_> = self.doc.nodes[parent]
+            .children
+            .iter()
+            .map(|id| (*id, 1usize))
+            .collect();
+        let mut visited = 0;
+        while let Some((id, depth)) = pending.pop() {
+            visited += 1;
+            if !self.spend(1) || visited > MAX_NODES || ancestors + depth > MAX_DEPTH {
+                self.work = 0;
+                return false;
+            }
+            pending.extend(
+                self.doc.nodes[id]
+                    .children
+                    .iter()
+                    .map(|child| (*child, depth + 1)),
+            );
+        }
+        // Commit in linear time only after the complete move has passed its checks.
+        let children = std::mem::take(&mut self.doc.nodes[parent].children);
+        for child in &children {
+            self.doc.nodes[*child].parent = Some(wrapper);
+        }
+        self.doc.nodes[wrapper].children = children;
+        self.doc.nodes[wrapper].parent = Some(parent);
+        self.doc.nodes[parent].children.push(wrapper);
+        true
+    }
+    fn generic_end(&mut self, subject: &str) {
+        for index in (0..self.stack.len()).rev() {
+            let current = self.doc.tag(self.stack[index]).unwrap_or("");
+            if current == subject {
+                self.stack.truncate(index);
+                return;
+            }
+            if special_html(current) {
+                return;
+            }
+        }
+    }
+    fn adoption_agency(&mut self, subject: &str, foster: bool) {
+        if !self.spend(self.formatting.len() + self.stack.len()) {
+            return;
+        }
+        if self.current_tag() == subject && !self.formatting.contains(&Some(self.current())) {
+            self.stack.pop();
+            return;
+        }
+        for _ in 0..8 {
+            if !self.spend(self.stack.len() + self.formatting.len() + 1) {
+                return;
+            }
+            let Some(format_index) = self.formatting_index(subject) else {
+                if self.work > 0 {
+                    self.generic_end(subject);
+                }
+                return;
+            };
+            let Some(format) = self.formatting[format_index] else {
+                return;
+            };
+            let Some(stack_index) = self.stack.iter().position(|id| *id == format) else {
+                self.formatting.remove(format_index);
+                return;
+            };
+            if !self.node_in_scope(format) {
+                return;
+            }
+            let Some(block_index) = (stack_index + 1..self.stack.len())
+                .find(|index| self.doc.tag(self.stack[*index]).is_some_and(special_html))
+            else {
+                self.stack.truncate(stack_index);
+                self.formatting.remove(format_index);
+                return;
+            };
+            let Some(common_ancestor) = stack_index.checked_sub(1).map(|index| self.stack[index])
+            else {
+                self.work = 0;
+                return;
+            };
+            let furthest_block = self.stack[block_index];
+            let mut bookmark = format_index;
+            let mut last_node = furthest_block;
+            let mut cursor = block_index;
+            let mut inner = 0usize;
+            loop {
+                if !self.spend(self.formatting.len() + self.stack.len() + 1) {
+                    return;
+                }
+                inner += 1;
+                if cursor == 0 {
+                    self.work = 0;
+                    return;
+                }
+                cursor -= 1;
+                let node = self.stack[cursor];
+                if node == format {
+                    break;
+                }
+                let mut active_index = self
+                    .formatting
+                    .iter()
+                    .position(|entry| *entry == Some(node));
+                if inner > 3
+                    && let Some(index) = active_index
+                {
+                    self.formatting.remove(index);
+                    if index < bookmark {
+                        bookmark -= 1;
+                    }
+                    active_index = None;
+                }
+                let Some(index) = active_index else {
+                    self.stack.remove(cursor);
+                    continue;
+                };
+                let Some(new_node) = self.clone_formatting(node) else {
+                    return;
+                };
+                self.formatting[index] = Some(new_node);
+                self.stack[cursor] = new_node;
+                if last_node == furthest_block {
+                    bookmark = index + 1;
+                }
+                if !self.reparent(last_node, new_node, None) {
+                    return;
+                }
+                last_node = new_node;
+            }
+            let (parent, before) = self.location_for(common_ancestor, foster);
+            if !self.reparent(last_node, parent, before) {
+                return;
+            }
+            let Some(new_format) = self.clone_formatting(format) else {
+                return;
+            };
+            if !self.wrap_children(furthest_block, new_format) {
+                return;
+            }
+            if !self.spend(self.formatting.len() + self.stack.len()) {
+                return;
+            }
+            if let Some(index) = self
+                .formatting
+                .iter()
+                .position(|entry| *entry == Some(format))
+            {
+                self.formatting.remove(index);
+                if index < bookmark {
+                    bookmark -= 1;
+                }
+            }
+            self.formatting
+                .insert(bookmark.min(self.formatting.len()), Some(new_format));
+            if let Some(index) = self.stack.iter().position(|id| *id == format) {
+                self.stack.remove(index);
+            }
+            if let Some(index) = self.stack.iter().position(|id| *id == furthest_block) {
+                self.stack.insert(index + 1, new_format);
+            }
+        }
     }
     fn merge_attrs(&mut self, id: Option<NodeId>, token: &HtmlToken) {
         if let (Some(id), HtmlToken::Start { attrs, .. }) = (id, token) {
@@ -1388,6 +1907,12 @@ impl TreeBuilder {
         if !matches!(token, HtmlToken::Characters(_)) && !self.pending_table_text.is_empty() {
             let text = std::mem::take(&mut self.pending_table_text);
             let foster = !text.bytes().all(is_space);
+            if foster {
+                self.reconstruct_formatting(true);
+            }
+            if self.work == 0 {
+                return;
+            }
             self.text(&text, foster);
         }
         // Every reprocessing transition consumes budget; malformed input cannot spin indefinitely.
@@ -2071,7 +2596,14 @@ impl TreeBuilder {
     fn in_body(&mut self, token: &HtmlToken, foster: bool) {
         use InsertionMode::*;
         match token {
-            HtmlToken::Characters(text) => self.text(text, foster),
+            HtmlToken::Characters(text) => {
+                if !text.is_empty() {
+                    self.reconstruct_formatting(foster);
+                }
+                if self.work > 0 {
+                    self.text(text, foster);
+                }
+            }
             HtmlToken::Comment(text) => self.comment(text, None),
             HtmlToken::Doctype(_) | HtmlToken::Eof | HtmlToken::ProcessingInstruction { .. } => {}
             HtmlToken::Start {
@@ -2111,6 +2643,37 @@ impl TreeBuilder {
                 {
                     return;
                 }
+                if is_formatting(tag) {
+                    if tag == "a"
+                        && let Some(index) = self.formatting_index("a")
+                    {
+                        let previous = self.formatting[index];
+                        self.adoption_agency("a", foster);
+                        if !self.spend(self.formatting.len() + self.stack.len()) {
+                            return;
+                        }
+                        self.formatting.retain(|entry| *entry != previous);
+                        self.stack.retain(|id| Some(*id) != previous);
+                    }
+                    self.reconstruct_formatting(foster);
+                    if tag == "nobr"
+                        && self
+                            .stack
+                            .iter()
+                            .rev()
+                            .find(|node| self.doc.tag(**node) == Some("nobr"))
+                            .is_some_and(|node| self.node_in_scope(*node))
+                    {
+                        self.adoption_agency("nobr", foster);
+                        self.reconstruct_formatting(foster);
+                    }
+                    if self.work == 0 {
+                        return;
+                    }
+                    let id = self.element(token, foster, true);
+                    self.push_formatting(id);
+                    return;
+                }
                 if closes_p(tag) && !(tag == "table" && self.quirks) {
                     self.close_in_scope(&["p"], false);
                 }
@@ -2118,7 +2681,6 @@ impl TreeBuilder {
                     "li" => Some(&["li"][..]),
                     "dt" | "dd" => Some(&["dt", "dd"][..]),
                     "option" => Some(&["option"][..]),
-                    "a" => Some(&["a"][..]),
                     "button" => Some(&["button"][..]),
                     _ => None,
                 };
@@ -2131,6 +2693,10 @@ impl TreeBuilder {
                     self.stack.pop();
                 }
                 if tag == "image" {
+                    self.reconstruct_formatting(foster);
+                    if self.work == 0 {
+                        return;
+                    }
                     self.element(&HtmlToken::start("img"), foster, false);
                     return;
                 }
@@ -2146,6 +2712,13 @@ impl TreeBuilder {
                         | "noframes"
                 ) || tag == "noscript" && self.scripting
                 {
+                    if tag == "xmp" {
+                        self.close_in_scope(&["p"], false);
+                        self.reconstruct_formatting(foster);
+                    }
+                    if self.work == 0 {
+                        return;
+                    }
                     self.raw_element(token, foster);
                     return;
                 }
@@ -2153,6 +2726,12 @@ impl TreeBuilder {
                     self.element(token, foster, true);
                     self.raw = Some(("\0never".into(), false));
                     return;
+                }
+                if reconstruct_before_start(tag) {
+                    self.reconstruct_formatting(foster);
+                    if self.work == 0 {
+                        return;
+                    }
                 }
                 let foreign = matches!(tag, "svg" | "math") || self.foreign();
                 let id = self.element(token, foster, !(is_void(tag) || *self_closing && foreign));
@@ -2168,6 +2747,14 @@ impl TreeBuilder {
             }
             HtmlToken::End(tag) => {
                 let tag = tag.as_str();
+                if is_formatting(tag) {
+                    self.adoption_agency(tag, foster);
+                    return;
+                }
+                if matches!(tag, "applet" | "marquee" | "object") {
+                    self.close_in_scope(&[tag], false);
+                    return;
+                }
                 if matches!(tag, "body" | "html") {
                     if self.scope(&["body"], false).is_some() {
                         self.mode = if tag == "html" {
@@ -2186,6 +2773,10 @@ impl TreeBuilder {
                     return;
                 }
                 if tag == "br" {
+                    self.reconstruct_formatting(foster);
+                    if self.work == 0 {
+                        return;
+                    }
                     self.element(&HtmlToken::start("br"), foster, false);
                     return;
                 }
@@ -2204,6 +2795,7 @@ impl TreeBuilder {
                         .rposition(|id| self.doc.tag(*id) == Some("template"))
                     {
                         self.stack.truncate(index);
+                        self.clear_formatting();
                         self.reset_mode();
                     }
                     return;
@@ -2248,19 +2840,93 @@ impl TreeBuilder {
                     self.close_in_scope(&[tag], false);
                     return;
                 }
-                for index in (0..self.stack.len()).rev() {
-                    let current = self.doc.tag(self.stack[index]).unwrap_or("");
-                    if current == tag {
-                        self.stack.truncate(index);
-                        return;
-                    }
-                    if special_html(current) {
-                        return;
-                    }
-                }
+                self.generic_end(tag);
             }
         }
     }
+}
+fn is_formatting(tag: &str) -> bool {
+    matches!(
+        tag,
+        "a" | "b"
+            | "big"
+            | "code"
+            | "em"
+            | "font"
+            | "i"
+            | "nobr"
+            | "s"
+            | "small"
+            | "strike"
+            | "strong"
+            | "tt"
+            | "u"
+    )
+}
+fn formatting_marker(tag: &str) -> bool {
+    matches!(
+        tag,
+        "applet" | "object" | "marquee" | "template" | "td" | "th" | "caption"
+    )
+}
+fn reconstruct_before_start(tag: &str) -> bool {
+    !matches!(
+        tag,
+        "base"
+            | "basefont"
+            | "bgsound"
+            | "link"
+            | "meta"
+            | "template"
+            | "address"
+            | "article"
+            | "aside"
+            | "blockquote"
+            | "center"
+            | "details"
+            | "dialog"
+            | "dir"
+            | "div"
+            | "dl"
+            | "fieldset"
+            | "figcaption"
+            | "figure"
+            | "footer"
+            | "header"
+            | "hgroup"
+            | "main"
+            | "menu"
+            | "nav"
+            | "ol"
+            | "p"
+            | "search"
+            | "section"
+            | "summary"
+            | "ul"
+            | "h1"
+            | "h2"
+            | "h3"
+            | "h4"
+            | "h5"
+            | "h6"
+            | "pre"
+            | "listing"
+            | "form"
+            | "li"
+            | "dd"
+            | "dt"
+            | "table"
+            | "param"
+            | "source"
+            | "track"
+            | "hr"
+            | "rb"
+            | "rtc"
+            | "rp"
+            | "rt"
+            | "frameset"
+            | "frame"
+    )
 }
 fn special_html(tag: &str) -> bool {
     closes_p(tag)
@@ -2287,6 +2953,42 @@ fn special_html(tag: &str) -> bool {
                 | "thead"
                 | "tr"
                 | "template"
+                | "area"
+                | "base"
+                | "basefont"
+                | "bgsound"
+                | "br"
+                | "center"
+                | "details"
+                | "dir"
+                | "embed"
+                | "figcaption"
+                | "figure"
+                | "frame"
+                | "frameset"
+                | "iframe"
+                | "img"
+                | "input"
+                | "keygen"
+                | "link"
+                | "listing"
+                | "menu"
+                | "meta"
+                | "noembed"
+                | "noframes"
+                | "noscript"
+                | "param"
+                | "plaintext"
+                | "script"
+                | "search"
+                | "source"
+                | "style"
+                | "summary"
+                | "textarea"
+                | "title"
+                | "track"
+                | "wbr"
+                | "xmp"
         )
 }
 
@@ -5177,6 +5879,327 @@ fn nth_matches(s: &str, index: usize) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn snapshot_validation_accepts_detached_forests_and_recomputes_bytes() {
+        let mut original = parse_with_scripting(
+            "<!doctype html><!--before--><p><b>one<i>two</b>three</i></p><?step done>",
+            true,
+        );
+        let paragraph = original.query_selector("p").unwrap();
+        let parent = original.nodes[paragraph].parent.unwrap();
+        original.remove_child(parent, paragraph);
+        let expected_bytes = original.retained_bytes();
+        let rebuilt = Document::from_snapshot(original.nodes, original.root, true).unwrap();
+        assert_eq!(rebuilt.retained_bytes(), expected_bytes);
+        assert!(rebuilt.scripting_enabled());
+        assert_eq!(rebuilt.text_content(paragraph), "onetwothree");
+        assert!(rebuilt.query_selector("p").is_none());
+    }
+    #[test]
+    fn snapshot_validation_rejects_cycles_duplicate_edges_and_non_container_children() {
+        let original = parse("<p>x</p>");
+        let paragraph = original.query_selector("p").unwrap();
+        let parent = original.nodes[paragraph].parent.unwrap();
+        let text = original.nodes[paragraph].children[0];
+        let mut duplicate = original.nodes.clone();
+        duplicate[parent].children.push(paragraph);
+        assert!(Document::from_snapshot(duplicate, original.root, false).is_err());
+        let mut dangling = original.nodes.clone();
+        dangling[paragraph].parent = Some(usize::MAX);
+        assert!(Document::from_snapshot(dangling, original.root, false).is_err());
+        let mut leaf = original.nodes.clone();
+        leaf[paragraph].kind = NodeKind::Comment("forged".into());
+        assert!(Document::from_snapshot(leaf, original.root, false).is_err());
+        let mut cycle = original.nodes.clone();
+        cycle[parent].children.retain(|id| *id != paragraph);
+        cycle[paragraph].parent = Some(text);
+        cycle[text].kind = NodeKind::Element(Element {
+            tag: "span".into(),
+            attrs: BTreeMap::new(),
+        });
+        cycle[text].children.push(paragraph);
+        assert!(Document::from_snapshot(cycle, original.root, false).is_err());
+        let mut doctype = original.nodes;
+        doctype[text].kind = NodeKind::Doctype(Doctype {
+            name: "html".into(),
+            public_id: None,
+            system_id: None,
+            force_quirks: false,
+        });
+        assert!(Document::from_snapshot(doctype, original.root, false).is_err());
+    }
+    #[test]
+    fn snapshot_validation_enforces_attribute_and_detached_depth_limits() {
+        let mut original = parse("<p>x</p>");
+        let paragraph = original.query_selector("p").unwrap();
+        for index in 0..1024 {
+            original.set_attr(paragraph, &format!("a{index}"), "");
+        }
+        assert!(Document::from_snapshot(original.nodes.clone(), original.root, false).is_ok());
+        let NodeKind::Element(element) = &mut original.nodes[paragraph].kind else {
+            unreachable!()
+        };
+        element.attrs.insert("extra".into(), String::new());
+        assert!(Document::from_snapshot(original.nodes, original.root, false).is_err());
+        let mut nodes = vec![Node {
+            parent: None,
+            children: vec![],
+            kind: NodeKind::Document,
+        }];
+        for index in 1..=MAX_DEPTH + 2 {
+            nodes.push(Node {
+                parent: if index == 1 { None } else { Some(index - 1) },
+                children: if index == MAX_DEPTH + 2 {
+                    vec![]
+                } else {
+                    vec![index + 1]
+                },
+                kind: NodeKind::Element(Element {
+                    tag: "div".into(),
+                    attrs: BTreeMap::new(),
+                }),
+            });
+        }
+        assert!(Document::from_snapshot(nodes, 0, false).is_err());
+    }
+    fn assert_bounded_forest(document: &Document) {
+        assert!(document.nodes.len() <= MAX_NODES);
+        assert!(document.retained_bytes() <= MAX_DOM_BYTES);
+        let mut seen = vec![false; document.nodes.len()];
+        let mut pending: Vec<_> = document
+            .nodes
+            .iter()
+            .enumerate()
+            .filter(|(_, node)| node.parent.is_none())
+            .map(|(id, _)| (id, 1usize))
+            .collect();
+        while let Some((id, depth)) = pending.pop() {
+            assert!(!seen[id], "node {id} occurs twice or a cycle exists");
+            seen[id] = true;
+            assert!(depth <= MAX_DEPTH, "node {id} at depth {depth}");
+            for child in &document.nodes[id].children {
+                assert_eq!(document.nodes[*child].parent, Some(id));
+                pending.push((*child, depth + 1));
+            }
+        }
+        assert!(
+            seen.into_iter().all(|visited| visited),
+            "cycle detached from every root"
+        );
+    }
+    #[test]
+    fn formatting_reconstruction_reopens_misnested_inline_elements() {
+        for (source, expected) in [
+            (
+                "<p>1<b>2<i>3</b>4</i>5",
+                "<body><p>1<b>2<i>3</i></b><i>4</i>5</p></body>",
+            ),
+            (
+                "<p><b>one</p>two<br>three",
+                "<body><p><b>one</b></p><b>two<br>three</b></body>",
+            ),
+            (
+                "<p>1<s id=A>2<b id=B>3</p>4</s>5</b>",
+                "<body><p>1<s id=\"A\">2<b id=\"B\">3</b></s></p><s id=\"A\"><b id=\"B\">4</b></s><b id=\"B\">5</b></body>",
+            ),
+        ] {
+            let d = parse(source);
+            assert_eq!(
+                d.outer_html(d.query_selector("body").unwrap()),
+                expected,
+                "{source}"
+            );
+            assert_bounded_forest(&d);
+        }
+    }
+    #[test]
+    fn adoption_reparents_blocks_and_preserves_bookmark_order() {
+        for (source, expected) in [
+            ("<b>1<p>2</b>3</p>", "<body><b>1</b><p><b>2</b>3</p></body>"),
+            (
+                "<a>1<button>2</a>3</button>",
+                "<body><a>1</a><button><a>2</a>3</button></body>",
+            ),
+            (
+                "<b><a><b><p></a>",
+                "<body><b><a><b></b></a><b><p><a></a></p></b></b></body>",
+            ),
+            (
+                "<a><b><b><p></a>",
+                "<body><a><b><b></b></b></a><b><b><p><a></a></p></b></b></body>",
+            ),
+            (
+                "<table><a>1<p>2</a>3</p>",
+                "<body><a>1</a><p><a>2</a>3</p><table></table></body>",
+            ),
+        ] {
+            let d = parse(source);
+            assert_eq!(
+                d.outer_html(d.query_selector("body").unwrap()),
+                expected,
+                "{source}"
+            );
+            assert_bounded_forest(&d);
+        }
+    }
+    #[test]
+    fn formatting_markers_stop_leaks_across_cells_and_objects() {
+        for (source, expected) in [
+            (
+                "<p><b>before</p><table><tr><td>cell</td></tr></table>after",
+                "<body><p><b>before</b></p><table><tbody><tr><td>cell</td></tr></tbody></table><b>after</b></body>",
+            ),
+            (
+                "<p><b>one</p><object><i>two</object>three",
+                "<body><p><b>one</b></p><b><object><i>two</i></object>three</b></body>",
+            ),
+            (
+                "<table><a>1<td>2</td>3</table>",
+                "<body><a>1</a><a>3</a><table><tbody><tr><td>2</td></tr></tbody></table></body>",
+            ),
+            (
+                "<nobr><table><marquee></table><nobr>",
+                "<body><nobr><marquee></marquee><table></table></nobr><nobr></nobr></body>",
+            ),
+        ] {
+            let d = parse(source);
+            assert_eq!(
+                d.outer_html(d.query_selector("body").unwrap()),
+                expected,
+                "{source}"
+            );
+            assert_bounded_forest(&d);
+        }
+    }
+    #[test]
+    fn adoption_iteration_limits_retain_the_required_inner_and_outer_structure() {
+        let d = parse("<div><a><b><u><i><code><div></a>");
+        assert_eq!(
+            d.outer_html(d.query_selector("body").unwrap()),
+            "<body><div><a><b><u><i><code></code></i></u></b></a><u><i><code><div><a></a></div></code></i></u></div></body>"
+        );
+        assert_bounded_forest(&d);
+        let d = parse(&format!("<div><a><b>{}</a>", "<div>".repeat(10)));
+        assert_eq!(d.query_selector_all("a").len(), 9);
+        assert_eq!(d.query_selector_all("b").len(), 2);
+        assert_eq!(d.query_selector_all("a > div > div").len(), 1);
+        assert_bounded_forest(&d);
+    }
+    #[test]
+    fn noahs_ark_limits_identical_entries_without_losing_attributes() {
+        let d =
+            parse("<p><b id=x class=y><b class=y id=x><b id=x class=y><b class=y id=x>one</p>two");
+        assert_eq!(d.query_selector_all("p b").len(), 4);
+        assert_eq!(d.query_selector_all("body > b, body > b b").len(), 3);
+        assert_eq!(d.query_selector_all("b#x.y").len(), 7);
+        let d = parse("<a id=old>one<a id=new>two</a>three");
+        assert_eq!(
+            d.outer_html(d.query_selector("body").unwrap()),
+            "<body><a id=\"old\">one</a><a id=\"new\">two</a>three</body>"
+        );
+        assert_bounded_forest(&d);
+    }
+    #[test]
+    fn adoption_reparenting_rejects_cycles_and_excess_depth_before_mutation() {
+        let mut builder = TreeBuilder::new(false);
+        let mut parent = builder.doc.root;
+        let mut first = 0;
+        for _ in 1..MAX_DEPTH {
+            let child = builder.doc.create_element("div");
+            builder.doc.append_child(parent, child);
+            if first == 0 {
+                first = child;
+            }
+            parent = child;
+        }
+        let original = builder.doc.nodes[first].children.clone();
+        let wrapper = builder.doc.create_element("b");
+        assert!(!builder.wrap_children(first, wrapper));
+        assert_eq!(builder.work, 0);
+        assert_eq!(builder.doc.nodes[first].children, original);
+        assert!(builder.doc.nodes[wrapper].parent.is_none());
+        builder.work = 50_000_000;
+        assert!(!builder.reparent(first, parent, None));
+        assert_eq!(builder.doc.nodes[first].parent, Some(builder.doc.root));
+        assert_bounded_forest(&builder.doc);
+    }
+    #[test]
+    fn adoption_wraps_large_sibling_lists_with_linear_work_and_atomic_preflight() {
+        let mut builder = TreeBuilder::new(false);
+        let parent = builder.doc.create_element("div");
+        builder.doc.append_child(builder.doc.root, parent);
+        for _ in 0..10_000 {
+            let child = builder.doc.create_element("span");
+            builder.doc.append_child(parent, child);
+        }
+        let wrapper = builder.doc.create_element("b");
+        builder.work = 20;
+        assert!(!builder.wrap_children(parent, wrapper));
+        assert_eq!(builder.doc.nodes[parent].children.len(), 10_000);
+        assert!(builder.doc.nodes[wrapper].children.is_empty());
+        builder.work = 30_000;
+        assert!(builder.wrap_children(parent, wrapper));
+        assert_eq!(builder.doc.nodes[parent].children, [wrapper]);
+        assert_eq!(builder.doc.nodes[wrapper].children.len(), 10_000);
+        assert_bounded_forest(&builder.doc);
+    }
+    #[test]
+    fn reconstruction_and_reparenting_stop_at_shared_resource_limits() {
+        let mut builder = TreeBuilder::new(false);
+        for token in [
+            HtmlToken::start("body"),
+            HtmlToken::start("p"),
+            HtmlToken::start("b"),
+            HtmlToken::End("p".into()),
+        ] {
+            builder.process(token);
+        }
+        let old_len = builder.doc.nodes.len();
+        builder.work = 0;
+        builder.reconstruct_formatting(false);
+        assert_eq!(builder.doc.nodes.len(), old_len);
+        let d = parse(&format!(
+            "{}tail",
+            (0..3000)
+                .map(|n| format!("<div><b data-n='{n}'>x</div>"))
+                .collect::<String>()
+        ));
+        assert_bounded_forest(&d);
+        let mut state = 0x92c314efu32;
+        let tokens = [
+            "<b>",
+            "</b>",
+            "<i>",
+            "</i>",
+            "<a>",
+            "</a>",
+            "<nobr>",
+            "</nobr>",
+            "<div>",
+            "</div>",
+            "<p>",
+            "</p>",
+            "<table>",
+            "</table>",
+            "<tr>",
+            "<td>",
+            "</td>",
+            "<object>",
+            "</object>",
+            "x",
+            " ",
+        ];
+        for _ in 0..120 {
+            let mut source = String::new();
+            for _ in 0..300 {
+                state ^= state << 13;
+                state ^= state >> 17;
+                state ^= state << 5;
+                source.push_str(tokens[state as usize % tokens.len()]);
+            }
+            assert_bounded_forest(&parse(&source));
+        }
+    }
     #[test]
     fn comments_doctypes_and_processing_instructions_keep_tree_positions() {
         let d = parse(

@@ -1,5 +1,19 @@
 # Validation record
 
+## Isolated native pages, formatting recovery and UTF-16
+
+Recorded September 28, 2026 UTC on x86-64 Linux with Landlock ABI 6 and seccomp enabled. The integrated suite passed **232 Rust tests**: 171 library, 22 browser/editor, one tree adapter, one CLI, 10 network, 20 pipeline and seven real-worker tests. No tests failed or remained ignored in the explicit `--include-ignored` run. Formatting, strict all-target Clippy, release compilation and ten Python harness tests passed. All 13 exact rendering comparisons passed. The deterministic stress run completed 15,000 cases with zero caught panics or invariant failures; one case reached the configured paint-work limit. These remain limited regression and smoke tests.
+
+The native browser now starts a fresh child for each document. Real-kernel tests verify allowed document reads and rejection of reads outside the grant, symlink escapes, writes, deletes, metadata mutations, filesystem-flag ioctls, execution, Unix sockets/socket pairs, thread creation and TCP listeners; allowed nonblocking/bytes-available socket ioctls remain usable. A separate subprocess verifies rejection of an inherited descriptor. Worker tests cover load/render, shared raster transfer, edits/events, stale edit sequences, POST navigation, fragments, cancellation, reaping, bounded malformed framing and HTTP loading with the synchronous resolver. Nonblocking-pipe tests cover both stalled reads and a full input pipe. These tests are evidence for specific controls, not a sandbox escape audit or complete security certification.
+
+Snapshot checks have regressions for disconnected cycles, parent links, depth and storage bounds, invalid geometry/clip stacks/rasters, strict framing, and 1,000 deterministic protocol mutations. Review also caught valid-output mismatches: unavailable images must preserve their fallback, expanded DOM text must use the DOM budget, and generated alt/control/marker/tab text must share the emitted-glyph cap. Those cases now have regressions. The syscall-filter tests independently interpret the emitted filter for native/foreign architecture and x32/argument-width edge cases.
+
+HTML exact-tree comparisons now yield **2,446 matches, 1,012 mismatches and 418 unsupported cases** across the unchanged 3,876-case inventory. Formatting reconstruction and adoption recovery added 194 matches with zero regressions against the prior 2,252-match baseline; that gate passed before the new baseline was recorded. Disabled-mode matches are 1,233 and enabled-mode matches 1,213. Fragment contexts, parser scripting, namespaces and other incomplete semantics remain visible in the inventory.
+
+The script suite includes 37 interpreter tests and two string-representation tests. They cover UTF-16 indexing, slicing, search and property keys, every code unit from 0x0000 through 0xFFFF in a JSON round trip, lone-surrogate callback/indentation behavior, and uncatchable resource limits. DOM/display conversion still replaces unpaired surrogates; this is documented as an incomplete boundary. Test262 is not yet integrated.
+
+The Unicode/formatting example was exercised through a script click and visually inspected as a headless image. A native window rendered the same page through the confined worker and exited successfully. A separate native `https://example.com` run verified actual DNS, TLS and rendering with the syscall filter enabled. The headless benchmark still excludes process startup and IPC; no Chromium performance comparison or full-platform conformance claim is made.
+
 ## Parser, JSON and flex compatibility increment
 
 Recorded September 28, 2026 UTC on the same Linux/Rust setup. The integrated run passed 183 Rust tests (131 library, 20 browser/editor, one tree adapter, one CLI, 10 network and 20 pipeline tests), ten Python harness tests, formatting, strict all-target Clippy, release compilation, and 13 exact rendering reference pairs.
@@ -40,4 +54,4 @@ The deterministic mutation run used seed `0xe2152026` and at most 8 KiB per gene
 
 Native and headless output for the home page, forms, gallery, and a narrow viewport was visually inspected. Native clipboard contents were not read during validation. Windows and macOS were not validated.
 
-The [performance record](PERFORMANCE.md) defines the measured phases and includes three fixture timings. There was no Chromium comparison. The [compatibility inventory](COMPATIBILITY.md) and [security boundary](SECURITY.md) list material unfulfilled requirements, including missing platform APIs and the absence of OS process isolation.
+The [performance record](PERFORMANCE.md) defines the measured phases and includes three fixture timings. There was no Chromium comparison. The [compatibility inventory](COMPATIBILITY.md) and [security boundary](SECURITY.md) list material unfulfilled requirements, including missing platform APIs and, at that initial checkpoint, the absence of OS process isolation.

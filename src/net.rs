@@ -1,6 +1,7 @@
 //! Bounded resource loading with explicit URL and local-file policy.
 use base64::Engine;
 use std::{
+    cell::Cell,
     collections::BTreeMap,
     fs::File,
     io::Read,
@@ -13,6 +14,39 @@ pub const MAX_RESOURCE_BYTES: usize = 8 * 1024 * 1024;
 pub const MAX_PAGE_BYTES: usize = 32 * 1024 * 1024;
 pub const MAX_RESOURCES: usize = 48;
 pub const MAX_FORM_BODY_BYTES: usize = 1024 * 1024;
+
+thread_local! {
+    static SYNCHRONOUS_PAGE_DNS: Cell<bool> = const { Cell::new(false) };
+}
+
+/// A confined page process cannot create the timeout thread used by ureq's
+/// default resolver. Its parent enforces cancellation and a process deadline,
+/// including time spent in synchronous system DNS. Other threads keep ureq's
+/// ordinary resolver timeout behavior.
+pub(crate) fn use_synchronous_dns_for_page_process() {
+    SYNCHRONOUS_PAGE_DNS.set(true);
+}
+
+#[derive(Debug)]
+struct PageProcessResolver;
+
+impl ureq::unversioned::resolver::Resolver for PageProcessResolver {
+    fn resolve(
+        &self,
+        uri: &ureq::http::Uri,
+        config: &ureq::config::Config,
+        timeout: ureq::unversioned::transport::NextTimeout,
+    ) -> Result<ureq::unversioned::resolver::ResolvedSocketAddrs, ureq::Error> {
+        ureq::unversioned::resolver::DefaultResolver::default().resolve(
+            uri,
+            config,
+            ureq::unversioned::transport::NextTimeout {
+                after: ureq::unversioned::transport::time::Duration::NotHappening,
+                reason: timeout.reason,
+            },
+        )
+    }
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum ResourceKind {
@@ -67,8 +101,17 @@ impl Fetcher {
             .timeout_global(Some(Duration::from_secs(12)))
             .user_agent("ErisBrowser/0.1 (independent experimental engine)")
             .build();
+        let agent = if SYNCHRONOUS_PAGE_DNS.get() {
+            ureq::Agent::with_parts(
+                config,
+                ureq::unversioned::transport::DefaultConnector::default(),
+                PageProcessResolver,
+            )
+        } else {
+            config.into()
+        };
         Self {
-            agent: config.into(),
+            agent,
             local_root,
             total: 0,
             count: 0,
