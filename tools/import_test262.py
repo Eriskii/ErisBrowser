@@ -41,6 +41,7 @@ NUMBER_STATIC_DIRECTORIES = {
 }
 NUMERIC_CONVERSION_DIRECTORIES = {'isFinite': 15, 'isNaN': 15}
 NUMERIC_PARSING_DIRECTORIES = {'parseInt': 55, 'parseFloat': 54}
+COMPOUND_ASSIGNMENT_DIRECTORIES = {'expressions/compound-assignment': 454}
 PROFILES = {'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
             'rest-parameters': REST_PARAMETER_DIRECTORIES,
@@ -49,14 +50,15 @@ PROFILES = {'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'identifiers': IDENTIFIER_DIRECTORIES, 'array-reduce': ARRAY_REDUCE_DIRECTORIES,
             'number-statics': NUMBER_STATIC_DIRECTORIES,
             'numeric-conversion': NUMERIC_CONVERSION_DIRECTORIES,
-            'numeric-parsing': NUMERIC_PARSING_DIRECTORIES}
+            'numeric-parsing': NUMERIC_PARSING_DIRECTORIES,
+            'compound-assignment': COMPOUND_ASSIGNMENT_DIRECTORIES}
 PROFILE_ROOTS = {'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
                  'template-literal': 'test/language', 'functions': 'test/language',
                  'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins',
                  'global-values': 'test/built-ins', 'array-sort': 'test/built-ins',
                  'identifiers': 'test/language', 'array-reduce': 'test/built-ins',
                  'number-statics': 'test/built-ins', 'numeric-conversion': 'test/built-ins',
-                 'numeric-parsing': 'test/built-ins'}
+                 'numeric-parsing': 'test/built-ins', 'compound-assignment': 'test/language'}
 
 
 def corpus_name(profile):
@@ -180,7 +182,7 @@ def import_corpus(output, profile='string-json'):
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
         sources = dict(zip(paths, pool.map(lambda path: fetch(raw + path), paths)))
     harness = {'assert.js', 'sta.js'}
-    if profile in {'template-literal', 'functions', 'rest-parameters', 'is-prototype-of', 'identifiers'}:
+    if profile in {'template-literal', 'functions', 'rest-parameters', 'is-prototype-of', 'identifiers', 'compound-assignment'}:
         # These unchanged helpers support the assertion-integrity preflight,
         # even when no selected test requests them directly.
         harness.update({'propertyHelper.js', 'compareArray.js'})
@@ -215,6 +217,7 @@ def import_corpus(output, profile='string-json'):
         'number-statics': 'all direct .js files in built-ins/Number and eight Number constant/predicate directories; no implementation',
         'numeric-conversion': 'all direct .js files in built-ins/isFinite and isNaN; no implementation',
         'numeric-parsing': 'all direct .js files in built-ins/parseInt and parseFloat; no implementation',
+        'compound-assignment': 'all direct .js files in language/expressions/compound-assignment; no implementation',
     }[profile]
     manifest = dict(format=1, repository=f'https://github.com/{REPOSITORY}', revision=REVISION,
                     scope=scope,

@@ -1,6 +1,73 @@
 # Validation record
 
+## Compound bitwise assignment
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **839 Rust tests** pass with `--include-ignored`: 679 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 47 pipeline and 38 confined-worker tests. None remain
+ignored. All **115 Python checks** and **57 exact pixel references** pass.
+
+The [implementation](../tests/conformance/compound-assignment.md) adds lexer/parser
+recognition for <<=, >>=, >>>=, &=, ^= and |= and reuses the existing assignment
+reference evaluator. Target/key evaluation occurs once, Get precedes the RHS,
+operand conversion precedes Put, and abrupt stages preserve identity and prior
+effects. Seven focused groups check reference order, live conversion, strict
+writes, const/TDZ/missing bindings, integer boundaries, early rejection, shared
+resource stops and actual execution of unchanged decimalToHexString.js.
+A preliminary stress test's unsupported String.repeat prerequisite was replaced
+with direct recursive conversion; runtime limits were not changed. Page and
+real confined-worker fixtures preserve six green then six blue samples through
+callbacks exercising all six operators.
+
+The [complete profile](../tests/conformance/test262-compound-assignment.md)
+retains **454 sources / 786 modes / 128 preflights**. It moves from **290 passed /
+328 failed / 168 unsupported** to **596 passed / ten failed / 180 unsupported**,
+adding 306 passes without losses. All 128 controls verify, with no resources,
+harness errors, timeouts or adapter errors. Twelve previous failures now reach
+explicit unsupported eval/host-definition operations. Twenty-four negative
+syntax cases preserve their passing status with more specific invalid-target
+or strict-binding diagnostics. All transitions are recorded. The ten remaining
+failures concern existing boxed/string += conversion. Actual baseline recording
+and a subsequent gate reproduce every observation; CI protects the full baseline.
+
+All thirteen earlier profiles retain **4,745 case and 920 preflight fingerprints**.
+Every observation in twelve of them is identical. The
+[parsing comparison](../tests/conformance/test262-numeric-parsing-compound-assignment.json)
+records four former helper parse errors becoming instruction-limit stops in
+complete Unicode loops: **164 passed / 46 unsupported / eight resources**,
+with all 80 controls. This is helper-loading progress, not new parsing passes;
+no healthy parsing baseline is recorded. HTML remains at 3,868 matches, two
+mismatches and six unsupported modes.
+
+The **15,000-case** mutation smoke run reports zero caught panics or invariant
+failures: 5,000 accepted HTML, 621 accepted/4,379 rejected scripts and
+3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and
+display-list size is 1,173 commands; 17 cases stop within paint limits. The new
+seed changes the inventory, so counts are not acceptance-rate comparisons.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+| --- | --- |
+| `eris-browser` | `0949c4474fcd7ecda1f944df6870ee108229c28996430f055a6b063d39f393a0` |
+| `eris-js` | `92710e2646cc80ba2d2839837941e5c6fe62242f6cad772396074bb880805d78` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `6a17607e6de61fadd2ca42c6a26805752435cca94e7df50816df7855d216f056` |
+
+Source-input SHA-256:
+`100da85dd37e4aee42d21f6b83afa7ff6459a21e87042cd4b9274a4a9e6f6931`.
+Local records are `artifacts/*compound-assignment*`. Agent sessions remain
+unavailable; this is local validation, not independent-agent review. No native
+window, Vulkan or Chromium performance measurement is assigned to this
+checkpoint. Full compatibility, production security and the requested
+performance threshold remain unverified.
+
 ## Numeric parsing conversion and aliases
+
+Published checkpoint `479e6b7` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36436404985),
+including the Number alias regression gate, Rust 1.88 and the Vulkan probe.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **830 Rust tests** pass with `--include-ignored`: 672 library,

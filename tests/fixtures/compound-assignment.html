@@ -1,0 +1,36 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Compound bitwise assignment</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#left{left:0}#right{left:50px}#unsigned{left:100px}#and{left:150px}#xor{left:200px}#or{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="left" class="sample"></div><div id="right" class="sample"></div>
+<div id="unsigned" class="sample"></div><div id="and" class="sample"></div>
+<div id="xor" class="sample"></div><div id="or" class="sample"></div>
+<button id="change" type="button">Apply bitwise assignments</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+function apply(color){
+  const values=[9,9,-1,9,9,9];
+  check((values[0]<<=1)===18&&values[0]===18,'left shift');mark('left',color);
+  check((values[1]>>=1)===4&&values[1]===4,'signed right shift');mark('right',color);
+  check((values[2]>>>=0)===4294967295&&values[2]===4294967295,'unsigned right shift');mark('unsigned',color);
+  check((values[3]&=1)===1&&values[3]===1,'bitwise and');mark('and',color);
+  check((values[4]^=1)===8&&values[4]===8,'bitwise xor');mark('xor',color);
+  check((values[5]|=1)===9&&values[5]===9,'bitwise or');mark('or',color);
+  let trace='',stored;
+  const object={get x(){trace+='G';return {valueOf(){trace+='L';return 9;}};},set x(value){trace+='S';stored=value;}};
+  function key(){trace+='K';return 'x';}
+  function rhs(){trace+='R';return {valueOf(){trace+='V';return 1;}};}
+  const result=(object[key()]>>>=rhs());
+  check(result===4&&stored===4&&trace==='KGRLVS','single reference and ordered conversion');
+}
+apply('green');document.getElementById('result').textContent='ready';document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  apply('blue');let count=1;count|=2;check(count===3,'event assignment result');
+  document.getElementById('result').textContent=String(count);document.body.className='clicked';
+};
+</script>

@@ -766,8 +766,9 @@ fn lex(source: &str, budget: &mut regexp::Budget) -> Result<Vec<Token>> {
                 TokenKind::Word(identifier)
             } else {
                 let operator = [
-                    "===", "!==", ">>>", "**=", "=>", "==", "!=", "<=", ">=", "&&", "||", "??",
-                    "++", "--", "+=", "-=", "*=", "/=", "%=", "**", "<<", ">>",
+                    ">>>=", "===", "!==", ">>>", "**=", "<<=", ">>=", "=>", "==", "!=", "<=", ">=",
+                    "&&", "||", "??", "++", "--", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|=",
+                    "**", "<<", ">>",
                 ]
                 .into_iter()
                 .find(|op| source[pos..].starts_with(op));
@@ -1954,7 +1955,9 @@ impl<'source> Parser<'source> {
             let no = self.expression()?;
             left = Expr::Conditional(Box::new(left), Box::new(yes), Box::new(no));
         }
-        for operator in ["=", "+=", "-=", "*=", "/=", "%=", "**="] {
+        for operator in [
+            "=", "+=", "-=", "*=", "/=", "%=", "**=", "<<=", ">>=", ">>>=", "&=", "^=", "|=",
+        ] {
             if self.eat(operator) {
                 self.assignment_target(&left)?;
                 return Ok(Expr::Assign(
@@ -17468,6 +17471,202 @@ mod tests {
                 runtime.execute(source, &mut document)
             };
             result.unwrap_or_else(|error| panic!("strict={strict}: {error}"));
+        }
+    }
+
+    fn compound_bitwise_modes(source: &str) {
+        for (operator, result) in [
+            ("<<=", 18),
+            (">>=", 4),
+            (">>>=", 4),
+            ("&=", 1),
+            ("^=", 8),
+            ("|=", 9),
+        ] {
+            for strict in [false, true] {
+                let (mut runtime, mut document) = upstream_harness();
+                let source = source
+                    .replace("@OP@", operator)
+                    .replace("@RESULT@", &result.to_string())
+                    .replace("@STRICT@", if strict { "true" } else { "false" });
+                let result = if strict {
+                    runtime.execute_strict(&source, &mut document)
+                } else {
+                    runtime.execute(&source, &mut document)
+                };
+                result.unwrap_or_else(|e| panic!("{operator} strict={strict}: {e}"));
+            }
+        }
+    }
+
+    #[test]
+    fn compound_bitwise_references_are_read_once_and_keep_the_original_receiver() {
+        compound_bitwise_modes(
+            r#"
+            var trace='',stored,old={valueOf:function(){trace+='L';return 9;}},
+                right={valueOf:function(){trace+='V';return 1;}};
+            var prototype={get x(){assert.sameValue(this,object);trace+='G';return old;},
+                set x(value){assert.sameValue(this,object);trace+='S';stored=value;}};
+            var object=Object.create(prototype),other={x:99},selected=object;
+            function target(){trace+='O';return selected;}
+            function key(){trace+='K';return {toString:function(){trace+='C';return 'x';}};}
+            function rhs(){trace+='R';selected=other;return right;}
+            var result=(target()[key()]@OP@rhs());
+            assert.sameValue(result,@RESULT@);assert.sameValue(stored,result);
+            assert.sameValue(trace,'OKCGRLVS');assert.sameValue(other.x,99);
+            trace='';old.valueOf=function(){trace+='L';right.valueOf=function(){trace+='V';return 1;};return 9;};
+            right.valueOf=function(){throw 'stale';};
+            result=(object.x@OP@right);assert.sameValue(result,@RESULT@);assert.sameValue(trace,'GLVS');
+        "#,
+        );
+    }
+
+    #[test]
+    fn compound_bitwise_abrupt_stages_preserve_identity_and_prior_effects() {
+        compound_bitwise_modes(
+            r#"
+            var reason={},seen,trace='',stored;
+            var object={get x(){trace+='G';return {valueOf:function(){trace+='L';throw reason;}};},
+                set x(value){trace+='S';stored=value;}};
+            function rhs(){trace+='R';return {valueOf:function(){trace+='V';return 1;}};}
+            try{object.x@OP@rhs();}catch(e){seen=e;}
+            assert.sameValue(seen,reason);assert.sameValue(trace,'GRL');assert.sameValue(stored,undefined);
+            trace='';seen=undefined;
+            try{object.x@OP@(function(){trace+='R';throw reason;})();}catch(e){seen=e;}
+            assert.sameValue(seen,reason);assert.sameValue(trace,'GR');
+            trace='';seen=undefined;var key={toString:function(){trace+='K';throw reason;}};
+            try{object[key]@OP@rhs();}catch(e){seen=e;}
+            assert.sameValue(seen,reason);assert.sameValue(trace,'K');
+            trace='';seen=undefined;object={get x(){trace+='G';return 9;},set x(value){trace+='S';stored=value;throw reason;}};
+            try{object.x@OP@rhs();}catch(e){seen=e;}
+            assert.sameValue(seen,reason);assert.sameValue(stored,@RESULT@);assert.sameValue(trace,'GRVS');
+        "#,
+        );
+    }
+
+    #[test]
+    fn compound_bitwise_readonly_const_tdz_and_missing_bindings_keep_order() {
+        compound_bitwise_modes(
+            r#"
+            var trace='',returned,seen,object={};Object.defineProperty(object,'x',{value:9,writable:false});
+            function rhs(){trace+='R';return {valueOf:function(){trace+='V';return 1;}};}
+            try{returned=(object.x@OP@rhs());}catch(e){seen=e;}
+            assert.sameValue(object.x,9);assert.sameValue(trace,'RV');
+            if(@STRICT@){assert.sameValue(seen.constructor,TypeError);assert.sameValue(returned,undefined);}
+            else{assert.sameValue(seen,undefined);assert.sameValue(returned,@RESULT@);}
+            trace='';const fixed=9;assert.throws(TypeError,function(){fixed@OP@rhs();});
+            assert.sameValue(fixed,9);assert.sameValue(trace,'RV');
+            trace='';assert.throws(ReferenceError,function(){missingCompoundTarget@OP@rhs();});
+            assert.sameValue(trace,'');
+            assert.throws(ReferenceError,function(){later@OP@rhs();let later=9;});assert.sameValue(trace,'');
+        "#,
+        );
+    }
+
+    #[test]
+    fn compound_bitwise_preserves_to_int32_and_masked_shift_boundaries() {
+        number_static_modes(
+            r#"
+            var a=-1;assert.sameValue(a>>>=0,4294967295);assert.sameValue(a,4294967295);
+            a=-1;assert.sameValue(a>>=1,-1);a=-1;assert.sameValue(a<<=1,-2);
+            a=1;assert.sameValue(a<<=-1,-2147483648);a=-2147483648;assert.sameValue(a>>>=-1,1);
+            a=4294967297;assert.sameValue(a<<=32,1);a=5.9;assert.sameValue(a>>=33.9,2);
+            a=-0;assert.sameValue(a|=0,0);a=NaN;assert.sameValue(a^=1,1);
+            a=Infinity;assert.sameValue(a&=-1,0);a=-Infinity;assert.sameValue(a>>>=1,0);
+            a='-1';assert.sameValue(a>>>=0,4294967295);a='9';assert.sameValue(a&='1',1);
+            a=null;assert.sameValue(a|=true,1);a=undefined;assert.sameValue(a^=true,1);
+            var b=2;a=9;assert.sameValue(a<<=b>>>=1,18);assert.sameValue(a,18);assert.sameValue(b,1);
+            var x=9,y=1;assert.sameValue(x>>=y+1,2);assert.sameValue(x,2);
+            var x=9;x
+            >>>=1;assert.sameValue(x,4);
+        "#,
+        );
+    }
+
+    #[test]
+    fn compound_bitwise_invalid_targets_and_split_tokens_reject_before_effects() {
+        for operator in ["<<=", ">>=", ">>>=", "&=", "^=", "|="] {
+            for target in ["1", "(1+2)", "true", "{}"] {
+                let mut runtime = Runtime::new();
+                let mut document = Document::parse("");
+                runtime
+                    .execute("var touched=false;", &mut document)
+                    .unwrap();
+                let source = format!("touched=true;{target}{operator}1;");
+                let error = runtime.execute(&source, &mut document).unwrap_err();
+                assert_eq!(
+                    error.intrinsic_error_name(),
+                    Some("SyntaxError"),
+                    "{source}: {error}"
+                );
+                assert_eq!(
+                    runtime.environments[0].bindings["touched"].value,
+                    Value::Bool(false)
+                );
+            }
+        }
+        for source in [
+            "var a=9;a > >>=1;",
+            "var a=9;a >> =1;",
+            "var a=9;a & =1;",
+            "var a=9;a >>>==1;",
+        ] {
+            assert_eq!(
+                run(source).unwrap_err().intrinsic_error_name(),
+                Some("SyntaxError"),
+                "{source}"
+            );
+        }
+    }
+
+    #[test]
+    fn compound_bitwise_executes_the_unchanged_hexadecimal_helper() {
+        let (mut runtime, mut document) = upstream_harness();
+        runtime
+            .execute(
+                include_str!(
+                    "../tests/upstream/test262-numeric-parsing/harness/decimalToHexString.js"
+                ),
+                &mut document,
+            )
+            .unwrap();
+        for strict in [false, true] {
+            let source = r#"assert.sameValue(decimalToHexString(0),'0000');assert.sameValue(decimalToHexString(-1),'FFFFFFFF');
+                assert.sameValue(decimalToHexString(4294967297),'0001');assert.sameValue(decimalToHexString(0xd800),'D800');
+                assert.sameValue(decimalToHexString(0xffff),'FFFF');assert.sameValue(decimalToPercentHexString(255),'%FF');"#;
+            if strict {
+                runtime.execute_strict(source, &mut document)
+            } else {
+                runtime.execute(source, &mut document)
+            }
+            .unwrap();
+        }
+    }
+
+    #[test]
+    fn compound_bitwise_resource_failure_cannot_write_or_be_caught() {
+        for operator in ["<<=", ">>=", ">>>=", "&=", "^=", "|="] {
+            for body in ["while(true){}", "return Number(object.x);"] {
+                let mut runtime = Runtime::new();
+                let mut document = Document::parse("");
+                runtime
+                    .execute("var wrote=false,caught=false;", &mut document)
+                    .unwrap();
+                let source = format!(
+                    "var object={{get x(){{return {{valueOf:function(){{{body}}}}};}},set x(value){{wrote=true;}}}};try{{object.x{operator}1;}}catch(e){{caught=true;}}"
+                );
+                let error = runtime.execute(&source, &mut document).unwrap_err();
+                assert!(error.is_resource_limit(), "{operator}: {error}");
+                assert_eq!(
+                    runtime.environments[0].bindings["wrote"].value,
+                    Value::Bool(false)
+                );
+                assert_eq!(
+                    runtime.environments[0].bindings["caught"].value,
+                    Value::Bool(false)
+                );
+                assert_eq!((runtime.calls, runtime.stack_units), (0, 0));
+            }
         }
     }
 

@@ -1,0 +1,3227 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all direct .js files in language/expressions/compound-assignment; no implementation",
+  "directories": {
+    "expressions/compound-assignment": [
+      "11.13.2-1-s.js",
+      "11.13.2-10-s.js",
+      "11.13.2-11-s.js",
+      "11.13.2-12-s.js",
+      "11.13.2-13-s.js",
+      "11.13.2-14-s.js",
+      "11.13.2-15-s.js",
+      "11.13.2-16-s.js",
+      "11.13.2-17-s.js",
+      "11.13.2-18-s.js",
+      "11.13.2-19-s.js",
+      "11.13.2-2-s.js",
+      "11.13.2-20-s.js",
+      "11.13.2-21-s.js",
+      "11.13.2-22-s.js",
+      "11.13.2-23-s.js",
+      "11.13.2-24-s.js",
+      "11.13.2-25-s.js",
+      "11.13.2-26-s.js",
+      "11.13.2-27-s.js",
+      "11.13.2-28-s.js",
+      "11.13.2-29-s.js",
+      "11.13.2-30-s.js",
+      "11.13.2-31-s.js",
+      "11.13.2-32-s.js",
+      "11.13.2-33-s.js",
+      "11.13.2-34-s.js",
+      "11.13.2-35-s.js",
+      "11.13.2-36-s.js",
+      "11.13.2-37-s.js",
+      "11.13.2-38-s.js",
+      "11.13.2-39-s.js",
+      "11.13.2-4-s.js",
+      "11.13.2-40-s.js",
+      "11.13.2-41-s.js",
+      "11.13.2-42-s.js",
+      "11.13.2-43-s.js",
+      "11.13.2-44-s.js",
+      "11.13.2-45-s.js",
+      "11.13.2-46-s.js",
+      "11.13.2-47-s.js",
+      "11.13.2-48-s.js",
+      "11.13.2-49-s.js",
+      "11.13.2-5-s.js",
+      "11.13.2-50-s.js",
+      "11.13.2-51-s.js",
+      "11.13.2-52-s.js",
+      "11.13.2-53-s.js",
+      "11.13.2-54-s.js",
+      "11.13.2-55-s.js",
+      "11.13.2-6-1gs.js",
+      "11.13.2-6-s.js",
+      "11.13.2-8-s.js",
+      "11.13.2-9-s.js",
+      "S11.13.2_A2.1_T1.1.js",
+      "S11.13.2_A2.1_T1.10.js",
+      "S11.13.2_A2.1_T1.11.js",
+      "S11.13.2_A2.1_T1.2.js",
+      "S11.13.2_A2.1_T1.3.js",
+      "S11.13.2_A2.1_T1.4.js",
+      "S11.13.2_A2.1_T1.5.js",
+      "S11.13.2_A2.1_T1.6.js",
+      "S11.13.2_A2.1_T1.7.js",
+      "S11.13.2_A2.1_T1.8.js",
+      "S11.13.2_A2.1_T1.9.js",
+      "S11.13.2_A2.1_T2.1.js",
+      "S11.13.2_A2.1_T2.10.js",
+      "S11.13.2_A2.1_T2.11.js",
+      "S11.13.2_A2.1_T2.2.js",
+      "S11.13.2_A2.1_T2.3.js",
+      "S11.13.2_A2.1_T2.4.js",
+      "S11.13.2_A2.1_T2.5.js",
+      "S11.13.2_A2.1_T2.6.js",
+      "S11.13.2_A2.1_T2.7.js",
+      "S11.13.2_A2.1_T2.8.js",
+      "S11.13.2_A2.1_T2.9.js",
+      "S11.13.2_A2.1_T3.1.js",
+      "S11.13.2_A2.1_T3.10.js",
+      "S11.13.2_A2.1_T3.11.js",
+      "S11.13.2_A2.1_T3.2.js",
+      "S11.13.2_A2.1_T3.3.js",
+      "S11.13.2_A2.1_T3.4.js",
+      "S11.13.2_A2.1_T3.5.js",
+      "S11.13.2_A2.1_T3.6.js",
+      "S11.13.2_A2.1_T3.7.js",
+      "S11.13.2_A2.1_T3.8.js",
+      "S11.13.2_A2.1_T3.9.js",
+      "S11.13.2_A3.1_T1.js",
+      "S11.13.2_A3.1_T10.js",
+      "S11.13.2_A3.1_T11.js",
+      "S11.13.2_A3.1_T2.js",
+      "S11.13.2_A3.1_T3.js",
+      "S11.13.2_A3.1_T4.js",
+      "S11.13.2_A3.1_T5.js",
+      "S11.13.2_A3.1_T6.js",
+      "S11.13.2_A3.1_T7.js",
+      "S11.13.2_A3.1_T8.js",
+      "S11.13.2_A3.1_T9.js",
+      "S11.13.2_A3.2_T1.js",
+      "S11.13.2_A3.2_T10.js",
+      "S11.13.2_A3.2_T11.js",
+      "S11.13.2_A3.2_T2.js",
+      "S11.13.2_A3.2_T3.js",
+      "S11.13.2_A3.2_T4.js",
+      "S11.13.2_A3.2_T5.js",
+      "S11.13.2_A3.2_T6.js",
+      "S11.13.2_A3.2_T7.js",
+      "S11.13.2_A3.2_T8.js",
+      "S11.13.2_A3.2_T9.js",
+      "S11.13.2_A4.10_T1.1.js",
+      "S11.13.2_A4.10_T1.2.js",
+      "S11.13.2_A4.10_T1.3.js",
+      "S11.13.2_A4.10_T1.4.js",
+      "S11.13.2_A4.10_T2.1.js",
+      "S11.13.2_A4.10_T2.2.js",
+      "S11.13.2_A4.10_T2.3.js",
+      "S11.13.2_A4.10_T2.4.js",
+      "S11.13.2_A4.10_T2.5.js",
+      "S11.13.2_A4.10_T2.6.js",
+      "S11.13.2_A4.10_T2.7.js",
+      "S11.13.2_A4.10_T2.8.js",
+      "S11.13.2_A4.10_T2.9.js",
+      "S11.13.2_A4.11_T1.1.js",
+      "S11.13.2_A4.11_T1.2.js",
+      "S11.13.2_A4.11_T1.3.js",
+      "S11.13.2_A4.11_T1.4.js",
+      "S11.13.2_A4.11_T2.1.js",
+      "S11.13.2_A4.11_T2.2.js",
+      "S11.13.2_A4.11_T2.3.js",
+      "S11.13.2_A4.11_T2.4.js",
+      "S11.13.2_A4.11_T2.5.js",
+      "S11.13.2_A4.11_T2.6.js",
+      "S11.13.2_A4.11_T2.7.js",
+      "S11.13.2_A4.11_T2.8.js",
+      "S11.13.2_A4.11_T2.9.js",
+      "S11.13.2_A4.1_T1.1.js",
+      "S11.13.2_A4.1_T1.2.js",
+      "S11.13.2_A4.1_T1.3.js",
+      "S11.13.2_A4.1_T1.4.js",
+      "S11.13.2_A4.1_T2.1.js",
+      "S11.13.2_A4.1_T2.2.js",
+      "S11.13.2_A4.1_T2.3.js",
+      "S11.13.2_A4.1_T2.4.js",
+      "S11.13.2_A4.1_T2.5.js",
+      "S11.13.2_A4.1_T2.6.js",
+      "S11.13.2_A4.1_T2.7.js",
+      "S11.13.2_A4.1_T2.8.js",
+      "S11.13.2_A4.1_T2.9.js",
+      "S11.13.2_A4.2_T1.1.js",
+      "S11.13.2_A4.2_T1.2.js",
+      "S11.13.2_A4.2_T1.3.js",
+      "S11.13.2_A4.2_T1.4.js",
+      "S11.13.2_A4.2_T2.1.js",
+      "S11.13.2_A4.2_T2.2.js",
+      "S11.13.2_A4.2_T2.3.js",
+      "S11.13.2_A4.2_T2.4.js",
+      "S11.13.2_A4.2_T2.5.js",
+      "S11.13.2_A4.2_T2.6.js",
+      "S11.13.2_A4.2_T2.7.js",
+      "S11.13.2_A4.2_T2.8.js",
+      "S11.13.2_A4.2_T2.9.js",
+      "S11.13.2_A4.3_T1.1.js",
+      "S11.13.2_A4.3_T1.2.js",
+      "S11.13.2_A4.3_T1.3.js",
+      "S11.13.2_A4.3_T1.4.js",
+      "S11.13.2_A4.3_T2.1.js",
+      "S11.13.2_A4.3_T2.2.js",
+      "S11.13.2_A4.3_T2.3.js",
+      "S11.13.2_A4.3_T2.4.js",
+      "S11.13.2_A4.3_T2.5.js",
+      "S11.13.2_A4.3_T2.6.js",
+      "S11.13.2_A4.3_T2.7.js",
+      "S11.13.2_A4.3_T2.8.js",
+      "S11.13.2_A4.3_T2.9.js",
+      "S11.13.2_A4.4_T1.1.js",
+      "S11.13.2_A4.4_T1.2.js",
+      "S11.13.2_A4.4_T1.3.js",
+      "S11.13.2_A4.4_T1.4.js",
+      "S11.13.2_A4.4_T2.1.js",
+      "S11.13.2_A4.4_T2.2.js",
+      "S11.13.2_A4.4_T2.3.js",
+      "S11.13.2_A4.4_T2.4.js",
+      "S11.13.2_A4.4_T2.5.js",
+      "S11.13.2_A4.4_T2.6.js",
+      "S11.13.2_A4.4_T2.7.js",
+      "S11.13.2_A4.4_T2.8.js",
+      "S11.13.2_A4.4_T2.9.js",
+      "S11.13.2_A4.5_T1.1.js",
+      "S11.13.2_A4.5_T1.2.js",
+      "S11.13.2_A4.5_T1.3.js",
+      "S11.13.2_A4.5_T1.4.js",
+      "S11.13.2_A4.5_T2.1.js",
+      "S11.13.2_A4.5_T2.2.js",
+      "S11.13.2_A4.5_T2.3.js",
+      "S11.13.2_A4.5_T2.4.js",
+      "S11.13.2_A4.5_T2.5.js",
+      "S11.13.2_A4.5_T2.6.js",
+      "S11.13.2_A4.5_T2.7.js",
+      "S11.13.2_A4.5_T2.8.js",
+      "S11.13.2_A4.5_T2.9.js",
+      "S11.13.2_A4.6_T1.1.js",
+      "S11.13.2_A4.6_T1.2.js",
+      "S11.13.2_A4.6_T1.3.js",
+      "S11.13.2_A4.6_T1.4.js",
+      "S11.13.2_A4.6_T2.1.js",
+      "S11.13.2_A4.6_T2.2.js",
+      "S11.13.2_A4.6_T2.3.js",
+      "S11.13.2_A4.6_T2.4.js",
+      "S11.13.2_A4.6_T2.5.js",
+      "S11.13.2_A4.6_T2.6.js",
+      "S11.13.2_A4.6_T2.7.js",
+      "S11.13.2_A4.6_T2.8.js",
+      "S11.13.2_A4.6_T2.9.js",
+      "S11.13.2_A4.7_T1.1.js",
+      "S11.13.2_A4.7_T1.2.js",
+      "S11.13.2_A4.7_T1.3.js",
+      "S11.13.2_A4.7_T1.4.js",
+      "S11.13.2_A4.7_T2.1.js",
+      "S11.13.2_A4.7_T2.2.js",
+      "S11.13.2_A4.7_T2.3.js",
+      "S11.13.2_A4.7_T2.4.js",
+      "S11.13.2_A4.7_T2.5.js",
+      "S11.13.2_A4.7_T2.6.js",
+      "S11.13.2_A4.7_T2.7.js",
+      "S11.13.2_A4.7_T2.8.js",
+      "S11.13.2_A4.7_T2.9.js",
+      "S11.13.2_A4.8_T1.1.js",
+      "S11.13.2_A4.8_T1.2.js",
+      "S11.13.2_A4.8_T1.3.js",
+      "S11.13.2_A4.8_T1.4.js",
+      "S11.13.2_A4.8_T2.1.js",
+      "S11.13.2_A4.8_T2.2.js",
+      "S11.13.2_A4.8_T2.3.js",
+      "S11.13.2_A4.8_T2.4.js",
+      "S11.13.2_A4.8_T2.5.js",
+      "S11.13.2_A4.8_T2.6.js",
+      "S11.13.2_A4.8_T2.7.js",
+      "S11.13.2_A4.8_T2.8.js",
+      "S11.13.2_A4.8_T2.9.js",
+      "S11.13.2_A4.9_T1.1.js",
+      "S11.13.2_A4.9_T1.2.js",
+      "S11.13.2_A4.9_T1.3.js",
+      "S11.13.2_A4.9_T1.4.js",
+      "S11.13.2_A4.9_T2.1.js",
+      "S11.13.2_A4.9_T2.2.js",
+      "S11.13.2_A4.9_T2.3.js",
+      "S11.13.2_A4.9_T2.4.js",
+      "S11.13.2_A4.9_T2.5.js",
+      "S11.13.2_A4.9_T2.6.js",
+      "S11.13.2_A4.9_T2.7.js",
+      "S11.13.2_A4.9_T2.8.js",
+      "S11.13.2_A4.9_T2.9.js",
+      "S11.13.2_A5.10_T1.js",
+      "S11.13.2_A5.10_T2.js",
+      "S11.13.2_A5.10_T3.js",
+      "S11.13.2_A5.11_T1.js",
+      "S11.13.2_A5.11_T2.js",
+      "S11.13.2_A5.11_T3.js",
+      "S11.13.2_A5.1_T1.js",
+      "S11.13.2_A5.1_T2.js",
+      "S11.13.2_A5.1_T3.js",
+      "S11.13.2_A5.2_T1.js",
+      "S11.13.2_A5.2_T2.js",
+      "S11.13.2_A5.2_T3.js",
+      "S11.13.2_A5.3_T1.js",
+      "S11.13.2_A5.3_T2.js",
+      "S11.13.2_A5.3_T3.js",
+      "S11.13.2_A5.4_T1.js",
+      "S11.13.2_A5.4_T2.js",
+      "S11.13.2_A5.4_T3.js",
+      "S11.13.2_A5.5_T1.js",
+      "S11.13.2_A5.5_T2.js",
+      "S11.13.2_A5.5_T3.js",
+      "S11.13.2_A5.6_T1.js",
+      "S11.13.2_A5.6_T2.js",
+      "S11.13.2_A5.6_T3.js",
+      "S11.13.2_A5.7_T1.js",
+      "S11.13.2_A5.7_T2.js",
+      "S11.13.2_A5.7_T3.js",
+      "S11.13.2_A5.8_T1.js",
+      "S11.13.2_A5.8_T2.js",
+      "S11.13.2_A5.8_T3.js",
+      "S11.13.2_A5.9_T1.js",
+      "S11.13.2_A5.9_T2.js",
+      "S11.13.2_A5.9_T3.js",
+      "S11.13.2_A6.10_T1.js",
+      "S11.13.2_A6.11_T1.js",
+      "S11.13.2_A6.1_T1.js",
+      "S11.13.2_A6.2_T1.js",
+      "S11.13.2_A6.3_T1.js",
+      "S11.13.2_A6.4_T1.js",
+      "S11.13.2_A6.5_T1.js",
+      "S11.13.2_A6.6_T1.js",
+      "S11.13.2_A6.7_T1.js",
+      "S11.13.2_A6.8_T1.js",
+      "S11.13.2_A6.9_T1.js",
+      "S11.13.2_A7.10_T1.js",
+      "S11.13.2_A7.10_T2.js",
+      "S11.13.2_A7.10_T3.js",
+      "S11.13.2_A7.10_T4.js",
+      "S11.13.2_A7.11_T1.js",
+      "S11.13.2_A7.11_T2.js",
+      "S11.13.2_A7.11_T3.js",
+      "S11.13.2_A7.11_T4.js",
+      "S11.13.2_A7.1_T1.js",
+      "S11.13.2_A7.1_T2.js",
+      "S11.13.2_A7.1_T3.js",
+      "S11.13.2_A7.1_T4.js",
+      "S11.13.2_A7.2_T1.js",
+      "S11.13.2_A7.2_T2.js",
+      "S11.13.2_A7.2_T3.js",
+      "S11.13.2_A7.2_T4.js",
+      "S11.13.2_A7.3_T1.js",
+      "S11.13.2_A7.3_T2.js",
+      "S11.13.2_A7.3_T3.js",
+      "S11.13.2_A7.3_T4.js",
+      "S11.13.2_A7.4_T1.js",
+      "S11.13.2_A7.4_T2.js",
+      "S11.13.2_A7.4_T3.js",
+      "S11.13.2_A7.4_T4.js",
+      "S11.13.2_A7.5_T1.js",
+      "S11.13.2_A7.5_T2.js",
+      "S11.13.2_A7.5_T3.js",
+      "S11.13.2_A7.5_T4.js",
+      "S11.13.2_A7.6_T1.js",
+      "S11.13.2_A7.6_T2.js",
+      "S11.13.2_A7.6_T3.js",
+      "S11.13.2_A7.6_T4.js",
+      "S11.13.2_A7.7_T1.js",
+      "S11.13.2_A7.7_T2.js",
+      "S11.13.2_A7.7_T3.js",
+      "S11.13.2_A7.7_T4.js",
+      "S11.13.2_A7.8_T1.js",
+      "S11.13.2_A7.8_T2.js",
+      "S11.13.2_A7.8_T3.js",
+      "S11.13.2_A7.8_T4.js",
+      "S11.13.2_A7.9_T1.js",
+      "S11.13.2_A7.9_T2.js",
+      "S11.13.2_A7.9_T3.js",
+      "S11.13.2_A7.9_T4.js",
+      "add-arguments-strict.js",
+      "add-eval-strict.js",
+      "add-non-simple.js",
+      "add-whitespace.js",
+      "and-arguments-strict.js",
+      "and-eval-strict.js",
+      "and-whitespace.js",
+      "btws-and-non-simple.js",
+      "btws-or-non-simple.js",
+      "btws-xor-non-simple.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--1.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--10.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--11.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--12.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--13.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--14.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--15.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--16.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--17.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--18.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--19.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--2.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--20.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--21.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--3.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--4.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--5.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--6.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--7.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--8.js",
+      "compound-assignment-operator-calls-putvalue-lref--v--9.js",
+      "compound-assignment-operator-calls-putvalue-lref--v-.js",
+      "div-arguments-strict.js",
+      "div-eval-strict.js",
+      "div-non-simple.js",
+      "div-whitespace.js",
+      "left-hand-side-private-reference-accessor-property-add.js",
+      "left-hand-side-private-reference-accessor-property-bitand.js",
+      "left-hand-side-private-reference-accessor-property-bitor.js",
+      "left-hand-side-private-reference-accessor-property-bitxor.js",
+      "left-hand-side-private-reference-accessor-property-div.js",
+      "left-hand-side-private-reference-accessor-property-exp.js",
+      "left-hand-side-private-reference-accessor-property-lshift.js",
+      "left-hand-side-private-reference-accessor-property-mod.js",
+      "left-hand-side-private-reference-accessor-property-mult.js",
+      "left-hand-side-private-reference-accessor-property-rshift.js",
+      "left-hand-side-private-reference-accessor-property-srshift.js",
+      "left-hand-side-private-reference-accessor-property-sub.js",
+      "left-hand-side-private-reference-data-property-add.js",
+      "left-hand-side-private-reference-data-property-bitand.js",
+      "left-hand-side-private-reference-data-property-bitor.js",
+      "left-hand-side-private-reference-data-property-bitxor.js",
+      "left-hand-side-private-reference-data-property-div.js",
+      "left-hand-side-private-reference-data-property-exp.js",
+      "left-hand-side-private-reference-data-property-lshift.js",
+      "left-hand-side-private-reference-data-property-mod.js",
+      "left-hand-side-private-reference-data-property-mult.js",
+      "left-hand-side-private-reference-data-property-rshift.js",
+      "left-hand-side-private-reference-data-property-srshift.js",
+      "left-hand-side-private-reference-data-property-sub.js",
+      "left-hand-side-private-reference-method-add.js",
+      "left-hand-side-private-reference-method-bitand.js",
+      "left-hand-side-private-reference-method-bitor.js",
+      "left-hand-side-private-reference-method-bitxor.js",
+      "left-hand-side-private-reference-method-div.js",
+      "left-hand-side-private-reference-method-exp.js",
+      "left-hand-side-private-reference-method-lshift.js",
+      "left-hand-side-private-reference-method-mod.js",
+      "left-hand-side-private-reference-method-mult.js",
+      "left-hand-side-private-reference-method-rshift.js",
+      "left-hand-side-private-reference-method-srshift.js",
+      "left-hand-side-private-reference-method-sub.js",
+      "left-hand-side-private-reference-readonly-accessor-property-add.js",
+      "left-hand-side-private-reference-readonly-accessor-property-bitand.js",
+      "left-hand-side-private-reference-readonly-accessor-property-bitor.js",
+      "left-hand-side-private-reference-readonly-accessor-property-bitxor.js",
+      "left-hand-side-private-reference-readonly-accessor-property-div.js",
+      "left-hand-side-private-reference-readonly-accessor-property-exp.js",
+      "left-hand-side-private-reference-readonly-accessor-property-lshift.js",
+      "left-hand-side-private-reference-readonly-accessor-property-mod.js",
+      "left-hand-side-private-reference-readonly-accessor-property-mult.js",
+      "left-hand-side-private-reference-readonly-accessor-property-rshift.js",
+      "left-hand-side-private-reference-readonly-accessor-property-srshift.js",
+      "left-hand-side-private-reference-readonly-accessor-property-sub.js",
+      "left-shift-non-simple.js",
+      "lshift-arguments-strict.js",
+      "lshift-eval-strict.js",
+      "lshift-whitespace.js",
+      "mod-arguments-strict.js",
+      "mod-div-non-simple.js",
+      "mod-eval-strict.js",
+      "mod-whitespace.js",
+      "mult-arguments-strict.js",
+      "mult-eval-strict.js",
+      "mult-non-simple.js",
+      "mult-whitespace.js",
+      "or-arguments-strict.js",
+      "or-eval-strict.js",
+      "or-whitespace.js",
+      "right-shift-non-simple.js",
+      "srshift-arguments-strict.js",
+      "srshift-eval-strict.js",
+      "srshift-whitespace.js",
+      "sub-arguments-strict.js",
+      "sub-eval-strict.js",
+      "sub-whitespace.js",
+      "subtract-non-simple.js",
+      "u-right-shift-non-simple.js",
+      "urshift-arguments-strict.js",
+      "urshift-eval-strict.js",
+      "urshift-whitespace.js",
+      "xor-arguments-strict.js",
+      "xor-eval-strict.js",
+      "xor-whitespace.js"
+    ]
+  },
+  "test_files": 454,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-1-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-1-s.js",
+      "bytes": 409,
+      "sha256": "bb850bf59179ff94b166b42c3003497e9c50c143fc4f9a69e2d95dcfc60bf15d"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-10-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-10-s.js",
+      "bytes": 411,
+      "sha256": "c6001a29cf1a80c2106d4520aacc5738db77ce5eb10f31f0559dbb8f999514cc"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-11-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-11-s.js",
+      "bytes": 411,
+      "sha256": "d8268662741a95bc2a6c6f021354477ed4874dbda384eec99b89bc40afbb90d4"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-12-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-12-s.js",
+      "bytes": 429,
+      "sha256": "4a53b101f0211806b92ff0d7f4c4db731dfa5ec414adf46980812e0b9a531e09"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-13-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-13-s.js",
+      "bytes": 428,
+      "sha256": "7dabafb33d9057da7d90fb5973b43ec02b14cd018ed1e1944c1fb8ceb5658a09"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-14-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-14-s.js",
+      "bytes": 428,
+      "sha256": "0d51de2f4b612998eb2a59c48e7cb826a844b28ded56f5341544d2b2eca95bfd"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-15-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-15-s.js",
+      "bytes": 432,
+      "sha256": "33f4fe9d576a815f0d2109835ef47d62f44fb43a3d76d5de829174b589c820a3"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-16-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-16-s.js",
+      "bytes": 428,
+      "sha256": "33ea45d5fe85dccc5eed8985562fa11dcf3496cc3f0888e11c6c33eb79d925ed"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-17-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-17-s.js",
+      "bytes": 431,
+      "sha256": "1cc14113ca0cb950b56232ea6dcd92712fd431a64a2f218efb7c6a704a0041f9"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-18-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-18-s.js",
+      "bytes": 430,
+      "sha256": "59a13568d18301bb6ab18dd1bf3cd9d3fcacb6930f109dc7738c994712146dec"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-19-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-19-s.js",
+      "bytes": 430,
+      "sha256": "50d9dd666fab10f620eae91d814921d7c2b03d3343fbbb203b9892e517ed9cb1"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-2-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-2-s.js",
+      "bytes": 423,
+      "sha256": "e1f51ddbdc3f1d9b4a0e0e09fe9b4112656c7a28c346a457224e29d24977aa10"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-20-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-20-s.js",
+      "bytes": 428,
+      "sha256": "b1b6e2debfb378f26f3117591b2e149f3118e5efae4de87c6f3ad1a74fd79589"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-21-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-21-s.js",
+      "bytes": 428,
+      "sha256": "ec38a4ec11fb9291b6fa18f8267304c158c85bc988935675911e2bd08bdb2c15"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-22-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-22-s.js",
+      "bytes": 428,
+      "sha256": "eccc16d2bcb1a34eaa93a61853b5bbb147075d366a5d13770fe8bc7f26c91d7e"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-23-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-23-s.js",
+      "bytes": 694,
+      "sha256": "e5cd5ab02e04259308e16fa6e10740accab538c82a1da6595bd670baba0b66c4"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-24-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-24-s.js",
+      "bytes": 694,
+      "sha256": "8ae9107290da15464d7fcb8bcdefd5c0bfe347c7b054e66d9ac77da6688696dc"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-25-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-25-s.js",
+      "bytes": 694,
+      "sha256": "4b0a927e7981c949d146162a3e7ca58d0b37e2b170f71c541a9981ea7f5452ef"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-26-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-26-s.js",
+      "bytes": 694,
+      "sha256": "2d48f2b21e3c8557645cdaf8788b47e798679e7f2ecef736431a49da6c2f79be"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-27-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-27-s.js",
+      "bytes": 694,
+      "sha256": "ec767693842e4d4cdbe7bc87c8288052f8c803012f3870f67af76e4c10ba10d4"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-28-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-28-s.js",
+      "bytes": 696,
+      "sha256": "a3a35968a6f29fb6f29094516fb71ffbaf2bd24f75468be6bacda4a1f6b4948b"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-29-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-29-s.js",
+      "bytes": 696,
+      "sha256": "ceb8e3569b65c6ff970d2e2fd9a6fbee000bfea25f54f9c387786427278d7232"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-30-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-30-s.js",
+      "bytes": 698,
+      "sha256": "739b1f1b48b7b09d610298f771fb7e5e107ec3e14fe48831a2ad59eeceabafcb"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-31-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-31-s.js",
+      "bytes": 694,
+      "sha256": "beabf13287a8bc0a34d794b132c597615914254c045ec2f99b60c031aee33482"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-32-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-32-s.js",
+      "bytes": 694,
+      "sha256": "d5ff88cbc3f824f306d7aff7f027af8a81fd540fd1ff8de11c86a70e9da5534d"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-33-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-33-s.js",
+      "bytes": 694,
+      "sha256": "55a256d849e86d32ab5896f5e25a899d86997d10cb88a128261c0add648a5136"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-34-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-34-s.js",
+      "bytes": 747,
+      "sha256": "f4dd83ac68a03e090800fa3a4f16503b6aa39cdd87c3b7a3a0ce4d45222ce4ad"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-35-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-35-s.js",
+      "bytes": 747,
+      "sha256": "0b17650f10e20ce3758a26eceaf2e80eba55386eccb9086ab61d7f976ef56a60"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-36-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-36-s.js",
+      "bytes": 747,
+      "sha256": "0ff6d76909b02a5ae0b6fd9487d205d519bd2b26f4965d93eb84f6c34937e9b3"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-37-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-37-s.js",
+      "bytes": 747,
+      "sha256": "2b90ce31e2fc8190f9095b1e86114729f907495a322a7c8d94f6813436aef129"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-38-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-38-s.js",
+      "bytes": 747,
+      "sha256": "b773858496fcf574f1cd652ce9538b1016ed40d9c51a308a5392e85c6eebfbb6"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-39-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-39-s.js",
+      "bytes": 749,
+      "sha256": "63e535cfe1e12e7d82c468c24bc0804da79bc948ac88e8b09429ebc5b7ddffff"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-4-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-4-s.js",
+      "bytes": 427,
+      "sha256": "0fa130b05397cbc4f6ed3cdba9d0d9c57bef70e874d1b3ecfacfe0a0f33cac49"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-40-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-40-s.js",
+      "bytes": 749,
+      "sha256": "37717c017e8d002e0c8244ed605d605f217341ce4a73442fdd81831bb0f296cb"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-41-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-41-s.js",
+      "bytes": 751,
+      "sha256": "57f39af2d13d633b2d1fb203f8b862ac2a547e40a693c950655aa6be152b06dc"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-42-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-42-s.js",
+      "bytes": 747,
+      "sha256": "87da9dd79b6ccdaf0508c361904e6812b509930637e06bc40a0e4c166b96535b"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-43-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-43-s.js",
+      "bytes": 747,
+      "sha256": "a57176d8bd6a47d583292427852c452df86278223394c328dc087ad0842bc50e"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-44-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-44-s.js",
+      "bytes": 750,
+      "sha256": "8819e7ba765e75b52206ff2ee996f25e11dd445f271fbf1ba14238004b12f391"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-45-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-45-s.js",
+      "bytes": 545,
+      "sha256": "d0e32fdeaf970ac1ca74675e2706105b3c6d7fd650d48d1119de97b71e2b33b7"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-46-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-46-s.js",
+      "bytes": 545,
+      "sha256": "0f768061a1dfe8e3f1555b6cda374723f0b55a053b216891f2f57571c5d8f7f1"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-47-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-47-s.js",
+      "bytes": 545,
+      "sha256": "d66d63e2e5d5f6470a1445bdea8de15ae5b31cc605b4955b7d1e2eb7d3b566aa"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-48-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-48-s.js",
+      "bytes": 545,
+      "sha256": "5eb505f03ae054a340931413a22e85ebe039165fa765720f164ab3d29d95f1f3"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-49-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-49-s.js",
+      "bytes": 545,
+      "sha256": "f1094c62647aa8bdd67385a9c503d282de0a137d524591ff8ceaa6d67d1528b1"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-5-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-5-s.js",
+      "bytes": 427,
+      "sha256": "1fb79d0b9135bce17553f1854bcfb32deaa77aa029bff4ae1193c93de6f8ea85"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-50-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-50-s.js",
+      "bytes": 547,
+      "sha256": "4c02c1687f2cd92aa2b68a119e4427a9666cd652fe0c3013bdf84f4cbebfb3e6"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-51-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-51-s.js",
+      "bytes": 547,
+      "sha256": "b7fec6a14be8b5d77fb4061e9dbca3ecdf2b00be092ecb073e14f2d8810b46b6"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-52-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-52-s.js",
+      "bytes": 549,
+      "sha256": "d19a2e1795296939bf510898b7b56970e7591b58bc27c89079323ccbafdba127"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-53-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-53-s.js",
+      "bytes": 545,
+      "sha256": "39025cf720f0dc24399deb6fac40e3c2babc86df1c0c15ad321554e85d1bf81a"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-54-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-54-s.js",
+      "bytes": 545,
+      "sha256": "b3d583ead7391b9984ed958989562fb82319915926f3a45da16f2fb72c7d72c5"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-55-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-55-s.js",
+      "bytes": 545,
+      "sha256": "779701f264686f12b2984fba3ae133e30a20201fc79b09c5fd97531688fb40ae"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-6-1gs.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-6-1gs.js",
+      "bytes": 423,
+      "sha256": "d05b860cd260fc9a0995616dfe7aaab6944f7f20e28efd182f4bd8c2cb567d10"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-6-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-6-s.js",
+      "bytes": 429,
+      "sha256": "5512efeb298132c68f78139094b10ec0ae0f11c5f1755b079b986236f3045b7c"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-8-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-8-s.js",
+      "bytes": 431,
+      "sha256": "bd090dc38d7ed2e2dff444dfd49375c71baba9b96d09768f30d14b1bd972c248"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/11.13.2-9-s.js",
+      "upstream_path": "test/language/expressions/compound-assignment/11.13.2-9-s.js",
+      "bytes": 427,
+      "sha256": "d5eb4bea930d47fba0e931aa3b33522788a725634863b0bc74c2dfaf4ad3ef8c"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.1.js",
+      "bytes": 618,
+      "sha256": "bcf2fc57dad86b08946ece92eeea99ae015552a286cd2647dbb6c0d7064c4e0a"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.10.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.10.js",
+      "bytes": 611,
+      "sha256": "bcd47bba9d88491c82dc41219a9a9dd89af1c64b730f93e9621615ee46028e49"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.11.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.11.js",
+      "bytes": 611,
+      "sha256": "88e6f25d4a3965bd41ebd2ebd5d3f23c2fe325e5c4ccfd440784af031b312040"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.2.js",
+      "bytes": 618,
+      "sha256": "f5fa01596bafc2009f71ee5296cfb5d5115b3182acd4bc5bc5bfbb34aac667ad"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.3.js",
+      "bytes": 618,
+      "sha256": "a861040887cd178a07a995b85388bc64bf022cb8075e7e2fab6ac7c3987744c1"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.4.js",
+      "bytes": 610,
+      "sha256": "ddb79c9efcee1d667367fef269ffdd1649d200229d1adb6f4f16b993dfb2a9a3"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.5.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.5.js",
+      "bytes": 610,
+      "sha256": "0dfa6923137a9910607ae9249a36d2d0ec19ed02c9eb76cc61a1bf5fe0444f5f"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.6.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.6.js",
+      "bytes": 615,
+      "sha256": "a68001bd40eb5cd054287d29acb44a28e3d93c607a807d398ac1f7e7026bc56c"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.7.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.7.js",
+      "bytes": 615,
+      "sha256": "a8e52431e3f3aa5e68ebb9d60ad63886d67dfcf31190c9ae909897ded3a8f3c2"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.8.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.8.js",
+      "bytes": 620,
+      "sha256": "45d614a995107a0847d086cca0e2913f5bafa57ae9cb7a2b7fea8a9315fd6cc3"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.9.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T1.9.js",
+      "bytes": 610,
+      "sha256": "0f2f832b84f7fcb1bba294c79052c6fd2703b12c6c9db0f5697142de18f5c33a"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.1.js",
+      "bytes": 616,
+      "sha256": "e7918237c85c19a976ba5598c99205d3174d2f86329b95a824e3e099dba65a28"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.10.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.10.js",
+      "bytes": 617,
+      "sha256": "89af06f27549f5cc87a17d9ca5297d9763967e4e966185c762c617a0b6daa23b"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.11.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.11.js",
+      "bytes": 617,
+      "sha256": "5f01ea62046ec4ac3b0cad525c28cd86fb77aa8e0038764269e2970ea587e974"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.2.js",
+      "bytes": 616,
+      "sha256": "96396eb82e0328a0a0c5125e2234ccc8a63ab382f845f53f41407389791551a7"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.3.js",
+      "bytes": 616,
+      "sha256": "47e3f111598d3756dc3925325330ea6d8f37ab698fce7b4f33880b634105e746"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.4.js",
+      "bytes": 616,
+      "sha256": "d27e08d329658bfed25a733671ea28a5433a6ea5bc522facbad9bc71726134b3"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.5.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.5.js",
+      "bytes": 616,
+      "sha256": "61d2481a40e9bb918766fbb5e39650ea126d567e5a77e72688d565c41cf5c589"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.6.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.6.js",
+      "bytes": 620,
+      "sha256": "128af001b40b35aca3fb2a6d5223127a45e51de4f211ff86df1267ed12bfbc47"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.7.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.7.js",
+      "bytes": 620,
+      "sha256": "f7b3b590fafa63fcf465debb9fe02d0393c5365e36c0456fb4d8509af059900d"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.8.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.8.js",
+      "bytes": 624,
+      "sha256": "095f730b3c4bbcfb1d7decae9c842af54e9ea08210f63d639a7fa669e416f9fe"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.9.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T2.9.js",
+      "bytes": 616,
+      "sha256": "3adc75db702b9df0fa7dc3875b97959d2d0f35a3427ba1076884b6964c30545f"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.1.js",
+      "bytes": 584,
+      "sha256": "dba101f88c5346181b022e8564d2dffa9886055dd90fe0187c058dd1aacb5300"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.10.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.10.js",
+      "bytes": 585,
+      "sha256": "2b4713d2bc055c1e8019adac256bc8e0db856246db75baa4f886d0afd2eb437a"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.11.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.11.js",
+      "bytes": 585,
+      "sha256": "bb36de2128e03898d2f116d705a748919fc8475aa479da587d6c1bb57eb9a07c"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.2.js",
+      "bytes": 584,
+      "sha256": "0a5b212f44db7d82e98b6ed79904f02cf0a7f19e7500dc044ba5c7ccb2f68bc2"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.3.js",
+      "bytes": 584,
+      "sha256": "b4f144d76bf061f159ac021087252e4b7a3cbeddb3a5cf87d70a6baf3a573cd3"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.4.js",
+      "bytes": 584,
+      "sha256": "f6be2d5eea171e79a7a498f921000cee30ec7298514628cfb0a12a61d50350e9"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.5.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.5.js",
+      "bytes": 584,
+      "sha256": "fe45f2a48f577149bb1c44cdae966c0d83b57f616d047dca8de6505897f50b3e"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.6.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.6.js",
+      "bytes": 588,
+      "sha256": "dc0bd6e65f10aef08b33a7d5c7f42674cf1648d7c59ddd176ad53c0e5e906150"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.7.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.7.js",
+      "bytes": 588,
+      "sha256": "8bbd21311f0ac58d7b974ebde9a0bd6f990b1ddc6132f66a99c97317ae6445a5"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.8.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.8.js",
+      "bytes": 592,
+      "sha256": "29f79f2096b2a02fa03f354ec033f652da9cf14a852b84b7e164c966f0c2ef09"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.9.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A2.1_T3.9.js",
+      "bytes": 584,
+      "sha256": "c6bee50881e3dbb5e612f2a4b64e27ab96ae95da7de4d613520d7c1480669e30"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T1.js",
+      "bytes": 536,
+      "sha256": "0a2e47fe5bb60ffc7b860facc92c81d87b88579fcbca70abf9649c53b3ad8010"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T10.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T10.js",
+      "bytes": 529,
+      "sha256": "f7163d7af3c8110d5ffff47bf2debf748770f6a5e0e25db27ad027c0308e4d8b"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T11.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T11.js",
+      "bytes": 529,
+      "sha256": "b2bbf4331e51f6e16a2a92526f9872001fcaa5c78809ec69ea7ebe7775f79002"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T2.js",
+      "bytes": 536,
+      "sha256": "529dae19aecc16aa8613b860d3cfa96c6f15d7014ec2233d22f02d7d93439093"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T3.js",
+      "bytes": 536,
+      "sha256": "b4d532e50f4888a6d9461191707d93fa94ebf3b593a95a5d0b6be372a9797130"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T4.js",
+      "bytes": 528,
+      "sha256": "b54bccd15c8edb82654a2068c751617e6f1c81a45433e76201500c82cc4cae08"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T5.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T5.js",
+      "bytes": 536,
+      "sha256": "d25678d346f5b29d29822b3921a180b65486529630b0835b7641cd55290a4069"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T6.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T6.js",
+      "bytes": 533,
+      "sha256": "fbe573a5c0b041e7ea585c70cc67f4532d62275b893cd0047e2e2a45a17bbf9b"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T7.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T7.js",
+      "bytes": 533,
+      "sha256": "f4ca3912dd9fff4a3147c1815bb9edece185e798fb6412c03a395f7febd63c9d"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T8.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T8.js",
+      "bytes": 538,
+      "sha256": "93ea7437e6b9f82ef344c7246fee8ad66f479e6fe107840fe55150b160f7415b"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T9.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.1_T9.js",
+      "bytes": 528,
+      "sha256": "a754f1ba3990ed3cf642381af97a0dbad4b90a3b055144eee777eca5419fa17a"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T1.js",
+      "bytes": 575,
+      "sha256": "ad74fda12fa41160ea6edeee1a2476062f7bbf52a652498a2d7d4b748d90a430"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T10.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T10.js",
+      "bytes": 568,
+      "sha256": "d19677dc5c6f537c3a3deb2c4030418435e2aff185c1dffc4c0eff5625641138"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T11.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T11.js",
+      "bytes": 568,
+      "sha256": "69c7aae1c26ede975426134d83b33b88dce8f2addbeea4742df0ea4791cbe148"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T2.js",
+      "bytes": 575,
+      "sha256": "ee088f459b1a0f92f9a7b0e37a57716c1bdedf6d4c6e3faff3db50bb30cf1270"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T3.js",
+      "bytes": 575,
+      "sha256": "cea7622f7131ed46f114ecf7c3d71b9fa96c57d5eb006d85f284b535793b6221"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T4.js",
+      "bytes": 567,
+      "sha256": "72471208d6c2f70ea0f072e6d49da041ea56a3406ab7a4b4c758970fe002b331"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T5.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T5.js",
+      "bytes": 575,
+      "sha256": "0ba010cf169cfbaf3e679a4eecaa8dfefc722ca98fb5bd6ac084e435a98693d3"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T6.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T6.js",
+      "bytes": 572,
+      "sha256": "0f3b2327a5121394543d8f713606fc88495d04e30f99ef8e0d85ae0eedb3c61f"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T7.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T7.js",
+      "bytes": 572,
+      "sha256": "c99023624ac4955d64035878c998bcec1e10b9bb00d6d245feae01955726da9a"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T8.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T8.js",
+      "bytes": 577,
+      "sha256": "12a304dd851274ed69d9d72c7fca47bf9c489b6109ae7795d324b06195cb22cd"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T9.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A3.2_T9.js",
+      "bytes": 567,
+      "sha256": "62d5681f420a8a0bb1ac6813897cdbd71b528eb634a5091992dd87a2ea928f60"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T1.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T1.1.js",
+      "bytes": 937,
+      "sha256": "dc468e99f1a3b7ea3bd0d1f095f26fd7492b418235ee0a158b50602c5c09c154"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T1.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T1.2.js",
+      "bytes": 869,
+      "sha256": "80d27fac321c0afe8844ed7084cf5372cbf4646358b96c397c7da44c50ba8851"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T1.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T1.3.js",
+      "bytes": 1147,
+      "sha256": "fc105570d86aa1c1aa1855c352959ba0e8871cd317ef3bf0a53a37a4a718b94a"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T1.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T1.4.js",
+      "bytes": 845,
+      "sha256": "f5165c32e2a373d47f9f00a51422a8b8c2cb94978510b414b93283681c801ba4"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T2.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T2.1.js",
+      "bytes": 1549,
+      "sha256": "e14d23c0dfb9c1df0d0dc546d656168288b52252c2d767cc9b5c171fce123d03"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T2.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T2.2.js",
+      "bytes": 1764,
+      "sha256": "1d8b9a8511b8ed3877860bbddf3b4a7bc2afb57bd9062b2786b274d16eeee400"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T2.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T2.3.js",
+      "bytes": 887,
+      "sha256": "9e054b4e406f7c91968b3b5cf475fc09ad8740c44a1528ed225db1ef261b486c"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T2.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T2.4.js",
+      "bytes": 932,
+      "sha256": "4d396fd814e487f68fd106aa3741461ec2db07bd3a36b8f3d89597f490859a8a"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T2.5.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T2.5.js",
+      "bytes": 1581,
+      "sha256": "f8c22c11cf207ed5c897396d3fec1117d90f817836819a29e17a03f42f2d346b"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T2.6.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T2.6.js",
+      "bytes": 948,
+      "sha256": "a037a9573d388a117bbdb2492a117b2bbfb37045f43758b185a84cc8da5dca26"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T2.7.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T2.7.js",
+      "bytes": 903,
+      "sha256": "6a13e650013cd8cd323651c8eddd4ddc509776784f8a8d0b3945c261a4308cfb"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T2.8.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T2.8.js",
+      "bytes": 961,
+      "sha256": "01663b6253d60ddc693071e2742337a37887f77d5cec69606f7c90b5c454944c"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T2.9.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.10_T2.9.js",
+      "bytes": 916,
+      "sha256": "0cc40b6ea55b182fc35a86965dc9699996c0a22dde5f031bc822205226a5864e"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T1.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T1.1.js",
+      "bytes": 937,
+      "sha256": "8ee5b030dc777284225cb41e80b59598522bc69d7d3bb67ae12f334a6477c907"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T1.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T1.2.js",
+      "bytes": 869,
+      "sha256": "8654fbe0fa9206e0f56e6d0b551f2d09ac4cc4f79ec45b2bc48e68eba418869a"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T1.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T1.3.js",
+      "bytes": 1147,
+      "sha256": "35562bdcfb528bfb409fb37deb8d9f704a442cf00e376f76e841a4d1c2ef8620"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T1.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T1.4.js",
+      "bytes": 845,
+      "sha256": "a1d7d5aff770af5155e9558fdd464ddf5de29e3ed0edb01b1af0294db6ae38a6"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T2.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T2.1.js",
+      "bytes": 1549,
+      "sha256": "e4adc1c2c22a542b3928902325ccff438558d3cb22a674aef2adde906fcb42db"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T2.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T2.2.js",
+      "bytes": 1764,
+      "sha256": "c1b0f5e36f874017d40d9d9001d13b9eb6e1e7470bff5c845cfabf50bd90078e"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T2.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T2.3.js",
+      "bytes": 887,
+      "sha256": "8bad83d62d85e937f7e2021ba9ebea349bd112f67905fcb8e93a12fa35469c55"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T2.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T2.4.js",
+      "bytes": 932,
+      "sha256": "bf6583914471d5e3a36adef552d46cc130c44952bacc12fd7153fcf516a73538"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T2.5.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T2.5.js",
+      "bytes": 1581,
+      "sha256": "f9e4f968ec06e5530a94453cbf129406c2224283b374c1b54d5f69efb16e2223"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T2.6.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T2.6.js",
+      "bytes": 948,
+      "sha256": "b06c78ca14f99acfcfbeba2ceef5556d2dd414e20772a424093c47e168573e99"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T2.7.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T2.7.js",
+      "bytes": 903,
+      "sha256": "3cd5e4f72d957440b85bf6375795828326f45143428d120a94667a088f564cc7"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T2.8.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T2.8.js",
+      "bytes": 961,
+      "sha256": "6d9d8af78404029e3a150e289b3c2a0f5ee23fdaa5b51f933919776010f1151c"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T2.9.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.11_T2.9.js",
+      "bytes": 916,
+      "sha256": "7a541bf0f1d47009b4b028cc9e10028d4bace00eb9c016438eb9157f95699242"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T1.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T1.1.js",
+      "bytes": 951,
+      "sha256": "a51809816ce99b5574f130836e212dce3a2f3df082a239387cd14fea96f42985"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T1.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T1.2.js",
+      "bytes": 883,
+      "sha256": "6f7405b52f44bd348014ad04fa23d2db81fe3e186325948b45a6e03bfb9a90f7"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T1.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T1.3.js",
+      "bytes": 1203,
+      "sha256": "4715d812262eefdabf0d9089ba35563d23d9ee6df8ca38dcc5d414b8a904b5ed"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T1.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T1.4.js",
+      "bytes": 922,
+      "sha256": "203fe2262d28edbb6d612e32559ba735f809ea9efaef317140c0207561f66f66"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T2.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T2.1.js",
+      "bytes": 1563,
+      "sha256": "1554b1fbf25d35eb5ff3dba2c10ad01f20de2f6015d4278eea59d9e52e41bc26"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T2.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T2.2.js",
+      "bytes": 1820,
+      "sha256": "a386ed0a63af089271d92f85292aa8c0ab4575f5782dd6d074a25f0f3f6858de"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T2.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T2.3.js",
+      "bytes": 901,
+      "sha256": "38bab5d60a8aa3b04720d8c49cc3c478088d0161b32370479708216fb061c37f"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T2.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T2.4.js",
+      "bytes": 1030,
+      "sha256": "4b6307f135479bf10954ff9c1f9aebca7135f9812bd854b0ef4b52fd735ce9b9"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T2.5.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T2.5.js",
+      "bytes": 1595,
+      "sha256": "ec0abaac64f94b3832e4a9dcf986112e0b660567e6c6f019aa787ab47e82d2d4"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T2.6.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T2.6.js",
+      "bytes": 1056,
+      "sha256": "5279d290eeaec88cd8756565110c64a521fff33210b7eb5ad5fc9f07090f067e"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T2.7.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T2.7.js",
+      "bytes": 917,
+      "sha256": "8cd58517dfe5e9e7abf10c8b7623abec904dfe89bd6761496276e24fde4b09e4"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T2.8.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T2.8.js",
+      "bytes": 1059,
+      "sha256": "bfcd7e5df899f7754d47bcd81cbf93429704c3e4ebc46dee8de104f5beede984"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T2.9.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.1_T2.9.js",
+      "bytes": 930,
+      "sha256": "8f53c247390e91f2dabc84580ff029cd3a3582c1d9667e08b7a1055d4067a8e5"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T1.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T1.1.js",
+      "bytes": 936,
+      "sha256": "1996ef6000d6a83197595008c3e467cda2c01cd49b4e9d5b5073903cabbd761c"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T1.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T1.2.js",
+      "bytes": 868,
+      "sha256": "2f8a5d90e965c4179f5f8d6bfe0aa81c576e13d36b9bca5049333e4d842d4ef5"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T1.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T1.3.js",
+      "bytes": 1188,
+      "sha256": "5b70fb564fccfa7cbde02f830f74e752090bfd9377aaa15446e3535a1efbd4b4"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T1.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T1.4.js",
+      "bytes": 928,
+      "sha256": "9f9b6cf322cf965bae2a024e9c710f1c2d01c185bb4e0aa80b71da5b4041d2da"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T2.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T2.1.js",
+      "bytes": 1548,
+      "sha256": "21f18cdc2451a71a15f79b19d15843c912958e6cceab9450a4846f6ce40f2ea6"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T2.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T2.2.js",
+      "bytes": 1805,
+      "sha256": "12897b5d98bf24b9ca3246ca0b99b95b03e646fad6e7307b311d33b6e5c734a0"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T2.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T2.3.js",
+      "bytes": 948,
+      "sha256": "2774f71bdcd1f90bffa40a78495db4e95aa9f50d7d6cc7e1773611cc581b639f"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T2.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T2.4.js",
+      "bytes": 1015,
+      "sha256": "ffbbbb801731907c776ce93ae34950b8e6f4b37825d3508de806956cce9de1eb"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T2.5.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T2.5.js",
+      "bytes": 1580,
+      "sha256": "70a9f48fcc82254ed634eb0000ff0fe54b2c7c331646a509f26bddd3d7879775"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T2.6.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T2.6.js",
+      "bytes": 1031,
+      "sha256": "ffa2f5a53370455c8dff6c85f17c0fa1b7948ad466150d2cd10d7f6260bab490"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T2.7.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T2.7.js",
+      "bytes": 964,
+      "sha256": "8ca7802e979b599359411300f5510e25f1b6a4ef926a02973ddcc3b08b0d46e9"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T2.8.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T2.8.js",
+      "bytes": 1044,
+      "sha256": "ebb011994e70414f10db418f910274dd8d1e9ff1d59921e696830abf9bc66a01"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T2.9.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.2_T2.9.js",
+      "bytes": 977,
+      "sha256": "8c2a557abbadb099e8677b3db75aada1ca42b43c130364d6335eacd272b977ae"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T1.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T1.1.js",
+      "bytes": 936,
+      "sha256": "aefc8aec46fcc2b4d2c31c821a68045f580927d514bad9caebf48774559ef9da"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T1.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T1.2.js",
+      "bytes": 868,
+      "sha256": "961ab26b6cbe3e0f2947defb85d971f4c2bfcd3aa53152a002039ab279c5e193"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T1.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T1.3.js",
+      "bytes": 1188,
+      "sha256": "35f5f7d9cbfbf1e19432bce9d0b09abfd911e5722519db3d341035162a72c65f"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T1.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T1.4.js",
+      "bytes": 928,
+      "sha256": "aaf6256c8ebe712093195af6c220b33e4a9a544be7d835d63f06f132f65581eb"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T2.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T2.1.js",
+      "bytes": 1548,
+      "sha256": "52dbd6d4747ecfb712834221e88de34f1a719b12e51466cd141275ba6c29d351"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T2.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T2.2.js",
+      "bytes": 1805,
+      "sha256": "3fb426f56c6901ca08bc1f3820d3596f4aa8aadfe46b2ba8c00e02f9a95f3b52"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T2.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T2.3.js",
+      "bytes": 928,
+      "sha256": "e436986715d27c9c71962cde53eeb36f448686a799b83510eb8790b7587633ce"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T2.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T2.4.js",
+      "bytes": 1015,
+      "sha256": "5240c489f18e6fe87ceb5c48c01e75401ecf467ffb1196a11b42a7eea877805e"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T2.5.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T2.5.js",
+      "bytes": 1580,
+      "sha256": "5528e46f78bc0b4f56ffb093f874cbe140b83f79012031a399e3fbc1a9b6bee9"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T2.6.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T2.6.js",
+      "bytes": 1031,
+      "sha256": "404a8a46abb1bf2e383f303dd7b9e3028ba97eeaffaede723ca4d0e9137035a9"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T2.7.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T2.7.js",
+      "bytes": 944,
+      "sha256": "de6af80225b1166515e09a912ceef97d3fe2e302569187eae60d27055deb4ba6"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T2.8.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T2.8.js",
+      "bytes": 1044,
+      "sha256": "5868c5145d3e7a0cc125d9e649c2f821bc64f210dffe560a98bf5d703897cbf6"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T2.9.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.3_T2.9.js",
+      "bytes": 957,
+      "sha256": "2d112064cb2bc9e816d44356dccd2a4cb397faa42890c2f2161999f3cd5e9833"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T1.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T1.1.js",
+      "bytes": 936,
+      "sha256": "47acecc9999ce0e18f95f343165da350a80ba286fe503ebfcfea0d67e8ee1a9e"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T1.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T1.2.js",
+      "bytes": 868,
+      "sha256": "0fe848b7a6ab83e6ac0b43e0f89aee6b013718874305b611c4a7f6693840378f"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T1.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T1.3.js",
+      "bytes": 907,
+      "sha256": "e5f6928c8cabf7bb1f5b8295c45fe9e78a24188b06ac1ac913359ca36894b7fa"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T1.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T1.4.js",
+      "bytes": 1170,
+      "sha256": "1ba5083356236c308484f4108cdab0989a7a70cb86dd4f93a994df3da299d3ea"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.1.js",
+      "bytes": 1548,
+      "sha256": "999b6496715309897ec9d023fdbfaf80c523c29800c5f809775992563c6dfd6c"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.2.js",
+      "bytes": 886,
+      "sha256": "5b81143cfcfe768711487e38420512c3358f5b87fcb972fc37ada0a3b06b54a7"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.3.js",
+      "bytes": 1015,
+      "sha256": "10a1567e00299b7aa7397d6f212d2a7343e8cd6aac48d4e9fe702427109dc446"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.4.js",
+      "bytes": 1044,
+      "sha256": "1a46da0c4ac2fc883e8a9b3d60a9c0dcb4f1d6ccef5946671d92c1c438189e68"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.5.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.5.js",
+      "bytes": 915,
+      "sha256": "b01bc0d7694fd17afcb107501ecb891192b5f9cdf75f47518d7dfdf5419e3bae"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.6.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.6.js",
+      "bytes": 1811,
+      "sha256": "ab9ba00c1c93830ef2d5de71e4107ff6d8135b0c7478bcea4d528e4574f1407d"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.7.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.7.js",
+      "bytes": 1676,
+      "sha256": "9b839b8210c8341cea6f8da925aaac849d99edfd0774fb9bf1b19f86b22cd02c"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.8.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.8.js",
+      "bytes": 1035,
+      "sha256": "d37b29c61542470507fe2321f188fb33de5a153620bd724ce96c790a3d97d6bc"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.9.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.4_T2.9.js",
+      "bytes": 950,
+      "sha256": "aa6e8094adc5666ad13a4eea3b1331f5f6ee9f8420a50f84da9c5c0609c94088"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T1.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T1.1.js",
+      "bytes": 936,
+      "sha256": "a85597273731ec53f940ff3a1a15692c14d681ba74cfdcba91f825b852850222"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T1.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T1.2.js",
+      "bytes": 868,
+      "sha256": "5f743352048651dd598bc3f9cfe578d6d609c4eb912292c11db6d522886115d2"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T1.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T1.3.js",
+      "bytes": 1188,
+      "sha256": "2b514bb8c803e3ff25253461df6ed995946d4436f37c884ea960b0fe6b5d4930"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T1.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T1.4.js",
+      "bytes": 907,
+      "sha256": "8d7ea85ce72184a764eeb7e70cbeb58ca877ef1a5ce6d5592484b18df76126b9"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T2.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T2.1.js",
+      "bytes": 1548,
+      "sha256": "8ff97d6818fda895c3f297a5298473c8b9e04ce08b1c2c7ab6e5292d5da9fb6a"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T2.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T2.2.js",
+      "bytes": 1805,
+      "sha256": "f429b703ef18c8df0e4b0698f36c4a8114c91ed682761ff74de00aa05db627eb"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T2.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T2.3.js",
+      "bytes": 890,
+      "sha256": "99efc6ea561e28a259ef3810cd437aefa5407130690f5323bd5241b3938e0d98"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T2.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T2.4.js",
+      "bytes": 1015,
+      "sha256": "ad717ded9d48ad415db58cf12dfd3e990f4f2e3481637fd2eeab66f1b7e0b6ac"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T2.5.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T2.5.js",
+      "bytes": 1580,
+      "sha256": "f0c8688830e75485eece6af9e16a63f119cb5b5958797d8ec1cb3d85afce12e6"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T2.6.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T2.6.js",
+      "bytes": 1031,
+      "sha256": "77ce1be80d9e5fb9d63e4409932555e60acc72e8e308550d477b7111a9b1706b"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T2.7.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T2.7.js",
+      "bytes": 906,
+      "sha256": "0142310a37f28950cfd63f9b0e751494ed8b1bd7184e07e8d1a7d49f7fef16ec"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T2.8.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T2.8.js",
+      "bytes": 1044,
+      "sha256": "781d883e9acc3d5427de254af95bcb0dbea02c1f5447ad329a2f1e9e610a6144"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T2.9.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.5_T2.9.js",
+      "bytes": 919,
+      "sha256": "639b5b4e0605d4ac06373630b1556aed36dc061a3f9bb984866f2189c3439d13"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T1.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T1.1.js",
+      "bytes": 946,
+      "sha256": "89686cdc96eee328211be110c646d4fb2020445b1ba25ba646cf48bd1f65cfbe"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T1.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T1.2.js",
+      "bytes": 878,
+      "sha256": "bf56eee2817637c0615ee1fb8ee2ddc513138a1af0c30a1feda52b106a050194"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T1.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T1.3.js",
+      "bytes": 1160,
+      "sha256": "8090ad4e6a41a43aad7dc83c1f9306bec2119c7db27c5e1622ba4d1383a460ce"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T1.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T1.4.js",
+      "bytes": 854,
+      "sha256": "8c8f7b6b010eb49cff2e195b51a5ea73d8c23919ecf90477c20dfc704bc95113"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T2.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T2.1.js",
+      "bytes": 1566,
+      "sha256": "41ed585728eb9efe813a73f322b3408d489425e5ca54df7ac3f27e794e6f41ac"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T2.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T2.2.js",
+      "bytes": 1785,
+      "sha256": "cc37737bd8c9395c52d9162ac76bfbee6f6fe3ecd604c527afa81ff282980cd1"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T2.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T2.3.js",
+      "bytes": 896,
+      "sha256": "5a07bead45913c7b23bdc26cec6e0681e4117ba73221aef00707e5c2390d344a"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T2.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T2.4.js",
+      "bytes": 941,
+      "sha256": "b14b6478b3f623ddc6e2ab846d86202a423dcb0160200090774c8ba52cd50b90"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T2.5.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T2.5.js",
+      "bytes": 1598,
+      "sha256": "65029cd6c55567b7e6c21d7d0f66362c05c1d50195fb57541e5311ae1fb83c57"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T2.6.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T2.6.js",
+      "bytes": 957,
+      "sha256": "a1691c0f80947198442a9ee2f6a7d5fcfbfdda8cf76d448143c3fc257932135e"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T2.7.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T2.7.js",
+      "bytes": 912,
+      "sha256": "fdc9aab17cb408c9137b09daa6bf33a58754e22cb87fee15d534ecb2c5034514"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T2.8.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T2.8.js",
+      "bytes": 970,
+      "sha256": "afef6865b8d712ca3a3b1999d2b9f026edd82fdea13f450d0e45e774b1162fe7"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T2.9.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.6_T2.9.js",
+      "bytes": 925,
+      "sha256": "b52f7ca9f9553cb0afad133df2fe4ddfad8783a6318c5be99d70f5e9ed8004ff"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T1.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T1.1.js",
+      "bytes": 946,
+      "sha256": "8ffd8ed43193e897f505caf3ac0ecc5e9852d0fc101df6a3a2d2b6f2f3bbd299"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T1.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T1.2.js",
+      "bytes": 878,
+      "sha256": "601a583544634cdbbf98a03def904448414eb92f0cf25db98b65c64186c0760a"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T1.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T1.3.js",
+      "bytes": 1160,
+      "sha256": "3c5de386b446c4caf10d9312898ba8cca1ed6b2dee6230d40348d2cb81223374"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T1.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T1.4.js",
+      "bytes": 854,
+      "sha256": "da3688deba210623d640097f2b3532a9851602a315ac2766c87a79f6284793f6"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T2.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T2.1.js",
+      "bytes": 1566,
+      "sha256": "99dbcbf55bf3ecf6e79ad7964007120a8d54c213010da91bad0daa6639ce4263"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T2.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T2.2.js",
+      "bytes": 1785,
+      "sha256": "4f872dd33878922d33f9383517109ec9e350ad54545728546dbba1d33d63a0eb"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T2.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T2.3.js",
+      "bytes": 896,
+      "sha256": "2755a82cb30ff049759d389449d5babc49b8ba460c7f3a51975fcd069ab8c4ef"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T2.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T2.4.js",
+      "bytes": 941,
+      "sha256": "01f2f4678d7c4e70ba37eab19f8d7d867332f30cbbe2c6d0cad2f4619e90794b"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T2.5.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T2.5.js",
+      "bytes": 1598,
+      "sha256": "e267778413e44f6ba6b749e54ae3f9a919e5083fece59fe68021d887e6d7d4f3"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T2.6.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T2.6.js",
+      "bytes": 957,
+      "sha256": "b3f8a244f3373d18e4047390f776c0d854d5f91decac845cf86a87435952858d"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T2.7.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T2.7.js",
+      "bytes": 912,
+      "sha256": "b1dcd9cb68fba73ba65e4504c8844c4cb177467736f8c2abf4f647c407d041a7"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T2.8.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T2.8.js",
+      "bytes": 970,
+      "sha256": "2c527c79bd11ebfa013e996778a78a7c219b3bf877b46d68b536b2c8984f21a0"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T2.9.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.7_T2.9.js",
+      "bytes": 925,
+      "sha256": "9acdf5e15290f8e7b7d485500143886084d875aa23c7c2220b695f08f9f6b7a5"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T1.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T1.1.js",
+      "bytes": 956,
+      "sha256": "c928d5d57c1c97331a3763f4f465e661246feb419be5eae922071cbd16f94b8d"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T1.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T1.2.js",
+      "bytes": 888,
+      "sha256": "794905d5763dae976aa4ec7ea298771ac0dc10b013ac2198a27c8670193d5251"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T1.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T1.3.js",
+      "bytes": 1174,
+      "sha256": "6a1ea21214e7817c09a822117b79c03e2bccb76cf6fb30004e5cde2256518d0f"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T1.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T1.4.js",
+      "bytes": 864,
+      "sha256": "95ae6630acbae717bb0b6f2ce47f23ff4be91ef05e2c62c43ce3a32bd868f14a"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T2.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T2.1.js",
+      "bytes": 1584,
+      "sha256": "330aea086eae9224359aeab9de51d23df7d79c9f8f575be102b9f2601ada4277"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T2.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T2.2.js",
+      "bytes": 1807,
+      "sha256": "3f7c76d2a55eb5733896045bb0beba0ca8417b072785133284527babef240d9f"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T2.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T2.3.js",
+      "bytes": 906,
+      "sha256": "7435655ec2e4c9b5105d0a49a73f9eb005f966c70483e2f868610d896b36e8d7"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T2.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T2.4.js",
+      "bytes": 951,
+      "sha256": "78f163a17ab85ab3abbec3b96a5da3b95476058852e25837cda1fb74d6b716f2"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T2.5.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T2.5.js",
+      "bytes": 1616,
+      "sha256": "26f2efeb536912469317610d87a3d06707b9b370d6f382552250ff08496304f3"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T2.6.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T2.6.js",
+      "bytes": 967,
+      "sha256": "1f6333acae1dad0d23552648fb4a21f3803e81d9035709496340a8620b3f3e2b"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T2.7.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T2.7.js",
+      "bytes": 922,
+      "sha256": "3a46e820266ac44a3868f9e2621d28d459e5f065381b5b3174eda81b24847ada"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T2.8.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T2.8.js",
+      "bytes": 980,
+      "sha256": "c4a511d816a9cf057686cb411733a1321876050e4aa53b5a2f383ffa66b98d04"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T2.9.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.8_T2.9.js",
+      "bytes": 935,
+      "sha256": "13e127d3a4d8242ad2f27ac1f53a01c1ba54228bf91107aae71b46ff05f5c592"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T1.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T1.1.js",
+      "bytes": 936,
+      "sha256": "bad5f4f7bef66fe35ca629a7867090a1800d64ccd0e19e379add781b3cc994fa"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T1.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T1.2.js",
+      "bytes": 868,
+      "sha256": "dcb4899d31acbade19a25da1b871e947efd0fdee8487099e885e1589582a3b38"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T1.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T1.3.js",
+      "bytes": 1146,
+      "sha256": "1246baa23adfa4c3bfd4fdedc3c2a0b0415fa38c44c540341695f0630fcced21"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T1.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T1.4.js",
+      "bytes": 844,
+      "sha256": "f8ae28863fc23fe101ad0da47d193b0c7914a91442d0a102ae5a67cbbd98874a"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T2.1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T2.1.js",
+      "bytes": 1548,
+      "sha256": "70aa6a8ef9b75eaed38ef13632606c298894806761d25c19a47ea531922cfb09"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T2.2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T2.2.js",
+      "bytes": 1763,
+      "sha256": "8e0ad0a2bbe1bcc166c25d5956c079c836480968cd0f8a9fed48cde8055a3906"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T2.3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T2.3.js",
+      "bytes": 886,
+      "sha256": "a8f50231a4d6a2802f82d8ab7b961b5e00d297350ace2e82368f2ddb22d7cff8"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T2.4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T2.4.js",
+      "bytes": 931,
+      "sha256": "b871955a02d635302443265a3d2428b2b518ca6bc7c68754f43cf796ee465ed6"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T2.5.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T2.5.js",
+      "bytes": 1580,
+      "sha256": "c9c4061430cb86742e057741c64bd9fa285a32d4fcb93236a08ee253070ba283"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T2.6.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T2.6.js",
+      "bytes": 947,
+      "sha256": "b5b691469eefc06e4520d1b53153343058cd743fb594288aad402ffeea06857c"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T2.7.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T2.7.js",
+      "bytes": 902,
+      "sha256": "e8ae674879a09495b1b012717c42a03f5623c65e758c86778cd278ff3310e82a"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T2.8.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T2.8.js",
+      "bytes": 960,
+      "sha256": "36dff8eda04bb33274e3372c420ec4f069db3f11ef9d0e4a648f2a6f22f53fc8"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T2.9.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A4.9_T2.9.js",
+      "bytes": 915,
+      "sha256": "5f9a98f7b0c66ef2677f0ce9f06a38bfa64d8b6972a8a4ada91fdef9901a2d09"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.10_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.10_T1.js",
+      "bytes": 1004,
+      "sha256": "550d099f69162213ac8a78dc0ff332c6538fc6d8fc673386a8f6a6cf9d3a139b"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.10_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.10_T2.js",
+      "bytes": 926,
+      "sha256": "46b67fe9a4c9a1bf254aa6f7c9d29d7246628c960dfd02cf40977027341b56e0"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.10_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.10_T3.js",
+      "bytes": 1030,
+      "sha256": "aa35128a7a4414803c328bbf87037db34ef5fe09f383511b8941efef231afd37"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.11_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.11_T1.js",
+      "bytes": 1004,
+      "sha256": "e4d465e3f96a2063d717b4156a26d548d8d1f5798049138a1eed027b75c25460"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.11_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.11_T2.js",
+      "bytes": 926,
+      "sha256": "a7a5991dc13f337c630f867beab09284a4398481ba684cd415be88cdb192db64"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.11_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.11_T3.js",
+      "bytes": 1030,
+      "sha256": "2bb558a93023515f17a950109b943d511f81c65ebf100d20f0b35b7642a349ff"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.1_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.1_T1.js",
+      "bytes": 1003,
+      "sha256": "f64dab2c233b323c54ac1f1e6c81307bcfefa31e6926a81b6d998baaf4d6073b"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.1_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.1_T2.js",
+      "bytes": 925,
+      "sha256": "bd7822e03857db66b557ea0b840d815755f46fe429f6effc2892e45434403114"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.1_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.1_T3.js",
+      "bytes": 1029,
+      "sha256": "8e2dac7560544a9926831a41a780b582823671f737ca182bca3da998595015df"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.2_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.2_T1.js",
+      "bytes": 1003,
+      "sha256": "8d2d2388e4c590f3e7286d031d1030ada7b79f2585fb6ad3a7665f4784a71ec2"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.2_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.2_T2.js",
+      "bytes": 925,
+      "sha256": "bbac2889a9215c2b10a10583c48519a56f8cac2227d78ea24237dc8dfa1b0320"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.2_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.2_T3.js",
+      "bytes": 1029,
+      "sha256": "a7dc51b2c166ad6d40a40823088fc5d3b6d5835e7c7c338ca1b5dc43c72bba34"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.3_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.3_T1.js",
+      "bytes": 1003,
+      "sha256": "e4cfb13008864cb555bb13362eac4d58d2759c6c8d37145122b6ea3b8722d632"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.3_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.3_T2.js",
+      "bytes": 925,
+      "sha256": "9c906752ff191aafb0bdec5251acf741f0bff0ac2d6fd18f76e7b796eddced6d"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.3_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.3_T3.js",
+      "bytes": 1029,
+      "sha256": "0c0c8f3d3c8b9e4a4e7484fb88099b8192c055554615a98609bb9d0f605c1645"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.4_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.4_T1.js",
+      "bytes": 1003,
+      "sha256": "909a4dc24f2d7faff29a6089071bb1e4bed115890ee35de944f5909eebebcee9"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.4_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.4_T2.js",
+      "bytes": 925,
+      "sha256": "406e045cba0186829e8304de5b34b3f6910f738d084fe41e45c04a1f163abbc9"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.4_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.4_T3.js",
+      "bytes": 1029,
+      "sha256": "e0035f56b0cf502357f48bb0bb30f8797481567da1c62e6306194b955dd31b06"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.5_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.5_T1.js",
+      "bytes": 1003,
+      "sha256": "449538fb7051d8282d50e74e929d42b2cbff13b25f2e56660340b9f672c22017"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.5_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.5_T2.js",
+      "bytes": 925,
+      "sha256": "0bbd4f04fd387f609809af320d37ce97c69242e7656728fe6aa32f868a8bf8d2"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.5_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.5_T3.js",
+      "bytes": 1029,
+      "sha256": "60f81ea97eefcf9848f94a674cb6cc5a5ab192d7b52485d66703ae6c535fe6b3"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.6_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.6_T1.js",
+      "bytes": 1007,
+      "sha256": "3ff557261e65d94d13218c365c02cadffcb605e700aeb225a3d3d09a72a721c0"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.6_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.6_T2.js",
+      "bytes": 929,
+      "sha256": "2c8251d25ab18c8f2857612ba55f523fb29cbd2a67b29b8b8fedbe310bf95d4f"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.6_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.6_T3.js",
+      "bytes": 1033,
+      "sha256": "30ded31ca1c8552e273d7e7da91fbbf252c5e51cad54e57176bf45c708b1c238"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.7_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.7_T1.js",
+      "bytes": 1006,
+      "sha256": "e47ad155273e32bae3dd1f9f11daaecf6429c748a442d8246115cac7f64234bf"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.7_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.7_T2.js",
+      "bytes": 928,
+      "sha256": "3d229270f61493e4490939743421a7e7ecc9380613dc750362e409989a02e2e2"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.7_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.7_T3.js",
+      "bytes": 1032,
+      "sha256": "b6686a102ba05704c51e44e606b7c72febb214cdacd96894279e2ff91c3b5a64"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.8_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.8_T1.js",
+      "bytes": 1008,
+      "sha256": "cd904491e5b2a3cb540fe179f78c9c2fec2dc2398e72af52a9f536d784803ced"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.8_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.8_T2.js",
+      "bytes": 930,
+      "sha256": "a5b5974823f97836a3a3dc04f102cc2a90681feda34495be86639af9c8912910"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.8_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.8_T3.js",
+      "bytes": 1034,
+      "sha256": "ebb9e1fedf48aeb8d639e88e2e3dc641ff54a6bedd2b9d023792411285371aa4"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.9_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.9_T1.js",
+      "bytes": 1003,
+      "sha256": "3d0e79ce12cc31bede0ce1e809a1ee8a04fe5c15bea6620eef44d7abcb7f2c8c"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.9_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.9_T2.js",
+      "bytes": 925,
+      "sha256": "cf060d4a9a8920894eabbc73cf9192e504ef8f83349ed0c14da9de145d190665"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A5.9_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A5.9_T3.js",
+      "bytes": 1029,
+      "sha256": "8bfd98f4123afec1c87c1b3a3a90b52ee4221522c098c933be2bc28ea5253438"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A6.10_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A6.10_T1.js",
+      "bytes": 917,
+      "sha256": "663688921461b65df33e93fbe4c6af84324ed50487b0c2220deea12cf1513fe2"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A6.11_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A6.11_T1.js",
+      "bytes": 917,
+      "sha256": "716d02217c839a73f8fae9f516a07401a37146e22715c53e8d17e69293bbc68b"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A6.1_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A6.1_T1.js",
+      "bytes": 918,
+      "sha256": "a553b08e009170f0263cc1f88541adef2f78e15852e2961950ef9c57de777948"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A6.2_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A6.2_T1.js",
+      "bytes": 917,
+      "sha256": "15e1a7f12297c0b524719fb4ba6fc5e78ae4d6b5e3c7825a06506864c9a06afa"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A6.3_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A6.3_T1.js",
+      "bytes": 916,
+      "sha256": "632eb4b76bb421667c2301157d704d7cac4029d40a084050fc7deb7a59f5a053"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A6.4_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A6.4_T1.js",
+      "bytes": 916,
+      "sha256": "a2bc57d8ce94b0880de3d88464ba904ebe5080ffa30cc1b3e3844917bbb1cc67"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A6.5_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A6.5_T1.js",
+      "bytes": 916,
+      "sha256": "fbc32293d12565925bf001a235bc3f2f3f62cc733c14eb12bde9d9af60d11e05"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A6.6_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A6.6_T1.js",
+      "bytes": 918,
+      "sha256": "8a827e48c5cacb17e9992be069f908b885c7c718d5a4300bd5dd323aba2e200a"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A6.7_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A6.7_T1.js",
+      "bytes": 918,
+      "sha256": "50a317b028f229eaa99e01102e43f372939b6732cbf096c9719822626763d504"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A6.8_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A6.8_T1.js",
+      "bytes": 920,
+      "sha256": "e4caed881462b4903e856c0f03b8c032c5c1d8f8000814ceaf24b3367ea4f743"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A6.9_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A6.9_T1.js",
+      "bytes": 916,
+      "sha256": "0c8c65e0d65110166ea3705ff5fa1365a0d4025ca8b6784befe4cc84a045e889"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.10_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.10_T1.js",
+      "bytes": 1004,
+      "sha256": "5f03ceaea57385acac429b62da33c56de15f5bc0b8c7270b7a37d43dd1036e0b"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.10_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.10_T2.js",
+      "bytes": 1019,
+      "sha256": "87845f84135ab23637457fe7d25211ecd5295243511b409203dacbf0592f16c7"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.10_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.10_T3.js",
+      "bytes": 753,
+      "sha256": "e6d3ae24c303ed775c55f2eb10fea3dd09a81e98dbc135c9751c17f3653472b6"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.10_T4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.10_T4.js",
+      "bytes": 679,
+      "sha256": "b0ab52ac166d6c20fe8beb8df8116a3d1ffeb808725c13945e819f25472ead99"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.11_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.11_T1.js",
+      "bytes": 1004,
+      "sha256": "c3b5f40f09ff418e20a36d6e43601eeaea61a200bbde9ed5d4e77f54edc06f71"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.11_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.11_T2.js",
+      "bytes": 1019,
+      "sha256": "e87c728a1afa9e89c96cc7a934f536a33ce2edec92f7c8329a2193507126b716"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.11_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.11_T3.js",
+      "bytes": 753,
+      "sha256": "2e6d10bedc33ddb176df41899083ecbfe4fa4e61cff96e1af081e3f98c0445c0"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.11_T4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.11_T4.js",
+      "bytes": 679,
+      "sha256": "8535a14a16e6789d353b65594778deddcae9cea6a9adc5a206a3f8b6f26a1b55"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.1_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.1_T1.js",
+      "bytes": 1004,
+      "sha256": "96327ef1839ea18de4f10026ec4eef737cf14a613f703ec832e1041137f0b6aa"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.1_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.1_T2.js",
+      "bytes": 1019,
+      "sha256": "3f89fdd77f985e166d5e2bb072f02cb5515f08c6f0861b2c9e0cbc1a93fd33b9"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.1_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.1_T3.js",
+      "bytes": 753,
+      "sha256": "557adb5df4a262284efb72595c031368fd78f2681668b0d18ddbd422cb66401e"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.1_T4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.1_T4.js",
+      "bytes": 679,
+      "sha256": "ce45421bd19e6e36c66ba74cb61702ff86da759fa3e54a1d0a9923ce8f366485"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.2_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.2_T1.js",
+      "bytes": 1004,
+      "sha256": "2bf7bd3176a7756f36f5a2c00ce5418a685a4c05943d59b52d6ffc6d4d0601a9"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.2_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.2_T2.js",
+      "bytes": 1019,
+      "sha256": "d0ff53ed4823f014d10944a60db8541e9780081a46a31b89e4ca95add0cb96f4"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.2_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.2_T3.js",
+      "bytes": 753,
+      "sha256": "639122fa062eccc271bd3c442803642cc26c36646757955e3914b19d05299b92"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.2_T4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.2_T4.js",
+      "bytes": 679,
+      "sha256": "8914edd0735e275139733abd34335bf18886548974c410de6b65e8f99305d99c"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.3_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.3_T1.js",
+      "bytes": 1004,
+      "sha256": "975e7490c4bc65fffedab94cf6059c56af04323680bf5d366bf5593dc29bc19c"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.3_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.3_T2.js",
+      "bytes": 1019,
+      "sha256": "d7625380a0c3ddafe07b642562877ba5945e1d15c77af07706a8c8ed2f30c03d"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.3_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.3_T3.js",
+      "bytes": 753,
+      "sha256": "44b648b14ad68cfc05979ad9c0aaeafbff1c340119e41459411932a2efc0d6ee"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.3_T4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.3_T4.js",
+      "bytes": 679,
+      "sha256": "38f780e902636335ebb175951b4d14435bea6bd84d39852b672e58fa0aa691ef"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.4_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.4_T1.js",
+      "bytes": 1004,
+      "sha256": "40052386ad308443c5c8323fb4a57a62031b34b9995b4f97cdc407a5450a0b82"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.4_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.4_T2.js",
+      "bytes": 1019,
+      "sha256": "cfb9633a05f6281ede883d586010827839dc3a47a701e32143ad2ff7fe8efada"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.4_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.4_T3.js",
+      "bytes": 753,
+      "sha256": "975804bdcf6b56cd6ed4fdac904a74501f090ed3819bf6441b4e610b04a5ba5b"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.4_T4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.4_T4.js",
+      "bytes": 679,
+      "sha256": "e99728365ad5e92fe4d9457bd4cc70078b9ee8818f70a528f884d523ffa7f4f9"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.5_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.5_T1.js",
+      "bytes": 1004,
+      "sha256": "b0d67541947cd2102790b8e4155de97ebd73e9889459ccddfd27cd4c2e2bb011"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.5_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.5_T2.js",
+      "bytes": 1019,
+      "sha256": "5fd926480733e6b9c7bff3996cc9efd32a5094ff10f73ef3bc3f88ac3c25e844"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.5_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.5_T3.js",
+      "bytes": 753,
+      "sha256": "adf5187b7aa2fb7918a9bd7aed8b55b3b0386951e79a3286f4c71f9dc3f336b3"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.5_T4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.5_T4.js",
+      "bytes": 679,
+      "sha256": "169840b66f35eec5fc1bff349d22de0d2e5689c2e0435d7fd7346cd28c10641e"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.6_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.6_T1.js",
+      "bytes": 1007,
+      "sha256": "855233c2cef9f4c6c7afe3d4380e7cf289fa581c71483d89896911218179f27f"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.6_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.6_T2.js",
+      "bytes": 1022,
+      "sha256": "c0e11eeb4ce07fc63f3c671e537c9a3602cb817b838ddbd267255eae0eeab908"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.6_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.6_T3.js",
+      "bytes": 755,
+      "sha256": "6f75a763de684e944aa4903ca7a7d2b00cd78502e0e71dc47b4c63607bc5b519"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.6_T4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.6_T4.js",
+      "bytes": 681,
+      "sha256": "909d2d5d8745a58756c502dfa980a7ffc3e21bf24530571534d6d412091d06dc"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.7_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.7_T1.js",
+      "bytes": 1007,
+      "sha256": "3e00592cbb3da8bc1e66309149e9b5ce6bf9c7a5b2d47f1c49912d30468650d0"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.7_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.7_T2.js",
+      "bytes": 1022,
+      "sha256": "d70effcdf9f95bced3f130cf13bc17c796035af5ef232f6a99b6bf7962e8c827"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.7_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.7_T3.js",
+      "bytes": 755,
+      "sha256": "c8fbc066e523fb5c45dfa90d2c6587988aed8ccd2f776f6b6a2df7266f0e0103"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.7_T4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.7_T4.js",
+      "bytes": 681,
+      "sha256": "f253a3f976b129d7fe59d339a0c44e32487d3a219336fa4711224e9144de14d1"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.8_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.8_T1.js",
+      "bytes": 1010,
+      "sha256": "1efda5247fe3f3f9236d280e020d4cdf16a73a1064b83834dbb6e03d43060c45"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.8_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.8_T2.js",
+      "bytes": 1025,
+      "sha256": "ece2f5476d872637153c19c875ccdbedd6352d9e49c1b1c7ca720bacbd6ec0b6"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.8_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.8_T3.js",
+      "bytes": 757,
+      "sha256": "364845556aafc31f774a2a653b0f89ee6c5ecff830bc0033951f00133c67f488"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.8_T4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.8_T4.js",
+      "bytes": 683,
+      "sha256": "6c81451808bf4055803492fbc0b748f94988ab44d9c9e9a954171a46efd8790f"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.9_T1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.9_T1.js",
+      "bytes": 1004,
+      "sha256": "9071997150a27af6fddd38ad6a41726351253609be52ab5748381e4871f229c2"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.9_T2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.9_T2.js",
+      "bytes": 1019,
+      "sha256": "0e1c81e76d0b9778de72efca517018b3d2bc7366e27c66a1fcd6255540ef8e3f"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.9_T3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.9_T3.js",
+      "bytes": 753,
+      "sha256": "eac7a689aa468e27795df7ec9d8a479b40b869307c98eea01073308f8afdd2f0"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/S11.13.2_A7.9_T4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/S11.13.2_A7.9_T4.js",
+      "bytes": 679,
+      "sha256": "ebfecffd6147e226ac8183ebea6efe2be32b88683c0da8ade3e7ac5e9b9428d0"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/add-arguments-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/add-arguments-strict.js",
+      "bytes": 469,
+      "sha256": "ce2bc914b50a972c29f3edad8911fa79a9de61e103362ba2eeb6ff5e5a29f4d6"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/add-eval-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/add-eval-strict.js",
+      "bytes": 454,
+      "sha256": "353ae8da25bb73ae999e6ffc814287251060e42e20bde076a225427f03c94f9c"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/add-non-simple.js",
+      "upstream_path": "test/language/expressions/compound-assignment/add-non-simple.js",
+      "bytes": 460,
+      "sha256": "170b00cf6d6c26e7da1ed3eb4bd45e9da8582f81fd7a4f775b2f207bd5ad8db9"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/add-whitespace.js",
+      "upstream_path": "test/language/expressions/compound-assignment/add-whitespace.js",
+      "bytes": 1660,
+      "sha256": "073f91b9b48543010ceecabd4d809869b950e23665a790339d2d113628e62e6b"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/and-arguments-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/and-arguments-strict.js",
+      "bytes": 469,
+      "sha256": "83a36bd6c65dbca64480892140982eb53af003d942a7a8e60c03e1e61180af58"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/and-eval-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/and-eval-strict.js",
+      "bytes": 454,
+      "sha256": "8ec2d5c302cb28f4964f541064849471fb63fcc951ee42690bd106d1432a01ee"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/and-whitespace.js",
+      "upstream_path": "test/language/expressions/compound-assignment/and-whitespace.js",
+      "bytes": 1620,
+      "sha256": "cf4d3b63ea39dc5caca2390a8ae3e8412762adc68b504147337a5a57fd396c0a"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/btws-and-non-simple.js",
+      "upstream_path": "test/language/expressions/compound-assignment/btws-and-non-simple.js",
+      "bytes": 465,
+      "sha256": "e564de901e6b8f68b4ed29fb8a51c6fa4c9447c6cd95239fdd7b91cba81f2aed"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/btws-or-non-simple.js",
+      "upstream_path": "test/language/expressions/compound-assignment/btws-or-non-simple.js",
+      "bytes": 464,
+      "sha256": "f715ba80813938965bb9e83bb5ae233042a258fa3c33147c2840353069ed2da6"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/btws-xor-non-simple.js",
+      "upstream_path": "test/language/expressions/compound-assignment/btws-xor-non-simple.js",
+      "bytes": 465,
+      "sha256": "510b288c3f7d581e01b25c657a7c8a848aeeb7abeb4c6016eed6fecc6c0d1056"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--1.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--1.js",
+      "bytes": 1191,
+      "sha256": "f192d3a7e5d5ec36d841fe4c8ddd1ef1215277a9efc3c28b9c4995e9470820ab"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--10.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--10.js",
+      "bytes": 1174,
+      "sha256": "27de2d17e00e2a22b4f1f9aae4fc495a510ec3046ed17e6e40ac9100b0a02be5"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--11.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--11.js",
+      "bytes": 1190,
+      "sha256": "cf84f1cb7f3b316d88ddae9be3045942d8b55a4ac36731ec0a000efc54ac7142"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--12.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--12.js",
+      "bytes": 1172,
+      "sha256": "f902050db7d613b6213e471323665fd9335cf9bd7655ff26ec86d34d06871a08"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--13.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--13.js",
+      "bytes": 1189,
+      "sha256": "272199d642521fa0947d565676e1f59fda464fb1cdd7439c9c47620a28a4d3be"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--14.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--14.js",
+      "bytes": 1174,
+      "sha256": "1e7747c7d7441c2c6402d1c3f9ddd9517982b193ed3c63ac6452463a1426c48b"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--15.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--15.js",
+      "bytes": 1190,
+      "sha256": "36cecc9fb5062310238cc54560a28f2c8d9c6772cc075a88924ea6044fcbc5c2"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--16.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--16.js",
+      "bytes": 1175,
+      "sha256": "7c4c234973caecc1961c7d9fbc996821b1b0898aab963706a89f7c9fade21301"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--17.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--17.js",
+      "bytes": 1191,
+      "sha256": "224c15a0b5876424303a1ed5e49ec3363ea722fe78aae6402f0e6d8a76136450"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--18.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--18.js",
+      "bytes": 1176,
+      "sha256": "afaf512125bbf300eb1ffca128c92fdf3582e19d970ead24acea3c88d8c52834"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--19.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--19.js",
+      "bytes": 1192,
+      "sha256": "a20b552e2d67b6e20d182835316480677ad537ae4e25d1f37f345fd153ea7860"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--2.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--2.js",
+      "bytes": 1174,
+      "sha256": "a64deedabd1fbd1c9cfed037e6ef880ad7e25656efd496488a3b87aa0543bdd5"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--20.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--20.js",
+      "bytes": 1173,
+      "sha256": "b1df1934b1bc0dfac6695449a6178d7ea4ffa6048875531896c1d83aa4ef1952"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--21.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--21.js",
+      "bytes": 1189,
+      "sha256": "388066f13dd03902caef6def2121382ebcbd5c87b24128735d4a05bf965fe395"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--3.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--3.js",
+      "bytes": 1190,
+      "sha256": "a207d221eb31f41a84194549c70548a73840b850746688163ec552bce094c67f"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--4.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--4.js",
+      "bytes": 1173,
+      "sha256": "53cc910969502a5e2edb1d753d520550971d95130b34d84c5a2df70c51d0059e"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--5.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--5.js",
+      "bytes": 1189,
+      "sha256": "38899185bdab53a660e40893192516c3fb3a3e8c64a49ea03a6cc70c7bc1e4d9"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--6.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--6.js",
+      "bytes": 1173,
+      "sha256": "74a648b04d18cbbdea3690ecef8d25e90e7888463d65360ff3a084c6180cd40e"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--7.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--7.js",
+      "bytes": 1189,
+      "sha256": "c7cde287e461928d147c00be325484f0dd781ddc7c755ebcd5160f21eda1c062"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--8.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--8.js",
+      "bytes": 1173,
+      "sha256": "7dbc3ed6a1179f4688f0dbd31ee9174419ba3fc30bcdb923e98043293e6fab89"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--9.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--9.js",
+      "bytes": 1189,
+      "sha256": "66b7c91a6f8c053c87a9c118fa9e0610ba83916a0b52983894473c0b04f100f0"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v-.js",
+      "upstream_path": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v-.js",
+      "bytes": 1174,
+      "sha256": "3305497bdfa9b00e0eb7ab76a57817a244cb237770553eeb2a60e7ffd384bc18"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/div-arguments-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/div-arguments-strict.js",
+      "bytes": 469,
+      "sha256": "ecdf08ab4220c2654794f07a263d7cf8b6e3e48464c9ef053902a7f431926fbd"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/div-eval-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/div-eval-strict.js",
+      "bytes": 454,
+      "sha256": "c706b658ac85adae35c3530c734cebf270ec2250a9ed917dd5460f2e2302634e"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/div-non-simple.js",
+      "upstream_path": "test/language/expressions/compound-assignment/div-non-simple.js",
+      "bytes": 460,
+      "sha256": "1e30145404d3a82983e63b787cdcf455558e8b058bd42fe338ddbefc1e0e3bb4"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/div-whitespace.js",
+      "upstream_path": "test/language/expressions/compound-assignment/div-whitespace.js",
+      "bytes": 1640,
+      "sha256": "801567c19f130e6d0482572d4d16b12e84177d28a314245435bfe3b5ddb15c2e"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-add.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-add.js",
+      "bytes": 2090,
+      "sha256": "2ab78ddf8044b389cea6b61d2fa0d38810bc2612d4d82ede557e17eba3eba718"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-bitand.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-bitand.js",
+      "bytes": 2116,
+      "sha256": "d7f950d4e632b044891cfe7a1398194fba1f1ddcac85fb958e065158929bba00"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-bitor.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-bitor.js",
+      "bytes": 2114,
+      "sha256": "07872ef25b80d11490f52c0c3cedb1f761dc0fc732570b7c54b9b707878dee68"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-bitxor.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-bitxor.js",
+      "bytes": 2116,
+      "sha256": "58a84456e22b827d7f2b7a17b16cdf92a9eab7923a81e55fa8bbc14fe0d71beb"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-div.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-div.js",
+      "bytes": 2094,
+      "sha256": "adc0d4dbdfa243efe265325d59249e79e3661ea6061e3f19d62dc1b5f0052d7e"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-exp.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-exp.js",
+      "bytes": 2120,
+      "sha256": "d95ef7fe489b34a2db95f4ba2f9f7a4ac76fd947788f4143ca77ba3d0d3131f4"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-lshift.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-lshift.js",
+      "bytes": 2119,
+      "sha256": "5e88db49cc2c66fb351804b460ad35b6c41163f1089d931d0c026171990d9403"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-mod.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-mod.js",
+      "bytes": 2088,
+      "sha256": "c851c6cf74496dc4eda7d44e7ad9466c9985e852daa95954fae15e4e51b76d59"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-mult.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-mult.js",
+      "bytes": 2097,
+      "sha256": "5245ad3a0946fb7453eb40cf63c9dd64967ad5a6eee2b5fe62a7f4e39c39f943"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-rshift.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-rshift.js",
+      "bytes": 2113,
+      "sha256": "44f5091e9aa772b5e235abadb372f34ae03dc8f71b06c62bdc19608b626e9d94"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-srshift.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-srshift.js",
+      "bytes": 2120,
+      "sha256": "a9b5295bdc19d518c44edd4c866fb12e15089be97eca1e2341f14cd2b597d96e"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-sub.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-accessor-property-sub.js",
+      "bytes": 2093,
+      "sha256": "dad19aa1040b29655a2ef15153c5e090dc39ce461d769736023528ac015a29e0"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-add.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-add.js",
+      "bytes": 1858,
+      "sha256": "77aea72c1d9a57cc60bb202ca4f6035533022a011bd0cc1d0ba8949b59ba3eca"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-bitand.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-bitand.js",
+      "bytes": 1884,
+      "sha256": "e210ac30b412114cd40ccc5bde729df856cd4e0b81c53b0a5031e7be2af097ef"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-bitor.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-bitor.js",
+      "bytes": 1882,
+      "sha256": "59b1a74d3d991254f20210a6db30b745e85ad59af4d105787d33ca2d198d3f5f"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-bitxor.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-bitxor.js",
+      "bytes": 1884,
+      "sha256": "074145398eb2710b79ebd28aa80718f6c18ca559f7dbe755df9c4acc565ec160"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-div.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-div.js",
+      "bytes": 1862,
+      "sha256": "686ee401157889500d83e3b3f8a1d5af2b9b8c4e781aee803453bbec3566ae0a"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-exp.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-exp.js",
+      "bytes": 1888,
+      "sha256": "2858206f3a686dde14d056a41eb8d4b9319c3eb7fb370682b41438409fdc6550"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-lshift.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-lshift.js",
+      "bytes": 1887,
+      "sha256": "59ff6edec9b9b0663e08aeaf1bb6979446ff47cb1069f3f4b1d64135bf352a20"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-mod.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-mod.js",
+      "bytes": 1856,
+      "sha256": "c9066733dc0bbfb410da90b9b9fab090ae9836f60cef20564b6de5906e9c0be1"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-mult.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-mult.js",
+      "bytes": 1865,
+      "sha256": "284321f2d1be5fc454f1842214e4cde346dc4f7089155ac4432ffe9bdd73c0c3"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-rshift.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-rshift.js",
+      "bytes": 1881,
+      "sha256": "397693a65af125de488f78d9b950279c85525410ef0907ae970d964f74523bb4"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-srshift.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-srshift.js",
+      "bytes": 1888,
+      "sha256": "2b76345efc1e81958b6c443c898dba534a6024a3d3c33eab7104456bd5420f9d"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-sub.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-data-property-sub.js",
+      "bytes": 1861,
+      "sha256": "17b7f5009db00ef8f1a0e6cbabad566d90d74bda34c740f8d1caede9953fa28f"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-add.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-add.js",
+      "bytes": 1772,
+      "sha256": "4a7efea0047613bda85f80db26b84866f7fd60987e18962f7d174a8930d917bf"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-bitand.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-bitand.js",
+      "bytes": 1778,
+      "sha256": "d0899c60f5a2fb92334cea83bde02cbf422b5e591c554a5500af3a64a6b2161e"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-bitor.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-bitor.js",
+      "bytes": 1776,
+      "sha256": "a0abcdbce1f26503b5c8fadaad2c24c99d5e64b6a1ffcadaf208dcda2e62b431"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-bitxor.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-bitxor.js",
+      "bytes": 1778,
+      "sha256": "a30573542ae6a04b4411233f849eba577b485185f0c86df077f336b2d0aaa03d"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-div.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-div.js",
+      "bytes": 1772,
+      "sha256": "2684f270cffbf405771e8d47bf277376929bcc08eaebc61853511eb897d9f496"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-exp.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-exp.js",
+      "bytes": 1795,
+      "sha256": "dc0c20a442e77ce7c15556bcd241bb68fad13e25973a604199b88e96812ae2d7"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-lshift.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-lshift.js",
+      "bytes": 1778,
+      "sha256": "311d5b49314af48dc39ba878151ea21608610deae48f63416a0f949edb860fb5"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-mod.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-mod.js",
+      "bytes": 1770,
+      "sha256": "2c17e2e058c6af77e7b24237d2e8f5c46c78e2913cc9dd20055d0c42e09fe974"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-mult.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-mult.js",
+      "bytes": 1779,
+      "sha256": "f4389e68323d21b2d975677e6fc05eeb0cb2677788f3a034b03efbb146dd4520"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-rshift.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-rshift.js",
+      "bytes": 1780,
+      "sha256": "dc6dfe8b7f742ae324bf8d7e5a41e093789f3bd3e05fc6bacad982e842df8f67"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-srshift.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-srshift.js",
+      "bytes": 1787,
+      "sha256": "4c4191c56374ce6a9d9d13d7a502065c16689a920df2e20a91d7f05ae7d30964"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-sub.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-method-sub.js",
+      "bytes": 1775,
+      "sha256": "d85943a3db13dd91241f3d4002246eed38cdcb47442c504b73c0d44400553a3a"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-add.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-add.js",
+      "bytes": 1808,
+      "sha256": "32054efe36d3d7d04087b98ad68c9090578def8c7a7d319564d59170952e34fc"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-bitand.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-bitand.js",
+      "bytes": 1814,
+      "sha256": "84cb230a78cfbbee4354a7e3269323fbac61c36d4431c510ed61c5880a767bc3"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-bitor.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-bitor.js",
+      "bytes": 1812,
+      "sha256": "4e0a1163b0b37eb8e55dfcffb4d73420eb51c0b8a10b9988af2a7987f3ef24df"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-bitxor.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-bitxor.js",
+      "bytes": 1814,
+      "sha256": "08e4e4e44b740b826e42cc59184f4992a67d89c20ba72db5aaa5837eb008e8ec"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-div.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-div.js",
+      "bytes": 1808,
+      "sha256": "4d97aa3d490c422addd14535e87cd67a2939c5f3bff131171187351d03c2550b"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-exp.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-exp.js",
+      "bytes": 1831,
+      "sha256": "92b8f1578705414c093eb008eb53a8a273d3f7f80f75d8be06db53dd1aef1d11"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-lshift.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-lshift.js",
+      "bytes": 1814,
+      "sha256": "045e5473f9a2f8ae7965f6febe5b575607b7ac53f8622c9de1bcba4c773818a4"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-mod.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-mod.js",
+      "bytes": 1806,
+      "sha256": "6b4e56d208a4399844c986620ee57ce5131ee6c6d2c969a9989894e6a658ea2b"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-mult.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-mult.js",
+      "bytes": 1815,
+      "sha256": "1f6084d234c82bd87888ff67911b38c115d5984cdde12a3195cd0e96f3f08a8f"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-rshift.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-rshift.js",
+      "bytes": 1816,
+      "sha256": "b46b571b0e428a6d1df84cf58ea12785ffc0c901ecdaa11dde3ab0d71bfcd303"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-srshift.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-srshift.js",
+      "bytes": 1823,
+      "sha256": "4fd563eb52a7306517528a230fb764e2656b2b44db3ea887c66e17e060045769"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-sub.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-hand-side-private-reference-readonly-accessor-property-sub.js",
+      "bytes": 1811,
+      "sha256": "8905801164f343d23dd7c1290c34f74b43c124ba6a1254379d8f808217c744ed"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/left-shift-non-simple.js",
+      "upstream_path": "test/language/expressions/compound-assignment/left-shift-non-simple.js",
+      "bytes": 465,
+      "sha256": "1cd9478dd4d3d0b48ea5c6da01af34dd27641f152ed005b8a1485724296abd08"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/lshift-arguments-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/lshift-arguments-strict.js",
+      "bytes": 471,
+      "sha256": "e538d2167343fe651a579656f21242ff92d8b89eea6e278cbb6ff4b18dc15298"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/lshift-eval-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/lshift-eval-strict.js",
+      "bytes": 460,
+      "sha256": "60906c8969e92f8541ae8c1b9c8ab510d2cf54f4e2f6d01b7af92d8f4ce6de67"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/lshift-whitespace.js",
+      "upstream_path": "test/language/expressions/compound-assignment/lshift-whitespace.js",
+      "bytes": 1631,
+      "sha256": "190a4bd144591a0b4c319ac31fd5d7e179e66a093b88636d67ac500efa329fa7"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/mod-arguments-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/mod-arguments-strict.js",
+      "bytes": 469,
+      "sha256": "7349bdbf5600b0b370a2904d1bf90ebb2e1f16c07ab8cda1faeffa6e2a72f6b2"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/mod-div-non-simple.js",
+      "upstream_path": "test/language/expressions/compound-assignment/mod-div-non-simple.js",
+      "bytes": 470,
+      "sha256": "8633085639ca8c6bf599630f9f6ce128823b6f98c1848e10fbc7d6a3f3d36b52"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/mod-eval-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/mod-eval-strict.js",
+      "bytes": 454,
+      "sha256": "0343875fea27091d3bcff13cc289150698836147d5448123d0f432f7b8b73370"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/mod-whitespace.js",
+      "upstream_path": "test/language/expressions/compound-assignment/mod-whitespace.js",
+      "bytes": 1660,
+      "sha256": "28eba8dcc1346fce8de1d7afb739c7f934f2a28ebd238bcec448f051836ab0d0"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/mult-arguments-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/mult-arguments-strict.js",
+      "bytes": 469,
+      "sha256": "eeb9dd6f66b79bf8e575cc7a533ea11ec3714e75808ff0001aa241cfc8991d60"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/mult-eval-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/mult-eval-strict.js",
+      "bytes": 454,
+      "sha256": "7472a510b810c4cc0f4d9920228ec6cb096840d911e628a801f6a36001884e68"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/mult-non-simple.js",
+      "upstream_path": "test/language/expressions/compound-assignment/mult-non-simple.js",
+      "bytes": 466,
+      "sha256": "c0df4df45d9cdcd86918967d14e617ca17b4313baebcd0076f4cddb845260961"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/mult-whitespace.js",
+      "upstream_path": "test/language/expressions/compound-assignment/mult-whitespace.js",
+      "bytes": 1640,
+      "sha256": "3f9a138f19f6b378e7c8ce0db4cf285ec0622bf89136f8b4484fee500986e73b"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/or-arguments-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/or-arguments-strict.js",
+      "bytes": 469,
+      "sha256": "a5b9957d12aad391ada64d36f331d77ecac653c77036554f8e7ac8a3fc688417"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/or-eval-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/or-eval-strict.js",
+      "bytes": 455,
+      "sha256": "b9607401aeffc5db8ed3a8d512ea0116b6320df3c6cfe95734bd7a3418ea8211"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/or-whitespace.js",
+      "upstream_path": "test/language/expressions/compound-assignment/or-whitespace.js",
+      "bytes": 1621,
+      "sha256": "c103d560867116b428dbe138ce62bae1c5e6bb04a0e27cef47063079edcc5020"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/right-shift-non-simple.js",
+      "upstream_path": "test/language/expressions/compound-assignment/right-shift-non-simple.js",
+      "bytes": 466,
+      "sha256": "5c5c2b0ba58d7c85c9dcc79c82ad3b86e5b8bc912fdb03d77d75d93b8ab5be5e"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/srshift-arguments-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/srshift-arguments-strict.js",
+      "bytes": 471,
+      "sha256": "30fdcd72b5a1785bab88f50d0b64726d840b0a1c76b11c8358a72f1a583cf597"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/srshift-eval-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/srshift-eval-strict.js",
+      "bytes": 460,
+      "sha256": "b38ac00423dad2a4d5ced27d35a5a87368bb34886ead5bbb1587721daeadb772"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/srshift-whitespace.js",
+      "upstream_path": "test/language/expressions/compound-assignment/srshift-whitespace.js",
+      "bytes": 1631,
+      "sha256": "b6915f6844c754753813f96e22e0ae787213b21a06e9885b3ebbf786b4b9fff2"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/sub-arguments-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/sub-arguments-strict.js",
+      "bytes": 469,
+      "sha256": "89f93bda8a5a22e8ac4c5d8e28abae0f476b5d72d74d823b7c388c4f3879f169"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/sub-eval-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/sub-eval-strict.js",
+      "bytes": 454,
+      "sha256": "60209a745d8a3c03e1a57856a49fe82bfe0c4cb8fb5bd20c4951a5168f928df4"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/sub-whitespace.js",
+      "upstream_path": "test/language/expressions/compound-assignment/sub-whitespace.js",
+      "bytes": 1650,
+      "sha256": "0b6c4fc70200982fce3865093e7aa2c2b71f173237bb3834a67c38155c1b6b23"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/subtract-non-simple.js",
+      "upstream_path": "test/language/expressions/compound-assignment/subtract-non-simple.js",
+      "bytes": 463,
+      "sha256": "0489b5f499710d62035360a6739a6b0894bb2aa039a4d2adcc17a1de99772873"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/u-right-shift-non-simple.js",
+      "upstream_path": "test/language/expressions/compound-assignment/u-right-shift-non-simple.js",
+      "bytes": 476,
+      "sha256": "e45de02c6cae7845b0ff0183c20164829e0ab437c542cdeee6a76826fb227fe6"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/urshift-arguments-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/urshift-arguments-strict.js",
+      "bytes": 473,
+      "sha256": "e52bca787ec22be5798fed1738c1ad7bffdc12d7ac472ef0d0942db43449da51"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/urshift-eval-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/urshift-eval-strict.js",
+      "bytes": 462,
+      "sha256": "e818e24542c269ee8606db20c53950a3a444f9bdbd35147fafa522e42733ac7d"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/urshift-whitespace.js",
+      "upstream_path": "test/language/expressions/compound-assignment/urshift-whitespace.js",
+      "bytes": 1642,
+      "sha256": "047a4990c5cac2fc961171150da4181947e7f92183a33ca3677ccfa64d821203"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/xor-arguments-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/xor-arguments-strict.js",
+      "bytes": 469,
+      "sha256": "382fea45e4bd6b315e02aa82806807eae62144b34d42fb13bad6f48307166a54"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/xor-eval-strict.js",
+      "upstream_path": "test/language/expressions/compound-assignment/xor-eval-strict.js",
+      "bytes": 455,
+      "sha256": "b29878c988cd543c792c08948545e9e1d338a6d870a1b5101989f4a1e7cd066a"
+    },
+    {
+      "path": "test/language/expressions/compound-assignment/xor-whitespace.js",
+      "upstream_path": "test/language/expressions/compound-assignment/xor-whitespace.js",
+      "bytes": 1621,
+      "sha256": "00cebbc7176d2490b7a5db04c44adaae2a152edc9bee899a5416ab87f90b573a"
+    }
+  ]
+}

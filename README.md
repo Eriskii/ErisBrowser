@@ -92,6 +92,7 @@ python3 tools/test262_conformance.py --profile global-values --baseline tests/co
 python3 tools/test262_conformance.py --profile array-reduce --baseline tests/conformance/test262-array-reduce-current.json
 python3 tools/test262_conformance.py --profile number-statics --baseline tests/conformance/test262-number-statics-current.json
 python3 tools/test262_conformance.py --profile numeric-conversion --baseline tests/conformance/test262-numeric-conversion-current.json
+python3 tools/test262_conformance.py --profile compound-assignment --baseline tests/conformance/test262-compound-assignment-current.json
 python3 -m unittest discover -s tools -p 'test_*.py'
 cargo run --locked --release --bin eris-stress -- 5000
 ```
@@ -150,10 +151,15 @@ adds eight passes with no losses. All 80 assertion controls verify, and CI
 preserves the complete inventory and passing outcomes.
 
 The complete [numeric parsing directories](tests/conformance/test262-numeric-parsing.md)
-retain 218 variants: 164 pass, 46 remain unsupported, four encounter an unchanged
-helper parse error and four exceed the instruction budget. All 80 assertion
-controls verify. The 22 gains lose no prior passes; the retained helper errors
-and resource stops prevent a healthy regression baseline.
+retain 218 variants: 164 pass, 46 remain unsupported and eight exceed the
+instruction budget. Compound assignment support lets the unchanged helper load
+and its dependent loops run. All 80 assertion controls verify; resource stops
+prevent a healthy regression baseline.
+
+The complete [compound-assignment directory](tests/conformance/test262-compound-assignment.md)
+retains 786 variants: 596 pass, ten fail on existing addition coercion and 180
+remain unsupported. Six bitwise assignments add 306 passes without losses.
+All 128 assertion controls verify; CI preserves the complete baseline.
 
 The complete [identifier and whitespace directories](tests/conformance/test262-identifiers.md)
 retain 669 variants: 507 pass, 154 remain unsupported and eight reach compile

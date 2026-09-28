@@ -104,3 +104,13 @@ python3 tools/test262_conformance.py --profile numeric-parsing
 
 The [implementation scope](numeric-parsing.md) records the ordinary conversion,
 metadata, resource accounting and remaining unsupported infrastructure.
+
+## Subsequent helper progress
+
+The [compound assignment increment](test262-compound-assignment.md) enables >>>=
+and loads unchanged decimalToHexString.js. Its four dependent modes now reach
+the complete Unicode loops and hit the existing instruction limit. The
+[full comparison](test262-numeric-parsing-compound-assignment.json) retains all
+case identities and 80 preflights: **164 passed / 46 unsupported / eight
+resources**, with no lost or new passes. The original helper-error report above
+remains historical evidence; no healthy parsing baseline is recorded.

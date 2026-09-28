@@ -31,6 +31,7 @@ ARRAY_REDUCE_FEATURES = SUPPORTED_FEATURES.copy()
 NUMBER_STATIC_FEATURES = SUPPORTED_FEATURES.copy()
 NUMERIC_CONVERSION_FEATURES = SUPPORTED_FEATURES.copy()
 NUMERIC_PARSING_FEATURES = SUPPORTED_FEATURES.copy()
+COMPOUND_ASSIGNMENT_FEATURES = SUPPORTED_FEATURES.copy()
 PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -39,7 +40,8 @@ PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES
                     'identifiers': IDENTIFIER_FEATURES, 'array-reduce': ARRAY_REDUCE_FEATURES,
                     'number-statics': NUMBER_STATIC_FEATURES,
                     'numeric-conversion': NUMERIC_CONVERSION_FEATURES,
-                    'numeric-parsing': NUMERIC_PARSING_FEATURES}
+                    'numeric-parsing': NUMERIC_PARSING_FEATURES,
+                    'compound-assignment': COMPOUND_ASSIGNMENT_FEATURES}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -408,6 +410,40 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                 for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
                     source = guard + setup + f'assert.sameValue({actual},{value});'
                     variants.append(('array-sort-' + name + suffix, source, expected, mode))
+    if profile == 'compound-assignment':
+        for operator, label, result, negative in (
+                ('<<=', 'left-shift', 18, -2), ('>>=', 'right-shift', 4, -1),
+                ('>>>=', 'unsigned-shift', 4, 2147483647), ('&=', 'and', 1, 1),
+                ('^=', 'xor', 8, -2), ('|=', 'or', 9, -1)):
+            guard = f'var probe=9;probe{operator}1;assert.sameValue(probe,{result});'
+            pairs = [
+                ('values', f'var a=9,returned=(a{operator}1);assert.sameValue(a,{result});assert.sameValue(returned,a);'
+                 f'var n=-1;n{operator}1;assert.sameValue(n,{negative});var z=-0;z{operator}0;',
+                 'z', '0', '-0'),
+                ('reference-order', "var trace='',stored,old={valueOf:function(){trace+='L';return 9;}},"
+                 "rhsValue={valueOf:function(){trace+='V';return 1;}},object={get x(){trace+='G';return old;},set x(value){trace+='S';stored=value;}};"
+                 "function target(){trace+='O';return object;}function key(){trace+='K';return {toString:function(){trace+='C';return 'x';}};}"
+                 "function rhs(){trace+='R';return rhsValue;}"
+                 f'var returned=(target()[key()]{operator}rhs());assert.sameValue(returned,{result});assert.sameValue(stored,returned);',
+                 'trace', "'OKCGRLVS'", "'OKCRGLVS'"),
+                ('abrupt-order', "var trace='',reason={},seen,wrote=false,old={valueOf:function(){trace+='L';throw reason;}},"
+                 "object={get x(){trace+='G';return old;},set x(value){wrote=true;}};"
+                 "function rhs(){trace+='R';return {valueOf:function(){throw 'unused';}};}"
+                 f'try{{object.x{operator}rhs();}}catch(e){{seen=e;}}assert.sameValue(seen,reason);assert.sameValue(wrote,false);',
+                 'trace', "'GRL'", "'GLR'"),
+                ('write-failure', "var object={},trace='',seen,returned;Object.defineProperty(object,'x',{value:9,writable:false});"
+                 "function rhs(){trace+='R';return 1;}"
+                 f'try{{returned=(object.x{operator}rhs());}}catch(e){{seen=e;}}assert.sameValue(object.x,9);'
+                 f'if(@STRICT@){{assert.sameValue(seen.constructor,TypeError);assert.sameValue(returned,undefined);}}'
+                 f'else{{assert.sameValue(seen,undefined);assert.sameValue(returned,{result});}}',
+                 'trace', "'R'", "''"),
+            ]
+            for mode in ('sloppy', 'strict'):
+                for name, setup, actual, good, bad in pairs:
+                    setup = setup.replace('@STRICT@', str(mode == 'strict').lower())
+                    for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                        variants.append(('compound-assignment-' + label + '-' + name + suffix,
+                                         guard + setup + f'assert.sameValue({actual},{value});', expected, mode))
     if profile == 'numeric-parsing':
         for method in ('parseInt', 'parseFloat'):
             guard = (f"var m={method};assert.sameValue(typeof m,'function');"

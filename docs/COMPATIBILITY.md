@@ -97,6 +97,12 @@ and the [complete pinned rest directory](../tests/conformance/test262-rest-param
 
 Script exception handling preserves explicitly thrown values and exposes ordinary runtime failures as objects with `name` and `message`. Catch bindings have local scope, and `finally` preserves or overrides returns and loop control. Execution, allocation, nesting, and other resource limits terminate the current script entry without running `catch` or `finally`; these host limits cannot be overridden by page code.
 
+The six [compound bitwise assignments](../tests/conformance/compound-assignment.md)
+reuse a single evaluated reference, with ordered getter/RHS/conversion/setter
+behavior, strict writes and masked 32-bit shifts. Their complete inventory has
+596 passes, ten existing addition-coercion failures and 180 unsupported modes.
+Logical assignment and BigInt/Symbol behavior remain separate gaps.
+
 Object initializers preserve computed-key evaluation/coercion order, UTF-16 names, method/accessor descriptors and the special static `__proto__` form. Symbols, spread, async/generator methods and `super` remain unsupported; see [object literal coverage](../tests/conformance/object-literals.md).
 
 Array reversal uses bounded ordinary property operations, preserving holes, inherited indices, accessor order and abrupt completion on supported receivers. Number radix formatting adds exact finite safe integers for bases 2–36; nondecimal fractions and larger magnitudes remain explicitly unsupported. See [Array/Number method coverage](../tests/conformance/array-number-methods.md).
