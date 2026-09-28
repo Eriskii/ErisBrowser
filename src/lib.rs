@@ -8,6 +8,7 @@ pub mod graphics;
 mod image_limits;
 mod js_identifier;
 pub mod js_string;
+mod js_uri;
 pub mod layout;
 pub mod net;
 pub mod page;

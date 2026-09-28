@@ -1,6 +1,78 @@
 # Validation record
 
+## URI encoding and decoding
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **869 Rust tests** pass with `--include-ignored`: 703 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 50 pipeline and 41 confined-worker tests. None remain
+ignored. All **133 Python checks** and **57 exact pixel references** pass.
+
+The [implementation](../tests/conformance/uri.md) adds all four global URI
+functions with ordinary string conversion, stable native identity and standard
+metadata. A bounded-stack visitor validates UTF-16/UTF-8 percent transformations,
+preserves reserved escape case and raw decoded surrogates, and rejects malformed
+encoding with canonical URIError. Both traversal passes, result copy work and
+simultaneous Vec/Rc storage are precharged; resource ceilings remain unchanged.
+Two codec and seven runtime groups cover boundaries, all isolated surrogates,
+metadata, hook order, abrupt identity and resource stops. Page and confined-worker
+fixtures preserve six green then six blue samples. A preliminary test cleanup
+was changed from unsupported Window descriptor redefinition to assignment;
+that separate runtime gap remains.
+
+The [complete URI profile](../tests/conformance/test262-uri.md) retains
+**173 sources / 346 modes / 128 preflights**. It moves from **zero passed /
+260 failed / 34 unsupported / 52 resources** to **208 passed / 34 unsupported /
+104 resources**, with all 128 controls. All 52 old instruction stops persist;
+52 former failures now reach the instruction limit in full loops. These are
+not passes. Labeled statements, host reflection and Reflect prerequisites
+remain explicit. There are no harness errors, timeouts or adapter errors.
+An actual baseline-recording attempt returns one, reproduces every candidate
+observation and writes no healthy URI baseline. No URI CI gate is added.
+
+All sixteen previous profiles retain **5,758 case and 1,216 preflight
+fingerprints** and policies. Fifteen preserve every observation. The
+[global-values comparison](../tests/conformance/test262-global-values-uri.json)
+adds four passes: **42 passed / six failed / 40 unsupported**, with all 64
+controls. Actual recording and a subsequent gate protect the gains, preserving
+historical evidence. HTML remains at 3,868 matches, two mismatches and six
+unsupported modes.
+
+A root-authored Python codec oracle checks **414 input strings / 3,312 assertions /
+104 strict/sloppy batches** across ASCII, scalar boundaries and all Unicode
+planes. All candidate batches pass; the old adapter fails every guarded batch.
+A wrong-answer control produces Test262Error. Its input digest and local reports
+are recorded in the implementation scope. This supplements the complete upstream
+inventory and is not independent-agent review.
+
+The **15,000-case** mutation smoke run reports zero caught panics or invariant
+failures: 5,000 accepted HTML, 623 accepted/4,377 rejected scripts and
+3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and
+display-list size is 1,173 commands; 17 cases stop within paint limits. The new
+seed changes the inventory, so counts are not acceptance-rate comparisons.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+| --- | --- |
+| `eris-browser` | `632df680fc4a9db8604939d8bc020a1889b186b8729946c46ec0c26cb791ce4d` |
+| `eris-js` | `1c7c0853356cc5282833d3ab0ed5deede421cbab3022668e1ba3cb5bcb7f7d06` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `476c97cb80d389651b62723e13abd97afe2f460f35a63ad0c4fd4985e306dc6d` |
+
+Source-input SHA-256:
+`9b4cf0cd976c9fe947cbbe8addf0bfc281dc5ec5dcd19a8c7026a7835bdbfe50`.
+Local records are `artifacts/*uri*`. Agent sessions remain unavailable; this is
+local validation, not independent-agent review. No native window, Vulkan or
+Chromium performance measurement is assigned to this checkpoint. Full
+compatibility, production security and the requested performance threshold
+remain unverified.
+
 ## Short-circuit logical assignment
+
+Published checkpoint `dbe8990` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36442294655),
+including the logical-assignment gate, Rust 1.88 and the Vulkan probe.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **858 Rust tests** pass with `--include-ignored`: 694 library,

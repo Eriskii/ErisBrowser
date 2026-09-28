@@ -1,0 +1,1278 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all direct .js files in built-ins/encodeURI, encodeURIComponent, decodeURI and decodeURIComponent; no implementation",
+  "directories": {
+    "encodeURI": [
+      "S15.1.3.3_A1.1_T1.js",
+      "S15.1.3.3_A1.1_T2.js",
+      "S15.1.3.3_A1.2_T1.js",
+      "S15.1.3.3_A1.2_T2.js",
+      "S15.1.3.3_A1.3_T1.js",
+      "S15.1.3.3_A2.1_T1.js",
+      "S15.1.3.3_A2.2_T1.js",
+      "S15.1.3.3_A2.3_T1.js",
+      "S15.1.3.3_A2.4_T1.js",
+      "S15.1.3.3_A2.4_T2.js",
+      "S15.1.3.3_A2.5_T1.js",
+      "S15.1.3.3_A3.1_T1.js",
+      "S15.1.3.3_A3.2_T1.js",
+      "S15.1.3.3_A3.2_T2.js",
+      "S15.1.3.3_A3.2_T3.js",
+      "S15.1.3.3_A3.3_T1.js",
+      "S15.1.3.3_A4_T1.js",
+      "S15.1.3.3_A4_T2.js",
+      "S15.1.3.3_A4_T3.js",
+      "S15.1.3.3_A4_T4.js",
+      "S15.1.3.3_A5.1.js",
+      "S15.1.3.3_A5.2.js",
+      "S15.1.3.3_A5.3.js",
+      "S15.1.3.3_A5.4.js",
+      "S15.1.3.3_A5.5.js",
+      "S15.1.3.3_A5.6.js",
+      "S15.1.3.3_A5.7.js",
+      "S15.1.3.3_A6_T1.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js"
+    ],
+    "encodeURIComponent": [
+      "S15.1.3.4_A1.1_T1.js",
+      "S15.1.3.4_A1.1_T2.js",
+      "S15.1.3.4_A1.2_T1.js",
+      "S15.1.3.4_A1.2_T2.js",
+      "S15.1.3.4_A1.3_T1.js",
+      "S15.1.3.4_A2.1_T1.js",
+      "S15.1.3.4_A2.2_T1.js",
+      "S15.1.3.4_A2.3_T1.js",
+      "S15.1.3.4_A2.4_T1.js",
+      "S15.1.3.4_A2.4_T2.js",
+      "S15.1.3.4_A2.5_T1.js",
+      "S15.1.3.4_A3.1_T1.js",
+      "S15.1.3.4_A3.2_T1.js",
+      "S15.1.3.4_A3.2_T2.js",
+      "S15.1.3.4_A3.2_T3.js",
+      "S15.1.3.4_A3.3_T1.js",
+      "S15.1.3.4_A4_T1.js",
+      "S15.1.3.4_A4_T2.js",
+      "S15.1.3.4_A4_T3.js",
+      "S15.1.3.4_A4_T4.js",
+      "S15.1.3.4_A5.1.js",
+      "S15.1.3.4_A5.2.js",
+      "S15.1.3.4_A5.3.js",
+      "S15.1.3.4_A5.4.js",
+      "S15.1.3.4_A5.5.js",
+      "S15.1.3.4_A5.6.js",
+      "S15.1.3.4_A5.7.js",
+      "S15.1.3.4_A6_T1.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js"
+    ],
+    "decodeURI": [
+      "S15.1.3.1_A1.10_T1.js",
+      "S15.1.3.1_A1.11_T1.js",
+      "S15.1.3.1_A1.11_T2.js",
+      "S15.1.3.1_A1.12_T1.js",
+      "S15.1.3.1_A1.12_T2.js",
+      "S15.1.3.1_A1.12_T3.js",
+      "S15.1.3.1_A1.13_T1.js",
+      "S15.1.3.1_A1.13_T2.js",
+      "S15.1.3.1_A1.14_T1.js",
+      "S15.1.3.1_A1.14_T2.js",
+      "S15.1.3.1_A1.14_T3.js",
+      "S15.1.3.1_A1.14_T4.js",
+      "S15.1.3.1_A1.15_T1.js",
+      "S15.1.3.1_A1.15_T2.js",
+      "S15.1.3.1_A1.15_T3.js",
+      "S15.1.3.1_A1.15_T4.js",
+      "S15.1.3.1_A1.15_T5.js",
+      "S15.1.3.1_A1.15_T6.js",
+      "S15.1.3.1_A1.1_T1.js",
+      "S15.1.3.1_A1.2_T1.js",
+      "S15.1.3.1_A1.2_T2.js",
+      "S15.1.3.1_A1.3_T1.js",
+      "S15.1.3.1_A1.3_T2.js",
+      "S15.1.3.1_A1.4_T1.js",
+      "S15.1.3.1_A1.5_T1.js",
+      "S15.1.3.1_A1.6_T1.js",
+      "S15.1.3.1_A1.7_T1.js",
+      "S15.1.3.1_A1.8_T1.js",
+      "S15.1.3.1_A1.8_T2.js",
+      "S15.1.3.1_A1.9_T1.js",
+      "S15.1.3.1_A1.9_T2.js",
+      "S15.1.3.1_A1.9_T3.js",
+      "S15.1.3.1_A2.1_T1.js",
+      "S15.1.3.1_A2.2_T1.js",
+      "S15.1.3.1_A2.3_T1.js",
+      "S15.1.3.1_A2.4_T1.js",
+      "S15.1.3.1_A2.5_T1.js",
+      "S15.1.3.1_A3_T1.js",
+      "S15.1.3.1_A3_T2.js",
+      "S15.1.3.1_A3_T3.js",
+      "S15.1.3.1_A4_T1.js",
+      "S15.1.3.1_A4_T2.js",
+      "S15.1.3.1_A4_T3.js",
+      "S15.1.3.1_A4_T4.js",
+      "S15.1.3.1_A5.1.js",
+      "S15.1.3.1_A5.2.js",
+      "S15.1.3.1_A5.3.js",
+      "S15.1.3.1_A5.4.js",
+      "S15.1.3.1_A5.5.js",
+      "S15.1.3.1_A5.6.js",
+      "S15.1.3.1_A5.7.js",
+      "S15.1.3.1_A6_T1.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js"
+    ],
+    "decodeURIComponent": [
+      "S15.1.3.2_A1.10_T1.js",
+      "S15.1.3.2_A1.11_T1.js",
+      "S15.1.3.2_A1.11_T2.js",
+      "S15.1.3.2_A1.12_T1.js",
+      "S15.1.3.2_A1.12_T2.js",
+      "S15.1.3.2_A1.12_T3.js",
+      "S15.1.3.2_A1.13_T1.js",
+      "S15.1.3.2_A1.13_T2.js",
+      "S15.1.3.2_A1.14_T1.js",
+      "S15.1.3.2_A1.14_T2.js",
+      "S15.1.3.2_A1.14_T3.js",
+      "S15.1.3.2_A1.14_T4.js",
+      "S15.1.3.2_A1.15_T1.js",
+      "S15.1.3.2_A1.15_T2.js",
+      "S15.1.3.2_A1.15_T3.js",
+      "S15.1.3.2_A1.15_T4.js",
+      "S15.1.3.2_A1.15_T5.js",
+      "S15.1.3.2_A1.15_T6.js",
+      "S15.1.3.2_A1.1_T1.js",
+      "S15.1.3.2_A1.2_T1.js",
+      "S15.1.3.2_A1.2_T2.js",
+      "S15.1.3.2_A1.3_T1.js",
+      "S15.1.3.2_A1.3_T2.js",
+      "S15.1.3.2_A1.4_T1.js",
+      "S15.1.3.2_A1.5_T1.js",
+      "S15.1.3.2_A1.6_T1.js",
+      "S15.1.3.2_A1.7_T1.js",
+      "S15.1.3.2_A1.8_T1.js",
+      "S15.1.3.2_A1.8_T2.js",
+      "S15.1.3.2_A1.9_T1.js",
+      "S15.1.3.2_A1.9_T2.js",
+      "S15.1.3.2_A1.9_T3.js",
+      "S15.1.3.2_A2.1_T1.js",
+      "S15.1.3.2_A2.2_T1.js",
+      "S15.1.3.2_A2.3_T1.js",
+      "S15.1.3.2_A2.4_T1.js",
+      "S15.1.3.2_A2.5_T1.js",
+      "S15.1.3.2_A3_T1.js",
+      "S15.1.3.2_A3_T2.js",
+      "S15.1.3.2_A3_T3.js",
+      "S15.1.3.2_A4_T1.js",
+      "S15.1.3.2_A4_T2.js",
+      "S15.1.3.2_A4_T3.js",
+      "S15.1.3.2_A4_T4.js",
+      "S15.1.3.2_A5.1.js",
+      "S15.1.3.2_A5.2.js",
+      "S15.1.3.2_A5.3.js",
+      "S15.1.3.2_A5.4.js",
+      "S15.1.3.2_A5.5.js",
+      "S15.1.3.2_A5.6.js",
+      "S15.1.3.2_A5.7.js",
+      "S15.1.3.2_A6_T1.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "throw-URIError.js"
+    ]
+  },
+  "test_files": 173,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/decimalToHexString.js",
+      "upstream_path": "harness/decimalToHexString.js",
+      "bytes": 641,
+      "sha256": "bc8786436987220b53cbc28443697f1fb61d5818fbf4f0741fd80a736d1d4ff5"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.10_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.10_T1.js",
+      "bytes": 992,
+      "sha256": "c2907f1491a4be1b7868f7d322bbae4b813f3e63ae52786ca04c17cfd2fbee96"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.11_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.11_T1.js",
+      "bytes": 1151,
+      "sha256": "de78bea284f8d8c02f0927b18e623cb194bf1074b5bbd4e91c6e7889511bb73e"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.11_T2.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.11_T2.js",
+      "bytes": 1151,
+      "sha256": "93a0543f58cf1b36d5e90fe1089e432038605d35ffa5e0a6251ced5b445efb7c"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.12_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.12_T1.js",
+      "bytes": 1210,
+      "sha256": "44c67b728cd6dc4ef96f694234a22242b923b0affaf7f79ec66907d20317d557"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.12_T2.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.12_T2.js",
+      "bytes": 1215,
+      "sha256": "700310ddd4bfa487e9a11ae160403f0510961564f59fb8abac1bc7e0ce294b17"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.12_T3.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.12_T3.js",
+      "bytes": 1214,
+      "sha256": "3e9a6309bad9d16611da84a2fda300bd9caaa07ee52ee1727336b8b3f986eb78"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.13_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.13_T1.js",
+      "bytes": 1773,
+      "sha256": "acd3c98924253113f4742d387a2c920e3b50637cdc3b73eea42fe94e5e38ce4f"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.13_T2.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.13_T2.js",
+      "bytes": 1773,
+      "sha256": "6aabe7248f45db6c644583b69c3a98fdbf10102d0ede200f7892b62481a0bdc0"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.14_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.14_T1.js",
+      "bytes": 1781,
+      "sha256": "eb746c0067ab73cb7fda41207256cf342019601b660cd312a3e55ccc5aa729ce"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.14_T2.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.14_T2.js",
+      "bytes": 1781,
+      "sha256": "369106657c694b3761092090f5c68326264b8fb0ffb7505940b43962231a6208"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.14_T3.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.14_T3.js",
+      "bytes": 1781,
+      "sha256": "89dc4bd7edf1baefda9b726a9b64df97ca1c00690a4df23a2866a6ea82be6cf8"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.14_T4.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.14_T4.js",
+      "bytes": 1781,
+      "sha256": "108331dc4adf27779c48e3ddddf39ce5754acc08379c6ed5fb6dda486914b484"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.15_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.15_T1.js",
+      "bytes": 1785,
+      "sha256": "1ee947ffb41f459ed4abffc533fdc6515eaebad9a38b1132a271779481c8a6b0"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.15_T2.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.15_T2.js",
+      "bytes": 1790,
+      "sha256": "445efc9e0c640fe9600ed077b0e183e13c527a11707c7edce80af4215a62569a"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.15_T3.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.15_T3.js",
+      "bytes": 1785,
+      "sha256": "94e11ddbde414b76fef8c02c3c416e56d779f2800e39130214e9c7dab3dcf9a2"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.15_T4.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.15_T4.js",
+      "bytes": 1785,
+      "sha256": "2926efd223cbcb30d008c8859aa95375cf83134c0da25a08ba8bb1d6252d3987"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.15_T5.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.15_T5.js",
+      "bytes": 1790,
+      "sha256": "a75643badbe27c0da75ccd52f5de22eee785fc7efcbb7aeb0e6bb477e8729178"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.15_T6.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.15_T6.js",
+      "bytes": 1785,
+      "sha256": "8dc57ed5c16950534834c1b860eb09820dc42a75bf2644258f2717a3ca6a62ab"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.1_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.1_T1.js",
+      "bytes": 977,
+      "sha256": "bf9652de96b4093bb5cda9bdb7dea67f204231355c2864caa1a2f4cbbc687bc5"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.2_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.2_T1.js",
+      "bytes": 907,
+      "sha256": "3df3875ad7f5886feb0f86e494221a45b9eebf0f6bc1791bbc7ba24e374156ed"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.2_T2.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.2_T2.js",
+      "bytes": 907,
+      "sha256": "977308744f91c7afe4e93a6bb61694b93ed9af50a09d2d1d519d9324a2ab095a"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.3_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.3_T1.js",
+      "bytes": 1481,
+      "sha256": "59b9e5c0b7269a3d4a2f079761f8f1f639d576f6ca85231f7e00a3dc0f2d2a3f"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.3_T2.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.3_T2.js",
+      "bytes": 1481,
+      "sha256": "170fc89d6645e2b977da4d1e6a2e3a0b4022bbb0a1fde53f51fdef610137ed25"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.4_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.4_T1.js",
+      "bytes": 1685,
+      "sha256": "e31c09f05e5274f0aa3685d4ba16f2a89ad92084427b70a6897eea76e856695b"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.5_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.5_T1.js",
+      "bytes": 1685,
+      "sha256": "2a5dae9ec01238c382204752e3e4e4ef0af79e3ad712cae6da958fbeeda5bd28"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.6_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.6_T1.js",
+      "bytes": 1685,
+      "sha256": "0344a9550a1cd4c8e42d669dbfd95f459c87691828e04b852ced6741a2f353a8"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.7_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.7_T1.js",
+      "bytes": 1513,
+      "sha256": "e12b9394b1613a00d797a3beadd0da35c23277d35438b532b01b63b6e938d6b5"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.8_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.8_T1.js",
+      "bytes": 1581,
+      "sha256": "0ab41b1c290485c9b927a702de0721095f45d8bedaadb5c3eccf5b3979979695"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.8_T2.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.8_T2.js",
+      "bytes": 1581,
+      "sha256": "4cc2a151c889dc53742cc0ce2855f8140c5b54b343769f972a659a9c2f6306ac"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.9_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.9_T1.js",
+      "bytes": 1607,
+      "sha256": "041d8c6b62624ecdbec25a656635a360a5f7af1bd97b7a696532e9319e165095"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.9_T2.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.9_T2.js",
+      "bytes": 1607,
+      "sha256": "5bdef113e2ca60053c9fd37cfed0f750103bad388f06b8c9a87ec9dded9a7836"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A1.9_T3.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A1.9_T3.js",
+      "bytes": 1607,
+      "sha256": "8a216fd780d1530a7a062c5427fde53946af2552d22d5fd45da3b08746296376"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A2.1_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A2.1_T1.js",
+      "bytes": 678,
+      "sha256": "30997693d9f9d14464364682750aad9e022271100fceab29d7cf60f2da7dde97"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A2.2_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A2.2_T1.js",
+      "bytes": 1774,
+      "sha256": "732ed88997debacd653e9148651f8d4b8c68b96b03a527157314bbef4dc904d6"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A2.3_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A2.3_T1.js",
+      "bytes": 1735,
+      "sha256": "be3a86ce1792248ae39eee0bf0dd566ff98b837445971e24f8e523d552ba1699"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A2.4_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A2.4_T1.js",
+      "bytes": 2128,
+      "sha256": "ba3cc547d25d05fc74c2ae19de7c9a36bdf507264600126fcfa0c04c00337d53"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A2.5_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A2.5_T1.js",
+      "bytes": 2458,
+      "sha256": "73144c6e18e008264415ebc7224cfe8a00ac36550efff62f1f3407a6be6f4cd7"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A3_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A3_T1.js",
+      "bytes": 1681,
+      "sha256": "471b3dd40ea2be85fde35f6d377cd53ae91c7dd88bafbac1120b27be14f3d0f0"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A3_T2.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A3_T2.js",
+      "bytes": 1744,
+      "sha256": "0fbb898cb88480826c7e079bcb57bfd67f7e2e114e78e051bcdbabe43deb48f1"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A3_T3.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A3_T3.js",
+      "bytes": 856,
+      "sha256": "79329c236c3e1966871ac4017b7ed65d1761aed526fc5365afa3a7d3a2e5ae66"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A4_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A4_T1.js",
+      "bytes": 797,
+      "sha256": "79d30ec094d4ec1e3664bc39307dd1f86951c8044c8722506bda260d0de4cfac"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A4_T2.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A4_T2.js",
+      "bytes": 1104,
+      "sha256": "d1a8b96b055dcce658be602a177431ffdd68821a32747e52c63dfddb23636ca4"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A4_T3.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A4_T3.js",
+      "bytes": 835,
+      "sha256": "30fc1d65f6d0bc58c21bc2c6eb54d063ef505d2326f02385bf9d01e5c7a137dd"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A4_T4.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A4_T4.js",
+      "bytes": 994,
+      "sha256": "df7af38752f00d1e2520c5e1cb6b1b54a82a58252e1c2f5f8ecf2b83ee4b6de9"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A5.1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A5.1.js",
+      "bytes": 769,
+      "sha256": "ecc01e30ab237d6033243d67d638fe09219b18d2e7c8d60e4396ccb6d2ccd607"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A5.2.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A5.2.js",
+      "bytes": 880,
+      "sha256": "22e601314db85941ee0a8b4f7022db042d9d935c360574fffb8353c52468abd3"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A5.3.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A5.3.js",
+      "bytes": 594,
+      "sha256": "497f6d431470a7c70e9740057611881d3b3232614448e27ef4c4728acc4db9f8"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A5.4.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A5.4.js",
+      "bytes": 386,
+      "sha256": "2b3142cfd1210502b3396b3fe454e554ac19377701e4b4229a244f1b8b9da9c8"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A5.5.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A5.5.js",
+      "bytes": 749,
+      "sha256": "94e5e3a9d451d178b2b10f9377946c674ce35f8edd8285c1daf427114e40f5bc"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A5.6.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A5.6.js",
+      "bytes": 429,
+      "sha256": "7e8ac075f4cb1c8e69c19f13ed90110850f82109b3a24d7ba2407a4a885fc695"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A5.7.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A5.7.js",
+      "bytes": 633,
+      "sha256": "a3d2c8be9d3b9da642f9155fc3428f183e2ca5f29fb78ae18f1ae8fee5a689d9"
+    },
+    {
+      "path": "test/built-ins/decodeURI/S15.1.3.1_A6_T1.js",
+      "upstream_path": "test/built-ins/decodeURI/S15.1.3.1_A6_T1.js",
+      "bytes": 3697,
+      "sha256": "7f99a7dad8c834bd9552cd15e81a370b63846b1bed284b95f2aeac5bcbf4e41d"
+    },
+    {
+      "path": "test/built-ins/decodeURI/name.js",
+      "upstream_path": "test/built-ins/decodeURI/name.js",
+      "bytes": 809,
+      "sha256": "8809bc28b970bc7ba04667ac46701b1c59d528332e3a15f36260536c1ee27b04"
+    },
+    {
+      "path": "test/built-ins/decodeURI/not-a-constructor.js",
+      "upstream_path": "test/built-ins/decodeURI/not-a-constructor.js",
+      "bytes": 838,
+      "sha256": "2bbf803f64b0afba29dceb4da5d5e3968aa61381f00c226757b193abaea9186d"
+    },
+    {
+      "path": "test/built-ins/decodeURI/prop-desc.js",
+      "upstream_path": "test/built-ins/decodeURI/prop-desc.js",
+      "bytes": 557,
+      "sha256": "406489bfd8652fb0f6bae2cb3b38dc61a0a6d6f41919d2e6f1f7db35e31deb70"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.10_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.10_T1.js",
+      "bytes": 1019,
+      "sha256": "acb714a6121726888d59222cfa7a56e4a61f2657c6d51d6d0db18df7fe564876"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.11_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.11_T1.js",
+      "bytes": 1178,
+      "sha256": "7950a7f6df07eb7c92f0ca17328356d9b8ab6efaf7565987f5fa80c04a0dff83"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.11_T2.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.11_T2.js",
+      "bytes": 1178,
+      "sha256": "94fb758d9e8d8bb7d23b888442759e843c80d911a538f26a38d37d09d94b1542"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.12_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.12_T1.js",
+      "bytes": 1237,
+      "sha256": "374a363052e314a806e5dcdaff70f67d44d11a40a0a4376224babea09a11c9cf"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.12_T2.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.12_T2.js",
+      "bytes": 1242,
+      "sha256": "c6739e651a16ad4f99bb64af24123acf2141a411f915e135262552470d2cc3dd"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.12_T3.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.12_T3.js",
+      "bytes": 1241,
+      "sha256": "abd18e7c8ef2b6b4363a3419cdeb83017113f0dbe5af921dcd6c9ad11ca1da7b"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.13_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.13_T1.js",
+      "bytes": 1800,
+      "sha256": "88d14371ca0d2b438e104d9aeff95de6bbd97f10c124b55e534407963260198e"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.13_T2.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.13_T2.js",
+      "bytes": 1800,
+      "sha256": "1ead9b0117d31ab118c9e3010d085f3b2a19b8da6a2b0e4b73c2ef262c3a995b"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.14_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.14_T1.js",
+      "bytes": 1808,
+      "sha256": "25fc54e19046705bb3c46d57bd695ebd0caaa2bfe0fa37bfdaead37b00159d08"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.14_T2.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.14_T2.js",
+      "bytes": 1808,
+      "sha256": "302fae178d979d8c04b775f5cda25d892d1fd5956148a28e9af1751446950995"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.14_T3.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.14_T3.js",
+      "bytes": 1808,
+      "sha256": "95ffeaed2ecbb120fa30e083e7e644ef6efcffedbe0065a214cf5e2cfdcf5808"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.14_T4.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.14_T4.js",
+      "bytes": 1808,
+      "sha256": "5c0c0b509c622af8d2d8ace67c3a50fbba06d15e92fe21027b3f40d93178b280"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.15_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.15_T1.js",
+      "bytes": 1812,
+      "sha256": "a18dd6620673cf56e96b688299dd79e3e5d1e263f982d6d3bbcb6f6bd7f9c86c"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.15_T2.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.15_T2.js",
+      "bytes": 1817,
+      "sha256": "1e46c0f8ab97765dfa3a01f557bd682bd8694db915fa6452605e458acadc1bdc"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.15_T3.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.15_T3.js",
+      "bytes": 1812,
+      "sha256": "8bf182a892de341d427b45fdcc5a59c9b806284fce5dd89d2c85aa4c46226b00"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.15_T4.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.15_T4.js",
+      "bytes": 1812,
+      "sha256": "abba178bc6745338eaf8d94a16e702dda50551a70353658319d4ab310b74b01f"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.15_T5.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.15_T5.js",
+      "bytes": 1817,
+      "sha256": "61e53b6d8168567743b00fc3ed486dc1d81cc1babd84a53a7c28232d30dcae7a"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.15_T6.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.15_T6.js",
+      "bytes": 1812,
+      "sha256": "0c08f981986523ae08377eb8266f748c2e2f212db5efe1018e2618403ac3d185"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.1_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.1_T1.js",
+      "bytes": 1031,
+      "sha256": "a9390ab59612ba7b9ad4a7293a55c86efc23828b4345ed0c7816305756e90aa6"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.2_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.2_T1.js",
+      "bytes": 934,
+      "sha256": "e99aaabbd291df900f11e31f5ed6063ec3de5c8e2768e599e8d7a9ab5c7c8d54"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.2_T2.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.2_T2.js",
+      "bytes": 934,
+      "sha256": "a788140a0897ff4a29565ae1eb608d1c911d50f5ac0c61aa3b602ba6edd1fa80"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.3_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.3_T1.js",
+      "bytes": 1508,
+      "sha256": "f708b08f7fa10a4c8f33ccb87f357eb208b736ed28bd5d5043d9bf5e25d14086"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.3_T2.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.3_T2.js",
+      "bytes": 1508,
+      "sha256": "04494605e266b70964b6fe224dd026fe934c21adfe933a4e5a03668cdc46714a"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.4_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.4_T1.js",
+      "bytes": 1712,
+      "sha256": "6f257f8fa3064064ee7c52b4aa64ddd4ac4ca7c5651ce7ab372c8ced5b32b5b0"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.5_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.5_T1.js",
+      "bytes": 1712,
+      "sha256": "a782872c8526d9ec57bd45cd086a88222ae44a2df7daee80288c47ea4709f41f"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.6_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.6_T1.js",
+      "bytes": 1712,
+      "sha256": "dfbc266df64ed9d7baee68d821ef205d037775115b64ccea715676d60b5a044f"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.7_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.7_T1.js",
+      "bytes": 1540,
+      "sha256": "6fca6aff977d316b67bfe31ebd6d8c27eb4264b7b6ffd3369d5df37d5364e1b2"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.8_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.8_T1.js",
+      "bytes": 1608,
+      "sha256": "04362ead14cb6207688df9d930f404eb3d5e7909d6f41f9db75c320400645eb6"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.8_T2.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.8_T2.js",
+      "bytes": 1608,
+      "sha256": "3339eced85e1412331a3b75ec795dd9e2651830979c5d2488bab06c003b59f58"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.9_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.9_T1.js",
+      "bytes": 1634,
+      "sha256": "a30e1cd8042ae15bf7c2f0a717f4fbd74ba01f6cf95ef38f9c39836eac4f0812"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.9_T2.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.9_T2.js",
+      "bytes": 1634,
+      "sha256": "2beed9a420e3a10533e311361b4483236cc49461af234faba37cffea75c2e11f"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.9_T3.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A1.9_T3.js",
+      "bytes": 1634,
+      "sha256": "e859d7ed2e48384c5cf44da4170fabc9028b14fb30b81ab3585ae093620f8667"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A2.1_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A2.1_T1.js",
+      "bytes": 705,
+      "sha256": "b019530ca72cbfeab7e90fb15295a1b3a437f83550e29ddeed9a5969185a6ce4"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A2.2_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A2.2_T1.js",
+      "bytes": 1498,
+      "sha256": "19b094d25026d5518f27e99d9208ebf2cb3259e5bac0a4f7e2214b612ed3b571"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A2.3_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A2.3_T1.js",
+      "bytes": 1762,
+      "sha256": "8de0b76c0d59bf624b679ace773e350a5f0d1542677de8ade4edaa40a6582f80"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A2.4_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A2.4_T1.js",
+      "bytes": 2155,
+      "sha256": "1a4e796e0c51cf0dca42ebbb3acb5cc7f5aef2975ba514dd424c175d7f5c8bbf"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A2.5_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A2.5_T1.js",
+      "bytes": 2485,
+      "sha256": "9f6346d52bffc388b5d8ddf5f9f6b13095e9062f5c871b38b29de9663d1b3e40"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A3_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A3_T1.js",
+      "bytes": 1830,
+      "sha256": "656d30913ca52075a485747372a3950c78c90977ed46449c3f39e0dc4cd0bad9"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A3_T2.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A3_T2.js",
+      "bytes": 1893,
+      "sha256": "e8eb28a15f1f7e8158d910612f8ba81a99f6d4c501ef52a1e872ef8bb4aefff7"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A3_T3.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A3_T3.js",
+      "bytes": 801,
+      "sha256": "59365b887a22b8d797f5d1d5dc7d0820466dd45ac7e31716d006fa9e0a1b4ee8"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A4_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A4_T1.js",
+      "bytes": 842,
+      "sha256": "15bdc3b9f02ae70881899b97333a1007c665b50bd7506168c5bd4cc962e1b994"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A4_T2.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A4_T2.js",
+      "bytes": 1147,
+      "sha256": "b568cc7c1e3f4fc1536e23fb1bce3104ff73a66bdc48c1a1e6fe96fc880650af"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A4_T3.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A4_T3.js",
+      "bytes": 889,
+      "sha256": "13f25cc17f6795c95a2f51275cbd8f341149eb1d7810265207f53d998cfbca3f"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A4_T4.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A4_T4.js",
+      "bytes": 1036,
+      "sha256": "568a219c5d08758d037df0f12136a901d49c7882c548808840a4f0946062303d"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A5.1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A5.1.js",
+      "bytes": 841,
+      "sha256": "ee69c480c5531d426c62269be04bda6d5c48d0f1589a1ba7120a74178be5bae0"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A5.2.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A5.2.js",
+      "bytes": 1016,
+      "sha256": "9dfa1388474a73f9983efde635b097596dcc7e950172e23ce9b4556adee3f269"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A5.3.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A5.3.js",
+      "bytes": 684,
+      "sha256": "b95bc4d7a121d4adab9bdf16ffe579b872812d2cf59f73dedb52ba47e9da6810"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A5.4.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A5.4.js",
+      "bytes": 449,
+      "sha256": "13ccf8933d368bd742c0a0150cf12f9bf876f4bdb17854caca188d7be24e5d2c"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A5.5.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A5.5.js",
+      "bytes": 821,
+      "sha256": "abd1e30b8053920a9dcd8585784163cdfe4a64cc34ce76e71360e31733cb19cc"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A5.6.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A5.6.js",
+      "bytes": 492,
+      "sha256": "a5e48bec4b8edadba793c254759d64daca70ade4d343db7d94031e1c416c9c70"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A5.7.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A5.7.js",
+      "bytes": 696,
+      "sha256": "52bdbe8ccd22dbc1c0531b60fd0516ca18c4fc0fc71ff388a4b3fb2d8abd42cb"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/S15.1.3.2_A6_T1.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/S15.1.3.2_A6_T1.js",
+      "bytes": 3967,
+      "sha256": "cd417f77e41ec5c482f700f236e66ce0f9323989d84ccd4cfcecad9187d5c3fc"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/name.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/name.js",
+      "bytes": 881,
+      "sha256": "b3d0de6c06cedca0e2ff40afb234d3e09e1e2a64d3f5ef211699873affb6f149"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/not-a-constructor.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/not-a-constructor.js",
+      "bytes": 874,
+      "sha256": "ee923c5543a2b5a27a3bd0e686c732052511a96ba5f16515a05b4e4b8fd1cd2d"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/prop-desc.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/prop-desc.js",
+      "bytes": 589,
+      "sha256": "349753db51997de1b90745f057fdb15c9086824f47283bb2695daa8874c6959a"
+    },
+    {
+      "path": "test/built-ins/decodeURIComponent/throw-URIError.js",
+      "upstream_path": "test/built-ins/decodeURIComponent/throw-URIError.js",
+      "bytes": 1464,
+      "sha256": "f8fd88920ccbe9d45e319cdec2764e9bbd909847f9e3e0ca4eedaeef2a451e2f"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A1.1_T1.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A1.1_T1.js",
+      "bytes": 1428,
+      "sha256": "eecb6562da7855d7613e2eff10ac1c0c3c1b76f937c9156bd1174d0fbfd4a6d0"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A1.1_T2.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A1.1_T2.js",
+      "bytes": 1436,
+      "sha256": "aea6423be8057cf115e9e2d2f0d40fff9ac62c3b5f83d951b1d38b8e777750a0"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A1.2_T1.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A1.2_T1.js",
+      "bytes": 1464,
+      "sha256": "4cdb8e6cb4a90a1b536a6cc5680d26510a5d3bcb0c9b7d851cad1192c83dab9c"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A1.2_T2.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A1.2_T2.js",
+      "bytes": 1472,
+      "sha256": "8393d06463ffe471db4362a72f9e50c8642e41eaec9524b2ab51c9ed3de2cd5e"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A1.3_T1.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A1.3_T1.js",
+      "bytes": 1830,
+      "sha256": "f5a6665f4364e3c0e5b9a462465591290ebf1f2834489dd64129eb3261db1102"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A2.1_T1.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A2.1_T1.js",
+      "bytes": 2290,
+      "sha256": "8f44b3cf79b011e54536c9774c903708a81598c4275bbb26d04db32708617613"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A2.2_T1.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A2.2_T1.js",
+      "bytes": 1669,
+      "sha256": "77a8b0cc2c8aa7900c4a5b8ca4a06f0468f83b3736795111723c5cac8aa94fe3"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A2.3_T1.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A2.3_T1.js",
+      "bytes": 1708,
+      "sha256": "2cb9d2c31f68904e3e7430180ed73207437e621dcad89e301535b5b19b875e94"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A2.4_T1.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A2.4_T1.js",
+      "bytes": 2229,
+      "sha256": "b8ccf01fa45e2ff2dabaada1d70fa84a17836f90c661fcd53c7c8acc6cda0e4b"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A2.4_T2.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A2.4_T2.js",
+      "bytes": 2227,
+      "sha256": "a2592a607aa23c7eff0d38e5534192f9a54ae66be58e65b251dcdcafeffdbb70"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A2.5_T1.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A2.5_T1.js",
+      "bytes": 1708,
+      "sha256": "019ff8410cdaa6e14ab0529636ea0701593c3f3cda61d80e5a5e2efe8c95977d"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A3.1_T1.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A3.1_T1.js",
+      "bytes": 582,
+      "sha256": "59124fb6473e5b6dca78dfcd3e15e7225607c2e56f1eef2d77836b94977835a2"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A3.2_T1.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A3.2_T1.js",
+      "bytes": 813,
+      "sha256": "2b07aba5dd917acc3a4acefe581b7fa590fc0a152bd8624273d19e7b99f64c66"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A3.2_T2.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A3.2_T2.js",
+      "bytes": 618,
+      "sha256": "781744fec73ce1775445af7355d3422534ad43386847e9fc9a345d8dc2aad383"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A3.2_T3.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A3.2_T3.js",
+      "bytes": 593,
+      "sha256": "a581747988de3c40e07de620797eafc240d94d659e64c77ca0443f5f32a49647"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A3.3_T1.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A3.3_T1.js",
+      "bytes": 339,
+      "sha256": "350fa3d4dec70272ba12fe7b58af5680050ea2032fb7218c80940f31e96fdf18"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A4_T1.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A4_T1.js",
+      "bytes": 840,
+      "sha256": "ce749372e6b72c2fc776ce1dbd40147f5e5ad46288466d2898899a8146ba3dcc"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A4_T2.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A4_T2.js",
+      "bytes": 1712,
+      "sha256": "114f1a8104181e107c36e58b4c0a86a11a9401a2dc1ce8f3902380e850b7c457"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A4_T3.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A4_T3.js",
+      "bytes": 1128,
+      "sha256": "477f83261cfa98a811a1c4832bd1ed07f9126b05b20e2591d2f42ba4510855d7"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A4_T4.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A4_T4.js",
+      "bytes": 941,
+      "sha256": "68c0b16711934d487754f8563495df36fc72d42383a487e9b7098704789264a8"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A5.1.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A5.1.js",
+      "bytes": 762,
+      "sha256": "1ff5075ddd12d9647402c1f2ec0fe445b4dda91226bf8be53edabc9ff40a2981"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A5.2.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A5.2.js",
+      "bytes": 873,
+      "sha256": "75bc45621273f0a6fa541494c26a5a5ce920cbaf5f344f73728ad1b6b6bf2d6d"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A5.3.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A5.3.js",
+      "bytes": 587,
+      "sha256": "75d99c6d83c5c836fbe0403e209431a49832e02e50b8f2d94877b8c4caf52fac"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A5.4.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A5.4.js",
+      "bytes": 379,
+      "sha256": "816885096ed52deae5a12b54738c0ec1e0b50c2ce6204a7c998adf3f1818431e"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A5.5.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A5.5.js",
+      "bytes": 742,
+      "sha256": "68d6f3f36a8e496e7d5a84e417b3d1678b2d5ebadd515998a16284d856b12d1f"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A5.6.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A5.6.js",
+      "bytes": 422,
+      "sha256": "d4cd6a6db7e372982e160eb4537c9102c2c8e42a29c63e57a31de6b16142d9d6"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A5.7.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A5.7.js",
+      "bytes": 626,
+      "sha256": "42593a42e460d4cd320a697d7cd090747ae621fe2d9d443787112955681dc383"
+    },
+    {
+      "path": "test/built-ins/encodeURI/S15.1.3.3_A6_T1.js",
+      "upstream_path": "test/built-ins/encodeURI/S15.1.3.3_A6_T1.js",
+      "bytes": 3688,
+      "sha256": "81a76de02fe6395bdadf4a125d806be87596cff9ddfad86da8eaad2c65fc32f0"
+    },
+    {
+      "path": "test/built-ins/encodeURI/name.js",
+      "upstream_path": "test/built-ins/encodeURI/name.js",
+      "bytes": 795,
+      "sha256": "740d9a018243c37be840258b3d7ec111447b66c8cb37147aa462cbf0ac25f656"
+    },
+    {
+      "path": "test/built-ins/encodeURI/not-a-constructor.js",
+      "upstream_path": "test/built-ins/encodeURI/not-a-constructor.js",
+      "bytes": 838,
+      "sha256": "affdf83f04722568f8ef41ab81fb2c0ea22364a5aa4c6f99d7ae436e8e207443"
+    },
+    {
+      "path": "test/built-ins/encodeURI/prop-desc.js",
+      "upstream_path": "test/built-ins/encodeURI/prop-desc.js",
+      "bytes": 546,
+      "sha256": "db1e4fa4e408907def294fa2e105cde0f03e576981444635ac57a916f6b2aeb2"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A1.1_T1.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A1.1_T1.js",
+      "bytes": 1455,
+      "sha256": "41149d929246eeaf26c543759b39a1d6e3b2ae98cb77bc81ba3504dffe5463fd"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A1.1_T2.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A1.1_T2.js",
+      "bytes": 1463,
+      "sha256": "6f1dfc13c845bce81842da5b21be568fd9ef6ae5d5d8c311638dfbf19a11d01c"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A1.2_T1.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A1.2_T1.js",
+      "bytes": 1491,
+      "sha256": "7b0b7c3d7f4af2b52bb16630c9820018924842f7d7e1868a46c7cbe7e3696840"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A1.2_T2.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A1.2_T2.js",
+      "bytes": 1499,
+      "sha256": "4e639835d205ccf19a2d3e043bf221ea84660bb4b4a5ee74fb1ce969ece97186"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A1.3_T1.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A1.3_T1.js",
+      "bytes": 1857,
+      "sha256": "7bcb678221d97aa337ed24ddbcb33f494f333ade4b3894588be51a2880128d44"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A2.1_T1.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A2.1_T1.js",
+      "bytes": 2079,
+      "sha256": "14bd50220ac97bb5fcef1185f7bcdbdae20e63e03ff2c582cc3cf52508f0177e"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A2.2_T1.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A2.2_T1.js",
+      "bytes": 1696,
+      "sha256": "d9a9f7c215f60a6679acacb3a8bf8fd9f53e1d7b7ac59df51763883e90087577"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A2.3_T1.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A2.3_T1.js",
+      "bytes": 1735,
+      "sha256": "ef275ea06f7204166291b81f8eb15cf4fdf15f672b974e458c1a61b0210a13b1"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A2.4_T1.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A2.4_T1.js",
+      "bytes": 2256,
+      "sha256": "7eea322286cce84f52788386f3b38e3879d5291d2ff9001eb12ea58c3cfca99f"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A2.4_T2.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A2.4_T2.js",
+      "bytes": 2254,
+      "sha256": "3746c90ea993073701ab227e5bb7c95a4589e9859690f42809f082a8ea7f915d"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A2.5_T1.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A2.5_T1.js",
+      "bytes": 1735,
+      "sha256": "e9544d19fde6611338827c374ecc762c6fc179088703dc5e6ecaab7d107d241e"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A3.1_T1.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A3.1_T1.js",
+      "bytes": 677,
+      "sha256": "7d4999ae9adeb42dc3df6af84d3efb66b44bf05eb81f9a862f4cac71b4ce0a2f"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A3.2_T1.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A3.2_T1.js",
+      "bytes": 849,
+      "sha256": "ed52aae1d97ff9bf50bcf96099083ff2c5f7d1817f951a9ed296287c657cb3c2"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A3.2_T2.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A3.2_T2.js",
+      "bytes": 654,
+      "sha256": "642b028ca919c9dc237f4bab2a0b78ef796eabd92adb42882355a7b98876ea76"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A3.2_T3.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A3.2_T3.js",
+      "bytes": 629,
+      "sha256": "a4259c2b2cd6a22003c264f75c9cd7b3ae594463786aee5d6544df6ddb3968c5"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A3.3_T1.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A3.3_T1.js",
+      "bytes": 407,
+      "sha256": "36746c45752c245b794b42b70048224a625a2d758f88319a01f6e63fc7ec64a7"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A4_T1.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A4_T1.js",
+      "bytes": 779,
+      "sha256": "c2fca6a43e1abff6de65e0396df57494201a0a2f09065f56d0340b3e8669e1c6"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A4_T2.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A4_T2.js",
+      "bytes": 1852,
+      "sha256": "233f029439eb6b414dbb1d3fdc2aba9e3ea1a56f86106cf003f95de792892b25"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A4_T3.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A4_T3.js",
+      "bytes": 1282,
+      "sha256": "9878a51cb6700a72ed4d140ab4727463c0212ba725765732814e861db8052c24"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A4_T4.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A4_T4.js",
+      "bytes": 1035,
+      "sha256": "9722c76a71e88c3082a0ce9e4e077f1fa9bb08feb4ab225c22bc6bbbad175764"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A5.1.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A5.1.js",
+      "bytes": 834,
+      "sha256": "c56310eb2c61327de9a0e87d013cc91991610c2a1bf366a5ef547bcb3db05aa4"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A5.2.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A5.2.js",
+      "bytes": 1009,
+      "sha256": "889a12800681e78a8731a793d7bcd07392ce9b3161064923137f7e622dd23a43"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A5.3.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A5.3.js",
+      "bytes": 677,
+      "sha256": "a702ba4c128ed3e954bd05104dbca215f45bfa7f1ce48b984d51bd916bfdbe89"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A5.4.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A5.4.js",
+      "bytes": 442,
+      "sha256": "86385c3fc160b184eb2bec996135ee9d40d9ee763e6447cb9efe84fa6823c4e6"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A5.5.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A5.5.js",
+      "bytes": 814,
+      "sha256": "5c89863e64e57349a8fd50eb3d821923799687d6bc393ad721a87c38f7e91b97"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A5.6.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A5.6.js",
+      "bytes": 485,
+      "sha256": "d5781782e95a3360a1f39c2bc03c8327c8abfe63fe33aa8d045e9da57e4e3d10"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A5.7.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A5.7.js",
+      "bytes": 689,
+      "sha256": "be4d2d8c833d5698a3d869a9b5ace40ea97499e8c734ca5aa91868a00c817e0a"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/S15.1.3.4_A6_T1.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/S15.1.3.4_A6_T1.js",
+      "bytes": 3958,
+      "sha256": "b6c508ce5f8a3b2cdeaa7c60789b2695b48bead84c1272801075638cb529e9ff"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/name.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/name.js",
+      "bytes": 867,
+      "sha256": "1217b3c8f021e30c15d25b395c097627d23592cceb699338fddff039413a87e2"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/not-a-constructor.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/not-a-constructor.js",
+      "bytes": 874,
+      "sha256": "d6a4d22918f199493efaf513e77753e90af6f1f49142b20947091922322b97a2"
+    },
+    {
+      "path": "test/built-ins/encodeURIComponent/prop-desc.js",
+      "upstream_path": "test/built-ins/encodeURIComponent/prop-desc.js",
+      "bytes": 582,
+      "sha256": "6f086404f7c56bf01e7a5ef7f110f294574bd69c647ae6276742b9767d40c4e8"
+    }
+  ]
+}

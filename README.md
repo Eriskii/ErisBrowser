@@ -125,9 +125,9 @@ adds 20 variants: ten pass and ten require unsupported features. Its separate
 CI gate requires all method assertion preflights to pass.
 
 The complete [global-value directories](tests/conformance/test262-global-values.md)
-retain 88 variants: 38 pass, ten fail on missing Date/URI functions, and 40 remain
-unsupported. Corrected global-property behavior adds six passes and verifies all
-64 assertion preflights; CI preserves those passes and the unchanged inventory.
+retain 88 variants: 42 pass, six fail on missing Date, and 40 remain unsupported.
+Global-property corrections and URI bindings add ten passes. All 64 assertion
+preflights verify; CI preserves those passes and the unchanged inventory.
 
 The complete [array-sort directory](tests/conformance/test262-array-sort.md)
 retains 107 variants: 57 pass, 46 remain unsupported, and four exceed the shared
@@ -172,6 +172,11 @@ The complete [logical-assignment directory](tests/conformance/test262-logical-as
 retains 132 variants: 72 pass, twelve fail on class/Symbol prerequisites and 48
 remain unsupported. The three short-circuit assignments add 54 passes without
 losses. All 104 assertion controls verify; CI preserves the complete baseline.
+
+The complete [URI builtin directories](tests/conformance/test262-uri.md) retain
+346 variants: 208 pass, 34 remain unsupported and 104 hit the instruction limit.
+All 128 assertion controls verify. Full loops remain unchanged; resource stops
+prevent a healthy URI regression baseline.
 
 The complete [identifier and whitespace directories](tests/conformance/test262-identifiers.md)
 retain 669 variants: 507 pass, 154 remain unsupported and eight reach compile

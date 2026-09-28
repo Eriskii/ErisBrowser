@@ -153,7 +153,7 @@ preflight identity changed: the comparison verified all **88 case fingerprints**
 and **64 preflight fingerprints**, plus source hashes, manifest and policy.
 
 After those checks, the runner recorded the
-[regression baseline](test262-global-values-current.json). A separate invocation
+[checkpoint regression baseline](https://github.com/Eriskii/ErisBrowser/blob/dbe89907138bc8331b865a97da16d40042f39b31/tests/conformance/test262-global-values-current.json). A separate invocation
 of the actual baseline CLI gate exited 0 with zero regressions and zero further
 improvements. The non-baseline run exits 1 because ten failures and forty
 unsupported variants remain. The runner's healthy-baseline criterion requires
@@ -172,7 +172,7 @@ Runtime source SHA-256:
 `c85a3408efb0e177f6493e12a0e7d294d943f7af57f837cb1e19cd24ba70f214`.
 Sanitized latest-report SHA-256:
 `d7f49559aca55c998a9f36090f02d347d09cc4632d5c4a22fc02b04b301a39e0`.
-Baseline SHA-256:
+Checkpoint baseline SHA-256:
 `868158b8a79305e12fc1a06f73f645bd40597c099fbef4197b8fa8cc41e0fcdf`.
 
 The full latest report includes both measurements' provenance, every outcome,
@@ -181,3 +181,12 @@ the six exact gains and actual baseline-gate verification. The
 assignment, deletion and declaration paths and their limits. This is a bounded
 regression checkpoint; general global-object/Window semantics and full Test262
 conformance remain incomplete.
+
+## Subsequent URI globals
+
+The [URI increment](test262-uri.md) adds both modes of the two URI-global sources,
+producing **42 passed / six missing-Date failures / 40 unsupported**, with all
+64 controls. The [full comparison](test262-global-values-uri.json) records four
+gains without any other observation changes. Actual recording and gate checks
+protect them in the [current baseline](test262-global-values-current.json); the
+checkpoint link above retains earlier evidence.

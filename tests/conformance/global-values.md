@@ -85,8 +85,10 @@ names, embedded NUL and isolated UTF-16 surrogates do not alias these globals.
 Symbols, cross-realm objects, WindowProxy/cross-origin semantics, general Window
 own-key enumeration, host hasOwnProperty/propertyIsEnumerable and extensibility
 are outside this increment. Protected window/document behavior is unchanged.
-The adapter still shares the browser host realm. No eval, Date or URI capability
-is introduced, and no complete global-object conformance claim is made.
+The adapter still shares the browser host realm. This global-property increment
+introduced no eval, Date or URI capability. The later [URI increment](uri.md)
+adds four encoding/decoding functions; complete global-object conformance
+remains unfulfilled.
 
 Eleven `global_values_` Rust groups cover both execution modes, descriptor flags
 and SameValue, assignment/deletion/coercion order, realm/event identity, reentrant

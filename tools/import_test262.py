@@ -44,6 +44,7 @@ NUMERIC_PARSING_DIRECTORIES = {'parseInt': 55, 'parseFloat': 54}
 COMPOUND_ASSIGNMENT_DIRECTORIES = {'expressions/compound-assignment': 454}
 ADDITION_DIRECTORIES = {'expressions/addition': 48}
 LOGICAL_ASSIGNMENT_DIRECTORIES = {'expressions/logical-assignment': 78}
+URI_DIRECTORIES = {'encodeURI':31, 'encodeURIComponent':31, 'decodeURI':55, 'decodeURIComponent':56}
 PROFILES = {'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
             'rest-parameters': REST_PARAMETER_DIRECTORIES,
@@ -54,14 +55,14 @@ PROFILES = {'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'numeric-conversion': NUMERIC_CONVERSION_DIRECTORIES,
             'numeric-parsing': NUMERIC_PARSING_DIRECTORIES,
             'compound-assignment': COMPOUND_ASSIGNMENT_DIRECTORIES,
-            'addition': ADDITION_DIRECTORIES, 'logical-assignment': LOGICAL_ASSIGNMENT_DIRECTORIES}
+            'addition': ADDITION_DIRECTORIES, 'logical-assignment': LOGICAL_ASSIGNMENT_DIRECTORIES, 'uri': URI_DIRECTORIES}
 PROFILE_ROOTS = {'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
                  'template-literal': 'test/language', 'functions': 'test/language',
                  'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins',
                  'global-values': 'test/built-ins', 'array-sort': 'test/built-ins',
                  'identifiers': 'test/language', 'array-reduce': 'test/built-ins',
                  'number-statics': 'test/built-ins', 'numeric-conversion': 'test/built-ins',
-                 'numeric-parsing': 'test/built-ins', 'compound-assignment': 'test/language', 'addition': 'test/language', 'logical-assignment': 'test/language'}
+                 'numeric-parsing': 'test/built-ins', 'compound-assignment': 'test/language', 'addition': 'test/language', 'logical-assignment': 'test/language', 'uri': 'test/built-ins'}
 
 
 def corpus_name(profile):
@@ -185,7 +186,7 @@ def import_corpus(output, profile='string-json'):
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
         sources = dict(zip(paths, pool.map(lambda path: fetch(raw + path), paths)))
     harness = {'assert.js', 'sta.js'}
-    if profile in {'template-literal', 'functions', 'rest-parameters', 'is-prototype-of', 'identifiers', 'compound-assignment', 'addition', 'logical-assignment'}:
+    if profile in {'template-literal', 'functions', 'rest-parameters', 'is-prototype-of', 'identifiers', 'compound-assignment', 'addition', 'logical-assignment', 'uri'}:
         # These unchanged helpers support the assertion-integrity preflight,
         # even when no selected test requests them directly.
         harness.update({'propertyHelper.js', 'compareArray.js'})
@@ -223,6 +224,7 @@ def import_corpus(output, profile='string-json'):
         'compound-assignment': 'all direct .js files in language/expressions/compound-assignment; no implementation',
         'addition': 'all direct .js files in language/expressions/addition; no implementation',
         'logical-assignment': 'all direct .js files in language/expressions/logical-assignment; no implementation',
+        'uri': 'all direct .js files in built-ins/encodeURI, encodeURIComponent, decodeURI and decodeURIComponent; no implementation',
     }[profile]
     manifest = dict(format=1, repository=f'https://github.com/{REPOSITORY}', revision=REVISION,
                     scope=scope,

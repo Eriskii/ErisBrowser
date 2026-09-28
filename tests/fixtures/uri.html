@@ -1,0 +1,34 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>URI encoding and decoding</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#whole{left:0}#component{left:50px}#decode{left:100px}#unicode{left:150px}#errors{left:200px}#conversion{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="whole" class="sample"></div><div id="component" class="sample"></div>
+<div id="decode" class="sample"></div><div id="unicode" class="sample"></div>
+<div id="errors" class="sample"></div><div id="conversion" class="sample"></div>
+<button id="change" type="button">Transform URI text</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+function apply(color){
+  check(encodeURI('https://example.test/a b?q=é#x')==='https://example.test/a%20b?q=%C3%A9#x','whole URI');mark('whole',color);
+  check(encodeURIComponent('/a b?x=é')==='%2Fa%20b%3Fx%3D%C3%A9','URI component');mark('component',color);
+  check(decodeURI('%2f%41%20')==='%2fA '&&decodeURIComponent('%2f%41%20')==='/A ','reserved escape');
+  check(decodeURIComponent('+%2B%2520')==='++%20','single decode');mark('decode',color);
+  check(encodeURIComponent('🦀')==='%F0%9F%A6%80'&&decodeURIComponent('%F0%9F%A6%80')==='🦀','astral scalar');
+  check(decodeURI('\uD800%41')==='\uD800A','raw UTF16');mark('unicode',color);
+  let count=0;try{encodeURI('\uD800');}catch(e){if(e instanceof URIError)count++;}
+  try{decodeURIComponent('%ED%A0%80');}catch(e){if(e instanceof URIError)count++;}
+  check(count===2,'canonical URI errors');mark('errors',color);
+  let trace='';const value={toString(){trace+='T';return {};},valueOf(){trace+='V';return 'a b';}};
+  check(encodeURIComponent(value)==='a%20b'&&trace==='TV','live string conversion');mark('conversion',color);
+}
+apply('green');document.getElementById('result').textContent='ready';document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  apply('blue');const count=Number(decodeURIComponent('%33'));check(count===3,'callback decode');
+  document.getElementById('result').textContent=String(count);document.body.className='clicked';
+};
+</script>

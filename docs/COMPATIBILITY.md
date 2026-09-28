@@ -31,7 +31,7 @@ The URL parser and encoding libraries are infrastructure libraries, not independ
 Ordinary objects support descriptor defaults, writable/enumerable/configurable checks, getters/setters, reflective descriptor queries and deletion. Enumeration visits own keys and inherited enumerable keys while respecting shadowing. Window descriptor queries expose tracked global bindings, including the CSS namespace, with ordered property-key conversion and current flags/values. The replaceable [Window.self accessor](../tests/conformance/window-self.md) supports assignment, deletion, descriptor restoration and author accessors, with global lexical shadowing kept separate. The [global value properties](../tests/conformance/global-values.md) share this handling: globalThis is initially writable/configurable and nonenumerable; undefined, NaN and Infinity are nonwritable, nonconfigurable and nonenumerable. Replacing globalThis preserves private Window/event identity. Other Window descriptor definitions, complete accessors, own-key enumeration and named-property behavior remain unsupported. Array holes and virtual array/string properties have targeted reflection support; indexed/length descriptor mutation, array extensibility restrictions, other host reflection and generic Array receivers remain incomplete. The unchanged upstream property-helper harness runs directly; no native test assertion shims replace it.
 
 The complete pinned [global-value inventory](../tests/conformance/test262-global-values.md)
-retains 88 variants: 38 pass, ten fail on missing Date/URI globals, and 40 require
+retains 88 variants: 42 pass, six fail on missing Date, and 40 require
 unsupported eval or host reflection/enumeration. All 64 preflights verify, but
 the regression gate does not imply complete global-object support.
 
@@ -139,6 +139,13 @@ record 248 passes and 92 unsupported variants, with all 104
 assertion checks verified.
 
 Untagged template literals support nested substitutions, cooked escapes and multiline text. Each substitution uses string-hint conversion before the next expression executes; tagged templates remain unsupported. See [template literal coverage](../tests/conformance/template-literals.md) and the separate [57-source upstream inventory](../tests/conformance/test262-template-literal.md), which retains 82 passing and 32 unsupported variants.
+
+The four [URI encoding/decoding functions](../tests/conformance/uri.md) preserve
+ordinary string conversion, strict percent-encoded UTF-8 and reserved-character
+behavior. Encoding rejects lone surrogates; decoding preserves raw unescaped
+UTF-16 units and throws URIError for malformed escapes. Complete upstream
+coverage retains 208 passes, 34 unsupported variants and 104 instruction-limit
+stops, with 128 controls. Those stops prevent a healthy URI baseline.
 
 JavaScript strings retain UTF-16 code units, including unpaired surrogates. Length, indexed access, `charAt`, `charCodeAt`, `codePointAt`, `slice`, `substring`, string searches, `match`, `search`, `replace`, string/RegExp `split`, array `join`, trimming, selected case conversion and `String.fromCharCode`/`fromCodePoint` operate on this representation. String-to-number conversion recognizes ECMAScript whitespace and decimal, hexadecimal, binary and octal forms. This is a bounded subset: normalization, locale-sensitive operations, Symbol-based RegExp dispatch/species and complete generic receiver/prototype behavior are absent. Each string is limited to 262,144 code units (512 KiB of backing storage), within the cumulative estimated 8 MiB script allocation budget.
 

@@ -9,6 +9,7 @@
 use crate::dom::{Document, Namespace, NodeId, NodeKind};
 use crate::js_identifier::{IDENTIFIER_LOOKUP_WORK, is_identifier_part, is_identifier_start};
 use crate::js_string::{JsString, is_js_whitespace, radix_number};
+use crate::js_uri;
 use crate::regexp::{self, RegExp};
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet};
@@ -288,6 +289,16 @@ impl fmt::Display for ScriptError {
 }
 impl std::error::Error for ScriptError {}
 type Result<T> = std::result::Result<T, ScriptError>;
+fn uri_error(error: js_uri::Error) -> ScriptError {
+    match error {
+        js_uri::Error::Malformed => {
+            let mut error = ScriptError::new("malformed URI encoding");
+            error.kind = ErrorKind::Runtime("URIError");
+            error
+        }
+        js_uri::Error::OutputLimit => ScriptError::resource("script string limit exceeded"),
+    }
+}
 fn regexp_error(error: regexp::Error) -> ScriptError {
     match error {
         regexp::Error::Syntax(message) => ScriptError::syntax(message),
@@ -2969,6 +2980,10 @@ impl Runtime {
             "Boolean",
             "parseInt",
             "parseFloat",
+            "encodeURI",
+            "encodeURIComponent",
+            "decodeURI",
+            "decodeURIComponent",
             "isNaN",
             "isFinite",
             "Object",
@@ -3350,7 +3365,14 @@ impl Runtime {
             self.objects[self.native_properties[owner]].insert_hidden(key.into(), value);
         }
         self.initialize_number_statics()?;
-        for name in ["isFinite", "isNaN"] {
+        for name in [
+            "isFinite",
+            "isNaN",
+            "encodeURI",
+            "encodeURIComponent",
+            "decodeURI",
+            "decodeURIComponent",
+        ] {
             // Cover literal metadata/native strings and registry storage before
             // intrinsic_function creates its separately charged property bag.
             self.work(1 + name.len())?;
@@ -10000,12 +10022,44 @@ impl Runtime {
         Ok((source.len() <= crate::css::MAX_SUPPORTS_BYTES).then_some(source))
     }
 
+    fn uri_value(&mut self, text: &JsString, mode: js_uri::Mode) -> Result<Value> {
+        // Two linear traversals validate/size, then fill the exact result.
+        // The visitor has bounded stack scratch and no heap allocation.
+        self.work(1 + text.len().saturating_mul(2))?;
+        let mut length = 0usize;
+        js_uri::visit(text.units(), mode, |units| {
+            length = length.saturating_add(units.len());
+            if length > MAX_STRING {
+                Err(js_uri::Error::OutputLimit)
+            } else {
+                Ok(())
+            }
+        })
+        .map_err(uri_error)?;
+        self.work(1 + length.saturating_mul(2) / 8)?;
+        self.charge(64 + length.saturating_mul(4))?;
+        let mut output = Vec::new();
+        output
+            .try_reserve_exact(length)
+            .map_err(|_| ScriptError::resource("URI result allocation failed"))?;
+        js_uri::visit(text.units(), mode, |units| {
+            output.extend_from_slice(units);
+            Ok(())
+        })
+        .map_err(uri_error)?;
+        Ok(Value::String(JsString::from(output)))
+    }
+
     fn native_call(
         &mut self,
         native: &Native,
         args: Vec<Value>,
         doc: &mut Document,
     ) -> Result<Value> {
+        if let Some(mode) = js_uri::Mode::from_name(&native.name) {
+            let text = self.string_hint(args.first().cloned().unwrap_or(Value::Undefined), doc)?;
+            return self.uri_value(&text, mode);
+        }
         if let Some(predicate) = NumberPredicate::from_name(&native.name) {
             self.work(4)?;
             // No coercion, argument-content scan, receiver lookup or allocation.
@@ -17545,6 +17599,250 @@ mod tests {
                 runtime.execute(source, &mut document)
             };
             result.unwrap_or_else(|error| panic!("strict={strict}: {error}"));
+        }
+    }
+
+    fn uri_modes(source: &str) {
+        for name in [
+            "encodeURI",
+            "encodeURIComponent",
+            "decodeURI",
+            "decodeURIComponent",
+        ] {
+            let encoding = name.starts_with("encode");
+            for strict in [false, true] {
+                let (mut runtime, mut doc) = upstream_harness();
+                let source = source
+                    .replace("@FN@", name)
+                    .replace("@INPUT@", if encoding { "'a b'" } else { "'%61%20%62'" })
+                    .replace("@OUTPUT@", if encoding { "'a%20b'" } else { "'a b'" })
+                    .replace("@BAD@", if encoding { "'\\uD800'" } else { "'%ED%A0%80'" });
+                let result = if strict {
+                    runtime.execute_strict(&source, &mut doc)
+                } else {
+                    runtime.execute(&source, &mut doc)
+                };
+                result.unwrap_or_else(|e| panic!("{name} strict={strict}: {e}"));
+            }
+        }
+    }
+
+    #[test]
+    fn uri_globals_preserve_live_string_hint_hooks_and_argument_order() {
+        uri_modes(
+            r#"
+            var trace='',object={get toString(){trace+='T';return function(){assert.sameValue(this,object);trace+='t';
+                object.valueOf=function(){assert.sameValue(this,object);trace+='v';return @INPUT@;};return {};};},
+                valueOf:function(){throw 'stale';}};
+            function first(){trace+='A';return object;}function extra(){trace+='B';return {toString:function(){throw 'unused';}};}
+            assert.sameValue(@FN@(first(),extra()),@OUTPUT@);assert.sameValue(trace,'ABTtv');
+            object={toString:null,valueOf:function(){return @INPUT@;}};assert.sameValue(@FN@(object),@OUTPUT@);
+            object={toString:function(){return @INPUT@;},get valueOf(){throw 'unused';}};assert.sameValue(@FN@(object),@OUTPUT@);
+            assert.sameValue(@FN@.call({toString:function(){throw 'unused';}},@INPUT@),@OUTPUT@);
+            assert.sameValue(@FN@(),'undefined');assert.sameValue(@FN@(undefined),'undefined');assert.sameValue(@FN@(null),'null');
+            assert.sameValue(@FN@(true),'true');assert.sameValue(@FN@(-0),'0');assert.sameValue(@FN@(new Number(12)),'12');
+        "#,
+        );
+    }
+
+    #[test]
+    fn uri_globals_preserve_abrupt_identity_and_canonical_uri_errors() {
+        uri_modes(
+            r#"
+            var reason={},seen,called=false,object={get toString(){throw reason;},get valueOf(){called=true;throw 'unused';}};
+            try{@FN@(object);}catch(e){seen=e;}assert.sameValue(seen,reason);assert.sameValue(called,false);
+            seen=undefined;object={toString:function(){return {};},get valueOf(){throw reason;}};
+            try{@FN@(object);}catch(e){seen=e;}assert.sameValue(seen,reason);
+            assert.throws(TypeError,function(){@FN@({toString:function(){return {};},valueOf:function(){return {};}});});
+            var actual=URIError;URIError=function replacement(){};
+            assert.throws(actual,function(){@FN@(@BAD@);});
+            try{@FN@(@BAD@);}catch(e){assert.sameValue(e.constructor,actual);assert.sameValue(e instanceof actual,true);}
+        "#,
+        );
+    }
+
+    #[test]
+    fn uri_globals_metadata_aliases_and_nonconstructability() {
+        uri_modes(
+            r#"
+            var saved=@FN@;assert.sameValue(saved.name,'@FN@');assert.sameValue(saved.length,1);
+            assert.sameValue(Object.getPrototypeOf(saved),Function.prototype);assert.sameValue(saved.hasOwnProperty('prototype'),false);
+            var desc=Object.getOwnPropertyDescriptor(saved,'name');assert.sameValue(desc.value,'@FN@');
+            assert.sameValue(desc.writable,false);assert.sameValue(desc.enumerable,false);assert.sameValue(desc.configurable,true);
+            desc=Object.getOwnPropertyDescriptor(saved,'length');assert.sameValue(desc.value,1);
+            assert.sameValue(desc.writable,false);assert.sameValue(desc.enumerable,false);assert.sameValue(desc.configurable,true);
+            desc=Object.getOwnPropertyDescriptor(globalThis,'@FN@');assert.sameValue(desc.value,saved);
+            assert.sameValue(desc.writable,true);assert.sameValue(desc.enumerable,false);assert.sameValue(desc.configurable,true);
+            assert.throws(TypeError,function(){new saved();});var bound=saved.bind(null,@INPUT@);
+            assert.throws(TypeError,function(){new bound();});assert.sameValue(bound(),@OUTPUT@);
+            Object.defineProperty(saved,'name',{value:'changed'});@FN@=function(){throw 'replacement';};
+            assert.sameValue(saved(@INPUT@),@OUTPUT@);assert.sameValue(delete globalThis['@FN@'],true);
+            globalThis['@FN@']=saved;assert.sameValue(@FN@,saved);
+        "#,
+        );
+    }
+
+    #[test]
+    fn uri_globals_reserved_characters_utf16_and_strict_percent_sequences() {
+        number_static_modes(
+            r#"
+            var reserved=';/?:@&=+$,#',escaped='%3B%2F%3F%3A%40%26%3D%2B%24%2C%23';
+            assert.sameValue(encodeURI(reserved),reserved);assert.sameValue(encodeURIComponent(reserved),escaped);
+            assert.sameValue(decodeURI(escaped),escaped);assert.sameValue(decodeURIComponent(escaped),reserved);
+            assert.sameValue(decodeURI('%3b%2f%3f%3a%40%26%3d%2b%24%2c%23'),'%3b%2f%3f%3a%40%26%3d%2b%24%2c%23');
+            var plain="AZaz09-_.!~*'()";assert.sameValue(encodeURI(plain),plain);assert.sameValue(encodeURIComponent(plain),plain);
+            assert.sameValue(encodeURI('[] %'),'%5B%5D%20%25');
+            assert.sameValue(decodeURIComponent('+%2B%2520'), '++%20');assert.sameValue(decodeURI('%41%00%7f'),'A\u0000\u007f');
+            var unicode='\u0000\u0080\u07FF\u0800\uD7FF\uE000\uFFFF\uD800\uDC00\uDBFF\uDFFF';
+            var encoded='%00%C2%80%DF%BF%E0%A0%80%ED%9F%BF%EE%80%80%EF%BF%BF%F0%90%80%80%F4%8F%BF%BF';
+            assert.sameValue(encodeURI(unicode),encoded);assert.sameValue(encodeURIComponent(unicode),encoded);
+            assert.sameValue(decodeURI(encoded),unicode);assert.sameValue(decodeURIComponent(encoded),unicode);
+            assert.sameValue(decodeURI('\uD800%41\uDC00'),'\uD800A\uDC00');
+            assert.sameValue(decodeURIComponent('\uDC00\uD800'),'\uDC00\uD800');
+            var bad=['%','%0','%GG','%u0041','%80','%C0%80','%C1%BF','%C2','%C2%20','%E0%80%80',
+                '%ED%A0%80','%ED%BF%BF','%F0%80%80%80','%F4%90%80%80','%F5%80%80%80','%FF','%E2%82%AC%80'];
+            for(var i=0;i<bad.length;i++){
+                assert.throws(URIError,function(){decodeURI(bad[i]);});assert.throws(URIError,function(){decodeURIComponent(bad[i]);});
+            }
+            bad=['\uD800','\uDC00','\uD800a','\uD800\uD800','\uDC00\uD800'];
+            for(var i=0;i<bad.length;i++){
+                assert.throws(URIError,function(){encodeURI(bad[i]);});assert.throws(URIError,function(){encodeURIComponent(bad[i]);});
+            }
+        "#,
+        );
+    }
+
+    #[test]
+    fn uri_globals_precharge_exact_output_transients_and_ignore_extra_content() {
+        for name in [
+            "encodeURI",
+            "encodeURIComponent",
+            "decodeURI",
+            "decodeURIComponent",
+        ] {
+            let mut runtime = Runtime::new();
+            let mut doc = Document::parse("");
+            let function = runtime.environments[0].bindings[name].value.clone();
+            let huge = Value::String(JsString::from(vec![97; MAX_STRING]));
+            runtime.steps = 5;
+            runtime.allocated = MAX_HEAP - 68;
+            assert_eq!(
+                runtime
+                    .call(
+                        function.clone(),
+                        vec![Value::String("a".into()), huge.clone()],
+                        huge,
+                        &mut doc
+                    )
+                    .unwrap(),
+                Value::String("a".into())
+            );
+            assert_eq!((runtime.steps, runtime.allocated), (0, MAX_HEAP));
+            runtime.steps = MAX_STEPS;
+            assert!(
+                runtime
+                    .call(
+                        function,
+                        vec![Value::String("a".into())],
+                        Value::Null,
+                        &mut doc
+                    )
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!((runtime.calls, runtime.stack_units), (0, 0));
+        }
+        let mut runtime = Runtime::new();
+        let mode = js_uri::Mode::Encode { component: true };
+        let input = JsString::from(" ");
+        runtime.steps = 3;
+        runtime.allocated = MAX_HEAP - 76;
+        assert!(
+            runtime
+                .uri_value(&input, mode)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(runtime.allocated, MAX_HEAP - 76);
+        runtime.steps = 4;
+        assert_eq!(
+            runtime.uri_value(&input, mode).unwrap(),
+            Value::String("%20".into())
+        );
+        assert_eq!((runtime.steps, runtime.allocated), (0, MAX_HEAP));
+    }
+
+    #[test]
+    fn uri_globals_complete_conversion_before_output_and_input_limit_stops() {
+        for output_limit in [false, true] {
+            let mut runtime = Runtime::new();
+            let mut doc = Document::parse("");
+            runtime.execute("var text='',seen=false;var object={toString:function(){seen=true;return text;}};",&mut doc).unwrap();
+            runtime.environments[0]
+                .bindings
+                .get_mut("text")
+                .unwrap()
+                .value = Value::String(JsString::from(if output_limit {
+                vec![0x800; 30_000]
+            } else {
+                vec![97; MAX_STRING]
+            }));
+            let error = runtime
+                .execute("encodeURIComponent(object);", &mut doc)
+                .unwrap_err();
+            assert!(error.is_resource_limit());
+            assert!(
+                error.message.contains(if output_limit {
+                    "string limit"
+                } else {
+                    "instruction limit"
+                }),
+                "{error}"
+            );
+            assert_eq!(
+                runtime.environments[0].bindings["seen"].value,
+                Value::Bool(true)
+            );
+            assert_eq!((runtime.calls, runtime.stack_units), (0, 0));
+        }
+    }
+
+    #[test]
+    fn uri_globals_conversion_callbacks_share_uncatchable_limits() {
+        for name in [
+            "encodeURI",
+            "encodeURIComponent",
+            "decodeURI",
+            "decodeURIComponent",
+        ] {
+            for body in [
+                "while(true){}".to_owned(),
+                format!("return {name}(object);"),
+            ] {
+                let mut runtime = Runtime::new();
+                let mut doc = Document::parse("");
+                runtime
+                    .execute("var caught=false,finished=false;", &mut doc)
+                    .unwrap();
+                let source = format!(
+                    "var object={{toString:function(){{{body}}}}};try{{{name}(object);finished=true;}}catch(e){{caught=true;}}"
+                );
+                assert!(
+                    runtime
+                        .execute(&source, &mut doc)
+                        .unwrap_err()
+                        .is_resource_limit()
+                );
+                assert_eq!(
+                    runtime.environments[0].bindings["caught"].value,
+                    Value::Bool(false)
+                );
+                assert_eq!(
+                    runtime.environments[0].bindings["finished"].value,
+                    Value::Bool(false)
+                );
+                assert_eq!((runtime.calls, runtime.stack_units), (0, 0));
+            }
         }
     }
 

@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "c1b627a7249d3ab460d5be88b54f34ead98c375c160bee9e72379aef213894a4",
   "runner_policy_sha256": "f096c9be039b6e5a005d3997e38d8da419399e8c6e8d3a23d2162d20c1763d03",
-  "binary_sha256": "3bcf5b560c662c70568c0748c6646f85fe056710231bd339b0317b67ec3c7663",
+  "binary_sha256": "1c7c0853356cc5282833d3ab0ed5deede421cbab3022668e1ba3cb5bcb7f7d06",
   "cases": {
     "test/built-ins/Infinity/15.1.1.2-0.js:sloppy": {
       "status": "passed",
@@ -145,12 +145,12 @@
       "source_sha256": "a3f1be953ad41188f96746000aa52d482d60df7985ebe35064ed52d294bdfb26"
     },
     "test/built-ins/global/S10.2.3_A1.1_T2.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "2d06c9af26a16e5dab356bf9c24a197d08c3ca3fb8189d53b6b95a9c7ca2d328",
       "source_sha256": "1653e41c1f847c6a292e8fe29e9ab8b2ec3a18f66239c49dd3b21b486ab43e4c"
     },
     "test/built-ins/global/S10.2.3_A1.1_T2.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "ba2c5bf616a1dccd3fb48172cd4fbb42ccca4bae7e56360756c0a24bbb23c5f4",
       "source_sha256": "1653e41c1f847c6a292e8fe29e9ab8b2ec3a18f66239c49dd3b21b486ab43e4c"
     },
@@ -185,12 +185,12 @@
       "source_sha256": "3b6e050d3348c953846f04d182139caaad70aa5c9875dd4705b6082b7e510697"
     },
     "test/built-ins/global/S10.2.3_A1.2_T2.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "ade275e8df17789c79e86ffb490ea5e856b97287d6f2601dd7572f03b949e855",
       "source_sha256": "96a8532293cbb8ed51502ae55a9e9b840426c47ab6998ff17f8902ec404ba897"
     },
     "test/built-ins/global/S10.2.3_A1.2_T2.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "59279573b6ac8c6364d3f6329c62fa50533c91078e251f39aeeef10da6dae6e4",
       "source_sha256": "96a8532293cbb8ed51502ae55a9e9b840426c47ab6998ff17f8902ec404ba897"
     },

@@ -34,6 +34,7 @@ NUMERIC_PARSING_FEATURES = SUPPORTED_FEATURES.copy()
 COMPOUND_ASSIGNMENT_FEATURES = SUPPORTED_FEATURES.copy()
 ADDITION_FEATURES = SUPPORTED_FEATURES.copy()
 LOGICAL_ASSIGNMENT_FEATURES = SUPPORTED_FEATURES | {'logical-assignment-operators'}
+URI_FEATURES = SUPPORTED_FEATURES.copy()
 PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -44,7 +45,7 @@ PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES
                     'numeric-conversion': NUMERIC_CONVERSION_FEATURES,
                     'numeric-parsing': NUMERIC_PARSING_FEATURES,
                     'compound-assignment': COMPOUND_ASSIGNMENT_FEATURES,
-                    'addition': ADDITION_FEATURES, 'logical-assignment': LOGICAL_ASSIGNMENT_FEATURES}
+                    'addition': ADDITION_FEATURES, 'logical-assignment': LOGICAL_ASSIGNMENT_FEATURES, 'uri': URI_FEATURES}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -413,6 +414,42 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                 for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
                     source = guard + setup + f'assert.sameValue({actual},{value});'
                     variants.append(('array-sort-' + name + suffix, source, expected, mode))
+    if profile == 'uri':
+        for function in ('encodeURI', 'encodeURIComponent', 'decodeURI', 'decodeURIComponent'):
+            encoding = function.startswith('encode')
+            component = function.endswith('Component')
+            guard = f"assert.sameValue({function}('a'),'a');"
+            unicode_input = "'\\u00E9\\uD83E\\uDD80'" if encoding else "'%C3%A9%F0%9F%A6%80'"
+            unicode_output = "'%C3%A9%F0%9F%A6%80'" if encoding else "'\\u00E9\\uD83E\\uDD80'"
+            reserved_input = "'/+ #'" if encoding else "'%2f%2B%20%23'"
+            reserved_output = ("'%2F%2B%20%23'" if component else "'/+%20#'") if encoding else ("'/+ #'" if component else "'%2f%2B %23'")
+            invalid = "'\\uD800'" if encoding else "'%ED%A0%80'"
+            pairs = [
+                ('unicode', f'assert.sameValue({function}(),"undefined");assert.sameValue({function}(null),"null");',
+                 f'{function}({unicode_input})', unicode_output, '"wrong"'),
+                ('reserved', f'assert.sameValue({function}("AZaz09-_.!~*\'()"),"AZaz09-_.!~*\'()");',
+                 f'{function}({reserved_input})', reserved_output, '"wrong"'),
+                ('conversion', "var trace='',object={get toString(){trace+='T';return function(){assert.sameValue(this,object);trace+='t';return {};};},"
+                 "get valueOf(){trace+='V';return function(){assert.sameValue(this,object);trace+='v';return 'a';};}};"
+                 f"assert.sameValue({function}(object,{{toString:function(){{throw 'unused';}}}}),'a');",
+                 'trace', "'TtVv'", "'VvTt'"),
+                ('abrupt', "var reason={},seen,object={get toString(){throw reason;},get valueOf(){throw 'unused';}};"
+                 f'try{{{function}(object);}}catch(e){{seen=e;}}',
+                 'seen', 'reason', 'undefined'),
+                ('malformed', f'assert.throws(URIError,function(){{{function}({invalid});}});'
+                 f'var caught=false;try{{{function}({invalid});}}catch(e){{caught=e instanceof URIError;}}',
+                 'caught', 'true', 'false'),
+                ('metadata', f'var saved={function};assert.sameValue(saved.name,"{function}");assert.sameValue(saved.length,1);'
+                 'var desc=Object.getOwnPropertyDescriptor(saved,"length");assert.sameValue(desc.writable,false);'
+                 'assert.sameValue(desc.enumerable,false);assert.sameValue(desc.configurable,true);'
+                 'assert.throws(TypeError,function(){new saved();});',
+                 'saved.hasOwnProperty("prototype")', 'false', 'true'),
+            ]
+            for mode in ('sloppy', 'strict'):
+                for name, setup, actual, good, bad in pairs:
+                    for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                        variants.append(('uri-' + function + '-' + name + suffix,
+                                         guard + setup + f'assert.sameValue({actual},{value});', expected, mode))
     if profile == 'logical-assignment':
         for operator, label, take, skip in (
                 ('&&=', 'and', '1', '0'), ('||=', 'or', '0', '1'),
