@@ -757,8 +757,9 @@ fn parse_rules(
                 rules.push(Rule {
                     selectors,
                     declarations: parse_declarations_with_limit(
-                        &strip_comments(body),
+                        body,
                         &mut budget.declarations,
+                        &mut budget.work,
                     ),
                     layer: layer.clone(),
                 });
@@ -1889,37 +1890,122 @@ fn supports_tracks(value: &str, depth: usize) -> bool {
     count(value, depth).is_some()
 }
 pub fn parse_declarations(source: &str) -> Vec<Declaration> {
-    parse_declarations_with_limit(&strip_comments(source), &mut (1024 * 1024))
+    parse_declarations_with_limit(source, &mut (1024 * 1024), &mut (MAX_STYLE_BYTES * 4))
 }
-fn parse_declarations_with_limit(source: &str, bytes_left: &mut usize) -> Vec<Declaration> {
-    if source.len() > MAX_STYLE_BYTES {
+// Scan component tokens before splitting declarations: semicolons/colons inside
+// strings, URLs, comments and simple blocks cannot create new declarations.
+fn declaration_parts<'a>(source: &'a str, work: &mut usize) -> Vec<&'a str> {
+    use crate::selectors::Kind;
+    if source.len() > MAX_STYLE_BYTES
+        || crate::selectors::spend(work, source.len().saturating_mul(2) + 1).is_err()
+    {
         return Vec::new();
     }
+    let mut parts = Vec::new();
+    let (mut start, mut at, mut depth) = (0, 0, 0usize);
+    while at < source.len() && parts.len() < 4096 {
+        if source[at..].starts_with("/*") {
+            at = source[at + 2..]
+                .find("*/")
+                .map_or(source.len(), |end| at + end + 4);
+            continue;
+        }
+        let (kind, count) = crate::selectors::token(&source[at..]);
+        match kind {
+            Kind::Function | Kind::Open(_) => depth += 1,
+            Kind::Close(_) => depth = depth.saturating_sub(1),
+            Kind::Delim(';') if depth == 0 => {
+                parts.push(&source[start..at]);
+                start = at + count;
+            }
+            _ => {}
+        }
+        at += count;
+    }
+    if start < source.len() && parts.len() < 4096 {
+        parts.push(&source[start..]);
+    }
+    parts
+}
+fn parse_declarations_with_limit(
+    source: &str,
+    bytes_left: &mut usize,
+    work: &mut usize,
+) -> Vec<Declaration> {
+    use crate::selectors::Kind;
     let mut declarations = vec![];
-    for part in split_top_level(source, ';').into_iter().take(4096) {
-        if declarations.len() >= 8192 {
+    for part in declaration_parts(source, work) {
+        if declarations.len() >= 8192 || *work == 0 {
             break;
         }
-        let Some((name, value)) = part.split_once(':') else {
+        // Raw comment bytes also count toward this input limit.
+        if part.len() > 8192 {
+            continue;
+        }
+        let Ok(tokens) = crate::selectors::tokens(part, work) else {
             continue;
         };
-        let name = if name.trim().starts_with("--") {
-            name.trim().to_owned()
+        let mut significant = tokens.iter().filter(|token| token.kind != Kind::Whitespace);
+        let (Some(property), Some(colon)) = (significant.next(), significant.next()) else {
+            continue;
+        };
+        if property.kind != Kind::Ident || colon.kind != Kind::Delim(':') {
+            continue;
+        }
+        let Some((decoded, consumed)) = css_identifier(property.raw) else {
+            continue;
+        };
+        if consumed != property.raw.len() || decoded.len() > 256 || decoded == "--" {
+            continue;
+        }
+        let name = if decoded.starts_with("--") {
+            decoded
         } else {
-            name.trim().to_ascii_lowercase()
+            decoded.to_ascii_lowercase()
         };
-        let mut value = value.trim();
-        if name.is_empty() || value.is_empty() || name.len() > 256 || value.len() > 4096 {
+        let custom = name.starts_with("--");
+        let mut value = part[colon.end..].trim_matches(media_space);
+        if value.len() > 4096 {
             continue;
         }
-        let lower = value.to_ascii_lowercase();
-        let important = lower
-            .rfind('!')
-            .is_some_and(|i| lower[i + 1..].trim() == "important");
+        let tail: Vec<_> = tokens
+            .iter()
+            .filter(|token| token.start >= colon.end && token.kind != Kind::Whitespace)
+            .collect();
+        let important = tail.len() >= 2
+            && tail[tail.len() - 2].kind == Kind::Delim('!')
+            && tail[tail.len() - 1].kind == Kind::Ident
+            && tail[tail.len() - 1].is_name("important");
         if important {
-            value = value[..value.rfind('!').unwrap_or(value.len())].trim_end();
+            value = part[colon.end..tail[tail.len() - 2].start].trim_matches(media_space);
         }
-        if matches!(name.as_str(), "float" | "clear") && !value.contains("var(") {
+        let has_vars = contains_var_function(value);
+        if (!custom && value.is_empty())
+            || (custom || has_vars) && VariableSyntax::parse(value, work).is_none()
+        {
+            continue;
+        }
+        // Keep custom values and pending substitutions as original token input.
+        // Legacy property parsers still normalize ordinary declaration comments.
+        let custom_wide = if custom && !has_vars {
+            let mut meaningful = tail.iter().take(tail.len() - if important { 2 } else { 0 });
+            meaningful
+                .next()
+                .filter(|_| meaningful.next().is_none())
+                .and_then(|token| wide_keyword(token.raw))
+        } else {
+            None
+        };
+        let clean = (!custom && !has_vars).then(|| strip_comments(value));
+        let value = custom_wide
+            .as_deref()
+            .or(clean.as_deref())
+            .unwrap_or(value)
+            .trim_matches(media_space);
+        if !custom && value.is_empty() {
+            continue;
+        }
+        if matches!(name.as_str(), "float" | "clear") && !contains_var_function(value) {
             let keyword = value.to_ascii_lowercase();
             if !(css_wide(value)
                 || matches!(
@@ -1938,7 +2024,7 @@ fn parse_declarations_with_limit(source: &str, bytes_left: &mut usize) -> Vec<De
                 continue;
             }
         }
-        if !value.contains("var(") && !css_wide(value) {
+        if !contains_var_function(value) && !css_wide(value) {
             let valid = match name.as_str() {
                 "grid-template-columns"
                 | "grid-template-rows"
@@ -2120,7 +2206,7 @@ fn shorthand_properties(name: &str) -> Option<Vec<String>> {
     Some(list.iter().map(|name| (*name).into()).collect())
 }
 fn expand_declaration(name: &str, value: &str, important: bool, out: &mut Vec<Declaration>) {
-    if name == "list-style" && !css_wide(value) && !value.contains("var(") {
+    if name == "list-style" && !css_wide(value) && !contains_var_function(value) {
         let lower = value.to_ascii_lowercase();
         let parts = words(&lower);
         let mut kind = None;
@@ -2165,7 +2251,7 @@ fn expand_declaration(name: &str, value: &str, important: bool, out: &mut Vec<De
         return;
     }
     let global = css_wide(value);
-    let has_vars = value.contains("var(");
+    let has_vars = contains_var_function(value);
     if let Some(properties) = shorthand_properties(name) {
         if global || has_vars {
             let pending = has_vars.then(|| Arc::<str>::from(name));
@@ -2189,7 +2275,7 @@ fn expand_declaration(name: &str, value: &str, important: bool, out: &mut Vec<De
     }
     let global_value = wide_keyword(value);
     let value = global_value.as_deref().unwrap_or(value);
-    let normalized = (!value.to_ascii_lowercase().contains("var(")
+    let normalized = (!contains_var_function(value)
         && (name.starts_with("grid-")
             || name.starts_with("place-")
             || matches!(name, "gap" | "row-gap" | "column-gap")))
@@ -2206,7 +2292,7 @@ fn expand_declaration(name: &str, value: &str, important: bool, out: &mut Vec<De
     if matches!(name, "gap" | "grid-gap") {
         let values = words(value);
         if (1..=2).contains(&values.len()) {
-            if !value.contains("var(") && values.iter().any(|part| !matches!(*part,"normal"|"inherit"|"initial"|"unset"|"revert") && !matches!(parse_length(part,16.0,16.0,800.0,600.0),Some(Length::Px(n)|Length::Percent(n)) if n>=0.0)) { return; }
+            if !contains_var_function(value) && values.iter().any(|part| !matches!(*part,"normal"|"inherit"|"initial"|"unset"|"revert") && !matches!(parse_length(part,16.0,16.0,800.0,600.0),Some(Length::Px(n)|Length::Percent(n)) if n>=0.0)) { return; }
             if values.len() == 2
                 && values
                     .iter()
@@ -2225,7 +2311,7 @@ fn expand_declaration(name: &str, value: &str, important: bool, out: &mut Vec<De
         }
         let global = matches!(value, "inherit" | "initial" | "unset" | "revert");
         if !global
-            && !value.contains("var(")
+            && !contains_var_function(value)
             && values.iter().any(|v| parse_grid_line(v.trim()).is_none())
         {
             return;
@@ -2629,7 +2715,7 @@ impl CascadedProperties {
 fn cascaded_value(
     name: &str,
     candidates: &BTreeMap<CascadeBucket, Candidate>,
-    variables: Option<&BTreeMap<String, String>>,
+    variables: Option<&CustomProperties>,
     work: &mut usize,
 ) -> Option<String> {
     let sort_cost = candidates
@@ -2657,7 +2743,15 @@ fn cascaded_value(
         *work -= candidate.value.len();
         let value = if let Some(variables) = variables {
             let value = resolve_vars(&candidate.value, variables, 0, work)
+                .map(|value| strip_comments(&value))
                 .unwrap_or_else(|| "unset".into());
+            // Empty custom values are valid, but an empty ordinary declaration
+            // is invalid at computed-value time and must use unset behavior.
+            let value = if value.trim_matches(media_space).is_empty() {
+                "unset".into()
+            } else {
+                value
+            };
             if let Some(shorthand) = &candidate.pending_shorthand {
                 let count =
                     shorthand_properties(shorthand).map_or(1, |properties| properties.len());
@@ -2752,7 +2846,7 @@ pub fn compute_styles_with_rules(
     let mut first_summaries = vec![false; doc.nodes.len()];
     let mut border_styles = vec![Edges::all(false); doc.nodes.len()];
     let empty_variables = Arc::new(BTreeMap::new());
-    let mut variables: Vec<Arc<BTreeMap<String, String>>> = vec![empty_variables; doc.nodes.len()];
+    let mut variables: Vec<Arc<CustomProperties>> = vec![empty_variables; doc.nodes.len()];
     let mut pending = vec![doc.root];
     let mut visited = vec![false; doc.nodes.len()];
     let mut retained_variable_bytes = 0usize;
@@ -2860,7 +2954,11 @@ pub fn compute_styles_with_rules(
                 && inline.len() <= work
             {
                 work -= inline.len();
-                for (decl_order, decl) in parse_declarations(inline).into_iter().enumerate() {
+                for (decl_order, decl) in
+                    parse_declarations_with_limit(inline, &mut (1024 * 1024), &mut work)
+                        .into_iter()
+                        .enumerate()
+                {
                     if !supported_property(&decl.name) || decl.value.len() > 4096 {
                         continue;
                     }
@@ -2886,25 +2984,8 @@ pub fn compute_styles_with_rules(
                     custom.insert(name.clone(), value);
                 }
             }
-            let inherited_variable_size: usize = vars.iter().map(|(k, v)| k.len() + v.len()).sum();
-            let new_variable_size: usize = custom.iter().map(|(k, v)| k.len() + v.len()).sum();
-            if new_variable_size > 0
-                && retained_variable_bytes + inherited_variable_size + new_variable_size
-                    <= 8 * 1024 * 1024
-            {
-                retained_variable_bytes += inherited_variable_size + new_variable_size;
-                let map = Arc::make_mut(&mut vars);
-                for (name, value) in custom {
-                    if value.eq_ignore_ascii_case("initial") {
-                        map.remove(&name);
-                    } else if !matches!(value.to_ascii_lowercase().as_str(), "inherit" | "unset")
-                        && value.len() <= 4096
-                        && (map.len() < 128 || map.contains_key(&name))
-                    {
-                        map.insert(name, value);
-                    }
-                }
-            }
+            vars =
+                compute_custom_properties(&vars, custom, &mut retained_variable_bytes, &mut work);
             let mut resolved: BTreeMap<String, String> = BTreeMap::new();
             for (name, candidates) in &cascade.properties {
                 if !name.starts_with("--")
@@ -3271,52 +3352,421 @@ fn selector_block_end(source: &str, start: usize, open: u8, close: u8) -> Option
     }
     None
 }
+const MAX_VARIABLE_VALUE: usize = 65_536;
+const MAX_VARIABLES: usize = 128;
+const MAX_VARIABLE_DEPTH: usize = 16;
+const MAX_RETAINED_VARIABLE_BYTES: usize = 8 * 1024 * 1024;
+type CustomProperties = BTreeMap<String, Arc<str>>;
+
+fn contains_var_function(source: &str) -> bool {
+    use crate::selectors::{Kind, Token};
+    if !source.contains('(') {
+        return false;
+    }
+    let mut at = 0;
+    while at < source.len() {
+        if source[at..].starts_with("/*") {
+            at = source[at + 2..]
+                .find("*/")
+                .map_or(source.len(), |end| at + end + 4);
+            continue;
+        }
+        let (kind, count) = crate::selectors::token(&source[at..]);
+        if kind == Kind::Function
+            && (Token {
+                kind,
+                raw: &source[at..at + count],
+                start: at,
+                end: at + count,
+            })
+            .is_name("var")
+        {
+            return true;
+        }
+        at += count;
+    }
+    false
+}
+
+struct VariableReference {
+    name: String,
+    close: usize,
+    fallback: Option<usize>,
+}
+struct VariableSyntax<'a> {
+    tokens: Vec<crate::selectors::Token<'a>>,
+    references: BTreeMap<usize, VariableReference>,
+}
+impl<'a> VariableSyntax<'a> {
+    fn parse(source: &'a str, work: &mut usize) -> Option<Self> {
+        use crate::selectors::Kind;
+        if source.len() > MAX_VARIABLE_VALUE {
+            return None;
+        }
+        let tokens = crate::selectors::tokens(source, work).ok()?;
+        crate::selectors::spend(work, tokens.len().saturating_mul(4) + 1).ok()?;
+        let mut stack = Vec::new();
+        let mut closes = vec![usize::MAX; tokens.len()];
+        for (i, token) in tokens.iter().enumerate() {
+            if token.kind == Kind::Bad {
+                return None;
+            }
+            // EOF repair and replacement of NUL are outside this bounded value
+            // parser. Reject instead of serializing an unterminated token.
+            if matches!(token.kind, Kind::String) {
+                let quote = token.raw.as_bytes()[0];
+                if token.raw.len() < 2
+                    || token.raw.as_bytes().last() != Some(&quote)
+                    || token.raw.as_bytes()[..token.raw.len() - 1]
+                        .iter()
+                        .rev()
+                        .take_while(|c| **c == b'\\')
+                        .count()
+                        % 2
+                        != 0
+                {
+                    return None;
+                }
+            }
+            if token.kind == Kind::Url && !token.raw.ends_with(')') {
+                return None;
+            }
+            if token.kind == Kind::Delim('\0') {
+                return None;
+            }
+            if let Some(open) = token.open() {
+                if stack.len() >= MAX_VARIABLE_DEPTH {
+                    return None;
+                }
+                stack.push((i, open));
+            } else if let Kind::Close(close) = token.kind {
+                let (start, open) = stack.pop()?;
+                if !matches!((open, close), ('(', ')') | ('[', ']') | ('{', '}')) {
+                    return None;
+                }
+                closes[start] = i;
+            } else if stack.is_empty() && matches!(token.kind, Kind::Delim('!' | ';')) {
+                return None;
+            }
+        }
+        if !stack.is_empty() {
+            return None;
+        }
+        let mut references = BTreeMap::new();
+        for (i, token) in tokens.iter().enumerate() {
+            if token.kind != Kind::Function || !token.is_name("var") {
+                continue;
+            }
+            let close = closes[i];
+            let mut at = i + 1;
+            while at < close && tokens[at].kind == Kind::Whitespace {
+                at += 1;
+            }
+            let name_token = tokens.get(at)?;
+            if name_token.kind != Kind::Ident {
+                return None;
+            }
+            let (name, consumed) = css_identifier(name_token.raw)?;
+            if consumed != name_token.raw.len()
+                || !name.starts_with("--")
+                || name == "--"
+                || name.len() > 256
+            {
+                return None;
+            }
+            at += 1;
+            while at < close && tokens[at].kind == Kind::Whitespace {
+                at += 1;
+            }
+            let fallback = if at == close {
+                None
+            } else if tokens[at].kind == Kind::Comma {
+                let begin = at + 1;
+                at = begin;
+                while at < close {
+                    if matches!(tokens[at].kind, Kind::Delim('!' | ';')) {
+                        return None;
+                    }
+                    at = if tokens[at].open().is_some() {
+                        closes[at] + 1
+                    } else {
+                        at + 1
+                    };
+                }
+                Some(begin)
+            } else {
+                return None;
+            };
+            references.insert(
+                i,
+                VariableReference {
+                    name,
+                    close,
+                    fallback,
+                },
+            );
+        }
+        Some(Self { tokens, references })
+    }
+    fn substitute(
+        &self,
+        start: usize,
+        end: usize,
+        depth: usize,
+        output: &mut VariableOutput,
+        lookup: &mut impl FnMut(&str, &mut usize) -> Option<Arc<str>>,
+        work: &mut usize,
+    ) -> Option<()> {
+        if depth > MAX_VARIABLE_DEPTH {
+            return None;
+        }
+        let mut at = start;
+        let mut valid = true;
+        while at < end {
+            crate::selectors::spend(work, 1).ok()?;
+            if let Some(reference) = self.references.get(&at) {
+                if let Some(value) = lookup(&reference.name, work) {
+                    // Computed custom values contain no unresolved var functions.
+                    // Retokenization keeps a replacement's boundaries separate
+                    // from the surrounding authored token stream.
+                    if valid {
+                        crate::selectors::spend(work, value.len() + 1).ok()?;
+                        if contains_var_function(&value) {
+                            return None;
+                        }
+                        for token in crate::selectors::tokens(&value, work).ok()? {
+                            output.token(&token, work)?;
+                        }
+                    }
+                } else if let Some(fallback) = reference.fallback {
+                    if self
+                        .substitute(fallback, reference.close, depth + 1, output, lookup, work)
+                        .is_none()
+                    {
+                        valid = false;
+                    }
+                } else {
+                    valid = false;
+                }
+                at = reference.close + 1;
+            } else {
+                if valid {
+                    output.token(&self.tokens[at], work)?;
+                }
+                at += 1;
+            }
+        }
+        valid.then_some(())
+    }
+}
+#[derive(Default)]
+struct VariableOutput {
+    text: String,
+    last: Option<crate::selectors::Kind>,
+}
+impl VariableOutput {
+    fn token(&mut self, token: &crate::selectors::Token<'_>, work: &mut usize) -> Option<()> {
+        use crate::selectors::Kind;
+        let ident_like = matches!(token.kind, Kind::Ident | Kind::Function | Kind::Url);
+        let numeric = matches!(
+            token.kind,
+            Kind::Number | Kind::Percentage | Kind::Dimension
+        );
+        // CSS Syntax section 10's token-separation table. Empty comments keep
+        // token identity without fabricating whitespace in computed variables.
+        let separate = match self.last {
+            Some(Kind::Ident) => {
+                ident_like || numeric || matches!(token.kind, Kind::Delim('-') | Kind::Open('('))
+            }
+            Some(Kind::Other | Kind::Hash(_) | Kind::Dimension | Kind::Delim('#' | '-')) => {
+                ident_like || numeric || token.kind == Kind::Delim('-')
+            }
+            Some(Kind::Number) => ident_like || numeric || token.kind == Kind::Delim('%'),
+            Some(Kind::Delim('@')) => ident_like || token.kind == Kind::Delim('-'),
+            Some(Kind::Delim('.' | '+')) => numeric,
+            Some(Kind::Delim('/')) => token.kind == Kind::Delim('*'),
+            _ => false,
+        };
+        let size = token.raw.len() + if separate { 4 } else { 0 };
+        if size > MAX_VARIABLE_VALUE.saturating_sub(self.text.len()) {
+            return None;
+        }
+        crate::selectors::spend(work, size + 1).ok()?;
+        if separate {
+            self.text.push_str("/**/");
+        }
+        self.text.push_str(token.raw);
+        self.last = Some(token.kind);
+        Some(())
+    }
+}
 fn resolve_vars(
     value: &str,
-    variables: &BTreeMap<String, String>,
+    variables: &CustomProperties,
     depth: usize,
     work: &mut usize,
 ) -> Option<String> {
-    if value.len() > *work {
-        *work = 0;
+    crate::selectors::spend(work, value.len() + 1).ok()?;
+    if depth > MAX_VARIABLE_DEPTH || value.len() > MAX_VARIABLE_VALUE {
         return None;
     }
-    *work -= value.len();
-    if depth > 16 || value.len() > 65_536 {
-        return None;
-    }
-    let Some(start) = value.find("var(") else {
+    if !contains_var_function(value) {
         return Some(value.into());
-    };
-    let mut level = 1;
-    let mut end = start + 4;
-    for b in value.as_bytes().iter().skip(end) {
-        if *b == b'(' {
-            level += 1;
-        } else if *b == b')' {
-            level -= 1;
-            if level == 0 {
-                break;
-            }
+    }
+    let syntax = VariableSyntax::parse(value, work)?;
+    let mut output = VariableOutput::default();
+    syntax.substitute(
+        0,
+        syntax.tokens.len(),
+        depth,
+        &mut output,
+        &mut |name, _| variables.get(name).cloned(),
+        work,
+    )?;
+    Some(output.text)
+}
+
+#[allow(clippy::too_many_arguments)]
+fn resolve_custom_variable(
+    index: usize,
+    local: &[(&str, Arc<str>)],
+    indices: &BTreeMap<&str, usize>,
+    inherited: &CustomProperties,
+    parent: &CustomProperties,
+    cache: &mut [Option<Option<Arc<str>>>],
+    stack: &mut Vec<usize>,
+    cyclic: &mut [bool],
+    work: &mut usize,
+) -> Option<Arc<str>> {
+    // Current CSS Variables/Values5 short-circuits unselected fallbacks. Only
+    // contexts actually entered participate in a substitution cycle.
+    if let Some(start) = stack.iter().position(|active| *active == index) {
+        for member in &stack[start..] {
+            cyclic[*member] = true;
         }
-        end += 1;
-    }
-    if end >= value.len() {
         return None;
     }
-    let args = split_top_level(&value[start + 4..end], ',');
-    let key = args.first()?.trim();
-    let replacement = variables
-        .get(key)
-        .map(String::as_str)
-        .or_else(|| args.get(1).copied())?;
-    let replacement = resolve_vars(replacement, variables, depth + 1, work)?;
-    let size = start + replacement.len() + value.len() - end - 1;
-    if size > 65_536 || size > *work {
+    if let Some(value) = &cache[index] {
+        return value.clone();
+    }
+    if stack.len() >= MAX_VARIABLE_DEPTH {
+        cache[index] = Some(None);
         return None;
     }
-    let new = format!("{}{}{}", &value[..start], replacement, &value[end + 1..]);
-    resolve_vars(&new, variables, depth + 1, work)
+    stack.push(index);
+    let value = (|| {
+        let syntax = VariableSyntax::parse(&local[index].1, work)?;
+        let mut output = VariableOutput::default();
+        syntax.substitute(
+            0,
+            syntax.tokens.len(),
+            0,
+            &mut output,
+            &mut |name, work| {
+                if let Some(next) = indices.get(name) {
+                    resolve_custom_variable(
+                        *next, local, indices, inherited, parent, cache, stack, cyclic, work,
+                    )
+                } else {
+                    inherited.get(name).cloned()
+                }
+            },
+            work,
+        )?;
+        crate::selectors::spend(work, output.text.len()).ok()?;
+        match wide_keyword(output.text.trim_matches(media_space)).as_deref() {
+            Some("initial") => None,
+            Some("inherit" | "unset" | "revert") => parent.get(local[index].0).cloned(),
+            // Computed custom-property layer rollback needs another cascade
+            // selection pass; fail closed until that operation is implemented.
+            Some("revert-layer") => None,
+            _ => Some(Arc::<str>::from(output.text)),
+        }
+    })();
+    stack.pop();
+    let value = if cyclic[index] { None } else { value };
+    cache[index] = Some(value.clone());
+    value
+}
+
+fn compute_custom_properties(
+    inherited: &Arc<CustomProperties>,
+    specified: BTreeMap<String, String>,
+    retained: &mut usize,
+    work: &mut usize,
+) -> Arc<CustomProperties> {
+    if specified.is_empty() {
+        return inherited.clone();
+    }
+    let incoming: usize = specified
+        .iter()
+        .map(|(name, value)| name.len() + value.len() + 64)
+        .sum();
+    let inherited_size: usize = inherited
+        .iter()
+        .map(|(name, value)| name.len() + value.len() + 64)
+        .sum();
+    if crate::selectors::spend(work, incoming + inherited_size).is_err()
+        || incoming + inherited_size > MAX_RETAINED_VARIABLE_BYTES.saturating_sub(*retained)
+    {
+        return Arc::new(BTreeMap::new());
+    }
+    let mut map = (**inherited).clone();
+    let mut changed = BTreeSet::new();
+    for (name, value) in specified {
+        match wide_keyword(&value).as_deref() {
+            Some("initial") => {
+                map.remove(&name);
+            }
+            Some("inherit" | "unset") => {}
+            _ if value.len() <= 4096 && (map.len() < MAX_VARIABLES || map.contains_key(&name)) => {
+                changed.insert(name.clone());
+                map.insert(name, value.into());
+            }
+            _ => {}
+        }
+    }
+    let local: Vec<_> = changed
+        .iter()
+        .filter_map(|name| map.get(name).map(|value| (name.as_str(), value.clone())))
+        .collect();
+    let indices: BTreeMap<_, _> = local
+        .iter()
+        .enumerate()
+        .map(|(i, (name, _))| (*name, i))
+        .collect();
+    let mut cache = vec![None; local.len()];
+    let mut stack = Vec::new();
+    let mut cyclic = vec![false; local.len()];
+    for index in 0..local.len() {
+        resolve_custom_variable(
+            index,
+            &local,
+            &indices,
+            &map,
+            inherited,
+            &mut cache,
+            &mut stack,
+            &mut cyclic,
+            work,
+        );
+    }
+    for (index, (name, _)) in local.iter().enumerate() {
+        if let Some(Some(value)) = &cache[index] {
+            map.insert((*name).into(), value.clone());
+        } else {
+            map.remove(*name);
+        }
+    }
+    let size: usize = map
+        .iter()
+        .map(|(name, value)| name.len() + value.len() + 64)
+        .sum();
+    if size > MAX_RETAINED_VARIABLE_BYTES.saturating_sub(*retained) {
+        return Arc::new(BTreeMap::new());
+    }
+    *retained += size;
+    Arc::new(map)
 }
 fn apply_user_agent(
     s: &mut ComputedStyle,
@@ -6323,6 +6773,297 @@ mod tests {
         assert_eq!(s[a].padding.top, Length::Px(20.0));
         assert_eq!(s[a].border_width.top, 3.0);
         assert_eq!(s[a].border_color, Color::rgb(170, 187, 204));
+    }
+    fn custom_map(source: &str, parent: &Arc<CustomProperties>) -> Arc<CustomProperties> {
+        let specified = parse_declarations(source)
+            .into_iter()
+            .filter(|declaration| declaration.name.starts_with("--"))
+            .map(|declaration| (declaration.name, declaration.value))
+            .collect();
+        compute_custom_properties(parent, specified, &mut 0, &mut 20_000_000)
+    }
+    #[test]
+    fn custom_properties_recognize_function_tokens_and_preserve_literals() {
+        let variables: CustomProperties = BTreeMap::from([("--Ink".into(), "blue".into())]);
+        for source in [
+            r#""var(--Ink)""#,
+            "myvar(--Ink)",
+            "var/**/(--Ink)",
+            r"url(var\(--Ink\))",
+        ] {
+            assert_eq!(
+                resolve_vars(source, &variables, 0, &mut 100_000).as_deref(),
+                Some(source),
+                "{source}"
+            );
+        }
+        for source in ["VAR(--Ink)", "VaR(/**/--Ink/**/)", r"v\61 r(--Ink)"] {
+            assert_eq!(
+                resolve_vars(source, &variables, 0, &mut 100_000).as_deref(),
+                Some("blue"),
+                "{source}"
+            );
+        }
+        assert_eq!(
+            resolve_vars("var(--ink,red)", &variables, 0, &mut 100_000).as_deref(),
+            Some("red")
+        );
+        let style = layered_style(
+            r#"div{--Ink:blue;font-family:"var(--Ink)";width:VaR(--size,25px);--size:31px;--ignore:/* var(--ignore) */green;color:var(--ignore)}"#,
+            "",
+        );
+        assert_eq!(style.font_family, "\"var(--Ink)\"");
+        assert_eq!(style.width, Length::Px(31.0));
+        assert_eq!(style.color, Color::rgb(0, 128, 0));
+        let escaped = layered_style(r"div{--\49 nk:blue;--ink:red;color:VAR(--Ink)}", "");
+        assert_eq!(escaped.color, Color::rgb(0, 0, 255));
+    }
+    #[test]
+    fn custom_properties_keep_complete_nested_and_empty_fallbacks() {
+        let empty = Arc::new(CustomProperties::new());
+        let variables = custom_map(
+            "--empty:;--comment:/**/;--invalid:initial;--r:0;--b:0",
+            &empty,
+        );
+        assert_eq!(variables.get("--empty").map(AsRef::as_ref), Some(""));
+        assert_eq!(variables.get("--comment").map(AsRef::as_ref), Some(""));
+        assert!(!variables.contains_key("--invalid"));
+        for source in [
+            "var(--empty,blue)",
+            "var(--comment,blue)",
+            "var(--missing,)",
+        ] {
+            assert_eq!(
+                resolve_vars(source, &variables, 0, &mut 100_000).as_deref(),
+                Some("")
+            );
+        }
+        assert_eq!(
+            resolve_vars("var(--invalid,blue)", &variables, 0, &mut 100_000).as_deref(),
+            Some("blue")
+        );
+        assert_eq!(
+            resolve_vars(
+                r#"var(--missing,"a),b",serif,sans-serif)"#,
+                &variables,
+                0,
+                &mut 100_000
+            )
+            .as_deref(),
+            Some(r#""a),b",serif,sans-serif"#)
+        );
+        let style = layered_style(
+            "div{--r:0;--b:0;color:var(--missing,rgb(var(--r),128,var(--b)));font-family:var(--missing,serif,sans-serif)}",
+            "",
+        );
+        assert_eq!(style.color, Color::rgb(0, 128, 0));
+        assert_eq!(style.font_family, "serif,sans-serif");
+        for value in [
+            "var(--empty,serif)",
+            "var(--comment,serif)",
+            "var(--missing,)",
+        ] {
+            let doc = Document::parse("<div><p></p></div>");
+            let source = format!(
+                "div{{font-family:monospace}}p{{--empty:;--comment:/**/;font-family:{value}}}"
+            );
+            let styles = compute_styles(&doc, &[source], 800.0, 600.0);
+            assert_eq!(
+                styles[doc.query_selector("p").unwrap()].font_family,
+                "monospace",
+                "{value}"
+            );
+        }
+        assert_eq!(
+            parse_declarations("font-family:monospace;font-family:/**/").len(),
+            1
+        );
+    }
+    #[test]
+    fn custom_properties_inherit_computed_values_and_remove_invalid_local_overrides() {
+        let empty = Arc::new(CustomProperties::new());
+        let parent = custom_map(
+            "--base:25px;--alias:var(--base);--ink:blue;--bad:var(--missing)",
+            &empty,
+        );
+        let child = custom_map(
+            "--base:75px;--ink:var(--missing);--missing:green;--keep:var(--alias)",
+            &parent,
+        );
+        assert_eq!(child.get("--alias").map(AsRef::as_ref), Some("25px"));
+        assert_eq!(child.get("--keep").map(AsRef::as_ref), Some("25px"));
+        assert!(!child.contains_key("--bad"));
+        assert_eq!(child.get("--ink").map(AsRef::as_ref), Some("green"));
+        let child = custom_map("--ink:var(--absent);--alias:inherit;--base:unset", &parent);
+        assert!(!child.contains_key("--ink"));
+        assert_eq!(child.get("--alias").map(AsRef::as_ref), Some("25px"));
+        assert_eq!(child.get("--base").map(AsRef::as_ref), Some("25px"));
+        let doc = Document::parse("<div><span></span></div>");
+        let styles = compute_styles(
+            &doc,
+            &["div{--base:25px;--alias:var(--base)}span{--base:75px;width:var(--alias)}".into()],
+            800.0,
+            600.0,
+        );
+        assert_eq!(
+            styles[doc.query_selector("span").unwrap()].width,
+            Length::Px(25.0)
+        );
+    }
+    #[test]
+    fn custom_properties_short_circuit_fallbacks_and_mark_every_active_cycle_member() {
+        let empty = Arc::new(CustomProperties::new());
+        let vars = custom_map(
+            "--x:red;--y:var(--x,var(--y));--z:var(--missing,var(--z))",
+            &empty,
+        );
+        assert_eq!(vars.get("--y").map(AsRef::as_ref), Some("red"));
+        assert!(!vars.contains_key("--z"));
+        for source in [
+            "--a:var(--b,red);--b:var(--a,blue);--c:var(--a,green)",
+            "--b:var(--a,blue);--a:var(--b,red);--c:var(--a,green)",
+            "--a:var(--missing) var(--b);--b:var(--a,blue);--c:var(--a,green)",
+            "--a:var(--missing,var(--b));--b:var(--a,blue);--c:var(--a,green)",
+        ] {
+            let vars = custom_map(source, &empty);
+            assert!(!vars.contains_key("--a"), "{source}");
+            assert!(!vars.contains_key("--b"), "{source}");
+            assert_eq!(
+                vars.get("--c").map(AsRef::as_ref),
+                Some("green"),
+                "{source}"
+            );
+        }
+        let parent = custom_map("--a:var(--b);--b:var(--a)", &empty);
+        let child = custom_map("--a:green", &parent);
+        assert!(!child.contains_key("--b"));
+    }
+    #[test]
+    fn custom_properties_never_join_replacement_tokens() {
+        let vars = custom_map(
+            "--n:25;--unit:px;--function:rgb;--sign:+;--joined:var(--n)px",
+            &Arc::new(CustomProperties::new()),
+        );
+        assert_eq!(vars.get("--joined").map(AsRef::as_ref), Some("25/**/px"));
+        for (source, expected) in [
+            ("var(--n)px", "25/**/px"),
+            ("var(--function)(0,0,0)", "rgb/**/(0,0,0)"),
+            ("var(--sign)1px", "+/**/1px"),
+        ] {
+            assert_eq!(
+                resolve_vars(source, &vars, 0, &mut 100_000).as_deref(),
+                Some(expected)
+            );
+        }
+        let style = layered_style(
+            "div{--n:25;--joined:var(--n)px;width:var(--joined);height:var(--n)px}",
+            "",
+        );
+        assert_eq!(style.width, Length::Auto);
+        assert_eq!(style.height, Length::Auto);
+        let vars = custom_map(
+            "--comment:foo/**/bar;--quoted:'/*var(--missing)*/'",
+            &Arc::new(CustomProperties::new()),
+        );
+        assert_eq!(vars.get("--comment").map(AsRef::as_ref), Some("foo/**/bar"));
+        assert_eq!(
+            vars.get("--quoted").map(AsRef::as_ref),
+            Some("'/*var(--missing)*/'")
+        );
+    }
+    #[test]
+    fn custom_property_declarations_handle_comments_important_and_pending_shorthands() {
+        let style = layered_style(
+            "@layer base{div{--ink:green;--space:3px 7px}} @layer theme{div{--ink:blue;--ink:/**/revert-layer/**/;color:VAR(--ink);margin:VAR(--space)}}",
+            "",
+        );
+        assert_eq!(style.color, Color::rgb(0, 128, 0));
+        assert_eq!(style.margin.left, Length::Px(7.0));
+        assert_eq!(style.margin.top, Length::Px(3.0));
+        let style = layered_style(
+            "div{--ink:green/**/!/**/IMPORTANT;--ink:red;color:var(--ink);--initial:/**/initial/**/;background:var(--initial,blue)}",
+            "",
+        );
+        assert_eq!(style.color, Color::rgb(0, 128, 0));
+        assert_eq!(style.background_color, Color::rgb(0, 0, 255));
+        let rules = parse_declarations(
+            "/* :;{} */--x:green;--x:var(no-name);--:red;--nested:{x;y};color:var(--x);font-family:'a;b:c';width:25px",
+        );
+        assert_eq!(rules.iter().filter(|decl| decl.name == "--x").count(), 1);
+        assert!(!rules.iter().any(|decl| decl.name == "--"));
+        assert!(
+            rules
+                .iter()
+                .any(|decl| decl.name == "--nested" && decl.value == "{x;y}")
+        );
+        assert!(
+            rules
+                .iter()
+                .any(|decl| decl.name == "width" && decl.value == "25px")
+        );
+    }
+    #[test]
+    fn custom_properties_keyword_fallbacks_use_the_parent_computed_map() {
+        let parent = custom_map(
+            "--ink:green;--base:12px;--alias:var(--base)",
+            &Arc::new(CustomProperties::new()),
+        );
+        let child = custom_map(
+            "--ink:var(--missing,inherit);--base:25px;--alias:var(--missing,unset);--reset:var(--missing,initial)",
+            &parent,
+        );
+        assert_eq!(child.get("--ink").map(AsRef::as_ref), Some("green"));
+        assert_eq!(child.get("--alias").map(AsRef::as_ref), Some("12px"));
+        assert!(!child.contains_key("--reset"));
+    }
+    #[test]
+    fn custom_properties_bound_expansion_recursion_storage_and_shared_work() {
+        let empty = Arc::new(CustomProperties::new());
+        let vars: CustomProperties = BTreeMap::from([("--x".into(), "x".into())]);
+        let flat = "var(--x) ".repeat(100);
+        assert_eq!(
+            resolve_vars(&flat, &vars, 0, &mut 100_000).unwrap(),
+            "x ".repeat(100)
+        );
+        let deep = format!("{}red{}", "var(--missing,".repeat(17), ")".repeat(17));
+        assert!(resolve_vars(&deep, &vars, 0, &mut 100_000).is_none());
+        let mut source = format!("--v00:{};", "x".repeat(1024));
+        for i in 1..16 {
+            source.push_str(&format!(
+                "--v{i:02}:var(--v{:02})var(--v{:02});",
+                i - 1,
+                i - 1
+            ));
+        }
+        let expanded = custom_map(&source, &empty);
+        assert!(
+            expanded
+                .values()
+                .all(|value| value.len() <= MAX_VARIABLE_VALUE)
+        );
+        assert!(!expanded.contains_key("--v15"));
+        let many = (0..200)
+            .map(|i| format!("--v{i:03}:red;"))
+            .collect::<String>();
+        assert_eq!(custom_map(&many, &empty).len(), 128);
+        let specified = BTreeMap::from([("--x".into(), "blue".into())]);
+        let mut retained = MAX_RETAINED_VARIABLE_BYTES - 1;
+        assert!(
+            compute_custom_properties(&empty, specified.clone(), &mut retained, &mut 100_000)
+                .is_empty()
+        );
+        assert_eq!(retained, MAX_RETAINED_VARIABLE_BYTES - 1);
+        let mut work = 10;
+        assert!(compute_custom_properties(&empty, specified, &mut 0, &mut work).is_empty());
+        assert_eq!(work, 0);
+        let mut work = 5;
+        assert!(resolve_vars("var(--x)", &vars, 0, &mut work).is_none());
+        assert_eq!(work, 0);
+        let mut work = 10;
+        assert!(
+            parse_declarations_with_limit("color:red;width:25px", &mut 1024, &mut work).is_empty()
+        );
+        assert_eq!(work, 0);
     }
     #[test]
     fn media_and_variables() {

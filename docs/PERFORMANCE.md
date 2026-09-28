@@ -215,3 +215,32 @@ benchmark was repeated for this checkpoint. These uncontrolled desktop
 measurements do not establish a causal speed change or the requested Chromium
 threshold. The [Vulkan design](vulkan-rendering.md) is published, but no GPU
 backend or GPU performance result exists yet.
+
+## Computed custom-property checkpoint
+
+Recorded September 28, 2026 UTC at 1180×880 over 100 warm iterations per view.
+The [before record](benchmark-custom-properties-before.json) uses the verified
+`dde3ff1` browser binary and a separate frozen source/assets checkout. The
+[after record](benchmark-custom-properties.json) uses the completed variable
+and descriptor corrections. Both input/binary identities are verified; all
+nine decoded final frames match exactly between those builds.
+
+| Local fixture | Before median / p95 | After median / p95 |
+|---|---:|---:|
+| home | 5.038 / 5.225 ms | 5.218 / 9.199 ms |
+| gallery | 8.118 / 8.856 ms | 8.685 / 10.419 ms |
+| forms | 5.972 / 6.485 ms | 6.251 / 7.860 ms |
+| templates | 1.161 / 1.219 ms | 1.195 / 1.570 ms |
+| positioning | 1.142 / 1.171 ms | 1.221 / 1.514 ms |
+| events | 1.160 / 1.300 ms | 1.236 / 1.674 ms |
+| events-visible | 12.241 / 12.582 ms | 12.756 / 15.354 ms |
+| responsive | 1.952 / 2.034 ms | 2.004 / 2.130 ms |
+| disclosures | 1.235 / 1.283 ms | 1.308 / 1.721 ms |
+
+Observed medians and tail values are higher in the later run. These are
+uncontrolled desktop measurements; separate native Vulkan prototype work was
+also active during development, so the samples do not isolate a causal cost.
+Token-aware declaration parsing and computed-variable resolution are inside the
+warm loop; descriptor calls and other script execution are outside it. There
+was no repeated confined-worker measurement or Chromium comparison. The
+browser still paints and presents through its software path.

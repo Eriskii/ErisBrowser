@@ -8598,13 +8598,53 @@ impl Runtime {
             }
             "Object.getOwnPropertyDescriptor" => {
                 let object = self.coerce_object(arg(0))?;
-                let key = self.json_text(arg(1), doc, &mut Vec::new())?;
-                if self.property_object(&object).is_none() {
-                    return Err(ScriptError::unsupported(
-                        "host own-property reflection is not implemented",
-                    ));
-                }
-                let Some(property) = self.own_property(&object, &key) else {
+                let key = self.string_hint(arg(1), doc)?;
+                let property = if matches!(object, Value::Window) {
+                    // Global object bindings are authoritative data-property
+                    // records. Do not read through the host getter/prototype
+                    // fallback or expose the separate lexical environment.
+                    let comparisons = 1 + self.environments[0]
+                        .bindings
+                        .len()
+                        .checked_ilog2()
+                        .unwrap_or(0) as usize;
+                    self.work(1 + key.len().saturating_mul(comparisons))?;
+                    // Include spare capacity while decoding into UTF-8.
+                    self.charge(24 + key.len().saturating_mul(6))?;
+                    match key.to_utf8() {
+                        Ok(key) => {
+                            if event_handler_name(&key) {
+                                return Err(ScriptError::unsupported(
+                                    "Window event-handler descriptor reflection is not implemented",
+                                ));
+                            }
+                            self.environments[0]
+                                .bindings
+                                .get(&key)
+                                .filter(|binding| binding.global_property)
+                                .map(|binding| {
+                                    Property::data(
+                                        binding.value.clone(),
+                                        binding.mutable,
+                                        binding.enumerable,
+                                        binding.deletable,
+                                    )
+                                })
+                        }
+                        // Host binding names are scalar UTF-8. Do not replace
+                        // isolated surrogates and alias an unrelated key.
+                        Err(_) => None,
+                    }
+                } else {
+                    if self.property_object(&object).is_none() {
+                        return Err(ScriptError::unsupported(
+                            "host own-property reflection is not implemented",
+                        ));
+                    }
+                    self.work(1 + key.len() / 8)?;
+                    self.own_property(&object, &key)
+                };
+                let Some(property) = property else {
                     return Ok(Value::Undefined);
                 };
                 let mut fields = match property.value {
@@ -10115,6 +10155,190 @@ mod tests {
     use super::*;
     fn run(source: &str) -> Result<Value> {
         Runtime::new().execute(source, &mut Document::parse("<body></body>"))
+    }
+
+    #[test]
+    fn window_descriptors_expose_current_global_binding_records_only() {
+        assert_eq!(
+            run(r#"
+            var namespace = CSS;
+            var descriptor = Object.getOwnPropertyDescriptor(window, 'CSS');
+            var independent = Object.getOwnPropertyDescriptor(self, 'CSS');
+            descriptor.value = 12;
+            descriptor.writable = false;
+            var declared = 7;
+            let lexical = 8;
+            const constant = 9;
+            window.assigned = 10;
+            var declaration = Object.getOwnPropertyDescriptor(globalThis, 'declared');
+            var assignment = Object.getOwnPropertyDescriptor(window, 'assigned');
+            var inheritedReads = 0;
+            Object.defineProperty(EventTarget.prototype, 'inheritedDescriptorProbe', {
+                get(){ inheritedReads++; return 17; }, configurable: true
+            });
+            CSS = 21;
+            var replacement = Object.getOwnPropertyDescriptor(window, 'CSS');
+            independent !== descriptor && independent.value === namespace &&
+            independent.writable && !independent.enumerable && independent.configurable &&
+            Object.getPrototypeOf(independent) === Object.prototype &&
+            Object.keys(independent).join(',') === 'value,writable,enumerable,configurable' &&
+            replacement.value === 21 && replacement.writable &&
+            !replacement.enumerable && replacement.configurable &&
+            declaration.value === 7 && declaration.writable && declaration.enumerable &&
+            !declaration.configurable && assignment.value === 10 && assignment.writable &&
+            assignment.enumerable && assignment.configurable &&
+            Object.getOwnPropertyDescriptor(window, 'lexical') === undefined &&
+            Object.getOwnPropertyDescriptor(window, 'constant') === undefined &&
+            Object.getOwnPropertyDescriptor(window, 'this') === undefined &&
+            Object.getOwnPropertyDescriptor(window, 'absentDescriptorProbe') === undefined &&
+            Object.getOwnPropertyDescriptor(window, 'inheritedDescriptorProbe') === undefined &&
+            inheritedReads === 0;
+        "#)
+            .unwrap(),
+            Value::Bool(true)
+        );
+    }
+
+    #[test]
+    fn window_descriptors_follow_deletion_recreation_and_key_conversion_order() {
+        assert_eq!(run(r#"
+            var saved = CSS;
+            var removed = delete window.CSS;
+            var absent = Object.getOwnPropertyDescriptor(window, 'CSS') === undefined;
+            window.CSS = saved;
+            var recreated = Object.getOwnPropertyDescriptor(window, 'CSS');
+            var trace = '';
+            var key = {
+                get toString(){
+                    trace += 'get-string;';
+                    return function(){trace += 'call-string;'; return {};};
+                },
+                get valueOf(){
+                    trace += 'get-value;';
+                    return function(){trace += 'call-value;'; window.CSS = 23; return 'CSS';};
+                }
+            };
+            var observed = Object.getOwnPropertyDescriptor(window, key);
+            var array = ['wrong']; array.toString = function(){return 'CSS';};
+            var joined = ['wrong']; joined.join = function(){return 'CSS';};
+            function callableKey(){} callableKey.toString = function(){return 'CSS';};
+            var sentinel = {}, threw = false, rejectedNull = false, convertedNull = false;
+            try { Object.getOwnPropertyDescriptor(window, {toString(){throw sentinel;}}); }
+            catch(error) { threw = error === sentinel; }
+            try { Object.getOwnPropertyDescriptor(null, {toString(){convertedNull=true;return 'CSS';}}); }
+            catch(error) { rejectedNull = error instanceof TypeError; }
+            var deletedDuringKey = Object.getOwnPropertyDescriptor(window, {
+                toString(){delete window.CSS; return 'CSS';}
+            });
+            window.CSS = 23;
+            removed && absent && recreated.value === saved && recreated.writable &&
+            recreated.enumerable && recreated.configurable && observed.value === 23 &&
+            trace === 'get-string;call-string;get-value;call-value;' &&
+            Object.getOwnPropertyDescriptor(window, array).value === 23 &&
+            Object.getOwnPropertyDescriptor(window, joined).value === 23 &&
+            Object.getOwnPropertyDescriptor(window, callableKey).value === 23 &&
+            threw && rejectedNull && !convertedNull && deletedDuringKey === undefined;
+        "#).unwrap(), Value::Bool(true));
+        assert_eq!(
+            run("Object.getOwnPropertyDescriptor(window, {toString(){return {};},valueOf(){return {};}})")
+                .unwrap_err().name(),
+            "TypeError"
+        );
+    }
+
+    #[test]
+    fn window_descriptor_keys_preserve_utf16_and_primitive_conversion() {
+        assert_eq!(
+            run(r#"
+            window['\uFFFD'] = 1;
+            window['\uD83D\uDE00'] = 2;
+            window[''] = 3;
+            window['17'] = 4;
+            window['null'] = 5;
+            Object.getOwnPropertyDescriptor(window, '\uD800') === undefined &&
+            Object.getOwnPropertyDescriptor(window, '\uDC00') === undefined &&
+            Object.getOwnPropertyDescriptor(window, {toString(){return '\uD800';}}) === undefined &&
+            Object.getOwnPropertyDescriptor(window, '\uFFFD').value === 1 &&
+            Object.getOwnPropertyDescriptor(window, '\uD83D\uDE00').value === 2 &&
+            Object.getOwnPropertyDescriptor(window, '').value === 3 &&
+            Object.getOwnPropertyDescriptor(window, 17).value === 4 &&
+            Object.getOwnPropertyDescriptor(window, null).value === 5 &&
+            Object.getOwnPropertyDescriptor(window).value === undefined &&
+            Object.getOwnPropertyDescriptor({CSS: 6}, {toString(){return 'CSS';}}).value === 6;
+        "#)
+            .unwrap(),
+            Value::Bool(true)
+        );
+    }
+
+    #[test]
+    fn window_descriptor_increment_preserves_explicit_host_limitations() {
+        for source in [
+            "Object.getOwnPropertyDescriptor(window, 'onclick')",
+            "window.onclick = function(){}; Object.getOwnPropertyDescriptor(window, 'onclick')",
+            "Object.getOwnPropertyDescriptor(document, 'title')",
+            "Object.getOwnPropertyDescriptor(document.createElement('div'), 'textContent')",
+            "Object.getOwnPropertyNames(window)",
+            "Object.defineProperty(window, 'CSS', {value: 1})",
+        ] {
+            assert!(run(source).unwrap_err().is_unsupported(), "{source}");
+        }
+    }
+
+    #[test]
+    fn window_descriptor_lookup_and_results_share_resource_limits() {
+        let mut runtime = Runtime::new();
+        let mut doc = Document::parse("<body></body>");
+        let key = "x".repeat(4096);
+        let error = runtime.execute(&format!(
+            "var caught=false; try {{ for(var i=0;i<32;i++) Object.getOwnPropertyDescriptor(window,'{key}'); }} catch(error) {{caught=true;}}"
+        ), &mut doc).unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(runtime.lookup(1, "caught").unwrap().1, Value::Bool(false));
+        assert_eq!(runtime.calls, 0);
+        assert_eq!(runtime.stack_units, 0);
+
+        let mut runtime = Runtime::new();
+        let descriptor = Native {
+            name: "Object.getOwnPropertyDescriptor".into(),
+            receiver: Value::Undefined,
+        };
+        runtime.allocated = MAX_HEAP - 16;
+        assert!(
+            runtime
+                .native_call(
+                    &descriptor,
+                    vec![Value::Window, Value::String("CSS".into())],
+                    &mut doc
+                )
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert!(
+            runtime
+                .own_property(&Value::Window, &"CSS".into())
+                .is_some()
+        );
+
+        let mut runtime = Runtime::new();
+        runtime.steps = 2;
+        assert!(
+            runtime
+                .native_call(
+                    &descriptor,
+                    vec![Value::Window, Value::String("CSS".into())],
+                    &mut doc
+                )
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        let mut runtime = Runtime::new();
+        let error = runtime.execute(
+            "var key={toString(){return Object.getOwnPropertyDescriptor(window,key);}}; Object.getOwnPropertyDescriptor(window,key);",
+            &mut doc).unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(runtime.calls, 0);
+        assert_eq!(runtime.stack_units, 0);
     }
 
     #[test]

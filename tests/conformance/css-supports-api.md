@@ -10,9 +10,28 @@ engine, native assertion substitute or rewritten upstream fixture is involved.
 
 `CSS` is a stable ordinary namespace object with `Object.prototype`, the class
 string `CSS`, and an enumerable, writable, configurable `supports` method. The
-global binding is writable and configurable and has non-enumerable internal
-metadata. General JavaScript reflection on `window` remains unsupported by the
-runtime; this change does not add Window own-key or descriptor reflection.
+global binding is writable, configurable and non-enumerable. These flags and
+the current value are observable through
+`Object.getOwnPropertyDescriptor(window, 'CSS')` (also via `self` or
+`globalThis`). This focused Window reflection reads the runtime's authoritative
+global data-binding records; it does not infer properties from host getters or
+the prototype chain. Assignment preserves the existing flags. Deleting and
+recreating the global through assignment creates an enumerable, writable,
+configurable property.
+
+Each returned descriptor is a fresh ordinary object. Global lexical bindings
+and absent own data properties return `undefined`; inherited getters are not
+invoked. Property-key conversion uses the string hint, including author
+`toString`/`valueOf` overrides, after checking that the target is coercible to an
+object. Conversion exceptions and mutations occur before lookup. Scalar UTF-16
+keys retain their spelling, and isolated surrogates do not alias U+FFFD. The
+existing host binding store cannot create names containing isolated surrogates.
+
+Window event-handler accessor descriptors, other host-object descriptors,
+Window own-key enumeration, descriptor-based definition, named properties and
+WindowProxy/cross-origin behavior remain unsupported. Other built-in global
+flags reflect the existing runtime records; this does not establish complete
+Web IDL global-property semantics.
 
 The method has name `supports`, length `1`, `Function.prototype`, no own
 `prototype` property, and no constructor behavior. Its `name` and `length` are
@@ -75,6 +94,18 @@ conversion; ordinary repeated calls, large input, shared work/heap exhaustion
 and recursive coercion; and DOM-visible initial/click-driven results. These are
 focused tests, not an unchanged upstream CSSOM/WPT harness run.
 
+Five additional descriptor regression groups cover current flags and values,
+descriptor independence, own-versus-inherited and lexical properties,
+deletion/recreation, key-conversion side effects and exceptions, primitive and
+UTF-16 keys, explicit unsupported host operations, and work/heap/recursion
+termination. Window key lookup precharges work proportional to the key length
+and the logarithm of the global binding count, plus six allocation bytes per
+UTF-16 unit and 24 bytes before UTF-8 decoding. Descriptor objects use the normal
+cumulative allocation accounting. This closes the global-descriptor operation
+used by the official WPT namespace check; the unchanged WPT test and IDL
+harnesses still require unsupported syntax and other bindings before they can
+run.
+
 ## Primary references
 
 - [CSS Conditional Rules: CSS namespace and supports algorithms](https://drafts.csswg.org/css-conditional-3/#the-css-interface)
@@ -82,4 +113,5 @@ focused tests, not an unchanged upstream CSSOM/WPT harness run.
 - [Web IDL: overload resolution](https://webidl.spec.whatwg.org/#dfn-overload-resolution-algorithm)
 - [Web IDL: operation functions](https://webidl.spec.whatwg.org/#es-operations)
 - [Web IDL: namespace objects](https://webidl.spec.whatwg.org/#namespace-object)
+- [ECMAScript: Object.getOwnPropertyDescriptor](https://tc39.es/ecma262/multipage/fundamental-objects.html#sec-object.getownpropertydescriptor)
 - [CSS Conditional Rules 4: recursive selector support](https://drafts.csswg.org/css-conditional-4/#support-definition-ext)

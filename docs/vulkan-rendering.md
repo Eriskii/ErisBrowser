@@ -85,9 +85,12 @@ loader directory; it contains no hardcoded host path. Driver calls and teardown
 can still block beyond application waits, as documented in the probe README.
 
 The pinned Linux graph has 58 dependencies. Declared MSRVs are compatible with
-1.88, but ten packages omit that field; the recorded build used the installed
-Rust 1.95 toolchain, not 1.88. This is an isolated dependency evaluation, not a
-change to the browser's dependency graph or completion of milestone A.
+1.88, but ten packages omit that field. The recorded host build used Rust 1.95;
+the subsequent [Rust 1.88 CI job](https://github.com/Eriskii/ErisBrowser/actions/runs/36396836593/job/108845129192)
+also passed compilation, formatting, strict Clippy and the Rust/Python checks.
+GPU execution was confined to the separately recorded host run. This is an
+isolated dependency evaluation, not a change to the browser's dependency graph
+or completion of milestone A.
 
 ## Milestone A: Vulkan presentation
 

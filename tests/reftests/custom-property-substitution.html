@@ -1,0 +1,38 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Computed custom properties and token substitution</title>
+<style>
+body { margin: 0 }
+.frame { position: absolute; width: 80px; height: 40px }
+.paint { height: 40px }
+#inherited { left: 10px; top: 10px; --tone: red; --alias: var(--tone) }
+#inherited .paint { --tone: blue; background: var(--alias) }
+#commas { left: 110px; top: 10px }
+#commas .paint { background: var(--missing, rgb(0, 128, 0)) }
+#case { left: 210px; top: 10px; --Tone: blue }
+#case .paint { background: VaR(--Tone) }
+#boundary { left: 10px; top: 70px; --number: 20 }
+#boundary .paint { width: var(--number)px; background: green }
+#cycle { left: 110px; top: 70px; --a: var(--b, red); --b: var(--a, green) }
+#cycle .paint { background: var(--a, blue) }
+#unused-fallback { left: 210px; top: 70px; --good: red; --cyclic: var(--good, var(--cyclic)) }
+#unused-fallback .paint { background: var(--cyclic, green) }
+#inherited-invalid { left: 10px; top: 130px; --a: var(--b); --b: var(--a) }
+#inherited-invalid .paint { --b: red; background: var(--a, blue) }
+#nested-fallback { left: 110px; top: 130px }
+#nested-fallback .paint { background: var(--a, var(--b, rgb(0, 128, 0))) }
+#comment { left: 210px; top: 130px; --tone: red }
+#comment .paint { background: var(/**/--tone/**/, blue) }
+#active-fallback { left: 10px; top: 190px; --cyclic: var(--missing, var(--cyclic)) }
+#active-fallback .paint { background: var(--cyclic, green) }
+</style>
+<div class="frame" id="inherited"><div class="paint"></div></div>
+<div class="frame" id="commas"><div class="paint"></div></div>
+<div class="frame" id="case"><div class="paint"></div></div>
+<div class="frame" id="boundary"><div class="paint"></div></div>
+<div class="frame" id="cycle"><div class="paint"></div></div>
+<div class="frame" id="unused-fallback"><div class="paint"></div></div>
+<div class="frame" id="inherited-invalid"><div class="paint"></div></div>
+<div class="frame" id="nested-fallback"><div class="paint"></div></div>
+<div class="frame" id="comment"><div class="paint"></div></div>
+<div class="frame" id="active-fallback"><div class="paint"></div></div>

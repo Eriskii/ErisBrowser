@@ -1,0 +1,15 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Inherited computed custom properties</title>
+<style>
+body { margin: 0 }
+#scope { --tone: green; --alias: var(--tone) }
+#sample { --tone: red; width: 40px; height: 40px; background: var(--alias) }
+</style>
+<div id="scope"><div id="sample"></div></div>
+<button id="change" type="button">Change inherited color</button>
+<script>
+document.getElementById('change').onclick = function () {
+  document.getElementById('scope').setAttribute('style', '--tone: blue');
+};
+</script>

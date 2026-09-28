@@ -1,5 +1,72 @@
 # Validation record
 
+## Computed custom properties and Window descriptors
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **652 Rust tests** pass with `--include-ignored`: 528 library,
+35 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 30 pipeline and 23 real-worker tests. None remain ignored.
+The existing **47 Python checks** and all **52 exact pixel references** pass.
+
+Custom values now compute before inheritance and substitute through CSS tokens.
+The new ten-tile independent rectangle reference covers inherited aliases,
+complete RGB fallbacks, case-insensitive functions, token separation, comments,
+active cycles and unselected fallbacks. It differs from the preceding release
+on **18,400 pixels**, then matches exactly after the correction. Page and real
+worker tests also agree after a click changes the parent's variable while a
+child shadows the referenced name. All **62 CSS tests** pass.
+
+Review corrected two additional defects: rescanning large cached values after
+an earlier substitution failed, and applying an empty ordinary font-family
+instead of its unset behavior. Instrumented scratch code verifies that 300
+discarded references scan zero cached-value bytes after the correction. Thirteen
+independent semantic probes, three empty-value inheritance controls, 10,000
+deterministic UTF-8-safe mutations and eight hostile inputs pass without caught
+panics, timeouts or nonfinite geometry. The
+[custom-property scope](../tests/conformance/custom-properties.md) records
+current short-circuit semantics, bounds and remaining grammar/CSSOM limitations.
+
+Window descriptor queries expose authoritative global data bindings with
+ordered key conversion, current flags/values, lexical/prototype exclusion and
+non-aliasing UTF-16 keys. Five new runtime groups and seven independent probes
+cover mutations, deletion/recreation, getter avoidance, descriptor independence
+and resource preflight. All **129 script tests** pass. This is bounded host
+reflection; other Window operations and full Web IDL semantics remain incomplete.
+The [API record](../tests/conformance/css-supports-api.md) gives exact coverage.
+
+Pinned upstream outcomes remain HTML **3,868 matched / two mismatched / six
+unsupported**, Test262 **536 passed / 116 unsupported**, RegExp **250 / 40**, and
+templates **82 / 32**, with all preflights passing and no regressions. Corpus
+bytes, runner policies and baselines are unchanged. A separate 15,000-case
+mutation run has zero caught panics or invariant failures: 5,000 accepted HTML,
+632 accepted/4,368 rejected scripts, and 3,347 accepted/1,653 rejected SVG inputs.
+Maximum DOM size is 229 nodes, maximum display-list size 349 commands, and
+21 cases stop within paint limits. New variable and descriptor seeds change
+the mutation inventory, so these counts are not an acceptance-rate comparison.
+
+The [before/after warm records](PERFORMANCE.md#computed-custom-property-checkpoint)
+use verified frozen inputs and binaries, nine views, 1180×880 and 100 iterations.
+All nine decoded final frames remain identical. Later medians and p95 values
+are higher in this uncontrolled desktop run; they do not isolate the change's
+cost or establish any Chromium-relative result. Script execution, native
+presentation and the isolated Vulkan prototype are outside the measured loop.
+
+Final release SHA-256 values:
+
+| Binary | SHA-256 |
+|---|---|
+| `eris-browser` | `34ca6655dd8d0ec1873ba85e9f82716e75eca79b1b6d9223264d657f0069a621` |
+| `eris-js` | `21c192148042d482cbed21403e20c6c2e360d31e0058c1c6cf70a2b7b14ad4eb` |
+| `eris-dom` | `ecf9052c43c5a3a968596c31c43a6baca92a4bdd3b309d127ebe23058d64bafc` |
+| `eris-stress` | `ed1c2a27e07044da41a58f110982d7c17adfe6994b59a7923e1e0300056805fd` |
+
+The source-input digest is
+`dde5ce131ea272fb5a737fddf4d048a7d1578371895ec17387cff6e5b689b86c`,
+using the benchmark tool's documented inventory. Adapter report hashes match
+these release binaries. Detailed session logs use the `vars-descriptors-final`
+suffix under `artifacts/`. These checks do not establish full web compatibility,
+independently audited security or the requested Chromium performance threshold.
+
 ## Isolated Vulkan transfer probe
 
 Recorded September 28, 2026 UTC. The independently built
@@ -7,8 +74,11 @@ Recorded September 28, 2026 UTC. The independently built
 12 Python runner checks, formatting and strict Clippy on the installed Rust
 1.95 toolchain. These counts are separate from the engine suite below. The
 standalone crate pins its own wgpu 30.0.1 resolution; browser dependencies and
-rendering behavior are unchanged. A separate Rust 1.88 CI job is configured;
-that compiler was not installed or executed for this local host record.
+rendering behavior are unchanged. The separate [Rust 1.88 CI job for
+`dde3ff1`](https://github.com/Eriskii/ErisBrowser/actions/runs/36396836593/job/108845129192)
+subsequently passed formatting, strict Clippy and the Rust/Python checks with
+the pinned lockfile. That compiler was not installed or executed for this local
+host record; CI did not run GPU transfers.
 
 The published source performs **18 exact comparisons across three adapters**:
 NVIDIA RTX 4070 SUPER, AMD integrated RADV and CPU llvmpipe. Each adapter receives

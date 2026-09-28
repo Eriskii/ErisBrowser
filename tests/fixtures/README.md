@@ -4,6 +4,10 @@
 and blue clicked box. Pipeline and confined-worker tests compare the visible
 result and reject injected property/value syntax. It loads no external assets.
 
+`custom-properties.html` checks that an inherited custom-property alias keeps
+the parent's computed color despite a child override, then recomputes after a
+click changes the parent's inline declaration. It loads no external assets.
+
 ## Synthetic image allocation fixtures
 
 These original fixtures are 1×1 RGBA PNGs, with valid chunk CRCs and 4,096 bytes

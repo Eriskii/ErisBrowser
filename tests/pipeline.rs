@@ -13,6 +13,25 @@ fn page(source: &str) -> Page {
 }
 
 #[test]
+fn custom_properties_recompute_inherited_aliases_after_parent_changes() {
+    let mut p = page(include_str!("fixtures/custom-properties.html"));
+    let fonts = Fonts::new();
+    for (click, color) in [(false, 0x008000), (true, 0x0000ff)] {
+        if click {
+            let button = p.document.query_selector("#change").unwrap();
+            assert!(p.click(button).is_none());
+        }
+        assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+        let layout = p.layout(320.0, 240.0, &fonts);
+        let mut canvas = Canvas::new(320, 240).unwrap();
+        canvas.clear(Color::WHITE);
+        canvas.paint(&layout.commands, &fonts, &p.images, 0.0, 0.0);
+        assert!(!canvas.exhausted());
+        assert_eq!(canvas.pixels[10 * 320 + 10], color);
+    }
+}
+
+#[test]
 fn css_supports_drives_visible_styles_without_crossing_argument_boundaries() {
     let mut p = page(include_str!("fixtures/css-supports.html"));
     let fonts = Fonts::new();

@@ -292,6 +292,12 @@
       "reference": "selector-comments-ref.html"
     },
     {
+      "name": "custom-property-substitution",
+      "description": "Custom properties inherit computed values, short-circuit unused fallbacks, invalidate active cycles, and preserve token boundaries, function case and complete fallback text.",
+      "test": "custom-property-substitution.html",
+      "reference": "custom-property-substitution-ref.html"
+    },
+    {
       "name": "details-closed-open",
       "description": "Closed disclosure omits its content; presence of open, including open=false, reveals it.",
       "test": "details-closed-open.html",

@@ -122,9 +122,13 @@ The independent Linux dependency inventory is in
 resolution contains 96 registry packages across targets, with 58 active Linux
 dependencies. The Linux manifests declare no Rust requirement above 1.88; ten
 omit `rust-version`. Wgpu's family declares 1.87, but manifest inspection cannot
-establish undeclared compatibility. The recorded run compiled with Rust 1.95;
-1.88 was not installed and was not tested. A Rust 1.88 CI build is configured, but its result
-was pending when these host results were recorded. No toolchain installation was performed for
+establish undeclared compatibility. The recorded host run compiled with Rust
+1.95; Rust 1.88 was not installed or executed locally. Subsequently, the
+dedicated [Rust 1.88 CI job for
+`dde3ff1`](https://github.com/Eriskii/ErisBrowser/actions/runs/36396836593/job/108845129192)
+passed formatting, strict Clippy, the three Rust tests and 12 Python runner
+tests with the pinned lockfile. CI did not run GPU transfers; those retain the
+separate host evidence above. No local toolchain installation was performed for
 the probe.
 
 ## Provenance
