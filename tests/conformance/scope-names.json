@@ -1,0 +1,3100 @@
+{
+  "recorded_date_utc": "2026-09-28",
+  "kind": "metered declaration-name validation regression comparison",
+  "before": {
+    "commit": "271504842bb71aa63ceb68a7f97352941a4d38c5",
+    "input_sha256": "d12aeb709649fe291b6a24ef70fdd555b2c58ffca5ed7cda83864efe929b7fe4",
+    "binaries": {
+      "eris-js": "93e5893a39bbdb36398561bb518be6b3649c0a8d64981fcef342528938c117e2",
+      "eris-browser": "d1ffd7ec0925c7e65d9bd5564c1c6f56a08ad814973798d3d9267b6b4b7d9b27"
+    }
+  },
+  "source_input_sha256": "e43f320ee08598bb1419c120b736e447674393f40fab3d42cad156de5d60a6c0",
+  "release_binaries": {
+    "eris-browser": "fc708729306aa5c7d5acb9cdf9944751da183c22d6e23f18eb58b1fd6c998037",
+    "eris-js": "6cd0a1426298b533c262ff1796ec6fec49bdd52a63ad8d860d8f2e8f72da621c",
+    "eris-dom": "b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb",
+    "eris-stress": "de1d825f74d7f73bf632cbfe0d36992226ac5960bd1763e1a0988cb5ecc7fbe0"
+  },
+  "contract_sha256": "9f3c501fc151605fa2af48ba1fdc1b239e8de14e9b3527c0964ab64b7d81a4b0",
+  "upstream_profiles": [
+    {
+      "profile": "string-json",
+      "source_files": 326,
+      "mode_cases": 652,
+      "counts": {
+        "passed": 536,
+        "unsupported": 116
+      },
+      "preflights": 32,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "f073410553ed7cac9c6ddb0d5d10da1e52616d067a0310578e84cbf000df4191",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-current.json",
+      "prior_public_report_sha256": "5fd495beea57cc15da9a4a1de7f530eb57c8e9ba942ca5a18dc725d8e26f8733",
+      "before_raw_report": "artifacts/string-json-scope-walk-final.json",
+      "before_raw_report_sha256": "507af987ad73e61f54998006669045267bb39d8ff70dd4b7348d18ac3f2d2b5c",
+      "after_raw_report": "artifacts/string-json-scope-names-final.json",
+      "after_raw_report_sha256": "9fe1f702e26e8e8205bf27ca290ca31a54ec21e63e1b2f793c8eb697aa8e0b6f"
+    },
+    {
+      "profile": "regexp",
+      "source_files": 145,
+      "mode_cases": 290,
+      "counts": {
+        "passed": 250,
+        "unsupported": 40
+      },
+      "preflights": 44,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "33c8319c02da5367a5ac2596cbb48fc3176839740935966754ea0370f4408fa0",
+      "runner_policy_sha256": "0997761beccb3ac2d6d387c373fe92b5fc59157e9a2e1114677d99433f867e4f",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-regexp-current.json",
+      "prior_public_report_sha256": "abc887ad63aa114bb019baf1610962d68fcf787a0844a1ea6c86736d49eee787",
+      "before_raw_report": "artifacts/regexp-scope-walk-final.json",
+      "before_raw_report_sha256": "fc72e985a0f4261f76f0b8b2ef6142d7363216f319b57c0ef6c4c42ab616fede",
+      "after_raw_report": "artifacts/regexp-scope-names-final.json",
+      "after_raw_report_sha256": "47ffcfae9dd52c007e9e7272db4d5e27fcc7ebf18870532bf00e11cfb51e83c0"
+    },
+    {
+      "profile": "template-literal",
+      "source_files": 57,
+      "mode_cases": 114,
+      "counts": {
+        "unsupported": 32,
+        "passed": 82
+      },
+      "preflights": 44,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "58951312763d816ca4cc139a4fcb2bf63f43a81414b91bf673f65c450b217d94",
+      "runner_policy_sha256": "17b229706fb4915c6c9d5daf4daa74129f2ac470bba8d993487356f12384517e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-template-literal-current.json",
+      "prior_public_report_sha256": "78df751741907b64bc65f8d88bd70d300df7d9b650630e5ec07b13c0dd594077",
+      "before_raw_report": "artifacts/template-literal-scope-walk-final.json",
+      "before_raw_report_sha256": "052880f2253ac0ca2661f7165faf6de17d73374e1d9f41ef83ab7b0272fd99af",
+      "after_raw_report": "artifacts/template-literal-scope-names-final.json",
+      "after_raw_report_sha256": "84aac457070ae34f6c1c8b9e437c5595eed70c888aa801026d26358b16557b05"
+    },
+    {
+      "profile": "rest-parameters",
+      "source_files": 11,
+      "mode_cases": 22,
+      "counts": {
+        "unsupported": 6,
+        "passed": 16
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "a3e15e061fc8c9cac736e081554f3e42b497d805ebfd7647ea49736cb2d83be5",
+      "runner_policy_sha256": "b579a37e261689714f4b2e41fe933581aa246348bafa391f2dba7c8aec4edacc",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-rest-parameters-current.json",
+      "prior_public_report_sha256": "24ff3862abfa3e83d4f6533f5e2603e975fe155b97d2f4d1475cc8dd8c64db16",
+      "before_raw_report": "artifacts/rest-parameters-scope-walk-final.json",
+      "before_raw_report_sha256": "9273749a3b235d85152c057d3541141b1299b5884f033b467a2c7326887a8cca",
+      "after_raw_report": "artifacts/rest-parameters-scope-names-final.json",
+      "after_raw_report_sha256": "3d5d4a3b8c4af0c7ffd9e6e6f7cc3d412e6d2816f9650f5bb1673a80e8574c22"
+    },
+    {
+      "profile": "is-prototype-of",
+      "source_files": 10,
+      "mode_cases": 20,
+      "counts": {
+        "unsupported": 10,
+        "passed": 10
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "f019dcc5e150cf14a6b144577a30937ed1314c6b5de3dd331ad574585f16d461",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-is-prototype-of-current.json",
+      "prior_public_report_sha256": "3d9c290af97e33fdaf3383e72ab319240802c6f10a6fce680d15e0bd338c775d",
+      "before_raw_report": "artifacts/is-prototype-of-scope-walk-final.json",
+      "before_raw_report_sha256": "6ded72cbca681aa2957166d870371b8aacb2bf1ddf053c12d0df87d00261c973",
+      "after_raw_report": "artifacts/is-prototype-of-scope-names-final.json",
+      "after_raw_report_sha256": "797c42a494ab16638848f0e797d9ba17d38e0b435b40dc4a1368553648023091"
+    },
+    {
+      "profile": "global-values",
+      "source_files": 49,
+      "mode_cases": 88,
+      "counts": {
+        "passed": 42,
+        "unsupported": 40,
+        "failed": 6
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "c1b627a7249d3ab460d5be88b54f34ead98c375c160bee9e72379aef213894a4",
+      "runner_policy_sha256": "f096c9be039b6e5a005d3997e38d8da419399e8c6e8d3a23d2162d20c1763d03",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-global-values-current.json",
+      "prior_public_report_sha256": "ea3dd8c07ab8a76f22e02b4de9ce01035547ec06c37ef4f08569d922425196ee",
+      "before_raw_report": "artifacts/global-values-scope-walk-final.json",
+      "before_raw_report_sha256": "4507b13fdfbf202878def1c928c54d87ffbf8e6b009d2d198bd21fdf23ce732b",
+      "after_raw_report": "artifacts/global-values-scope-names-final.json",
+      "after_raw_report_sha256": "b900618b8cb2639ecc70edcb7a41979593a4aa6bcf2f8a7dc0b195048717020c"
+    },
+    {
+      "profile": "array-reduce",
+      "source_files": 520,
+      "mode_cases": 1034,
+      "counts": {
+        "passed": 848,
+        "failed": 16,
+        "unsupported": 170
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "77ee716188d99fdba64adbe151ef4efd915fbaa6345b2b0ec8fe3550efb5ec24",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-array-reduce-current.json",
+      "prior_public_report_sha256": "0eeff1f9bdccb1a035ed2d5e888390352f1f9a2704511a4f979085a26ed79c76",
+      "before_raw_report": "artifacts/array-reduce-scope-walk-final.json",
+      "before_raw_report_sha256": "656711e226723501d1d83571e7aa2367ddff7628b5bd24a514aeaa0a4aea528d",
+      "after_raw_report": "artifacts/array-reduce-scope-names-final.json",
+      "after_raw_report_sha256": "4bee194b75cc146f2ff3e166878c993c674bba6805b8edc993dde3d0ca56c504"
+    },
+    {
+      "profile": "number-statics",
+      "source_files": 170,
+      "mode_cases": 340,
+      "counts": {
+        "passed": 248,
+        "unsupported": 92
+      },
+      "preflights": 104,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "3c5c2503458843bfc64eaf546ee08b6e693714f561df42330d9001a2ec8216cd",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-number-statics-current.json",
+      "prior_public_report_sha256": "8b4837fb66a9ced2a9e1910830bc5a8aa67d81d52b6766764c2aceddef7b8717",
+      "before_raw_report": "artifacts/number-statics-scope-walk-final.json",
+      "before_raw_report_sha256": "e5d37c6bfc82dfacc1c1d7e9cbd5797549820234cb0d31d280b7d9f48d522308",
+      "after_raw_report": "artifacts/number-statics-scope-names-final.json",
+      "after_raw_report_sha256": "d1b72540373660bd5df4bf8a7f7c25c2144dcbc33c22852a153d2d5d2692f1e1"
+    },
+    {
+      "profile": "numeric-conversion",
+      "source_files": 30,
+      "mode_cases": 60,
+      "counts": {
+        "passed": 24,
+        "unsupported": 36
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "de7cf1098618ad0fdb7786d4ab4f6c648bfb6fe2543981fe21ca6e0cba50928f",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-numeric-conversion-current.json",
+      "prior_public_report_sha256": "8fec4cd70dfea5f1c1f49e91a2fb491be0eb70cc2af18ed30afb92cda2797a7b",
+      "before_raw_report": "artifacts/numeric-conversion-scope-walk-final.json",
+      "before_raw_report_sha256": "3ff06972c3c363d91ed5826edb59d6bda509c4b18c61a4896e74110e1a446adb",
+      "after_raw_report": "artifacts/numeric-conversion-scope-names-final.json",
+      "after_raw_report_sha256": "eb5c5a424ed1f2322ed9fab70be7217c7ddb03ab612e7fbb2380ffc44026ed00"
+    },
+    {
+      "profile": "compound-assignment",
+      "source_files": 454,
+      "mode_cases": 786,
+      "counts": {
+        "unsupported": 180,
+        "passed": 606
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "edc2b04b5e9f810e1757a327f5d2a32c240f41d61e8a6d2a89cb35c3ec14f1d0",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-compound-assignment-current.json",
+      "prior_public_report_sha256": "11cd52f4c5416495f0653d4444f798e70beecd6afd2de328980f7025dddb5213",
+      "before_raw_report": "artifacts/compound-assignment-scope-walk-final.json",
+      "before_raw_report_sha256": "d66a6cbdd9bbd8cb5a9a5b31b8b87a746aefe6d56af7aca363ae8c2f6d5ed07d",
+      "after_raw_report": "artifacts/compound-assignment-scope-names-final.json",
+      "after_raw_report_sha256": "bef5ffaffd8966c110c48b6984f350a7238d86f878d44bb8a2185d0fcfaf0a6f"
+    },
+    {
+      "profile": "addition",
+      "source_files": 48,
+      "mode_cases": 95,
+      "counts": {
+        "unsupported": 28,
+        "passed": 65,
+        "failed": 2
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "56088f55075e4d44da6915ca41383604182a8a72aaef8230af61369513cbdc0c",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-addition-current.json",
+      "prior_public_report_sha256": "d2770943fb2be1285decb499952fd908ca8021a49e321f5be26dab71a45dfd57",
+      "before_raw_report": "artifacts/addition-scope-walk-final.json",
+      "before_raw_report_sha256": "7198938384bcecc7f3261170a771162fcfe7f13b1d2c2b451f3e1660c855df8c",
+      "after_raw_report": "artifacts/addition-scope-names-final.json",
+      "after_raw_report_sha256": "0158f93d26d10996970a5a73efeb772ce70613808b8c1c0d72ee270c8466732c"
+    },
+    {
+      "profile": "logical-assignment",
+      "source_files": 78,
+      "mode_cases": 132,
+      "counts": {
+        "unsupported": 48,
+        "passed": 72,
+        "failed": 12
+      },
+      "preflights": 104,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "a83f71b8a6b6a1523951d73a4711f024cf77ad3bf90e6698bc6224e7bfabf1a3",
+      "runner_policy_sha256": "6f127a653c09ef49d48382570086b28407a0b1f6426fd888045621d72d3e89af",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-logical-assignment-current.json",
+      "prior_public_report_sha256": "ad49bf074436d4b37a00ad41064f45f477e8aad81ae15fc4df3eadcb14e7742a",
+      "before_raw_report": "artifacts/logical-assignment-scope-walk-final.json",
+      "before_raw_report_sha256": "0ffa00ef77e4929c5e1f03b4e8fe37a95b0255f324bd4c3dbc13ccbb1bf7e894",
+      "after_raw_report": "artifacts/logical-assignment-scope-names-final.json",
+      "after_raw_report_sha256": "e13fd3d33a727248d6d8b9a5b2f898440c8c7a7ef16e0f9a368ff46da8a231dc"
+    },
+    {
+      "profile": "relational",
+      "source_files": 184,
+      "mode_cases": 364,
+      "counts": {
+        "unsupported": 64,
+        "passed": 300
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "34497c818a4de422d2628afe1270525fe6c5467bbb43126c1796324a5bc8f138",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-relational-current.json",
+      "prior_public_report_sha256": "e86260961b586de3423fbd9bab9bed25559745c314803d1107ad02a1b58078d1",
+      "before_raw_report": "artifacts/relational-scope-walk-final.json",
+      "before_raw_report_sha256": "2b78d2472f48a978ff442167a70b0440bfc3f2c2a9b99a70b5d61998da375a41",
+      "after_raw_report": "artifacts/relational-scope-names-final.json",
+      "after_raw_report_sha256": "45dd4078b77264e3983867a239ded05693f0dbf7907579eb9ecdb013afddf3e5"
+    },
+    {
+      "profile": "equality",
+      "source_files": 145,
+      "mode_cases": 286,
+      "counts": {
+        "unsupported": 96,
+        "passed": 190
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "b1d07bdfaee72e164608d7ed3351ab70d05931ffda34f174f6c3f99bf12a0046",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-equality-current.json",
+      "prior_public_report_sha256": "91e65f1532487a2b2d552e4c95f118e07249f23abc1d4dd65de56fb9103f262c",
+      "before_raw_report": "artifacts/equality-scope-walk-final.json",
+      "before_raw_report_sha256": "13aef921895772fc537a33ea7f096101f0fdd2c72121b9d7346ea34f86e24bed",
+      "after_raw_report": "artifacts/equality-scope-names-final.json",
+      "after_raw_report_sha256": "6be8eb8b086940d993f43e66b8c93aa4f33c2a81f523b1e546abf13d0f30050f"
+    },
+    {
+      "profile": "labels",
+      "source_files": 68,
+      "mode_cases": 125,
+      "counts": {
+        "passed": 100,
+        "unsupported": 25
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "32889cc4ab3de15132243dae4981418ba559cd10294df9222329070b8f74649b",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-labels-current.json",
+      "prior_public_report_sha256": "5a84e2f694ccb009e7a7e21d501df73c346368df454d43d9618965a02753c22f",
+      "before_raw_report": "artifacts/labels-scope-walk-final.json",
+      "before_raw_report_sha256": "90a587a0eadb1786e7da7a93075e4f755c29d1aa7ea6d387b71394d378662cb6",
+      "after_raw_report": "artifacts/labels-scope-names-final.json",
+      "after_raw_report_sha256": "70f0277712efa234ee7c8cc25332483e6851fc614c0a481a84877513dfb22358"
+    },
+    {
+      "profile": "functions",
+      "source_files": 663,
+      "mode_cases": 1131,
+      "counts": {
+        "passed": 509,
+        "unsupported": 620,
+        "resource": 2
+      },
+      "preflights": 48,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "15281ebe6e6c980c547f113563df7d2b5d346ac0db5c9c4aca75dbb6fc60b330",
+      "runner_policy_sha256": "952e68b04e464d1a954c5949b0b9bbd8924472b8fba70a719a20a754d4d03439",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-functions-identifiers.json",
+      "prior_public_report_sha256": "2902b700a5861e68886cfef65ed1bb2feed32d13cd3e9a2fed7968efcfb4d575",
+      "before_raw_report": "artifacts/functions-scope-walk-final.json",
+      "before_raw_report_sha256": "88d5ed4df19eb57f46bf169aec93df02f0b597cae94b26728955a24ef65ac8ca",
+      "after_raw_report": "artifacts/functions-scope-names-final.json",
+      "after_raw_report_sha256": "14e2995aaff8d60af531cfa7bbc8f8a45c09dccbc95e447822c1dc7762003da3"
+    },
+    {
+      "profile": "uri",
+      "source_files": 173,
+      "mode_cases": 346,
+      "counts": {
+        "resource": 112,
+        "passed": 210,
+        "unsupported": 24
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "bf48d1dddac882a9609fe78aea7521e7477c1cef2ba6036a74c48513ad28ab8f",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-uri-labels.json",
+      "prior_public_report_sha256": "eb7f76b625fa2fe581fcc289f3b77729cc102e43c9a60171f7ca58ee894613db",
+      "before_raw_report": "artifacts/uri-scope-walk-final.json",
+      "before_raw_report_sha256": "664a559b656dd5e356fa779bd88110892ae1cbb023c14367ef66f2dd49881a05",
+      "after_raw_report": "artifacts/uri-scope-names-final.json",
+      "after_raw_report_sha256": "085e0a8107e6cb789c1066d6ef5bd9c38c892a67742300c91718ca5a67cf6137"
+    },
+    {
+      "profile": "numeric-parsing",
+      "source_files": 109,
+      "mode_cases": 218,
+      "counts": {
+        "passed": 164,
+        "unsupported": 46,
+        "resource": 8
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "f8959cc2e43d94b5b0c671105f87d3fc831fa6359065566791707a6f9b400c6a",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-numeric-parsing-compound-assignment.json",
+      "prior_public_report_sha256": "bffcd9ab4898076622c1002fc11c3a6523eb1185981c27f44468ca7fb6520950",
+      "before_raw_report": "artifacts/numeric-parsing-scope-walk-final.json",
+      "before_raw_report_sha256": "54b4ed3f9ceab4e523b195ff7da0f88624ecab6c8574425d5bae0327ce0f16c9",
+      "after_raw_report": "artifacts/numeric-parsing-scope-names-final.json",
+      "after_raw_report_sha256": "d37b54f9df32264dde5e70be174803e70adf08d35ed1797bf008386cfddb7eb8"
+    },
+    {
+      "profile": "array-sort",
+      "source_files": 54,
+      "mode_cases": 107,
+      "counts": {
+        "passed": 57,
+        "unsupported": 46,
+        "resource": 4
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "d6f43dd379ae49ae08f959596852e28e6bd33a0420eb699d763ff696b0e961d2",
+      "runner_policy_sha256": "8621a5b10295e4a41806178744c4e906157ef78c884220a154860fae829fd205",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-array-sort-reduce.json",
+      "prior_public_report_sha256": "af4f9eef2e405faf726ad2893a4724a1a491339899927a697dc50a301466a5e5",
+      "before_raw_report": "artifacts/array-sort-scope-walk-final.json",
+      "before_raw_report_sha256": "db022d422facaee25c16d5e1d1a23bad706a62a095dc7cd4e7bd42ef816fed84",
+      "after_raw_report": "artifacts/array-sort-scope-names-final.json",
+      "after_raw_report_sha256": "605b275cc4995fc100ad46369d47824c9ca80fa63fbdb63a03d183d4a633dea2"
+    },
+    {
+      "profile": "identifiers",
+      "source_files": 335,
+      "mode_cases": 669,
+      "counts": {
+        "passed": 507,
+        "unsupported": 154,
+        "resource": 8
+      },
+      "preflights": 88,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "b93b9e76f5231a3d342d95fe0a8cf47ca79c2a3101f2a78e4d5bb564c4d06ea8",
+      "runner_policy_sha256": "bdbeba5b53e7ef315e7f06e78fe8c66247cd7dd9ae2545ac5ec25749b94d95d5",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "prior_public_report": "test262-identifiers-latest.json",
+      "prior_public_report_sha256": "ca6d5282f979ef7308263f90494efe5019bfeb6f1379e0cd49f065073a4922f5",
+      "before_raw_report": "artifacts/identifiers-scope-walk-final.json",
+      "before_raw_report_sha256": "38cb9306c9da7c1d58eacde3e5bff0a2c32d06689b570ee87aebe8726dc5863e",
+      "after_raw_report": "artifacts/identifiers-scope-names-final.json",
+      "after_raw_report_sha256": "24bf51e2b28e7b9c64fb5644e3b8189c2d9dabaab16e1cb5b9e963c37f1ead05"
+    }
+  ],
+  "upstream_mode_cases": 6879,
+  "upstream_preflights": 1680,
+  "all_upstream_observations_identical": true,
+  "healthy_baseline_gates": 15,
+  "new_baselines_recorded": false,
+  "validation": {
+    "rust_tests": 917,
+    "rust_ignored": 0,
+    "python_checks": 151,
+    "exact_pixel_references": 57,
+    "mutation_smoke_cases": 15000,
+    "caught_panics": 0,
+    "independent_agent_review": false,
+    "chromium_comparison": false,
+    "production_vulkan": false
+  },
+  "root_authored_matrix": {
+    "fixture": "../fixtures/scope-names.tsv",
+    "fixture_sha256": "58415bfd670354c04027df2eae0dcdc2d56efaf7db30fd2973ddcf0e5faa60f7",
+    "original_case_table_sha256": "829d089a859c41f8f2aa5e9d19e1edbfc5b4bda2e97191cfb458aad7dfc20b6d",
+    "unique_source_snippets": 72,
+    "mode_cases": 144,
+    "before_passed": 144,
+    "after_passed": 144,
+    "all_observations_identical": true,
+    "before_report_sha256": "2fafdcdb90abd5b5e652ba4f534c6627ad6214ae37b4a45aa08e0f026828078b",
+    "after_report_sha256": "6fd79e217dd9ac17a01dc3f790f3cf832121b79db6e08b5f397142d3a1b811ea",
+    "cases": [
+      {
+        "id": "valid-0/sloppy",
+        "source_sha256": "7a4dd20e3f55254928942e981f8a5d171118ff0c4613ca2f5027b929b997756d",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "valid-0/strict",
+        "source_sha256": "7a4dd20e3f55254928942e981f8a5d171118ff0c4613ca2f5027b929b997756d",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-0-0/sloppy",
+        "source_sha256": "5061b9ef7e2f78e547fb36eaa9509a07d3714a3457bfc14241f21c3b87467ebc",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'z'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'z'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-0-0/strict",
+        "source_sha256": "5061b9ef7e2f78e547fb36eaa9509a07d3714a3457bfc14241f21c3b87467ebc",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'z'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'z'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-0-1/sloppy",
+        "source_sha256": "e9f2d09de30d27edd2524088ae96c6d6c6dc2ddc76880ae07104ad25ef33c041",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'm'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'm'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-0-1/strict",
+        "source_sha256": "e9f2d09de30d27edd2524088ae96c6d6c6dc2ddc76880ae07104ad25ef33c041",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'm'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'm'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "intersection-0/sloppy",
+        "source_sha256": "b00edafa2f0139817101c3bbf44bcc67c6942a9a6a704e8b4ee38071f0a38178",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "intersection-0/strict",
+        "source_sha256": "b00edafa2f0139817101c3bbf44bcc67c6942a9a6a704e8b4ee38071f0a38178",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "functions-excluded-0/sloppy",
+        "source_sha256": "8d7acc2f77804669c7e642cc6bf24ebe7b1e69e6fb47ed91188ef7e40ca7d73b",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "functions-excluded-0/strict",
+        "source_sha256": "8d7acc2f77804669c7e642cc6bf24ebe7b1e69e6fb47ed91188ef7e40ca7d73b",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "valid-1/sloppy",
+        "source_sha256": "b575b0589407ec7a5e4410772a0702dc68d35e9f15417fdaff98ed12264f523b",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "valid-1/strict",
+        "source_sha256": "b575b0589407ec7a5e4410772a0702dc68d35e9f15417fdaff98ed12264f523b",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-1-0/sloppy",
+        "source_sha256": "cb25261fd095b9e7718d8d6da09e60f661e702cf8ffb5d227a44a8c45b865d9a",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'z'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'z'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-1-0/strict",
+        "source_sha256": "cb25261fd095b9e7718d8d6da09e60f661e702cf8ffb5d227a44a8c45b865d9a",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'z'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'z'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-1-1/sloppy",
+        "source_sha256": "88bc96f9323556920c4d45bf0268ad1cf9e5c100293ba869a0a2736b0e146e4d",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-1-1/strict",
+        "source_sha256": "88bc96f9323556920c4d45bf0268ad1cf9e5c100293ba869a0a2736b0e146e4d",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "intersection-1/sloppy",
+        "source_sha256": "c8e46885f6279f2547f82eab6b2d67e9a4a84d232ee4a3699ca60efcf94f6af0",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "intersection-1/strict",
+        "source_sha256": "c8e46885f6279f2547f82eab6b2d67e9a4a84d232ee4a3699ca60efcf94f6af0",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "functions-excluded-1/sloppy",
+        "source_sha256": "c4032ec2e5cf018e8a205fc60e0cfe76ec322812fa4ab72cb90b26f982b4096a",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "functions-excluded-1/strict",
+        "source_sha256": "c4032ec2e5cf018e8a205fc60e0cfe76ec322812fa4ab72cb90b26f982b4096a",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "valid-2/sloppy",
+        "source_sha256": "ad4d857c063f1bf7f00892504f73bc47c26677cd660ce131be3a78ffa81b88e6",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "valid-2/strict",
+        "source_sha256": "ad4d857c063f1bf7f00892504f73bc47c26677cd660ce131be3a78ffa81b88e6",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-2-0/sloppy",
+        "source_sha256": "ae049320b1d8bcafce51f8bc08eab553ff39414ac063ed34718271db98601285",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-2-0/strict",
+        "source_sha256": "ae049320b1d8bcafce51f8bc08eab553ff39414ac063ed34718271db98601285",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-2-1/sloppy",
+        "source_sha256": "5efe3891b1c0c1f0f52b68a2a68e8e36ea516bc0cf4f785bf0033a8842083235",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'm'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'm'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-2-1/strict",
+        "source_sha256": "5efe3891b1c0c1f0f52b68a2a68e8e36ea516bc0cf4f785bf0033a8842083235",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'm'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'm'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "intersection-2/sloppy",
+        "source_sha256": "4fbace5da070ff02b9e6dcfc79d0451adb737bfb75d82c4b0762592466d90826",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "intersection-2/strict",
+        "source_sha256": "4fbace5da070ff02b9e6dcfc79d0451adb737bfb75d82c4b0762592466d90826",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "functions-excluded-2/sloppy",
+        "source_sha256": "d32c218c7d36da50a243a963144d6ef7a0e182d6af4bb1810f35276c447983fe",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "functions-excluded-2/strict",
+        "source_sha256": "d32c218c7d36da50a243a963144d6ef7a0e182d6af4bb1810f35276c447983fe",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "valid-3/sloppy",
+        "source_sha256": "85a09903375d3883dd6eb2078ac5a36476c975ee15cc43078abf1c1e21d19be7",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "valid-3/strict",
+        "source_sha256": "85a09903375d3883dd6eb2078ac5a36476c975ee15cc43078abf1c1e21d19be7",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-3-0/sloppy",
+        "source_sha256": "cb8676a95ca10e26fd145e936e5bd75096d45b385c3737a0195f09dfda2820bd",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-3-0/strict",
+        "source_sha256": "cb8676a95ca10e26fd145e936e5bd75096d45b385c3737a0195f09dfda2820bd",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-3-1/sloppy",
+        "source_sha256": "da7f4706c54445069977befe9c2d2a340ed8491d4c2b1bca38d26a2374d17c02",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'z'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'z'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-3-1/strict",
+        "source_sha256": "da7f4706c54445069977befe9c2d2a340ed8491d4c2b1bca38d26a2374d17c02",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'z'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'z'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "intersection-3/sloppy",
+        "source_sha256": "05a24bdccf5d8670de534f1bd5f5c7b4d4bcb054b5a03afdfe0d5424dba553d3",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "intersection-3/strict",
+        "source_sha256": "05a24bdccf5d8670de534f1bd5f5c7b4d4bcb054b5a03afdfe0d5424dba553d3",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "functions-excluded-3/sloppy",
+        "source_sha256": "2339247cf5998d47c8198568de0f1c8096cfbc0bd1ea3837037dd4a4edb9f043",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "functions-excluded-3/strict",
+        "source_sha256": "2339247cf5998d47c8198568de0f1c8096cfbc0bd1ea3837037dd4a4edb9f043",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "valid-4/sloppy",
+        "source_sha256": "f438f874afee7b0285c148fbe5ed29c3bfdc998fee6123f74778eb142a8902af",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "valid-4/strict",
+        "source_sha256": "f438f874afee7b0285c148fbe5ed29c3bfdc998fee6123f74778eb142a8902af",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-4-0/sloppy",
+        "source_sha256": "3e4de22f975353fbb5ef40d67ab25451af202f3e9163ccb6dd2a3a2364c396f8",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'm'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'm'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-4-0/strict",
+        "source_sha256": "3e4de22f975353fbb5ef40d67ab25451af202f3e9163ccb6dd2a3a2364c396f8",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'm'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'm'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-4-1/sloppy",
+        "source_sha256": "9cb63107454b84cbda0586ead4927bfb6a9c6de6e243d0787a83c92b1dd4ed69",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-4-1/strict",
+        "source_sha256": "9cb63107454b84cbda0586ead4927bfb6a9c6de6e243d0787a83c92b1dd4ed69",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "intersection-4/sloppy",
+        "source_sha256": "69152408914ed322c5315b5c23a67eb8dc14aaddb6c001dd94f3a0b6c158d033",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "intersection-4/strict",
+        "source_sha256": "69152408914ed322c5315b5c23a67eb8dc14aaddb6c001dd94f3a0b6c158d033",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "functions-excluded-4/sloppy",
+        "source_sha256": "4b0b006882f77b174352308632a1dc2d0f379adc0546812d4fbafa9a9cabadf5",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "functions-excluded-4/strict",
+        "source_sha256": "4b0b006882f77b174352308632a1dc2d0f379adc0546812d4fbafa9a9cabadf5",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "valid-5/sloppy",
+        "source_sha256": "fa620a93f3290ebf129e7a8cf61f488f7760a6144ca90e1c680c3a27eedced76",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "valid-5/strict",
+        "source_sha256": "fa620a93f3290ebf129e7a8cf61f488f7760a6144ca90e1c680c3a27eedced76",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-5-0/sloppy",
+        "source_sha256": "ae1a686ba225d29c9747def4ba75184764f6a7e22b359c9c247b88ecaa747c52",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'm'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'm'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-5-0/strict",
+        "source_sha256": "ae1a686ba225d29c9747def4ba75184764f6a7e22b359c9c247b88ecaa747c52",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'm'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'm'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-5-1/sloppy",
+        "source_sha256": "684dc27e6fc53bf0a175885bb5a730fd4267f8257425eb5cf3c2218284eac539",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'z'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'z'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "duplicate-5-1/strict",
+        "source_sha256": "684dc27e6fc53bf0a175885bb5a730fd4267f8257425eb5cf3c2218284eac539",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'z'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'z'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "intersection-5/sloppy",
+        "source_sha256": "fe2bc55083c58e8a2780fceeb128c506a678533798efe5ff26966ce275669b88",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "intersection-5/strict",
+        "source_sha256": "fe2bc55083c58e8a2780fceeb128c506a678533798efe5ff26966ce275669b88",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "functions-excluded-5/sloppy",
+        "source_sha256": "95ba89e25da08e1abaf36212f7975396a77e79be9381a7bdf47736b3b39c13d9",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "functions-excluded-5/strict",
+        "source_sha256": "95ba89e25da08e1abaf36212f7975396a77e79be9381a7bdf47736b3b39c13d9",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "block-function-after-0/sloppy",
+        "source_sha256": "73eaf93f8663251f505420014d0700c306cd0959456135ad9c8eb0910498dcfb",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate block binding 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate block binding 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "block-function-after-0/strict",
+        "source_sha256": "73eaf93f8663251f505420014d0700c306cd0959456135ad9c8eb0910498dcfb",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate block binding 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate block binding 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "block-function-before-0/sloppy",
+        "source_sha256": "7e8515c8cece97076466018e1c3c33a2be57a45a17996424a8df6bf01395ff45",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "block-function-before-0/strict",
+        "source_sha256": "7e8515c8cece97076466018e1c3c33a2be57a45a17996424a8df6bf01395ff45",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "function-body-lexical-0/sloppy",
+        "source_sha256": "efc4070834522ef15a713693c93864d46fc0ec3e9214950461727a5c262d282f",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "parameter conflicts with lexical declaration"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "parameter conflicts with lexical declaration",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "function-body-lexical-0/strict",
+        "source_sha256": "efc4070834522ef15a713693c93864d46fc0ec3e9214950461727a5c262d282f",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "parameter conflicts with lexical declaration"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "parameter conflicts with lexical declaration",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "function-scope-conflict-0/sloppy",
+        "source_sha256": "b9eb5dd883773ae7d75b26c09efe08992389613592d269c8d2053147a8d110f2",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "function-scope-conflict-0/strict",
+        "source_sha256": "b9eb5dd883773ae7d75b26c09efe08992389613592d269c8d2053147a8d110f2",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "for-head-0/sloppy",
+        "source_sha256": "f0f556fe2b8940256cd01368cc9e2034eda197ff9b04144b75c6d119bf59feab",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "for lexical binding conflicts with var"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "for lexical binding conflicts with var",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "for-head-0/strict",
+        "source_sha256": "f0f556fe2b8940256cd01368cc9e2034eda197ff9b04144b75c6d119bf59feab",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "for lexical binding conflicts with var"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "for lexical binding conflicts with var",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "for-in-head-0/sloppy",
+        "source_sha256": "2d41650da0aa4589c14375f2c2e2beff600485aa55010cd01c09171fbac5071f",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "for-in lexical binding conflicts with var"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "for-in lexical binding conflicts with var",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "for-in-head-0/strict",
+        "source_sha256": "2d41650da0aa4589c14375f2c2e2beff600485aa55010cd01c09171fbac5071f",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "for-in lexical binding conflicts with var"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "for-in lexical binding conflicts with var",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "catch-binding-0/sloppy",
+        "source_sha256": "33a7070770638bc357ed6f66846b849104aedaaf179d5ae4bdb77a4c550a3adf",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "parameter conflicts with lexical declaration"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "parameter conflicts with lexical declaration",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "catch-binding-0/strict",
+        "source_sha256": "33a7070770638bc357ed6f66846b849104aedaaf179d5ae4bdb77a4c550a3adf",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "parameter conflicts with lexical declaration"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "parameter conflicts with lexical declaration",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "block-function-after-1/sloppy",
+        "source_sha256": "9175a5f9fc804938e2a108bfd35eff96fe3d5be71d7b6aeede2f5df69cb38a49",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate block binding 'π'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate block binding 'π'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "block-function-after-1/strict",
+        "source_sha256": "9175a5f9fc804938e2a108bfd35eff96fe3d5be71d7b6aeede2f5df69cb38a49",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate block binding 'π'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate block binding 'π'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "block-function-before-1/sloppy",
+        "source_sha256": "3f3a21ea9956ce708293ea8007573c8f689fd1418c184eb90bc5cac5012ae7fe",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'π'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'π'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "block-function-before-1/strict",
+        "source_sha256": "3f3a21ea9956ce708293ea8007573c8f689fd1418c184eb90bc5cac5012ae7fe",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'π'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'π'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "function-body-lexical-1/sloppy",
+        "source_sha256": "94efbf606ccb6cb69b85d9b1f369f0031bd5154f511ca3ca8dad24d6d5ef6970",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "parameter conflicts with lexical declaration"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "parameter conflicts with lexical declaration",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "function-body-lexical-1/strict",
+        "source_sha256": "94efbf606ccb6cb69b85d9b1f369f0031bd5154f511ca3ca8dad24d6d5ef6970",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "parameter conflicts with lexical declaration"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "parameter conflicts with lexical declaration",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "function-scope-conflict-1/sloppy",
+        "source_sha256": "08748b7f3c37f30801ac824754f3610fd82e2163e8e00441dac543eab0a7cf53",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for 'π'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for 'π'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "function-scope-conflict-1/strict",
+        "source_sha256": "08748b7f3c37f30801ac824754f3610fd82e2163e8e00441dac543eab0a7cf53",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for 'π'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for 'π'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "for-head-1/sloppy",
+        "source_sha256": "66994e4f831960600984cf4318197c87509931b62e5a4e3f9c08eccbf5823d1c",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "for lexical binding conflicts with var"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "for lexical binding conflicts with var",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "for-head-1/strict",
+        "source_sha256": "66994e4f831960600984cf4318197c87509931b62e5a4e3f9c08eccbf5823d1c",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "for lexical binding conflicts with var"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "for lexical binding conflicts with var",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "for-in-head-1/sloppy",
+        "source_sha256": "cba84811d1a02189c79ba7fe97e5f61b73f7df40b869e299a3c717bc15845a99",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "for-in lexical binding conflicts with var"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "for-in lexical binding conflicts with var",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "for-in-head-1/strict",
+        "source_sha256": "cba84811d1a02189c79ba7fe97e5f61b73f7df40b869e299a3c717bc15845a99",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "for-in lexical binding conflicts with var"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "for-in lexical binding conflicts with var",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "catch-binding-1/sloppy",
+        "source_sha256": "b0b3af079a3eb2ad9485e5f4eec5b6daea01e614e25700a4fe78a2542d594802",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "parameter conflicts with lexical declaration"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "parameter conflicts with lexical declaration",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "catch-binding-1/strict",
+        "source_sha256": "b0b3af079a3eb2ad9485e5f4eec5b6daea01e614e25700a4fe78a2542d594802",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "parameter conflicts with lexical declaration"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "parameter conflicts with lexical declaration",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "block-function-after-2/sloppy",
+        "source_sha256": "2e51149b31a2819a7748a3af1ae140468eee9c95fe37def416cff6eb1a0850d8",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate block binding '名字'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate block binding '名字'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "block-function-after-2/strict",
+        "source_sha256": "2e51149b31a2819a7748a3af1ae140468eee9c95fe37def416cff6eb1a0850d8",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate block binding '名字'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate block binding '名字'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "block-function-before-2/sloppy",
+        "source_sha256": "3c1ad983348690476f4272d9951d02a814678c3dfd0a0971fc7f21f9e74614df",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding '名字'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding '名字'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "block-function-before-2/strict",
+        "source_sha256": "3c1ad983348690476f4272d9951d02a814678c3dfd0a0971fc7f21f9e74614df",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding '名字'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding '名字'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "function-body-lexical-2/sloppy",
+        "source_sha256": "ee65fe42109c30c08f989634c38cf706dc62117bd6e7241a34e20d82da9ee3ff",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "parameter conflicts with lexical declaration"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "parameter conflicts with lexical declaration",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "function-body-lexical-2/strict",
+        "source_sha256": "ee65fe42109c30c08f989634c38cf706dc62117bd6e7241a34e20d82da9ee3ff",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "parameter conflicts with lexical declaration"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "parameter conflicts with lexical declaration",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "function-scope-conflict-2/sloppy",
+        "source_sha256": "da9031e5d5f44d272a3d9619623c021e0e747c2e636c841a6a4cb07d1821ce63",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for '名字'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for '名字'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "function-scope-conflict-2/strict",
+        "source_sha256": "da9031e5d5f44d272a3d9619623c021e0e747c2e636c841a6a4cb07d1821ce63",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for '名字'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for '名字'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "for-head-2/sloppy",
+        "source_sha256": "9e510e162943c96b91a29ad6494494e67c48c88ef15f2f2128c323c854826e1f",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "for lexical binding conflicts with var"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "for lexical binding conflicts with var",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "for-head-2/strict",
+        "source_sha256": "9e510e162943c96b91a29ad6494494e67c48c88ef15f2f2128c323c854826e1f",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "for lexical binding conflicts with var"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "for lexical binding conflicts with var",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "for-in-head-2/sloppy",
+        "source_sha256": "20f5543c690070c6071aeec5138afb2a35b37ca1a7fac646178bb1dca2be5710",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "for-in lexical binding conflicts with var"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "for-in lexical binding conflicts with var",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "for-in-head-2/strict",
+        "source_sha256": "20f5543c690070c6071aeec5138afb2a35b37ca1a7fac646178bb1dca2be5710",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "for-in lexical binding conflicts with var"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "for-in lexical binding conflicts with var",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "catch-binding-2/sloppy",
+        "source_sha256": "a381f394ec42d365efc0619a8667b825aa206c098b513c361d2522d7c5339d87",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "parameter conflicts with lexical declaration"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "parameter conflicts with lexical declaration",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "catch-binding-2/strict",
+        "source_sha256": "a381f394ec42d365efc0619a8667b825aa206c098b513c361d2522d7c5339d87",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "parameter conflicts with lexical declaration"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "parameter conflicts with lexical declaration",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "block-function-after-3/sloppy",
+        "source_sha256": "5932602b2f3e68d5fa48ea2f1263386844cc2c780ce201f103604bd0529b1efa",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate block binding 'prefix_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate block binding 'prefix_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "block-function-after-3/strict",
+        "source_sha256": "5932602b2f3e68d5fa48ea2f1263386844cc2c780ce201f103604bd0529b1efa",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate block binding 'prefix_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate block binding 'prefix_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "block-function-before-3/sloppy",
+        "source_sha256": "e2a07294aa0aac4e9d3f350729e211763f5564eed160bfa23da001835ddef659",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'prefix_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'prefix_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "block-function-before-3/strict",
+        "source_sha256": "e2a07294aa0aac4e9d3f350729e211763f5564eed160bfa23da001835ddef659",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'prefix_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'prefix_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "function-body-lexical-3/sloppy",
+        "source_sha256": "073a378b5471702291b00a7e4d1a17dc5bdf88792c12ca90ac73581a5d0f910e",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "parameter conflicts with lexical declaration"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "parameter conflicts with lexical declaration",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "function-body-lexical-3/strict",
+        "source_sha256": "073a378b5471702291b00a7e4d1a17dc5bdf88792c12ca90ac73581a5d0f910e",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "parameter conflicts with lexical declaration"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "parameter conflicts with lexical declaration",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "function-scope-conflict-3/sloppy",
+        "source_sha256": "a8ba224dbd884d6782d2d0b3f4972d7095f38d7ee6fa53b27368a4e793baaa93",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for 'prefix_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for 'prefix_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "function-scope-conflict-3/strict",
+        "source_sha256": "a8ba224dbd884d6782d2d0b3f4972d7095f38d7ee6fa53b27368a4e793baaa93",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for 'prefix_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for 'prefix_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "for-head-3/sloppy",
+        "source_sha256": "b1babc8307c7d12a9b724c667ea851d751a224c990fc35cbadb885a66ddf6e91",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "for lexical binding conflicts with var"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "for lexical binding conflicts with var",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "for-head-3/strict",
+        "source_sha256": "b1babc8307c7d12a9b724c667ea851d751a224c990fc35cbadb885a66ddf6e91",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "for lexical binding conflicts with var"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "for lexical binding conflicts with var",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "for-in-head-3/sloppy",
+        "source_sha256": "c240838c1efc63db06261c03ac00e684895d1a155641af8c643b456f9fcdc411",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "for-in lexical binding conflicts with var"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "for-in lexical binding conflicts with var",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "for-in-head-3/strict",
+        "source_sha256": "c240838c1efc63db06261c03ac00e684895d1a155641af8c643b456f9fcdc411",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "for-in lexical binding conflicts with var"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "for-in lexical binding conflicts with var",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "catch-binding-3/sloppy",
+        "source_sha256": "1a09f7b4a353d100fc79a64bac3e69fd759325a2fdcbfbb01b2d51a48a7d82af",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "parameter conflicts with lexical declaration"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "parameter conflicts with lexical declaration",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "catch-binding-3/strict",
+        "source_sha256": "1a09f7b4a353d100fc79a64bac3e69fd759325a2fdcbfbb01b2d51a48a7d82af",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "parameter conflicts with lexical declaration"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "parameter conflicts with lexical declaration",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "escaped-duplicate/sloppy",
+        "source_sha256": "aad6534115fd6de041d55bdb9a2f012167e1a51a041591b64de29d7d7b484e05",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "escaped-duplicate/strict",
+        "source_sha256": "aad6534115fd6de041d55bdb9a2f012167e1a51a041591b64de29d7d7b484e05",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate lexical binding 'a'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate lexical binding 'a'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "escaped-intersection/sloppy",
+        "source_sha256": "1f97ddbfe84065fc3153b869ccbf37b08bd8b9e1829e455ae89347e57a0077b8",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for 'π'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for 'π'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "escaped-intersection/strict",
+        "source_sha256": "1f97ddbfe84065fc3153b869ccbf37b08bd8b9e1829e455ae89347e57a0077b8",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "lexical and var declarations conflict for 'π'"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "lexical and var declarations conflict for 'π'",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "simple-duplicate-sloppy/sloppy",
+        "source_sha256": "6d7cdc2bad6622a500976d825a06877b156d328dfd79462402b7396e517de3a3",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "simple-duplicate-strict/strict",
+        "source_sha256": "6d7cdc2bad6622a500976d825a06877b156d328dfd79462402b7396e517de3a3",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate function parameter"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate function parameter",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "parameter-duplicate-defaults/sloppy",
+        "source_sha256": "0c8198c1ed1be24e9e66ca743f7cb16d76caf6d7841f6d24f83035db1a29111c",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate function parameter"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate function parameter",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "parameter-duplicate-defaults/strict",
+        "source_sha256": "0c8198c1ed1be24e9e66ca743f7cb16d76caf6d7841f6d24f83035db1a29111c",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate function parameter"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate function parameter",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "parameter-duplicate-rest/sloppy",
+        "source_sha256": "b483d80150ba1b22adb9791f5179ff18114a1c9904177aaa422c72abda9670a7",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate function parameter"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate function parameter",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "parameter-duplicate-rest/strict",
+        "source_sha256": "b483d80150ba1b22adb9791f5179ff18114a1c9904177aaa422c72abda9670a7",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate function parameter"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate function parameter",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "parameter-duplicate-arrow/sloppy",
+        "source_sha256": "8ee943794362f0e2c27a38f9dd34a14c16e2e85bab8fac50e6d4dcc991d06ad8",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate function parameter"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate function parameter",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "parameter-duplicate-arrow/strict",
+        "source_sha256": "8ee943794362f0e2c27a38f9dd34a14c16e2e85bab8fac50e6d4dcc991d06ad8",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate function parameter"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate function parameter",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "parameter-duplicate-method/sloppy",
+        "source_sha256": "568c9a16dca63a311b6dccf40fe9507a5e3fa1e61c2234e016c575735f9e1e5f",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate function parameter"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate function parameter",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "parameter-duplicate-method/strict",
+        "source_sha256": "568c9a16dca63a311b6dccf40fe9507a5e3fa1e61c2234e016c575735f9e1e5f",
+        "expected": {
+          "status": "exception",
+          "phase": "parse",
+          "message": "duplicate function parameter"
+        },
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "duplicate function parameter",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "shadow-function/sloppy",
+        "source_sha256": "40ea509cb2f4787c63b54051b2f28fbade86830bf6ed9c741f0021861b64bb4c",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "shadow-function/strict",
+        "source_sha256": "40ea509cb2f4787c63b54051b2f28fbade86830bf6ed9c741f0021861b64bb4c",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "shadow-block/sloppy",
+        "source_sha256": "00f4758ad57acb0ef831bb9b322f6bc3f35869fb6326395a72247980239d6d60",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "shadow-block/strict",
+        "source_sha256": "00f4758ad57acb0ef831bb9b322f6bc3f35869fb6326395a72247980239d6d60",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "var-redeclare/sloppy",
+        "source_sha256": "a523154c8389e97b39c2a3fc379c01438b4a65a508bab410058140c0fa1a4ff3",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "var-redeclare/strict",
+        "source_sha256": "a523154c8389e97b39c2a3fc379c01438b4a65a508bab410058140c0fa1a4ff3",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "rest-valid/sloppy",
+        "source_sha256": "5e13e0bcf22f813409a944acc3107dfbb6f9bac2d755f4532a8ee6c76b689833",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "rest-valid/strict",
+        "source_sha256": "5e13e0bcf22f813409a944acc3107dfbb6f9bac2d755f4532a8ee6c76b689833",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "default-valid/sloppy",
+        "source_sha256": "fc6b3662642611d3e30f277fbee98e8740180ce36e5c3c044e232d5cbd366d8e",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "default-valid/strict",
+        "source_sha256": "fc6b3662642611d3e30f277fbee98e8740180ce36e5c3c044e232d5cbd366d8e",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "catch-var/sloppy",
+        "source_sha256": "0bc7acfaafc98f793176f8afcd33562baa15d8bc265c9359c389a82ec53bec60",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "catch-var/strict",
+        "source_sha256": "0bc7acfaafc98f793176f8afcd33562baa15d8bc265c9359c389a82ec53bec60",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "preserved-1000-parameters/sloppy",
+        "source_sha256": "41ddaea35ee48785664e2f8f20cf1750c26fa10a0f8701d5ab82b4bc9d1012f5",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      },
+      {
+        "id": "preserved-1000-parameters/strict",
+        "source_sha256": "41ddaea35ee48785664e2f8f20cf1750c26fa10a0f8701d5ab82b4bc9d1012f5",
+        "expected": {
+          "status": "complete",
+          "phase": "parse",
+          "message": ""
+        },
+        "observation": {
+          "status": "complete",
+          "phase": "parse",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        },
+        "passed": true
+      }
+    ],
+    "note": "Root-authored parse-only expectations and diagnostics, not upstream conformance evidence."
+  },
+  "focused_tests": [
+    "merge_matches_independent_stable_order_duplicate_and_set_oracles",
+    "collection_precharges_work_and_growth_before_mutation",
+    "sorting_scratch_and_comparison_failures_use_the_same_ledger",
+    "membership_duplicates_intersection_and_diagnostics_precharge_string_work",
+    "count_limit_and_trivial_lists_need_no_sort_allocation"
+  ],
+  "algorithm": {
+    "record_limit": 32768,
+    "borrowed_names": true,
+    "stable_iterative_merge": true,
+    "cumulative_growth_and_scratch_charges": true,
+    "copy_and_comparison_precharges": true,
+    "checked_reservations": true,
+    "source_order_duplicate_diagnostics": true,
+    "sorted_first_intersection": true,
+    "named_diagnostic_precharges": true,
+    "quota_increases": false
+  },
+  "limitations": [
+    "Other parser operations and runtime maps remain separate resource-accounting work.",
+    "The merge collects/sorts a whole lexical list before selecting the earliest duplicate; resource exhaustion may precede syntax reporting on larger inputs.",
+    "Duplicate names occupy temporary records until validation ends; compilation accounting remains cumulative without refunds.",
+    "Owned syntax, parsing and expression/statement/function execution still have recursive paths.",
+    "No depth acceptance or performance claim; local regression checks and mutation smoke are not a security proof or complete web compatibility evidence."
+  ]
+}

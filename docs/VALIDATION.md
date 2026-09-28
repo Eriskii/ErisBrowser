@@ -1,6 +1,63 @@
 # Validation record
 
+## Metered declaration-name validation
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **917 Rust tests** pass with `--include-ignored`: 735 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 53 pipeline, one declaration-name matrix, nine completion
+and 44 confined-worker tests. None remain ignored. All **151 Python checks**
+and **57 exact pixel references** pass.
+
+The [implementation and evidence](../tests/conformance/scope-names.md) charge
+borrowed declaration-name collection, buffer growth, stable iterative sorting,
+string comparisons and named diagnostic construction before the corresponding
+work or allocation. Scope/for-header/parameter/catch validation uses the shared
+compile ledger; existing limits and no-lexical-scope skips remain. Earliest source
+duplicates, diagnostic kinds and sorted first-conflict selection are preserved.
+Five private test groups cover ordering, independent oracles, pointer identity and
+resource boundaries. A root-authored **72-source / 144-mode** syntax/diagnostic
+matrix passes before and after with identical observations.
+
+All **20 Test262 profiles / 6,879 modes / 1,680 controls** preserve every case and
+preflight fingerprint, policy and observation. Every control verifies; fifteen
+healthy gates pass. Resource-stopped profiles remain nonpassing observations,
+with no baseline re-recording. HTML stays at 3,868 matches, two mismatches and
+six unsupported modes.
+
+The **15,000-case** deterministic mutation smoke run reports zero caught panics
+or invariant failures: 5,000 accepted HTML, 623 accepted/4,377 rejected scripts,
+and 3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and
+display-list size 1,173 commands; 17 cases stop within paint limits.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+| --- | --- |
+| `eris-browser` | `fc708729306aa5c7d5acb9cdf9944751da183c22d6e23f18eb58b1fd6c998037` |
+| `eris-js` | `6cd0a1426298b533c262ff1796ec6fec49bdd52a63ad8d860d8f2e8f72da621c` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `de1d825f74d7f73bf632cbfe0d36992226ac5960bd1763e1a0988cb5ecc7fbe0` |
+
+Source-input SHA-256:
+`e43f320ee08598bb1419c120b736e447674393f40fab3d42cad156de5d60a6c0`.
+Local records are `artifacts/*scope-names*`; the
+[public comparison](../tests/conformance/scope-names.json) retains report/provenance
+hashes and the complete local matrix. Sorting precedes duplicate selection, so
+resource exhaustion can precede syntax reporting on larger inputs; duplicates
+occupy temporary records and accounting does not refund released storage.
+Other parser operations and runtime maps remain separate accounting work.
+Owned syntax and parser/evaluator execution still have recursive paths. Agent
+sessions remain unavailable, so this is local validation without independent-agent
+review. No native-window, Vulkan or Chromium performance result is assigned.
+Full compatibility, production security and the requested performance threshold
+remain unverified.
+
 ## Bounded borrowed declaration traversal
+
+Published checkpoint `2715048` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36455629280),
+including all existing conformance gates, Rust 1.88 and the Vulkan probe.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **911 Rust tests** pass with `--include-ignored`: 730 library,

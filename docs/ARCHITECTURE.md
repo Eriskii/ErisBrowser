@@ -108,6 +108,10 @@ function boundaries. Switch scopes use borrowed case statements, and parsing
 records whether a scope contains lexical declarations to skip unnecessary name
 analysis. This removes recursive declaration walks and temporary syntax clones;
 the parser, evaluator and owned syntax trees still have recursive paths.
+Declaration-name validation uses borrowed record lists and a fallible iterative
+merge sort. Growth, scratch storage, copies and UTF-8 comparisons consume the
+compile ledger. Stable ordering retains source-order duplicate diagnostics;
+sorted lookups preserve lexical/var and parameter/body conflicts.
 
 Media-query conditions use bounded recursive evaluation with unknown-value
 logic and share work across stylesheet sources. Flex layout forms row or column

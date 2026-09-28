@@ -114,7 +114,9 @@ retains 72 passes, twelve class/Symbol failures and 48 unsupported modes, with
 [Declaration traversal](../tests/conformance/scope-walk.md) uses bounded borrowed
 ancestor cursors for name collection and hoisting. Switch scopes no longer clone
 statement trees. This preserves scope behavior without making the parser or
-evaluator fully iterative; name-set resource accounting remains further work.
+evaluator fully iterative. [Declaration-name validation](../tests/conformance/scope-names.md)
+now charges temporary records, sorting, comparisons and named diagnostics while
+preserving duplicate and scope-conflict behavior.
 
 [Labeled break and continue](../tests/conformance/labels.md) resolve ordinary
 statement/loop targets, propagate through nested loops and switches, and preserve

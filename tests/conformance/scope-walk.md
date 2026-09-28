@@ -46,8 +46,9 @@ pixel references** and **15,000 deterministic mutation cases**, plus formatting,
 strict all-target Clippy and release compilation. No independent-agent review,
 native-window, Vulkan or Chromium performance measurement is claimed.
 
-Borrowed name-set comparisons and temporary set storage still need resource
-accounting work. This change does not establish complete parser accounting,
+The subsequent [declaration-name change](scope-names.md) accounts for comparisons
+and temporary storage in these validation paths. This traversal change alone
+does not establish complete parser accounting,
 safe execution of arbitrarily deep syntax, full compatibility or production
 security. Flat code ownership and explicit execution/parser continuations remain
 on the [roadmap](../../docs/ROADMAP.md#javascript-execution-depth).

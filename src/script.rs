@@ -16,6 +16,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
 use std::rc::Rc;
 
+mod names;
+
 const MAX_SOURCE: usize = 256 * 1024;
 const MAX_TOKENS: usize = 32_768;
 const MAX_DEPTH: usize = 96;
@@ -1733,9 +1735,10 @@ impl<'source> Parser<'source> {
             if let ForBinding::Declaration(name, kind) = &binding
                 && *kind != DeclarationKind::Var
             {
-                let mut vars = BTreeSet::new();
-                self.var_names(std::iter::once(&body), &mut vars)?;
-                if vars.contains(name.as_str()) {
+                let vars = self
+                    .var_names(std::iter::once(&body))?
+                    .finish(&mut self.compile_budget)?;
+                if vars.contains(name, &mut self.compile_budget)? {
                     return Err(self.error("for-in lexical binding conflicts with var"));
                 }
             }
@@ -1761,13 +1764,13 @@ impl<'source> Parser<'source> {
             && let Stmt::Var(bindings, kind) = &**init
             && *kind != DeclarationKind::Var
         {
-            let mut vars = BTreeSet::new();
-            self.var_names(std::iter::once(&body), &mut vars)?;
-            if bindings
-                .iter()
-                .any(|(name, _)| vars.contains(name.as_str()))
-            {
-                return Err(self.error("for lexical binding conflicts with var"));
+            let vars = self
+                .var_names(std::iter::once(&body))?
+                .finish(&mut self.compile_budget)?;
+            for (name, _) in bindings {
+                if vars.contains(name, &mut self.compile_budget)? {
+                    return Err(self.error("for lexical binding conflicts with var"));
+                }
             }
             self.check_scope(std::iter::once(&**init), false)?;
         }
@@ -1879,72 +1882,75 @@ impl<'source> Parser<'source> {
         body: impl Iterator<Item = &'a Stmt> + Clone,
         block_functions: bool,
     ) -> Result<()> {
-        let mut lexical = BTreeSet::new();
+        let mut lexical = names::Names::default();
         for statement in body.clone() {
             self.compile_budget.work(1).map_err(regexp_error)?;
             match statement {
                 Stmt::Var(bindings, kind) if *kind != DeclarationKind::Var => {
                     for (name, _) in bindings {
-                        if !lexical.insert(name.as_str()) {
-                            return Err(ScriptError::at(
-                                format!("duplicate lexical binding '{name}'"),
-                                0,
-                            ));
-                        }
+                        lexical.push(name, false, &mut self.compile_budget)?;
                     }
                 }
-                Stmt::Function(name, _) if block_functions && !lexical.insert(name.as_str()) => {
-                    return Err(ScriptError::at(
-                        format!("duplicate block binding '{name}'"),
-                        0,
-                    ));
+                Stmt::Function(name, _) if block_functions => {
+                    lexical.push(name, true, &mut self.compile_budget)?;
                 }
                 _ => {}
             }
         }
-        // With no direct lexical declarations there is no possible name
-        // intersection. Avoid rescanning an entire subtree just to discard it.
         if lexical.is_empty() {
             return Ok(());
         }
-        let mut vars = BTreeSet::new();
-        self.var_names(body.clone(), &mut vars)?;
+        let lexical = lexical.finish(&mut self.compile_budget)?;
+        if let Some(duplicate) = lexical.first_duplicate(&mut self.compile_budget)? {
+            let prefix = if duplicate.block_function {
+                "duplicate block binding '"
+            } else {
+                "duplicate lexical binding '"
+            };
+            return Err(names::named_error(
+                prefix,
+                duplicate.text,
+                &mut self.compile_budget,
+            )?);
+        }
+        let mut vars = self.var_names(body.clone())?;
         if !block_functions {
             for statement in body {
                 self.compile_budget.work(1).map_err(regexp_error)?;
                 if let Stmt::Function(name, _) = statement {
-                    vars.insert(name.as_str());
+                    vars.push(name, false, &mut self.compile_budget)?;
                 }
             }
         }
-        if let Some(name) = lexical.intersection(&vars).next() {
-            return Err(ScriptError::at(
-                format!("lexical and var declarations conflict for '{name}'"),
-                0,
-            ));
+        let vars = vars.finish(&mut self.compile_budget)?;
+        if let Some(name) = lexical.first_intersection(&vars, &mut self.compile_budget)? {
+            return Err(names::named_error(
+                "lexical and var declarations conflict for '",
+                name,
+                &mut self.compile_budget,
+            )?);
         }
         Ok(())
     }
-    fn var_names<'a>(
-        &mut self,
-        body: impl Iterator<Item = &'a Stmt>,
-        names: &mut BTreeSet<&'a str>,
-    ) -> Result<()> {
+    fn var_names<'a>(&mut self, body: impl Iterator<Item = &'a Stmt>) -> Result<names::Names<'a>> {
+        let mut names = names::Names::default();
         let mut walk = StatementWalk::new(body);
         while let Some(statement) =
             walk.next(|| self.compile_budget.work(1).map_err(regexp_error))?
         {
             match statement {
                 Stmt::Var(bindings, DeclarationKind::Var) => {
-                    names.extend(bindings.iter().map(|(name, _)| name.as_str()));
+                    for (name, _) in bindings {
+                        names.push(name, false, &mut self.compile_budget)?;
+                    }
                 }
                 Stmt::ForIn(ForBinding::Declaration(name, DeclarationKind::Var), _, _) => {
-                    names.insert(name);
+                    names.push(name, false, &mut self.compile_budget)?;
                 }
                 _ => {}
             }
         }
-        Ok(())
+        Ok(names)
     }
     fn object_key(&mut self) -> Result<PropertyName> {
         if self.eat("[") {
@@ -2150,40 +2156,28 @@ impl<'source> Parser<'source> {
     }
     fn check_parameter_lexicals<'a>(
         &mut self,
-        params: impl Iterator<Item = &'a str> + Clone,
+        params: impl Iterator<Item = &'a str>,
         body: &[Stmt],
         unique: bool,
     ) -> Result<()> {
-        // Bound tree comparisons and borrowed-name set storage before building
-        // it. A linear membership scan per lexical name becomes quadratic for
-        // wide formal/body lists. The token cap bounds tree depth below 16.
-        let count = params.clone().count();
-        if count == 0 {
+        let mut names = names::Names::default();
+        for name in params {
+            names.push(name, false, &mut self.compile_budget)?;
+        }
+        if names.is_empty() {
             return Ok(());
         }
-        let comparisons = (usize::BITS - count.leading_zeros()) as usize;
-        for name in params.clone() {
-            self.compile_budget
-                .work(comparisons * (1 + name.len() / 8))
-                .map_err(regexp_error)?;
-            self.compile_budget.allocated = self.compile_budget.allocated.saturating_add(64);
-            if self.compile_budget.allocated > MAX_HEAP {
-                return Err(self.resource_error("parameter validation storage limit exceeded"));
-            }
-        }
-        let params: BTreeSet<_> = params.collect();
-        if unique && params.len() != count {
+        let params = names.finish(&mut self.compile_budget)?;
+        if unique && params.first_duplicate(&mut self.compile_budget)?.is_some() {
             return Err(self.error("duplicate function parameter"));
         }
         for statement in body {
+            self.compile_budget.work(1).map_err(regexp_error)?;
             if let Stmt::Var(bindings, kind) = statement
                 && *kind != DeclarationKind::Var
             {
                 for (name, _) in bindings {
-                    self.compile_budget
-                        .work(comparisons * (1 + name.len() / 8))
-                        .map_err(regexp_error)?;
-                    if params.contains(name.as_str()) {
+                    if params.contains(name, &mut self.compile_budget)? {
                         return Err(ScriptError::at(
                             "parameter conflicts with lexical declaration",
                             0,

@@ -69,8 +69,8 @@ The planned progression is:
 
 1. Introduce flat executable-code ownership. Declaration-name collection and
    hoisting now use a bounded borrowed traversal; switch scope checking no longer
-   clones syntax trees. Finish auditing name-set work/storage and account for
-   retained code and temporary lowering storage. Preserve
+   clones syntax trees. Declaration-name validation now uses charged buffers and
+   comparisons. Account for retained code and temporary lowering storage. Preserve
    existing parser limits while recursive syntax ownership remains.
 2. Move ordinary expression, statement and function execution to an explicit
    continuation stack. Preserve evaluation order, lexical environments,
