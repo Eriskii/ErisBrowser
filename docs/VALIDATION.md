@@ -1,6 +1,78 @@
 # Validation record
 
+## Flat executable ownership and paged tokens
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **926 Rust tests** pass with `--include-ignored`: 744 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 53 pipeline, one declaration-name matrix, nine completion
+and 44 confined-worker tests. None remain ignored. All **151 Python checks**
+and **57 exact pixel references** pass.
+
+[Flat executable units](../tests/conformance/flat-code.md) own expression,
+statement and function records connected by typed IDs. Closures/defaults and
+cross-script callbacks retain their own unit; inline handlers use the same form.
+Iterative lowering shares the remaining compile ledger and releases temporary
+parser syntax on success. Exact edge reservations and direct leaf emission remove
+redundant growth and worklist visits. Paged tokens avoid relocating the complete
+prefix. These changes preserve the existing 8,327-declaration Unicode regression,
+which the initial lowering candidate resource-stopped. No quota increases.
+
+Six code groups and three token groups cover structure, lifetimes, precharges,
+truncation and boundaries. Directly constructed flat code with 32,000 expression,
+8,000 statement and 8,000 function records releases its last handle on a thread
+requesting a 64 KiB native stack. This is an ownership check, not deeper source
+acceptance or execution. Existing 144 declaration-name and 240 scalar completion
+variants pass. The final validation includes an exact reservation for the fixed
+intrinsic empty unit; earlier validation artifacts remain separate.
+
+All **20 Test262 profiles / 6,879 modes / 1,680 controls** preserve case identities,
+policies and all preflight observations. Every control verifies and every prior
+pass remains. The escaped Unicode 5.2 identifier source gains both modes, leaving
+**509 passed / 154 unsupported / six compile resource stops** in that profile.
+Array sort retains four resource stops; its two 2,048-element stability modes now
+stop on instructions instead of allocation. Every other observation is identical.
+Fifteen healthy baseline gates pass. Five resource-stopped profiles remain
+nonpassing observations, with no new baselines. HTML stays at 3,868 matches,
+two mismatches and six unsupported modes.
+
+The **15,000-case** deterministic mutation smoke run reports zero caught panics
+or invariant failures: 5,000 accepted HTML, 623 accepted/4,377 rejected scripts,
+and 3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and
+display-list size 1,173 commands; 17 cases stop within paint limits.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+| --- | --- |
+| `eris-browser` | `7b99a721b25cb0864a6d10a58b28f02c7e40f4b5a052c8e60c1be750dc0b56cf` |
+| `eris-js` | `822b017948d135761cc0074dd910b55dba9cb79941c4c30a27eb7d2158f3ba80` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `e27fbacdfb8472823e588c2bc3bbc032a59744b7fcc2f702639d56c9b77332c1` |
+
+Source-input SHA-256:
+`abc454be3cea7233cdbd00ba8315fbb650b0020918dbb378aa4a93386e805f77`.
+Local records are `artifacts/*flat-code*`; the
+[public comparison](../tests/conformance/flat-code.json) retains provenance and
+all four changed observations. The complete updated
+[identifier](../tests/conformance/test262-identifiers-flat-code.json) and
+[sort](../tests/conformance/test262-array-sort-flat-code.json) observations remain
+explicitly nonpassing profiles.
+
+Temporary parser syntax and evaluator/callback execution remain recursive.
+Parser allocations are not comprehensively accounted, so the compile ledger does
+not prove total peak memory. Whole-unit retention can keep otherwise unused code
+alive; conservative legacy activation metadata allowances remain. Agent sessions
+remain unavailable, so this is local validation without independent-agent review.
+No native-window, Vulkan or Chromium performance result is assigned. Full
+compatibility, production security and the requested performance threshold remain
+unverified.
+
 ## Metered declaration-name validation
+
+Published checkpoint `faa7298` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36458164451),
+including all existing conformance gates, Rust 1.88 and the Vulkan probe.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **917 Rust tests** pass with `--include-ignored`: 735 library,

@@ -201,9 +201,9 @@ All 128 assertion controls verify. Full loops remain unchanged; resource stops
 prevent a healthy URI regression baseline.
 
 The complete [identifier and whitespace directories](tests/conformance/test262-identifiers.md)
-retain 669 variants: 507 pass, 154 remain unsupported and eight reach compile
-limits. All 88 assertion checks verify. The final implementation adds 130 passes
-without losing earlier passes; retained preliminary results document 16 resource
+retain 669 variants: 509 pass, 154 remain unsupported and six reach compile
+limits. All 88 assertion checks verify. The identifier and flat-code changes add
+132 passes without losing earlier passes; retained preliminary results document 16 resource
 regressions that were resolved by reducing actual lookup work and token storage.
 The remaining resource stops prevent a healthy regression baseline.
 

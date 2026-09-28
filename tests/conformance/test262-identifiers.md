@@ -276,3 +276,14 @@ Packed Unicode module SHA-256:
 `49187f73fcbae9d685e7848c6a412315c247a7fbfd4f3919bd5c08f8a6a7b552`.
 Sanitized full final-report SHA-256:
 `ca6d5282f979ef7308263f90494efe5019bfeb6f1379e0cd49f065073a4922f5`.
+
+## Flat executable ownership and paged-token checkpoint
+
+The subsequent [complete report](test262-identifiers-flat-code.json) preserves
+all 669 case identities, policy and 88 preflight observations. All preflights
+verify. Both modes of `start-unicode-5.2.0-escaped.js` now pass, changing the
+counts to **509 passed / 154 unsupported / six compile resource stops**. Every
+other observation is identical to the previous report. Paged tokens and bounded
+flat lowering remove actual prefix relocation and redundant lowering work without
+raising limits or changing the source. The profile remains a nonpassing
+observation with no healthy baseline. See [implementation and evidence](flat-code.md).

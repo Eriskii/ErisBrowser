@@ -254,3 +254,12 @@ Sanitized latest-report SHA-256:
 The [implementation scope](array-sort.md) records the supported sorting and
 receiver behavior and its resource limits. The seven earlier profiles and their
 policies remain intact; no new passing CI baseline is claimed for this slice.
+
+## Flat executable ownership checkpoint
+
+The subsequent [complete report](test262-array-sort-flat-code.json) preserves all
+case identities, policies, preflight observations and passes. Counts remain
+**57 passed / 46 unsupported / four runtime resource stops**. Both modes of
+`stability-2048-elements.js` now stop on the instruction allowance rather than
+allocation; every other observation is identical. These are still nonpassing
+cases, and no healthy baseline was recorded. See [implementation and evidence](flat-code.md).

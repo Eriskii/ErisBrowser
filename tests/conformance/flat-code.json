@@ -1,0 +1,829 @@
+{
+  "recorded_date_utc": "2026-09-28",
+  "kind": "flat executable ownership and paged-token comparison",
+  "before": {
+    "commit": "faa72988df0deb87a7d0cddc23610688364c3aa1",
+    "input_sha256": "e43f320ee08598bb1419c120b736e447674393f40fab3d42cad156de5d60a6c0",
+    "binaries": {
+      "eris-js": "6cd0a1426298b533c262ff1796ec6fec49bdd52a63ad8d860d8f2e8f72da621c",
+      "eris-browser": "fc708729306aa5c7d5acb9cdf9944751da183c22d6e23f18eb58b1fd6c998037"
+    }
+  },
+  "source_input_sha256": "abc454be3cea7233cdbd00ba8315fbb650b0020918dbb378aa4a93386e805f77",
+  "source_files": {
+    "src/script.rs": "8cd0d4dddec7f6b8b5f2e2a168362b7388dddbedc60c436001e26b5b1b227b3c",
+    "src/script/names.rs": "6ccbc235c97507315f65c827169270e30c0bb4bb2533ed435fa9b5cddc138332",
+    "src/script/code.rs": "0a64752ebc1411e90428874ad0b7341d02ab169d949adabf819180691f97d141",
+    "src/script/tokens.rs": "b044323426c54e4c8eef93312eae0d0b45ab5b6019a796321c7d73085c373342",
+    "src/js_uri.rs": "4759c1634201f4f6720871e240201c35a08e81addc30417376a45f69fc4830e6",
+    "src/js_identifier.rs": "49187f73fcbae9d685e7848c6a412315c247a7fbfd4f3919bd5c08f8a6a7b552",
+    "src/lib.rs": "d96945bd6e61e3f7e5e2210b4df69e51f61d82a9c1fd945313666709e2de9d92",
+    "src/bin/eris-stress.rs": "c4768e4028c34c9e891e24d39d3ec8573c8411fc72c4f93d000923d86e7e4743",
+    "tests/fixtures/script-completion.tsv": "7a53bb8b0b6e5d2f8eb1ff782ac139fb5dd302df3feae3391b2f20de0edcd90b",
+    "tests/script_completion.rs": "a8188f0b8c9c8c186bc9a8c1fa4f8823228193163e49918826d2d51fe61d23da",
+    "tests/fixtures/scope-names.tsv": "58415bfd670354c04027df2eae0dcdc2d56efaf7db30fd2973ddcf0e5faa60f7",
+    "tests/scope_names.rs": "172fa7d2cd0ea996d1a7e2e0fc01feb6a35461b2d838468ce97b573b375c4c7f",
+    "tests/pipeline.rs": "b50f3bf725f79a31ab28cec4983a4aedf3c007208a8557f49bd2b0ff95657f3f",
+    "tests/worker.rs": "ca479ad64df4a01481beba3980ee0821d6fed255852f25a237982e2e7b7bc79d"
+  },
+  "release_binaries": {
+    "eris-browser": "7b99a721b25cb0864a6d10a58b28f02c7e40f4b5a052c8e60c1be750dc0b56cf",
+    "eris-js": "822b017948d135761cc0074dd910b55dba9cb79941c4c30a27eb7d2158f3ba80",
+    "eris-dom": "b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb",
+    "eris-stress": "e27fbacdfb8472823e588c2bc3bbc032a59744b7fcc2f702639d56c9b77332c1"
+  },
+  "contract_sha256": "dcc4f2ef87e990b8c137f1d143bde463bb127190219cb199bf8e1c4dc82f328c",
+  "upstream_profiles": [
+    {
+      "profile": "string-json",
+      "source_files": 326,
+      "mode_cases": 652,
+      "before_counts": {
+        "passed": 536,
+        "unsupported": 116
+      },
+      "after_counts": {
+        "passed": 536,
+        "unsupported": 116
+      },
+      "preflights": 32,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "f073410553ed7cac9c6ddb0d5d10da1e52616d067a0310578e84cbf000df4191",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-current.json",
+      "prior_public_report_sha256": "5fd495beea57cc15da9a4a1de7f530eb57c8e9ba942ca5a18dc725d8e26f8733",
+      "before_raw_report": "artifacts/string-json-scope-names-final.json",
+      "before_raw_report_sha256": "9fe1f702e26e8e8205bf27ca290ca31a54ec21e63e1b2f793c8eb697aa8e0b6f",
+      "after_raw_report": "artifacts/string-json-flat-code-final.json",
+      "after_raw_report_sha256": "f838f29f51d77a202a8c469f3a5fac0eff25bfb8bc3537ce71793774434d3dd2"
+    },
+    {
+      "profile": "regexp",
+      "source_files": 145,
+      "mode_cases": 290,
+      "before_counts": {
+        "passed": 250,
+        "unsupported": 40
+      },
+      "after_counts": {
+        "passed": 250,
+        "unsupported": 40
+      },
+      "preflights": 44,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "33c8319c02da5367a5ac2596cbb48fc3176839740935966754ea0370f4408fa0",
+      "runner_policy_sha256": "0997761beccb3ac2d6d387c373fe92b5fc59157e9a2e1114677d99433f867e4f",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-regexp-current.json",
+      "prior_public_report_sha256": "abc887ad63aa114bb019baf1610962d68fcf787a0844a1ea6c86736d49eee787",
+      "before_raw_report": "artifacts/regexp-scope-names-final.json",
+      "before_raw_report_sha256": "47ffcfae9dd52c007e9e7272db4d5e27fcc7ebf18870532bf00e11cfb51e83c0",
+      "after_raw_report": "artifacts/regexp-flat-code-final.json",
+      "after_raw_report_sha256": "9312c1475ac55865caa20a8ed72bd31cb38a90601983786f916d74265075b0e6"
+    },
+    {
+      "profile": "template-literal",
+      "source_files": 57,
+      "mode_cases": 114,
+      "before_counts": {
+        "unsupported": 32,
+        "passed": 82
+      },
+      "after_counts": {
+        "unsupported": 32,
+        "passed": 82
+      },
+      "preflights": 44,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "58951312763d816ca4cc139a4fcb2bf63f43a81414b91bf673f65c450b217d94",
+      "runner_policy_sha256": "17b229706fb4915c6c9d5daf4daa74129f2ac470bba8d993487356f12384517e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-template-literal-current.json",
+      "prior_public_report_sha256": "78df751741907b64bc65f8d88bd70d300df7d9b650630e5ec07b13c0dd594077",
+      "before_raw_report": "artifacts/template-literal-scope-names-final.json",
+      "before_raw_report_sha256": "84aac457070ae34f6c1c8b9e437c5595eed70c888aa801026d26358b16557b05",
+      "after_raw_report": "artifacts/template-literal-flat-code-final.json",
+      "after_raw_report_sha256": "956d5ecb81f50faca23dff787aa0c7be2f07d193a1ff730ca832f5b3a3e07a32"
+    },
+    {
+      "profile": "rest-parameters",
+      "source_files": 11,
+      "mode_cases": 22,
+      "before_counts": {
+        "unsupported": 6,
+        "passed": 16
+      },
+      "after_counts": {
+        "unsupported": 6,
+        "passed": 16
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "a3e15e061fc8c9cac736e081554f3e42b497d805ebfd7647ea49736cb2d83be5",
+      "runner_policy_sha256": "b579a37e261689714f4b2e41fe933581aa246348bafa391f2dba7c8aec4edacc",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-rest-parameters-current.json",
+      "prior_public_report_sha256": "24ff3862abfa3e83d4f6533f5e2603e975fe155b97d2f4d1475cc8dd8c64db16",
+      "before_raw_report": "artifacts/rest-parameters-scope-names-final.json",
+      "before_raw_report_sha256": "3d5d4a3b8c4af0c7ffd9e6e6f7cc3d412e6d2816f9650f5bb1673a80e8574c22",
+      "after_raw_report": "artifacts/rest-parameters-flat-code-final.json",
+      "after_raw_report_sha256": "ea6b7499864404268261eb4a7bbf14f62c6d5ca59610ce5b2bbee120785dc1ee"
+    },
+    {
+      "profile": "is-prototype-of",
+      "source_files": 10,
+      "mode_cases": 20,
+      "before_counts": {
+        "unsupported": 10,
+        "passed": 10
+      },
+      "after_counts": {
+        "unsupported": 10,
+        "passed": 10
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "f019dcc5e150cf14a6b144577a30937ed1314c6b5de3dd331ad574585f16d461",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-is-prototype-of-current.json",
+      "prior_public_report_sha256": "3d9c290af97e33fdaf3383e72ab319240802c6f10a6fce680d15e0bd338c775d",
+      "before_raw_report": "artifacts/is-prototype-of-scope-names-final.json",
+      "before_raw_report_sha256": "797c42a494ab16638848f0e797d9ba17d38e0b435b40dc4a1368553648023091",
+      "after_raw_report": "artifacts/is-prototype-of-flat-code-final.json",
+      "after_raw_report_sha256": "bd7605fc8ecfee142a2baada2c56f20a935a1088df4f9a753144882185964704"
+    },
+    {
+      "profile": "global-values",
+      "source_files": 49,
+      "mode_cases": 88,
+      "before_counts": {
+        "passed": 42,
+        "unsupported": 40,
+        "failed": 6
+      },
+      "after_counts": {
+        "passed": 42,
+        "unsupported": 40,
+        "failed": 6
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "c1b627a7249d3ab460d5be88b54f34ead98c375c160bee9e72379aef213894a4",
+      "runner_policy_sha256": "f096c9be039b6e5a005d3997e38d8da419399e8c6e8d3a23d2162d20c1763d03",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-global-values-current.json",
+      "prior_public_report_sha256": "ea3dd8c07ab8a76f22e02b4de9ce01035547ec06c37ef4f08569d922425196ee",
+      "before_raw_report": "artifacts/global-values-scope-names-final.json",
+      "before_raw_report_sha256": "b900618b8cb2639ecc70edcb7a41979593a4aa6bcf2f8a7dc0b195048717020c",
+      "after_raw_report": "artifacts/global-values-flat-code-final.json",
+      "after_raw_report_sha256": "a509eca3d18ffcad7a924728925e1c1834b5d6456eeef67b59946b02386ce9f5"
+    },
+    {
+      "profile": "array-reduce",
+      "source_files": 520,
+      "mode_cases": 1034,
+      "before_counts": {
+        "passed": 848,
+        "failed": 16,
+        "unsupported": 170
+      },
+      "after_counts": {
+        "passed": 848,
+        "failed": 16,
+        "unsupported": 170
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "77ee716188d99fdba64adbe151ef4efd915fbaa6345b2b0ec8fe3550efb5ec24",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-array-reduce-current.json",
+      "prior_public_report_sha256": "0eeff1f9bdccb1a035ed2d5e888390352f1f9a2704511a4f979085a26ed79c76",
+      "before_raw_report": "artifacts/array-reduce-scope-names-final.json",
+      "before_raw_report_sha256": "4bee194b75cc146f2ff3e166878c993c674bba6805b8edc993dde3d0ca56c504",
+      "after_raw_report": "artifacts/array-reduce-flat-code-final.json",
+      "after_raw_report_sha256": "015b22140329a94f5c42aa2bad9b4152d43e0120f78f4319bd88ab24907c87f2"
+    },
+    {
+      "profile": "number-statics",
+      "source_files": 170,
+      "mode_cases": 340,
+      "before_counts": {
+        "passed": 248,
+        "unsupported": 92
+      },
+      "after_counts": {
+        "passed": 248,
+        "unsupported": 92
+      },
+      "preflights": 104,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "3c5c2503458843bfc64eaf546ee08b6e693714f561df42330d9001a2ec8216cd",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-number-statics-current.json",
+      "prior_public_report_sha256": "8b4837fb66a9ced2a9e1910830bc5a8aa67d81d52b6766764c2aceddef7b8717",
+      "before_raw_report": "artifacts/number-statics-scope-names-final.json",
+      "before_raw_report_sha256": "d1b72540373660bd5df4bf8a7f7c25c2144dcbc33c22852a153d2d5d2692f1e1",
+      "after_raw_report": "artifacts/number-statics-flat-code-final.json",
+      "after_raw_report_sha256": "55fad6bb8be50e63411f5a387ec3b442a01d162a4a6c77c1d0d45c6c56e8d45b"
+    },
+    {
+      "profile": "numeric-conversion",
+      "source_files": 30,
+      "mode_cases": 60,
+      "before_counts": {
+        "passed": 24,
+        "unsupported": 36
+      },
+      "after_counts": {
+        "passed": 24,
+        "unsupported": 36
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "de7cf1098618ad0fdb7786d4ab4f6c648bfb6fe2543981fe21ca6e0cba50928f",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-numeric-conversion-current.json",
+      "prior_public_report_sha256": "8fec4cd70dfea5f1c1f49e91a2fb491be0eb70cc2af18ed30afb92cda2797a7b",
+      "before_raw_report": "artifacts/numeric-conversion-scope-names-final.json",
+      "before_raw_report_sha256": "eb5c5a424ed1f2322ed9fab70be7217c7ddb03ab612e7fbb2380ffc44026ed00",
+      "after_raw_report": "artifacts/numeric-conversion-flat-code-final.json",
+      "after_raw_report_sha256": "b899f55a46275bc9dc10e3213421a286402e12f874e54172194b72a3d74ded82"
+    },
+    {
+      "profile": "compound-assignment",
+      "source_files": 454,
+      "mode_cases": 786,
+      "before_counts": {
+        "unsupported": 180,
+        "passed": 606
+      },
+      "after_counts": {
+        "unsupported": 180,
+        "passed": 606
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "edc2b04b5e9f810e1757a327f5d2a32c240f41d61e8a6d2a89cb35c3ec14f1d0",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-compound-assignment-current.json",
+      "prior_public_report_sha256": "11cd52f4c5416495f0653d4444f798e70beecd6afd2de328980f7025dddb5213",
+      "before_raw_report": "artifacts/compound-assignment-scope-names-final.json",
+      "before_raw_report_sha256": "bef5ffaffd8966c110c48b6984f350a7238d86f878d44bb8a2185d0fcfaf0a6f",
+      "after_raw_report": "artifacts/compound-assignment-flat-code-final.json",
+      "after_raw_report_sha256": "396bb6d62b0b7f7754717d45ea0e5ba32ab524813202c729c0af040caeb19fb2"
+    },
+    {
+      "profile": "addition",
+      "source_files": 48,
+      "mode_cases": 95,
+      "before_counts": {
+        "unsupported": 28,
+        "passed": 65,
+        "failed": 2
+      },
+      "after_counts": {
+        "unsupported": 28,
+        "passed": 65,
+        "failed": 2
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "56088f55075e4d44da6915ca41383604182a8a72aaef8230af61369513cbdc0c",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-addition-current.json",
+      "prior_public_report_sha256": "d2770943fb2be1285decb499952fd908ca8021a49e321f5be26dab71a45dfd57",
+      "before_raw_report": "artifacts/addition-scope-names-final.json",
+      "before_raw_report_sha256": "0158f93d26d10996970a5a73efeb772ce70613808b8c1c0d72ee270c8466732c",
+      "after_raw_report": "artifacts/addition-flat-code-final.json",
+      "after_raw_report_sha256": "a19eadae0393dd870191b3e0a91a0bcb5dd9ee212daba2d6b22a3f6e479c8132"
+    },
+    {
+      "profile": "logical-assignment",
+      "source_files": 78,
+      "mode_cases": 132,
+      "before_counts": {
+        "unsupported": 48,
+        "passed": 72,
+        "failed": 12
+      },
+      "after_counts": {
+        "unsupported": 48,
+        "passed": 72,
+        "failed": 12
+      },
+      "preflights": 104,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "a83f71b8a6b6a1523951d73a4711f024cf77ad3bf90e6698bc6224e7bfabf1a3",
+      "runner_policy_sha256": "6f127a653c09ef49d48382570086b28407a0b1f6426fd888045621d72d3e89af",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-logical-assignment-current.json",
+      "prior_public_report_sha256": "ad49bf074436d4b37a00ad41064f45f477e8aad81ae15fc4df3eadcb14e7742a",
+      "before_raw_report": "artifacts/logical-assignment-scope-names-final.json",
+      "before_raw_report_sha256": "e13fd3d33a727248d6d8b9a5b2f898440c8c7a7ef16e0f9a368ff46da8a231dc",
+      "after_raw_report": "artifacts/logical-assignment-flat-code-final.json",
+      "after_raw_report_sha256": "6db9fc00b66f6ad9e7993bfc0a96572b46189e4be2b574ae81dd7550e38d5552"
+    },
+    {
+      "profile": "relational",
+      "source_files": 184,
+      "mode_cases": 364,
+      "before_counts": {
+        "unsupported": 64,
+        "passed": 300
+      },
+      "after_counts": {
+        "unsupported": 64,
+        "passed": 300
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "34497c818a4de422d2628afe1270525fe6c5467bbb43126c1796324a5bc8f138",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-relational-current.json",
+      "prior_public_report_sha256": "e86260961b586de3423fbd9bab9bed25559745c314803d1107ad02a1b58078d1",
+      "before_raw_report": "artifacts/relational-scope-names-final.json",
+      "before_raw_report_sha256": "45dd4078b77264e3983867a239ded05693f0dbf7907579eb9ecdb013afddf3e5",
+      "after_raw_report": "artifacts/relational-flat-code-final.json",
+      "after_raw_report_sha256": "ba9c7bf8e2b9b7c49ba3598c459c66449bafa9a0afcff6e777c79843492ffb86"
+    },
+    {
+      "profile": "equality",
+      "source_files": 145,
+      "mode_cases": 286,
+      "before_counts": {
+        "unsupported": 96,
+        "passed": 190
+      },
+      "after_counts": {
+        "unsupported": 96,
+        "passed": 190
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "b1d07bdfaee72e164608d7ed3351ab70d05931ffda34f174f6c3f99bf12a0046",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-equality-current.json",
+      "prior_public_report_sha256": "91e65f1532487a2b2d552e4c95f118e07249f23abc1d4dd65de56fb9103f262c",
+      "before_raw_report": "artifacts/equality-scope-names-final.json",
+      "before_raw_report_sha256": "6be8eb8b086940d993f43e66b8c93aa4f33c2a81f523b1e546abf13d0f30050f",
+      "after_raw_report": "artifacts/equality-flat-code-final.json",
+      "after_raw_report_sha256": "b57f0d2b69064e9e8e69e3e7ca88f34655bcb290f9163ec4feafc39d73f8aaf0"
+    },
+    {
+      "profile": "labels",
+      "source_files": 68,
+      "mode_cases": 125,
+      "before_counts": {
+        "passed": 100,
+        "unsupported": 25
+      },
+      "after_counts": {
+        "passed": 100,
+        "unsupported": 25
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "32889cc4ab3de15132243dae4981418ba559cd10294df9222329070b8f74649b",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-labels-current.json",
+      "prior_public_report_sha256": "5a84e2f694ccb009e7a7e21d501df73c346368df454d43d9618965a02753c22f",
+      "before_raw_report": "artifacts/labels-scope-names-final.json",
+      "before_raw_report_sha256": "70f0277712efa234ee7c8cc25332483e6851fc614c0a481a84877513dfb22358",
+      "after_raw_report": "artifacts/labels-flat-code-final.json",
+      "after_raw_report_sha256": "aef6b5fe9c36850245d739b0d474bae903b89be3e168c6c1db20c07427560298"
+    },
+    {
+      "profile": "functions",
+      "source_files": 663,
+      "mode_cases": 1131,
+      "before_counts": {
+        "passed": 509,
+        "unsupported": 620,
+        "resource": 2
+      },
+      "after_counts": {
+        "passed": 509,
+        "unsupported": 620,
+        "resource": 2
+      },
+      "preflights": 48,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "15281ebe6e6c980c547f113563df7d2b5d346ac0db5c9c4aca75dbb6fc60b330",
+      "runner_policy_sha256": "952e68b04e464d1a954c5949b0b9bbd8924472b8fba70a719a20a754d4d03439",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-functions-identifiers.json",
+      "prior_public_report_sha256": "2902b700a5861e68886cfef65ed1bb2feed32d13cd3e9a2fed7968efcfb4d575",
+      "before_raw_report": "artifacts/functions-scope-names-final.json",
+      "before_raw_report_sha256": "14e2995aaff8d60af531cfa7bbc8f8a45c09dccbc95e447822c1dc7762003da3",
+      "after_raw_report": "artifacts/functions-flat-code-final.json",
+      "after_raw_report_sha256": "61b1f2653a6c568d8adaf091712deeac6d9f7c988e0d08e291cdfae4e17f5093"
+    },
+    {
+      "profile": "uri",
+      "source_files": 173,
+      "mode_cases": 346,
+      "before_counts": {
+        "resource": 112,
+        "passed": 210,
+        "unsupported": 24
+      },
+      "after_counts": {
+        "resource": 112,
+        "passed": 210,
+        "unsupported": 24
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "bf48d1dddac882a9609fe78aea7521e7477c1cef2ba6036a74c48513ad28ab8f",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-uri-labels.json",
+      "prior_public_report_sha256": "eb7f76b625fa2fe581fcc289f3b77729cc102e43c9a60171f7ca58ee894613db",
+      "before_raw_report": "artifacts/uri-scope-names-final.json",
+      "before_raw_report_sha256": "085e0a8107e6cb789c1066d6ef5bd9c38c892a67742300c91718ca5a67cf6137",
+      "after_raw_report": "artifacts/uri-flat-code-final.json",
+      "after_raw_report_sha256": "1fd05208f21f7819c71c09e0935b8ccff10ef0c23a225ebaea05fa9c7235bd4b"
+    },
+    {
+      "profile": "numeric-parsing",
+      "source_files": 109,
+      "mode_cases": 218,
+      "before_counts": {
+        "passed": 164,
+        "unsupported": 46,
+        "resource": 8
+      },
+      "after_counts": {
+        "passed": 164,
+        "unsupported": 46,
+        "resource": 8
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "f8959cc2e43d94b5b0c671105f87d3fc831fa6359065566791707a6f9b400c6a",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-numeric-parsing-compound-assignment.json",
+      "prior_public_report_sha256": "bffcd9ab4898076622c1002fc11c3a6523eb1185981c27f44468ca7fb6520950",
+      "before_raw_report": "artifacts/numeric-parsing-scope-names-final.json",
+      "before_raw_report_sha256": "d37b54f9df32264dde5e70be174803e70adf08d35ed1797bf008386cfddb7eb8",
+      "after_raw_report": "artifacts/numeric-parsing-flat-code-final.json",
+      "after_raw_report_sha256": "fe53328e78b4d5f806af23984dbf97cfe1b00da84cbe8d3fac4b2e97ba7c845d"
+    },
+    {
+      "profile": "array-sort",
+      "source_files": 54,
+      "mode_cases": 107,
+      "before_counts": {
+        "passed": 57,
+        "unsupported": 46,
+        "resource": 4
+      },
+      "after_counts": {
+        "passed": 57,
+        "unsupported": 46,
+        "resource": 4
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "d6f43dd379ae49ae08f959596852e28e6bd33a0420eb699d763ff696b0e961d2",
+      "runner_policy_sha256": "8621a5b10295e4a41806178744c4e906157ef78c884220a154860fae829fd205",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [
+        {
+          "id": "test/built-ins/Array/prototype/sort/stability-2048-elements.js:sloppy",
+          "before": {
+            "id": "test/built-ins/Array/prototype/sort/stability-2048-elements.js:sloppy",
+            "file": "test/built-ins/Array/prototype/sort/stability-2048-elements.js",
+            "mode": "sloppy",
+            "case_sha256": "61f2f210b697ccf1524a26dd346bb399380dc3b29833d1c697d7ba64e8359176",
+            "source_sha256": "fed127c2af841d2d2d8fb782b6e505ba445ef38169af6d38abea4635c6086257",
+            "expected_negative": null,
+            "status": "resource",
+            "observation": {
+              "status": "resource",
+              "phase": "runtime",
+              "error_type": "ResourceLimit",
+              "error_identity": "",
+              "message": "script allocation limit exceeded",
+              "harness": ""
+            }
+          },
+          "after": {
+            "id": "test/built-ins/Array/prototype/sort/stability-2048-elements.js:sloppy",
+            "file": "test/built-ins/Array/prototype/sort/stability-2048-elements.js",
+            "mode": "sloppy",
+            "case_sha256": "61f2f210b697ccf1524a26dd346bb399380dc3b29833d1c697d7ba64e8359176",
+            "source_sha256": "fed127c2af841d2d2d8fb782b6e505ba445ef38169af6d38abea4635c6086257",
+            "expected_negative": null,
+            "status": "resource",
+            "observation": {
+              "status": "resource",
+              "phase": "runtime",
+              "error_type": "ResourceLimit",
+              "error_identity": "",
+              "message": "script instruction limit exceeded",
+              "harness": ""
+            }
+          }
+        },
+        {
+          "id": "test/built-ins/Array/prototype/sort/stability-2048-elements.js:strict",
+          "before": {
+            "id": "test/built-ins/Array/prototype/sort/stability-2048-elements.js:strict",
+            "file": "test/built-ins/Array/prototype/sort/stability-2048-elements.js",
+            "mode": "strict",
+            "case_sha256": "1111fc5601b5b023c68b59ca687c53904b17e56f01472ab64ade42c11037a9ee",
+            "source_sha256": "fed127c2af841d2d2d8fb782b6e505ba445ef38169af6d38abea4635c6086257",
+            "expected_negative": null,
+            "status": "resource",
+            "observation": {
+              "status": "resource",
+              "phase": "runtime",
+              "error_type": "ResourceLimit",
+              "error_identity": "",
+              "message": "script allocation limit exceeded",
+              "harness": ""
+            }
+          },
+          "after": {
+            "id": "test/built-ins/Array/prototype/sort/stability-2048-elements.js:strict",
+            "file": "test/built-ins/Array/prototype/sort/stability-2048-elements.js",
+            "mode": "strict",
+            "case_sha256": "1111fc5601b5b023c68b59ca687c53904b17e56f01472ab64ade42c11037a9ee",
+            "source_sha256": "fed127c2af841d2d2d8fb782b6e505ba445ef38169af6d38abea4635c6086257",
+            "expected_negative": null,
+            "status": "resource",
+            "observation": {
+              "status": "resource",
+              "phase": "runtime",
+              "error_type": "ResourceLimit",
+              "error_identity": "",
+              "message": "script instruction limit exceeded",
+              "harness": ""
+            }
+          }
+        }
+      ],
+      "prior_public_report": "test262-array-sort-reduce.json",
+      "prior_public_report_sha256": "af4f9eef2e405faf726ad2893a4724a1a491339899927a697dc50a301466a5e5",
+      "before_raw_report": "artifacts/array-sort-scope-names-final.json",
+      "before_raw_report_sha256": "605b275cc4995fc100ad46369d47824c9ca80fa63fbdb63a03d183d4a633dea2",
+      "after_raw_report": "artifacts/array-sort-flat-code-final.json",
+      "after_raw_report_sha256": "3bc07ac6f29b22cabd5c1319827c7b777b17e00043c7681df505fbf8f8f5bc3d"
+    },
+    {
+      "profile": "identifiers",
+      "source_files": 335,
+      "mode_cases": 669,
+      "before_counts": {
+        "passed": 507,
+        "unsupported": 154,
+        "resource": 8
+      },
+      "after_counts": {
+        "passed": 509,
+        "unsupported": 154,
+        "resource": 6
+      },
+      "preflights": 88,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "b93b9e76f5231a3d342d95fe0a8cf47ca79c2a3101f2a78e4d5bb564c4d06ea8",
+      "runner_policy_sha256": "bdbeba5b53e7ef315e7f06e78fe8c66247cd7dd9ae2545ac5ec25749b94d95d5",
+      "all_case_fingerprints_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [
+        "test/language/identifiers/start-unicode-5.2.0-escaped.js:sloppy",
+        "test/language/identifiers/start-unicode-5.2.0-escaped.js:strict"
+      ],
+      "changed_observations": [
+        {
+          "id": "test/language/identifiers/start-unicode-5.2.0-escaped.js:sloppy",
+          "before": {
+            "id": "test/language/identifiers/start-unicode-5.2.0-escaped.js:sloppy",
+            "file": "test/language/identifiers/start-unicode-5.2.0-escaped.js",
+            "mode": "sloppy",
+            "case_sha256": "d8ceabd30b56fa66c30fdfedfab66e4cc80a777fddb8541837a6679cb575f870",
+            "source_sha256": "a0c9f71e59b16411f7fab2e24bc88e9f1d3643df8736b77732ef3601ef035251",
+            "expected_negative": null,
+            "status": "resource",
+            "observation": {
+              "status": "resource",
+              "phase": "parse",
+              "error_type": "ResourceLimit",
+              "error_identity": "",
+              "message": "regular expression work limit exceeded",
+              "harness": ""
+            }
+          },
+          "after": {
+            "id": "test/language/identifiers/start-unicode-5.2.0-escaped.js:sloppy",
+            "file": "test/language/identifiers/start-unicode-5.2.0-escaped.js",
+            "mode": "sloppy",
+            "case_sha256": "d8ceabd30b56fa66c30fdfedfab66e4cc80a777fddb8541837a6679cb575f870",
+            "source_sha256": "a0c9f71e59b16411f7fab2e24bc88e9f1d3643df8736b77732ef3601ef035251",
+            "expected_negative": null,
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            }
+          }
+        },
+        {
+          "id": "test/language/identifiers/start-unicode-5.2.0-escaped.js:strict",
+          "before": {
+            "id": "test/language/identifiers/start-unicode-5.2.0-escaped.js:strict",
+            "file": "test/language/identifiers/start-unicode-5.2.0-escaped.js",
+            "mode": "strict",
+            "case_sha256": "b062e75c4c01eda197200e4fb2d654dc72d02f3915457fb554d70ddcda50818f",
+            "source_sha256": "a0c9f71e59b16411f7fab2e24bc88e9f1d3643df8736b77732ef3601ef035251",
+            "expected_negative": null,
+            "status": "resource",
+            "observation": {
+              "status": "resource",
+              "phase": "parse",
+              "error_type": "ResourceLimit",
+              "error_identity": "",
+              "message": "regular expression work limit exceeded",
+              "harness": ""
+            }
+          },
+          "after": {
+            "id": "test/language/identifiers/start-unicode-5.2.0-escaped.js:strict",
+            "file": "test/language/identifiers/start-unicode-5.2.0-escaped.js",
+            "mode": "strict",
+            "case_sha256": "b062e75c4c01eda197200e4fb2d654dc72d02f3915457fb554d70ddcda50818f",
+            "source_sha256": "a0c9f71e59b16411f7fab2e24bc88e9f1d3643df8736b77732ef3601ef035251",
+            "expected_negative": null,
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            }
+          }
+        }
+      ],
+      "prior_public_report": "test262-identifiers-latest.json",
+      "prior_public_report_sha256": "ca6d5282f979ef7308263f90494efe5019bfeb6f1379e0cd49f065073a4922f5",
+      "before_raw_report": "artifacts/identifiers-scope-names-final.json",
+      "before_raw_report_sha256": "24bf51e2b28e7b9c64fb5644e3b8189c2d9dabaab16e1cb5b9e963c37f1ead05",
+      "after_raw_report": "artifacts/identifiers-flat-code-final.json",
+      "after_raw_report_sha256": "ba047c54d38f8101824a5e324f68bc2fd26152c9248f23993638c00c0caae649"
+    }
+  ],
+  "upstream_mode_cases": 6879,
+  "upstream_preflights": 1680,
+  "healthy_baseline_gates": 15,
+  "new_baselines_recorded": false,
+  "lost_passes": 0,
+  "newly_passing": 2,
+  "changed_observations": 4,
+  "validation": {
+    "rust_tests": 926,
+    "rust_ignored": 0,
+    "python_checks": 151,
+    "exact_pixel_references": 57,
+    "mutation_smoke_cases": 15000,
+    "caught_panics": 0,
+    "independent_agent_review": false,
+    "chromium_comparison": false,
+    "production_vulkan": false
+  },
+  "implementation": {
+    "typed_ids": true,
+    "flat_expression_statement_function_records": true,
+    "whole_unit_closure_retention": true,
+    "no_owning_edges_between_code_records": true,
+    "explicit_unit_across_callbacks": true,
+    "iterative_lowering": true,
+    "remaining_compile_ledger_shared": true,
+    "known_edge_lengths_reserved_once": true,
+    "leaf_statements_emitted_without_worklist_revisit": true,
+    "token_page_records": 128,
+    "token_prefix_relocation": false,
+    "conservative_legacy_activation_allowances_retained": true,
+    "quota_increases": false
+  },
+  "focused_checks": {
+    "code_test_groups": 6,
+    "token_test_groups": 3,
+    "syntax_edge_roundtrip": true,
+    "flat_scope_walk_order_work_and_terminal_failures": true,
+    "cross_unit_closures_and_callbacks": true,
+    "allocation_and_work_precharges": true,
+    "small_native_stack_release": {
+      "requested_stack_bytes": 65536,
+      "expression_records": 32000,
+      "statement_records": 8000,
+      "function_records": 8000,
+      "direct_test_construction": true,
+      "does_not_demonstrate_deep_source_acceptance_or_execution": true
+    },
+    "existing_scope_name_variants": 144,
+    "existing_scalar_completion_variants": 240
+  },
+  "limitations": [
+    "Temporary parser syntax remains recursive and its allocations are not comprehensively accounted; the compile ledger does not prove total peak memory.",
+    "The evaluator and native callback bridges remain recursive and retain their existing limits.",
+    "Escaping closures retain their whole unit, including otherwise unused code.",
+    "The unit uses cumulative charges for its known buffers and copied names; conservative per-closure/per-activation metadata allowances remain even though records are shared.",
+    "Existing RegExp payload ownership and runtime object graphs are separate from flat JavaScript syntax edges.",
+    "Five Test262 profiles still contain resource stops, including six identifier compile stops; no healthy baselines are recorded for them.",
+    "No native-window, Vulkan, Chromium-relative performance, full-compatibility or production-security claim."
+  ]
+}

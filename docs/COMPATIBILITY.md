@@ -118,6 +118,12 @@ evaluator fully iterative. [Declaration-name validation](../tests/conformance/sc
 now charges temporary records, sorting, comparisons and named diagnostics while
 preserving duplicate and scope-conflict behavior.
 
+[Flat executable ownership](../tests/conformance/flat-code.md) stores syntax edges
+as typed IDs within immutable shared units. Escaping closures and cross-script
+callbacks retain their own units. The parser and evaluator still use guarded
+native recursion; this ownership change does not establish deeper source or call
+acceptance. Token pages avoid relocating the accumulated token prefix.
+
 [Labeled break and continue](../tests/conformance/labels.md) resolve ordinary
 statement/loop targets, propagate through nested loops and switches, and preserve
 finally overrides and function boundaries. The complete three-directory profile

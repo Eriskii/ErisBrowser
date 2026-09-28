@@ -16,7 +16,9 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
 use std::rc::Rc;
 
+mod code;
 mod names;
+mod tokens;
 
 const MAX_SOURCE: usize = 256 * 1024;
 const MAX_TOKENS: usize = 32_768;
@@ -516,25 +518,11 @@ fn compile_allocate(budget: &mut regexp::Budget, bytes: usize) -> Result<()> {
 }
 
 fn reserve_tokens(
-    tokens: &mut Vec<Token>,
+    tokens: &mut tokens::Tokens,
     additional: usize,
     budget: &mut regexp::Budget,
 ) -> Result<()> {
-    let needed = tokens.len().saturating_add(additional);
-    if needed > MAX_TOKENS + 2 {
-        return Err(ScriptError::resource("script token limit exceeded"));
-    }
-    if needed > tokens.capacity() {
-        budget.work(tokens.len() + 1).map_err(regexp_error)?;
-        let capacity = needed
-            .max(tokens.capacity().saturating_mul(2))
-            .clamp(8, MAX_TOKENS + 2);
-        compile_allocate(budget, capacity * std::mem::size_of::<Token>() + 32)?;
-        tokens
-            .try_reserve_exact(capacity - tokens.len())
-            .map_err(|_| ScriptError::resource("script token allocation failed"))?;
-    }
-    Ok(())
+    tokens.reserve(additional, budget)
 }
 
 fn identifier_escape(
@@ -663,14 +651,14 @@ fn identifier_token(
     Ok((IdentifierToken { value, escaped }, at))
 }
 
-fn lex(source: &str, budget: &mut regexp::Budget) -> Result<Vec<Token>> {
+fn lex(source: &str, budget: &mut regexp::Budget) -> Result<tokens::Tokens> {
     if source.len() > MAX_SOURCE {
         return Err(ScriptError::resource("script source limit exceeded"));
     }
     // Precharge bounded ASCII scans, including comments and numeric parsing.
     // Non-ASCII table searches and escape decoding charge separately.
     budget.work(1 + source.len() / 4).map_err(regexp_error)?;
-    let mut tokens = Vec::new();
+    let mut tokens = tokens::Tokens::default();
     let mut pos = 0;
     let mut line_break_before = false;
     // The parser supplies the RegExp lexical goal at a primary expression.
@@ -892,27 +880,12 @@ struct FunctionCode {
     constructable: bool,
     strict: bool,
 }
-impl FunctionCode {
-    fn has_parameter_expressions(&self) -> bool {
-        self.params
-            .iter()
-            .any(|parameter| parameter.initializer.is_some())
-    }
-    fn has_simple_parameters(&self) -> bool {
-        self.params.iter().all(Parameter::is_simple)
-    }
-    fn length(&self) -> usize {
-        self.params
-            .iter()
-            .position(|parameter| !parameter.is_simple())
-            .unwrap_or(self.params.len())
-    }
-}
 #[derive(Debug)]
 struct Program {
     body: Vec<Stmt>,
     strict: bool,
     compiled_storage: usize,
+    remaining_work: usize,
 }
 #[derive(Clone, Debug)]
 enum Expr {
@@ -1142,7 +1115,7 @@ struct ActiveLabel {
 }
 
 struct Parser<'source> {
-    tokens: Vec<Token>,
+    tokens: tokens::Tokens,
     source: &'source str,
     lex_work: usize,
     compile_budget: regexp::Budget,
@@ -1193,6 +1166,7 @@ impl<'source> Parser<'source> {
             body,
             strict: parser.strict,
             compiled_storage: parser.compile_budget.allocated,
+            remaining_work: parser.compile_budget.steps,
         })
     }
     fn directive_body(&mut self, block: bool) -> Result<(Vec<Stmt>, bool, bool)> {
@@ -1217,8 +1191,9 @@ impl<'source> Parser<'source> {
                 if token.use_strict {
                     own_strict = true;
                     self.strict = true;
-                    if self.tokens[start..self.pos]
-                        .iter()
+                    if self
+                        .tokens
+                        .range(start..self.pos)
                         .any(|token| token.legacy_literal)
                     {
                         return Err(self.error("legacy escapes are forbidden in strict directives"));
@@ -2943,7 +2918,7 @@ struct Environment {
 }
 #[derive(Clone)]
 struct Function {
-    code: FunctionCode,
+    code: code::FunctionRef,
     environment: usize,
     properties: usize,
     bound: Option<BoundFunction>,
@@ -3354,12 +3329,14 @@ impl Runtime {
     }
 
     pub fn parse_only(source: &str) -> Result<()> {
-        Parser::program(source).map(|_| ())
+        Parser::program(source).and_then(code::compile).map(|_| ())
     }
     /// Parse a script using a caller-supplied strict parse goal without altering
     /// its source bytes (used by the unchanged Test262 mode adapter).
     pub fn parse_only_strict(source: &str) -> Result<()> {
-        Parser::program_context(source, false, true).map(|_| ())
+        Parser::program_context(source, false, true)
+            .and_then(code::compile)
+            .map(|_| ())
     }
 
     fn initialize_intrinsics(&mut self) -> Result<()> {
@@ -3411,16 +3388,11 @@ impl Runtime {
             Some(Value::Object(self.prototypes["Error"]));
         self.objects[self.prototypes["AbortSignal"]].prototype =
             Some(Value::Object(self.prototypes["EventTarget"]));
+        self.charge(
+            std::mem::size_of::<code::Unit>() + std::mem::size_of::<code::Function>() + 64,
+        )?;
         self.functions.push(Function {
-            code: FunctionCode {
-                params: Vec::new(),
-                body: Rc::new(Vec::new()),
-                name: None,
-                arrow: true,
-                self_name: false,
-                constructable: false,
-                strict: true,
-            },
+            code: code::FunctionRef::empty()?,
             environment: 0,
             properties: self.prototypes["Function"],
             bound: None,
@@ -3835,17 +3807,17 @@ impl Runtime {
     }
 
     pub fn execute(&mut self, source: &str, document: &mut Document) -> Result<Value> {
-        let program = Parser::program(source)?;
+        let program = code::compile(Parser::program(source)?)?;
         self.execute_program(source, program, document)
     }
     pub fn execute_strict(&mut self, source: &str, document: &mut Document) -> Result<Value> {
-        let program = Parser::program_context(source, false, true)?;
+        let program = code::compile(Parser::program_context(source, false, true)?)?;
         self.execute_program(source, program, document)
     }
     fn execute_program(
         &mut self,
         source: &str,
-        program: Program,
+        program: Rc<code::Unit>,
         document: &mut Document,
     ) -> Result<Value> {
         self.charge(source.len().saturating_mul(3))?;
@@ -3853,7 +3825,7 @@ impl Runtime {
         self.steps = MAX_STEPS;
         let saved = self.environments[1].strict;
         self.environments[1].strict = program.strict;
-        let completion = self.statements(&program.body, 1, document);
+        let completion = self.statements(&program, &program.body, 1, document);
         self.environments[1].strict = saved;
         match completion? {
             Flow::Normal(value) => Ok(value.unwrap_or(Value::Undefined)),
@@ -4740,20 +4712,12 @@ impl Runtime {
         let result = (|| {
             self.work(source.len())?;
             self.charge(source.len().saturating_mul(4))?;
-            let program = Parser::program_context(&source, true, false)?;
-            self.charge(program.compiled_storage)?;
-            self.function_value(
-                &FunctionCode {
-                    params: vec![Parameter::simple("event".into())],
-                    body: Rc::new(program.body),
-                    name: Some(format!("on{kind}")),
-                    arrow: false,
-                    self_name: false,
-                    constructable: false,
-                    strict: program.strict,
-                },
-                1,
-            )
+            let code = code::handler(
+                Parser::program_context(&source, true, false)?,
+                format!("on{kind}"),
+            )?;
+            self.charge(code.unit.compiled_storage)?;
+            self.function_value(&code, 1)
         })();
         match result {
             Ok(callback) => {
@@ -5244,9 +5208,14 @@ impl Runtime {
         }
         Ok(binding.value.clone())
     }
-    fn validate_lexical(&self, body: &[Stmt], env: usize) -> Result<()> {
+    fn validate_lexical(
+        &self,
+        unit: &Rc<code::Unit>,
+        body: &[code::StmtId],
+        env: usize,
+    ) -> Result<()> {
         for statement in body {
-            if let Stmt::Var(bindings, kind) = statement
+            if let code::Stmt::Var(bindings, kind) = unit.stmt(*statement)
                 && *kind != DeclarationKind::Var
             {
                 for (name, _) in bindings {
@@ -5266,10 +5235,15 @@ impl Runtime {
         }
         Ok(())
     }
-    fn instantiate_lexical(&mut self, body: &[Stmt], env: usize) -> Result<()> {
-        self.validate_lexical(body, env)?;
+    fn instantiate_lexical(
+        &mut self,
+        unit: &Rc<code::Unit>,
+        body: &[code::StmtId],
+        env: usize,
+    ) -> Result<()> {
+        self.validate_lexical(unit, body, env)?;
         for statement in body {
-            if let Stmt::Var(bindings, kind) = statement
+            if let code::Stmt::Var(bindings, kind) = unit.stmt(*statement)
                 && *kind != DeclarationKind::Var
             {
                 for (name, _) in bindings {
@@ -5298,20 +5272,35 @@ impl Runtime {
         }
         env
     }
-    fn hoist_vars(&mut self, body: &[Stmt], env: usize) -> Result<()> {
-        self.hoist_vars_mode(body, env, true)
+    fn hoist_vars(
+        &mut self,
+        unit: &Rc<code::Unit>,
+        body: &[code::StmtId],
+        env: usize,
+    ) -> Result<()> {
+        self.hoist_vars_mode(unit, body, env, true)
     }
-    fn hoist_vars_mode(&mut self, body: &[Stmt], env: usize, insert: bool) -> Result<()> {
+    fn hoist_vars_mode(
+        &mut self,
+        unit: &Rc<code::Unit>,
+        body: &[code::StmtId],
+        env: usize,
+        insert: bool,
+    ) -> Result<()> {
         let owner = self.var_scope(env);
-        let mut walk = StatementWalk::new(body.iter());
+        let mut walk = code::StatementWalk::new(unit, body.iter());
         while let Some(statement) = walk.next(|| self.tick())? {
-            match statement {
-                Stmt::Var(bindings, DeclarationKind::Var) => {
+            match unit.stmt(*statement) {
+                code::Stmt::Var(bindings, DeclarationKind::Var) => {
                     for (name, _) in bindings {
                         self.hoist_name(name, owner, insert)?;
                     }
                 }
-                Stmt::ForIn(ForBinding::Declaration(name, DeclarationKind::Var), _, _) => {
+                code::Stmt::ForIn(
+                    code::ForBinding::Declaration(name, DeclarationKind::Var),
+                    _,
+                    _,
+                ) => {
                     self.hoist_name(name, owner, insert)?;
                 }
                 _ => {}
@@ -5330,7 +5319,7 @@ impl Runtime {
         }
         Ok(())
     }
-    fn function_value(&mut self, code: &FunctionCode, environment: usize) -> Result<Value> {
+    fn function_value(&mut self, code: &code::FunctionRef, environment: usize) -> Result<Value> {
         self.charge_function_code_copy(code)?;
         let id = self.functions.len();
         let Value::Object(properties) = self.object_ordered([
@@ -5374,9 +5363,9 @@ impl Runtime {
         }
         Ok(Value::Function(id))
     }
-    fn charge_function_code_copy(&mut self, code: &FunctionCode) -> Result<()> {
-        // Bodies/initializers are shared, but Clone owns parameter metadata/names.
-        // Charge the scan first, then the retained copies before any allocation.
+    fn charge_function_code_copy(&mut self, code: &code::FunctionRef) -> Result<()> {
+        // Preserve the conservative legacy metadata allowance for each closure.
+        // Flat code is shared; this scan and allowance do not clone its syntax.
         self.work(1 + code.params.len())?;
         let text_bytes = code.params.iter().fold(0usize, |size, parameter| {
             size.saturating_add(parameter.name.len())
@@ -5435,15 +5424,20 @@ impl Runtime {
         }))
     }
 
-    fn instantiate_statements(&mut self, body: &[Stmt], env: usize) -> Result<()> {
+    fn instantiate_statements(
+        &mut self,
+        unit: &Rc<code::Unit>,
+        body: &[code::StmtId],
+        env: usize,
+    ) -> Result<()> {
         let mut tracked_functions = [None; 5];
         if env == 1 {
             // Validate declarations before inserting lexical, var, or function
             // bindings. Tracked globals may be immutable or author-locked.
             self.work(body.len().saturating_add(1))?;
-            self.validate_lexical(body, env)?;
+            self.validate_lexical(unit, body, env)?;
             for statement in body {
-                if let Stmt::Function(name, _) = statement
+                if let code::Stmt::Function(name, _) = unit.stmt(*statement)
                     && self.environments[1].bindings.contains_key(name)
                 {
                     return Err(ScriptError::syntax(format!(
@@ -5453,7 +5447,7 @@ impl Runtime {
             }
             for (index, statement) in body.iter().enumerate().rev() {
                 self.tick()?;
-                if let Stmt::Function(name, _) = statement
+                if let code::Stmt::Function(name, _) = unit.stmt(*statement)
                     && let Some(kind) = TrackedGlobal::from_name(name)
                 {
                     tracked_functions[kind as usize].get_or_insert(index);
@@ -5461,10 +5455,10 @@ impl Runtime {
             }
             if tracked_functions.iter().any(Option::is_some) {
                 // Earlier lexical-name checks precede CanDeclareGlobalFunction.
-                self.hoist_vars_mode(body, env, false)?;
+                self.hoist_vars_mode(unit, body, env, false)?;
                 for (index, statement) in body.iter().enumerate().rev() {
                     self.tick()?;
-                    if let Stmt::Function(name, _) = statement
+                    if let code::Stmt::Function(name, _) = unit.stmt(*statement)
                         && let Some(kind) = TrackedGlobal::from_name(name)
                         && tracked_functions[kind as usize] == Some(index)
                         && self
@@ -5485,10 +5479,10 @@ impl Runtime {
                 }
             }
         }
-        self.instantiate_lexical(body, env)?;
-        self.hoist_vars(body, env)?;
+        self.instantiate_lexical(unit, body, env)?;
+        self.hoist_vars(unit, body, env)?;
         for (index, statement) in body.iter().enumerate() {
-            if let Stmt::Function(name, code) = statement {
+            if let code::Stmt::Function(name, code) = unit.stmt(*statement) {
                 if env == 1 && self.environments[1].bindings.contains_key(name) {
                     return Err(ScriptError::syntax(format!(
                         "global lexical binding conflicts with function '{name}'"
@@ -5510,7 +5504,7 @@ impl Runtime {
                 } else {
                     None
                 };
-                let function = self.function_value(code, env)?;
+                let function = self.function_value(&code::FunctionRef::new(unit, *code), env)?;
                 if let Some(kind) = tracked {
                     let desc = if current.is_some_and(|property| !property.configurable) {
                         PropertyDescriptor {
@@ -5533,13 +5527,19 @@ impl Runtime {
         }
         Ok(())
     }
-    fn statements(&mut self, body: &[Stmt], env: usize, doc: &mut Document) -> Result<Flow> {
+    fn statements(
+        &mut self,
+        unit: &Rc<code::Unit>,
+        body: &[code::StmtId],
+        env: usize,
+        doc: &mut Document,
+    ) -> Result<Flow> {
         // Declaration setup finishes before retaining frames for nested bodies.
-        self.instantiate_statements(body, env)?;
+        self.instantiate_statements(unit, body, env)?;
         let mut last = None;
         for statement in body {
             match self
-                .statement(statement, env, doc)?
+                .statement(unit, statement, env, doc)?
                 .update_empty(last.as_ref())
             {
                 Flow::Normal(value) => last = value,
@@ -5548,73 +5548,79 @@ impl Runtime {
         }
         Ok(Flow::Normal(last))
     }
-    fn statement(&mut self, statement: &Stmt, env: usize, doc: &mut Document) -> Result<Flow> {
-        self.statement_labeled(statement, env, doc, None)
+    fn statement(
+        &mut self,
+        unit: &Rc<code::Unit>,
+        statement: &code::StmtId,
+        env: usize,
+        doc: &mut Document,
+    ) -> Result<Flow> {
+        self.statement_labeled(unit, statement, env, doc, None)
     }
     fn statement_labeled(
         &mut self,
-        statement: &Stmt,
+        unit: &Rc<code::Unit>,
+        statement: &code::StmtId,
         env: usize,
         doc: &mut Document,
         label: Option<usize>,
     ) -> Result<Flow> {
         self.enter_stack(1)?;
-        let result = self.statement_inner(statement, env, doc, label);
+        let result = self.statement_inner(unit, statement, env, doc, label);
         self.stack_units -= 1;
         result
     }
     fn statement_inner(
         &mut self,
-        statement: &Stmt,
+        unit: &Rc<code::Unit>,
+        statement: &code::StmtId,
         env: usize,
         doc: &mut Document,
         label: Option<usize>,
     ) -> Result<Flow> {
         self.tick()?;
-        match statement {
-            Stmt::Empty | Stmt::Function(_, _) => {}
-            Stmt::Label(target, body) => {
-                return match self.statement_labeled(body, env, doc, Some(*target))? {
+        match unit.stmt(*statement) {
+            code::Stmt::Empty | code::Stmt::Function(_, _) => {}
+            code::Stmt::Label(target, body) => {
+                return match self.statement_labeled(unit, body, env, doc, Some(*target))? {
                     Flow::Break(Some(found), value) if found == *target => Ok(Flow::Normal(value)),
                     flow => Ok(flow),
                 };
             }
-            Stmt::Expr(expression) => {
-                return Ok(Flow::Normal(Some(self.eval(expression, env, doc)?)));
+            code::Stmt::Expr(expression) => {
+                return Ok(Flow::Normal(Some(self.eval(unit, expression, env, doc)?)));
             }
-            Stmt::Var(..) => return self.declaration_statement(statement, env, doc),
-            Stmt::Block(body) => {
+            code::Stmt::Var(..) => return self.declaration_statement(unit, statement, env, doc),
+            code::Stmt::Block(body) => {
                 let child = self.environment(env)?;
-                return self.statements(body, child, doc);
+                return self.statements(unit, body, child, doc);
             }
-            Stmt::If(condition, yes, no) => {
-                let completion = if self.eval(condition, env, doc)?.truthy() {
-                    self.statement(yes, env, doc)?
+            code::Stmt::If(condition, yes, no) => {
+                let completion = if self.eval(unit, condition, env, doc)?.truthy() {
+                    self.statement(unit, yes, env, doc)?
                 } else if let Some(no) = no {
-                    self.statement(no, env, doc)?
+                    self.statement(unit, no, env, doc)?
                 } else {
                     Flow::Normal(None)
                 };
                 return Ok(completion.update_empty(Some(&Value::Undefined)));
             }
-            Stmt::While(..) => return self.while_loop(statement, env, doc, label),
-            Stmt::DoWhile(..) => return self.do_while_loop(statement, env, doc, label),
-            Stmt::For(..) => return self.for_loop(statement, env, doc, label),
-            Stmt::ForIn(binding, expression, body) => {
-                return self.for_in(binding, expression, body, env, doc, label);
+            code::Stmt::While(..) => return self.while_loop(unit, statement, env, doc, label),
+            code::Stmt::DoWhile(..) => return self.do_while_loop(unit, statement, env, doc, label),
+            code::Stmt::For(..) => return self.for_loop(unit, statement, env, doc, label),
+            code::Stmt::ForIn(..) => return self.for_in(unit, statement, env, doc, label),
+            code::Stmt::Switch(expression, cases) => {
+                return self.switch_statement(unit, expression, cases, env, doc);
             }
-            Stmt::Switch(expression, cases) => {
-                return self.switch_statement(expression, cases, env, doc);
-            }
-            Stmt::Return(expression) => {
+            code::Stmt::Return(expression) => {
                 return Ok(Flow::Return(if let Some(expression) = expression {
-                    self.eval(expression, env, doc)?
+                    self.eval(unit, expression, env, doc)?
                 } else {
                     Value::Undefined
                 }));
             }
-            Stmt::Throw(expression) => {
-                let value = self.eval(expression, env, doc)?;
+            code::Stmt::Throw(expression) => {
+                let value = self.eval(unit, expression, env, doc)?;
                 let name = self.thrown_name(&value, doc)?;
                 let intrinsic = self.thrown_intrinsic_name(&value, doc)?;
                 let mut error = self.thrown_error(value)?;
@@ -5622,19 +5628,20 @@ impl Runtime {
                 error.intrinsic_name = intrinsic;
                 return Err(error);
             }
-            Stmt::Try(..) => return self.try_statement(statement, env, doc),
-            Stmt::Break(target) => return Ok(Flow::Break(*target, None)),
-            Stmt::Continue(target) => return Ok(Flow::Continue(*target, None)),
+            code::Stmt::Try(..) => return self.try_statement(unit, statement, env, doc),
+            code::Stmt::Break(target) => return Ok(Flow::Break(*target, None)),
+            code::Stmt::Continue(target) => return Ok(Flow::Continue(*target, None)),
         }
         Ok(Flow::Normal(None))
     }
     fn declaration_statement(
         &mut self,
-        statement: &Stmt,
+        unit: &Rc<code::Unit>,
+        statement: &code::StmtId,
         env: usize,
         doc: &mut Document,
     ) -> Result<Flow> {
-        let Stmt::Var(bindings, kind) = statement else {
+        let code::Stmt::Var(bindings, kind) = unit.stmt(*statement) else {
             unreachable!("declaration_statement receives the matching statement");
         };
         let owner = if *kind == DeclarationKind::Var {
@@ -5647,7 +5654,7 @@ impl Runtime {
                 continue;
             }
             let value = if let Some(expression) = expression {
-                self.eval(expression, env, doc)?
+                self.eval(unit, expression, env, doc)?
             } else {
                 Value::Undefined
             };
@@ -5676,18 +5683,22 @@ impl Runtime {
     }
     fn while_loop(
         &mut self,
-        statement: &Stmt,
+        unit: &Rc<code::Unit>,
+        statement: &code::StmtId,
         env: usize,
         doc: &mut Document,
         label: Option<usize>,
     ) -> Result<Flow> {
-        let Stmt::While(condition, body) = statement else {
+        let code::Stmt::While(condition, body) = unit.stmt(*statement) else {
             unreachable!("while_loop receives the matching statement");
         };
         let mut last = Value::Undefined;
-        while self.eval(condition, env, doc)?.truthy() {
+        while self.eval(unit, condition, env, doc)?.truthy() {
             self.tick()?;
-            if let Err(flow) = self.statement(body, env, doc)?.loop_step(label, &mut last) {
+            if let Err(flow) = self
+                .statement(unit, body, env, doc)?
+                .loop_step(label, &mut last)
+            {
                 return Ok(flow.consume_break());
             }
         }
@@ -5695,31 +5706,41 @@ impl Runtime {
     }
     fn do_while_loop(
         &mut self,
-        statement: &Stmt,
+        unit: &Rc<code::Unit>,
+        statement: &code::StmtId,
         env: usize,
         doc: &mut Document,
         label: Option<usize>,
     ) -> Result<Flow> {
-        let Stmt::DoWhile(condition, body) = statement else {
+        let code::Stmt::DoWhile(condition, body) = unit.stmt(*statement) else {
             unreachable!("do_while_loop receives the matching statement");
         };
         let mut last = Value::Undefined;
         loop {
             self.tick()?;
-            if let Err(flow) = self.statement(body, env, doc)?.loop_step(label, &mut last) {
+            if let Err(flow) = self
+                .statement(unit, body, env, doc)?
+                .loop_step(label, &mut last)
+            {
                 return Ok(flow.consume_break());
             }
-            if !self.eval(condition, env, doc)?.truthy() {
+            if !self.eval(unit, condition, env, doc)?.truthy() {
                 break;
             }
         }
         Ok(Flow::Normal(Some(last)))
     }
-    fn try_statement(&mut self, statement: &Stmt, env: usize, doc: &mut Document) -> Result<Flow> {
-        let Stmt::Try(body, handler, finalizer) = statement else {
+    fn try_statement(
+        &mut self,
+        unit: &Rc<code::Unit>,
+        statement: &code::StmtId,
+        env: usize,
+        doc: &mut Document,
+    ) -> Result<Flow> {
+        let code::Stmt::Try(body, handler, finalizer) = unit.stmt(*statement) else {
             unreachable!("try_statement receives the matching statement");
         };
-        let mut completion = self.statement(body, env, doc);
+        let mut completion = self.statement(unit, body, env, doc);
         if let Err(error) = completion {
             // Quota exhaustion is a host termination, not a JavaScript
             // exception. Running either handler could hide that failure.
@@ -5732,7 +5753,7 @@ impl Runtime {
                     let value = self.exception_value(error)?;
                     self.define(catch_env, binding, value, true)?;
                 }
-                self.statements(&handler.body, catch_env, doc)
+                self.statements(unit, &handler.body, catch_env, doc)
             } else {
                 Err(error)
             };
@@ -5744,7 +5765,7 @@ impl Runtime {
             return completion;
         }
         if let Some(finalizer) = finalizer {
-            match self.statement(finalizer, env, doc)? {
+            match self.statement(unit, finalizer, env, doc)? {
                 Flow::Normal(_) => {}
                 abrupt => return Ok(abrupt.update_empty(Some(&Value::Undefined))),
             }
@@ -5753,23 +5774,24 @@ impl Runtime {
     }
     fn for_loop(
         &mut self,
-        statement: &Stmt,
+        unit: &Rc<code::Unit>,
+        statement: &code::StmtId,
         env: usize,
         doc: &mut Document,
         label: Option<usize>,
     ) -> Result<Flow> {
-        let Stmt::For(init, condition, update, body) = statement else {
+        let code::Stmt::For(init, condition, update, body) = unit.stmt(*statement) else {
             unreachable!("for_loop receives a For statement");
         };
-        let init = init.as_deref();
+        let init = init.as_ref();
         let condition = condition.as_ref();
         let update = update.as_ref();
         let mut child = self.environment(env)?;
         let mut names = Vec::new();
         if let Some(init) = init {
-            self.instantiate_lexical(std::slice::from_ref(init), child)?;
-            self.statement(init, child, doc)?;
-            if let Stmt::Var(bindings, DeclarationKind::Let) = init {
+            self.instantiate_lexical(unit, std::slice::from_ref(init), child)?;
+            self.statement(unit, init, child, doc)?;
+            if let code::Stmt::Var(bindings, DeclarationKind::Let) = unit.stmt(*init) {
                 names.extend(bindings.iter().map(|(name, _)| name.clone()));
             }
         }
@@ -5780,12 +5802,12 @@ impl Runtime {
         loop {
             self.tick()?;
             if let Some(condition) = condition
-                && !self.eval(condition, child, doc)?.truthy()
+                && !self.eval(unit, condition, child, doc)?.truthy()
             {
                 break;
             }
             if let Err(flow) = self
-                .statement(body, child, doc)?
+                .statement(unit, body, child, doc)?
                 .loop_step(label, &mut last)
             {
                 return Ok(flow.consume_break());
@@ -5794,7 +5816,7 @@ impl Runtime {
                 child = self.iteration_environment(child, env, &names)?;
             }
             if let Some(update) = update {
-                self.eval(update, child, doc)?;
+                self.eval(unit, update, child, doc)?;
             }
         }
         Ok(Flow::Normal(Some(last)))
@@ -5817,18 +5839,20 @@ impl Runtime {
     }
     fn switch_statement(
         &mut self,
-        expression: &Expr,
-        cases: &[(Option<Expr>, Vec<Stmt>)],
+        unit: &Rc<code::Unit>,
+        expression: &code::ExprId,
+        cases: &[(Option<code::ExprId>, Vec<code::StmtId>)],
         env: usize,
         doc: &mut Document,
     ) -> Result<Flow> {
-        let value = self.eval(expression, env, doc)?;
+        let value = self.eval(unit, expression, env, doc)?;
         let child = self.environment(env)?;
         for (_, body) in cases {
-            self.instantiate_lexical(body, child)?;
+            self.instantiate_lexical(unit, body, child)?;
             for statement in body {
-                if let Stmt::Function(name, code) = statement {
-                    let function = self.function_value(code, child)?;
+                if let code::Stmt::Function(name, code) = unit.stmt(*statement) {
+                    let function =
+                        self.function_value(&code::FunctionRef::new(unit, *code), child)?;
                     self.define(child, name, function, true)?;
                 }
             }
@@ -5838,7 +5862,7 @@ impl Runtime {
         for (index, (condition, _)) in cases.iter().enumerate() {
             self.tick()?;
             if let Some(condition) = condition {
-                let case = self.eval(condition, child, doc)?;
+                let case = self.eval(unit, condition, child, doc)?;
                 if self.binary_value("===", value.clone(), case, doc)? == Value::Bool(true) {
                     start = Some(index);
                     break;
@@ -5851,7 +5875,7 @@ impl Runtime {
         if let Some(start) = start.or(default) {
             for (_, body) in &cases[start..] {
                 for statement in body {
-                    match self.statement(statement, child, doc)? {
+                    match self.statement(unit, statement, child, doc)? {
                         Flow::Normal(Some(value)) => last = value,
                         Flow::Normal(None) => {}
                         abrupt => return Ok(abrupt.update_empty(Some(&last)).consume_break()),
@@ -5863,14 +5887,16 @@ impl Runtime {
     }
     fn for_in(
         &mut self,
-        binding: &ForBinding,
-        expression: &Expr,
-        body: &Stmt,
+        unit: &Rc<code::Unit>,
+        statement: &code::StmtId,
         env: usize,
         doc: &mut Document,
         label: Option<usize>,
     ) -> Result<Flow> {
-        let expression_env = if let ForBinding::Declaration(name, kind) = binding
+        let code::Stmt::ForIn(binding, expression, body) = unit.stmt(*statement) else {
+            unreachable!("for_in receives the matching statement");
+        };
+        let expression_env = if let code::ForBinding::Declaration(name, kind) = binding
             && *kind != DeclarationKind::Var
         {
             let child = self.environment(env)?;
@@ -5889,7 +5915,7 @@ impl Runtime {
         } else {
             env
         };
-        let value = self.eval(expression, expression_env, doc)?;
+        let value = self.eval(unit, expression, expression_env, doc)?;
         if matches!(value, Value::Null | Value::Undefined) {
             return Ok(Flow::Normal(Some(Value::Undefined)));
         }
@@ -5917,24 +5943,24 @@ impl Runtime {
                 }
                 let value = self.string(key)?;
                 let scope = match binding {
-                    ForBinding::Declaration(name, DeclarationKind::Var) => {
+                    code::ForBinding::Declaration(name, DeclarationKind::Var) => {
                         let owner = self.var_scope(env);
                         self.define(owner, name, value, true)?;
                         env
                     }
-                    ForBinding::Declaration(name, kind) => {
+                    code::ForBinding::Declaration(name, kind) => {
                         let child = self.environment(env)?;
                         self.define(child, name, value, *kind != DeclarationKind::Const)?;
                         child
                     }
-                    ForBinding::Target(target) => {
-                        let reference = self.reference(target, env, doc)?;
+                    code::ForBinding::Target(target) => {
+                        let reference = self.reference(unit, target, env, doc)?;
                         self.write_reference(reference, value, doc)?;
                         env
                     }
                 };
                 if let Err(flow) = self
-                    .statement(body, scope, doc)?
+                    .statement(unit, body, scope, doc)?
                     .loop_step(label, &mut last)
                 {
                     return Ok(flow.consume_break());
@@ -6021,7 +6047,13 @@ impl Runtime {
         let constructor = self.get(value.clone(), "constructor", doc)?;
         Ok((constructor == Self::native(name, Value::Window)).then_some(name))
     }
-    fn eval(&mut self, expression: &Expr, env: usize, doc: &mut Document) -> Result<Value> {
+    fn eval(
+        &mut self,
+        unit: &Rc<code::Unit>,
+        expression: &code::ExprId,
+        env: usize,
+        doc: &mut Document,
+    ) -> Result<Value> {
         if self.eval_depth >= MAX_DEPTH {
             return Err(ScriptError::resource(
                 "expression evaluation nesting limit exceeded",
@@ -6029,46 +6061,52 @@ impl Runtime {
         }
         self.enter_stack(1)?;
         self.eval_depth += 1;
-        let result = self.eval_inner(expression, env, doc);
+        let result = self.eval_inner(unit, expression, env, doc);
         self.eval_depth -= 1;
         self.stack_units -= 1;
         result
     }
-    fn eval_inner(&mut self, expression: &Expr, env: usize, doc: &mut Document) -> Result<Value> {
+    fn eval_inner(
+        &mut self,
+        unit: &Rc<code::Unit>,
+        expression: &code::ExprId,
+        env: usize,
+        doc: &mut Document,
+    ) -> Result<Value> {
         self.tick()?;
-        match expression {
-            Expr::Literal(value) => Ok(value.clone()),
-            Expr::Template(head, tail) => {
+        match unit.expr(*expression) {
+            code::Expr::Literal(value) => Ok(value.clone()),
+            code::Expr::Template(head, tail) => {
                 let mut output = Vec::new();
                 self.append_template_text(&mut output, head)?;
                 for (expression, text) in tail {
-                    let value = self.eval(expression, env, doc)?;
+                    let value = self.eval(unit, expression, env, doc)?;
                     let cooked = self.string_hint(value, doc)?;
                     self.append_template_text(&mut output, &cooked)?;
                     self.append_template_text(&mut output, text)?;
                 }
                 self.string(output)
             }
-            Expr::RegExp(pattern) => self.regexp_object(pattern.clone()),
-            Expr::Ident(name) => {
+            code::Expr::RegExp(pattern) => self.regexp_object(pattern.clone()),
+            code::Expr::Ident(name) => {
                 let owner = self
                     .resolve_binding(env, name)?
                     .ok_or_else(|| ScriptError::reference(format!("'{name}' is not defined")))?;
                 self.binding_value(owner, name, doc)
             }
-            Expr::Sequence(items) => {
+            code::Expr::Sequence(items) => {
                 let mut last = Value::Undefined;
                 for item in items {
-                    last = self.eval(item, env, doc)?;
+                    last = self.eval(unit, item, env, doc)?;
                 }
                 Ok(last)
             }
-            Expr::Array(items) => {
+            code::Expr::Array(items) => {
                 let mut values = Vec::new();
                 let mut holes = BTreeSet::new();
                 for (index, item) in items.iter().enumerate() {
                     values.push(if let Some(item) = item {
-                        self.eval(item, env, doc)?
+                        self.eval(unit, item, env, doc)?
                     } else {
                         holes.insert(index);
                         Value::Undefined
@@ -6082,11 +6120,11 @@ impl Runtime {
                 self.array_holes[id] = holes;
                 Ok(array)
             }
-            Expr::Object(items) => {
+            code::Expr::Object(items) => {
                 let object = self.object_ordered([])?;
                 for (key, entry) in items {
-                    if let ObjectEntry::Prototype(expression) = entry {
-                        let prototype = self.eval(expression, env, doc)?;
+                    if let code::ObjectEntry::Prototype(expression) = entry {
+                        let prototype = self.eval(unit, expression, env, doc)?;
                         if js_object(&prototype) || prototype == Value::Null {
                             self.set_object_prototype(&object, prototype)?;
                         }
@@ -6095,9 +6133,9 @@ impl Runtime {
                     // ToPropertyKey precedes RHS evaluation and function
                     // creation. This runtime's supported keys are strings.
                     let key = match key {
-                        PropertyName::Literal(key, _) => key.clone(),
-                        PropertyName::Computed(expression) => {
-                            let value = self.eval(expression, env, doc)?;
+                        code::PropertyName::Literal(key) => key.clone(),
+                        code::PropertyName::Computed(expression) => {
+                            let value = self.eval(unit, expression, env, doc)?;
                             self.string_hint(value, doc)?
                         }
                     };
@@ -6107,22 +6145,24 @@ impl Runtime {
                         ..PropertyDescriptor::default()
                     };
                     match entry {
-                        ObjectEntry::Data(expression) => {
-                            let value = self.eval(expression, env, doc)?;
-                            if matches!(expression, Expr::Function(code) if code.name.is_none()) {
+                        code::ObjectEntry::Data(expression) => {
+                            let value = self.eval(unit, expression, env, doc)?;
+                            if unit.anonymous(*expression) {
                                 self.set_function_name(&value, &key, None)?;
                             }
                             desc.value = Some(value);
                             desc.writable = Some(true);
                         }
-                        ObjectEntry::Method(code) => {
-                            let function = self.function_value(code, env)?;
+                        code::ObjectEntry::Method(code) => {
+                            let function =
+                                self.function_value(&code::FunctionRef::new(unit, *code), env)?;
                             self.set_function_name(&function, &key, None)?;
                             desc.value = Some(function);
                             desc.writable = Some(true);
                         }
-                        ObjectEntry::Accessor(code, setter) => {
-                            let function = self.function_value(code, env)?;
+                        code::ObjectEntry::Accessor(code, setter) => {
+                            let function =
+                                self.function_value(&code::FunctionRef::new(unit, *code), env)?;
                             self.set_function_name(
                                 &function,
                                 &key,
@@ -6134,18 +6174,18 @@ impl Runtime {
                                 desc.get = Some(function);
                             }
                         }
-                        ObjectEntry::Prototype(_) => unreachable!(),
+                        code::ObjectEntry::Prototype(_) => unreachable!(),
                     }
                     self.define_own(&object, &key, desc)?;
                 }
                 Ok(object)
             }
-            Expr::Unary(op, expression) => {
+            code::Expr::Unary(op, expression) => {
                 if op == "delete" {
-                    return match &**expression {
-                        Expr::Member(object, key) => {
-                            let object = self.eval(object, env, doc)?;
-                            let value = self.eval(key, env, doc)?;
+                    return match unit.expr(*expression) {
+                        code::Expr::Member(object, key) => {
+                            let object = self.eval(unit, object, env, doc)?;
+                            let value = self.eval(unit, key, env, doc)?;
                             let key = self.reference_key(&object, value, doc)?;
                             let deleted = self.delete_property(object, &key)?;
                             if !deleted && self.environments[env].strict {
@@ -6155,8 +6195,8 @@ impl Runtime {
                             }
                             Ok(Value::Bool(deleted))
                         }
-                        Expr::Ident(name) if name == "this" => Ok(Value::Bool(true)),
-                        Expr::Ident(name) => {
+                        code::Expr::Ident(name) if name == "this" => Ok(Value::Bool(true)),
+                        code::Expr::Ident(name) => {
                             if let Some(owner) = self.resolve_binding(env, name)? {
                                 if owner == 0
                                     && let Some(kind) = TrackedGlobal::from_name(name)
@@ -6176,18 +6216,18 @@ impl Runtime {
                             }
                         }
                         _ => {
-                            self.eval(expression, env, doc)?;
+                            self.eval(unit, expression, env, doc)?;
                             Ok(Value::Bool(true))
                         }
                     };
                 }
                 if op == "typeof"
-                    && let Expr::Ident(name) = &**expression
+                    && let code::Expr::Ident(name) = unit.expr(*expression)
                     && self.resolve_binding(env, name)?.is_none()
                 {
                     return self.string("undefined");
                 }
-                let value = self.eval(expression, env, doc)?;
+                let value = self.eval(unit, expression, env, doc)?;
                 if let Value::String(text) = &value {
                     self.work(1 + text.len() / 8)?;
                 }
@@ -6210,8 +6250,8 @@ impl Runtime {
                     _ => Err(ScriptError::new("unknown unary operator")),
                 }
             }
-            Expr::BinaryChain(left, operations) => {
-                let mut left = self.eval(left, env, doc)?;
+            code::Expr::BinaryChain(left, operations) => {
+                let mut left = self.eval(unit, left, env, doc)?;
                 for (op, right) in operations {
                     self.tick()?;
                     if op == "&&" && !left.truthy()
@@ -6220,7 +6260,7 @@ impl Runtime {
                     {
                         continue;
                     }
-                    let right = self.eval(right, env, doc)?;
+                    let right = self.eval(unit, right, env, doc)?;
                     left = if matches!(op.as_str(), "&&" | "||" | "??") {
                         right
                     } else {
@@ -6229,15 +6269,15 @@ impl Runtime {
                 }
                 Ok(left)
             }
-            Expr::Conditional(condition, yes, no) => {
-                if self.eval(condition, env, doc)?.truthy() {
-                    self.eval(yes, env, doc)
+            code::Expr::Conditional(condition, yes, no) => {
+                if self.eval(unit, condition, env, doc)?.truthy() {
+                    self.eval(unit, yes, env, doc)
                 } else {
-                    self.eval(no, env, doc)
+                    self.eval(unit, no, env, doc)
                 }
             }
-            Expr::Assign(op, left, right) => {
-                let mut reference = self.reference(left, env, doc)?;
+            code::Expr::Assign(op, left, right) => {
+                let mut reference = self.reference(unit, left, env, doc)?;
                 if matches!(op.as_str(), "&&=" | "||=" | "??=") {
                     let old = self.read_reference(&mut reference, doc)?;
                     if op == "&&=" && !old.truthy()
@@ -6246,9 +6286,9 @@ impl Runtime {
                     {
                         return Ok(old);
                     }
-                    let value = self.eval(right, env, doc)?;
-                    if let Expr::Ident(name) = &**left
-                        && matches!(&**right, Expr::Function(code) if code.name.is_none())
+                    let value = self.eval(unit, right, env, doc)?;
+                    if let code::Expr::Ident(name) = unit.expr(*left)
+                        && unit.anonymous(*right)
                     {
                         // UTF-8 to UTF-16 may retain a Vec while copying to Rc.
                         // Skip this work entirely on the short-circuit path.
@@ -6264,15 +6304,15 @@ impl Runtime {
                 } else {
                     None
                 };
-                let mut value = self.eval(right, env, doc)?;
+                let mut value = self.eval(unit, right, env, doc)?;
                 if let Some(old) = old {
                     value = self.binary_value(&op[..op.len() - 1], old, value, doc)?;
                 }
                 self.write_reference(reference, value.clone(), doc)?;
                 Ok(value)
             }
-            Expr::Update(target, delta, prefix) => {
-                let mut reference = self.reference(target, env, doc)?;
+            code::Expr::Update(target, delta, prefix) => {
+                let mut reference = self.reference(unit, target, env, doc)?;
                 let previous = self.read_reference(&mut reference, doc)?;
                 if let Value::String(text) = &previous {
                     self.work(1 + text.len() / 8)?;
@@ -6282,36 +6322,39 @@ impl Runtime {
                 self.write_reference(reference, value.clone(), doc)?;
                 Ok(if *prefix { value } else { Value::Number(old) })
             }
-            Expr::Member(object, property) => {
-                let object = self.eval(object, env, doc)?;
-                let value = self.eval(property, env, doc)?;
+            code::Expr::Member(object, property) => {
+                let object = self.eval(unit, object, env, doc)?;
+                let value = self.eval(unit, property, env, doc)?;
                 let property = self.reference_key(&object, value, doc)?;
                 self.get_key(object, &property, doc)
             }
-            Expr::Call(callee, arguments) => {
-                let (function, receiver) = if let Expr::Member(object, property) = &**callee {
-                    let receiver = self.eval(object, env, doc)?;
-                    let value = self.eval(property, env, doc)?;
-                    let property = self.reference_key(&receiver, value, doc)?;
-                    (self.get_key(receiver.clone(), &property, doc)?, receiver)
-                } else {
-                    (self.eval(callee, env, doc)?, Value::Undefined)
-                };
+            code::Expr::Call(callee, arguments) => {
+                let (function, receiver) =
+                    if let code::Expr::Member(object, property) = unit.expr(*callee) {
+                        let receiver = self.eval(unit, object, env, doc)?;
+                        let value = self.eval(unit, property, env, doc)?;
+                        let property = self.reference_key(&receiver, value, doc)?;
+                        (self.get_key(receiver.clone(), &property, doc)?, receiver)
+                    } else {
+                        (self.eval(unit, callee, env, doc)?, Value::Undefined)
+                    };
                 let arguments = arguments
                     .iter()
-                    .map(|argument| self.eval(argument, env, doc))
+                    .map(|argument| self.eval(unit, argument, env, doc))
                     .collect::<Result<Vec<_>>>()?;
                 self.call(function, arguments, receiver, doc)
             }
-            Expr::New(callee, arguments) => {
-                let constructor = self.eval(callee, env, doc)?;
+            code::Expr::New(callee, arguments) => {
+                let constructor = self.eval(unit, callee, env, doc)?;
                 let arguments = arguments
                     .iter()
-                    .map(|argument| self.eval(argument, env, doc))
+                    .map(|argument| self.eval(unit, argument, env, doc))
                     .collect::<Result<Vec<_>>>()?;
                 self.construct(constructor, arguments, doc)
             }
-            Expr::Function(code) => self.function_value(code, env),
+            code::Expr::Function(code) => {
+                self.function_value(&code::FunctionRef::new(unit, *code), env)
+            }
         }
     }
     fn number_hint_primitive(&mut self, value: Value, doc: &mut Document) -> Result<Value> {
@@ -6558,12 +6601,13 @@ impl Runtime {
     }
     fn reference(
         &mut self,
-        expression: &Expr,
+        unit: &Rc<code::Unit>,
+        expression: &code::ExprId,
         env: usize,
         doc: &mut Document,
     ) -> Result<Reference> {
-        match expression {
-            Expr::Ident(name) => {
+        match unit.expr(*expression) {
+            code::Expr::Ident(name) => {
                 let strict = self.environments[env].strict;
                 Ok(if let Some(owner) = self.resolve_binding(env, name)? {
                     Reference::Binding(owner, name.clone(), strict)
@@ -6571,9 +6615,9 @@ impl Runtime {
                     Reference::Unresolvable(name.clone(), strict)
                 })
             }
-            Expr::Member(object, property) => {
-                let object = self.eval(object, env, doc)?;
-                let value = self.eval(property, env, doc)?;
+            code::Expr::Member(object, property) => {
+                let object = self.eval(unit, object, env, doc)?;
+                let value = self.eval(unit, property, env, doc)?;
                 Ok(Reference::Property(
                     object,
                     value,
@@ -6706,7 +6750,8 @@ impl Runtime {
         match function {
             Value::Function(id) => {
                 // Release the immutable arena borrow before charging the copy.
-                // Bodies and parameter initializers are shared by FunctionCode::clone.
+                // Code records are shared by the immutable unit handle. The existing
+                // conservative metadata allowance remains for each activation.
                 let parameters = self.functions[id].code.params.len();
                 self.work(1 + parameters)?;
                 let code = &self.functions[id].code;
@@ -6729,6 +6774,7 @@ impl Runtime {
                         .saturating_add(bound_bytes),
                 )?;
                 let function = self.functions[id].clone();
+                let unit = &function.code.unit;
                 if let Some(bound) = function.bound {
                     self.charge(
                         (bound.arguments.len() + arguments.len())
@@ -6770,8 +6816,8 @@ impl Runtime {
                     }
                 }
                 let shadows_arguments = function.code.params.iter().any(|p| p.name == "arguments")
-                    || !parameter_expressions && function.code.body.iter().any(|s| matches!(s, Stmt::Function(name, _) if name == "arguments")
-                        || matches!(s, Stmt::Var(bindings, kind) if *kind != DeclarationKind::Var && bindings.iter().any(|(name, _)| name == "arguments")));
+                    || !parameter_expressions && function.code.body.iter().any(|s| matches!(unit.stmt(*s), code::Stmt::Function(name, _) if name == "arguments")
+                        || matches!(unit.stmt(*s), code::Stmt::Var(bindings, kind) if *kind != DeclarationKind::Var && bindings.iter().any(|(name, _)| name == "arguments")));
                 let arguments_binding = !function.code.arrow && !shadows_arguments;
                 if arguments_binding {
                     let unmapped = function.code.strict || !function.code.has_simple_parameters();
@@ -6803,8 +6849,8 @@ impl Runtime {
                     if matches!(value, Value::Undefined)
                         && let Some(initializer) = &parameter.initializer
                     {
-                        value = self.eval(initializer, env, doc)?;
-                        if matches!(&**initializer, Expr::Function(code) if code.name.is_none()) {
+                        value = self.eval(unit, initializer, env, doc)?;
+                        if unit.anonymous(*initializer) {
                             self.charge(parameter.name.len().saturating_mul(4))?;
                             self.set_function_name(
                                 &value,
@@ -6826,7 +6872,7 @@ impl Runtime {
                     // cannot become visible to those closures retroactively.
                     let body_env = self.environment(env)?;
                     self.environments[body_env].function_scope = true;
-                    self.hoist_vars(&function.code.body, body_env)?;
+                    self.hoist_vars(unit, &function.code.body, body_env)?;
                     for parameter in &function.code.params {
                         self.tick()?;
                         if self.environments[body_env]
@@ -6857,7 +6903,7 @@ impl Runtime {
                 } else {
                     env
                 };
-                match self.statements(&function.code.body, body_env, doc)? {
+                match self.statements(unit, &function.code.body, body_env, doc)? {
                     Flow::Return(value) => Ok(value),
                     Flow::Normal(_) => Ok(Value::Undefined),
                     _ => Err(ScriptError::new("loop control outside loop")),
@@ -10702,15 +10748,7 @@ impl Runtime {
                 self.objects[properties].attributes("length", false, false, true);
                 let id = self.functions.len();
                 self.functions.push(Function {
-                    code: FunctionCode {
-                        params: Vec::new(),
-                        body: Rc::new(Vec::new()),
-                        name: None,
-                        arrow: true,
-                        self_name: false,
-                        constructable: false,
-                        strict: true,
-                    },
+                    code: self.functions[self.function_prototype].code.clone(),
                     environment: 0,
                     properties,
                     bound: Some(BoundFunction {
@@ -12907,8 +12945,10 @@ mod tests {
         };
         lex("é", &mut budget).unwrap();
         // One raw-start query, rather than an identical query in each helper.
-        assert_eq!(MAX_STEPS - budget.steps, 3 + IDENTIFIER_LOOKUP_WORK);
-        let required = 8 * std::mem::size_of::<Token>()
+        assert_eq!(MAX_STEPS - budget.steps, 4 + IDENTIFIER_LOOKUP_WORK);
+        let required = 4 * std::mem::size_of::<Vec<Token>>()
+            + 32
+            + 128 * std::mem::size_of::<Token>()
             + 32
             + std::mem::size_of::<ScriptError>()
             + 2 * std::mem::size_of::<usize>();
@@ -14694,7 +14734,7 @@ mod tests {
         let before = runtime.functions.len();
         assert!(
             runtime
-                .function_value(code, 1)
+                .function_value(&code::test_function(code), 1)
                 .unwrap_err()
                 .is_resource_limit()
         );
@@ -18004,7 +18044,8 @@ mod tests {
             ]
         );
         let mut runtime = Runtime::new();
-        runtime.hoist_vars(&program.body, 1).unwrap();
+        let unit = code::test_unit(&program.body);
+        runtime.hoist_vars(&unit, &unit.body, 1).unwrap();
         for name in names {
             assert_eq!(runtime.lookup(1, name).unwrap().1, Value::Undefined);
         }
@@ -18085,18 +18126,19 @@ mod tests {
             vec![("unreached".into(), None)],
             DeclarationKind::Var,
         )];
+        let unit = code::test_unit(&body);
         let mut runtime = Runtime::new();
         runtime.steps = 0;
         assert!(
             runtime
-                .hoist_vars(&body, 1)
+                .hoist_vars(&unit, &unit.body, 1)
                 .unwrap_err()
                 .is_resource_limit()
         );
         assert!(runtime.lookup(1, "unreached").is_none());
         runtime.steps = MAX_STEPS;
         runtime.stack_units = MAX_STACK_UNITS;
-        runtime.hoist_vars(&body, 1).unwrap();
+        runtime.hoist_vars(&unit, &unit.body, 1).unwrap();
         assert_eq!(runtime.stack_units, MAX_STACK_UNITS);
         assert_eq!(runtime.lookup(1, "unreached").unwrap().1, Value::Undefined);
     }
@@ -19339,13 +19381,17 @@ mod tests {
                 Box::new(Expr::Ident("held".into())),
                 Box::new(Expr::Object(Vec::new())),
             );
+            let unit = code::test_unit(&[Stmt::Expr(expr)]);
+            let code::Stmt::Expr(expr) = unit.stmt(unit.body[0]) else {
+                panic!("expression code");
+            };
             runtime.steps = MAX_STEPS;
             runtime.allocated = MAX_HEAP;
-            assert_eq!(runtime.eval(&expr, 0, &mut doc).unwrap(), skip);
+            assert_eq!(runtime.eval(&unit, expr, 0, &mut doc).unwrap(), skip);
             assert_eq!(runtime.allocated, MAX_HEAP);
             let short_steps = MAX_STEPS - runtime.steps;
             runtime.steps = short_steps;
-            assert_eq!(runtime.eval(&expr, 0, &mut doc).unwrap(), skip);
+            assert_eq!(runtime.eval(&unit, expr, 0, &mut doc).unwrap(), skip);
             assert_eq!(runtime.steps, 0);
             runtime.steps = MAX_STEPS;
             runtime.environments[0]
@@ -19355,7 +19401,7 @@ mod tests {
                 .value = take;
             assert!(
                 runtime
-                    .eval(&expr, 0, &mut doc)
+                    .eval(&unit, expr, 0, &mut doc)
                     .unwrap_err()
                     .is_resource_limit()
             );
@@ -21605,7 +21651,7 @@ mod tests {
         let before = runtime.functions.len();
         assert!(
             runtime
-                .function_value(code, 1)
+                .function_value(&code::test_function(code), 1)
                 .unwrap_err()
                 .is_resource_limit()
         );
@@ -21618,7 +21664,7 @@ mod tests {
         let before = runtime.functions.len();
         assert!(
             runtime
-                .function_value(&named, 1)
+                .function_value(&code::test_function(&named), 1)
                 .unwrap_err()
                 .is_resource_limit()
         );
