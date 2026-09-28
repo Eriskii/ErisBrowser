@@ -32,15 +32,18 @@ REST_PARAMETER_DIRECTORIES = {'rest-parameters': 11}
 IS_PROTOTYPE_OF_DIRECTORIES = {'Object/prototype/isPrototypeOf': 10}
 GLOBAL_VALUE_DIRECTORIES = {'global': 29, 'undefined': 8, 'NaN': 6, 'Infinity': 6}
 ARRAY_SORT_DIRECTORIES = {'Array/prototype/sort': 54}
+IDENTIFIER_DIRECTORIES = {'identifiers': 268, 'white-space': 67}
 PROFILES = {'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
             'rest-parameters': REST_PARAMETER_DIRECTORIES,
             'is-prototype-of': IS_PROTOTYPE_OF_DIRECTORIES,
-            'global-values': GLOBAL_VALUE_DIRECTORIES, 'array-sort': ARRAY_SORT_DIRECTORIES}
+            'global-values': GLOBAL_VALUE_DIRECTORIES, 'array-sort': ARRAY_SORT_DIRECTORIES,
+            'identifiers': IDENTIFIER_DIRECTORIES}
 PROFILE_ROOTS = {'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
                  'template-literal': 'test/language', 'functions': 'test/language',
                  'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins',
-                 'global-values': 'test/built-ins', 'array-sort': 'test/built-ins'}
+                 'global-values': 'test/built-ins', 'array-sort': 'test/built-ins',
+                 'identifiers': 'test/language'}
 
 
 def corpus_name(profile):
@@ -164,7 +167,7 @@ def import_corpus(output, profile='string-json'):
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
         sources = dict(zip(paths, pool.map(lambda path: fetch(raw + path), paths)))
     harness = {'assert.js', 'sta.js'}
-    if profile in {'template-literal', 'functions', 'rest-parameters', 'is-prototype-of'}:
+    if profile in {'template-literal', 'functions', 'rest-parameters', 'is-prototype-of', 'identifiers'}:
         # These unchanged helpers support the assertion-integrity preflight,
         # even when no selected test requests them directly.
         harness.update({'propertyHelper.js', 'compareArray.js'})
@@ -194,6 +197,7 @@ def import_corpus(output, profile='string-json'):
         'is-prototype-of': 'all direct .js files in built-ins/Object/prototype/isPrototypeOf; no implementation',
         'global-values': 'all direct .js files in built-ins/global, undefined, NaN and Infinity; no implementation',
         'array-sort': 'all direct .js files in built-ins/Array/prototype/sort; no implementation',
+        'identifiers': 'all direct .js files in language/identifiers and language/white-space; no implementation',
     }[profile]
     manifest = dict(format=1, repository=f'https://github.com/{REPOSITORY}', revision=REVISION,
                     scope=scope,

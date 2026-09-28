@@ -1,0 +1,42 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Unicode names and escaped identifiers</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#alias{left:0}#marks{left:50px}#scalar{left:100px}#properties{left:150px}#context{left:200px}#rescan{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="alias" class="sample"></div><div id="marks" class="sample"></div>
+<div id="scalar" class="sample"></div><div id="properties" class="sample"></div>
+<div id="context" class="sample"></div><div id="rescan" class="sample"></div>
+<button id="change" type="button">Update Unicode names</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color='green'){document.getElementById(id).style.backgroundColor=color;}
+let π=2;\u03C0+=3;
+function \u{0000061}dd(value){return value+π;}
+check(π===5&&add(2)===7,'raw and escaped names share a binding');mark('alias');
+const ℘=7;const a\u0301=8;const é=9;const e\u0301=10;
+check(\u2118===7&&á===8&&é===9&&é===10,'Other_ID, combining marks and distinct normalization');mark('marks');
+let 𐐀=11;const x\u200C\u200D=12;
+check(\u{10400}===11&&x‌‍===12,'supplementary start and join-control continuation');mark('scalar');
+const base={inherited:13};
+const object={\u0069f:14,\u0067et(){return this.if;},\u005f_proto__:base};
+check(object.\u0069f===14&&object.get()===14&&object.inherited===13,'decoded property names and escaped method name');
+check(Object.getPrototypeOf(object)===base,'decoded prototype key');mark('properties');
+function context(){'use strict';let await=15;let async=16;return await+async;}
+let yield=17;
+check(context()===31&&yield===17,'ordinary contextual names');mark('context');
+const tail=`${/}/.test('}')} ${\u03C0}`;const﻿bom=18;
+check(tail==='true 5'&&bom===18,'names after rescan and BOM whitespace');mark('rescan');
+document.getElementById('result').textContent=String(π);document.body.className='ready';
+document.getElementById('change').onclick=function(\u0065vent){
+  check(event.type==='click'&&π===5&&𐐀===11,'decoded names survive callback checkpoint');
+  \u03C0++;\u{10400}++;
+  check(add(1)===7&&𐐀===12,'retained closures use decoded names');
+  document.getElementById('result').textContent=String(π);
+  mark('alias','blue');mark('marks','blue');mark('scalar','blue');
+  mark('properties','blue');mark('context','blue');mark('rescan','blue');
+  document.body.className='clicked';
+};
+</script>

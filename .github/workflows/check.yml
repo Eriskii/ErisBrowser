@@ -19,6 +19,8 @@ jobs:
       - run: rustup update stable && rustup default stable
       - run: rustup component add rustfmt clippy
       - run: cargo fmt --all -- --check
+      - name: Verify pinned Unicode identifier tables offline
+        run: python3 tools/generate_js_identifiers.py --check
       - run: cargo clippy --locked --all-targets -- -D warnings
       - run: cargo test --locked -- --include-ignored
         env:

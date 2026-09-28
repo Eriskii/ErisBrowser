@@ -76,6 +76,7 @@ The benchmark measures **warm-cache CSS computation + layout + software painting
 
 ```sh
 cargo fmt --all -- --check
+python3 tools/generate_js_identifiers.py --check
 cargo clippy --locked --all-targets -- -D warnings
 cargo test --locked
 cargo test --locked -- --include-ignored
@@ -104,9 +105,9 @@ The [validation record](docs/VALIDATION.md) lists observed results and their lim
 
 A separate [function inventory](tests/conformance/test262-functions.md) retains
 663 unchanged Test262 sources and 1,131 required variants. Default parameters,
-prototype membership, Window.self and array sorting bring it to 503 passing
-variants, 153 more than the initial measurement with no lost passes. Failures,
-unsupported features and two parser-limit stops remain; it is not yet a healthy
+prototype membership, Window.self, array sorting and identifier parsing bring it
+to 509 passing variants, 159 more than the initial measurement with no lost
+passes. Unsupported features and two parser-limit stops remain; it is not yet a healthy
 regression gate.
 
 A separate complete [rest-parameter directory](tests/conformance/test262-rest-parameters.md)
@@ -124,8 +125,15 @@ unsupported. Corrected global-property behavior adds six passes and verifies all
 
 The complete [array-sort directory](tests/conformance/test262-array-sort.md)
 retains 107 variants: 53 pass, 46 remain unsupported, six fail on missing reduce,
-and two exceed the instruction budget. Those resource stops prevent a healthy
+and two exceed the shared script budget. Those resource stops prevent a healthy
 regression baseline; the full inventory remains part of local measurements.
+
+The complete [identifier and whitespace directories](tests/conformance/test262-identifiers.md)
+retain 669 variants: 507 pass, 154 remain unsupported and eight reach compile
+limits. All 88 assertion checks verify. The final implementation adds 130 passes
+without losing earlier passes; retained preliminary results document 16 resource
+regressions that were resolved by reducing actual lookup work and token storage.
+The remaining resource stops prevent a healthy regression baseline.
 
 ## Implementation
 
@@ -140,6 +148,7 @@ The [development docket](docs/ROADMAP.md) includes a planned Vulkan rendering ba
 | `selectors.rs` | Bounded CSS tokens and selector grammar shared by matching and feature queries |
 | `layout.rs` | Block/inline flow, floats, flex, Grid placement/tracks, tables, controls, display lists, hit regions |
 | `script.rs` | Custom lexer, parser, interpreter, lexical environments, DOM bindings and events |
+| `js_identifier.rs` | Offline-generated Unicode identifier membership with pinned source data |
 | `regexp.rs` | Custom bounded UTF-16 regular-expression parser and backtracking matcher |
 | `svg.rs` | Custom SVG geometry, paths, transforms and bounded RGBA rasterization |
 | `graphics.rs` | Font metrics, cached glyph masks, clipped/limited software painting, group opacity, PNG output |
@@ -155,4 +164,4 @@ The [development docket](docs/ROADMAP.md) includes a planned Vulkan rendering ba
 
 Infrastructure dependencies provide TLS/HTTP (`ureq`/`rustls`), URLs (`url`), character encodings, font outline rasterization (`ab_glyph`), image codecs (`image`), native clipboard access (`arboard`), window events (`winit`), a pixel surface (`softbuffer`), and OS confinement wrappers (`landlock`, `rustix`, `seccompiler`). These are not web layout or script engines. Their transitive dependencies remain part of the security surface. The source forbids application-level `unsafe` Rust; dependencies can contain unsafe code.
 
-Fonts are DejaVu; redistribution notices are in [assets/FONTS-LICENSE.txt](assets/FONTS-LICENSE.txt). Project code is MIT licensed. Vendored WPT test data retains its [upstream BSD license](tests/upstream/wpt-html/LICENSE.md); Test262 data retains its [upstream license](tests/upstream/test262/LICENSE).
+Fonts are DejaVu; redistribution notices are in [assets/FONTS-LICENSE.txt](assets/FONTS-LICENSE.txt). Project code is MIT licensed. Vendored WPT test data retains its [upstream BSD license](tests/upstream/wpt-html/LICENSE.md); Test262 data retains its [upstream license](tests/upstream/test262/LICENSE). Identifier tables and their pinned source data retain [Unicode License V3](tests/upstream/unicode/18.0.0/LICENSE.txt).

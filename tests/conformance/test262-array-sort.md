@@ -30,6 +30,18 @@ python3 tools/test262_conformance.py --profile array-sort
 python3 -m unittest discover -s tools -p 'test_test262_conformance.py'
 ```
 
+## Identifier compiler checkpoint
+
+The [full later comparison](test262-array-sort-identifiers.json) preserves all
+107 cases, 80 preflights, policy and result categories: **53 passed / six failed /
+46 unsupported / two resources**. The two unchanged 2,048-element stability
+modes now reach the runtime allocation limit rather than the earlier instruction
+limit because initial token/compiler storage is accounted cumulatively. Their
+exact before/after diagnostics are retained; this is not a new pass. The final
+adapter SHA-256 is
+`b7f77cbbc11f14297b7b34716668a10c0522be62562a33a07756dcc89f17d12f`.
+The following original sort measurements remain historical evidence.
+
 ## Isolated policy and retained limitations
 
 The policy adds only `stable-array-sort` to the existing core feature set:

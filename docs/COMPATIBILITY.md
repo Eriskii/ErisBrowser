@@ -66,6 +66,17 @@ functions, arrows, methods and setters share this bounded implementation. See
 [default-parameter scope](../tests/conformance/default-parameters.md) and the
 [complete upstream function inventory](../tests/conformance/test262-functions.md).
 
+JavaScript identifier names use pinned Unicode 18.0.0 `ID_Start`/`ID_Continue`
+data with ECMAScript additions. Raw names and valid four-digit or braced Unicode
+escapes resolve to the same binding without normalization. Decoded reserved
+words remain invalid as bindings/references; property names accept them, while
+keywords and accessor introducers require literal spelling. Numeric adjacency,
+RegExp flag boundaries and ECMAScript whitespace use their separate lexical
+rules. These changes do not implement classes, modules, private fields,
+generators, async execution or Unicode RegExp capture names. See
+[identifier scope](../tests/conformance/identifiers.md) and
+[data provenance](../tests/conformance/unicode-identifiers-data.md).
+
 Identifier rest parameters create fresh dense arrays from the remaining actual
 arguments. Ordinary functions, arrows and concise methods support them; accessors
 reject rest. Rest-only functions use unmapped arguments without introducing the

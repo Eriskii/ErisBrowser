@@ -1,0 +1,2396 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all direct .js files in language/identifiers and language/white-space; no implementation",
+  "directories": {
+    "identifiers": [
+      "other_id_continue-escaped.js",
+      "other_id_continue.js",
+      "other_id_start-escaped.js",
+      "other_id_start.js",
+      "part-digits-via-escape-hex.js",
+      "part-digits-via-escape-hex4.js",
+      "part-digits.js",
+      "part-unicode-10.0.0-class-escaped.js",
+      "part-unicode-10.0.0-class.js",
+      "part-unicode-10.0.0-escaped.js",
+      "part-unicode-10.0.0.js",
+      "part-unicode-11.0.0-class-escaped.js",
+      "part-unicode-11.0.0-class.js",
+      "part-unicode-11.0.0-escaped.js",
+      "part-unicode-11.0.0.js",
+      "part-unicode-12.0.0-class-escaped.js",
+      "part-unicode-12.0.0-class.js",
+      "part-unicode-12.0.0-escaped.js",
+      "part-unicode-12.0.0.js",
+      "part-unicode-13.0.0-class-escaped.js",
+      "part-unicode-13.0.0-class.js",
+      "part-unicode-13.0.0-escaped.js",
+      "part-unicode-13.0.0.js",
+      "part-unicode-14.0.0-class-escaped.js",
+      "part-unicode-14.0.0-class.js",
+      "part-unicode-14.0.0-escaped.js",
+      "part-unicode-14.0.0.js",
+      "part-unicode-15.0.0-class-escaped.js",
+      "part-unicode-15.0.0-class.js",
+      "part-unicode-15.0.0-escaped.js",
+      "part-unicode-15.0.0.js",
+      "part-unicode-15.1.0-class-escaped.js",
+      "part-unicode-15.1.0-class.js",
+      "part-unicode-15.1.0-escaped.js",
+      "part-unicode-15.1.0.js",
+      "part-unicode-16.0.0-class-escaped.js",
+      "part-unicode-16.0.0-class.js",
+      "part-unicode-16.0.0-escaped.js",
+      "part-unicode-16.0.0.js",
+      "part-unicode-17.0.0-class-escaped.js",
+      "part-unicode-17.0.0-class.js",
+      "part-unicode-17.0.0-escaped.js",
+      "part-unicode-17.0.0.js",
+      "part-unicode-5.2.0-class-escaped.js",
+      "part-unicode-5.2.0-class.js",
+      "part-unicode-5.2.0-escaped.js",
+      "part-unicode-5.2.0.js",
+      "part-unicode-6.0.0-class-escaped.js",
+      "part-unicode-6.0.0-class.js",
+      "part-unicode-6.0.0-escaped.js",
+      "part-unicode-6.0.0.js",
+      "part-unicode-6.1.0-class-escaped.js",
+      "part-unicode-6.1.0-class.js",
+      "part-unicode-6.1.0-escaped.js",
+      "part-unicode-6.1.0.js",
+      "part-unicode-7.0.0-class-escaped.js",
+      "part-unicode-7.0.0-class.js",
+      "part-unicode-7.0.0-escaped.js",
+      "part-unicode-7.0.0.js",
+      "part-unicode-8.0.0-class-escaped.js",
+      "part-unicode-8.0.0-class.js",
+      "part-unicode-8.0.0-escaped.js",
+      "part-unicode-8.0.0.js",
+      "part-unicode-9.0.0-class-escaped.js",
+      "part-unicode-9.0.0-class.js",
+      "part-unicode-9.0.0-escaped.js",
+      "part-unicode-9.0.0.js",
+      "part-zwj-zwnj-escaped.js",
+      "start-dollar-sign.js",
+      "start-escape-seq.js",
+      "start-underscore.js",
+      "start-unicode-10.0.0-class-escaped.js",
+      "start-unicode-10.0.0-class.js",
+      "start-unicode-10.0.0-escaped.js",
+      "start-unicode-10.0.0.js",
+      "start-unicode-11.0.0-class-escaped.js",
+      "start-unicode-11.0.0-class.js",
+      "start-unicode-11.0.0-escaped.js",
+      "start-unicode-11.0.0.js",
+      "start-unicode-12.0.0-class-escaped.js",
+      "start-unicode-12.0.0-class.js",
+      "start-unicode-12.0.0-escaped.js",
+      "start-unicode-12.0.0.js",
+      "start-unicode-13.0.0-class-escaped.js",
+      "start-unicode-13.0.0-class.js",
+      "start-unicode-13.0.0-escaped.js",
+      "start-unicode-13.0.0.js",
+      "start-unicode-14.0.0-class-escaped.js",
+      "start-unicode-14.0.0-class.js",
+      "start-unicode-14.0.0-escaped.js",
+      "start-unicode-14.0.0.js",
+      "start-unicode-15.0.0-class-escaped.js",
+      "start-unicode-15.0.0-class.js",
+      "start-unicode-15.0.0-escaped.js",
+      "start-unicode-15.0.0.js",
+      "start-unicode-15.1.0-class-escaped.js",
+      "start-unicode-15.1.0-class.js",
+      "start-unicode-15.1.0-escaped.js",
+      "start-unicode-15.1.0.js",
+      "start-unicode-16.0.0-class-escaped.js",
+      "start-unicode-16.0.0-class.js",
+      "start-unicode-16.0.0-escaped.js",
+      "start-unicode-16.0.0.js",
+      "start-unicode-17.0.0-class-escaped.js",
+      "start-unicode-17.0.0-class.js",
+      "start-unicode-17.0.0-escaped.js",
+      "start-unicode-17.0.0.js",
+      "start-unicode-5.2.0-class-escaped.js",
+      "start-unicode-5.2.0-class.js",
+      "start-unicode-5.2.0-escaped.js",
+      "start-unicode-5.2.0.js",
+      "start-unicode-6.0.0-class-escaped.js",
+      "start-unicode-6.0.0-class.js",
+      "start-unicode-6.0.0-escaped.js",
+      "start-unicode-6.0.0.js",
+      "start-unicode-6.1.0-class-escaped.js",
+      "start-unicode-6.1.0-class.js",
+      "start-unicode-6.1.0-escaped.js",
+      "start-unicode-6.1.0.js",
+      "start-unicode-7.0.0-class-escaped.js",
+      "start-unicode-7.0.0-class.js",
+      "start-unicode-7.0.0-escaped.js",
+      "start-unicode-7.0.0.js",
+      "start-unicode-8.0.0-class-escaped.js",
+      "start-unicode-8.0.0-class.js",
+      "start-unicode-8.0.0-escaped.js",
+      "start-unicode-8.0.0.js",
+      "start-unicode-9.0.0-class-escaped.js",
+      "start-unicode-9.0.0-class.js",
+      "start-unicode-9.0.0-escaped.js",
+      "start-unicode-9.0.0.js",
+      "start-unicode-ltr.js",
+      "start-zwj-escaped.js",
+      "start-zwnj-escaped.js",
+      "unicode-escape-nls-err.js",
+      "val-break-via-escape-hex.js",
+      "val-break-via-escape-hex4.js",
+      "val-break.js",
+      "val-case-via-escape-hex.js",
+      "val-case-via-escape-hex4.js",
+      "val-case.js",
+      "val-catch-via-escape-hex.js",
+      "val-catch-via-escape-hex4.js",
+      "val-catch.js",
+      "val-class-via-escape-hex.js",
+      "val-class-via-escape-hex4.js",
+      "val-class.js",
+      "val-const-via-escape-hex.js",
+      "val-const-via-escape-hex4.js",
+      "val-const.js",
+      "val-continue-via-escape-hex.js",
+      "val-continue-via-escape-hex4.js",
+      "val-continue.js",
+      "val-debugger-via-escape-hex.js",
+      "val-debugger-via-escape-hex4.js",
+      "val-debugger.js",
+      "val-default-via-escape-hex.js",
+      "val-default-via-escape-hex4.js",
+      "val-default.js",
+      "val-delete-via-escape-hex.js",
+      "val-delete-via-escape-hex4.js",
+      "val-delete.js",
+      "val-do-via-escape-hex.js",
+      "val-do-via-escape-hex4.js",
+      "val-do.js",
+      "val-dollar-sign-via-escape-hex.js",
+      "val-dollar-sign-via-escape-hex4.js",
+      "val-dollar-sign.js",
+      "val-else-via-escape-hex.js",
+      "val-else-via-escape-hex4.js",
+      "val-else.js",
+      "val-enum-via-escape-hex.js",
+      "val-enum-via-escape-hex4.js",
+      "val-enum.js",
+      "val-export-via-escape-hex.js",
+      "val-export-via-escape-hex4.js",
+      "val-export.js",
+      "val-extends-via-escape-hex.js",
+      "val-extends-via-escape-hex4.js",
+      "val-extends.js",
+      "val-false-via-escape-hex.js",
+      "val-false-via-escape-hex4.js",
+      "val-false.js",
+      "val-finally-via-escape-hex.js",
+      "val-finally-via-escape-hex4.js",
+      "val-finally.js",
+      "val-for-via-escape-hex.js",
+      "val-for-via-escape-hex4.js",
+      "val-for.js",
+      "val-function-via-escape-hex.js",
+      "val-function-via-escape-hex4.js",
+      "val-function.js",
+      "val-if-via-escape-hex.js",
+      "val-if-via-escape-hex4.js",
+      "val-if.js",
+      "val-import-via-escape-hex.js",
+      "val-import-via-escape-hex4.js",
+      "val-import.js",
+      "val-in-via-escape-hex.js",
+      "val-in-via-escape-hex4.js",
+      "val-in.js",
+      "val-instanceof-via-escape-hex.js",
+      "val-instanceof-via-escape-hex4.js",
+      "val-instanceof.js",
+      "val-new-via-escape-hex.js",
+      "val-new-via-escape-hex4.js",
+      "val-new.js",
+      "val-null-via-escape-hex.js",
+      "val-null-via-escape-hex4.js",
+      "val-null.js",
+      "val-return-via-escape-hex.js",
+      "val-return-via-escape-hex4.js",
+      "val-return.js",
+      "val-super-via-escape-hex.js",
+      "val-super-via-escape-hex4.js",
+      "val-super.js",
+      "val-switch-via-escape-hex.js",
+      "val-switch-via-escape-hex4.js",
+      "val-switch.js",
+      "val-this-via-escape-hex.js",
+      "val-this-via-escape-hex4.js",
+      "val-this.js",
+      "val-throw-via-escape-hex.js",
+      "val-throw-via-escape-hex4.js",
+      "val-throw.js",
+      "val-true-via-escape-hex.js",
+      "val-true-via-escape-hex4.js",
+      "val-true.js",
+      "val-try-via-escape-hex.js",
+      "val-try-via-escape-hex4.js",
+      "val-try.js",
+      "val-typeof-via-escape-hex.js",
+      "val-typeof-via-escape-hex4.js",
+      "val-typeof.js",
+      "val-underscore-via-escape-hex.js",
+      "val-underscore-via-escape-hex4.js",
+      "val-underscore.js",
+      "val-var-via-escape-hex.js",
+      "val-var-via-escape-hex4.js",
+      "val-var.js",
+      "val-void-via-escape-hex.js",
+      "val-void-via-escape-hex4.js",
+      "val-void.js",
+      "val-while-via-escape-hex.js",
+      "val-while-via-escape-hex4.js",
+      "val-while.js",
+      "val-with-via-escape-hex.js",
+      "val-with-via-escape-hex4.js",
+      "val-with.js",
+      "val-yield-strict.js",
+      "vals-cjk-escaped.js",
+      "vals-cjk.js",
+      "vals-eng-alpha-lower-via-escape-hex.js",
+      "vals-eng-alpha-lower-via-escape-hex4.js",
+      "vals-eng-alpha-lower.js",
+      "vals-eng-alpha-upper-via-escape-hex.js",
+      "vals-eng-alpha-upper-via-escape-hex4.js",
+      "vals-eng-alpha-upper.js",
+      "vals-rus-alpha-lower-via-escape-hex.js",
+      "vals-rus-alpha-lower-via-escape-hex4.js",
+      "vals-rus-alpha-lower.js",
+      "vals-rus-alpha-upper-via-escape-hex.js",
+      "vals-rus-alpha-upper-via-escape-hex4.js",
+      "vals-rus-alpha-upper.js",
+      "vertical-tilde-continue-escaped.js",
+      "vertical-tilde-continue.js",
+      "vertical-tilde-start-escaped.js",
+      "vertical-tilde-start.js"
+    ],
+    "white-space": [
+      "S7.2_A2.1_T2.js",
+      "S7.2_A2.2_T2.js",
+      "S7.2_A2.3_T2.js",
+      "S7.2_A2.4_T2.js",
+      "S7.2_A2.5_T2.js",
+      "S7.2_A3.1_T2.js",
+      "S7.2_A3.2_T2.js",
+      "S7.2_A3.3_T2.js",
+      "S7.2_A3.4_T2.js",
+      "S7.2_A3.5_T2.js",
+      "S7.2_A4.1_T2.js",
+      "S7.2_A4.2_T2.js",
+      "S7.2_A4.3_T2.js",
+      "S7.2_A4.4_T2.js",
+      "S7.2_A4.5_T2.js",
+      "S7.2_A5_T1.js",
+      "S7.2_A5_T2.js",
+      "S7.2_A5_T3.js",
+      "S7.2_A5_T4.js",
+      "S7.2_A5_T5.js",
+      "after-regular-expression-literal-carriage-return.js",
+      "after-regular-expression-literal-em-quad.js",
+      "after-regular-expression-literal-em-space.js",
+      "after-regular-expression-literal-en-quad.js",
+      "after-regular-expression-literal-en-space.js",
+      "after-regular-expression-literal-figure-space.js",
+      "after-regular-expression-literal-form-feed.js",
+      "after-regular-expression-literal-four-per-em-space.js",
+      "after-regular-expression-literal-hair-space.js",
+      "after-regular-expression-literal-ideographic-space.js",
+      "after-regular-expression-literal-line-feed.js",
+      "after-regular-expression-literal-line-separator.js",
+      "after-regular-expression-literal-medium-mathematical-space.js",
+      "after-regular-expression-literal-nbsp.js",
+      "after-regular-expression-literal-nnbsp.js",
+      "after-regular-expression-literal-ogham-space.js",
+      "after-regular-expression-literal-paragraph-separator.js",
+      "after-regular-expression-literal-punctuation-space.js",
+      "after-regular-expression-literal-six-per-em-space.js",
+      "after-regular-expression-literal-space.js",
+      "after-regular-expression-literal-tab.js",
+      "after-regular-expression-literal-thin-space.js",
+      "after-regular-expression-literal-three-per-em-space.js",
+      "after-regular-expression-literal-vertical-tab.js",
+      "after-regular-expression-literal-zwnbsp.js",
+      "between-form-feed.js",
+      "between-horizontal-tab.js",
+      "between-nbsp.js",
+      "between-space.js",
+      "between-vertical-tab.js",
+      "comment-multi-form-feed.js",
+      "comment-multi-horizontal-tab.js",
+      "comment-multi-nbsp.js",
+      "comment-multi-space.js",
+      "comment-multi-vertical-tab.js",
+      "comment-single-form-feed.js",
+      "comment-single-horizontal-tab.js",
+      "comment-single-nbsp.js",
+      "comment-single-space.js",
+      "comment-single-vertical-tab.js",
+      "mongolian-vowel-separator-eval.js",
+      "mongolian-vowel-separator.js",
+      "string-form-feed.js",
+      "string-horizontal-tab.js",
+      "string-nbsp.js",
+      "string-space.js",
+      "string-vertical-tab.js"
+    ]
+  },
+  "test_files": 335,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/language/identifiers/other_id_continue-escaped.js",
+      "upstream_path": "test/language/identifiers/other_id_continue-escaped.js",
+      "bytes": 711,
+      "sha256": "deb73f334517afb4553fb3f12d716767b6ffe3333476af542ef5927b45d5e001"
+    },
+    {
+      "path": "test/language/identifiers/other_id_continue.js",
+      "upstream_path": "test/language/identifiers/other_id_continue.js",
+      "bytes": 835,
+      "sha256": "4a36775d34ea937475219a520be01768cf0b12712e16a0ff9eba8b7975b2d9cd"
+    },
+    {
+      "path": "test/language/identifiers/other_id_start-escaped.js",
+      "upstream_path": "test/language/identifiers/other_id_start-escaped.js",
+      "bytes": 418,
+      "sha256": "285faafbb8baabcdc88ed53df483eb2c6836ca71495680ba39ae2242ee5e5a3b"
+    },
+    {
+      "path": "test/language/identifiers/other_id_start.js",
+      "upstream_path": "test/language/identifiers/other_id_start.js",
+      "bytes": 460,
+      "sha256": "98975fd7ab9d9ec0c875ce717af9c084446a2cfbf4f6d3a465856a831db010d8"
+    },
+    {
+      "path": "test/language/identifiers/part-digits-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/part-digits-via-escape-hex.js",
+      "bytes": 671,
+      "sha256": "808f6a38d050f226c78c50c6b1912948705b099ae26ce527a70e1c885cd5eac7"
+    },
+    {
+      "path": "test/language/identifiers/part-digits-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/part-digits-via-escape-hex4.js",
+      "bytes": 672,
+      "sha256": "4cad2f393d021a664ec64a9a8dfa64063ff503040fa725a9d2a8f9b67491bb58"
+    },
+    {
+      "path": "test/language/identifiers/part-digits.js",
+      "upstream_path": "test/language/identifiers/part-digits.js",
+      "bytes": 621,
+      "sha256": "389fcb27b2b5f6d705844f0ff892b90f503a750110d6b6b06d2de254a56aefa5"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-10.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-10.0.0-class-escaped.js",
+      "bytes": 1320,
+      "sha256": "c408fc11ec2ea53c6312ffe01afc8bdd9fc149f48871b5be4a5b9c6760916f95"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-10.0.0-class.js",
+      "upstream_path": "test/language/identifiers/part-unicode-10.0.0-class.js",
+      "bytes": 801,
+      "sha256": "87eceb294af60c89e924accd623bfd505905b6efb83b807fadf681288096c1c5"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-10.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-10.0.0-escaped.js",
+      "bytes": 1241,
+      "sha256": "95e3aa2b6240a0f38e96de9b3499594bd2c635b72f8aae1321e02713b498eec3"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-10.0.0.js",
+      "upstream_path": "test/language/identifiers/part-unicode-10.0.0.js",
+      "bytes": 725,
+      "sha256": "63127f15aa8fd55f95f02a33c19f6669b50bca362d598cf8c1ab73b405393b1b"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-11.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-11.0.0-class-escaped.js",
+      "bytes": 1221,
+      "sha256": "97095e4e5e46650ed3b9b9de110621a8aa78239fabb9c9639e0e58bd2b81c879"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-11.0.0-class.js",
+      "upstream_path": "test/language/identifiers/part-unicode-11.0.0-class.js",
+      "bytes": 753,
+      "sha256": "07fcb5f991676d6b7bdfd30e2302ea428ae564836fa0659616297d225dd82338"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-11.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-11.0.0-escaped.js",
+      "bytes": 1142,
+      "sha256": "8ff40675f590acbd932409b6297448f852b5aaedef34aa8d8a3abb4bb313d716"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-11.0.0.js",
+      "upstream_path": "test/language/identifiers/part-unicode-11.0.0.js",
+      "bytes": 677,
+      "sha256": "7a9eeaad3bcb9a670b1e9b6fdfe6792b89a913bb5cdfe0d616d5dbc771c267d0"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-12.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-12.0.0-class-escaped.js",
+      "bytes": 1062,
+      "sha256": "3f03a8b52fb2466d91c67035b63fd24c7f5f0bb8cf499edb56ac725045b0e547"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-12.0.0-class.js",
+      "upstream_path": "test/language/identifiers/part-unicode-12.0.0-class.js",
+      "bytes": 682,
+      "sha256": "0909c0096fe4312c47ec11f4c2f349031797d4912711c7b67459e7897a1ead34"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-12.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-12.0.0-escaped.js",
+      "bytes": 983,
+      "sha256": "8c1a0ab1ec6872dbb2ec241c35d0d203722762c22e3c9d80283ab8dab3ba43a7"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-12.0.0.js",
+      "upstream_path": "test/language/identifiers/part-unicode-12.0.0.js",
+      "bytes": 606,
+      "sha256": "8531189f1ebdc16e7d2eecd1e0f35be36dc77c05780e1c5c041e43e65306192b"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-13.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-13.0.0-class-escaped.js",
+      "bytes": 960,
+      "sha256": "a85a5cb88f8a9b33d91f008571e4757433b12d6fda4b62bdf3305bd5e33b59d8"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-13.0.0-class.js",
+      "upstream_path": "test/language/identifiers/part-unicode-13.0.0-class.js",
+      "bytes": 638,
+      "sha256": "91eeef5fbde1bc62f120ba6d6dd1cf373d3a11a9c3c905ca4e48e7c6d152ac35"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-13.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-13.0.0-escaped.js",
+      "bytes": 881,
+      "sha256": "f939efb1f4a931cdac3e636c5c8f601f18cf0fdb2ece21ec158a979a8088cf89"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-13.0.0.js",
+      "upstream_path": "test/language/identifiers/part-unicode-13.0.0.js",
+      "bytes": 562,
+      "sha256": "2fb488432071f98bc0f8884b9df26ddcf693b3b407f498f1f6f9581893db0002"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-14.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-14.0.0-class-escaped.js",
+      "bytes": 1554,
+      "sha256": "d97fc78cdbc29b910446baad3f7d963dcab88283c14214f1a30694fa87c713f0"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-14.0.0-class.js",
+      "upstream_path": "test/language/identifiers/part-unicode-14.0.0-class.js",
+      "bytes": 912,
+      "sha256": "574b80666e5a6d14636dd87bc7b26ce1832e7c1ba13afd553afb3f82809c0de1"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-14.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-14.0.0-escaped.js",
+      "bytes": 1475,
+      "sha256": "5ff6e6bd11afe98fbcc616b61ac2136a4158ec82ede227ffcd099aba9031b73c"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-14.0.0.js",
+      "upstream_path": "test/language/identifiers/part-unicode-14.0.0.js",
+      "bytes": 836,
+      "sha256": "a183976a5a2fe24d0ad5fd477c4c76d08107c899d964af516aa246f952a4b052"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-15.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-15.0.0-class-escaped.js",
+      "bytes": 1104,
+      "sha256": "cc9b291b2b34ecf85a520e7732fcc82789c863a70bd0c9ee37eae668a9004557"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-15.0.0-class.js",
+      "upstream_path": "test/language/identifiers/part-unicode-15.0.0-class.js",
+      "bytes": 701,
+      "sha256": "8889104981901c3a496b6c34be8686ec1dd3175a6945e63e773d711e767bfea2"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-15.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-15.0.0-escaped.js",
+      "bytes": 1025,
+      "sha256": "f86ac00e0b8e65f4b191892b496e203552875dee17f9063a6aac152efcf69ea5"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-15.0.0.js",
+      "upstream_path": "test/language/identifiers/part-unicode-15.0.0.js",
+      "bytes": 625,
+      "sha256": "f83f6e9cd0b3d1cd2123360abb47cdf4cc13106d4ea2a07f4d1eab984912c201"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-15.1.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-15.1.0-class-escaped.js",
+      "bytes": 576,
+      "sha256": "62aa45318074f4a99b1572dafb75a88ab8c6ecda675f26928b60edb370f30953"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-15.1.0-class.js",
+      "upstream_path": "test/language/identifiers/part-unicode-15.1.0-class.js",
+      "bytes": 467,
+      "sha256": "5b74ae8c2a99eb4c356b39bf0290e2e252f3b01a73636220e186bf7f664bbd36"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-15.1.0-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-15.1.0-escaped.js",
+      "bytes": 497,
+      "sha256": "f3090c2ef3ec5309329714b06724ef06b9bdf41c661915cc9d748f69f14b73ef"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-15.1.0.js",
+      "upstream_path": "test/language/identifiers/part-unicode-15.1.0.js",
+      "bytes": 391,
+      "sha256": "1967add6f0c6ce39a9cc35275778d860d046b22750157687a88125b22ea91ec3"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-16.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-16.0.0-class-escaped.js",
+      "bytes": 1728,
+      "sha256": "7a0d97756651e34ed5df3edc0b088a754d18afea68aa6d3c270a1d968b527ae2"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-16.0.0-class.js",
+      "upstream_path": "test/language/identifiers/part-unicode-16.0.0-class.js",
+      "bytes": 978,
+      "sha256": "964d47aa501707c3ecfdc85ef5874b5c820a026b2efdc7fcd9424659addc6ed1"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-16.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-16.0.0-escaped.js",
+      "bytes": 1649,
+      "sha256": "fdc9cb6bae76a460cee90c5c4f9c4a81d832e08f21b64d4e819b5b56fa0bd3ae"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-16.0.0.js",
+      "upstream_path": "test/language/identifiers/part-unicode-16.0.0.js",
+      "bytes": 902,
+      "sha256": "aaf6aeef56a6f2ec294f2610ff02da08b67ef9e05df9ee835324cbfa6bba2715"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-17.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-17.0.0-class-escaped.js",
+      "bytes": 939,
+      "sha256": "1b9f12ecf76752dcbffed77d383b91a187a6694e0e686bf51a9723f3614f353f"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-17.0.0-class.js",
+      "upstream_path": "test/language/identifiers/part-unicode-17.0.0-class.js",
+      "bytes": 636,
+      "sha256": "8825b7b8efbfa7fca9c3a9f3cb6c82bcaa2770929f4ac2709a2ca61b945d7fc1"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-17.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-17.0.0-escaped.js",
+      "bytes": 860,
+      "sha256": "1b1c13ab82bc801d25f453fa7390d2a48914fe01f267606d221528df9676adad"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-17.0.0.js",
+      "upstream_path": "test/language/identifiers/part-unicode-17.0.0.js",
+      "bytes": 560,
+      "sha256": "8ce696ccad1535c42a8a1f9bf4333bfba085f15a3bb39910524c687091a43602"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-5.2.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-5.2.0-class-escaped.js",
+      "bytes": 1859,
+      "sha256": "dba45580441c7eb828bb6a57ab0af779cff1c6e13c73f0154d311be876e0bc09"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-5.2.0-class.js",
+      "upstream_path": "test/language/identifiers/part-unicode-5.2.0-class.js",
+      "bytes": 1101,
+      "sha256": "98e298059c3805c04307cd6e99d28e88ff728c5be6efeff52b1f33013e7154f2"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-5.2.0-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-5.2.0-escaped.js",
+      "bytes": 1780,
+      "sha256": "e16ecef1cb94f5e2a7ec24cdbbfb7af83ceaa6eaed251f7a4779c62852ede45e"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-5.2.0.js",
+      "upstream_path": "test/language/identifiers/part-unicode-5.2.0.js",
+      "bytes": 1025,
+      "sha256": "b0a2ff02858a88f86059c2a094f1ef54d54778d53564b1d8d77987cc7f8d0ce4"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-6.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-6.0.0-class-escaped.js",
+      "bytes": 983,
+      "sha256": "6b2ff2dfeba77e79984a914c85e23428e9b1dfa539cb0a582fd0ed99b94b4258"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-6.0.0-class.js",
+      "upstream_path": "test/language/identifiers/part-unicode-6.0.0-class.js",
+      "bytes": 655,
+      "sha256": "2ebacb758a8d9ff5f85d4a444e9d5eb1744bddddb1449ae26d535ade3489baf8"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-6.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-6.0.0-escaped.js",
+      "bytes": 904,
+      "sha256": "edc3bd8c27d5392c0d22f64fa85bcc3a7ffd852a7af07b50b3d0001a6906109e"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-6.0.0.js",
+      "upstream_path": "test/language/identifiers/part-unicode-6.0.0.js",
+      "bytes": 579,
+      "sha256": "154c83587a70c7cac5a48a908fbf983434efe8255fd32ace1989144b7b788ecd"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-6.1.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-6.1.0-class-escaped.js",
+      "bytes": 2084,
+      "sha256": "b0ba75492b2abed71148dee5921d24cde4a632336c6df053477fc1786649e234"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-6.1.0-class.js",
+      "upstream_path": "test/language/identifiers/part-unicode-6.1.0-class.js",
+      "bytes": 1152,
+      "sha256": "4ec70cf3626b1c2411b43b50f0a202f31d699dc54930637ad7a271e84967b86d"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-6.1.0-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-6.1.0-escaped.js",
+      "bytes": 2005,
+      "sha256": "4a939780d482d22acae297eb83773b94523ef8c0560c8f1373ff9c6e65d493bd"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-6.1.0.js",
+      "upstream_path": "test/language/identifiers/part-unicode-6.1.0.js",
+      "bytes": 1076,
+      "sha256": "699c7477e30df998730154bbffb5b8a80fd68a43fd6bc93b3348c3a3cf1ca75a"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-7.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-7.0.0-class-escaped.js",
+      "bytes": 2732,
+      "sha256": "e950a0684463573c5d814f14eb29b4bf24d60967e16205b56e2ef07f988d49ad"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-7.0.0-class.js",
+      "upstream_path": "test/language/identifiers/part-unicode-7.0.0-class.js",
+      "bytes": 1445,
+      "sha256": "f7f5f55fae726730e7b7c5d25cb0758b53a2377a421ef8219680cb51e80e04b0"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-7.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-7.0.0-escaped.js",
+      "bytes": 2653,
+      "sha256": "2a7b742baf4343979d5b057039c369485c1b3da1ceaf4538d1c28ff41895690a"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-7.0.0.js",
+      "upstream_path": "test/language/identifiers/part-unicode-7.0.0.js",
+      "bytes": 1369,
+      "sha256": "1544fa81ca64088fb65aeffed48d415f3f795d06307ee6f46dc932629fe49845"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-8.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-8.0.0-class-escaped.js",
+      "bytes": 1997,
+      "sha256": "d588fe47c419babaf0efa14b8c850f875f27de3e547a825f18c5aa3d758e485c"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-8.0.0-class.js",
+      "upstream_path": "test/language/identifiers/part-unicode-8.0.0-class.js",
+      "bytes": 1098,
+      "sha256": "8fbb105e5ed46cc263697a8d5b245db204c54941981576057c68bbfc1babe49d"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-8.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-8.0.0-escaped.js",
+      "bytes": 1918,
+      "sha256": "af16b4eae1c2c688f5d555c68df6fc31a553d7111a43f8da246283dc022c24ca"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-8.0.0.js",
+      "upstream_path": "test/language/identifiers/part-unicode-8.0.0.js",
+      "bytes": 1022,
+      "sha256": "aae53a2ad09c61a06518b6445dcd6b287ccb9d0746f3fab98ea8227d2f2623ed"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-9.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-9.0.0-class-escaped.js",
+      "bytes": 1961,
+      "sha256": "682e317828d04e7dc2dbbfd968f1c2c72fb561b026e9ed319e2fbe44260612f3"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-9.0.0-class.js",
+      "upstream_path": "test/language/identifiers/part-unicode-9.0.0-class.js",
+      "bytes": 1086,
+      "sha256": "fa8c288c61d9a0489d4ea38fe0de5caef1ed23667dfcb197dec0c19a6a9e8754"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-9.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/part-unicode-9.0.0-escaped.js",
+      "bytes": 1882,
+      "sha256": "0e53e7dad6a4d99094ff8d2d60bc0035d9acbbd5581d72408b0107ea96aff4af"
+    },
+    {
+      "path": "test/language/identifiers/part-unicode-9.0.0.js",
+      "upstream_path": "test/language/identifiers/part-unicode-9.0.0.js",
+      "bytes": 1010,
+      "sha256": "523bd57da0fccbf114b2b47d07a1ed5bb8637c850ef25f47a93761f738835a5b"
+    },
+    {
+      "path": "test/language/identifiers/part-zwj-zwnj-escaped.js",
+      "upstream_path": "test/language/identifiers/part-zwj-zwnj-escaped.js",
+      "bytes": 406,
+      "sha256": "80c8098f04bdb546f639d0407b3d23a74351d3828cbc08d48a189ca7d6e8237c"
+    },
+    {
+      "path": "test/language/identifiers/start-dollar-sign.js",
+      "upstream_path": "test/language/identifiers/start-dollar-sign.js",
+      "bytes": 392,
+      "sha256": "863b8d758f19871c23f27b5912f116a97cc98fbc53b8c3c3e696d4e72f5db43c"
+    },
+    {
+      "path": "test/language/identifiers/start-escape-seq.js",
+      "upstream_path": "test/language/identifiers/start-escape-seq.js",
+      "bytes": 705,
+      "sha256": "ada572c1ba49de6500d8d71575427f8f95507ec37c4ad24186732d0c10464765"
+    },
+    {
+      "path": "test/language/identifiers/start-underscore.js",
+      "upstream_path": "test/language/identifiers/start-underscore.js",
+      "bytes": 392,
+      "sha256": "53912ec469deccd0d8793297f5e20350846106de02fd2428e61c1fcb65e3fefa"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-10.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-10.0.0-class-escaped.js",
+      "bytes": 117020,
+      "sha256": "fa3017eb9c86dc0b02f9416cb5555195dc6696ca4bfd60df67b12776fb8829d6"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-10.0.0-class.js",
+      "upstream_path": "test/language/identifiers/start-unicode-10.0.0-class.js",
+      "bytes": 75356,
+      "sha256": "dcf082bde41a400573a2077cee17b962616259c1e9852a540c331a33de642150"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-10.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-10.0.0-escaped.js",
+      "bytes": 125267,
+      "sha256": "9e3ba6889c66f7eacc17a5b8fc9cb7040891b676ab1eb9396b9c5cfe0d1d0c8f"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-10.0.0.js",
+      "upstream_path": "test/language/identifiers/start-unicode-10.0.0.js",
+      "bytes": 83606,
+      "sha256": "fd256cf1f6538fbb3ee1d1c8eaa74b0da9549e6a19fd50d6edd294aa2cba2869"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-11.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-11.0.0-class-escaped.js",
+      "bytes": 4928,
+      "sha256": "a5599e2d42a4892ad1fa055331cafc5076f43307f538e7caa7c867821ac593ad"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-11.0.0-class.js",
+      "upstream_path": "test/language/identifiers/start-unicode-11.0.0-class.js",
+      "bytes": 3318,
+      "sha256": "a9716ad35b8eb79113aa72860fa40bfd2311b6e7d19b61e05d7d23fd25b54c90"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-11.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-11.0.0-escaped.js",
+      "bytes": 5174,
+      "sha256": "5922b40984165bb4796113ebf9fee2e89417afbbdcb5c4180aa31412cb6d345f"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-11.0.0.js",
+      "upstream_path": "test/language/identifiers/start-unicode-11.0.0.js",
+      "bytes": 3567,
+      "sha256": "0dc8069e95a6ef437b7cf2903bc7cb3dae55f34aaf6480b89185430d0d122f33"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-12.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-12.0.0-class-escaped.js",
+      "bytes": 3590,
+      "sha256": "2af5f2d7ab849c4a342909b6c76ac3323e9342a598502e16f432c3ed32804660"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-12.0.0-class.js",
+      "upstream_path": "test/language/identifiers/start-unicode-12.0.0-class.js",
+      "bytes": 2433,
+      "sha256": "44cd2d0a3bb3527b25422901ffc5e3fed5890f0874017daa8861271f3be9f6ca"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-12.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-12.0.0-escaped.js",
+      "bytes": 3734,
+      "sha256": "e9886a2ef0625500fb52ca100edc9dd8cd74b0483a97fbe2c1c26ae12fd0e9c1"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-12.0.0.js",
+      "upstream_path": "test/language/identifiers/start-unicode-12.0.0.js",
+      "bytes": 2580,
+      "sha256": "2244d48be628ccae405656476c00e0a16fedde8d0b818b76cbbc3b9db5386be2"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-13.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-13.0.0-class-escaped.js",
+      "bytes": 78775,
+      "sha256": "753228c671462f3a371eb6953bbf14389d234a1e143ca7f242d11d2ec75b693c"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-13.0.0-class.js",
+      "upstream_path": "test/language/identifiers/start-unicode-13.0.0-class.js",
+      "bytes": 50782,
+      "sha256": "eec6ec5213a9fb67cc70105b09c8a373579ecc12ec75fc2a4696f7473a490e02"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-13.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-13.0.0-escaped.js",
+      "bytes": 84293,
+      "sha256": "8656dcda55caa21cb1c640792fb025f34af942a1f8f04e4d8b140a4d2c1dd9c6"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-13.0.0.js",
+      "upstream_path": "test/language/identifiers/start-unicode-13.0.0.js",
+      "bytes": 56303,
+      "sha256": "b128d03a4f9275c91aa7d2cd13ce34de80f662ebddcbf95ad030a239f873c79f"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-14.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-14.0.0-class-escaped.js",
+      "bytes": 7586,
+      "sha256": "eeab36666f4464d992abcd3adc326c1bad6c4bd281755498232f2de362509fba"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-14.0.0-class.js",
+      "upstream_path": "test/language/identifiers/start-unicode-14.0.0-class.js",
+      "bytes": 5026,
+      "sha256": "b7be95d375a89d2f9cdab861890d0c799482b3b139139317416f9e29625607f3"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-14.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-14.0.0-escaped.js",
+      "bytes": 8021,
+      "sha256": "5d27aa42de98fa7228fd84463a2699bb4328a2eb8c9941596ce671a5fb83b375"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-14.0.0.js",
+      "upstream_path": "test/language/identifiers/start-unicode-14.0.0.js",
+      "bytes": 5464,
+      "sha256": "27da506d81bbe190637cc16112d69aa58fbe5c7e19b9b4423960ef056bb04c8d"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-15.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-15.0.0-class-escaped.js",
+      "bytes": 61416,
+      "sha256": "fc6f03725280e31f431633e5ea29a1c40662012d9e826ee56a7f28fe6c2fa5eb"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-15.0.0-class.js",
+      "upstream_path": "test/language/identifiers/start-unicode-15.0.0-class.js",
+      "bytes": 39579,
+      "sha256": "5d5f19b5a489d76dac159617b29f973e0d77126d2b04d06b32215c94f313aaed"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-15.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-15.0.0-escaped.js",
+      "bytes": 65684,
+      "sha256": "53a79c0e7433fc43841a62e668e4ddbda9ce3dd81bd654ea627f3ca45bcadd04"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-15.0.0.js",
+      "upstream_path": "test/language/identifiers/start-unicode-15.0.0.js",
+      "bytes": 43850,
+      "sha256": "bec6a593db62e39c23d0cd02c876e9ab75c34cb8c77709a1698a329c15c5dbef"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-15.1.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-15.1.0-class-escaped.js",
+      "bytes": 9252,
+      "sha256": "c348ee2a01090bc7d8366f7efefeb3ad4e625d4d8a5c57f1e188f3851f60ac62"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-15.1.0-class.js",
+      "upstream_path": "test/language/identifiers/start-unicode-15.1.0-class.js",
+      "bytes": 6045,
+      "sha256": "403bd0ef12fe0be80a9ede8b6e38a25898ef1c548bb8745f348a7112417fdf35"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-15.1.0-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-15.1.0-escaped.js",
+      "bytes": 9794,
+      "sha256": "4d8555b36700730a2f6bd882d8fdf7f818a72250dd85b224477959e47b71e63b"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-15.1.0.js",
+      "upstream_path": "test/language/identifiers/start-unicode-15.1.0.js",
+      "bytes": 6590,
+      "sha256": "06eb55847873f7239895375a228dd055c06026b0ee582378783e8c7868a94c1e"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-16.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-16.0.0-class-escaped.js",
+      "bytes": 60748,
+      "sha256": "8e175c707c2452b542d757c2ebe71f110555cfda1d734083dc5fc60770b68f03"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-16.0.0-class.js",
+      "upstream_path": "test/language/identifiers/start-unicode-16.0.0-class.js",
+      "bytes": 39157,
+      "sha256": "664e3ebc41a83acd0761fc95137bde55638d618eecb5d4e372338bf01608d505"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-16.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-16.0.0-escaped.js",
+      "bytes": 64970,
+      "sha256": "140bb47a855ba62ead1446bfb59ebbf47671d36ed236ed0f2d75eb9db6ef3900"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-16.0.0.js",
+      "upstream_path": "test/language/identifiers/start-unicode-16.0.0.js",
+      "bytes": 43382,
+      "sha256": "b3afb5c2717626f586c15825b8b578c1904458496e991eb14d11adb73b469e96"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-17.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-17.0.0-class-escaped.js",
+      "bytes": 65578,
+      "sha256": "2319e5cb953957ed69a16c1ee3dee07172e5b713be0789ae7ac03c8da6b466d1"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-17.0.0-class.js",
+      "upstream_path": "test/language/identifiers/start-unicode-17.0.0-class.js",
+      "bytes": 42262,
+      "sha256": "995efe63474817ea2427237b2f95ef47d5576a682d982a8800e3355c217cb1c9"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-17.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-17.0.0-escaped.js",
+      "bytes": 70145,
+      "sha256": "f04165b4992b3339763bf3f897875187b33eaac4ea97b83317555ff7f56250c0"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-17.0.0.js",
+      "upstream_path": "test/language/identifiers/start-unicode-17.0.0.js",
+      "bytes": 46832,
+      "sha256": "8d095332b36f2900a1f0636e528594fb43757f5fb467306fa82d71bbeadfcb60"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-5.2.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-5.2.0-class-escaped.js",
+      "bytes": 84007,
+      "sha256": "aa27f25380750b21278e29e988c538ae048674358f82b7099d19cbb0271afffe"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-5.2.0-class.js",
+      "upstream_path": "test/language/identifiers/start-unicode-5.2.0-class.js",
+      "bytes": 54664,
+      "sha256": "a2e7a5699c5e8ef31cf62c28e8530ca3d8fd4e0bda4cbe06bb1ebea38a2e4f21"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-5.2.0-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-5.2.0-escaped.js",
+      "bytes": 90019,
+      "sha256": "a0c9f71e59b16411f7fab2e24bc88e9f1d3643df8736b77732ef3601ef035251"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-5.2.0.js",
+      "upstream_path": "test/language/identifiers/start-unicode-5.2.0.js",
+      "bytes": 60679,
+      "sha256": "c263caa5bcedf3263899322e5391361828b210177e54f670c4edcab1545f3dda"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-6.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-6.0.0-class-escaped.js",
+      "bytes": 13894,
+      "sha256": "dbccf45b466c87acb9a4c053df3557135dc9dc1eaaeaffc2e5d710a6290ebcde"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-6.0.0-class.js",
+      "upstream_path": "test/language/identifiers/start-unicode-6.0.0-class.js",
+      "bytes": 9153,
+      "sha256": "34757a83dbe008949bf5fbe31d61d7e557750add65cea635dcaf100be78ac056"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-6.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-6.0.0-escaped.js",
+      "bytes": 14797,
+      "sha256": "523a8ab8abd7e82e27c7acd0e549ba807f8120f90fee6ae8a4a108980a6f3f2d"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-6.0.0.js",
+      "upstream_path": "test/language/identifiers/start-unicode-6.0.0.js",
+      "bytes": 10059,
+      "sha256": "7924750c9834189e99cdaf3cc6a529dc9da8eb8548ed209920efc95889c474f6"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-6.1.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-6.1.0-class-escaped.js",
+      "bytes": 7280,
+      "sha256": "d92f54957f3f609c7ed93c6da2ea2e5e5b03edde4f83d8aacd872e632ee65520"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-6.1.0-class.js",
+      "upstream_path": "test/language/identifiers/start-unicode-6.1.0-class.js",
+      "bytes": 4828,
+      "sha256": "f0fc265f5f90e63b181a831702eda8fc0b6e84f1def9a7d9eaeb1140b5d0e581"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-6.1.0-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-6.1.0-escaped.js",
+      "bytes": 7693,
+      "sha256": "f1d288c69cb12a125c1bef43f551b5124afaca790a7131d7ea12caf3474c1e5c"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-6.1.0.js",
+      "upstream_path": "test/language/identifiers/start-unicode-6.1.0.js",
+      "bytes": 5244,
+      "sha256": "d74a596aceba3f39659a4baad913a47019bbfe3b7fff422a2888cabc77f87399"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-7.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-7.0.0-class-escaped.js",
+      "bytes": 24307,
+      "sha256": "b3af8fc82fdaa248d1a2055409f0f5e31213cb6f71b0375af70b98d9ca6bd93e"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-7.0.0-class.js",
+      "upstream_path": "test/language/identifiers/start-unicode-7.0.0-class.js",
+      "bytes": 15829,
+      "sha256": "f72c8857da91e109dc573637656d1b0401a5d2f651737737e32ecdaaad7a2d68"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-7.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-7.0.0-escaped.js",
+      "bytes": 25951,
+      "sha256": "77536db22c4db86726ae612127ac9abfc0e0696eaca5cdd8c354bf353acb263d"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-7.0.0.js",
+      "upstream_path": "test/language/identifiers/start-unicode-7.0.0.js",
+      "bytes": 17476,
+      "sha256": "7dcad28ee08f41ac0e96d12ed111386bbcc25da48dde99ed11f9e255800f6778"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-8.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-8.0.0-class-escaped.js",
+      "bytes": 96271,
+      "sha256": "3da88aec50b2f145805414d7da7720524b19aebd1b07d088c9040a658637fb60"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-8.0.0-class.js",
+      "upstream_path": "test/language/identifiers/start-unicode-8.0.0-class.js",
+      "bytes": 62108,
+      "sha256": "e8f2f11b19fd531a833c6de3dba0329815ce4aced04b3262d621618d5fb6b664"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-8.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-8.0.0-escaped.js",
+      "bytes": 103057,
+      "sha256": "3e93ab6f006e0a27bd9a86a8bc3c524122edfc1ebfc10f9ae1e2629b3fbb6c96"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-8.0.0.js",
+      "upstream_path": "test/language/identifiers/start-unicode-8.0.0.js",
+      "bytes": 68897,
+      "sha256": "5e3ee222b7e6471424f0fa5309c31ac0f8c4753f7a68dcc463c807baa0a3a3c7"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-9.0.0-class-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-9.0.0-class-escaped.js",
+      "bytes": 100955,
+      "sha256": "c14f5b40c3bb0005554031f06865133489d696f953bca77b3540eac7b343ca40"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-9.0.0-class.js",
+      "upstream_path": "test/language/identifiers/start-unicode-9.0.0-class.js",
+      "bytes": 65017,
+      "sha256": "1b734884ab2dd857213e40326c3f8fbc7846c3783b8c2dabb1ae535c19a85c87"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-9.0.0-escaped.js",
+      "upstream_path": "test/language/identifiers/start-unicode-9.0.0-escaped.js",
+      "bytes": 108052,
+      "sha256": "61bd94019d14b1cbdd732cb1017ec972dcfb162c607700f20c2ad7684a8837e3"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-9.0.0.js",
+      "upstream_path": "test/language/identifiers/start-unicode-9.0.0.js",
+      "bytes": 72117,
+      "sha256": "5eb51398aba1647c2c17bf12707d27a19baccc6703d170f837820dcd685b3c19"
+    },
+    {
+      "path": "test/language/identifiers/start-unicode-ltr.js",
+      "upstream_path": "test/language/identifiers/start-unicode-ltr.js",
+      "bytes": 404,
+      "sha256": "b9992912ebee8c554724bed2afffc3d2d874728621e3511d48a376575161b8f6"
+    },
+    {
+      "path": "test/language/identifiers/start-zwj-escaped.js",
+      "upstream_path": "test/language/identifiers/start-zwj-escaped.js",
+      "bytes": 331,
+      "sha256": "a7b6897ef81876c7859cd1ccdc961aaaaff8354ec87e5552978f6e462eb477e8"
+    },
+    {
+      "path": "test/language/identifiers/start-zwnj-escaped.js",
+      "upstream_path": "test/language/identifiers/start-zwnj-escaped.js",
+      "bytes": 335,
+      "sha256": "106a34ee22ae11e26f8ab0256a78a91166860eae60a0083674adcf5c6f7e8bcf"
+    },
+    {
+      "path": "test/language/identifiers/unicode-escape-nls-err.js",
+      "upstream_path": "test/language/identifiers/unicode-escape-nls-err.js",
+      "bytes": 965,
+      "sha256": "a69ad72380cb793431ce48af486604c4b22b1f8fcba0d160fc33912d5cd6b91d"
+    },
+    {
+      "path": "test/language/identifiers/val-break-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-break-via-escape-hex.js",
+      "bytes": 371,
+      "sha256": "e8992117b2cc26c55076d84a880f0d1796eecc8277a1b718186d07e15543eff5"
+    },
+    {
+      "path": "test/language/identifiers/val-break-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-break-via-escape-hex4.js",
+      "bytes": 383,
+      "sha256": "4b88f7d6779e4be09cb989ebe3e8edcfe3c60c56df24b5b496003aa937f0cb4c"
+    },
+    {
+      "path": "test/language/identifiers/val-break.js",
+      "upstream_path": "test/language/identifiers/val-break.js",
+      "bytes": 321,
+      "sha256": "f06a54350d412671a04c8bf8fb0bf04da2ee65b2d672509ce6db98500cfc6cca"
+    },
+    {
+      "path": "test/language/identifiers/val-case-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-case-via-escape-hex.js",
+      "bytes": 348,
+      "sha256": "52ec66a17d465dbd9f1f7818aed770e8f1a9b500143450a218a597f80948443c"
+    },
+    {
+      "path": "test/language/identifiers/val-case-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-case-via-escape-hex4.js",
+      "bytes": 359,
+      "sha256": "692868cbf7b728db2ba6be3900772d97bfdfc5a3c4fbaf6ebc1bc6486f428dd2"
+    },
+    {
+      "path": "test/language/identifiers/val-case.js",
+      "upstream_path": "test/language/identifiers/val-case.js",
+      "bytes": 319,
+      "sha256": "2d94251a5d0017f15a65bb53b8ab1c407a3d4b2ab5e8a7c948d9120cbce0eaff"
+    },
+    {
+      "path": "test/language/identifiers/val-catch-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-catch-via-escape-hex.js",
+      "bytes": 350,
+      "sha256": "ba7c5bfe50c3f3b84863001de02781395cc38013d11fcabcaff8ebfe691f291c"
+    },
+    {
+      "path": "test/language/identifiers/val-catch-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-catch-via-escape-hex4.js",
+      "bytes": 363,
+      "sha256": "128359402aad21e6b719e40fe564150993c3dfda3eecf236e472da5395fbcbb0"
+    },
+    {
+      "path": "test/language/identifiers/val-catch.js",
+      "upstream_path": "test/language/identifiers/val-catch.js",
+      "bytes": 320,
+      "sha256": "9ea2e471842b80823b77b683b74503fdeb5fe320997d8416dd36f78dbf0e557a"
+    },
+    {
+      "path": "test/language/identifiers/val-class-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-class-via-escape-hex.js",
+      "bytes": 350,
+      "sha256": "3c36c97c6ed544812cd6d2b78faf8e87a9c1729585e555d84cb7c186aa28dc44"
+    },
+    {
+      "path": "test/language/identifiers/val-class-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-class-via-escape-hex4.js",
+      "bytes": 363,
+      "sha256": "9833c6282c2a8d842c95795983e39085b583e987c4b13f47cc21af49e39589d7"
+    },
+    {
+      "path": "test/language/identifiers/val-class.js",
+      "upstream_path": "test/language/identifiers/val-class.js",
+      "bytes": 320,
+      "sha256": "5f4dd5e4041d3af37f843559c0801dee1919ef0cbac2d646da631a92dfa01e26"
+    },
+    {
+      "path": "test/language/identifiers/val-const-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-const-via-escape-hex.js",
+      "bytes": 350,
+      "sha256": "21b5e4ba7eecf476ffd686e20bb52f2de156c02e79d50f8bcc659e4f77648a5f"
+    },
+    {
+      "path": "test/language/identifiers/val-const-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-const-via-escape-hex4.js",
+      "bytes": 363,
+      "sha256": "8044b99f078f6da7aaf4a11900299a9cf076567a101bc5be07e3983345486ff3"
+    },
+    {
+      "path": "test/language/identifiers/val-const.js",
+      "upstream_path": "test/language/identifiers/val-const.js",
+      "bytes": 320,
+      "sha256": "a358f472e53ee49277d9be99514e11a239d62b5950562dd98e49cd333a18496d"
+    },
+    {
+      "path": "test/language/identifiers/val-continue-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-continue-via-escape-hex.js",
+      "bytes": 356,
+      "sha256": "e5ca1b1a53b1a7f8ac83a96a40b1be33e9ab847d997c0c7f68caa3dd02e0d9f6"
+    },
+    {
+      "path": "test/language/identifiers/val-continue-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-continue-via-escape-hex4.js",
+      "bytes": 372,
+      "sha256": "4fb05d090002c61a40091105485eef6f848b06e3747e2a4967dfa2a39d8240f9"
+    },
+    {
+      "path": "test/language/identifiers/val-continue.js",
+      "upstream_path": "test/language/identifiers/val-continue.js",
+      "bytes": 323,
+      "sha256": "9b54cb0de5ce7fe564c25e6a150c3c19ca1bad43023183b4d9d5ec4aca9cd677"
+    },
+    {
+      "path": "test/language/identifiers/val-debugger-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-debugger-via-escape-hex.js",
+      "bytes": 356,
+      "sha256": "49930bc936e24df16aeb98e43a8937206c5ea9059a8bfee128be445488f41192"
+    },
+    {
+      "path": "test/language/identifiers/val-debugger-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-debugger-via-escape-hex4.js",
+      "bytes": 372,
+      "sha256": "a0cc62adfe63312142078d3cb8c04de3f450b07267eaa0cc6a8e4b7a24cbdf43"
+    },
+    {
+      "path": "test/language/identifiers/val-debugger.js",
+      "upstream_path": "test/language/identifiers/val-debugger.js",
+      "bytes": 323,
+      "sha256": "229e3d72b1b337ff2f51179091bd525dc27059610fb9f3f103be213a9e4e8f62"
+    },
+    {
+      "path": "test/language/identifiers/val-default-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-default-via-escape-hex.js",
+      "bytes": 354,
+      "sha256": "7e943e30b3085de340164b3cd4e433768937cb40eb95947060c89370fd3e2539"
+    },
+    {
+      "path": "test/language/identifiers/val-default-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-default-via-escape-hex4.js",
+      "bytes": 369,
+      "sha256": "dec305d7c13fc9f17b206f1e58e91f062d7d3141c68393c4086dfe24aa9b09e7"
+    },
+    {
+      "path": "test/language/identifiers/val-default.js",
+      "upstream_path": "test/language/identifiers/val-default.js",
+      "bytes": 322,
+      "sha256": "13404fa85e22e9c3f4141989c5a258a35d94d9ef0e346e2f29058ee9bc948ea0"
+    },
+    {
+      "path": "test/language/identifiers/val-delete-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-delete-via-escape-hex.js",
+      "bytes": 352,
+      "sha256": "ca4bcaa140267b2e5ca9add6810790338aa11887cdec33dcfe5559768136301b"
+    },
+    {
+      "path": "test/language/identifiers/val-delete-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-delete-via-escape-hex4.js",
+      "bytes": 366,
+      "sha256": "fbd78c7aa4d6231b15f45ca1a0e0093ff59ceeca8a12b231a64af3969c663dcf"
+    },
+    {
+      "path": "test/language/identifiers/val-delete.js",
+      "upstream_path": "test/language/identifiers/val-delete.js",
+      "bytes": 321,
+      "sha256": "70223e7893db56881fcec09b0863af0f2532e50c15b6a05d41b11c37207984d4"
+    },
+    {
+      "path": "test/language/identifiers/val-do-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-do-via-escape-hex.js",
+      "bytes": 349,
+      "sha256": "dc4a5441493b002e7d9bac38cb1c5b6c5f2155e64dc5a676b91cb120956b1e93"
+    },
+    {
+      "path": "test/language/identifiers/val-do-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-do-via-escape-hex4.js",
+      "bytes": 358,
+      "sha256": "71af27f73a5a0092b1a13feb44bbe01a1d93fd49b28b0aa36431b5701527d7b6"
+    },
+    {
+      "path": "test/language/identifiers/val-do.js",
+      "upstream_path": "test/language/identifiers/val-do.js",
+      "bytes": 317,
+      "sha256": "307b8726a6bf0293e38ca028f8a0def86e69af411005388c0fd26a1d74360157"
+    },
+    {
+      "path": "test/language/identifiers/val-dollar-sign-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-dollar-sign-via-escape-hex.js",
+      "bytes": 281,
+      "sha256": "a1be1fbf280fb70b8faf80d1ccc51c3e8df35606699a55c12a365e7d6a5df995"
+    },
+    {
+      "path": "test/language/identifiers/val-dollar-sign-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-dollar-sign-via-escape-hex4.js",
+      "bytes": 282,
+      "sha256": "fcbb7058d208114d56695d964257410357b740d03cf587194362fbc533de408c"
+    },
+    {
+      "path": "test/language/identifiers/val-dollar-sign.js",
+      "upstream_path": "test/language/identifiers/val-dollar-sign.js",
+      "bytes": 271,
+      "sha256": "ba24ebdaf73d1dec1b642fd6305ab7a43944c9adfe0a8dd827875380b5dc764f"
+    },
+    {
+      "path": "test/language/identifiers/val-else-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-else-via-escape-hex.js",
+      "bytes": 355,
+      "sha256": "254354371e49a5ef77d3be0633fec56035624ccd7a3f4b7ba36a2f593a3f1ec5"
+    },
+    {
+      "path": "test/language/identifiers/val-else-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-else-via-escape-hex4.js",
+      "bytes": 366,
+      "sha256": "d41eee516ec466742f2e6b21cc7f18e1b77daf29354550eff4530154d5ecc593"
+    },
+    {
+      "path": "test/language/identifiers/val-else.js",
+      "upstream_path": "test/language/identifiers/val-else.js",
+      "bytes": 319,
+      "sha256": "65422b68ed0d7a35ed712152d18d4f0ccf11c5c990fcf1310438d3f3e05b7939"
+    },
+    {
+      "path": "test/language/identifiers/val-enum-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-enum-via-escape-hex.js",
+      "bytes": 363,
+      "sha256": "40c610192a1e18ef7c1442fb7944631189ffc4f049def996fda5bfef2cefb9f6"
+    },
+    {
+      "path": "test/language/identifiers/val-enum-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-enum-via-escape-hex4.js",
+      "bytes": 375,
+      "sha256": "7d21731542df7f59dec413ee0afba6a9c8beb1b6efefdb567934a20bdb5ea97c"
+    },
+    {
+      "path": "test/language/identifiers/val-enum.js",
+      "upstream_path": "test/language/identifiers/val-enum.js",
+      "bytes": 319,
+      "sha256": "6da1046606ac5bf64c24684074740cebeeb5fb72a584a35bdb2e17653664db55"
+    },
+    {
+      "path": "test/language/identifiers/val-export-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-export-via-escape-hex.js",
+      "bytes": 352,
+      "sha256": "33e04d16b1c5d495ffa504bec07dfa5c9ed96b4c398ace730821ac40ea98863c"
+    },
+    {
+      "path": "test/language/identifiers/val-export-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-export-via-escape-hex4.js",
+      "bytes": 366,
+      "sha256": "a75226dcaecf79faa9b5c7d0475d5ca1ea7170adb87b981251a706ce37da3a22"
+    },
+    {
+      "path": "test/language/identifiers/val-export.js",
+      "upstream_path": "test/language/identifiers/val-export.js",
+      "bytes": 321,
+      "sha256": "b857cbb9bda9752adf1e343e532b71158a985646b597bd50ecfe3b4e48194908"
+    },
+    {
+      "path": "test/language/identifiers/val-extends-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-extends-via-escape-hex.js",
+      "bytes": 354,
+      "sha256": "b03134767cbafa192dc3a81876455a0d49fc17231f8b51ff32d52971dd40b972"
+    },
+    {
+      "path": "test/language/identifiers/val-extends-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-extends-via-escape-hex4.js",
+      "bytes": 369,
+      "sha256": "7686a28b16c37542f0f9e64f109deeaa69ab7c911a1a6d563990c630e74f163e"
+    },
+    {
+      "path": "test/language/identifiers/val-extends.js",
+      "upstream_path": "test/language/identifiers/val-extends.js",
+      "bytes": 322,
+      "sha256": "84100474f1b17606744f027c776472072c3dfa0daf654fb733ae633d1a6ca2de"
+    },
+    {
+      "path": "test/language/identifiers/val-false-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-false-via-escape-hex.js",
+      "bytes": 350,
+      "sha256": "c12800ee4b0a192e3be4af4f179ca72ad1ee057e2f1d9f54296cc10c5cf95488"
+    },
+    {
+      "path": "test/language/identifiers/val-false-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-false-via-escape-hex4.js",
+      "bytes": 362,
+      "sha256": "c00ee7f2a8eb9495f98d1234457c99b00f86d806c1992d4996ea316ebfadd80d"
+    },
+    {
+      "path": "test/language/identifiers/val-false.js",
+      "upstream_path": "test/language/identifiers/val-false.js",
+      "bytes": 320,
+      "sha256": "017c90cfd80b877027ee6241adc4983d452259887b15d9f8286302e211a37361"
+    },
+    {
+      "path": "test/language/identifiers/val-finally-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-finally-via-escape-hex.js",
+      "bytes": 354,
+      "sha256": "364af5ce59ec50d17eddb620c7fa1d83982a48c63912168be4fb57660550988a"
+    },
+    {
+      "path": "test/language/identifiers/val-finally-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-finally-via-escape-hex4.js",
+      "bytes": 369,
+      "sha256": "602184677a4a07350d7a5957e96d9671e7ff344bbba8c83b942b0cf8c6a0aba2"
+    },
+    {
+      "path": "test/language/identifiers/val-finally.js",
+      "upstream_path": "test/language/identifiers/val-finally.js",
+      "bytes": 322,
+      "sha256": "7353db0dd5df7dfbefb28743c4439fc3999142b128ef72a8c25e5d080b7ea3ed"
+    },
+    {
+      "path": "test/language/identifiers/val-for-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-for-via-escape-hex.js",
+      "bytes": 346,
+      "sha256": "50f7759d240aac26dfbd2585e4029f68e76d50f65c4c295eaaa297e89bfb00a7"
+    },
+    {
+      "path": "test/language/identifiers/val-for-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-for-via-escape-hex4.js",
+      "bytes": 357,
+      "sha256": "040636c212b829dc67abfa567209ea62454ac2655c08db2e155a9fc82fca0305"
+    },
+    {
+      "path": "test/language/identifiers/val-for.js",
+      "upstream_path": "test/language/identifiers/val-for.js",
+      "bytes": 318,
+      "sha256": "6fced8ec111734184d90ee6a34274f5a1fa4c175bda8d8476bac0d78fe528f65"
+    },
+    {
+      "path": "test/language/identifiers/val-function-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-function-via-escape-hex.js",
+      "bytes": 356,
+      "sha256": "cbee9fd19a3534464145e22c40f5bd92857b98d21042f5f6398b384e8183c25d"
+    },
+    {
+      "path": "test/language/identifiers/val-function-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-function-via-escape-hex4.js",
+      "bytes": 372,
+      "sha256": "6a7a04350bcd729ca2698563201032fa6e36d5f0e52fd93d147090bc5e01117c"
+    },
+    {
+      "path": "test/language/identifiers/val-function.js",
+      "upstream_path": "test/language/identifiers/val-function.js",
+      "bytes": 323,
+      "sha256": "2cac687e9e34ca6b9c1eb9bfded832bc38f5da64229e75c401cf738372ce2072"
+    },
+    {
+      "path": "test/language/identifiers/val-if-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-if-via-escape-hex.js",
+      "bytes": 349,
+      "sha256": "db773f8660480bd8d4b0c2abdc993873434f53745f32e580dcb3a2b5f84d315c"
+    },
+    {
+      "path": "test/language/identifiers/val-if-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-if-via-escape-hex4.js",
+      "bytes": 359,
+      "sha256": "d7ac646de032e5903674ef6656792a02c549b801d00d41d86a9945160a6f39d8"
+    },
+    {
+      "path": "test/language/identifiers/val-if.js",
+      "upstream_path": "test/language/identifiers/val-if.js",
+      "bytes": 317,
+      "sha256": "1bb302369e77d197a71812ec810f8577806c526bb99635a4cbc935f8380ec9c2"
+    },
+    {
+      "path": "test/language/identifiers/val-import-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-import-via-escape-hex.js",
+      "bytes": 377,
+      "sha256": "6a46a0bcb4a4a15e476b3852ef0d85c17d97a416710789bfe96ccdc07ba02b7b"
+    },
+    {
+      "path": "test/language/identifiers/val-import-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-import-via-escape-hex4.js",
+      "bytes": 391,
+      "sha256": "da74de26832b5ae6c150ceb7d58389629fd9a2665d1f2be6b85e27bd0d6b4d09"
+    },
+    {
+      "path": "test/language/identifiers/val-import.js",
+      "upstream_path": "test/language/identifiers/val-import.js",
+      "bytes": 321,
+      "sha256": "b1463b99a6d793e1e142f0ed79b55192ad273c0c2ac9d9c379e988d48e18e331"
+    },
+    {
+      "path": "test/language/identifiers/val-in-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-in-via-escape-hex.js",
+      "bytes": 349,
+      "sha256": "f7dce9282d708b89371a5c890b249413af1db5176c5172ea3a6921f390e0c24f"
+    },
+    {
+      "path": "test/language/identifiers/val-in-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-in-via-escape-hex4.js",
+      "bytes": 359,
+      "sha256": "8312b517c0fcbea327f0965c7584058de39b2cd6283d60aaecd3c3ec20ac7e3b"
+    },
+    {
+      "path": "test/language/identifiers/val-in.js",
+      "upstream_path": "test/language/identifiers/val-in.js",
+      "bytes": 317,
+      "sha256": "f6fc3b9b3f06d6e92c051805df5cdb28f97abd7375f2ed3a4a7eaaf8d021f30c"
+    },
+    {
+      "path": "test/language/identifiers/val-instanceof-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-instanceof-via-escape-hex.js",
+      "bytes": 360,
+      "sha256": "dc98341b1629a23ae8a6f957eb41e8051dab9f087e2187dc438057565858b959"
+    },
+    {
+      "path": "test/language/identifiers/val-instanceof-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-instanceof-via-escape-hex4.js",
+      "bytes": 377,
+      "sha256": "623c583c3563be0599449ce93182336c8a1938637476e5069f5167b7e24203bf"
+    },
+    {
+      "path": "test/language/identifiers/val-instanceof.js",
+      "upstream_path": "test/language/identifiers/val-instanceof.js",
+      "bytes": 325,
+      "sha256": "2a00cc5fdc4a96a57206cbd2a865248ca88fade1fbc47103f6da1f03dadb62d7"
+    },
+    {
+      "path": "test/language/identifiers/val-new-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-new-via-escape-hex.js",
+      "bytes": 346,
+      "sha256": "3e8e3b963cec317ef3146c94c586e1bcd36e66f24f65bbefe78f9c8dd269bed3"
+    },
+    {
+      "path": "test/language/identifiers/val-new-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-new-via-escape-hex4.js",
+      "bytes": 357,
+      "sha256": "af0e56606fec3eda31a4417bf52740b1c772c98f2fa533cc20a66f51d900356e"
+    },
+    {
+      "path": "test/language/identifiers/val-new.js",
+      "upstream_path": "test/language/identifiers/val-new.js",
+      "bytes": 318,
+      "sha256": "543f465d4a226beebcc38d8b48990b614a11a6ee4b5180710e5839d48c4b7393"
+    },
+    {
+      "path": "test/language/identifiers/val-null-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-null-via-escape-hex.js",
+      "bytes": 348,
+      "sha256": "41f492b52d82a067ecd848208d92690bb4b02019cd263fe5a712e33b2ba8f5b9"
+    },
+    {
+      "path": "test/language/identifiers/val-null-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-null-via-escape-hex4.js",
+      "bytes": 359,
+      "sha256": "a61c9eb88d468083e167a2e1d891b96eba5aa41bc5e91c09db2ba9667cb0bec1"
+    },
+    {
+      "path": "test/language/identifiers/val-null.js",
+      "upstream_path": "test/language/identifiers/val-null.js",
+      "bytes": 319,
+      "sha256": "79ff0e6e29379b24553c1789eb0c2b22e4fcbe274089c7f12c8870e92c723e57"
+    },
+    {
+      "path": "test/language/identifiers/val-return-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-return-via-escape-hex.js",
+      "bytes": 352,
+      "sha256": "f36e9ed4dd4e36474f249c79140f4bd4c331200e8c47b4752c90367c75fcad21"
+    },
+    {
+      "path": "test/language/identifiers/val-return-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-return-via-escape-hex4.js",
+      "bytes": 366,
+      "sha256": "91e171fc07725e3d2093b1be7eb888f18a1f2059eda2fc79c77471bf310eb639"
+    },
+    {
+      "path": "test/language/identifiers/val-return.js",
+      "upstream_path": "test/language/identifiers/val-return.js",
+      "bytes": 321,
+      "sha256": "5c475f5c65e749d474e67ba23d376538bea7a75bd38ea410b17721faa1da862e"
+    },
+    {
+      "path": "test/language/identifiers/val-super-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-super-via-escape-hex.js",
+      "bytes": 350,
+      "sha256": "bf97c42c8fbdbf831a3df1b82087734f684ee91fa610d22b37ef95ccccbe8a08"
+    },
+    {
+      "path": "test/language/identifiers/val-super-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-super-via-escape-hex4.js",
+      "bytes": 363,
+      "sha256": "5973e79e55be8595731691d52ee5dd47d01baa6aac2da95ce3390bb1a8b43546"
+    },
+    {
+      "path": "test/language/identifiers/val-super.js",
+      "upstream_path": "test/language/identifiers/val-super.js",
+      "bytes": 320,
+      "sha256": "306a86086ad915b825627ff63ab44aa645fcaa4843b78fa506b4d4f68fb1812f"
+    },
+    {
+      "path": "test/language/identifiers/val-switch-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-switch-via-escape-hex.js",
+      "bytes": 352,
+      "sha256": "9b00a1eb0638f2bd36ef7a1c00d5324950e14cf705560a9ca207fc1c310dbb40"
+    },
+    {
+      "path": "test/language/identifiers/val-switch-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-switch-via-escape-hex4.js",
+      "bytes": 366,
+      "sha256": "54debca8ba4ddc3d4246c94419894a4a6f134fd2a5140e5b22bc047180ea0a32"
+    },
+    {
+      "path": "test/language/identifiers/val-switch.js",
+      "upstream_path": "test/language/identifiers/val-switch.js",
+      "bytes": 321,
+      "sha256": "11b386ef2d21ebca974815d0648fd9155992319a58ca7fe942ac2f844e58347f"
+    },
+    {
+      "path": "test/language/identifiers/val-this-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-this-via-escape-hex.js",
+      "bytes": 348,
+      "sha256": "256fd24a193b632f20c3e4c3a7eacf06ab05d0029d0beb612ae61453844a1407"
+    },
+    {
+      "path": "test/language/identifiers/val-this-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-this-via-escape-hex4.js",
+      "bytes": 360,
+      "sha256": "43d0d8211c61ec1043ca7b43bc9dc890924f1ee9dc7cf3afb2ed5f7f12a0b0d9"
+    },
+    {
+      "path": "test/language/identifiers/val-this.js",
+      "upstream_path": "test/language/identifiers/val-this.js",
+      "bytes": 319,
+      "sha256": "1fedcadfe119c61c9fed015d77e637bb8b3068d5c4d61ddc35b327f1f84efb3f"
+    },
+    {
+      "path": "test/language/identifiers/val-throw-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-throw-via-escape-hex.js",
+      "bytes": 350,
+      "sha256": "8dc359b173d1e3c47ace3dac0e00ce32d9b50f6a3908b1f0c254ace7af664c59"
+    },
+    {
+      "path": "test/language/identifiers/val-throw-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-throw-via-escape-hex4.js",
+      "bytes": 363,
+      "sha256": "52ce1b554c7f229594b4b5831811cb525847cab524a47d5c766dd67d58c07dd3"
+    },
+    {
+      "path": "test/language/identifiers/val-throw.js",
+      "upstream_path": "test/language/identifiers/val-throw.js",
+      "bytes": 320,
+      "sha256": "007d3c3ce26541c3fcb830e2c407b3261530ef75b1b888a0974e034950837f29"
+    },
+    {
+      "path": "test/language/identifiers/val-true-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-true-via-escape-hex.js",
+      "bytes": 348,
+      "sha256": "98795fa547ad8bdebff06daafdeaa57745b81bf99cacc8ebfff61c0fff50933a"
+    },
+    {
+      "path": "test/language/identifiers/val-true-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-true-via-escape-hex4.js",
+      "bytes": 359,
+      "sha256": "b8530a101fb79d0dfe6e791d93d5068447a2d82fff40e43817b73a17d005a153"
+    },
+    {
+      "path": "test/language/identifiers/val-true.js",
+      "upstream_path": "test/language/identifiers/val-true.js",
+      "bytes": 319,
+      "sha256": "d776a56efc7bea1a0f3da8df6e0bb554b95c3925984df8ac01d10fad5f333540"
+    },
+    {
+      "path": "test/language/identifiers/val-try-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-try-via-escape-hex.js",
+      "bytes": 356,
+      "sha256": "2c48e3c8422389189d42f71fb2b5013c0e48584e606e056a8a9d03c5a7373edf"
+    },
+    {
+      "path": "test/language/identifiers/val-try-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-try-via-escape-hex4.js",
+      "bytes": 367,
+      "sha256": "1deb1edf799e72e9f00ae1d1b288af02b467d6c889bdcbc7cc25d5cfcc237c20"
+    },
+    {
+      "path": "test/language/identifiers/val-try.js",
+      "upstream_path": "test/language/identifiers/val-try.js",
+      "bytes": 318,
+      "sha256": "9f2b235770a5aaa1263161e40f69f091ba5e53d2fac47311d50c3307f4657a33"
+    },
+    {
+      "path": "test/language/identifiers/val-typeof-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-typeof-via-escape-hex.js",
+      "bytes": 352,
+      "sha256": "8cccca3a7a6c1bad45e4633e763a62a944b4b79684e1dc4192b46d8ec7dc1502"
+    },
+    {
+      "path": "test/language/identifiers/val-typeof-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-typeof-via-escape-hex4.js",
+      "bytes": 365,
+      "sha256": "a1b4836817946fb3249959b2d55e87c555e499f6af27dbefa4c3135e311bc9ee"
+    },
+    {
+      "path": "test/language/identifiers/val-typeof.js",
+      "upstream_path": "test/language/identifiers/val-typeof.js",
+      "bytes": 321,
+      "sha256": "eff93b3ff4f1f21051aabc81f3ec00aa3b6fecf8dd481a63173b8adf2a81307c"
+    },
+    {
+      "path": "test/language/identifiers/val-underscore-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-underscore-via-escape-hex.js",
+      "bytes": 281,
+      "sha256": "be36ac1f94b6bf7f15f7c709bfa9760abb8c6bf6de732628f009c5058caa292a"
+    },
+    {
+      "path": "test/language/identifiers/val-underscore-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-underscore-via-escape-hex4.js",
+      "bytes": 282,
+      "sha256": "6decd62c39a068d0b4aaae9ae88f23f3ebb792d10a7798fede28558e34ab8b20"
+    },
+    {
+      "path": "test/language/identifiers/val-underscore.js",
+      "upstream_path": "test/language/identifiers/val-underscore.js",
+      "bytes": 271,
+      "sha256": "8bb507815b56fcc215a8a2aa27ef52b241b80e0d427e237e23e3d1b38552bb20"
+    },
+    {
+      "path": "test/language/identifiers/val-var-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-var-via-escape-hex.js",
+      "bytes": 346,
+      "sha256": "f39a9b7e6cffe5877648dee38c205fe01d2b8a9f89df10c37443d77511f7600e"
+    },
+    {
+      "path": "test/language/identifiers/val-var-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-var-via-escape-hex4.js",
+      "bytes": 357,
+      "sha256": "b067f11c26c3ae2149ccc138c57d6ea0ea75a36389ac68b8580f8c046973d898"
+    },
+    {
+      "path": "test/language/identifiers/val-var.js",
+      "upstream_path": "test/language/identifiers/val-var.js",
+      "bytes": 318,
+      "sha256": "c6f9517cc234bac9749a6c0862dadfc926a1531f897d5e222bf53c5632ed93ea"
+    },
+    {
+      "path": "test/language/identifiers/val-void-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-void-via-escape-hex.js",
+      "bytes": 363,
+      "sha256": "7b8cc03eb5d15b285debddba5597c2bcc6e6b54812bde552f949127a51706484"
+    },
+    {
+      "path": "test/language/identifiers/val-void-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-void-via-escape-hex4.js",
+      "bytes": 375,
+      "sha256": "9f25fcebbab7b6b2179ad95358cc89cd40cb8e6f191ea6afd5316f0eb2b40e63"
+    },
+    {
+      "path": "test/language/identifiers/val-void.js",
+      "upstream_path": "test/language/identifiers/val-void.js",
+      "bytes": 319,
+      "sha256": "c210340a537674ba6692fada5a1dcbf1f606012ce490633e2f7c9aab4d533c96"
+    },
+    {
+      "path": "test/language/identifiers/val-while-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-while-via-escape-hex.js",
+      "bytes": 370,
+      "sha256": "ca191881158fdd276a602913c4437fd7d2bf8a64656004ede9711337664788ed"
+    },
+    {
+      "path": "test/language/identifiers/val-while-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-while-via-escape-hex4.js",
+      "bytes": 383,
+      "sha256": "01e045e173ba0082bb1a8124750cdf8eee9c634f87fb011197719e50a058a74b"
+    },
+    {
+      "path": "test/language/identifiers/val-while.js",
+      "upstream_path": "test/language/identifiers/val-while.js",
+      "bytes": 320,
+      "sha256": "8035333182e7c7dd751e38fa9011ec39359ed35bac0011cce470cda59f4d8104"
+    },
+    {
+      "path": "test/language/identifiers/val-with-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/val-with-via-escape-hex.js",
+      "bytes": 348,
+      "sha256": "6a33b8d3b4c846bcc1efd07871b6ef05594d961c46f0cd041a79187773531bf6"
+    },
+    {
+      "path": "test/language/identifiers/val-with-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/val-with-via-escape-hex4.js",
+      "bytes": 360,
+      "sha256": "5c83a3e36e0761ffb12c1b123aabba47dbb7adc2d36181dfe03a6826fcd54f99"
+    },
+    {
+      "path": "test/language/identifiers/val-with.js",
+      "upstream_path": "test/language/identifiers/val-with.js",
+      "bytes": 319,
+      "sha256": "8b52697f4bcfaebf04f4783d324be01eb1db6b148e8f5bd49bae066bd9db4cbf"
+    },
+    {
+      "path": "test/language/identifiers/val-yield-strict.js",
+      "upstream_path": "test/language/identifiers/val-yield-strict.js",
+      "bytes": 380,
+      "sha256": "ae0ee639809ba39870dc62e06b77eacfd5c4a5d1743f0c897f928f6af11c8921"
+    },
+    {
+      "path": "test/language/identifiers/vals-cjk-escaped.js",
+      "upstream_path": "test/language/identifiers/vals-cjk-escaped.js",
+      "bytes": 1005,
+      "sha256": "7eabf5942747974f83cf68d44b4ad0ab1dd434c0f8a0bd424f887de5961dfaf4"
+    },
+    {
+      "path": "test/language/identifiers/vals-cjk.js",
+      "upstream_path": "test/language/identifiers/vals-cjk.js",
+      "bytes": 997,
+      "sha256": "4c077771423c0ec1e358434d12fae65502482c859db049dca89ceb6e22b2db15"
+    },
+    {
+      "path": "test/language/identifiers/vals-eng-alpha-lower-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/vals-eng-alpha-lower-via-escape-hex.js",
+      "bytes": 1320,
+      "sha256": "a491a59d641a5b735dde1ff5e129656742bf50145466b5957bb706a5a3a6f1ff"
+    },
+    {
+      "path": "test/language/identifiers/vals-eng-alpha-lower-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/vals-eng-alpha-lower-via-escape-hex4.js",
+      "bytes": 1321,
+      "sha256": "460d988cb98ccbd0c4d6daa487e7a10327ef7bc25325ee7af0f105c6f6615c24"
+    },
+    {
+      "path": "test/language/identifiers/vals-eng-alpha-lower.js",
+      "upstream_path": "test/language/identifiers/vals-eng-alpha-lower.js",
+      "bytes": 1815,
+      "sha256": "ab907b36a0a22b3d55bc9c621de179c18e9425efe479341e23387752d4122a19"
+    },
+    {
+      "path": "test/language/identifiers/vals-eng-alpha-upper-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/vals-eng-alpha-upper-via-escape-hex.js",
+      "bytes": 1322,
+      "sha256": "0c5ef9d54b91e77e00c4268d24f1b446f895d35ff8df193638de936b91724280"
+    },
+    {
+      "path": "test/language/identifiers/vals-eng-alpha-upper-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/vals-eng-alpha-upper-via-escape-hex4.js",
+      "bytes": 1323,
+      "sha256": "a5d1070b2390d920707dea4c116a358b219fad5cb186adc488ac446607d8c4b4"
+    },
+    {
+      "path": "test/language/identifiers/vals-eng-alpha-upper.js",
+      "upstream_path": "test/language/identifiers/vals-eng-alpha-upper.js",
+      "bytes": 1192,
+      "sha256": "8675794cd7898981538cddd440e2c7d970e451f0690ff876182da771aa8e1301"
+    },
+    {
+      "path": "test/language/identifiers/vals-rus-alpha-lower-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/vals-rus-alpha-lower-via-escape-hex.js",
+      "bytes": 1673,
+      "sha256": "54f3a8cd48bf10f2ca240a8488f749a41cb6d99fe8ca03a2714083b936f65b33"
+    },
+    {
+      "path": "test/language/identifiers/vals-rus-alpha-lower-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/vals-rus-alpha-lower-via-escape-hex4.js",
+      "bytes": 1641,
+      "sha256": "71fca27bd744a7e109e6f97a819257c0c32655db42f0e68cd517926c05aaf274"
+    },
+    {
+      "path": "test/language/identifiers/vals-rus-alpha-lower.js",
+      "upstream_path": "test/language/identifiers/vals-rus-alpha-lower.js",
+      "bytes": 1508,
+      "sha256": "480e56696023d317d6b9e76587b74bc971053a390886b8449b092fa059f572fa"
+    },
+    {
+      "path": "test/language/identifiers/vals-rus-alpha-upper-via-escape-hex.js",
+      "upstream_path": "test/language/identifiers/vals-rus-alpha-upper-via-escape-hex.js",
+      "bytes": 1675,
+      "sha256": "249c5779be30000e23cf5cf383a0a84c83bb7ed2bc2f61f3f5f2829b1178847a"
+    },
+    {
+      "path": "test/language/identifiers/vals-rus-alpha-upper-via-escape-hex4.js",
+      "upstream_path": "test/language/identifiers/vals-rus-alpha-upper-via-escape-hex4.js",
+      "bytes": 1643,
+      "sha256": "395dcd4a5543f96249d4b6ad951aadbe3aa27a40b5c328a173bc140e30533e23"
+    },
+    {
+      "path": "test/language/identifiers/vals-rus-alpha-upper.js",
+      "upstream_path": "test/language/identifiers/vals-rus-alpha-upper.js",
+      "bytes": 1510,
+      "sha256": "cfd176f32e79199ef67a8195271cd59153e04e1c267e6ba567f99b1bef4beb59"
+    },
+    {
+      "path": "test/language/identifiers/vertical-tilde-continue-escaped.js",
+      "upstream_path": "test/language/identifiers/vertical-tilde-continue-escaped.js",
+      "bytes": 413,
+      "sha256": "c39f3c052f4a67178d35bd57f877277d7563409f8010291ff5211f51f62dd9be"
+    },
+    {
+      "path": "test/language/identifiers/vertical-tilde-continue.js",
+      "upstream_path": "test/language/identifiers/vertical-tilde-continue.js",
+      "bytes": 420,
+      "sha256": "ee7794fc751678c6126a6eb5e4a20c79f0318c97c3633d45659b3c67e4d92e43"
+    },
+    {
+      "path": "test/language/identifiers/vertical-tilde-start-escaped.js",
+      "upstream_path": "test/language/identifiers/vertical-tilde-start-escaped.js",
+      "bytes": 409,
+      "sha256": "5c9d8e9923470c1a19b263cb9d4aaad8e9e2bb569ac4b8fe0d2da244994aef9c"
+    },
+    {
+      "path": "test/language/identifiers/vertical-tilde-start.js",
+      "upstream_path": "test/language/identifiers/vertical-tilde-start.js",
+      "bytes": 416,
+      "sha256": "fc0300ba2146a8b32e9818e0fc927daccca652f0d36591d6a7639aaecd39a890"
+    },
+    {
+      "path": "test/language/white-space/S7.2_A2.1_T2.js",
+      "upstream_path": "test/language/white-space/S7.2_A2.1_T2.js",
+      "bytes": 398,
+      "sha256": "968889d824476f415a0542d0fca8f2339b58d3237aa853f728bc6c71728d89c7"
+    },
+    {
+      "path": "test/language/white-space/S7.2_A2.2_T2.js",
+      "upstream_path": "test/language/white-space/S7.2_A2.2_T2.js",
+      "bytes": 394,
+      "sha256": "9365a198e52e5f77eceec7f3debe408eeafee8b74df2f38faf14a43c6148f47b"
+    },
+    {
+      "path": "test/language/white-space/S7.2_A2.3_T2.js",
+      "upstream_path": "test/language/white-space/S7.2_A2.3_T2.js",
+      "bytes": 388,
+      "sha256": "96bdcc326f95933488ee08b36acc707574d55795ffb7e91ef76cdd284253938f"
+    },
+    {
+      "path": "test/language/white-space/S7.2_A2.4_T2.js",
+      "upstream_path": "test/language/white-space/S7.2_A2.4_T2.js",
+      "bytes": 380,
+      "sha256": "d46a29b13993d9d1c02e9aa7a7ce88f3591dfc8e0cb9139113e8fb2026b8326f"
+    },
+    {
+      "path": "test/language/white-space/S7.2_A2.5_T2.js",
+      "upstream_path": "test/language/white-space/S7.2_A2.5_T2.js",
+      "bytes": 404,
+      "sha256": "14302b839e60223e6b1a92c9621001c316f6035245917d08d910c2c67a63537d"
+    },
+    {
+      "path": "test/language/white-space/S7.2_A3.1_T2.js",
+      "upstream_path": "test/language/white-space/S7.2_A3.1_T2.js",
+      "bytes": 430,
+      "sha256": "a317e76c461c8efb08c3a6d4baf8e8b156c16aa2f7c1fc357b6e7969e14a0fe6"
+    },
+    {
+      "path": "test/language/white-space/S7.2_A3.2_T2.js",
+      "upstream_path": "test/language/white-space/S7.2_A3.2_T2.js",
+      "bytes": 426,
+      "sha256": "97886670b4de211a3b0496b50400efa15da53a1ed200e86fc35c96cab0d28e70"
+    },
+    {
+      "path": "test/language/white-space/S7.2_A3.3_T2.js",
+      "upstream_path": "test/language/white-space/S7.2_A3.3_T2.js",
+      "bytes": 420,
+      "sha256": "db0297f7b4b19f39b982ec6cb2d9123bbaaefd83b116e75e15377afb79104c03"
+    },
+    {
+      "path": "test/language/white-space/S7.2_A3.4_T2.js",
+      "upstream_path": "test/language/white-space/S7.2_A3.4_T2.js",
+      "bytes": 412,
+      "sha256": "97b9285a157ee5409c7a66e2bf4ee203016b461a42a49c27e26d554a9c20d16b"
+    },
+    {
+      "path": "test/language/white-space/S7.2_A3.5_T2.js",
+      "upstream_path": "test/language/white-space/S7.2_A3.5_T2.js",
+      "bytes": 438,
+      "sha256": "2c06db8ba1d76abd676fa9edb82383537e93d61fdc95a68f8d32c0c77bdeb611"
+    },
+    {
+      "path": "test/language/white-space/S7.2_A4.1_T2.js",
+      "upstream_path": "test/language/white-space/S7.2_A4.1_T2.js",
+      "bytes": 433,
+      "sha256": "cfa5a198bb98135e86f9821a2b162528201fa4663b96cc44b3c8a9c5ef9b84cd"
+    },
+    {
+      "path": "test/language/white-space/S7.2_A4.2_T2.js",
+      "upstream_path": "test/language/white-space/S7.2_A4.2_T2.js",
+      "bytes": 429,
+      "sha256": "27bb5cab3f275f1890ba3a07ecc9bd638718a433487fb5b56058a1d0d07f8a00"
+    },
+    {
+      "path": "test/language/white-space/S7.2_A4.3_T2.js",
+      "upstream_path": "test/language/white-space/S7.2_A4.3_T2.js",
+      "bytes": 423,
+      "sha256": "14a0dd55d33c4ccd5000414aa3bfe44fec0afdf1e7259452f3d07312552508b5"
+    },
+    {
+      "path": "test/language/white-space/S7.2_A4.4_T2.js",
+      "upstream_path": "test/language/white-space/S7.2_A4.4_T2.js",
+      "bytes": 415,
+      "sha256": "ef4a04ab78e3c62aaac85bd7553aecdf80e17632af90c4f25776a3339100d0e3"
+    },
+    {
+      "path": "test/language/white-space/S7.2_A4.5_T2.js",
+      "upstream_path": "test/language/white-space/S7.2_A4.5_T2.js",
+      "bytes": 441,
+      "sha256": "4347eb4ca225ed9c4d3b3307923208c486e84599eb824b485524513a8857f98a"
+    },
+    {
+      "path": "test/language/white-space/S7.2_A5_T1.js",
+      "upstream_path": "test/language/white-space/S7.2_A5_T1.js",
+      "bytes": 415,
+      "sha256": "54505b8ff1f067f7d4c1b0b4e8ed1c8381aa8da7bb38504009d90cf80bcecb81"
+    },
+    {
+      "path": "test/language/white-space/S7.2_A5_T2.js",
+      "upstream_path": "test/language/white-space/S7.2_A5_T2.js",
+      "bytes": 424,
+      "sha256": "83060ef5abb6326adb14c3ccca07648dd85e4bd2bcb3d3d4a73f7e242ed927cc"
+    },
+    {
+      "path": "test/language/white-space/S7.2_A5_T3.js",
+      "upstream_path": "test/language/white-space/S7.2_A5_T3.js",
+      "bytes": 421,
+      "sha256": "c9a152b853921f8efc2b8d72d7809970cf6da104c235f173b8e06c3d2015a789"
+    },
+    {
+      "path": "test/language/white-space/S7.2_A5_T4.js",
+      "upstream_path": "test/language/white-space/S7.2_A5_T4.js",
+      "bytes": 417,
+      "sha256": "8da60056e4273733ee38e1d63cbf48538255250d2be006e6ff9672f95e41b919"
+    },
+    {
+      "path": "test/language/white-space/S7.2_A5_T5.js",
+      "upstream_path": "test/language/white-space/S7.2_A5_T5.js",
+      "bytes": 426,
+      "sha256": "24cb14401b9a023fab9c5ed13d3f20373538adf31737ec45a0dc9f49a2f87ff4"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-carriage-return.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-carriage-return.js",
+      "bytes": 1699,
+      "sha256": "5f16ff80ca15dd008e1ddecb5c896dbef5728e062ae4e1fb6ca486a98daa5d50"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-em-quad.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-em-quad.js",
+      "bytes": 1797,
+      "sha256": "afea361241c038d42677ab232a5b299a94840b11af19bee36d6a6e70b976f8dc"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-em-space.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-em-space.js",
+      "bytes": 1799,
+      "sha256": "bdf6c4c89a61632a74c1ff98caf095aa868099d493fa58683426d4b6b455a9c0"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-en-quad.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-en-quad.js",
+      "bytes": 1797,
+      "sha256": "910559503a29b2e90ebdc47cccd299d0ce350b044b770f2cd643e3e6004d8539"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-en-space.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-en-space.js",
+      "bytes": 1799,
+      "sha256": "6a0127fdcfb5d77fcc3c0bbebe38254ad6208af10addffbbdfde93d30a7372de"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-figure-space.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-figure-space.js",
+      "bytes": 1807,
+      "sha256": "518f484594294e379b0c93105e9b0e702e6192671f22c8f1d501e04d590e631e"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-form-feed.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-form-feed.js",
+      "bytes": 1736,
+      "sha256": "e996de0942b7900b01c8503622167ac85af5a0404f4ddd169d1909c4c96c6592"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-four-per-em-space.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-four-per-em-space.js",
+      "bytes": 1817,
+      "sha256": "b795c36df2767323267c6a72c9dfb0e482f96b7b9cf503225a7ef3b4f4b751a1"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-hair-space.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-hair-space.js",
+      "bytes": 1803,
+      "sha256": "375f42ef5ab664739f9fd72aa6fadd6c40851d2534c74cb2a086e5055ef21fb2"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-ideographic-space.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-ideographic-space.js",
+      "bytes": 1817,
+      "sha256": "8d41fd2494c961b1dd6ee42bc30c896fc616775b46dc316cd8db18ff0dd3ddc9"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-line-feed.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-line-feed.js",
+      "bytes": 1681,
+      "sha256": "e035ffa7aa33583c116d667b5a49f2aa04159b38debb6cd2bec818784a27a4df"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-line-separator.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-line-separator.js",
+      "bytes": 1693,
+      "sha256": "26be509d2cd0f3fef6b6f9f0a57b63da1a673de9b663d02e386a6796ac57afd7"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-medium-mathematical-space.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-medium-mathematical-space.js",
+      "bytes": 1833,
+      "sha256": "3c2dc5e368ed0af695eb7ec95fa41fb8e64a0ef1c7ca32f959e1918e2c54198e"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-nbsp.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-nbsp.js",
+      "bytes": 1741,
+      "sha256": "638ff27c2ed3dd7c51fcad5b7c5b52a1357ea742e3a9f6d449ac11357e0318bd"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-nnbsp.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-nnbsp.js",
+      "bytes": 1809,
+      "sha256": "809bd142a5deaae566d09d32dc917b202c7be434e895c540076d19dea25eda0e"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-ogham-space.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-ogham-space.js",
+      "bytes": 1810,
+      "sha256": "fa3537b68cf9bd29d35ff81ae7d1a6f3df8f60cd3d70681472b5e1d90ae70b2f"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-paragraph-separator.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-paragraph-separator.js",
+      "bytes": 1708,
+      "sha256": "a34402657fc9b8c92077dbcbf5562fc0f78d30e256e91dc49e72988403a32bed"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-punctuation-space.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-punctuation-space.js",
+      "bytes": 1817,
+      "sha256": "1f0ea86d80de9cd6d37783bd6412b267ca37b7d7047427a56990335599e9e151"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-six-per-em-space.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-six-per-em-space.js",
+      "bytes": 1815,
+      "sha256": "614f3fa6b0810fcd086af73b1cf1c4be359513982e7390afd6a3dd71d622c533"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-space.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-space.js",
+      "bytes": 1719,
+      "sha256": "64cbcc748ce003fd8fe9e2f4622419c577fc06b2f52bfcc947aa9d786a5b091d"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-tab.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-tab.js",
+      "bytes": 1749,
+      "sha256": "abf8f48e6c02cebba38ba11c0e39a4f30a6791579074cef4ff3f1951b16e0180"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-thin-space.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-thin-space.js",
+      "bytes": 1803,
+      "sha256": "8dab215476e84f81f1b8f65f27f86607085dca02d3e627fabc66c4bec5828b2a"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-three-per-em-space.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-three-per-em-space.js",
+      "bytes": 1819,
+      "sha256": "1e93d409cc6782fcac8bc436a871f500e1e7fa25b658f41dfeeaa5ea2e4bcd16"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-vertical-tab.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-vertical-tab.js",
+      "bytes": 1746,
+      "sha256": "cd0d11e982fa96d34c005d4f134b72cd5085c87e67f4956a0c12b1fe697d080c"
+    },
+    {
+      "path": "test/language/white-space/after-regular-expression-literal-zwnbsp.js",
+      "upstream_path": "test/language/white-space/after-regular-expression-literal-zwnbsp.js",
+      "bytes": 1770,
+      "sha256": "90a622ccde4abcd5c2ab45dd5d23341bbaf98f9845ee5cf6a96b3ae67897a1b0"
+    },
+    {
+      "path": "test/language/white-space/between-form-feed.js",
+      "upstream_path": "test/language/white-space/between-form-feed.js",
+      "bytes": 323,
+      "sha256": "bc2c1491c7e026bd18246657e736b41ba23f9cbb21e3392e88c59f2cc273584b"
+    },
+    {
+      "path": "test/language/white-space/between-horizontal-tab.js",
+      "upstream_path": "test/language/white-space/between-horizontal-tab.js",
+      "bytes": 334,
+      "sha256": "0165aca2ec0d39c8c11d4a922e20ac9db99c1c40cef9bc7d03bdbe3ec7a6b9d5"
+    },
+    {
+      "path": "test/language/white-space/between-nbsp.js",
+      "upstream_path": "test/language/white-space/between-nbsp.js",
+      "bytes": 336,
+      "sha256": "620c6f8edadc0a0f4409c7e0ef17491253e8a41f4f6b25616e0088dba76937dd"
+    },
+    {
+      "path": "test/language/white-space/between-space.js",
+      "upstream_path": "test/language/white-space/between-space.js",
+      "bytes": 315,
+      "sha256": "565b51d61fafc2c0e45f398a677aa62065e4c5173264ad1ec0793808d63138ee"
+    },
+    {
+      "path": "test/language/white-space/between-vertical-tab.js",
+      "upstream_path": "test/language/white-space/between-vertical-tab.js",
+      "bytes": 329,
+      "sha256": "e60f013787276493a26b19ff09ef311eab12d0aa2004eafdc1347945be18fbb2"
+    },
+    {
+      "path": "test/language/white-space/comment-multi-form-feed.js",
+      "upstream_path": "test/language/white-space/comment-multi-form-feed.js",
+      "bytes": 550,
+      "sha256": "420e368f4de8d2a078bfab75f9a116c75ea7619217de87d175c498b2e5a31574"
+    },
+    {
+      "path": "test/language/white-space/comment-multi-horizontal-tab.js",
+      "upstream_path": "test/language/white-space/comment-multi-horizontal-tab.js",
+      "bytes": 560,
+      "sha256": "8417e76ae3eb0309f81c083cef9e8b7571a6adc631200ef5084e0ae1e397e8de"
+    },
+    {
+      "path": "test/language/white-space/comment-multi-nbsp.js",
+      "upstream_path": "test/language/white-space/comment-multi-nbsp.js",
+      "bytes": 560,
+      "sha256": "fbc163402c77510e4e93059dee45612c8a63fe23000c93f70a4ff631e49c2ca9"
+    },
+    {
+      "path": "test/language/white-space/comment-multi-space.js",
+      "upstream_path": "test/language/white-space/comment-multi-space.js",
+      "bytes": 542,
+      "sha256": "cbe251e575e9ec40dd676d90563bb5931f97790bad8317f4136ec190c71de8c9"
+    },
+    {
+      "path": "test/language/white-space/comment-multi-vertical-tab.js",
+      "upstream_path": "test/language/white-space/comment-multi-vertical-tab.js",
+      "bytes": 556,
+      "sha256": "5ff4ad7875170827da5bf0b036a57e3ac734a727b98a4821b3cca737d4456afa"
+    },
+    {
+      "path": "test/language/white-space/comment-single-form-feed.js",
+      "upstream_path": "test/language/white-space/comment-single-form-feed.js",
+      "bytes": 548,
+      "sha256": "fc1c31b680e9d4ce541529889df793f73bb0b9565c2c41f2284dba1e12aa6352"
+    },
+    {
+      "path": "test/language/white-space/comment-single-horizontal-tab.js",
+      "upstream_path": "test/language/white-space/comment-single-horizontal-tab.js",
+      "bytes": 558,
+      "sha256": "0b13a46486136d8b62efaeb5682c60cfedd98f4fe4d2c43a29b8477eefc63d5d"
+    },
+    {
+      "path": "test/language/white-space/comment-single-nbsp.js",
+      "upstream_path": "test/language/white-space/comment-single-nbsp.js",
+      "bytes": 558,
+      "sha256": "655ff14f674bcd61d01eb83e761c721151c88162d07466125c45842832fa22d6"
+    },
+    {
+      "path": "test/language/white-space/comment-single-space.js",
+      "upstream_path": "test/language/white-space/comment-single-space.js",
+      "bytes": 540,
+      "sha256": "1223c178c4408b329e0782103dff0eb66b46fe67d548546c4d86131d0621af0a"
+    },
+    {
+      "path": "test/language/white-space/comment-single-vertical-tab.js",
+      "upstream_path": "test/language/white-space/comment-single-vertical-tab.js",
+      "bytes": 554,
+      "sha256": "fb59b9ca2642c20924308661b7b22953da55fe51deffe31fd7a24a137159a3c7"
+    },
+    {
+      "path": "test/language/white-space/mongolian-vowel-separator-eval.js",
+      "upstream_path": "test/language/white-space/mongolian-vowel-separator-eval.js",
+      "bytes": 595,
+      "sha256": "6b2139d618919e96d0b9fdee14b451136fef101cfe967a3e31c99a3385d14ac6"
+    },
+    {
+      "path": "test/language/white-space/mongolian-vowel-separator.js",
+      "upstream_path": "test/language/white-space/mongolian-vowel-separator.js",
+      "bytes": 619,
+      "sha256": "e017394d29e0ae4b5909742824b1e0cc6edb8c6c8ff7f34fdbb543abb013d277"
+    },
+    {
+      "path": "test/language/white-space/string-form-feed.js",
+      "upstream_path": "test/language/white-space/string-form-feed.js",
+      "bytes": 595,
+      "sha256": "2f044164e0ce7d1cd720a42cb67253838966c69021b2681389750fcc3fb34cb4"
+    },
+    {
+      "path": "test/language/white-space/string-horizontal-tab.js",
+      "upstream_path": "test/language/white-space/string-horizontal-tab.js",
+      "bytes": 605,
+      "sha256": "882e36d5bd5b3478fb8a46c73a717e0eeaaf5683c86e09f3958adf99dd8515dc"
+    },
+    {
+      "path": "test/language/white-space/string-nbsp.js",
+      "upstream_path": "test/language/white-space/string-nbsp.js",
+      "bytes": 453,
+      "sha256": "491a77b96bb9c008a36310efbafe96a279113d4a2a22bd1995a0662cfe43559d"
+    },
+    {
+      "path": "test/language/white-space/string-space.js",
+      "upstream_path": "test/language/white-space/string-space.js",
+      "bytes": 562,
+      "sha256": "8c577e14d668318ee44223c902fe661db0dcd1e4866b288b9250c21fadcbc6db"
+    },
+    {
+      "path": "test/language/white-space/string-vertical-tab.js",
+      "upstream_path": "test/language/white-space/string-vertical-tab.js",
+      "bytes": 601,
+      "sha256": "3eca3990e938a55ceb8fde6a2ca0e74e037b7d761206b370a7387ad52e9aee5b"
+    }
+  ]
+}

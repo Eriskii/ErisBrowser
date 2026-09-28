@@ -6,6 +6,7 @@ pub(crate) mod document_url;
 pub mod dom;
 pub mod graphics;
 mod image_limits;
+mod js_identifier;
 pub mod js_string;
 pub mod layout;
 pub mod net;

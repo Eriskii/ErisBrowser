@@ -48,6 +48,31 @@ fn stable_array_sort_preserves_holes_identity_and_callback_effects() {
 }
 
 #[test]
+fn unicode_identifier_bindings_survive_rendering_and_event_callbacks() {
+    assert_six_scripted_samples(include_str!("fixtures/identifiers.html"));
+}
+
+#[test]
+fn invalid_identifier_scripts_leave_no_effects_and_later_scripts_still_run() {
+    for invalid in [
+        r"var \u0069f=1;",
+        r"var \uD801\uDC00=1;",
+        r"var \u0030name=1;",
+        r"var x=3in {};",
+        "var\u{0085}name=1;",
+    ] {
+        let source = format!(
+            "<!doctype html><body><script>document.body.className='wrong';{invalid}</script>\
+             <script>if(document.body.className===''){{let \\u03C0=3;if(π===3)document.body.className='ready';}}</script>"
+        );
+        let p = page(&source);
+        assert_eq!(p.diagnostics.len(), 1, "{invalid}: {:?}", p.diagnostics);
+        let body = p.document.query_selector("body").unwrap();
+        assert_eq!(p.document.attr(body, "class"), Some("ready"), "{invalid}");
+    }
+}
+
+#[test]
 fn window_self_state_survives_fragment_navigation_and_resets_in_a_new_page() {
     let source = include_str!("fixtures/window-self.html");
     let mut p = page(source);

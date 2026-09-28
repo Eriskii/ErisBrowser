@@ -1,0 +1,47 @@
+{
+  "format": 1,
+  "unicode_version": "18.0.0",
+  "retrieved_at_utc": "2026-09-28T11:18:40+00:00",
+  "files": [
+    {
+      "path": "DerivedCoreProperties.txt",
+      "url": "https://www.unicode.org/Public/18.0.0/ucd/DerivedCoreProperties.txt",
+      "resolved_url": "https://www.unicode.org/Public/18.0.0/ucd/DerivedCoreProperties.txt",
+      "bytes": 1159889,
+      "sha256": "09c928886a178fcafd93c29e4bd59073a058e5a100b716d425cb563ab50f68c9",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "path": "ReadMe.txt",
+      "url": "https://www.unicode.org/Public/18.0.0/ucd/ReadMe.txt",
+      "resolved_url": "https://www.unicode.org/Public/18.0.0/ucd/ReadMe.txt",
+      "bytes": 729,
+      "sha256": "b0ea442f29dee90584aacd3665a6e1ce87ffc917a4d31f34e1916d2d6f7f9205",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "path": "LICENSE.txt",
+      "url": "https://www.unicode.org/license.txt",
+      "resolved_url": "https://www.unicode.org/license.txt",
+      "bytes": 1995,
+      "sha256": "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "path": "Unicode18.0.0.html",
+      "url": "https://www.unicode.org/versions/Unicode18.0.0/",
+      "resolved_url": "https://www.unicode.org/versions/Unicode18.0.0/",
+      "bytes": 62838,
+      "sha256": "238585432d40b86c63666334939f5ab691340b8c7a67ea63327d12471950fb63",
+      "content_type": "text/html; charset=UTF-8"
+    }
+  ],
+  "final_version_evidence": {
+    "data_header": "# DerivedCoreProperties-18.0.0.txt",
+    "data_date": "# Date: 2026-08-07, 16:19:42 GMT",
+    "readme_statement": "This directory contains final data files for version 18.0.0 of the\nUnicode Character Database.",
+    "landing_page_caveat": "The official landing page still carries a preliminary banner; final-data status is taken from the versioned ReadMe and matching data header, not inferred from that page.",
+    "landing_page_release_date": "September 16, 2026"
+  },
+  "license": "Unicode License V3; exact mutable license URL bytes are retained and hashed."
+}

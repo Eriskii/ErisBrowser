@@ -26,11 +26,13 @@ REST_PARAMETER_FEATURES = FUNCTION_FEATURES | {'rest-parameters'}
 IS_PROTOTYPE_OF_FEATURES = SUPPORTED_FEATURES.copy()
 GLOBAL_VALUE_FEATURES = SUPPORTED_FEATURES | {'globalThis'}
 ARRAY_SORT_FEATURES = SUPPORTED_FEATURES | {'stable-array-sort'}
+IDENTIFIER_FEATURES = SUPPORTED_FEATURES | {'u180e'}
 PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
                     'is-prototype-of': IS_PROTOTYPE_OF_FEATURES,
-                    'global-values': GLOBAL_VALUE_FEATURES, 'array-sort': ARRAY_SORT_FEATURES}
+                    'global-values': GLOBAL_VALUE_FEATURES, 'array-sort': ARRAY_SORT_FEATURES,
+                    'identifiers': IDENTIFIER_FEATURES}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -399,7 +401,23 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                 for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
                     source = guard + setup + f'assert.sameValue({actual},{value});'
                     variants.append(('array-sort-' + name + suffix, source, expected, mode))
+    if profile == 'identifiers':
+        pairs = [
+            ('identifier-alias', r"var \u0061=7;var \u{000000000061}lias=9;assert.sameValue(a,7);function f(\u0078){return x;}assert.sameValue(f(11),11);", 'alias', '9', '8'),
+            ('identifier-id-properties', r"var ℘=1,ͺ=2;assert.sameValue(\u2118,1);", r'\u037A', '2', '3'),
+            ('identifier-parts', r"var á=1,a·=2,a‿=3,a٠=4;assert.sameValue(a\u0301,1);assert.sameValue(a\u00B7,2);assert.sameValue(a\u203F,3);", r'a\u0660', '4', '5'),
+            ('identifier-join', r"var a‌b=5,a‍b=6;assert.sameValue(a\u200Cb,5);", r'a\u200Db', '6', '5'),
+            ('identifier-supplementary', r"var 𐐀=10;assert.sameValue(\u{10400},10);var \u{000000000010400}x=11;", '𐐀x', '11', '12'),
+            ('identifier-normalization', r"var é=3,é=4;assert.sameValue(e\u0301,4);", r'\u00E9', '3', '4'),
+            ('identifier-keyword-properties', r"var o={\u0069f:7,\u0074his:8,\u006eull:9};assert.sameValue(o.if,7);assert.sameValue(o.\u0074his,8);", 'o.null', '9', '8'),
+            ('identifier-whitespace-literals', "\ufeffvar x\u00a0=\u202f1;if(true){x+=2;}assert.sameValue(false,false);assert.sameValue(null,null);", 'x', '3', '4'),
+        ]
+        for mode in ('sloppy', 'strict'):
+            for name, setup, actual, good, bad in pairs:
+                for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                    variants.append((name + suffix, setup + f'assert.sameValue({actual},{value});', expected, mode))
     outcomes = []
+    identifier_controls = {}
     for name, source, expected, mode in variants:
         includes = ['propertyHelper.js'] if 'property-' in name else []
         case = dict(id=f'harness-preflight:{name}', file='<preflight>', mode=mode,
@@ -411,6 +429,43 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
         if expected == 'failed':
             correct = correct and result.get('observation', {}).get('error_type') == 'Test262Error'
         outcomes.append(dict(name=name, expected=expected, verified=correct, result=result))
+        if profile == 'identifiers' and name.startswith('identifier-') and expected == 'passed':
+            identifier_controls[(name, mode)] = dict(
+                name=name, mode=mode, case_sha256=case['case_sha256'],
+                source_sha256=digest(case['source']), expected=expected,
+                verified=correct, result=result)
+    if profile == 'identifiers':
+        # Parse-negative observations alone can pass on an old lexer that
+        # rejects every escape. Require a separately executed valid control,
+        # retaining both the raw negative result and the control's identity.
+        invalid = [
+            ('escaped-keyword-binding', r'var \u0069f=1;', 'identifier-alias'),
+            ('escaped-keyword-terminal', r'\u0069f(true){}', 'identifier-keyword-properties'),
+            ('escaped-literal', r'var x=tr\u0075e;', 'identifier-keyword-properties'),
+            ('escaped-this', r'var x=th\u0069s;', 'identifier-keyword-properties'),
+            ('initial-mark', r'var \u0300x=1;', 'identifier-parts'),
+            ('initial-digit', r'var \u0030x=1;', 'identifier-alias'),
+            ('surrogate', r'var \uD800=1;', 'identifier-supplementary'),
+            ('surrogate-pair', r'var \uD801\uDC00=1;', 'identifier-supplementary'),
+            ('empty-braced', r'var \u{}=1;', 'identifier-alias'),
+            ('outside-scalar', r'var \u{110000}=1;', 'identifier-supplementary'),
+            ('numeric-adjacency', r'var x=1\u0061;', 'identifier-alias'),
+            ('forbidden-nel', 'var\u0085x=1;', 'identifier-whitespace-literals'),
+        ]
+        for mode in ('sloppy', 'strict'):
+            for label, source, control in invalid:
+                name = 'identifier-syntax-' + label
+                case = dict(id=f'harness-preflight:{name}', file='<preflight>', mode=mode,
+                            metadata=dict(flags=[], includes=[], features=[], locale=[],
+                                          negative=dict(phase='parse', type='SyntaxError')),
+                            source=source.encode(),
+                            harness=[(item, files[f'harness/{item}']) for item in ('assert.js', 'sta.js')])
+                case['case_sha256'] = case_fingerprint(case)
+                result = run_case(case, binary, timeout)
+                prerequisite = identifier_controls[(control, mode)]
+                outcomes.append(dict(name=name, expected='passed',
+                                     verified=result['status'] == 'passed' and prerequisite['verified'],
+                                     result=result, prerequisite=prerequisite))
     return outcomes
 
 

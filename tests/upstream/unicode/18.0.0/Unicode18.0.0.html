@@ -1,0 +1,1269 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+
+       "http://www.w3.org/TR/html4/loose.dtd"> 
+
+<html>
+<!-- 
+This file is part of the content published with each Unicode release,
+including alpha and beta preview releases. Source for this file is 
+maintained in the website/versions/{latest} folder of the utc-release-management 
+repo. For releases, it is deployed to a versioned folder under 
+www.unicode.org/versions.
+-->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-us">
+<meta name="keywords" content="Unicode Standard">
+<title>Unicode 18.0.0</title>
+<meta name="revision" content="69050b254b01fdc305d7f4bff891da6466d05337">
+<link rel="stylesheet" type="text/css" href="https://www.unicode.org/webscripts/standard_styles.css">
+<style type="text/css"> 
+
+:root {
+  /* The following variable is used to control display of a 
+     (pre-release) "Status" paragraph at the top of the page. 
+     The element is displayed during alpha and beta periods,
+     but hidden for the release. 
+  
+     Prior to release, set to: 
+        --status_display: block;
+     For the release, set to:
+        --status_display: none;
+  */
+  --status_display: none; 
+}
+.status {
+  background-color: aquamarine;
+  border: 1px solid black;
+  padding: 2px;
+  display: var(--status_display);
+}
+
+.nobullet {
+  list-style-type: none;
+}
+
+.nochange {
+  color: #767676;
+}
+</style>
+</head>
+
+<body>
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+<!-- BEGIN HEADER BAR -->
+    <tr>
+      <td colspan="2">
+      <table width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+          
+          <td class="icon" style="width:38px; height:35px">
+          <a href="https://www.unicode.org/">
+          <img border="0" src="https://www.unicode.org/webscripts/logo60s2.gif" align="middle" 
+          alt="[Unicode]" width="34" height="33"></a>
+          </td>
+
+          <td class="icon" style="vertical-align:middle">
+          <a class="bar"> </a>
+          <a class="bar" href="/versions/Unicode18.0.0/"><font size="3">Unicode 18.0.0</font></a>
+          </td>
+
+          <td class="bar">
+          <a href="https://www.unicode.org/main.html" class="bar">Tech Site</a> 
+          | <a href="https://www.unicode.org/sitemap/" class="bar">Site Map</a> |
+          <a href="https://www.unicode.org/search" class="bar">Search </a>
+          </td>
+
+        </tr>
+      </table>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" class="gray">&nbsp;</td>
+    </tr>
+<!-- END HEADER BAR -->
+
+    <tr>
+      <!-- BEGIN CONTENTS -->
+          <td valign="top" class="contents">
+          <blockquote>
+            <h1>Unicode® 18.0.0</h1>
+            <h3 align="center" style="margin-top:1em">2026 September 16 (<a href="https://blog.unicode.org/2026/09/announcing-unicode-standard-version-180.html">Announcement</a>)</h3>
+            
+<blockquote class="status"><strong>STATUS:</strong> This is a preliminary draft page for an upcoming release. Some details may be missing or incorrect, and some links may be wrong or broken. <!-- During the alpha review period, errors are expected and feedback is not necessary.--> During the beta review period, feedback about errors on this page will be helpful and appreciated.</blockquote>
+
+            <!-- <p><em>Version 18.0.0 has been superseded by the <a href="/versions/latest/">latest version</a> of the Unicode Standard.</em></p> -->
+            <p>This page summarizes the important changes for the Unicode Standard, Version 18.0.0. 
+              This version supersedes all previous versions of the Unicode Standard.</p>
+<blockquote>
+            <ul class="nobullet">
+              <li>A. <a href="#Summary">Summary</a></li>
+              <li>B. <a href="#Technical_Overview">Technical Overview</a>
+                <ul class="nobullet">
+                  <li><a href="#Core_Specification">Core Specification</a></li>
+                  <li><a href="#Code_Charts">Code Charts</a></li>
+                  <li><a href="#Radical_Stroke">Han Radical-Stroke Indices</a></li>
+                  <li><a href="#Annexes">Unicode Standard Annexes</a></li>
+                  <li><a href="#UCD">Unicode Character Database</a></li>
+                  <li><a href="#Version_References">Version References</a></li>
+                  <li><a href="#Errata">Errata</a></li>
+                </ul>
+              </li>
+              <li>C. <a href="#Stability_Policy">Stability Policy Update</a></li>
+              <li>D. <a href="#Character_Additions">Textual Changes and Character Additions</a></li>
+              <li>E. <a href="#Conformance_Changes">Conformance Changes</a></li>
+              <li>F. <a href="#Database_Changes">Changes in the Unicode Character Database</a></li>
+              <li>G. <a href="#UAX_Changes">Changes in the Unicode Standard Annexes</a></li>
+              <li>H. <a href="#UTS_Changes">Changes in Synchronized Unicode Technical Standards</a></li>
+              <li>I. <a href="#Components">List of Components</a></li>
+              <li>M. <a href="#Migration">Implications for Migration</a></li>
+            </ul>
+</blockquote>            
+            <h2><a id="Summary"></a>A. Summary</h2>
+            <p>Unicode 18.0 adds 13,007 characters, 
+              for a total of 172,808 characters.
+              The new additions include three new scripts: 
+            </p>
+
+            <ul>
+              <li>Proto-Cuneiform (numerals)</li>
+              <li>Jurchen</li>
+              <li>Seal (= “Small Seal”)</li>
+            </ul>
+
+            <h3>New Data Files for Unicode 18.0</h3>
+
+            <ul>
+              <li>JurchenSources.txt</li>
+              <li>SealSources.txt</li>
+            </ul>
+
+            <h3>Synchronization</h3>
+            <p>Several other important Unicode specifications have been updated for Version 18.0. 
+              The following five Unicode Technical Standards are versioned in
+                synchrony with the Unicode Standard, because their data files cover the same repertoire.
+                All have been updated to Version 18.0:</p>
+            <div align="center">
+                <table class="subtle">
+                  <tr>
+                    <th>Specification</th>
+                    <th>Scope</th>
+                    <th>Data Files</th>
+                  </tr>
+                  <tr>
+                    <td><a href="https://www.unicode.org/reports/tr10/tr10-55.html">UTS #10, Unicode Collation Algorithm</a></td>
+                    <td>Sorting Unicode text</td>
+                    <td><a href="/Public/18.0.0/uca/">UCA data</a></td>
+                  </tr>
+                  <tr>
+                    <td><a href="https://www.unicode.org/reports/tr39/tr39-34.html">UTS #39, Unicode Security Mechanisms</a></td>
+                    <td>Reducing Unicode spoofing</td>
+                    <td><a href="/Public/18.0.0/security/">Security data</a></td>
+                  </tr>
+                  <tr>
+                    <td><a href="https://www.unicode.org/reports/tr46/tr46-36.html">UTS #46, Unicode IDNA Compatibility Processing</a></td>
+                    <td>Compatible processing of non-ASCII URLs</td>
+                    <td><a href="/Public/18.0.0/idna/">IDNA data</a><br>
+                      <a href="/Public/18.0.0/idna/Idna2008.txt">IDNA 2008 derived data</a></td>
+                  </tr>
+                  <tr>
+                    <td><a href="https://www.unicode.org/reports/tr51/tr51-31.html">UTS #51, Unicode Emoji</a></td>
+                    <td>Emoji and their behavior</td>
+                    <td><a href="/Public/18.0.0/emoji/">Emoji data</a></td>
+                  </tr>
+                  <tr>
+                    <td><a href="https://www.unicode.org/reports/tr58/tr58-3.html">UTS #58, Unicode Link Detection and Formatting: URLs and Email Addresses</a></td>
+                    <td>Linkification of URLs and email addresses</td>
+                    <td><a href="/Public/18.0.0/linkification/">Linkification data</a></td>
+                  </tr>
+                </table>
+            </div>
+
+<p>Some of the changes in Version 18.0 and associated Unicode Technical Standards 
+  may require modifications 
+  to implementations. For more information, see the migration and modification sections of 
+  those specifications.</p>
+
+<p>See Sections D through H below for additional details regarding the changes in this version of
+  the Unicode Standard, its associated annexes, and the other synchronized Unicode specifications.</p>
+
+<p>See the following resource links for general information about Unicode versions
+and other information about the Unicode Standard and other publications
+of the Unicode Consortium.</p>
+
+      <ul>
+          <li>
+          <a href="https://www.unicode.org/versions/enumeratedversions.html">Archive of Unicode Versions</a></li>
+          <li>
+          <a href="https://www.unicode.org/versions/index.html">About Versions</a></li>
+          <li>
+          <a href="https://www.unicode.org/glossary/">Glossary of Unicode Terms</a></li>
+          <li>
+            <a href="https://www.unicode.org/references/">References for the Unicode Standard</a></li>
+          <li><a href="https://www.unicode.org/acknowledgements/">Unicode Acknowledgements</a></li>
+          <li>
+          <a href="https://www.unicode.org/reports/">Technical Reports</a></li>
+          <li>
+          <a href="https://www.unicode.org/emoji/techindex.html">Unicode Emoji</a></li>
+      </ul>
+            
+<h2><a id="Technical_Overview"></a>B. Technical Overview</h2>
+
+            <p>Version 18.0 of the Unicode Standard consists of:</p>
+            <ul>
+              <li>The core specification</li>
+              <li>The code charts for this version</li>
+              <li>The Unicode Standard Annexes</li>
+              <li>The Unicode Character Database (UCD)</li>
+            </ul>
+
+            <p>The core specification gives the general principles, 
+              requirements for conformance, and guidelines for implementers. The 
+              code charts show representative glyphs for all the Unicode 
+              characters. The Unicode Standard Annexes supply detailed normative 
+              information about particular aspects of the standard. The Unicode 
+              Character Database supplies normative and informative data for 
+              implementers to allow them to implement the Unicode Standard.</p>
+
+<h3><a id="Core_Specification"></a>Core Specification</h3>
+
+<div align="center">
+            <table class="simple">
+              <tr>
+                <td><a href="/versions/Unicode18.0.0/core-spec/">Core Specification</a> (HTML)</td>
+                <td>Authoritative version. Chapter-by-chapter web pages.</td>
+              </tr>
+              <tr>
+                <td><a href="/versions/Unicode18.0.0/UnicodeStandard-18.0.pdf" >Core Specification</a> (PDF, 13 MB)</td>
+                <td>Archival copy. Consolidated single file.<!-- (Not available during beta review.)--></td>
+              </tr>
+            </table>
+</div>
+
+            <p>The <a href="/versions/Unicode18.0.0/core-spec/">core specification</a> for Version 18.0 is available for browsing online
+              as per-chapter web pages. Because the full table of contents for the core specification is provided,
+              with interactive links, no separate bookmarks page is provided,
+              nor are separate chapter links provided directly in this summary page
+              for the Unicode Standard.
+              Anchors for chapters, sections, tables, and figures in the core specification are
+            shown with the convention of a "#" in the left margin of the heading or caption.
+            Those anchors can be clicked on to provide custom bookmarks to any particular
+            portion of the text, down to the level of subsections.</p>
+
+              <p>The HTML version of the core specification is authoritative. However, for
+                convenience of reference, an archival
+              version of the core specification is also available, formatted as
+              a single pdf.</p>
+
+<h3><a id="Code_Charts"></a>Code Charts</h3>
+            
+            <p>Several sets of code charts are available. They serve different 
+              purposes:</p>
+<div align="center">
+            <table class="simple">
+              <tr>
+                <th>Chart Type</th>
+                <th>Description</th>
+              </tr>
+              <tr>
+                <td nowrap><a href="/Public/18.0.0/charts/">Code Charts</a></td>
+                <td>Block-by-block code charts for Version 18.0.0. The charts are organized by 
+                scripts and blocks for easy reference. 
+                <!-- The <a href="/Public/18.0.0/charts/fr/">Tableaux des caractères</a> 
+                provides a French translation of these latest code charts. --></td>
+              </tr>
+              <tr>
+                <td nowrap><a href="https://www.unicode.org/charts/PDF/Unicode-18.0/">Delta Code Charts</a></td>
+                <td>These charts show the
+                new blocks and any blocks in which characters were added 
+                specifically for Unicode 18.0.0. The new characters and any major updates to the
+                representative glyphs are visually highlighted in these charts.</td>
+              </tr>
+              <tr>
+                <td nowrap><a href="/Public/18.0.0/charts/CodeCharts.pdf">Consolidated Code Charts</a> (179 MB)</td>
+                <td>These charts are distributed as a single large pdf file containing
+                the entire set of characters, names and representative glyphs at the time of publication of Unicode 18.0.0.
+                <!-- A <a href="/Public/18.0.0/charts/fr/">French translation</a> of the archival code charts is also available for this version. --></td>
+              </tr>
+              <tr>
+                <td nowrap><a href="/Public/18.0.0/charts/collation/">Auxiliary Code Charts</a></td>
+                <td>The auxiliary charts display information about collation and casing for
+                the repertoire of the scripts for this release.</td>
+              </tr>
+            </table>
+</div>
+            
+            <p>The block-by-block, delta, and consolidated code charts are a stable part of this release of the Unicode Standard. They will never be updated. The auxiliary code charts are
+            provided for information, and have no stability guarantees.</p>
+
+<div align="center">
+            <table class="simple">
+              <tr>
+                <th>Index Type</th>
+                <th>Description</th>
+              </tr>
+              <tr>
+                <td><a href="https://www.unicode.org/charts/charindex.html">Character Name Index</a></td>
+                <td>An interactive character name index with incremental matching, which also enables lookup by names list annotations, chart headings, and code points.</td>
+              </tr>
+            </table>
+</div>
+
+<h3><a id="Radical_Stroke"></a>Han Radical-Stroke Indices</h3>
+
+            <p>There are a number of radical-stroke indices available to assist in
+              the lookup of Han ideographs in the code charts.</p>
+
+<div align="center">
+            <table class="simple">
+              <tr>
+                <th>Index Type</th>
+                <th>Description</th>
+              </tr>
+              <tr>
+                <td><a href="https://www.unicode.org/charts/unihan.html">Interactive</a></td>
+                <td>An interactive CJK character lookup page that supports lookup
+                either by code point or by radical and stroke values.</td>
+              </tr>
+              <tr>
+                <td nowrap><a href="/versions/IICoreRSIndex.pdf">IICore</a> (4.6 MB)</td>
+                <td>A static radical-stroke index PDF file limited to only the 
+                  <a href="https://www.unicode.org/reports/tr38/#kIICore">IICore</a> repertoire. (This RS index is seldom updated.)</td>
+              </tr>
+              <tr>
+                <td nowrap><a href="/versions/UnihanCore2020RSIndex.pdf">Unihan Core 2020</a> (8.6 MB)</td>
+                <td>A static radical-stroke index PDF file limited to only the 
+                  <a href="https://www.unicode.org/reports/tr38/#kUnihanCore2020">Unihan
+                Core 2020</a> repertoire. (This RS index is seldom updated.)</td>
+              </tr>
+              <tr>
+                <td nowrap><a href="/Public/18.0.0/charts/RSIndex.pdf">Complete</a> (35 MB)</td>
+                <td>A static radical-stroke index PDF file that covers the entire
+               CJK ideograph repertoire for Unicode 18.0.</td>
+              </tr>
+              <tr>
+                <td nowrap><a href="/Public/18.0.0/charts/RSIndex.txt">Complete</a></td>
+                <td>A static data file that corresponds to the complete radical-stroke index for Unicode 18.0.</td>
+              </tr>
+            </table>
+</div>
+
+            <p>The complete radical-stroke index is a stable part of this release of the Unicode Standard. It will never be updated.</p>
+
+<h3><a id="Annexes"></a>Unicode Standard Annexes</h3>
+
+<blockquote class="status"><strong>STATUS:</strong> During the alpha review and beta review periods,
+links to individual UAXes (or UTSes) point to the proposed update for that document, if any.
+If no proposed update has been posted for the document, links point to the last published
+version of the document, for reference.</blockquote>
+
+            <p>Links to the individual Unicode Standard Annexes for this
+              version are available in
+              <a href="#Components">Section I, List of Components</a> below. The summary list of significant changes
+              in the content of each Unicode Standard Annex for Version 18.0 can be found
+              in <a href="#UAX_Changes">Section G, Changes in the Unicode Standard Annexes</a> below.</p>
+
+<h3><a id="UCD"></a>Unicode Character Database</h3>
+<!--
+<blockquote class="status"><strong>STATUS:</strong> During the alpha review period, the draft of UCD data includes data for the complete, planned character repertoire of Unicode 18.0 but might not yet include all data changes approved by UTC for version 18.0.</blockquote>
+-->
+
+<blockquote class="status"><strong>STATUS:</strong> During the beta review period, the draft of UCD data includes data for the complete, planned character repertoire of Unicode 18.0, including all data changes approved by UTC for version 18.0.</blockquote>
+
+            <p><a href="/Public/18.0.0/">Data files</a>
+             for Version 18.0 of
+              the Unicode Character Database are available.
+              Detailed documentation about the data files can be found in
+              <a href="https://www.unicode.org/reports/tr44/tr44-38.html">UAX #44, Unicode Character Database</a>.</p>
+
+<h3><a id="Version_References"></a>Version References</h3>
+
+            <p>Version 18.0.0 of the Unicode Standard 
+              should be referenced as:</p>
+            <blockquote>
+              <p>The Unicode Consortium. <em>The Unicode Standard, Version 18.0.0</em>, (South San Francisco: The Unicode Consortium, 
+                2026. ISBN 978-1-936213-36-8)<br>
+                <a href="/versions/Unicode18.0.0/">https://www.unicode.org/versions/Unicode18.0.0/</a></p>
+            </blockquote>
+            <p>The terms “Version 18.0” or “Unicode 18.0” are abbreviations for the full version reference, Version 18.0.0.</p>
+            <p>The citation and permalink for the latest published version of the Unicode Standard is:</p>
+            <blockquote>
+              <p>The Unicode Consortium. <em>The Unicode Standard</em>.<br>
+                <a href="/versions/latest/">https://www.unicode.org/versions/latest/</a></p>
+            </blockquote>
+
+            <p>A complete specification of the contributory files for Unicode 
+              18.0 is found below in <a href="#Components">Section I, List of Components</a>.
+              For examples of how to cite particular portions of the Unicode Standard, see also the <a href="https://www.unicode.org/versions/#References">Reference Examples</a>.</p>
+              
+<h3><a id="Errata"></a>Errata</h3>
+
+            <p>Errata incorporated into Unicode 18.0 are listed by date in 
+              a <a href="erratafixed.html">separate table</a>. For corrigenda and errata after the release of Unicode 18.0, see the list of current  
+              <a href="https://www.unicode.org/errata/">Updates and Errata</a>.</p>
+
+<h2><a id="Stability_Policy"></a>C. Stability Policy Update</h2>
+
+<!--
+          <p>No significant updates to the <a href="https://www.unicode.org/policies/stability_policy.html">Character Encoding Stability Policies</a> have occurred in the interval since the last release of the Unicode Standard.</p>
+-->
+          <p>A new property stability policy has been added for the ID_Compat_Math_Start and
+            ID_Compat_Math_Continue properties. See the <a href="https://www.unicode.org/policies/stability_policy.html">Character Encoding Stability Policies</a>.</p>
+            
+<h2><a id="Character_Additions"></a>D. Textual Changes and Character Additions</h2>
+
+            <p> Changes in the Unicode Standard Annexes are listed in <a href="#UAX_Changes">Section G</a>.</p>
+            
+            <h3>Character Assignment Overview</h3>
+            
+            <p>13,007 characters have been added.
+             Most character additions are in new blocks, but there are also character additions to a number of existing blocks. For details, see the <a href="https://www.unicode.org/charts/PDF/Unicode-18.0/">delta code charts</a>.</p>
+
+            <h3>New Blocks</h3>
+
+            <!-- <p>There are no new blocks defined in Version 18.0.</p> -->
+
+            <p>The following blocks are newly defined in Version 18.0:</p>
+
+            <div align="center">
+            <table class="simple">
+                <tr>
+                  <th>Range</th>
+                  <th>Block Name</th>
+                </tr>
+                <tr>
+                  <td style = "text-align:right">11DF0..11DFF</td>
+                  <td>Bengali Supplement</td>
+                </tr>
+                <tr>
+                  <td style = "text-align:right">12550..1268F</td>
+                  <td>Archaic Cuneiform Numerals</td>
+                </tr>
+                <tr>
+                  <td style = "text-align:right">18E00..1919F</td>
+                  <td>Jurchen</td>
+                </tr>
+                <tr>
+                  <td style = "text-align:right">191A0..191DF</td>
+                  <td>Jurchen Radicals</td>
+                </tr>
+                <tr>
+                  <td style = "text-align:right">1D250..1D28F</td>
+                  <td>Musical Symbols Supplement</td>
+                </tr>
+                <tr>
+                  <td style = "text-align:right">1DB00..1DBFF</td>
+                  <td>Miscellaneous Symbols and Arrows Extended</td>
+                </tr>
+                <tr>
+                  <td style = "text-align:right">3D000..3FC3F</td>
+                  <td>Seal</td>
+                </tr>
+            </table>
+            </div>
+
+            <p>Note that the block name for the Seal script is “Seal”.
+              The Script property value is also “Seal”. However, the
+              code chart headers and core specification documentation
+              use the extended name “Small Seal”. This is intentional
+            and is not a discrepancy to be reported.</p>
+
+            <h2><a id="Conformance_Changes"></a>E. Conformance Changes</h2>
+
+            <p>The conformance section of the standard has been updated with
+            new definitions and requirements regarding the use of variation selectors
+            and variation sequences.</p>
+
+            <h2><a id="Database_Changes"></a>F. Changes in the Unicode Character Database</h2>
+            <p>Some of the important impacts of data changes on implementations migrating from earlier versions of the standard are highlighted in 
+              <a href="#Migration">Section M</a>.</p>
+
+<h2><a id="UAX_Changes"></a>G. Changes in the Unicode Standard Annexes</h2>
+            <p>In Version 18.0, some of the Unicode Standard Annexes have had significant revisions. The most important of these changes are listed below. For the full details of all changes, see the Modifications section 
+              of each UAX, linked directly from the following list of UAXes.</p>
+            <div align="center">
+                <table class="subtle">
+                  <tr>
+                    <th nowrap>Unicode Standard Annex</th>
+                    <th>Changes</th>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="https://www.unicode.org/reports/tr9/tr9-52.html#Modifications">UAX #9</a><br>Unicode Bidirectional Algorithm           
+                    </td>
+                    <td class="nochange">No significant changes in this version.</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="https://www.unicode.org/reports/tr11/tr11-46.html#Modifications">UAX 
+                        #11</a><br>East Asian Width</td>
+                    <td>The unassigned code point ranges in Section 6.1 were adjusted.</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="https://www.unicode.org/reports/tr14/tr14-57.html#Modifications">UAX 
+                        #14</a><br>Unicode Line Breaking Algorithm</td>
+                    <td>Rule LB12a was changed to disallow a break between BA and GL.
+                    The Line_Break assignment of FIGURE DASH and EN DASH was changed from HH to BA and SOFT HYPHEN from BA to HH for better linebreaking behavior for those characters.</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="https://www.unicode.org/reports/tr15/tr15-58.html#Modifications">UAX 
+                        #15</a><br>Unicode Normalization Forms
+                    </td>
+                    <td class="nochange">No significant changes in this version.</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="https://www.unicode.org/reports/tr24/tr24-41.html#Modifications">UAX 
+                        #24</a><br>Unicode Script Property
+                    </td>
+                    <td>Added explanation of mixed-script script codes.</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="https://www.unicode.org/reports/tr29/tr29-49.html#Modifications">UAX 
+                        #29</a><br>Unicode Text Segmentation</td>
+                    <td>Rule GB9c (“Do not break within certain combinations with Indic_Conjunct_Break (InCB)=Linker.”) has been revised.</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="https://www.unicode.org/reports/tr31/tr31-45.html#Modifications">UAX 
+                        #31</a><br>Unicode Identifiers and Syntax
+                    </td>
+                    <td>The new scripts in Unicode 18.0 were added to Table 4, Excluded Scripts.
+                    A note was added indicating that the Property and Algorithms Working Group (PAG) is
+                    the primary point of contact for script reclassification, and pointing to the
+                    guidelines approved by the UTC.</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="https://www.unicode.org/reports/tr34/tr34-33.html#Modifications">UAX 
+                        #34</a><br>Unicode Named Character Sequences</td>
+                    <td class="nochange">No significant changes in this version.</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="https://www.unicode.org/reports/tr38/tr38-41.html#Modifications">UAX 
+                        #38</a><br>Unicode Han Database (Unihan)</td>
+                    <td>The provisional kJapaneseNewVariant and kJapaneseOldVariant properties were added.
+                    The provisional properties kIRGDaeJaweon and kIRGKangXi were removed.
+                  The delimiter of 23 properties was updated. The syntax of the kGB5 property was updated. The descriptions of the kIRG_KSource, kIRG_UKSource, kJinmeiyoKanji, kOtherNumeric, and kTang properties were updated. The syntax and description of the kIRG_GSource property were updated. U+2B81E was added to the first table in Section 4.4.</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="https://www.unicode.org/reports/tr41/tr41-38.html">UAX 
+                      #41</a><br>Common References for Unicode Standard Annexes</td>
+                    <td>All references were updated for Unicode 18.0.</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="https://www.unicode.org/reports/tr42/tr42-40.html#Modifications">UAX 
+                      #42</a><br>Unicode Character Database in XML</td>
+                    <td>New code point attributes, values, and patterns were added for Unicode 18.0.</td>
+                  </tr>
+                  <tr>
+                    <td><a href="https://www.unicode.org/reports/tr44/tr44-38.html#Modifications">UAX 
+                      #44</a><br>
+                      Unicode Character Database </td>
+                    <td>A new section was added to document UAX #60 and the data files
+                    for the large East Asian scripts it covers (Seal, Jurchen, Nushu, Tangut). Additions were made
+                    to Table 5 for the new data files JurchenSources.txt and SealSources.txt. The section regarding the directory structure for UCD and non-UCD files distributed under /Public/draft/ and versioned directories was rewritten.</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="https://www.unicode.org/reports/tr45/tr45-34.html#Modifications">UAX #45</a><br>
+                      U-Source Ideographs</td>
+                    <td class="nochange">No significant changes in this version.</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="https://www.unicode.org/reports/tr50/tr50-35.html#Modifications">UAX #50</a><br>
+                      Unicode Vertical Text Layout</td>
+                    <td>Table 3 was updated to add a character that is now assigned the property value vo=Tu (U+1B168).</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="https://www.unicode.org/reports/tr53/tr53-13.html#Modifications">UAX #53</a><br>
+                      Unicode Arabic Mark Rendering</td>
+                    <td>U+10EF4, U+10EF6, and U+10EF9 were added to MCM.</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="https://www.unicode.org/reports/tr57/tr57-7.html#Modifications">UAX #57</a><br>
+                      Unicode Egyptian Hieroglyph Database (Unikemet)</td>
+                    <td>Many small corrections for details about the data and regex values.</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="https://www.unicode.org/reports/tr60/tr60-3.html#Modifications">UAX #60</a><br>
+                      Data for East Asian Scripts</td>
+                    <td>New in this release.</td>
+                  </tr>
+                </table>
+              
+            </div>
+            
+            <h2><a id="UTS_Changes"></a>H. Changes in Synchronized Unicode Technical Standards</h2>
+            
+            <p>There are also significant revisions in the Unicode Technical Standards whose
+              versions are synchronized with the Unicode Standard. The most important of these changes are listed below. 
+              For the full details of all changes, see the Modifications section 
+              of each UTS, linked directly from the following list of UTSes.</p>
+            
+            <div align="center">
+                <table class="subtle">
+                  <tr>
+                    <th nowrap>Unicode Technical Standard</th>
+                    <th>Changes</th>
+                  </tr>
+                  <tr>
+                    <td><a href="https://www.unicode.org/reports/tr10/tr10-55.html#Modifications">UTS #10</a><br>Unicode Collation Algorithm</td>
+                    <td>Jurchen and Small Seal were added to the table for computing implicit weights. Missing Tibetan contractions were added to DUCET. A discussion of the mapping and behavior for U+FFFE and U+FFFF was added. The Shift-Trimmed option was removed.</td>
+                  </tr>
+                  <tr>
+                    <td><a href="https://www.unicode.org/reports/tr39/tr39-34.html#Modifications">UTS #39</a><br>Unicode Security Mechanisms</td>
+                    <td>Support was added for the Hntl script code. Rule A1 was tightened by removing the allowance for Transparent characters between ZWNJ and the following joining characters. The term “nonspacing mark” has been clarified, and some outdated text has been removed.</td>
+                  </tr>
+                  <tr>
+                    <td><a href="https://www.unicode.org/reports/tr46/tr46-36.html#Modifications">UTS #46</a><br>Unicode IDNA Compatibility Processing</td>
+                    <td class="nochange">No significant changes in this version.</td>
+                  </tr>
+                  <tr>
+                    <td><a href="https://www.unicode.org/reports/tr51/tr51-31.html#Modifications">UTS #51</a><br>Unicode Emoji</td>
+                    <td>The guidance regarding emoji/text presentation selectors and default presentation style was updated.</td>
+                  </tr>
+                  <tr>
+                    <td><a href="https://www.unicode.org/reports/tr58/tr58-3.html#Modifications">UTS #58</a><br>Unicode Link Detection and Formatting: URLs and Email Addresses</td>
+                    <td class="nochange">No significant changes in this version.</td>
+                  </tr>
+                </table>
+              
+            </div>
+
+            <h2><a id="Components"></a>I. List of Components</h2>
+
+            <p>This section lists the components of Version 18.0.0 of the Unicode
+            Standard. The version numbering and the role of each component are 
+            explained in <a href="https://www.unicode.org/versions/">
+            Versions of The Unicode Standard</a>.</p>
+
+      <table>
+        <tr>
+          <th class="noborder" align="left">Core Specification</th>
+        </tr>
+        <tr>
+          <td class="noborder"><a href="/versions/Unicode18.0.0/core-spec/">Authoritative HTML</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          Archival PDF: <a href="/versions/Unicode18.0.0/UnicodeStandard-18.0.pdf">UnicodeStandard-18.0.pdf</a> (size: 13 MB)</td>
+        </tr>
+        <tr>
+          <th class="noborder" align="left">Code Charts and Radical-Stroke Index</th>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/charts/CodeCharts.pdf">Code Charts</a> (size: 179 MB)<br>
+          <a href="/Public/18.0.0/charts/RSIndex.pdf">Radical-Stroke Index</a> (size: 35 MB)<br>
+          <a href="/Public/18.0.0/charts/RSIndex.txt">Radical-Stroke Index data</a></td>
+        </tr>
+        <tr>
+          <th class="noborder" align="left">
+          <a href="https://www.unicode.org/reports/">Unicode Standard Annexes</a></th>
+        </tr>
+        <tr>
+          <td>
+          <a href="https://www.unicode.org/reports/tr9/tr9-52.html">
+          UAX #9: Unicode Bidirectional Algorithm</a><br>
+          <a href="https://www.unicode.org/reports/tr11/tr11-46.html">
+          UAX #11: East Asian Width</a><br>
+          <a href="https://www.unicode.org/reports/tr14/tr14-57.html">
+          UAX #14: Unicode Line Breaking Algorithm</a><br>
+          <a href="https://www.unicode.org/reports/tr15/tr15-58.html">
+          UAX #15: Unicode Normalization Forms</a><br>
+          <a href="https://www.unicode.org/reports/tr24/tr24-41.html">
+          UAX #24: Unicode Script Property</a><br>
+          <a href="https://www.unicode.org/reports/tr29/tr29-49.html">
+          UAX #29: Unicode Text Segmentation</a><br>
+          <a href="https://www.unicode.org/reports/tr31/tr31-45.html">
+          UAX #31: Unicode Identifiers and Syntax</a><br>
+          <a href="https://www.unicode.org/reports/tr34/tr34-33.html">
+          UAX #34: Unicode Named Character Sequences</a><br>
+          <a href="https://www.unicode.org/reports/tr38/tr38-41.html">
+          UAX #38: Unicode Han Database (Unihan)</a><br>
+          <a href="https://www.unicode.org/reports/tr41/tr41-38.html">
+          UAX #41: Common References for Unicode Standard Annexes</a><br>
+          <a href="https://www.unicode.org/reports/tr42/tr42-40.html">
+          UAX #42: Unicode Character Database in XML</a><br>
+          <a href="https://www.unicode.org/reports/tr44/tr44-38.html">
+          UAX #44: Unicode Character Database</a><br>
+          <a href="https://www.unicode.org/reports/tr45/tr45-34.html">
+          UAX #45: U-Source Ideographs</a><br>
+          <a href="https://www.unicode.org/reports/tr50/tr50-35.html">
+          UAX #50: Unicode Vertical Text Layout</a><br>
+          <a href="https://www.unicode.org/reports/tr53/tr53-13.html">
+          UAX #53: Unicode Arabic Mark Rendering</a><br>
+          <a href="https://www.unicode.org/reports/tr57/tr57-7.html">
+          UAX #57: Unicode Egyptian Hieroglyph Database (Unikemet)</a><br>
+          <a href="https://www.unicode.org/reports/tr60/tr60-3.html">
+          UAX #60: Data for East Asian Scripts</a></td>
+        </tr>
+        <tr>
+          <th class="noborder" align="left">Unicode Character Database</th>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/">https://www.unicode.org/Public/18.0.0/</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">(Note that not all subdirectories of this
+          versioned data directory are formally part of the UCD. See
+          <a href="https://www.unicode.org/reports/tr44/tr44-38.html#UCD_And_Other">Table 2a in UAX #44</a> for details.)</td>
+        </tr>
+        <tr>
+          <th class="noborder" align="left">Documentation</th>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/Index.txt">Index.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/NamesList.html">NamesList.html</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ReadMe.txt">ReadMe.txt</a></td>
+        </tr>
+        <tr>
+          <th class="noborder" align="left">Core Data</th>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/ArabicShaping.txt">ArabicShaping.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/BidiBrackets.txt">BidiBrackets.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/BidiMirroring.txt">BidiMirroring.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/Blocks.txt">Blocks.txt</a></td>
+        </tr>
+          <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/CJKRadicals.txt">CJKRadicals.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/CompositionExclusions.txt">CompositionExclusions.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/DoNotEmit.txt">DoNotEmit.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/EastAsianWidth.txt">EastAsianWidth.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/EmojiSources.txt">EmojiSources.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/EquivalentUnifiedIdeograph.txt">EquivalentUnifiedIdeograph.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/HangulSyllableType.txt">HangulSyllableType.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/IndicPositionalCategory.txt">IndicPositionalCategory.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/IndicSyllabicCategory.txt">IndicSyllabicCategory.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/Jamo.txt">Jamo.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/LineBreak.txt">LineBreak.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/NameAliases.txt">NameAliases.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/NamedSequences.txt">NamedSequences.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/NamedSequencesProv.txt">NamedSequencesProv.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/NamesList.txt">NamesList.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/NormalizationCorrections.txt">NormalizationCorrections.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/PropertyAliases.txt">PropertyAliases.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/PropertyValueAliases.txt">PropertyValueAliases.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/PropList.txt">PropList.txt</a></td>
+        </tr>
+          <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/Scripts.txt">Scripts.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/ScriptExtensions.txt">ScriptExtensions.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/SpecialCasing.txt">SpecialCasing.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/StandardizedVariants.txt">StandardizedVariants.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/UnicodeData.txt">UnicodeData.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/VerticalOrientation.txt">VerticalOrientation.txt</a></td>
+        </tr>
+        <tr>
+          <th class="noborder" align="left">Data for UAX #38:
+          Unihan Database (<a href="/Public/18.0.0/ucd/Unihan.zip">Unihan.zip</a>)</th>
+        </tr>
+        <tr>
+          <td class="noborder">Unihan_DictionaryIndices.txt</td>
+        </tr>
+        <tr>
+          <td class="noborder">Unihan_DictionaryLikeData.txt</td>
+        </tr>
+        <tr>
+          <td class="noborder">Unihan_IRGSources.txt</td>
+        </tr>
+        <tr>
+          <td class="noborder">Unihan_NumericValues.txt</td>
+        </tr>
+        <tr>
+          <td class="noborder">Unihan_OtherMappings.txt</td>
+        </tr>
+        <tr>
+          <td class="noborder">Unihan_RadicalStrokeCounts.txt</td>
+        </tr>
+        <tr>
+          <td class="noborder">Unihan_Readings.txt</td>
+        </tr>
+        <tr>
+          <td class="noborder">Unihan_Variants.txt</td>
+        </tr>
+        <tr>
+          <th class="noborder" align="left">Data for UAX #45</th>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/USourceData.txt">USourceData.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/USourceGlyphs.pdf">USourceGlyphs.pdf</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/USourceRSChart.pdf">USourceRSChart.pdf</a></td>
+        </tr>
+        <tr>
+          <th class="noborder" align="left">Data for UAX #57</th>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/Unikemet.txt">Unikemet.txt</a></td>
+        </tr>
+        <tr>
+          <th class="noborder" align="left">Data for UAX #60</th>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/JurchenSources.txt">JurchenSources.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/NushuSources.txt">NushuSources.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/SealSources.txt">SealSources.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/TangutSources.txt">TangutSources.txt</a></td>
+        </tr>
+        <tr>
+          <th class="noborder" align="left">Derived Data</th>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/CaseFolding.txt">CaseFolding.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/DerivedAge.txt">DerivedAge.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/DerivedCoreProperties.txt">DerivedCoreProperties.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/DerivedNormalizationProps.txt">DerivedNormalizationProps.txt</a></td>
+        </tr>
+        <tr>
+          <th class="noborder" align="left">Extracted Data</th>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/extracted/DerivedBidiClass.txt">DerivedBidiClass.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/extracted/DerivedBinaryProperties.txt">DerivedBinaryProperties.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/extracted/DerivedCombiningClass.txt">DerivedCombiningClass.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/extracted/DerivedDecompositionType.txt">DerivedDecompositionType.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/extracted/DerivedEastAsianWidth.txt">DerivedEastAsianWidth.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/extracted/DerivedGeneralCategory.txt">DerivedGeneralCategory.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/extracted/DerivedJoiningGroup.txt">DerivedJoiningGroup.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/extracted/DerivedJoiningType.txt">DerivedJoiningType.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/extracted/DerivedLineBreak.txt">DerivedLineBreak.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/extracted/DerivedName.txt">DerivedName.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/extracted/DerivedNumericType.txt">DerivedNumericType.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/extracted/DerivedNumericValues.txt">DerivedNumericValues.txt</a></td>
+        </tr>
+        <tr>
+          <th class="noborder" align="left">Conformance Test Data</th>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/BidiCharacterTest.txt">BidiCharacterTest.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/BidiTest.txt">BidiTest.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/NormalizationTest.txt">NormalizationTest.txt</a></td>
+        </tr>
+        <tr>
+          <th class="noborder" align="left">Auxiliary Data for UAX #14 and UAX #29</th>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/auxiliary/GraphemeBreakProperty.txt">GraphemeBreakProperty.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/auxiliary/GraphemeBreakTest.txt">GraphemeBreakTest.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/auxiliary/LineBreakTest.txt">LineBreakTest.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/auxiliary/SentenceBreakProperty.txt">SentenceBreakProperty.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/auxiliary/SentenceBreakTest.txt">SentenceBreakTest.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/auxiliary/WordBreakProperty.txt">WordBreakProperty.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/auxiliary/WordBreakTest.txt">WordBreakTest.txt</a></td>
+        </tr>
+        <tr>
+          <th class="noborder" align="left">Documentation for Auxiliary Data</th>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/auxiliary/GraphemeBreakTest.html">GraphemeBreakTest.html</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/auxiliary/LineBreakTest.html">LineBreakTest.html</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/auxiliary/SentenceBreakTest.html">SentenceBreakTest.html</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/auxiliary/WordBreakTest.html">WordBreakTest.html</a></td>
+        </tr>
+        <tr>
+          <th class="noborder" align="left">Emoji Data</th>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/emoji/emoji-data.txt">emoji-data.txt</a></td>
+        </tr>
+        <tr>
+          <td class="noborder">
+          <a href="/Public/18.0.0/ucd/emoji/emoji-variation-sequences.txt">emoji-variation-sequences.txt</a></td>
+        </tr>
+      </table>
+
+      <h2><a id="Migration"></a>M. Implications for Migration</h2>
+
+<blockquote class="status"><strong>STATUS:</strong> During the beta review period,
+the following section is incomplete. For issues which may impact migration, see the
+detailed notes presented under <a href="https://www.unicode.org/versions/beta-18.0.0.html#notable_issues">Notable Issues for Beta Reviewers</a>
+on the 18.0 beta review page.</blockquote>
+
+            <p>There are a significant number of changes in Unicode 18.0 which may impact implementations upgrading 
+              to Version 18.0 from earlier versions of the standard. The most important of these are listed 
+              and explained here, to help focus on the issues most likely to cause unexpected trouble during upgrades.</p>
+
+<h3>Core Specification Changes</h3>
+
+      <p>New content has been added for Unicode 18.0, and many other improvements have been made to the text.</p>
+
+<p>Wording in the core specification of earlier versions was not completely clear regarding variation sequences and conformance. To provide greater clarity, the text describing variation sequences and related conformance requirements has been revised. See <a href="/versions/Unicode18.0.0/core-spec/chapter-3/#G52444">Section 3.6.2</a> in the core specification for details. There are some related changes to <a href="/versions/Unicode18.0.0/core-spec/chapter-5/#G22860">Section 5.20</a> and <a href="/versions/Unicode18.0.0/core-spec/chapter-23/#G19053">Section 23.4</a>, as well.</p>
+
+<h3>Script-related Changes</h3>
+
+      <ul>
+      <li>There are three new scripts encoded in Unicode 18.0. Two of these scripts,
+      Jurchen and Seal (= “Small Seal”), are large ideographic scripts.</li>
+      <li>For Proto-Cuneiform, only
+      the archaic numerals are added in Unicode 18.0; encoding of additional signs 
+      for non-numerics is anticipated for a future version.</li>
+      </ul>
+
+<h3>General Character Property Issues</h3>
+
+      <ul>
+        <li>Two new UCD data files, JurchenSources.txt and SealSources.txt, are associated with two new scripts, Jurchen and Seal (= “Small Seal”). The latter data file includes kSEAL_THXSrc, kSEAL_CCZSrc, kSEAL_DYCSrc, and kSEAL_QJZSrc as new normative properties.</li>
+      </ul>
+
+<h3>Reorganization of Some Data Files</h3>
+
+<ul>
+  <li>The /Public/18.0.0/ directory now contains a linkification subdirectory, which contains the data files associated with UTS #58, Unicode Link Detection and Formatting: URLs and Email Addresses.</li>
+  <li>The /Public/18.0.0/charts/ directory has been substantially expanded to include all of the versioned block charts and the auxiliary charts, as well as the navigation pages for code charts.</li>
+</ul>
+
+<h3>Other UCD Issues</h3>
+
+<ul>
+  <li>
+    The UCD file Index.txt has not been updated for Unicode Version 18.0; the
+    file published in Version 18.0 is identical to the
+    file for Version 17.0.  This file is obsolete and will be removed altogether in Unicode
+    Version 19.0.
+  </li>
+  <li>
+    The permuted index generated from the manually-curated Index.txt has been
+    replaced with a search tool based on the names list and other UCD data.
+    This search tool is available where the static index used to be, at
+    <a href="/charts/charindex.html">https://www.unicode.org/charts/charindex.html</a>.
+  </li>
+</ul>
+
+<h3>Security and Identifier-related Issues (See UAX #31 and UTS #39.)</h3>
+
+  <ul>
+      <li>Many lines of unused data in confusables.txt have been removed. These lines corresponded to characters that never appear in NFD form and thus were never exercised by the Confusable Detection algorithm in UTS #39.</li>
+      <li>Several corrections and additions to confusables data have been made, incorporating parts of a large backlog of public contributions to confusables data. Emphasis has been on confusable pairs with at least one side having Identifier_Status=Allowed.</li>
+      <li>The entries in the file IdentifierType.txt are no longer grouped by sets of values, but are instead ordered by code point; this is similar to the change made to ScriptExtensions.txt in Unicode Version 16.0.</li>
+      <li>Support was added for the Hntl script code.</li>
+      <li>Rule A1 was tightened by removing the allowance for Transparent characters between ZWNJ and the following joining characters. This can affect the processing result for an implementation using Rule A1.</li>
+  </ul>
+
+<h3>Segmentation (See UAX #14 and UAX #29.)</h3>
+
+  <ul>
+    <li>
+      There has been a change to line breaking rule LB12a and to the Line_Break
+      property assignments of some dashes and hyphens, including SOFT HYPHEN.
+      This fixes a regression in the behaviour of an EN DASH set aside from
+      preceding text by a NO-BREAK SPACE that had been introduced in Unicode
+      Version 5.1.
+    </li>
+    <li>
+      Grapheme cluster breaking rule GB9c, which binds Indic conjuncts, has been
+      changed to eliminate the requirement for context before the linker.
+      This improves grapheme cluster breaking for Balinese.
+    </li>
+    <li>
+      The derivation of the Indic_Conjunct_Break property has been changed, 
+      correcting a regression in the behaviour of Zanabazar Square
+      grapheme cluster breaking that had been introduced in Unicode Version
+      17.0.
+    </li>
+    <li>
+      An additional change to the derivation of the Indic_Conjunct_Break has
+      been made: the derivation uses Script_Extensions instead of
+      Script. This improves grapheme cluster breaking for Bengali.
+    </li>
+  </ul>
+
+<h3>Numeric Property Issues</h3>
+
+      <ul>
+        <li>The new Archaic Cuneiform Numerals block contains a very large set of numeric characters. Specialist implementations dealing with cuneiform text should be aware of these characters, which also pose challenges for formatting and for font design.</li>
+      </ul>
+
+
+<h3>CJK/Unihan Changes (See UAX #38.)</h3>
+
+      <ul>
+          <li>There have been many changes to various Unihan properties.
+          See Unicode Character Database, 
+          and <a href="https://www.unicode.org/reports/tr38/tr38-41.html#Modifications">UAX 
+          #38</a>, Unicode Han Database (Unihan) for further details on these changes.</li>
+          <li>One more unified ideograph was added to the CJK Unified Ideographs Extension D block, extending the assigned range to U+2B81E, instead of U+2B81D. Implementations which
+          use hard-coded ranges for CJK unified ideographs need to be updated.</li>
+          <li>The RSIndex.txt data file now uses a semicolon-delimited syntax. 
+          See the documentation in the file header of RSIndex.txt for details.</li>
+      </ul>
+
+<h3>Standardized Variation Sequences</h3>
+
+      <ul>
+        <li>17 variation sequences have been added for CJK strokes.</li>
+        <li>10 variation sequences have been added for various math operators and a script small z.</li>
+        <li>Many changes have been made to standardized variation sequences for
+          Mongolian. These sequences are now synchronized with the Chinese standards
+          for Mongolian. See UTN #57, "Encoding and Shaping of the Mongolian Script"
+        for more details.</li>
+      </ul>
+
+<h3>Changes to Code Charts</h3>
+
+      <ul>
+        <li>The chart fonts of Armenian and Khitan Small Script have been changed to Noto Serif Armenian and Khitan Small Linear.</li>
+        <li>The glyph of U+06C4 ARABIC LETTER WAW WITH RING has been corrected per <a href="https://www.unicode.org/cgi-bin/GetL2Ref.pl?187-C13">187-C13</a>.</li>
+        <li>There are a number of other Han glyph updates.</li>
+        <li>Other glyph updates are listed explicitly in the 
+          <a href="https://www.unicode.org/charts/PDF/Unicode-18.0/">delta charts index page</a>.</li>
+        <li>The two code charts for Egyptian hieroglyphs contain extensive functional and phonetic
+        information derived from the data file Unikemet.txt, and have notable further updates for Version 18.0.</li>
+        <li>The version-specific code charts are now distributed under the same /Public/18.0.0/charts/ directory as the consolidated charts, and an explicitly versioned <a href="/Public/18.0.0/charts/">code charts index page</a> is available to help with access to them.</li>
+        <li>The auxiliary charts have been completely reconstituted, and are now also distributed under the /Public/18.0.0/charts/ directory. See <a href="/Public/18.0.0/charts/collation/index.html">Collation and Casing Charts</a>.</li>
+        <li>To explain these changes, the <a href="/Public/18.0.0/charts/About.html">Code Charts Help</a> page has been substantially reorganized and is also now explicitly versioned along with the charts.</li>
+      </ul>
+
+<h3>Collation-related Changes</h3>
+
+      <p>The Default Unicode Collation Element Table (DUCET) was updated to the Unicode 18.0.0
+        repertoire for UCA 18.0.0.</p>
+
+      <p>The two new large siniform ideographic scripts, Jurchen and Seal (= “Small Seal”), are given collation weights using
+        <a href="https://www.unicode.org/reports/tr10/tr10-55.html#Values_For_Base_Table">implicit weighting</a>. This requires a small change to the implicit weighting algorithm, to add new base weights. Implementations of UCA should be aware of this change.</p>
+
+      <p>Several special mappings have been added to the DUCET. These had already been added in the CLDR root collation tailoring.</p>
+      <ul>
+        <li><a href="https://www.unicode.org/reports/tr10/tr10-55.html#Well_Formed_DUCET">10 additional contraction mappings for Tibetan</a>,
+          for making the DUCET well-formed.</li>
+        <li><a href="https://www.unicode.org/reports/tr10/tr10-55.html#Reserved_Weights">Mapping U+FFFF</a>
+          to a collation element with the highest primary weight.</li>
+        <li><a href="https://www.unicode.org/reports/tr10/tr10-55.html#Reserved_Weights">Mapping U+FFFE</a>
+          to a collation element with the lowest non-zero primary weight,
+          and some special processing, for “Merging Sort Keys” within code point space.</li>
+      </ul>
+
+      <p>The Shift-Trimmed option was not previously recommended. It has now been removed completely from the UCA specification.</p>
+
+
+<h3>Linkification-related Issues</h3>
+
+      <p>The recently added <a href="https://www.unicode.org/reports/tr58/tr58-3.html">UTS #58, Unicode Link Detection and Formatting: URLs and Email Addresses</a>
+        is published in synchronization with the Unicode Standard starting with Unicode 18.0.0.</p>
+
+<h3>Emoji Changes</h3>
+
+      <p>For details about emoji changes, see the Unicode 18.0 <a href="https://www.unicode.org/emoji/charts-18.0/">emoji charts</a> and <a href="https://www.unicode.org/emoji/charts-18.0/emoji-released.html">Emoji Recently Added, v18.0</a>.</p>
+
+              <h3>&nbsp;</h3>
+</blockquote>
+          <hr width="50%">
+             
+          <div align="center">
+            <center>
+            <table cellspacing="0" cellpadding="0" border="0">
+              <tr>
+                <td><a href="https://www.unicode.org/copyright.html">
+                <img src="https://www.unicode.org/img/hb_notice.gif" border="0" 
+                alt="Access to Copyright and terms of use" width="216" 
+                height="50"></a></td>
+              </tr>
+            </table>
+            </center>
+          </div>
+          </td>
+    </tr>
+  </table>
+
+</body>
+</html>

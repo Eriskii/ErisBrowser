@@ -1,6 +1,120 @@
 # Validation record
 
+## Unicode identifiers and bounded compilation
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **783 Rust tests** pass with `--include-ignored`: 633 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 42 pipeline and 33 confined-worker tests. None remain
+ignored. All **85 Python checks**, offline table verification and **57 exact
+pixel references** pass.
+
+The [identifier implementation](../tests/conformance/identifiers.md) decodes
+valid Unicode escapes, distinguishes raw grammar terminals from decoded names,
+and uses exact pinned Unicode 18.0.0 ID properties. It preserves combining marks,
+supplementary characters and distinct normalization forms while rejecting
+invalid start/continuation characters, surrogate escapes and escaped reserved
+bindings. Numeric adjacency, RegExp flag scanning and ECMAScript whitespace have
+their separate rules. Sixteen script groups cover these paths, compiler limits,
+diagnostic offsets, parse atomicity and retained callbacks after source disposal.
+
+The [pinned data and generator](../tests/conformance/unicode-identifiers-data.md)
+retain official bytes, license, version evidence and hashes. A deterministic
+two-level packed table has 4,352 byte indices and 132 unique 64-byte pages:
+**12,800 bytes** of static payload. Membership uses two bounded table reads and
+fixed shifts/masks. Independent parsing of source records and generated numeric
+literals matches all 1,114,112 code-point positions; the compiled predicate test
+checks every scalar. Invalid indices and changed membership bits are rejected
+by the independent corruption controls.
+
+Initial scanning and all suffix rescans share the existing work/allocation
+ledger. No source, token, nesting, work or heap ceiling increased. Actual token
+storage shrank from **120 to 48 bytes** on the tested target by sharing rare
+provisional diagnostics. Their allocation is precharged and offset adjustment
+requires unique ownership. The parser borrows source during compilation and
+retains owned syntax/string data, removing a real whole-source allocation/copy.
+Raw first-character membership is reused instead of searched twice.
+
+Direct Page and real confined-worker fixtures preserve six green samples and
+six blue samples after an event callback changes retained Unicode bindings.
+Worker pixels equal direct output. Separate Page checks reject invalid scripts
+before any effects and allow later valid scripts to execute.
+
+The complete [identifier/whitespace inventory](../tests/conformance/test262-identifiers.md)
+retains **335 sources / 669 variants / 88 preflights**. It moves from **377
+passed / 138 failed / 154 unsupported** to **507 passed / 154 unsupported /
+eight resources**: 130 new passes, no lost passes and all 88 preflights verified.
+The remaining resources are both modes of four large escaped-Unicode sources.
+The runner refuses a healthy baseline; no passing conformance gate was added.
+Syntax-negative preflights also require a separately executed positive lexer
+control in the same mode, preserving raw results even when that prerequisite
+fails.
+
+The [preliminary report](../tests/conformance/test262-identifiers-preliminary.json)
+is retained: it had 483 passes and 32 resources, including 16 prior passes that
+regressed to compile limits. All 16 are restored by the real work/storage
+reductions above, with the same corpus and assertion contract. One private
+20,000-character identifier sample now fits the unchanged limits; its exact
+input remains a positive control, accompanied by a larger 50,001-character
+resource control. No upstream or independent-matrix expectation changed.
+
+Independent frozen-release review matches **435 unchanged outcomes**: 175
+normal completions, 229 intended parse SyntaxErrors, 25 unsupported controls
+and six resources. Seven private groups pass under 512 MiB address-space,
+three-second CPU and eight-second wall limits, including the real exhaustive
+scalar test and largest raw Unicode file in both modes. Four resource diagnostics
+change as different existing limits become the first exhausted resource; all
+remain parse-phase resource outcomes. Static delta review found no concrete
+scoped defect. Original and optimized sources, binaries and review records are
+retained separately in session scratch storage.
+
+All prior passing conformance cases remain passing. The
+[function inventory](../tests/conformance/test262-functions-identifiers.json)
+adds six passes, reaching **509 passed / 620 unsupported / two parser resources**
+with 48 verified preflights. The
+[sort comparison](../tests/conformance/test262-array-sort-identifiers.json)
+retains **53 passed / six failed / 46 unsupported / two resources**, with all
+80 preflights. Its two large stability cases now stop at runtime allocation
+rather than instruction limits; exact diagnostics are retained. HTML retains
+3,868 matching trees, two mismatches and six unsupported modes. String/JSON,
+RegExp, templates, rest, prototype membership and global-value gates retain
+their prior results and policies. All eight earlier profiles preserve their
+2,424 case and 440 preflight identities.
+
+The **15,000-case** mutation smoke run reports zero caught panics or invariant
+failures: 5,000 accepted HTML, 627 accepted/4,373 rejected scripts and
+3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and
+display-list size is 1,173 commands; 17 cases stop within paint limits. The new
+identifier seed changes the inventory; these counts are not an acceptance-rate
+comparison.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+|---|---|
+| `eris-browser` | `8b4a850f591997e3e4a716d821b89e1980e0c87856fe673b4edd1aa7b684c943` |
+| `eris-js` | `b7f77cbbc11f14297b7b34716668a10c0522be62562a33a07756dcc89f17d12f` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `d909fc7cd0b21c52b6d3afcbdb4759a563381b66f30667bb32b27cf1be4a8eef` |
+
+Source-input digest:
+`aa1d611fc199bdff6eab451307c2166ca0fe71ab3b8c39dd1bf0182ca5431cb7`.
+Session logs use `identifiers-final` under `artifacts/`. Classes/modules,
+generators/async execution, labels, eval, full goal validation and Unicode
+RegExp capture names remain incomplete. No Chromium performance result or new
+native-window measurement is assigned to this increment. Full compatibility,
+audited security and the requested performance threshold remain unfulfilled;
+Vulkan browser integration remains on the development docket.
+
 ## Stable array sorting
+
+The runtime checkpoint `eee6586` exposed a race in the existing Python process
+cleanup test: Linux procfs returned ESRCH while a terminated child disappeared
+during a read. Test-only follow-up `d678745` accepts that specific disappearance
+alongside ENOENT, while still failing for live descendants and unrelated errors.
+All 68 Python checks and 20 repetitions of the process-group cleanup check pass.
+The follow-up passed [all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36415370021),
+including Rust 1.88 and the Vulkan probe. No browser runtime changed in that fix.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **762 Rust tests** pass with `--include-ignored`: 615 library,

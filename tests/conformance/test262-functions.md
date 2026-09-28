@@ -40,6 +40,18 @@ explicitly unsupported. Existing profile policies and baselines are unchanged.
 The [runner contract](test262.md) describes isolated processes, bounds,
 unchanged assertions, negative error identity and outcome categories.
 
+## Identifier checkpoint
+
+The [identifier comparison](test262-functions-identifiers.json) records **509
+passed / 620 unsupported / two resource stops**, with all 48 preflights verified.
+Both modes of `S13_A7_T1.js`, `S14_A5_T1.js` and `S14_A5_T2.js` newly pass after
+Unicode escape decoding; no earlier pass is lost. All 1,131 identities and the
+existing policy match the [sort checkpoint](test262-functions-sort.json).
+There are no remaining ordinary failures in this selection, but both unchanged
+32-level nested-function tests still exceed the parser limit. No healthy
+functions baseline is recorded. The final adapter SHA-256 is
+`b7f77cbbc11f14297b7b34716668a10c0522be62562a33a07756dcc89f17d12f`.
+
 ## Initial measurement
 
 The [complete initial report](test262-functions-initial.json) records a frozen

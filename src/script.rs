@@ -7,6 +7,7 @@
 //! UTF-8 is lossy only at the display/DOM boundary; JSON retains lone surrogates.
 
 use crate::dom::{Document, Namespace, NodeId, NodeKind};
+use crate::js_identifier::{IDENTIFIER_LOOKUP_WORK, is_identifier_part, is_identifier_start};
 use crate::js_string::{JsString, is_js_whitespace, radix_number};
 use crate::regexp::{self, RegExp};
 use std::cmp::Ordering;
@@ -260,14 +261,19 @@ fn regexp_error(error: regexp::Error) -> ScriptError {
 }
 
 #[derive(Clone, Debug)]
+struct IdentifierToken {
+    value: Rc<str>,
+    escaped: bool,
+}
+#[derive(Clone, Debug)]
 enum TokenKind {
-    Word(String),
+    Word(IdentifierToken),
     Number(f64),
     String(JsString),
     Symbol(String),
     RegExp(Rc<RegExp>),
     TemplateStart,
-    Invalid(ScriptError),
+    Invalid(Rc<ScriptError>),
     End,
 }
 #[derive(Clone, Debug)]
@@ -288,6 +294,9 @@ fn quoted_text(
     quote: char,
     mut budget: Option<&mut regexp::Budget>,
 ) -> Result<(JsString, usize, bool, bool)> {
+    if let Some(budget) = budget.as_deref_mut() {
+        compile_allocate(budget, 32)?;
+    }
     let mut pos = start + 1;
     let mut legacy_literal = false;
     let mut interpolation = false;
@@ -296,10 +305,7 @@ fn quoted_text(
     while pos < source.len() {
         if let Some(budget) = budget.as_deref_mut() {
             budget.work(1).map_err(regexp_error)?;
-            budget.allocated = budget.allocated.saturating_add(8);
-            if budget.allocated > MAX_HEAP {
-                return Err(ScriptError::resource("template storage limit exceeded"));
-            }
+            compile_allocate(budget, 8)?;
         }
         if value.len() > MAX_STRING {
             return Err(ScriptError::resource("script string limit exceeded"));
@@ -314,6 +320,15 @@ fn quoted_text(
             pos += 1;
             interpolation = true;
             break;
+        }
+        if value.capacity().saturating_sub(value.len()) < 2 {
+            let capacity = value.capacity().saturating_mul(2).max(4);
+            if let Some(budget) = budget.as_deref_mut() {
+                compile_allocate(budget, capacity.saturating_mul(2).saturating_add(32))?;
+            }
+            value
+                .try_reserve_exact(capacity - value.len())
+                .map_err(|_| ScriptError::resource("quoted token allocation failed"))?;
         }
         if c == '\\' {
             let e = source[pos..]
@@ -436,14 +451,176 @@ fn quoted_text(
     }
     if let Some(budget) = budget {
         budget.work((pos - start) / 8 + 1).map_err(regexp_error)?;
+        compile_allocate(budget, value.len().saturating_mul(2).saturating_add(32))?;
     }
     Ok((JsString::from(value), pos, legacy_literal, interpolation))
 }
 
-fn lex(source: &str) -> Result<Vec<Token>> {
+fn compile_allocate(budget: &mut regexp::Budget, bytes: usize) -> Result<()> {
+    budget.allocated = budget.allocated.saturating_add(bytes);
+    if budget.allocated > budget.heap_limit {
+        return Err(ScriptError::resource(
+            "script compile allocation limit exceeded",
+        ));
+    }
+    Ok(())
+}
+
+fn reserve_tokens(
+    tokens: &mut Vec<Token>,
+    additional: usize,
+    budget: &mut regexp::Budget,
+) -> Result<()> {
+    let needed = tokens.len().saturating_add(additional);
+    if needed > MAX_TOKENS + 2 {
+        return Err(ScriptError::resource("script token limit exceeded"));
+    }
+    if needed > tokens.capacity() {
+        budget.work(tokens.len() + 1).map_err(regexp_error)?;
+        let capacity = needed
+            .max(tokens.capacity().saturating_mul(2))
+            .clamp(8, MAX_TOKENS + 2);
+        compile_allocate(budget, capacity * std::mem::size_of::<Token>() + 32)?;
+        tokens
+            .try_reserve_exact(capacity - tokens.len())
+            .map_err(|_| ScriptError::resource("script token allocation failed"))?;
+    }
+    Ok(())
+}
+
+fn identifier_escape(
+    source: &str,
+    start: usize,
+    budget: &mut regexp::Budget,
+) -> Result<(char, usize)> {
+    let bytes = source.as_bytes();
+    if bytes.get(start + 1) != Some(&b'u') {
+        return Err(ScriptError::at(
+            "identifier escape must use Unicode syntax",
+            start,
+        ));
+    }
+    let mut at = start + 2;
+    let braced = bytes.get(at) == Some(&b'{');
+    if braced {
+        at += 1;
+    }
+    let digits = at;
+    let mut value = 0u32;
+    while braced || at - digits < 4 {
+        if (at - digits) & 7 == 0 {
+            budget.work(1).map_err(regexp_error)?;
+        }
+        let Some(byte) = bytes.get(at).copied() else {
+            break;
+        };
+        let digit = match byte {
+            b'0'..=b'9' => u32::from(byte - b'0'),
+            b'a'..=b'f' => u32::from(byte - b'a' + 10),
+            b'A'..=b'F' => u32::from(byte - b'A' + 10),
+            _ => break,
+        };
+        value = value
+            .checked_mul(16)
+            .and_then(|value| value.checked_add(digit))
+            .filter(|value| *value <= 0x10ffff)
+            .ok_or_else(|| ScriptError::at("identifier escape exceeds Unicode range", start))?;
+        at += 1;
+    }
+    if braced {
+        if at == digits || bytes.get(at) != Some(&b'}') {
+            return Err(ScriptError::at("invalid braced identifier escape", start));
+        }
+        at += 1;
+    } else if at - digits != 4 {
+        return Err(ScriptError::at("invalid identifier escape", start));
+    }
+    let value = char::from_u32(value)
+        .ok_or_else(|| ScriptError::at("surrogate is not an identifier code point", start))?;
+    Ok((value, at))
+}
+
+enum IdentifierFirst {
+    ValidatedRaw(char),
+    Escape,
+}
+
+fn identifier_token(
+    source: &str,
+    start: usize,
+    first: IdentifierFirst,
+    budget: &mut regexp::Budget,
+) -> Result<(IdentifierToken, usize)> {
+    // The lexer already queried the raw first scalar. Reuse that result;
+    // escaped first scalars still need decoding and positional validation.
+    let mut length = match first {
+        IdentifierFirst::ValidatedRaw(value) => value.len_utf8(),
+        IdentifierFirst::Escape => 0,
+    };
+    let mut at = start + length;
+    let mut escaped = false;
+    while let Some(raw) = source[at..].chars().next() {
+        let (value, end) = if raw == '\\' {
+            escaped = true;
+            identifier_escape(source, at, budget)?
+        } else {
+            (raw, at + raw.len_utf8())
+        };
+        if !value.is_ascii() {
+            budget.work(IDENTIFIER_LOOKUP_WORK).map_err(regexp_error)?;
+        }
+        let valid = if at == start {
+            is_identifier_start(value)
+        } else {
+            is_identifier_part(value)
+        };
+        if !valid {
+            if raw == '\\' || at == start {
+                return Err(ScriptError::at("invalid identifier code point", at));
+            }
+            break;
+        }
+        length += value.len_utf8();
+        at = end;
+    }
+    compile_allocate(
+        budget,
+        length
+            .saturating_mul(if escaped { 2 } else { 1 })
+            .saturating_add(32),
+    )?;
+    budget.work(1 + (at - start) / 8).map_err(regexp_error)?;
+    let value = if !escaped {
+        Rc::from(&source[start..at])
+    } else {
+        let mut output = String::new();
+        output
+            .try_reserve_exact(length)
+            .map_err(|_| ScriptError::resource("identifier allocation failed"))?;
+        let mut cursor = start;
+        while cursor < at {
+            let raw = source[cursor..].chars().next().unwrap();
+            if raw == '\\' {
+                let (value, end) = identifier_escape(source, cursor, budget)?;
+                output.push(value);
+                cursor = end;
+            } else {
+                output.push(raw);
+                cursor += raw.len_utf8();
+            }
+        }
+        Rc::from(output)
+    };
+    Ok((IdentifierToken { value, escaped }, at))
+}
+
+fn lex(source: &str, budget: &mut regexp::Budget) -> Result<Vec<Token>> {
     if source.len() > MAX_SOURCE {
         return Err(ScriptError::resource("script source limit exceeded"));
     }
+    // Precharge bounded ASCII scans, including comments and numeric parsing.
+    // Non-ASCII table searches and escape decoding charge separately.
+    budget.work(1 + source.len() / 4).map_err(regexp_error)?;
     let mut tokens = Vec::new();
     let mut pos = 0;
     let mut line_break_before = false;
@@ -453,7 +630,7 @@ fn lex(source: &str) -> Result<Vec<Token>> {
     let result = (|| -> Result<()> {
         while pos < source.len() {
             let ch = source[pos..].chars().next().unwrap();
-            if ch.is_whitespace() {
+            if u16::try_from(u32::from(ch)).is_ok_and(is_js_whitespace) {
                 line_break_before |= matches!(ch, '\n' | '\r' | '\u{2028}' | '\u{2029}');
                 pos += ch.len_utf8();
                 continue;
@@ -482,7 +659,7 @@ fn lex(source: &str) -> Result<Vec<Token>> {
                 pos += 1;
                 TokenKind::TemplateStart
             } else if ch == '\'' || ch == '"' {
-                let (value, end, legacy, _) = quoted_text(source, start, ch, None)?;
+                let (value, end, legacy, _) = quoted_text(source, start, ch, Some(budget))?;
                 pos = end;
                 legacy_literal = legacy;
                 TokenKind::String(value)
@@ -537,15 +714,20 @@ fn lex(source: &str) -> Result<Vec<Token>> {
                         },
                     )
                 }
-            } else if ch.is_alphabetic() || ch == '_' || ch == '$' {
-                pos += ch.len_utf8();
-                while let Some(c) = source[pos..].chars().next() {
-                    if !(c.is_alphanumeric() || c == '_' || c == '$') {
-                        break;
-                    }
-                    pos += c.len_utf8();
+            } else if ch == '\\' || {
+                if !ch.is_ascii() {
+                    budget.work(IDENTIFIER_LOOKUP_WORK).map_err(regexp_error)?;
                 }
-                TokenKind::Word(source[start..pos].to_owned())
+                is_identifier_start(ch)
+            } {
+                let first = if ch == '\\' {
+                    IdentifierFirst::Escape
+                } else {
+                    IdentifierFirst::ValidatedRaw(ch)
+                };
+                let (identifier, end) = identifier_token(source, start, first, budget)?;
+                pos = end;
+                TokenKind::Word(identifier)
             } else {
                 let operator = [
                     "===", "!==", ">>>", "**=", "=>", "==", "!=", "<=", ">=", "&&", "||", "??",
@@ -554,9 +736,11 @@ fn lex(source: &str) -> Result<Vec<Token>> {
                 .into_iter()
                 .find(|op| source[pos..].starts_with(op));
                 if let Some(op) = operator {
+                    compile_allocate(budget, 32)?;
                     pos += op.len();
                     TokenKind::Symbol(op.to_owned())
                 } else if "{}[]().,;:?+-*/%<>=!~&|^".contains(ch) {
+                    compile_allocate(budget, 32)?;
                     pos += 1;
                     TokenKind::Symbol(ch.to_string())
                 } else {
@@ -566,6 +750,20 @@ fn lex(source: &str) -> Result<Vec<Token>> {
                     ));
                 }
             };
+            if matches!(kind, TokenKind::Number(_))
+                && let Some(next) = source[pos..].chars().next()
+            {
+                if !next.is_ascii() {
+                    budget.work(IDENTIFIER_LOOKUP_WORK).map_err(regexp_error)?;
+                }
+                if next == '\\' || next.is_ascii_digit() || is_identifier_start(next) {
+                    return Err(ScriptError::at(
+                        "identifier immediately follows numeric literal",
+                        pos,
+                    ));
+                }
+            }
+            reserve_tokens(&mut tokens, 1, budget)?;
             tokens.push(Token {
                 kind,
                 offset: start,
@@ -585,15 +783,24 @@ fn lex(source: &str) -> Result<Vec<Token>> {
         Ok(())
     })();
     if let Err(error) = result {
+        if error.is_resource_limit() {
+            return Err(error);
+        }
+        reserve_tokens(&mut tokens, 1, budget)?;
+        compile_allocate(
+            budget,
+            std::mem::size_of::<ScriptError>() + 2 * std::mem::size_of::<usize>(),
+        )?;
         tokens.push(Token {
             offset: error.offset.unwrap_or(pos),
-            kind: TokenKind::Invalid(error),
+            kind: TokenKind::Invalid(Rc::new(error)),
             line_break_before,
             string_literal: false,
             use_strict: false,
             legacy_literal: false,
         });
     }
+    reserve_tokens(&mut tokens, 1, budget)?;
     tokens.push(Token {
         kind: TokenKind::End,
         offset: source.len(),
@@ -725,9 +932,9 @@ enum DeclarationKind {
     Const,
 }
 
-struct Parser {
+struct Parser<'source> {
     tokens: Vec<Token>,
-    source: String,
+    source: &'source str,
     lex_work: usize,
     compile_budget: regexp::Budget,
     pos: usize,
@@ -738,21 +945,25 @@ struct Parser {
     allow_in: bool,
     strict: bool,
 }
-impl Parser {
-    fn program(source: &str) -> Result<Program> {
+impl<'source> Parser<'source> {
+    fn program(source: &'source str) -> Result<Program> {
         Self::program_context(source, false, false)
     }
-    fn program_context(source: &str, function: bool, strict: bool) -> Result<Program> {
+    fn program_context(source: &'source str, function: bool, strict: bool) -> Result<Program> {
+        if source.len() > MAX_SOURCE {
+            return Err(ScriptError::resource("script source limit exceeded"));
+        }
+        let mut compile_budget = regexp::Budget {
+            steps: MAX_STEPS,
+            allocated: 0,
+            heap_limit: MAX_HEAP,
+            stack_limit: 16,
+        };
         let mut parser = Self {
-            tokens: lex(source)?,
-            source: source.into(),
+            tokens: lex(source, &mut compile_budget)?,
+            source,
             lex_work: source.len(),
-            compile_budget: regexp::Budget {
-                steps: MAX_STEPS,
-                allocated: 0,
-                heap_limit: MAX_HEAP,
-                stack_limit: 16,
-            },
+            compile_budget,
             pos: 0,
             depth: 0,
             function_depth: usize::from(function),
@@ -808,7 +1019,14 @@ impl Parser {
         matches!(self.tokens[self.pos].kind, TokenKind::End)
     }
     fn is(&self, text: &str) -> bool {
-        matches!(&self.tokens[self.pos].kind, TokenKind::Word(s) | TokenKind::Symbol(s) if s == text)
+        self.token_is(self.pos, text)
+    }
+    fn token_is(&self, pos: usize, text: &str) -> bool {
+        match self.tokens.get(pos).map(|token| &token.kind) {
+            Some(TokenKind::Word(word)) => !word.escaped && &*word.value == text,
+            Some(TokenKind::Symbol(symbol)) => symbol == text,
+            _ => false,
+        }
     }
     fn eat(&mut self, text: &str) -> bool {
         if self.is(text) {
@@ -827,7 +1045,7 @@ impl Parser {
     }
     fn error(&self, message: impl Into<String>) -> ScriptError {
         if let TokenKind::Invalid(error) = &self.tokens[self.pos].kind {
-            return error.clone();
+            return (**error).clone();
         }
         ScriptError::at(message, self.tokens[self.pos].offset)
     }
@@ -838,12 +1056,24 @@ impl Parser {
     }
     fn identifier(&mut self) -> Result<String> {
         if let TokenKind::Word(s) = &self.tokens[self.pos].kind {
-            let name = s.clone();
+            let value = s.value.clone();
+            let name = self.copy_identifier(&value)?;
             self.pos += 1;
             Ok(name)
         } else {
             Err(self.error("expected identifier"))
         }
+    }
+    fn copy_identifier(&mut self, name: &str) -> Result<String> {
+        self.compile_budget
+            .work(1 + name.len() / 8)
+            .map_err(regexp_error)?;
+        compile_allocate(&mut self.compile_budget, name.len() + 24)?;
+        let mut copy = String::new();
+        copy.try_reserve_exact(name.len())
+            .map_err(|_| ScriptError::resource("identifier copy allocation failed"))?;
+        copy.push_str(name);
+        Ok(copy)
     }
     fn binding_identifier(&mut self) -> Result<String> {
         if self.is("{") || self.is("[") || self.is(".") {
@@ -966,6 +1196,31 @@ impl Parser {
         }
         Ok(statement)
     }
+    fn declaration_start(&self) -> bool {
+        self.is("var")
+            || self.is("const")
+            || self.is("let")
+                && (self.token_is(self.pos + 1, "[")
+                    || self.token_is(self.pos + 1, "{")
+                    || matches!(
+                        self.tokens.get(self.pos + 1).map(|token| &token.kind),
+                        Some(TokenKind::Word(_))
+                    ) && !self.token_is(self.pos + 1, "in")
+                        && !self.token_is(self.pos + 1, "instanceof"))
+    }
+    fn unsupported_async_start(&self) -> bool {
+        self.is("async")
+            && self
+                .tokens
+                .get(self.pos + 1)
+                .is_some_and(|token| !token.line_break_before)
+            && (self.token_is(self.pos + 1, "function")
+                || matches!(
+                    self.tokens.get(self.pos + 1).map(|token| &token.kind),
+                    Some(TokenKind::Word(_))
+                ) && self.token_is(self.pos + 2, "=>")
+                    && !self.tokens[self.pos + 2].line_break_before)
+    }
     fn statement_inner(&mut self) -> Result<Stmt> {
         if self.eat(";") {
             return Ok(Stmt::Empty);
@@ -973,19 +1228,24 @@ impl Parser {
         if self.eat("{") {
             return Ok(Stmt::Block(self.block()?));
         }
-        if self.is("let") || self.is("const") || self.is("var") {
+        if self.declaration_start() {
             let declaration = self.declaration()?;
             self.semicolon()?;
             return Ok(declaration);
         }
         if self.eat("function") {
+            if self.is("*") {
+                return Err(ScriptError::unsupported(
+                    "generator functions are not implemented",
+                ));
+            }
             let name = self.binding_identifier()?;
             let mut code = self.function(false)?;
             let saved = self.strict;
             self.strict = code.strict;
             self.validate_identifier(&name, true)?;
             self.strict = saved;
-            code.name = Some(name.clone());
+            code.name = Some(self.copy_identifier(&name)?);
             return Ok(Stmt::Function(name, code));
         }
         if self.eat("switch") {
@@ -1072,7 +1332,7 @@ impl Parser {
             self.allow_in = false;
             let init = if self.is(";") {
                 None
-            } else if self.is("let") || self.is("const") || self.is("var") {
+            } else if self.declaration_start() {
                 Some(Box::new(self.declaration()?))
             } else {
                 Some(Box::new(Stmt::Expr(self.sequence()?)))
@@ -1201,6 +1461,9 @@ impl Parser {
             if !self.tokens[self.pos].line_break_before
                 && matches!(self.tokens[self.pos].kind, TokenKind::Word(_))
             {
+                if let TokenKind::Word(word) = &self.tokens[self.pos].kind {
+                    self.validate_identifier(&word.value, false)?;
+                }
                 return Err(ScriptError::unsupported(
                     "labeled control flow is not implemented",
                 ));
@@ -1215,6 +1478,9 @@ impl Parser {
             if !self.tokens[self.pos].line_break_before
                 && matches!(self.tokens[self.pos].kind, TokenKind::Word(_))
             {
+                if let TokenKind::Word(word) = &self.tokens[self.pos].kind {
+                    self.validate_identifier(&word.value, false)?;
+                }
                 return Err(ScriptError::unsupported(
                     "labeled control flow is not implemented",
                 ));
@@ -1223,8 +1489,7 @@ impl Parser {
             return Ok(Stmt::Continue);
         }
         for unsupported in [
-            "class", "import", "export", "catch", "finally", "do", "with", "async", "await",
-            "yield",
+            "class", "import", "export", "catch", "finally", "do", "with",
         ] {
             if self.is(unsupported) {
                 if self.strict && matches!(unsupported, "with" | "yield") {
@@ -1241,6 +1506,9 @@ impl Parser {
                 .get(self.pos + 1)
                 .is_some_and(|t| matches!(&t.kind, TokenKind::Symbol(s) if s == ":"))
         {
+            if let TokenKind::Word(word) = &self.tokens[self.pos].kind {
+                self.validate_identifier(&word.value, false)?;
+            }
             return Err(ScriptError::unsupported(
                 "labeled statements are not implemented",
             ));
@@ -1397,13 +1665,23 @@ impl Parser {
             return Err(self.error("legacy literals are forbidden in strict code"));
         }
         let (key, identifier) = match self.tokens[self.pos].kind.clone() {
-            TokenKind::Word(value) => (value.into(), true),
+            TokenKind::Word(word) => (self.identifier_key(&word.value)?, true),
             TokenKind::String(value) => (value, false),
             TokenKind::Number(value) => (json_number(value).into(), false),
             _ => return Err(self.error("expected object property")),
         };
         self.pos += 1;
         Ok(PropertyName::Literal(key, identifier))
+    }
+    fn identifier_key(&mut self, name: &str) -> Result<JsString> {
+        self.compile_budget
+            .work(1 + name.len() / 8)
+            .map_err(regexp_error)?;
+        compile_allocate(
+            &mut self.compile_budget,
+            name.len().saturating_mul(4).saturating_add(32),
+        )?;
+        Ok(JsString::from(name))
     }
     fn parameter(&mut self, name: String, initializer: Option<Expr>) -> Result<Parameter> {
         self.compile_budget
@@ -1656,8 +1934,16 @@ impl Parser {
         let left = self.unary()?;
         let mut operations = Vec::new();
         let mut chain = 0;
-        while let TokenKind::Symbol(s) | TokenKind::Word(s) = &self.tokens[self.pos].kind {
-            let op = s.clone();
+        loop {
+            let op = match &self.tokens[self.pos].kind {
+                TokenKind::Symbol(symbol) => symbol.clone(),
+                TokenKind::Word(word)
+                    if !word.escaped && matches!(&*word.value, "in" | "instanceof") =>
+                {
+                    word.value.to_string()
+                }
+                _ => break,
+            };
             if op == "in" && !self.allow_in {
                 break;
             }
@@ -1762,6 +2048,9 @@ impl Parser {
             self.assignment_target(&value)?;
             return Ok(Expr::Update(Box::new(value), delta, true));
         }
+        let async_call = self.is("async")
+            && self.token_is(self.pos + 1, "(")
+            && !self.tokens[self.pos + 1].line_break_before;
         let mut value = self.new_expression()?;
         let mut chain = 0;
         loop {
@@ -1771,9 +2060,10 @@ impl Parser {
             }
             if self.eat(".") {
                 let property = self.identifier()?;
+                let property = self.identifier_key(&property)?;
                 value = Expr::Member(
                     Box::new(value),
-                    Box::new(Expr::Literal(Value::String(JsString::from(property)))),
+                    Box::new(Expr::Literal(Value::String(property))),
                 );
             } else if self.eat("[") {
                 let property = self.expression()?;
@@ -1789,6 +2079,14 @@ impl Parser {
                         }
                         self.expect(",")?;
                     }
+                }
+                if async_call && chain == 1 && self.is("=>") {
+                    if self.tokens[self.pos].line_break_before {
+                        return Err(self.error("line terminator before arrow"));
+                    }
+                    return Err(ScriptError::unsupported(
+                        "async arrow functions are not implemented",
+                    ));
                 }
                 value = Expr::Call(Box::new(value), arguments);
             } else if matches!(self.tokens[self.pos].kind, TokenKind::TemplateStart) {
@@ -1809,6 +2107,11 @@ impl Parser {
         Ok(value)
     }
     fn primary(&mut self) -> Result<Expr> {
+        if self.unsupported_async_start() {
+            return Err(ScriptError::unsupported(
+                "async functions are not implemented",
+            ));
+        }
         if matches!(self.tokens[self.pos].kind, TokenKind::TemplateStart) {
             return self.template_literal();
         }
@@ -1930,10 +2233,10 @@ impl Parser {
                 if self.compile_budget.allocated > MAX_HEAP {
                     return Err(self.resource_error("object literal allocation limit exceeded"));
                 }
+                let accessor = self.is("get") || self.is("set");
+                let async_keyword = self.is("async");
                 let mut key = self.object_key()?;
-                let accessor = matches!(&key, PropertyName::Literal(name, true)
-                    if name == &JsString::from("get") || name == &JsString::from("set"));
-                if matches!(&key, PropertyName::Literal(name, true) if name == &JsString::from("async"))
+                if async_keyword
                     && !self.is(":")
                     && !self.is("(")
                     && !self.is(",")
@@ -1981,6 +2284,13 @@ impl Parser {
                         let PropertyName::Literal(name, true) = &key else {
                             return Err(self.error("object shorthand requires an identifier"));
                         };
+                        self.compile_budget
+                            .work(1 + name.len() / 8)
+                            .map_err(regexp_error)?;
+                        compile_allocate(
+                            &mut self.compile_budget,
+                            name.len().saturating_mul(3).saturating_add(32),
+                        )?;
                         let name = name
                             .to_utf8()
                             .map_err(|_| self.error("object shorthand requires an identifier"))?;
@@ -1998,6 +2308,11 @@ impl Parser {
             return Ok(Expr::Object(entries));
         }
         if self.eat("function") {
+            if self.is("*") {
+                return Err(ScriptError::unsupported(
+                    "generator functions are not implemented",
+                ));
+            }
             let name = if matches!(self.tokens[self.pos].kind, TokenKind::Word(_)) {
                 Some(self.binding_identifier()?)
             } else {
@@ -2026,17 +2341,22 @@ impl Parser {
         }
         match token.kind {
             TokenKind::RegExp(pattern) => Ok(Expr::RegExp(pattern)),
-            TokenKind::Invalid(error) => Err(error),
+            TokenKind::Invalid(error) => Err((*error).clone()),
             TokenKind::Number(n) => Ok(Expr::Literal(Value::Number(n))),
             TokenKind::String(s) => Ok(Expr::Literal(Value::String(s))),
-            TokenKind::Word(s) if s == "true" || s == "false" => {
-                Ok(Expr::Literal(Value::Bool(s == "true")))
+            TokenKind::Word(s) if !s.escaped && matches!(&*s.value, "true" | "false") => {
+                Ok(Expr::Literal(Value::Bool(&*s.value == "true")))
             }
-            TokenKind::Word(s) if s == "null" => Ok(Expr::Literal(Value::Null)),
-            TokenKind::Word(s) if s == "super" => Err(ScriptError::unsupported(
-                "super property and constructor references are not implemented",
-            )),
-            TokenKind::Word(s) => {
+            TokenKind::Word(s) if !s.escaped && &*s.value == "null" => {
+                Ok(Expr::Literal(Value::Null))
+            }
+            TokenKind::Word(s) if !s.escaped && &*s.value == "super" => {
+                Err(ScriptError::unsupported(
+                    "super property and constructor references are not implemented",
+                ))
+            }
+            TokenKind::Word(word) => {
+                let s = self.copy_identifier(&word.value)?;
                 if self.is("=>") {
                     if self.tokens[self.pos].line_break_before {
                         return Err(self.error("line terminator before arrow"));
@@ -2045,7 +2365,7 @@ impl Parser {
                     let parameter = self.parameter(s, None)?;
                     self.arrow(vec![parameter])
                 } else {
-                    if s != "this" {
+                    if word.escaped || s != "this" {
                         self.validate_identifier(&s, false)?;
                     }
                     Ok(Expr::Ident(s))
@@ -2057,7 +2377,7 @@ impl Parser {
     fn template_literal(&mut self) -> Result<Expr> {
         let start = self.tokens[self.pos].offset;
         let (head, mut at, _, mut interpolation) =
-            quoted_text(&self.source, start, '`', Some(&mut self.compile_budget))?;
+            quoted_text(self.source, start, '`', Some(&mut self.compile_budget))?;
         self.pos += 1;
         self.rescan_suffix(at)?;
         let mut tail = Vec::new();
@@ -2080,7 +2400,7 @@ impl Parser {
             let start = self.tokens[self.pos].offset;
             self.expect("}")?;
             let (text, end, _, next) =
-                quoted_text(&self.source, start, '`', Some(&mut self.compile_budget))?;
+                quoted_text(self.source, start, '`', Some(&mut self.compile_budget))?;
             tail.push((expression, text));
             at = end;
             interpolation = next;
@@ -2100,19 +2420,28 @@ impl Parser {
                 "script lexical rescan limit exceeded",
             ));
         }
-        let suffix = lex(&self.source[at..])?;
+        let suffix = lex(&self.source[at..], &mut self.compile_budget)?;
         if self.tokens.len().saturating_add(suffix.len()) > MAX_TOKENS {
             return Err(ScriptError::resource("script token limit exceeded"));
         }
-        self.tokens.extend(suffix.into_iter().map(|mut token| {
+        reserve_tokens(&mut self.tokens, suffix.len(), &mut self.compile_budget)?;
+        self.compile_budget
+            .work(suffix.len())
+            .map_err(regexp_error)?;
+        for mut token in suffix {
             token.offset += at;
-            if let TokenKind::Invalid(error) = &mut token.kind
-                && let Some(offset) = &mut error.offset
-            {
-                *offset += at;
+            if let TokenKind::Invalid(error) = &mut token.kind {
+                // lex just allocated this diagnostic; avoid a potentially
+                // allocating clone-on-write path when adjusting its offset.
+                let error = Rc::get_mut(error).ok_or_else(|| {
+                    ScriptError::resource("shared diagnostic during lexical rescan")
+                })?;
+                if let Some(offset) = &mut error.offset {
+                    *offset += at;
+                }
             }
-            token
-        }));
+            self.tokens.push(token);
+        }
         Ok(())
     }
     fn regexp_literal(&mut self) -> Result<Expr> {
@@ -2145,7 +2474,14 @@ impl Parser {
         at = end + 1;
         while at < self.source.len() {
             let ch = self.source[at..].chars().next().unwrap();
-            if !(ch.is_alphanumeric() || matches!(ch, '_' | '$' | '\\')) {
+            self.compile_budget
+                .work(if ch.is_ascii() {
+                    1
+                } else {
+                    IDENTIFIER_LOOKUP_WORK
+                })
+                .map_err(regexp_error)?;
+            if !is_identifier_part(ch) {
                 break;
             }
             at += ch.len_utf8();
@@ -2187,9 +2523,10 @@ impl Parser {
             }
             if self.eat(".") {
                 let key = self.identifier()?;
+                let key = self.identifier_key(&key)?;
                 constructor = Expr::Member(
                     Box::new(constructor),
-                    Box::new(Expr::Literal(Value::String(key.into()))),
+                    Box::new(Expr::Literal(Value::String(key))),
                 );
             } else if self.eat("[") {
                 let key = self.expression()?;
@@ -11263,6 +11600,644 @@ mod tests {
     use super::*;
     fn run(source: &str) -> Result<Value> {
         Runtime::new().execute(source, &mut Document::parse("<body></body>"))
+    }
+
+    fn identifier_syntax(source: &str, strict: bool) {
+        let error = Parser::program_context(source, false, strict).unwrap_err();
+        assert_eq!(
+            error.intrinsic_error_name(),
+            Some("SyntaxError"),
+            "{source}: {error}"
+        );
+        assert!(error.is_parse_error(), "{source}: {error}");
+    }
+
+    #[test]
+    fn identifiers_decode_across_bindings_parameters_members_and_closures() {
+        for strict in [false, true] {
+            let (mut runtime, mut document) = property_harness();
+            let source = r#"
+                var \u0061=1;a+=2;assert.sameValue(\u{61},3);
+                let \u0062=4;const \u{63}=5;assert.sameValue(b+c,9);
+                function \u0066(\u0078=2,...\u0079){return ()=>x+y[0];}
+                assert.sameValue(f(undefined,3)(),5);assert.sameValue(f.name,'f');
+                var arrow=(\u0078=4,...\u0079)=>x+y[0];assert.sameValue(arrow(undefined,5),9);
+                var result;try{throw 7;}catch(\u0065){result=e;}assert.sameValue(result,7);
+                var x=8,π=9,o={\u0078,π,\u0069f:10,\u0074his(){return this.x;}};
+                assert.sameValue(o.x,8);assert.sameValue(o.\u03c0,9);assert.sameValue(o.if,10);
+                assert.sameValue(o.\u{74}his(),8);assert.sameValue(window.\u0061,3);
+                var constructors={\u0066:function(v){this.value=v;}};
+                assert.sameValue(new constructors.\u0066(11).value,11);
+                var closure=()=>++\u0061;assert.sameValue(closure(),4);assert.sameValue(a,4);
+            "#;
+            if strict {
+                runtime.execute_strict(source, &mut document)
+            } else {
+                runtime.execute(source, &mut document)
+            }
+            .unwrap();
+        }
+    }
+
+    #[test]
+    fn identifiers_use_id_properties_and_preserve_code_point_identity() {
+        for point in [
+            'A',
+            '_',
+            '$',
+            'π',
+            '字',
+            '\u{2118}',
+            '\u{212e}',
+            '\u{309b}',
+            '\u{037a}',
+            '\u{10400}',
+        ] {
+            let escaped = format!("\\u{{{:x}}}", u32::from(point));
+            let source = format!("var {point}=7;{escaped}");
+            assert_eq!(run(&source).unwrap(), Value::Number(7.0), "{source}");
+            let source = format!("var {escaped}=8;{point}");
+            assert_eq!(run(&source).unwrap(), Value::Number(8.0), "{source}");
+        }
+        for point in [
+            '0',
+            '\u{0300}',
+            '\u{00b7}',
+            '\u{203f}',
+            '\u{0660}',
+            '\u{200c}',
+            '\u{200d}',
+            '\u{10400}',
+        ] {
+            let source = format!("var a{point}=9;a\\u{{{:x}}}", u32::from(point));
+            assert_eq!(run(&source).unwrap(), Value::Number(9.0), "{source}");
+        }
+        for point in [
+            '\u{0300}', '\u{00b7}', '\u{203f}', '\u{0660}', '\u{200c}', '\u{200d}', '\u{00b2}',
+            '\u{0378}', '😀',
+        ] {
+            identifier_syntax(&format!("var {point}=0;"), false);
+            identifier_syntax(&format!("var \\u{{{:x}}}=0;", u32::from(point)), false);
+        }
+        identifier_syntax("var a²=0;", false);
+        assert_eq!(
+            run(r"var é=1,e\u0301=2;é+'|'+é").unwrap().to_string(),
+            "1|2"
+        );
+        assert_eq!(run(r"var K=1,K=2;K+'|'+K").unwrap().to_string(), "1|2");
+    }
+
+    #[test]
+    fn identifiers_reject_malformed_and_invalid_position_escapes() {
+        for name in [
+            r"\u",
+            r"\u12",
+            r"\u00G0",
+            r"\u{}",
+            r"\u{61",
+            r"\u{110000}",
+            r"\u{ffffffffffffffff}",
+            r"\uD800",
+            r"\uDC00",
+            r"\uD801\uDC00",
+            r"\u{d800}",
+            r"\x61",
+            r"\U0061",
+            r"\u0030",
+            r"\u0020",
+            r"\u003b",
+            r"\u0000",
+            r"\u2028",
+            r"a\u0020",
+            r"a\u003b",
+            r"a\uD800",
+            r"a\q",
+        ] {
+            identifier_syntax(&format!("var {name}=1;"), false);
+        }
+        identifier_syntax("var a\\\n=1;", false);
+        assert_eq!(
+            run(r"var a\u0030=1;var \u0061b=2;a0+ab").unwrap(),
+            Value::Number(3.0)
+        );
+        let zeros = "0".repeat(16_384);
+        assert_eq!(
+            run(&format!("var \\u{{{zeros}61}}=12;a")).unwrap(),
+            Value::Number(12.0)
+        );
+        let source = r"var π=1;var x\u{2d}=0;";
+        let error = Parser::program(source).unwrap_err();
+        assert_eq!(error.offset, source.find('\\'));
+        assert_eq!(run(r"var 𐐀=3;\u{10400}").unwrap(), Value::Number(3.0));
+    }
+
+    #[test]
+    fn identifiers_escaped_reserved_words_are_names_only_in_property_positions() {
+        for keyword in [
+            "break",
+            "case",
+            "catch",
+            "class",
+            "const",
+            "continue",
+            "debugger",
+            "default",
+            "delete",
+            "do",
+            "else",
+            "enum",
+            "export",
+            "extends",
+            "false",
+            "finally",
+            "for",
+            "function",
+            "if",
+            "import",
+            "in",
+            "instanceof",
+            "new",
+            "null",
+            "return",
+            "super",
+            "switch",
+            "this",
+            "throw",
+            "true",
+            "try",
+            "typeof",
+            "var",
+            "void",
+            "while",
+            "with",
+        ] {
+            let escaped = format!("\\u{:04x}{}", keyword.as_bytes()[0], &keyword[1..]);
+            for strict in [false, true] {
+                identifier_syntax(&format!("var {escaped}=1;"), strict);
+                identifier_syntax(&format!("{escaped};"), strict);
+                identifier_syntax(&format!("function {escaped}(){{}}"), strict);
+                let source = format!("({{{escaped}:3}}).{escaped}");
+                let result = if strict {
+                    Runtime::new().execute_strict(&source, &mut Document::parse(""))
+                } else {
+                    run(&source)
+                };
+                assert_eq!(result.unwrap(), Value::Number(3.0), "{source}");
+            }
+        }
+        for source in [
+            r"function f(){\u0072eturn 1;}",
+            r"\u0069f(true){}",
+            r"\u0074ypeof 1",
+            r"1 \u0069n {}",
+            r"({}) \u0069nstanceof Object",
+            r"\u0069f:;",
+            r"while(true){break \u0069f;}",
+            r"while(true){continue \u0069f;}",
+        ] {
+            identifier_syntax(source, false);
+        }
+        for source in [
+            r"var \u0065val=1;",
+            r"var \u0061rguments=1;",
+            r"\u0065val=1;",
+            r"++\u0061rguments;",
+            r"function f(\u0065val){}",
+            r"function f(\u0061rguments){'use strict';}",
+        ] {
+            identifier_syntax(source, true);
+        }
+    }
+
+    #[test]
+    fn identifiers_object_introducers_and_proto_setters_use_distinct_rules() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var value=1,get=7,set=8,async=9;
+            var o={get \u0078(){return value;},set \u0078(v){value=v;},g\u0065t(){return 4;},\u0061sync(){return 5;}};
+            assert.sameValue(o.x,1);o.x=3;assert.sameValue(value,3);
+            assert.sameValue(o.get(),4);assert.sameValue(o.async(),5);
+            var shorthand={g\u0065t,s\u0065t,\u0061sync};assert.sameValue(shorthand.get,7);assert.sameValue(shorthand.set,8);assert.sameValue(shorthand.async,9);
+            var p={value:6},child={\u005f_proto__:p};assert.sameValue(Object.getPrototypeOf(child),p);
+            var own={['__proto__']:p};assert.sameValue(Object.getPrototypeOf(own),Object.prototype);
+        "#,&mut document).unwrap();
+        for source in [
+            r"({g\u0065t x(){}})",
+            r"({s\u0065t x(v){}})",
+            r"({\u0061sync x(){}})",
+            r"({__proto__:null,\u005f_proto__:null})",
+            r"({\u0069f})",
+        ] {
+            identifier_syntax(source, false);
+        }
+    }
+
+    #[test]
+    fn identifiers_script_contextual_names_are_not_blanket_keywords() {
+        for strict in [false, true] {
+            let (mut runtime, mut document) = upstream_harness();
+            let source = r#"
+                var async=function(v){return v+1;};assert.sameValue(async(2),3);assert.sameValue(\u0061sync(3),4);
+                var a=async=>async+2,b=\u0061sync=>async+3;assert.sameValue(a(1),3);assert.sameValue(b(1),4);
+                var await=4;await++;assert.sameValue(\u0061wait,5);
+                function f(await){return await+1;}assert.sameValue(f(5),6);
+                var g=(\u0061wait=1,...rest)=>await+rest[0];assert.sameValue(g(undefined,2),3);
+                var source={await,async};assert.sameValue(source.await,5);assert.sameValue(source.async,async);
+            "#;
+            if strict {
+                runtime.execute_strict(source, &mut document)
+            } else {
+                runtime.execute(source, &mut document)
+            }
+            .unwrap();
+        }
+        assert_eq!(
+            run(r"var yield=1;yield++;\u0079ield").unwrap(),
+            Value::Number(2.0)
+        );
+        assert_eq!(
+            run(r"var let=1;let+=2;\u006cet").unwrap(),
+            Value::Number(3.0)
+        );
+        assert_eq!(
+            run(r"var let={};let instanceof Object").unwrap(),
+            Value::Bool(true)
+        );
+        assert_eq!(
+            run(r"var let='';for(let in {a:1}){}let")
+                .unwrap()
+                .to_string(),
+            "a"
+        );
+        assert_eq!(
+            run("var async=1;async\nfunction f(){return 2;}f()").unwrap(),
+            Value::Number(2.0)
+        );
+        for source in [
+            r"var yield=1;",
+            r"var \u0079ield=1;",
+            r"yield;",
+            r"var let=1;",
+            r"var \u006cet=1;",
+            r"function f(\u0079ield){}",
+        ] {
+            identifier_syntax(source, true);
+        }
+        for source in [
+            r"let let=1;",
+            r"let \u006cet=1;",
+            r"\u006cet x=1;",
+            r"await 1;",
+            r"yield 1;",
+            r"\u0061sync function f(){}",
+            r"\u0061sync x=>x",
+            r"\u0061sync(x)=>x",
+            "async\n(x)=>x",
+            "async(x)\n=>x",
+        ] {
+            identifier_syntax(source, false);
+        }
+    }
+
+    #[test]
+    fn identifiers_valid_unavailable_grammars_stay_explicit() {
+        for source in [
+            "async function f(){}",
+            "(async function(){})",
+            "async x=>x",
+            "async(x)=>x",
+            "async()=>1",
+            "function* f(){yield 1;}",
+            "(function*(){yield 1;})",
+            "({*f(){yield 1;}})",
+            "label:;",
+            "while(true){break label;}",
+            "class C{}",
+            "import x from 'x';",
+            "export var x=1;",
+        ] {
+            let error = Parser::program(source).unwrap_err();
+            assert!(error.is_unsupported(), "{source}: {error}");
+        }
+        for source in [
+            r"\u0066unction* f(){}",
+            r"(\u0066unction*(){})",
+            r"\u0069mport x from 'x';",
+            r"\u0065xport var x=1;",
+        ] {
+            identifier_syntax(source, false);
+        }
+        assert!(run(r"/(?<π>a)/").unwrap_err().is_unsupported());
+        assert!(run(r"/a/u").unwrap_err().is_unsupported());
+        assert!(run(r"/a/v").unwrap_err().is_unsupported());
+    }
+
+    #[test]
+    fn identifiers_numeric_adjacency_and_regex_flags_use_source_characters() {
+        for source in [
+            r"3in {}",
+            r"1\u0061",
+            r"0x1g",
+            r"1.π",
+            r"1e+2x",
+            r"1\u0030",
+            r"1$",
+            r"1_",
+            "/a/π",
+            "/a/g\u{0300}",
+            "/a/g\u{200c}",
+            r"/a/\u0067",
+            r"/a/g\u0069",
+            "/a/g$",
+            "/a/1",
+            "/a/gg",
+        ] {
+            identifier_syntax(source, false);
+        }
+        assert_eq!(run("1 in {1:0}").unwrap(), Value::Bool(true));
+        assert_eq!(run("1..toString()").unwrap().to_string(), "1");
+        assert_eq!(run(r"/1in/.test('1in')").unwrap(), Value::Bool(true));
+        assert_eq!(run(r"/\u0061/g.test('a')").unwrap(), Value::Bool(true));
+        assert_eq!(run(r"var \u0061=8;a/2").unwrap(), Value::Number(4.0));
+    }
+
+    #[test]
+    fn identifiers_rescans_preserve_escape_identity_and_asi_boundaries() {
+        assert_eq!(
+            run(r#"var \u03c0=3;`${\u03c0}:${`x${π}`}:${/[a-z\u0061]/.test('a')}`"#)
+                .unwrap()
+                .to_string(),
+            "3:x3:true"
+        );
+        assert_eq!(
+            run(r#"var \u0061=8;/["']/.test('"')+'|'+a/2"#)
+                .unwrap()
+                .to_string(),
+            "true|4"
+        );
+        assert_eq!(
+            run("\u{feff}var\u{feff}a=2;\u{00a0}a").unwrap(),
+            Value::Number(2.0)
+        );
+        assert_eq!(
+            run("function f(){return\u{000b}1;}f()").unwrap(),
+            Value::Number(1.0)
+        );
+        for terminator in ['\n', '\r', '\u{2028}', '\u{2029}'] {
+            assert_eq!(
+                run(&format!("function f(){{return{terminator}1;}}f()")).unwrap(),
+                Value::Undefined
+            );
+        }
+        for point in ['\u{0085}', '\u{180e}'] {
+            identifier_syntax(&format!("var{point}a=1;"), false);
+        }
+        assert_eq!(
+            run("var a=1;// \\u000a a=2;\na").unwrap(),
+            Value::Number(1.0)
+        );
+        assert_eq!(
+            run(r"function f(){return/*\u000a*/1;}f()").unwrap(),
+            Value::Number(1.0)
+        );
+        let source = r"/a/;var π=1;var x\u002d=2;";
+        let error = Parser::program(source).unwrap_err();
+        assert_eq!(error.offset, source.find('\\'));
+    }
+
+    #[test]
+    fn identifiers_decoded_duplicates_and_parse_failure_do_not_create_bindings() {
+        for source in [
+            r"let a;let \u0061;",
+            r"const a=1;let \u0061;",
+            r"function f(a,\u0061){'use strict';}",
+            r"function f(a=1,\u0061){}",
+            r"(a,\u0061)=>a",
+            r"function f(a,...\u0061){}",
+        ] {
+            identifier_syntax(source, false);
+        }
+        assert_eq!(
+            run(r"function f(a,\u0061){return a;}f(1,2)").unwrap(),
+            Value::Number(2.0)
+        );
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        runtime.execute("var present=1;", &mut document).unwrap();
+        let error = runtime
+            .execute(
+                r"var fresh=2;let lexical;function fn(){}var \u0069f=3;",
+                &mut document,
+            )
+            .unwrap_err();
+        assert_eq!(error.intrinsic_error_name(), Some("SyntaxError"));
+        assert_eq!(
+            runtime
+                .execute(
+                    "present+'|'+typeof fresh+'|'+typeof lexical+'|'+typeof fn",
+                    &mut document
+                )
+                .unwrap()
+                .to_string(),
+            "1|undefined|undefined|undefined"
+        );
+    }
+
+    #[test]
+    fn identifiers_compilation_shares_work_storage_and_token_text() {
+        fn budget() -> regexp::Budget {
+            regexp::Budget {
+                steps: MAX_STEPS,
+                allocated: 0,
+                heap_limit: MAX_HEAP,
+                stack_limit: 16,
+            }
+        }
+        let mut ledger = budget();
+        let tokens = lex(r"\u0061;", &mut ledger).unwrap();
+        let TokenKind::Word(first) = &tokens[0].kind else {
+            panic!("word")
+        };
+        assert!(first.escaped);
+        assert_eq!(&*first.value, "a");
+        let clone = tokens[0].clone();
+        let TokenKind::Word(second) = clone.kind else {
+            panic!("word")
+        };
+        assert!(Rc::ptr_eq(&first.value, &second.value));
+        let allocated = ledger.allocated;
+        let steps = ledger.steps;
+        lex(r"\u0062;", &mut ledger).unwrap();
+        assert!(ledger.allocated > allocated);
+        assert!(ledger.steps < steps);
+        ledger.steps = 0;
+        assert!(lex("a", &mut ledger).unwrap_err().is_resource_limit());
+        let mut ledger = budget();
+        ledger.heap_limit = 0;
+        assert!(lex("a", &mut ledger).unwrap_err().is_resource_limit());
+        let mut ledger = budget();
+        ledger.steps = 3;
+        assert!(lex("var π=1", &mut ledger).unwrap_err().is_resource_limit());
+        let mut ledger = budget();
+        let tokens = lex(r"/\x/", &mut ledger).unwrap();
+        assert!(
+            tokens
+                .iter()
+                .any(|token| matches!(token.kind, TokenKind::Invalid(_)))
+        );
+        assert!(
+            Parser::program(&"/a/;".repeat(400))
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert!(
+            Parser::program(&"a".repeat(MAX_SOURCE + 1))
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert!(
+            Parser::program(&format!("var \\u{{{}61}}=1;", "0".repeat(200_000)))
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        // Keep the original input as a visible optimization control: replacing
+        // repeated binary searches with two reads makes this valid name fit.
+        assert!(Parser::program(&format!("var {}=1;", "π".repeat(20_000))).is_ok());
+        // The same work limit still terminates sufficiently many actual reads.
+        assert!(
+            Parser::program(&format!("var {}=1;", "π".repeat(50_001)))
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert!(
+            Parser::program(&";".repeat(MAX_TOKENS + 1))
+                .unwrap_err()
+                .is_resource_limit()
+        );
+    }
+
+    #[test]
+    fn identifiers_execute_six_unchanged_pinned_function_modes() {
+        for source in [
+            include_str!(
+                "../tests/upstream/test262-functions/test/language/statements/function/S13_A7_T1.js"
+            ),
+            include_str!(
+                "../tests/upstream/test262-functions/test/language/statements/function/S14_A5_T1.js"
+            ),
+            include_str!(
+                "../tests/upstream/test262-functions/test/language/statements/function/S14_A5_T2.js"
+            ),
+        ] {
+            for strict in [false, true] {
+                let (mut runtime, mut document) = upstream_harness();
+                if strict {
+                    runtime.execute_strict(source, &mut document)
+                } else {
+                    runtime.execute(source, &mut document)
+                }
+                .unwrap();
+            }
+        }
+    }
+
+    #[test]
+    fn identifiers_compact_tokens_precharge_shared_diagnostics() {
+        assert_eq!(std::mem::size_of::<Token>(), 48);
+        let mut budget = regexp::Budget {
+            steps: MAX_STEPS,
+            allocated: 0,
+            heap_limit: MAX_HEAP,
+            stack_limit: 16,
+        };
+        lex("é", &mut budget).unwrap();
+        // One raw-start query, rather than an identical query in each helper.
+        assert_eq!(MAX_STEPS - budget.steps, 3 + IDENTIFIER_LOOKUP_WORK);
+        let required = 8 * std::mem::size_of::<Token>()
+            + 32
+            + std::mem::size_of::<ScriptError>()
+            + 2 * std::mem::size_of::<usize>();
+        budget.steps = MAX_STEPS;
+        budget.allocated = 0;
+        budget.heap_limit = required - 1;
+        let error = lex("@", &mut budget).unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(budget.allocated, required);
+        budget.steps = MAX_STEPS;
+        budget.allocated = 0;
+        budget.heap_limit = required;
+        let tokens = lex("@", &mut budget).unwrap();
+        assert_eq!(budget.allocated, required);
+        let TokenKind::Invalid(original) = &tokens[0].kind else {
+            panic!("expected provisional syntax diagnostic")
+        };
+        let TokenKind::Invalid(copy) = tokens[0].clone().kind else {
+            panic!("expected shared diagnostic")
+        };
+        assert!(Rc::ptr_eq(original, &copy));
+        assert_eq!(original.offset, Some(0));
+        assert!(original.is_parse_error());
+    }
+
+    #[test]
+    fn identifiers_cold_diagnostics_keep_absolute_rescan_offsets() {
+        for source in [
+            r"/a/;var \u{};",
+            r#"/['"]/;var \u{};"#,
+            r"`ok`;var \uD800;",
+            r"`before${/a/.test('a')}after`;var \u{};",
+            r"`outer${`inner${1}`}`;var \u{};",
+        ] {
+            let expected = source.rfind(r"\u").unwrap();
+            let error = Runtime::parse_only(source).unwrap_err();
+            assert!(error.is_parse_error(), "{source}: {error}");
+            assert_eq!(error.offset, Some(expected), "{source}: {error}");
+        }
+        // The provisional malformed string belongs to RegExp source and is
+        // discarded under the parser-selected lexical goal.
+        assert!(Runtime::parse_only(r#"/['"]/;`ok${1}`;"#).is_ok());
+    }
+
+    #[test]
+    fn identifiers_parser_source_borrow_does_not_escape_into_retained_code() {
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("<p></p>");
+        {
+            let source = String::from(
+                r#"var \u03c0=7;
+                function retained(\u0061=π){return `value:${a}:${/ab/.test('ab')}`;}
+                document.querySelector('p').onclick=function(){this.textContent=retained();};"#,
+            );
+            runtime.execute(&source, &mut document).unwrap();
+        }
+        assert_eq!(
+            runtime
+                .execute("retained()", &mut document)
+                .unwrap()
+                .to_string(),
+            "value:7:true"
+        );
+        let node = document.query_selector("p").unwrap();
+        runtime
+            .dispatch_event(node, "click", &mut document)
+            .unwrap();
+        assert_eq!(document.text_content(node), "value:7:true");
+    }
+
+    #[test]
+    fn identifiers_largest_previously_passing_raw_table_keeps_exact_limits() {
+        let source = include_str!(
+            "../tests/upstream/test262-identifiers/test/language/identifiers/start-unicode-10.0.0.js"
+        );
+        for strict in [false, true] {
+            let (mut runtime, mut document) = upstream_harness();
+            if strict {
+                runtime.execute_strict(source, &mut document)
+            } else {
+                runtime.execute(source, &mut document)
+            }
+            .unwrap();
+        }
     }
 
     #[test]
