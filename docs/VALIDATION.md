@@ -1,5 +1,26 @@
 # Validation record
 
+## Software presentation boundary and native Vulkan investigation
+
+Recorded September 28, 2026 UTC. The software presenter extraction passes all
+**39 browser/editor tests**, including four new frame-boundary checks, strict
+binary Clippy and formatting. The boundary borrows completed pixels, rejects
+invalid dimensions and mismatched source/destination lengths, and preserves
+pixel words without conversion. No GPU dependency or browser Vulkan backend
+was added. The preceding custom-property checkpoint also completed
+[GitHub CI](https://github.com/Eriskii/ErisBrowser/actions/runs/36398730489).
+
+A separately reviewed native Vulkan prototype matched **3,316,800 bytes** in
+five acquired-surface readbacks on the NVIDIA adapter, including changed frames
+and resize. Full compositor comparisons remain failed, with mismatch counts
+172,800 / 252 / 252 / 252; later inset agreement is diagnostic only. Normal
+exit and cleanup were verified; forced hang recovery was not exercised.
+[Sanitized evidence](evidence/vulkan-native-surface.json) retains source,
+binary, log and capture hashes, independently checked against the frozen
+session artifacts. The [milestone record](vulkan-rendering.md) explains the
+capabilities, provenance and limitations. This is neither browser GPU
+integration nor a performance result.
+
 ## Computed custom properties and Window descriptors
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release

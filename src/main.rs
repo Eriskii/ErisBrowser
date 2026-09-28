@@ -1,6 +1,7 @@
 #![forbid(unsafe_code)]
 mod browser;
 mod edit;
+mod presenter;
 mod worker_benchmark;
 use eris::{
     graphics::{Canvas, Color, Fonts},

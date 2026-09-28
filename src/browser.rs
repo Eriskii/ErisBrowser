@@ -1,4 +1,7 @@
-use crate::edit::Selection;
+use crate::{
+    edit::Selection,
+    presenter::{CpuFrame, SoftwarePresenter},
+};
 use eris::{
     dom::{Namespace, NodeId},
     graphics::{Canvas, Color, DrawCommand, Fonts, Rect},
@@ -8,7 +11,6 @@ use eris::{
 };
 use std::{
     collections::VecDeque,
-    num::NonZeroU32,
     path::PathBuf,
     sync::{
         Arc, Condvar, Mutex,
@@ -482,7 +484,7 @@ pub fn run(
         .map_err(|e| e.to_string())?;
     let mut browser = Browser {
         window: None,
-        surface: None,
+        presenter: None,
         fonts: Fonts::new(),
         snapshot: None,
         visible_nodes: Vec::new(),
@@ -528,7 +530,7 @@ pub fn run(
 }
 struct Browser {
     window: Option<Arc<Window>>,
-    surface: Option<softbuffer::Surface<Arc<Window>, Arc<Window>>>,
+    presenter: Option<SoftwarePresenter>,
     fonts: Fonts,
     snapshot: Option<Snapshot>,
     visible_nodes: Vec<bool>,
@@ -1598,16 +1600,8 @@ impl Browser {
             }
             canvas.save(&path)?;
         }
-        if let Some(surface) = &mut self.surface {
-            surface
-                .resize(
-                    NonZeroU32::new(size.width).unwrap(),
-                    NonZeroU32::new(size.height).unwrap(),
-                )
-                .map_err(|e| e.to_string())?;
-            let mut buffer = surface.buffer_mut().map_err(|e| e.to_string())?;
-            buffer.copy_from_slice(&canvas.pixels);
-            buffer.present().map_err(|e| e.to_string())?;
+        if let Some(presenter) = &mut self.presenter {
+            presenter.present(CpuFrame::from_canvas(&canvas)?)?;
         }
         Ok(())
     }
@@ -1627,11 +1621,9 @@ impl ApplicationHandler<Event> for Browser {
                     .create_window(attributes)
                     .map_err(|e| e.to_string())?,
             );
-            let context = softbuffer::Context::new(window.clone()).map_err(|e| e.to_string())?;
-            let surface =
-                softbuffer::Surface::new(&context, window.clone()).map_err(|e| e.to_string())?;
+            let presenter = SoftwarePresenter::new(window.clone())?;
             window.set_ime_allowed(true);
-            self.surface = Some(surface);
+            self.presenter = Some(presenter);
             self.window = Some(window);
             Ok(())
         })();
@@ -1954,7 +1946,7 @@ mod tests {
         let visible_nodes = visible_layout_nodes(&snapshot);
         Browser {
             window: None,
-            surface: None,
+            presenter: None,
             fonts,
             snapshot: Some(snapshot),
             visible_nodes,

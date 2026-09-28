@@ -1,8 +1,9 @@
 # Vulkan rendering milestones
 
-Status: design, host inventory and an isolated transfer probe, recorded
-September 28, 2026. No Vulkan backend or graphics dependency has been added to
-the browser. The standalone [`tools/vulkan-probe`](../tools/vulkan-probe/README.md)
+Status: design, host inventory, isolated offscreen/native experiments and a
+software presenter boundary, recorded September 28, 2026. No Vulkan backend or
+graphics dependency has been added to the browser. The standalone
+[`tools/vulkan-probe`](../tools/vulkan-probe/README.md)
 crate has its own pinned wgpu dependency and lockfile. This document expands the
 [Vulkan docket](ROADMAP.md#vulkan-rendering-backend). The requested custom GPU
 rasterizer and compositor remain future work; uploading software-rendered
@@ -16,8 +17,15 @@ and decoded images. The parent validates that snapshot in
 [`worker/codec.rs`](../src/worker/codec.rs). Native
 [`Browser::draw`](../src/browser.rs) paints the snapshot with
 [`Canvas::paint_with_viewport`](../src/graphics.rs), adds browser chrome and
-copies the completed `Vec<u32>` into a softbuffer surface. Headless rendering
-uses the same CPU painter.
+passes a borrowed completed `CpuFrame` to
+[`SoftwarePresenter`](../src/presenter.rs). This module exclusively owns the
+softbuffer surface and performs its resize, buffer acquisition, copy and
+presentation on the existing UI thread. It checks nonzero dimensions, the
+existing framebuffer limits, exact source pixel length and destination length
+before copying. Pixel words remain `0x00RRGGBB`; the unused high byte is not
+alpha. There is no new conversion, retained frame, queue or presenter thread.
+The CPU screenshot is saved before presentation as before. Headless rendering
+uses the same CPU painter and does not create a native presenter.
 
 `Canvas` already owns the relevant paint semantics: command order, separate
 document and fixed offsets, typed clip/fixed/opacity scopes, glyph masks,
@@ -92,10 +100,54 @@ GPU execution was confined to the separately recorded host run. This is an
 isolated dependency evaluation, not a change to the browser's dependency graph
 or completion of milestone A.
 
+### Isolated native surface experiment
+
+A separate temporary safe-Rust wgpu 30.0.1/winit 0.30.13 prototype created one
+owned native window. All three host adapters reported a compatible surface;
+only the NVIDIA adapter was used to present. It selected `Bgra8Unorm` with
+`Srgb` display color space, opaque composition, FIFO, and
+`COPY_DST | COPY_SRC | RENDER_ATTACHMENT`. No shader, render pipeline or render
+pass was created. The prototype uploaded opaque CPU pixels directly into the
+acquired surface texture, copied that same texture to an aligned readback
+buffer, compared every color/alpha byte, and then presented it.
+
+Five acquired-surface readbacks were exact, totaling **3,316,800 bytes**. They
+covered startup at 320×240, a 1.5-scale transition to 480×360, changed frames,
+and resize to 600×390. Packed rows of 1,920 and 2,400 bytes used readback rows
+of 2,048 and 2,560 bytes. The window exited normally and its tracked process
+was reaped. This demonstrates the transfer path on that surface configuration,
+not a browser implementation or a portable surface capability guarantee.
+
+**Full compositor captures did not match exactly.** The first capture differed
+at all 172,800 pixels; its cause remains unproven. Three later captures each
+differed at 252 pixels, all within the four 16×16 corner squares, consistent
+with the visibly rounded window corners. Inset comparisons are diagnostic
+only and do not turn those failures into passes. A same-frame cursor move
+strictly inside the owned window did not establish the cause of an earlier
+central shape because elapsed time also changed. No cursor-inclusion flag was
+used. GPU readback verifies texture bytes before the compositor; it does not
+prove exact final display pixels.
+
+The [compact evidence](evidence/vulkan-native-surface.json) preserves the exact
+readback records, full mismatch counts and source/binary/log/capture hashes.
+The source and host-specific supervisor were independently reviewed in a
+temporary directory; they are not published as a portable test here. Private
+capture geometry and images are omitted. The prototype used five-second
+application waits, a cooperative twenty-second lifetime and a separate
+twenty-five-second process-group watchdog. Forced driver-hang recovery was
+not exercised, and internal driver calls or kernel teardown can outlast
+application waits. No driver or compositor settings were changed.
+
+Local formatting, strict Clippy and build checks passed on Rust 1.95. This
+separate native crate was not built on Rust 1.88; the published offscreen
+probe's CI result does not establish its MSRV. This remains an isolated native
+presentation experiment, with no GPU rasterization or performance claim.
+
 ## Milestone A: Vulkan presentation
 
-Introduce a native presenter boundary after the completed CPU frame. Proposed
-interfaces are illustrative and are not currently implemented:
+The completed-CPU-frame boundary and sole software surface owner are now in
+place. A Vulkan implementation, asynchronous frame scheduling and backend
+selection remain unimplemented. Proposed future interfaces are illustrative:
 
 ```text
 Presenter = Software | Vulkan

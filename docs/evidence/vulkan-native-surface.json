@@ -1,0 +1,202 @@
+{
+  "schema": 1,
+  "recorded_on": "2026-09-28",
+  "scope": "Isolated native Vulkan COPY_DST presentation with exact acquired-surface readback; not a browser backend, GPU rasterizer or performance result.",
+  "source_provenance": {
+    "availability": "Session-local standalone Rust crate and host-specific supervisor, independently reviewed; not published as a portable reproducer.",
+    "source_sha256": {
+      "Cargo.toml": "52dcc9c29d83f5bd9cd263faa99b0969b51b4de81f9aa8dc374888422b672bcc",
+      "Cargo.lock": "ff6bfb62bf7b2b57c4857db719ab116565fb047109bb092bbe3b36fc3855c393",
+      "src/main.rs": "83388f35f92229381e579a68fc0f0544bb4298491c14e20f61f77870f8a0cda9",
+      "run_native.py": "8f2a556205c2471181e82506d192de5ddcd3e565d09874c9e0405a8d58f7a093"
+    },
+    "binary_sha256": "ec0d232d2caaa84d9220481e897ea8748f3815b5449d54b1aae837c4d314e8e4",
+    "report_sha256": "d102ddd0215af8aa9c2b8542aa0d47beb43cde3f41ec51ec5669e6857ec22f38",
+    "native_log_sha256": "6ae9585aad015e3b50fd55586acdfa7a096ce063e9e7ba62fa76a4575114db18",
+    "native_results_sha256": "d6bd4df9a61156de434ba1566e014f355631a658a3e3a02f9faa1c7cbec71595",
+    "capture_decode_audit_sha256": "e58f48869dd5e0b4bd6fd2a3ee2693cbba5a0c7b325f4791bead8ad7ff13a117",
+    "host_supervisor_capture_geometry_and_images_published": false
+  },
+  "build": {
+    "rustc": "1.95.0 (59807616e 2026-04-14)",
+    "wgpu": "30.0.1",
+    "wgpu_features": [
+      "std",
+      "vulkan",
+      "wgsl"
+    ],
+    "winit": "0.30.13",
+    "registry_packages_in_full_lock": 231,
+    "rust_1_88_tested": false,
+    "format_check_passed": true,
+    "strict_clippy_passed": true
+  },
+  "surface_inventory": [
+    {
+      "adapter": 0,
+      "name": "NVIDIA GeForce RTX 4070 SUPER",
+      "driver": "NVIDIA 595.99.02",
+      "surface_compatible": true,
+      "presented": true
+    },
+    {
+      "adapter": 1,
+      "name": "AMD Ryzen 7 7800X3D integrated GPU (RADV RAPHAEL_MENDOCINO)",
+      "driver": "Mesa 26.2.3",
+      "surface_compatible": true,
+      "presented": false
+    },
+    {
+      "adapter": 2,
+      "name": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "driver": "Mesa 26.2.3",
+      "surface_compatible": true,
+      "presented": false
+    }
+  ],
+  "selected_configuration": {
+    "adapter": 0,
+    "format": "Bgra8Unorm",
+    "color_space": "Srgb",
+    "usages": [
+      "COPY_DST",
+      "COPY_SRC",
+      "RENDER_ATTACHMENT"
+    ],
+    "alpha_mode": "Opaque",
+    "present_mode": "Fifo",
+    "desired_maximum_frame_latency": 2
+  },
+  "surface_readbacks": [
+    {
+      "phase": 0,
+      "width": 320,
+      "height": 240,
+      "compared_bytes": 307200,
+      "packed_row": 1280,
+      "readback_row": 1280,
+      "exact": true
+    },
+    {
+      "phase": 0,
+      "width": 480,
+      "height": 360,
+      "compared_bytes": 691200,
+      "packed_row": 1920,
+      "readback_row": 2048,
+      "exact": true
+    },
+    {
+      "phase": 1,
+      "width": 480,
+      "height": 360,
+      "compared_bytes": 691200,
+      "packed_row": 1920,
+      "readback_row": 2048,
+      "exact": true
+    },
+    {
+      "phase": 2,
+      "width": 480,
+      "height": 360,
+      "compared_bytes": 691200,
+      "packed_row": 1920,
+      "readback_row": 2048,
+      "exact": true
+    },
+    {
+      "phase": 2,
+      "width": 600,
+      "height": 390,
+      "compared_bytes": 936000,
+      "packed_row": 2400,
+      "readback_row": 2560,
+      "exact": true
+    }
+  ],
+  "total_surface_bytes_compared": 3316800,
+  "presentation_complete": true,
+  "gpu_surface_readbacks_exact": true,
+  "full_client_capture_exact": false,
+  "captures": [
+    {
+      "label": "phase-0-surface-readback.png",
+      "sha256": "ba506fd74d6696ddb4d2ed0568d3357f61c1043d43f72bdf86efa42d8e54b3b2",
+      "phase": 0,
+      "physical_size": [
+        480,
+        360
+      ],
+      "compared_pixels": 172800,
+      "full_client_mismatched_pixels": 172800,
+      "diagnostic_only_inset_16_mismatched_pixels": 146944,
+      "mismatches_in_four_corner_squares": 1024,
+      "independent_decoders_agree": true
+    },
+    {
+      "label": "phase-0-after-owned-cursor-move.png",
+      "sha256": "06c92a835dc7f5cb1f118cd89732e0ca6dfd9e3e44eb0f383d37d78341e51513",
+      "phase": 0,
+      "physical_size": [
+        480,
+        360
+      ],
+      "compared_pixels": 172800,
+      "full_client_mismatched_pixels": 252,
+      "diagnostic_only_inset_16_mismatched_pixels": 0,
+      "mismatches_in_four_corner_squares": 252,
+      "independent_decoders_agree": true
+    },
+    {
+      "label": "phase-1-surface-readback.png",
+      "sha256": "290b6b8a2dc397d961f75d1b298f97b7d70697e13e26400c3071d391ff4e2973",
+      "phase": 1,
+      "physical_size": [
+        480,
+        360
+      ],
+      "compared_pixels": 172800,
+      "full_client_mismatched_pixels": 252,
+      "diagnostic_only_inset_16_mismatched_pixels": 0,
+      "mismatches_in_four_corner_squares": 252,
+      "independent_decoders_agree": true
+    },
+    {
+      "label": "phase-2-surface-readback.png",
+      "sha256": "940df633a10171042bb0ec7715a48669b581208416f94b7947f1137526b17e92",
+      "phase": 2,
+      "physical_size": [
+        600,
+        390
+      ],
+      "compared_pixels": 234000,
+      "full_client_mismatched_pixels": 252,
+      "diagnostic_only_inset_16_mismatched_pixels": 0,
+      "mismatches_in_four_corner_squares": 252,
+      "independent_decoders_agree": true
+    }
+  ],
+  "capture_caveats": [
+    "First capture differed throughout; cause unproven.",
+    "Later 252 mismatches are all in the four 16-by-16 corner squares, consistent with visually rounded corners.",
+    "Full-client capture remains false; inset counts are diagnostic only.",
+    "One same-frame cursor move inside the owned window did not establish causality because capture timing also changed.",
+    "No grim cursor-inclusion flag was used.",
+    "Only the tracked owned window was captured, with PID/title/address/geometry verification before and after."
+  ],
+  "cleanup": {
+    "application_deadline_seconds": 20,
+    "process_group_watchdog_seconds": 25,
+    "exit_code": 0,
+    "watchdog_fired": false,
+    "tracked_process_remaining": false,
+    "forced_hang_recovery_experimentally_tested": false
+  },
+  "limitations": [
+    "Selected NVIDIA device only presented; other two adapters were capability checks.",
+    "Native application waits do not bound blocking internal driver calls or host-kernel teardown.",
+    "No device-loss, output-migration, minimize, multiwindow or production fallback validation.",
+    "No source dependency, sandbox, driver or compositor-setting changes in the browser.",
+    "No GPU speedup or Chromium performance conclusion."
+  ]
+}

@@ -16,8 +16,17 @@ probe, separates upload/presentation from custom GPU rasterization, and compares
 bindings. The standalone [Vulkan transfer probe](../tools/vulkan-probe/README.md)
 pins wgpu 30.0.1 in its own crate and lockfile. Its bounded offscreen uploads and
 readbacks preserve the tested bytes on the NVIDIA, AMD and software Vulkan
-adapters. No graphics dependency or Vulkan backend has been added to the browser;
-native presentation and custom GPU rasterization remain separate milestones.
+adapters. A separate temporary native prototype presented changed/resized
+frames on the NVIDIA adapter; five acquired-surface readbacks matched all
+3,316,800 tested bytes. Full compositor captures remained non-exact, with
+counts and caveats preserved in the
+[native evidence](evidence/vulkan-native-surface.json).
+
+The browser now passes a checked, borrowed completed CPU frame to a focused
+[software presenter](../src/presenter.rs), which exclusively owns its native
+surface. Software remains the only browser path; no graphics dependency,
+Vulkan backend, presenter thread or frame queue was added. Native Vulkan
+integration and custom GPU rasterization remain separate milestones.
 
 Acceptance work:
 
@@ -35,7 +44,7 @@ Acceptance work:
   costs, memory and frame latency. Vulkan alone does not establish a Chromium
   performance result.
 
-The Vulkan browser backend remains planned. The isolated probe evaluates one
-binding and transfer path; production driver requirements, platform coverage
-and binding adoption remain undecided. Ongoing standards and security work
-continues alongside preparation for this backend.
+The Vulkan browser backend remains planned. The isolated experiments evaluate
+one binding and transfer/presentation path; production driver requirements,
+platform coverage and binding adoption remain undecided. Ongoing standards and
+security work continues alongside preparation for this backend.
