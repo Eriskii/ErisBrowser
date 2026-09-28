@@ -1,0 +1,9 @@
+attribute-symbol-rejection	var e=document.createElement('div');assert.throws(TypeError,function(){e.setAttribute('x',Symbol());});assert.sameValue(e.hasAttribute('x'),false);
+text-node-symbol-rejection	assert.throws(TypeError,function(){document.createTextNode(Symbol());});
+text-content-symbol-rejection	var e=document.createElement('div');e.textContent='old';assert.throws(TypeError,function(){e.textContent=Symbol();});assert.sameValue(e.textContent,'old');
+attribute-hook-order	var e=document.createElement('div'),order='',a={},b={};a[Symbol.toPrimitive]=function(h){order+='a'+h;return 'x';};b[Symbol.toPrimitive]=function(h){order+='b'+h;return 'y';};e.setAttribute(a,b);assert.sameValue(order,'astringbstring');assert.sameValue(e.getAttribute('x'),'y');
+append-stages-conversion	var e=document.createElement('div'),child=document.createElement('b');assert.throws(TypeError,function(){e.append(child,Symbol());});assert.sameValue(child.parentNode,null);assert.sameValue(e.textContent,'');
+class-list-live-after-conversion	var e=document.createElement('div'),v={};v[Symbol.toPrimitive]=function(h){assert.sameValue(h,'string');e.className='during';return 'new';};e.classList.add(v);assert.sameValue(e.className,'during new');
+attribute-number-formatting	var e=document.createElement('div');e.setAttribute('1e+21','x');assert.sameValue(e.getAttribute(1e21),'x');
+nullable-text-content	var e=document.createElement('div');e.textContent='old';e.textContent=undefined;assert.sameValue(e.textContent,'');
+boolean-symbol-uses-truthiness	var e=document.createElement('div');e.hidden=Symbol();assert.sameValue(e.hidden,true);

@@ -70,6 +70,11 @@ a Symbol for legacy host/console display charges its description scan and UTF-8
 allocation before formatting. This does not complete legacy host string coercion.
 No script quota was raised, and these estimates are not whole-process accounting.
 
+The subsequent [DOM binding checkpoint](dom-string-conversion.md) replaces display
+formatting in the supported DOM operations with checked string conversion and
+actual receiver dispatch. Console formatting remains separate; complete DOMString
+storage and Web IDL coverage still need work.
+
 Identity constants alone do not implement their protocols. Iteration,
 async iteration/disposal, regular-expression Symbol dispatch, species construction,
 concat spreadability and unscopables remain incomplete. Proxies, other realms,

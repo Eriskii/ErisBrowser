@@ -1,5 +1,46 @@
 # Validation record
 
+## DOM string conversion and operation receivers
+
+Formatting, strict all-target Clippy and release compilation pass. **975 Rust
+tests** pass with `--include-ignored` (793 library; none remain ignored), along
+with **155 Python checks**, **57 exact pixel references** and **15,000 mutation
+cases** without a caught panic or invariant failure.
+
+Supported [DOM methods](../tests/conformance/dom-string-conversion.md) now use
+their actual receiver, validate required arguments, and convert strings before
+their DOM effects. Six Rust groups cover method identity/call/apply/bind, abrupt
+and reentrant hooks, nullable/Boolean rules, token validation and resource limits.
+Two existing private native-call fixtures initially failed because they used old
+internal method identifiers. Updating those identifiers retained their original
+budgets, input trees, operations and no-mutation assertions; the full suite passes.
+
+All **22 frozen self-authored probe modes** remain in the
+[comparison](../tests/conformance/dom-string-conversion.json): **16 improve**, two
+prior passes remain, and four unrelated global-reflection modes remain unsupported.
+Sources, case fingerprints and language modes are unchanged. The nine DOM sources
+also run in both modes as Rust regression fixtures. This is focused implementation
+evidence, not a full upstream DOM or Web IDL conformance result.
+
+All **21 existing Test262 profiles / 7,121 modes / 1,744 controls** preserve every
+source/case fingerprint, policy and observation, including resource stops. All
+controls verify; no passing case is lost. Seventeen healthy baseline gates pass;
+four resource-stopped inventories remain observations. No baseline was changed.
+HTML retains **3,868 matched / two mismatched / six unsupported** modes, with no
+regression or improvement.
+
+The public comparison records the source-input digest, source and release binary
+hashes, exact probe outcomes and per-profile comparisons. Local evidence is
+`artifacts/*dom-conversion*`. Prior commit `cbbfd22` passed all jobs in
+[CI run 36485477521](https://github.com/Eriskii/ErisBrowser/actions/runs/36485477521).
+
+Quotas remain unchanged. DOM storage still replaces lone UTF-16 surrogates, and
+full interfaces, live collections, XML name validation and hierarchy semantics
+remain incomplete. Agent sessions were unavailable; no independent-agent review
+is claimed. No native-window, Vulkan integration or Chromium performance result
+is assigned to this change. Full compatibility and production security remain
+unverified.
+
 ## Symbol identities and property-key integration
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy and release

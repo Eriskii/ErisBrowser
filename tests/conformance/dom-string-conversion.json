@@ -1,0 +1,1538 @@
+{
+  "kind": "Focused self-authored DOM binding checks and unchanged upstream regression inventories",
+  "full_web_compatibility": false,
+  "full_dom_or_webidl_conformance": false,
+  "prior_commit": "cbbfd22a46c97a1b1694107e447ba40646ffe71e",
+  "prior_ci": {
+    "run": 36485477521,
+    "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/36485477521",
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": {
+      "test": "success",
+      "vulkan-probe": "success",
+      "minimum-rust": "success"
+    }
+  },
+  "prior_source_input_sha256": "857547575004ab839a59028a72d9e709413f2b1ced8cad2d52c2da5bb39dc0c9",
+  "source_input_sha256": "6a8a87f048cf30968d0a7d4576de5377f8cc59af10c0b79e93f4a04d31810a6d",
+  "source_files": {
+    "src/script.rs": "0a09cbecbe340373265b29932f08f20b4c0391b4810571056bf568752192d016",
+    "src/script/dom_bindings.rs": "93413bbdd5b96dc8dc95e577d3d12f3f5ffe3cc6c134a0161b20f725e8a97c21",
+    "tests/fixtures/dom-string-conversion.tsv": "a6258d12211346243d4d2598c62e43df5a0b2952d009eca53288ba9d284c3780"
+  },
+  "release_binary_sha256": {
+    "eris-browser": "b50bbd7e7c0b3d4bd9dc882928e7b0168334e7d9a823d3d61d5bc8de98dc43e1",
+    "eris-js": "1fb6407a99fdcd66c8deca79db2deedd4591cff22fd8fb7d394eec19d6439bb7",
+    "eris-dom": "b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb",
+    "eris-stress": "839a06dc97392977a524519919ade0583c367c0a273dd8fff541eee214b949d0"
+  },
+  "self_authored_probes": {
+    "before_counts": {
+      "failed": 16,
+      "passed": 2,
+      "unsupported": 4
+    },
+    "after_counts": {
+      "passed": 18,
+      "unsupported": 4
+    },
+    "unchanged_sources_modes_and_fingerprints": true,
+    "newly_passing": [
+      "attribute-symbol-rejection:sloppy",
+      "attribute-symbol-rejection:strict",
+      "text-node-symbol-rejection:sloppy",
+      "text-node-symbol-rejection:strict",
+      "text-content-symbol-rejection:sloppy",
+      "text-content-symbol-rejection:strict",
+      "attribute-hook-order:sloppy",
+      "attribute-hook-order:strict",
+      "append-stages-conversion:sloppy",
+      "append-stages-conversion:strict",
+      "class-list-live-after-conversion:sloppy",
+      "class-list-live-after-conversion:strict",
+      "attribute-number-formatting:sloppy",
+      "attribute-number-formatting:strict",
+      "nullable-text-content:sloppy",
+      "nullable-text-content:strict"
+    ],
+    "lost_passes": [],
+    "before_raw_sha256": "d228703872ede32b995a8804b37d3609c0baab69382f2038a215513173278e74",
+    "after_raw_sha256": "5611a78c8f2f3bb8369d6593c51f7dce72167a4eec66f1a89acf6bc0d218a9ee",
+    "cases": [
+      {
+        "source": "var e=document.createElement('div');assert.throws(TypeError,function(){e.setAttribute('x',Symbol());});assert.sameValue(e.hasAttribute('x'),false);",
+        "before": {
+          "id": "attribute-symbol-rejection:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "4151e946efc7a4d54d2f0cf709195811926a8bcab7dfcdc6b832496938733c23",
+          "source_sha256": "116ebcdff4d785435159a8e20ae34ab602b024ef6ad9247d41c9b3d974016914",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "attribute-symbol-rejection:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "4151e946efc7a4d54d2f0cf709195811926a8bcab7dfcdc6b832496938733c23",
+          "source_sha256": "116ebcdff4d785435159a8e20ae34ab602b024ef6ad9247d41c9b3d974016914",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var e=document.createElement('div');assert.throws(TypeError,function(){e.setAttribute('x',Symbol());});assert.sameValue(e.hasAttribute('x'),false);",
+        "before": {
+          "id": "attribute-symbol-rejection:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "d5ef79024549a68f020e69859240ef77abd4303b2a2694dd38752f3118e8b1af",
+          "source_sha256": "116ebcdff4d785435159a8e20ae34ab602b024ef6ad9247d41c9b3d974016914",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "attribute-symbol-rejection:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "d5ef79024549a68f020e69859240ef77abd4303b2a2694dd38752f3118e8b1af",
+          "source_sha256": "116ebcdff4d785435159a8e20ae34ab602b024ef6ad9247d41c9b3d974016914",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "assert.throws(TypeError,function(){document.createTextNode(Symbol());});",
+        "before": {
+          "id": "text-node-symbol-rejection:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "3f8ddf4e387979e99a4ca0f96b0b0cbbd2def5856ad4ff23c87d3fe0b2d9ce58",
+          "source_sha256": "c1daab83347e2c7fce8626c26a3eb66218f2e3b2acdff803068899cc9f6f0578",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "text-node-symbol-rejection:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "3f8ddf4e387979e99a4ca0f96b0b0cbbd2def5856ad4ff23c87d3fe0b2d9ce58",
+          "source_sha256": "c1daab83347e2c7fce8626c26a3eb66218f2e3b2acdff803068899cc9f6f0578",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "assert.throws(TypeError,function(){document.createTextNode(Symbol());});",
+        "before": {
+          "id": "text-node-symbol-rejection:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "78ea2f9b552dd030ff14a05808d1ff7e485d0b47777660355d3a602f0e3724df",
+          "source_sha256": "c1daab83347e2c7fce8626c26a3eb66218f2e3b2acdff803068899cc9f6f0578",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "text-node-symbol-rejection:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "78ea2f9b552dd030ff14a05808d1ff7e485d0b47777660355d3a602f0e3724df",
+          "source_sha256": "c1daab83347e2c7fce8626c26a3eb66218f2e3b2acdff803068899cc9f6f0578",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var e=document.createElement('div');e.textContent='old';assert.throws(TypeError,function(){e.textContent=Symbol();});assert.sameValue(e.textContent,'old');",
+        "before": {
+          "id": "text-content-symbol-rejection:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "0e89fc542aa8a2495b2fb05e6048fa047b85cec6549e4ecb6ad61e96c50ecc57",
+          "source_sha256": "549b54aa83b88c147f6f7b1a93b3a0e23f9c3ccde885eaa584d044e64cb568da",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "text-content-symbol-rejection:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "0e89fc542aa8a2495b2fb05e6048fa047b85cec6549e4ecb6ad61e96c50ecc57",
+          "source_sha256": "549b54aa83b88c147f6f7b1a93b3a0e23f9c3ccde885eaa584d044e64cb568da",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var e=document.createElement('div');e.textContent='old';assert.throws(TypeError,function(){e.textContent=Symbol();});assert.sameValue(e.textContent,'old');",
+        "before": {
+          "id": "text-content-symbol-rejection:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "c29c6606618052f0bc4c98a9321f0cb97997777d4dcd64f12f85d8b85c162990",
+          "source_sha256": "549b54aa83b88c147f6f7b1a93b3a0e23f9c3ccde885eaa584d044e64cb568da",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "text-content-symbol-rejection:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "c29c6606618052f0bc4c98a9321f0cb97997777d4dcd64f12f85d8b85c162990",
+          "source_sha256": "549b54aa83b88c147f6f7b1a93b3a0e23f9c3ccde885eaa584d044e64cb568da",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var e=document.createElement('div'),order='',a={},b={};a[Symbol.toPrimitive]=function(h){order+='a'+h;return 'x';};b[Symbol.toPrimitive]=function(h){order+='b'+h;return 'y';};e.setAttribute(a,b);assert.sameValue(order,'astringbstring');assert.sameValue(e.getAttribute('x'),'y');",
+        "before": {
+          "id": "attribute-hook-order:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "f259be8109f777f9f424d45c506cff121bd6f8f412952a441f5427197cb5f52c",
+          "source_sha256": "f90e62bb5d0579af987aba730805d4a4ee5013ebab7c3c879ac167cf8a07d4d9",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "attribute-hook-order:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "f259be8109f777f9f424d45c506cff121bd6f8f412952a441f5427197cb5f52c",
+          "source_sha256": "f90e62bb5d0579af987aba730805d4a4ee5013ebab7c3c879ac167cf8a07d4d9",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var e=document.createElement('div'),order='',a={},b={};a[Symbol.toPrimitive]=function(h){order+='a'+h;return 'x';};b[Symbol.toPrimitive]=function(h){order+='b'+h;return 'y';};e.setAttribute(a,b);assert.sameValue(order,'astringbstring');assert.sameValue(e.getAttribute('x'),'y');",
+        "before": {
+          "id": "attribute-hook-order:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "8461c825c6bf0d8ea129715f1d5d0ecd8416be9e7b643c554af36db02c142540",
+          "source_sha256": "f90e62bb5d0579af987aba730805d4a4ee5013ebab7c3c879ac167cf8a07d4d9",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "attribute-hook-order:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "8461c825c6bf0d8ea129715f1d5d0ecd8416be9e7b643c554af36db02c142540",
+          "source_sha256": "f90e62bb5d0579af987aba730805d4a4ee5013ebab7c3c879ac167cf8a07d4d9",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var e=document.createElement('div'),child=document.createElement('b');assert.throws(TypeError,function(){e.append(child,Symbol());});assert.sameValue(child.parentNode,null);assert.sameValue(e.textContent,'');",
+        "before": {
+          "id": "append-stages-conversion:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "9327a4648fff35b87df4cc457a18d0665ffcd01f7a8dd554861101921bc5a08a",
+          "source_sha256": "79b70f51c7845c9f05190ab95b9f01b5332a111f9671fffe6b5a8ed3e636bd3a",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "append-stages-conversion:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "9327a4648fff35b87df4cc457a18d0665ffcd01f7a8dd554861101921bc5a08a",
+          "source_sha256": "79b70f51c7845c9f05190ab95b9f01b5332a111f9671fffe6b5a8ed3e636bd3a",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var e=document.createElement('div'),child=document.createElement('b');assert.throws(TypeError,function(){e.append(child,Symbol());});assert.sameValue(child.parentNode,null);assert.sameValue(e.textContent,'');",
+        "before": {
+          "id": "append-stages-conversion:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "830ed16fa90700dfe10c6ff2e26b8d57666f3c7523158c45f29514831f986d3b",
+          "source_sha256": "79b70f51c7845c9f05190ab95b9f01b5332a111f9671fffe6b5a8ed3e636bd3a",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "append-stages-conversion:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "830ed16fa90700dfe10c6ff2e26b8d57666f3c7523158c45f29514831f986d3b",
+          "source_sha256": "79b70f51c7845c9f05190ab95b9f01b5332a111f9671fffe6b5a8ed3e636bd3a",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var e=document.createElement('div'),v={};v[Symbol.toPrimitive]=function(h){assert.sameValue(h,'string');e.className='during';return 'new';};e.classList.add(v);assert.sameValue(e.className,'during new');",
+        "before": {
+          "id": "class-list-live-after-conversion:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "0e51af3322a81c1b107a168bb313d6e9235f2664cf18e51b4db6995c6266b2b8",
+          "source_sha256": "b39f174e60b6298df295bef0d4f6c37b508475ee595efc98f4a03db1bb10014b",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Error",
+            "error_identity": "Error",
+            "message": "invalid class token",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "class-list-live-after-conversion:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "0e51af3322a81c1b107a168bb313d6e9235f2664cf18e51b4db6995c6266b2b8",
+          "source_sha256": "b39f174e60b6298df295bef0d4f6c37b508475ee595efc98f4a03db1bb10014b",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var e=document.createElement('div'),v={};v[Symbol.toPrimitive]=function(h){assert.sameValue(h,'string');e.className='during';return 'new';};e.classList.add(v);assert.sameValue(e.className,'during new');",
+        "before": {
+          "id": "class-list-live-after-conversion:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "b320e1e124763d822b5031a3c40e89a3de5d987c952a5d5bc318ebc8be0b54c9",
+          "source_sha256": "b39f174e60b6298df295bef0d4f6c37b508475ee595efc98f4a03db1bb10014b",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Error",
+            "error_identity": "Error",
+            "message": "invalid class token",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "class-list-live-after-conversion:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "b320e1e124763d822b5031a3c40e89a3de5d987c952a5d5bc318ebc8be0b54c9",
+          "source_sha256": "b39f174e60b6298df295bef0d4f6c37b508475ee595efc98f4a03db1bb10014b",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var e=document.createElement('div');e.setAttribute('1e+21','x');assert.sameValue(e.getAttribute(1e21),'x');",
+        "before": {
+          "id": "attribute-number-formatting:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "45c5f3677ad2991f87654c4d38d3239e83db20fc6a61b667bba4e1c0f35e4877",
+          "source_sha256": "8bc996796446186cfcb17809a2597e98a3fcf5ae17feedab17040393a34a0de0",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "attribute-number-formatting:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "45c5f3677ad2991f87654c4d38d3239e83db20fc6a61b667bba4e1c0f35e4877",
+          "source_sha256": "8bc996796446186cfcb17809a2597e98a3fcf5ae17feedab17040393a34a0de0",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var e=document.createElement('div');e.setAttribute('1e+21','x');assert.sameValue(e.getAttribute(1e21),'x');",
+        "before": {
+          "id": "attribute-number-formatting:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "eca7ddc9451f3d228077ac2049d28a94986b0397702fd091f1b12af8b21db221",
+          "source_sha256": "8bc996796446186cfcb17809a2597e98a3fcf5ae17feedab17040393a34a0de0",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "attribute-number-formatting:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "eca7ddc9451f3d228077ac2049d28a94986b0397702fd091f1b12af8b21db221",
+          "source_sha256": "8bc996796446186cfcb17809a2597e98a3fcf5ae17feedab17040393a34a0de0",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var e=document.createElement('div');e.textContent='old';e.textContent=undefined;assert.sameValue(e.textContent,'');",
+        "before": {
+          "id": "nullable-text-content:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "4805cb2772671014651ff8cb5c77d77d0e9ef1a95c083e825330f7c305bfa1c9",
+          "source_sha256": "85969a571dfebd7b26262db0f6ac8298628ad48f24059abfd17ce46972b543e4",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "nullable-text-content:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "4805cb2772671014651ff8cb5c77d77d0e9ef1a95c083e825330f7c305bfa1c9",
+          "source_sha256": "85969a571dfebd7b26262db0f6ac8298628ad48f24059abfd17ce46972b543e4",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var e=document.createElement('div');e.textContent='old';e.textContent=undefined;assert.sameValue(e.textContent,'');",
+        "before": {
+          "id": "nullable-text-content:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "e896c1ca094965ebe19aa01f6d60a1a151a934ca09a6314bf0da690c2b6e2c88",
+          "source_sha256": "85969a571dfebd7b26262db0f6ac8298628ad48f24059abfd17ce46972b543e4",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "nullable-text-content:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "e896c1ca094965ebe19aa01f6d60a1a151a934ca09a6314bf0da690c2b6e2c88",
+          "source_sha256": "85969a571dfebd7b26262db0f6ac8298628ad48f24059abfd17ce46972b543e4",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var e=document.createElement('div');e.hidden=Symbol();assert.sameValue(e.hidden,true);",
+        "before": {
+          "id": "boolean-symbol-uses-truthiness:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "459aebedffff40a6f1bbc33dfd367cce917b37fc6821aca5de053e806aecdfa5",
+          "source_sha256": "cbef5d15f037e0c68fc77c1e7e275e9e13b424351a5ec6790649f8f5de66ed49",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "boolean-symbol-uses-truthiness:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "459aebedffff40a6f1bbc33dfd367cce917b37fc6821aca5de053e806aecdfa5",
+          "source_sha256": "cbef5d15f037e0c68fc77c1e7e275e9e13b424351a5ec6790649f8f5de66ed49",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var e=document.createElement('div');e.hidden=Symbol();assert.sameValue(e.hidden,true);",
+        "before": {
+          "id": "boolean-symbol-uses-truthiness:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "f55fc02fc870c1dc8c9337f7bbfc2dc3d0af04e30b34b03c0fb8edb27d391f5d",
+          "source_sha256": "cbef5d15f037e0c68fc77c1e7e275e9e13b424351a5ec6790649f8f5de66ed49",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "boolean-symbol-uses-truthiness:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "f55fc02fc870c1dc8c9337f7bbfc2dc3d0af04e30b34b03c0fb8edb27d391f5d",
+          "source_sha256": "cbef5d15f037e0c68fc77c1e7e275e9e13b424351a5ec6790649f8f5de66ed49",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "verifyProperty(globalThis,'Symbol',{writable:true,enumerable:false,configurable:true});",
+        "before": {
+          "id": "global-symbol-descriptor:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "1a99df82d1c2d54c25d0a22820fa39d6c0d9a2d45ac5a3497122e9d20e87cc7b",
+          "source_sha256": "3ab8d6928f7a74ff67b0b523976c93a04e8551bcdcf92dac99b63ee2a5d485f5",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host own-property reflection is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-symbol-descriptor:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "1a99df82d1c2d54c25d0a22820fa39d6c0d9a2d45ac5a3497122e9d20e87cc7b",
+          "source_sha256": "3ab8d6928f7a74ff67b0b523976c93a04e8551bcdcf92dac99b63ee2a5d485f5",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host own-property reflection is not implemented",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "verifyProperty(globalThis,'Symbol',{writable:true,enumerable:false,configurable:true});",
+        "before": {
+          "id": "global-symbol-descriptor:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "8c58d4d436d4cb037d4a569340e4c6b42d2d693f39078f3ea5a6da62dbb34741",
+          "source_sha256": "3ab8d6928f7a74ff67b0b523976c93a04e8551bcdcf92dac99b63ee2a5d485f5",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host own-property reflection is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-symbol-descriptor:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "8c58d4d436d4cb037d4a569340e4c6b42d2d693f39078f3ea5a6da62dbb34741",
+          "source_sha256": "3ab8d6928f7a74ff67b0b523976c93a04e8551bcdcf92dac99b63ee2a5d485f5",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host own-property reflection is not implemented",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "verifyProperty(globalThis,'Reflect',{writable:true,enumerable:false,configurable:true});",
+        "before": {
+          "id": "global-reflect-descriptor:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "d148819da459f3abff9826727b5e12510ef6391b637ecf4dc603c63b067ee60b",
+          "source_sha256": "6e129395aaa87692ad046c10a18aebe37d2bbea02f415f19a07ce5b3ec4a9385",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host own-property reflection is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-reflect-descriptor:sloppy",
+          "file": "<local-next-probe>",
+          "mode": "sloppy",
+          "case_sha256": "d148819da459f3abff9826727b5e12510ef6391b637ecf4dc603c63b067ee60b",
+          "source_sha256": "6e129395aaa87692ad046c10a18aebe37d2bbea02f415f19a07ce5b3ec4a9385",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host own-property reflection is not implemented",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "verifyProperty(globalThis,'Reflect',{writable:true,enumerable:false,configurable:true});",
+        "before": {
+          "id": "global-reflect-descriptor:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "e62340a18ddec8c9d982e596222d30ac61c6c44f1fe38f9e895b9958a122b3bc",
+          "source_sha256": "6e129395aaa87692ad046c10a18aebe37d2bbea02f415f19a07ce5b3ec4a9385",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host own-property reflection is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-reflect-descriptor:strict",
+          "file": "<local-next-probe>",
+          "mode": "strict",
+          "case_sha256": "e62340a18ddec8c9d982e596222d30ac61c6c44f1fe38f9e895b9958a122b3bc",
+          "source_sha256": "6e129395aaa87692ad046c10a18aebe37d2bbea02f415f19a07ce5b3ec4a9385",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host own-property reflection is not implemented",
+            "harness": ""
+          }
+        }
+      }
+    ]
+  },
+  "rust": {
+    "passed": 975,
+    "library_passed": 793,
+    "ignored": 0,
+    "new_test_groups": 6
+  },
+  "python": {
+    "passed": 155
+  },
+  "pixel_references": {
+    "passed": 57,
+    "failed": 0,
+    "external_conformance_claim": false
+  },
+  "mutation_smoke": {
+    "cases": 15000,
+    "seed": "0x00000000e2152026",
+    "caught_panics": 0,
+    "invariant_failures": 0,
+    "coverage_guided": false
+  },
+  "formatting": "passed",
+  "strict_all_target_clippy": "passed",
+  "release_build": "passed",
+  "initial_test_failure": "Two existing private native-call fixtures referred to the old setAttribute/appendChild/removeChild/remove native identifiers. Their names were updated to DOM.*; budgets, input trees, operations and no-mutation assertions were unchanged. The final complete suite passes.",
+  "upstream": {
+    "mode_cases": 7121,
+    "verified_controls": 1744,
+    "healthy_baseline_gates": 17,
+    "resource_observation_profiles": 4,
+    "all_observations_and_fingerprints_unchanged": true,
+    "baseline_changes": false,
+    "profiles": [
+      {
+        "profile": "symbols",
+        "source_files": 123,
+        "mode_cases": 242,
+        "before_counts": {
+          "passed": 166,
+          "unsupported": 70,
+          "failed": 6
+        },
+        "after_counts": {
+          "passed": 166,
+          "unsupported": 70,
+          "failed": 6
+        },
+        "preflights": 64,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "c234ca3a603d668cff1b769612b3574cf2e59cfa5d21cd70695300e18751f127",
+        "runner_policy_sha256": "34973c30f01597f7a0d535832c49d33b6f9b8d87746ad679a68ab2b74ebaa053",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/symbols-symbols-final.json",
+        "before_raw_report_sha256": "52543882c934eb1cc3117637e829493e482157cab04c08a9fccdd5ad6823b91c",
+        "after_raw_report": "artifacts/symbols-dom-conversion-final.json",
+        "after_raw_report_sha256": "441613d32367a609b112f28f68c636052496105af775fbc76fa7d7f36a7d59c1"
+      },
+      {
+        "profile": "string-json",
+        "source_files": 326,
+        "mode_cases": 652,
+        "before_counts": {
+          "passed": 536,
+          "unsupported": 116
+        },
+        "after_counts": {
+          "passed": 536,
+          "unsupported": 116
+        },
+        "preflights": 32,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "f073410553ed7cac9c6ddb0d5d10da1e52616d067a0310578e84cbf000df4191",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/string-json-symbols-final.json",
+        "before_raw_report_sha256": "9e9ec5dcebb5dfcc2cd74e068742b96bc870da21b9065a821fcb24e23598f8f0",
+        "after_raw_report": "artifacts/string-json-dom-conversion-final.json",
+        "after_raw_report_sha256": "b2be00032cb7a2876c580d44248d8ba2e9d261aa0b2d3cc933bcd6a644056575"
+      },
+      {
+        "profile": "regexp",
+        "source_files": 145,
+        "mode_cases": 290,
+        "before_counts": {
+          "passed": 250,
+          "unsupported": 40
+        },
+        "after_counts": {
+          "passed": 250,
+          "unsupported": 40
+        },
+        "preflights": 44,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "33c8319c02da5367a5ac2596cbb48fc3176839740935966754ea0370f4408fa0",
+        "runner_policy_sha256": "0997761beccb3ac2d6d387c373fe92b5fc59157e9a2e1114677d99433f867e4f",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/regexp-symbols-final.json",
+        "before_raw_report_sha256": "15dd16bc70213ea6b0014efbc7fff548ec94ba9606d028dcbb3d6bce728bc4f4",
+        "after_raw_report": "artifacts/regexp-dom-conversion-final.json",
+        "after_raw_report_sha256": "f62a4040820a79ee9154c206fa3f4d59d8d6671a891108d627baab43d5bf6cf4"
+      },
+      {
+        "profile": "template-literal",
+        "source_files": 57,
+        "mode_cases": 114,
+        "before_counts": {
+          "unsupported": 32,
+          "passed": 82
+        },
+        "after_counts": {
+          "unsupported": 32,
+          "passed": 82
+        },
+        "preflights": 44,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "58951312763d816ca4cc139a4fcb2bf63f43a81414b91bf673f65c450b217d94",
+        "runner_policy_sha256": "17b229706fb4915c6c9d5daf4daa74129f2ac470bba8d993487356f12384517e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/template-literal-symbols-final.json",
+        "before_raw_report_sha256": "6f6cd612668b9d23020b5196bb6abb457aabcfb045577fcc2218f49695253feb",
+        "after_raw_report": "artifacts/template-literal-dom-conversion-final.json",
+        "after_raw_report_sha256": "724fcb382a08046b7ab8e4a211a87a9932f11d7ae3b2e17ef1cf97ccc905d78e"
+      },
+      {
+        "profile": "functions",
+        "source_files": 663,
+        "mode_cases": 1131,
+        "before_counts": {
+          "passed": 511,
+          "unsupported": 620
+        },
+        "after_counts": {
+          "passed": 511,
+          "unsupported": 620
+        },
+        "preflights": 48,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "15281ebe6e6c980c547f113563df7d2b5d346ac0db5c9c4aca75dbb6fc60b330",
+        "runner_policy_sha256": "952e68b04e464d1a954c5949b0b9bbd8924472b8fba70a719a20a754d4d03439",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/functions-symbols-final.json",
+        "before_raw_report_sha256": "188b5527263f8af3786a0ebfbf3e5a1e5e6f3ac272a1d12de1ffd783749c4a6b",
+        "after_raw_report": "artifacts/functions-dom-conversion-final.json",
+        "after_raw_report_sha256": "79b2271f29f52336d8b3ab17915ba44a76d26ed7ebfa3b4046d9235c7d745f09"
+      },
+      {
+        "profile": "rest-parameters",
+        "source_files": 11,
+        "mode_cases": 22,
+        "before_counts": {
+          "unsupported": 6,
+          "passed": 16
+        },
+        "after_counts": {
+          "unsupported": 6,
+          "passed": 16
+        },
+        "preflights": 64,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "a3e15e061fc8c9cac736e081554f3e42b497d805ebfd7647ea49736cb2d83be5",
+        "runner_policy_sha256": "b579a37e261689714f4b2e41fe933581aa246348bafa391f2dba7c8aec4edacc",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/rest-parameters-symbols-final.json",
+        "before_raw_report_sha256": "6cb891fcf66dfc458687c28a640289287a610e9f31b4ab6dfd74c5aa5082b5c9",
+        "after_raw_report": "artifacts/rest-parameters-dom-conversion-final.json",
+        "after_raw_report_sha256": "982dcece86a85e79b7ec77c967fa4d8aed5ab7ba45f88dfeb32eee76476adada"
+      },
+      {
+        "profile": "is-prototype-of",
+        "source_files": 10,
+        "mode_cases": 20,
+        "before_counts": {
+          "unsupported": 10,
+          "passed": 10
+        },
+        "after_counts": {
+          "unsupported": 10,
+          "passed": 10
+        },
+        "preflights": 64,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "f019dcc5e150cf14a6b144577a30937ed1314c6b5de3dd331ad574585f16d461",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/is-prototype-of-symbols-final.json",
+        "before_raw_report_sha256": "229ef996f149d44a9188abff030c1bc873a98d96315032bdee987a0b08ac6704",
+        "after_raw_report": "artifacts/is-prototype-of-dom-conversion-final.json",
+        "after_raw_report_sha256": "2ea5373919a6dacd076ab412dd3bcf287ad694cd59236e8b1507b84e6a49cdb9"
+      },
+      {
+        "profile": "global-values",
+        "source_files": 49,
+        "mode_cases": 88,
+        "before_counts": {
+          "passed": 42,
+          "unsupported": 40,
+          "failed": 6
+        },
+        "after_counts": {
+          "passed": 42,
+          "unsupported": 40,
+          "failed": 6
+        },
+        "preflights": 64,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "c1b627a7249d3ab460d5be88b54f34ead98c375c160bee9e72379aef213894a4",
+        "runner_policy_sha256": "f096c9be039b6e5a005d3997e38d8da419399e8c6e8d3a23d2162d20c1763d03",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/global-values-symbols-final.json",
+        "before_raw_report_sha256": "2a3870c3ae3c31806555f0ab1629880f100f05c160f8e2f49a78c6b6ac0ac59b",
+        "after_raw_report": "artifacts/global-values-dom-conversion-final.json",
+        "after_raw_report_sha256": "b85da4abf9e834358ed0446ab23b165acb2bb48b7d9915d74e66b9ca38abc951"
+      },
+      {
+        "profile": "array-sort",
+        "source_files": 54,
+        "mode_cases": 107,
+        "before_counts": {
+          "passed": 57,
+          "unsupported": 46,
+          "resource": 4
+        },
+        "after_counts": {
+          "passed": 57,
+          "unsupported": 46,
+          "resource": 4
+        },
+        "preflights": 80,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "d6f43dd379ae49ae08f959596852e28e6bd33a0420eb699d763ff696b0e961d2",
+        "runner_policy_sha256": "8621a5b10295e4a41806178744c4e906157ef78c884220a154860fae829fd205",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/array-sort-symbols-final.json",
+        "before_raw_report_sha256": "1b9970dcab11889c1a54473abc21bd8b80d1e28a404d2138e9a0ec127d8ef2b6",
+        "after_raw_report": "artifacts/array-sort-dom-conversion-final.json",
+        "after_raw_report_sha256": "ed857fcfee78adc85696a535e599a5d9be01836ca2143b896dfc5f06fad06e77"
+      },
+      {
+        "profile": "identifiers",
+        "source_files": 335,
+        "mode_cases": 669,
+        "before_counts": {
+          "passed": 509,
+          "unsupported": 154,
+          "resource": 6
+        },
+        "after_counts": {
+          "passed": 509,
+          "unsupported": 154,
+          "resource": 6
+        },
+        "preflights": 88,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "b93b9e76f5231a3d342d95fe0a8cf47ca79c2a3101f2a78e4d5bb564c4d06ea8",
+        "runner_policy_sha256": "bdbeba5b53e7ef315e7f06e78fe8c66247cd7dd9ae2545ac5ec25749b94d95d5",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/identifiers-symbols-final.json",
+        "before_raw_report_sha256": "5d47b83623ec2ba76594173f2e1da6e913d0137cd2b6bc10e0aee0ce963f3ed6",
+        "after_raw_report": "artifacts/identifiers-dom-conversion-final.json",
+        "after_raw_report_sha256": "55fba5cf664c8e683f07d307e5889a6595eeac8221021c19b460ded9f495796c"
+      },
+      {
+        "profile": "array-reduce",
+        "source_files": 520,
+        "mode_cases": 1034,
+        "before_counts": {
+          "passed": 856,
+          "failed": 8,
+          "unsupported": 170
+        },
+        "after_counts": {
+          "passed": 856,
+          "failed": 8,
+          "unsupported": 170
+        },
+        "preflights": 128,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "77ee716188d99fdba64adbe151ef4efd915fbaa6345b2b0ec8fe3550efb5ec24",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/array-reduce-symbols-final.json",
+        "before_raw_report_sha256": "dffc0fc62227a88dd521f97e9766b35d29d1ce9d6d76a46e3035f57e8af5d093",
+        "after_raw_report": "artifacts/array-reduce-dom-conversion-final.json",
+        "after_raw_report_sha256": "6880120360474c7e48dbda19416d45f9a41c62958afd012e7e2962293ff11c26"
+      },
+      {
+        "profile": "number-statics",
+        "source_files": 170,
+        "mode_cases": 340,
+        "before_counts": {
+          "passed": 248,
+          "unsupported": 92
+        },
+        "after_counts": {
+          "passed": 248,
+          "unsupported": 92
+        },
+        "preflights": 104,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "3c5c2503458843bfc64eaf546ee08b6e693714f561df42330d9001a2ec8216cd",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/number-statics-symbols-final.json",
+        "before_raw_report_sha256": "fe6bcf13733f80a18e9c25aa0b0d89b8878b2928fe88206a9cbaf1a3b3bf6107",
+        "after_raw_report": "artifacts/number-statics-dom-conversion-final.json",
+        "after_raw_report_sha256": "d73a0650501dc78b1d408f4ac3d79389b3a856ecc4bd3d65e0d5bff7ff13a670"
+      },
+      {
+        "profile": "numeric-conversion",
+        "source_files": 30,
+        "mode_cases": 60,
+        "before_counts": {
+          "passed": 24,
+          "unsupported": 36
+        },
+        "after_counts": {
+          "passed": 24,
+          "unsupported": 36
+        },
+        "preflights": 80,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "de7cf1098618ad0fdb7786d4ab4f6c648bfb6fe2543981fe21ca6e0cba50928f",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/numeric-conversion-symbols-final.json",
+        "before_raw_report_sha256": "697ffc90745381d1ab6c3abdf669740b45fd12e656db21c6b60105065bf8d3a1",
+        "after_raw_report": "artifacts/numeric-conversion-dom-conversion-final.json",
+        "after_raw_report_sha256": "6cb7fd1352b8bfa42d414b8812b4230564c0e2b57cea245744300e505ff1f7de"
+      },
+      {
+        "profile": "numeric-parsing",
+        "source_files": 109,
+        "mode_cases": 218,
+        "before_counts": {
+          "passed": 164,
+          "unsupported": 46,
+          "resource": 8
+        },
+        "after_counts": {
+          "passed": 164,
+          "unsupported": 46,
+          "resource": 8
+        },
+        "preflights": 80,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "f8959cc2e43d94b5b0c671105f87d3fc831fa6359065566791707a6f9b400c6a",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/numeric-parsing-symbols-final.json",
+        "before_raw_report_sha256": "6a6b1117549666a1c75799cc33e0205cf4c49358bd6879bf3730a09d34573d7b",
+        "after_raw_report": "artifacts/numeric-parsing-dom-conversion-final.json",
+        "after_raw_report_sha256": "0a213286791be71baf91e24fcdc01aabcffc9894620809ffb00ab02394dedca2"
+      },
+      {
+        "profile": "compound-assignment",
+        "source_files": 454,
+        "mode_cases": 786,
+        "before_counts": {
+          "unsupported": 180,
+          "passed": 606
+        },
+        "after_counts": {
+          "unsupported": 180,
+          "passed": 606
+        },
+        "preflights": 128,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "edc2b04b5e9f810e1757a327f5d2a32c240f41d61e8a6d2a89cb35c3ec14f1d0",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/compound-assignment-symbols-final.json",
+        "before_raw_report_sha256": "65d8b19e154b6e902b46bd9fc2110cce6bd5f12cdc15252b044e1b43adaa3f8a",
+        "after_raw_report": "artifacts/compound-assignment-dom-conversion-final.json",
+        "after_raw_report_sha256": "57c60abc54874aa5b847ad9e4d18e0f0a191cb602e0ecb5e5748130794a68600"
+      },
+      {
+        "profile": "addition",
+        "source_files": 48,
+        "mode_cases": 95,
+        "before_counts": {
+          "unsupported": 28,
+          "passed": 65,
+          "failed": 2
+        },
+        "after_counts": {
+          "unsupported": 28,
+          "passed": 65,
+          "failed": 2
+        },
+        "preflights": 64,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "56088f55075e4d44da6915ca41383604182a8a72aaef8230af61369513cbdc0c",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/addition-symbols-final.json",
+        "before_raw_report_sha256": "7be2d98e4b11e913b8491422dacd2520098d25bfb197a3519bc24aaed29afb88",
+        "after_raw_report": "artifacts/addition-dom-conversion-final.json",
+        "after_raw_report_sha256": "665ab2f535dab1c7a93aafd77b14788a88e5eb3d22272d457405d1ba9291862f"
+      },
+      {
+        "profile": "logical-assignment",
+        "source_files": 78,
+        "mode_cases": 132,
+        "before_counts": {
+          "unsupported": 48,
+          "passed": 78,
+          "failed": 6
+        },
+        "after_counts": {
+          "unsupported": 48,
+          "passed": 78,
+          "failed": 6
+        },
+        "preflights": 104,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "a83f71b8a6b6a1523951d73a4711f024cf77ad3bf90e6698bc6224e7bfabf1a3",
+        "runner_policy_sha256": "6f127a653c09ef49d48382570086b28407a0b1f6426fd888045621d72d3e89af",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/logical-assignment-symbols-final.json",
+        "before_raw_report_sha256": "8381b967ccabe570b3058ef27cbaf3f9ff52c89e518ebad13236c472a9bcb6ca",
+        "after_raw_report": "artifacts/logical-assignment-dom-conversion-final.json",
+        "after_raw_report_sha256": "8e04715f24cffe47c6b6a522924e640d524a3be0d99619c5159c8a523cdbaf7f"
+      },
+      {
+        "profile": "uri",
+        "source_files": 173,
+        "mode_cases": 346,
+        "before_counts": {
+          "resource": 112,
+          "passed": 210,
+          "unsupported": 24
+        },
+        "after_counts": {
+          "resource": 112,
+          "passed": 210,
+          "unsupported": 24
+        },
+        "preflights": 128,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "bf48d1dddac882a9609fe78aea7521e7477c1cef2ba6036a74c48513ad28ab8f",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/uri-symbols-final.json",
+        "before_raw_report_sha256": "d5c98a2e286b4986c7d82b98838d70a41c74cdb2c9d0bb72959dff238db18667",
+        "after_raw_report": "artifacts/uri-dom-conversion-final.json",
+        "after_raw_report_sha256": "d816972a1a6983ab6805a423596f8020984e9b89fa250ac5007c5845e9b7caae"
+      },
+      {
+        "profile": "relational",
+        "source_files": 184,
+        "mode_cases": 364,
+        "before_counts": {
+          "unsupported": 64,
+          "passed": 300
+        },
+        "after_counts": {
+          "unsupported": 64,
+          "passed": 300
+        },
+        "preflights": 128,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "34497c818a4de422d2628afe1270525fe6c5467bbb43126c1796324a5bc8f138",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/relational-symbols-final.json",
+        "before_raw_report_sha256": "8cd49dc7824fd8c235ff369355b440d1b2f65cfb594a452672402d1792db5379",
+        "after_raw_report": "artifacts/relational-dom-conversion-final.json",
+        "after_raw_report_sha256": "9c049f2c535debe56f4c12a20519c1bce4e60fc69ddaf958bc3df469c040f74d"
+      },
+      {
+        "profile": "equality",
+        "source_files": 145,
+        "mode_cases": 286,
+        "before_counts": {
+          "unsupported": 96,
+          "passed": 190
+        },
+        "after_counts": {
+          "unsupported": 96,
+          "passed": 190
+        },
+        "preflights": 128,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "b1d07bdfaee72e164608d7ed3351ab70d05931ffda34f174f6c3f99bf12a0046",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/equality-symbols-final.json",
+        "before_raw_report_sha256": "1c895b2ba2e57d5ad9396ba7e947316c685a4a53fe508ada95abf2c8fe2e161c",
+        "after_raw_report": "artifacts/equality-dom-conversion-final.json",
+        "after_raw_report_sha256": "3769bfa827e73d7c0eb29e18e96ee60f178de12b97fba5d4db12e1dc259475c1"
+      },
+      {
+        "profile": "labels",
+        "source_files": 68,
+        "mode_cases": 125,
+        "before_counts": {
+          "passed": 100,
+          "unsupported": 25
+        },
+        "after_counts": {
+          "passed": 100,
+          "unsupported": 25
+        },
+        "preflights": 80,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "32889cc4ab3de15132243dae4981418ba559cd10294df9222329070b8f74649b",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/labels-symbols-final.json",
+        "before_raw_report_sha256": "ce7da994309f8a9bda685501d096307e86dcbff3208465e400b0249cb047ebd6",
+        "after_raw_report": "artifacts/labels-dom-conversion-final.json",
+        "after_raw_report_sha256": "49514dfcc9f0c3003f33452537f11c4101c7aa1ef2502453d35582a3cdd23252"
+      }
+    ]
+  },
+  "html": {
+    "counts": {
+      "matched": 3868,
+      "mismatched": 2,
+      "unsupported": 6
+    },
+    "mode_cases": 3876,
+    "regressions": [],
+    "improvements": [],
+    "binary_sha256": "b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb"
+  },
+  "local_evidence_sha256": {
+    "artifacts/dom-conversion-final-validation.log": "5ef0645858173f93a34c788095f1dcc588d1828bab5797b68e4895f7b1565d09",
+    "artifacts/rust-dom-conversion-final.log": "723c35bac50aa42b8fa057081aaeb50a7460eb1bf8565a6392bae4f3e47d2bad",
+    "artifacts/python-dom-conversion-final.log": "9ec73d455d21420d1db48d4a663f1f5c4f9cc584aa04dd02f4790a4e57b110be",
+    "artifacts/pixels-dom-conversion-final.log": "091389d5abb7581f6e80a6311addf598e82c345d8894da7ba46af92c085094f3",
+    "artifacts/stress-dom-conversion-final.log": "b824ccaf27eedd5f3e05295d6519b65fd8b0ce75ab8da4e2cf74a2d654194d19",
+    "artifacts/dom-conversion-final-probes.json": "5611a78c8f2f3bb8369d6593c51f7dce72167a4eec66f1a89acf6bc0d218a9ee",
+    "artifacts/html-dom-conversion-final.json": "7a30c17ed6645a4b71641bacc62192e4f37ac5b9e9ce3e9155f2999131c1c962",
+    "artifacts/dom-conversion-first-library.log": "16554f2b5e37a4da17e5e653ec25a10a2eaff758a08213b1bf2d934fa80bac97"
+  },
+  "limits": {
+    "quotas_changed": false,
+    "allocation_accounting": "estimated",
+    "independent_agent_review": false,
+    "security_audit": false,
+    "chromium_comparison": false,
+    "native_window_check": false,
+    "vulkan_browser_integration": false
+  },
+  "remaining_gaps": [
+    "DOM UTF-8 storage replaces lone UTF-16 surrogates; complete DOMString storage is missing.",
+    "Interface prototype trees, descriptors and complete method exposure remain incomplete.",
+    "XML name validation, createElement options, Trusted Types and live collection/query semantics remain incomplete.",
+    "Full DOM hierarchy exceptions and fragment algorithms are not implemented by this change.",
+    "Global Symbol/Reflect descriptor probes remain unsupported in both modes.",
+    "Complete DOMTokenList and generated Web IDL binding semantics remain incomplete.",
+    "Full compatibility, production security and the Chromium performance target remain unmet."
+  ]
+}

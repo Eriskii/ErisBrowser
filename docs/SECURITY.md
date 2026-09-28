@@ -128,13 +128,30 @@ Registry lookup/scans, key lists, descriptive strings, function names and custom
 object tags share the existing work/allocation ledger. Refused registry entries
 and property insertions are not published. Primitive/instance hooks share native
 and script guards; looping or recursive callbacks cannot catch quota exhaustion.
-Legacy host/console formatting charges Symbol description scanning and UTF-8
-storage before formatting. Legacy host string conversion is still incomplete.
+Diagnostic console formatting charges Symbol description scanning and UTF-8
+storage before formatting. Supported DOM operations use checked JavaScript string
+conversion separately.
 
 The [Symbol validation record](../tests/conformance/symbol-properties.json)
 includes exhaustion and unwind checks. Quotas are unchanged. The registry belongs
 to the current page Runtime; shared multi-realm behavior is unimplemented.
 This remains estimated accounting, without an independent security audit.
+
+## DOM conversion callbacks
+
+Supported DOM methods check their receiver and required arguments before invoking
+author conversion hooks. Variadic append/class-list arguments are converted before
+their operation; callbacks may themselves mutate the DOM. Title and class-list
+lookups observe that live state. Host conversion charges scans and worst-case
+UTF-8 storage before decoding. Staged arguments, token parsing/deduplication,
+vector growth, serialization, query scratch and native method handles share the
+existing ledger. No quota increased.
+
+The [focused validation](../tests/conformance/dom-string-conversion.json) includes
+allocation refusals and looping/recursive callbacks that cannot catch resource
+exhaustion, with execution-state cleanup checked afterward. These checks do not
+establish full DOM operation atomicity or exact process-wide memory accounting.
+Lone UTF-16 surrogates are still replaced at the DOM storage boundary.
 
 ## Remaining work
 

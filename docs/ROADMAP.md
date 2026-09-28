@@ -1,9 +1,11 @@
 # Development docket
 
-The latest [Symbol checkpoint](../tests/conformance/symbols.md) adds primitive
-identities, property keys, conversion/tag/instance hooks and key reflection.
-Next work includes complete host string conversion/global reflection, the remaining
-Symbol consumers, iterator infrastructure and broader ECMAScript dependencies.
+The [DOM binding checkpoint](../tests/conformance/dom-string-conversion.md) adds
+checked string conversion and receiver handling to the supported DOM operations,
+building on [Symbol identities and hooks](../tests/conformance/symbols.md).
+Next work includes complete DOMString storage and Web IDL interfaces, global
+reflection, the remaining Symbol consumers, iterator infrastructure and broader
+ECMAScript dependencies.
 These sit alongside the Vulkan milestones below.
 
 The goal remains an independent, fully web-compatible Rust browser with a

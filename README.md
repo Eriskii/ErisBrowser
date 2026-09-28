@@ -216,6 +216,13 @@ symbol properties, primitive/tag/instance hooks and key reflection now work.
 Their broader protocols remain incomplete. The [full comparison](tests/conformance/symbol-properties.json)
 retains all results; CI preserves the new passing-case baseline.
 
+Supported [DOM operations](tests/conformance/dom-string-conversion.md) now honor
+borrowed method receivers and perform JavaScript string conversion before their
+DOM effects. Attribute/append/class-list conversion preserves callback order and
+thrown values; nullable strings and Boolean setters use their respective rules.
+The original probes gain 16 passes with no regression in the existing inventories.
+Complete DOMString storage and Web IDL interfaces remain incomplete.
+
 ## Implementation
 
 The [architecture notes](docs/ARCHITECTURE.md) describe the page pipeline and native process boundaries.

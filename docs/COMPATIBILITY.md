@@ -1,5 +1,12 @@
 # Compatibility status
 
+[DOM string conversion and receivers](../tests/conformance/dom-string-conversion.md)
+cover the supported creation, query, attribute, tree and class-list operations.
+String hooks run in argument order before those operations; borrowed methods use
+their actual receiver. Nullable text and Boolean properties retain distinct
+conversion rules. Complete DOMString storage, interface prototypes, XML name
+validation, live collections and DOM hierarchy semantics remain incomplete.
+
 [Symbol primitives and property keys](../tests/conformance/symbols.md) now include
 identity, registry/description behavior, descriptors, computed keys, JSON omission,
 `Symbol.toPrimitive`, `Symbol.toStringTag`, `Symbol.hasInstance`,

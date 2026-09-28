@@ -17,6 +17,7 @@ use std::fmt;
 use std::rc::Rc;
 
 mod code;
+mod dom_bindings;
 mod machine;
 mod names;
 mod parser;
@@ -2284,7 +2285,8 @@ impl Runtime {
                 Property::data(Value::Number(20.0), false, true, false),
             );
         }
-        self.initialize_symbols()
+        self.initialize_symbols()?;
+        self.initialize_dom_bindings()
     }
     fn abort_signal_index(&self, value: &Value) -> Result<usize> {
         if let Value::Object(id) = value
@@ -2603,6 +2605,9 @@ impl Runtime {
         let code = match name.to_utf8().as_deref() {
             Ok("InvalidStateError") => 11.0,
             Ok("NotSupportedError") => 9.0,
+            Ok("SyntaxError") => 12.0,
+            Ok("InvalidCharacterError") => 5.0,
+            Ok("NotFoundError") => 8.0,
             Ok("AbortError") => 20.0,
             _ => 0.0,
         };
@@ -5757,8 +5762,8 @@ impl Runtime {
                 | "getElementsByClassName"
                 | "createElement"
                 | "createTextNode"
-                | "createDocumentFragment"
-                | "createEvent" => return Ok(Self::native(key, receiver)),
+                | "createDocumentFragment" => return self.dom_method(key, false),
+                "createEvent" => return Ok(Self::native(key, receiver)),
                 _ => {}
             },
             Value::Node(id) => {
@@ -5872,22 +5877,17 @@ impl Runtime {
                     }
                     "appendChild" | "append" | "removeChild" | "remove" | "setAttribute"
                     | "getAttribute" | "hasAttribute" | "removeAttribute" | "querySelector"
-                    | "querySelectorAll" => return Ok(Self::native(key, receiver)),
-                    "cloneNode" => return Ok(Self::native(key, receiver)),
+                    | "querySelectorAll" => return self.dom_method(key, false),
+                    "cloneNode" => return self.dom_method(key, false),
                     _ => {}
                 }
             }
             Value::ClassList(id) => {
                 if ["add", "remove", "toggle", "contains"].contains(&key) {
-                    return Ok(Self::native(key, receiver));
+                    return self.dom_method(key, true);
                 }
                 if key == "length" {
-                    return Ok(Value::Number(
-                        doc.attr(*id, "class")
-                            .unwrap_or("")
-                            .split_whitespace()
-                            .count() as f64,
-                    ));
+                    return self.class_list_length(*id, doc);
                 }
             }
             _ => {}
@@ -5895,9 +5895,8 @@ impl Runtime {
         Ok(Value::Undefined)
     }
 
-    // Legacy host/display conversions still use Display. A Symbol adds an
-    // author-sized description to that path; charge its scan and UTF-8 storage
-    // before formatting, just as explicit Symbol.prototype.toString does.
+    // Console display is diagnostic formatting, separate from DOM conversion.
+    // Charge an author-sized Symbol description before formatting it.
     fn display_value(&mut self, value: &Value) -> Result<String> {
         if let Value::Symbol(symbol) = value {
             let length = symbol
@@ -5976,6 +5975,7 @@ impl Runtime {
                 }
             }
             Value::Document if key == "title" => {
+                let text = self.dom_string(value, doc)?;
                 let id = if let Some(id) = doc.first_html_element("title") {
                     id
                 } else {
@@ -5988,7 +5988,6 @@ impl Runtime {
                     id
                 };
                 self.ensure_dom_capacity(doc, 1)?;
-                let text = self.display_value(&value)?;
                 self.charge(text.len())?;
                 self.charge_dom_clear(id, doc)?;
                 doc.set_text_content(id, &text);
@@ -6017,12 +6016,23 @@ impl Runtime {
                         return Ok(());
                     }
                 }
-                let text =
-                    if key == "value" && doc.tag(id) == Some("textarea") && value == Value::Null {
-                        String::new()
+                if matches!(key, "checked" | "disabled" | "hidden") {
+                    if value.truthy() {
+                        doc.set_attr(id, key, "");
                     } else {
-                        self.display_value(&value)?
-                    };
+                        doc.remove_attr(id, key);
+                    }
+                    return Ok(());
+                }
+                let text = if key == "textContent"
+                    && matches!(value, Value::Null | Value::Undefined)
+                    || matches!(key, "innerText" | "innerHTML") && value == Value::Null
+                    || key == "value" && doc.tag(id) == Some("textarea") && value == Value::Null
+                {
+                    String::new()
+                } else {
+                    self.dom_string(value, doc)?
+                };
                 self.charge(text.len())?;
                 match key {
                     "textContent" | "innerText" => {
@@ -6046,13 +6056,6 @@ impl Runtime {
                         let work = doc.base_attribute_work(id, key);
                         self.work(work.saturating_add(if work > 0 { text.len() } else { 0 }))?;
                         doc.set_attr(id, key, &text)
-                    }
-                    "checked" | "disabled" | "hidden" => {
-                        if value.truthy() {
-                            doc.set_attr(id, key, "");
-                        } else {
-                            doc.remove_attr(id, key);
-                        }
                     }
                     _ => {
                         return Err(ScriptError::new(format!(
@@ -7928,6 +7931,12 @@ impl Runtime {
         args: Vec<Value>,
         doc: &mut Document,
     ) -> Result<Value> {
+        if let Some(method) = native.name.strip_prefix("DOM.") {
+            return self.dom_native(method, native.receiver.clone(), &args, doc);
+        }
+        if let Some(method) = native.name.strip_prefix("DOMTokenList.") {
+            return self.token_list_native(method, native.receiver.clone(), &args, doc);
+        }
         if let Some(mode) = js_uri::Mode::from_name(&native.name) {
             let text = self.string_hint(args.first().cloned().unwrap_or(Value::Undefined), doc)?;
             return self.uri_value(&text, mode);
@@ -9105,203 +9114,7 @@ impl Runtime {
                 }
                 return self.string(native.receiver.js_string());
             }
-            Value::ClassList(id) => {
-                self.work(1 + doc.attr(*id, "class").unwrap_or("").len() / 16)?;
-                let mut classes: Vec<String> = doc
-                    .attr(*id, "class")
-                    .unwrap_or("")
-                    .split_whitespace()
-                    .map(str::to_owned)
-                    .collect();
-                let token = self.display_value(&arg(0))?;
-                if name == "contains" {
-                    return Ok(Value::Bool(classes.contains(&token)));
-                }
-                let mut present = classes.contains(&token);
-                if name == "toggle" {
-                    if token.is_empty() || token.chars().any(char::is_whitespace) {
-                        return Err(ScriptError::new("invalid class token"));
-                    }
-                    present = args.get(1).map(Value::truthy).unwrap_or(!present);
-                    classes.retain(|item| item != &token);
-                    if present {
-                        classes.push(token);
-                    }
-                } else {
-                    for value in args {
-                        let token = self.display_value(&value)?;
-                        if token.is_empty() || token.chars().any(char::is_whitespace) {
-                            return Err(ScriptError::new("invalid class token"));
-                        }
-                        if name == "add" && !classes.contains(&token) {
-                            classes.push(token);
-                        } else if name == "remove" {
-                            classes.retain(|item| item != &token);
-                        }
-                    }
-                }
-                let classes = classes.join(" ");
-                self.charge(classes.len())?;
-                doc.set_attr(*id, "class", &classes);
-                return if name == "toggle" {
-                    Ok(Value::Bool(present))
-                } else {
-                    Ok(Value::Undefined)
-                };
-            }
             _ => {}
-        }
-
-        if [
-            "querySelector",
-            "querySelectorAll",
-            "getElementById",
-            "getElementsByTagName",
-            "getElementsByClassName",
-        ]
-        .contains(&name)
-        {
-            self.work(1 + doc.nodes.len() / 8)?;
-            let input = self.display_value(&arg(0))?;
-            let selector = match name {
-                "getElementsByClassName" => format!(
-                    ".{}",
-                    input.split_whitespace().collect::<Vec<_>>().join(".")
-                ),
-                _ => input.clone(),
-            };
-            let root = if let Value::Node(id) = native.receiver {
-                id
-            } else {
-                doc.root
-            };
-            let candidates = if name == "getElementById" {
-                doc.query_selector_all_from(root, "*")
-                    .into_iter()
-                    .filter(|id| doc.attr(*id, "id") == Some(input.as_str()))
-                    .collect::<Vec<_>>()
-            } else {
-                doc.query_selector_all_from(root, &selector)
-            };
-            self.charge(candidates.len() * 8)?;
-            return if ["querySelector", "getElementById"].contains(&name) {
-                Ok(candidates
-                    .first()
-                    .copied()
-                    .map(Value::Node)
-                    .unwrap_or(Value::Null))
-            } else {
-                self.array(candidates.into_iter().map(Value::Node).collect())
-            };
-        }
-        if name == "createElement" {
-            let tag = self.display_value(&arg(0))?;
-            if tag.is_empty()
-                || !tag
-                    .chars()
-                    .all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
-            {
-                return Err(ScriptError::new("invalid element tag name"));
-            }
-            self.ensure_dom_capacity(
-                doc,
-                if tag.eq_ignore_ascii_case("template") {
-                    2
-                } else {
-                    1
-                },
-            )?;
-            return Ok(Value::Node(doc.create_element(&tag.to_ascii_lowercase())));
-        }
-        if name == "createTextNode" {
-            let text = self.display_value(&arg(0))?;
-            self.ensure_dom_capacity(doc, 1)?;
-            self.charge(text.len())?;
-            return Ok(Value::Node(doc.create_text_node(&text)));
-        }
-        if name == "createDocumentFragment" {
-            self.ensure_dom_capacity(doc, 1)?;
-            return Ok(Value::Node(doc.create_document_fragment()));
-        }
-        if let Value::Node(id) = native.receiver {
-            match name {
-                "cloneNode" => {
-                    return self
-                        .clone_dom_node(id, arg(0).truthy(), doc)
-                        .map(Value::Node);
-                }
-                "getAttribute" => {
-                    return match doc.attr(id, &self.display_value(&arg(0))?) {
-                        Some(value) => self.string(value),
-                        None => Ok(Value::Null),
-                    };
-                }
-                "hasAttribute" => {
-                    return Ok(Value::Bool(
-                        doc.attr(id, &self.display_value(&arg(0))?).is_some(),
-                    ));
-                }
-                "setAttribute" => {
-                    let key = self.display_value(&arg(0))?;
-                    let text = self.display_value(&arg(1))?;
-                    self.charge(key.len() + text.len() + 64)?;
-                    let work = doc.base_attribute_work(id, &key);
-                    self.work(work.saturating_add(if work > 0 { text.len() } else { 0 }))?;
-                    self.charge_details_attribute(id, &key, text.len(), doc)?;
-                    doc.set_attr(id, &key, &text);
-                    self.event_attribute_changed(id, &key, doc)?;
-                    return Ok(Value::Undefined);
-                }
-                "removeAttribute" => {
-                    let key = self.display_value(&arg(0))?;
-                    self.work(doc.base_attribute_work(id, &key))?;
-                    self.charge_details_attribute(id, &key, 0, doc)?;
-                    doc.remove_attr(id, &key);
-                    self.event_attribute_changed(id, &key, doc)?;
-                    return Ok(Value::Undefined);
-                }
-                "appendChild" | "removeChild" => {
-                    let Value::Node(child) = arg(0) else {
-                        return Err(ScriptError::new("expected DOM node"));
-                    };
-                    if name == "appendChild" {
-                        self.charge_dom_append(id, child, doc)?;
-                        doc.append_child(id, child);
-                    } else {
-                        if doc.nodes.get(child).and_then(|node| node.parent) != Some(id) {
-                            return Err(ScriptError::new("node is not a child"));
-                        }
-                        self.charge_dom_remove(id, doc)?;
-                        self.work(doc.base_remove_work(child))?;
-                        doc.remove_child(id, child);
-                    }
-                    return Ok(Value::Node(child));
-                }
-                "append" => {
-                    for value in args {
-                        let child = if let Value::Node(child) = value {
-                            child
-                        } else {
-                            let text = self.display_value(&value)?;
-                            self.ensure_dom_capacity(doc, 1)?;
-                            self.charge(text.len())?;
-                            doc.create_text_node(&text)
-                        };
-                        self.charge_dom_append(id, child, doc)?;
-                        doc.append_child(id, child);
-                    }
-                    return Ok(Value::Undefined);
-                }
-                "remove" => {
-                    if let Some(parent) = doc.nodes[id].parent {
-                        self.charge_dom_remove(parent, doc)?;
-                        self.work(doc.base_remove_work(id))?;
-                        doc.remove_child(parent, id);
-                    }
-                    return Ok(Value::Undefined);
-                }
-                _ => {}
-            }
         }
         Err(ScriptError::new(format!(
             "unsupported native method '{name}'"
@@ -20002,7 +19815,7 @@ mod tests {
         let error = runtime
             .native_call(
                 &Native {
-                    name: "setAttribute".into(),
+                    name: "DOM.setAttribute".into(),
                     receiver: Value::Node(base),
                 },
                 vec![Value::String("href".into()), Value::String("/new/".into())],
@@ -20219,7 +20032,7 @@ mod tests {
         let error = runtime
             .native_call(
                 &Native {
-                    name: "appendChild".into(),
+                    name: "DOM.appendChild".into(),
                     receiver: Value::Node(target),
                 },
                 vec![Value::Node(fragment)],
@@ -20251,7 +20064,7 @@ mod tests {
             let error = runtime
                 .native_call(
                     &Native {
-                        name: method.into(),
+                        name: format!("DOM.{method}"),
                         receiver: Value::Node(receiver),
                     },
                     vec![Value::Node(child)],
