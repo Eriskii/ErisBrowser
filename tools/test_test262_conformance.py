@@ -191,6 +191,128 @@ class ExecutionTests(unittest.TestCase):
 
 
 class IntegrityTests(unittest.TestCase):
+    def test_global_values_inventory_preserves_all_four_directories_and_modes(self):
+        manifest, files, cases, fixtures, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-global-values', 'global-values')
+        expected = {
+            'global': {
+                '10.2.1.1.3-4-16-s.js', '10.2.1.1.3-4-18-s.js',
+                '10.2.1.1.3-4-22.js', '10.2.1.1.3-4-27.js',
+                'S15.1_A1_T1.js', 'S15.1_A1_T2.js', 'S15.1_A2_T1.js',
+                'global-object.js', 'property-descriptor.js',
+            } | {f'S10.2.3_A{section}_T{n}.js'
+                 for section in ('1.1', '1.2', '1.3', '2.1', '2.3') for n in range(1, 5)},
+            'undefined': {'15.1.1.3-0.js', '15.1.1.3-1.js', '15.1.1.3-2.js',
+                          '15.1.1.3-3.js', 'S15.1.1.3_A1.js', 'S15.1.1.3_A3_T2.js',
+                          'S15.1.1.3_A4.js', 'prop-desc.js'},
+            'NaN': {'15.1.1.1-0.js', 'S15.1.1.1_A1.js', 'S15.1.1.1_A2_T2.js',
+                    'S15.1.1.1_A3_T2.js', 'S15.1.1.1_A4.js', 'prop-desc.js'},
+            'Infinity': {'15.1.1.2-0.js', 'S15.1.1.2_A1.js', 'S15.1.1.2_A2_T2.js',
+                         'S15.1.1.2_A3_T2.js', 'S15.1.1.2_A4.js', 'prop-desc.js'},
+        }
+        self.assertEqual({key: set(value) for key, value in manifest['directories'].items()}, expected)
+        self.assertEqual(manifest['test_files'], 49)
+        self.assertEqual(len(cases), 88)
+        self.assertEqual(sum(c['mode'] == 'sloppy' for c in cases), 46)
+        self.assertEqual(sum(c['mode'] == 'strict' for c in cases), 42)
+        for directory, counts in {'global': (27, 29), 'undefined': (7, 5),
+                                  'NaN': (6, 4), 'Infinity': (6, 4)}.items():
+            selected = [c for c in cases if Path(c['file']).parent.name == directory]
+            self.assertEqual(tuple(sum(c['mode'] == mode for c in selected)
+                                   for mode in ('sloppy', 'strict')), counts)
+        self.assertEqual(fixtures, [])
+        self.assertFalse(any(c['metadata']['negative'] for c in cases))
+        self.assertEqual({p for p in files if p.startswith('harness/')}, {
+            'harness/assert.js', 'harness/sta.js', 'harness/propertyHelper.js'})
+        _, original, _, _, _ = runner.load_corpus(runner.ROOT / 'tests/upstream/test262')
+        for name in ('LICENSE', 'INTERPRETING.md', 'harness/assert.js',
+                     'harness/sta.js', 'harness/propertyHelper.js'):
+            self.assertEqual(files[name], original[name])
+        self.assertIn(b'Date', files['test/built-ins/global/global-object.js'])
+        self.assertIn(b'for (var x in obj)', files['harness/propertyHelper.js'])
+
+    def test_global_values_policy_only_adds_global_this_without_old_profile_changes(self):
+        self.assertEqual(runner.GLOBAL_VALUE_FEATURES, runner.SUPPORTED_FEATURES | {'globalThis'})
+        global_this = sample(b'/*---\nfeatures: [globalThis]\n---*/\nglobalThis;')
+        self.assertIsNone(runner.unsupported_reason(global_this, runner.GLOBAL_VALUE_FEATURES))
+        for name, features in runner.PROFILE_FEATURES.items():
+            if name != 'global-values':
+                self.assertIn('globalThis', runner.unsupported_reason(global_this, features))
+        for feature in ('Proxy', 'Reflect.construct', 'Symbol', 'rest-parameters', 'default-parameters'):
+            case = sample(('/*---\nfeatures: [' + feature + ']\n---*/\n').encode())
+            self.assertIn(feature, runner.unsupported_reason(case, runner.GLOBAL_VALUE_FEATURES))
+        _, _, cases, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-global-values', 'global-values')
+        self.assertEqual(sum(bool(c['metadata']['features']) for c in cases), 4)
+        self.assertTrue(all(runner.unsupported_reason(c, runner.GLOBAL_VALUE_FEATURES) is None
+                            for c in cases))
+
+    def test_global_values_preflight_preserves_core_and_requires_real_assertions(self):
+        _, files, _, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-global-values', 'global-values')
+        with patch.object(runner, 'bounded_process', return_value=(0, response('complete'), b'')):
+            previous = runner.harness_preflight(files, Path('/fake'), 1)
+            results = runner.harness_preflight(files, Path('/fake'), 1, 'global-values')
+        self.assertEqual(results[:32], previous)
+        self.assertEqual(len(results), 64)
+        checks = results[32:]
+        self.assertEqual(sum(c['verified'] for c in checks), 16)
+        self.assertEqual({c['name'] for c in checks if not c['verified']}, {
+            'global-values-' + name + '-mismatch' for name in (
+                'identity', 'immutable-descriptors', 'this-descriptor', 'immutable-write',
+                'immutable-delete', 'this-replace', 'this-recreate', 'this-lexical')})
+        self.assertEqual({c['result']['mode'] for c in checks}, {'sloppy', 'strict'})
+        with patch.object(runner, 'bounded_process', return_value=(
+                0, response('exception', 'runtime', 'TypeError'), b'')):
+            wrong_error = runner.harness_preflight(files, Path('/fake'), 1, 'global-values')
+        self.assertFalse(any(c['verified'] for c in wrong_error[32:]))
+        captured = []
+        def capture(case, *args):
+            captured.append(case)
+            return dict(status='passed')
+        with patch.object(runner, 'run_case', side_effect=capture):
+            runner.harness_preflight(files, Path('/fake'), 1, 'global-values')
+        for case in captured[32:]:
+            self.assertEqual([name for name, _ in case['harness']], ['assert.js', 'sta.js'])
+            for forbidden in (b'hasOwnProperty', b'propertyIsEnumerable', b'verifyProperty', b'for (var x in'):
+                self.assertNotIn(forbidden, case['source'])
+
+    def test_global_values_import_checks_all_pinned_blobs_and_directory_counts(self):
+        _, files, _, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-global-values', 'global-values')
+        raw = f'https://raw.githubusercontent.com/{importer.REPOSITORY}/{importer.REVISION}/'
+        api = f'https://api.github.com/repos/{importer.REPOSITORY}/contents/test/built-ins/'
+        listings = {name: [] for name in importer.GLOBAL_VALUE_DIRECTORIES}
+        for path, data in files.items():
+            if path.startswith('test/'):
+                listings[Path(path).parent.name].append(dict(type='file', name=Path(path).name,
+                    sha=importer.hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()))
+        def fetch(url):
+            if url.startswith(api):
+                name = url[len(api):].removesuffix('?ref=' + importer.REVISION)
+                return json.dumps(listings[name]).encode()
+            self.assertTrue(url.startswith(raw))
+            return files[url[len(raw):]]
+        with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch), contextlib.redirect_stdout(io.StringIO()):
+            output = Path(temporary)
+            importer.import_corpus(output, 'global-values')
+            _, imported, cases, _, _ = runner.load_corpus(output, 'global-values')
+            self.assertEqual(imported, files)
+            self.assertEqual(len(cases), 88)
+        for name in listings:
+            saved = listings[name][0]['sha']
+            listings[name][0]['sha'] = '0' * 40
+            with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch):
+                with self.assertRaisesRegex(ValueError, 'pinned Git blob'):
+                    importer.import_corpus(Path(temporary), 'global-values')
+                self.assertFalse(any(Path(temporary).iterdir()))
+            listings[name][0]['sha'] = saved
+        listings['global'].pop()
+        with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch):
+            with self.assertRaisesRegex(ValueError, 'inventory mismatch'):
+                importer.import_corpus(Path(temporary), 'global-values')
+            self.assertFalse(any(Path(temporary).iterdir()))
+
     def test_is_prototype_of_inventory_retains_complete_directory_and_modes(self):
         directory = runner.ROOT / 'tests/upstream/test262-is-prototype-of'
         manifest, files, cases, fixtures, _ = runner.load_corpus(directory, 'is-prototype-of')

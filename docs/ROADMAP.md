@@ -48,3 +48,31 @@ The Vulkan browser backend remains planned. The isolated experiments evaluate
 one binding and transfer/presentation path; production driver requirements,
 platform coverage and binding adoption remain undecided. Ongoing standards and
 security work continues alongside preparation for this backend.
+
+## JavaScript execution depth
+
+The retained Test262 test with 32 nested immediately invoked functions currently
+stops at the parser budget in both modes. A separate investigation of checkpoint
+`9d6aa9e` found that a controlled chain of ten IIFEs parses and executes, while
+eleven stop in parsing. A shallow recursive function reaches the combined
+runtime stack limit independently. Parser changes alone will therefore leave
+an execution barrier.
+
+The planned progression is:
+
+1. Introduce flat executable-code ownership and charged iterative scope/hoist
+   walks. Account for retained code and temporary lowering storage, and preserve
+   existing parser limits while recursive syntax ownership remains.
+2. Move ordinary expression, statement and function execution to an explicit
+   continuation stack. Preserve evaluation order, lexical environments,
+   return/throw/finally behavior and quota cleanup. Keep logical call limits and
+   guards on native helpers that can call author code.
+3. Convert the recursive parser paths to bounded continuations with flat syntax
+   ownership. Preserve strict-context checks, RegExp/template lexical goals,
+   early errors and safe destruction of partially parsed input.
+
+Each stage needs independent allocation, callback, cleanup and small-native-stack
+checks. Keep the original 32-function test and all previous passing cases in the
+inventory throughout; only the combined parser and runtime work can establish
+that test's improved result. This architecture is planned and has not been
+implemented.

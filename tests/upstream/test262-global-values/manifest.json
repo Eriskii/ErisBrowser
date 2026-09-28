@@ -1,0 +1,392 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all direct .js files in built-ins/global, undefined, NaN and Infinity; no implementation",
+  "directories": {
+    "global": [
+      "10.2.1.1.3-4-16-s.js",
+      "10.2.1.1.3-4-18-s.js",
+      "10.2.1.1.3-4-22.js",
+      "10.2.1.1.3-4-27.js",
+      "S10.2.3_A1.1_T1.js",
+      "S10.2.3_A1.1_T2.js",
+      "S10.2.3_A1.1_T3.js",
+      "S10.2.3_A1.1_T4.js",
+      "S10.2.3_A1.2_T1.js",
+      "S10.2.3_A1.2_T2.js",
+      "S10.2.3_A1.2_T3.js",
+      "S10.2.3_A1.2_T4.js",
+      "S10.2.3_A1.3_T1.js",
+      "S10.2.3_A1.3_T2.js",
+      "S10.2.3_A1.3_T3.js",
+      "S10.2.3_A1.3_T4.js",
+      "S10.2.3_A2.1_T1.js",
+      "S10.2.3_A2.1_T2.js",
+      "S10.2.3_A2.1_T3.js",
+      "S10.2.3_A2.1_T4.js",
+      "S10.2.3_A2.3_T1.js",
+      "S10.2.3_A2.3_T2.js",
+      "S10.2.3_A2.3_T3.js",
+      "S10.2.3_A2.3_T4.js",
+      "S15.1_A1_T1.js",
+      "S15.1_A1_T2.js",
+      "S15.1_A2_T1.js",
+      "global-object.js",
+      "property-descriptor.js"
+    ],
+    "undefined": [
+      "15.1.1.3-0.js",
+      "15.1.1.3-1.js",
+      "15.1.1.3-2.js",
+      "15.1.1.3-3.js",
+      "S15.1.1.3_A1.js",
+      "S15.1.1.3_A3_T2.js",
+      "S15.1.1.3_A4.js",
+      "prop-desc.js"
+    ],
+    "NaN": [
+      "15.1.1.1-0.js",
+      "S15.1.1.1_A1.js",
+      "S15.1.1.1_A2_T2.js",
+      "S15.1.1.1_A3_T2.js",
+      "S15.1.1.1_A4.js",
+      "prop-desc.js"
+    ],
+    "Infinity": [
+      "15.1.1.2-0.js",
+      "S15.1.1.2_A1.js",
+      "S15.1.1.2_A2_T2.js",
+      "S15.1.1.2_A3_T2.js",
+      "S15.1.1.2_A4.js",
+      "prop-desc.js"
+    ]
+  },
+  "test_files": 49,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/built-ins/Infinity/15.1.1.2-0.js",
+      "upstream_path": "test/built-ins/Infinity/15.1.1.2-0.js",
+      "bytes": 509,
+      "sha256": "edcb821e2d9649a99deaa4e9cccd33b300ae52cefcd95b346f0a74ab496501e6"
+    },
+    {
+      "path": "test/built-ins/Infinity/S15.1.1.2_A1.js",
+      "upstream_path": "test/built-ins/Infinity/S15.1.1.2_A1.js",
+      "bytes": 688,
+      "sha256": "bfa15a9ea73ca59e829934f0edac7b78fab7fbf74c6d15165a077e85b7ab03a7"
+    },
+    {
+      "path": "test/built-ins/Infinity/S15.1.1.2_A2_T2.js",
+      "upstream_path": "test/built-ins/Infinity/S15.1.1.2_A2_T2.js",
+      "bytes": 430,
+      "sha256": "821e76eb261bad332db81054c1f2393b544d8882e2c1a5f19af81e2f97642ec4"
+    },
+    {
+      "path": "test/built-ins/Infinity/S15.1.1.2_A3_T2.js",
+      "upstream_path": "test/built-ins/Infinity/S15.1.1.2_A3_T2.js",
+      "bytes": 388,
+      "sha256": "1db86b381d714854d30a108252fa47dfdb1482f696d78cd79e24c9117d009d0c"
+    },
+    {
+      "path": "test/built-ins/Infinity/S15.1.1.2_A4.js",
+      "upstream_path": "test/built-ins/Infinity/S15.1.1.2_A4.js",
+      "bytes": 394,
+      "sha256": "89c7978b3624ecbdf697b1c795d8032dff6dd06ff55ef1d7f47f2e04c95793c9"
+    },
+    {
+      "path": "test/built-ins/Infinity/prop-desc.js",
+      "upstream_path": "test/built-ins/Infinity/prop-desc.js",
+      "bytes": 487,
+      "sha256": "eb77a7e658ad51edf5c1eabb1cde4045875c177159a5fc345d4eab10e59fc879"
+    },
+    {
+      "path": "test/built-ins/NaN/15.1.1.1-0.js",
+      "upstream_path": "test/built-ins/NaN/15.1.1.1-0.js",
+      "bytes": 489,
+      "sha256": "97a54e67663749c192647142fec0b3e3046e4bae925323f537361c3e4086f5bd"
+    },
+    {
+      "path": "test/built-ins/NaN/S15.1.1.1_A1.js",
+      "upstream_path": "test/built-ins/NaN/S15.1.1.1_A1.js",
+      "bytes": 231,
+      "sha256": "f56179804256b2e479d599954ea99ddf2580c5def08966f64b7d74e155b32058"
+    },
+    {
+      "path": "test/built-ins/NaN/S15.1.1.1_A2_T2.js",
+      "upstream_path": "test/built-ins/NaN/S15.1.1.1_A2_T2.js",
+      "bytes": 408,
+      "sha256": "33f77fc9a57971a761f96b11af4c3c5227d01ff32492dfec12f5a2e836d6719a"
+    },
+    {
+      "path": "test/built-ins/NaN/S15.1.1.1_A3_T2.js",
+      "upstream_path": "test/built-ins/NaN/S15.1.1.1_A3_T2.js",
+      "bytes": 373,
+      "sha256": "51c9f5a86ed00d49f57519f49f44718255abb6fa163f1855188b26b5c0cd1d9c"
+    },
+    {
+      "path": "test/built-ins/NaN/S15.1.1.1_A4.js",
+      "upstream_path": "test/built-ins/NaN/S15.1.1.1_A4.js",
+      "bytes": 381,
+      "sha256": "691603b796df393f288db3b1afb0b32956550ec2b29c86572c567949020a4480"
+    },
+    {
+      "path": "test/built-ins/NaN/prop-desc.js",
+      "upstream_path": "test/built-ins/NaN/prop-desc.js",
+      "bytes": 472,
+      "sha256": "d768a164c97197b00099e830b4213e5c95149c25919e6bfecdc7d1442990ad4d"
+    },
+    {
+      "path": "test/built-ins/global/10.2.1.1.3-4-16-s.js",
+      "upstream_path": "test/built-ins/global/10.2.1.1.3-4-16-s.js",
+      "bytes": 395,
+      "sha256": "8d28046ef414448ea60afbd6e80d117b8e741563604d3c791c1d2b2854fd8b00"
+    },
+    {
+      "path": "test/built-ins/global/10.2.1.1.3-4-18-s.js",
+      "upstream_path": "test/built-ins/global/10.2.1.1.3-4-18-s.js",
+      "bytes": 407,
+      "sha256": "56d5afde24bc3c9857b55bb1535370bfb2051ed543dea9bb52429683f90ac6b1"
+    },
+    {
+      "path": "test/built-ins/global/10.2.1.1.3-4-22.js",
+      "upstream_path": "test/built-ins/global/10.2.1.1.3-4-22.js",
+      "bytes": 368,
+      "sha256": "b653e48fa4521da20fa76b57efc1595cde9f4a8c43338f9ca5845cc49a524ef9"
+    },
+    {
+      "path": "test/built-ins/global/10.2.1.1.3-4-27.js",
+      "upstream_path": "test/built-ins/global/10.2.1.1.3-4-27.js",
+      "bytes": 376,
+      "sha256": "8ac8cbb9db34017b7992400e376d2654a871b6de15a04e31f3ea5a9cb611652f"
+    },
+    {
+      "path": "test/built-ins/global/S10.2.3_A1.1_T1.js",
+      "upstream_path": "test/built-ins/global/S10.2.3_A1.1_T1.js",
+      "bytes": 595,
+      "sha256": "a3f1be953ad41188f96746000aa52d482d60df7985ebe35064ed52d294bdfb26"
+    },
+    {
+      "path": "test/built-ins/global/S10.2.3_A1.1_T2.js",
+      "upstream_path": "test/built-ins/global/S10.2.3_A1.1_T2.js",
+      "bytes": 1180,
+      "sha256": "1653e41c1f847c6a292e8fe29e9ab8b2ec3a18f66239c49dd3b21b486ab43e4c"
+    },
+    {
+      "path": "test/built-ins/global/S10.2.3_A1.1_T3.js",
+      "upstream_path": "test/built-ins/global/S10.2.3_A1.1_T3.js",
+      "bytes": 1695,
+      "sha256": "5a3df26be734e7e6cc67bbc6c60c071dd2354c9f4d42bb38b1a8f501c9f17bfd"
+    },
+    {
+      "path": "test/built-ins/global/S10.2.3_A1.1_T4.js",
+      "upstream_path": "test/built-ins/global/S10.2.3_A1.1_T4.js",
+      "bytes": 419,
+      "sha256": "e7bbe717389b3d7d6980389fba40a58a33764db5bde1f741e3b2a6526abf28cd"
+    },
+    {
+      "path": "test/built-ins/global/S10.2.3_A1.2_T1.js",
+      "upstream_path": "test/built-ins/global/S10.2.3_A1.2_T1.js",
+      "bytes": 650,
+      "sha256": "3b6e050d3348c953846f04d182139caaad70aa5c9875dd4705b6082b7e510697"
+    },
+    {
+      "path": "test/built-ins/global/S10.2.3_A1.2_T2.js",
+      "upstream_path": "test/built-ins/global/S10.2.3_A1.2_T2.js",
+      "bytes": 1283,
+      "sha256": "96a8532293cbb8ed51502ae55a9e9b840426c47ab6998ff17f8902ec404ba897"
+    },
+    {
+      "path": "test/built-ins/global/S10.2.3_A1.2_T3.js",
+      "upstream_path": "test/built-ins/global/S10.2.3_A1.2_T3.js",
+      "bytes": 1848,
+      "sha256": "63226c327f0506dba5ba7cf995b691e5b986ebcc4fb176c3f37dfe1992763630"
+    },
+    {
+      "path": "test/built-ins/global/S10.2.3_A1.2_T4.js",
+      "upstream_path": "test/built-ins/global/S10.2.3_A1.2_T4.js",
+      "bytes": 458,
+      "sha256": "a4c5e370408552ab9dd0846fd9ce35c67c907dedd585ed0f295d1d9b85037fbf"
+    },
+    {
+      "path": "test/built-ins/global/S10.2.3_A1.3_T1.js",
+      "upstream_path": "test/built-ins/global/S10.2.3_A1.3_T1.js",
+      "bytes": 696,
+      "sha256": "898208d8ecee5cf809cf971c91b22ca73ed1dc4bedfc1d66218e2da4f9f6d085"
+    },
+    {
+      "path": "test/built-ins/global/S10.2.3_A1.3_T2.js",
+      "upstream_path": "test/built-ins/global/S10.2.3_A1.3_T2.js",
+      "bytes": 1413,
+      "sha256": "4ff342742b7cdfde4c0506c872194144d7b7073cc3e36bfbdaa66cc4c2c7a0f1"
+    },
+    {
+      "path": "test/built-ins/global/S10.2.3_A1.3_T3.js",
+      "upstream_path": "test/built-ins/global/S10.2.3_A1.3_T3.js",
+      "bytes": 2062,
+      "sha256": "2e9e38fcba549fa08313f6f9be856725664cd9c2c6d9c866fdd4b824e8f33dd9"
+    },
+    {
+      "path": "test/built-ins/global/S10.2.3_A1.3_T4.js",
+      "upstream_path": "test/built-ins/global/S10.2.3_A1.3_T4.js",
+      "bytes": 476,
+      "sha256": "c2fcc0eae1b6a568bcd6fab02a91d32bec43e17e9301e42316a4f6f66ed257c1"
+    },
+    {
+      "path": "test/built-ins/global/S10.2.3_A2.1_T1.js",
+      "upstream_path": "test/built-ins/global/S10.2.3_A2.1_T1.js",
+      "bytes": 617,
+      "sha256": "6efb4314c67ca0ff1ca16a4448f46931ef479dab6c2b51c3b5579848657a09c9"
+    },
+    {
+      "path": "test/built-ins/global/S10.2.3_A2.1_T2.js",
+      "upstream_path": "test/built-ins/global/S10.2.3_A2.1_T2.js",
+      "bytes": 1280,
+      "sha256": "8a8441cfa2a5075106539479616a8ce0c99fded82f5cb89307dc49094d18d469"
+    },
+    {
+      "path": "test/built-ins/global/S10.2.3_A2.1_T3.js",
+      "upstream_path": "test/built-ins/global/S10.2.3_A2.1_T3.js",
+      "bytes": 1865,
+      "sha256": "e426e017c73236dd33289373dbc96c45f9ad5204816062f77642eb458e68a354"
+    },
+    {
+      "path": "test/built-ins/global/S10.2.3_A2.1_T4.js",
+      "upstream_path": "test/built-ins/global/S10.2.3_A2.1_T4.js",
+      "bytes": 411,
+      "sha256": "80cb546e60e8658d555251fd0d00b56dcd53a42abb402aaface5c7792b4ab609"
+    },
+    {
+      "path": "test/built-ins/global/S10.2.3_A2.3_T1.js",
+      "upstream_path": "test/built-ins/global/S10.2.3_A2.3_T1.js",
+      "bytes": 715,
+      "sha256": "d7668e49e790f3b132cbc5410ce1259624cb5fee521dc555421b66d7a029ef3b"
+    },
+    {
+      "path": "test/built-ins/global/S10.2.3_A2.3_T2.js",
+      "upstream_path": "test/built-ins/global/S10.2.3_A2.3_T2.js",
+      "bytes": 1474,
+      "sha256": "a2d338f0a0915beaa0ecb8f318fc98643cd94b54f25a67b8e098a3cc553aba8c"
+    },
+    {
+      "path": "test/built-ins/global/S10.2.3_A2.3_T3.js",
+      "upstream_path": "test/built-ins/global/S10.2.3_A2.3_T3.js",
+      "bytes": 2144,
+      "sha256": "88c6286cbb583c6596b77606c67c705c638dd6f446e3d2826fa96f62bfdc91c8"
+    },
+    {
+      "path": "test/built-ins/global/S10.2.3_A2.3_T4.js",
+      "upstream_path": "test/built-ins/global/S10.2.3_A2.3_T4.js",
+      "bytes": 477,
+      "sha256": "05ae2e44f0f2b77640e0d10fb0ee3d2acc5725fb399e2112f8f6be919bb73924"
+    },
+    {
+      "path": "test/built-ins/global/S15.1_A1_T1.js",
+      "upstream_path": "test/built-ins/global/S15.1_A1_T1.js",
+      "bytes": 410,
+      "sha256": "b5429f91ea86849dfe066f05fa31ea76f34a651d63b7a84584b2c43dac167e78"
+    },
+    {
+      "path": "test/built-ins/global/S15.1_A1_T2.js",
+      "upstream_path": "test/built-ins/global/S15.1_A1_T2.js",
+      "bytes": 412,
+      "sha256": "d067d2e6c54cfdea0d7e3263ec5543f4826e06f00d44d287adc72f8d3b2e182b"
+    },
+    {
+      "path": "test/built-ins/global/S15.1_A2_T1.js",
+      "upstream_path": "test/built-ins/global/S15.1_A2_T1.js",
+      "bytes": 370,
+      "sha256": "a375111e60a6bbfa2fc24e1e70a03fd6bb360aaf5b64bab7e98678474ba892f1"
+    },
+    {
+      "path": "test/built-ins/global/global-object.js",
+      "upstream_path": "test/built-ins/global/global-object.js",
+      "bytes": 922,
+      "sha256": "7b9cf9f00d8a6a4aeb3d452c8499bb80d16af0b5ad24da094511e6cbc500de8b"
+    },
+    {
+      "path": "test/built-ins/global/property-descriptor.js",
+      "upstream_path": "test/built-ins/global/property-descriptor.js",
+      "bytes": 468,
+      "sha256": "74d731bbd7f28b416d2c0ab56d252d4a8cad3c9ed29e25a783c3a0d4c18b7604"
+    },
+    {
+      "path": "test/built-ins/undefined/15.1.1.3-0.js",
+      "upstream_path": "test/built-ins/undefined/15.1.1.3-0.js",
+      "bytes": 513,
+      "sha256": "677e9127f2f22384c719be521b10a1bd3a5013ad9f38d9ecab7606e12529e60a"
+    },
+    {
+      "path": "test/built-ins/undefined/15.1.1.3-1.js",
+      "upstream_path": "test/built-ins/undefined/15.1.1.3-1.js",
+      "bytes": 431,
+      "sha256": "ca6f5f6fb8a11aaf3d5464947e9930d2d32610c52d395a8e5c0ea42e5f515d12"
+    },
+    {
+      "path": "test/built-ins/undefined/15.1.1.3-2.js",
+      "upstream_path": "test/built-ins/undefined/15.1.1.3-2.js",
+      "bytes": 482,
+      "sha256": "9fc0aa49f1023aed2d9cd900ec5411ba485df3c7caf9daa8ed1bfc6c48777b66"
+    },
+    {
+      "path": "test/built-ins/undefined/15.1.1.3-3.js",
+      "upstream_path": "test/built-ins/undefined/15.1.1.3-3.js",
+      "bytes": 381,
+      "sha256": "09beed64b2721a1d709187ee97b9ad4ab0d4fa1a07f653f617f7cb170fbef67b"
+    },
+    {
+      "path": "test/built-ins/undefined/S15.1.1.3_A1.js",
+      "upstream_path": "test/built-ins/undefined/S15.1.1.3_A1.js",
+      "bytes": 664,
+      "sha256": "10263e5bb50ff2090f7328e1c13da9561426f21b27c8ab213a495a6583671586"
+    },
+    {
+      "path": "test/built-ins/undefined/S15.1.1.3_A3_T2.js",
+      "upstream_path": "test/built-ins/undefined/S15.1.1.3_A3_T2.js",
+      "bytes": 380,
+      "sha256": "6e7ac6a7d142e2946890c49797a4d51104711198578f594dd155000490169ba4"
+    },
+    {
+      "path": "test/built-ins/undefined/S15.1.1.3_A4.js",
+      "upstream_path": "test/built-ins/undefined/S15.1.1.3_A4.js",
+      "bytes": 365,
+      "sha256": "2ed249fdcdabb086fe07dd33de3b4adf4581b94e0fbc09d48bf961c49739702d"
+    },
+    {
+      "path": "test/built-ins/undefined/prop-desc.js",
+      "upstream_path": "test/built-ins/undefined/prop-desc.js",
+      "bytes": 452,
+      "sha256": "feb68b76e5ac10ab8d5c3b756ab4609a7769335ed91c7a847c5aa0d2194ce726"
+    }
+  ]
+}

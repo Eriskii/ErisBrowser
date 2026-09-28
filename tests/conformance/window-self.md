@@ -10,7 +10,9 @@ enumerable and configurable data. Null or undefined accessor receivers select
 the realm Window; other receivers, including an object inheriting from Window,
 throw TypeError.
 
-Bare `self`, `window.self` and `globalThis.self` consult the same property record.
+Bare `self` and members of the realm Window consult the same property record.
+Initially this includes `window.self` and `globalThis.self`; replacing globalThis
+changes what that public alias refers to, independently of the self property.
 Author data/accessor redefinitions use ordinary descriptor compatibility checks.
 Descriptor queries report fresh records without invoking getters. Saved native
 accessors remain callable after replacement or deletion. A saved Replaceable
@@ -66,13 +68,13 @@ of earlier successful author effects.
 This is a scoped Window binding correction. General Window definitions,
 reflection such as host `hasOwnProperty`/`propertyIsEnumerable`, extensibility,
 WindowProxy behavior, cross-origin/cross-realm objects, named child properties
-and a complete Window prototype hierarchy remain unsupported. Definitions of
-other Window property names continue to report the existing unsupported result.
-Other initial globals were not changed: current globalThis flags, window/document
-data descriptors and undefined/NaN/Infinity enumerability still have known
-conformance gaps. Their existing protected-write behavior is retained. The core
-ECMAScript adapter still shares the browser host realm; this patch does not
-separate it into a host-free realm or claim full Window WPT coverage.
+and a complete Window prototype hierarchy remain unsupported. The subsequent
+[global-value correction](global-values.md) extends the shared property handling
+to globalThis, undefined, NaN and Infinity, including their descriptor flags.
+Definitions outside those four names and self retain the existing unsupported
+result. Window/document data descriptors still have known conformance gaps.
+The core ECMAScript adapter still shares the browser host realm; these changes
+do not separate it into a host-free realm or claim full Window WPT coverage.
 
 Nine `window_self_` Rust regression groups cover both execution modes, accessor
 metadata/brands, saved descriptors, locking, inherited lookup, captured references,

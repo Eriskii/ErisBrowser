@@ -24,10 +24,12 @@ FUNCTION_FEATURES = SUPPORTED_FEATURES | {'default-parameters', 'object-methods'
                                           'computed-property-names', 'trailing-function-commas'}
 REST_PARAMETER_FEATURES = FUNCTION_FEATURES | {'rest-parameters'}
 IS_PROTOTYPE_OF_FEATURES = SUPPORTED_FEATURES.copy()
+GLOBAL_VALUE_FEATURES = SUPPORTED_FEATURES | {'globalThis'}
 PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
-                    'is-prototype-of': IS_PROTOTYPE_OF_FEATURES}
+                    'is-prototype-of': IS_PROTOTYPE_OF_FEATURES,
+                    'global-values': GLOBAL_VALUE_FEATURES}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -341,6 +343,35 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
         ]
         variants += [(name, source, expected, mode)
                      for mode in ('sloppy', 'strict') for name, source, expected in checks]
+    if profile == 'global-values':
+        for mode in ('sloppy', 'strict'):
+            write = ("assert.throws(TypeError,function(){realm[key]=replacement;});"
+                     if mode == 'strict' else "assert.sameValue(realm[key]=replacement,replacement);")
+            wrong_write = ("assert.throws(RangeError,function(){Infinity=3;});"
+                           if mode == 'strict' else "Infinity=3;assert.sameValue(Infinity,3);")
+            delete = ("assert.throws(TypeError,function(){delete realm[key];});"
+                      if mode == 'strict' else "assert.sameValue(delete realm[key],false);")
+            wrong_delete = ("var realm=this;assert.throws(RangeError,function(){delete realm.Infinity;});"
+                            if mode == 'strict' else "assert.sameValue(delete this.Infinity,true);")
+            checks = [
+                ('global-values-identity', "assert.sameValue(globalThis,this);assert.sameValue(undefined,void 0);assert.sameValue(NaN,0/0);assert.sameValue(Infinity,1/0);assert.notSameValue(Infinity,-1/0);", 'passed'),
+                ('global-values-identity-mismatch', "assert.sameValue(Infinity,-1/0);", 'failed'),
+                ('global-values-immutable-descriptors', "var names=['undefined','NaN','Infinity'],values=[void 0,0/0,1/0];for(var i=0;i<names.length;i++){var d=Object.getOwnPropertyDescriptor(this,names[i]);assert.sameValue(d.value,values[i]);assert.sameValue(d.writable,false);assert.sameValue(d.enumerable,false);assert.sameValue(d.configurable,false);assert.sameValue(d.get,undefined);assert.sameValue(d.set,undefined);}", 'passed'),
+                ('global-values-immutable-descriptors-mismatch', "assert.sameValue(Object.getOwnPropertyDescriptor(this,'NaN').enumerable,true);", 'failed'),
+                ('global-values-this-descriptor', "var d=Object.getOwnPropertyDescriptor(this,'globalThis');assert.sameValue(d.value,this);assert.sameValue(d.writable,true);assert.sameValue(d.enumerable,false);assert.sameValue(d.configurable,true);", 'passed'),
+                ('global-values-this-descriptor-mismatch', "assert.sameValue(Object.getOwnPropertyDescriptor(this,'globalThis').writable,false);", 'failed'),
+                ('global-values-immutable-write', "var realm=this,names=['undefined','NaN','Infinity'],values=[void 0,0/0,1/0],calls=0,replacement={toString:function(){calls++;throw 1;},valueOf:function(){calls++;throw 2;}};for(var i=0;i<names.length;i++){var key=names[i];" + write + "assert.sameValue(realm[key],values[i]);}assert.sameValue(calls,0);", 'passed'),
+                ('global-values-immutable-write-mismatch', wrong_write, 'failed'),
+                ('global-values-immutable-delete', "var realm=this,names=['undefined','NaN','Infinity'],values=[void 0,0/0,1/0];for(var i=0;i<names.length;i++){var key=names[i];" + delete + "assert.sameValue(realm[key],values[i]);}", 'passed'),
+                ('global-values-immutable-delete-mismatch', wrong_delete, 'failed'),
+                ('global-values-this-replace', "var realm=this,replacement={};assert.sameValue(globalThis=replacement,replacement);assert.sameValue(globalThis,replacement);assert.sameValue(realm.globalThis,replacement);assert.sameValue(this,realm);function readThis(){return this;}assert.sameValue(readThis.call(realm),realm);globalThis=realm;assert.sameValue(globalThis,realm);", 'passed'),
+                ('global-values-this-replace-mismatch', "var realm=this;globalThis={};assert.sameValue(realm.globalThis,realm);", 'failed'),
+                ('global-values-this-recreate', "var realm=this;assert.sameValue(delete realm.globalThis,true);assert.sameValue(Object.getOwnPropertyDescriptor(realm,'globalThis'),undefined);assert.sameValue(typeof globalThis,'undefined');assert.sameValue(this,realm);var replacement={};realm.globalThis=replacement;assert.sameValue(globalThis,replacement);var d=Object.getOwnPropertyDescriptor(realm,'globalThis');assert.sameValue(d.value,replacement);assert.sameValue(d.writable,true);assert.sameValue(d.enumerable,true);assert.sameValue(d.configurable,true);assert.sameValue(this,realm);", 'passed'),
+                ('global-values-this-recreate-mismatch', "assert.sameValue(delete this.globalThis,false);", 'failed'),
+                ('global-values-this-lexical', "let globalThis='lexical';assert.sameValue(globalThis,'lexical');assert.sameValue(this.globalThis,this);this.globalThis=7;assert.sameValue(globalThis,'lexical');assert.sameValue(this.globalThis,7);", 'passed'),
+                ('global-values-this-lexical-mismatch', "let globalThis='lexical';assert.sameValue(this.globalThis,globalThis);", 'failed'),
+            ]
+            variants += [(name, source, expected, mode) for name, source, expected in checks]
     outcomes = []
     for name, source, expected, mode in variants:
         includes = ['propertyHelper.js'] if 'property-' in name else []

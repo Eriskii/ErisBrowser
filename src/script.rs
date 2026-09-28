@@ -2216,6 +2216,49 @@ impl Parser {
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum TrackedGlobal {
+    WindowSelf,
+    GlobalThis,
+    Undefined,
+    Nan,
+    Infinity,
+}
+impl TrackedGlobal {
+    const ALL: [Self; 5] = [
+        Self::WindowSelf,
+        Self::GlobalThis,
+        Self::Undefined,
+        Self::Nan,
+        Self::Infinity,
+    ];
+    fn name(self) -> &'static str {
+        match self {
+            Self::WindowSelf => "self",
+            Self::GlobalThis => "globalThis",
+            Self::Undefined => "undefined",
+            Self::Nan => "NaN",
+            Self::Infinity => "Infinity",
+        }
+    }
+    fn from_name(name: &str) -> Option<Self> {
+        match name {
+            "self" => Some(Self::WindowSelf),
+            "globalThis" => Some(Self::GlobalThis),
+            "undefined" => Some(Self::Undefined),
+            "NaN" => Some(Self::Nan),
+            "Infinity" => Some(Self::Infinity),
+            _ => None,
+        }
+    }
+    fn from_key(key: &JsString) -> Option<Self> {
+        Self::ALL.into_iter().find(|kind| {
+            let name = kind.name();
+            key.len() == name.len() && key.units().iter().copied().eq(name.bytes().map(u16::from))
+        })
+    }
+}
+
 #[derive(Clone)]
 struct Binding {
     value: Value,
@@ -2499,7 +2542,7 @@ pub struct Runtime {
     stack_units: usize,
     pub console: Vec<String>,
     pub last_default_prevented: bool,
-    window_self_key: JsString,
+    tracked_global_keys: [JsString; 5],
 }
 
 impl Default for Runtime {
@@ -2527,12 +2570,12 @@ impl Runtime {
                 Binding {
                     value,
                     accessor: None,
-                    mutable: false,
+                    mutable: name == "globalThis",
                     initialized: true,
                     strict_immutable: false,
                     global_property: name != "this",
-                    enumerable: true,
-                    deletable: false,
+                    enumerable: !matches!(name, "globalThis" | "undefined" | "NaN" | "Infinity"),
+                    deletable: name == "globalThis",
                 },
             );
         }
@@ -2612,14 +2655,19 @@ impl Runtime {
             readiness_fired: false,
             started: std::time::Instant::now(),
             steps: MAX_STEPS,
-            allocated: 2048 + initial_binding_bytes + 32,
+            allocated: 2048
+                + initial_binding_bytes
+                + TrackedGlobal::ALL
+                    .iter()
+                    .map(|kind| 64 + kind.name().len() * 6)
+                    .sum::<usize>(),
             calls: 0,
             eval_depth: 0,
             json_depth: 0,
             stack_units: 0,
             console: Vec::new(),
             last_default_prevented: false,
-            window_self_key: "self".into(),
+            tracked_global_keys: TrackedGlobal::ALL.map(|kind| kind.name().into()),
         };
         runtime
             .initialize_intrinsics()
@@ -3011,7 +3059,7 @@ impl Runtime {
         }
         let get = self.intrinsic_function("Window.get.self", "get self", 0)?;
         let set = self.intrinsic_function("Window.set.self", "set self", 1)?;
-        let key = self.window_self_key.clone();
+        let key = self.global_key(TrackedGlobal::WindowSelf);
         self.define_own(
             &Value::Window,
             &key,
@@ -4411,12 +4459,15 @@ impl Runtime {
             env = self.environments[env].parent?;
         }
     }
+    fn global_key(&self, kind: TrackedGlobal) -> JsString {
+        self.tracked_global_keys[kind as usize].clone()
+    }
     fn resolve_binding(&mut self, env: usize, name: &str) -> Result<Option<usize>> {
         if let Some((owner, _)) = self.lookup(env, name) {
             return Ok(Some(owner));
         }
-        if name == "self" {
-            let key = self.window_self_key.clone();
+        if let Some(kind) = TrackedGlobal::from_name(name) {
+            let key = self.global_key(kind);
             if self.find_property(&Value::Window, &key)?.is_some() {
                 return Ok(Some(0));
             }
@@ -4424,11 +4475,20 @@ impl Runtime {
         Ok(None)
     }
     fn binding_value(&mut self, env: usize, name: &str, doc: &mut Document) -> Result<Value> {
-        if env == 0 && name == "self" {
-            let key = self.window_self_key.clone();
+        if env == 0
+            && let Some(kind) = TrackedGlobal::from_name(name)
+        {
+            // Ordinary own data bindings need neither prototype traversal nor
+            // a property-key conversion. Accessors/absence use the live object.
+            if let Some(binding) = self.environments[0].bindings.get(name)
+                && binding.accessor.is_none()
+            {
+                return Ok(binding.value.clone());
+            }
+            let key = self.global_key(kind);
             return self
                 .lookup_property(&Value::Window, &key, doc)?
-                .ok_or_else(|| ScriptError::reference("'self' is not defined"));
+                .ok_or_else(|| ScriptError::reference(format!("'{name}' is not defined")));
         }
         let binding = self.environments[env]
             .bindings
@@ -4684,12 +4744,12 @@ impl Runtime {
     }
 
     fn statements(&mut self, body: &[Stmt], env: usize, doc: &mut Document) -> Result<Flow> {
+        let mut tracked_functions = [None; 5];
         if env == 1 {
-            // Global declaration checks precede every binding insertion. In
-            // particular, a locked self property must not leave an earlier
-            // lexical, var, or function declaration behind after rejection.
-            self.validate_lexical(body, env)?;
+            // Validate declarations before inserting lexical, var, or function
+            // bindings. Tracked globals may be immutable or author-locked.
             self.work(body.len().saturating_add(1))?;
+            self.validate_lexical(body, env)?;
             for statement in body {
                 if let Stmt::Function(name, _) = statement
                     && self.environments[1].bindings.contains_key(name)
@@ -4699,48 +4759,67 @@ impl Runtime {
                     )));
                 }
             }
-            let declares_self = body
-                .iter()
-                .any(|statement| matches!(statement, Stmt::Function(name, _) if name == "self"));
-            if declares_self {
-                // Preserve the earlier SyntaxError checks before CanDeclareGlobalFunction.
-                self.hoist_vars_mode(body, env, false)?;
+            for (index, statement) in body.iter().enumerate().rev() {
+                self.tick()?;
+                if let Stmt::Function(name, _) = statement
+                    && let Some(kind) = TrackedGlobal::from_name(name)
+                {
+                    tracked_functions[kind as usize].get_or_insert(index);
+                }
             }
-            if declares_self
-                && self
-                    .own_property(&Value::Window, &self.window_self_key)
-                    .is_some_and(|property| {
-                        !(property.configurable
-                            || property.enumerable
-                                && matches!(
-                                    property.value,
-                                    PropertyValue::Data { writable: true, .. }
-                                ))
-                    })
-            {
-                return Err(ScriptError::type_error(
-                    "global function conflicts with self property",
-                ));
+            if tracked_functions.iter().any(Option::is_some) {
+                // Earlier lexical-name checks precede CanDeclareGlobalFunction.
+                self.hoist_vars_mode(body, env, false)?;
+                for (index, statement) in body.iter().enumerate().rev() {
+                    self.tick()?;
+                    if let Stmt::Function(name, _) = statement
+                        && let Some(kind) = TrackedGlobal::from_name(name)
+                        && tracked_functions[kind as usize] == Some(index)
+                        && self
+                            .own_property(&Value::Window, &self.global_key(kind))
+                            .is_some_and(|property| {
+                                !(property.configurable
+                                    || property.enumerable
+                                        && matches!(
+                                            property.value,
+                                            PropertyValue::Data { writable: true, .. }
+                                        ))
+                            })
+                    {
+                        return Err(ScriptError::type_error(format!(
+                            "global function conflicts with {name} property"
+                        )));
+                    }
+                }
             }
         }
         self.instantiate_lexical(body, env)?;
         self.hoist_vars(body, env)?;
-        for statement in body {
+        for (index, statement) in body.iter().enumerate() {
             if let Stmt::Function(name, code) = statement {
                 if env == 1 && self.environments[1].bindings.contains_key(name) {
                     return Err(ScriptError::syntax(format!(
                         "global lexical binding conflicts with function '{name}'"
                     )));
                 }
-                let global_self = env == 1 && name == "self";
-                let current = if global_self {
+                let tracked = if env == 1 {
+                    TrackedGlobal::from_name(name)
+                } else {
+                    None
+                };
+                if let Some(kind) = tracked
+                    && tracked_functions[kind as usize] != Some(index)
+                {
+                    continue;
+                }
+                let current = if let Some(kind) = tracked {
                     self.tick()?;
-                    self.own_property(&Value::Window, &self.window_self_key)
+                    self.own_property(&Value::Window, &self.global_key(kind))
                 } else {
                     None
                 };
                 let function = self.function_value(code, env)?;
-                if global_self {
+                if let Some(kind) = tracked {
                     let desc = if current.is_some_and(|property| !property.configurable) {
                         PropertyDescriptor {
                             value: Some(function),
@@ -4749,11 +4828,11 @@ impl Runtime {
                     } else {
                         PropertyDescriptor::data_property(function, true, true, false)
                     };
-                    let key = self.window_self_key.clone();
+                    let key = self.global_key(kind);
                     if !self.define_own(&Value::Window, &key, desc)? {
-                        return Err(ScriptError::type_error(
-                            "cannot define global self function",
-                        ));
+                        return Err(ScriptError::type_error(format!(
+                            "cannot define global {name} function"
+                        )));
                     }
                 } else {
                     self.define(if env == 1 { 0 } else { env }, name, function, true)?;
@@ -5323,8 +5402,10 @@ impl Runtime {
                         Expr::Ident(name) if name == "this" => Ok(Value::Bool(true)),
                         Expr::Ident(name) => {
                             if let Some(owner) = self.resolve_binding(env, name)? {
-                                if owner == 0 && name == "self" {
-                                    let key = self.window_self_key.clone();
+                                if owner == 0
+                                    && let Some(kind) = TrackedGlobal::from_name(name)
+                                {
+                                    let key = self.global_key(kind);
                                     return self
                                         .delete_property(Value::Window, &key)
                                         .map(Value::Bool);
@@ -5649,10 +5730,12 @@ impl Runtime {
     ) -> Result<()> {
         match reference {
             Reference::Binding(env, name, strict) => {
-                if env == 0 && name == "self" {
-                    let key = self.window_self_key.clone();
+                if env == 0
+                    && let Some(kind) = TrackedGlobal::from_name(&name)
+                {
+                    let key = self.global_key(kind);
                     if strict && self.find_property(&Value::Window, &key)?.is_none() {
-                        return Err(ScriptError::reference("'self' is not defined"));
+                        return Err(ScriptError::reference(format!("'{name}' is not defined")));
                     }
                     return self.set_key_strict(Value::Window, &key, value, strict, doc);
                 }
@@ -5688,8 +5771,8 @@ impl Runtime {
                 if strict {
                     return Err(ScriptError::reference(format!("'{name}' is not defined")));
                 }
-                if name == "self" {
-                    let key = self.window_self_key.clone();
+                if let Some(kind) = TrackedGlobal::from_name(&name) {
+                    let key = self.global_key(kind);
                     return self.set_key_strict(Value::Window, &key, value, false, doc);
                 }
                 self.define(0, &name, value, true)?;
@@ -5989,10 +6072,10 @@ impl Runtime {
     }
     fn own_property(&self, receiver: &Value, key: &JsString) -> Option<Property> {
         if matches!(receiver, Value::Window) {
-            if key == &self.window_self_key {
+            if let Some(kind) = TrackedGlobal::from_key(key) {
                 return self.environments[0]
                     .bindings
-                    .get("self")
+                    .get(kind.name())
                     .map(Binding::property);
             }
             let key = key.to_utf8().ok()?;
@@ -6199,9 +6282,13 @@ impl Runtime {
         desc: PropertyDescriptor,
     ) -> Result<bool> {
         self.work(1 + key.len() / 8)?;
-        let window_self = receiver == &Value::Window && key == &self.window_self_key;
+        let tracked_global = if receiver == &Value::Window {
+            TrackedGlobal::from_key(key)
+        } else {
+            None
+        };
         let object_id = self.property_object(receiver);
-        if object_id.is_none() && !window_self {
+        if object_id.is_none() && tracked_global.is_none() {
             return Err(ScriptError::unsupported(
                 "host property definition is not implemented",
             ));
@@ -6295,8 +6382,8 @@ impl Runtime {
                 }
             }
         }
-        if window_self {
-            self.store_window_self(property)?;
+        if let Some(kind) = tracked_global {
+            self.store_global_property(kind, property)?;
             return Ok(true);
         }
         let id = object_id.unwrap();
@@ -6318,14 +6405,15 @@ impl Runtime {
         }
         Ok(true)
     }
-    fn store_window_self(&mut self, property: Property) -> Result<()> {
-        let new = !self.environments[0].bindings.contains_key("self");
+    fn store_global_property(&mut self, kind: TrackedGlobal, property: Property) -> Result<()> {
+        let name = kind.name();
+        let new = !self.environments[0].bindings.contains_key(name);
         let accessor_bytes = if matches!(property.value, PropertyValue::Accessor { .. }) {
             16 + std::mem::size_of::<BindingAccessor>()
         } else {
             0
         };
-        self.charge(accessor_bytes + if new { BINDING_BYTES + 4 } else { 0 })?;
+        self.charge(accessor_bytes + if new { BINDING_BYTES + name.len() } else { 0 })?;
         let (value, mutable, accessor) = match property.value {
             PropertyValue::Data { value, writable } => (value, writable, None),
             PropertyValue::Accessor { get, set } => (
@@ -6344,10 +6432,10 @@ impl Runtime {
             enumerable: property.enumerable,
             deletable: property.configurable,
         };
-        if let Some(previous) = self.environments[0].bindings.get_mut("self") {
+        if let Some(previous) = self.environments[0].bindings.get_mut(name) {
             *previous = binding;
         } else {
-            self.environments[0].bindings.insert("self".into(), binding);
+            self.environments[0].bindings.insert(name.into(), binding);
         }
         Ok(())
     }
@@ -6386,7 +6474,7 @@ impl Runtime {
         }
         self.work(1 + key.len() / 8)?;
         let Some(property) = self.own_property(&receiver, key) else {
-            if receiver == Value::Window && key == &self.window_self_key {
+            if receiver == Value::Window && TrackedGlobal::from_key(key).is_some() {
                 return Ok(true);
             }
             if self.property_object(&receiver).is_none() && js_object(&receiver) {
@@ -6400,7 +6488,9 @@ impl Runtime {
             return Ok(false);
         }
         if matches!(receiver, Value::Window) {
-            if let Ok(key) = key.to_utf8() {
+            if let Some(kind) = TrackedGlobal::from_key(key) {
+                self.environments[0].bindings.remove(kind.name());
+            } else if let Ok(key) = key.to_utf8() {
                 self.environments[0].bindings.remove(&key);
             }
             return Ok(true);
@@ -6769,10 +6859,12 @@ impl Runtime {
         } else if !js_object(&receiver) && !matches!(receiver, Value::Null | Value::Undefined) {
             return Self::failed_write(strict);
         }
-        if receiver == Value::Window && key == &self.window_self_key {
+        if receiver == Value::Window
+            && let Some(kind) = TrackedGlobal::from_key(key)
+        {
             // Accessors/readonly data were handled above. Do not route a data
             // write back through the identifier path, which also uses [[Set]].
-            if let Some(binding) = self.environments[0].bindings.get_mut("self") {
+            if let Some(binding) = self.environments[0].bindings.get_mut(kind.name()) {
                 binding.value = value;
                 return Ok(());
             }
@@ -9088,7 +9180,7 @@ impl Runtime {
                 return Ok(Value::Window);
             }
             let value = args.first().cloned().unwrap_or(Value::Undefined);
-            let key = self.window_self_key.clone();
+            let key = self.global_key(TrackedGlobal::WindowSelf);
             if !self.define_own(
                 &Value::Window,
                 &key,
@@ -10976,6 +11068,553 @@ mod tests {
     }
 
     #[test]
+    fn global_values_have_live_descriptor_flags_and_private_realm_identity() {
+        for strict in [false, true] {
+            let (mut runtime, mut document) = property_harness();
+            let source = r#"
+                var w=window,d=Object.getOwnPropertyDescriptor(w,'globalThis');
+                assert.sameValue(globalThis,w);assert.sameValue(this,w);
+                assert.sameValue(d.value,w);assert.sameValue(d.writable,true);
+                assert.sameValue(d.enumerable,false);assert.sameValue(d.configurable,true);
+                assert.sameValue('get' in d,false);assert.sameValue('set' in d,false);
+                var names=['undefined','NaN','Infinity'];var values=[void 0,0/0,1/0];
+                for(var i=0;i<names.length;i++){
+                    var descriptor=Object.getOwnPropertyDescriptor(w,names[i]);
+                    assert.sameValue(descriptor.value,values[i]);
+                    assert.sameValue(descriptor.writable,false);assert.sameValue(descriptor.enumerable,false);
+                    assert.sameValue(descriptor.configurable,false);assert.sameValue('get' in descriptor,false);
+                }
+                var selfGetter=Object.getOwnPropertyDescriptor(w,'self').get;
+                var replacements=[0,null,void 0,false,'other',{},function(){}];
+                for(var j=0;j<replacements.length;j++){
+                    globalThis=replacements[j];assert.sameValue(w.globalThis,replacements[j]);
+                    assert.sameValue(Object.getOwnPropertyDescriptor(w,'globalThis').enumerable,false);
+                    assert.sameValue(this,w);assert.sameValue(selfGetter.call(null),w);
+                    assert.sameValue(document.defaultView,w);assert.sameValue(self,w);
+                }
+                var calls=0,poison={toString(){calls++;throw 1;},valueOf(){calls++;throw 2;}};
+                globalThis=poison;assert.sameValue(globalThis,poison);assert.sameValue(calls,0);
+                function loose(){return this;}function tight(){'use strict';return this;}
+                assert.sameValue(tight(),void 0);
+                var eventCount=0;
+                w.addEventListener('global-values',function(event){
+                    assert.sameValue(this,w);assert.sameValue(event.target,w);eventCount++;
+                });
+                w.dispatchEvent(new Event('global-values'));assert.sameValue(eventCount,1);
+                Object.defineProperty(w,'globalThis',d);assert.sameValue(globalThis,w);
+            "#;
+            if strict {
+                runtime.execute_strict(source, &mut document)
+            } else {
+                runtime.execute(source, &mut document)
+            }
+            .unwrap();
+        }
+    }
+
+    #[test]
+    fn global_values_immutable_writes_deletes_and_updates_preserve_order() {
+        for name in ["undefined", "NaN", "Infinity"] {
+            let (mut runtime, mut document) = property_harness();
+            runtime.execute(&format!(r#"
+                var w=window,original=w['{name}'],effects=0;
+                function right(){{effects++;return {{toString(){{throw 'coerced';}},valueOf(){{throw 'coerced';}}}};}}
+                var supplied=right();assert.sameValue({name}=supplied,supplied);
+                assert.sameValue(w['{name}'],original);assert.sameValue(effects,1);
+                assert.sameValue(delete {name},false);assert.sameValue(delete w['{name}'],false);
+                assert.throws(TypeError,function(){{'use strict';{name}=right();}});
+                assert.sameValue(effects,2);assert.sameValue(w['{name}'],original);
+                assert.throws(TypeError,function(){{'use strict';delete w['{name}'];}});
+                var converted=0;var extra={{valueOf(){{converted++;return 2;}}}};
+                {name}+=extra;assert.sameValue(converted,1);assert.sameValue(w['{name}'],original);
+                assert.throws(TypeError,function(){{'use strict';{name}+=extra;}});
+                assert.sameValue(converted,2);assert.sameValue(w['{name}'],original);
+                {name}++;assert.sameValue(w['{name}'],original);
+                assert.throws(TypeError,function(){{'use strict';++{name};}});
+                var {name};assert.sameValue(w['{name}'],original);
+                var descriptor=Object.getOwnPropertyDescriptor(w,'{name}');
+                assert.sameValue(descriptor.enumerable,false);assert.sameValue(descriptor.writable,false);
+            "#),&mut document).unwrap();
+            assert!(
+                Runtime::parse_only_strict(&format!("delete {name}"))
+                    .unwrap_err()
+                    .is_parse_error()
+            );
+        }
+    }
+
+    #[test]
+    fn global_values_immutable_descriptors_use_same_value_without_author_coercion() {
+        for strict in [false, true] {
+            let (mut runtime, mut document) = property_harness();
+            let source = r#"
+                var w=window,names=['undefined','NaN','Infinity'],values=[void 0,0/0,1/0];
+                var calls=0,poison={toString(){calls++;throw 'coerced';},valueOf(){calls++;throw 'coerced';}};
+                for(var i=0;i<names.length;i++){
+                    var name=names[i],value=values[i];
+                    assert.sameValue(Object.defineProperty(w,name,{}),w);
+                    assert.sameValue(Object.defineProperty(w,name,{value:value,writable:false,enumerable:false,configurable:false}),w);
+                    assert.throws(TypeError,function(){Object.defineProperty(w,name,{value:poison});});
+                    assert.throws(TypeError,function(){Object.defineProperty(w,name,{writable:true});});
+                    assert.throws(TypeError,function(){Object.defineProperty(w,name,{enumerable:true});});
+                    assert.throws(TypeError,function(){Object.defineProperty(w,name,{configurable:true});});
+                    assert.throws(TypeError,function(){Object.defineProperty(w,name,{get:undefined});});
+                    assert.sameValue(w[name],value);
+                }
+                assert.sameValue(calls,0);
+                Object.defineProperty(w,'NaN',{value:Infinity-Infinity});assert.sameValue(w.NaN,0/0);
+                assert.throws(TypeError,function(){Object.defineProperty(w,'Infinity',{value:-Infinity});});
+                var log='';var descriptor={
+                    get enumerable(){log+='e';return false;},get configurable(){log+='c';return false;},
+                    get value(){log+='v';return 7;},get writable(){log+='w';return false;}
+                };
+                assert.throws(TypeError,function(){Object.defineProperty(w,'undefined',descriptor);});
+                assert.sameValue(log,'ecvw');assert.sameValue(w.undefined,void 0);
+                var reason={},seen;try{Object.defineProperty(w,'Infinity',{get value(){throw reason;}});}catch(error){seen=error;}
+                assert.sameValue(seen,reason);assert.sameValue(w.Infinity,1/0);
+            "#;
+            if strict {
+                runtime.execute_strict(source, &mut document)
+            } else {
+                runtime.execute(source, &mut document)
+            }
+            .unwrap();
+        }
+    }
+
+    #[test]
+    fn global_values_accessors_reenter_and_borrowed_self_descriptor_keeps_its_target() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var w=window,original=Object.getOwnPropertyDescriptor(w,'globalThis'),log='';
+            var descriptor={get:function(){assert.sameValue(this,w);log+='g';return 4;},set:function(value){
+                assert.sameValue(this,w);log+='s'+value;delete w.globalThis;w.globalThis='replaced';
+            },configurable:true};
+            Object.defineProperty(w,'globalThis',descriptor);
+            var saved=Object.getOwnPropertyDescriptor(w,'globalThis');assert.sameValue(log,'');
+            globalThis+=2;assert.sameValue(log,'gs6');assert.sameValue(globalThis,'replaced');
+            Object.defineProperty(w,'globalThis',{get:function(){delete w.globalThis;return 'deleted';}});
+            assert.sameValue(globalThis,'deleted');assert.sameValue(typeof globalThis,'undefined');
+            var reason={},seen;
+            Object.defineProperty(w,'globalThis',{get:function(){throw reason;},set:function(){throw reason;},configurable:true});
+            try{globalThis;}catch(error){seen=error;}assert.sameValue(seen,reason);
+            seen=undefined;try{globalThis=2;}catch(error){seen=error;}assert.sameValue(seen,reason);
+            Object.defineProperty(w,'globalThis',{get:undefined,set:undefined});
+            assert.sameValue(globalThis,undefined);globalThis=2;assert.sameValue(globalThis,undefined);
+            assert.throws(TypeError,function(){'use strict';globalThis=2;});
+            Object.defineProperty(w,'globalThis',original);
+            var selfDescriptor=Object.getOwnPropertyDescriptor(w,'self');
+            Object.defineProperty(w,'globalThis',selfDescriptor);
+            globalThis=9;assert.sameValue(self,9);assert.sameValue(globalThis,w);
+            assert.sameValue(Object.getOwnPropertyDescriptor(w,'globalThis').get,selfDescriptor.get);
+            Object.defineProperty(w,'self',selfDescriptor);Object.defineProperty(w,'globalThis',original);
+            Object.defineProperty(w,'globalThis',{value:7,writable:false,configurable:false});
+            globalThis=8;assert.sameValue(globalThis,7);
+            assert.throws(TypeError,function(){'use strict';globalThis=8;});
+            assert.sameValue(delete w.globalThis,false);
+            assert.throws(TypeError,function(){Object.defineProperty(w,'globalThis',original);});
+        "#,&mut document).unwrap();
+    }
+
+    #[test]
+    fn global_values_captured_references_observe_rhs_and_numeric_coercion_mutations() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var w=window,original=Object.getOwnPropertyDescriptor(w,'globalThis');
+            function remove(){delete w.globalThis;return 4;}
+            globalThis=remove();assert.sameValue(globalThis,4);
+            assert.sameValue(Object.getOwnPropertyDescriptor(w,'globalThis').enumerable,true);
+            assert.throws(ReferenceError,function(){'use strict';globalThis=remove();});
+            assert.sameValue(typeof globalThis,'undefined');assert.sameValue(delete w.globalThis,true);
+            function install(){w.globalThis=6;return 7;}
+            assert.throws(ReferenceError,function(){'use strict';globalThis=install();});
+            assert.sameValue(globalThis,6);
+            function member(){'use strict';w.globalThis=remove();}member();assert.sameValue(globalThis,4);
+            globalThis={valueOf(){delete w.globalThis;return 10;}};
+            assert.sameValue(globalThis++,10);assert.sameValue(globalThis,11);
+            globalThis={valueOf(){delete w.globalThis;return 10;}};
+            assert.throws(ReferenceError,function(){'use strict';globalThis++;});
+            assert.sameValue(typeof globalThis,'undefined');
+            Object.defineProperty(w,'globalThis',original);
+            function lock(){Object.defineProperty(w,'globalThis',{value:3,writable:false});return 9;}
+            globalThis=lock();assert.sameValue(globalThis,3);
+            assert.throws(TypeError,function(){'use strict';globalThis=lock();});
+            Object.defineProperty(w,'globalThis',original);
+            var received=0;
+            function installSetter(){Object.defineProperty(w,'globalThis',{get:undefined,set:function(value){received=value;}});return 12;}
+            globalThis=installSetter();assert.sameValue(received,12);assert.sameValue(globalThis,undefined);
+        "#,&mut document).unwrap();
+    }
+
+    #[test]
+    fn global_values_inherited_bindings_and_member_receivers_are_bounded_and_coherent() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var w=window,original=Object.getOwnPropertyDescriptor(w,'globalThis');
+            delete w.globalThis;Object.prototype.globalThis=5;
+            assert.sameValue(globalThis,5);assert.sameValue(w.globalThis,5);assert.sameValue('globalThis' in w,true);
+            assert.sameValue(delete globalThis,true);assert.sameValue(Object.prototype.globalThis,5);
+            globalThis=6;assert.sameValue(Object.getOwnPropertyDescriptor(w,'globalThis').value,6);
+            assert.sameValue(Object.prototype.globalThis,5);delete w.globalThis;
+            var saved=7,log='';
+            Object.defineProperty(Object.prototype,'globalThis',{get:function(){assert.sameValue(this,w);log+='g';return saved;},set:function(v){assert.sameValue(this,w);log+='s';saved=v;},configurable:true});
+            globalThis+=2;assert.sameValue(log,'gs');assert.sameValue(saved,9);
+            assert.sameValue(Object.getOwnPropertyDescriptor(w,'globalThis'),undefined);
+            assert.sameValue(delete globalThis,true);assert.sameValue(typeof Object.getOwnPropertyDescriptor(Object.prototype,'globalThis').get,'function');
+            Object.defineProperty(Object.prototype,'globalThis',{value:4,writable:false});
+            globalThis=2;assert.sameValue(globalThis,4);
+            assert.throws(TypeError,function(){'use strict';globalThis=2;});
+            delete Object.prototype.globalThis;Object.defineProperty(w,'globalThis',original);
+            var child=Object.create(w);child.globalThis=8;
+            assert.sameValue(child.globalThis,8);assert.sameValue(w.globalThis,w);
+            Object.defineProperty(w,'globalThis',{get:function(){return this;},set:function(value){this.marker=value;}});
+            delete child.globalThis;assert.sameValue(child.globalThis,child);
+            child.globalThis=10;assert.sameValue(child.marker,10);assert.sameValue(w.marker,undefined);
+        "#,&mut document).unwrap();
+    }
+
+    #[test]
+    fn global_values_global_lexical_var_and_local_bindings_remain_distinct() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute("var w=window,original=Object.getOwnPropertyDescriptor(w,'globalThis');var globalThis;assert.sameValue(Object.getOwnPropertyDescriptor(w,'globalThis').enumerable,false);",&mut document).unwrap();
+        runtime.execute_strict("let globalThis='lexical';assert.sameValue(globalThis,'lexical');assert.sameValue(w.globalThis,w);w.globalThis=4;globalThis='changed';assert.sameValue(w.globalThis,4);assert.sameValue(this,w);",&mut document).unwrap();
+        runtime.execute("delete w.globalThis;assert.sameValue(globalThis,'changed');assert.sameValue(w.globalThis,undefined);Object.defineProperty(w,'globalThis',original);assert.sameValue(globalThis,'changed');",&mut document).unwrap();
+        for source in ["var globalThis;", "function globalThis(){}"] {
+            assert_eq!(
+                runtime.execute(source, &mut document).unwrap_err().name(),
+                "SyntaxError"
+            );
+        }
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute("var w=window;delete w.globalThis;Object.defineProperty(Object.prototype,'globalThis',{set:function(){throw 'inherited setter';},configurable:true});",&mut document).unwrap();
+        runtime.execute_strict("var globalThis;assert.sameValue(globalThis,undefined);var d=Object.getOwnPropertyDescriptor(w,'globalThis');assert.sameValue(d.configurable,false);assert.sameValue(d.enumerable,true);assert.sameValue(d.writable,true);delete Object.prototype.globalThis;",&mut document).unwrap();
+        assert_eq!(
+            runtime
+                .execute("let globalThis;", &mut document)
+                .unwrap_err()
+                .name(),
+            "SyntaxError"
+        );
+        for name in ["undefined", "NaN", "Infinity"] {
+            let (mut runtime, mut document) = property_harness();
+            assert_eq!(
+                runtime
+                    .execute(&format!("let before;let {name};"), &mut document)
+                    .unwrap_err()
+                    .name(),
+                "SyntaxError"
+            );
+            assert!(!runtime.environments[1].bindings.contains_key("before"));
+            runtime.execute_strict(&format!("function local({name}){{return {name};}}assert.sameValue(local(2),2);{{let {name}=3;assert.sameValue({name},3);}}"),&mut document).unwrap();
+        }
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        assert_eq!(
+            runtime
+                .execute("let globalThis=globalThis;", &mut document)
+                .unwrap_err()
+                .name(),
+            "ReferenceError"
+        );
+        assert!(matches!(
+            runtime
+                .own_property(
+                    &Value::Window,
+                    &runtime.global_key(TrackedGlobal::GlobalThis)
+                )
+                .unwrap()
+                .value,
+            PropertyValue::Data {
+                value: Value::Window,
+                writable: true
+            }
+        ));
+    }
+
+    #[test]
+    fn global_values_function_preflight_checks_all_tracked_names_without_partial_declarations() {
+        for strict in [false, true] {
+            for kind in TrackedGlobal::ALL {
+                let (mut runtime, mut document) = property_harness();
+                let name = kind.name();
+                if matches!(kind, TrackedGlobal::WindowSelf | TrackedGlobal::GlobalThis) {
+                    runtime
+                        .execute(
+                            &format!(
+                                "Object.defineProperty(window,'{name}',{{configurable:false}});"
+                            ),
+                            &mut document,
+                        )
+                        .unwrap();
+                }
+                let global_count = runtime.environments[0].bindings.len();
+                let lexical_count = runtime.environments[1].bindings.len();
+                let function_count = runtime.functions.len();
+                let source = format!(
+                    "let freshLexical;var freshVar;function freshFunction(){{}}function {name}(){{}}"
+                );
+                let error = if strict {
+                    runtime.execute_strict(&source, &mut document)
+                } else {
+                    runtime.execute(&source, &mut document)
+                }
+                .unwrap_err();
+                assert_eq!(error.name(), "TypeError");
+                assert_eq!(runtime.environments[0].bindings.len(), global_count);
+                assert_eq!(runtime.environments[1].bindings.len(), lexical_count);
+                assert_eq!(runtime.functions.len(), function_count);
+                runtime.execute("assert.sameValue(typeof freshLexical,'undefined');assert.sameValue(typeof freshVar,'undefined');assert.sameValue(typeof freshFunction,'undefined');",&mut document).unwrap();
+                runtime.execute("let freshLexical=1;var freshVar=2;function freshFunction(){return 3;}assert.sameValue(freshLexical+freshVar+freshFunction(),6);",&mut document).unwrap();
+            }
+        }
+        for kind in TrackedGlobal::ALL {
+            let (mut runtime, mut document) = property_harness();
+            if matches!(kind, TrackedGlobal::WindowSelf | TrackedGlobal::GlobalThis) {
+                runtime
+                    .execute(
+                        &format!(
+                            "Object.defineProperty(window,'{}',{{configurable:false}});",
+                            kind.name()
+                        ),
+                        &mut document,
+                    )
+                    .unwrap();
+            }
+            runtime.execute("let occupied=1;", &mut document).unwrap();
+            let error = runtime
+                .execute(
+                    &format!(
+                        "let fresh;var early;for(var occupied in {{}}){{}}function {}(){{}}",
+                        kind.name()
+                    ),
+                    &mut document,
+                )
+                .unwrap_err();
+            assert_eq!(error.name(), "SyntaxError");
+            assert!(!runtime.environments[0].bindings.contains_key("early"));
+            assert!(!runtime.environments[1].bindings.contains_key("fresh"));
+        }
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        let error = runtime
+            .execute("function NaN(){}function Infinity(){}", &mut document)
+            .unwrap_err();
+        assert!(error.message.contains("Infinity"));
+        assert!(
+            runtime
+                .execute("function Infinity(){}function NaN(){}", &mut document)
+                .unwrap_err()
+                .message
+                .contains("NaN")
+        );
+    }
+
+    #[test]
+    fn global_values_function_commit_uses_last_declaration_and_preserves_compatible_flags() {
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        let before = runtime.functions.len();
+        assert_eq!(runtime.execute("function globalThis(){return 1;}function self(){return 2;}function globalThis(){return 3;}function self(){return 4;}globalThis()+self();",&mut document).unwrap(),Value::Number(7.0));
+        assert_eq!(runtime.functions.len(), before + 2);
+        for kind in [TrackedGlobal::WindowSelf, TrackedGlobal::GlobalThis] {
+            let property = runtime
+                .own_property(&Value::Window, &runtime.global_key(kind))
+                .unwrap();
+            assert!(!property.configurable);
+            assert!(property.enumerable);
+            assert!(matches!(
+                property.value,
+                PropertyValue::Data { writable: true, .. }
+            ));
+        }
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute("Object.defineProperty(window,'globalThis',{get:function(){throw 'getter';},set:function(){throw 'setter';},configurable:true});",&mut document).unwrap();
+        runtime
+            .execute(
+                "function globalThis(){return 5;}assert.sameValue(globalThis(),5);",
+                &mut document,
+            )
+            .unwrap();
+        runtime
+            .execute(
+                "function globalThis(){return 6;}assert.sameValue(globalThis(),6);",
+                &mut document,
+            )
+            .unwrap();
+        runtime
+            .execute(
+                "Object.defineProperty(window,'globalThis',{writable:false});",
+                &mut document,
+            )
+            .unwrap();
+        assert_eq!(
+            runtime
+                .execute("function globalThis(){}", &mut document)
+                .unwrap_err()
+                .name(),
+            "TypeError"
+        );
+    }
+
+    #[test]
+    fn global_values_definition_keys_and_descriptor_reentrancy_keep_exact_names_and_order() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var w=window,original=Object.getOwnPropertyDescriptor(w,'globalThis'),log='';
+            var key={toString(){log+='k';delete w.globalThis;return 'globalThis';}};
+            var descriptor={get value(){log+='v';return 5;},configurable:true,writable:true};
+            Object.defineProperty(w,key,descriptor);assert.sameValue(log,'kv');assert.sameValue(globalThis,5);
+            Object.defineProperty(w,'globalThis',original);
+            var poison={get value(){Object.defineProperty(w,'globalThis',{value:7,writable:false,configurable:false});return 8;}};
+            assert.throws(TypeError,function(){Object.defineProperty(w,'globalThis',poison);});assert.sameValue(globalThis,7);
+            var calls=0;assert.throws(TypeError,function(){Object.defineProperty(null,{toString(){calls++;return 'NaN';}},{value:0});});
+            assert.sameValue(calls,0);
+            Object.defineProperty(w,{toString(){calls++;return 'NaN';}},{value:0/0});assert.sameValue(calls,1);
+            assert.sameValue(Object.getOwnPropertyDescriptor(w,'globalThis\u0000'),undefined);
+            assert.sameValue(Object.getOwnPropertyDescriptor(w,'NaN\uD800'),undefined);
+        "#,&mut document).unwrap();
+        for key in [
+            "'globalThis\\u0000'",
+            "'globalThis\\uD800'",
+            "'GlobalThis'",
+            "'undefined '",
+            "'NaN\\uFFFD'",
+        ] {
+            assert!(
+                run(&format!("Object.defineProperty(window,{key},{{value:1}})"))
+                    .unwrap_err()
+                    .is_unsupported()
+            );
+        }
+        for source in [
+            "Object.keys(window)",
+            "window.hasOwnProperty('globalThis')",
+            "window.propertyIsEnumerable('NaN')",
+            "Object.defineProperty(window,'other',{value:1})",
+        ] {
+            assert!(run(source).unwrap_err().is_unsupported());
+        }
+    }
+
+    #[test]
+    fn global_values_share_resource_limits_and_preflight_every_final_property_store() {
+        for kind in TrackedGlobal::ALL {
+            let mut runtime = Runtime::new();
+            let key = runtime.global_key(kind);
+            let old = runtime.own_property(&Value::Window, &key).unwrap();
+            let count = runtime.environments[0].bindings.len();
+            runtime.steps = 0;
+            assert!(
+                runtime
+                    .define_own(&Value::Window, &key, PropertyDescriptor::default())
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(runtime.environments[0].bindings.len(), count);
+            let current = runtime.own_property(&Value::Window, &key).unwrap();
+            assert_eq!(old.enumerable, current.enumerable);
+            assert_eq!(old.configurable, current.configurable);
+            match (&old.value, &current.value) {
+                (PropertyValue::Data { value: a, .. }, PropertyValue::Data { value: b, .. }) => {
+                    assert!(json_same_value(a, b))
+                }
+                (
+                    PropertyValue::Accessor { get: a, .. },
+                    PropertyValue::Accessor { get: b, .. },
+                ) => assert_eq!(a, b),
+                _ => panic!("property kind changed"),
+            }
+        }
+        for kind in [
+            TrackedGlobal::GlobalThis,
+            TrackedGlobal::Undefined,
+            TrackedGlobal::Nan,
+            TrackedGlobal::Infinity,
+        ] {
+            let mut runtime = Runtime::new();
+            let mut document = Document::parse("");
+            let key = runtime.global_key(kind);
+            let before = runtime.allocated;
+            let value = runtime
+                .binding_value(0, kind.name(), &mut document)
+                .unwrap();
+            assert_eq!(runtime.allocated, before);
+            runtime.allocated = MAX_HEAP;
+            assert!(
+                runtime
+                    .define_own(
+                        &Value::Window,
+                        &key,
+                        PropertyDescriptor {
+                            value: Some(value),
+                            ..PropertyDescriptor::default()
+                        }
+                    )
+                    .unwrap()
+            );
+            assert_eq!(runtime.allocated, MAX_HEAP);
+        }
+        for kind in [TrackedGlobal::WindowSelf, TrackedGlobal::GlobalThis] {
+            let mut runtime = Runtime::new();
+            let key = runtime.global_key(kind);
+            runtime
+                .define_own(
+                    &Value::Window,
+                    &key,
+                    PropertyDescriptor::data_property(Value::Number(7.0), true, true, true),
+                )
+                .unwrap();
+            runtime.allocated = MAX_HEAP;
+            assert!(
+                runtime
+                    .define_own(
+                        &Value::Window,
+                        &key,
+                        PropertyDescriptor {
+                            get: Some(Value::Undefined),
+                            ..PropertyDescriptor::default()
+                        }
+                    )
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(
+                runtime.environments[0].bindings[kind.name()].value,
+                Value::Number(7.0)
+            );
+            runtime.delete_property(Value::Window, &key).unwrap();
+            let count = runtime.environments[0].bindings.len();
+            assert!(
+                runtime
+                    .define_own(
+                        &Value::Window,
+                        &key,
+                        PropertyDescriptor::data_property(Value::Number(8.0), true, true, true)
+                    )
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(runtime.environments[0].bindings.len(), count);
+            assert!(runtime.own_property(&Value::Window, &key).is_none());
+            let prototype = runtime.prototypes["EventTarget"];
+            runtime.objects[prototype].prototype = Some(Value::Object(prototype));
+            assert!(
+                runtime
+                    .resolve_binding(1, kind.name())
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+        }
+        for source in [
+            "Object.defineProperty(window,'globalThis',{get:function(){return globalThis;}});try{globalThis;}catch(e){throw 'caught';}",
+            "Object.defineProperty(window,'globalThis',{set:function(v){globalThis=v;}});try{globalThis=1;}catch(e){throw 'caught';}",
+            "var w=window,d=Object.getOwnPropertyDescriptor(w,'globalThis');try{for(var i=0;i<10000;i++){delete w.globalThis;Object.defineProperty(w,'globalThis',d);}}catch(e){throw 'caught';}",
+        ] {
+            assert!(run(source).unwrap_err().is_resource_limit(), "{source}");
+        }
+    }
+
+    #[test]
     fn window_self_starts_as_an_accessor_and_replaces_without_coercion_in_both_modes() {
         for strict in [false, true] {
             let (mut runtime, mut document) = property_harness();
@@ -11146,7 +11785,10 @@ mod tests {
                     )
                     .unwrap();
                 let before = runtime
-                    .own_property(&Value::Window, &runtime.window_self_key)
+                    .own_property(
+                        &Value::Window,
+                        &runtime.global_key(TrackedGlobal::WindowSelf),
+                    )
                     .unwrap();
                 let global_count = runtime.environments[0].bindings.len();
                 let lexical_count = runtime.environments[1].bindings.len();
@@ -11164,7 +11806,10 @@ mod tests {
                 assert_eq!(runtime.environments[1].bindings.len(), lexical_count);
                 assert_eq!(runtime.functions.len(), function_count);
                 let after = runtime
-                    .own_property(&Value::Window, &runtime.window_self_key)
+                    .own_property(
+                        &Value::Window,
+                        &runtime.global_key(TrackedGlobal::WindowSelf),
+                    )
                     .unwrap();
                 match (before.value, after.value) {
                     (
@@ -11272,7 +11917,7 @@ mod tests {
     #[test]
     fn window_self_descriptor_and_callback_limits_are_shared_and_preflight_mutation() {
         let mut runtime = Runtime::new();
-        let key = runtime.window_self_key.clone();
+        let key = runtime.global_key(TrackedGlobal::WindowSelf);
         let original = runtime.own_property(&Value::Window, &key).unwrap();
         runtime
             .define_own(
@@ -11324,7 +11969,7 @@ mod tests {
             Value::Number(7.0)
         );
         let mut runtime = Runtime::new();
-        let key = runtime.window_self_key.clone();
+        let key = runtime.global_key(TrackedGlobal::WindowSelf);
         runtime.delete_property(Value::Window, &key).unwrap();
         let prototype = runtime.prototypes["EventTarget"];
         runtime.objects[prototype].prototype = Some(Value::Object(prototype));

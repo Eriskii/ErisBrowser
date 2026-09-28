@@ -1,6 +1,93 @@
 # Validation record
 
+## Global value properties
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **747 Rust tests** pass with `--include-ignored`: 602 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 39 pipeline and 31 confined-worker tests. None remain
+ignored. All **63 Python checks** and **57 exact pixel references** pass.
+
+The [global-value implementation](../tests/conformance/global-values.md) gives
+globalThis, undefined, NaN and Infinity their actual initial descriptor flags
+and shares the existing Window.self property machinery through an exact
+five-name selector. Eleven new script groups cover immutable writes/deletes,
+SameValue descriptor compatibility, reentrant accessors, inherited and captured
+references, lexical separation, private Window/event identity and allocation/work
+limits. Tracked global functions are checked before declaration insertion;
+reverse-order checks and the last declaration of each name avoid partial
+bindings and unnecessary function allocations.
+
+Direct Page and real confined-worker fixtures produce six green samples and
+six blue samples after a callback replaces the public property and a separate
+lexical binding. Initial descriptors, strict immutable writes, deletion,
+restoration, sloppy/strict receiver rules and Window events are checked before
+the pixels are accepted. Worker pixels match the direct Page output.
+
+Independent frozen-release review matches **178 expected outcomes**: 138 normal
+completions, 18 intrinsic declaration errors, 14 explicitly unsupported controls
+and eight uncatchable resource stops. All eight strict/sloppy continuation pages
+match exact final text and the single intended declaration-error diagnostic.
+They confirm a rejected function declaration leaves no earlier lexical, var or
+function binding behind, permits later declarations, and preserves the locked
+property and private Window identity. The review uses unchanged expectations,
+upstream assertion helpers and before/candidate source and binary fingerprints.
+Four compiled private resource/declaration groups also pass under 512 MiB,
+three-second CPU and eight-second wall limits. Static review found no concrete
+new defect in the changed descriptor, declaration, callback or allocation paths.
+
+The complete new [global-value profile](../tests/conformance/test262-global-values.md)
+retains 49 upstream files and all 88 required modes. It improves from
+**32 passed / 16 failed / 40 unsupported** to **38 passed / ten failed /
+40 unsupported**, with all **64 preflights verified**. The six gains are the
+undefined, NaN and Infinity direct descriptor tests in both modes. All earlier
+passes are preserved, with identical source/harness/mode, manifest and execution
+policy fingerprints. The ten failures still require missing Date/URI globals;
+the 40 unsupported cases still require eval or host reflection/enumeration.
+The [full report](../tests/conformance/test262-global-values-latest.json) keeps
+every observation. The new regression baseline and its CLI gate pass; this
+execution-health gate permits documented ordinary failures and does not mean
+the entire selection passes.
+
+All earlier regression gates retain their outcomes: HTML **3,868 matched /
+two mismatched / six unsupported**, String/JSON **536 passed / 116 unsupported**,
+RegExp **250 / 40**, templates **82 / 32**, rest parameters **16 / six**, and
+prototype membership **ten / ten**. The complete unchanged functions inventory
+retains **501 passed / 620 unsupported / eight failed / two resource stops**
+with all 48 preflights verified, no gained/lost passes and identical case/policy
+fingerprints. Its two parser stops still prevent a healthy functions baseline.
+No previously imported corpus, baseline or assertion helper was modified.
+
+The **15,000-case** mutation smoke run has zero caught panics or invariant
+failures: 5,000 accepted HTML, 628 accepted/4,372 rejected scripts, and
+3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and
+display-list size is 1,173 commands; 17 cases stop within paint limits. The new
+global-property seed changes the inventory, so acceptance counts are not a
+comparison against the previous run.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+|---|---|
+| `eris-browser` | `3f42c2e722c16c97f8d4021fcb0128d56c06aef6dbccd25f788ee2a8aea29e0c` |
+| `eris-js` | `3bcf5b560c662c70568c0748c6646f85fe056710231bd339b0317b67ec3c7663` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `d0a80ce7ca3255a95b4bf31103020a26fd851f7d1b8478d2f2ca1449380e4c96` |
+
+The final source-input digest is
+`7ab85433d856ca68c585e4a02c3f52a96dcb3ae90f72414b8e8282b1f6415975`.
+Session logs use `global-values-final` under `artifacts/`; independent review
+records remain session scratch files. General host definitions/reflection,
+window/document descriptor correctness, WindowProxy and cross-realm behavior
+remain incomplete. No new native-window or performance measurement is assigned
+to this increment. Full web compatibility, independently audited security and
+Chromium-relative performance remain unverified.
+
 ## Replaceable Window.self
+
+Published checkpoint `a9f4530` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36410428928),
+including every pinned regression gate, Rust 1.88 compilation and the Vulkan probe.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **734 Rust tests** pass with `--include-ignored`: 591 library,

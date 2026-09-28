@@ -30,13 +30,16 @@ FUNCTION_DIRECTORIES = {
 }
 REST_PARAMETER_DIRECTORIES = {'rest-parameters': 11}
 IS_PROTOTYPE_OF_DIRECTORIES = {'Object/prototype/isPrototypeOf': 10}
+GLOBAL_VALUE_DIRECTORIES = {'global': 29, 'undefined': 8, 'NaN': 6, 'Infinity': 6}
 PROFILES = {'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
             'rest-parameters': REST_PARAMETER_DIRECTORIES,
-            'is-prototype-of': IS_PROTOTYPE_OF_DIRECTORIES}
+            'is-prototype-of': IS_PROTOTYPE_OF_DIRECTORIES,
+            'global-values': GLOBAL_VALUE_DIRECTORIES}
 PROFILE_ROOTS = {'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
                  'template-literal': 'test/language', 'functions': 'test/language',
-                 'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins'}
+                 'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins',
+                 'global-values': 'test/built-ins'}
 
 
 def corpus_name(profile):
@@ -188,6 +191,7 @@ def import_corpus(output, profile='string-json'):
         'functions': 'all direct .js files in four language function/arrow/object-method directories; no implementation',
         'rest-parameters': 'all direct .js files in language/rest-parameters; no implementation',
         'is-prototype-of': 'all direct .js files in built-ins/Object/prototype/isPrototypeOf; no implementation',
+        'global-values': 'all direct .js files in built-ins/global, undefined, NaN and Infinity; no implementation',
     }[profile]
     manifest = dict(format=1, repository=f'https://github.com/{REPOSITORY}', revision=REVISION,
                     scope=scope,

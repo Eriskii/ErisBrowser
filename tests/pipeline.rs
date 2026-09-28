@@ -38,6 +38,11 @@ fn replaceable_window_self_preserves_lexical_and_event_identity() {
 }
 
 #[test]
+fn global_value_properties_preserve_private_realm_and_event_identity() {
+    assert_six_scripted_samples(include_str!("fixtures/global-values.html"));
+}
+
+#[test]
 fn window_self_state_survives_fragment_navigation_and_resets_in_a_new_page() {
     let source = include_str!("fixtures/window-self.html");
     let mut p = page(source);

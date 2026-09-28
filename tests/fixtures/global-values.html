@@ -1,0 +1,76 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Global value properties and realm identity</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#values{left:0}#flags{left:50px}#protected{left:100px}#replacement{left:150px}#restored{left:200px}#identity{left:250px}
+#change{position:absolute;top:60px;left:0}
+</style>
+<div id="values" class="sample"></div><div id="flags" class="sample"></div>
+<div id="protected" class="sample"></div><div id="replacement" class="sample"></div>
+<div id="restored" class="sample"></div><div id="identity" class="sample"></div>
+<button id="change" type="button">Replace the global property again</button>
+<script>
+'use strict';
+var globalThis;
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color='green'){document.getElementById(id).style.backgroundColor=color;}
+const win=window;
+const initialGlobal=Object.getOwnPropertyDescriptor(win,'globalThis');
+const originalSelfGetter=Object.getOwnPropertyDescriptor(win,'self').get;
+check(globalThis===win&&this===win&&undefined===void 0&&NaN!==NaN&&Infinity===1/0,'initial values and private this');
+mark('values');
+check(initialGlobal.writable&&!initialGlobal.enumerable&&initialGlobal.configurable,'globalThis initial flags');
+const names=['undefined','NaN','Infinity'];
+for(let i=0;i<names.length;i++){
+  const descriptor=Object.getOwnPropertyDescriptor(win,names[i]);
+  check(!descriptor.writable&&!descriptor.enumerable&&!descriptor.configurable,'protected global flags');
+}
+mark('flags');
+let rejected=0;
+try{undefined=7;}catch(error){if(error instanceof TypeError)rejected++;}
+try{NaN=7;}catch(error){if(error instanceof TypeError)rejected++;}
+try{Infinity=7;}catch(error){if(error instanceof TypeError)rejected++;}
+check(rejected===3&&undefined===void 0&&NaN!==NaN&&Infinity===1/0,'strict protected writes');
+mark('protected');
+globalThis={phase:'first'};
+check(win.globalThis===globalThis&&globalThis.phase==='first'&&this===win,'replacement does not change top-level this');
+check(originalSelfGetter.call(null)===win&&self===win,'self remains the realm Window');
+check(!Object.getOwnPropertyDescriptor(win,'globalThis').enumerable,'assignment preserves enumerability');
+mark('replacement');
+check(delete win.globalThis,'delete configurable globalThis');
+check(typeof globalThis==='undefined'&&!('globalThis' in win),'deletion removes the name');
+win.globalThis=win;
+check(Object.getOwnPropertyDescriptor(win,'globalThis').enumerable,'member recreation uses ordinary data flags');
+Object.defineProperty(win,'globalThis',initialGlobal);
+check(globalThis===win&&!Object.getOwnPropertyDescriptor(win,'globalThis').enumerable,'restore initial descriptor');
+globalThis={phase:'ready'};
+mark('restored');
+let globalEvents=0;
+</script>
+<script>
+let globalThis='lexical shadow';
+function looseThis(){return this;}
+function strictThis(){'use strict';return this;}
+check(globalThis==='lexical shadow'&&win.globalThis.phase==='ready','lexical and property bindings stay separate');
+check(looseThis()===win&&strictThis()===undefined&&this===win,'callee receiver rules use private realm identity');
+win.addEventListener('eris-global',function(event){
+  check(this===win&&event.target===win,'global property cannot retarget Window events');
+  globalEvents++;
+});
+win.dispatchEvent(new Event('eris-global'));
+check(globalEvents===1,'Window listener remains reachable');
+mark('identity');document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  check(globalThis==='lexical shadow'&&win.globalThis.phase==='ready','global state survives page checkpoints');
+  globalThis='changed lexical';
+  win.globalThis={phase:'clicked'};
+  check(globalThis==='changed lexical'&&win.globalThis.phase==='clicked','callback writes preserve separate bindings');
+  check(looseThis()===win&&strictThis()===undefined&&originalSelfGetter.call(null)===win,'private receiver identity survives replacement');
+  win.dispatchEvent(new Event('eris-global'));
+  check(globalEvents===2,'Window event identity survives callback replacement');
+  mark('values','blue');mark('flags','blue');mark('protected','blue');
+  mark('replacement','blue');mark('restored','blue');mark('identity','blue');
+  document.body.className='clicked';
+};
+</script>

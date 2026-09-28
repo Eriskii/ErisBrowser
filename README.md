@@ -87,6 +87,7 @@ python3 tools/test262_conformance.py --profile regexp --baseline tests/conforman
 python3 tools/test262_conformance.py --profile template-literal --baseline tests/conformance/test262-template-literal-current.json
 python3 tools/test262_conformance.py --profile rest-parameters --baseline tests/conformance/test262-rest-parameters-current.json
 python3 tools/test262_conformance.py --profile is-prototype-of --baseline tests/conformance/test262-is-prototype-of-current.json
+python3 tools/test262_conformance.py --profile global-values --baseline tests/conformance/test262-global-values-current.json
 python3 -m unittest discover -s tools -p 'test_*.py'
 cargo run --locked --release --bin eris-stress -- 5000
 ```
@@ -115,6 +116,11 @@ regression baseline runs in CI.
 The complete [prototype-membership directory](tests/conformance/test262-is-prototype-of.md)
 adds 20 variants: ten pass and ten require unsupported features. Its separate
 CI gate requires all method assertion preflights to pass.
+
+The complete [global-value directories](tests/conformance/test262-global-values.md)
+retain 88 variants: 38 pass, ten fail on missing Date/URI functions, and 40 remain
+unsupported. Corrected global-property behavior adds six passes and verifies all
+64 assertion preflights; CI preserves those passes and the unchanged inventory.
 
 ## Implementation
 
