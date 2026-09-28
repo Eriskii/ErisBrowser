@@ -14,6 +14,11 @@ identity, registry/description behavior, descriptors, computed keys, JSON omissi
 records 168 passed, six failed and 68 unsupported modes. Iteration, RegExp dispatch,
 species, other realms and most Reflect methods remain incomplete.
 
+[String.prototype.concat](../tests/conformance/string-concat.md) supports generic
+receivers, ordered conversion, shared method identity and exact UTF-16 output.
+Its complete pinned directory has 42 passing modes and two metadata exclusions
+for Reflect.construct. This does not complete the remaining String methods.
+
 This is an implementation inventory, not a conformance certificate. A feature listed as partial supports specific cases; it does not imply passing that specification's full tests. Unsupported syntax is generally ignored by HTML/CSS or reported by the script interpreter.
 
 | Area | Implemented subset | Missing or incomplete |

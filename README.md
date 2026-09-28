@@ -231,6 +231,12 @@ now add data/accessor definitions, exact UTF-16 keys and private execution recei
 This follow-up gains another 13 upstream passes and completes all 64 frozen local
 Window probe modes. Full Window interfaces and extensibility remain incomplete.
 
+[String.prototype.concat](tests/conformance/string-concat.md) now performs ordered
+string conversion and preserves UTF-16 units using one final output buffer.
+Its complete 22-source Test262 directory records 42 passed modes and two requiring
+unimplemented Reflect.construct; all 56 assertion controls verify. The existing
+21 profile inventories retain every previous pass and control.
+
 ## Implementation
 
 The [architecture notes](docs/ARCHITECTURE.md) describe the page pipeline and native process boundaries.

@@ -18,6 +18,7 @@ from import_test262 import (DIRECTORIES, PROFILES, PROFILE_ROOTS, MAX_FILE, MAX_
 
 ROOT = Path(__file__).resolve().parents[1]
 SUPPORTED_FEATURES = {'arrow-function', 'String.fromCodePoint', 'well-formed-json-stringify', 'for-in-order'}
+STRING_CONCAT_FEATURES = SUPPORTED_FEATURES.copy()
 REGEXP_FEATURES = SUPPORTED_FEATURES | {'regexp-dotall', 'regexp-match-indices', 'regexp-named-groups', 'regexp-sticky'}
 TEMPLATE_FEATURES = SUPPORTED_FEATURES | {'template', 'u180e'}
 FUNCTION_FEATURES = SUPPORTED_FEATURES | {'default-parameters', 'object-methods',
@@ -45,7 +46,7 @@ SYMBOL_FEATURES = SUPPORTED_FEATURES | {
     'Symbol.unscopables', 'Symbol.prototype.description', 'Reflect', 'Reflect.ownKeys',
     'computed-property-names', 'object-methods',
 }
-PROFILE_FEATURES = {'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+PROFILE_FEATURES = {'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
                     'is-prototype-of': IS_PROTOTYPE_OF_FEATURES,
@@ -972,6 +973,19 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
             ('symbol-tag', "var o={};o[Symbol.toStringTag]='Custom';", 'Object.prototype.toString.call(o)', "'[object Custom]'", "'[object Object]'"),
             ('symbol-instance', "var o={};o[Symbol.hasInstance]=function(v){return v===3;};", '3 instanceof o', 'true', 'false'),
             ('symbol-json', "var o={x:Symbol()};o[Symbol()]=1;", 'JSON.stringify(o)', "'{}'", "'{x:1}'"),
+        ]
+        for mode in ('sloppy', 'strict'):
+            for name, setup, actual, good, bad in pairs:
+                for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                    variants.append((name + suffix, setup + f'assert.sameValue({actual},{value});', expected, mode))
+    if profile == 'string-concat':
+        pairs = [
+            ('concat-basic', '', "'a'.concat('b',3)", "'ab3'", "'a3b'"),
+            ('concat-generic', '', "String.prototype.concat.call(12,'x')", "'12x'", "'x12'"),
+            ('concat-order', "var log='';var r={toString:function(){log+='r';return 'R';}},a={toString:function(){log+='a';return 'A';}};String.prototype.concat.call(r,a);", 'log', "'ra'", "'ar'"),
+            ('concat-utf16', r"var text='\ud800'.concat('\udfff');", 'text.charCodeAt(1)', '0xdfff', '0xfffd'),
+            ('concat-null', "assert.sameValue(typeof String.prototype.concat,'function');var caught;try{String.prototype.concat.call(null);}catch(e){caught=e;}", 'caught instanceof TypeError', 'true', 'false'),
+            ('concat-name', '', 'String.prototype.concat.name', "'concat'", "'wrong'"),
         ]
         for mode in ('sloppy', 'strict'):
             for name, setup, actual, good, bad in pairs:

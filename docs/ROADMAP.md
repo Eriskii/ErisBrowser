@@ -2,7 +2,9 @@
 
 The [Window global-binding checkpoint](../tests/conformance/window-global-bindings.md)
 adds general data/accessor definitions, exact UTF-16 property keys, private
-execution receivers and global declaration validation. Next work includes
+execution receivers and global declaration validation. The
+[String concat checkpoint](../tests/conformance/string-concat.md) adds bounded,
+ordered conversion and exact UTF-16 assembly. Next work includes
 Window extensibility and interface coverage, complete DOMString storage and Web
 IDL interfaces, remaining Symbol consumers, iterator infrastructure and broader
 ECMAScript dependencies. These sit alongside the Vulkan milestones below.

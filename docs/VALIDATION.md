@@ -1,5 +1,45 @@
 # Validation record
 
+## String.prototype.concat
+
+The [concat implementation](../tests/conformance/string-concat.md) passes **995
+Rust tests** with `--include-ignored` (813 library, none ignored), formatting,
+strict all-target Clippy, release compilation, **158 Python checks**, **57 exact
+pixel references**, and **15,000 mutation cases** without a caught panic or
+invariant failure. Seven Rust groups and three Python groups cover conversion,
+UTF-16/resource boundaries, complete corpus integrity and assertion failures.
+
+The new complete **22-source / 44-mode** directory records **42 passed / two
+metadata-unsupported** modes. The same frozen before binary records 40 failed,
+two passed and two unsupported; its new feature preflight fails (34/56 verify).
+Those two initial passes accept a construction exception even when the method is
+absent. The new binary verifies all **56 controls**. The two unsupported modes
+still require Reflect.construct. The new healthy baseline retains all 44 modes.
+
+All **21 previous profiles / 7,121 modes / 1,744 controls** preserve their sources
+and policies. No pass is lost and no control changes. Two existing Symbol failures
+now reach missing Date instead of missing concat; all other observations remain
+identical, including resource stops. Existing baselines are unchanged. The combined
+inventory is **22 profiles / 7,165 modes / 1,800 verified controls**, with 18 healthy
+baseline gates and four resource observation profiles. HTML remains 3,868 matched,
+two mismatched and six unsupported.
+
+The **28 frozen local probe modes** retain all sources and fingerprints: 26 improve,
+while two original metadata probes remain failed because their own use of upstream
+verifyProperty deletes the method without restoration. The initial focused Rust
+run exposed this fixture error. The unchanged original source now has a regression
+check for its TypeError and deletion; a separate corrected metadata probe passes
+both modes using `{restore:true}`. These retained failures are not counted as
+conformance passes, and no upstream source or helper was changed.
+
+The [public comparison](../tests/conformance/string-concat.json) records exact
+cases, controls, policies and hashes. Local evidence is `artifacts/*string-concat*`.
+Prior commit `ab5740b` passed all jobs in [CI run 36492738848](https://github.com/Eriskii/ErisBrowser/actions/runs/36492738848).
+Quotas remain unchanged. Agent sessions were unavailable, so no independent-agent
+review is claimed. No native-window check, browser Vulkan integration, security
+audit or Chromium comparison is claimed. The full browser requirements remain unmet.
+
+
 ## Window properties and global bindings
 
 The [binding checkpoint](../tests/conformance/window-global-bindings.md) adds

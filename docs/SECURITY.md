@@ -169,6 +169,16 @@ Getter/setter callbacks share existing limits and unwind on uncatchable resource
 errors. Event-handler descriptor/deletion behavior, full interface reflection and
 WindowProxy semantics remain incomplete.
 
+## String concatenation
+
+[String.prototype.concat](../tests/conformance/string-concat.md) precharges a
+fallibly reserved fragment vector, copying work, output buffer and Rc conversion
+storage. Cumulative UTF-16 length is checked after each argument conversion;
+callbacks share existing instruction, allocation and recursion limits. Abrupt
+conversions retain earlier author effects, and resource failures unwind without
+running catch/finally recovery. This changes no script authority or quota. The
+ledger remains estimated; the checks do not establish production security.
+
 ## Remaining work
 
 Stronger syscall confinement and complete opaque-response semantics; headless and cross-platform process isolation; complete origin/opaque-origin handling; Fetch/CORS/CSP and navigation policy; cookie/storage partitioning; mixed-content/private-network protection; permissions; verified dependency vulnerability monitoring; continuous coverage-guided fuzzing; sanitizers and cross-platform hardening; independent audit. The [CSP standard](https://www.w3.org/TR/CSP3/) describes substantially more behavior than the fallback above.

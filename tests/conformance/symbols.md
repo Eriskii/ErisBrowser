@@ -5,6 +5,10 @@ Symbol descriptor modes: the current profile records **168 passed / six failed /
 68 unsupported**, with all 64 controls verified. The original measurements below
 remain the evidence for the Symbol implementation itself.
 
+The [String concat follow-up](string-concat.md) preserves those counts and all
+controls. The two removed-wrapper conversion failures now reach missing Date;
+they remain failures and are not promoted to passing cases.
+
 Eris implements Symbol primitives in its own Rust interpreter. Unique symbols
 retain identity independently of descriptions; the registry uses exact UTF-16
 keys. Well-known symbols have stable identities. `Symbol` is callable but cannot

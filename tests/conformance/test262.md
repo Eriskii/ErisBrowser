@@ -1,5 +1,9 @@
 # Pinned Test262 String and JSON selection
 
+A separate [complete String concat directory](test262-string-concat.md) now has
+42 passing modes and two Reflect.construct exclusions, with 56 verified controls.
+The original string/JSON selection and its policy below are unchanged.
+
 Subsequent [Symbol support and key reflection](symbols.md) have a separate
 complete upstream profile. This original String/JSON profile retains its previous
 feature policy, source inventory and result counts; its historical Symbol/Reflect

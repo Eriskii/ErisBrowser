@@ -22,6 +22,7 @@ mod machine;
 mod names;
 mod parser;
 mod property_keys;
+mod string_builtins;
 mod symbols;
 mod window;
 use symbols::PropertyKey;
@@ -1899,6 +1900,7 @@ impl Runtime {
         self.objects[self.prototypes["Number"]].boxed = Some(Value::Number(0.0));
         self.objects[self.prototypes["Boolean"]].boxed = Some(Value::Bool(false));
         for (name, key, length) in [
+            ("String", "concat", 1),
             ("String", "charAt", 1),
             ("String", "charCodeAt", 1),
             ("String", "codePointAt", 1),
@@ -8037,6 +8039,9 @@ impl Runtime {
             let id = self.event_index(&event)?;
             self.events[id].initialized = false;
             return Ok(event);
+        }
+        if native.name == "String.concat" {
+            return self.string_concat(native.receiver.clone(), &args, doc);
         }
         let normalized;
         let native = if let Some(method) = native.name.strip_prefix("String.")
