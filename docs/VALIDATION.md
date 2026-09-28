@@ -1,5 +1,57 @@
 # Validation record
 
+## Optional Vulkan upload presenter
+
+The optional Linux presenter uploads frames produced by the custom CPU painter.
+Software remains the default/headless path. The [implementation record](vulkan-rendering.md)
+and [compact evidence](evidence/vulkan-presenter.json) bind the final source,
+dependencies, binaries, case inventories and native outcomes to their hashes.
+
+Formatting passes. On both Rust **1.88** and local **1.95**, strict all-target
+Clippy and full tests pass: **997 default / 1,008 feature-enabled Rust tests**, none ignored.
+Both release binaries preserve all **57 headless CPU pixel references**. Those
+references do not exercise the GPU. **158 Python checks** pass, and **45,000
+generated cases** finish without a caught panic or invariant failure. Three
+pre-existing Clippy findings were fixed without changing their operations.
+
+The actual browser presented on **Wayland / NVIDIA GeForce RTX 4070 SUPER** using
+Bgra8Unorm, Srgb display color space, opaque composition and FIFO. **Eight distinct
+acquired textures matched all 30,841,144 bytes** before presentation, including
+changed viewport revisions and odd widths. A missing-driver run cleanly selected
+software after confirmed release. Missing-driver verification and insufficient
+sampling both exited nonzero. **20 additional missing-driver launches** passed,
+including ten traced runs. All tracked test processes exited and were reaped.
+No new compositor capture, alternate-adapter result or performance claim is made.
+
+Initial native failures remain recorded. The first presenter exposed transient
+Vulkan loader manifest descriptors inherited by the page worker. Four of ten
+traced diagnostic launches reproduced rejection. A graphics/spawn mutex candidate
+still failed: hardware initialization retained an inheritable `/dev/udmabuf`
+handle, rejected in three diagnostic launches. The mutex was removed. The final
+feature-enabled launch stage marks all non-stdio descriptors close-on-exec and
+execs the worker; its strict descriptor rejection stays intact. The real-binary
+regression checks both direct rejection and sanitized startup, preserving the
+parent's descriptor flags and handle. Renderer/broker/decoder policies and IPC
+framing are unchanged; only the internal feature-enabled launch command changes.
+
+All **22 Test262 profiles / 7,165 modes / 1,800 controls** have identical sources,
+policies, cases and observations to the concat checkpoint. No baseline changes.
+HTML remains **3,868 matched / two mismatched / six unsupported**. The combined
+optional graph adds 47 lock packages (35 extra active Linux dependencies); no
+existing version, source or checksum changes. The two stripped browser binaries
+are 11,327,312 bytes by default and 15,123,208 with the optional feature. These
+sizes are observations, not startup, throughput or memory benchmarks.
+
+The tests cover mailbox storms, stale epochs, conversion/padding, fixed deadlines,
+callback reentrancy, simulated stuck cleanup, panic and late release. They do not
+establish real driver-hang recovery. Native minimize/restore, forced surface/device
+loss, broader platform coverage and full GPU reference coverage remain open.
+The earlier four non-exact compositor captures remain failures. Agent sessions
+were unavailable; this implementation has local self-review and tests, not an
+independent implementation review. Full web compatibility, audited security and
+the requested Chromium performance bound remain unmet.
+
+
 ## String.prototype.concat
 
 The [concat implementation](../tests/conformance/string-concat.md) passes **995

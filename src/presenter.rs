@@ -3,6 +3,231 @@ use eris::graphics::Canvas;
 use std::{num::NonZeroU32, sync::Arc};
 use winit::window::Window;
 
+#[cfg(all(target_os = "linux", feature = "vulkan-presenter"))]
+mod vulkan;
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub(crate) enum PresenterChoice {
+    #[default]
+    Software,
+    Vulkan,
+}
+
+impl PresenterChoice {
+    pub(crate) fn parse(value: &str) -> Result<Self, String> {
+        match value {
+            "software" => Ok(Self::Software),
+            "vulkan" => Ok(Self::Vulkan),
+            _ => Err("--presenter must be software or vulkan".into()),
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, Default)]
+pub(crate) struct PresenterConfig {
+    pub choice: PresenterChoice,
+    pub verify_frames: u8,
+}
+
+impl PresenterConfig {
+    pub(crate) fn validate(self, headless: bool) -> Result<(), String> {
+        if self.verify_frames > 8 {
+            return Err("--vulkan-verify-frames must be between 1 and 8".into());
+        }
+        if self.verify_frames != 0 && self.choice != PresenterChoice::Vulkan {
+            return Err("--vulkan-verify-frames requires --presenter=vulkan".into());
+        }
+        if self.choice == PresenterChoice::Vulkan {
+            if headless {
+                return Err("Vulkan presentation requires a desktop window".into());
+            }
+            if !cfg!(all(target_os = "linux", feature = "vulkan-presenter")) {
+                return Err("Vulkan presentation requires Linux and a build with --features vulkan-presenter".into());
+            }
+        }
+        Ok(())
+    }
+}
+
+/// These epochs describe the completed UI frame, including loading chrome.
+/// They do not assert that the page snapshot belongs to the new navigation.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub(crate) struct FrameStamp {
+    pub generation: u64,
+    pub viewport_revision: u64,
+    pub serial: u64,
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub(crate) struct Target {
+    pub generation: u64,
+    pub viewport_revision: u64,
+    pub size: (u32, u32),
+    pub occluded: bool,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum Submission {
+    SoftwarePresented,
+    #[cfg(all(target_os = "linux", feature = "vulkan-presenter"))]
+    Queued,
+    #[cfg(all(target_os = "linux", feature = "vulkan-presenter"))]
+    Replaced,
+    IgnoredStale,
+    Stopped,
+}
+
+#[derive(Default)]
+pub(crate) struct Notice {
+    pub redraw: bool,
+    pub message: Option<String>,
+    pub error: Option<String>,
+}
+
+enum Backend {
+    Software(SoftwarePresenter),
+    #[cfg(all(target_os = "linux", feature = "vulkan-presenter"))]
+    Vulkan(vulkan::Worker),
+}
+
+/// The facade never contains two native surface owners. Vulkan release is a
+/// positive acknowledgment after actual Drop, not a timeout or join status.
+pub(crate) struct Presenter {
+    backend: Backend,
+    target: Target,
+    last_serial: u64,
+    stopped: bool,
+    #[cfg(all(target_os = "linux", feature = "vulkan-presenter"))]
+    window: Arc<Window>,
+}
+
+impl Presenter {
+    pub(crate) fn new(
+        window: Arc<Window>,
+        config: PresenterConfig,
+        target: Target,
+        wake: Arc<dyn Fn() + Send + Sync>,
+    ) -> Result<Self, String> {
+        config.validate(false)?;
+        let backend = match config.choice {
+            PresenterChoice::Software => Backend::Software(SoftwarePresenter::new(window.clone())?),
+            #[cfg(all(target_os = "linux", feature = "vulkan-presenter"))]
+            PresenterChoice::Vulkan => Backend::Vulkan(vulkan::Worker::new(
+                window.clone(),
+                target,
+                config.verify_frames,
+                wake,
+            )?),
+            #[cfg(not(all(target_os = "linux", feature = "vulkan-presenter")))]
+            PresenterChoice::Vulkan => unreachable!("configuration was validated"),
+        };
+        #[cfg(not(all(target_os = "linux", feature = "vulkan-presenter")))]
+        let _ = wake;
+        Ok(Self {
+            backend,
+            target,
+            last_serial: 0,
+            stopped: false,
+            #[cfg(all(target_os = "linux", feature = "vulkan-presenter"))]
+            window,
+        })
+    }
+
+    pub(crate) fn invalidate(&mut self, target: Target) {
+        self.target = target;
+        #[cfg(all(target_os = "linux", feature = "vulkan-presenter"))]
+        if let Backend::Vulkan(worker) = &self.backend {
+            worker.invalidate(target);
+        }
+    }
+
+    pub(crate) fn submit(
+        &mut self,
+        canvas: Canvas,
+        stamp: FrameStamp,
+    ) -> Result<Submission, String> {
+        if self.stopped {
+            return Ok(Submission::Stopped);
+        }
+        if stamp.serial <= self.last_serial
+            || stamp.generation != self.target.generation
+            || stamp.viewport_revision != self.target.viewport_revision
+            || self.target.occluded
+            || (canvas.width, canvas.height) != self.target.size
+        {
+            return Ok(Submission::IgnoredStale);
+        }
+        self.last_serial = stamp.serial;
+        match &mut self.backend {
+            Backend::Software(presenter) => {
+                presenter.present(CpuFrame::from_canvas(&canvas)?)?;
+                Ok(Submission::SoftwarePresented)
+            }
+            #[cfg(all(target_os = "linux", feature = "vulkan-presenter"))]
+            Backend::Vulkan(worker) => Ok(worker.submit(canvas, stamp)),
+        }
+    }
+
+    pub(crate) fn service(&mut self, now: std::time::Instant) -> Notice {
+        #[cfg(all(target_os = "linux", feature = "vulkan-presenter"))]
+        if let Backend::Vulkan(worker) = &mut self.backend {
+            let (mut notice, released) = worker.service(now);
+            if released && !self.stopped && worker.verification_requested() == 0 {
+                match SoftwarePresenter::new(self.window.clone()) {
+                    Ok(software) => {
+                        self.backend = Backend::Software(software);
+                        notice.redraw = true;
+                        notice.message = Some(format!(
+                            "{}; Vulkan resources released; using software",
+                            notice.message.as_deref().unwrap_or("presenter")
+                        ));
+                    }
+                    Err(error) => {
+                        self.stopped = true;
+                        notice.error = Some(error);
+                    }
+                }
+            }
+            return notice;
+        }
+        let _ = now;
+        Notice::default()
+    }
+
+    pub(crate) fn next_deadline(&self) -> Option<std::time::Instant> {
+        #[cfg(all(target_os = "linux", feature = "vulkan-presenter"))]
+        if let Backend::Vulkan(worker) = &self.backend {
+            return worker.next_deadline();
+        }
+        None
+    }
+
+    pub(crate) fn finish(&mut self) -> Result<(), String> {
+        self.stopped = true;
+        #[cfg(all(target_os = "linux", feature = "vulkan-presenter"))]
+        if let Backend::Vulkan(worker) = &mut self.backend {
+            return worker.finish();
+        }
+        Ok(())
+    }
+
+    pub(crate) fn request_stop(&mut self) {
+        self.stopped = true;
+        #[cfg(all(target_os = "linux", feature = "vulkan-presenter"))]
+        if let Backend::Vulkan(worker) = &self.backend {
+            worker.request_stop();
+        }
+    }
+
+    pub(crate) fn shutdown_complete(&self) -> bool {
+        #[cfg(all(target_os = "linux", feature = "vulkan-presenter"))]
+        if let Backend::Vulkan(worker) = &self.backend {
+            return worker.shutdown_complete();
+        }
+        true
+    }
+}
+
 /// Immutable, tightly packed native pixel words, in row-major `0x00RRGGBB`
 /// order. The high byte is unused, not transparent alpha. No pixel conversion
 /// or retained framebuffer is needed for the current software presenter.

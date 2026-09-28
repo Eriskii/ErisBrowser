@@ -1,6 +1,6 @@
 use crate::{
     edit::Selection,
-    presenter::{CpuFrame, SoftwarePresenter},
+    presenter::{FrameStamp, Presenter, PresenterConfig, Target},
 };
 use eris::{
     dom::{Namespace, NodeId},
@@ -71,6 +71,7 @@ fn visible_layout_nodes(snapshot: &Snapshot) -> Vec<bool> {
 }
 enum Event {
     Ready,
+    PresenterReady,
     Failed {
         generation: u64,
         error: String,
@@ -467,6 +468,7 @@ pub fn run(
     scripts: bool,
     exit_after: Option<f64>,
     capture: Option<PathBuf>,
+    presenter_config: PresenterConfig,
 ) -> Result<(), String> {
     let event_loop = EventLoop::<Event>::with_user_event()
         .build()
@@ -476,6 +478,10 @@ pub fn run(
     let ready_snapshot = Arc::new(Latest::default());
     let worker_snapshot = ready_snapshot.clone();
     let current = Arc::new(AtomicU64::new(0));
+    let presenter_proxy = event_loop.create_proxy();
+    let presenter_wake: Arc<dyn Fn() + Send + Sync> = Arc::new(move || {
+        let _ = presenter_proxy.send_event(Event::PresenterReady);
+    });
     let proxy = event_loop.create_proxy();
     let generation = current.clone();
     let bridge = thread::Builder::new()
@@ -485,6 +491,11 @@ pub fn run(
     let mut browser = Browser {
         window: None,
         presenter: None,
+        presenter_config,
+        presenter_wake,
+        target: Target::default(),
+        frame_serial: 0,
+        closing: false,
         fonts: Fonts::new(),
         snapshot: None,
         visible_nodes: Vec::new(),
@@ -516,6 +527,7 @@ pub fn run(
         applied_fragment_generation: 0,
     };
     let result = event_loop.run_app(&mut browser).map_err(|e| e.to_string());
+    let presenter_result = browser.presenter.as_mut().map_or(Ok(()), Presenter::finish);
     let _ = browser.tx.send(Request::Stop);
     let bridge_result = bridge
         .join()
@@ -525,12 +537,17 @@ pub fn run(
     } else if let Some(error) = browser.worker_error {
         Err(format!("Page process failed: {error}"))
     } else {
-        result.and(bridge_result)
+        result.and(bridge_result).and(presenter_result)
     }
 }
 struct Browser {
     window: Option<Arc<Window>>,
-    presenter: Option<SoftwarePresenter>,
+    presenter: Option<Presenter>,
+    presenter_config: PresenterConfig,
+    presenter_wake: Arc<dyn Fn() + Send + Sync>,
+    target: Target,
+    frame_serial: u64,
+    closing: bool,
     fonts: Fonts,
     snapshot: Option<Snapshot>,
     visible_nodes: Vec<bool>,
@@ -562,6 +579,47 @@ struct Browser {
     applied_fragment_generation: u64,
 }
 impl Browser {
+    fn update_presentation_target(&mut self, resize_event: bool) -> Result<(), String> {
+        let size = self.window.as_ref().map(|window| window.inner_size());
+        let size = size.map_or(self.target.size, |size| (size.width, size.height));
+        let mut target = self.target;
+        target.generation = self.generation();
+        if resize_event || size != target.size {
+            target.viewport_revision = target
+                .viewport_revision
+                .checked_add(1)
+                .ok_or("presentation viewport revision exhausted")?;
+            target.size = size;
+        }
+        if target != self.target || resize_event {
+            self.target = target;
+            if let Some(presenter) = &mut self.presenter {
+                presenter.invalidate(target);
+            }
+        }
+        Ok(())
+    }
+    fn begin_close(&mut self) {
+        self.closing = true;
+        if let Some(presenter) = &mut self.presenter {
+            presenter.request_stop();
+        }
+    }
+    fn service_presenter(&mut self) {
+        if let Some(presenter) = &mut self.presenter {
+            let notice = presenter.service(Instant::now());
+            if let Some(message) = notice.message {
+                eprintln!("{message}");
+            }
+            if let Some(error) = notice.error {
+                self.startup_error.get_or_insert(error);
+                self.begin_close();
+            }
+            if notice.redraw && !self.closing {
+                self.redraw();
+            }
+        }
+    }
     fn generation(&self) -> u64 {
         self.current.load(Ordering::Relaxed)
     }
@@ -645,7 +703,18 @@ impl Browser {
         self.worker_error = None;
         self.edit_sequence = 0;
         self.status = "Loading…".into();
-        let generation = self.current.fetch_add(1, Ordering::Relaxed) + 1;
+        let Some(generation) = self.generation().checked_add(1) else {
+            self.startup_error = Some("navigation generation exhausted".into());
+            self.begin_close();
+            return;
+        };
+        self.current.store(generation, Ordering::Relaxed);
+        // Invalidate queued UI pixels before sending the new navigation.
+        if let Err(error) = self.update_presentation_target(false) {
+            self.startup_error = Some(error);
+            self.begin_close();
+            return;
+        }
         let _ = self.tx.send(Request::Load {
             generation,
             navigation,
@@ -1307,6 +1376,10 @@ impl Browser {
         self.focus_input(inputs[next]);
     }
     fn draw(&mut self) -> Result<(), String> {
+        if self.closing || self.target.occluded {
+            return Ok(());
+        }
+        self.update_presentation_target(false)?;
         let Some(window) = &self.window else {
             return Ok(());
         };
@@ -1601,7 +1674,18 @@ impl Browser {
             canvas.save(&path)?;
         }
         if let Some(presenter) = &mut self.presenter {
-            presenter.present(CpuFrame::from_canvas(&canvas)?)?;
+            self.frame_serial = self
+                .frame_serial
+                .checked_add(1)
+                .ok_or("presentation frame serial exhausted")?;
+            presenter.submit(
+                canvas,
+                FrameStamp {
+                    generation: self.target.generation,
+                    viewport_revision: self.target.viewport_revision,
+                    serial: self.frame_serial,
+                },
+            )?;
         }
         Ok(())
     }
@@ -1621,7 +1705,19 @@ impl ApplicationHandler<Event> for Browser {
                     .create_window(attributes)
                     .map_err(|e| e.to_string())?,
             );
-            let presenter = SoftwarePresenter::new(window.clone())?;
+            let size = window.inner_size();
+            self.target = Target {
+                generation: self.generation(),
+                viewport_revision: 1,
+                size: (size.width, size.height),
+                occluded: false,
+            };
+            let presenter = Presenter::new(
+                window.clone(),
+                self.presenter_config,
+                self.target,
+                self.presenter_wake.clone(),
+            )?;
             window.set_ime_allowed(true);
             self.presenter = Some(presenter);
             self.window = Some(window);
@@ -1640,6 +1736,7 @@ impl ApplicationHandler<Event> for Browser {
     }
     fn user_event(&mut self, _event_loop: &ActiveEventLoop, event: Event) {
         match event {
+            Event::PresenterReady => self.service_presenter(),
             Event::Ready => {
                 let Some(snapshot) = self.ready_snapshot.take() else {
                     return;
@@ -1656,19 +1753,36 @@ impl ApplicationHandler<Event> for Browser {
     }
     fn window_event(
         &mut self,
-        event_loop: &ActiveEventLoop,
+        _event_loop: &ActiveEventLoop,
         _window_id: WindowId,
         event: WindowEvent,
     ) {
         match event {
-            WindowEvent::CloseRequested => event_loop.exit(),
+            WindowEvent::CloseRequested => self.begin_close(),
+            WindowEvent::Occluded(occluded) => {
+                self.target.occluded = occluded;
+                if let Some(presenter) = &mut self.presenter {
+                    presenter.invalidate(self.target);
+                }
+                if !occluded {
+                    self.redraw();
+                }
+            }
             WindowEvent::Resized(_) => {
+                if let Err(error) = self.update_presentation_target(true) {
+                    self.startup_error = Some(error);
+                    self.begin_close();
+                }
                 self.resize();
                 self.redraw();
             }
             WindowEvent::RedrawRequested => {
                 if let Err(error) = self.draw() {
                     eprintln!("paint: {error}");
+                    if self.presenter_config.verify_frames != 0 {
+                        self.startup_error = Some(error);
+                        self.begin_close();
+                    }
                 }
             }
             WindowEvent::ModifiersChanged(modifiers) => self.modifiers = modifiers.state(),
@@ -1728,15 +1842,34 @@ impl ApplicationHandler<Event> for Browser {
         }
     }
     fn about_to_wait(&mut self, event_loop: &ActiveEventLoop) {
-        if let Some(seconds) = self.exit_after {
+        self.service_presenter();
+        let now = Instant::now();
+        let mut deadline = self.presenter.as_ref().and_then(Presenter::next_deadline);
+        if !self.closing
+            && let Some(seconds) = self.exit_after
+        {
             if self.started.elapsed().as_secs_f64() >= seconds {
-                event_loop.exit();
+                self.begin_close();
             } else {
-                event_loop.set_control_flow(winit::event_loop::ControlFlow::WaitUntil(
-                    Instant::now() + std::time::Duration::from_millis(100),
-                ));
+                let exit_poll = now + Duration::from_millis(100);
+                deadline = Some(deadline.map_or(exit_poll, |old| old.min(exit_poll)));
             }
         }
+        if self.closing {
+            if self
+                .presenter
+                .as_ref()
+                .is_none_or(Presenter::shutdown_complete)
+            {
+                event_loop.exit();
+                return;
+            }
+            deadline = self.presenter.as_ref().and_then(Presenter::next_deadline);
+        }
+        event_loop.set_control_flow(deadline.map_or(
+            winit::event_loop::ControlFlow::Wait,
+            winit::event_loop::ControlFlow::WaitUntil,
+        ));
     }
 }
 /// A process error is trusted browser chrome. No HTML parsing, scripting, or
@@ -1947,6 +2080,11 @@ mod tests {
         Browser {
             window: None,
             presenter: None,
+            presenter_config: PresenterConfig::default(),
+            presenter_wake: Arc::new(|| {}),
+            target: Target::default(),
+            frame_serial: 0,
+            closing: false,
             fonts,
             snapshot: Some(snapshot),
             visible_nodes,

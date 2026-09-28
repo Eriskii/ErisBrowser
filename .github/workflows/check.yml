@@ -69,6 +69,28 @@ jobs:
       - name: Preserve passing cases in the complete String concat directory
         run: python3 tools/test262_conformance.py --profile string-concat --baseline tests/conformance/test262-string-concat-current.json --output artifacts/test262-string-concat-gate.json
       - run: timeout 180s target/release/eris-stress 5000
+  presenter-variants:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        include:
+          - toolchain: 1.88.0
+            cargo-args: ''
+          - toolchain: 1.88.0
+            cargo-args: '--features vulkan-presenter'
+          - toolchain: stable
+            cargo-args: '--features vulkan-presenter'
+    env:
+      RUSTUP_TOOLCHAIN: ${{ matrix.toolchain }}
+      CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUNNER: python3 tools/ci_test_runner.py
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup toolchain install ${{ matrix.toolchain }} --profile minimal --component clippy
+      - run: cargo clippy --locked --all-targets ${{ matrix.cargo-args }} -- -D warnings
+      - run: cargo test --locked ${{ matrix.cargo-args }} -- --include-ignored
+      # These tests cover CPU ownership, deadlines and transfer layout. A real
+      # Vulkan surface/readback is a separate host check, never an inferred pass.
   vulkan-probe:
     runs-on: ubuntu-latest
     timeout-minutes: 15

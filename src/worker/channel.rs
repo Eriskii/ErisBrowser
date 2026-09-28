@@ -17,6 +17,8 @@ pub(super) struct Channel {
 impl Channel {
     pub(super) fn spawn(executable: &Path, mode: &str) -> Result<Self, String> {
         let mut command = Command::new(executable);
+        #[cfg(all(target_os = "linux", feature = "vulkan-presenter"))]
+        command.arg("--clean-worker-launch");
         command
             .arg(mode)
             .env_clear()

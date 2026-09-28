@@ -240,7 +240,7 @@ unimplemented Reflect.construct; all 56 assertion controls verify. The existing
 ## Implementation
 
 The [architecture notes](docs/ARCHITECTURE.md) describe the page pipeline and native process boundaries.
-The [development docket](docs/ROADMAP.md) includes a planned Vulkan rendering backend. An independent [Vulkan transfer probe](tools/vulkan-probe/README.md) checks exact offscreen uploads/readback with its own pinned dependencies; the browser still uses software painting and presentation.
+The browser has an optional [Linux Vulkan presenter](docs/vulkan-rendering.md): build with `--features vulkan-presenter`, then launch the binary with `--presenter=vulkan`. It uploads custom CPU-painted frames; software remains the default and headless path. Custom Vulkan rasterization and compositing remain on the [development docket](docs/ROADMAP.md).
 
 JavaScript [parses directly into flat code records](tests/conformance/flat-parser.md)
 and uses [shared execution continuations](tests/conformance/activation-frames.md),
@@ -274,6 +274,6 @@ remain unchanged.
 | `presenter.rs` | Checked completed CPU frames and exclusive ownership of the software surface |
 | `edit.rs` | Unicode scalar cursor movement, selections, replacements and deletion |
 
-Infrastructure dependencies provide TLS/HTTP (`ureq`/`rustls`), URLs (`url`), character encodings, font outline rasterization (`ab_glyph`), image codecs (`image`), native clipboard access (`arboard`), window events (`winit`), a pixel surface (`softbuffer`), and OS confinement wrappers (`landlock`, `rustix`, `seccompiler`). These are not web layout or script engines. Their transitive dependencies remain part of the security surface. The source forbids application-level `unsafe` Rust; dependencies can contain unsafe code.
+Infrastructure dependencies provide TLS/HTTP (`ureq`/`rustls`), URLs (`url`), character encodings, font outline rasterization (`ab_glyph`), image codecs (`image`), native clipboard access (`arboard`), window events (`winit`), a pixel surface (`softbuffer`), optional Vulkan presentation (`wgpu`) and exec descriptor hygiene (`close_fds`), and OS confinement wrappers (`landlock`, `rustix`, `seccompiler`). These are not web layout or script engines. Their transitive dependencies remain part of the security surface. The source forbids application-level `unsafe` Rust; dependencies can contain unsafe code.
 
 Fonts are DejaVu; redistribution notices are in [assets/FONTS-LICENSE.txt](assets/FONTS-LICENSE.txt). Project code is MIT licensed. Vendored WPT test data retains its [upstream BSD license](tests/upstream/wpt-html/LICENSE.md); Test262 data retains its [upstream license](tests/upstream/test262/LICENSE). Identifier tables and their pinned source data retain [Unicode License V3](tests/upstream/unicode/18.0.0/LICENSE.txt).

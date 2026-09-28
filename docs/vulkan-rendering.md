@@ -1,14 +1,30 @@
 # Vulkan rendering milestones
 
-Status: design, host inventory, isolated offscreen/native experiments and a
-software presenter boundary, recorded September 28, 2026. No Vulkan backend or
-graphics dependency has been added to the browser. The standalone
-[`tools/vulkan-probe`](../tools/vulkan-probe/README.md)
-crate has its own pinned wgpu dependency and lockfile. This document expands the
-[Vulkan docket](ROADMAP.md#vulkan-rendering-backend). The requested custom GPU
-rasterizer and compositor remain future work; uploading software-rendered
-pixels is an intermediate presentation milestone. No GPU speedup or Chromium
-performance result is established.
+Status: an **optional Linux Vulkan upload presenter** is implemented. Software
+remains the default and the only headless path. Both paths use Eris's custom CPU
+rasterizer; custom GPU rasterization and compositing remain future milestones.
+No GPU speedup or Chromium performance result is established. Earlier isolated
+experiments and their failed compositor comparisons remain recorded below.
+
+Build and select the experimental presenter explicitly:
+
+```sh
+cargo build --locked --release --features vulkan-presenter
+./target/release/eris-browser --presenter=vulkan ./examples/forms.html
+```
+
+The host must expose its installed Vulkan loader/ICD and desktop libraries to
+the process. No driver is bundled or installed by the browser. Requesting Vulkan
+in a build without the feature, on another platform, or in a headless mode is a
+CLI error before window creation. `--vulkan-verify-frames N` (1–8) additionally
+requires COPY_SRC and compares every packed byte of distinct acquired textures
+before presentation. It fails on incomplete sampling, fallback, mismatch, stall
+or device error. It does not drive redraws to manufacture samples; use real
+content/viewport changes. Existing CPU screenshots are not GPU evidence.
+
+The current [browser validation record](VALIDATION.md#optional-vulkan-upload-presenter)
+and [source-bound evidence](evidence/vulkan-presenter.json) distinguish successful
+readback, retained failed launch attempts, CPU references and untested scenarios.
 
 ## Existing boundary
 
@@ -16,16 +32,18 @@ The page process produces the custom renderer's `DrawCommand` list, hit regions
 and decoded images. The parent validates that snapshot in
 [`worker/codec.rs`](../src/worker/codec.rs). Native
 [`Browser::draw`](../src/browser.rs) paints the snapshot with
-[`Canvas::paint_with_viewport`](../src/graphics.rs), adds browser chrome and
-passes a borrowed completed `CpuFrame` to
-[`SoftwarePresenter`](../src/presenter.rs). This module exclusively owns the
-softbuffer surface and performs its resize, buffer acquisition, copy and
-presentation on the existing UI thread. It checks nonzero dimensions, the
-existing framebuffer limits, exact source pixel length and destination length
-before copying. Pixel words remain `0x00RRGGBB`; the unused high byte is not
-alpha. There is no new conversion, retained frame, queue or presenter thread.
-The CPU screenshot is saved before presentation as before. Headless rendering
-uses the same CPU painter and does not create a native presenter.
+[`Canvas::paint_with_viewport`](../src/graphics.rs), adds browser chrome, saves
+any CPU screenshot, and transfers the completed Canvas to the
+[`presenter facade`](../src/presenter.rs). Software validates and borrows its
+pixel words without conversion. Vulkan moves the pixel Vec without cloning,
+drops the rest of the Canvas, and uses a dedicated owner thread. Pixel words are
+`0x00RRGGBB`; explicit BGRA/RGBA conversion always supplies alpha 255.
+
+The UI retains only CPU scheduling state and a thread handle for Vulkan. The
+owner thread holds all graphics API objects. Software surface construction is
+permitted only after that owner positively acknowledges actual resource drops.
+A stuck native call or destructor can therefore prevent fallback. Headless
+rendering never initializes this presenter or Vulkan.
 
 `Canvas` already owns the relevant paint semantics: command order, separate
 document and fixed offsets, typed clip/fixed/opacity scopes, glyph masks,
@@ -36,7 +54,7 @@ and pixel work, and deferred, bounded opacity allocations. A Vulkan path must
 preserve those semantics and the explicit exhaustion indication.
 
 The page sandbox denies GPU device access, almost all ioctls and new threads.
-GPU initialization belongs outside that process. This proposal does not weaken
+GPU initialization belongs outside that process. This implementation does not weaken
 the page, broker or image-decoder sandbox.
 
 ## Host inventory and its limits
@@ -145,9 +163,8 @@ presentation experiment, with no GPU rasterization or performance claim.
 
 ## Milestone A: Vulkan presentation
 
-The completed-CPU-frame boundary and sole software surface owner are now in
-place. A Vulkan implementation, asynchronous frame scheduling and backend
-selection remain unimplemented. Proposed future interfaces are illustrative:
+The optional implementation uses the following boundary. Broader platform,
+fault-injection and compositor coverage remain open:
 
 ```text
 Presenter = Software | Vulkan
@@ -156,9 +173,8 @@ Frame = { serial, generation, viewport_revision, width, height, opaque_pixels }
 submit(Frame) -> Presented | Queued | Replaced | IgnoredStale | Stopped
 ```
 
-The initial Vulkan option should be explicit and experimental; software stays
-the default. A possible CLI spelling is `--presenter=software|vulkan`, which
-describes this slice accurately. The headless CPU path remains the reference.
+Selection is explicit through `--presenter=software|vulkan`. Software remains
+the default and the headless CPU path remains the reference.
 
 1. Select an actual Vulkan adapter compatible with the window surface. Record
    its name, device type, driver and selected surface configuration. Report a
@@ -180,6 +196,20 @@ describes this slice accurately. The headless CPU path remains the reference.
    Coalesce pending resize/frame requests and discard obsolete pending work.
    Do not retain a history of full frames while the compositor is busy.
 
+Native testing exposed two descriptor problems: transient loader manifest files
+opened without close-on-exec, and a retained `/dev/udmabuf` descriptor after
+hardware initialization. The page worker refused both before accepting page
+content. A graphics/spawn mutex was tested and rejected as insufficient because
+it cannot eliminate retained descriptors or independent driver threads.
+
+Feature-enabled builds now enter an exec-only launch stage before each worker.
+It validates the internal role and single-thread startup, marks every descriptor
+above stdio close-on-exec through the safe `close_fds` API, then execs the same
+binary in the requested worker role. Parent handles are unaffected. This stage
+initializes no driver and handles no page data. The worker's existing strict
+inspection remains after exec; a descriptor missed by sanitization still causes
+rejection. Default builds retain their original direct launch path.
+
 The GPU work in this milestone is transfer and presentation. The page is still
 rasterized and composited by `Canvas`. Existing CPU screenshot output by itself
 cannot verify that the Vulkan copy or presentation was correct.
@@ -187,7 +217,8 @@ cannot verify that the Vulkan copy or presentation was correct.
 ### First integration contract
 
 A review of the pinned binding and current browser identified these requirements
-for implementation. They are design constraints, not completed browser behavior.
+for implementation. The current owner follows these constraints; tests and host
+evidence must still distinguish application simulations from actual driver behavior.
 
 - Keep one active upload and one replaceable pending frame. Navigation and
   physical viewport changes advance the target epoch, including a resize back
@@ -265,8 +296,8 @@ docket.
 
 ## Isolation, resource ownership and recovery
 
-The first implementation should own device, queue, surface and uploads on a
-dedicated presentation thread. Winit window creation/input and the existing
+The implementation owns device, queue, surface and uploads on a dedicated
+presentation thread. Winit window creation/input and the existing
 page IPC remain on their current paths. The presenter receives a retained
 window owner and bounded completed frames; it receives no page filesystem
 authority, network requests, shader source or raw device handles.
@@ -277,26 +308,28 @@ process and kernel. A separately supervised GPU process is needed before
 claiming recovery from arbitrary driver hangs or driver-process crashes; window
 surface ownership and IPC for that process require a separate design.
 
-Proposed initial application-controlled limits are:
+Current application-controlled limits are:
 
 | Resource | Initial policy |
 | --- | --- |
 | Submitted frames | One active upload/submission, retained until completion or release |
 | Pending CPU frame | One replaceable latest frame |
-| Presenter allocations | 128 MiB ledger for retained upload buffers, intermediate textures and surface-image estimates; include retired generations until completion |
+| Presenter allocations | 128 MiB ledger: active/pending pixel Vec capacities, conversion storage and its growth transient, padded readback buffer, and a reserved incoming UI framebuffer |
 | Upload work | One outstanding upload and one reusable conversion buffer; account row padding and staging copies |
 | Vulkan input | At most 4,194,304 pixels and 8,192 per axis; larger frames require clean release before software fallback |
 | CPU framebuffer | Existing 16-megapixel/8,192-axis software checks remain unchanged |
-| Shader/pipeline sources | Fixed application-owned code, compiled at initialization; no page-provided code or unbounded per-style variants |
+| Shader/pipeline sources | No application shader or render pipeline in this upload presenter; the binding retains internal shader machinery |
 
-These numbers are design choices awaiting implementation measurements. They are
-not hard bounds on undocumented driver allocations or wgpu's internal allocator.
-At the proposed four-megapixel Vulkan limit, active pixels, pending pixels and
+These are application pixel-buffer limits, not a total browser/process or GPU
+memory cap. They do not bound undocumented driver allocations or wgpu's internal
+allocator. At the four-megapixel Vulkan limit, active pixels, pending pixels and
 converted bytes occupy up to 48 MiB; the UI may simultaneously paint another
 16 MiB frame. Count buffer capacities and replacement transients, padded
 readback storage, alignment and retirement, not just live logical dimensions.
-Swap pending ownership under the accounting lock. Label staging and surface
-estimates separately from exact application allocations. Query effective device
+Pending ownership is swapped under the accounting lock. Driver staging and
+swapchain images are excluded from this ledger: approximately another packed
+frame for upload staging and multiple configured images are estimates, not
+measured or enforceable driver memory limits. Query effective device
 texture/buffer limits and request only those needed by the implementation.
 Limiting inspection to 16 adapters does not bound the binding's prior full
 adapter enumeration or driver allocations.
@@ -318,13 +351,11 @@ and retain application resources through its completion notifications. See
 
 ## Binding evaluation and recommendation
 
-**Recommendation for browser integration, not yet adopted by the browser:**
-implement the first slice using
-wgpu exactly 30.0.1 with defaults disabled and only `std` and `vulkan` enabled,
+**Binding adopted for the optional upload presenter:** wgpu exactly 30.0.1 with defaults disabled and only `std` and `vulkan` enabled,
 behind an optional Eris feature. Select `Backends::VULKAN` explicitly at runtime.
 Keep application `unsafe_code = "forbid"` and use the checked public APIs; do
 not bypass validation through HAL access, trusted shader entry points or
-SPIR-V passthrough. This recommendation concerns a graphics binding, not an
+SPIR-V passthrough. This is a graphics binding, not an
 existing web renderer or implementation of the browser's WebGPU API.
 
 | Question | Vulkan-only wgpu 30.0.1 | Vulkano 0.35.2 |
@@ -363,8 +394,9 @@ There are two specific wgpu lifecycle qualifications. Local 30.0.1 sources show
 the public `get_current_texture` call does not expose as an argument. Vulkan
 swapchain cleanup can call `device_wait_idle`. Therefore the design must not
 promise a nonblocking UI-thread acquire or bounded destructor time. Keep these
-operations on the presenter thread, use nonblocking polling for application
-completion handling, and retain the driver-hang limitation stated above.
+operations on the presenter thread. The UI observes durable state and deadlines
+without invoking device polling or joining an unfinished thread. The driver-hang
+limitation still applies.
 [Published source](https://docs.rs/crate/wgpu-core/30.0.1/source/src/present.rs),
 [Vulkan swapchain source](https://docs.rs/crate/wgpu-hal/30.0.1/source/src/vulkan/swapchain/native.rs).
 
@@ -387,16 +419,19 @@ The eight-package subtotal comprises `wgpu`, `wgpu-core`, `wgpu-hal`,
 and `naga-types`. These are package inventories, including code for disabled
 targets/features, not complete resolved Linux dependency graphs or incremental
 download estimates. Several common dependencies already exist in Eris's lock
-file; none of wgpu, Vulkano, Naga or ash is currently in that lock file.
+file. At the time of this initial inventory, none of wgpu, Vulkano, Naga or ash
+was in that lock file. The optional presenter now adds the pinned wgpu graph.
 The Vulkano figure is a single-package measurement and must not be compared to
 the wgpu family subtotal as if both covered equivalent graphs.
 [Vulkano package metadata](https://docs.rs/crate/vulkano/0.35.2).
 
-No release binary size, compilation time or runtime memory comparison has been
-performed. Before adopting the dependency, resolve a pinned graph and record
-its added packages, licenses, build time and stripped release size against the
-same CPU-only build. Check the resolved graph with Rust 1.88; top-level package
-MSRVs alone do not prove all newly resolved transitive versions are compatible.
+The combined optional graph adds 47 lockfile packages and removes none; existing
+versions, sources and checksums remain unchanged. Eight existing dependency
+lists change through feature unification or version disambiguation. The Linux
+resolve has 191 enabled packages versus 156 by default. Both configurations are
+compiled and tested on Rust 1.88, including strict Clippy; declared MSRVs alone
+are not the evidence. The new browser evidence records final source/binary
+hashes. No runtime-memory or performance comparison is established.
 
 ## Acceptance and measurement
 

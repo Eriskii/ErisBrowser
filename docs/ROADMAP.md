@@ -31,18 +31,13 @@ frames on the NVIDIA adapter; five acquired-surface readbacks matched all
 counts and caveats preserved in the
 [native evidence](evidence/vulkan-native-surface.json).
 
-The browser now passes a checked, borrowed completed CPU frame to a focused
-[software presenter](../src/presenter.rs), which exclusively owns its native
-surface. Software remains the only browser path; no graphics dependency,
-Vulkan backend, presenter thread or frame queue was added. Native Vulkan
-integration and custom GPU rasterization remain separate milestones.
-
-The [first integration contract](vulkan-rendering.md#first-integration-contract)
-now specifies one active upload and one pending frame, viewport/visibility
-invalidation, fixed operation deadlines and confirmed release before fallback.
-The review also accounts for staging allocated before submission and distinguishes
-texture readback from final compositor output. These remain implementation
-requirements, with no browser Vulkan path enabled yet.
+The optional [Linux Vulkan presenter](vulkan-rendering.md) now uploads completed
+CPU-painted frames through a Vulkan-only wgpu binding. It uses one owner thread,
+one active upload and one replaceable pending frame, fixed operation deadlines,
+and confirmed resource release before software fallback. Verification reads
+back actual acquired surface textures; it does not certify compositor output.
+Software remains the default/headless path. Custom GPU rasterization remains
+unimplemented, and driver isolation/performance work remains open.
 
 Acceptance work:
 
@@ -60,9 +55,9 @@ Acceptance work:
   costs, memory and frame latency. Vulkan alone does not establish a Chromium
   performance result.
 
-The Vulkan browser backend remains planned. The isolated experiments evaluate
-one binding and transfer/presentation path; production driver requirements,
-platform coverage and binding adoption remain undecided. Ongoing standards and
+The custom Vulkan rasterizer remains planned. The optional upload presenter
+adopts one transfer/presentation path; production driver requirements and
+broader platform coverage remain undecided. Ongoing standards and
 security work continues alongside preparation for this backend.
 
 ## JavaScript execution depth

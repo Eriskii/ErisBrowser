@@ -2,6 +2,25 @@
 
 **This is experimental software. It has not had a professional security audit and should not be used for sensitive browsing.** Native browsing uses a fresh confined Linux renderer per document and a separate resource broker when resources are needed. This is a concrete isolation layer, not evidence of production security, complete site isolation, or a complete web-origin model. The `--render` and `--benchmark` CLI modes, conformance adapters and public library API do not install this sandbox. `--benchmark-worker` exercises the confined renderer/broker and validated snapshot path, with the same fail-closed Linux requirements as native browsing.
 
+The optional Linux Vulkan presenter runs a graphics driver on a dedicated thread
+inside the privileged native browser process. This is not GPU process isolation.
+Only completed CPU pixel frames cross its mailbox; it receives no page shader
+source. It limits active/pending frames and counts application pixel-buffer
+capacities, while driver staging, swapchains and internal allocation remain
+outside that ledger. A five-second application deadline cannot interrupt a
+native call or destructor. Timeout or thread panic never authorizes a competing
+software surface; fallback requires an acknowledgment after actual resource
+drops return. Feature-enabled worker launches use an isolated exec-only stage
+that marks all non-stdio descriptors close-on-exec before replacing itself with
+the worker. It validates the internal role, requires single-thread startup and
+handles no page data. Parent descriptors remain unchanged. This handles both
+transient loader files and retained driver handles; a graphics/spawn mutex was
+insufficient. Worker startup still rejects every unexpected descriptor that
+survives exec before handling page content. Driver crashes
+can still affect the browser process. The renderer,
+broker and image-decoder sandbox policies are unchanged. See the
+[Vulkan boundary](vulkan-rendering.md#isolation-resource-ownership-and-recovery).
+
 ## Native process boundary
 
 The UI retains the window, address bar, clipboard, trusted bundled fonts and software painter. A renderer child runs HTML/CSS parsing, scripting, same-origin image decoding and layout. A separate broker child performs resource loading; the parent relays its bounded responses and records the broker's final document URL. Each cross-origin image is decoded in a fresh third child which exits after one response. All children start with a cleared environment and reject inherited descriptors other than stdin/stdout/stderr and the temporary procfs inspection handle. Inspection failure rejects startup.
@@ -25,7 +44,8 @@ host device/driver access with fixed synthetic pixels and no page content. It
 does not change the browser's dependency graph or renderer authority. Its finite
 process deadlines and output bounds are test controls, not a GPU sandbox or a
 hard limit on driver allocations. Native driver calls and teardown can outlast
-application waits; the browser has no Vulkan backend yet.
+application waits. The optional browser presenter has the additional ownership
+and launch controls described above; neither path is a GPU sandbox.
 
 - The application forbids unsafe Rust. Parser, layout, interpreter, and software-paint code are custom Rust. Platform/codec/crypto dependencies have their own security surface and may use unsafe code.
 - Script code cannot call host filesystem, networking, process, clipboard, native eval, or FFI APIs. Native clipboard access is initiated only by explicit user keyboard shortcuts. Unsupported features produce errors. Scripts have DOM access within the current page.

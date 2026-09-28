@@ -214,3 +214,94 @@ fn headless_fragment_navigation_preserves_script_state_and_updates_document_url(
     assert_eq!(image.get_pixel(300, 150).0, [0, 0, 255]);
     fs::remove_dir_all(directory).unwrap();
 }
+
+#[test]
+fn presenter_options_reject_invalid_and_headless_modes_before_opening_a_window() {
+    let cases: &[(&[&str], &str)] = &[
+        (&["--presenter"], "needs a mode"),
+        (&["--presenter=metal"], "must be software or vulkan"),
+        (&["--presenter", "auto"], "must be software or vulkan"),
+        (&["--vulkan-verify-frames"], "needs a count"),
+        (&["--vulkan-verify-frames", "0"], "between 1 and 8"),
+        (&["--vulkan-verify-frames", "9"], "between 1 and 8"),
+        (&["--vulkan-verify-frames", "256"], "between 1 and 8"),
+        (
+            &["--vulkan-verify-frames", "1"],
+            "requires --presenter=vulkan",
+        ),
+        (
+            &["--presenter=vulkan", "--render"],
+            "requires a desktop window",
+        ),
+        (
+            &["--headless", "--presenter", "vulkan"],
+            "requires a desktop window",
+        ),
+        (
+            &["--presenter=vulkan", "--dump-dom"],
+            "requires a desktop window",
+        ),
+        (
+            &["--presenter=vulkan", "--benchmark", "1"],
+            "requires a desktop window",
+        ),
+        (
+            &["--presenter=vulkan", "--benchmark-worker", "1"],
+            "requires a desktop window",
+        ),
+        (
+            &["--presenter=vulkan", "--click", "body"],
+            "requires a desktop window",
+        ),
+    ];
+    for (arguments, expected) in cases {
+        let output = Command::new(env!("CARGO_BIN_EXE_eris-browser"))
+            .env_remove("DISPLAY")
+            .env_remove("WAYLAND_DISPLAY")
+            .arg("/nonexistent-eris-presenter-document")
+            .args(*arguments)
+            .output()
+            .unwrap();
+        assert!(!output.status.success(), "{arguments:?}");
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        assert!(stderr.contains(expected), "{arguments:?}: {stderr}");
+        assert!(
+            !stderr.contains("Unable to open browser window"),
+            "{stderr}"
+        );
+    }
+}
+
+#[test]
+#[cfg(not(all(target_os = "linux", feature = "vulkan-presenter")))]
+fn unavailable_vulkan_feature_is_an_explicit_error() {
+    let output = Command::new(env!("CARGO_BIN_EXE_eris-browser"))
+        .env_remove("DISPLAY")
+        .env_remove("WAYLAND_DISPLAY")
+        .arg("--presenter=vulkan")
+        .output()
+        .unwrap();
+    assert!(!output.status.success());
+    assert!(
+        String::from_utf8_lossy(&output.stderr)
+            .contains("requires Linux and a build with --features vulkan-presenter")
+    );
+}
+
+#[test]
+#[cfg(all(target_os = "linux", feature = "vulkan-presenter"))]
+fn clean_worker_launcher_accepts_only_exact_internal_roles() {
+    for args in [
+        vec!["--clean-worker-launch"],
+        vec!["--clean-worker-launch", "--help"],
+        vec!["--clean-worker-launch", "--page-worker", "extra"],
+        vec!["--clean-worker-launch", "/bin/sh"],
+    ] {
+        let output = Command::new(env!("CARGO_BIN_EXE_eris-browser"))
+            .args(&args)
+            .output()
+            .unwrap();
+        assert!(!output.status.success(), "{args:?}");
+        assert!(String::from_utf8_lossy(&output.stderr).contains("worker"));
+    }
+}

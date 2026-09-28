@@ -7753,17 +7753,15 @@ fn matches_compound(doc: &Document, id: NodeId, s: &str, depth: usize, budget: &
                 let value = &s[i..end];
                 let found = if c == b'#' {
                     doc.attr(id, "id") == Some(value)
-                } else {
-                    if let Some(classes) = doc.attr(id, "class") {
-                        if classes.len() > *budget {
-                            *budget = 0;
-                            return false;
-                        }
-                        *budget -= classes.len();
-                        classes.split_ascii_whitespace().any(|x| x == value)
-                    } else {
-                        false
+                } else if let Some(classes) = doc.attr(id, "class") {
+                    if classes.len() > *budget {
+                        *budget = 0;
+                        return false;
                     }
+                    *budget -= classes.len();
+                    classes.split_ascii_whitespace().any(|x| x == value)
+                } else {
+                    false
                 };
                 if !found {
                     return false;

@@ -1,0 +1,1558 @@
+{
+  "scope": "Optional Linux Vulkan upload presentation of completed custom CPU frames; no GPU rasterization, full compatibility, production security or performance certification",
+  "before_commit": "1a8da26627ca8b2b756bbfcf1687bccd1800d341",
+  "before_ci": "https://github.com/Eriskii/ErisBrowser/actions/runs/36494310429",
+  "input_sha256": "f47439549d10b71cd3716211d2948db500b62972b852b77c613274126e6deffb",
+  "source_files": {
+    "Cargo.toml": "015958175457d712165b649803198aa8aa5bba2f35e19dd49814def7308b03ec",
+    "Cargo.lock": "fc2d595602095e8a4333975b5f2e8ba748a1b82fbdc84505e64abcbd2b92a0de",
+    "src/main.rs": "21fe1be4c60887579fdb3ef49ac2d4d09e4784938ebc3a87b813947e01ac4da1",
+    "src/browser.rs": "826ef6c2a8e1b812db7d7a90b8654e847546c7bee13b4ca641fd8922d6511571",
+    "src/presenter.rs": "f9bd2a4d817fe0ded8abd695296abf5b4151dbe13a5a00313a1f981fcb0d3094",
+    "src/worker.rs": "60d4b4b40a818705fded997324b2ee36bdb1ad5132f8d8a9d84689ef4740ee59",
+    "src/worker/channel.rs": "fa5e11334ea0cace8ac7e5b43c770f77dcaa7ccbf245a71365ff3540d9226d44",
+    "src/worker/launcher.rs": "22257be63985052060a613c5eaab02b7c59f79f07a808537e0e063e1e7944ab3",
+    "src/presenter/vulkan.rs": "d3de9ac6382a8776448c48ebe571debe70e4eab85878429070f95fbaa40df68b",
+    "src/presenter/vulkan/control.rs": "24233c70d6ab550ee44303c098f944fc33551052fa00feebf660ef5302a89abd",
+    "src/presenter/vulkan/transfer.rs": "b1ec4bd22469eccfd7caae685eb580733628c461148078470c9dfdc4869c4937"
+  },
+  "binaries": {
+    "default": {
+      "eris-browser": "6ca4158ac09a8b54ea33438cacb0f5106a1bd0bc824de865a4d907ffd4378c8e",
+      "eris-js": "a035703dcdb12a9c665ed6cf89247864bbca3a9a2c54142f69c299c8cadb6f12",
+      "eris-dom": "e6d8f63edb88bd11f5987c8be0e1898c385155a1e017125497316c0f36627bce",
+      "eris-stress": "c2adea19f8e3fe1b38dd5b608d5b2a4f9804a4c59f5d77e559b8528ee38d5af4"
+    },
+    "feature": "c1ed1ea7d58acf98755b55c1f6019b20b9a9624d63bb90898ce6060308b0caf4"
+  },
+  "release_binary_bytes": {
+    "default": 11327312,
+    "vulkan": 15123208
+  },
+  "tests": {
+    "188-default": {
+      "passed": 997,
+      "failed": 0,
+      "ignored": 0,
+      "log_sha256": "911a06265aa8876d26eddae40a4375619e39e293211bc84917229e6859717daf"
+    },
+    "188-feature": {
+      "passed": 1008,
+      "failed": 0,
+      "ignored": 0,
+      "log_sha256": "5522393e3a8f62ed9f902549db33efaaf1bef0a9507bb8ecd5b3286bae3dcf03"
+    },
+    "stable-default": {
+      "passed": 997,
+      "failed": 0,
+      "ignored": 0,
+      "log_sha256": "85e1ce43f44a1ebc2432306ca1fe5475528ee734590bb5d9cb0b2a9c32445c10"
+    },
+    "stable-feature": {
+      "passed": 1008,
+      "failed": 0,
+      "ignored": 0,
+      "log_sha256": "b740943a0de488950597439b9c03d3c47fa7f878c4f8534bb18ed5de764f20f6"
+    }
+  },
+  "python_tests": 158,
+  "pixel_references_each_configuration": 57,
+  "generated_cases": 45000,
+  "native": {
+    "binary_sha256": "c1ed1ea7d58acf98755b55c1f6019b20b9a9624d63bb90898ce6060308b0caf4",
+    "results": [
+      {
+        "name": "verified-resizes",
+        "arguments": [
+          "--presenter=vulkan",
+          "--vulkan-verify-frames",
+          "8",
+          "--exit-after",
+          "8"
+        ],
+        "missing_driver": false,
+        "resize_requests": [
+          {
+            "size": [
+              603,
+              403
+            ],
+            "exit": 0,
+            "response": "ok"
+          },
+          {
+            "size": [
+              605,
+              405
+            ],
+            "exit": 0,
+            "response": "ok"
+          },
+          {
+            "size": [
+              607,
+              407
+            ],
+            "exit": 0,
+            "response": "ok"
+          },
+          {
+            "size": [
+              609,
+              409
+            ],
+            "exit": 0,
+            "response": "ok"
+          },
+          {
+            "size": [
+              611,
+              411
+            ],
+            "exit": 0,
+            "response": "ok"
+          },
+          {
+            "size": [
+              613,
+              413
+            ],
+            "exit": 0,
+            "response": "ok"
+          },
+          {
+            "size": [
+              615,
+              415
+            ],
+            "exit": 0,
+            "response": "ok"
+          },
+          {
+            "size": [
+              617,
+              417
+            ],
+            "exit": 0,
+            "response": "ok"
+          },
+          {
+            "size": [
+              619,
+              419
+            ],
+            "exit": 0,
+            "response": "ok"
+          },
+          {
+            "size": [
+              621,
+              421
+            ],
+            "exit": 0,
+            "response": "ok"
+          }
+        ],
+        "window_system": "Wayland",
+        "exit_code": 0,
+        "expected_exit": 0,
+        "deadline_fired": false,
+        "reaped": true,
+        "log_sha256": "786763b5bb5b162417931e27bf5d5c32691c89483028966514389a59fb3c7d54",
+        "verified": [
+          {
+            "serial": 2,
+            "generation": 1,
+            "viewport_revision": 2,
+            "width": 1211,
+            "height": 1390,
+            "bytes": 6733160
+          },
+          {
+            "serial": 4,
+            "generation": 1,
+            "viewport_revision": 3,
+            "width": 1204,
+            "height": 1386,
+            "bytes": 6674976
+          },
+          {
+            "serial": 5,
+            "generation": 1,
+            "viewport_revision": 3,
+            "width": 1204,
+            "height": 1386,
+            "bytes": 6674976
+          },
+          {
+            "serial": 6,
+            "generation": 1,
+            "viewport_revision": 4,
+            "width": 1221,
+            "height": 1400,
+            "bytes": 6837600
+          },
+          {
+            "serial": 8,
+            "generation": 1,
+            "viewport_revision": 5,
+            "width": 603,
+            "height": 403,
+            "bytes": 972036
+          },
+          {
+            "serial": 9,
+            "generation": 1,
+            "viewport_revision": 6,
+            "width": 605,
+            "height": 405,
+            "bytes": 980100
+          },
+          {
+            "serial": 10,
+            "generation": 1,
+            "viewport_revision": 6,
+            "width": 605,
+            "height": 405,
+            "bytes": 980100
+          },
+          {
+            "serial": 11,
+            "generation": 1,
+            "viewport_revision": 7,
+            "width": 607,
+            "height": 407,
+            "bytes": 988196
+          }
+        ],
+        "fallback": false
+      },
+      {
+        "name": "missing-driver-fallback",
+        "arguments": [
+          "--presenter=vulkan",
+          "--exit-after",
+          "2"
+        ],
+        "missing_driver": true,
+        "resize_requests": [],
+        "exit_code": 0,
+        "expected_exit": 0,
+        "deadline_fired": false,
+        "reaped": true,
+        "log_sha256": "50832c06f052787feaa5ef331922269f070b6ee3a425f275ec088816b806ec3a",
+        "verified": [],
+        "fallback": true
+      },
+      {
+        "name": "missing-driver-verify",
+        "arguments": [
+          "--presenter=vulkan",
+          "--vulkan-verify-frames",
+          "1",
+          "--exit-after",
+          "2"
+        ],
+        "missing_driver": true,
+        "resize_requests": [],
+        "exit_code": 1,
+        "expected_exit": 1,
+        "deadline_fired": false,
+        "reaped": true,
+        "log_sha256": "24aaf5ed69d9db2bf07a95da9d5ad4daaa81bfb094bd2a1c8c94209aa191d07c",
+        "verified": [],
+        "fallback": false
+      },
+      {
+        "name": "insufficient-verify",
+        "arguments": [
+          "--presenter=vulkan",
+          "--vulkan-verify-frames",
+          "8",
+          "--exit-after",
+          "0.0000001"
+        ],
+        "missing_driver": false,
+        "resize_requests": [],
+        "exit_code": 1,
+        "expected_exit": 1,
+        "deadline_fired": false,
+        "reaped": true,
+        "log_sha256": "f20fc33317a23dea06fe5efff5727f1ea09b207cd675a2613b052bf3da3d479e",
+        "verified": [],
+        "fallback": false
+      }
+    ]
+  },
+  "repeat_missing_driver_launches": {
+    "binary_sha256": "c1ed1ea7d58acf98755b55c1f6019b20b9a9624d63bb90898ce6060308b0caf4",
+    "cases": [
+      {
+        "case": 0,
+        "traced": false,
+        "exit": 0,
+        "fallback": true,
+        "descriptor_rejection": false,
+        "log_sha256": "7a43b929794f28eaf72c5bb5703f0a3e62a9b0952ecfcda02561b1cd2ca4db33"
+      },
+      {
+        "case": 1,
+        "traced": false,
+        "exit": 0,
+        "fallback": true,
+        "descriptor_rejection": false,
+        "log_sha256": "0d207a6ce980ca938ce4552b5b5cdaac92739b6886913bad49027a4f639d8d35"
+      },
+      {
+        "case": 2,
+        "traced": false,
+        "exit": 0,
+        "fallback": true,
+        "descriptor_rejection": false,
+        "log_sha256": "7c84fd03b8036ee0cb66cc87998a228ecf27c5d67fa0b834a20c2a0525a0817b"
+      },
+      {
+        "case": 3,
+        "traced": false,
+        "exit": 0,
+        "fallback": true,
+        "descriptor_rejection": false,
+        "log_sha256": "0149c52a98e9901d36a3419babf6b5d71888d2554781359db49ade4da4cbe3ff"
+      },
+      {
+        "case": 4,
+        "traced": false,
+        "exit": 0,
+        "fallback": true,
+        "descriptor_rejection": false,
+        "log_sha256": "513b06cbdee4634be1d7930e7c9bd0c525d25a5113a5a768a514f49814465a50"
+      },
+      {
+        "case": 5,
+        "traced": false,
+        "exit": 0,
+        "fallback": true,
+        "descriptor_rejection": false,
+        "log_sha256": "de84611f4f0aa0062de26506fe8cd2153b9a00ce16fde4b5718828910bc19a71"
+      },
+      {
+        "case": 6,
+        "traced": false,
+        "exit": 0,
+        "fallback": true,
+        "descriptor_rejection": false,
+        "log_sha256": "d38310e0b224569b98ed2184504c317e7efa26e13c69b57a133b01157dd7c973"
+      },
+      {
+        "case": 7,
+        "traced": false,
+        "exit": 0,
+        "fallback": true,
+        "descriptor_rejection": false,
+        "log_sha256": "a0d7aabad9372f8477aa4192356119eb144aab3e4ff040f5a7048cd06372116b"
+      },
+      {
+        "case": 8,
+        "traced": false,
+        "exit": 0,
+        "fallback": true,
+        "descriptor_rejection": false,
+        "log_sha256": "879bb9ebc158fad446d20c54349b8a4a8fc4f459f3c178835fe900b184f8a735"
+      },
+      {
+        "case": 9,
+        "traced": false,
+        "exit": 0,
+        "fallback": true,
+        "descriptor_rejection": false,
+        "log_sha256": "46794d01e51389b8736823a6995351e4439167fab66bb69e3ba11275b121d71b"
+      },
+      {
+        "case": 10,
+        "traced": true,
+        "exit": 0,
+        "fallback": true,
+        "descriptor_rejection": false,
+        "log_sha256": "7ce065da21f0825a41767a1177dab4f7dd37220ac0bf00026b715d16c9e40df7"
+      },
+      {
+        "case": 11,
+        "traced": true,
+        "exit": 0,
+        "fallback": true,
+        "descriptor_rejection": false,
+        "log_sha256": "233bf7870a29b1b18f0464380c47abf6b8588b985e4c3604cecf43440eeb3c6c"
+      },
+      {
+        "case": 12,
+        "traced": true,
+        "exit": 0,
+        "fallback": true,
+        "descriptor_rejection": false,
+        "log_sha256": "e1b52d486e64008f0f61847c283d9ac0bbe81d672a1d9cd2eb7b15c2ab2e2519"
+      },
+      {
+        "case": 13,
+        "traced": true,
+        "exit": 0,
+        "fallback": true,
+        "descriptor_rejection": false,
+        "log_sha256": "64f4efe81c404bd03849e341399e24807f9394db1e7a2f1421098ae7acc42046"
+      },
+      {
+        "case": 14,
+        "traced": true,
+        "exit": 0,
+        "fallback": true,
+        "descriptor_rejection": false,
+        "log_sha256": "d0dafc4ca07eb3072ccd3ce093d4a0b339795330bf8cc632d4a92d30ba2cee8f"
+      },
+      {
+        "case": 15,
+        "traced": true,
+        "exit": 0,
+        "fallback": true,
+        "descriptor_rejection": false,
+        "log_sha256": "c7c84004573ff237152e1594816813e6c46e934839543e6fdb7a474c9c0f7b17"
+      },
+      {
+        "case": 16,
+        "traced": true,
+        "exit": 0,
+        "fallback": true,
+        "descriptor_rejection": false,
+        "log_sha256": "e8d62e39a815e3fbe784abb5b965057246217141abe82422f3faeb9710b0557a"
+      },
+      {
+        "case": 17,
+        "traced": true,
+        "exit": 0,
+        "fallback": true,
+        "descriptor_rejection": false,
+        "log_sha256": "bc12501a38516bb869d7e75f18ac6ee1b325be3fbc2a19a15fcd749144e057a9"
+      },
+      {
+        "case": 18,
+        "traced": true,
+        "exit": 0,
+        "fallback": true,
+        "descriptor_rejection": false,
+        "log_sha256": "61fca37788c660fe8eef195453848947f102347fa3cc38821ebd7aec1852f35f"
+      },
+      {
+        "case": 19,
+        "traced": true,
+        "exit": 0,
+        "fallback": true,
+        "descriptor_rejection": false,
+        "log_sha256": "8aee553eb4a7cc276d727c55cd8d141e6e7aa97884abdb611c2dab4adaf27f44"
+      }
+    ]
+  },
+  "dependency_review": {
+    "added_lock_packages": [
+      [
+        "allocator-api2",
+        "0.2.21",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "android_system_properties",
+        "0.1.6",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "arrayvec",
+        "0.7.8",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "ash",
+        "0.38.0+1.3.281",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "bit-set",
+        "0.10.0",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "bit-vec",
+        "0.9.1",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "bytemuck_derive",
+        "1.12.1",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "close_fds",
+        "0.3.2",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "codespan-reporting",
+        "0.13.1",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "crunchy",
+        "0.2.4",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "document-features",
+        "0.2.12",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "foldhash",
+        "0.2.0",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "gpu-allocator",
+        "0.28.0",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "half",
+        "2.7.1",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "hashbrown",
+        "0.16.1",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "libm",
+        "0.2.16",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "litrs",
+        "1.0.0",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "naga",
+        "30.0.1",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "naga-types",
+        "30.0.1",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "objc2-metal",
+        "0.3.2",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "ordered-float",
+        "5.3.0",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "portable-atomic",
+        "1.15.0",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "portable-atomic-util",
+        "0.2.8",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "presser",
+        "0.3.1",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "profiling",
+        "1.0.18",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "raw-window-metal",
+        "1.1.0",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "renderdoc-sys",
+        "1.1.0",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "rustc-hash",
+        "1.1.0",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "spirv",
+        "0.4.0+sdk-1.4.341.0",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "static_assertions",
+        "1.1.0",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "unicode-width",
+        "0.2.2",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "wgpu",
+        "30.0.1",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "wgpu-core",
+        "30.0.1",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "wgpu-core-deps-windows-linux-android",
+        "30.0.1",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "wgpu-hal",
+        "30.0.1",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "wgpu-naga-bridge",
+        "30.0.1",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "wgpu-types",
+        "30.0.1",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "windows",
+        "0.62.2",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "windows-collections",
+        "0.3.2",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "windows-core",
+        "0.62.2",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "windows-future",
+        "0.3.2",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "windows-implement",
+        "0.60.2",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "windows-interface",
+        "0.59.3",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "windows-numerics",
+        "0.3.1",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "windows-result",
+        "0.4.1",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "windows-strings",
+        "0.5.1",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "windows-threading",
+        "0.2.1",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ]
+    ],
+    "removed_lock_packages": [],
+    "existing_versions_sources_checksums_unchanged": true,
+    "changed_existing_dependency_lists": [
+      [
+        "bytemuck",
+        "1.25.2",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "eris-browser",
+        "0.1.0",
+        ""
+      ],
+      [
+        "hashbrown",
+        "0.17.1",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "indexmap",
+        "2.14.2",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "num-traits",
+        "0.2.19",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "objc2-core-image",
+        "0.2.2",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "objc2-quartz-core",
+        "0.2.2",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ],
+      [
+        "objc2-quartz-core",
+        "0.3.2",
+        "registry+https://github.com/rust-lang/crates.io-index"
+      ]
+    ],
+    "linux_feature_dependency_count": 191,
+    "linux_added_package_licenses": [
+      [
+        "allocator-api2",
+        "0.2.21",
+        "MIT OR Apache-2.0"
+      ],
+      [
+        "arrayvec",
+        "0.7.8",
+        "MIT OR Apache-2.0"
+      ],
+      [
+        "ash",
+        "0.38.0+1.3.281",
+        "MIT OR Apache-2.0"
+      ],
+      [
+        "bit-set",
+        "0.10.0",
+        "Apache-2.0 OR MIT"
+      ],
+      [
+        "bit-vec",
+        "0.9.1",
+        "Apache-2.0 OR MIT"
+      ],
+      [
+        "bytemuck_derive",
+        "1.12.1",
+        "Zlib OR Apache-2.0 OR MIT"
+      ],
+      [
+        "close_fds",
+        "0.3.2",
+        "MIT"
+      ],
+      [
+        "codespan-reporting",
+        "0.13.1",
+        "Apache-2.0"
+      ],
+      [
+        "document-features",
+        "0.2.12",
+        "MIT OR Apache-2.0"
+      ],
+      [
+        "foldhash",
+        "0.2.0",
+        "Zlib"
+      ],
+      [
+        "gpu-allocator",
+        "0.28.0",
+        "MIT OR Apache-2.0"
+      ],
+      [
+        "half",
+        "2.7.1",
+        "MIT OR Apache-2.0"
+      ],
+      [
+        "hashbrown",
+        "0.16.1",
+        "MIT OR Apache-2.0"
+      ],
+      [
+        "libm",
+        "0.2.16",
+        "MIT"
+      ],
+      [
+        "litrs",
+        "1.0.0",
+        "MIT OR Apache-2.0"
+      ],
+      [
+        "naga",
+        "30.0.1",
+        "MIT OR Apache-2.0"
+      ],
+      [
+        "naga-types",
+        "30.0.1",
+        "MIT OR Apache-2.0"
+      ],
+      [
+        "ordered-float",
+        "5.3.0",
+        "MIT"
+      ],
+      [
+        "presser",
+        "0.3.1",
+        "MIT OR Apache-2.0"
+      ],
+      [
+        "profiling",
+        "1.0.18",
+        "MIT OR Apache-2.0"
+      ],
+      [
+        "renderdoc-sys",
+        "1.1.0",
+        "MIT OR Apache-2.0"
+      ],
+      [
+        "rustc-hash",
+        "1.1.0",
+        "Apache-2.0/MIT"
+      ],
+      [
+        "spirv",
+        "0.4.0+sdk-1.4.341.0",
+        "Apache-2.0"
+      ],
+      [
+        "static_assertions",
+        "1.1.0",
+        "MIT OR Apache-2.0"
+      ],
+      [
+        "unicode-width",
+        "0.2.2",
+        "MIT OR Apache-2.0"
+      ],
+      [
+        "wgpu",
+        "30.0.1",
+        "MIT OR Apache-2.0"
+      ],
+      [
+        "wgpu-core",
+        "30.0.1",
+        "MIT OR Apache-2.0"
+      ],
+      [
+        "wgpu-core-deps-windows-linux-android",
+        "30.0.1",
+        "MIT OR Apache-2.0"
+      ],
+      [
+        "wgpu-hal",
+        "30.0.1",
+        "MIT OR Apache-2.0"
+      ],
+      [
+        "wgpu-naga-bridge",
+        "30.0.1",
+        "MIT OR Apache-2.0"
+      ],
+      [
+        "wgpu-types",
+        "30.0.1",
+        "MIT OR Apache-2.0"
+      ]
+    ]
+  },
+  "conformance": [
+    {
+      "profile": "string-concat",
+      "mode_cases": 44,
+      "source_files": 22,
+      "counts": {
+        "passed": 42,
+        "unsupported": 2
+      },
+      "controls": 56,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "b826dbf1a4575d6b80d26ed933daad6c2a893448eab761271232121506eaee35"
+    },
+    {
+      "profile": "symbols",
+      "mode_cases": 242,
+      "source_files": 123,
+      "counts": {
+        "passed": 168,
+        "unsupported": 68,
+        "failed": 6
+      },
+      "controls": 64,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "e1fc5110b5ef059467639b3dbb0733f2432adaa0fa472f0d7825c61b5b2a0173"
+    },
+    {
+      "profile": "string-json",
+      "mode_cases": 652,
+      "source_files": 326,
+      "counts": {
+        "passed": 536,
+        "unsupported": 116
+      },
+      "controls": 32,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "ec0ea057327af8be3b52dff5ac4f1edc4a6db0297e48849f9fef9e71b3e10830"
+    },
+    {
+      "profile": "regexp",
+      "mode_cases": 290,
+      "source_files": 145,
+      "counts": {
+        "passed": 252,
+        "unsupported": 38
+      },
+      "controls": 44,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "c0a3701c297de90ceefb3e1822c99d94754dbdd64f48f05a746c091e1cf20830"
+    },
+    {
+      "profile": "template-literal",
+      "mode_cases": 114,
+      "source_files": 57,
+      "counts": {
+        "unsupported": 32,
+        "passed": 82
+      },
+      "controls": 44,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "20b81d2876472fb605aa278265354c5125665241ddbf80a477c13329240783b6"
+    },
+    {
+      "profile": "functions",
+      "mode_cases": 1131,
+      "source_files": 663,
+      "counts": {
+        "passed": 511,
+        "unsupported": 620
+      },
+      "controls": 48,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "6ed5822f9410aae654a9b6740c9bfa923035ad167997943eae65726acb55c992"
+    },
+    {
+      "profile": "rest-parameters",
+      "mode_cases": 22,
+      "source_files": 11,
+      "counts": {
+        "unsupported": 6,
+        "passed": 16
+      },
+      "controls": 64,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "15d7434439e3ecb32ecc80e91c071846461322b377d41117be6e96d32eaa2da7"
+    },
+    {
+      "profile": "is-prototype-of",
+      "mode_cases": 20,
+      "source_files": 10,
+      "counts": {
+        "unsupported": 10,
+        "passed": 10
+      },
+      "controls": 64,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "0d4b32240ef8542ce032c150fe7c3c6f656dde1ce1b64ea0e9686ca2ae9a60be"
+    },
+    {
+      "profile": "global-values",
+      "mode_cases": 88,
+      "source_files": 49,
+      "counts": {
+        "passed": 64,
+        "failed": 6,
+        "unsupported": 18
+      },
+      "controls": 64,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "ee54effa938709a17cf60901ca0d1c6f029a46746b1b0850fc1f781792b65996"
+    },
+    {
+      "profile": "array-sort",
+      "mode_cases": 107,
+      "source_files": 54,
+      "counts": {
+        "passed": 57,
+        "unsupported": 46,
+        "resource": 4
+      },
+      "controls": 80,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "94f5109a609329adc412c2d8766564522ba42efe7250f07208d01d02d9d5885f"
+    },
+    {
+      "profile": "identifiers",
+      "mode_cases": 669,
+      "source_files": 335,
+      "counts": {
+        "passed": 509,
+        "unsupported": 154,
+        "resource": 6
+      },
+      "controls": 88,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "fc51c13702515130514f2d1cea57e14df24c78504bf3de694ae555666b48f500"
+    },
+    {
+      "profile": "array-reduce",
+      "mode_cases": 1034,
+      "source_files": 520,
+      "counts": {
+        "passed": 856,
+        "failed": 8,
+        "unsupported": 170
+      },
+      "controls": 128,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "c114fe8c1cda0f7e83c39eb09b9ece71a200ba135dd7526db196255fd922f89e"
+    },
+    {
+      "profile": "number-statics",
+      "mode_cases": 340,
+      "source_files": 170,
+      "counts": {
+        "passed": 250,
+        "unsupported": 90
+      },
+      "controls": 104,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "88dff8258e6286aa340173c4212963a4bb3095c89622be56638d7e5c96797ef4"
+    },
+    {
+      "profile": "numeric-conversion",
+      "mode_cases": 60,
+      "source_files": 30,
+      "counts": {
+        "passed": 28,
+        "unsupported": 32
+      },
+      "controls": 80,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "c37683d0d9ce0b5ce9c9664d0785804406c3ac912439d855b3e627df61bd907c"
+    },
+    {
+      "profile": "numeric-parsing",
+      "mode_cases": 218,
+      "source_files": 109,
+      "counts": {
+        "passed": 172,
+        "unsupported": 38,
+        "resource": 8
+      },
+      "controls": 80,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "684affb26e80d3547356f597df44ebc11be295af6896edbc1ec8717b57855a98"
+    },
+    {
+      "profile": "compound-assignment",
+      "mode_cases": 786,
+      "source_files": 454,
+      "counts": {
+        "unsupported": 169,
+        "passed": 617
+      },
+      "controls": 128,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "ffa63528786bca22ca92f55249f6dc504d490924fa18b36fddef724199ec69ec"
+    },
+    {
+      "profile": "addition",
+      "mode_cases": 95,
+      "source_files": 48,
+      "counts": {
+        "unsupported": 28,
+        "passed": 65,
+        "failed": 2
+      },
+      "controls": 64,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "6eee6f52aa94f6ccde03ee1dcb2b557ff748063ff2c0567ff15000a9c187adbc"
+    },
+    {
+      "profile": "logical-assignment",
+      "mode_cases": 132,
+      "source_files": 78,
+      "counts": {
+        "unsupported": 48,
+        "passed": 78,
+        "failed": 6
+      },
+      "controls": 104,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "59de626d0218d25a083457659f4e8d1cff7dae9fc12bea8ef2c25548711f6e78"
+    },
+    {
+      "profile": "uri",
+      "mode_cases": 346,
+      "source_files": 173,
+      "counts": {
+        "resource": 112,
+        "passed": 226,
+        "unsupported": 8
+      },
+      "controls": 128,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "115298b6e153a48b4fb7e60568a96dbd3b6d3104697efbb7be378fe8e029f15f"
+    },
+    {
+      "profile": "relational",
+      "mode_cases": 364,
+      "source_files": 184,
+      "counts": {
+        "unsupported": 64,
+        "passed": 300
+      },
+      "controls": 128,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "de47bab6df53e96d6451b3a6718daae67fca8ee83f3aad6e462aff8ee3a8d1af"
+    },
+    {
+      "profile": "equality",
+      "mode_cases": 286,
+      "source_files": 145,
+      "counts": {
+        "unsupported": 96,
+        "passed": 190
+      },
+      "controls": 128,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "fcf66629e101c24e0e7cf8a915d53d92680b4d988df3d73597aadc183ccef7c4"
+    },
+    {
+      "profile": "labels",
+      "mode_cases": 125,
+      "source_files": 68,
+      "counts": {
+        "passed": 100,
+        "unsupported": 25
+      },
+      "controls": 80,
+      "all_cases_controls_sources_policies_unchanged": true,
+      "report_sha256": "ab6e518a2f227018b8e9371bfdb1e4e612afedc606f0253bf0307ab1085336fd"
+    }
+  ],
+  "html_counts": {
+    "matched": 3868,
+    "mismatched": 2,
+    "unsupported": 6
+  },
+  "retained_failed_attempts": [
+    {
+      "name": "original async presenter",
+      "input_sha256": "e78e2db315ffc971f25e37e8a2b81246abdbd58af2fb9ae671706a88d4d55449",
+      "binary_sha256": "633ab4332011559da999afbc029585313e9f1e0949370b93c459714c54cbab7e",
+      "native": [
+        {
+          "name": "verified-resizes",
+          "arguments": [
+            "--presenter=vulkan",
+            "--vulkan-verify-frames",
+            "8",
+            "--exit-after",
+            "8"
+          ],
+          "missing_driver": false,
+          "resize_requests": [
+            {
+              "size": [
+                602,
+                402
+              ],
+              "exit": 0,
+              "response": "ok"
+            },
+            {
+              "size": [
+                604,
+                404
+              ],
+              "exit": 0,
+              "response": "ok"
+            },
+            {
+              "size": [
+                606,
+                406
+              ],
+              "exit": 0,
+              "response": "ok"
+            },
+            {
+              "size": [
+                608,
+                408
+              ],
+              "exit": 0,
+              "response": "ok"
+            },
+            {
+              "size": [
+                610,
+                410
+              ],
+              "exit": 0,
+              "response": "ok"
+            },
+            {
+              "size": [
+                612,
+                412
+              ],
+              "exit": 0,
+              "response": "ok"
+            },
+            {
+              "size": [
+                614,
+                414
+              ],
+              "exit": 0,
+              "response": "ok"
+            },
+            {
+              "size": [
+                616,
+                416
+              ],
+              "exit": 0,
+              "response": "ok"
+            },
+            {
+              "size": [
+                618,
+                418
+              ],
+              "exit": 0,
+              "response": "ok"
+            },
+            {
+              "size": [
+                620,
+                420
+              ],
+              "exit": 0,
+              "response": "ok"
+            }
+          ],
+          "exit_code": 0,
+          "expected_exit": 0,
+          "deadline_fired": false,
+          "reaped": true,
+          "log_sha256": "cbb6e3509f27dad10cbc355a33cd3e0a25c6447cd9c45192c49a96b91f75e0cb",
+          "verified": [
+            {
+              "serial": 2,
+              "generation": 1,
+              "viewport_revision": 2,
+              "width": 1275,
+              "height": 695,
+              "bytes": 3544500
+            },
+            {
+              "serial": 4,
+              "generation": 1,
+              "viewport_revision": 3,
+              "width": 1268,
+              "height": 688,
+              "bytes": 3489536
+            },
+            {
+              "serial": 5,
+              "generation": 1,
+              "viewport_revision": 3,
+              "width": 1268,
+              "height": 688,
+              "bytes": 3489536
+            },
+            {
+              "serial": 6,
+              "generation": 1,
+              "viewport_revision": 4,
+              "width": 1934,
+              "height": 402,
+              "bytes": 3109872
+            },
+            {
+              "serial": 7,
+              "generation": 1,
+              "viewport_revision": 4,
+              "width": 1934,
+              "height": 402,
+              "bytes": 3109872
+            },
+            {
+              "serial": 8,
+              "generation": 1,
+              "viewport_revision": 5,
+              "width": 2415,
+              "height": 404,
+              "bytes": 3902640
+            },
+            {
+              "serial": 9,
+              "generation": 1,
+              "viewport_revision": 5,
+              "width": 2415,
+              "height": 404,
+              "bytes": 3902640
+            },
+            {
+              "serial": 10,
+              "generation": 1,
+              "viewport_revision": 6,
+              "width": 2415,
+              "height": 406,
+              "bytes": 3921960
+            }
+          ],
+          "fallback": false
+        },
+        {
+          "name": "missing-driver-fallback",
+          "arguments": [
+            "--presenter=vulkan",
+            "--exit-after",
+            "2"
+          ],
+          "missing_driver": true,
+          "resize_requests": [],
+          "exit_code": 1,
+          "expected_exit": 0,
+          "deadline_fired": false,
+          "reaped": true,
+          "log_sha256": "aaeb52066cfbf564c1ddbdf71f8722309053753cbb3f07e010db5ecb2036fc96",
+          "verified": [],
+          "fallback": true
+        }
+      ],
+      "finding": "Missing-driver run selected software after actual release, but page startup rejected an inherited descriptor."
+    },
+    {
+      "name": "diagnostic loader tracing",
+      "binary_sha256": "8f33220c87d09f7aa1b78b8094c84a865d9e74c0357daf609bc2c0556bc91cbe",
+      "untraced_launches": 10,
+      "traced_launches": 10,
+      "rejected_traced_launches": 4,
+      "finding": "Four traced runs rejected Vulkan layer manifest descriptors opened without close-on-exec. Raw filesystem paths stay in local artifacts."
+    },
+    {
+      "name": "graphics/spawn gate candidate",
+      "input_sha256": "cdbd976c5f18474f5770d5a8acca7f9933bd0841f97950a0d77240b0ce2b691c",
+      "binary_sha256": "3b227fc75b05694e767f45ba225dfca40a0fc0021028a94175acbfa5f6ae2ae4",
+      "native": [
+        {
+          "name": "verified-resizes",
+          "arguments": [
+            "--presenter=vulkan",
+            "--vulkan-verify-frames",
+            "8",
+            "--exit-after",
+            "8"
+          ],
+          "missing_driver": false,
+          "resize_requests": [
+            {
+              "size": [
+                602,
+                402
+              ],
+              "exit": 0,
+              "response": "ok"
+            },
+            {
+              "size": [
+                604,
+                404
+              ],
+              "exit": 0,
+              "response": "ok"
+            },
+            {
+              "size": [
+                606,
+                406
+              ],
+              "exit": 0,
+              "response": "ok"
+            },
+            {
+              "size": [
+                608,
+                408
+              ],
+              "exit": 0,
+              "response": "ok"
+            },
+            {
+              "size": [
+                610,
+                410
+              ],
+              "exit": 0,
+              "response": "ok"
+            },
+            {
+              "size": [
+                612,
+                412
+              ],
+              "exit": 0,
+              "response": "ok"
+            },
+            {
+              "size": [
+                614,
+                414
+              ],
+              "exit": 0,
+              "response": "ok"
+            },
+            {
+              "size": [
+                616,
+                416
+              ],
+              "exit": 0,
+              "response": "ok"
+            },
+            {
+              "size": [
+                618,
+                418
+              ],
+              "exit": 0,
+              "response": "ok"
+            },
+            {
+              "size": [
+                620,
+                420
+              ],
+              "exit": 0,
+              "response": "ok"
+            }
+          ],
+          "window_system": "Wayland",
+          "exit_code": 1,
+          "expected_exit": 0,
+          "deadline_fired": false,
+          "reaped": true,
+          "log_sha256": "0b7d159954cba2b7070efccce5f3c3678616fdf3127f85d3c050c9f2cb1d68f9",
+          "verified": [
+            {
+              "serial": 1,
+              "generation": 1,
+              "viewport_revision": 2,
+              "width": 1211,
+              "height": 1390,
+              "bytes": 6733160
+            },
+            {
+              "serial": 3,
+              "generation": 1,
+              "viewport_revision": 3,
+              "width": 1204,
+              "height": 1386,
+              "bytes": 6674976
+            },
+            {
+              "serial": 4,
+              "generation": 1,
+              "viewport_revision": 3,
+              "width": 1204,
+              "height": 1386,
+              "bytes": 6674976
+            },
+            {
+              "serial": 5,
+              "generation": 1,
+              "viewport_revision": 4,
+              "width": 1221,
+              "height": 1400,
+              "bytes": 6837600
+            },
+            {
+              "serial": 6,
+              "generation": 1,
+              "viewport_revision": 5,
+              "width": 602,
+              "height": 402,
+              "bytes": 968016
+            },
+            {
+              "serial": 7,
+              "generation": 1,
+              "viewport_revision": 6,
+              "width": 604,
+              "height": 404,
+              "bytes": 976064
+            },
+            {
+              "serial": 8,
+              "generation": 1,
+              "viewport_revision": 7,
+              "width": 606,
+              "height": 406,
+              "bytes": 984144
+            },
+            {
+              "serial": 9,
+              "generation": 1,
+              "viewport_revision": 8,
+              "width": 608,
+              "height": 408,
+              "bytes": 992256
+            }
+          ],
+          "fallback": false
+        }
+      ],
+      "finding": "Readback remained exact, but page startup still failed. A diagnostic build rejected retained /dev/udmabuf in three of three hardware launches. The gate was removed; it could not sanitize retained handles.",
+      "diagnostic_binary_sha256": "9b0bc1ecb1a784ca60ee11453eb992c9d5b1659b3a3b7ba7dfc258f418a533b1",
+      "diagnostic_log_sha256": "4a8427d355a1ff962fb24590d0cb0d28d555e10a3b37b9ee37b1d3962b2ccc08"
+    }
+  ],
+  "limits": [
+    "Application ledger excludes driver allocations and other browser memory",
+    "Application deadlines cannot interrupt native calls/destructors",
+    "No actual device/surface-loss or forced driver-hang recovery tested",
+    "No minimize/restore host test; CPU state tests cover occlusion",
+    "No new compositor capture; earlier four non-exact captures remain failures",
+    "No independent review of this implementation; prior design review and current local self-review/tests only"
+  ],
+  "pixel_reference_path": "Headless CPU painting in both release binaries; these 57 cases do not exercise the Vulkan surface."
+}

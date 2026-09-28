@@ -10,6 +10,20 @@ use eris::{
 use std::{path::PathBuf, time::Instant};
 
 fn main() {
+    #[cfg(all(target_os = "linux", feature = "vulkan-presenter"))]
+    if std::env::args().nth(1).as_deref() == Some("--clean-worker-launch") {
+        let result = match (std::env::args().nth(2), std::env::args().nth(3)) {
+            (Some(role), None) => eris::worker::launch_worker(&role),
+            _ => Err("clean worker launch needs exactly one internal role".into()),
+        };
+        match result {
+            Ok(never) => match never {},
+            Err(error) => {
+                eprintln!("eris-browser: {error}");
+                std::process::exit(1);
+            }
+        }
+    }
     if std::env::args().nth(1).as_deref() == Some("--image-decoder") {
         if eris::worker::serve_image_decoder().is_err() {
             std::process::exit(1);
@@ -46,14 +60,33 @@ fn run() -> Result<(), String> {
     let mut clicks = Vec::new();
     let mut exit_after = None;
     let mut capture = None;
+    let mut presenter = presenter::PresenterConfig::default();
     let mut args = std::env::args().skip(1);
     while let Some(arg) = args.next() {
         match arg.as_str() {
             "--help" | "-h" => {
                 println!(
-                    "Eris Browser — independent experimental Rust web engine\n\nUsage: eris-browser [ADDRESS] [OPTIONS]\n\n  --render                 Render without a desktop window\n  --output PATH            PNG output (default: render.png)\n  --width N --height N     Viewport in CSS pixels (1180 × 880)\n  --no-scripts             Disable page scripting\n  --click SELECTOR         Activate a matched node before rendering; repeatable\n  --dump-dom               Print the resulting document tree\n  --benchmark N            Measure N style/layout/paint iterations\n  --benchmark-worker N     Measure confined load/render/paint phases; JSON stdout\n  --exit-after SECONDS     Close desktop window after a smoke-test interval\n  --window-screenshot PATH Capture the native browser framebuffer\n\nAddresses: https://example.com, ./examples/forms.html, eris:home, about:blank\nDesktop keys: Ctrl+L address, Ctrl+R reload, Alt+Left/Right history, Ctrl +/- zoom\n\nThis is an early implementation with partial HTML/CSS/JavaScript support.\nFull web compatibility, production security and Chromium performance are unverified."
+                    "Eris Browser — independent experimental Rust web engine\n\nUsage: eris-browser [ADDRESS] [OPTIONS]\n\n  --presenter MODE         software (default) or vulkan (optional Linux build)\n  --vulkan-verify-frames N  Check 1..8 acquired Vulkan textures before presentation\n  --render                 Render without a desktop window\n  --output PATH            PNG output (default: render.png)\n  --width N --height N     Viewport in CSS pixels (1180 × 880)\n  --no-scripts             Disable page scripting\n  --click SELECTOR         Activate a matched node before rendering; repeatable\n  --dump-dom               Print the resulting document tree\n  --benchmark N            Measure N style/layout/paint iterations\n  --benchmark-worker N     Measure confined load/render/paint phases; JSON stdout\n  --exit-after SECONDS     Close desktop window after a smoke-test interval\n  --window-screenshot PATH Capture the native browser framebuffer\n\nAddresses: https://example.com, ./examples/forms.html, eris:home, about:blank\nDesktop keys: Ctrl+L address, Ctrl+R reload, Alt+Left/Right history, Ctrl +/- zoom\n\nThis is an early implementation with partial HTML/CSS/JavaScript support.\nFull web compatibility, production security and Chromium performance are unverified."
                 );
                 return Ok(());
+            }
+            "--presenter" => {
+                presenter.choice = presenter::PresenterChoice::parse(
+                    &args.next().ok_or("--presenter needs a mode")?,
+                )?;
+            }
+            value if value.starts_with("--presenter=") => {
+                presenter.choice = presenter::PresenterChoice::parse(&value[12..])?;
+            }
+            "--vulkan-verify-frames" => {
+                presenter.verify_frames = args
+                    .next()
+                    .ok_or("--vulkan-verify-frames needs a count")?
+                    .parse()
+                    .map_err(|_| "--vulkan-verify-frames must be between 1 and 8")?;
+                if !(1..=8).contains(&presenter.verify_frames) {
+                    return Err("--vulkan-verify-frames must be between 1 and 8".into());
+                }
             }
             "--render" | "--headless" => headless = true,
             "--output" | "-o" => {
@@ -125,6 +158,7 @@ fn run() -> Result<(), String> {
             value => address = value.into(),
         }
     }
+    presenter.validate(headless)?;
     if let Some(count) = worker_iterations {
         if iterations > 0 || dump || !clicks.is_empty() || exit_after.is_some() || capture.is_some()
         {
@@ -133,7 +167,7 @@ fn run() -> Result<(), String> {
         return worker_benchmark::run(&address, scripts, width, height, count, &output);
     }
     if !headless {
-        return browser::run(address, scripts, exit_after, capture);
+        return browser::run(address, scripts, exit_after, capture, presenter);
     }
     let mut canvas = Canvas::new(width, height)?;
     let fonts = Fonts::new();

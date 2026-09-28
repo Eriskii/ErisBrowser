@@ -15749,7 +15749,7 @@ mod tests {
         assert_eq!(parser.labels.capacity(), 0);
         parser.labels = (0..MAX_DEPTH)
             .map(|i| ActiveLabel {
-                name: format!("{:032}", i),
+                name: format!("{i:032}"),
                 target: i,
                 iteration: true,
             })

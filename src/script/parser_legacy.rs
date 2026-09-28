@@ -1440,36 +1440,34 @@ impl<'source> Parser<'source> {
                     let mut code = self.function(true)?;
                     code.constructable = false;
                     ObjectEntry::Method(code)
-                } else {
-                    if self.eat(":") {
-                        let is_prototype = matches!(&key, PropertyName::Literal(name, _) if name == &JsString::from("__proto__"));
-                        if is_prototype && prototype_setter {
-                            return Err(self.error("duplicate __proto__ prototype setter"));
-                        }
-                        let expression = self.expression()?;
-                        if is_prototype {
-                            prototype_setter = true;
-                            ObjectEntry::Prototype(expression)
-                        } else {
-                            ObjectEntry::Data(expression)
-                        }
-                    } else {
-                        let PropertyName::Literal(name, true) = &key else {
-                            return Err(self.error("object shorthand requires an identifier"));
-                        };
-                        self.compile_budget
-                            .work(1 + name.len() / 8)
-                            .map_err(regexp_error)?;
-                        compile_allocate(
-                            &mut self.compile_budget,
-                            name.len().saturating_mul(3).saturating_add(32),
-                        )?;
-                        let name = name
-                            .to_utf8()
-                            .map_err(|_| self.error("object shorthand requires an identifier"))?;
-                        self.validate_identifier(&name, false)?;
-                        ObjectEntry::Data(Expr::Ident(name))
+                } else if self.eat(":") {
+                    let is_prototype = matches!(&key, PropertyName::Literal(name, _) if name == &JsString::from("__proto__"));
+                    if is_prototype && prototype_setter {
+                        return Err(self.error("duplicate __proto__ prototype setter"));
                     }
+                    let expression = self.expression()?;
+                    if is_prototype {
+                        prototype_setter = true;
+                        ObjectEntry::Prototype(expression)
+                    } else {
+                        ObjectEntry::Data(expression)
+                    }
+                } else {
+                    let PropertyName::Literal(name, true) = &key else {
+                        return Err(self.error("object shorthand requires an identifier"));
+                    };
+                    self.compile_budget
+                        .work(1 + name.len() / 8)
+                        .map_err(regexp_error)?;
+                    compile_allocate(
+                        &mut self.compile_budget,
+                        name.len().saturating_mul(3).saturating_add(32),
+                    )?;
+                    let name = name
+                        .to_utf8()
+                        .map_err(|_| self.error("object shorthand requires an identifier"))?;
+                    self.validate_identifier(&name, false)?;
+                    ObjectEntry::Data(Expr::Ident(name))
                 };
                 entries.push((key, value));
                 if self.eat("}") {

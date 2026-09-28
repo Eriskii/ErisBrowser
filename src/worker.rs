@@ -2,6 +2,10 @@
 mod broker;
 mod channel;
 mod codec;
+#[cfg(all(target_os = "linux", feature = "vulkan-presenter"))]
+mod launcher;
+#[cfg(all(target_os = "linux", feature = "vulkan-presenter"))]
+pub use launcher::launch_worker;
 mod image_decoder;
 mod sandbox;
 use crate::{

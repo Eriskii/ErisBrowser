@@ -1710,17 +1710,55 @@ fn unexpected_inherited_descriptor_is_rejected() {
         let file = fs::File::open("/dev/null").unwrap();
         let original = rustix::io::fcntl_getfd(&file).unwrap();
         rustix::io::fcntl_setfd(&file, rustix::io::FdFlags::empty()).unwrap();
-        let result = WorkerClient::spawn_at(
-            Path::new(BINARY),
-            false,
-            &Navigation::get("about:blank"),
-            103,
-        );
-        rustix::io::fcntl_setfd(&file, original).unwrap();
-        let error = result
+        // Exercise the worker entry point directly: no launch sanitizer may
+        // turn this negative test into a false pass.
+        let mut direct = Command::new(BINARY)
+            .arg("--page-worker")
+            .env_clear()
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::null())
+            .spawn()
+            .unwrap();
+        let mut init = b"ERW8\x00\x00".to_vec();
+        init.extend_from_slice(&103u64.to_le_bytes());
+        let mut input = direct.stdin.take().unwrap();
+        input.write_all(&(init.len() as u32).to_le_bytes()).unwrap();
+        input.write_all(&init).unwrap();
+        drop(input);
+        let output = direct.wait_with_output().unwrap();
+        assert!(!output.status.success());
+        assert!(String::from_utf8_lossy(&output.stdout).contains("unexpected open descriptor"));
+        #[cfg(feature = "vulkan-presenter")]
+        {
+            // The normal parent API deliberately sanitizes before exec. Its
+            // worker starts clean without changing the parent's owned file.
+            let navigation = Navigation::get("about:blank");
+            let mut client =
+                WorkerClient::spawn_at(Path::new(BINARY), false, &navigation, 104).unwrap();
+            load(&mut client, &navigation);
+            let snapshot = render(&mut client);
+            assert_eq!(snapshot.generation, 104);
+            assert_eq!(
+                rustix::io::fcntl_getfd(&file).unwrap(),
+                rustix::io::FdFlags::empty()
+            );
+            assert!(file.metadata().is_ok());
+            drop(client);
+        }
+        #[cfg(not(feature = "vulkan-presenter"))]
+        {
+            let error = WorkerClient::spawn_at(
+                Path::new(BINARY),
+                false,
+                &Navigation::get("about:blank"),
+                103,
+            )
             .err()
-            .expect("unexpected inherited descriptors must fail closed");
-        assert!(error.contains("unexpected open descriptor"), "{error}");
+            .expect("default launches still reject unexpected descriptors");
+            assert!(error.contains("unexpected open descriptor"), "{error}");
+        }
+        rustix::io::fcntl_setfd(&file, original).unwrap();
         return;
     }
     let output = Command::new(std::env::current_exe().unwrap())
