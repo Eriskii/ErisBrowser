@@ -563,23 +563,8 @@ fn records(
             pending: css::shorthand_properties(property),
         }]));
     }
-    let mut calc = Vec::new();
-    for (i, token) in tokens.iter().enumerate() {
-        if token.open().is_some() {
-            calc.push(
-                token.kind == Kind::Function && token.is_name("calc")
-                    || calc.last().copied().unwrap_or(false),
-            );
-        } else if matches!(token.kind, Kind::Close(_)) {
-            calc.pop();
-        } else if calc.last() == Some(&true)
-            && matches!(token.kind, Kind::Delim('+' | '-'))
-            && (i == 0
-                || tokens[i - 1].kind != Kind::Whitespace
-                || tokens.get(i + 1).is_none_or(|t| t.kind != Kind::Whitespace))
-        {
-            return Ok(None);
-        }
+    if !css::valid_calculations(value, work).map_err(|_| Error::Limit)? {
+        return Ok(None);
     }
     // Normalize only tokens whose grammar is already known. Strings are copied
     // verbatim, and a removed comment cannot concatenate adjacent CSS tokens.
@@ -674,70 +659,22 @@ fn number(value: &str) -> Option<f32> {
     }
     value.parse::<f32>().ok().filter(|n| n.is_finite())
 }
-// Calc's supported grammar is sums/differences of lengths, percentages and
-// nested calc(). Mixed units are retained, although layout cannot yet resolve
-// every mixed-category expression. Products/min/max/clamp remain unsupported.
-fn length(value: &str, percent: bool, negative: bool, depth: usize, work: &mut usize) -> bool {
-    if spend(work, value.len().saturating_mul(4) + 1).is_err() {
+// The renderer and CSSOM share one typed additive calculation grammar. CSSOM
+// retains authored units; actual font/viewport coefficients are computed later.
+fn length(value: &str, percent: bool, negative: bool, _depth: usize, work: &mut usize) -> bool {
+    if spend(work, value.len().saturating_mul(4) + 1).is_err() || value.is_empty() {
         return false;
     }
-    if depth > MAX_DEPTH || value.is_empty() {
-        return false;
+    if value.contains('(') {
+        return match css::parse_calculation(value, [16.0, 16.0, 800.0, 600.0], work) {
+            Ok(Some(length)) => percent || !length.depends_on_percentage(),
+            Err(_) => {
+                *work = 0;
+                false
+            }
+            _ => false,
+        };
     }
-    if let Some(inner) = value
-        .strip_prefix("calc(")
-        .and_then(|v| v.strip_suffix(')'))
-    {
-        // Borrow each top-level component directly. Nested calculations do not
-        // allocate another full token vector at every recursion level.
-        let mut at = 0;
-        let mut operand = true;
-        let mut seen = false;
-        while at < inner.len() {
-            let (kind, count) = selectors::token(&inner[at..]);
-            if kind == Kind::Whitespace {
-                at += count;
-                continue;
-            }
-            let start = at;
-            at += count;
-            let mut nesting = usize::from(matches!(kind, Kind::Function | Kind::Open(_)));
-            while nesting > 0 && at < inner.len() {
-                let (kind, count) = selectors::token(&inner[at..]);
-                if matches!(kind, Kind::Function | Kind::Open(_)) {
-                    nesting += 1;
-                } else if matches!(kind, Kind::Close(_)) {
-                    nesting -= 1;
-                }
-                at += count;
-            }
-            if nesting != 0 {
-                return false;
-            }
-            let part = &inner[start..at];
-            if operand {
-                if !length(part, percent, true, depth + 1, work) {
-                    return false;
-                }
-            } else if !matches!(part, "+" | "-") {
-                return false;
-            }
-            // Binary +/- requires whitespace on both sides. Token adjacency
-            // must not repair calc(1px+ 2px) into valid arithmetic.
-            if !operand
-                && (start == 0
-                    || !inner[..start].ends_with(selectors::space)
-                    || at == inner.len()
-                    || !inner[at..].starts_with(selectors::space))
-            {
-                return false;
-            }
-            operand = !operand;
-            seen = true;
-        }
-        return seen && !operand;
-    }
-
     let (kind, n) = selectors::token(value);
     if n != value.len() || !matches!(kind, Kind::Dimension | Kind::Percentage | Kind::Number) {
         return false;
@@ -1058,7 +995,10 @@ fn valid_longhand(property: &str, value: &str, work: &mut usize) -> Result<bool,
         "border-radius" => {
             let tokens = selectors::tokens(value, work).map_err(|_| Error::Limit)?;
             let parts = components(value, &tokens);
-            (1..=4).contains(&parts.len()) && parts.iter().all(|p| length(p, true, false, 0, work))
+            (1..=4).contains(&parts.len())
+                && parts
+                    .iter()
+                    .all(|p| length(p, !p.contains('('), false, 0, work))
         }
         "list-style-type" => matches!(
             value,
@@ -1325,6 +1265,66 @@ mod tests {
             assert!(!set(&mut s, name, value, ""), "{name}:{value}");
             assert_eq!(s, before);
         }
+    }
+    #[test]
+    fn inline_calculations_share_typed_grammar_and_preserve_atomic_mutations() {
+        let mut work = 1_000_000;
+        let mut style =
+            InlineStyle::parse("width:77px;border-radius:7px;margin:8px", &mut work).unwrap();
+        for value in [
+            "calc(1px +)",
+            "calc(0 + 1px)",
+            "calc(1px/**/+/**/2px)",
+            "calc(1px * 2)",
+            "calc(1px) trailing",
+        ] {
+            assert!(
+                !style.set_property("width", value, "", &mut work).unwrap(),
+                "{value}"
+            );
+            assert_eq!(
+                style.get_property_value("width", &mut work).unwrap(),
+                "77px"
+            );
+        }
+        assert!(
+            style
+                .set_property("width", r"c\61 lc((50% - 2em) + 1rem)", "", &mut work)
+                .unwrap()
+        );
+        assert_eq!(
+            style.get_property_value("width", &mut work).unwrap(),
+            "calc((50% - 2em) + 1rem)"
+        );
+        assert!(
+            style
+                .set_property("margin", "calc(1px)/**/calc(2px)", "", &mut work)
+                .unwrap()
+        );
+        assert!(
+            !style
+                .set_property("border-radius", "calc(10% + 1px)", "", &mut work)
+                .unwrap()
+        );
+        assert!(
+            style
+                .set_property("width", "calc(-1px)", "", &mut work)
+                .unwrap()
+        );
+        let text = style.serialize(&mut work).unwrap();
+        let doc = crate::dom::Document::parse(&format!("<div style='{text}'></div>"));
+        let styles = css::compute_styles(&doc, &[], 800.0, 600.0);
+        let computed = &styles[doc.query_selector("div").unwrap()];
+        assert_eq!(computed.width.resolve(0.0), Some(0.0));
+        assert_eq!(computed.margin.top.resolve(0.0), Some(1.0));
+        assert_eq!(computed.margin.left.resolve(0.0), Some(2.0));
+        let old = style.serialize(&mut work).unwrap();
+        let mut short = 9;
+        assert_eq!(
+            style.set_property("width", "calc(50% + 1px)", "", &mut short),
+            Err(Error::Limit)
+        );
+        assert_eq!(old, style.serialize(&mut work).unwrap());
     }
     #[test]
     fn inline_bounds_exhaustion_and_snapshot_atomicity() {

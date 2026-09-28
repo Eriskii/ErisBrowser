@@ -14,7 +14,16 @@ fn page(source: &str) -> Page {
 
 #[test]
 fn inline_style_mutations_preserve_values_priorities_and_visible_output() {
-    let mut p = page(include_str!("fixtures/inline-style.html"));
+    assert_six_scripted_samples(include_str!("fixtures/inline-style.html"));
+}
+
+#[test]
+fn default_parameters_preserve_scope_and_run_in_event_callbacks() {
+    assert_six_scripted_samples(include_str!("fixtures/default-parameters.html"));
+}
+
+fn assert_six_scripted_samples(source: &str) {
+    let mut p = page(source);
     let fonts = Fonts::new();
     for (state, color) in [("ready", 0x008000), ("clicked", 0x0000ff)] {
         if state == "clicked" {
@@ -32,6 +41,44 @@ fn inline_style_mutations_preserve_values_priorities_and_visible_output() {
         for x in [10, 60, 110, 160, 210, 260] {
             assert_eq!(canvas.pixels[10 * 320 + x], color, "{state}, x={x}");
         }
+    }
+}
+
+#[test]
+fn mixed_calculations_recompute_after_resize_and_cssom_mutation() {
+    let mut p = page(include_str!("fixtures/calc-resize.html"));
+    let fonts = Fonts::new();
+    let sample = p.document.query_selector("#sample").unwrap();
+    for (width, click, x, box_width, color) in [
+        (320, false, 45.0, 140.0, 0x008000),
+        (520, false, 65.0, 240.0, 0x008000),
+        (520, true, 30.0, 130.0, 0x0000ff),
+        (320, false, 20.0, 80.0, 0x0000ff),
+    ] {
+        if click {
+            let button = p.document.query_selector("#change").unwrap();
+            assert!(p.click(button).is_none());
+        }
+        assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+        let layout = p.layout(width as f32, 240.0, &fonts);
+        let rect = layout
+            .hit_regions
+            .iter()
+            .find(|hit| hit.node == sample)
+            .unwrap()
+            .rect;
+        assert_eq!(
+            (rect.x, rect.y, rect.width, rect.height),
+            (x, 10.0, box_width, 40.0)
+        );
+        let mut canvas = Canvas::new(width, 240).unwrap();
+        canvas.clear(Color::WHITE);
+        canvas.paint(&layout.commands, &fonts, &p.images, 0.0, 0.0);
+        assert!(!canvas.exhausted());
+        let row = 20 * width as usize;
+        assert_eq!(canvas.pixels[row + x as usize], color);
+        assert_eq!(canvas.pixels[row + (x + box_width) as usize - 1], color);
+        assert_eq!(canvas.pixels[row + (x + box_width) as usize], 0xeeeeee);
     }
 }
 

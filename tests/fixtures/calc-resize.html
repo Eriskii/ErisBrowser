@@ -1,0 +1,20 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Mixed calculation resize and inline mutation</title>
+<style>
+body{margin:0}
+#container{position:absolute;left:10px;top:10px;width:calc(100% - 20px);height:60px;background:#eeeeee}
+#sample{width:calc(50% - 10px);height:40px;margin-left:calc(10% + 5px);background:green}
+#change{position:absolute;left:10px;top:90px}
+</style>
+<div id="container"><div id="sample"></div></div>
+<button id="change" type="button">Change the calculation</button>
+<script>
+const style=document.getElementById('sample').style;
+document.getElementById('change').onclick=function(){
+  style.width='calc(25% + 5px)';
+  style.marginLeft='calc(5% - 5px)';
+  style.backgroundColor='blue';
+  if(style.width!=='calc(25% + 5px)')throw new Error('inline calculation was not retained');
+};
+</script>

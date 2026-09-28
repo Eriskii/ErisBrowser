@@ -1,0 +1,66 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Default parameter scope and evaluation</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#basic{left:0}#tdz{left:50px}#scope{left:100px}#arguments{left:150px}#arrow{left:200px}#names{left:250px}
+#change{position:absolute;top:60px;left:0}
+</style>
+<div id="basic" class="sample"></div><div id="tdz" class="sample"></div>
+<div id="scope" class="sample"></div><div id="arguments" class="sample"></div>
+<div id="arrow" class="sample"></div><div id="names" class="sample"></div>
+<button id="change" type="button">Change the samples</button>
+<script>
+function check(value, message) { if (!value) throw new Error(message); }
+function mark(id, color='green') { document.getElementById(id).style.backgroundColor=color; }
+function choose(a=17, b=a+5) { return a+b; }
+check(choose()===39 && choose(undefined,3)===20, 'missing and undefined use defaults');
+check(choose(null,3)===3 && choose(0,0)===0, 'other values do not use defaults');
+mark('basic');
+
+function later(a=b,b=7) { return a; }
+function selfDefault(a=typeof a) { return a; }
+function deferred(a=()=>b,b=7) { return a(); }
+let laterFailed=false;let selfFailed=false;
+try { later(); } catch(error) { laterFailed=error instanceof ReferenceError; }
+try { selfDefault(); } catch(error) { selfFailed=error instanceof ReferenceError; }
+check(laterFailed && selfFailed && deferred()===7, 'parameter initialization order and TDZ');
+mark('tdz');
+
+let outer=4;
+function separated(a=outer, read=()=>a) {
+  var outer=90;var a=99;
+  return [read(),a];
+}
+let values=separated();
+check(values[0]===4 && values[1]===99, 'parameter closures cannot see body bindings');
+mark('scope');
+
+function unmapped(a=9) {
+  arguments[0]=12;check(a===9,'arguments do not map to default parameters');
+  a=13;check(arguments[0]===12,'parameter writes do not change arguments');
+  let restricted=false;
+  try { arguments.callee; } catch(error) { restricted=error instanceof TypeError; }
+  check(restricted,'non-simple arguments have restricted callee');
+  return arguments.length;
+}
+check(unmapped(undefined)===1,'arguments retain supplied count');mark('arguments');
+
+function makeArrow(value) { return (a=value,b=this.flag)=>a+b+arguments[0]; }
+let get=makeArrow.call({flag:5},7);
+const lexical=(a=/[()]/,b=`n${a.test('(')}`)=>b;
+check(get()===19 && lexical()==='ntrue','arrow defaults retain lexical context and lexical goals');
+mark('arrow');
+
+function named(first,second=function(){},third=()=>0) { return [second.name,third.name]; }
+let names=named();
+check(named.length===1 && names[0]==='second' && names[1]==='third','length and default function names');
+mark('names');document.body.className='ready';
+
+document.getElementById('change').onclick=function(event,color='blue') {
+  check(event.type==='click' && color==='blue','event callback initializes omitted parameter');
+  mark('basic',color);mark('tdz',color);mark('scope',color);
+  mark('arguments',color);mark('arrow',color);mark('names',color);
+  document.body.className='clicked';
+};
+</script>

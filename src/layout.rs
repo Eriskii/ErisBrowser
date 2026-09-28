@@ -416,10 +416,9 @@ fn has_inline_content(text: &str, source_work: &mut usize) -> bool {
 }
 
 fn grid_length(length: Length, reference: Option<f32>) -> Option<f32> {
-    match length {
-        Length::Percent(_) => reference.and_then(|r| resolve(length, r)),
-        _ => resolve(length, reference.unwrap_or(0.0)),
-    }
+    length
+        .resolve_with_basis(reference)
+        .map(|value| finite(value, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT))
 }
 fn grid_breadth(breadth: GridBreadth, reference: Option<f32>) -> Option<f32> {
     if let GridBreadth::Length(length) = breadth {
@@ -997,6 +996,9 @@ struct Engine<'a> {
     positioned: Vec<PositionJob>,
     paint_owner: PaintOwner,
     flow_height_reference: Option<f32>,
+    // A content-based column flex base ignores the item's preferred main size
+    // and main-axis min/max while measuring, then applies them in flex sizing.
+    content_height_measure: Option<NodeId>,
     position_work_left: usize,
     visits: usize,
     hits_created: usize,
@@ -1059,6 +1061,7 @@ pub fn layout(
             background: true,
         },
         flow_height_reference: Some(viewport.height),
+        content_height_measure: None,
         position_work_left: MAX_POSITION_WORK,
         visits: 0,
         hits_created: 0,
@@ -1324,8 +1327,40 @@ impl Engine<'_> {
         }
     }
 
+    fn height_reference_for(&self, id: NodeId) -> Option<f32> {
+        self.grid_height_reference
+            .filter(|(node, _)| *node == id)
+            .map(|(_, reference)| reference)
+            .unwrap_or_else(|| {
+                if self.doc.nodes[id].parent == Some(self.doc.root) {
+                    Some(self.viewport.height)
+                } else {
+                    self.flow_height_reference
+                }
+            })
+    }
+
     fn width_for(&self, id: NodeId, available: f32, containing_width: f32) -> f32 {
+        self.sized_width(id, available, Some(containing_width), false)
+    }
+
+    // None requests a cyclic intrinsic contribution. CSS Sizing §5.2.1
+    // resolves min-size/padding percentages against zero, but treats preferred
+    // and max sizes as auto (except the minimum contribution of replaced boxes).
+    fn sized_width(
+        &self,
+        id: NodeId,
+        available: f32,
+        basis: Option<f32>,
+        replaced_min: bool,
+    ) -> f32 {
         let style = self.style(id);
+        let containing_width = basis.unwrap_or(0.0);
+        let preferred_basis = if replaced_min {
+            Some(containing_width)
+        } else {
+            basis
+        };
         let padding = self.padding(id, containing_width);
         let border = self.borders(id);
         let extra = padding.horizontal() + border.horizontal();
@@ -1335,13 +1370,21 @@ impl Engine<'_> {
             extra
         };
         let tag = self.layout_tag(id);
-        let mut width = resolve(style.width, containing_width)
-            .map(|value| value + css_to_border)
+        let mut width = grid_length(style.width, preferred_basis)
+            .map(|value| extent(value) + css_to_border)
             .unwrap_or_else(|| match tag {
                 "img" | "svg" | "canvas" | "video" => {
                     let natural = self.natural_size(id);
                     let value = self.attr_number(id, "width").unwrap_or_else(|| {
-                        resolve(style.height, self.viewport.height)
+                        grid_length(style.height, self.height_reference_for(id))
+                            .map(|height| {
+                                if style.box_sizing == "border-box" {
+                                    (extent(height) - padding.vertical() - border.vertical())
+                                        .max(0.0)
+                                } else {
+                                    extent(height)
+                                }
+                            })
                             .or_else(|| self.attr_number(id, "height"))
                             .map(|height| height * natural.width / natural.height.max(1.0))
                             .unwrap_or(natural.width)
@@ -1368,11 +1411,11 @@ impl Engine<'_> {
                 "select" => self.intrinsic_width(id, containing_width).max(80.0) + 22.0 + extra,
                 _ => available,
             });
-        if let Some(max) = resolve(style.max_width, containing_width) {
-            width = width.min(max + css_to_border);
+        if let Some(max) = grid_length(style.max_width, preferred_basis) {
+            width = width.min(extent(max) + css_to_border);
         }
         if let Some(min) = resolve(style.min_width, containing_width) {
-            width = width.max(min + css_to_border);
+            width = width.max(extent(min) + css_to_border);
         }
         extent(width).max(extra)
     }
@@ -1401,7 +1444,12 @@ impl Engine<'_> {
         if !self.enter(id, depth) || self.is_hidden(id) {
             return Size::default();
         }
-        let style = self.style(id).clone();
+        let mut style = self.style(id).clone();
+        if self.content_height_measure == Some(id) {
+            style.height = Length::Auto;
+            style.min_height = Length::Auto;
+            style.max_height = Length::Auto;
+        }
         let previous_owner = self.paint_owner;
         let previous_flow_height = self.flow_height_reference;
         self.paint_owner = PaintOwner {
@@ -1442,22 +1490,17 @@ impl Engine<'_> {
         } else {
             extras
         };
-        let height_reference = self
-            .grid_height_reference
-            .filter(|(node, _)| *node == id)
-            .map(|(_, reference)| reference)
-            .unwrap_or_else(|| {
-                if self.doc.nodes[id].parent == Some(self.doc.root) {
-                    Some(self.viewport.height)
-                } else {
-                    previous_flow_height
-                }
-            });
+        let height_reference = self.height_reference_for(id);
         let definite_height = forced.1.or_else(|| {
             grid_length(style.height, height_reference).map(|height| {
-                let (min, max) =
-                    self.flex_limits(id, available, height_reference.unwrap_or(0.0), true);
-                (height + css_to_border).clamp(min, max)
+                let (min, max) = size_limits(
+                    style.min_height,
+                    style.max_height,
+                    height_reference,
+                    extras,
+                    css_to_border,
+                );
+                (extent(height) + css_to_border).clamp(min, max)
             })
         });
         self.flow_height_reference = definite_height.map(|height| (height - extras).max(0.0));
@@ -1490,9 +1533,19 @@ impl Engine<'_> {
         let tag = self.layout_tag(id).to_owned();
         let children = self.layout_children(id);
         let mut natural_height = if matches!(tag.as_str(), "img" | "svg" | "canvas" | "video") {
-            self.paint_replaced(id, &tag, inner_x, inner_y, inner_width)
+            self.paint_replaced(
+                id,
+                &tag,
+                rect(inner_x, inner_y, inner_width, 0.0),
+                self.flow_height_reference,
+            )
         } else if matches!(tag.as_str(), "input" | "textarea" | "select") {
-            self.paint_control(id, &tag, inner_x, inner_y, inner_width)
+            self.paint_control(
+                id,
+                &tag,
+                rect(inner_x, inner_y, inner_width, 0.0),
+                self.flow_height_reference,
+            )
         } else if tag == "details" && self.doc.first_summary(id).is_none() {
             let marker = if self.doc.attr(id, "open").is_some() {
                 "▾"
@@ -1542,7 +1595,7 @@ impl Engine<'_> {
                 FlexConstraints {
                     width: inner_width,
                     height: definite_height.map(|h| (h - extras).max(0.0)),
-                    min_height: grid_length(style.min_height, height_reference)
+                    min_height: resolve(style.min_height, height_reference.unwrap_or(0.0))
                         .map(|h| extent(h + css_to_border - extras))
                         .unwrap_or(0.0),
                     max_height: grid_length(style.max_height, height_reference)
@@ -1601,12 +1654,12 @@ impl Engine<'_> {
         if forced.1.is_none()
             && let Some(max) = grid_length(style.max_height, height_reference)
         {
-            height = height.min(max + css_to_border);
+            height = height.min(extent(max) + css_to_border);
         }
         if forced.1.is_none()
-            && let Some(min) = grid_length(style.min_height, height_reference)
+            && let Some(min) = resolve(style.min_height, height_reference.unwrap_or(0.0))
         {
-            height = height.max(min + css_to_border);
+            height = height.max(extent(min) + css_to_border);
         }
         height = extent(height).max(extras);
         // Canvas background propagation is emitted once before the root box.
@@ -1885,13 +1938,19 @@ impl Engine<'_> {
                 self.layout_tag(job.node),
                 "img" | "svg" | "canvas" | "video" | "input" | "textarea" | "select"
             );
-            let (min_width, max_width) = self.flex_limits(job.node, cb.width, cb.width, false);
-            let (min_height, max_height) = self.flex_limits(job.node, cb.width, cb.height, true);
+            let (min_width, max_width) =
+                self.flex_limits(job.node, cb.width, Some(cb.width), false);
+            let (min_height, max_height) =
+                self.flex_limits(job.node, cb.width, Some(cb.height), true);
             let left = resolve(style.left, cb.width);
             let right = resolve(style.right, cb.width);
             let margin_left = resolve(style.margin.left, cb.width);
             let margin_right = resolve(style.margin.right, cb.width);
+            let saved_reference = self
+                .grid_height_reference
+                .replace((job.node, Some(cb.height)));
             let (preferred_min, preferred_max) = self.preferred_widths(job.node, cb.width, 0);
+            self.grid_height_reference = saved_reference;
             let remaining = cb.width
                 - left.unwrap_or(0.0)
                 - right.unwrap_or(0.0)
@@ -1902,7 +1961,7 @@ impl Engine<'_> {
                 start: left,
                 end: right,
                 size: resolve(style.width, cb.width)
-                    .map(|v| v + if border_box { 0.0 } else { extra_x })
+                    .map(|v| extent(v) + if border_box { 0.0 } else { extra_x })
                     .or_else(|| replaced.then_some(preferred_max)),
                 natural: preferred_max.min(remaining.max(preferred_min)),
                 min: min_width,
@@ -1915,7 +1974,7 @@ impl Engine<'_> {
             let top = resolve(style.top, cb.height);
             let bottom = resolve(style.bottom, cb.height);
             let specified_height = resolve(style.height, cb.height)
-                .map(|v| v + if border_box { 0.0 } else { extra_y });
+                .map(|v| extent(v) + if border_box { 0.0 } else { extra_y });
             let height_axis = PositionedAxis {
                 containing: cb.height,
                 start: top,
@@ -2604,6 +2663,16 @@ impl Engine<'_> {
     /// Preferred minimum/preferred widths for bounded shrink-to-fit sizing.
     /// Block children start new preferred lines; inline children share a line.
     fn preferred_widths(&self, id: NodeId, available: f32, depth: usize) -> (f32, f32) {
+        self.intrinsic_widths(id, available, Some(available), depth)
+    }
+
+    fn intrinsic_widths(
+        &self,
+        id: NodeId,
+        available: f32,
+        basis: Option<f32>,
+        depth: usize,
+    ) -> (f32, f32) {
         let work = self.intrinsic_work_left.get();
         if depth > MAX_DEPTH || work == 0 || self.is_hidden(id) {
             return (0.0, 0.0);
@@ -2611,14 +2680,18 @@ impl Engine<'_> {
         self.intrinsic_work_left.set(work - 1);
         let style = self.style(id);
         let tag = self.layout_tag(id);
-        if resolve(style.width, available).is_some()
-            || matches!(
-                tag,
-                "img" | "svg" | "canvas" | "video" | "input" | "textarea" | "select"
-            )
-        {
-            let width = self.width_for(id, available, available);
-            return (width, width);
+        let replaced = matches!(
+            tag,
+            "img" | "svg" | "canvas" | "video" | "input" | "textarea" | "select"
+        );
+        if grid_length(style.width, basis).is_some() || replaced {
+            let max = self.sized_width(id, available, basis, false);
+            let min = if replaced && basis.is_none() {
+                self.sized_width(id, available, None, true)
+            } else {
+                max
+            };
+            return (min, max.max(min));
         }
         if let NodeKind::Text(text) = &self.doc.nodes[id].kind {
             let value: String = text
@@ -2684,8 +2757,8 @@ impl Engine<'_> {
             {
                 continue;
             }
-            let (child_min, child_max) = self.preferred_widths(child, available, depth + 1);
-            let margins = self.margins(child, available).horizontal();
+            let (child_min, child_max) = self.intrinsic_widths(child, available, None, depth + 1);
+            let margins = self.margins(child, 0.0).horizontal();
             min = min.max(child_min + margins);
             if matches!(
                 self.style(child).display,
@@ -2698,7 +2771,8 @@ impl Engine<'_> {
                 inline += child_max + margins;
             }
         }
-        let extra = self.padding(id, available).horizontal() + self.borders(id).horizontal();
+        let extra =
+            self.padding(id, basis.unwrap_or(0.0)).horizontal() + self.borders(id).horizontal();
         let marker = if style.list_item
             && style.list_style_type != "none"
             && style.list_style_position == "inside"
@@ -2707,9 +2781,21 @@ impl Engine<'_> {
         } else {
             0.0
         };
+        let adjustment = if style.box_sizing == "border-box" {
+            0.0
+        } else {
+            extra
+        };
+        let lower = (extent(resolve(style.min_width, basis.unwrap_or(0.0)).unwrap_or(0.0))
+            + adjustment)
+            .max(extra);
+        let upper = grid_length(style.max_width, basis)
+            .map(|value| extent(value) + adjustment)
+            .unwrap_or(MAX_EXTENT)
+            .max(lower);
         (
-            extent(min + extra + marker),
-            extent(max.max(inline) + extra + marker),
+            extent(min + extra + marker).clamp(lower, upper),
+            extent(max.max(inline) + extra + marker).clamp(lower, upper),
         )
     }
 
@@ -2729,7 +2815,7 @@ impl Engine<'_> {
             )
         {
             let (min, preferred) = self.preferred_widths(id, width, depth);
-            let (lower, upper) = self.flex_limits(id, width, width, false);
+            let (lower, upper) = self.flex_limits(id, width, Some(width), false);
             box_width = min
                 .max(width - margin.horizontal())
                 .min(preferred)
@@ -3133,7 +3219,7 @@ impl Engine<'_> {
     }
 
     /// Border-box min/max bounds, with minimums winning conflicting limits.
-    fn flex_limits(&self, id: NodeId, width: f32, main: f32, column: bool) -> (f32, f32) {
+    fn flex_limits(&self, id: NodeId, width: f32, main: Option<f32>, column: bool) -> (f32, f32) {
         let style = self.style(id);
         let padding = self.padding(id, width);
         let border = self.borders(id);
@@ -3152,14 +3238,7 @@ impl Engine<'_> {
         } else {
             (style.min_width, style.max_width)
         };
-        let min = extent(resolve(min, main).map(|v| v + adjustment).unwrap_or(extra)).max(extra);
-        let max = extent(
-            resolve(max, main)
-                .map(|v| v + adjustment)
-                .unwrap_or(MAX_EXTENT),
-        )
-        .max(min);
-        (min, max)
+        size_limits(min, max, main, extra, adjustment)
     }
 
     fn flex_metrics(
@@ -3183,19 +3262,19 @@ impl Engine<'_> {
         } else {
             extra
         };
-        // A percentage basis in an indefinite main axis behaves as content.
-        let resolve_main = |length| match length {
-            Length::Percent(_) => main.and_then(|v| resolve(length, v)),
-            _ => resolve(length, main.unwrap_or(0.0)),
+        // Only auto retrieves the preferred main size. An unresolved explicit
+        // percentage basis (even calc(30px + 0%)) uses content instead.
+        let basis = if matches!(style.flex_basis, Length::Auto) {
+            if column { style.height } else { style.width }
+        } else {
+            style.flex_basis
         };
-        let preferred = if column { style.height } else { style.width };
         let base = extent(
-            resolve_main(style.flex_basis)
-                .or_else(|| resolve_main(preferred))
-                .map(|v| v + adjustment)
+            grid_length(basis, main)
+                .map(|v| extent(v) + adjustment)
                 .unwrap_or(natural),
         );
-        let (min, max) = self.flex_limits(id, width, main.unwrap_or(0.0), column);
+        let (min, max) = self.flex_limits(id, width, main, column);
         FlexSize {
             base,
             inner: (base - extra).max(0.0),
@@ -3232,7 +3311,7 @@ impl Engine<'_> {
             |natural: f32| natural.clamp(available.min_height, max_height.unwrap_or(MAX_EXTENT));
         let reverse = style.flex_direction.ends_with("reverse");
         let column = style.flex_direction.starts_with("column");
-        let row_gap = extent(grid_length(style.row_gap, height).unwrap_or(0.0));
+        let row_gap = extent(resolve(style.row_gap, height.unwrap_or(0.0)).unwrap_or(0.0));
         let column_gap = extent(grid_length(style.column_gap, Some(width)).unwrap_or(0.0));
         let gap = if column { row_gap } else { column_gap };
         let single_line = style.flex_wrap == "nowrap";
@@ -3253,7 +3332,7 @@ impl Engine<'_> {
                 let space = (width - margin.horizontal()).max(0.0);
                 let auto_margin = matches!(child.margin.left, Length::Auto)
                     || matches!(child.margin.right, Length::Auto);
-                let (min, max) = self.flex_limits(id, width, width, false);
+                let (min, max) = self.flex_limits(id, width, Some(width), false);
                 let child_width = if !matches!(child.width, Length::Auto) {
                     self.width_for(id, space, width)
                 } else if single_line && align == "stretch" && !auto_margin {
@@ -3265,14 +3344,18 @@ impl Engine<'_> {
                     let (minimum, preferred) = self.preferred_widths(id, width, depth);
                     minimum.max(space).min(preferred).clamp(min, max)
                 };
-                let definite_basis = matches!(child.flex_basis, Length::Px(_))
-                    || height.is_some() && matches!(child.flex_basis, Length::Percent(_))
-                    || matches!(child.height, Length::Px(_))
-                    || height.is_some() && matches!(child.height, Length::Percent(_));
-                let natural = if definite_basis {
+                let basis = if matches!(child.flex_basis, Length::Auto) {
+                    child.height
+                } else {
+                    child.flex_basis
+                };
+                let natural = if grid_length(basis, height).is_some() {
                     None
                 } else {
-                    Some(self.fragment(id, width, child_width, depth))
+                    let saved = self.content_height_measure.replace(id);
+                    let fragment = self.fragment(id, width, child_width, depth);
+                    self.content_height_measure = saved;
+                    Some(fragment)
                 };
                 let metrics = self.flex_metrics(
                     id,
@@ -3374,7 +3457,7 @@ impl Engine<'_> {
                         && !auto_left
                         && !auto_right
                     {
-                        let (min, max) = self.flex_limits(id, width, width, false);
+                        let (min, max) = self.flex_limits(id, width, Some(width), false);
                         child_width = (line_width - margin.horizontal()).clamp(min, max);
                     }
                     let dx = cross_offset(
@@ -3458,7 +3541,7 @@ impl Engine<'_> {
                 .then_some(height)
                 .flatten()
                 .map(|h| {
-                    let (min, max) = self.flex_limits(id, width, h, true);
+                    let (min, max) = self.flex_limits(id, width, Some(h), true);
                     (h - margin.vertical()).clamp(min, max)
                 });
                 let fragment = self.fragment_sized(id, width, target, stretched, depth);
@@ -3527,7 +3610,7 @@ impl Engine<'_> {
                     && !auto_top
                     && !auto_bottom
                 {
-                    let (min, max) = self.flex_limits(id, width, row_height, true);
+                    let (min, max) = self.flex_limits(id, width, Some(row_height), true);
                     let target = (row_height - margin.vertical()).clamp(min, max);
                     if (target - fragment.size.height).abs() > 0.001 {
                         // Relayout restores descendant clipping and gives nested flexboxes their used size.
@@ -3574,7 +3657,7 @@ impl Engine<'_> {
         let height = (available.height >= 0.0).then_some(available.height);
         let column_gap = extent(grid_length(style.column_gap, Some(width)).unwrap_or(0.0));
         // Cyclic percentages contribute zero during intrinsic row sizing.
-        let row_gap = extent(grid_length(style.row_gap, height).unwrap_or(0.0));
+        let row_gap = extent(resolve(style.row_gap, height.unwrap_or(0.0)).unwrap_or(0.0));
         let plan = grid_plan(
             self.flow_items(children),
             self.styles,
@@ -3601,14 +3684,13 @@ impl Engine<'_> {
             if !grid_charge(&mut self.grid_work_left, 1) {
                 break;
             }
-            let (min, max) = self.preferred_widths(item.id, width, depth);
-            let (lower, upper) = self.flex_limits(item.id, width, width, false);
-            let margins = self.margins(item.id, width).horizontal();
+            let (min, max) = self.intrinsic_widths(item.id, width, None, depth);
+            let margins = self.margins(item.id, 0.0).horizontal();
             contributions.push(GridContribution {
                 start: area.column,
                 span: area.columns,
-                min: extent(min.clamp(lower, upper) + margins),
-                max: extent(max.clamp(lower, upper) + margins),
+                min: extent(min + margins),
+                max: extent(max + margins),
             });
         }
         let widths = size_grid_tracks(
@@ -3695,6 +3777,26 @@ impl Engine<'_> {
         // back into that intrinsic height.
         let final_row_gap =
             extent(grid_length(style.row_gap, height.or(Some(natural_height))).unwrap_or(0.0));
+        // Percentage-bearing tracks behave as auto for intrinsic sizing, then
+        // resolve once against that intrinsic content height. Do not feed the
+        // resulting overflow back into the grid's own height (CSS Grid §7.2).
+        let heights = if height.is_none()
+            && rows.iter().any(|track| {
+                [track.min, track.max].into_iter().any(|breadth| {
+                    matches!(breadth, GridBreadth::Length(value) if value.depends_on_percentage())
+                })
+            }) {
+            size_grid_tracks(
+                &rows,
+                Some(natural_height),
+                final_row_gap,
+                &row_contributions,
+                &style.align_content,
+                &mut self.grid_work_left,
+            )
+        } else {
+            heights
+        };
         let (row_positions, final_row_gap) =
             grid_positions(&heights, final_row_gap, height, &style.align_content);
         for (
@@ -3721,9 +3823,9 @@ impl Engine<'_> {
             let auto_y = matches!(child.margin.top, Length::Auto)
                 || matches!(child.margin.bottom, Length::Auto);
             let extras = self.padding(id, area_width).vertical() + self.borders(id).vertical();
-            let (min, max) = self.flex_limits(id, area_width, area_height, true);
+            let (min, max) = self.flex_limits(id, area_width, Some(area_height), true);
             let child_height = if let Some(value) = grid_length(child.height, Some(area_height)) {
-                (value
+                (extent(value)
                     + if child.box_sizing == "border-box" {
                         0.0
                     } else {
@@ -3889,7 +3991,7 @@ impl Engine<'_> {
         let mut heights: Vec<f32> = rows
             .iter()
             .map(|&id| {
-                resolve(self.style(id).height, self.viewport.height)
+                grid_length(self.style(id).height, self.flow_height_reference)
                     .unwrap_or(0.0)
                     .max(0.0)
             })
@@ -4106,18 +4208,16 @@ impl Engine<'_> {
         }
     }
 
-    fn paint_replaced(&mut self, id: NodeId, tag: &str, x: f32, y: f32, width: f32) -> f32 {
+    fn paint_replaced(
+        &mut self,
+        id: NodeId,
+        tag: &str,
+        area: Rect,
+        used_height: Option<f32>,
+    ) -> f32 {
+        let Rect { x, y, width, .. } = area;
         let style = self.style(id).clone();
-        let specified = resolve(style.height, self.viewport.height)
-            .map(|height| {
-                if style.box_sizing == "border-box" {
-                    (height - self.padding(id, width).vertical() - self.borders(id).vertical())
-                        .max(0.0)
-                } else {
-                    height
-                }
-            })
-            .or_else(|| self.attr_number(id, "height"));
+        let specified = used_height.or_else(|| self.attr_number(id, "height"));
         let natural = self.natural_size(id);
         let height = specified
             .unwrap_or(width * natural.height / natural.width.max(1.0))
@@ -4178,7 +4278,14 @@ impl Engine<'_> {
         extent(height)
     }
 
-    fn paint_control(&mut self, id: NodeId, tag: &str, x: f32, y: f32, width: f32) -> f32 {
+    fn paint_control(
+        &mut self,
+        id: NodeId,
+        tag: &str,
+        area: Rect,
+        used_height: Option<f32>,
+    ) -> f32 {
+        let Rect { x, y, width, .. } = area;
         let style = self.style(id).clone();
         let kind = self
             .doc
@@ -4196,16 +4303,7 @@ impl Engine<'_> {
         } else {
             line_height(&style) + 10.0
         };
-        let height = resolve(style.height, self.viewport.height)
-            .map(|height| {
-                if style.box_sizing == "border-box" {
-                    (height - self.padding(id, width).vertical() - self.borders(id).vertical())
-                        .max(0.0)
-                } else {
-                    height.max(0.0)
-                }
-            })
-            .unwrap_or(intrinsic_height);
+        let height = used_height.unwrap_or(intrinsic_height);
         self.push(DrawCommand::Rect {
             rect: rect(x, y, width, height),
             color: rgba(160, 167, 180, 255),
@@ -4361,13 +4459,32 @@ fn extent(value: f32) -> f32 {
 }
 
 fn resolve(length: Length, reference: f32) -> Option<f32> {
-    match length {
-        Length::Auto | Length::Fr(_) => None,
-        Length::Px(value) => Some(finite(value, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT)),
-        Length::Percent(value) => {
-            Some(finite(reference * value / 100.0, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT))
-        }
-    }
+    length
+        .resolve(reference)
+        .map(|value| finite(value, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT))
+}
+
+/// Nonnegative used sizes are clamped before content-box padding is added.
+fn size_limits(
+    min: Length,
+    max: Length,
+    basis: Option<f32>,
+    extra: f32,
+    adjustment: f32,
+) -> (f32, f32) {
+    let min = extent(
+        resolve(min, basis.unwrap_or(0.0))
+            .map(|v| extent(v) + adjustment)
+            .unwrap_or(extra),
+    )
+    .max(extra);
+    let max = extent(
+        grid_length(max, basis)
+            .map(|v| extent(v) + adjustment)
+            .unwrap_or(MAX_EXTENT),
+    )
+    .max(min);
+    (min, max)
 }
 
 fn font_size(style: &ComputedStyle) -> f32 {
@@ -4823,6 +4940,125 @@ mod tests {
         let styles = crate::css::compute_styles(&document, &document.stylesheets(), width, 400.0);
         let result = layout(&document, &styles, width, 400.0, &Fonts::new());
         (document, result)
+    }
+
+    #[test]
+    fn calc_height_dependency_survives_zero_and_cancelled_percentages() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{width:200px}b{display:block;height:20px}#a{height:calc(30px + 0%);min-height:calc(80px + 0%);max-height:calc(10px + 0%)}#b{height:calc(80% - 80% + 30px)}#c{height:calc(30px)}section{height:100px}#d{height:calc(50% - 10px)}</style><main><div id=a><b></b></div><div id=b><b></b></div><div id=c></div><section><div id=d></div></section></main>",
+            400.0,
+        );
+        for (id, height) in [("#a", 80.0), ("#b", 20.0), ("#c", 30.0), ("#d", 40.0)] {
+            assert_eq!(bounds(&doc, &result, id).height, height, "{id}");
+        }
+    }
+
+    #[test]
+    fn calc_replaced_and_control_paint_uses_resolved_content_height() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{width:200px;height:100px}img,input{display:block;width:80px;height:calc(50% - 10px);padding:5px;border:2px solid;box-sizing:border-box}#ratio{width:auto;height:calc(50% - 10px);padding:0;border:0;box-sizing:content-box}</style><main><img id=img src=fixture data-eris-natural-width=200 data-eris-natural-height=100><input id=input><img id=ratio src=ratio data-eris-natural-width=200 data-eris-natural-height=100></main>",
+            400.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#img").height, 40.0);
+        assert_eq!(bounds(&doc, &result, "#input").height, 40.0);
+        assert_eq!(bounds(&doc, &result, "#ratio").width, 80.0);
+        assert!(result.commands.iter().any(|cmd| matches!(cmd, DrawCommand::Image{key,rect} if key=="fixture" && rect.height==26.0 && rect.width==66.0)));
+        let input = bounds(&doc, &result, "#input");
+        assert!(result.commands.iter().any(|cmd| matches!(cmd, DrawCommand::Rect{rect,..} if rect.x==input.x+7.0 && rect.y==input.y+7.0 && rect.height==26.0 && rect.width==66.0)));
+    }
+
+    #[test]
+    fn calc_column_flex_unresolved_basis_uses_content_instead_of_preferred_height() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:flex;flex-direction:column;width:100px;max-height:400px;row-gap:calc(10% + 10px)}i{display:block;flex:0 0 calc(30px + 0%);height:80px;min-height:0}b{display:block;height:20px}#auto{flex-basis:auto}#pixels{flex-basis:calc(30px)}#min{min-height:40px}</style><main id=main><i id=content><b></b></i><i id=auto><b></b></i><i id=pixels><b></b></i><i id=min><b></b></i></main>",
+            200.0,
+        );
+        for (id, y, height) in [
+            ("#content", 0.0, 20.0),
+            ("#auto", 30.0, 80.0),
+            ("#pixels", 120.0, 30.0),
+            ("#min", 160.0, 40.0),
+        ] {
+            let item = bounds(&doc, &result, id);
+            assert_eq!((item.y, item.height), (y, height), "{id}");
+        }
+        assert_eq!(bounds(&doc, &result, "#main").height, 200.0);
+    }
+
+    #[test]
+    fn calc_cyclic_grid_contribution_uses_auto_preferred_and_zero_percentage_edges() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:grid;width:300px;grid-template-columns:max-content 10px;justify-content:start}#item{width:calc(50% + 10px);max-width:calc(20px + 0%);min-width:calc(5px + 0%);padding:0 calc(10% + 3px);margin:0 calc(10% + 2px)}b{display:block;width:60px;height:10px}#marker{height:10px}</style><main><div id=item><b></b></div><div id=marker></div></main>",
+            400.0,
+        );
+        // 60px content + 2*3px intrinsic padding + 2*2px margins.
+        // The cyclic preferred/max-size expressions both act as auto/none.
+        assert_eq!(bounds(&doc, &result, "#marker").x, 70.0);
+        // Layout resolves percentages against the resulting 70px grid area.
+        assert_eq!(bounds(&doc, &result, "#item"), rect(9.0, 0.0, 40.0, 10.0));
+    }
+
+    #[test]
+    fn calc_replaced_min_and_max_content_contributions_differ() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:grid;width:300px;grid-template-columns:min-content max-content;justify-content:start}img{width:calc(50% + 20px);padding:3px;border:2px solid;margin:0 calc(10% + 2px)}i{height:1px}</style><main><img src=a data-eris-natural-width=80 data-eris-natural-height=40><img src=b data-eris-natural-width=80 data-eris-natural-height=40><i id=a></i><i id=b></i></main>",
+            400.0,
+        );
+        // Min: 20px calc absolute term. Max: 80px intrinsic image width.
+        // Both add 10px padding/border and the 4px absolute margins.
+        assert_eq!(bounds(&doc, &result, "#a").width, 34.0);
+        assert_eq!(bounds(&doc, &result, "#b").x, 34.0);
+        assert_eq!(bounds(&doc, &result, "#b").width, 94.0);
+    }
+
+    #[test]
+    fn calc_cyclic_row_gap_preserves_absolute_term_then_grid_resolves_percentage() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main,section{width:100px;row-gap:calc(10% + 10px)}main{display:grid;grid-template-rows:20px 20px}section{display:flex;flex-direction:column}i{display:block;height:20px;flex-shrink:0}</style><main id=grid><i></i><i id=g></i></main><section id=flex><i></i><i id=f></i></section>",
+            200.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#grid").height, 50.0);
+        assert_eq!(bounds(&doc, &result, "#g").y, 35.0);
+        assert_eq!(bounds(&doc, &result, "#flex").height, 50.0);
+        assert_eq!(bounds(&doc, &result, "#f").y, 80.0);
+    }
+
+    #[test]
+    fn calc_indefinite_grid_tracks_and_minimum_contributions_keep_distinct_rules() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:grid;width:100px;grid-template-rows:calc(20px + 0%) calc(10px + 50%)}i{display:block;height:30px}#a{min-height:calc(40px + 0%)}section{display:grid;height:100px;width:100px;grid-template-rows:calc(50% - 10px) calc(20% - 100px);align-content:start}</style><main id=main><i id=a></i><i id=b></i></main><section><div id=c></div><div id=d></div></section>",
+            200.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a").height, 40.0);
+        // The first track is 40px intrinsically, then resolves calc(20px +
+        // 0%) to 20px; its 40px minimum-height child overflows that track.
+        assert_eq!(bounds(&doc, &result, "#b").y, 20.0);
+        assert_eq!(bounds(&doc, &result, "#main").height, 70.0);
+        assert_eq!(bounds(&doc, &result, "#c").height, 40.0);
+        assert_eq!(bounds(&doc, &result, "#d").height, 0.0);
+    }
+
+    #[test]
+    fn calc_shrink_to_fit_and_positioned_replaced_sizes_use_known_containing_blocks() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{position:relative;width:200px;height:100px}#float{float:left;padding:0 calc(10% + 5px)}b{display:block;width:60px;height:10px}img{position:absolute;right:0;bottom:0;width:auto;height:calc(50% - 10px)}</style><main><div id=float><b id=text></b></div><section><img id=img src=fixture data-eris-natural-width=200 data-eris-natural-height=100></section></main>",
+            400.0,
+        );
+        // The float's own padding has a definite 200px containing-block basis;
+        // it is not a cyclic descendant contribution.
+        assert_eq!(bounds(&doc, &result, "#float"), rect(0.0, 0.0, 110.0, 10.0));
+        assert_eq!(bounds(&doc, &result, "#text").x, 25.0);
+        assert_eq!(bounds(&doc, &result, "#img"), rect(120.0, 60.0, 80.0, 40.0));
+    }
+
+    #[test]
+    fn calc_negative_used_sizes_clamp_before_padding_but_margins_keep_sign() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{width:200px;height:100px}#a{width:calc(20% - 100px);height:calc(10% - 100px);padding:5px;border:2px solid;margin-left:calc(10% - 30px)}#b{height:10px;padding-left:calc(10% - 30px)}</style><main><div id=a></div><div id=b></div></main>",
+            400.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a"), rect(-10.0, 0.0, 14.0, 14.0));
+        assert_eq!(bounds(&doc, &result, "#b"), rect(0.0, 14.0, 200.0, 10.0));
     }
 
     #[test]

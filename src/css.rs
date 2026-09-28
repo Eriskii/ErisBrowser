@@ -12,6 +12,12 @@ pub enum Length {
     Auto,
     Px(f32),
     Percent(f32),
+    /// A typed calculation. Percentage presence survives zero/cancellation.
+    Calc {
+        px: f32,
+        percent: f32,
+        has_percent: bool,
+    },
     /// Flexible grid track weight; resolved after fixed tracks and gaps.
     Fr(f32),
 }
@@ -21,6 +27,56 @@ impl Length {
             Self::Auto | Self::Fr(_) => None,
             Self::Px(v) => Some(v),
             Self::Percent(v) => Some(reference * v / 100.0),
+            Self::Calc {
+                px,
+                percent,
+                has_percent,
+            } => {
+                if !px.is_finite() || !percent.is_finite() || has_percent && !reference.is_finite()
+                {
+                    return None;
+                }
+                let result = px as f64
+                    + if has_percent {
+                        reference as f64 * percent as f64 / 100.0
+                    } else {
+                        0.0
+                    };
+                Some(result.clamp(-1_000_000.0, 1_000_000.0) as f32)
+            }
+        }
+    }
+    pub fn depends_on_percentage(self) -> bool {
+        matches!(
+            self,
+            Self::Percent(_)
+                | Self::Calc {
+                    has_percent: true,
+                    ..
+                }
+        )
+    }
+    pub fn resolve_with_basis(self, reference: Option<f32>) -> Option<f32> {
+        if self.depends_on_percentage() && reference.is_none() {
+            None
+        } else {
+            self.resolve(reference.unwrap_or(0.0))
+        }
+    }
+    fn nonnegative(self) -> Option<Self> {
+        match self {
+            Self::Px(n) | Self::Percent(n) if n < 0.0 => None,
+            Self::Calc {
+                px,
+                percent,
+                has_percent: false,
+            } => Some(Self::Calc {
+                px: px.max(0.0),
+                percent,
+                has_percent: false,
+            }),
+            Self::Fr(_) => None,
+            _ => Some(self),
         }
     }
 }
@@ -70,19 +126,24 @@ impl GridTrackPool {
         if Arc::strong_count(tracks) > 1 {
             return;
         }
-        let mut key = Vec::with_capacity(tracks.len() * 4);
+        let mut key = Vec::with_capacity(tracks.len() * 8);
         for track in tracks.iter() {
             for breadth in [track.min, track.max] {
-                let (tag, bits) = match breadth {
-                    GridBreadth::Auto => (0, 0),
-                    GridBreadth::MinContent => (1, 0),
-                    GridBreadth::MaxContent => (2, 0),
-                    GridBreadth::Length(Length::Auto) => (3, 0),
-                    GridBreadth::Length(Length::Px(n)) => (4, n.to_bits()),
-                    GridBreadth::Length(Length::Percent(n)) => (5, n.to_bits()),
-                    GridBreadth::Length(Length::Fr(n)) => (6, n.to_bits()),
+                let bits = match breadth {
+                    GridBreadth::Auto => [0, 0, 0, 0],
+                    GridBreadth::MinContent => [1, 0, 0, 0],
+                    GridBreadth::MaxContent => [2, 0, 0, 0],
+                    GridBreadth::Length(Length::Auto) => [3, 0, 0, 0],
+                    GridBreadth::Length(Length::Px(n)) => [4, n.to_bits(), 0, 0],
+                    GridBreadth::Length(Length::Percent(n)) => [5, n.to_bits(), 0, 0],
+                    GridBreadth::Length(Length::Fr(n)) => [6, n.to_bits(), 0, 0],
+                    GridBreadth::Length(Length::Calc {
+                        px,
+                        percent,
+                        has_percent,
+                    }) => [7, px.to_bits(), percent.to_bits(), u32::from(has_percent)],
                 };
-                key.extend([tag, bits]);
+                key.extend(bits);
             }
         }
         if let Some(shared) = self.lists.get(&key) {
@@ -1996,6 +2057,9 @@ fn parse_declarations_with_limit(
         } else {
             None
         };
+        if !custom && !has_vars && !valid_calculations(value, work).unwrap_or(false) {
+            continue;
+        }
         let clean = (!custom && !has_vars).then(|| strip_comments(value));
         let value = custom_wide
             .as_deref()
@@ -2024,6 +2088,13 @@ fn parse_declarations_with_limit(
                 continue;
             }
         }
+        if !custom
+            && !has_vars
+            && may_have_calculation(value)
+            && crate::selectors::spend(work, value.len().saturating_mul(96) + 1).is_err()
+        {
+            break;
+        }
         if !contains_var_function(value) && !css_wide(value) {
             let valid = match name.as_str() {
                 "grid-template-columns"
@@ -2048,6 +2119,17 @@ fn parse_declarations_with_limit(
         }
         let start = declarations.len();
         expand_declaration(&name, value, important, &mut declarations);
+        // Reject malformed complete math values before selecting a cascade
+        // winner. Pending var() declarations are validated after substitution.
+        if !custom
+            && !has_vars
+            && declarations[start..]
+                .iter()
+                .any(|d| !valid_math_property(&d.name, &d.value))
+        {
+            declarations.truncate(start);
+            continue;
+        }
         let cost: usize = declarations[start..]
             .iter()
             .map(|decl| decl.name.len() + decl.value.len())
@@ -2297,7 +2379,16 @@ pub(crate) fn expand_declaration(
     if matches!(name, "gap" | "grid-gap") {
         let values = words(value);
         if (1..=2).contains(&values.len()) {
-            if !contains_var_function(value) && values.iter().any(|part| !matches!(*part,"normal"|"inherit"|"initial"|"unset"|"revert") && !matches!(parse_length(part,16.0,16.0,800.0,600.0),Some(Length::Px(n)|Length::Percent(n)) if n>=0.0)) { return; }
+            if !contains_var_function(value)
+                && values.iter().any(|part| {
+                    !matches!(*part, "normal" | "inherit" | "initial" | "unset" | "revert")
+                        && parse_length(part, 16.0, 16.0, 800.0, 600.0)
+                            .and_then(Length::nonnegative)
+                            .is_none_or(|v| matches!(v, Length::Auto))
+                })
+            {
+                return;
+            }
             if values.len() == 2
                 && values
                     .iter()
@@ -2748,7 +2839,12 @@ fn cascaded_value(
         *work -= candidate.value.len();
         let value = if let Some(variables) = variables {
             let value = resolve_vars(&candidate.value, variables, 0, work)
-                .map(|value| strip_comments(&value))
+                .and_then(|value| {
+                    valid_calculations(&value, work)
+                        .ok()
+                        .filter(|valid| *valid)
+                        .map(|_| strip_comments(&value))
+                })
                 .unwrap_or_else(|| "unset".into());
             // Empty custom values are valid, but an empty ordinary declaration
             // is invalid at computed-value time and must use unset behavior.
@@ -2777,6 +2873,17 @@ fn cascaded_value(
             }
         } else {
             candidate.value.clone()
+        };
+        if variables.is_some()
+            && may_have_calculation(&value)
+            && crate::selectors::spend(work, value.len().saturating_mul(16) + 1).is_err()
+        {
+            return None;
+        }
+        let value = if variables.is_some() && !valid_math_property(name, &value) {
+            "unset".into()
+        } else {
+            value
         };
         let value = wide_keyword(&value).unwrap_or(value);
         if value == "revert-layer" {
@@ -3006,16 +3113,22 @@ pub fn compute_styles_with_rules(
                     "font-size",
                     value,
                     parent,
-                    root_font,
-                    width,
-                    height,
+                    [root_font, width, height],
+                    &mut work,
                 );
             }
             if tag == "html" && doc.namespace(id) == Some(Namespace::Html) {
                 root_font = style.font_size;
             }
             if let Some(value) = resolved.get("color") {
-                apply_property(&mut style, "color", value, parent, root_font, width, height);
+                apply_property(
+                    &mut style,
+                    "color",
+                    value,
+                    parent,
+                    [root_font, width, height],
+                    &mut work,
+                );
             }
             let native_border = doc.namespace(id) == Some(Namespace::Html)
                 && matches!(tag, "button" | "input" | "select" | "textarea" | "hr");
@@ -3024,7 +3137,14 @@ pub fn compute_styles_with_rules(
             }
             for (name, value) in &resolved {
                 if name != "font-size" && name != "color" {
-                    apply_property(&mut style, name, value, parent, root_font, width, height);
+                    apply_property(
+                        &mut style,
+                        name,
+                        value,
+                        parent,
+                        [root_font, width, height],
+                        &mut work,
+                    );
                 }
             }
             if !resolved.contains_key("line-height") {
@@ -3981,10 +4101,18 @@ fn apply_property(
     name: &str,
     value: &str,
     parent: Option<&ComputedStyle>,
-    root_font: f32,
-    width: f32,
-    height: f32,
+    units: [f32; 3],
+    work: &mut usize,
 ) {
+    let [root_font, width, height] = units;
+    // The property parsers use bounded local token cursors. Reserve their
+    // aggregate math scans against the style computation's shared budget.
+    // Nested calc is linear; the grid-list parser has at most eight wrappers.
+    if may_have_calculation(value)
+        && crate::selectors::spend(work, value.len().saturating_mul(32) + 1).is_err()
+    {
+        return;
+    }
     let keyword = (name.starts_with("grid-")
         || matches!(
             name,
@@ -4110,32 +4238,32 @@ fn apply_property(
             }
         }
         "width" => {
-            if let Some(v) = length() {
+            if let Some(v) = length().and_then(Length::nonnegative) {
                 s.width = v;
             }
         }
         "height" => {
-            if let Some(v) = length() {
+            if let Some(v) = length().and_then(Length::nonnegative) {
                 s.height = v;
             }
         }
         "min-width" => {
-            if let Some(v) = length() {
+            if let Some(v) = length().and_then(Length::nonnegative) {
                 s.min_width = v;
             }
         }
         "max-width" => {
-            if let Some(v) = length() {
+            if let Some(v) = length().and_then(Length::nonnegative) {
                 s.max_width = v;
             }
         }
         "min-height" => {
-            if let Some(v) = length() {
+            if let Some(v) = length().and_then(Length::nonnegative) {
                 s.min_height = v;
             }
         }
         "max-height" => {
-            if let Some(v) = length() {
+            if let Some(v) = length().and_then(Length::nonnegative) {
                 s.max_height = v;
             }
         }
@@ -4187,8 +4315,15 @@ fn apply_property(
                 "xxx-large" => Some(48.0),
                 "smaller" => Some(parent_size / 1.2),
                 "larger" => Some(parent_size * 1.2),
-                _ => parse_length(value, parent_size, root_font, width, height)
-                    .and_then(|v| v.resolve(parent_size)),
+                _ => parse_length(value, parent_size, root_font, width, height).and_then(|v| {
+                    v.resolve(parent_size).map(|n| {
+                        if matches!(v, Length::Calc { .. }) {
+                            n.max(0.0)
+                        } else {
+                            n
+                        }
+                    })
+                }),
             };
             if let Some(v) = parsed
                 && v >= 0.0
@@ -4224,7 +4359,15 @@ fn apply_property(
             } else if let Some(n) = finite_number(value) {
                 Some(n * s.font_size)
             } else {
-                length().and_then(|l| l.resolve(s.font_size))
+                length().and_then(|l| {
+                    l.resolve(s.font_size).map(|n| {
+                        if matches!(l, Length::Calc { .. }) {
+                            n.max(0.0)
+                        } else {
+                            n
+                        }
+                    })
+                })
             };
             if let Some(v) = parsed
                 && v >= 0.0
@@ -4290,12 +4433,12 @@ fn apply_property(
             } else {
                 length()
             };
-            if let Some(v @ (Length::Px(_) | Length::Percent(_))) = parsed
-                && v.resolve(width).is_some_and(|v| v >= 0.0)
+            if let Some(v) = parsed.and_then(Length::nonnegative)
+                && !matches!(v, Length::Auto)
             {
                 if name == "row-gap" {
                     s.row_gap = v;
-                    s.gap = v.resolve(width).unwrap_or(0.0);
+                    s.gap = v.resolve(width).unwrap_or(0.0).max(0.0);
                 } else {
                     s.column_gap = v;
                 }
@@ -4312,7 +4455,7 @@ fn apply_property(
             }
         }
         "flex-basis" => {
-            if let Some(v) = length() {
+            if let Some(v) = length().and_then(Length::nonnegative) {
                 s.flex_basis = v;
             }
         }
@@ -4375,6 +4518,15 @@ fn apply_property(
             if let Some(v) = words(value)
                 .first()
                 .and_then(|v| parse_length(v, s.font_size, root_font, width, height))
+                .filter(|v| {
+                    !matches!(
+                        v,
+                        Length::Calc {
+                            has_percent: true,
+                            ..
+                        }
+                    )
+                })
                 .and_then(|v| v.resolve(width))
             {
                 s.border_radius = v.max(0.0);
@@ -4404,8 +4556,8 @@ fn apply_property(
                 }
             } else if let Some(side) = name.strip_prefix("padding-") {
                 if ["top", "right", "bottom", "left"].contains(&side)
-                    && let Some(v) = length()
-                    && v.resolve(100.0).is_some_and(|x| x >= 0.0)
+                    && let Some(v) = length().and_then(Length::nonnegative)
+                    && !matches!(v, Length::Auto)
                 {
                     *edge_mut(&mut s.padding, side) = v;
                 }
@@ -4417,7 +4569,10 @@ fn apply_property(
                     "thin" => Some(1.0),
                     "medium" => Some(3.0),
                     "thick" => Some(5.0),
-                    _ => length().and_then(|v| v.resolve(width)),
+                    _ => length()
+                        .filter(|v| !v.depends_on_percentage())
+                        .and_then(Length::nonnegative)
+                        .and_then(|v| v.resolve(0.0)),
                 };
                 if let Some(v) = n
                     && v >= 0.0
@@ -4527,20 +4682,16 @@ pub fn parse_length(
         return None;
     }
     let value = value.trim().to_ascii_lowercase();
-    if value.matches("calc(").take(17).count() > 16 {
-        return None;
-    }
     if matches!(
         value.as_str(),
         "auto" | "none" | "normal" | "max-content" | "min-content" | "fit-content"
     ) {
         return Some(Length::Auto);
     }
-    if let Some(expression) = value
-        .strip_prefix("calc(")
-        .and_then(|s| s.strip_suffix(')'))
-    {
-        return parse_calc(expression, font, root_font, width, height);
+    if value.contains('(') {
+        return parse_calculation(&value, [font, root_font, width, height], &mut 65536)
+            .ok()
+            .flatten();
     }
     for (unit, scale) in [
         ("rem", root_font),
@@ -4575,49 +4726,295 @@ pub fn parse_length(
     }
     finite_number(&value).map(Length::Px)
 }
-fn parse_calc(
-    expression: &str,
-    font: f32,
-    root_font: f32,
-    width: f32,
-    height: f32,
-) -> Option<Length> {
-    let terms = words(expression);
-    if terms.len() == 1 {
-        return parse_length(terms[0], font, root_font, width, height);
+// A single token pass retains percentage dependency even if its coefficient
+// cancels. Arithmetic uses f64 until the complete expression is constructed;
+// clamping intermediate terms would change e.g. large-unit cancellation.
+const MAX_CALC_DEPTH: usize = 16;
+const MAX_CALC_TERMS: usize = 256;
+#[derive(Default)]
+struct Calculation {
+    px: f64,
+    percent: f64,
+    has_percent: bool,
+}
+struct CalculationParser<'a, 's, 'w> {
+    tokens: &'a [crate::selectors::Token<'s>],
+    at: usize,
+    terms: usize,
+    units: [f32; 4],
+    work: &'w mut usize,
+}
+impl<'s> CalculationParser<'_, 's, '_> {
+    fn take(&mut self) -> Result<crate::selectors::Token<'s>, crate::selectors::Error> {
+        let token = *self
+            .tokens
+            .get(self.at)
+            .ok_or(crate::selectors::Error::Invalid)?;
+        crate::selectors::spend(self.work, token.raw.len() + 1)?;
+        self.at += 1;
+        Ok(token)
     }
-    let mut total = 0.0;
-    let mut percent = None;
-    let mut sign = 1.0;
-    for term in terms {
-        if term == "+" {
-            sign = 1.0;
-            continue;
+    fn spaces(&mut self) -> Result<bool, crate::selectors::Error> {
+        let start = self.at;
+        while self
+            .tokens
+            .get(self.at)
+            .is_some_and(|t| t.kind == crate::selectors::Kind::Whitespace)
+        {
+            self.take()?;
         }
-        if term == "-" {
-            sign = -1.0;
-            continue;
-        }
-        let (v, is_percent) = match parse_length(term, font, root_font, width, height)? {
-            Length::Px(v) => (v, false),
-            Length::Percent(v) => (v, true),
-            Length::Auto | Length::Fr(_) => return None,
-        };
-        if percent.is_some_and(|p| p != is_percent) {
-            return None;
-        }
-        percent = Some(is_percent);
-        total += sign * v;
-        sign = 1.0;
+        Ok(self.at != start)
     }
-    if !total.is_finite() {
-        return None;
+    fn operand(&mut self, depth: usize) -> Result<Calculation, crate::selectors::Error> {
+        use crate::selectors::{Error, Kind};
+        if depth > MAX_CALC_DEPTH {
+            return Err(Error::Limit);
+        }
+        let token = self.take()?;
+        match token.kind {
+            Kind::Function if token.is_name("calc") => self.sum(depth + 1),
+            Kind::Open('(') => self.sum(depth + 1),
+            Kind::Percentage | Kind::Dimension => {
+                let kind = token.kind;
+                let raw = token.raw;
+                self.terms += 1;
+                if self.terms > MAX_CALC_TERMS {
+                    return Err(Error::Limit);
+                }
+                let end = crate::selectors::number_end(raw).ok_or(Error::Invalid)?;
+                let n = raw[..end]
+                    .parse::<f64>()
+                    .ok()
+                    .filter(|n| n.is_finite() && n.abs() <= 1_000_000.0)
+                    .ok_or(Error::Invalid)?;
+                if kind == Kind::Percentage {
+                    return Ok(Calculation {
+                        percent: n,
+                        has_percent: true,
+                        ..Calculation::default()
+                    });
+                }
+                let (unit, consumed) = css_identifier(&raw[end..]).ok_or(Error::Invalid)?;
+                if consumed != raw.len() - end {
+                    return Err(Error::Invalid);
+                }
+                let [font, root, width, height] = self.units.map(f64::from);
+                let scale = match unit.to_ascii_lowercase().as_str() {
+                    "px" => 1.0,
+                    "em" => font,
+                    "rem" => root,
+                    "ex" | "ch" => font * 0.5,
+                    "vw" | "dvw" | "svw" | "lvw" => width / 100.0,
+                    "vh" | "dvh" | "svh" | "lvh" => height / 100.0,
+                    "vmin" => width.min(height) / 100.0,
+                    "vmax" => width.max(height) / 100.0,
+                    "pt" => 96.0 / 72.0,
+                    "pc" => 16.0,
+                    "in" => 96.0,
+                    "cm" => 96.0 / 2.54,
+                    "mm" => 96.0 / 25.4,
+                    "q" => 96.0 / 101.6,
+                    _ => return Err(Error::Invalid),
+                };
+                let px = n * scale;
+                if !px.is_finite() {
+                    return Err(Error::Invalid);
+                }
+                Ok(Calculation {
+                    px,
+                    ..Calculation::default()
+                })
+            }
+            _ => Err(Error::Invalid),
+        }
     }
-    Some(if percent == Some(true) {
-        Length::Percent(total)
-    } else {
-        Length::Px(total)
-    })
+    // Called immediately after the function/simple-block opening token.
+    fn sum(&mut self, depth: usize) -> Result<Calculation, crate::selectors::Error> {
+        use crate::selectors::{Error, Kind};
+        if depth > MAX_CALC_DEPTH {
+            return Err(Error::Limit);
+        }
+        self.spaces()?;
+        let mut result = self.operand(depth)?;
+        loop {
+            let before = self.spaces()?;
+            let token = self.take()?;
+            let sign = match token.kind {
+                Kind::Close(')') => return Ok(result),
+                Kind::Delim('+') if before => 1.0,
+                Kind::Delim('-') if before => -1.0,
+                _ => return Err(Error::Invalid),
+            };
+            if !self.spaces()? {
+                return Err(Error::Invalid);
+            }
+            let term = self.operand(depth)?;
+            result.px += sign * term.px;
+            result.percent += sign * term.percent;
+            result.has_percent |= term.has_percent;
+        }
+    }
+}
+/// Shared CSS/CSSOM typed additive calculation parser. Invalid grammar returns
+/// None; structural/work caps remain distinct so script cannot catch a quota.
+pub(crate) fn parse_calculation(
+    value: &str,
+    units: [f32; 4],
+    work: &mut usize,
+) -> Result<Option<Length>, crate::selectors::Error> {
+    use crate::selectors::{Error, Kind};
+    if value.len() > 4096 {
+        return Err(Error::Limit);
+    }
+    let tokens = crate::selectors::tokens(value, work)?;
+    let mut parser = CalculationParser {
+        tokens: &tokens,
+        at: 0,
+        terms: 0,
+        units,
+        work,
+    };
+    let parsed = (|| {
+        parser.spaces()?;
+        let first = parser.take()?;
+        if first.kind != Kind::Function || !first.is_name("calc") {
+            return Err(Error::Invalid);
+        }
+        let value = parser.sum(1)?;
+        parser.spaces()?;
+        if parser.at != tokens.len()
+            || !value.px.is_finite()
+            || !value.percent.is_finite()
+            || value.px.abs() > f32::MAX as f64
+            || value.percent.abs() > f32::MAX as f64
+        {
+            return Err(Error::Invalid);
+        }
+        Ok(Length::Calc {
+            px: value.px as f32,
+            percent: value.percent as f32,
+            has_percent: value.has_percent,
+        })
+    })();
+    match parsed {
+        Ok(value) => Ok(Some(value)),
+        Err(Error::Limit) => Err(Error::Limit),
+        Err(_) => Ok(None),
+    }
+}
+// This allocation-free prefilter only skips values that cannot contain the
+// function. Escaped names take the token path; strings are distinguished there.
+fn may_have_calculation(value: &str) -> bool {
+    value.contains('(')
+        && (value.contains('\\')
+            || value
+                .as_bytes()
+                .windows(4)
+                .any(|w| w.eq_ignore_ascii_case(b"calc")))
+}
+/// Validate original math tokens before legacy declaration comment
+/// normalization. Each outer calculation is visited once, including its nested
+/// operands; quoted function-like text is never arithmetic.
+pub(crate) fn valid_calculations(
+    value: &str,
+    work: &mut usize,
+) -> Result<bool, crate::selectors::Error> {
+    use crate::selectors::{Error, Kind};
+    if !may_have_calculation(value) {
+        return Ok(true);
+    }
+    if value.len() > 4096 {
+        return Err(Error::Limit);
+    }
+    let tokens = crate::selectors::tokens(value, work)?;
+    let mut parser = CalculationParser {
+        tokens: &tokens,
+        at: 0,
+        terms: 0,
+        units: [16.0, 16.0, 800.0, 600.0],
+        work,
+    };
+    while parser.at < tokens.len() {
+        let token = parser.take()?;
+        if token.kind == Kind::Function && token.is_name("calc") {
+            match parser.sum(1) {
+                Ok(_) => {}
+                Err(Error::Limit) => return Err(Error::Limit),
+                Err(_) => return Ok(false),
+            }
+        }
+    }
+    Ok(true)
+}
+// Only math-related acceptance is tightened here. Other ordinary property
+// grammars retain their separately documented parser limits.
+fn valid_math_property(name: &str, value: &str) -> bool {
+    let parse = |v| parse_length(v, 16.0, 16.0, 800.0, 600.0);
+    if !value.contains('(') {
+        let nonnegative = name.starts_with("padding-")
+            || name.starts_with("border-") && name.ends_with("-width")
+            || matches!(
+                name,
+                "width"
+                    | "height"
+                    | "min-width"
+                    | "max-width"
+                    | "min-height"
+                    | "max-height"
+                    | "flex-basis"
+                    | "font-size"
+                    | "line-height"
+                    | "row-gap"
+                    | "column-gap"
+            );
+        return !nonnegative
+            || !value.trim_start().starts_with('-')
+            || !matches!(parse(value),Some(Length::Px(n)|Length::Percent(n)) if n < 0.0);
+    }
+    if name == "border-radius" {
+        let values = words(value);
+        return (1..=4).contains(&values.len())
+            && values.iter().all(|v| {
+                parse(v).is_some_and(|l| {
+                    !matches!(
+                        l,
+                        Length::Auto
+                            | Length::Calc {
+                                has_percent: true,
+                                ..
+                            }
+                    )
+                })
+            });
+    }
+    let border = name.starts_with("border-") && name.ends_with("-width");
+    if border
+        || name.starts_with("padding-")
+        || name.starts_with("margin-")
+        || matches!(
+            name,
+            "width"
+                | "height"
+                | "min-width"
+                | "max-width"
+                | "min-height"
+                | "max-height"
+                | "top"
+                | "right"
+                | "bottom"
+                | "left"
+                | "flex-basis"
+                | "font-size"
+                | "line-height"
+                | "row-gap"
+                | "column-gap"
+        )
+    {
+        return parse(value).is_some_and(|l| {
+            !matches!(l, Length::Auto) && (!border || !l.depends_on_percentage())
+        });
+    }
+    true
 }
 fn parse_grid_line(value: &str) -> Option<GridLine> {
     let lower = value.trim().to_ascii_lowercase();
@@ -4672,6 +5069,7 @@ fn parse_grid_tracks(
                     Length::Px(n) | Length::Percent(n) | Length::Fr(n) if n >= 0.0 => {
                         Some(GridBreadth::Length(length))
                     }
+                    Length::Calc { .. } => length.nonnegative().map(GridBreadth::Length),
                     _ => None,
                 }
             }
@@ -6554,7 +6952,8 @@ mod tests {
             pool.intern(&mut tracks, false);
             retained.push(tracks);
         }
-        assert_eq!(pool.bytes, MAX_RETAINED_GRID_BYTES);
+        assert_eq!(pool.bytes, count * 64 * std::mem::size_of::<GridTrack>());
+        assert!(pool.bytes <= MAX_RETAINED_GRID_BYTES);
         assert_eq!(pool.lists.len(), count);
         assert!(retained[count].is_empty() && retained[count + 1].is_empty());
         let mut implicit: Arc<[GridTrack]> =
@@ -7105,6 +7504,188 @@ mod tests {
             Some(Length::Px(32.0))
         );
         assert_eq!(parse_length("NaNpx", 16.0, 16.0, 800.0, 600.0), None);
+    }
+    #[test]
+    fn calculations_retain_coefficients_and_percentage_dependency() {
+        let parse = |v| parse_length(v, 20.0, 16.0, 800.0, 600.0).unwrap();
+        let mixed = parse("calc(50% - 2em + 1rem)");
+        assert_eq!(
+            mixed,
+            Length::Calc {
+                px: -24.0,
+                percent: 50.0,
+                has_percent: true
+            }
+        );
+        assert_eq!(mixed.resolve_with_basis(Some(200.0)), Some(76.0));
+        assert_eq!(mixed.resolve_with_basis(None), None);
+        for value in ["calc(10px + 0%)", "calc(10px + 25% - 25%)", "calc(0% - 0%)"] {
+            let length = parse(value);
+            assert!(length.depends_on_percentage(), "{value}");
+            assert_eq!(length.resolve_with_basis(None), None);
+        }
+        assert_eq!(parse("calc(10px)").resolve_with_basis(None), Some(10.0));
+        assert_eq!(parse("calc(50%)").resolve(f32::INFINITY), None);
+        assert_eq!(parse("calc(10px)").resolve(f32::NAN), Some(10.0));
+        assert_eq!(parse("calc(1000000in)").resolve(1.0), Some(1_000_000.0));
+    }
+    #[test]
+    fn calculations_use_typed_tokens_real_operator_space_and_complete_consumption() {
+        for value in [
+            "calc(1px +)",
+            "calc(+ 1px)",
+            "calc(1px 2px)",
+            "calc(1px+ 2px)",
+            "calc(1px +2px)",
+            "calc(1px/**/+/**/2px)",
+            "calc(1/**/px)",
+            "calc(0 + 1px)",
+            "calc(1px * 2)",
+            "calc(1px / 2)",
+            "calc(1fr + 2px)",
+            "calc(min(1px,2px))",
+            "calc(1px))",
+            "calc(1px) trailing",
+            "calc()",
+            "calc((1px + 2px])",
+            "calc(1px + 0)",
+            r"calc(1p\78 + 2px)",
+            "calc(infinity * 1px)",
+        ] {
+            assert_eq!(
+                parse_length(value, 16.0, 16.0, 800.0, 600.0),
+                None,
+                "{value}"
+            );
+        }
+        for value in [
+            "CALC(1px + -2px)",
+            r"c\61 lc(1p\78  + -2px)",
+            "calc((1px + 2px) - calc(4px))",
+            "calc(1px /*)*/ + /**/(2px - 4px))",
+        ] {
+            assert_eq!(
+                parse_length(value, 16.0, 16.0, 800.0, 600.0).and_then(|v| v.resolve(100.0)),
+                Some(-1.0),
+                "{value}"
+            );
+        }
+        let length = parse_length("calc(500000cm - 499999cm)", 16.0, 16.0, 800.0, 600.0).unwrap();
+        assert!((length.resolve(0.0).unwrap() - 96.0 / 2.54).abs() < 0.001);
+    }
+    #[test]
+    fn calculations_preserve_authored_and_substituted_token_boundaries() {
+        let doc = Document::parse(
+            "<div id=literal></div><div id=variable></div><div id=valid></div><div id=quoted></div>",
+        );
+        let css = r"#literal { width:77px; width:calc(1px/**/+/**/2px); padding:8px; padding:calc(1px) bad }
+            #variable { --bad:calc(1px/**/+/**/2px); width:77px; width:var(--bad) }
+            #valid { --a:10px; width:calc(50% + var(--a)); margin:calc(1px)/**/calc(2px); }
+            #quoted { font-family:'calc(0 + nope)'; width:20px; width:calc(5px) trailing }";
+        let styles = compute_styles(&doc, &[css.into()], 800.0, 600.0);
+        let get = |s| &styles[doc.query_selector(s).unwrap()];
+        assert_eq!(get("#literal").width, Length::Px(77.0));
+        assert_eq!(get("#variable").width, Length::Auto);
+        assert_eq!(get("#valid").width.resolve(200.0), Some(110.0));
+        assert_eq!(get("#valid").margin.top.resolve(0.0), Some(1.0));
+        assert_eq!(get("#valid").margin.left.resolve(0.0), Some(2.0));
+        assert_eq!(get("#quoted").font_family, "'calc(0 + nope)'");
+        assert_eq!(get("#quoted").width, Length::Px(20.0));
+    }
+    #[test]
+    fn calculations_clamp_nonnegative_properties_after_arithmetic() {
+        let doc = Document::parse("<div id=a></div><div id=b></div><div id=c></div>");
+        let styles=compute_styles(&doc,&["#a {font-size:calc(1px - 2px);line-height:calc(1px - 2px);width:calc(1px - 2px);padding:calc(1px - 2px);gap:calc(1px - 2px);border:calc(1px - 2px) solid red} #b {font-size:calc(50% + 2px);line-height:calc(100% + 2px);width:calc(50% - 100px);padding:calc(50% - 100px);gap:calc(50% - 100px)} #c {width:77px;width:-1px;padding:8px;padding:-1px;border:3px solid red;border-width:calc(0% + 1px);border-radius:7px;border-radius:calc(10% + 1px)}".into()],800.0,600.0);
+        let get = |s| &styles[doc.query_selector(s).unwrap()];
+        let a = get("#a");
+        assert_eq!(a.font_size, 1.0); // Existing engine minimum font size.
+        assert_eq!(a.line_height, 0.0);
+        assert_eq!(a.width.resolve(0.0), Some(0.0));
+        assert_eq!(a.padding.left.resolve(0.0), Some(0.0));
+        assert_eq!(a.row_gap.resolve(0.0), Some(0.0));
+        assert_eq!(a.border_width.left, 0.0);
+        let b = get("#b");
+        assert_eq!(b.font_size, 10.0);
+        assert_eq!(b.line_height, 12.0);
+        assert_eq!(b.width.resolve(100.0), Some(-50.0)); // Used-size clamp belongs to layout.
+        assert_eq!(b.width.resolve(400.0), Some(100.0));
+        assert_eq!(b.padding.left.resolve(100.0), Some(-50.0));
+        assert_eq!(b.row_gap.resolve(100.0), Some(-50.0));
+        let c = get("#c");
+        assert_eq!(c.width, Length::Px(77.0));
+        assert_eq!(c.padding.left, Length::Px(8.0));
+        assert_eq!(c.border_width.left, 3.0);
+        assert_eq!(c.border_radius, 7.0);
+    }
+    #[test]
+    fn calculations_in_grid_keys_keep_percentage_flags_and_coefficients() {
+        let doc = Document::parse("<i id=a></i><i id=b></i><i id=c></i><i id=d></i>");
+        let styles=compute_styles(&doc,&["i{grid-template-columns:calc(50% - 10px);grid-auto-rows:minmax(calc(-1px),calc(25% + 1em))} #c{grid-template-columns:calc(0% + 10px)} #d{grid-template-columns:calc(10px)}".into()],800.0,600.0);
+        let get = |s| &styles[doc.query_selector(s).unwrap()];
+        assert!(Arc::ptr_eq(
+            &get("#a").grid_template_columns,
+            &get("#b").grid_template_columns
+        ));
+        assert!(!Arc::ptr_eq(
+            &get("#c").grid_template_columns,
+            &get("#d").grid_template_columns
+        ));
+        assert_eq!(
+            get("#a").grid_template_columns[0].max,
+            GridBreadth::Length(Length::Calc {
+                px: -10.0,
+                percent: 50.0,
+                has_percent: true
+            })
+        );
+        assert_eq!(
+            get("#a").grid_auto_rows[0].min,
+            GridBreadth::Length(Length::Calc {
+                px: 0.0,
+                percent: 0.0,
+                has_percent: false
+            })
+        );
+    }
+    #[test]
+    fn calculations_have_shared_work_depth_term_and_source_limits() {
+        let nested = |n| format!("{}1px{}", "calc(".repeat(n), ")".repeat(n));
+        assert!(
+            parse_calculation(&nested(16), [16.0; 4], &mut 100_000)
+                .unwrap()
+                .is_some()
+        );
+        assert_eq!(
+            parse_calculation(&nested(17), [16.0; 4], &mut 100_000),
+            Err(crate::selectors::Error::Limit)
+        );
+        let many = |n| format!("calc({})", vec!["1px"; n].join(" + "));
+        assert!(
+            parse_calculation(&many(256), [16.0; 4], &mut 100_000)
+                .unwrap()
+                .is_some()
+        );
+        assert_eq!(
+            parse_calculation(&many(257), [16.0; 4], &mut 100_000),
+            Err(crate::selectors::Error::Limit)
+        );
+        assert_eq!(
+            parse_calculation(&" ".repeat(4097), [16.0; 4], &mut 100_000),
+            Err(crate::selectors::Error::Limit)
+        );
+        let mut work = 7;
+        assert_eq!(
+            parse_calculation("calc(50% + 2px)", [16.0; 4], &mut work),
+            Err(crate::selectors::Error::Limit)
+        );
+        assert_eq!(work, 0);
+        let mut work = 10;
+        assert!(
+            parse_declarations_with_limit("width:calc(50% + 2px)", &mut 1024, &mut work).is_empty()
+        );
+        assert_eq!(work, 0);
+        // Feature queries intentionally retain their conservative inventory.
+        assert!(!supports_matches("(width:calc(50% + 2px))"));
     }
     #[test]
     fn quoted_delimiters_and_comments() {

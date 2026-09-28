@@ -290,6 +290,19 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
         ]
         variants += [(name, source, expected, mode)
                      for mode in ('sloppy', 'strict') for name, source, expected in checks]
+    if profile == 'functions':
+        checks = [
+            ('default-success', "function f(a=3,b=a+1){return a+b;}assert.sameValue(f(),7);assert.sameValue(f(0),1);", 'passed'),
+            ('default-supplied-mismatch', "function f(a=3){return a;}assert.sameValue(f(0),3);", 'failed'),
+            ('default-tdz', "function f(a=b,b=2){}assert.throws(ReferenceError,function(){f();});", 'passed'),
+            ('default-tdz-wrong-type', "function f(a=b,b=2){}assert.throws(TypeError,function(){f();});", 'failed'),
+            ('default-arguments', "function f(a=3){arguments[0]=9;assert.sameValue(a,3);var args=arguments;assert.throws(TypeError,function(){return args.callee;});}f(undefined);", 'passed'),
+            ('default-arguments-mismatch', "function f(a=3){arguments[0]=9;assert.sameValue(a,9);}f(undefined);", 'failed'),
+            ('default-scope', "function f(a=3,read=()=>a){var a=9;assert.sameValue(read(),3);assert.sameValue(a,9);}f();", 'passed'),
+            ('default-scope-mismatch', "function f(a=3,read=()=>a){var a=9;assert.sameValue(read(),9);}f();", 'failed'),
+        ]
+        variants += [(name, source, expected, mode)
+                     for mode in ('sloppy', 'strict') for name, source, expected in checks]
     outcomes = []
     for name, source, expected, mode in variants:
         includes = ['propertyHelper.js'] if 'property-' in name else []

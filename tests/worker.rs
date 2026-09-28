@@ -93,10 +93,22 @@ fn exchange_empty(client: &mut WorkerClient, command: WorkerCommand) {
 #[test]
 #[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
 fn inline_style_mutations_preserve_the_same_pixels_through_the_confined_worker() {
+    assert_six_scripted_samples_through_worker(include_str!("fixtures/inline-style.html"), 117);
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn default_parameters_and_event_callbacks_survive_the_confined_worker() {
+    assert_six_scripted_samples_through_worker(
+        include_str!("fixtures/default-parameters.html"),
+        121,
+    );
+}
+
+fn assert_six_scripted_samples_through_worker(source: &str, generation: u64) {
     use eris::graphics::{Canvas, Color, Fonts};
-    let source = include_str!("fixtures/inline-style.html");
     let fixture = Fixture::new(source);
-    let mut client = fixture.spawn(true, 117);
+    let mut client = fixture.spawn(true, generation);
     load(&mut client, &fixture.navigation);
     let mut direct = eris::page::Page::from_html(
         Url::parse(&fixture.navigation.address).unwrap(),
@@ -146,6 +158,91 @@ fn inline_style_mutations_preserve_the_same_pixels_through_the_confined_worker()
         for x in [10, 60, 110, 160, 210, 260] {
             assert_eq!(actual.pixels[10 * 320 + x], color, "{state}, x={x}");
         }
+    }
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn mixed_calculations_resize_and_mutate_through_the_confined_worker() {
+    use eris::graphics::{Canvas, Color, Fonts};
+    let source = include_str!("fixtures/calc-resize.html");
+    let fixture = Fixture::new(source);
+    let mut client = fixture.spawn(true, 125);
+    load(&mut client, &fixture.navigation);
+    let mut direct = eris::page::Page::from_html(
+        Url::parse(&fixture.navigation.address).unwrap(),
+        source,
+        true,
+    );
+    let fonts = Fonts::new();
+    for (width, click, x, box_width, color) in [
+        (320, false, 45.0, 140.0, 0x008000),
+        (520, false, 65.0, 240.0, 0x008000),
+        (520, true, 30.0, 130.0, 0x0000ff),
+        (320, false, 20.0, 80.0, 0x0000ff),
+    ] {
+        if click {
+            let node = direct.document.query_selector("#change").unwrap();
+            assert!(direct.click(node).is_none());
+            exchange_empty(&mut client, WorkerCommand::Click { node });
+        }
+        let reply = client
+            .exchange(
+                WorkerCommand::Render {
+                    width: width as f32,
+                    height: 240.0,
+                },
+                || false,
+            )
+            .unwrap();
+        assert!(reply.navigation.is_none());
+        let snapshot = reply.snapshot.unwrap();
+        assert!(direct.diagnostics.is_empty(), "{:?}", direct.diagnostics);
+        assert!(
+            snapshot
+                .diagnostics
+                .iter()
+                .all(|line| line.starts_with("Page process ")
+                    || line.starts_with("Resource broker ")),
+            "{:?}",
+            snapshot.diagnostics
+        );
+        let sample = snapshot.document.query_selector("#sample").unwrap();
+        let rect = snapshot
+            .layout
+            .hit_regions
+            .iter()
+            .find(|hit| hit.node == sample)
+            .unwrap()
+            .rect;
+        assert_eq!(
+            (rect.x, rect.y, rect.width, rect.height),
+            (x, 10.0, box_width, 40.0)
+        );
+        let mut expected = Canvas::new(width, 240).unwrap();
+        expected.clear(Color::WHITE);
+        expected.paint(
+            &direct.layout(width as f32, 240.0, &fonts).commands,
+            &fonts,
+            &direct.images,
+            0.0,
+            0.0,
+        );
+        let mut actual = Canvas::new(width, 240).unwrap();
+        actual.clear(Color::WHITE);
+        actual.paint(
+            &snapshot.layout.commands,
+            &fonts,
+            &snapshot.images,
+            0.0,
+            0.0,
+        );
+        assert!(!actual.exhausted() && !expected.exhausted());
+        assert_eq!(actual.pixels, expected.pixels);
+        let row = 20 * width as usize;
+        assert_eq!(actual.pixels[row + x as usize], color);
+        assert_eq!(actual.pixels[row + (x + box_width) as usize - 1], color);
+        assert_eq!(actual.pixels[row + (x + box_width) as usize], 0xeeeeee);
     }
 }
 

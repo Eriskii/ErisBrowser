@@ -20,7 +20,7 @@ Methods and accessors capture the surrounding lexical environment, receive the
 call's receiver, and inherit strictness or enable it with their own directive.
 Object methods are not inherently strict. They are not constructors and have no
 own `prototype` property. Their `name` is the evaluated key, with `get ` or `set `
-for accessors; `length` reflects the supported simple parameter list. Both
+for accessors; `length` counts parameters before the first initializer. Both
 properties are non-writable, non-enumerable and configurable. Anonymous function
 and arrow expressions in data-property values receive the property name;
 explicitly named functions and references to existing functions keep their
@@ -68,8 +68,10 @@ anonymous-name inference, descriptor merging, prototype forms and parse-time
 errors, and hostile coercion, key sizes, prototype chains and nesting.
 
 Symbols and `Symbol.toPrimitive`, object spread, async/generator methods,
-`super`/home-object behavior, and default/rest/destructured parameter lists remain
+`super`/home-object behavior, and rest/destructured parameter lists remain
 unsupported. Unsupported method forms are not replaced with ordinary methods.
+Identifier defaults now share the [default-parameter implementation](default-parameters.md),
+including separate initialization scope and unmapped arguments.
 Identifier Unicode escapes and complete function source reflection are also
 outside the current parser/runtime subset. The separate bounded
 [Array reversal and Number radix increment](array-number-methods.md) supplies

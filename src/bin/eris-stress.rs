@@ -27,6 +27,7 @@ const DEFAULT_SEED: u64 = 0xe215_2026;
 const SCRIPT_DOCUMENT: &str = "<!doctype html><body><button id='go'>Go</button><div id='out'>Initial</div><input id='field' value='test'></body>";
 
 const HTML_SEEDS: &[&str] = &[
+    "<style>main{width:calc(100% - 20px);display:grid;grid-template-columns:calc(50% - 5px) 1fr;gap:calc(10% + 2px)}i{width:calc((25% + 10px) + calc(25% - 20px));padding:calc(5% - 10px);margin-left:calc(10% + 5px)}b{width:40px;width:calc(1px +);width:calc(0 + 1px);height:calc(30px + 0%);background:green}</style><main><i>Mixed lengths</i><b>Token boundaries</b></main>",
     r#"<style>main{--Tone:red;--alias:var(--Tone);--empty:;--loop:var(--missing,var(--loop));--safe:var(--Tone,var(--safe))}i{--Tone:blue;--number:20;color:VAR(--alias);width:var(--number)px;background:var(--loop,rgb(0,128,0));font-family:"var(--Tone)",serif;margin:var(/**/--empty/**/,3px) 2px}b{color:var(--safe);padding:var(--missing,var(--other,1px 2px))}</style><main><i>Computed aliases</i><b>Fallbacks and cycles</b></main>"#,
     "<style>i/**/.tile{background:green}div /**/i{color:blue}div/**/i{color:red}./**/tile{width:30px}[data-x~/**/=a]{height:40px}:/**/is(.tile){display:block}@supports selector(i/**/.tile) and/**/(display:block){i{border:1px solid green}}@supports not selector(ns/**/|i){i{background:red}}</style><div><i class=tile data-x='a b'></i></div>",
     "<style>details{border:1px solid green}summary{display:list-item;list-style-position:inside}@supports (display:grid) and (width:20px){section{display:grid;grid-template-columns:1fr 1fr}}@supports not (padding:auto){i{color:blue}}</style><section><details name=notes open><p>Before summary</p><summary>First</summary><i style='position:fixed;top:0'>Hidden fixed</i><details><summary>Nested</summary>Nested body</details></details><details name=notes open><summary>Second</summary>Content</details><details>No summary</details></section>",
@@ -55,6 +56,7 @@ const HTML_SEEDS: &[&str] = &[
     "<style>.a{position:relative;left:-2px;top:3px;width:90%;max-width:150px;min-height:20px}.b{font-size:125%;vertical-align:middle}a[href^='https']{color:rebeccapurple}</style><p class=a>Text <span class=b>large</span> <a href=https://example.com>link</a></p><img width=16 height=16 alt=missing>",
 ];
 const SCRIPT_SEEDS: &[&str] = &[
+    "let outer=4;function sample(a=outer,read=()=>a){var a=9;return [read(),a,arguments.length];}const object={method(x=3,y=x+1){return x+y;}};const arrow=(x=/[()]/,text=`matched:${x.test('(')}`)=>text;document.getElementById('out').textContent=sample().join(':')+':'+object.method()+':'+arrow();document.getElementById('out').style.width='calc(50% - 10px)';",
     r#"const s=document.getElementById('out').style;s.cssText='--Tone:green;--tone:red;--note:"a;b:c";background-color:var(--Tone);color:blue!important';s.setProperty('--tone','blue');s.setProperty('color','red','invalid');s.setProperty('background-color',{toString(){s.setProperty('--saved','"x;y:z"');return 'green';}},'IMPORTANT');const prior=s.removeProperty('COLOR');document.getElementById('field').value=s.getPropertyValue('--Tone')+':'+s.getPropertyValue('--note')+':'+s.getPropertyPriority('background-color')+':'+prior+':'+('backgroundColor' in s);s.backgroundColor=null;"#,
     "const key={toString(){return 'CSS';}};const descriptor=Object.getOwnPropertyDescriptor(window,key);const supported=descriptor.value.supports('display','grid');delete window.CSS;const missing=Object.getOwnPropertyDescriptor(window,'CSS');window.CSS=descriptor.value;document.getElementById('out').textContent=descriptor.enumerable+':'+supported+':'+missing+':'+Object.getOwnPropertyDescriptor(window,'CSS').enumerable;",
     "let n=0;const key={toString(){n++;return 'value';}};const object={__proto__:{inherited:4},[key]:3,get ['total'](){return this.value+this.inherited;},['advance'](){this.value++;return this.total;}};document.getElementById('out').textContent=object.advance()+':'+n+':'+object.advance.name;",
@@ -322,6 +324,7 @@ fn style_invariants(style: &ComputedStyle) -> Result<(), String> {
             Length::Px(value) | Length::Percent(value) | Length::Fr(value) => {
                 finite(&[value], "CSS length")?
             }
+            Length::Calc { px, percent, .. } => finite(&[px, percent], "CSS calculation")?,
         }
     }
     Ok(())
@@ -893,6 +896,15 @@ mod tests {
         let mut bad = style.clone();
         bad.column_gap = Length::Percent(f32::NAN);
         assert!(style_invariants(&bad).is_err());
+        for (px, percent) in [(f32::INFINITY, 0.0), (0.0, f32::NAN)] {
+            let mut bad = style.clone();
+            bad.width = Length::Calc {
+                px,
+                percent,
+                has_percent: true,
+            };
+            assert!(style_invariants(&bad).is_err());
+        }
     }
 
     #[test]

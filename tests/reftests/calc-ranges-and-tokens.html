@@ -1,0 +1,20 @@
+<!doctype html>
+<style>
+body{margin:0}
+section{position:absolute;width:100px;height:40px}
+div{width:80px;height:40px;background:#23956b}
+#padding{left:10px;top:10px}#padding div{padding-left:8px;padding-right:8px;padding-left:calc(5px - 10px);padding-right:calc(2px - 10%)}
+#width{left:110px;top:10px;width:80px;background:#23956b}#width div{background:red;width:calc(10px - 30px)}
+#nested{left:210px;top:10px}#nested div{width:calc(100px + calc(10px - 30px))}
+#margin{left:15px;top:70px}#margin div{margin-left:calc(5px - 10px)}
+#comments{left:110px;top:70px}#comments div{width:calc(20px/**/+/**/10px)}
+#operand{left:210px;top:70px}#operand div{width:calc(40px +)}
+#operator{left:10px;top:130px}#operator div{width:calc(20px 30px)}
+#number{left:110px;top:130px}#number div{width:calc(0 + 30px)}
+#whitespace{left:210px;top:130px}#whitespace div{width:calc(30px +20px)}
+</style>
+<section id="padding"><div></div></section><section id="width"><div></div></section>
+<section id="nested"><div></div></section><section id="margin"><div></div></section>
+<section id="comments"><div></div></section><section id="operand"><div></div></section>
+<section id="operator"><div></div></section><section id="number"><div></div></section>
+<section id="whitespace"><div></div></section>

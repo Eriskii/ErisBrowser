@@ -60,6 +60,27 @@ The runner correctly refuses to record a healthy baseline. This report is an
 initial measurement, not an accepted regression baseline or a passing CI gate.
 Its failure inventory is retained without modifying tests or relaxing budgets.
 
+## Default-parameter checkpoint
+
+The [updated complete report](test262-functions-latest.json) records
+**490 passed / 620 unsupported / 19 failed / two resource stops**. Comparing
+identical source/harness/mode fingerprints and the same execution policy gives
+**140 newly passing variants and no lost passes**. The two 32-nested-function
+resource stops remain unchanged, so this still is not a healthy baseline.
+
+There are now **48 passing preflights**: the original 32 plus 16 positive and
+deliberately incorrect default-value, TDZ, arguments and scope checks across
+both modes. These execute the unchanged upstream assertion helpers. Deliberate
+mismatches must throw `Test262Error`; disabling assertions cannot pass the
+preflight. No upstream file or previous profile policy changed.
+
+The release adapter SHA-256 is
+`77003eefd7a91dccb2b418e0d59bc234091edbfb1a7bb6a217de63cd1ece8b69`.
+Its source-input digest is
+`e6d4d857c922db8942abaec7cf230454b3487313f1121dbc6e7babbe0385bcd6`.
+The [implementation scope](default-parameters.md) records remaining syntax and
+host limits, including the next unchanged WPT harness blocker.
+
 This selection is broader than default-parameter syntax and deliberately keeps
 unrelated function tests. It is not full Test262, Web Platform Tests, or web
 compatibility coverage. The vendored data retains its

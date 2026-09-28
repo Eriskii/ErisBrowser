@@ -221,6 +221,16 @@ class IntegrityTests(unittest.TestCase):
             unavailable = sample(('/*---\nfeatures: [' + feature + ']\n---*/\n').encode())
             self.assertIn(feature, runner.unsupported_reason(unavailable, runner.FUNCTION_FEATURES))
 
+    def test_function_preflight_rejects_disabled_default_parameter_assertions(self):
+        directory = runner.ROOT / 'tests/upstream/test262-functions'
+        _, files, _, _, _ = runner.load_corpus(directory, 'functions')
+        with patch.object(runner, 'bounded_process', return_value=(0, response('complete'), b'')):
+            results = runner.harness_preflight(files, Path('/fake'), 1, 'functions')
+        self.assertEqual(len(results), 48)
+        rejected = {result['name'] for result in results if not result['verified']}
+        self.assertTrue({'default-supplied-mismatch', 'default-tdz-wrong-type',
+                         'default-arguments-mismatch', 'default-scope-mismatch'} <= rejected)
+
     def test_language_profile_retains_all_sources_modes_and_parse_negatives(self):
         directory = runner.ROOT / 'tests/upstream/test262-template-literal'
         manifest, files, cases, fixtures, _ = runner.load_corpus(directory, 'template-literal')

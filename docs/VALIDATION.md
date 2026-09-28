@@ -1,5 +1,103 @@
 # Validation record
 
+## Length-percentage calculations and default parameters
+
+Recorded September 28, 2026 UTC. The recorded integrated run passes formatting,
+strict all-target Clippy, release compilation and **704 Rust tests** with
+`--include-ignored`: 570 library, 39 browser/editor, four HTML adapter, six
+JavaScript adapter, five stress, four CLI, 17 network, 33 pipeline and 26
+real-worker tests. None remain ignored. All **51 Python checks** and **57 exact
+pixel references** pass. The five new references use independently specified
+SVG rectangles for containing-block bases, Grid tracks/gaps, definite and
+indefinite flex bases, range/token rejection and cyclic Grid/Flex gaps.
+
+The [calculation scope](../tests/conformance/calc-lengths.md) records the shared
+CSS/CSSOM additive grammar, retained percentage dependency, context-sensitive
+resolution and explicit limits. Nine new geometry groups bring layout coverage
+to **120 passing tests**. Independent release probes pass **34 calculation
+grammar cases** and **24 default-parameter cases**. A separate cross-layer audit
+passes **100 checks** across authored declarations, variable substitution,
+unrelated inline mutations and CSSOM round trips, plus **39 invalid-value and
+priority nonmutation checks**. Its deterministic seed `0x43414c4320260928`
+generates 2,000 mutated values and 39 hostile cases: 2,007 evaluations succeed,
+32 reach resource limits without changing the original style attribute, and
+none produce a caught panic. External limits are 30 seconds wall time,
+10 seconds CPU and 512 MiB address space. These malformed-input probes establish
+bounded observed behavior, not acceptance conformance.
+
+An independent default-parameter audit adds 12 semantic checks, 14 early-error
+controls, three valid-but-unsupported rest controls, 1,200 deterministic UTF-8
+mutations and 12 hostile inputs, with no panic, signal or timeout. Each child
+has external 512 MiB, two-second CPU and three-second wall limits. Eleven hostile
+inputs reach resource limits; 5,000 short defaults parse within the existing
+budgets. The audit found that extra ellipses were classified as unsupported
+instead of `SyntaxError`. A narrow correction and four regression cases fix
+that classification; valid rest remains unsupported. After the correction,
+all 704 Rust tests, formatting, strict Clippy, release compilation and all four
+Test262 profiles pass their applicable checks with unchanged outcome counts.
+
+An independent layout audit passes **38 bounded probes** for counter
+monotonicity, state restoration and finite output. A 24-level cyclic Grid case
+terminates at its shared Grid-work limit after 16,145 visits. Nine of ten
+ordinary fixed-pixel before/after controls remain exact; the remaining change
+corrects a control's paint height to its resolved content box instead of its
+old overflowing intrinsic height. Five additional storage/work probes complete
+under 512 MiB. Repeated declarations over 99,000 siblings share three nonempty
+Grid track arrays totaling **3,096 bytes**. Distinct plain and calculated track
+lists both stop retaining new lists at **4,193,304 bytes**, with 2,730 populated
+column lists; later values take the documented bounded fallback. The larger
+calculation representation is included in retained-byte accounting.
+
+The [unchanged function inventory](../tests/conformance/test262-functions.md)
+now reports **490 passed / 620 unsupported / 19 failed / two resource stops**
+across 1,131 required variants, with **140 new passes and no lost passes**
+against the same sources, harnesses, modes and execution policy. All **48
+preflights** pass, including deliberately incorrect assertions. The remaining
+resource outcomes prevent recording a healthy baseline; failures and
+unsupported variants remain in the denominator. The
+[default-parameter implementation record](../tests/conformance/default-parameters.md)
+separates supported identifier defaults from remaining rest, destructuring,
+async and host gaps. The unchanged WPT JavaScript harness advances past its
+first default-parameter blocker but still cannot execute.
+
+Existing pinned upstream outcomes remain HTML **3,868 matched / two mismatched /
+six unsupported**, String/JSON Test262 **536 passed / 116 unsupported**, RegExp
+**250 / 40**, and templates **82 / 32**. Existing policies, corpus bytes and
+baselines are unchanged. A separate **15,000-case** mutation run has zero caught
+panics or invariant failures: 5,000 accepted HTML inputs, 637 accepted/4,363
+rejected scripts, and 3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size
+is 191 nodes, maximum display-list size 1,173 commands, and 17 cases stop within
+paint limits. New calculation/default-parameter seeds change this inventory;
+these counts are not an acceptance-rate comparison or coverage-guided fuzzing.
+
+Direct Page and confined-worker fixtures pass calculation resize/mutation and
+default-parameter interactions. A bounded native software-window check confirms
+the default-parameter fixture's green framebuffer state, exits successfully,
+and leaves no tracked UI, renderer or broker process alive. This checks the
+owned CPU framebuffer, not compositor pixels or a Vulkan browser backend.
+All nine existing benchmark views are pixel-identical to frozen `3491721`;
+the [warm measurement record](PERFORMANCE.md#calculation-and-default-parameter-checkpoint)
+reports both builds without claiming a speed change.
+
+Session records use `calc-params-final`, `calc-params-corrected`, `calc-storage-final` and
+`default-parameters-native` names under `artifacts/`; focused peer-review
+reproducers remain session scratch artifacts. Native, stress and adversarial
+audits preceded the narrow extra-ellipsis correction; their reports retain the
+original binary/source hashes. Final release SHA-256 values are:
+
+| Binary | SHA-256 |
+|---|---|
+| `eris-browser` | `371a91b712ea2d112948ae905bf381faeb3ec2908ef363b024c5c536dc61e7eb` |
+| `eris-js` | `77003eefd7a91dccb2b418e0d59bc234091edbfb1a7bb6a217de63cd1ece8b69` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `8b5babf065524debe90ecd7714bb0a89f74dd419b9cc2c308af01654e7223b48` |
+
+The final source-input digest is
+`e6d4d857c922db8942abaec7cf230454b3487313f1121dbc6e7babbe0385bcd6`.
+Full CSS/JavaScript conformance, independently
+audited security and the requested Chromium-relative performance threshold
+remain unverified.
+
 ## Expanded upstream function inventory
 
 Recorded September 28, 2026 UTC. The new complete four-directory

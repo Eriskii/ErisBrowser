@@ -14,6 +14,16 @@ priorities, invalid-write preservation, case-sensitive custom names, quoted
 delimiters, property aliases, removal, null values and reentrant string
 conversion. It loads no external assets.
 
+`default-parameters.html` checks six green initial samples and blue samples
+after an event callback. Script assertions cover omitted arguments, temporal
+dead zones, body/parameter scope separation, unmapped arguments, lexical arrows,
+default function names and length. Page and confined-worker tests check pixels.
+
+`calc-resize.html` uses mixed length-percentage widths and margins. Page and
+confined-worker tests verify exact geometry and pixels at 320 and 520 pixels,
+then repeat after CSSOM mutation, including a resize back to the smaller viewport.
+Both fixtures are original and load no external assets.
+
 ## Synthetic image allocation fixtures
 
 These original fixtures are 1×1 RGBA PNGs, with valid chunk CRCs and 4,096 bytes

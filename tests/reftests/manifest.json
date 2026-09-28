@@ -314,6 +314,36 @@
       "description": "The first direct summary is laid out before disclosure content without changing DOM order.",
       "test": "details-first-summary-order.html",
       "reference": "details-first-summary-order-ref.html"
+    },
+    {
+      "name": "calc-containing-blocks",
+      "description": "Mixed-unit nested sums retain percentages until width, margins and padding use their actual containing block.",
+      "test": "calc-containing-blocks.html",
+      "reference": "calc-containing-blocks-ref.html"
+    },
+    {
+      "name": "calc-grid",
+      "description": "Definite Grid tracks and gaps resolve mixed-unit calculations against their respective content-box axes.",
+      "test": "calc-grid.html",
+      "reference": "calc-grid-ref.html"
+    },
+    {
+      "name": "calc-flex-bases",
+      "description": "Column flex bases distinguish definite and auto main sizes, retaining zero-percentage dependency and absolute gap terms.",
+      "test": "calc-flex-bases.html",
+      "reference": "calc-flex-bases-ref.html"
+    },
+    {
+      "name": "calc-ranges-and-tokens",
+      "description": "Only final calculation results clamp in nonnegative contexts; signed margins and original operator token boundaries are preserved.",
+      "test": "calc-ranges-and-tokens.html",
+      "reference": "calc-ranges-and-tokens-ref.html"
+    },
+    {
+      "name": "calc-cyclic-gaps",
+      "description": "Auto-height Grid resolves cyclic gap percentages after intrinsic sizing while column Flexbox retains only the absolute gap term.",
+      "test": "calc-cyclic-gaps.html",
+      "reference": "calc-cyclic-gaps-ref.html"
     }
   ]
 }

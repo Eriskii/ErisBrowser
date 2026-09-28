@@ -26,6 +26,34 @@ After the broker, namespace and Test262 increment, the same warm-render configur
 
 `python3 tools/benchmark.py` records nine measurements across eight local pages in `artifacts/benchmark.json`, including source/assets/dependency input hashes, binary hash, CPU, OS, compiler and excluded phases. The template/Grid, positioning, event/compositing responsive and disclosure fixtures use their initially loaded documents; cloning, import loading and click handlers execute outside the measured warm-render loop. The event page is measured both from the top and scrolled to its panel so the opacity group is visible. Opacity allocation and compositing, when needed, are inside that loop.
 
+## Calculation and default-parameter checkpoint
+
+Frozen before (`3491721`) and after release binaries were measured sequentially
+on September 28, 2026 UTC, after builds and stress checks finished. Both runs
+use the nine existing views at 1180×880 and 100 warm iterations. All nine final
+frames are pixel-identical across the two builds.
+
+| View | Before median / p95 (ms) | After median / p95 (ms) |
+|---|---:|---:|
+| home | 4.921 / 4.982 | 4.953 / 5.007 |
+| gallery | 8.063 / 8.324 | 8.105 / 8.989 |
+| forms | 5.965 / 6.017 | 5.948 / 6.145 |
+| templates | 1.122 / 1.161 | 1.142 / 1.313 |
+| positioning | 1.118 / 1.156 | 1.148 / 1.238 |
+| events | 1.123 / 1.142 | 1.142 / 1.200 |
+| events-visible | 12.023 / 12.188 | 12.157 / 12.298 |
+| responsive | 1.924 / 1.961 | 1.967 / 2.059 |
+| disclosures | 1.212 / 1.234 | 1.228 / 1.288 |
+
+The [before](benchmark-calc-parameters-before.json) and
+[after](benchmark-calc-parameters.json) records retain measured input/binary
+hashes, environment and phase exclusions; local checkout/output paths are
+redacted. These are sequential observations on an uncontrolled desktop, not
+evidence of a causal speed change or a Chromium comparison. They measure the
+existing warm CSS/layout/software-paint workload, excluding JavaScript execution,
+process startup, IPC and native presentation. The five new calculation reference
+fixtures have separate correctness results and are not included in these timings.
+
 ## Confined worker measurements
 
 ```sh
