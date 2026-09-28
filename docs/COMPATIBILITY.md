@@ -111,6 +111,12 @@ Strict/readonly/const rules apply only to actual writes. The complete profile
 retains 72 passes, twelve class/Symbol failures and 48 unsupported modes, with
 104 verified controls.
 
+[Labeled break and continue](../tests/conformance/labels.md) resolve ordinary
+statement/loop targets, propagate through nested loops and switches, and preserve
+finally overrides and function boundaries. The complete three-directory profile
+retains 100 passes and 25 unsupported modes, with 80 controls. Legacy labeled
+functions and general statement completion values remain incomplete.
+
 [Loose equality](../tests/conformance/equality.md) follows ordinary primitive
 conversion and Boolean/Number/String dispatch. Null and undefined remain unequal
 to false and zero; object identity and nullish comparisons skip conversion hooks.
@@ -157,7 +163,7 @@ The four [URI encoding/decoding functions](../tests/conformance/uri.md) preserve
 ordinary string conversion, strict percent-encoded UTF-8 and reserved-character
 behavior. Encoding rejects lone surrogates; decoding preserves raw unescaped
 UTF-16 units and throws URIError for malformed escapes. Complete upstream
-coverage retains 208 passes, 34 unsupported variants and 104 instruction-limit
+coverage retains 210 passes, 24 unsupported variants and 112 instruction-limit
 stops, with 128 controls. Those stops prevent a healthy URI baseline.
 
 JavaScript strings retain UTF-16 code units, including unpaired surrogates. Length, indexed access, `charAt`, `charCodeAt`, `codePointAt`, `slice`, `substring`, string searches, `match`, `search`, `replace`, string/RegExp `split`, array `join`, trimming, selected case conversion and `String.fromCharCode`/`fromCodePoint` operate on this representation. String-to-number conversion recognizes ECMAScript whitespace and decimal, hexadecimal, binary and octal forms. This is a bounded subset: normalization, locale-sensitive operations, Symbol-based RegExp dispatch/species and complete generic receiver/prototype behavior are absent. Each string is limited to 262,144 code units (512 KiB of backing storage), within the cumulative estimated 8 MiB script allocation budget.

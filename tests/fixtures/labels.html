@@ -1,0 +1,33 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Labeled control flow through callbacks</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#block{left:0}#while{left:50px}#for{left:100px}#switch{left:150px}#finally{left:200px}#unicode{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="block" class="sample"></div><div id="while" class="sample"></div>
+<div id="for" class="sample"></div><div id="switch" class="sample"></div>
+<div id="finally" class="sample"></div><div id="unicode" class="sample"></div>
+<button id="change" type="button">Jump through callbacks</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+function apply(color){
+  let n=0;outer:alias:{n++;inner:{break alias;}n++;}check(n===1,'block target');mark('block',color);
+  n=0;outer:while(n<3){n++;inner:while(true){continue outer;}n+=100;}check(n===3,'outer continue');mark('while',color);
+  const fs=[];outer:alias:for(let i=0;i<3;i++){fs.push(function(){return i;});while(true){continue alias;}}
+  check(fs[0]()===0&&fs[1]()===1&&fs[2]()===2,'iteration bindings');mark('for',color);
+  let trace='';outer:for(let i=0;i<3;i++){switch(i){case 0:trace+='A';continue outer;case 1:trace+='B';break;default:break outer;}trace+='C';}
+  check(trace==='ABC','switch propagation');mark('switch',color);
+  trace='';outer:for(let i=0;i<3;i++){try{trace+=i;continue outer;}finally{trace+='F';}}
+  check(trace==='0F1F2F','finally order');mark('finally',color);
+  n=0;\u0061:{n++;break a;n++;}a:{n++;break \u0061;n++;}π:{n++;break π;n++;}
+  check(n===3,'decoded labels');mark('unicode',color);
+}
+apply('green');document.getElementById('result').textContent='ready';document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  apply('blue');let count=0;outer:for(let i=0;i<3;i++){try{continue outer;}finally{count++;}}
+  check(count===3,'callback finalizers');document.getElementById('result').textContent=String(count);document.body.className='clicked';
+};
+</script>

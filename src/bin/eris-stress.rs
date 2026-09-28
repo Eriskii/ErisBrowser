@@ -56,6 +56,7 @@ const HTML_SEEDS: &[&str] = &[
     "<style>.a{position:relative;left:-2px;top:3px;width:90%;max-width:150px;min-height:20px}.b{font-size:125%;vertical-align:middle}a[href^='https']{color:rebeccapurple}</style><p class=a>Text <span class=b>large</span> <a href=https://example.com>link</a></p><img width=16 height=16 alt=missing>",
 ];
 const SCRIPT_SEEDS: &[&str] = &[
+    r#"var n=0;outer:alias:for(var i=0;i<3;i++){try{inner:while(true){continue alias;}}finally{n++;}}block:{if(n===3)break block;throw 'label';}"#,
     r#"var a={valueOf:function(){return '1';}};var b={get valueOf(){throw 'unused';}};a==true;b==null;b==b;false!=null;new String('x')=='x';"#,
     "var trace='',left={valueOf(){trace+='L';return '2';}},right={valueOf(){trace+='R';return '10';}};document.getElementById('out').textContent=String(left>right)+trace;document.getElementById('go').onclick=function(){right.valueOf=function(){return 10;};document.getElementById('out').textContent=String(left<right)+String(NaN>=0);};",
     "var input={toString(){return 'a b🦀';}},encoded=encodeURIComponent(input);document.getElementById('out').textContent=decodeURIComponent(encoded);try{decodeURI('%ED%A0%80');}catch(e){if(e instanceof URIError)document.body.className='invalid';}document.getElementById('go').onclick=function(){document.getElementById('out').textContent=decodeURI('%2f%41')+encodeURI('/a b');};",

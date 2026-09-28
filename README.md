@@ -97,6 +97,7 @@ python3 tools/test262_conformance.py --profile addition --baseline tests/conform
 python3 tools/test262_conformance.py --profile logical-assignment --baseline tests/conformance/test262-logical-assignment-current.json
 python3 tools/test262_conformance.py --profile relational --baseline tests/conformance/test262-relational-current.json
 python3 tools/test262_conformance.py --profile equality --baseline tests/conformance/test262-equality-current.json
+python3 tools/test262_conformance.py --profile labels --baseline tests/conformance/test262-labels-current.json
 python3 -m unittest discover -s tools -p 'test_*.py'
 cargo run --locked --release --bin eris-stress -- 5000
 ```
@@ -175,6 +176,11 @@ retains 132 variants: 72 pass, twelve fail on class/Symbol prerequisites and 48
 remain unsupported. The three short-circuit assignments add 54 passes without
 losses. All 104 assertion controls verify; CI preserves the complete baseline.
 
+The complete [labeled statement, break and continue directories](tests/conformance/test262-labels.md)
+retain 125 variants: 100 pass and 25 need unsupported syntax or dynamic eval.
+Ordinary targets, early errors and statement-context ASI add 70 passes.
+All 80 assertion controls verify; CI preserves the complete inventory.
+
 The four complete [equality directories](tests/conformance/test262-equality.md)
 retain 286 variants: 190 pass and 96 require exotic values or dynamic eval.
 Ordinary coercion and nullish dispatch add 44 passes. All 128 assertion controls
@@ -186,7 +192,7 @@ Ordinary conversion adds eight passes; all 128 assertion controls verify.
 CI preserves the passes and unchanged inventory.
 
 The complete [URI builtin directories](tests/conformance/test262-uri.md) retain
-346 variants: 208 pass, 34 remain unsupported and 104 hit the instruction limit.
+346 variants: 210 pass, 24 remain unsupported and 112 hit the instruction limit.
 All 128 assertion controls verify. Full loops remain unchanged; resource stops
 prevent a healthy URI regression baseline.
 

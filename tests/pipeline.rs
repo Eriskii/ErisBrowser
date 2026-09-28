@@ -58,6 +58,11 @@ fn array_reductions_preserve_direction_live_values_and_accumulator_identity() {
 }
 
 #[test]
+fn labeled_jumps_preserve_finalizers_and_callback_pixels() {
+    assert_six_scripted_samples(include_str!("fixtures/labels.html"));
+}
+
+#[test]
 fn equality_conversions_preserve_nullish_rules_and_callback_pixels() {
     assert_six_scripted_samples(include_str!("fixtures/equality.html"));
 }

@@ -75,3 +75,12 @@ python3 tools/test262_conformance.py --profile uri
 | Candidate report | `ce06f9bc7163d0c309d741e5853289ddfb0aac16a7cce25c1dd3ac621173b59a` |
 | Global-values comparison | `b9b534ee1d5493a976637b6a7eab02a57e32e16a968408f1de754537abc5533a` |
 | Updated global baseline | `ea3dd8c07ab8a76f22e02b4de9ce01035547ec06c37ef4f08569d922425196ee` |
+
+## Subsequent ordinary labels
+
+The [labeled control-flow increment](test262-labels.md) adds two decodeURI passes
+and allows eight formerly unsupported variants to reach their full-loop
+instruction limit. The [complete comparison](test262-uri-labels.json) records
+**210 passed / 24 unsupported / 112 resources**, with all 128 controls and no lost
+passes. All 104 earlier stops remain. No healthy URI baseline is recorded; the
+historical tables above retain the original URI checkpoint evidence.

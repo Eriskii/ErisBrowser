@@ -1,6 +1,82 @@
 # Validation record
 
+## Ordinary labeled control flow and parser stack correction
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **898 Rust tests** pass with `--include-ignored`: 726 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 53 pipeline and 44 confined-worker tests. None remain
+ignored. All **151 Python checks** and **57 exact pixel references** pass.
+
+The [implementation](../tests/conformance/labels.md) resolves labeled statements,
+break and continue to numeric targets, retaining loop updates, lexical iteration
+bindings, finally overrides, exact exceptions and function boundaries. Consecutive
+aliases share one AST target. Active names, copies, lookup work and storage are
+bounded. Strict reserved names and invalid targets are syntax errors; newline ASI
+and statement-only grammar are preserved. Existing resource ceilings are unchanged.
+Nine focused groups and page/worker fixtures cover these behaviors.
+
+A new deep-label debug test initially aborted with a native stack overflow.
+Counting the two extra label helper frames was insufficient alone. Extracting
+nine keyword parsers reduced the local debug statement-dispatch frame from
+40,216 bytes to 6,344 bytes in the final build. The regression and excessive
+nesting of eight statement forms now return resource errors. No thread stack
+or global quota was enlarged. Compiler-specific sizes and local failure/prologue
+logs are evidence for this fix, not a portable stack bound or security proof.
+
+The [complete upstream profile](../tests/conformance/test262-labels.md) retains
+**68 sources / 125 modes / 80 preflights**. It moves from **30 passed / 95
+unsupported** to **100 passed / 25 unsupported**, with all controls. The 70 gains,
+four changed passing-negative diagnostics and four shifts to dynamic-eval
+unsupported outcomes are all retained. Fifty-two negative modes pass. The 25
+remaining unsupported modes cover metadata prerequisites and dynamic eval;
+there are no ordinary failures, resource stops, harness errors, timeouts or
+adapter errors in this profile. Recording and a subsequent gate reproduce all
+candidate observations, and CI now protects them.
+
+A preliminary release measured 95 passes, one failure and 29 unsupported modes.
+The unchanged labeled-let/newline case exposed a Statement-versus-Declaration
+ambiguity. Correcting it also handles the block/array variants and rejects class
+declarations in statement position. Five further passes result. Both preliminary
+reports and validation are retained locally; all full checks above were repeated
+on the final frozen source and binary.
+
+All nineteen previous profiles preserve **6,754 case and 1,600 preflight
+fingerprints** and policies. Eighteen preserve every observation. The
+[URI comparison](../tests/conformance/test262-uri-labels.json) adds two passes
+and eight instruction stops from formerly unsupported labels: **210 passed /
+24 unsupported / 112 resources**, with all 128 controls. All 104 prior resource
+stops remain; no healthy URI baseline is recorded. HTML stays at 3,868 matches,
+two mismatches and six unsupported modes.
+
+The **15,000-case** mutation smoke run reports zero caught panics or invariant
+failures: 5,000 accepted HTML, 623 accepted/4,377 rejected scripts and
+3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and
+display-list size is 1,173 commands; 17 cases stop within paint limits. The new
+seed changes the inventory, so counts are not acceptance-rate comparisons.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+| --- | --- |
+| `eris-browser` | `8d84259900e9112511c11b92f754801f1e0f8de2b77e3bdf8b61ff85e833637e` |
+| `eris-js` | `9e643c885523b75a1e1a991bb3e7c7a9c84601b6adacb1243932f379716c2cc0` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `b643203b66afced4d41636fee61b448c694d75b17c69a8637ef15cda2596d657` |
+
+Source-input SHA-256:
+`e34329d60bba0a821277b13b537bf0021285d2d2add3e554160f51e48e684c61`.
+Local records are `artifacts/*labels*`. Agent sessions remain unavailable;
+this is local validation, not independent-agent review. No native window,
+Vulkan or Chromium performance measurement is assigned to this checkpoint.
+Full compatibility, production security and the requested performance threshold
+remain unverified.
+
 ## Ordinary equality conversion
+
+Published checkpoint `52b373f` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36447803488),
+including the equality gate, Rust 1.88 and the Vulkan probe.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **887 Rust tests** pass with `--include-ignored`: 717 library,

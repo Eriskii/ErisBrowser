@@ -191,6 +191,141 @@ class ExecutionTests(unittest.TestCase):
 
 
 class IntegrityTests(unittest.TestCase):
+    def test_labels_retains_three_complete_directories_and_helpers(self):
+        manifest,files,cases,fixtures,manifest_hash=runner.load_corpus(runner.ROOT/'tests/upstream/test262-labels','labels')
+        self.assertEqual({k:len(v) for k,v in manifest['directories'].items()},
+                         {'statements/labeled':24,'statements/break':20,'statements/continue':24})
+        self.assertEqual(manifest_hash,'32889cc4ab3de15132243dae4981418ba559cd10294df9222329070b8f74649b')
+        self.assertEqual((manifest['test_files'],len(cases),fixtures),(68,125,[]))
+        self.assertEqual(sum(c['mode']=='sloppy' for c in cases),62)
+        self.assertEqual(sum(c['mode']=='strict' for c in cases),61)
+        self.assertEqual(sum(c['mode']=='module' for c in cases),2)
+        self.assertEqual(sum(c['metadata']['flags']==['noStrict'] for c in cases),5)
+        self.assertEqual(sum(c['metadata']['flags']==['onlyStrict'] for c in cases),4)
+        negatives=[c for c in cases if c['metadata']['negative'] is not None]
+        self.assertEqual(len(negatives),68)
+        self.assertTrue(all(c['metadata']['negative']==dict(phase='parse',type='SyntaxError') for c in negatives))
+        self.assertEqual(sum(len(v) for p,v in files.items() if p.startswith('test/')),41681)
+        self.assertEqual(sum(map(len,files.values())),87810)
+        self.assertEqual({p for p in files if p.startswith('harness/')},
+                         {'harness/assert.js','harness/sta.js','harness/propertyHelper.js','harness/compareArray.js','harness/tcoHelper.js'})
+        _,old,_,_,_=runner.load_corpus(runner.ROOT/'tests/upstream/test262-equality','equality')
+        for path,data in files.items():
+            if not path.startswith('test/') and path in old:
+                self.assertEqual(data,old[path])
+
+    def test_labels_core_policy_preserves_unimplemented_prerequisites(self):
+        self.assertEqual(runner.LABELS_FEATURES,runner.SUPPORTED_FEATURES)
+        _,_,cases,_,_=runner.load_corpus(runner.ROOT/'tests/upstream/test262-labels','labels')
+        excluded=[c for c in cases if runner.unsupported_reason(c,runner.LABELS_FEATURES)]
+        self.assertEqual((len(excluded),len({c['file'] for c in excluded})),(17,10))
+        self.assertTrue(all(c['mode']=='module' or set(c['metadata']['features']) &
+                            {'class-static-block','async-functions','async-iteration','generators','tail-call-optimization'} for c in excluded))
+        self.assertEqual(sum(c['mode']=='module' for c in excluded),2)
+
+    def test_labels_pairs_guard_label_execution_and_preserve_identical_setup(self):
+        _, files, _, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-labels', 'labels')
+        captured = []
+        def capture(case, *args):
+            captured.append(case)
+            return dict(status='passed')
+        with patch.object(runner, 'run_case', side_effect=capture):
+            runner.harness_preflight(files, Path('/fake'), 1, 'labels')
+        added = captured[32:]
+        self.assertEqual(len(added), 48)
+        self.assertEqual({c['mode'] for c in added}, {'strict', 'sloppy'})
+        guards = {b"guard:{break guard;throw new Test262Error('unreached');}"}
+        for case in added:
+            self.assertTrue(any(case['source'].startswith(guard) for guard in guards))
+            self.assertEqual([name for name, _ in case['harness']], ['assert.js','sta.js'])
+        for offset in range(0, len(added), 2):
+            good, bad = added[offset:offset + 2]
+            self.assertEqual(good['source'].rsplit(b'assert.sameValue(', 1)[0],
+                             bad['source'].rsplit(b'assert.sameValue(', 1)[0])
+            self.assertNotEqual(good['source'], bad['source'])
+
+    def test_labels_preflights_require_actual_assertion_failures(self):
+        _, files, _, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-labels', 'labels')
+        with patch.object(runner, 'bounded_process', return_value=(0, response('complete'), b'')):
+            old = runner.harness_preflight(files, Path('/fake'), 1)
+            current = runner.harness_preflight(files, Path('/fake'), 1, 'labels')
+        self.assertEqual(current[:32], old)
+        self.assertEqual(len(current), 80)
+        self.assertEqual(sum(p['verified'] for p in current[32:]), 24)
+        for error_type in ('TypeError', 'ReferenceError', 'SyntaxError'):
+            with patch.object(runner, 'bounded_process', return_value=(
+                    0, response('exception', 'runtime', error_type), b'')):
+                wrong = runner.harness_preflight(files, Path('/fake'), 1, 'labels')
+            self.assertFalse(any(p['verified'] for p in wrong[32:]))
+        with patch.object(runner, 'bounded_process', return_value=(
+                0, response('exception', 'runtime', 'Test262Error'), b'')):
+            wrong = runner.harness_preflight(files, Path('/fake'), 1, 'labels')
+        self.assertTrue(all(p['verified'] == (p['expected'] == 'failed') for p in wrong[32:]))
+        self.assertFalse(all(p['verified'] for p in wrong))
+
+    def test_labels_import_checks_every_directory_and_source_blob(self):
+        _, files, _, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-labels', 'labels')
+        raw = f'https://raw.githubusercontent.com/{importer.REPOSITORY}/{importer.REVISION}/'
+        api = f'https://api.github.com/repos/{importer.REPOSITORY}/contents/test/language/'
+        listings = {name: [] for name in importer.LABELS_DIRECTORIES}
+        for path, data in files.items():
+            if path.startswith('test/'):
+                directory = str(Path(path).parent).removeprefix('test/language/')
+                listings[directory].append(dict(type='file', name=Path(path).name,
+                    sha=importer.hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()))
+        def fetch(url):
+            if url.startswith(api):
+                name = url[len(api):].removesuffix('?ref=' + importer.REVISION)
+                return json.dumps(listings[name]).encode()
+            self.assertTrue(url.startswith(raw))
+            return files[url[len(raw):]]
+        with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch), contextlib.redirect_stdout(io.StringIO()):
+            importer.import_corpus(Path(temporary), 'labels')
+            _, imported, cases, fixtures, _ = runner.load_corpus(Path(temporary), 'labels')
+            self.assertEqual(imported, files)
+            self.assertEqual((len(cases), fixtures), (125, []))
+        for name in listings:
+            saved = listings[name][0]['sha']
+            listings[name][0]['sha'] = '0' * 40
+            with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch):
+                with self.assertRaisesRegex(ValueError, 'pinned Git blob'):
+                    importer.import_corpus(Path(temporary), 'labels')
+                self.assertFalse(any(Path(temporary).iterdir()))
+            listings[name][0]['sha'] = saved
+            item = listings[name].pop()
+            with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch):
+                with self.assertRaisesRegex(ValueError, 'inventory mismatch'):
+                    importer.import_corpus(Path(temporary), 'labels')
+                self.assertFalse(any(Path(temporary).iterdir()))
+            listings[name].append(item)
+
+    def test_labels_preserves_all_nineteen_prior_profile_contracts(self):
+        profiles = ('string-json', 'regexp', 'template-literal', 'functions', 'rest-parameters',
+                    'is-prototype-of', 'global-values', 'array-sort', 'identifiers', 'array-reduce', 'number-statics', 'numeric-conversion', 'numeric-parsing', 'compound-assignment', 'addition', 'logical-assignment', 'uri', 'relational', 'equality')
+        retained = {}
+        for name in profiles:
+            _, files, cases, fixtures, manifest_hash = runner.load_corpus(
+                runner.ROOT / 'tests/upstream' / runner.corpus_name(name), name)
+            captured = []
+            def capture(case, *args):
+                captured.append(dict(name=case['id'], mode=case['mode'], case_sha256=case['case_sha256'],
+                                     source_sha256=runner.digest(case['source'])))
+                return dict(status='passed', mode=case['mode'], case_sha256=case['case_sha256'],
+                            source_sha256=runner.digest(case['source']))
+            with patch.object(runner, 'run_case', side_effect=capture):
+                runner.harness_preflight(files, Path('/fake'), 3, name)
+            retained[name] = dict(manifest_sha256=manifest_hash,
+                                 cases={c['id']: c['case_sha256'] for c in cases},
+                                 preflights=captured, fixtures=fixtures,
+                                 features=sorted(runner.PROFILE_FEATURES[name]))
+        self.assertEqual(sum(len(v['cases']) for v in retained.values()), 6754)
+        self.assertEqual(sum(len(v['preflights']) for v in retained.values()), 1600)
+        self.assertEqual(runner.digest(json.dumps(retained, sort_keys=True, separators=(',', ':')).encode()),
+                         '586bc156a2b40f9d5f4f3d07bcfe35e642d5b807970be341935ee6f9eb1a2ab2')
+
     def test_equality_retains_four_complete_directories_and_helpers(self):
         manifest,files,cases,fixtures,manifest_hash=runner.load_corpus(runner.ROOT/'tests/upstream/test262-equality','equality')
         self.assertEqual({k:len(v) for k,v in manifest['directories'].items()},

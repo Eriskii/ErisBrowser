@@ -37,6 +37,7 @@ LOGICAL_ASSIGNMENT_FEATURES = SUPPORTED_FEATURES | {'logical-assignment-operator
 URI_FEATURES = SUPPORTED_FEATURES.copy()
 RELATIONAL_FEATURES = SUPPORTED_FEATURES.copy()
 EQUALITY_FEATURES = SUPPORTED_FEATURES.copy()
+LABELS_FEATURES = SUPPORTED_FEATURES.copy()
 PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -47,7 +48,7 @@ PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES
                     'numeric-conversion': NUMERIC_CONVERSION_FEATURES,
                     'numeric-parsing': NUMERIC_PARSING_FEATURES,
                     'compound-assignment': COMPOUND_ASSIGNMENT_FEATURES,
-                    'addition': ADDITION_FEATURES, 'logical-assignment': LOGICAL_ASSIGNMENT_FEATURES, 'uri': URI_FEATURES, 'relational': RELATIONAL_FEATURES, 'equality': EQUALITY_FEATURES}
+                    'addition': ADDITION_FEATURES, 'logical-assignment': LOGICAL_ASSIGNMENT_FEATURES, 'uri': URI_FEATURES, 'relational': RELATIONAL_FEATURES, 'equality': EQUALITY_FEATURES, 'labels': LABELS_FEATURES}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -416,6 +417,28 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                 for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
                     source = guard + setup + f'assert.sameValue({actual},{value});'
                     variants.append(('array-sort-' + name + suffix, source, expected, mode))
+    if profile == 'labels':
+        guard = "guard:{break guard;throw new Test262Error('unreached');}"
+        pairs = [
+            ('block', "var trace='';outer:{trace+='A';inner:{trace+='B';break outer;}trace+='X';}trace+='C';", 'trace', "'ABC'", "'ABXC'"),
+            ('while', "var n=0,trace='';outer:while(n<3){n++;inner:while(true){trace+=n;continue outer;}trace+='X';}", 'trace', "'123'", "'123X'"),
+            ('for', "var n=0,trace='';outer:alias:for(var i=0;i<3;i++){for(var j=0;j<2;j++){trace+=i;continue alias;}trace+='X';}n=i;assert.sameValue(n,3);", 'trace', "'012'", "'012X'"),
+            ('do', "var n=0,checks=0;outer:do{n++;if(n<3)continue outer;break outer;}while(++checks<5);assert.sameValue(n,3);", 'checks', '2', '3'),
+            ('for-in', "var trace='';outer:for(var key in {a:1,b:2,c:3}){for(var j=0;j<2;j++){trace+=key;continue outer;}}", 'trace', "'abc'", "'aabbcc'"),
+            ('switch', "var trace='';outer:for(var i=0;i<3;i++){switch(i){case 0:trace+='A';continue outer;case 1:trace+='B';break;default:break outer;}trace+='C';}", 'trace', "'ABC'", "'ABCC'"),
+            ('finally', "var trace='';outer:for(var i=0;i<3;i++){try{trace+=i;continue outer;}finally{trace+='F';}}", 'trace', "'0F1F2F'", "'012'"),
+            ('override', "var trace='';outer:for(var i=0;i<3;i++){try{trace+='A';continue outer;}finally{trace+='F';break outer;}}", 'trace', "'AF'", "'AFAFAF'"),
+            ('abrupt', "var reason={},seen;function f(){outer:{try{break outer;}finally{return 7;}}return 9;}assert.sameValue(f(),7);try{outer:{try{break outer;}finally{throw reason;}}}catch(e){seen=e;}", 'seen', 'reason', 'undefined'),
+            ('hoist', "assert.sameValue(x,undefined);outer:{break outer;var x=7;}assert.sameValue(x,undefined);var n=0;outer:var y=++n;", 'y', '1', '2'),
+            ('unicode', "var n=0;\\u0061:{n++;break a;n++;}a:{n++;break \\u0061;n++;}π:{n++;break π;n++;}", 'n', '3', '6'),
+            ('function-scope', "function f(){outer:{break outer;}return 2;}var n=0;outer:{n=f();break outer;}outer:{n++;break outer;}function g(){outer:{break outer;}return 4;}n+=g();", 'n', '7', '8'),
+        ]
+        for mode in ('sloppy','strict'):
+            for name,setup,actual,good,bad in pairs:
+                if name == 'unicode' and mode == 'sloppy':
+                    setup += "if(false){L:let\nx=1;L:let\n{}}"
+                for suffix,value,expected in (('',good,'passed'),('-mismatch',bad,'failed')):
+                    variants.append(('labels-'+name+suffix,guard+setup+f'assert.sameValue({actual},{value});',expected,mode))
     if profile == 'equality':
         for operator, label, strict, equal, unequal in (
                 ('==','eq',False,'true','false'), ('!=','ne',False,'false','true'),

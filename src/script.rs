@@ -946,6 +946,7 @@ enum ObjectEntry {
 #[derive(Clone, Debug)]
 enum Stmt {
     Empty,
+    Label(usize, Box<Stmt>),
     Expr(Expr),
     Var(Vec<(String, Option<Expr>)>, DeclarationKind),
     Block(Vec<Stmt>),
@@ -959,8 +960,8 @@ enum Stmt {
     Return(Option<Expr>),
     Throw(Expr),
     Try(Box<Stmt>, Option<CatchClause>, Option<Box<Stmt>>),
-    Break,
-    Continue,
+    Break(Option<usize>),
+    Continue(Option<usize>),
 }
 #[derive(Clone, Debug)]
 enum ForBinding {
@@ -986,6 +987,12 @@ enum ReduceDirection {
     Right,
 }
 
+struct ActiveLabel {
+    name: String,
+    target: usize,
+    iteration: bool,
+}
+
 struct Parser<'source> {
     tokens: Vec<Token>,
     source: &'source str,
@@ -996,6 +1003,8 @@ struct Parser<'source> {
     function_depth: usize,
     loop_depth: usize,
     switch_depth: usize,
+    labels: Vec<ActiveLabel>,
+    next_label: usize,
     allow_in: bool,
     strict: bool,
 }
@@ -1023,6 +1032,8 @@ impl<'source> Parser<'source> {
             function_depth: usize::from(function),
             loop_depth: 0,
             switch_depth: 0,
+            labels: Vec::new(),
+            next_label: 0,
             allow_in: true,
             strict,
         };
@@ -1227,13 +1238,22 @@ impl<'source> Parser<'source> {
         Ok(())
     }
     fn statement(&mut self) -> Result<Stmt> {
-        self.enter()?;
-        let result = self.statement_inner();
-        self.depth -= 1;
+        self.statement_context(true)
+    }
+    fn statement_context(&mut self, declarations: bool) -> Result<Stmt> {
+        // A label retains labeled_statement and controlled_statement while its
+        // body parses. Account for those two additional native frames before
+        // entering statement_inner; flat aliases share this single charge.
+        let weight = if self.label_start() { 3 } else { 1 };
+        for _ in 0..weight {
+            self.enter()?;
+        }
+        let result = self.statement_inner(declarations);
+        self.depth -= weight;
         result
     }
     fn controlled_statement(&mut self) -> Result<Stmt> {
-        let statement = self.statement()?;
+        let statement = self.statement_context(false)?;
         if matches!(
             statement,
             Stmt::Var(_, DeclarationKind::Let | DeclarationKind::Const)
@@ -1275,272 +1295,145 @@ impl<'source> Parser<'source> {
                 ) && self.token_is(self.pos + 2, "=>")
                     && !self.tokens[self.pos + 2].line_break_before)
     }
-    fn statement_inner(&mut self) -> Result<Stmt> {
+    fn label_start(&self) -> bool {
+        matches!(self.tokens[self.pos].kind, TokenKind::Word(_)) && self.token_is(self.pos + 1, ":")
+    }
+    fn label_target(&mut self, name: &str) -> Result<Option<(usize, bool)>> {
+        let work = self.labels.iter().fold(1usize, |work, label| {
+            work.saturating_add(1 + name.len().min(label.name.len()) / 8)
+        });
+        self.compile_budget.work(work).map_err(regexp_error)?;
+        Ok(self
+            .labels
+            .iter()
+            .rev()
+            .find(|label| label.name == name)
+            .map(|label| (label.target, label.iteration)))
+    }
+    fn labeled_statement(&mut self) -> Result<Stmt> {
+        let start = self.labels.len();
+        let target = self.next_label;
+        self.next_label = self
+            .next_label
+            .checked_add(1)
+            .ok_or_else(|| self.resource_error("label target limit exceeded"))?;
+        // Consecutive labels all name the same statement. Flatten their aliases
+        // into one target without building a recursive chain of AST wrappers.
+        while self.label_start() {
+            let name = self.identifier()?;
+            self.validate_identifier(&name, false)?;
+            self.expect(":")?;
+            if self.label_target(&name)?.is_some() {
+                return Err(self.error("duplicate active label"));
+            }
+            if self.labels.len() >= MAX_DEPTH {
+                return Err(self.resource_error("active label limit exceeded"));
+            }
+            compile_allocate(
+                &mut self.compile_budget,
+                2 * std::mem::size_of::<ActiveLabel>(),
+            )?;
+            self.labels
+                .try_reserve(1)
+                .map_err(|_| ScriptError::resource("label allocation failed"))?;
+            self.labels.push(ActiveLabel {
+                name,
+                target,
+                iteration: false,
+            });
+        }
+        let iteration = self.is("while") || self.is("do") || self.is("for");
+        for label in &mut self.labels[start..] {
+            label.iteration = iteration;
+        }
+        let body = self.controlled_statement();
+        self.labels.truncate(start);
+        Ok(Stmt::Label(target, Box::new(body?)))
+    }
+    fn control_target(&mut self, continuing: bool) -> Result<Option<usize>> {
+        if !self.tokens[self.pos].line_break_before
+            && matches!(self.tokens[self.pos].kind, TokenKind::Word(_))
+        {
+            let name = self.identifier()?;
+            self.validate_identifier(&name, false)?;
+            let Some((target, iteration)) = self.label_target(&name)? else {
+                return Err(self.error("unknown control-flow label"));
+            };
+            if continuing && !iteration {
+                return Err(self.error("continue label does not name an iteration statement"));
+            }
+            return Ok(Some(target));
+        }
+        if self.loop_depth == 0 && (continuing || self.switch_depth == 0) {
+            return Err(self.error(if continuing {
+                "continue outside loop"
+            } else {
+                "break outside loop or switch"
+            }));
+        }
+        Ok(None)
+    }
+    fn statement_inner(&mut self, declarations: bool) -> Result<Stmt> {
+        if self.label_start() {
+            return self.labeled_statement();
+        }
         if self.eat(";") {
             return Ok(Stmt::Empty);
         }
         if self.eat("{") {
             return Ok(Stmt::Block(self.block()?));
         }
-        if self.declaration_start() {
+        if !declarations
+            && (self.is("const")
+                || self.is("class")
+                || self.is("let") && self.token_is(self.pos + 1, "["))
+        {
+            return Err(self.error("declaration is not allowed in statement position"));
+        }
+        // In Statement position, sloppy `let` is an IdentifierReference except
+        // for the forbidden `let [` lookahead. A newline can terminate that
+        // expression; it must not be consumed as a lexical declaration.
+        if self.declaration_start() && (declarations || !self.is("let")) {
             let declaration = self.declaration()?;
             self.semicolon()?;
             return Ok(declaration);
         }
         if self.eat("function") {
-            if self.is("*") {
-                return Err(ScriptError::unsupported(
-                    "generator functions are not implemented",
-                ));
-            }
-            let name = self.binding_identifier()?;
-            let mut code = self.function(false)?;
-            let saved = self.strict;
-            self.strict = code.strict;
-            self.validate_identifier(&name, true)?;
-            self.strict = saved;
-            code.name = Some(self.copy_identifier(&name)?);
-            return Ok(Stmt::Function(name, code));
+            return self.parse_function_statement();
         }
         if self.eat("switch") {
-            self.expect("(")?;
-            let value = self.expression()?;
-            self.expect(")")?;
-            self.expect("{")?;
-            let mut cases = Vec::new();
-            let mut has_default = false;
-            self.switch_depth += 1;
-            while !self.eat("}") {
-                let condition = if self.eat("case") {
-                    Some(self.expression()?)
-                } else if self.eat("default") {
-                    if has_default {
-                        return Err(self.error("duplicate switch default"));
-                    }
-                    has_default = true;
-                    None
-                } else {
-                    return Err(self.error("expected case or default"));
-                };
-                self.expect(":")?;
-                let mut body = Vec::new();
-                while !self.is("case") && !self.is("default") && !self.is("}") {
-                    if self.done() {
-                        return Err(self.error("unterminated switch"));
-                    }
-                    body.push(self.statement()?);
-                }
-                cases.push((condition, body));
-            }
-            self.switch_depth -= 1;
-            let combined = cases
-                .iter()
-                .flat_map(|(_, body)| body.iter().cloned())
-                .collect::<Vec<_>>();
-            Self::check_scope(&combined, true)?;
-            return Ok(Stmt::Switch(value, cases));
+            return self.parse_switch_statement();
         }
         if self.eat("if") {
-            self.expect("(")?;
-            let condition = self.sequence()?;
-            self.expect(")")?;
-            let yes = Box::new(self.controlled_statement()?);
-            let no = if self.eat("else") {
-                Some(Box::new(self.controlled_statement()?))
-            } else {
-                None
-            };
-            if self.strict
-                && (matches!(&*yes, Stmt::Function(..))
-                    || no
-                        .as_deref()
-                        .is_some_and(|s| matches!(s, Stmt::Function(..))))
-            {
-                return Err(self.error("strict function declarations require a statement list"));
-            }
-            return Ok(Stmt::If(condition, yes, no));
+            return self.parse_if_statement();
         }
         if self.eat("while") {
-            self.expect("(")?;
-            let condition = self.sequence()?;
-            self.expect(")")?;
-            self.loop_depth += 1;
-            let body = self.controlled_statement()?;
-            self.loop_depth -= 1;
-            return Ok(Stmt::While(condition, Box::new(body)));
+            return self.parse_while_statement();
         }
         if self.eat("do") {
-            self.loop_depth += 1;
-            let body = self.controlled_statement()?;
-            self.loop_depth -= 1;
-            self.expect("while")?;
-            self.expect("(")?;
-            let condition = self.sequence()?;
-            self.expect(")")?;
-            self.eat(";");
-            return Ok(Stmt::DoWhile(condition, Box::new(body)));
+            return self.parse_do_statement();
         }
         if self.eat("for") {
-            self.expect("(")?;
-            let saved_in = self.allow_in;
-            self.allow_in = false;
-            let init = if self.is(";") {
-                None
-            } else if self.declaration_start() {
-                Some(Box::new(self.declaration()?))
-            } else {
-                Some(Box::new(Stmt::Expr(self.sequence()?)))
-            };
-            self.allow_in = saved_in;
-            if self.eat("in") {
-                let binding = match init.map(|init| *init) {
-                    Some(Stmt::Var(mut bindings, kind))
-                        if bindings.len() == 1 && bindings[0].1.is_none() =>
-                    {
-                        ForBinding::Declaration(bindings.remove(0).0, kind)
-                    }
-                    Some(Stmt::Expr(target @ (Expr::Ident(_) | Expr::Member(..)))) => {
-                        self.assignment_target(&target)?;
-                        ForBinding::Target(target)
-                    }
-                    _ => return Err(self.error("invalid for-in binding")),
-                };
-                let object = self.sequence()?;
-                self.expect(")")?;
-                self.loop_depth += 1;
-                let body = self.controlled_statement()?;
-                self.loop_depth -= 1;
-                if let ForBinding::Declaration(name, kind) = &binding
-                    && *kind != DeclarationKind::Var
-                {
-                    let mut vars = BTreeSet::new();
-                    Self::var_names(&body, &mut vars);
-                    if vars.contains(name.as_str()) {
-                        return Err(self.error("for-in lexical binding conflicts with var"));
-                    }
-                }
-                return Ok(Stmt::ForIn(binding, object, Box::new(body)));
-            }
-            self.expect(";")?;
-            let test = if self.is(";") {
-                None
-            } else {
-                Some(self.sequence()?)
-            };
-            self.expect(";")?;
-            let update = if self.is(")") {
-                None
-            } else {
-                Some(self.sequence()?)
-            };
-            self.expect(")")?;
-            self.loop_depth += 1;
-            let body = self.controlled_statement()?;
-            self.loop_depth -= 1;
-            if let Some(init) = &init
-                && let Stmt::Var(bindings, kind) = &**init
-                && *kind != DeclarationKind::Var
-            {
-                let mut vars = BTreeSet::new();
-                Self::var_names(&body, &mut vars);
-                if bindings
-                    .iter()
-                    .any(|(name, _)| vars.contains(name.as_str()))
-                {
-                    return Err(self.error("for lexical binding conflicts with var"));
-                }
-                Self::check_scope(std::slice::from_ref(&**init), false)?;
-            }
-            return Ok(Stmt::For(init, test, update, Box::new(body)));
+            return self.parse_for_statement();
         }
         if self.eat("return") {
-            if self.function_depth == 0 {
-                return Err(self.error("return outside function"));
-            }
-            let result = if self.is(";")
-                || self.is("}")
-                || self.done()
-                || self.tokens[self.pos].line_break_before
-            {
-                None
-            } else {
-                Some(self.sequence()?)
-            };
-            self.semicolon()?;
-            return Ok(Stmt::Return(result));
+            return self.parse_return_statement();
         }
         if self.eat("throw") {
-            if self.tokens[self.pos].line_break_before {
-                return Err(self.error("line break is not allowed after throw"));
-            }
-            let value = self.sequence()?;
-            self.semicolon()?;
-            return Ok(Stmt::Throw(value));
+            return self.parse_throw_statement();
         }
         if self.eat("try") {
-            self.expect("{")?;
-            let body = Box::new(Stmt::Block(self.block()?));
-            let handler = if self.eat("catch") {
-                let binding = if self.eat("(") {
-                    let name = self.binding_identifier()?;
-                    self.expect(")")?;
-                    Some(name)
-                } else {
-                    None
-                };
-                self.expect("{")?;
-                let body = self.block()?;
-                if let Some(name) = &binding {
-                    self.check_parameter_lexicals(std::iter::once(name.as_str()), &body, false)?;
-                }
-                Some(CatchClause { binding, body })
-            } else {
-                None
-            };
-            let finalizer = if self.eat("finally") {
-                self.expect("{")?;
-                Some(Box::new(Stmt::Block(self.block()?)))
-            } else {
-                None
-            };
-            if handler.is_none() && finalizer.is_none() {
-                return Err(self.error("try requires catch or finally"));
-            }
-            return Ok(Stmt::Try(body, handler, finalizer));
+            return self.parse_try_statement();
         }
         if self.eat("break") {
-            if self.loop_depth == 0 && self.switch_depth == 0 {
-                return Err(self.error("break outside loop or switch"));
-            }
-            if !self.tokens[self.pos].line_break_before
-                && matches!(self.tokens[self.pos].kind, TokenKind::Word(_))
-            {
-                if let TokenKind::Word(word) = &self.tokens[self.pos].kind {
-                    self.validate_identifier(&word.value, false)?;
-                }
-                return Err(ScriptError::unsupported(
-                    "labeled control flow is not implemented",
-                ));
-            }
+            let target = self.control_target(false)?;
             self.semicolon()?;
-            return Ok(Stmt::Break);
+            return Ok(Stmt::Break(target));
         }
         if self.eat("continue") {
-            if self.loop_depth == 0 {
-                return Err(self.error("continue outside loop"));
-            }
-            if !self.tokens[self.pos].line_break_before
-                && matches!(self.tokens[self.pos].kind, TokenKind::Word(_))
-            {
-                if let TokenKind::Word(word) = &self.tokens[self.pos].kind {
-                    self.validate_identifier(&word.value, false)?;
-                }
-                return Err(ScriptError::unsupported(
-                    "labeled control flow is not implemented",
-                ));
-            }
+            let target = self.control_target(true)?;
             self.semicolon()?;
-            return Ok(Stmt::Continue);
+            return Ok(Stmt::Continue(target));
         }
         for unsupported in [
             "class", "import", "export", "catch", "finally", "do", "with",
@@ -1554,22 +1447,230 @@ impl<'source> Parser<'source> {
                 )));
             }
         }
-        if matches!(self.tokens[self.pos].kind, TokenKind::Word(_))
-            && self
-                .tokens
-                .get(self.pos + 1)
-                .is_some_and(|t| matches!(&t.kind, TokenKind::Symbol(s) if s == ":"))
-        {
-            if let TokenKind::Word(word) = &self.tokens[self.pos].kind {
-                self.validate_identifier(&word.value, false)?;
-            }
-            return Err(ScriptError::unsupported(
-                "labeled statements are not implemented",
-            ));
-        }
         let expression = self.sequence()?;
         self.semicolon()?;
         Ok(Stmt::Expr(expression))
+    }
+    fn parse_function_statement(&mut self) -> Result<Stmt> {
+        if self.is("*") {
+            return Err(ScriptError::unsupported(
+                "generator functions are not implemented",
+            ));
+        }
+        let name = self.binding_identifier()?;
+        let mut code = self.function(false)?;
+        let saved = self.strict;
+        self.strict = code.strict;
+        self.validate_identifier(&name, true)?;
+        self.strict = saved;
+        code.name = Some(self.copy_identifier(&name)?);
+        Ok(Stmt::Function(name, code))
+    }
+    fn parse_switch_statement(&mut self) -> Result<Stmt> {
+        self.expect("(")?;
+        let value = self.expression()?;
+        self.expect(")")?;
+        self.expect("{")?;
+        let mut cases = Vec::new();
+        let mut has_default = false;
+        self.switch_depth += 1;
+        while !self.eat("}") {
+            let condition = if self.eat("case") {
+                Some(self.expression()?)
+            } else if self.eat("default") {
+                if has_default {
+                    return Err(self.error("duplicate switch default"));
+                }
+                has_default = true;
+                None
+            } else {
+                return Err(self.error("expected case or default"));
+            };
+            self.expect(":")?;
+            let mut body = Vec::new();
+            while !self.is("case") && !self.is("default") && !self.is("}") {
+                if self.done() {
+                    return Err(self.error("unterminated switch"));
+                }
+                body.push(self.statement()?);
+            }
+            cases.push((condition, body));
+        }
+        self.switch_depth -= 1;
+        let combined = cases
+            .iter()
+            .flat_map(|(_, body)| body.iter().cloned())
+            .collect::<Vec<_>>();
+        Self::check_scope(&combined, true)?;
+        Ok(Stmt::Switch(value, cases))
+    }
+    fn parse_if_statement(&mut self) -> Result<Stmt> {
+        self.expect("(")?;
+        let condition = self.sequence()?;
+        self.expect(")")?;
+        let yes = Box::new(self.controlled_statement()?);
+        let no = if self.eat("else") {
+            Some(Box::new(self.controlled_statement()?))
+        } else {
+            None
+        };
+        if self.strict
+            && (matches!(&*yes, Stmt::Function(..))
+                || no
+                    .as_deref()
+                    .is_some_and(|s| matches!(s, Stmt::Function(..))))
+        {
+            return Err(self.error("strict function declarations require a statement list"));
+        }
+        Ok(Stmt::If(condition, yes, no))
+    }
+    fn parse_while_statement(&mut self) -> Result<Stmt> {
+        self.expect("(")?;
+        let condition = self.sequence()?;
+        self.expect(")")?;
+        self.loop_depth += 1;
+        let body = self.controlled_statement()?;
+        self.loop_depth -= 1;
+        Ok(Stmt::While(condition, Box::new(body)))
+    }
+    fn parse_do_statement(&mut self) -> Result<Stmt> {
+        self.loop_depth += 1;
+        let body = self.controlled_statement()?;
+        self.loop_depth -= 1;
+        self.expect("while")?;
+        self.expect("(")?;
+        let condition = self.sequence()?;
+        self.expect(")")?;
+        self.eat(";");
+        Ok(Stmt::DoWhile(condition, Box::new(body)))
+    }
+    fn parse_for_statement(&mut self) -> Result<Stmt> {
+        self.expect("(")?;
+        let saved_in = self.allow_in;
+        self.allow_in = false;
+        let init = if self.is(";") {
+            None
+        } else if self.declaration_start() {
+            Some(Box::new(self.declaration()?))
+        } else {
+            Some(Box::new(Stmt::Expr(self.sequence()?)))
+        };
+        self.allow_in = saved_in;
+        if self.eat("in") {
+            let binding = match init.map(|init| *init) {
+                Some(Stmt::Var(mut bindings, kind))
+                    if bindings.len() == 1 && bindings[0].1.is_none() =>
+                {
+                    ForBinding::Declaration(bindings.remove(0).0, kind)
+                }
+                Some(Stmt::Expr(target @ (Expr::Ident(_) | Expr::Member(..)))) => {
+                    self.assignment_target(&target)?;
+                    ForBinding::Target(target)
+                }
+                _ => return Err(self.error("invalid for-in binding")),
+            };
+            let object = self.sequence()?;
+            self.expect(")")?;
+            self.loop_depth += 1;
+            let body = self.controlled_statement()?;
+            self.loop_depth -= 1;
+            if let ForBinding::Declaration(name, kind) = &binding
+                && *kind != DeclarationKind::Var
+            {
+                let mut vars = BTreeSet::new();
+                Self::var_names(&body, &mut vars);
+                if vars.contains(name.as_str()) {
+                    return Err(self.error("for-in lexical binding conflicts with var"));
+                }
+            }
+            return Ok(Stmt::ForIn(binding, object, Box::new(body)));
+        }
+        self.expect(";")?;
+        let test = if self.is(";") {
+            None
+        } else {
+            Some(self.sequence()?)
+        };
+        self.expect(";")?;
+        let update = if self.is(")") {
+            None
+        } else {
+            Some(self.sequence()?)
+        };
+        self.expect(")")?;
+        self.loop_depth += 1;
+        let body = self.controlled_statement()?;
+        self.loop_depth -= 1;
+        if let Some(init) = &init
+            && let Stmt::Var(bindings, kind) = &**init
+            && *kind != DeclarationKind::Var
+        {
+            let mut vars = BTreeSet::new();
+            Self::var_names(&body, &mut vars);
+            if bindings
+                .iter()
+                .any(|(name, _)| vars.contains(name.as_str()))
+            {
+                return Err(self.error("for lexical binding conflicts with var"));
+            }
+            Self::check_scope(std::slice::from_ref(&**init), false)?;
+        }
+        Ok(Stmt::For(init, test, update, Box::new(body)))
+    }
+    fn parse_return_statement(&mut self) -> Result<Stmt> {
+        if self.function_depth == 0 {
+            return Err(self.error("return outside function"));
+        }
+        let result = if self.is(";")
+            || self.is("}")
+            || self.done()
+            || self.tokens[self.pos].line_break_before
+        {
+            None
+        } else {
+            Some(self.sequence()?)
+        };
+        self.semicolon()?;
+        Ok(Stmt::Return(result))
+    }
+    fn parse_throw_statement(&mut self) -> Result<Stmt> {
+        if self.tokens[self.pos].line_break_before {
+            return Err(self.error("line break is not allowed after throw"));
+        }
+        let value = self.sequence()?;
+        self.semicolon()?;
+        Ok(Stmt::Throw(value))
+    }
+    fn parse_try_statement(&mut self) -> Result<Stmt> {
+        self.expect("{")?;
+        let body = Box::new(Stmt::Block(self.block()?));
+        let handler = if self.eat("catch") {
+            let binding = if self.eat("(") {
+                let name = self.binding_identifier()?;
+                self.expect(")")?;
+                Some(name)
+            } else {
+                None
+            };
+            self.expect("{")?;
+            let body = self.block()?;
+            if let Some(name) = &binding {
+                self.check_parameter_lexicals(std::iter::once(name.as_str()), &body, false)?;
+            }
+            Some(CatchClause { binding, body })
+        } else {
+            None
+        };
+        let finalizer = if self.eat("finally") {
+            self.expect("{")?;
+            Some(Box::new(Stmt::Block(self.block()?)))
+        } else {
+            None
+        };
+        if handler.is_none() && finalizer.is_none() {
+            return Err(self.error("try requires catch or finally"));
+        }
+        Ok(Stmt::Try(body, handler, finalizer))
     }
     fn declaration(&mut self) -> Result<Stmt> {
         let kind = if self.eat("const") {
@@ -1670,7 +1771,9 @@ impl<'source> Parser<'source> {
                     Self::var_names(no, names);
                 }
             }
-            Stmt::While(_, body) | Stmt::DoWhile(_, body) => Self::var_names(body, names),
+            Stmt::Label(_, body) | Stmt::While(_, body) | Stmt::DoWhile(_, body) => {
+                Self::var_names(body, names)
+            }
             Stmt::For(init, _, _, body) => {
                 if let Some(init) = init {
                     Self::var_names(init, names);
@@ -1788,6 +1891,7 @@ impl<'source> Parser<'source> {
             self.switch_depth,
             self.allow_in,
             self.strict,
+            std::mem::take(&mut self.labels),
         );
         self.loop_depth = 0;
         self.switch_depth = 0;
@@ -1839,6 +1943,7 @@ impl<'source> Parser<'source> {
             self.switch_depth,
             self.allow_in,
             self.strict,
+            self.labels,
         ) = saved;
         Ok(FunctionCode {
             params,
@@ -1856,6 +1961,7 @@ impl<'source> Parser<'source> {
             self.switch_depth,
             self.allow_in,
             self.strict,
+            std::mem::take(&mut self.labels),
         );
         self.loop_depth = 0;
         self.switch_depth = 0;
@@ -1881,6 +1987,7 @@ impl<'source> Parser<'source> {
             self.switch_depth,
             self.allow_in,
             self.strict,
+            self.labels,
         ) = saved;
         Ok(Expr::Function(FunctionCode {
             params,
@@ -2713,8 +2820,8 @@ struct BoundFunction {
 enum Flow {
     Normal(Value),
     Return(Value),
-    Break,
-    Continue,
+    Break(Option<usize>),
+    Continue(Option<usize>),
 }
 enum Reference {
     Binding(usize, String, bool),
@@ -5062,7 +5169,7 @@ impl Runtime {
                     self.hoist_statement(no, owner, insert)?;
                 }
             }
-            Stmt::While(_, body) | Stmt::DoWhile(_, body) => {
+            Stmt::Label(_, body) | Stmt::While(_, body) | Stmt::DoWhile(_, body) => {
                 self.hoist_statement(body, owner, insert)?
             }
             Stmt::For(init, _, _, body) => {
@@ -5313,8 +5420,17 @@ impl Runtime {
         Ok(Flow::Normal(last))
     }
     fn statement(&mut self, statement: &Stmt, env: usize, doc: &mut Document) -> Result<Flow> {
+        self.statement_labeled(statement, env, doc, None)
+    }
+    fn statement_labeled(
+        &mut self,
+        statement: &Stmt,
+        env: usize,
+        doc: &mut Document,
+        label: Option<usize>,
+    ) -> Result<Flow> {
         self.enter_stack(1)?;
-        let result = self.statement_inner(statement, env, doc);
+        let result = self.statement_inner(statement, env, doc, label);
         self.stack_units -= 1;
         result
     }
@@ -5323,10 +5439,19 @@ impl Runtime {
         statement: &Stmt,
         env: usize,
         doc: &mut Document,
+        label: Option<usize>,
     ) -> Result<Flow> {
         self.tick()?;
         match statement {
             Stmt::Empty | Stmt::Function(_, _) => {}
+            Stmt::Label(target, body) => {
+                return match self.statement_labeled(body, env, doc, Some(*target))? {
+                    Flow::Break(Some(found)) if found == *target => {
+                        Ok(Flow::Normal(Value::Undefined))
+                    }
+                    flow => Ok(flow),
+                };
+            }
             Stmt::Expr(expression) => return Ok(Flow::Normal(self.eval(expression, env, doc)?)),
             Stmt::Var(bindings, kind) => {
                 let owner = if *kind == DeclarationKind::Var {
@@ -5381,35 +5506,28 @@ impl Runtime {
                 while self.eval(condition, env, doc)?.truthy() {
                     self.tick()?;
                     match self.statement(body, env, doc)? {
-                        Flow::Break => break,
-                        Flow::Return(value) => return Ok(Flow::Return(value)),
-                        _ => {}
+                        Flow::Break(None) => break,
+                        Flow::Normal(_) | Flow::Continue(None) => {}
+                        Flow::Continue(target) if target == label => {}
+                        flow => return Ok(flow),
                     }
                 }
             }
             Stmt::DoWhile(condition, body) => loop {
                 self.tick()?;
                 match self.statement(body, env, doc)? {
-                    Flow::Break => break,
-                    Flow::Return(value) => return Ok(Flow::Return(value)),
-                    _ => {}
+                    Flow::Break(None) => break,
+                    Flow::Normal(_) | Flow::Continue(None) => {}
+                    Flow::Continue(target) if target == label => {}
+                    flow => return Ok(flow),
                 }
                 if !self.eval(condition, env, doc)?.truthy() {
                     break;
                 }
             },
-            Stmt::For(init, condition, update, body) => {
-                return self.for_loop(
-                    init.as_deref(),
-                    condition.as_ref(),
-                    update.as_ref(),
-                    body,
-                    env,
-                    doc,
-                );
-            }
+            Stmt::For(..) => return self.for_loop(statement, env, doc, label),
             Stmt::ForIn(binding, expression, body) => {
-                return self.for_in(binding, expression, body, env, doc);
+                return self.for_in(binding, expression, body, env, doc, label);
             }
             Stmt::Switch(expression, cases) => {
                 return self.switch_statement(expression, cases, env, doc);
@@ -5463,20 +5581,24 @@ impl Runtime {
                 }
                 return completion;
             }
-            Stmt::Break => return Ok(Flow::Break),
-            Stmt::Continue => return Ok(Flow::Continue),
+            Stmt::Break(target) => return Ok(Flow::Break(*target)),
+            Stmt::Continue(target) => return Ok(Flow::Continue(*target)),
         }
         Ok(Flow::Normal(Value::Undefined))
     }
     fn for_loop(
         &mut self,
-        init: Option<&Stmt>,
-        condition: Option<&Expr>,
-        update: Option<&Expr>,
-        body: &Stmt,
+        statement: &Stmt,
         env: usize,
         doc: &mut Document,
+        label: Option<usize>,
     ) -> Result<Flow> {
+        let Stmt::For(init, condition, update, body) = statement else {
+            unreachable!("for_loop receives a For statement");
+        };
+        let init = init.as_deref();
+        let condition = condition.as_ref();
+        let update = update.as_ref();
         let mut child = self.environment(env)?;
         let mut names = Vec::new();
         if let Some(init) = init {
@@ -5497,9 +5619,10 @@ impl Runtime {
                 break;
             }
             match self.statement(body, child, doc)? {
-                Flow::Break => break,
-                flow @ Flow::Return(_) => return Ok(flow),
-                _ => {}
+                Flow::Break(None) => break,
+                Flow::Normal(_) | Flow::Continue(None) => {}
+                Flow::Continue(target) if target == label => {}
+                flow => return Ok(flow),
             }
             if !names.is_empty() {
                 child = self.iteration_environment(child, env, &names)?;
@@ -5564,7 +5687,7 @@ impl Runtime {
                 for statement in body {
                     match self.statement(statement, child, doc)? {
                         Flow::Normal(value) => last = value,
-                        Flow::Break => return Ok(Flow::Normal(last)),
+                        Flow::Break(None) => return Ok(Flow::Normal(last)),
                         abrupt => return Ok(abrupt),
                     }
                 }
@@ -5579,6 +5702,7 @@ impl Runtime {
         body: &Stmt,
         env: usize,
         doc: &mut Document,
+        label: Option<usize>,
     ) -> Result<Flow> {
         let expression_env = if let ForBinding::Declaration(name, kind) = binding
             && *kind != DeclarationKind::Var
@@ -5643,9 +5767,10 @@ impl Runtime {
                     }
                 };
                 match self.statement(body, scope, doc)? {
-                    Flow::Break => return Ok(Flow::Normal(Value::Undefined)),
-                    flow @ Flow::Return(_) => return Ok(flow),
-                    _ => {}
+                    Flow::Break(None) => return Ok(Flow::Normal(Value::Undefined)),
+                    Flow::Normal(_) | Flow::Continue(None) => {}
+                    Flow::Continue(target) if target == label => {}
+                    flow => return Ok(flow),
                 }
             }
             cursor = self.prototype_of(&object);
@@ -12374,8 +12499,7 @@ mod tests {
             "function* f(){yield 1;}",
             "(function*(){yield 1;})",
             "({*f(){yield 1;}})",
-            "label:;",
-            "while(true){break label;}",
+            "label:function f(){}",
             "class C{}",
             "import x from 'x';",
             "export var x=1;",
@@ -17659,6 +17783,296 @@ mod tests {
                 runtime.execute(source, &mut document)
             };
             result.unwrap_or_else(|error| panic!("strict={strict}: {error}"));
+        }
+    }
+
+    fn labels_modes(source: &str) {
+        for strict in [false, true] {
+            let (mut runtime, mut doc) = upstream_harness();
+            let result = if strict {
+                runtime.execute_strict(source, &mut doc)
+            } else {
+                runtime.execute(source, &mut doc)
+            };
+            result.unwrap_or_else(|error| panic!("strict={strict}: {error}"));
+        }
+    }
+
+    #[test]
+    fn labels_blocks_chains_and_nested_jumps_stop_at_the_right_target() {
+        labels_modes(
+            r#"
+            var trace='';outer:{trace+='A';inner:{trace+='B';break outer;}trace+='X';}trace+='C';
+            assert.sameValue(trace,'ABC');
+            trace='';outer:alias:{trace+='A';inner:{trace+='B';break inner;}trace+='C';break alias;trace+='X';}
+            assert.sameValue(trace,'ABC');
+            var n=0;outer:while(n<3){n++;inner:while(true){trace+=n;continue outer;}trace+='X';}
+            assert.sameValue(trace,'ABC123');
+            trace='';outer:alias:for(var i=0;i<3;i++){for(var j=0;j<2;j++){trace+=i;continue alias;}trace+='X';}
+            assert.sameValue(trace,'012');assert.sameValue(i,3);
+            outer:{break outer;}outer:{break outer;}
+            var same=2;same:{same++;break same;}assert.sameValue(same,3);
+        "#,
+        );
+    }
+
+    #[test]
+    fn labels_loop_kinds_switches_and_iteration_closures_preserve_order() {
+        labels_modes(
+            r#"
+            var n=0,checks=0;outer:do{n++;if(n<3)continue outer;break outer;}while(++checks<5);
+            assert.sameValue(n,3);assert.sameValue(checks,2);
+            var trace='';outer:for(var key in {a:1,b:2,c:3}){for(var j=0;j<2;j++){trace+=key;continue outer;}}
+            assert.sameValue(trace,'abc');
+            trace='';outer:for(var i=0;i<3;i++){switch(i){case 0:trace+='A';continue outer;case 1:trace+='B';break;default:break outer;}trace+='C';}
+            assert.sameValue(trace,'ABC');
+            trace='';label:switch(1){case 1:trace+='A';while(true){break label;}default:trace+='X';}assert.sameValue(trace,'A');
+            var fs=[];outer:for(let i=0;i<3;i++){fs.push(function(){return i;});inner:while(true){continue outer;}}
+            assert.sameValue(fs[0](),0);assert.sameValue(fs[1](),1);assert.sameValue(fs[2](),2);
+            trace='';outer:for(var x in {a:1,b:2}){for(var y in {z:1}){trace+=x;break outer;}}assert.sameValue(trace,'a');
+        "#,
+        );
+    }
+
+    #[test]
+    fn labels_finalizers_preserve_or_replace_break_continue_return_and_throw() {
+        labels_modes(
+            r#"
+            var trace='';outer:for(var i=0;i<3;i++){try{trace+=i;continue outer;}finally{trace+='F';}}
+            assert.sameValue(trace,'0F1F2F');
+            trace='';outer:for(var i=0;i<3;i++){try{trace+='A';continue outer;}finally{trace+='F';break outer;}}
+            assert.sameValue(trace,'AF');
+            trace='';outer:for(var i=0;i<2;i++){try{trace+='A';break outer;}finally{trace+='F';continue outer;}}
+            assert.sameValue(trace,'AFAF');
+            function f(){outer:{try{break outer;}finally{return 7;}}return 9;}assert.sameValue(f(),7);
+            function g(){outer:{try{return 7;}finally{break outer;}}return 9;}assert.sameValue(g(),9);
+            var reason={},seen;try{outer:{try{break outer;}finally{throw reason;}}}catch(e){seen=e;}assert.sameValue(seen,reason);
+            trace='';outer:{try{inner:{try{break outer;}finally{trace+='I';}}}finally{trace+='O';}}assert.sameValue(trace,'IO');
+            trace='';outer:{try{throw reason;}finally{trace+='F';break outer;}}assert.sameValue(trace,'F');
+        "#,
+        );
+    }
+
+    #[test]
+    fn labels_var_hoists_and_nested_function_scopes_remain_separate() {
+        labels_modes(
+            r#"
+            assert.sameValue(x,undefined);outer:{break outer;var x=7;}assert.sameValue(x,undefined);
+            var n=0;outer:var y=++n;assert.sameValue(y,1);
+            function f(){outer:{break outer;}return 2;}
+            outer:{n=f();break outer;}assert.sameValue(n,2);
+            outer:{var fn=function(){outer:{break outer;}return 3;};n=fn();break outer;}assert.sameValue(n,3);
+            outer:{var arrow=()=>{outer:{break outer;}return 4;};n=arrow();break outer;}assert.sameValue(n,4);
+            outer:{var object={f(){outer:{break outer;}return 5;}};n=object.f();break outer;}assert.sameValue(n,5);
+            let shadow=1;outer:{let shadow=2;assert.sameValue(shadow,2);break outer;}assert.sameValue(shadow,1);
+        "#,
+        );
+        for source in [
+            "let x;outer:var x;",
+            "{let x;outer:{var x;}}",
+            "outer:let x=1;",
+            "outer:const x=1;",
+        ] {
+            identifier_syntax(source, false);
+            identifier_syntax(source, true);
+        }
+    }
+
+    #[test]
+    fn labels_early_errors_reject_unknown_duplicate_nonloop_and_cross_function_targets() {
+        for source in [
+            "break missing;",
+            "while(true){break missing;}",
+            "while(true){continue missing;}",
+            "a:a:;",
+            "a:{a:;}",
+            "a:{while(true){continue a;}}",
+            "a:{continue a;}",
+            "while(true){a:switch(0){default:continue a;}}",
+            "a:if(true)while(true){continue a;}",
+            "a:{break;}",
+            "a:{continue;}",
+            "a:{function f(){break a;}}",
+            "a:while(false){function f(){continue a;}}",
+            "a:{var f=()=>{break a;};}",
+            "a:while(false){var f=()=>{continue a;};}",
+            "a:{var x={f(){break a;}};}",
+            "a:{function f(x=function(){break a;}){}}",
+            "a:{var f=(x=function(){break a;})=>1;}",
+            "L:let\n[a]=0;",
+            "L:class C{}",
+            "if(false)class C{}",
+            "a:{break a;}break a;",
+            "a:while(false){}continue a;",
+            r"a:\u0061:;",
+            "if:;",
+            r"\u0069f:;",
+        ] {
+            identifier_syntax(source, false);
+            identifier_syntax(source, true);
+        }
+        for source in [
+            "label:function f(){}",
+            "a:b:function f(){}",
+            "let:;",
+            "yield:;",
+        ] {
+            identifier_syntax(source, true);
+        }
+        assert!(
+            Parser::program("label:function f(){}")
+                .unwrap_err()
+                .is_unsupported()
+        );
+    }
+
+    #[test]
+    fn labels_unicode_reserved_contexts_and_asi_preserve_identifier_rules() {
+        labels_modes(
+            r#"
+            var n=0;\u0061:{n++;break a;n++;}a:{n++;break \u0061;n++;}π:{n++;break π;n++;}
+            assert.sameValue(n,3);
+            eval:{n++;break eval;}arguments:{n++;break arguments;}assert.sameValue(n,5);
+            await:{break await;}async:{break async;}
+        "#,
+        );
+        let (mut runtime, mut doc) = upstream_harness();
+        runtime
+            .execute(
+                "if(false){L:let\nx=1;L:let\n{}}if(false)let\nx=1;",
+                &mut doc,
+            )
+            .unwrap();
+        runtime
+            .execute("let:{break let;}yield:{break yield;}", &mut doc)
+            .unwrap();
+        for line in ["\n", "\r", "\r\n", "\u{2028}", "\u{2029}", "/*\n*/"] {
+            labels_modes(&format!(
+                "var n=0;outer:while(true){{n++;break{line}missing;}}assert.sameValue(n,1);"
+            ));
+            labels_modes(&format!(
+                "var n=0;outer:while(n<2){{n++;continue{line}missing;}}assert.sameValue(n,2);"
+            ));
+            identifier_syntax(&format!("outer:{{break{line}outer;}}"), false);
+        }
+    }
+
+    #[test]
+    fn labels_flat_chains_and_parser_work_storage_remain_bounded() {
+        let chain = (0..MAX_DEPTH)
+            .map(|i| format!("label{i}:"))
+            .collect::<String>();
+        labels_modes(&format!(
+            "var n=0;{chain}{{n++;break label0;n++;}}assert.sameValue(n,1);"
+        ));
+        let source = format!("extra:{chain};");
+        assert!(Parser::program(&source).unwrap_err().is_resource_limit());
+        let deep = format!(
+            "{};{}",
+            (0..MAX_DEPTH)
+                .map(|i| format!("l{i}:{{"))
+                .collect::<String>(),
+            "}".repeat(MAX_DEPTH)
+        );
+        assert!(Parser::program(&deep).unwrap_err().is_resource_limit());
+        let mut budget = regexp::Budget {
+            steps: MAX_STEPS,
+            allocated: 0,
+            heap_limit: MAX_HEAP,
+            stack_limit: 16,
+        };
+        let tokens = lex("label:;", &mut budget).unwrap();
+        let mut parser = Parser {
+            tokens,
+            source: "label:;",
+            lex_work: 7,
+            compile_budget: budget,
+            pos: 0,
+            depth: 0,
+            function_depth: 0,
+            loop_depth: 0,
+            switch_depth: 0,
+            labels: Vec::new(),
+            next_label: 0,
+            allow_in: true,
+            strict: false,
+        };
+        parser.compile_budget.allocated = 0;
+        parser.compile_budget.heap_limit = 29;
+        assert!(parser.labeled_statement().unwrap_err().is_resource_limit());
+        assert!(parser.labels.is_empty());
+        assert_eq!(parser.labels.capacity(), 0);
+        parser.labels = (0..MAX_DEPTH)
+            .map(|i| ActiveLabel {
+                name: format!("{:032}", i),
+                target: i,
+                iteration: true,
+            })
+            .collect();
+        parser.compile_budget.steps = MAX_DEPTH * 5;
+        assert!(
+            parser
+                .label_target("00000000000000000000000000000000")
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        parser.compile_budget.steps = MAX_DEPTH * 5 + 1;
+        assert_eq!(
+            parser
+                .label_target("00000000000000000000000000000000")
+                .unwrap(),
+            Some((0, true))
+        );
+        assert_eq!(parser.compile_budget.steps, 0);
+    }
+
+    #[test]
+    fn labels_statement_dispatch_rejects_deep_syntax_before_native_stack_exhaustion() {
+        for (open, close) in [
+            ("{", "}"),
+            ("if(true)", ""),
+            ("while(false)", ""),
+            ("for(;;)", ""),
+            ("do ", "while(false);"),
+            ("try{", "}finally{}"),
+            ("switch(0){default:", "}"),
+            ("function f(){", "}"),
+        ] {
+            let source = format!("{};{}", open.repeat(MAX_DEPTH), close.repeat(MAX_DEPTH));
+            let error = Parser::program(&source).unwrap_err();
+            assert!(error.is_resource_limit(), "{open}: {error}");
+        }
+    }
+
+    #[test]
+    fn labels_infinite_control_flow_remains_an_uncatchable_host_stop() {
+        for loop_source in [
+            "outer:while(true){continue outer;}",
+            "outer:for(;;){inner:while(true){continue outer;}}",
+            "outer:do{continue outer;}while(true);",
+        ] {
+            let mut runtime = Runtime::new();
+            let mut doc = Document::parse("");
+            runtime
+                .execute("var caught=false,finalized=false;", &mut doc)
+                .unwrap();
+            let source =
+                format!("try{{{loop_source}}}catch(e){{caught=true;}}finally{{finalized=true;}}");
+            assert!(
+                runtime
+                    .execute(&source, &mut doc)
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(
+                runtime.environments[0].bindings["caught"].value,
+                Value::Bool(false)
+            );
+            assert_eq!(
+                runtime.environments[0].bindings["finalized"].value,
+                Value::Bool(false)
+            );
+            assert_eq!((runtime.calls, runtime.stack_units), (0, 0));
         }
     }
 
