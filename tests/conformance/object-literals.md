@@ -68,10 +68,11 @@ anonymous-name inference, descriptor merging, prototype forms and parse-time
 errors, and hostile coercion, key sizes, prototype chains and nesting.
 
 Symbols and `Symbol.toPrimitive`, object spread, async/generator methods,
-`super`/home-object behavior, and rest/destructured parameter lists remain
+`super`/home-object behavior, and destructured parameter lists remain
 unsupported. Unsupported method forms are not replaced with ordinary methods.
-Identifier defaults now share the [default-parameter implementation](default-parameters.md),
-including separate initialization scope and unmapped arguments.
+Identifier defaults share the [default-parameter implementation](default-parameters.md),
+including separate initialization scope and unmapped arguments. Concise methods
+also accept [identifier rest parameters](rest-parameters.md).
 Identifier Unicode escapes and complete function source reflection are also
 outside the current parser/runtime subset. The separate bounded
 [Array reversal and Number radix increment](array-number-methods.md) supplies

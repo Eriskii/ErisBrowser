@@ -1,0 +1,126 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all direct .js files in language/rest-parameters; no implementation",
+  "directories": {
+    "rest-parameters": [
+      "array-pattern.js",
+      "arrow-function.js",
+      "expected-argument-count.js",
+      "no-alias-arguments.js",
+      "object-pattern.js",
+      "position-invalid.js",
+      "rest-index.js",
+      "rest-parameters-apply.js",
+      "rest-parameters-call.js",
+      "rest-parameters-produce-an-array.js",
+      "with-new-target.js"
+    ]
+  },
+  "test_files": 11,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/language/rest-parameters/array-pattern.js",
+      "upstream_path": "test/language/rest-parameters/array-pattern.js",
+      "bytes": 1145,
+      "sha256": "be31dd32641fababc321629af07af851ae76300599ebc6d3dc04352b87b6f038"
+    },
+    {
+      "path": "test/language/rest-parameters/arrow-function.js",
+      "upstream_path": "test/language/rest-parameters/arrow-function.js",
+      "bytes": 561,
+      "sha256": "3d79e77d33b7f714e6f8e46c8121306d35daa8bc573444057beda31dc5dff885"
+    },
+    {
+      "path": "test/language/rest-parameters/expected-argument-count.js",
+      "upstream_path": "test/language/rest-parameters/expected-argument-count.js",
+      "bytes": 547,
+      "sha256": "d720321fcb4a2704dab99eec486d10179d683cb336b1433fb2e6b9124d19af00"
+    },
+    {
+      "path": "test/language/rest-parameters/no-alias-arguments.js",
+      "upstream_path": "test/language/rest-parameters/no-alias-arguments.js",
+      "bytes": 397,
+      "sha256": "64c39d0b4f67a43fd8d5c381e2c54064cc91d9cff1de529d34cf4f33c2cd0695"
+    },
+    {
+      "path": "test/language/rest-parameters/object-pattern.js",
+      "upstream_path": "test/language/rest-parameters/object-pattern.js",
+      "bytes": 1073,
+      "sha256": "3ab0743806cd7ae6fdabc3bc6e2a7e5c957932d5ba154fb049a939f98c6b357d"
+    },
+    {
+      "path": "test/language/rest-parameters/position-invalid.js",
+      "upstream_path": "test/language/rest-parameters/position-invalid.js",
+      "bytes": 332,
+      "sha256": "d6a0932b0eacde30f9625b6723f5db14f497bd8919f97cfc7290e728c377bbfe"
+    },
+    {
+      "path": "test/language/rest-parameters/rest-index.js",
+      "upstream_path": "test/language/rest-parameters/rest-index.js",
+      "bytes": 1260,
+      "sha256": "637882c3e67e9fd2390f09268cc2aac182e895306d90e5facfc582b5536b152e"
+    },
+    {
+      "path": "test/language/rest-parameters/rest-parameters-apply.js",
+      "upstream_path": "test/language/rest-parameters/rest-parameters-apply.js",
+      "bytes": 595,
+      "sha256": "7edaa1de6cf3f9daa583161287a246ad21ec2b6bfc25973908075643380573b1"
+    },
+    {
+      "path": "test/language/rest-parameters/rest-parameters-call.js",
+      "upstream_path": "test/language/rest-parameters/rest-parameters-call.js",
+      "bytes": 485,
+      "sha256": "e0678892347dda21d5e57d41f8c4fae5aed9635c67ce6e7edfeaf57669677eed"
+    },
+    {
+      "path": "test/language/rest-parameters/rest-parameters-produce-an-array.js",
+      "upstream_path": "test/language/rest-parameters/rest-parameters-produce-an-array.js",
+      "bytes": 405,
+      "sha256": "c29da74bdd7e2c98ca8560fd9abd1bae48c4d5b6dfbe0aa8180c26d764016e41"
+    },
+    {
+      "path": "test/language/rest-parameters/with-new-target.js",
+      "upstream_path": "test/language/rest-parameters/with-new-target.js",
+      "bytes": 1180,
+      "sha256": "82dd7aa1fdf64a7fafc3160bc769fdb1b7fbabbb092342452be3a5586a8abb6c"
+    }
+  ]
+}

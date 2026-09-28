@@ -1,0 +1,64 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Rest parameter arrays and scope</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#values{left:0}#arguments{left:50px}#scope{left:100px}#arrow{left:150px}#calls{left:200px}#fresh{left:250px}
+#change{position:absolute;top:60px;left:0}
+</style>
+<div id="values" class="sample"></div><div id="arguments" class="sample"></div>
+<div id="scope" class="sample"></div><div id="arrow" class="sample"></div>
+<div id="calls" class="sample"></div><div id="fresh" class="sample"></div>
+<button id="change" type="button">Change the samples</button>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color='green'){document.getElementById(id).style.backgroundColor=color;}
+function tail(first,...rest){return rest;}
+let values=tail(1,undefined,null,4);
+check(Array.isArray(values)&&values.length===3&&0 in values&&values[0]===undefined&&values[1]===null&&values[2]===4,'dense remaining values');
+check(tail().length===0&&tail(1).length===0&&tail.length===1,'empty rest and function length');
+mark('values');
+
+function unmapped(first,...rest){
+  arguments[0]=90;arguments[1]=91;
+  check(first===1&&rest[0]===2,'arguments do not alias ordinary or rest formals');
+  first=50;rest[0]=51;
+  check(arguments[0]===90&&arguments[1]===91&&arguments.length===2,'formal writes do not alias arguments');
+  let denied=false;try{arguments.callee;}catch(error){denied=error instanceof TypeError;}
+  return denied;
+}
+check(unmapped(1,2),'non-simple arguments restrict callee');mark('arguments');
+
+function deferred(read=()=>rest,...rest){var rest=[90];return [read(),rest];}
+let scopes=deferred(undefined,7,8);
+check(scopes[0][0]===7&&scopes[0].length===2&&scopes[1][0]===90,'default closures retain the parameter rest binding');
+function early(value=rest,...rest){return value;}
+let tdz=false;try{early();}catch(error){tdz=error instanceof ReferenceError;}
+check(tdz,'rest binding is uninitialized during preceding default');mark('scope');
+
+function outer(value){return (...rest)=>this.flag+arguments[0]+rest[0];}
+let arrow=outer.call({flag:5},7);
+const covered=(pattern=/[(),]/,...rest)=>pattern.test(rest[0]);
+check(arrow(3)===15&&arrow.length===0&&covered(undefined,','),'rest arrows keep lexical context and regex parsing');
+mark('arrow');
+
+let object={sum(first,...rest){return this.base+first+rest[0];},base:2};
+check(object.sum(3,4)===9&&object.sum.length===1,'method rest and receiver');
+function Pack(first,...rest){this.first=first;this.rest=rest;}
+let bound=Pack.bind(null,6);let packed=new bound(7,8);
+check(packed.first===6&&packed.rest.join(',')==='7,8'&&bound.length===0,'bound constructor gathers remaining actual arguments');
+check(tail.apply(null,[1,2,3]).join(',')==='2,3','apply gathers remaining actual arguments');mark('calls');
+
+function all(...rest){return rest;}
+let a=all(),b=all();a.push(7);
+let named=(...arguments)=>arguments;
+check(a!==b&&b.length===0&&named(2,3).join(',')==='2,3','fresh arrays and explicit arguments binding');
+mark('fresh');document.body.className='ready';
+
+document.getElementById('change').onclick=function(...events){
+  check(events.length===1&&events[0].type==='click','event callback receives rest array');
+  mark('values','blue');mark('arguments','blue');mark('scope','blue');
+  mark('arrow','blue');mark('calls','blue');mark('fresh','blue');
+  document.body.className='clicked';
+};
+</script>

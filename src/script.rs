@@ -610,13 +610,18 @@ struct Parameter {
     // Initializers, like bodies, are immutable shared syntax. Closure/call
     // copies must never recursively clone an initializer's retained AST.
     initializer: Option<Rc<Expr>>,
+    rest: bool,
 }
 impl Parameter {
     fn simple(name: String) -> Self {
         Self {
             name,
             initializer: None,
+            rest: false,
         }
+    }
+    fn is_simple(&self) -> bool {
+        !self.rest && self.initializer.is_none()
     }
 }
 #[derive(Clone, Debug)]
@@ -635,10 +640,13 @@ impl FunctionCode {
             .iter()
             .any(|parameter| parameter.initializer.is_some())
     }
+    fn has_simple_parameters(&self) -> bool {
+        self.params.iter().all(Parameter::is_simple)
+    }
     fn length(&self) -> usize {
         self.params
             .iter()
-            .position(|parameter| parameter.initializer.is_some())
+            .position(|parameter| !parameter.is_simple())
             .unwrap_or(self.params.len())
     }
 }
@@ -1411,12 +1419,12 @@ impl Parser {
         Ok(Parameter {
             name,
             initializer: initializer.map(Rc::new),
+            rest: false,
         })
     }
-    fn reject_rest_parameter(&mut self) -> Result<()> {
-        // Rest is unsupported, but an initializer, comma, member target, or
-        // malformed ellipsis on an identifier rest parameter is invalid syntax.
-        // Reject those forms before reporting a valid unsupported capability.
+    fn rest_parameter(&mut self) -> Result<Parameter> {
+        // Identifier rest must be last and cannot have an initializer. Keep
+        // malformed ellipses distinct from unsupported binding patterns.
         let start = self.tokens[self.pos].offset;
         for byte in 0..3 {
             if self.tokens[self.pos].offset != start + byte || !self.eat(".") {
@@ -1432,13 +1440,13 @@ impl Parser {
             error.offset = Some(start);
             return Err(error);
         }
-        self.binding_identifier()?;
+        let name = self.binding_identifier()?;
         if !self.is(")") {
             return Err(self.error("rest parameter must be last and cannot have an initializer"));
         }
-        let mut error = ScriptError::unsupported("rest parameters are not implemented");
-        error.offset = Some(start);
-        Err(error)
+        let mut parameter = self.parameter(name, None)?;
+        parameter.rest = true;
+        Ok(parameter)
     }
     fn function(&mut self, unique_parameters: bool) -> Result<FunctionCode> {
         self.expect("(")?;
@@ -1456,7 +1464,9 @@ impl Parser {
         if !self.eat(")") {
             loop {
                 if self.is(".") {
-                    self.reject_rest_parameter()?;
+                    params.push(self.rest_parameter()?);
+                    self.expect(")")?;
+                    break;
                 }
                 let name = self.binding_identifier()?;
                 let initializer = if self.eat("=") {
@@ -1479,9 +1489,7 @@ impl Parser {
         Self::check_scope(&body, false)?;
         self.function_depth -= 1;
         let strict = self.strict;
-        let non_simple = params
-            .iter()
-            .any(|parameter| parameter.initializer.is_some());
+        let non_simple = params.iter().any(|parameter| !parameter.is_simple());
         if own_strict && non_simple {
             return Err(self.error("use strict directive with non-simple parameters"));
         }
@@ -1526,11 +1534,7 @@ impl Parser {
             (vec![Stmt::Return(Some(self.expression()?))], false)
         };
         let strict = self.strict;
-        if own_strict
-            && params
-                .iter()
-                .any(|parameter| parameter.initializer.is_some())
-        {
+        if own_strict && params.iter().any(|parameter| !parameter.is_simple()) {
             return Err(self.error("use strict directive with non-simple parameters"));
         }
         Self::check_scope(&body, false)?;
@@ -1817,11 +1821,14 @@ impl Parser {
             let saved_in = self.allow_in;
             self.allow_in = true;
             let mut items = Vec::new();
+            let mut rest = None;
             let mut trailing_comma = false;
             if !self.eat(")") {
                 loop {
                     if self.is(".") {
-                        self.reject_rest_parameter()?;
+                        rest = Some(self.rest_parameter()?);
+                        self.expect(")")?;
+                        break;
                     }
                     let binding_form = matches!(self.tokens[self.pos].kind, TokenKind::Word(_));
                     let expression = self.expression()?;
@@ -1864,7 +1871,13 @@ impl Parser {
                     };
                     params.push(self.parameter(name, initializer)?);
                 }
+                if let Some(rest) = rest {
+                    params.push(rest);
+                }
                 return self.arrow(params);
+            }
+            if rest.is_some() {
+                return Err(self.error("rest parameter requires an arrow function"));
             }
             if items.is_empty() || trailing_comma {
                 return Err(self.error("invalid parenthesized expression"));
@@ -1939,7 +1952,9 @@ impl Parser {
                     let setter = matches!(&key, PropertyName::Literal(name, _) if name == &JsString::from("set"));
                     key = self.object_key()?;
                     let mut code = self.function(true)?;
-                    if code.params.len() != usize::from(setter) {
+                    if code.params.len() != usize::from(setter)
+                        || code.params.iter().any(|parameter| parameter.rest)
+                    {
                         return Err(self.error("invalid accessor parameter count"));
                     }
                     code.constructable = false;
@@ -4221,6 +4236,31 @@ impl Runtime {
         self.array_holes.push(BTreeSet::new());
         Ok(Value::Array(id))
     }
+    fn rest_arguments(&mut self, arguments: &[Value]) -> Result<Value> {
+        if arguments.len() > 65_536 {
+            return Err(ScriptError::resource(
+                "rest argument array length limit exceeded",
+            ));
+        }
+        self.work(arguments.len().saturating_add(1))?;
+        let copied_bytes = arguments.len().saturating_mul(std::mem::size_of::<Value>());
+        // Check both the copy and array()'s retained storage/ordinary property
+        // record before allocating. No getters/iterators run between this
+        // preflight and array construction, and failure leaves its arenas intact.
+        let required = copied_bytes
+            .saturating_mul(2)
+            .saturating_add(32 + 72 + std::mem::size_of::<Option<AbortSlot>>());
+        if required > MAX_HEAP.saturating_sub(self.allocated) {
+            return Err(ScriptError::resource("script allocation limit exceeded"));
+        }
+        self.charge(copied_bytes)?;
+        let mut values = Vec::new();
+        values
+            .try_reserve_exact(arguments.len())
+            .map_err(|_| ScriptError::resource("rest argument array allocation failed"))?;
+        values.extend_from_slice(arguments);
+        self.array(values)
+    }
     fn arguments_object(&mut self, values: &[Value], strict: bool, callee: Value) -> Result<Value> {
         let object = self.object_ordered(
             values
@@ -5565,8 +5605,9 @@ impl Runtime {
                 }
                 let parameter_expressions = function.code.has_parameter_expressions();
                 // Every formal binding exists before the first initializer.
-                // Non-simple lists are unique and remain in their TDZ until
-                // initialized in source order, even when an argument exists.
+                // Lists with expressions remain in their TDZ until initialized
+                // in source order, even when an argument exists. Rest-only
+                // initialization has no author callbacks or expressions.
                 for parameter in &function.code.params {
                     if !self.environments[env]
                         .bindings
@@ -5585,7 +5626,7 @@ impl Runtime {
                         || matches!(s, Stmt::Var(bindings, kind) if *kind != DeclarationKind::Var && bindings.iter().any(|(name, _)| name == "arguments")));
                 let arguments_binding = !function.code.arrow && !shadows_arguments;
                 if arguments_binding {
-                    let unmapped = function.code.strict || parameter_expressions;
+                    let unmapped = function.code.strict || !function.code.has_simple_parameters();
                     let args = self.arguments_object(&arguments, unmapped, Value::Function(id))?;
                     if !unmapped {
                         let Value::Object(id) = args else {
@@ -5606,7 +5647,11 @@ impl Runtime {
                 }
                 for (index, parameter) in function.code.params.iter().enumerate() {
                     self.tick()?;
-                    let mut value = arguments.get(index).cloned().unwrap_or(Value::Undefined);
+                    let mut value = if parameter.rest {
+                        self.rest_arguments(&arguments[index.min(arguments.len())..])?
+                    } else {
+                        arguments.get(index).cloned().unwrap_or(Value::Undefined)
+                    };
                     if matches!(value, Value::Undefined)
                         && let Some(initializer) = &parameter.initializer
                     {
@@ -10647,6 +10692,226 @@ mod tests {
     }
 
     #[test]
+    fn rest_parameters_capture_fresh_dense_actual_argument_arrays() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            function all(...tail){return tail;}function after(a,b,...tail){return tail;}
+            assert.sameValue(Array.isArray(all()),true);assert.sameValue(all().length,0);
+            assert.sameValue(all()===all(),false);assert.sameValue(after(1).length,0);
+            assert.sameValue(after(1,2).length,0);assert.sameValue(after(1,2,3,4).join(','),'3,4');
+            var identity={},tail=all(undefined,null,false,0,'',identity);
+            assert.sameValue(tail.length,6);assert.sameValue(0 in tail,true);assert.sameValue(tail[0],undefined);
+            assert.sameValue(tail[1],null);assert.sameValue(tail[2],false);assert.sameValue(tail[3],0);
+            assert.sameValue(tail[4],'');assert.sameValue(tail[5],identity);
+            var first=Object.getOwnPropertyDescriptor(tail,'0');assert.sameValue(first.value,undefined);assert.sameValue(first.writable,true);assert.sameValue(first.enumerable,true);assert.sameValue(first.configurable,true);
+            var length=Object.getOwnPropertyDescriptor(tail,'length');assert.sameValue(length.value,6);assert.sameValue(length.writable,true);assert.sameValue(length.enumerable,false);assert.sameValue(length.configurable,false);tail.length=5;assert.sameValue(tail.length,5);
+            var savedArray=Array,calls=0;
+            var priorPrototype=Object.getPrototypeOf(savedArray.prototype);Object.setPrototypeOf(savedArray.prototype,{set 0(v){calls++;}});
+            Array=function(){calls++;throw 'global Array called';};
+            var copied=all(7);assert.sameValue(copied[0],7);assert.sameValue(calls,0);
+            assert.sameValue(Object.getPrototypeOf(copied),savedArray.prototype);
+            Object.setPrototypeOf(savedArray.prototype,priorPrototype);Array=savedArray;
+        "#, &mut document).unwrap();
+    }
+
+    #[test]
+    fn rest_parameters_make_arguments_unmapped_without_conflating_body_scope() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            function unmap(a,...tail){
+                var args=arguments;assert.sameValue(args.length,3);
+                args[0]=9;assert.sameValue(a,1);a=8;assert.sameValue(args[0],9);
+                args[1]=7;assert.sameValue(tail[0],2);tail[1]=6;assert.sameValue(args[2],3);
+                assert.throws(TypeError,function(){return args.callee;});
+                assert.throws(TypeError,function(){args.callee=1;});return tail;
+            }
+            assert.sameValue(unmap(1,2,3).join(','),'2,6');
+            function lexical(...tail){let arguments='local';return arguments+tail.length;}
+            function declaration(...tail){function arguments(){return 'fn';}return arguments()+tail.length;}
+            function variable(...tail){var arguments;return arguments.length+tail.length;}
+            assert.sameValue(lexical(1),'local1');assert.sameValue(declaration(1),'fn1');assert.sameValue(variable(1,2),4);
+            function sameBinding(...tail){var tail;var get=()=>tail;tail=[9];return get()[0];}
+            assert.sameValue(sameBinding(3),9);
+            function named(a,...arguments){return arguments;}
+            assert.sameValue(named(1,2,3).join(','),'2,3');
+            function objectAlias(...tail){arguments[0].changed=3;return tail[0].changed;}
+            assert.sameValue(objectAlias({}),3);
+        "#, &mut document).unwrap();
+    }
+
+    #[test]
+    fn rest_parameters_follow_defaults_tdz_original_arguments_and_separate_body_vars() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            function mutate(a=(arguments[1]=99),...tail){return tail;}
+            assert.sameValue(mutate(undefined,7)[0],7);
+            function deferred(a=()=>tail,...tail){return a();}
+            assert.sameValue(deferred(undefined,4,5).join(','),'4,5');
+            function separated(a=()=>tail,...tail){var tail;tail=[9];return [a()[0],tail[0]];}
+            assert.sameValue(separated(undefined,4).join(','),'4,9');
+            function read(a=tail,...tail){}function type(a=typeof tail,...tail){}
+            function write(a=(tail=1),...tail){}function named(a=arguments,...arguments){}
+            assert.throws(ReferenceError,function(){read();});assert.throws(ReferenceError,function(){type();});
+            assert.throws(ReferenceError,function(){write();});assert.throws(ReferenceError,function(){named();});
+            function bodyShadow(a=()=>arguments,...tail){let arguments='body';return [a().length,arguments,tail.length];}
+            assert.sameValue(bodyShadow(undefined,1).join(','),'2,body,1');
+            var reason={},body=false;function fail(){throw reason;}function abrupt(a=fail(),...tail){body=true;}
+            var seen;try{abrupt();}catch(e){seen=e;}assert.sameValue(seen,reason);assert.sameValue(body,false);
+        "#, &mut document).unwrap();
+    }
+
+    #[test]
+    fn rest_parameters_preserve_arrow_method_receiver_metadata_and_call_entry_points() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            function fixed(a,b,...tail){return [this,a,b,tail];}
+            verifyProperty(fixed,'length',{value:2,writable:false,enumerable:false,configurable:true},{restore:true});
+            function defaults(a,b=1,...tail){}assert.sameValue(defaults.length,1);
+            var zero=(...tail)=>tail;assert.sameValue(zero.length,0);
+            var receiver={},called=fixed.call(receiver,1,2,3);assert.sameValue(called[0],receiver);assert.sameValue(called[3][0],3);
+            var order='',like={get length(){order+='L';return 3;},get 0(){order+='0';return 1;},get 1(){order+='1';return 2;},get 2(){order+='2';return 3;}};
+            assert.sameValue(fixed.apply(receiver,like)[3][0],3);assert.sameValue(order,'L012');
+            var bound=fixed.bind(receiver,1);assert.sameValue(bound.length,1);assert.sameValue(bound(2,4)[3][0],4);
+            function Make(a,...tail){this.a=a;this.tail=tail;}var boundMaker=Make.bind(null,1),made=new boundMaker(2,3);
+            assert.sameValue(made.a,1);assert.sameValue(made.tail.join(','),'2,3');assert.sameValue(made instanceof Make,true);
+            var object={m(a,...tail){return [this,tail];}};assert.sameValue(object.m(0,3)[0],object);assert.sameValue(object.m(0,3)[1][0],3);
+            assert.sameValue(object.m.name,'m');assert.sameValue(object.m.length,1);
+            assert.throws(TypeError,function(){new object.m();});
+            function outer(){return ((...tail)=>[this,arguments[0],tail])('tail');}
+            var lexical=outer.call(receiver,'outer');assert.sameValue(lexical[0],receiver);assert.sameValue(lexical[1],'outer');assert.sameValue(lexical[2][0],'tail');
+            function strictOuter(){'use strict';return function(...tail){return this;};}
+            assert.sameValue(strictOuter()(),undefined);assert.sameValue(strictOuter().call(7),7);
+            var prefix=(a=/[),]/.test(')'),b=`v${a}`,...tail)=>b+tail.join(',');assert.sameValue(prefix(undefined,undefined,3,4),'vtrue3,4');
+            var nested=(a=(x,...rest)=>x+rest.length,...tail)=>a(3,4)+tail.length;assert.sameValue(nested(undefined,7),5);
+        "#, &mut document).unwrap();
+    }
+
+    #[test]
+    fn rest_parameters_reject_invalid_syntax_and_keep_unimplemented_forms_explicit() {
+        for source in [
+            "function f(...a=[]){}",
+            "function f(...a,){}",
+            "function f(...a,b){}",
+            "function f(a,...a){}",
+            "function f(a,a,...tail){}",
+            "function f(...a.x){}",
+            "function f(...(a)){}",
+            "function f(...1){}",
+            "function f(...){}",
+            "function f(. . .a){}",
+            "function f(....a){}",
+            "function f(......a){}",
+            "function f(... ...a){}",
+            "(...a=[])=>a",
+            "(...a,)=>a",
+            "(...a,b)=>a",
+            "(a,...a)=>a",
+            "(...a)",
+            "(...a)\n=>a",
+            "(...a,...b)=>a",
+            "(...a.x)=>a",
+            "function f(...a){'use strict';}",
+            "(...a)=>{'use strict';}",
+            "({m(...a){'use strict';}})",
+            "'use strict';function f(...a){'use strict';}",
+            "'use strict';function f(...eval){}",
+            "'use strict';(...arguments)=>arguments",
+            "function f(...a){let a;}",
+            "(...a)=>{const a=1;}",
+            "({set x(...a){}})",
+            "({get x(...a){}})",
+        ] {
+            let error = Runtime::parse_only(source).unwrap_err();
+            assert!(
+                error.is_parse_error() && !error.is_unsupported(),
+                "{source}: {error}"
+            );
+        }
+        for source in [
+            "function f(... a){}",
+            "function f(.../* comment */a){}",
+            "function f(a,...tail){}",
+            "(a=1,...tail)=>tail",
+            "'use strict';function f(...tail){}",
+            "function f(...a){'use\\x20strict';}",
+            "function f(a,){}",
+            "(a,)=>a",
+        ] {
+            Runtime::parse_only(source).unwrap();
+        }
+        for source in [
+            "function f(...[a]){}",
+            "function f(...{a}){}",
+            "(...[a])=>a",
+            "(...{a})=>a",
+            "function f({a},...tail){}",
+        ] {
+            assert!(
+                Runtime::parse_only(source).unwrap_err().is_unsupported(),
+                "{source}"
+            );
+        }
+    }
+
+    #[test]
+    fn rest_parameters_preflight_array_storage_and_share_uncatchable_limits() {
+        let mut runtime = Runtime::new();
+        let arrays = runtime.arrays.len();
+        let objects = runtime.objects.len();
+        let properties = runtime.array_properties.len();
+        runtime.allocated = MAX_HEAP - 64;
+        assert!(runtime.rest_arguments(&[]).unwrap_err().is_resource_limit());
+        assert_eq!(
+            (
+                runtime.arrays.len(),
+                runtime.objects.len(),
+                runtime.array_properties.len()
+            ),
+            (arrays, objects, properties)
+        );
+        let mut runtime = Runtime::new();
+        let values = vec![Value::Undefined; 1024];
+        runtime.steps = 1000;
+        let before = runtime.arrays.len();
+        assert!(
+            runtime
+                .rest_arguments(&values)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(runtime.arrays.len(), before);
+        let mut runtime = Runtime::new();
+        let values = vec![Value::Null; 65_537];
+        assert!(
+            runtime
+                .rest_arguments(&values)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert!(runtime.arrays.len() < 10);
+        for source in [
+            "var caught=false;function f(...a){f();}try{f();}catch(e){caught=true;}",
+            "var caught=false;try{for(var i=0;i<100000;i++){((...a)=>a)();}}catch(e){caught=true;}",
+            "var caught=false;var f=(...a)=>a;try{for(var i=0;i<100000;i++){f(1,2,3,4,5);}}catch(e){caught=true;}",
+            "var caught=false,body=false;var f=(...a)=>{body=true;};try{f.apply(null,{length:65536});}catch(e){caught=true;}",
+        ] {
+            let mut runtime = Runtime::new();
+            let mut document = Document::parse("");
+            assert!(
+                runtime
+                    .execute(source, &mut document)
+                    .unwrap_err()
+                    .is_resource_limit(),
+                "{source}"
+            );
+            assert_eq!(runtime.lookup(0, "caught").unwrap().1, Value::Bool(false));
+            if let Some((_, body)) = runtime.lookup(0, "body") {
+                assert_eq!(body, Value::Bool(false));
+            }
+        }
+    }
+
+    #[test]
     fn default_parameters_initialize_in_order_only_for_undefined() {
         let (mut runtime, mut document) = property_harness();
         runtime.execute(r#"
@@ -10856,10 +11121,8 @@ mod tests {
             Runtime::parse_only(source).unwrap();
         }
         for source in [
-            "function f(...a){}",
             "function f({a}){}",
             "function f([a]){}",
-            "(...a)=>a",
             "({a})=>a",
             "([a])=>a",
         ] {
@@ -14559,7 +14822,6 @@ mod tests {
             "({async *m(){}})",
             "({...x})",
             "({m(){return super.x;}})",
-            "({m(...args){}})",
             "({m({a}){}})",
         ] {
             assert!(

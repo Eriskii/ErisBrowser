@@ -1,6 +1,72 @@
 # Validation record
 
+## Identifier rest parameters
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **712 Rust tests** pass with `--include-ignored`: 576 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 34 pipeline and 27 confined-worker tests. None remain
+ignored. All **55 Python checks** and **57 exact pixel references** pass.
+
+The [rest implementation](../tests/conformance/rest-parameters.md) distinguishes
+non-simple parameter lists from lists containing default expressions. Six new
+script groups cover dense intrinsic arrays, original actual values, arguments
+non-aliasing, scope, strictness, arrow parsing, metadata, call entry points and
+allocation/work failure before array retention. The direct Page and real worker
+fixtures each verify six green samples, then six blue samples after a callback
+receives its event through a rest array.
+
+An independent final-release audit passes 18 semantic checks, 28 early-error
+checks, three unsupported-destructuring controls, 300 deterministic UTF-8
+mutations and ten hostile controls. Seed `0x524553545441494c` and per-child
+512 MiB, two-second CPU and three-second wall limits produce no panic, signal
+or timeout. Nine hostile cases reach resource limits; 5,000 short defaults
+followed by rest parse within bounds. The frozen source/binary hashes remain
+unchanged throughout. These are bounded observations, not proof of security.
+
+The complete pinned [rest directory](../tests/conformance/test262-rest-parameters.md)
+improves from **two passed / 20 unsupported** to **16 passed / six unsupported**,
+with the same 22 source/harness/mode fingerprints and execution policy. All
+64 assertion preflights pass, including deliberate mismatches. A new healthy
+regression baseline retains all unsupported variants; its CI command passes
+locally with no regressions. The six remaining variants require destructuring
+or classes, not a modified assertion harness.
+
+Existing upstream outcomes are unchanged: HTML **3,868 matched / two mismatched /
+six unsupported**, String/JSON **536 passed / 116 unsupported**, RegExp **250 / 40**,
+templates **82 / 32**, and functions **490 passed / 620 unsupported / 19 failed /
+two resource stops**. The functions profile still cannot record a healthy
+baseline. Its policy and all previous corpora/baselines remain unchanged.
+
+A **15,000-case** mutation smoke run has zero caught panics or invariant failures:
+5,000 accepted HTML, 628 accepted/4,372 rejected scripts, and 3,347 accepted/1,653
+rejected SVG inputs. Maximum DOM size is 191 nodes and maximum display-list size
+is 1,173 commands; 17 cases stop within paint limits. Three new rest seeds change
+the inventory, so these counts are not an acceptance-rate comparison.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+|---|---|
+| `eris-browser` | `e75c159e64bd3f64bd798991567848e4362fd96cdcb39451089f7b0a6931a98b` |
+| `eris-js` | `f7303916323638bd7965ffbffeee4afd27e8f630bed6c8357a8a51fc10621b56` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `fabe4f0713477e2be903d02b74b84866dd8b46edfffd19c1f72e4f1e7b6e21fc` |
+
+The source-input digest is
+`a61c16761f309ea4e51f42b44ef2bd3471a04d1b5c8843a4d8ec15b4fc0d191c`.
+Session logs use the `rest-final` suffix under `artifacts/`. This increment
+changes parser/runtime behavior, not native presentation. No new performance
+claim is assigned. The unchanged WPT harness now passes the former rest syntax
+blocker and stops at destructuring; it still cannot execute. Full web
+compatibility, independently audited security and Chromium-relative performance
+remain unverified.
+
 ## Length-percentage calculations and default parameters
+
+Published checkpoint `ed7dcb8` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36405141684),
+including all-target compilation with Rust 1.88.
 
 Recorded September 28, 2026 UTC. The recorded integrated run passes formatting,
 strict all-target Clippy, release compilation and **704 Rust tests** with

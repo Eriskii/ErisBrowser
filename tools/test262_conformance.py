@@ -22,8 +22,10 @@ REGEXP_FEATURES = SUPPORTED_FEATURES | {'regexp-dotall', 'regexp-match-indices',
 TEMPLATE_FEATURES = SUPPORTED_FEATURES | {'template', 'u180e'}
 FUNCTION_FEATURES = SUPPORTED_FEATURES | {'default-parameters', 'object-methods',
                                           'computed-property-names', 'trailing-function-commas'}
+REST_PARAMETER_FEATURES = FUNCTION_FEATURES | {'rest-parameters'}
 PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
-                    'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES}
+                    'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
+                    'rest-parameters': REST_PARAMETER_FEATURES}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -290,7 +292,7 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
         ]
         variants += [(name, source, expected, mode)
                      for mode in ('sloppy', 'strict') for name, source, expected in checks]
-    if profile == 'functions':
+    if profile in {'functions', 'rest-parameters'}:
         checks = [
             ('default-success', "function f(a=3,b=a+1){return a+b;}assert.sameValue(f(),7);assert.sameValue(f(0),1);", 'passed'),
             ('default-supplied-mismatch', "function f(a=3){return a;}assert.sameValue(f(0),3);", 'failed'),
@@ -300,6 +302,19 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
             ('default-arguments-mismatch', "function f(a=3){arguments[0]=9;assert.sameValue(a,9);}f(undefined);", 'failed'),
             ('default-scope', "function f(a=3,read=()=>a){var a=9;assert.sameValue(read(),3);assert.sameValue(a,9);}f();", 'passed'),
             ('default-scope-mismatch', "function f(a=3,read=()=>a){var a=9;assert.sameValue(read(),9);}f();", 'failed'),
+        ]
+        variants += [(name, source, expected, mode)
+                     for mode in ('sloppy', 'strict') for name, source, expected in checks]
+    if profile == 'rest-parameters':
+        checks = [
+            ('rest-array', "function f(...r){return r;}var a=f(1,2);var b=f(1,2);assert(Array.isArray(a));assert.compareArray(a,[1,2]);assert.sameValue(f().length,0);a[0]=9;assert.sameValue(b[0],1);", 'passed'),
+            ('rest-array-mismatch', "function f(...r){return r;}assert.compareArray(f(1,2),[1,3]);", 'failed'),
+            ('rest-index', "function f(a,b,...r){assert.compareArray(r,[3,undefined,5]);assert.sameValue(r.length,3);}f(1,2,3,undefined,5);", 'passed'),
+            ('rest-index-mismatch', "function f(a,b,...r){assert.compareArray(r,[2,3]);}f(1,2,3);", 'failed'),
+            ('rest-unmapped', "function f(a,...r){arguments[0]=9;assert.sameValue(a,1);r[0]=7;assert.sameValue(arguments[1],2);arguments[1]=8;assert.sameValue(r[0],7);}f(1,2);", 'passed'),
+            ('rest-unmapped-mismatch', "function f(a,...r){arguments[0]=9;assert.sameValue(a,9);}f(1,2);", 'failed'),
+            ('rest-length', "function f(a,b,...r){}function g(a=1,...r){}assert.sameValue(f.length,2);assert.sameValue(g.length,0);", 'passed'),
+            ('rest-length-mismatch', "function f(a,b,...r){}assert.sameValue(f.length,3);", 'failed'),
         ]
         variants += [(name, source, expected, mode)
                      for mode in ('sloppy', 'strict') for name, source, expected in checks]

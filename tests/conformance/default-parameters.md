@@ -2,10 +2,11 @@
 
 The custom parser and interpreter implement identifier default parameters in
 ordinary function declarations and expressions, arrow functions, concise object
-methods, and setters. This increment does not implement rest or destructured
-bindings, async/generator execution, direct/indirect `eval`, `super`,
-`new.target`, classes, or dynamic `Function` construction. It supplies no
-replacement for an upstream assertion harness and does not rewrite test bodies.
+methods, and setters. Identifier [rest parameters](rest-parameters.md) are covered
+by a subsequent increment. Destructured bindings, async/generator execution,
+direct/indirect `eval`, `super`, `new.target`, classes, and dynamic `Function`
+construction remain unsupported. This implementation supplies no replacement
+for an upstream assertion harness and does not rewrite test bodies.
 
 ## Initialization and scope
 
@@ -60,7 +61,7 @@ raw `"use strict"` directive is an early SyntaxError with non-simple parameters,
 including when the surrounding code was already strict. Parameter/body lexical
 name conflicts remain early errors. Recognized invalid identifier-rest forms,
 such as an initializer, a following comma, or a member target, produce
-SyntaxError; valid rest parameters remain explicitly unsupported. This is not
+SyntaxError; valid identifier rest is now implemented separately. This is not
 a complete validation implementation for unsupported binding-pattern grammar.
 
 The existing 256 KiB source, 32,768-token, 96-depth parser, shared weighted
@@ -93,10 +94,11 @@ upstream conformance credit or remove unsupported cases from its denominator.
 The unchanged WPT `resources/testharness.js` inspected here is revision
 `f085a1efc1f58fbe263d384b1e335d656fe58e66`, 198,291 bytes, SHA-256
 `d2399236c2a09c429804ff2299ad6629e17e2b53f17a74dd341e936adb11ae3e`.
-Its former first blocker, `promise_setup(func, properties={})` on line 1141,
-now parses. The next parser blocker is the rest parameter in `assert_wrapper`
+At the default-parameter checkpoint `ed7dcb8`, its former first blocker, `promise_setup(func, properties={})` on line 1141,
+parsed. The next parser blocker was the rest parameter in `assert_wrapper`
 on line 1504. Later code also needs rest parameters, destructuring, `for...of`,
-and async/await, as well as host bindings. This increment does not make that
+and async/await, as well as host bindings. The [rest increment](rest-parameters.md)
+records the later parser result. Default parameters alone do not make that
 unchanged harness executable and does not establish a WPT pass.
 
 Primary references: [FunctionDeclarationInstantiation](https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-functiondeclarationinstantiation),

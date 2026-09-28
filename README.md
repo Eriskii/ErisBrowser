@@ -85,6 +85,7 @@ python3 tools/html_conformance.py --baseline tests/conformance/html-tree-current
 python3 tools/test262_conformance.py --baseline tests/conformance/test262-current.json
 python3 tools/test262_conformance.py --profile regexp --baseline tests/conformance/test262-regexp-current.json
 python3 tools/test262_conformance.py --profile template-literal --baseline tests/conformance/test262-template-literal-current.json
+python3 tools/test262_conformance.py --profile rest-parameters --baseline tests/conformance/test262-rest-parameters-current.json
 python3 -m unittest discover -s tools -p 'test_*.py'
 cargo run --locked --release --bin eris-stress -- 5000
 ```
@@ -104,6 +105,10 @@ A separate [function inventory](tests/conformance/test262-functions.md) retains
 bring it to 490 passing variants, 140 more than the initial measurement with
 no lost passes. Failures, unsupported features and two parser-limit stops remain;
 it is not yet a healthy regression gate.
+
+A separate complete [rest-parameter directory](tests/conformance/test262-rest-parameters.md)
+retains 22 variants: 16 pass and six remain unsupported. Its assertion-checked
+regression baseline runs in CI.
 
 ## Implementation
 

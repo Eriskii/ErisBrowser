@@ -22,6 +22,11 @@ fn default_parameters_preserve_scope_and_run_in_event_callbacks() {
     assert_six_scripted_samples(include_str!("fixtures/default-parameters.html"));
 }
 
+#[test]
+fn rest_parameter_arrays_preserve_scope_and_run_in_event_callbacks() {
+    assert_six_scripted_samples(include_str!("fixtures/rest-parameters.html"));
+}
+
 fn assert_six_scripted_samples(source: &str) {
     let mut p = page(source);
     let fonts = Fonts::new();

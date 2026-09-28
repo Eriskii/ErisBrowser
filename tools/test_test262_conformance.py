@@ -191,6 +191,86 @@ class ExecutionTests(unittest.TestCase):
 
 
 class IntegrityTests(unittest.TestCase):
+    def test_rest_inventory_retains_every_source_and_required_mode(self):
+        directory = runner.ROOT / 'tests/upstream/test262-rest-parameters'
+        manifest, files, cases, fixtures, _ = runner.load_corpus(directory, 'rest-parameters')
+        self.assertEqual(manifest['test_files'], 11)
+        self.assertEqual(len(cases), 22)
+        self.assertEqual(fixtures, [])
+        self.assertEqual(sum(case['mode'] == 'sloppy' for case in cases), 11)
+        self.assertEqual(sum(case['mode'] == 'strict' for case in cases), 11)
+        negative = [case for case in cases if case['metadata']['negative']]
+        self.assertEqual(len(negative), 2)
+        self.assertEqual({case['file'].rsplit('/', 1)[-1] for case in negative},
+                         {'position-invalid.js'})
+        self.assertTrue(all(case['metadata']['negative'] == dict(phase='parse', type='SyntaxError')
+                            for case in negative))
+        # Old metadata lacks feature labels: preserve these files for the adapter
+        # to classify, rather than filtering syntax outside the supported slice.
+        self.assertTrue(all(not case['metadata']['features'] for case in cases))
+        names = {Path(case['file']).name for case in cases}
+        self.assertTrue({'array-pattern.js', 'object-pattern.js', 'with-new-target.js'} <= names)
+        self.assertIn(b'$DONOTEVALUATE();', files['test/language/rest-parameters/position-invalid.js'])
+        self.assertTrue({'harness/assert.js', 'harness/sta.js', 'harness/compareArray.js',
+                         'harness/propertyHelper.js'} <= files.keys())
+        with self.assertRaisesRegex(ValueError, 'inventory'):
+            runner.load_corpus(directory, 'functions')
+
+    def test_rest_policy_is_separate_and_only_adds_rest_parameters(self):
+        self.assertEqual(runner.REST_PARAMETER_FEATURES,
+                         runner.FUNCTION_FEATURES | {'rest-parameters'})
+        self.assertNotIn('rest-parameters', runner.FUNCTION_FEATURES)
+        rest = sample(b'/*---\nfeatures: [rest-parameters]\n---*/\nfunction f(...args){}')
+        self.assertIsNone(runner.unsupported_reason(rest, runner.REST_PARAMETER_FEATURES))
+        for profile, policy in runner.PROFILE_FEATURES.items():
+            if profile != 'rest-parameters':
+                self.assertIn('rest-parameters', runner.unsupported_reason(rest, policy))
+        for feature in ('destructuring-binding', 'new.target', 'eval', 'async-functions', 'generators'):
+            case = sample(('/*---\nfeatures: [' + feature + ']\n---*/\n').encode())
+            self.assertIn(feature, runner.unsupported_reason(case, runner.REST_PARAMETER_FEATURES))
+
+    def test_rest_preflight_keeps_previous_checks_and_rejects_disabled_assertions(self):
+        directory = runner.ROOT / 'tests/upstream/test262-rest-parameters'
+        _, files, _, _, _ = runner.load_corpus(directory, 'rest-parameters')
+        with patch.object(runner, 'bounded_process', return_value=(0, response('complete'), b'')):
+            previous = runner.harness_preflight(files, Path('/fake'), 1, 'functions')
+            results = runner.harness_preflight(files, Path('/fake'), 1, 'rest-parameters')
+        self.assertEqual(len(previous), 48)
+        self.assertEqual(results[:48], previous)
+        self.assertEqual(len(results), 64)
+        rest = results[48:]
+        self.assertEqual(sum(result['verified'] for result in rest), 8)
+        self.assertEqual({result['name'] for result in rest if not result['verified']},
+                         {'rest-array-mismatch', 'rest-index-mismatch',
+                          'rest-unmapped-mismatch', 'rest-length-mismatch'})
+        self.assertEqual({result['result']['mode'] for result in rest}, {'sloppy', 'strict'})
+
+    def test_rest_import_verifies_pinned_blobs_without_filtering_unimplemented_files(self):
+        directory = runner.ROOT / 'tests/upstream/test262-rest-parameters'
+        _, files, _, _, _ = runner.load_corpus(directory, 'rest-parameters')
+        raw = f'https://raw.githubusercontent.com/{importer.REPOSITORY}/{importer.REVISION}/'
+        inventory = [dict(type='file', name=Path(path).name,
+                          sha=importer.hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest())
+                     for path, data in files.items() if path.startswith('test/')]
+        listing_url = (f'https://api.github.com/repos/{importer.REPOSITORY}/contents/'
+                       f'test/language/rest-parameters?ref={importer.REVISION}')
+        def fetch(url):
+            if url == listing_url:
+                return json.dumps(inventory).encode()
+            self.assertTrue(url.startswith(raw))
+            return files[url[len(raw):]]
+        with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch), contextlib.redirect_stdout(io.StringIO()):
+            output = Path(temporary)
+            importer.import_corpus(output, 'rest-parameters')
+            _, imported, cases, _, _ = runner.load_corpus(output, 'rest-parameters')
+            self.assertEqual(imported, files)
+            self.assertEqual(len(cases), 22)
+        inventory[0]['sha'] = '0' * 40
+        with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch):
+            with self.assertRaisesRegex(ValueError, 'pinned Git blob'):
+                importer.import_corpus(Path(temporary), 'rest-parameters')
+            self.assertFalse(any(Path(temporary).iterdir()))
+
     def test_function_inventory_keeps_all_directories_modes_and_negative_tests(self):
         directory = runner.ROOT / 'tests/upstream/test262-functions'
         manifest, files, cases, fixtures, _ = runner.load_corpus(directory, 'functions')

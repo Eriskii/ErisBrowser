@@ -1,0 +1,1842 @@
+{
+  "suite": "pinned-test262-rest-parameters-selection",
+  "full_test262_conformance": false,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "corpus_manifest_sha256": "a3e15e061fc8c9cac736e081554f3e42b497d805ebfd7647ea49736cb2d83be5",
+  "runner_policy": {
+    "format": 2,
+    "supported_features": [
+      "String.fromCodePoint",
+      "arrow-function",
+      "computed-property-names",
+      "default-parameters",
+      "for-in-order",
+      "object-methods",
+      "rest-parameters",
+      "trailing-function-commas",
+      "well-formed-json-stringify"
+    ],
+    "negative_intrinsic_errors": [
+      "Error",
+      "EvalError",
+      "RangeError",
+      "ReferenceError",
+      "SyntaxError",
+      "TypeError",
+      "URIError"
+    ],
+    "strict": true,
+    "modules": false,
+    "async_completion": false,
+    "host_hooks": false,
+    "timeout_seconds": 3.0
+  },
+  "runner_policy_sha256": "b579a37e261689714f4b2e41fe933581aa246348bafa391f2dba7c8aec4edacc",
+  "source_files": 11,
+  "source_tests": 11,
+  "negative_source_tests": 1,
+  "fixture_files": [],
+  "mode_cases": 22,
+  "counts": {
+    "unsupported": 20,
+    "passed": 2
+  },
+  "seconds": 0.115,
+  "binary_sha256": "77003eefd7a91dccb2b418e0d59bc234091edbfb1a7bb6a217de63cd1ece8b69",
+  "harness_preflight": [
+    {
+      "name": "success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:success",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "7fe7d94d9e84765c39e095ba88d5f54cb937df0d780785e185ff5dfd3bb74291",
+        "source_sha256": "2485acdeffa6a0eaa6c2483198a4384021f8b3dda5fbe0e31889ab4a21637849",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "assert-false",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:assert-false",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "6470c0827c0de6472342233bbb189008df60df75393ac98843660e2729be2e41",
+        "source_sha256": "d0d1f50a5cc28c1ea72f93a59ff43e2de631ed7fb9add9964dd1f29a38d065f4",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:same-value",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a4d7d481cb816dc706a6b8f84e7dbcea5f1d7c6393094ab35cb6d47ab0d39494",
+        "source_sha256": "22ae75695ff709309cb80f46b82cf58252826926b3bd8e3fadfae56c72c2f031",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "signed-zero",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:signed-zero",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "8e329999cda16ae14b530d61dcc7794f2b572e0809370e4c6b8ee9faff63d074",
+        "source_sha256": "862870d24485db4c8763181434fcc45886c6504cb6c14f24740f0f8107cf665a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "not-same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:not-same-value",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "738a0dd64663125af510063f604bec8e8f914f340be2cd3f430eaf1e5cf2cc0c",
+        "source_sha256": "524aa491b0239cd572a71a972f22557d333509659a55e3cb894bee0534ae8415",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "throws-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:throws-success",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "bdf648715c68784de062689b85db48546e44e14dc31df5644ff1e420e5623d1c",
+        "source_sha256": "06adf2351bff48eebd68184c6e4a9fb74e0c00f9acc6e14f4d35808a2a5017a7",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "throws-wrong-type",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:throws-wrong-type",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "d0f5b25203199d201f006e90e7bb6b78023d5bb7ea803581daf5caf2d52fcf9c",
+        "source_sha256": "99982c4b3bd8f707222e78c1742c855cbc5428ffb83171661392e6e461be1336",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "throws-missing",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:throws-missing",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "29bc8742a93e811f9680ef2098bfcb4984e86673ea3da41c377e907067cde255",
+        "source_sha256": "25cc89bd353c7f8aa2fb23afb2e1f2e52324e36a385647a498e157e5ccd29f5c",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "array-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:array-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a883850a23bc0f55e12bb5f3d09780b9935eb141e2af3892dabc5b5a35172096",
+        "source_sha256": "fccb44163731695919a45cb9cfbb1c99f5c508778937eac46f5fa5e97f5f60ea",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-success",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "b35a36c10460a813dbcc5a40b356d1ae07c2d54c272b35a717dd6bddf667c51e",
+        "source_sha256": "5f3a5de6c5896c29b489bec40463fbf565e86f993f00ca214a7e65241be28f04",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-writable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-writable",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "6cbcbbbcae8167c890124971bd07ceb81f6daf8e286ad12025bb4a82a0672944",
+        "source_sha256": "58e50c0eb345267a90f035e104dc54b60455d981e5364651b5e0c1e4fda0deb5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-enumerable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-enumerable",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "2a651b1aefd71f4a017d564e91b842569e6cd78d0145d03b20b48d0836c3c56d",
+        "source_sha256": "6a029d9d45542346ad7bf0b5036fa32346522b049c4925588dc40db894ea19a5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-configurable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-configurable",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "e18cf4dde2cd44993c84b43d6a01e68c021d56365f4e15673fe1fa2bdb774cd8",
+        "source_sha256": "f0ec83e690c6d34e68680b9d10a7931ee5b4fba6810ee920902881494202d2e6",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-success",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "3c5650218df0ef937e5a3ecd6f9c7460f960e61f0c9832515a63b77b832d78cd",
+        "source_sha256": "2485acdeffa6a0eaa6c2483198a4384021f8b3dda5fbe0e31889ab4a21637849",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-assert-false",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-assert-false",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "11fe2e709b0565e340d83176bc248895795e43c8d9eaa47619dcd939374937e7",
+        "source_sha256": "d0d1f50a5cc28c1ea72f93a59ff43e2de631ed7fb9add9964dd1f29a38d065f4",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-same-value",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "03efed7bd86096fb67e4d8e0941b4768e61e8f7068c95f9b5ac63c86a95ee96f",
+        "source_sha256": "22ae75695ff709309cb80f46b82cf58252826926b3bd8e3fadfae56c72c2f031",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-signed-zero",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-signed-zero",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "b4ce5d0baa51a09beb8d14cc65bf66e805a4f48e03ad306bd044f6bf0fba7631",
+        "source_sha256": "862870d24485db4c8763181434fcc45886c6504cb6c14f24740f0f8107cf665a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-not-same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-not-same-value",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "615fa57db6e08e455e124d6f3eaf118f2e4eab20161f51aab723923c9a0f8d36",
+        "source_sha256": "524aa491b0239cd572a71a972f22557d333509659a55e3cb894bee0534ae8415",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-throws-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-throws-success",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "bafcbdea8809ac7c1628fe502c6a060a0e2ad7ca9a8598faf3e902734673c4e4",
+        "source_sha256": "06adf2351bff48eebd68184c6e4a9fb74e0c00f9acc6e14f4d35808a2a5017a7",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-throws-wrong-type",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-throws-wrong-type",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "f83aeacb9dc37b65255ab7bfd51a0d8052e8da2915d8fb7fe06777292780b078",
+        "source_sha256": "99982c4b3bd8f707222e78c1742c855cbc5428ffb83171661392e6e461be1336",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-throws-missing",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-throws-missing",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "a6d552fcd92dddd52b6239ebe82177f95648349f2b07847a36307aada0579e35",
+        "source_sha256": "25cc89bd353c7f8aa2fb23afb2e1f2e52324e36a385647a498e157e5ccd29f5c",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-array-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-array-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "8f8086b6d6f7fc051eac7270c9ca4be3f85cbcb5ae935dabd4c6d264cc917338",
+        "source_sha256": "fccb44163731695919a45cb9cfbb1c99f5c508778937eac46f5fa5e97f5f60ea",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-success",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "a46db4f2087865126ceac90ba93407c3877f00c0c698d8f4e604111f395780ba",
+        "source_sha256": "5f3a5de6c5896c29b489bec40463fbf565e86f993f00ca214a7e65241be28f04",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-writable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-writable",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "412b91a8d1093f526f34b58ad29668225c387226712184ef8d79e36cd470bccd",
+        "source_sha256": "58e50c0eb345267a90f035e104dc54b60455d981e5364651b5e0c1e4fda0deb5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-enumerable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-enumerable",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "c571e812c4ddab362d7caabd07b4b3ed427f9962e91e728c61b272fe7f8004eb",
+        "source_sha256": "6a029d9d45542346ad7bf0b5036fa32346522b049c4925588dc40db894ea19a5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-configurable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-configurable",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "634b734df32d4d581162c58f74ddb831dc337fce988dd52d74f23fca1d93a126",
+        "source_sha256": "f0ec83e690c6d34e68680b9d10a7931ee5b4fba6810ee920902881494202d2e6",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-receiver",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-receiver",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "9e721632d9643b3489c411eb2d5a3f87a08c3bea9f9cf9a673ebb102b24a5974",
+        "source_sha256": "d0e7bb44576a0bf890774b1736e79cd0166a2e32fe030a3ba86e5015f2c244bf",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-unbound-write",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-unbound-write",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "2916d638664aa431071561dff0ba0337d5f005f08424cfe8c67d07c93c0cf792",
+        "source_sha256": "150659db8ea36d09b80df3f046ab341af7b1f64b691051fa9c866e2da4c5314d",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-readonly-write",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-readonly-write",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "937d5d1a945b824e6d6d60304aea3337db809214469240d437ba6081a9bec231",
+        "source_sha256": "a1cce38d2daa07cbcc33a2d2db74f0e720a5f0deee03767480c699db33b4882b",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-delete",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-delete",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "2c630739c1458f6444b889a03992a2be2de36b0e00dd56522bf0844fe2c54a2c",
+        "source_sha256": "cb997e967d015ba97c122c1ea746bdd0fbcb2659573645728918558d1349a965",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-arguments",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-arguments",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "54df002c837ca5ed70e5d5b49dc0375e40bbfb6b88580dfdc66b5ee7bec44171",
+        "source_sha256": "a77f7981af7c3910476440f16ac4c18b7ffaf381714ad33e70fa0d0d5c953887",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-tdz",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-tdz",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "cf503031beb1832405ad98ea6ca81c8b6de9bb1f90143829dac8788b2affbbfd",
+        "source_sha256": "2e0d83e7123f5fa749a3f10484c95aa95eac4140438da59faa19edfb82d1061f",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "default-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:default-success",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "82b80cdf1cdcc2ec8fb1c9bd6ace2dcd540ba391d959cf083ab5ace442ef5e0d",
+        "source_sha256": "acfcd6201bff90759b13b0276f1f7c00982a31eb79e9c9d22587ceeb39a9134d",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "default-supplied-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:default-supplied-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "e69250cda45ab9f80a4f0c2ecd7ea15209eed41213ff4610f7407cecc13dd081",
+        "source_sha256": "ede9b0250b701f299500f10fb47a0e8e86544a934bf7a4cefb9f3c13f1d9d5cb",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "default-tdz",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:default-tdz",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "768723261502ee8534efc56fe525f881bab0c2367e1e7028a151f9c836d8cebd",
+        "source_sha256": "bf57df5e389758237bb7aa9297b47b93a3de2ce08cef6b9de251e56123028f69",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "default-tdz-wrong-type",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:default-tdz-wrong-type",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "c0783de93dc3e50766b01a42fbc03160b1b906826f5afe9dfa54c67b36460c7a",
+        "source_sha256": "921361281c3cd98f6c2f18d3e30e670642c2320c6c32076ec90625230a16f6e4",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "default-arguments",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:default-arguments",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "8817173e74852a9bc0886519cc132464d0da34a246f6ae3a691caaeb65badcea",
+        "source_sha256": "22c07e9eab737c4232eff76e20b66d51fa013f119287f5034bf422e172e731e1",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "default-arguments-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:default-arguments-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "d97f751782718cf44572ae35d36829cd553bf9b1a9637d0ebbf52c6eb6d40f56",
+        "source_sha256": "35d227cf53afe96782f4f5aadfe0e1a90e219dc564388dcf975dadaec96cc8a7",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "default-scope",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:default-scope",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "bd5308bee3c86ff9676ceeaa62648443bc2b08f842453faa66e36d1e69436eff",
+        "source_sha256": "c5ff7179b79a67fabbeed23ae037e4c632ebacbd8d0b1d6c11f6b4a5788f47f2",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "default-scope-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:default-scope-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "3fe7112d9de9a0d85892f6fa93be994d93a3a7937166bc2b45c2dc4b072ca36a",
+        "source_sha256": "b2912efca666555a48e83f7c63303fd72424d2ed62dfdf60425c73c6f7fa6ca8",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "default-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:default-success",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "116452c227231152efcd069272271097593812e9b9d5ba6b86900c2668449411",
+        "source_sha256": "acfcd6201bff90759b13b0276f1f7c00982a31eb79e9c9d22587ceeb39a9134d",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "default-supplied-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:default-supplied-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "732e5bb4763a96fccbe80bed670454a1d156745ddcdce13b9f8370c6b68e1e04",
+        "source_sha256": "ede9b0250b701f299500f10fb47a0e8e86544a934bf7a4cefb9f3c13f1d9d5cb",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "default-tdz",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:default-tdz",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "0aa8035e6dfc89b09262a3d26335b6507a9bbe7f7f7d1e33c1b1420a3de24d25",
+        "source_sha256": "bf57df5e389758237bb7aa9297b47b93a3de2ce08cef6b9de251e56123028f69",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "default-tdz-wrong-type",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:default-tdz-wrong-type",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "0adb6300a09ad129da99b25ae696196e17f6ff4d726c26ec0f52ea040c0c43a9",
+        "source_sha256": "921361281c3cd98f6c2f18d3e30e670642c2320c6c32076ec90625230a16f6e4",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "default-arguments",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:default-arguments",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "26a0401e0141eeccf655fc7868315c665ebaaaa1ac5b1eb27c4c2c2db8d6ae12",
+        "source_sha256": "22c07e9eab737c4232eff76e20b66d51fa013f119287f5034bf422e172e731e1",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "default-arguments-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:default-arguments-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "af189fc7543be3fbe634b02134e9ab48f1c9b586615e784622fc782eccd43a52",
+        "source_sha256": "35d227cf53afe96782f4f5aadfe0e1a90e219dc564388dcf975dadaec96cc8a7",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "default-scope",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:default-scope",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "e2745cbb2f6ccf4e1504b52c24ecde4d7a7fdd65fd4d99b138d4333ba66b3c3a",
+        "source_sha256": "c5ff7179b79a67fabbeed23ae037e4c632ebacbd8d0b1d6c11f6b4a5788f47f2",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "default-scope-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:default-scope-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "dda2bb1209f51fa714a1c5255945a34d85de010d8bb94f31b2c6fe66eb4e41f1",
+        "source_sha256": "b2912efca666555a48e83f7c63303fd72424d2ed62dfdf60425c73c6f7fa6ca8",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "rest-array",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:rest-array",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "4e127a809e9684cd519141fb0c74d5cc4ae158b418f0b6cad4198a0ac4659d21",
+        "source_sha256": "d02da0cfebb446d2923b64d0eb754a42e60f7b8ae995d4e9ff6945020100572b",
+        "expected_negative": null,
+        "status": "unsupported",
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "rest parameters are not implemented",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "rest-array-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:rest-array-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "d4ba68cc2cac0ec38a9c50c1b5cf18b182e271745466991815bef4ca4e447897",
+        "source_sha256": "f03786196acbf5ec1dbeaec563fa306c5561db07efa72bbf9383ad7e7fedbebc",
+        "expected_negative": null,
+        "status": "unsupported",
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "rest parameters are not implemented",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "rest-index",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:rest-index",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "83532f7efdbcded4e88c82a7d1e9bc3dfd5c8c405299942f5d7bce9e43199cea",
+        "source_sha256": "51cb280a40bf0430db02ca498d5309932764e85891c1ad1b0acf4b78781b65a7",
+        "expected_negative": null,
+        "status": "unsupported",
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "rest parameters are not implemented",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "rest-index-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:rest-index-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "fdb3eee0d65815700cf5d3cedafd7e96534af144353e841d8c50f39bada9b20b",
+        "source_sha256": "a63172b7cf673a06d682aca99033e1a1c996c095325b83fcde83b51feb12dcce",
+        "expected_negative": null,
+        "status": "unsupported",
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "rest parameters are not implemented",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "rest-unmapped",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:rest-unmapped",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "9ff78df1e919e8664cf68e3402b0f2261e656608d89227f46d087160f19a1259",
+        "source_sha256": "3791ab451625ba204aa1f6ba077302e4f2fff5cdefcb769e392b1bae4adbeb83",
+        "expected_negative": null,
+        "status": "unsupported",
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "rest parameters are not implemented",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "rest-unmapped-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:rest-unmapped-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "1abff454787a192baa3d11693c0c88c4da8d2f29c2316cd404da5deb24ecebf9",
+        "source_sha256": "0fc2100bb7bdb6755541cabb1c4cfadca6bf737a0da24ec189c398f7e2570e4b",
+        "expected_negative": null,
+        "status": "unsupported",
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "rest parameters are not implemented",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "rest-length",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:rest-length",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "79d98b490bd223f710528bc64dca839aa59b2cec437db22c2907db1cc4b0bc5c",
+        "source_sha256": "891a285ba3aa204d7f5ed57bf029d284d90a1066d29264bcbf29006523b90d9d",
+        "expected_negative": null,
+        "status": "unsupported",
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "rest parameters are not implemented",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "rest-length-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:rest-length-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "8d0f8a7d31996a217a9d084cf3d945db203f4c56bae4c2e1f9de456f3f009fb9",
+        "source_sha256": "50e52bfca43cdeedbfddd4915821699187cc6f7da3a37d543b8cdfa17d048178",
+        "expected_negative": null,
+        "status": "unsupported",
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "rest parameters are not implemented",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "rest-array",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:rest-array",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "e4cd937b1dda584d271b9a393070d1cc91aba946a2978e67c17a97f57930ca1c",
+        "source_sha256": "d02da0cfebb446d2923b64d0eb754a42e60f7b8ae995d4e9ff6945020100572b",
+        "expected_negative": null,
+        "status": "unsupported",
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "rest parameters are not implemented",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "rest-array-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:rest-array-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "644836404ae08fdd383f0694b34602e2e5879c99cd4c48597664ca56527b769f",
+        "source_sha256": "f03786196acbf5ec1dbeaec563fa306c5561db07efa72bbf9383ad7e7fedbebc",
+        "expected_negative": null,
+        "status": "unsupported",
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "rest parameters are not implemented",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "rest-index",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:rest-index",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "fb298229884aa140c8970c3ecdc13a5bb6d131a25914f5a33c4bda728f7689e8",
+        "source_sha256": "51cb280a40bf0430db02ca498d5309932764e85891c1ad1b0acf4b78781b65a7",
+        "expected_negative": null,
+        "status": "unsupported",
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "rest parameters are not implemented",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "rest-index-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:rest-index-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "3c793bc95f17c7ba6c9d3219639b43cf8a44c6d1f7d6efa656b4068d6fdc1b33",
+        "source_sha256": "a63172b7cf673a06d682aca99033e1a1c996c095325b83fcde83b51feb12dcce",
+        "expected_negative": null,
+        "status": "unsupported",
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "rest parameters are not implemented",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "rest-unmapped",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:rest-unmapped",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "282b8f5367fe3bc9a76625a280ce5398c83fcf7634610df0ee37527c1fec0043",
+        "source_sha256": "3791ab451625ba204aa1f6ba077302e4f2fff5cdefcb769e392b1bae4adbeb83",
+        "expected_negative": null,
+        "status": "unsupported",
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "rest parameters are not implemented",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "rest-unmapped-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:rest-unmapped-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "01c24a7b3a58c60c39386572740a395d38c03b02f0256e79638730926847136d",
+        "source_sha256": "0fc2100bb7bdb6755541cabb1c4cfadca6bf737a0da24ec189c398f7e2570e4b",
+        "expected_negative": null,
+        "status": "unsupported",
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "rest parameters are not implemented",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "rest-length",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:rest-length",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "8648320989a5cacfa93b6f8b7e17e667541edffdedf1d04f385c04b23b3d9a1e",
+        "source_sha256": "891a285ba3aa204d7f5ed57bf029d284d90a1066d29264bcbf29006523b90d9d",
+        "expected_negative": null,
+        "status": "unsupported",
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "rest parameters are not implemented",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "rest-length-mismatch",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:rest-length-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "3e7347fa01b3a40680ff150bf6d03baa14196f8bbd4c817141913de4e4645a5e",
+        "source_sha256": "50e52bfca43cdeedbfddd4915821699187cc6f7da3a37d543b8cdfa17d048178",
+        "expected_negative": null,
+        "status": "unsupported",
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "rest parameters are not implemented",
+          "harness": ""
+        }
+      }
+    }
+  ],
+  "harness_preflight_passed": false,
+  "regressions": [],
+  "improvements": [],
+  "cases": [
+    {
+      "id": "test/language/rest-parameters/array-pattern.js:sloppy",
+      "file": "test/language/rest-parameters/array-pattern.js",
+      "mode": "sloppy",
+      "case_sha256": "a4eca5ed4565fe5ef10f929e052b2f524888dc62137f56def126b09560719e91",
+      "source_sha256": "be31dd32641fababc321629af07af851ae76300599ebc6d3dc04352b87b6f038",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "parse",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "destructuring rest parameters are not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/array-pattern.js:strict",
+      "file": "test/language/rest-parameters/array-pattern.js",
+      "mode": "strict",
+      "case_sha256": "76be215d91389605a3fe07331f1797f1aaef4228153c465e6bd103c895df3e03",
+      "source_sha256": "be31dd32641fababc321629af07af851ae76300599ebc6d3dc04352b87b6f038",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "parse",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "destructuring rest parameters are not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/arrow-function.js:sloppy",
+      "file": "test/language/rest-parameters/arrow-function.js",
+      "mode": "sloppy",
+      "case_sha256": "12f113a9e27ee1dd64c3453d8df3a37b05f64f5ec5f01ec812e72a31a10cbefb",
+      "source_sha256": "3d79e77d33b7f714e6f8e46c8121306d35daa8bc573444057beda31dc5dff885",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "parse",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "rest parameters are not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/arrow-function.js:strict",
+      "file": "test/language/rest-parameters/arrow-function.js",
+      "mode": "strict",
+      "case_sha256": "b2030ab8aefb66789dca5d4f6283f9b6f663e33d15e6cb2bcdd42d58d25bed20",
+      "source_sha256": "3d79e77d33b7f714e6f8e46c8121306d35daa8bc573444057beda31dc5dff885",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "parse",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "rest parameters are not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/expected-argument-count.js:sloppy",
+      "file": "test/language/rest-parameters/expected-argument-count.js",
+      "mode": "sloppy",
+      "case_sha256": "7956b7db873485fa6f9fef588347a4c7dc2a9b19a3e50b2a80b5326cb6cdbb4e",
+      "source_sha256": "d720321fcb4a2704dab99eec486d10179d683cb336b1433fb2e6b9124d19af00",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "parse",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "rest parameters are not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/expected-argument-count.js:strict",
+      "file": "test/language/rest-parameters/expected-argument-count.js",
+      "mode": "strict",
+      "case_sha256": "cb4f181bc5957e435bba2b59dc6884f32b78acb544829441c591f6cb27818f93",
+      "source_sha256": "d720321fcb4a2704dab99eec486d10179d683cb336b1433fb2e6b9124d19af00",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "parse",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "rest parameters are not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/no-alias-arguments.js:sloppy",
+      "file": "test/language/rest-parameters/no-alias-arguments.js",
+      "mode": "sloppy",
+      "case_sha256": "2cc71ea303dff707a29fe1e978d975ed3fe5abf1cba55ccae545bac1873525b6",
+      "source_sha256": "64c39d0b4f67a43fd8d5c381e2c54064cc91d9cff1de529d34cf4f33c2cd0695",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "parse",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "rest parameters are not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/no-alias-arguments.js:strict",
+      "file": "test/language/rest-parameters/no-alias-arguments.js",
+      "mode": "strict",
+      "case_sha256": "c9106f83e6c8325b2527613c3eca027c5a92498bf680c5887f2294ed078d4a99",
+      "source_sha256": "64c39d0b4f67a43fd8d5c381e2c54064cc91d9cff1de529d34cf4f33c2cd0695",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "parse",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "rest parameters are not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/object-pattern.js:sloppy",
+      "file": "test/language/rest-parameters/object-pattern.js",
+      "mode": "sloppy",
+      "case_sha256": "54d151a94f9ffd14957a6980ecf9c803a447d6aea80474b5cd7599b9909e9541",
+      "source_sha256": "3ab0743806cd7ae6fdabc3bc6e2a7e5c957932d5ba154fb049a939f98c6b357d",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "parse",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "destructuring rest parameters are not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/object-pattern.js:strict",
+      "file": "test/language/rest-parameters/object-pattern.js",
+      "mode": "strict",
+      "case_sha256": "92b21977f8954728839f627647c22dc1080f295e5d4c7de00a47e6202fb31684",
+      "source_sha256": "3ab0743806cd7ae6fdabc3bc6e2a7e5c957932d5ba154fb049a939f98c6b357d",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "parse",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "destructuring rest parameters are not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/position-invalid.js:sloppy",
+      "file": "test/language/rest-parameters/position-invalid.js",
+      "mode": "sloppy",
+      "case_sha256": "6275fc8be8246a095c79ac1086c8799a1ded5ba5c3f038049827f88ae427547e",
+      "source_sha256": "d6a0932b0eacde30f9625b6723f5db14f497bd8919f97cfc7290e728c377bbfe",
+      "expected_negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "status": "passed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "rest parameter must be last and cannot have an initializer",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/position-invalid.js:strict",
+      "file": "test/language/rest-parameters/position-invalid.js",
+      "mode": "strict",
+      "case_sha256": "db2429becdff73c89bb1b10733acdb20154822ec8496ca40801817bfb4a9db7d",
+      "source_sha256": "d6a0932b0eacde30f9625b6723f5db14f497bd8919f97cfc7290e728c377bbfe",
+      "expected_negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "status": "passed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "rest parameter must be last and cannot have an initializer",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/rest-index.js:sloppy",
+      "file": "test/language/rest-parameters/rest-index.js",
+      "mode": "sloppy",
+      "case_sha256": "dacc75522066be45d113c1e1584f0955c1d164d2ac83040764511fa80980e651",
+      "source_sha256": "637882c3e67e9fd2390f09268cc2aac182e895306d90e5facfc582b5536b152e",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "parse",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "rest parameters are not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/rest-index.js:strict",
+      "file": "test/language/rest-parameters/rest-index.js",
+      "mode": "strict",
+      "case_sha256": "f0aade9a40e8a3a5a5b17ac037ed0d65a1b8dac02dcc4c05d01e326aae9c00d7",
+      "source_sha256": "637882c3e67e9fd2390f09268cc2aac182e895306d90e5facfc582b5536b152e",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "parse",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "rest parameters are not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/rest-parameters-apply.js:sloppy",
+      "file": "test/language/rest-parameters/rest-parameters-apply.js",
+      "mode": "sloppy",
+      "case_sha256": "c23b4610a7802a3a010bea9ac0d35ead2b1a460fb66aaf68d07feaa919998ec8",
+      "source_sha256": "7edaa1de6cf3f9daa583161287a246ad21ec2b6bfc25973908075643380573b1",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "parse",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "rest parameters are not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/rest-parameters-apply.js:strict",
+      "file": "test/language/rest-parameters/rest-parameters-apply.js",
+      "mode": "strict",
+      "case_sha256": "16c740cccecbf251df6299d70b905649c4b276a51dd0fa24ff0fb048bb433c16",
+      "source_sha256": "7edaa1de6cf3f9daa583161287a246ad21ec2b6bfc25973908075643380573b1",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "parse",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "rest parameters are not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/rest-parameters-call.js:sloppy",
+      "file": "test/language/rest-parameters/rest-parameters-call.js",
+      "mode": "sloppy",
+      "case_sha256": "a39fffb324b5f32bf4273b8dc955a1fcd7ce11ba04b9bf676904c8f025da76ce",
+      "source_sha256": "e0678892347dda21d5e57d41f8c4fae5aed9635c67ce6e7edfeaf57669677eed",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "parse",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "rest parameters are not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/rest-parameters-call.js:strict",
+      "file": "test/language/rest-parameters/rest-parameters-call.js",
+      "mode": "strict",
+      "case_sha256": "818ebafc3e2baf7cd519119a7626cdb4543f025193f313336d0807fe7f0bbc25",
+      "source_sha256": "e0678892347dda21d5e57d41f8c4fae5aed9635c67ce6e7edfeaf57669677eed",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "parse",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "rest parameters are not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/rest-parameters-produce-an-array.js:sloppy",
+      "file": "test/language/rest-parameters/rest-parameters-produce-an-array.js",
+      "mode": "sloppy",
+      "case_sha256": "480df76fc1fc671dfff51b993852c49f6da31af472f3482a9c7dbd359a3ceafd",
+      "source_sha256": "c29da74bdd7e2c98ca8560fd9abd1bae48c4d5b6dfbe0aa8180c26d764016e41",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "parse",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "rest parameters are not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/rest-parameters-produce-an-array.js:strict",
+      "file": "test/language/rest-parameters/rest-parameters-produce-an-array.js",
+      "mode": "strict",
+      "case_sha256": "0f67cf12e500801010c781e42755198c33f02f68b5fc247b7b7cbf6fa0c30d6f",
+      "source_sha256": "c29da74bdd7e2c98ca8560fd9abd1bae48c4d5b6dfbe0aa8180c26d764016e41",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "parse",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "rest parameters are not implemented",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/with-new-target.js:sloppy",
+      "file": "test/language/rest-parameters/with-new-target.js",
+      "mode": "sloppy",
+      "case_sha256": "4ab88ebad2ad4de8821523726b476139c9ff1c854841fed69fe732f06f4f8952",
+      "source_sha256": "82dd7aa1fdf64a7fafc3160bc769fdb1b7fbabbb092342452be3a5586a8abb6c",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "parse",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "'class' is not supported",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/language/rest-parameters/with-new-target.js:strict",
+      "file": "test/language/rest-parameters/with-new-target.js",
+      "mode": "strict",
+      "case_sha256": "e3310f3ec156c98ea3d1ccbcd86093bf8e400a13de8e43579c80dafdc1aed366",
+      "source_sha256": "82dd7aa1fdf64a7fafc3160bc769fdb1b7fbabbb092342452be3a5586a8abb6c",
+      "expected_negative": null,
+      "status": "unsupported",
+      "observation": {
+        "status": "unsupported",
+        "phase": "parse",
+        "error_type": "UnsupportedFeature",
+        "error_identity": "",
+        "message": "'class' is not supported",
+        "harness": ""
+      }
+    }
+  ]
+}

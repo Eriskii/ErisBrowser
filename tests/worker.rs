@@ -105,6 +105,12 @@ fn default_parameters_and_event_callbacks_survive_the_confined_worker() {
     );
 }
 
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn rest_parameters_and_event_callbacks_survive_the_confined_worker() {
+    assert_six_scripted_samples_through_worker(include_str!("fixtures/rest-parameters.html"), 123);
+}
+
 fn assert_six_scripted_samples_through_worker(source: &str, generation: u64) {
     use eris::graphics::{Canvas, Color, Fonts};
     let fixture = Fixture::new(source);

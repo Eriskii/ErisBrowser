@@ -19,6 +19,11 @@ after an event callback. Script assertions cover omitted arguments, temporal
 dead zones, body/parameter scope separation, unmapped arguments, lexical arrows,
 default function names and length. Page and confined-worker tests check pixels.
 
+`rest-parameters.html` checks dense fresh arrays, unmapped arguments, default/rest
+scope and temporal dead zones, lexical arrows, methods, bound construction,
+apply and event callback arguments. Page and confined-worker tests check six
+green initial samples and blue clicked samples. It loads no external assets.
+
 `calc-resize.html` uses mixed length-percentage widths and margins. Page and
 confined-worker tests verify exact geometry and pixels at 320 and 520 pixels,
 then repeat after CSSOM mutation, including a resize back to the smaller viewport.

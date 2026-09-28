@@ -28,10 +28,13 @@ FUNCTION_DIRECTORIES = {
     'expressions/function': 69, 'statements/function': 256,
     'expressions/arrow-function': 55, 'expressions/object/method-definition': 283,
 }
+REST_PARAMETER_DIRECTORIES = {'rest-parameters': 11}
 PROFILES = {'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
-            'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES}
+            'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
+            'rest-parameters': REST_PARAMETER_DIRECTORIES}
 PROFILE_ROOTS = {'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
-                 'template-literal': 'test/language', 'functions': 'test/language'}
+                 'template-literal': 'test/language', 'functions': 'test/language',
+                 'rest-parameters': 'test/language'}
 
 
 def corpus_name(profile):
@@ -155,7 +158,7 @@ def import_corpus(output, profile='string-json'):
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
         sources = dict(zip(paths, pool.map(lambda path: fetch(raw + path), paths)))
     harness = {'assert.js', 'sta.js'}
-    if profile in {'template-literal', 'functions'}:
+    if profile in {'template-literal', 'functions', 'rest-parameters'}:
         # These unchanged helpers support the assertion-integrity preflight,
         # even when no selected test requests them directly.
         harness.update({'propertyHelper.js', 'compareArray.js'})
@@ -181,6 +184,7 @@ def import_corpus(output, profile='string-json'):
         'regexp': 'all direct .js files in four RegExp prototype directories; no implementation',
         'template-literal': 'all direct .js files in language/expressions/template-literal; no implementation',
         'functions': 'all direct .js files in four language function/arrow/object-method directories; no implementation',
+        'rest-parameters': 'all direct .js files in language/rest-parameters; no implementation',
     }[profile]
     manifest = dict(format=1, repository=f'https://github.com/{REPOSITORY}', revision=REVISION,
                     scope=scope,
