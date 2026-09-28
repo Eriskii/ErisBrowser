@@ -176,6 +176,12 @@ fn compound_bitwise_assignments_preserve_pixels_and_callbacks_through_the_worker
 
 #[test]
 #[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn relational_conversions_preserve_order_and_callbacks_through_the_worker() {
+    assert_six_scripted_samples_through_worker(include_str!("fixtures/relational.html"), 169);
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
 fn uri_transforms_preserve_unicode_and_callbacks_through_the_worker() {
     assert_six_scripted_samples_through_worker(include_str!("fixtures/uri.html"), 167);
 }

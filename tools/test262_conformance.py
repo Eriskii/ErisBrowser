@@ -35,6 +35,7 @@ COMPOUND_ASSIGNMENT_FEATURES = SUPPORTED_FEATURES.copy()
 ADDITION_FEATURES = SUPPORTED_FEATURES.copy()
 LOGICAL_ASSIGNMENT_FEATURES = SUPPORTED_FEATURES | {'logical-assignment-operators'}
 URI_FEATURES = SUPPORTED_FEATURES.copy()
+RELATIONAL_FEATURES = SUPPORTED_FEATURES.copy()
 PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -45,7 +46,7 @@ PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES
                     'numeric-conversion': NUMERIC_CONVERSION_FEATURES,
                     'numeric-parsing': NUMERIC_PARSING_FEATURES,
                     'compound-assignment': COMPOUND_ASSIGNMENT_FEATURES,
-                    'addition': ADDITION_FEATURES, 'logical-assignment': LOGICAL_ASSIGNMENT_FEATURES, 'uri': URI_FEATURES}
+                    'addition': ADDITION_FEATURES, 'logical-assignment': LOGICAL_ASSIGNMENT_FEATURES, 'uri': URI_FEATURES, 'relational': RELATIONAL_FEATURES}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -414,6 +415,44 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                 for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
                     source = guard + setup + f'assert.sameValue({actual},{value});'
                     variants.append(('array-sort-' + name + suffix, source, expected, mode))
+    if profile == 'relational':
+        for operator, label, lexical, numeric in (
+                ('<','lt','false','true'), ('>','gt','true','false'),
+                ('<=','le','false','true'), ('>=','ge','true','false')):
+            guard = f"assert.sameValue(new String('2'){operator}new String('10'),{lexical});"
+            pairs = [
+                ('types', f"assert.sameValue(new Number(2){operator}new String('10'),{numeric});"
+                 f"assert.sameValue({{valueOf:function(){{return '2';}}}}{operator}'10',{lexical});"
+                 f"assert.sameValue(NaN{operator}1,false);assert.sameValue(1{operator}undefined,false);",
+                 f"'2'{operator}'10'", lexical, numeric),
+                ('live-order', "var trace='',right={valueOf:function(){throw 'stale';}},left={get valueOf(){trace+='L';"
+                 "return function(){assert.sameValue(this,left);trace+='l';right.valueOf=function(){trace+='R';return '10';};return {};};},"
+                 "get toString(){trace+='T';return function(){assert.sameValue(this,left);trace+='t';return '2';};}};"
+                 "function a(){trace+='A';return left;}function b(){trace+='B';return right;}"
+                 f"assert.sameValue(a(){operator}b(),{lexical});",
+                 'trace', "'ABLlTtR'", "'ALlTtBR'"),
+                ('abrupt', "var trace='',reason={},seen,left={get valueOf(){trace+='L';throw reason;}},"
+                 "right={get valueOf(){trace+='R';throw 'unused';}};function b(){trace+='B';return right;}"
+                 f'try{{left{operator}b();}}catch(e){{seen=e;}}assert.sameValue(seen,reason);',
+                 'trace', "'BL'", "'BLR'"),
+                ('utf16', f"assert.sameValue(new String('\\uD800\\uDC00'){operator}'\\uE000',{numeric});"
+                 f"assert.sameValue('a'{operator}'aa',{numeric});",
+                 f"new String('\\uD800'){operator}'\\uDC00'", numeric, lexical),
+                ('fallback', f"assert.sameValue({{valueOf:null,toString:function(){{return '2';}}}}{operator}'10',{lexical});"
+                 f"assert.throws(TypeError,function(){{return Object.create(null){operator}1;}});"
+                 f"assert.throws(TypeError,function(){{return {{valueOf:function(){{return {{}};}},toString:function(){{return {{}};}}}}{operator}1;}});",
+                 f"null{operator}1", numeric, lexical),
+                ('chain', "var trace='',left={valueOf:function(){trace+='L';return '2';}},right={valueOf:function(){trace+='R';return '10';}};"
+                 "function a(){trace+='A';return left;}function b(){trace+='B';return right;}"
+                 "function c(){trace+='C';return {valueOf:function(){trace+='V';return 3;}};}"
+                 f'assert.sameValue(a(){operator}b(){operator}c(),{numeric});',
+                 'trace', "'ABLRCV'", "'ABCLRV'"),
+            ]
+            for mode in ('sloppy','strict'):
+                for name,setup,actual,good,bad in pairs:
+                    for suffix,value,expected in (('',good,'passed'),('-mismatch',bad,'failed')):
+                        variants.append(('relational-'+label+'-'+name+suffix,
+                                         guard+setup+f'assert.sameValue({actual},{value});',expected,mode))
     if profile == 'uri':
         for function in ('encodeURI', 'encodeURIComponent', 'decodeURI', 'decodeURIComponent'):
             encoding = function.startswith('encode')

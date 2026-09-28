@@ -1,6 +1,63 @@
 # Validation record
 
+## Ordinary relational comparisons
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **878 Rust tests** pass with `--include-ignored`: 710 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 51 pipeline and 42 confined-worker tests. None remain
+ignored. All **139 Python checks** and **57 exact pixel references** pass.
+
+The [implementation](../tests/conformance/relational.md) converts both saved
+operands in source order, then selects UTF-16 string ordering or numeric
+comparison. This fixes boxed strings and objects that produce strings while
+preserving live conversion hooks, receivers, abrupt identity and unordered NaN.
+Seven focused groups cover conversion, chains, Unicode boundaries and resource
+accounting. The page and confined-worker fixtures retain six green then six blue
+samples after a click. No resource ceiling changes.
+
+The [complete comparison inventory](../tests/conformance/test262-relational.md)
+retains **184 sources / 364 modes / 128 preflights**. It moves from **292 passed /
+eight failed / 64 unsupported** to **300 passed / 64 unsupported**, with all
+128 controls. The eight gains are boxed-string comparisons in both modes of each
+operator. BigInt/Symbol metadata and dynamic-eval prerequisites remain explicit.
+There are no resource stops, harness errors, timeouts or adapter errors in this
+profile. Actual recording and a subsequent gate reproduce every candidate
+observation; CI now protects these passes and the unchanged inventory.
+
+All seventeen previous profiles preserve every observation, all **6,104 case
+and 1,344 preflight fingerprints**, and their policies. Existing resource stops
+remain nonpassing. HTML stays at 3,868 matches, two mismatches and six unsupported
+modes.
+
+The **15,000-case** mutation smoke run reports zero caught panics or invariant
+failures: 5,000 accepted HTML, 618 accepted/4,382 rejected scripts and
+3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and
+display-list size is 1,173 commands; 17 cases stop within paint limits. The new
+seed changes the inventory, so counts are not acceptance-rate comparisons.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+| --- | --- |
+| `eris-browser` | `45455784bcc92aa20c46e7c09f17dcb52a4270703df2701745d1116cff30ecbc` |
+| `eris-js` | `a1697ac1b5fa8c70b6c8dc2990bc473bcd5680e892b6f9cfbdc8fc5788740157` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `2dd59004ebcc6122242e3528c339e5e20ad960249fbc9815bdec363c2a3448b9` |
+
+Source-input SHA-256:
+`6838e6c870859dfd799bfe7204775ad81c61e4bd27ef2c8ca7f996ad429f4e88`.
+Local records are `artifacts/*relational*`. Agent sessions remain unavailable;
+this is local validation, not independent-agent review. No native window,
+Vulkan or Chromium performance measurement is assigned to this checkpoint.
+Full compatibility, production security and the requested performance threshold
+remain unverified.
+
 ## URI encoding and decoding
+
+Published checkpoint `bf0fa0d` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36444302786),
+including the updated global-values gate, Rust 1.88 and the Vulkan probe.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **869 Rust tests** pass with `--include-ignored`: 703 library,

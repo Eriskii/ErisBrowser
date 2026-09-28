@@ -111,6 +111,12 @@ Strict/readonly/const rules apply only to actual writes. The complete profile
 retains 72 passes, twelve class/Symbol failures and 48 unsupported modes, with
 104 verified controls.
 
+[Relational comparisons](../tests/conformance/relational.md) convert both operands
+in source order before choosing UTF-16 string or numeric ordering. Live hooks,
+boxed strings, abrupt completion and unordered NaN are covered. The four complete
+upstream directories retain 300 passes and 64 unsupported variants, with 128
+controls. BigInt, Symbol and broader exotic conversions remain incomplete.
+
 [Ordinary addition](../tests/conformance/addition.md) converts both saved operands
 left-to-right before selecting numeric addition or UTF-16 concatenation. Live
 valueOf/toString hooks, boxed values, exact exceptions and += reference order are

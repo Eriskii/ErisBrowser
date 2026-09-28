@@ -58,6 +58,11 @@ fn array_reductions_preserve_direction_live_values_and_accumulator_identity() {
 }
 
 #[test]
+fn relational_conversions_preserve_utf16_order_and_callback_pixels() {
+    assert_six_scripted_samples(include_str!("fixtures/relational.html"));
+}
+
+#[test]
 fn uri_transforms_preserve_unicode_errors_and_callback_pixels() {
     assert_six_scripted_samples(include_str!("fixtures/uri.html"));
 }

@@ -1,0 +1,33 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Relational conversion and UTF-16 ordering</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#lt{left:0}#gt{left:50px}#le{left:100px}#ge{left:150px}#order{left:200px}#utf16{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="lt" class="sample"></div><div id="gt" class="sample"></div>
+<div id="le" class="sample"></div><div id="ge" class="sample"></div>
+<div id="order" class="sample"></div><div id="utf16" class="sample"></div>
+<button id="change" type="button">Compare through callbacks</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+function apply(color){
+  const a=new String('2'),b=new String('10');
+  check((a<b)===false&&a<10,'less than');mark('lt',color);
+  check(a>b&&(a>10)===false,'greater than');mark('gt',color);
+  check((a<=b)===false&&a<=2&&(NaN<=2)===false,'less or equal');mark('le',color);
+  check(a>=b&&a>=2&&(NaN>=2)===false,'greater or equal');mark('ge',color);
+  let trace='';const right={valueOf(){throw new Error('stale');}},left={valueOf(){trace+='L';right.valueOf=function(){trace+='R';return '10';};return '2';}};
+  function first(){trace+='A';return left;}function second(){trace+='B';return right;}
+  check(first()>second()&&trace==='ABLR','source conversion order');mark('order',color);
+  check(new String('\uD800\uDC00')<'\uE000'&&new String('\uD800')<'\uDC00','UTF16 order');
+  check(new String('a')<'aa'&&new String('same')>='same','prefix and equal');mark('utf16',color);
+}
+apply('green');document.getElementById('result').textContent='ready';document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  apply('blue');const count=Number(new String('a')<'b')+Number(new String('2')>'10')+Number(new String('x')<='x');
+  check(count===3,'callback comparisons');document.getElementById('result').textContent=String(count);document.body.className='clicked';
+};
+</script>

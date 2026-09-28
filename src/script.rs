@@ -6022,7 +6022,7 @@ impl Runtime {
             Expr::Function(code) => self.function_value(code, env),
         }
     }
-    fn addition_primitive(&mut self, value: Value, doc: &mut Document) -> Result<Value> {
+    fn number_hint_primitive(&mut self, value: Value, doc: &mut Document) -> Result<Value> {
         if !js_object(&value) {
             return Ok(value);
         }
@@ -6061,8 +6061,8 @@ impl Runtime {
         }
     }
     fn addition_value(&mut self, left: Value, right: Value, doc: &mut Document) -> Result<Value> {
-        let left = self.addition_primitive(left, doc)?;
-        let right = self.addition_primitive(right, doc)?;
+        let left = self.number_hint_primitive(left, doc)?;
+        let right = self.number_hint_primitive(right, doc)?;
         if !matches!(left, Value::String(_)) && !matches!(right, Value::String(_)) {
             return Ok(Value::Number(left.number() + right.number()));
         }
@@ -6084,6 +6084,41 @@ impl Runtime {
         units.extend_from_slice(right.units());
         Ok(Value::String(JsString::from(units)))
     }
+    fn relational_value(
+        &mut self,
+        op: &str,
+        left: Value,
+        right: Value,
+        doc: &mut Document,
+    ) -> Result<Value> {
+        // All four operators convert in source order. Reversing the comparison
+        // for > and <= must not reverse getters or calls in ToPrimitive.
+        let left = self.number_hint_primitive(left, doc)?;
+        let right = self.number_hint_primitive(right, doc)?;
+        for value in [&left, &right] {
+            if let Value::String(text) = value {
+                self.work(1 + text.len() / 8)?;
+            }
+        }
+        let (x, y) = if matches!(op, ">" | "<=") {
+            (right, left)
+        } else {
+            (left, right)
+        };
+        let less = if let (Value::String(a), Value::String(b)) = (&x, &y) {
+            Some(a < b)
+        } else {
+            let a = self.primitive_number_value(x)?;
+            let b = self.primitive_number_value(y)?;
+            a.partial_cmp(&b).map(|ordering| ordering == Ordering::Less)
+        };
+        // An unordered numeric result is false for every relational operator.
+        Ok(Value::Bool(if matches!(op, "<=" | ">=") {
+            less == Some(false)
+        } else {
+            less == Some(true)
+        }))
+    }
     fn binary_value(
         &mut self,
         op: &str,
@@ -6093,6 +6128,9 @@ impl Runtime {
     ) -> Result<Value> {
         if op == "+" {
             return self.addition_value(left, right, doc);
+        }
+        if matches!(op, "<" | ">" | "<=" | ">=") {
+            return self.relational_value(op, left, right, doc);
         }
         for value in [&left, &right] {
             if let Value::String(text) = value {
@@ -6174,15 +6212,6 @@ impl Runtime {
                 equal
             }));
         }
-        if let (Value::String(a), Value::String(b)) = (&left, &right) {
-            match op {
-                "<" => return Ok(Value::Bool(a < b)),
-                ">" => return Ok(Value::Bool(a > b)),
-                "<=" => return Ok(Value::Bool(a <= b)),
-                ">=" => return Ok(Value::Bool(a >= b)),
-                _ => {}
-            }
-        }
         let a = self.number_value(left, doc)?;
         let b = self.number_value(right, doc)?;
         Ok(match op {
@@ -6191,10 +6220,6 @@ impl Runtime {
             "/" => Value::Number(a / b),
             "%" => Value::Number(a % b),
             "**" => Value::Number(a.powf(b)),
-            "<" => Value::Bool(a < b),
-            ">" => Value::Bool(a > b),
-            "<=" => Value::Bool(a <= b),
-            ">=" => Value::Bool(a >= b),
             "&" => Value::Number((to_i32(a) & to_i32(b)) as f64),
             "|" => Value::Number((to_i32(a) | to_i32(b)) as f64),
             "^" => Value::Number((to_i32(a) ^ to_i32(b)) as f64),
@@ -17599,6 +17624,215 @@ mod tests {
                 runtime.execute(source, &mut document)
             };
             result.unwrap_or_else(|error| panic!("strict={strict}: {error}"));
+        }
+    }
+
+    fn relational_modes(source: &str) {
+        for (op, lexical, numeric, inclusive) in [
+            ("<", "false", "true", "false"),
+            (">", "true", "false", "false"),
+            ("<=", "false", "true", "true"),
+            (">=", "true", "false", "true"),
+        ] {
+            for strict in [false, true] {
+                let (mut runtime, mut doc) = upstream_harness();
+                let source = source
+                    .replace("@OP@", op)
+                    .replace("@LEX@", lexical)
+                    .replace("@NUM@", numeric)
+                    .replace("@EQ@", inclusive);
+                let result = if strict {
+                    runtime.execute_strict(&source, &mut doc)
+                } else {
+                    runtime.execute(&source, &mut doc)
+                };
+                result.unwrap_or_else(|e| panic!("{op} strict={strict}: {e}"));
+            }
+        }
+    }
+
+    #[test]
+    fn relational_selects_string_or_numeric_order_after_both_conversions() {
+        relational_modes(
+            r#"
+            assert.sameValue(new String('2')@OP@new String('10'),@LEX@);
+            assert.sameValue({valueOf:function(){return '2';}}@OP@'10',@LEX@);
+            assert.sameValue('2'@OP@{valueOf:function(){return '10';}},@LEX@);
+            assert.sameValue(new Number(2)@OP@new String('10'),@NUM@);
+            assert.sameValue(new String('2')@OP@new Number(10),@NUM@);
+            assert.sameValue([2]@OP@[10],@LEX@);assert.sameValue([2]@OP@10,@NUM@);
+            assert.sameValue({valueOf:null,toString:function(){return '2';}}@OP@'10',@LEX@);
+            var calls=0,object={valueOf:function(){calls++;return calls===1?'2':'10';}};
+            assert.sameValue(object@OP@object,@LEX@);assert.sameValue(calls,2);
+        "#,
+        );
+    }
+
+    #[test]
+    fn relational_preserves_source_order_live_fallbacks_and_captured_values() {
+        relational_modes(
+            r#"
+            var trace='',right={valueOf:function(){throw 'stale';}},left={get valueOf(){trace+='L';return function(){
+                assert.sameValue(this,left);trace+='l';right.valueOf=function(){trace+='R';return '10';};
+                Object.defineProperty(left,'toString',{get:function(){trace+='T';return function(){assert.sameValue(this,left);trace+='t';return '2';};},configurable:true});return {};};},
+                toString:function(){throw 'stale';}};
+            function a(){trace+='A';return left;}function b(){trace+='B';return right;}
+            assert.sameValue(a()@OP@b(),@LEX@);assert.sameValue(trace,'ABLlTtR');
+            trace='';left={valueOf:function(){trace+='L';return '2';}};right={valueOf:function(){trace+='R';return '10';}};
+            function c(){trace+='C';return {valueOf:function(){trace+='V';return 3;}};}
+            assert.sameValue(a()@OP@b()@OP@c(),@NUM@);assert.sameValue(trace,'ABLRCV');
+            var original={valueOf:function(){trace+='L';return '2';}},selected=original;
+            function first(){trace+='A';return selected;}function second(){trace+='B';selected={valueOf:function(){throw 'unused';}};return '10';}
+            trace='';assert.sameValue(first()@OP@second(),@LEX@);assert.sameValue(trace,'ABL');
+        "#,
+        );
+    }
+
+    #[test]
+    fn relational_abrupt_completion_stops_later_hooks_and_preserves_identity() {
+        relational_modes(
+            r#"
+            var trace='',reason={},seen,left={get valueOf(){trace+='L';throw reason;}},right={get valueOf(){trace+='R';throw 'unused';}};
+            function rhs(){trace+='B';return right;}
+            try{left@OP@rhs();}catch(e){seen=e;}assert.sameValue(seen,reason);assert.sameValue(trace,'BL');
+            left={valueOf:function(){trace+='L';return '2';}};right={get valueOf(){trace+='R';throw reason;}};
+            trace='';seen=undefined;try{left@OP@right;}catch(e){seen=e;}assert.sameValue(seen,reason);assert.sameValue(trace,'LR');
+            trace='';seen=undefined;try{left@OP@(function(){trace+='B';throw reason;})();}catch(e){seen=e;}
+            assert.sameValue(seen,reason);assert.sameValue(trace,'B');
+            assert.throws(TypeError,function(){return Object.create(null)@OP@1;});
+            assert.throws(TypeError,function(){return {valueOf:function(){return {};},toString:function(){return {};}}@OP@1;});
+        "#,
+        );
+    }
+
+    #[test]
+    fn relational_utf16_prefixes_nan_and_numeric_boundaries() {
+        relational_modes(
+            r#"
+            assert.sameValue(new String('\uD800\uDC00')@OP@'\uE000',@NUM@);
+            assert.sameValue('\uD800'@OP@new String('\uDC00'),@NUM@);
+            assert.sameValue(new String('a')@OP@'aa',@NUM@);assert.sameValue(''@OP@new String('a'),@NUM@);
+            assert.sameValue(new String('same')@OP@'same',@EQ@);
+            assert.sameValue(new String('10')@OP@'2',@NUM@);assert.sameValue(new String(' 2 ')@OP@10,@NUM@);
+            assert.sameValue(new String('0x10')@OP@17,@NUM@);
+            assert.sameValue(null@OP@1,@NUM@);assert.sameValue(false@OP@true,@NUM@);
+            assert.sameValue(-Infinity@OP@Infinity,@NUM@);assert.sameValue(-0@OP@0,@EQ@);
+            assert.sameValue(Infinity@OP@Infinity,@EQ@);assert.sameValue(-Infinity@OP@-Infinity,@EQ@);
+            assert.sameValue(NaN@OP@1,false);assert.sameValue(1@OP@NaN,false);
+            assert.sameValue(undefined@OP@0,false);assert.sameValue(0@OP@undefined,false);
+            assert.sameValue(new String('no number')@OP@1,false);assert.sameValue(1@OP@new String('no number'),false);
+            assert.sameValue('\uD800'@OP@1,false);assert.sameValue(1@OP@'\uD800',false);
+        "#,
+        );
+    }
+
+    #[test]
+    fn relational_string_work_and_numeric_storage_are_charged_before_use() {
+        for (op, expected) in [("<", true), (">", false), ("<=", true), (">=", false)] {
+            let mut runtime = Runtime::new();
+            let mut doc = Document::parse("");
+            let a = Value::String(JsString::from(vec![97; 32]));
+            let b = Value::String(JsString::from(vec![98; 33]));
+            runtime.allocated = MAX_HEAP;
+            runtime.steps = 9;
+            assert!(
+                runtime
+                    .relational_value(op, a.clone(), b.clone(), &mut doc)
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(runtime.allocated, MAX_HEAP);
+            runtime.steps = 10;
+            assert_eq!(
+                runtime.relational_value(op, a, b, &mut doc).unwrap(),
+                Value::Bool(expected)
+            );
+            assert_eq!((runtime.steps, runtime.allocated), (0, MAX_HEAP));
+            runtime.steps = MAX_STEPS;
+            runtime.allocated = MAX_HEAP - 36;
+            assert_eq!(
+                runtime
+                    .relational_value(
+                        op,
+                        Value::String("12".into()),
+                        Value::Number(13.0),
+                        &mut doc
+                    )
+                    .unwrap(),
+                Value::Bool(expected)
+            );
+            assert_eq!(runtime.allocated, MAX_HEAP);
+            assert!(
+                runtime
+                    .relational_value(
+                        op,
+                        Value::String("12".into()),
+                        Value::Number(13.0),
+                        &mut doc
+                    )
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(runtime.allocated, MAX_HEAP + 36);
+        }
+    }
+
+    #[test]
+    fn relational_both_hooks_precede_large_string_resource_checks() {
+        for op in ["<", ">", "<=", ">="] {
+            let mut runtime = Runtime::new();
+            let mut doc = Document::parse("");
+            runtime.execute("var text='',seen=false;var right={valueOf:function(){seen=true;return text;}};",&mut doc).unwrap();
+            let text = Value::String(JsString::from(vec![97; MAX_STRING]));
+            runtime.environments[0]
+                .bindings
+                .get_mut("text")
+                .unwrap()
+                .value = text.clone();
+            let right = runtime.environments[0].bindings["right"].value.clone();
+            runtime.steps = 1024;
+            assert!(
+                runtime
+                    .relational_value(op, text, right, &mut doc)
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(
+                runtime.environments[0].bindings["seen"].value,
+                Value::Bool(true)
+            );
+            assert_eq!((runtime.calls, runtime.stack_units), (0, 0));
+        }
+    }
+
+    #[test]
+    fn relational_recursive_and_looping_conversion_remains_uncatchable() {
+        for op in ["<", ">", "<=", ">="] {
+            for body in ["while(true){}".to_owned(), format!("return object{op}1;")] {
+                let mut runtime = Runtime::new();
+                let mut doc = Document::parse("");
+                runtime
+                    .execute("var caught=false,finished=false;", &mut doc)
+                    .unwrap();
+                let source = format!(
+                    "var object={{valueOf:function(){{{body}}}}};try{{object{op}1;finished=true;}}catch(e){{caught=true;}}"
+                );
+                assert!(
+                    runtime
+                        .execute(&source, &mut doc)
+                        .unwrap_err()
+                        .is_resource_limit()
+                );
+                assert_eq!(
+                    runtime.environments[0].bindings["caught"].value,
+                    Value::Bool(false)
+                );
+                assert_eq!(
+                    runtime.environments[0].bindings["finished"].value,
+                    Value::Bool(false)
+                );
+                assert_eq!((runtime.calls, runtime.stack_units), (0, 0));
+            }
         }
     }
 
