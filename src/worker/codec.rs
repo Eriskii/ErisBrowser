@@ -21,7 +21,7 @@ pub(super) const MAX_REQUEST: usize = 18 * 1024 * 1024;
 const MAX_STRING: usize = 16 * 1024 * 1024;
 const MAX_IMAGES: usize = 64 * 1024 * 1024;
 const MAX_COMMANDS: usize = 200_000;
-const MAGIC: &[u8] = b"ERW5";
+const MAGIC: &[u8] = b"ERW6";
 type Result<T> = std::result::Result<T, String>;
 
 pub(super) fn read_frame(input: &mut impl Read, limit: usize) -> Result<Vec<u8>> {
@@ -488,6 +488,11 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
             DrawCommand::PopClip => e.byte(1),
             DrawCommand::PushFixed => e.byte(6),
             DrawCommand::PopFixed => e.byte(7),
+            DrawCommand::PushOpacity { opacity } => {
+                e.byte(8);
+                e.f32(*opacity);
+            }
+            DrawCommand::PopOpacity => e.byte(9),
             DrawCommand::Rect {
                 rect,
                 color,
@@ -734,7 +739,13 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
     let mut commands = Vec::new();
     let mut text_bytes = 8 * 1024 * 1024;
     let mut glyphs = 500_000usize;
-    // One typed stack prevents PopClip from escaping a fixed viewport scope.
+    // A shared typed stack prevents closures from escaping another scope kind.
+    #[derive(PartialEq)]
+    enum Scope {
+        Clip,
+        Fixed,
+        Opacity,
+    }
     let mut scopes = Vec::new();
     for _ in 0..d.count(MAX_COMMANDS)? {
         let command = match d.byte()? {
@@ -742,11 +753,11 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
                 if scopes.len() >= 128 {
                     return Err("IPC clip depth exceeded".into());
                 }
-                scopes.push(false);
+                scopes.push(Scope::Clip);
                 DrawCommand::PushClip { rect: d.rect()? }
             }
             1 => {
-                if scopes.pop() != Some(false) {
+                if scopes.pop() != Some(Scope::Clip) {
                     return Err("unbalanced IPC clips".into());
                 }
                 DrawCommand::PopClip
@@ -817,14 +828,31 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
                 if scopes.len() >= 128 {
                     return Err("IPC display scope depth exceeded".into());
                 }
-                scopes.push(true);
+                scopes.push(Scope::Fixed);
                 DrawCommand::PushFixed
             }
             7 => {
-                if scopes.pop() != Some(true) {
+                if scopes.pop() != Some(Scope::Fixed) {
                     return Err("unbalanced IPC fixed scopes".into());
                 }
                 DrawCommand::PopFixed
+            }
+            8 => {
+                if scopes.len() >= 128 {
+                    return Err("IPC display scope depth exceeded".into());
+                }
+                let opacity = d.f32()?;
+                if !(0.0..=1.0).contains(&opacity) {
+                    return Err("invalid IPC group opacity".into());
+                }
+                scopes.push(Scope::Opacity);
+                DrawCommand::PushOpacity { opacity }
+            }
+            9 => {
+                if scopes.pop() != Some(Scope::Opacity) {
+                    return Err("unbalanced IPC opacity scopes".into());
+                }
+                DrawCommand::PopOpacity
             }
             _ => return Err("unknown IPC display command".into()),
         };
@@ -1658,6 +1686,32 @@ mod tests {
             }],
             vec![DrawCommand::PopClip],
             vec![DrawCommand::PopFixed],
+            vec![DrawCommand::PopOpacity],
+            vec![DrawCommand::PushOpacity { opacity: 0.5 }],
+            vec![
+                DrawCommand::PushOpacity { opacity: f32::NAN },
+                DrawCommand::PopOpacity,
+            ],
+            vec![
+                DrawCommand::PushOpacity { opacity: -0.1 },
+                DrawCommand::PopOpacity,
+            ],
+            vec![
+                DrawCommand::PushOpacity { opacity: 1.1 },
+                DrawCommand::PopOpacity,
+            ],
+            vec![
+                DrawCommand::PushOpacity { opacity: 0.5 },
+                DrawCommand::PushFixed,
+                DrawCommand::PopOpacity,
+                DrawCommand::PopFixed,
+            ],
+            vec![
+                DrawCommand::PushClip { rect },
+                DrawCommand::PushOpacity { opacity: 0.5 },
+                DrawCommand::PopClip,
+                DrawCommand::PopOpacity,
+            ],
             vec![DrawCommand::PushFixed],
             vec![
                 DrawCommand::PushFixed,
@@ -1730,6 +1784,60 @@ mod tests {
             }
         }
         assert_eq!(clips, 0);
+    }
+    #[test]
+    fn opacity_snapshot_scopes_preserve_nested_fixed_geometry() {
+        let mut original = reply();
+        original.snapshot.as_mut().unwrap().layout.commands = vec![
+            DrawCommand::PushOpacity { opacity: 0.5 },
+            DrawCommand::PushFixed,
+            DrawCommand::PushClip {
+                rect: Rect {
+                    x: 2.0,
+                    y: 3.0,
+                    width: 20.0,
+                    height: 30.0,
+                },
+            },
+            DrawCommand::PushOpacity { opacity: 0.25 },
+            DrawCommand::Rect {
+                rect: Rect {
+                    x: 4.0,
+                    y: 5.0,
+                    width: 10.0,
+                    height: 12.0,
+                },
+                color: Color::BLACK,
+                radius: 0.0,
+            },
+            DrawCommand::PopOpacity,
+            DrawCommand::PopClip,
+            DrawCommand::PopFixed,
+            DrawCommand::PopOpacity,
+        ];
+        let bytes = encode_reply(&original).unwrap();
+        let result = decode_reply(&bytes).unwrap();
+        assert_eq!(encode_reply(&result).unwrap(), bytes);
+        let mut oversized = original;
+        oversized.snapshot.as_mut().unwrap().layout.commands = (0..43)
+            .flat_map(|_| {
+                [
+                    DrawCommand::PushFixed,
+                    DrawCommand::PushOpacity { opacity: 0.5 },
+                    DrawCommand::PushClip {
+                        rect: Rect::default(),
+                    },
+                ]
+            })
+            .chain((0..43).flat_map(|_| {
+                [
+                    DrawCommand::PopClip,
+                    DrawCommand::PopOpacity,
+                    DrawCommand::PopFixed,
+                ]
+            }))
+            .collect();
+        assert!(decode_reply(&encode_reply(&oversized).unwrap()).is_err());
     }
     #[test]
     fn snapshot_round_trip_and_truncation_rejection() {

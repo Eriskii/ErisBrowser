@@ -1985,6 +1985,8 @@ struct ScriptObject {
     parameter_map: BTreeMap<JsString, (usize, String)>,
     arguments: bool,
     regexp: Option<Rc<RegExp>>,
+    event: Option<usize>,
+    event_target: bool,
 }
 impl ScriptObject {
     fn get(&self, key: impl Into<JsString>) -> Option<&Value> {
@@ -2044,6 +2046,58 @@ struct JsonWriter {
     output: Vec<u16>,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
+enum EventTarget {
+    Window,
+    Document,
+    Node(NodeId),
+    Object(usize),
+}
+impl EventTarget {
+    fn value(self) -> Value {
+        match self {
+            Self::Window => Value::Window,
+            Self::Document => Value::Document,
+            Self::Node(id) => Value::Node(id),
+            Self::Object(id) => Value::Object(id),
+        }
+    }
+}
+struct EventState {
+    event_type: JsString,
+    bubbles: bool,
+    cancelable: bool,
+    composed: bool,
+    detail: Value,
+    custom: bool,
+    target: Value,
+    current_target: Value,
+    phase: u8,
+    stopped: bool,
+    immediate: bool,
+    canceled: bool,
+    passive: bool,
+    dispatching: bool,
+    initialized: bool,
+    trusted: bool,
+    timestamp: f64,
+    path: Vec<EventTarget>,
+}
+#[derive(Clone)]
+struct EventListener {
+    callback: Value,
+    capture: bool,
+    once: bool,
+    passive: bool,
+    removed: bool,
+    handler: bool,
+}
+struct EventHandler {
+    listener: Option<usize>,
+    attribute: Option<String>,
+    assigned: bool,
+}
+
 pub struct Runtime {
     environments: Vec<Environment>,
     functions: Vec<Function>,
@@ -2055,9 +2109,12 @@ pub struct Runtime {
     prototypes: BTreeMap<&'static str, usize>,
     native_properties: BTreeMap<String, usize>,
     function_prototype: usize,
-    handlers: BTreeMap<(NodeId, String), Vec<Value>>,
-    property_handlers: BTreeMap<(NodeId, String), Value>,
-    ready: Vec<(String, Value)>,
+    events: Vec<EventState>,
+    listeners: Vec<EventListener>,
+    event_listeners: BTreeMap<(EventTarget, JsString), Vec<usize>>,
+    event_handlers: BTreeMap<(EventTarget, JsString), EventHandler>,
+    readiness_fired: bool,
+    started: std::time::Instant,
     steps: usize,
     allocated: usize,
     calls: usize,
@@ -2113,6 +2170,10 @@ impl Runtime {
             "Array",
             "Function",
             "RegExp",
+            "Event",
+            "CustomEvent",
+            "EventTarget",
+            "DOMException",
             "Error",
             "TypeError",
             "SyntaxError",
@@ -2158,9 +2219,12 @@ impl Runtime {
             prototypes: BTreeMap::new(),
             native_properties: BTreeMap::new(),
             function_prototype: 0,
-            handlers: BTreeMap::new(),
-            property_handlers: BTreeMap::new(),
-            ready: Vec::new(),
+            events: Vec::new(),
+            listeners: Vec::new(),
+            event_listeners: BTreeMap::new(),
+            event_handlers: BTreeMap::new(),
+            readiness_fired: false,
+            started: std::time::Instant::now(),
             steps: MAX_STEPS,
             allocated: 2048,
             calls: 0,
@@ -2201,6 +2265,10 @@ impl Runtime {
             "RangeError",
             "EvalError",
             "URIError",
+            "Event",
+            "CustomEvent",
+            "EventTarget",
+            "DOMException",
         ] {
             let Value::Object(id) = self.object_ordered([])? else {
                 unreachable!()
@@ -2219,6 +2287,10 @@ impl Runtime {
             self.prototypes.insert(name, id);
         }
         self.function_prototype = self.functions.len();
+        self.objects[self.prototypes["CustomEvent"]].prototype =
+            Some(Value::Object(self.prototypes["Event"]));
+        self.objects[self.prototypes["DOMException"]].prototype =
+            Some(Value::Object(self.prototypes["Error"]));
         self.functions.push(Function {
             code: FunctionCode {
                 params: Vec::new(),
@@ -2271,6 +2343,10 @@ impl Runtime {
             "RangeError",
             "EvalError",
             "URIError",
+            "Event",
+            "CustomEvent",
+            "EventTarget",
+            "DOMException",
         ] {
             let constructor = Self::native(name, Value::Window);
             let prototype = self.prototypes[name];
@@ -2278,7 +2354,11 @@ impl Runtime {
                 ("name".into(), Value::String(name.into())),
                 (
                     "length".into(),
-                    Value::Number(if name == "RegExp" { 2.0 } else { 1.0 }),
+                    Value::Number(match name {
+                        "RegExp" => 2.0,
+                        "EventTarget" | "DOMException" => 0.0,
+                        _ => 1.0,
+                    }),
                 ),
                 (
                     "prototype".into(),
@@ -2470,6 +2550,7 @@ impl Runtime {
                 Property::data(Value::Number(value), false, false, false),
             );
         }
+        self.initialize_events()?;
         // Give every stored intrinsic method a stable ordinary property bag.
         let mut methods = Vec::new();
         for object in &self.objects {
@@ -2548,25 +2629,834 @@ impl Runtime {
         }
     }
 
-    pub fn dispatch_dom_content_loaded(&mut self, document: &mut Document) -> Result<()> {
-        self.steps = MAX_STEPS;
-        let callbacks = std::mem::take(&mut self.ready);
-        for (event_type, callback) in callbacks {
-            let event = self.object(BTreeMap::from([
-                ("type".into(), Value::String(JsString::from(event_type))),
-                ("target".into(), Value::Document),
-                ("currentTarget".into(), Value::Document),
-                ("defaultPrevented".into(), Value::Bool(false)),
-            ]))?;
-            self.call(callback, vec![event], Value::Document, document)?;
+    fn initialize_events(&mut self) -> Result<()> {
+        self.objects[self.native_properties["CustomEvent"]].prototype =
+            Some(Self::native("Event", Value::Window));
+        for (owner, key, length) in [
+            ("EventTarget", "addEventListener", 2),
+            ("EventTarget", "removeEventListener", 2),
+            ("EventTarget", "dispatchEvent", 1),
+            ("Event", "preventDefault", 0),
+            ("Event", "stopPropagation", 0),
+            ("Event", "stopImmediatePropagation", 0),
+            ("Event", "composedPath", 0),
+            ("Event", "initEvent", 1),
+            ("CustomEvent", "initCustomEvent", 1),
+        ] {
+            let value = self.intrinsic_function(&format!("{owner}.{key}"), key, length)?;
+            self.objects[self.prototypes[owner]].insert(key.into(), value);
+        }
+        for key in [
+            "type",
+            "target",
+            "srcElement",
+            "currentTarget",
+            "eventPhase",
+            "bubbles",
+            "cancelable",
+            "composed",
+            "defaultPrevented",
+            "timeStamp",
+            "cancelBubble",
+            "returnValue",
+            "detail",
+        ] {
+            let get =
+                self.intrinsic_function(&format!("Event.get.{key}"), &format!("get {key}"), 0)?;
+            let set = if matches!(key, "cancelBubble" | "returnValue") {
+                self.intrinsic_function(&format!("Event.set.{key}"), &format!("set {key}"), 1)?
+            } else {
+                Value::Undefined
+            };
+            let owner = if key == "detail" {
+                "CustomEvent"
+            } else {
+                "Event"
+            };
+            self.objects[self.prototypes[owner]].insert_property(
+                key.into(),
+                Property {
+                    value: PropertyValue::Accessor { get, set },
+                    enumerable: true,
+                    configurable: true,
+                },
+            );
+        }
+        self.intrinsic_function("Event.get.isTrusted", "get isTrusted", 0)?;
+        for (key, number) in [
+            ("NONE", 0.0),
+            ("CAPTURING_PHASE", 1.0),
+            ("AT_TARGET", 2.0),
+            ("BUBBLING_PHASE", 3.0),
+        ] {
+            for id in [self.prototypes["Event"], self.native_properties["Event"]] {
+                self.objects[id].insert_property(
+                    key.into(),
+                    Property::data(Value::Number(number), false, true, false),
+                );
+            }
+        }
+        for id in [
+            self.prototypes["DOMException"],
+            self.native_properties["DOMException"],
+        ] {
+            self.objects[id].insert_property(
+                "INVALID_STATE_ERR".into(),
+                Property::data(Value::Number(11.0), false, true, false),
+            );
         }
         Ok(())
     }
-
+    fn event_index(&self, value: &Value) -> Result<usize> {
+        if let Value::Object(id) = value
+            && let Some(index) = self.objects[*id].event
+        {
+            return Ok(index);
+        }
+        Err(ScriptError::type_error("receiver is not an Event"))
+    }
+    fn event_target(&self, value: &Value, doc: &Document) -> Result<EventTarget> {
+        match value {
+            Value::Window => Ok(EventTarget::Window),
+            Value::Document => Ok(EventTarget::Document),
+            Value::Node(id) if *id == doc.root => Ok(EventTarget::Document),
+            Value::Node(id) if *id < doc.nodes.len() => Ok(EventTarget::Node(*id)),
+            Value::Object(id) if self.objects[*id].event_target => Ok(EventTarget::Object(*id)),
+            _ => Err(ScriptError::type_error("receiver is not an EventTarget")),
+        }
+    }
+    fn event_object(
+        &mut self,
+        event_type: JsString,
+        bubbles: bool,
+        cancelable: bool,
+        composed: bool,
+        detail: Value,
+        custom: bool,
+    ) -> Result<Value> {
+        self.work(1 + event_type.len())?;
+        self.charge(std::mem::size_of::<EventState>() + 192)?;
+        let value = self.object_ordered([])?;
+        let Value::Object(id) = value else {
+            unreachable!()
+        };
+        self.objects[id].prototype = Some(Value::Object(
+            self.prototypes[if custom { "CustomEvent" } else { "Event" }],
+        ));
+        self.objects[id].event = Some(self.events.len());
+        self.objects[id].insert_property(
+            "isTrusted".into(),
+            Property {
+                value: PropertyValue::Accessor {
+                    get: Self::native("Event.get.isTrusted", Value::Undefined),
+                    set: Value::Undefined,
+                },
+                enumerable: true,
+                configurable: false,
+            },
+        );
+        self.events.push(EventState {
+            event_type,
+            bubbles,
+            cancelable,
+            composed,
+            detail,
+            custom,
+            target: Value::Null,
+            current_target: Value::Null,
+            phase: 0,
+            stopped: false,
+            immediate: false,
+            canceled: false,
+            passive: false,
+            dispatching: false,
+            initialized: true,
+            trusted: false,
+            timestamp: self.started.elapsed().as_millis() as f64,
+            path: Vec::new(),
+        });
+        Ok(value)
+    }
+    fn event_construct(&mut self, name: &str, args: &[Value], doc: &mut Document) -> Result<Value> {
+        if name == "EventTarget" {
+            let value = self.object_ordered([])?;
+            let Value::Object(id) = value else {
+                unreachable!()
+            };
+            self.objects[id].event_target = true;
+            self.objects[id].prototype = Some(Value::Object(self.prototypes["EventTarget"]));
+            return Ok(value);
+        }
+        if name == "DOMException" {
+            let message = self.json_text(
+                args.first()
+                    .filter(|value| **value != Value::Undefined)
+                    .cloned()
+                    .unwrap_or(Value::String("".into())),
+                doc,
+                &mut Vec::new(),
+            )?;
+            let name = self.json_text(
+                args.get(1)
+                    .filter(|value| **value != Value::Undefined)
+                    .cloned()
+                    .unwrap_or(Value::String("Error".into())),
+                doc,
+                &mut Vec::new(),
+            )?;
+            return self.dom_exception(name, message);
+        }
+        let Some(kind) = args.first() else {
+            return Err(ScriptError::type_error("Event requires a type"));
+        };
+        let kind = self.json_text(kind.clone(), doc, &mut Vec::new())?;
+        let init = args.get(1).cloned().unwrap_or(Value::Undefined);
+        if !matches!(init, Value::Null | Value::Undefined) && !js_object(&init) {
+            return Err(ScriptError::type_error(
+                "event initialization dictionary must be an object",
+            ));
+        }
+        let mut flags = [false; 3];
+        for (i, key) in ["bubbles", "cancelable", "composed"]
+            .into_iter()
+            .enumerate()
+        {
+            if js_object(&init) {
+                flags[i] = self.get(init.clone(), key, doc)?.truthy();
+            }
+        }
+        let custom = name == "CustomEvent";
+        let detail = if custom && js_object(&init) {
+            match self.get(init, "detail", doc)? {
+                Value::Undefined => Value::Null,
+                value => value,
+            }
+        } else {
+            Value::Null
+        };
+        self.event_object(kind, flags[0], flags[1], flags[2], detail, custom)
+    }
+    fn dom_exception(&mut self, name: JsString, message: JsString) -> Result<Value> {
+        let code = match name.to_utf8().as_deref() {
+            Ok("InvalidStateError") => 11.0,
+            Ok("NotSupportedError") => 9.0,
+            _ => 0.0,
+        };
+        let value = self.object_ordered([
+            ("name".into(), Value::String(name)),
+            ("message".into(), Value::String(message)),
+            ("code".into(), Value::Number(code)),
+        ])?;
+        let Value::Object(id) = value else {
+            unreachable!()
+        };
+        self.objects[id].prototype = Some(Value::Object(self.prototypes["DOMException"]));
+        for key in ["name", "message", "code"] {
+            self.objects[id].attributes(key, false, false, true);
+        }
+        Ok(value)
+    }
+    fn event_native(
+        &mut self,
+        name: &str,
+        receiver: Value,
+        args: &[Value],
+        doc: &mut Document,
+    ) -> Result<Value> {
+        let id = self.event_index(&receiver)?;
+        if let Some(key) = name.strip_prefix("get.") {
+            let state = &self.events[id];
+            return Ok(match key {
+                "type" => Value::String(state.event_type.clone()),
+                "target" | "srcElement" => state.target.clone(),
+                "currentTarget" => state.current_target.clone(),
+                "eventPhase" => Value::Number(state.phase.into()),
+                "bubbles" => Value::Bool(state.bubbles),
+                "cancelable" => Value::Bool(state.cancelable),
+                "composed" => Value::Bool(state.composed),
+                "defaultPrevented" => Value::Bool(state.canceled),
+                "cancelBubble" => Value::Bool(state.stopped),
+                "returnValue" => Value::Bool(!state.canceled),
+                "isTrusted" => Value::Bool(state.trusted),
+                "timeStamp" => Value::Number(state.timestamp),
+                "detail" if state.custom => state.detail.clone(),
+                _ => {
+                    return Err(ScriptError::type_error(
+                        "event getter receiver is incompatible",
+                    ));
+                }
+            });
+        }
+        let arg = |n| args.get(n).cloned().unwrap_or(Value::Undefined);
+        match name {
+            "preventDefault" | "set.returnValue" => {
+                if name == "preventDefault" || !arg(0).truthy() {
+                    let state = &mut self.events[id];
+                    if state.cancelable && !state.passive {
+                        state.canceled = true;
+                    }
+                }
+            }
+            "stopPropagation" => self.events[id].stopped = true,
+            "set.cancelBubble" => {
+                if arg(0).truthy() {
+                    self.events[id].stopped = true;
+                }
+            }
+            "stopImmediatePropagation" => {
+                self.events[id].stopped = true;
+                self.events[id].immediate = true;
+            }
+            "composedPath" => {
+                self.work(self.events[id].path.len())?;
+                self.charge(self.events[id].path.len() * std::mem::size_of::<Value>())?;
+                return self.array(
+                    self.events[id]
+                        .path
+                        .iter()
+                        .map(|target| target.value())
+                        .collect(),
+                );
+            }
+            "initEvent" | "initCustomEvent" => {
+                if args.is_empty() {
+                    return Err(ScriptError::type_error("initEvent requires a type"));
+                }
+                if name == "initCustomEvent" && !self.events[id].custom {
+                    return Err(ScriptError::type_error("receiver is not a CustomEvent"));
+                }
+                let event_type = self.json_text(arg(0), doc, &mut Vec::new())?;
+                if !self.events[id].dispatching {
+                    let state = &mut self.events[id];
+                    state.event_type = event_type;
+                    state.bubbles = arg(1).truthy();
+                    state.cancelable = arg(2).truthy();
+                    state.initialized = true;
+                    state.stopped = false;
+                    state.immediate = false;
+                    state.canceled = false;
+                    state.trusted = false;
+                    state.target = Value::Null;
+                    if name == "initCustomEvent" {
+                        state.detail = match arg(3) {
+                            Value::Undefined => Value::Null,
+                            value => value,
+                        };
+                    }
+                }
+            }
+            _ => return Err(ScriptError::unsupported("event method is not implemented")),
+        }
+        Ok(Value::Undefined)
+    }
+    fn add_listener(
+        &mut self,
+        target: EventTarget,
+        kind: JsString,
+        listener: EventListener,
+    ) -> Result<usize> {
+        self.charge(256 + kind.byte_len())?;
+        let id = self.listeners.len();
+        self.listeners.push(listener);
+        self.event_listeners
+            .entry((target, kind))
+            .or_default()
+            .push(id);
+        Ok(id)
+    }
+    fn event_listener_lookup_work(&mut self, kind: &JsString) -> Result<()> {
+        let comparisons = self.event_listeners.len().saturating_add(1).ilog2() as usize + 2;
+        self.work(
+            (kind.len() + 1)
+                .saturating_mul(comparisons)
+                .saturating_mul(4),
+        )
+    }
+    fn event_target_native(
+        &mut self,
+        name: &str,
+        receiver: Value,
+        args: &[Value],
+        doc: &mut Document,
+    ) -> Result<Value> {
+        let target = self.event_target(&receiver, doc)?;
+        if name == "dispatchEvent" {
+            let event = args
+                .first()
+                .cloned()
+                .ok_or_else(|| ScriptError::type_error("dispatchEvent requires an event"))?;
+            let id = self.event_index(&event)?;
+            if self.events[id].dispatching || !self.events[id].initialized {
+                let value = self.dom_exception(
+                    "InvalidStateError".into(),
+                    "event is already being dispatched or is uninitialized".into(),
+                )?;
+                return Err(ScriptError::thrown(value));
+            }
+            self.events[id].trusted = false;
+            return self
+                .dispatch_event_object(target, event, None, doc)
+                .map(Value::Bool);
+        }
+        if args.len() < 2 {
+            return Err(ScriptError::type_error(
+                "event listener operation requires type and callback",
+            ));
+        }
+        let kind = self.json_text(args[0].clone(), doc, &mut Vec::new())?;
+        let callback = args[1].clone();
+        if !matches!(callback, Value::Null | Value::Undefined) && !js_object(&callback) {
+            return Err(ScriptError::type_error(
+                "event listener must be an object or null",
+            ));
+        }
+        let options = args.get(2).cloned().unwrap_or(Value::Undefined);
+        let dictionary = js_object(&options);
+        let capture = if dictionary {
+            self.get(options.clone(), "capture", doc)?.truthy()
+        } else {
+            options.truthy()
+        };
+        let mut once = false;
+        let mut passive = None;
+        if dictionary && name == "addEventListener" {
+            once = self.get(options.clone(), "once", doc)?.truthy();
+            let value = self.get(options.clone(), "passive", doc)?;
+            if value != Value::Undefined {
+                passive = Some(value.truthy());
+            }
+            let signal = self.get(options, "signal", doc)?;
+            if !matches!(signal, Value::Undefined | Value::Null) {
+                return Err(ScriptError::unsupported(
+                    "AbortSignal listener removal is not implemented",
+                ));
+            }
+        }
+        if matches!(callback, Value::Null | Value::Undefined) {
+            return Ok(Value::Undefined);
+        }
+        self.event_listener_lookup_work(&kind)?;
+        self.sync_event_handler(target, &kind, doc)?;
+        let key = (target, kind.clone());
+        let count = self.event_listeners.get(&key).map_or(0, Vec::len);
+        self.work(count + kind.len())?;
+        let existing = self.event_listeners.get(&key).and_then(|ids| {
+            ids.iter().copied().find(|id| {
+                let item = &self.listeners[*id];
+                !item.removed
+                    && !item.handler
+                    && item.capture == capture
+                    && item.callback == callback
+            })
+        });
+        if name == "removeEventListener" {
+            if let Some(id) = existing {
+                self.listeners[id].removed = true;
+            }
+        } else if existing.is_none() {
+            let passive = match passive {
+                Some(value) => value,
+                None if ["touchstart", "touchmove", "wheel", "mousewheel"]
+                    .iter()
+                    .any(|name| kind.units().iter().copied().eq(name.encode_utf16())) =>
+                {
+                    match target {
+                        EventTarget::Window | EventTarget::Document => true,
+                        EventTarget::Node(id) => {
+                            // These helpers scan document/HTML children. Charge
+                            // before scanning even for a detached wheel target.
+                            self.work(doc.nodes.len().saturating_mul(2))?;
+                            Some(id) == document_element(doc)
+                                || Some(id) == html_document_child(doc, "body")
+                        }
+                        _ => false,
+                    }
+                }
+                None => false,
+            };
+            self.add_listener(
+                target,
+                kind,
+                EventListener {
+                    callback,
+                    capture,
+                    once,
+                    passive,
+                    removed: false,
+                    handler: false,
+                },
+            )?;
+        }
+        Ok(Value::Undefined)
+    }
+    fn set_event_handler(
+        &mut self,
+        target: EventTarget,
+        kind: JsString,
+        value: Value,
+        assigned: bool,
+    ) -> Result<()> {
+        let key = (target, kind.clone());
+        let old = self.event_handlers.get(&key).and_then(|h| h.listener);
+        // HTML EventHandler conversion treats primitive assignments as null.
+        let active = js_object(&value);
+        let listener = if active {
+            if let Some(id) = old.filter(|id| !self.listeners[*id].removed) {
+                self.listeners[id].callback = value;
+                Some(id)
+            } else {
+                Some(self.add_listener(
+                    target,
+                    kind,
+                    EventListener {
+                        callback: value,
+                        capture: false,
+                        once: false,
+                        passive: false,
+                        removed: false,
+                        handler: true,
+                    },
+                )?)
+            }
+        } else {
+            if let Some(id) = old {
+                self.listeners[id].removed = true;
+            }
+            None
+        };
+        if !self.event_handlers.contains_key(&key) {
+            self.charge(192 + key.1.byte_len())?;
+        }
+        let entry = self.event_handlers.entry(key).or_insert(EventHandler {
+            listener: None,
+            attribute: None,
+            assigned: false,
+        });
+        entry.listener = listener;
+        entry.assigned = assigned;
+        Ok(())
+    }
+    fn sync_event_handler(
+        &mut self,
+        target: EventTarget,
+        kind: &JsString,
+        doc: &Document,
+    ) -> Result<()> {
+        let EventTarget::Node(node) = target else {
+            return Ok(());
+        };
+        // Every supported handler name is short ASCII. Arbitrary long event
+        // types never require allocating or scanning an HTML attribute name.
+        if kind.len() > 16 {
+            return Ok(());
+        }
+        let Ok(kind_text) = kind.to_utf8() else {
+            return Ok(());
+        };
+        if !event_handler_name(&format!("on{kind_text}")) {
+            return Ok(());
+        }
+        let key = (target, kind.clone());
+        if self.event_handlers.get(&key).is_some_and(|h| h.assigned) {
+            return Ok(());
+        }
+        let source = doc.attr(node, &format!("on{kind_text}"));
+        // Repeated IDL reads and dispatches revisit unchanged inline handlers.
+        // String equality can scan the entire cached source, even when no
+        // handler is recompiled. Charge that work before comparing its bytes.
+        let comparison_bytes = source
+            .zip(
+                self.event_handlers
+                    .get(&key)
+                    .and_then(|h| h.attribute.as_deref()),
+            )
+            .filter(|(current, cached)| current.len() == cached.len())
+            .map_or(0, |(current, _)| current.len());
+        self.work(comparison_bytes)?;
+        if source
+            == self
+                .event_handlers
+                .get(&key)
+                .and_then(|h| h.attribute.as_deref())
+        {
+            return Ok(());
+        }
+        if let Some(source) = source {
+            self.work(source.len())?;
+            self.charge(source.len() + 192 + kind.byte_len())?;
+            let old = self.event_handlers.get(&key).and_then(|h| h.listener);
+            let listener = if let Some(id) = old.filter(|id| !self.listeners[*id].removed) {
+                self.listeners[id].callback = Value::Undefined;
+                id
+            } else {
+                self.add_listener(
+                    target,
+                    kind.clone(),
+                    EventListener {
+                        callback: Value::Undefined,
+                        capture: false,
+                        once: false,
+                        passive: false,
+                        removed: false,
+                        handler: true,
+                    },
+                )?
+            };
+            self.event_handlers.insert(
+                key,
+                EventHandler {
+                    listener: Some(listener),
+                    attribute: Some(source.into()),
+                    assigned: false,
+                },
+            );
+        } else {
+            self.set_event_handler(target, kind.clone(), Value::Null, false)?;
+            self.event_handlers.get_mut(&key).unwrap().attribute = None;
+        }
+        Ok(())
+    }
+    fn event_attribute_changed(&mut self, node: NodeId, name: &str, doc: &Document) -> Result<()> {
+        let name = if doc.namespace(node) == Some(Namespace::Html) {
+            name.to_ascii_lowercase()
+        } else {
+            name.into()
+        };
+        if !event_handler_name(&name) {
+            return Ok(());
+        }
+        let kind = JsString::from(&name[2..]);
+        let target = EventTarget::Node(node);
+        if doc.attr(node, &name).is_none() {
+            self.set_event_handler(target, kind.clone(), Value::Null, false)?;
+            self.event_handlers
+                .get_mut(&(target, kind))
+                .unwrap()
+                .attribute = None;
+            return Ok(());
+        }
+        if let Some(handler) = self.event_handlers.get_mut(&(target, kind.clone())) {
+            handler.assigned = false;
+            // Force source replacement even when an attribute is set to the
+            // same text after its corresponding IDL handler was reassigned.
+            handler.attribute = None;
+        }
+        self.sync_event_handler(target, &kind, doc)
+    }
+    fn event_handler_callback(&mut self, target: EventTarget, kind: &JsString) -> Result<Value> {
+        let key = (target, kind.clone());
+        let Some(listener) = self
+            .event_handlers
+            .get(&key)
+            .and_then(|h| h.listener)
+            .filter(|id| !self.listeners[*id].removed)
+        else {
+            return Ok(Value::Null);
+        };
+        if self.listeners[listener].callback != Value::Undefined {
+            return Ok(self.listeners[listener].callback.clone());
+        }
+        let source_len = self.event_handlers[&key]
+            .attribute
+            .as_ref()
+            .map_or(0, String::len);
+        self.charge(source_len)?;
+        let source = self.event_handlers[&key]
+            .attribute
+            .clone()
+            .unwrap_or_default();
+        let result = (|| {
+            self.work(source.len())?;
+            self.charge(source.len().saturating_mul(4))?;
+            let program = Parser::program_context(&source, true, false)?;
+            self.charge(program.compiled_storage)?;
+            self.function_value(
+                &FunctionCode {
+                    params: vec!["event".into()],
+                    body: Rc::new(program.body),
+                    name: Some(format!("on{kind}")),
+                    arrow: false,
+                    self_name: false,
+                    constructable: false,
+                    strict: program.strict,
+                },
+                1,
+            )
+        })();
+        match result {
+            Ok(callback) => {
+                self.listeners[listener].callback = callback.clone();
+                Ok(callback)
+            }
+            Err(error) => {
+                self.listeners[listener].removed = true;
+                self.event_handlers.get_mut(&key).unwrap().listener = None;
+                self.report_event_error(error)?;
+                Ok(Value::Null)
+            }
+        }
+    }
+    fn report_event_error(&mut self, error: ScriptError) -> Result<()> {
+        if error.is_resource_limit() || error.is_unsupported() {
+            return Err(error);
+        }
+        let message = format!("Uncaught event listener exception: {error}");
+        self.work(message.len())?;
+        self.charge(message.len() + 32)?;
+        if self.console.len() < 1024 {
+            self.console.push(message);
+        }
+        Ok(())
+    }
+    fn invoke_event_listeners(
+        &mut self,
+        target: EventTarget,
+        event: &Value,
+        id: usize,
+        capture: bool,
+        doc: &mut Document,
+    ) -> Result<()> {
+        if self.events[id].stopped {
+            return Ok(());
+        }
+        self.events[id].current_target = target.value();
+        let kind = self.events[id].event_type.clone();
+        self.event_listener_lookup_work(&kind)?;
+        if let Err(error) = self.sync_event_handler(target, &kind, doc) {
+            self.report_event_error(error)?;
+        }
+        let key = (target, kind);
+        let count = self.event_listeners.get(&key).map_or(0, Vec::len);
+        self.work(count)?;
+        self.charge(count * std::mem::size_of::<usize>())?;
+        let snapshot = self.event_listeners.get(&key).cloned().unwrap_or_default();
+        for listener_id in snapshot {
+            self.tick()?;
+            let listener = self.listeners[listener_id].clone();
+            if listener.removed || listener.capture != capture {
+                continue;
+            }
+            if listener.once {
+                self.listeners[listener_id].removed = true;
+            }
+            self.events[id].passive = listener.passive;
+            let result = (|| {
+                if listener.handler {
+                    let callback =
+                        self.event_handler_callback(target, &self.events[id].event_type.clone())?;
+                    if !json_callable(&callback) {
+                        return Ok(Value::Undefined);
+                    }
+                    self.call(callback, vec![event.clone()], target.value(), doc)
+                } else if json_callable(&listener.callback) {
+                    self.call(listener.callback, vec![event.clone()], target.value(), doc)
+                } else {
+                    let method = self.get(listener.callback.clone(), "handleEvent", doc)?;
+                    self.call(method, vec![event.clone()], listener.callback, doc)
+                }
+            })();
+            self.events[id].passive = false;
+            match result {
+                Ok(Value::Bool(false)) if listener.handler && self.events[id].cancelable => {
+                    self.events[id].canceled = true
+                }
+                Ok(_) => {}
+                Err(error) => self.report_event_error(error)?,
+            }
+            if self.events[id].immediate {
+                break;
+            }
+        }
+        Ok(())
+    }
+    fn dispatch_event_object(
+        &mut self,
+        target: EventTarget,
+        event: Value,
+        override_target: Option<Value>,
+        doc: &mut Document,
+    ) -> Result<bool> {
+        let id = self.event_index(&event)?;
+        self.enter_stack(4)?;
+        let result = (|| {
+            let mut path = Vec::new();
+            let mut cursor = Some(target);
+            while let Some(target) = cursor {
+                self.tick()?;
+                if path.len() >= 258 {
+                    return Err(ScriptError::resource("event path limit exceeded"));
+                }
+                self.charge(std::mem::size_of::<EventTarget>())?;
+                path.push(target);
+                cursor = match target {
+                    EventTarget::Node(node) => doc.nodes[node].parent.map(|parent| {
+                        if parent == doc.root {
+                            EventTarget::Document
+                        } else {
+                            EventTarget::Node(parent)
+                        }
+                    }),
+                    EventTarget::Document
+                        if self.events[id].event_type != JsString::from("load") =>
+                    {
+                        Some(EventTarget::Window)
+                    }
+                    _ => None,
+                };
+            }
+            self.events[id].dispatching = true;
+            self.events[id].target = override_target.unwrap_or_else(|| target.value());
+            self.events[id].path = path;
+            for index in (0..self.events[id].path.len()).rev() {
+                self.events[id].phase = if index == 0 { 2 } else { 1 };
+                self.invoke_event_listeners(self.events[id].path[index], &event, id, true, doc)?;
+            }
+            for index in 0..self.events[id].path.len() {
+                if index > 0 && !self.events[id].bubbles {
+                    continue;
+                }
+                self.events[id].phase = if index == 0 { 2 } else { 3 };
+                self.invoke_event_listeners(self.events[id].path[index], &event, id, false, doc)?;
+            }
+            Ok(!self.events[id].canceled)
+        })();
+        let state = &mut self.events[id];
+        state.dispatching = false;
+        state.passive = false;
+        state.stopped = false;
+        state.immediate = false;
+        state.phase = 0;
+        state.current_target = Value::Null;
+        state.path.clear();
+        self.stack_units -= 4;
+        result
+    }
+    pub fn dispatch_dom_content_loaded(&mut self, document: &mut Document) -> Result<()> {
+        if self.readiness_fired {
+            return Ok(());
+        }
+        self.readiness_fired = true;
+        self.steps = MAX_STEPS;
+        let event = self.event_object(
+            "DOMContentLoaded".into(),
+            true,
+            false,
+            false,
+            Value::Null,
+            false,
+        )?;
+        let id = self.event_index(&event)?;
+        self.events[id].trusted = true;
+        self.dispatch_event_object(EventTarget::Document, event, None, document)?;
+        let event = self.event_object("load".into(), false, false, false, Value::Null, false)?;
+        let id = self.event_index(&event)?;
+        self.events[id].trusted = true;
+        self.dispatch_event_object(EventTarget::Window, event, Some(Value::Document), document)?;
+        Ok(())
+    }
     pub fn dispatch_click(&mut self, target: NodeId, document: &mut Document) -> Result<()> {
         self.dispatch_event(target, "click", document)
     }
-
     pub fn dispatch_event(
         &mut self,
         target: NodeId,
@@ -2576,79 +3466,38 @@ impl Runtime {
         if event_type.len() > 128 {
             return Err(ScriptError::resource("event name limit exceeded"));
         }
-        if target >= document.nodes.len() {
-            return Err(ScriptError::new("invalid event target"));
-        }
+        let target = self.event_target(&Value::Node(target), document)?;
         self.steps = MAX_STEPS;
         self.last_default_prevented = false;
-        let mut path = Vec::new();
-        let mut cursor = Some(target);
-        while let Some(id) = cursor {
-            if path.len() >= 256 {
-                return Err(ScriptError::resource("event path limit exceeded"));
-            }
-            path.push(id);
-            cursor = document.nodes[id].parent;
-        }
-        let event = self.object(BTreeMap::from([
-            ("type".into(), Value::String(JsString::from(event_type))),
-            ("target".into(), Value::Node(target)),
-            ("defaultPrevented".into(), Value::Bool(false)),
-            ("cancelBubble".into(), Value::Bool(false)),
-        ]))?;
-        let Value::Object(event_id) = event else {
-            unreachable!()
-        };
-        for id in path {
-            self.tick()?;
-            self.objects[event_id].insert("currentTarget".into(), Value::Node(id));
-            if let Some(callback) = self
-                .property_handlers
-                .get(&(id, event_type.into()))
-                .cloned()
-            {
-                if matches!(callback, Value::Function(_) | Value::Native(_))
-                    && self.call(callback, vec![event.clone()], Value::Node(id), document)?
-                        == Value::Bool(false)
-                {
-                    self.last_default_prevented = true;
-                }
-            } else if let Some(source) = document
-                .attr(id, &format!("on{event_type}"))
-                .map(str::to_owned)
-            {
-                self.charge(source.len().saturating_mul(3))?;
-                let program = Parser::program_context(&source, true, false)?;
-                let env = self.environment(1)?;
-                self.environments[env].strict = program.strict;
-                self.environments[env].function_scope = true;
-                self.define(env, "event", event.clone(), false)?;
-                self.define(env, "this", Value::Node(id), false)?;
-                if let Flow::Return(Value::Bool(false)) =
-                    self.statements(&program.body, env, document)?
-                {
-                    self.last_default_prevented = true;
-                }
-            }
-            let handlers = self
-                .handlers
-                .get(&(id, event_type.into()))
-                .cloned()
-                .unwrap_or_default();
-            for callback in handlers {
-                self.call(callback, vec![event.clone()], Value::Node(id), document)?;
-            }
-            if self.objects[event_id]
-                .get("cancelBubble")
-                .is_some_and(Value::truthy)
-            {
-                break;
-            }
-        }
-        self.last_default_prevented |= self.objects[event_id]
-            .get("defaultPrevented")
-            .is_some_and(Value::truthy);
-        Ok(())
+        let cancelable = matches!(
+            event_type,
+            "click"
+                | "submit"
+                | "keydown"
+                | "keyup"
+                | "beforeinput"
+                | "contextmenu"
+                | "wheel"
+                | "mousedown"
+                | "mouseup"
+        );
+        let bubbles = !matches!(
+            event_type,
+            "focus" | "blur" | "load" | "unload" | "mouseenter" | "mouseleave"
+        );
+        let event = self.event_object(
+            event_type.into(),
+            bubbles,
+            cancelable,
+            false,
+            Value::Null,
+            false,
+        )?;
+        let id = self.event_index(&event)?;
+        self.events[id].trusted = true;
+        let result = self.dispatch_event_object(target, event, None, document);
+        self.last_default_prevented = self.events[id].canceled;
+        result.map(|_| ())
     }
 
     fn tick(&mut self) -> Result<()> {
@@ -3964,6 +4813,7 @@ impl Runtime {
             return Some(Value::Function(self.function_prototype));
         }
         let name = match value {
+            Value::Node(_) | Value::Document | Value::Window => "EventTarget",
             Value::String(_) => "String",
             Value::Number(_) => "Number",
             Value::Bool(_) => "Boolean",
@@ -4414,6 +5264,15 @@ impl Runtime {
     ) -> Result<Value> {
         match &constructor {
             Value::Native(native)
+                if native.receiver == Value::Window
+                    && matches!(
+                        native.name.as_str(),
+                        "Event" | "CustomEvent" | "EventTarget" | "DOMException"
+                    ) =>
+            {
+                self.event_construct(&native.name, &arguments, doc)
+            }
+            Value::Native(native)
                 if native.name == "RegExp" && native.receiver == Value::Window =>
             {
                 self.regexp_create(
@@ -4507,6 +5366,14 @@ impl Runtime {
         doc: &mut Document,
     ) -> Result<()> {
         self.work(1 + key.len() / 8)?;
+        if matches!(receiver, Value::Node(_) | Value::Document | Value::Window)
+            && let Ok(name) = key.to_utf8()
+            && event_handler_name(&name)
+        {
+            let target = self.event_target(&receiver, doc)?;
+            self.sync_event_handler(target, &JsString::from(&name[2..]), doc)?;
+            return self.set_event_handler(target, JsString::from(&name[2..]), value, true);
+        }
         if matches!(receiver, Value::Document)
             && [
                 "characterSet",
@@ -4588,16 +5455,22 @@ impl Runtime {
         }
     }
     fn get(&mut self, receiver: Value, key: &str, doc: &mut Document) -> Result<Value> {
+        if matches!(receiver, Value::Node(_) | Value::Document | Value::Window)
+            && event_handler_name(key)
+        {
+            let target = self.event_target(&receiver, doc)?;
+            let kind = JsString::from(&key[2..]);
+            self.sync_event_handler(target, &kind, doc)?;
+            return self.event_handler_callback(target, &kind);
+        }
         if let Some(value) = self.lookup_property(&receiver, &key.into(), doc)? {
             return Ok(value);
         }
-        if (self.property_object(&receiver).is_some()
+        if self.property_object(&receiver).is_some()
             || matches!(
                 receiver,
                 Value::String(_) | Value::Number(_) | Value::Bool(_)
-            ))
-            && !(matches!(receiver, Value::Object(_))
-                && matches!(key, "preventDefault" | "stopPropagation"))
+            )
         {
             return Ok(Value::Undefined);
         }
@@ -4625,9 +5498,6 @@ impl Runtime {
             Value::Object(id) => {
                 if let Some(value) = self.objects[*id].get(key) {
                     return Ok(value.clone());
-                }
-                if ["preventDefault", "stopPropagation"].contains(&key) {
-                    return Ok(Self::native(key, receiver));
                 }
             }
             Value::Array(id) => {
@@ -4694,9 +5564,6 @@ impl Runtime {
                 if let Some((_, value)) = self.lookup(0, key) {
                     return Ok(value);
                 }
-                if ["addEventListener", "removeEventListener"].contains(&key) {
-                    return Ok(Self::native(key, receiver));
-                }
             }
             Value::Console if ["log", "warn", "error", "info", "debug"].contains(&key) => {
                 return Ok(Self::native(key, receiver));
@@ -4721,6 +5588,7 @@ impl Runtime {
                 }
             }
             Value::Document => match key {
+                "defaultView" => return Ok(Value::Window),
                 "URL" | "documentURI" => return self.string(doc.url().as_str()),
                 "baseURI" => {
                     return self.string(doc.base_url().as_str());
@@ -4757,8 +5625,7 @@ impl Runtime {
                 | "createElement"
                 | "createTextNode"
                 | "createDocumentFragment"
-                | "addEventListener"
-                | "removeEventListener" => return Ok(Self::native(key, receiver)),
+                | "createEvent" => return Ok(Self::native(key, receiver)),
                 _ => {}
             },
             Value::Node(id) => {
@@ -4815,7 +5682,17 @@ impl Runtime {
                         }));
                     }
                     "parentNode" | "parentElement" => {
-                        return Ok(doc.nodes[id].parent.map(Value::Node).unwrap_or(Value::Null));
+                        return Ok(doc.nodes[id]
+                            .parent
+                            .filter(|parent| key == "parentNode" || doc.tag(*parent).is_some())
+                            .map(|parent| {
+                                if parent == doc.root {
+                                    Value::Document
+                                } else {
+                                    Value::Node(parent)
+                                }
+                            })
+                            .unwrap_or(Value::Null));
                     }
                     "firstChild" => {
                         return Ok(doc.nodes[id]
@@ -4843,29 +5720,13 @@ impl Runtime {
                             .collect();
                         return self.array(children);
                     }
-                    "onclick" | "oninput" | "onchange" | "onsubmit" | "onkeydown" | "onkeyup" => {
-                        return Ok(self
-                            .property_handlers
-                            .get(&(id, key[2..].into()))
-                            .cloned()
-                            .unwrap_or(Value::Null));
-                    }
                     "style" => return Ok(Value::Style(id)),
                     "classList" => return Ok(Value::ClassList(id)),
                     "checked" | "disabled" | "hidden" => {
                         return Ok(Value::Bool(doc.attr(id, key).is_some()));
                     }
-                    "addEventListener"
-                    | "removeEventListener"
-                    | "appendChild"
-                    | "append"
-                    | "removeChild"
-                    | "remove"
-                    | "setAttribute"
-                    | "getAttribute"
-                    | "hasAttribute"
-                    | "removeAttribute"
-                    | "querySelector"
+                    "appendChild" | "append" | "removeChild" | "remove" | "setAttribute"
+                    | "getAttribute" | "hasAttribute" | "removeAttribute" | "querySelector"
                     | "querySelectorAll" => return Ok(Self::native(key, receiver)),
                     "cloneNode" => return Ok(Self::native(key, receiver)),
                     _ => {}
@@ -4985,26 +5846,6 @@ impl Runtime {
             Value::Node(id) => {
                 if id >= doc.nodes.len() {
                     return Err(ScriptError::new("invalid DOM node"));
-                }
-                if [
-                    "onclick",
-                    "oninput",
-                    "onchange",
-                    "onsubmit",
-                    "onkeydown",
-                    "onkeyup",
-                ]
-                .contains(&key)
-                {
-                    if !matches!(
-                        value,
-                        Value::Function(_) | Value::Native(_) | Value::Null | Value::Undefined
-                    ) {
-                        return Err(ScriptError::new("event handler must be a function"));
-                    }
-                    self.charge(64)?;
-                    self.property_handlers.insert((id, key[2..].into()), value);
-                    return Ok(());
                 }
                 let text =
                     if key == "value" && doc.tag(id) == Some("textarea") && value == Value::Null {
@@ -6464,6 +7305,55 @@ impl Runtime {
         args: Vec<Value>,
         doc: &mut Document,
     ) -> Result<Value> {
+        if let Some(method) = native
+            .name
+            .strip_prefix("Event.")
+            .or_else(|| native.name.strip_prefix("CustomEvent."))
+        {
+            return self.event_native(method, native.receiver.clone(), &args, doc);
+        }
+        if let Some(method) = native.name.strip_prefix("EventTarget.") {
+            return self.event_target_native(method, native.receiver.clone(), &args, doc);
+        }
+        if matches!(
+            native.name.as_str(),
+            "Event" | "CustomEvent" | "EventTarget" | "DOMException"
+        ) {
+            return Err(ScriptError::type_error("DOM constructor requires new"));
+        }
+        if native.name == "createEvent" {
+            if native.receiver != Value::Document {
+                return Err(ScriptError::type_error("createEvent requires a Document"));
+            }
+            let Some(kind) = args.first() else {
+                return Err(ScriptError::type_error("createEvent requires an interface"));
+            };
+            let kind = self
+                .json_text(kind.clone(), doc, &mut Vec::new())?
+                .to_utf8_lossy()
+                .to_ascii_lowercase();
+            if !matches!(
+                kind.as_str(),
+                "event" | "events" | "htmlevents" | "customevent"
+            ) {
+                let value = self.dom_exception(
+                    "NotSupportedError".into(),
+                    "event interface is not supported".into(),
+                )?;
+                return Err(ScriptError::thrown(value));
+            }
+            let event = self.event_object(
+                "".into(),
+                false,
+                false,
+                false,
+                Value::Null,
+                kind == "customevent",
+            )?;
+            let id = self.event_index(&event)?;
+            self.events[id].initialized = false;
+            return Ok(event);
+        }
         let normalized;
         let native = if let Some(method) = native.name.strip_prefix("String.")
             && !matches!(method, "toString" | "valueOf")
@@ -6660,6 +7550,14 @@ impl Runtime {
                     Value::Bool(_) => "Boolean",
                     Value::Object(id) if self.objects[*id].arguments => "Arguments",
                     Value::Object(id) if self.objects[*id].regexp.is_some() => "RegExp",
+                    Value::Object(id) if self.objects[*id].event.is_some() => {
+                        if self.events[self.objects[*id].event.unwrap()].custom {
+                            "CustomEvent"
+                        } else {
+                            "Event"
+                        }
+                    }
+                    Value::Object(id) if self.objects[*id].event_target => "EventTarget",
                     Value::Object(id) => match self.objects[*id].boxed {
                         Some(Value::String(_)) => "String",
                         Some(Value::Number(_)) => "Number",
@@ -7403,16 +8301,6 @@ impl Runtime {
                 }
                 return self.string(native.receiver.js_string());
             }
-            Value::Object(id) => {
-                if name == "preventDefault" {
-                    self.objects[*id].insert("defaultPrevented".into(), Value::Bool(true));
-                    return Ok(Value::Undefined);
-                }
-                if name == "stopPropagation" {
-                    self.objects[*id].insert("cancelBubble".into(), Value::Bool(true));
-                    return Ok(Value::Undefined);
-                }
-            }
             Value::Style(id) => {
                 self.work(1 + doc.attr(*id, "style").unwrap_or("").len() / 16)?;
                 let property = arg(0).to_string();
@@ -7480,38 +8368,6 @@ impl Runtime {
             _ => {}
         }
 
-        if ["addEventListener", "removeEventListener"].contains(&name) {
-            let event = arg(0).to_string();
-            let callback = arg(1);
-            if !matches!(callback, Value::Function(_) | Value::Native(_)) {
-                return Err(ScriptError::new("event listener must be a function"));
-            }
-            if event == "DOMContentLoaded" || event == "load" {
-                if name == "addEventListener" {
-                    self.charge(64)?;
-                    self.ready.push((event, callback));
-                } else {
-                    self.ready
-                        .retain(|(kind, item)| *kind != event || *item != callback);
-                }
-            } else {
-                let id = if let Value::Node(id) = native.receiver {
-                    id
-                } else {
-                    doc.root
-                };
-                if name == "addEventListener" {
-                    self.charge(event.len() + 96)?;
-                    let handlers = self.handlers.entry((id, event)).or_default();
-                    if !handlers.contains(&callback) {
-                        handlers.push(callback);
-                    }
-                } else if let Some(handlers) = self.handlers.get_mut(&(id, event)) {
-                    handlers.retain(|item| *item != callback);
-                }
-            }
-            return Ok(Value::Undefined);
-        }
         if [
             "querySelector",
             "querySelectorAll",
@@ -7606,12 +8462,14 @@ impl Runtime {
                     let work = doc.base_attribute_work(id, &key);
                     self.work(work.saturating_add(if work > 0 { text.len() } else { 0 }))?;
                     doc.set_attr(id, &key, &text);
+                    self.event_attribute_changed(id, &key, doc)?;
                     return Ok(Value::Undefined);
                 }
                 "removeAttribute" => {
                     let key = arg(0).to_string();
                     self.work(doc.base_attribute_work(id, &key))?;
                     doc.remove_attr(id, &key);
+                    self.event_attribute_changed(id, &key, doc)?;
                     return Ok(Value::Undefined);
                 }
                 "appendChild" | "removeChild" => {
@@ -8105,6 +8963,42 @@ fn parse_int(text: &str, radix: f64) -> f64 {
     };
     sign * number
 }
+fn event_handler_name(name: &str) -> bool {
+    matches!(
+        name,
+        "onclick"
+            | "ondblclick"
+            | "oninput"
+            | "onbeforeinput"
+            | "onchange"
+            | "onsubmit"
+            | "onreset"
+            | "onkeydown"
+            | "onkeyup"
+            | "onkeypress"
+            | "onfocus"
+            | "onblur"
+            | "onfocusin"
+            | "onfocusout"
+            | "onmousedown"
+            | "onmouseup"
+            | "onmousemove"
+            | "onmouseenter"
+            | "onmouseleave"
+            | "onmouseover"
+            | "onmouseout"
+            | "onwheel"
+            | "oncontextmenu"
+            | "onload"
+            | "onerror"
+            | "onscroll"
+            | "onresize"
+            | "onunload"
+            | "ontouchstart"
+            | "ontouchmove"
+            | "ontouchend"
+    )
+}
 fn css_name(name: &str) -> String {
     let mut result = String::new();
     for c in name.chars() {
@@ -8400,11 +9294,301 @@ mod tests {
         );
         doc.set_attr(field, "value", "typed value");
         runtime.dispatch_event(field, "input", &mut doc).unwrap();
-        assert!(runtime.last_default_prevented);
+        assert!(!runtime.last_default_prevented);
         assert_eq!(
             doc.text_content(doc.query_selector("#out").unwrap()),
             "typed value"
         );
+    }
+
+    #[test]
+    fn events_have_private_state_readonly_fields_and_standard_construction() {
+        let (mut runtime, mut doc) = property_harness();
+        runtime.execute(r#"
+            var detail={answer:42}; var e=new CustomEvent('change',{detail:detail,bubbles:true,cancelable:true,composed:true});
+            assert.sameValue(e instanceof Event,true); assert.sameValue(e instanceof CustomEvent,true);
+            assert.sameValue(e.type,'change');assert.sameValue(e.detail,detail);assert.sameValue(e.isTrusted,false);
+            assert.sameValue(e.target,null);assert.sameValue(e.currentTarget,null);assert.sameValue(e.eventPhase,Event.NONE);
+            assert.sameValue(e.composed,true);assert.sameValue(e.bubbles,true);assert.sameValue(e.cancelable,true);
+            assert.sameValue(CustomEvent.AT_TARGET,2);assert.sameValue(typeof e.timeStamp,'number');
+            e.type='wrong';e.target={};e.defaultPrevented=true;e.isTrusted=true;
+            assert.sameValue(e.type,'change');assert.sameValue(e.target,null);assert.sameValue(e.defaultPrevented,false);
+            assert.throws(TypeError,function(){'use strict';e.type='wrong';});
+            assert.throws(TypeError,()=>Object.defineProperty(e,'isTrusted',{value:true}));
+            assert.throws(TypeError,()=>Event('x'));assert.throws(TypeError,()=>new Event());
+            assert.throws(TypeError,()=>Event.prototype.preventDefault.call({}));
+            assert.sameValue(Object.prototype.toString.call(e),'[object CustomEvent]');
+            var t=new EventTarget();assert.sameValue(t instanceof EventTarget,true);
+            e.preventDefault();assert.sameValue(t.dispatchEvent(e),false);assert.sameValue(e.target,t);
+            e.initCustomEvent('other',false,false,17);assert.sameValue(e.detail,17);
+            assert.sameValue(e.defaultPrevented,false);assert.sameValue(e.target,null);assert.sameValue(e.type,'other');
+            var old=document.createEvent('Event');var caught=false;
+            try{t.dispatchEvent(old);}catch(error){caught=error instanceof DOMException && error.name==='InvalidStateError' && error.code===11;}
+            assert.sameValue(caught,true);old.initEvent('',false,true);assert.sameValue(t.dispatchEvent(old),true);
+            var trace='';new CustomEvent({toString(){trace+='type;';return 'x';}}, {
+                get bubbles(){trace+='bubbles;';return false;},get cancelable(){trace+='cancelable;';return false;},
+                get composed(){trace+='composed;';return false;},get detail(){trace+='detail;';return 1;}
+            });assert.sameValue(trace,'type;bubbles;cancelable;composed;detail;');
+        "#,&mut doc).unwrap();
+        assert!(runtime.console.is_empty(), "{:?}", runtime.console);
+    }
+    #[test]
+    fn events_capture_target_bubble_use_fixed_paths_and_clean_up_after_dispatch() {
+        let (mut runtime, _) = property_harness();
+        let mut doc = Document::parse(
+            "<main id=p><button id=c>go</button></main><section id=other></section>",
+        );
+        runtime.execute(r#"
+            var p=document.getElementById('p'),c=document.getElementById('c'),other=document.getElementById('other');
+            var trace='',pathGood=false,targetGood=true,seen;
+            function listen(target,label,capture){target.addEventListener('x',function(e){
+                trace+=label+e.eventPhase+';';targetGood=targetGood && this===target && e.currentTarget===target && e.target===c;
+            },capture);}
+            listen(window,'w',true);listen(document,'d',true);listen(p,'p',true);listen(c,'c',true);
+            listen(c,'c',false);listen(p,'p',false);listen(document,'d',false);listen(window,'w',false);
+            c.addEventListener('x',function(e){seen=e;var path=e.composedPath();
+                pathGood=path[0]===c && path[1]===p && path[path.length-2]===document && path[path.length-1]===window;
+                path.pop();other.appendChild(c);
+            });
+            var e=new Event('x',{bubbles:true});assert.sameValue(c.dispatchEvent(e),true);
+            assert.sameValue(trace,'w1;d1;p1;c2;c2;p3;d3;w3;');assert.sameValue(targetGood,true);assert.sameValue(pathGood,true);
+            assert.sameValue(e.currentTarget,null);assert.sameValue(e.eventPhase,0);assert.sameValue(e.composedPath().length,0);
+            assert.sameValue(e.target,c);assert.sameValue(seen,e);assert.sameValue(document.documentElement.parentNode,document);
+            p.appendChild(c);trace='';c.dispatchEvent(new Event('x'));
+            assert.sameValue(trace,'w1;d1;p1;c2;c2;');
+        "#,&mut doc).unwrap();
+        assert!(runtime.console.is_empty(), "{:?}", runtime.console);
+    }
+    #[test]
+    fn events_snapshot_listeners_and_honor_removal_addition_once_and_identity() {
+        let (mut runtime, mut doc) = property_harness();
+        runtime.execute(r#"
+            var t=new EventTarget(),trace='';function late(){trace+='late;';}function removed(){trace+='removed;';}
+            t.addEventListener('x',function(){trace+='first;';t.removeEventListener('x',removed);t.addEventListener('x',late);});
+            t.addEventListener('x',removed);t.addEventListener('x',function(){trace+='last;';});
+            t.dispatchEvent(new Event('x'));assert.sameValue(trace,'first;last;');
+            trace='';t.dispatchEvent(new Event('x'));assert.sameValue(trace,'first;last;late;');
+            var n=0;function one(){n++;t.dispatchEvent(new Event('once'));}
+            t.addEventListener('once',one,{once:true});t.addEventListener('once',one,{once:false});
+            t.dispatchEvent(new Event('once'));assert.sameValue(n,1);
+            var phases='';function twice(e){phases+=e.eventPhase;}
+            t.addEventListener('both',twice,true);t.addEventListener('both',twice,false);
+            t.removeEventListener('both',twice,{capture:true, get once(){throw new Error('must not read');}});
+            t.dispatchEvent(new Event('both'));assert.sameValue(phases,'2');
+            var observer={count:0,handleEvent(e){this.count++;this.handleEvent=function(){this.count+=10;};}};
+            t.addEventListener('object',observer);t.dispatchEvent(new Event('object'));t.dispatchEvent(new Event('object'));
+            assert.sameValue(observer.count,11);t.removeEventListener('object',observer);t.dispatchEvent(new Event('object'));assert.sameValue(observer.count,11);
+            var captureAdded=0;t.addEventListener('target',function(){t.addEventListener('target',()=>{captureAdded++;});},true);
+            t.dispatchEvent(new Event('target'));assert.sameValue(captureAdded,1);
+            t.addEventListener('null',null);t.addEventListener('null',undefined);t.removeEventListener('null',null);
+            assert.throws(TypeError,()=>t.addEventListener('x',1));
+        "#,&mut doc).unwrap();
+        assert!(runtime.console.is_empty(), "{:?}", runtime.console);
+    }
+    #[test]
+    fn events_stop_flags_passive_cancellation_and_reentrancy_are_independent() {
+        let (mut runtime, _) = property_harness();
+        let mut doc = Document::parse("<main><button></button></main>");
+        runtime.execute(r#"
+            var p=document.querySelector('main'),c=document.querySelector('button'),trace='';
+            c.addEventListener('x',function(e){trace+='one;';e.stopPropagation();e.cancelBubble=false;});
+            c.addEventListener('x',function(){trace+='two;';});p.addEventListener('x',function(){trace+='parent;';});
+            var e=new Event('x',{bubbles:true});c.dispatchEvent(e);assert.sameValue(trace,'one;two;');assert.sameValue(e.cancelBubble,false);
+            trace='';c.addEventListener('immediate',function(e){trace+='one;';e.stopImmediatePropagation();});
+            c.addEventListener('immediate',function(){trace+='two;';});c.dispatchEvent(new Event('immediate'));assert.sameValue(trace,'one;');
+            trace='';c.addEventListener('capture-stop',function(e){trace+='capture;';e.stopPropagation();},true);
+            c.addEventListener('capture-stop',function(){trace+='same-invocation;';},true);
+            c.addEventListener('capture-stop',function(){trace+='bubble;';});
+            c.dispatchEvent(new Event('capture-stop',{bubbles:true}));assert.sameValue(trace,'capture;same-invocation;');
+            c.addEventListener('passive',function(e){e.preventDefault();e.returnValue=false;},{passive:true});
+            var passive=new Event('passive',{cancelable:true});assert.sameValue(c.dispatchEvent(passive),true);assert.sameValue(passive.defaultPrevented,false);
+            c.addEventListener('cancel',function(e){e.preventDefault();e.returnValue=true;return false;});
+            var cancel=new Event('cancel',{cancelable:true});assert.sameValue(c.dispatchEvent(cancel),false);assert.sameValue(cancel.returnValue,false);
+            assert.sameValue(c.dispatchEvent(new Event('cancel')),true);
+            var wheel;document.body.addEventListener('wheel',function(e){e.preventDefault();});
+            wheel=new Event('wheel',{cancelable:true});assert.sameValue(document.body.dispatchEvent(wheel),true);
+            var explicit=document.createElement('aside');document.body.appendChild(explicit);
+            explicit.addEventListener('wheel',function(e){e.preventDefault();},{passive:false});
+            assert.sameValue(explicit.dispatchEvent(new Event('wheel',{cancelable:true})),false);
+            var t=new EventTarget(),inner=new Event('inner'),outer=new Event('outer'),invalid=false,stable=false;
+            t.addEventListener('inner',function(e){e.stopImmediatePropagation();});
+            t.addEventListener('outer',function(e){try{t.dispatchEvent(e);}catch(err){invalid=err.name==='InvalidStateError';}
+                t.dispatchEvent(inner);e.initEvent('changed',false,false);stable=e.type==='outer' && e.currentTarget===t && e.eventPhase===2;
+            });
+            t.dispatchEvent(outer);assert.sameValue(invalid,true);assert.sameValue(stable,true);assert.sameValue(inner.currentTarget,null);
+            assert.sameValue(outer.currentTarget,null);assert.sameValue(outer.type,'outer');
+        "#,&mut doc).unwrap();
+        assert!(runtime.console.is_empty(), "{:?}", runtime.console);
+    }
+    #[test]
+    fn events_report_listener_errors_and_keep_dispatching() {
+        let (mut runtime, mut doc) = property_harness();
+        runtime.execute(r#"
+            var t=new EventTarget(),trace='';
+            t.addEventListener('x',function(){trace+='first;';throw new Error('listener failed');});
+            t.addEventListener('x',{get handleEvent(){throw new TypeError('getter failed');}});
+            t.addEventListener('x',function(){trace+='last;';});
+            var e=new Event('x');assert.sameValue(t.dispatchEvent(e),true);assert.sameValue(trace,'first;last;');
+            assert.sameValue(e.currentTarget,null);assert.sameValue(e.eventPhase,0);assert.sameValue(e.composedPath().length,0);
+        "#,&mut doc).unwrap();
+        assert_eq!(runtime.console.len(), 2);
+    }
+    #[test]
+    fn events_inline_handler_registration_and_attribute_mutation_preserve_order() {
+        let (mut runtime, _) = property_harness();
+        let mut doc = Document::parse(
+            "<button onclick=\"trace+='inline;';return false\"></button><input onclick='bad syntax )'>",
+        );
+        runtime.execute(r#"
+            var trace='',button=document.querySelector('button');
+            button.addEventListener('click',function(){trace+='listener;';});
+            var e=new Event('click',{cancelable:true});assert.sameValue(button.dispatchEvent(e),false);assert.sameValue(trace,'inline;listener;');
+            button.onclick=function(){trace+='property;';return false;};trace='';button.dispatchEvent(new Event('click'));
+            assert.sameValue(trace,'property;listener;');button.onclick=null;
+            button.onclick=function(){trace+='last;';};trace='';button.dispatchEvent(new Event('click'));assert.sameValue(trace,'listener;last;');
+            button.setAttribute('onclick',"trace+='attribute;';");trace='';button.dispatchEvent(new Event('click'));assert.sameValue(trace,'listener;attribute;');
+            button.removeAttribute('onclick');trace='';button.dispatchEvent(new Event('click'));assert.sameValue(trace,'listener;');
+            var bad=document.querySelector('input');bad.addEventListener('click',()=>{trace+='survived;';});
+            trace='';bad.dispatchEvent(new Event('click'));assert.sameValue(trace,'survived;');assert.sameValue(bad.onclick,null);
+            var nothing={};button.onclick=nothing;assert.sameValue(button.onclick,nothing);
+            trace='';button.dispatchEvent(new Event('click'));assert.sameValue(trace,'listener;');
+            button.onclick=12;assert.sameValue(button.onclick,null);
+        "#,&mut doc).unwrap();
+        assert_eq!(runtime.console.len(), 1);
+    }
+    #[test]
+    fn events_detached_and_template_paths_do_not_reach_document_or_window() {
+        let (mut runtime, mut doc) = property_harness();
+        runtime.execute(r#"
+            var hits=0;document.addEventListener('x',()=>{hits++;},true);window.addEventListener('x',()=>{hits++;});
+            var parent=document.createElement('main'),child=document.createElement('button');parent.appendChild(child);
+            var path;child.addEventListener('x',e=>{path=e.composedPath();});child.dispatchEvent(new Event('x',{bubbles:true,composed:true}));
+            assert.sameValue(path.length,2);assert.sameValue(path[1],parent);assert.sameValue(hits,0);
+            var card=document.createElement('template');card.innerHTML='<button></button>';document.body.appendChild(card);
+            child=card.content.querySelector('button');child.addEventListener('x',e=>{path=e.composedPath();});
+            child.dispatchEvent(new Event('x',{bubbles:true,composed:true}));assert.sameValue(path.length,2);assert.sameValue(path[1],card.content);assert.sameValue(hits,0);
+        "#,&mut doc).unwrap();
+        assert!(runtime.console.is_empty(), "{:?}", runtime.console);
+    }
+    #[test]
+    fn events_readiness_trust_and_host_cancellation_match_event_types() {
+        let (mut runtime, mut doc) = property_harness();
+        runtime.execute(r#"
+            var trace='',trusted=true,loadTarget=false;
+            document.addEventListener('DOMContentLoaded',e=>{trace+='document;';trusted=trusted&&e.isTrusted;});
+            window.addEventListener('DOMContentLoaded',e=>{trace+='window;';trusted=trusted&&e.isTrusted;});
+            document.addEventListener('load',()=>{trace+='wrong;';});
+            window.onload=function(e){trace+='load;';loadTarget=e.target===document&&e.currentTarget===window;trusted=trusted&&e.isTrusted;};
+        "#,&mut doc).unwrap();
+        runtime.dispatch_dom_content_loaded(&mut doc).unwrap();
+        runtime.dispatch_dom_content_loaded(&mut doc).unwrap();
+        runtime.execute("assert.sameValue(trace,'document;window;load;');assert.sameValue(trusted,true);assert.sameValue(loadTarget,true);",&mut doc).unwrap();
+        assert!(runtime.console.is_empty(), "{:?}", runtime.console);
+    }
+    #[test]
+    fn events_charge_default_passive_tree_scans_and_long_type_lookups_before_work() {
+        let mut doc = Document::parse(&format!("{}<body>", "<!-- retained -->".repeat(1000)));
+        let mut runtime = Runtime::new();
+        runtime.execute("function callback(){}", &mut doc).unwrap();
+        let callback = runtime.lookup(0, "callback").unwrap().1;
+        let node = doc.create_element("button");
+        let before = runtime.listeners.len();
+        runtime.steps = 128;
+        let error = runtime
+            .event_target_native(
+                "addEventListener",
+                Value::Node(node),
+                &[Value::String("wheel".into()), callback],
+                &mut doc,
+            )
+            .unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(runtime.listeners.len(), before);
+        runtime.steps = MAX_STEPS;
+        let event = runtime
+            .event_object(
+                "x".repeat(1024).into(),
+                false,
+                false,
+                false,
+                Value::Null,
+                false,
+            )
+            .unwrap();
+        let id = runtime.event_index(&event).unwrap();
+        runtime.steps = 128;
+        let error = runtime
+            .dispatch_event_object(EventTarget::Node(node), event, None, &mut doc)
+            .unwrap_err();
+        assert!(error.is_resource_limit());
+        assert!(!runtime.events[id].dispatching);
+        assert!(runtime.events[id].path.is_empty());
+        assert_eq!(runtime.events[id].current_target, Value::Null);
+    }
+    #[test]
+    fn repeated_inline_handler_reads_charge_cached_source_comparisons() {
+        let mut doc = Document::parse(&format!(
+            "<button onclick='{}return 1'></button>",
+            " ".repeat(30_000)
+        ));
+        let mut runtime = Runtime::new();
+        runtime
+            .execute(
+                "var button=document.querySelector('button');button.onclick;",
+                &mut doc,
+            )
+            .unwrap();
+        // Previously these 3,000 reads completed within one entry while
+        // comparing 90,024,000 cached-source bytes without charging that work.
+        let error = runtime
+            .execute("var i;for(i=0;i<3000;i++){button.onclick;}", &mut doc)
+            .unwrap_err();
+        assert!(error.is_resource_limit());
+        let Value::Number(reads) = runtime.execute("i", &mut doc).unwrap() else {
+            panic!("loop counter must remain numeric");
+        };
+        assert!(
+            reads < 4.0,
+            "comparison work must consume the shared budget"
+        );
+        // Exhaustion does not remove or corrupt the compiled handler.
+        assert_eq!(
+            runtime.execute("button.onclick()", &mut doc).unwrap(),
+            Value::Number(1.0)
+        );
+        assert_eq!(runtime.stack_units, 0);
+    }
+    #[test]
+    fn events_quota_and_reentrant_termination_are_uncatchable_and_clean_state() {
+        for source in [
+            "var t=new EventTarget();var e=new Event('x');t.addEventListener('x',function(){while(true){}});try{t.dispatchEvent(e);}catch(err){caught=true;}",
+            "var t=new EventTarget();var e=new Event('x');t.addEventListener('x',function(){t.dispatchEvent(new Event('x'));});try{t.dispatchEvent(e);}catch(err){caught=true;}",
+        ] {
+            let mut runtime = Runtime::new();
+            let mut doc = Document::parse("");
+            runtime.execute("var caught=false;", &mut doc).unwrap();
+            assert!(
+                runtime
+                    .execute(source, &mut doc)
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(
+                runtime.execute("caught", &mut doc).unwrap(),
+                Value::Bool(false)
+            );
+            assert_eq!(
+                runtime
+                    .execute(
+                        "e.currentTarget===null && e.eventPhase===0 && e.composedPath().length===0",
+                        &mut doc
+                    )
+                    .unwrap(),
+                Value::Bool(true)
+            );
+            assert_eq!(runtime.stack_units, 0);
+            assert_eq!(runtime.calls, 0);
+        }
     }
 
     #[test]

@@ -195,7 +195,7 @@ fn run() -> Result<(), String> {
         let mut samples = Vec::with_capacity(iterations);
         for _ in 0..iterations {
             let start = Instant::now();
-            let styles = eris::css::compute_styles(
+            let styles = eris::css::compute_styles_from_sources(
                 &page.document,
                 &stylesheets,
                 width as f32,

@@ -30,13 +30,23 @@ Decoded source caching includes that fallback encoding. Fetch permissions remain
 those of the document throughout the import graph.
 
 Import traversal preserves cascade positions, repeated imports and conditional
-media wrappers. Repeated resources share decoded source; each occurrence still
+media metadata. Repeated resources share decoded source; each occurrence still
 costs scan work. Current recursion-path URLs, including redirect destinations,
 stop cycles. Each imported sheet remains a separate parser input so malformed
 EOF comments, strings or blocks cannot consume its parent's rules. Media
 conditions are evaluated during style computation, so resizing reevaluates them.
 This implements part of [CSS stylesheet imports](https://drafts.csswg.org/css-cascade-5/#at-import),
 not the full CSS grammar or loading model.
+
+`@import` supports both `layer(name.path)` and the anonymous `layer` keyword.
+The loader retains one anonymous identity for every source segment belonging to
+the same imported layer. Layer order statements before imports remain before
+them in the cascade inventory. A valid layered import registers its layer even
+when fetching fails, subject to its media conditions. Layers and media contexts
+are carried in `StyleSource` metadata, including empty registration sources;
+they are never serialized into invented author-visible names or CSS wrappers.
+Nested imports inherit both the parent layer and media conjunction. See
+[cascade behavior](../tests/conformance/cascade-layers.md).
 
 Media evaluation implements a bounded subset of [Media Queries 4](https://www.w3.org/TR/mediaqueries-4/#mq-syntax):
 comma-separated alternatives, media types, `only`/`not`, plain feature
@@ -58,30 +68,48 @@ or attached input devices. Range comparisons, `or`, grouped Boolean conditions,
 `calc()`, escaped media identifiers and the full media-feature inventory remain
 unsupported.
 
-Generated media wrappers require a structurally valid condition: strings,
+Media conditions require a structurally valid prelude: strings,
 comments and delimiters must close, and unquoted braces or semicolons are
 rejected. Quoted or escaped delimiter characters remain data. Conditional sheet
-source with an unmatched closing brace is conservatively ignored so it cannot
-escape its wrapper. This guard is intentionally stricter than complete CSS
-Syntax recovery. Imported URL tokens retain literal braces and semicolons;
+contents remain independent parser inputs; malformed closing braces cannot
+change their metadata conditions or layer identity. Imported URL tokens retain literal braces and semicolons;
 their contents are not mistaken for import-rule boundaries.
 
 Per-load bounds are 8 MiB of decoded stylesheet text, 8 MiB of constructed text,
 32 MiB of repeated scan input, 256 import attempts, 256 cached resources, 256
 retained segments and 16 recursive external-sheet levels. Parsing an import
-prelude or validating a wrapper condition permits at most 128 nested delimiters.
+prelude or validating a media condition permits at most 128 nested delimiters.
 Media evaluation separately permits 64 KiB of input, 64 comma-separated queries,
 64 conjunctive features per query and 16 nested delimiters. Stylesheet URL work
 and retained URL cache data each have a 32 MiB allowance, including repeated
 cache lookups and failed-resource keys. Page resource resolution has its own
 32 MiB work limit. Page-wide fetch count/body limits and the final
-8 MiB/256-style-input cascade limit also apply. Media wrapping is charged before
-allocation; import diagnostics have a bounded inventory.
+8 MiB/256-style-input cascade limit also apply. New layer-name and media text is charged before
+allocation; import diagnostics have a bounded inventory. Structured inputs allow
+at most 32 media conditions per source under the shared 8 MiB input budget.
 
-Remaining limitations include cascade layers, `supports()` import conditions,
+Inline collection validates `type` and media syntax before copying text, both
+while loading and during later style recalculation. HTML and SVG `style`
+elements use only their direct Text children; descendant element text does not
+become stylesheet source. This follows [HTML style processing](https://html.spec.whatwg.org/multipage/semantics.html#the-style-element),
+which [SVG 2 also adopts](https://www.w3.org/TR/SVG2/styling.html#StyleElement).
+The type must be absent, empty, or an ASCII case-insensitive `text/css` match;
+surrounding spaces and MIME parameters make a style element inert. Linked
+stylesheet type hints retain their separate MIME processing. JavaScript
+`textContent` continues to concatenate descendant text.
+
+Each collection accepts at most 256 inline sheets and 8 MiB of copied text.
+It reserves up to 200,000 direct-child visits across sizing and copying passes,
+checks the complete output size before allocation, and uses fallible reservation.
+Initial loading, re-layout and the raw `Document::stylesheets` helper all use
+these bounds. The first exhausted inline collection stops further copying;
+initial loading records a diagnostic and can still process other resource kinds.
+The separate final segment/media budget above still applies.
+
+Remaining limitations include `supports()` import conditions,
 complete CSS Syntax recovery and namespace semantics, asynchronous/parser-driven
 loading, dynamic stylesheet fetching, CSSOM, alternate stylesheet sets and full
-CORS/CSP. Unsupported import layer/supports clauses produce a diagnostic and do
+CORS/CSP. Unsupported import supports clauses produce a diagnostic and do
 not fetch. Non-CSS style types are inert. Inline DOM text changes invalidate the
 cached expanded source, but do not start new import fetches. `Page::from_html`
 uses the supplied text without fetching external resources. Nested browsing

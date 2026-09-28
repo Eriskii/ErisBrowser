@@ -1,6 +1,6 @@
 # Focused rendering reference tests
 
-These thirty-two self-authored cases compare Eris rendering against independently
+These forty-one self-authored cases compare Eris rendering against independently
 expressed reference layouts at 320 × 240 pixels. They exercise specific HTML/CSS
 behaviors; they are not the Web Platform Tests, a browser compatibility score, or
 a Chromium performance comparison. Passing a pair cannot detect a defect shared
@@ -30,3 +30,14 @@ sizing and placement limitations.
 The six positioned-layout cases and their geometry/stacking coverage are
 described in [`positioning.md`](positioning.md), including the remaining
 static-position, inline-fragment and compositing limitations.
+
+The six opacity cases use independently specified opaque SVG rectangles to
+check grouped backgrounds, borders, images, inline fragments, nested contexts
+and fixed descendants. [`opacity.md`](opacity.md) describes their coverage and
+the painter's surface/work limits.
+
+Three cascade-layer cases cover normal and important order, inline precedence,
+nested and implicit layers, `revert-layer`, variable substitution and anonymous
+layer identities across imported source segments. Their references use opaque
+SVG rectangles without cascade layers. The supported grammar and rollback
+limits are recorded in [`cascade-layers.md`](../conformance/cascade-layers.md).

@@ -1,0 +1,3 @@
+@import 'inner.css';
+@layer theme { #a{background:blue!important} }
+#b{background:green}

@@ -27,6 +27,7 @@ const DEFAULT_SEED: u64 = 0xe215_2026;
 const SCRIPT_DOCUMENT: &str = "<!doctype html><body><button id='go'>Go</button><div id='out'>Initial</div><input id='field' value='test'></body>";
 
 const HTML_SEEDS: &[&str] = &[
+    "<style>@layer reset,theme;@layer theme{main{opacity:.5;background:blue}i{position:absolute;left:20px;top:10px;opacity:.7;background:red}}@layer reset{main{position:relative;width:120px;height:80px;background:green}i{width:70px;height:50px}}@layer theme{b{position:fixed;left:0;top:0;background:orange}}</style><main>group<i>nested<b>fixed</b></i></main>",
     "<style>main{position:relative;width:120px;padding:10px;border:2px solid;z-index:0}section{overflow:hidden;width:40px}i{position:absolute;left:10%;right:5px;top:2px;height:20px;z-index:-1;background:red}b{position:fixed;bottom:3px;right:4px;width:20px;height:15px;z-index:2147483647;background:blue}</style><main><section><i><b></b></i></section><p>stacked text</p></main>",
     "<style>main{display:grid;grid-template-columns:40px 40px;position:relative}div{grid-area:1/1;z-index:2;background:coral}span{position:relative;left:-3px;top:2px}i{position:absolute;left:0;right:0;max-width:20px;margin:auto;height:8px}</style><main><div><span>word<i></i></span></div><div style='z-index:1'>lower</div></main>",
     "<style>main{display:grid;grid-template-columns:minmax(20px,1fr) 2fr;grid-template-rows:30px auto;grid-auto-rows:20px 40px;grid-auto-columns:min-content 50px;grid-auto-flow:row dense;gap:3px 7px}i{padding:2px}#wide{grid-column:span 2}#past{grid-column:-5;grid-row:4 / span 2}</style><main><i id=wide>Spanning text</i><i>Auto</i><i id=past>Implicit</i><i style='order:-1;align-self:end'>Ordered</i></main>",
@@ -49,6 +50,8 @@ const HTML_SEEDS: &[&str] = &[
     "<style>.a{position:relative;left:-2px;top:3px;width:90%;max-width:150px;min-height:20px}.b{font-size:125%;vertical-align:middle}a[href^='https']{color:rebeccapurple}</style><p class=a>Text <span class=b>large</span> <a href=https://example.com>link</a></p><img width=16 height=16 alt=missing>",
 ];
 const SCRIPT_SEEDS: &[&str] = &[
+    "const target=document.getElementById('go');let trace=[];document.addEventListener('signal',function(e){trace.push(e.eventPhase);},{capture:true,once:true});target.addEventListener('signal',function(e){e.preventDefault();trace.push(e.detail);});const event=new CustomEvent('signal',{bubbles:true,cancelable:true,detail:4});const accepted=target.dispatchEvent(event);document.getElementById('out').textContent=trace.join('/')+accepted;",
+    "const target=new EventTarget();let count=0;const callback={handleEvent:function(e){count++;target.removeEventListener('x',callback);}};target.addEventListener('x',callback);target.dispatchEvent(new Event('x'));target.dispatchEvent(new Event('x'));document.getElementById('out').textContent=String(count);",
     r#"const pattern=/(?<name>[A-Z]+)-(\d+)/g; const text='AX-12 BY-34'; const match=pattern.exec(text); document.getElementById('out').textContent=match.groups.name+':'+text.replace(pattern,'$2/$<name>');"#,
     r#"const pattern=/((a|b)+)\1/d; const match=pattern.exec('abbaabba'); document.getElementById('out').textContent=match[0]+':'+match.indices[1].join(',')+':'+('one  two').split(/\s+/).join('/');"#,
     "x=0;function remove(){delete globalThis.x;return 1;}x=remove();document.getElementById('out').textContent=String(x);",
@@ -446,16 +449,26 @@ struct CaseResult {
     paint_limited: bool,
 }
 fn scope_invariants(commands: &[DrawCommand]) -> Result<(), String> {
+    #[derive(PartialEq)]
+    enum Scope {
+        Clip,
+        Fixed,
+        Opacity,
+    }
     let mut scopes = Vec::new();
     for command in commands {
         match command {
-            DrawCommand::PushClip { .. } => scopes.push(false),
-            DrawCommand::PushFixed => scopes.push(true),
-            DrawCommand::PopClip if scopes.pop() != Some(false) => {
+            DrawCommand::PushClip { .. } => scopes.push(Scope::Clip),
+            DrawCommand::PushFixed => scopes.push(Scope::Fixed),
+            DrawCommand::PushOpacity { .. } => scopes.push(Scope::Opacity),
+            DrawCommand::PopClip if scopes.pop() != Some(Scope::Clip) => {
                 return Err("clip scope mismatch".into());
             }
-            DrawCommand::PopFixed if scopes.pop() != Some(true) => {
+            DrawCommand::PopFixed if scopes.pop() != Some(Scope::Fixed) => {
                 return Err("fixed scope mismatch".into());
+            }
+            DrawCommand::PopOpacity if scopes.pop() != Some(Scope::Opacity) => {
+                return Err("opacity scope mismatch".into());
             }
             _ => {}
         }
@@ -511,7 +524,15 @@ fn pipeline(
                 glyphs = glyphs.saturating_add(text.chars().count());
             }
             DrawCommand::Image { rect, .. } | DrawCommand::PushClip { rect } => rectangle(*rect)?,
-            DrawCommand::PushFixed | DrawCommand::PopFixed | DrawCommand::PopClip => {}
+            DrawCommand::PushFixed
+            | DrawCommand::PopFixed
+            | DrawCommand::PopClip
+            | DrawCommand::PopOpacity => {}
+            DrawCommand::PushOpacity { opacity } => {
+                if !(0.0..=1.0).contains(opacity) {
+                    return Err("invalid group opacity".into());
+                }
+            }
             DrawCommand::Line {
                 x1,
                 y1,
@@ -767,6 +788,27 @@ mod tests {
         let mut deep = vec![clip; 129];
         deep.extend(vec![DrawCommand::PopClip; 129]);
         assert!(scope_invariants(&deep).is_err());
+        let group = DrawCommand::PushOpacity { opacity: 0.5 };
+        assert!(
+            scope_invariants(&[
+                group.clone(),
+                DrawCommand::PushFixed,
+                DrawCommand::PopFixed,
+                DrawCommand::PopOpacity,
+            ])
+            .is_ok()
+        );
+        assert!(
+            scope_invariants(&[
+                group.clone(),
+                DrawCommand::PushFixed,
+                DrawCommand::PopOpacity,
+                DrawCommand::PopFixed,
+            ])
+            .is_err()
+        );
+        assert!(scope_invariants(&[group, DrawCommand::PopClip,]).is_err());
+        assert!(scope_invariants(&[DrawCommand::PopOpacity]).is_err());
     }
 
     #[test]

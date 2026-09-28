@@ -5,6 +5,8 @@ pub type NodeId = usize;
 pub const MAX_NODES: usize = 100_000;
 pub const MAX_DEPTH: usize = 256;
 const MAX_TEXT: usize = 8 * 1024 * 1024;
+pub(crate) const MAX_INLINE_STYLES: usize = 256;
+pub(crate) const MAX_STYLE_CHILD_VISITS: usize = MAX_NODES * 2;
 pub const MAX_DOM_BYTES: usize = 32 * 1024 * 1024;
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
@@ -624,6 +626,59 @@ impl Document {
         }
         result
     }
+    /// Concatenate direct Text children, as defined by DOM child text content.
+    /// Reserve both traversal passes and all output bytes before allocating.
+    /// None indicates an invalid node or exhausted caller/per-string limits;
+    /// callers must not treat it as an empty stylesheet and continue copying.
+    pub fn child_text_content_bounded(
+        &self,
+        id: NodeId,
+        bytes_left: &mut usize,
+        child_visits_left: &mut usize,
+    ) -> Option<String> {
+        let node = self.nodes.get(id)?;
+        let visits = node.children.len().checked_mul(2)?;
+        if visits > *child_visits_left {
+            *child_visits_left = 0;
+            return None;
+        }
+        *child_visits_left -= visits;
+        let mut size = 0usize;
+        for child in &node.children {
+            if let Some(Node {
+                kind: NodeKind::Text(text),
+                ..
+            }) = self.nodes.get(*child)
+            {
+                size = size.checked_add(text.len())?;
+                if size > (*bytes_left).min(MAX_TEXT) {
+                    return None;
+                }
+            }
+        }
+        *bytes_left -= size;
+        let mut output = String::new();
+        output.try_reserve_exact(size).ok()?;
+        for child in &node.children {
+            if let Some(Node {
+                kind: NodeKind::Text(text),
+                ..
+            }) = self.nodes.get(*child)
+            {
+                output.push_str(text);
+            }
+        }
+        Some(output)
+    }
+    /// HTML style's exact type check also applies to SVG style (SVG 2 §6.2).
+    /// Link MIME hints have different processing and must not use this helper.
+    pub(crate) fn is_css_style_element(&self, id: NodeId) -> bool {
+        self.tag(id) == Some("style")
+            && matches!(self.namespace(id), Some(Namespace::Html | Namespace::Svg))
+            && self
+                .attr(id, "type")
+                .is_none_or(|kind| kind.is_empty() || kind.eq_ignore_ascii_case("text/css"))
+    }
     pub fn set_text_content(&mut self, id: NodeId, text: &str) {
         if id >= self.nodes.len() || matches!(self.nodes[id].kind, NodeKind::Doctype(_)) {
             return;
@@ -1000,14 +1055,29 @@ impl Document {
         result
     }
     pub fn stylesheets(&self) -> Vec<String> {
-        self.query_selector_all("style")
-            .into_iter()
-            .filter(|id| {
-                matches!(self.namespace(*id), Some(Namespace::Html | Namespace::Svg))
-                    && self.is_active_node(*id)
-            })
-            .map(|id| self.text_content(id))
-            .collect()
+        let mut sources = Vec::new();
+        let mut bytes_left = MAX_TEXT;
+        let mut child_visits_left = MAX_STYLE_CHILD_VISITS;
+        for id in self.query_selector_all("style") {
+            if sources.len() >= MAX_INLINE_STYLES {
+                break;
+            }
+            if !self.is_css_style_element(id)
+                || !self.is_active_node(id)
+                || self
+                    .attr(id, "media")
+                    .is_some_and(|media| !crate::stylesheet_loading::valid_media_condition(media))
+            {
+                continue;
+            }
+            let Some(source) =
+                self.child_text_content_bounded(id, &mut bytes_left, &mut child_visits_left)
+            else {
+                break;
+            };
+            sources.push(source);
+        }
+        sources
     }
     /// Attached nodes outside HTML template content can contribute document metadata and resources.
     pub fn is_active_node(&self, id: NodeId) -> bool {
@@ -7646,6 +7716,74 @@ fn nth_matches(s: &str, index: usize) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn child_text_collection_preflights_bytes_and_visits_without_descending() {
+        let mut document = Document::parse("");
+        let style = document.create_element("style");
+        let first = document.create_text_node("aé");
+        let comment = document.create_comment("comment");
+        let descendant = document.create_element("span");
+        document.set_text_content(descendant, "descendant");
+        let last = document.create_text_node("𝄞z");
+        for child in [first, comment, descendant, last] {
+            document.append_child(style, child);
+        }
+        let mut bytes = 8;
+        let mut visits = 8;
+        assert_eq!(
+            document.child_text_content_bounded(style, &mut bytes, &mut visits),
+            Some("aé𝄞z".into())
+        );
+        assert_eq!((bytes, visits), (0, 0));
+        assert_eq!(document.text_content(style), "aédescendant𝄞z");
+        let mut bytes = 7;
+        let mut visits = 8;
+        assert!(
+            document
+                .child_text_content_bounded(style, &mut bytes, &mut visits)
+                .is_none()
+        );
+        assert_eq!((bytes, visits), (7, 0));
+        let mut bytes = 8;
+        let mut visits = 7;
+        assert!(
+            document
+                .child_text_content_bounded(style, &mut bytes, &mut visits)
+                .is_none()
+        );
+        assert_eq!((bytes, visits), (8, 0));
+    }
+    #[test]
+    fn stylesheet_collection_uses_exact_type_and_shared_source_limits() {
+        let mut document = Document::parse(
+            "<style type='text/css; charset=utf-8'>html parameters</style><style type=' text/css'>html whitespace</style><style type='TEXT/CSS'>html</style><svg><style type='text/css; charset=utf-8'>svg parameters</style><style type=' '>svg whitespace</style><style type=''>svg</style></svg>",
+        );
+        assert_eq!(document.stylesheets(), ["html", "svg"]);
+        document = Document::parse(&"<style>x</style>".repeat(MAX_INLINE_STYLES + 1));
+        assert_eq!(document.stylesheets().len(), MAX_INLINE_STYLES);
+        let mut document =
+            Document::parse("<style id=a></style><style id=b></style><style id=c>overflow</style>");
+        let text = "x".repeat(MAX_TEXT / 2);
+        for id in ["#a", "#b"] {
+            document.set_text_content(document.query_selector(id).unwrap(), &text);
+        }
+        let styles = document.stylesheets();
+        assert_eq!(styles.len(), 2);
+        assert_eq!(styles.iter().map(String::len).sum::<usize>(), MAX_TEXT);
+    }
+    #[test]
+    fn nested_svg_styles_do_not_multiply_descendant_text() {
+        let document = Document::parse(&format!(
+            "<svg>{}{}{}",
+            "<style>".repeat(64),
+            "x".repeat(4096),
+            "</style>".repeat(64)
+        ));
+        let styles = document.stylesheets();
+        assert_eq!(styles.len(), 64);
+        assert_eq!(styles.iter().map(String::len).sum::<usize>(), 4096);
+        assert!(styles[..63].iter().all(String::is_empty));
+    }
     #[test]
     fn block_starts_and_end_tag_scopes_keep_paragraph_and_button_boundaries() {
         for tag in [

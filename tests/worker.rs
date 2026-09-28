@@ -146,6 +146,75 @@ fn process_exists(pid: u32) -> bool {
 }
 
 #[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn layered_imports_opacity_and_event_capture_cross_real_process_boundary() {
+    let fixture = Fixture::new(
+        r#"<!doctype html><link rel=stylesheet href=main.css>
+      <div id=group><div id=back></div><div id=front></div></div>
+      <div id=panel><a id=go href='/must-not-navigate'>Send</a></div><p id=out>ready</p>
+      <script>
+      var trace=[];var go=document.getElementById('go');var panel=document.getElementById('panel');
+      document.addEventListener('click',function(e){trace=['document capture'];},true);
+      panel.addEventListener('click',function(e){trace.push('panel capture');}, {capture:true});
+      go.addEventListener('click',function(e){trace.push('target');e.preventDefault();go.dispatchEvent(new CustomEvent('signal',{bubbles:true,detail:7}));});
+      panel.addEventListener('signal',function(e){trace.push('signal '+e.detail);},{once:true});
+      panel.addEventListener('click',function(e){trace.push('panel bubble');});
+      document.addEventListener('click',function(e){trace.push('document bubble');document.getElementById('out').textContent=trace.join('/');});
+      </script>"#,
+    );
+    fs::write(fixture.directory.join("main.css"), "@layer base,theme;@import 'theme.css' layer(theme);@import 'base.css' layer(base);body{margin:0}#group{position:fixed;left:0;top:0;width:70px;height:30px;opacity:0.5}#back,#front{position:absolute;top:0;width:40px;height:30px}#back{left:0}#front{left:20px}#panel{margin-top:80px}").unwrap();
+    fs::write(
+        fixture.directory.join("base.css"),
+        "#back,#front{background:blue}",
+    )
+    .unwrap();
+    fs::write(
+        fixture.directory.join("theme.css"),
+        "#back,#front{background:red}",
+    )
+    .unwrap();
+    let mut client = fixture.spawn(true, 91);
+    load(&mut client, &fixture.navigation);
+    let snapshot = render(&mut client);
+    assert!(
+        snapshot
+            .diagnostics
+            .iter()
+            .all(|m| m.starts_with("Page process ") || m.starts_with("Resource broker ")),
+        "{:?}",
+        snapshot.diagnostics
+    );
+    assert!(snapshot.layout.commands.iter().any(
+        |c| matches!(c, eris::graphics::DrawCommand::PushOpacity { opacity } if *opacity == 0.5)
+    ));
+    let mut canvas = eris::graphics::Canvas::new(320, 240).unwrap();
+    canvas.paint_with_viewport(
+        &snapshot.layout.commands,
+        &eris::graphics::Fonts::new(),
+        &snapshot.images,
+        (0.0, -100.0),
+        (0.0, 0.0),
+    );
+    assert!(!canvas.exhausted());
+    assert_eq!(canvas.pixels[5 * 320 + 5], 0xff8080);
+    assert_eq!(
+        canvas.pixels[5 * 320 + 25],
+        canvas.pixels[5 * 320 + 5],
+        "overlap must be composited once"
+    );
+    let go = snapshot.document.query_selector("#go").unwrap();
+    for expected in [
+        "document capture/panel capture/target/signal 7/panel bubble/document bubble",
+        "document capture/panel capture/target/panel bubble/document bubble",
+    ] {
+        exchange_empty(&mut client, WorkerCommand::Click { node: go });
+        let snapshot = render(&mut client);
+        let out = snapshot.document.query_selector("#out").unwrap();
+        assert_eq!(snapshot.document.text_content(out), expected);
+    }
+}
+
+#[test]
 #[ignore = "requires Linux Landlock ABI 6 and launches the real confined browser worker"]
 fn isolated_load_render_returns_valid_snapshot_from_distinct_process() {
     let fixture = Fixture::new(
@@ -919,12 +988,12 @@ fn image_decoder_confines_decodes_once_and_exits_without_response_body_leaks() {
         let mut output = child.0.stdout.take().unwrap();
         let flags = rustix::fs::fcntl_getfl(&output).unwrap();
         rustix::fs::fcntl_setfl(&output, flags | rustix::fs::OFlags::NONBLOCK).unwrap();
-        send(&mut input, b"ERW5\x06");
-        assert_eq!(receive(&mut output), b"ERW5\x02\x01\x00\x00");
+        send(&mut input, b"ERW6\x06");
+        assert_eq!(receive(&mut output), b"ERW6\x02\x01\x00\x00");
         let status = fs::read_to_string(format!("/proc/{pid}/status")).unwrap();
         assert!(status.contains("NoNewPrivs:\t1"));
         assert!(status.contains("Seccomp:\t2"));
-        let mut request = b"ERW5\x07".to_vec();
+        let mut request = b"ERW6\x07".to_vec();
         request.extend_from_slice(&(mime.len() as u32).to_le_bytes());
         request.extend_from_slice(mime.as_bytes());
         request.extend_from_slice(&budget.to_le_bytes());
@@ -932,7 +1001,7 @@ fn image_decoder_confines_decodes_once_and_exits_without_response_body_leaks() {
         request.extend_from_slice(body);
         send(&mut input, &request);
         let response = receive(&mut output);
-        assert_eq!(&response[..5], b"ERW5\x08");
+        assert_eq!(&response[..5], b"ERW6\x08");
         assert_eq!(response[5], u8::from(success));
         if success {
             assert_eq!(u32::from_le_bytes(response[6..10].try_into().unwrap()), 2);

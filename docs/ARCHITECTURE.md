@@ -57,8 +57,8 @@ results from replacing newer input.
 Snapshots contain the DOM, display list, hit regions, shared raster images and
 page metadata. The parent checks their graph structure, namespace bindings,
 storage limits, geometry and raster dimensions before publishing them to the
-UI. The ERW5 format also validates reciprocal template/fragment ownership,
-host-inclusive cycles/depth, canonical encoding metadata, frozen base URLs, fixed hit coordinates and typed clip/fixed display scopes. Resource traffic has separate request/response messages. All pipe channels
+UI. The ERW6 format also validates reciprocal template/fragment ownership,
+host-inclusive cycles/depth, canonical encoding metadata, frozen base URLs, fixed hit coordinates and typed clip/fixed/opacity display scopes. Resource traffic has separate request/response messages. All pipe channels
 use bounded framing, nonblocking I/O and deadlines; cancellation remains latched
 across nested broker and decoder exchanges. Failure or replacement kills and reaps the
 corresponding children.
@@ -79,7 +79,7 @@ The string-based DOM APIs already receive Unicode and never reinterpret bytes.
 See [encoding behavior](ENCODING.md) for precedence, tests and remaining limits.
 
 Document base URL metadata changes resolution without changing fetch authority.
-Stylesheet imports retain separate parse inputs and conditional media scopes;
+Stylesheet imports retain separate parse inputs, shared layer identities and structured media conditions;
 cycles, repeated scans, URL copies/cache storage and expanded source all have
 shared limits. The custom RegExp parser and explicit backtracking matcher use
 runtime work/allocation limits and introduce no external execution engine.
@@ -89,3 +89,5 @@ See [security](SECURITY.md) for exact grants, limits and remaining attack surfac
 [validation](VALIDATION.md) for observed test results. These boundaries are
 implementation facts, not a claim of complete standards support or audited
 security.
+
+CSS layer registration spans all source segments before cascade ranking. Event objects keep private runtime state separate from script-visible properties; synchronous dispatch fixes the path before callbacks and shares script quotas. Opacity groups are emitted after stacking order and painted into bounded premultiplied RGBA16 intermediates, then composited once into their parent. The native protocol validates opacity values and typed scope nesting before UI painting.

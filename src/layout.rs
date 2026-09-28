@@ -1068,12 +1068,16 @@ pub fn layout(
         fallback: ComputedStyle::default(),
     };
     if let Some(id) = canvas_background_node {
+        // A propagated body background belongs to the root element's canvas
+        // background group, including the root's opacity, not body's opacity.
+        engine.paint_owner.node = html.unwrap_or(id);
         let style = engine.style(id);
         engine.push(DrawCommand::Rect {
             rect: rect(0.0, 0.0, viewport.width, viewport.height),
-            color: faded(style.background_color, style.opacity),
+            color: style.background_color,
             radius: 0.0,
         });
+        engine.paint_owner.node = doc.root;
     }
     let size = if doc.nodes.get(doc.root).is_some() {
         engine.layout_box(doc.root, 0.0, 0.0, viewport.width, Some(viewport.width), 0)
@@ -1159,13 +1163,15 @@ impl Engine<'_> {
         // Closing every emitted clip is part of the allocation, including clips
         // around a fragment whose descendants consume the remaining quota.
         match command {
-            DrawCommand::PushClip { .. } | DrawCommand::PushFixed => {
+            DrawCommand::PushClip { .. }
+            | DrawCommand::PushFixed
+            | DrawCommand::PushOpacity { .. } => {
                 if self.commands_created + self.open_clips + 2 > MAX_COMMANDS {
                     return false;
                 }
                 self.open_clips += 1;
             }
-            DrawCommand::PopClip | DrawCommand::PopFixed => {
+            DrawCommand::PopClip | DrawCommand::PopFixed | DrawCommand::PopOpacity => {
                 if self.open_clips == 0 {
                     return false;
                 }
@@ -1538,9 +1544,9 @@ impl Engine<'_> {
         let background = if self.canvas_background_node == Some(id) {
             Color::TRANSPARENT
         } else {
-            faded(style.background_color, style.opacity)
+            style.background_color
         };
-        let border_color = faded(style.border_color, style.opacity);
+        let border_color = style.border_color;
         let mut replacements = [
             DrawCommand::Rect {
                 rect: rect(x, y, width, paint_height),
@@ -1961,11 +1967,23 @@ impl Engine<'_> {
         let mut groups = vec![Group {
             entries: Vec::new(),
         }];
+        #[derive(Clone, Copy)]
+        struct Opacity {
+            parent: usize,
+            value: f32,
+            depth: usize,
+        }
+        let mut opacities = vec![Opacity {
+            parent: 0,
+            value: 1.0,
+            depth: 0,
+        }];
+        let mut owner_opacity = vec![0usize; self.doc.nodes.len()];
         let mut ranks = vec![[usize::MAX; 2]; self.doc.nodes.len()];
-        let mut traversal = vec![(self.doc.root, 0usize, 0usize)];
+        let mut traversal = vec![(self.doc.root, 0usize, 0usize, 0usize)];
         let mut seen = vec![false; self.doc.nodes.len()];
         let mut order = 0usize;
-        while let Some((id, parent_group, real_parent)) = traversal.pop() {
+        while let Some((id, parent_group, real_parent, inherited_opacity)) = traversal.pop() {
             if seen[id] || !grid_charge(&mut self.position_work_left, 1) {
                 continue;
             }
@@ -1974,12 +1992,24 @@ impl Engine<'_> {
             if self.is_hidden(id) {
                 continue;
             }
+            let opacity = finite(style.opacity, 1.0).clamp(0.0, 1.0);
+            let opacity_chain = if opacity < 1.0 {
+                opacities.push(Opacity {
+                    parent: inherited_opacity,
+                    value: opacity,
+                    depth: opacities[inherited_opacity].depth + 1,
+                });
+                opacities.len() - 1
+            } else {
+                inherited_opacity
+            };
+            owner_opacity[id] = opacity_chain;
             let positioned = style.position != "static";
             let item = self.doc.nodes[id]
                 .parent
                 .is_some_and(|p| matches!(self.style(p).display, Display::Flex | Display::Grid));
             let real = id == self.doc.root
-                || style.opacity < 1.0
+                || opacity < 1.0
                 || style.position == "fixed"
                 || style.z_index.is_some() && (positioned || item);
             let floating = self.is_float(id);
@@ -2042,7 +2072,7 @@ impl Engine<'_> {
                 children
                     .into_iter()
                     .rev()
-                    .map(|child| (child, group, real_group)),
+                    .map(|child| (child, group, real_group, opacity_chain)),
             );
         }
         for group in &mut groups {
@@ -2074,6 +2104,7 @@ impl Engine<'_> {
             rank: usize,
             chain: usize,
             fixed: bool,
+            opacity: usize,
             sequence: usize,
         }
         let mut chains = vec![Chain {
@@ -2124,6 +2155,7 @@ impl Engine<'_> {
                             rank: ranks[owner.node][usize::from(!owner.background)],
                             chain,
                             fixed,
+                            opacity: owner_opacity[owner.node],
                             sequence,
                         });
                     }
@@ -2131,18 +2163,40 @@ impl Engine<'_> {
             }
         }
         atoms.sort_by_key(|atom| (atom.rank, atom.sequence));
-        let (mut current_chain, mut current_fixed) = (0usize, false);
-        let mut open = 0usize;
+        let (mut current_chain, mut current_fixed, mut current_opacity) = (0usize, false, 0usize);
         let mut cutoff = usize::MAX;
         for atom in atoms {
             if !grid_charge(&mut self.position_work_left, 1) {
                 cutoff = atom.rank;
                 break;
             }
-            // Close to the common ancestor; fixed/document coordinates have
-            // independent clip roots. Scope transitions are charged and closure
-            // slots reserved before emitting any part of the next atom.
-            let mut common = if current_fixed == atom.fixed {
+            // Opacity scopes enclose complete stacking groups. Coordinate/clip
+            // transitions happen inside them, allowing fixed children to escape
+            // ancestor overflow without escaping the group's opacity.
+            let changing_opacity = current_opacity != atom.opacity;
+            let mut common_opacity = current_opacity;
+            let mut target_opacity = atom.opacity;
+            let mut traversal_cost = 0;
+            while opacities[common_opacity].depth > opacities[target_opacity].depth {
+                common_opacity = opacities[common_opacity].parent;
+                traversal_cost += 1;
+            }
+            while opacities[target_opacity].depth > opacities[common_opacity].depth {
+                target_opacity = opacities[target_opacity].parent;
+                traversal_cost += 1;
+            }
+            while common_opacity != target_opacity {
+                common_opacity = opacities[common_opacity].parent;
+                target_opacity = opacities[target_opacity].parent;
+                traversal_cost += 2;
+            }
+            let mut opacity_path = Vec::new();
+            let mut target_opacity = atom.opacity;
+            while target_opacity != common_opacity {
+                opacity_path.push(target_opacity);
+                target_opacity = opacities[target_opacity].parent;
+            }
+            let mut common = if !changing_opacity && current_fixed == atom.fixed {
                 current_chain
             } else {
                 0
@@ -2150,13 +2204,16 @@ impl Engine<'_> {
             let mut target = atom.chain;
             while chains[common].depth > chains[target].depth {
                 common = chains[common].parent;
+                traversal_cost += 1;
             }
             while chains[target].depth > chains[common].depth {
                 target = chains[target].parent;
+                traversal_cost += 1;
             }
             while common != target {
                 common = chains[common].parent;
                 target = chains[target].parent;
+                traversal_cost += 2;
             }
             let mut path = Vec::new();
             let mut target = atom.chain;
@@ -2165,16 +2222,19 @@ impl Engine<'_> {
                 target = chains[target].parent;
             }
             let closes = chains[current_chain].depth - chains[common].depth;
-            let fixed_changes = if current_fixed == atom.fixed {
+            let fixed_changes = if !changing_opacity && current_fixed == atom.fixed {
                 0
             } else {
                 usize::from(current_fixed) + usize::from(atom.fixed)
             };
-            let final_open = chains[atom.chain].depth + usize::from(atom.fixed);
-            let cost = closes + fixed_changes + path.len() + 1;
+            let opacity_closes = opacities[current_opacity].depth - opacities[common_opacity].depth;
+            let final_open =
+                chains[atom.chain].depth + usize::from(atom.fixed) + opacities[atom.opacity].depth;
+            let cost =
+                closes + fixed_changes + path.len() + opacity_closes + opacity_path.len() + 1;
             if final_open > MAX_DEPTH
                 || self.commands.len() + cost + final_open > MAX_COMMANDS
-                || !grid_charge(&mut self.position_work_left, cost)
+                || !grid_charge(&mut self.position_work_left, cost + traversal_cost)
             {
                 cutoff = atom.rank;
                 break;
@@ -2182,13 +2242,20 @@ impl Engine<'_> {
             for _ in 0..closes {
                 self.commands.push(DrawCommand::PopClip);
             }
-            if current_fixed != atom.fixed {
-                if current_fixed {
-                    self.commands.push(DrawCommand::PopFixed);
-                }
-                if atom.fixed {
-                    self.commands.push(DrawCommand::PushFixed);
-                }
+            let change_coordinates = changing_opacity || current_fixed != atom.fixed;
+            if change_coordinates && current_fixed {
+                self.commands.push(DrawCommand::PopFixed);
+            }
+            for _ in 0..opacity_closes {
+                self.commands.push(DrawCommand::PopOpacity);
+            }
+            for id in opacity_path.into_iter().rev() {
+                self.commands.push(DrawCommand::PushOpacity {
+                    opacity: opacities[id].value,
+                });
+            }
+            if change_coordinates && atom.fixed {
+                self.commands.push(DrawCommand::PushFixed);
             }
             for id in path.into_iter().rev() {
                 self.commands.push(DrawCommand::PushClip {
@@ -2198,13 +2265,16 @@ impl Engine<'_> {
             self.commands.push(atom.command);
             current_chain = atom.chain;
             current_fixed = atom.fixed;
-            open = final_open;
+            current_opacity = atom.opacity;
         }
-        for _ in 0..open.saturating_sub(usize::from(current_fixed)) {
+        for _ in 0..chains[current_chain].depth {
             self.commands.push(DrawCommand::PopClip);
         }
         if current_fixed {
             self.commands.push(DrawCommand::PopFixed);
+        }
+        for _ in 0..opacities[current_opacity].depth {
+            self.commands.push(DrawCommand::PopOpacity);
         }
         let hit_rank = |hit: &HitRegion| {
             ranks[hit.node][usize::from(matches!(self.doc.nodes[hit.node].kind, NodeKind::Text(_)))]
@@ -2905,7 +2975,7 @@ impl Engine<'_> {
                     {
                         self.push(DrawCommand::Rect {
                             rect: item_rect,
-                            color: faded(owner_style.background_color, owner_style.opacity),
+                            color: owner_style.background_color,
                             radius: owner_style.border_radius,
                         });
                     }
@@ -2914,7 +2984,7 @@ impl Engine<'_> {
                         y: text_y,
                         text,
                         size,
-                        color: faded(style.color, style.opacity),
+                        color: style.color,
                         bold: style.font_weight >= 600,
                         italic: style.font_style == "italic" || style.font_style == "oblique",
                         monospace: monospace(&style),
@@ -3707,11 +3777,18 @@ impl Engine<'_> {
                 available + spacing * column_count.saturating_sub(1) as f32,
                 heights[row],
             );
+            let background = style.background_color;
+            let saved_owner = self.paint_owner;
+            self.paint_owner = PaintOwner {
+                node: id,
+                background: true,
+            };
             self.push(DrawCommand::Rect {
                 rect: row_rect,
-                color: faded(style.background_color, style.opacity),
+                color: background,
                 radius: 0.0,
             });
+            self.paint_owner = saved_owner;
             self.push_hit(HitRegion {
                 fixed: false,
                 node: id,
@@ -3893,22 +3970,33 @@ impl Engine<'_> {
                 key: format!("eris-inline-svg:{id}"),
             });
         } else if tag == "img" {
-            self.push(DrawCommand::Rect {
-                rect: rect(x, y, width, height),
-                color: rgba(236, 238, 242, 255),
-                radius: 0.0,
-            });
-            if let Some(alt) = self.doc.attr(id, "alt").filter(|alt| !alt.is_empty()) {
-                self.push(DrawCommand::Text {
-                    x: x + 4.0,
-                    y: y + 4.0,
-                    text: alt.chars().take(256).collect(),
-                    size: font_size(&style).min(16.0),
-                    color: style.color,
-                    bold: false,
-                    italic: false,
-                    monospace: false,
+            // Successful decoding installs natural-size metadata. A missing
+            // image fallback must not become an opaque backdrop (or alt-text
+            // watermark) beneath a loaded image's transparent pixels.
+            let loaded = self
+                .attr_number(id, "data-eris-natural-width")
+                .is_some_and(|v| v > 0.0)
+                && self
+                    .attr_number(id, "data-eris-natural-height")
+                    .is_some_and(|v| v > 0.0);
+            if !loaded {
+                self.push(DrawCommand::Rect {
+                    rect: rect(x, y, width, height),
+                    color: rgba(236, 238, 242, 255),
+                    radius: 0.0,
                 });
+                if let Some(alt) = self.doc.attr(id, "alt").filter(|alt| !alt.is_empty()) {
+                    self.push(DrawCommand::Text {
+                        x: x + 4.0,
+                        y: y + 4.0,
+                        text: alt.chars().take(256).collect(),
+                        size: font_size(&style).min(16.0),
+                        color: style.color,
+                        bold: false,
+                        italic: false,
+                        monospace: false,
+                    });
+                }
             }
             if let Some(src) = self.doc.attr(id, "src").filter(|src| !src.is_empty()) {
                 self.push(DrawCommand::Image {
@@ -4136,11 +4224,6 @@ fn rgba(r: u8, g: u8, b: u8, a: u8) -> Color {
     Color { r, g, b, a }
 }
 
-fn faded(mut color: Color, opacity: f32) -> Color {
-    color.a = (f32::from(color.a) * finite(opacity, 1.0).clamp(0.0, 1.0)).round() as u8;
-    color
-}
-
 fn collapsed_margin(previous: f32, next: f32) -> f32 {
     previous.max(next).max(0.0) + previous.min(next).min(0.0)
 }
@@ -4363,7 +4446,11 @@ fn translate(command: &mut DrawCommand, dx: f32, dy: f32) {
             *y1 = finite(*y1 + dy, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
             *y2 = finite(*y2 + dy, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
         }
-        DrawCommand::PopClip | DrawCommand::PushFixed | DrawCommand::PopFixed => {}
+        DrawCommand::PopClip
+        | DrawCommand::PushFixed
+        | DrawCommand::PopFixed
+        | DrawCommand::PushOpacity { .. }
+        | DrawCommand::PopOpacity => {}
     }
 }
 
@@ -4578,9 +4665,9 @@ mod tests {
     }
 
     #[test]
-    fn deep_fixed_clip_scopes_and_exhausted_command_quota_remain_typed_and_balanced() {
+    fn deep_fixed_clip_opacity_scopes_and_exhausted_command_quota_remain_typed_and_balanced() {
         let mut source = String::from(
-            "<style>body{margin:0}.outer{overflow:hidden;position:relative;width:40px;height:40px}.fixed{position:fixed;overflow:hidden;left:0;top:0;width:40px;height:40px}.leaf{position:relative;overflow:hidden;height:1px;background:red}.leaf:nth-child(2n){z-index:1}</style>",
+            "<style>body{margin:0}.outer{opacity:.9;overflow:hidden;position:relative;width:40px;height:40px}.fixed{position:fixed;overflow:hidden;left:0;top:0;width:40px;height:40px}.leaf{position:relative;overflow:hidden;height:1px;background:red}.leaf:nth-child(2n){z-index:1}</style>",
         );
         for _ in 0..12 {
             source.push_str("<div class=outer><div class=fixed>");
@@ -4601,20 +4688,26 @@ mod tests {
         );
         let mut scopes = Vec::new();
         let mut saw_fixed = false;
+        let mut saw_opacity = false;
         for command in &result.commands {
             match command {
                 DrawCommand::PushFixed => {
                     saw_fixed = true;
-                    scopes.push(true);
+                    scopes.push(1);
                 }
-                DrawCommand::PushClip { .. } => scopes.push(false),
-                DrawCommand::PopFixed => assert_eq!(scopes.pop(), Some(true)),
-                DrawCommand::PopClip => assert_eq!(scopes.pop(), Some(false)),
+                DrawCommand::PushClip { .. } => scopes.push(0),
+                DrawCommand::PushOpacity { .. } => {
+                    saw_opacity = true;
+                    scopes.push(2);
+                }
+                DrawCommand::PopFixed => assert_eq!(scopes.pop(), Some(1)),
+                DrawCommand::PopClip => assert_eq!(scopes.pop(), Some(0)),
+                DrawCommand::PopOpacity => assert_eq!(scopes.pop(), Some(2)),
                 _ => {}
             }
             assert!(scopes.len() <= 128);
         }
-        assert!(saw_fixed);
+        assert!(saw_fixed && saw_opacity);
         assert!(scopes.is_empty());
         assert!(result.commands.len() <= MAX_COMMANDS);
         assert!(result.hit_regions.len() <= MAX_VISITS);
@@ -4778,6 +4871,136 @@ mod tests {
             0.0,
         );
         canvas.pixels[y * 200 + x]
+    }
+
+    #[test]
+    fn opacity_wraps_background_border_descendants_and_preserves_zero_hits() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{opacity:.5;background:red;border:10px solid lime;width:80px;height:60px}div{background:blue;width:40px;height:40px}#zero{opacity:0;position:absolute;left:0;top:100px;width:30px;height:20px}</style><main><div></div></main><button id=zero>invisible</button>",
+            200.0,
+        );
+        assert_eq!(pixel(&result, 4, 4), 0x80ff80);
+        assert_eq!(pixel(&result, 20, 20), 0x8080ff);
+        assert_eq!(pixel(&result, 70, 20), 0xff8080);
+        assert_eq!(pixel(&result, 10, 110), 0xffffff);
+        let zero = doc.query_selector("#zero").unwrap();
+        let hit = result.hit_test(10.0, 110.0).unwrap();
+        assert!(hit == zero || doc.nodes[hit].parent == Some(zero));
+        assert_eq!(
+            result
+                .commands
+                .iter()
+                .filter(|c| matches!(c, DrawCommand::PushOpacity { .. }))
+                .count(),
+            2
+        );
+    }
+
+    #[test]
+    fn nested_opacity_groups_isolate_high_z_descendants_and_follow_source_order() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{opacity:.5;background:red;position:relative;width:100px;height:80px}section{opacity:.5;position:absolute;left:0;top:0;width:40px;height:40px}section i{position:absolute;z-index:999;left:0;top:0;width:40px;height:40px;background:blue}aside{position:absolute;left:20px;top:0;width:20px;height:40px;background:lime}</style><main><section><i id=nested></i></section><aside id=top></aside></main>",
+            200.0,
+        );
+        assert_eq!(pixel(&result, 10, 10), 0xbf80bf);
+        assert_eq!(pixel(&result, 30, 10), 0x80ff80);
+        assert_eq!(pixel(&result, 60, 10), 0xff8080);
+        assert_eq!(result.hit_test(30.0, 10.0), doc.query_selector("#top"));
+    }
+
+    #[test]
+    fn inline_opacity_encloses_wrapped_runs_once_and_keeps_primitive_alpha() {
+        let (_, result) = render(
+            "<style>body{margin:0;width:75px;font:20px monospace}span{opacity:.5;background:red;color:blue}</style><span>alpha beta gamma delta</span>",
+            200.0,
+        );
+        assert_eq!(
+            result
+                .commands
+                .iter()
+                .filter(|c| matches!(c, DrawCommand::PushOpacity { .. }))
+                .count(),
+            1
+        );
+        let mut text_lines = std::collections::HashSet::new();
+        for command in &result.commands {
+            if let DrawCommand::Text { y, color, .. } = command {
+                text_lines.insert(y.to_bits());
+                assert_eq!(*color, Color::rgb(0, 0, 255));
+            }
+        }
+        assert!(text_lines.len() >= 3);
+        assert!(result.commands.iter().any(
+            |c| matches!(c, DrawCommand::Rect { color, .. } if *color == Color::rgb(255, 0, 0))
+        ));
+    }
+
+    #[test]
+    fn fixed_opacity_descendant_stays_faded_under_scroll_and_outside_ancestor_clip() {
+        use crate::graphics::{Canvas, ImageStore};
+        let (doc, result) = render(
+            "<style>body{margin:0}main{opacity:.5;overflow:hidden;width:10px;height:10px;margin-top:100px}b{position:fixed;left:20px;top:20px;width:40px;height:40px;background:blue}</style><main><b id=fixed></b></main>",
+            200.0,
+        );
+        let mut canvas = Canvas::new(200, 150).unwrap();
+        canvas.paint_with_viewport(
+            &result.commands,
+            &Fonts::new(),
+            &ImageStore::new(),
+            (0.0, -100.0),
+            (0.0, 0.0),
+        );
+        assert_eq!(canvas.pixels[30 * 200 + 30], 0x8080ff);
+        assert!(!canvas.exhausted());
+        assert!(
+            result
+                .hit_regions
+                .iter()
+                .any(|hit| hit.node == doc.query_selector("#fixed").unwrap() && hit.fixed)
+        );
+    }
+
+    #[test]
+    fn decoded_transparent_images_do_not_paint_missing_image_fallbacks() {
+        use crate::graphics::{Canvas, ImageStore, RasterImage};
+        let (_, result) = render(
+            "<style>body{margin:0}main{opacity:.5;background:blue;width:80px;height:40px}img{display:block;width:40px;height:40px}</style><main><img src=alpha alt=missing data-eris-natural-width=1 data-eris-natural-height=1></main>",
+            200.0,
+        );
+        assert!(
+            !result.commands.iter().any(
+                |command| matches!(command, DrawCommand::Text { text, .. } if text == "missing")
+            )
+        );
+        let mut images = ImageStore::new();
+        images.insert(
+            "alpha".into(),
+            std::sync::Arc::new(RasterImage {
+                width: 1,
+                height: 1,
+                rgba: vec![255, 0, 0, 128],
+            }),
+        );
+        let mut canvas = Canvas::new(200, 150).unwrap();
+        canvas.paint(&result.commands, &Fonts::new(), &images, 0.0, 0.0);
+        assert_eq!(canvas.pixels[0], 0xc080bf);
+        assert_eq!(canvas.pixels[60], 0x8080ff);
+        assert!(!canvas.exhausted());
+    }
+
+    #[test]
+    fn root_opacity_contains_propagated_background_and_row_background_has_its_owner() {
+        let (_, root) = render(
+            "<style>html{opacity:.5}body{margin:0;background:red}div{background:blue;width:40px;height:40px}</style><div></div>",
+            200.0,
+        );
+        assert_eq!(pixel(&root, 10, 10), 0x8080ff);
+        assert_eq!(pixel(&root, 100, 100), 0xff8080);
+        let (_, table) = render(
+            "<style>body{margin:0}table{width:80px;border-spacing:0}tr{opacity:.5;background:red}td{width:40px;height:40px;padding:0;background:blue}</style><table><tr><td></td><td></td></tr></table>",
+            200.0,
+        );
+        assert_eq!(pixel(&table, 10, 10), 0x8080ff);
     }
 
     #[test]
@@ -5837,7 +6060,11 @@ mod tests {
                     width,
                     ..
                 } => vec![*x1, *y1, *x2, *y2, *width],
-                DrawCommand::PopClip | DrawCommand::PushFixed | DrawCommand::PopFixed => vec![],
+                DrawCommand::PopClip
+                | DrawCommand::PushFixed
+                | DrawCommand::PopFixed
+                | DrawCommand::PushOpacity { .. }
+                | DrawCommand::PopOpacity => vec![],
             };
             assert!(coordinates.iter().all(|value| value.is_finite()));
         }

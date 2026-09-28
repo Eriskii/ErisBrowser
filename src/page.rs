@@ -139,6 +139,10 @@ impl Page {
         let mut decoded_bytes = 0usize;
         let mut script_bytes = 0usize;
         let mut resource_url_work = 32usize * 1024 * 1024;
+        let mut style_text_left = MAX_STYLE_BYTES;
+        let mut style_child_visits_left = crate::dom::MAX_STYLE_CHILD_VISITS;
+        let mut inline_style_count = 0usize;
+        let mut style_text_exhausted = false;
         for id in ids {
             if page.policy_blocks_styles {
                 break;
@@ -152,10 +156,24 @@ impl Page {
                     Some(Namespace::Html | Namespace::Svg)
                 )
             {
-                if !page.css_type_supported(id) {
+                if style_text_exhausted || inline_style_count >= crate::dom::MAX_INLINE_STYLES {
                     continue;
                 }
-                let original: Arc<str> = page.document.text_content(id).into();
+                let original = match page.inline_style_source(
+                    id,
+                    &mut style_text_left,
+                    &mut style_child_visits_left,
+                ) {
+                    Ok(Some(source)) => source,
+                    Ok(None) => continue,
+                    Err(error) => {
+                        page.diagnostics.push(error);
+                        style_text_exhausted = true;
+                        continue;
+                    }
+                };
+                inline_style_count += 1;
+                let original: Arc<str> = original.into();
                 match styles.inline(&mut fetcher, &original, &base, &mut page.diagnostics) {
                     Ok(expanded) => {
                         page.inline_styles.insert(id, (original, expanded));
@@ -514,14 +532,24 @@ impl Page {
             self.diagnostics.push(format!("DOMContentLoaded: {error}"));
         }
     }
-    pub fn stylesheets(&self) -> Vec<String> {
+    pub fn stylesheets(&self) -> Vec<css::StyleSource> {
         if self.policy_blocks_styles {
             return Vec::new();
         }
         let mut sources = Vec::new();
         let mut bytes = 0usize;
+        let mut text_left = MAX_STYLE_BYTES;
+        let mut child_visits_left = crate::dom::MAX_STYLE_CHILD_VISITS;
+        let mut inline_count = 0usize;
         for id in self.document.query_selector_all("style, link") {
+            if sources.len() >= 256 {
+                return sources;
+            }
             if !self.is_active_node(id) || !self.css_type_supported(id) {
+                continue;
+            }
+            let media = self.document.attr(id, "media");
+            if media.is_some_and(|media| !crate::stylesheet_loading::valid_media_condition(media)) {
                 continue;
             }
             let style_element = self.document.tag(id) == Some("style")
@@ -530,12 +558,21 @@ impl Page {
                     Some(Namespace::Html | Namespace::Svg)
                 );
             let parts = if style_element {
-                let current = self.document.text_content(id);
+                if inline_count >= crate::dom::MAX_INLINE_STYLES {
+                    return sources;
+                }
+                let current =
+                    match self.inline_style_source(id, &mut text_left, &mut child_visits_left) {
+                        Ok(Some(source)) => source,
+                        Ok(None) => continue,
+                        Err(_) => return sources,
+                    };
+                inline_count += 1;
                 self.inline_styles
                     .get(&id)
                     .filter(|(original, _)| original.as_ref() == current)
                     .map(|(_, expanded)| expanded.clone())
-                    .unwrap_or_else(|| vec![current.into()])
+                    .unwrap_or_else(|| vec![css::StyleSource::new(current)])
             } else if let Some(source) = self
                 .external_styles
                 .get(&id)
@@ -545,29 +582,28 @@ impl Page {
             } else {
                 continue;
             };
-            let media = self.document.attr(id, "media");
-            if media.is_some_and(|media| !crate::stylesheet_loading::valid_media_condition(media)) {
-                continue;
-            }
-            for source in parts {
-                let size = source.len() + media.map_or(0, |m| m.len() + 12);
+            for mut source in parts {
+                let size = source
+                    .source
+                    .len()
+                    .saturating_add(source.media.iter().map(|m| m.len()).sum::<usize>())
+                    .saturating_add(media.map_or(0, str::len));
                 if sources.len() >= 256 || size > MAX_STYLE_BYTES.saturating_sub(bytes) {
                     return sources;
                 }
-                if media.is_some() && !crate::stylesheet_loading::valid_media_source(&source) {
-                    continue;
-                }
                 bytes += size;
-                sources.push(if let Some(media) = media {
-                    format!("@media {media} {{{source}}}")
-                } else {
-                    source.to_string()
-                });
+                if let Some(media) = media {
+                    source.media.push(media.into());
+                }
+                sources.push(source);
             }
         }
         sources
     }
     fn css_type_supported(&self, node: NodeId) -> bool {
+        if self.document.tag(node) == Some("style") {
+            return self.document.is_css_style_element(node);
+        }
         self.document.attr(node, "type").is_none_or(|kind| {
             kind.trim().is_empty()
                 || kind
@@ -578,8 +614,30 @@ impl Page {
                     .eq_ignore_ascii_case("text/css")
         })
     }
+    /// Validate style metadata before reserving child visits or copying text.
+    /// Shared by initial loading and every later stylesheet collection.
+    fn inline_style_source(
+        &self,
+        node: NodeId,
+        bytes_left: &mut usize,
+        child_visits_left: &mut usize,
+    ) -> Result<Option<String>, String> {
+        if !self.document.is_css_style_element(node)
+            || self
+                .document
+                .attr(node, "media")
+                .is_some_and(|media| !crate::stylesheet_loading::valid_media_condition(media))
+        {
+            return Ok(None);
+        }
+        self.document
+            .child_text_content_bounded(node, bytes_left, child_visits_left)
+            .map(Some)
+            .ok_or_else(|| "inline stylesheet text/traversal budget exceeded".into())
+    }
     pub fn layout(&self, width: f32, height: f32, fonts: &Fonts) -> LayoutResult {
-        let styles = css::compute_styles(&self.document, &self.stylesheets(), width, height);
+        let styles =
+            css::compute_styles_from_sources(&self.document, &self.stylesheets(), width, height);
         layout::layout(&self.document, &styles, width, height, fonts)
     }
     pub fn title(&self) -> String {
@@ -1024,6 +1082,119 @@ fn bounded_image_decoder(
 mod tests {
     use super::*;
     #[test]
+    fn inert_style_metadata_is_checked_before_any_text_collection() {
+        let mut page = Page::from_html(
+            Url::parse("https://example.test/").unwrap(),
+            "<svg><style id=media media='screen }'><style id=type type='text/css; charset=utf-8'></style></style></svg>",
+            false,
+        );
+        let media = page.document.query_selector("#media").unwrap();
+        let wrong_type = page.document.query_selector("#type").unwrap();
+        page.document
+            .set_text_content(wrong_type, &"x".repeat(4096));
+        let mut bytes = 0;
+        let mut visits = 0;
+        for id in [media, wrong_type] {
+            assert_eq!(
+                page.inline_style_source(id, &mut bytes, &mut visits),
+                Ok(None)
+            );
+            assert_eq!((bytes, visits), (0, 0));
+        }
+        assert!(page.stylesheets().is_empty());
+        page.document.remove_attr(wrong_type, "type");
+        assert!(
+            page.inline_style_source(wrong_type, &mut bytes, &mut visits)
+                .is_err()
+        );
+    }
+    #[test]
+    fn html_and_svg_style_use_direct_child_text_without_changing_text_content() {
+        for namespace in [Namespace::Html, Namespace::Svg] {
+            let mut page = Page::from_html(
+                Url::parse("https://example.test/").unwrap(),
+                "<p id=x>text</p>",
+                false,
+            );
+            let style = page.document.create_element_ns(namespace, "style");
+            page.document.set_text_content(style, "p{color:green}");
+            let child = page.document.create_element_ns(namespace, "g");
+            page.document.set_text_content(child, "p{color:red}");
+            page.document.append_child(style, child);
+            let body = page.document.query_selector("body").unwrap();
+            page.document.append_child(body, style);
+            assert_eq!(
+                page.document.text_content(style),
+                "p{color:green}p{color:red}"
+            );
+            let sources = page.stylesheets();
+            assert_eq!(sources.len(), 1);
+            assert_eq!(sources[0].source.as_ref(), "p{color:green}");
+            let styles = css::compute_styles_from_sources(&page.document, &sources, 400.0, 300.0);
+            assert_eq!(
+                styles[page.document.query_selector("#x").unwrap()].color,
+                crate::graphics::Color::rgb(0, 128, 0)
+            );
+        }
+    }
+    #[test]
+    fn initial_loading_and_recollection_share_style_type_and_text_rules() {
+        // Initial loading caches only accepted direct child text. Invalid style
+        // metadata must not even send an otherwise invalid import to the loader.
+        let source = "<style type='text/css; charset=utf-8'>@import 'http://[bad';</style><style type=' text/css'>@import 'http://[bad';</style><style media='screen }'>@import 'http://[bad';</style><svg><style id=outer><style id=inner>p{color:green}</style></style></svg><p id=x>text</p>";
+        let encoded: String = url::form_urlencoded::byte_serialize(source.as_bytes()).collect();
+        // Form encoding represents spaces as '+', while data URLs preserve '+'.
+        let address = format!("data:text/html,{}", encoded.replace('+', "%20"));
+        let page = Page::load(&address, false).unwrap();
+        assert!(page.diagnostics.is_empty(), "{:?}", page.diagnostics);
+        let outer = page.document.query_selector("#outer").unwrap();
+        let inner = page.document.query_selector("#inner").unwrap();
+        assert_eq!(page.inline_styles.len(), 2);
+        assert_eq!(page.inline_styles[&outer].0.as_ref(), "");
+        assert_eq!(page.inline_styles[&inner].0.as_ref(), "p{color:green}");
+        let sources = page.stylesheets();
+        assert_eq!(
+            sources
+                .iter()
+                .map(|source| source.source.len())
+                .sum::<usize>(),
+            "p{color:green}".len()
+        );
+        let styles = css::compute_styles_from_sources(&page.document, &sources, 400.0, 300.0);
+        assert_eq!(
+            styles[page.document.query_selector("#x").unwrap()].color,
+            crate::graphics::Color::rgb(0, 128, 0)
+        );
+    }
+    #[test]
+    fn recollecting_inline_styles_has_shared_byte_and_count_limits() {
+        let mut page = Page::from_html(
+            Url::parse("https://example.test/").unwrap(),
+            "<style id=a></style><style id=b></style><style id=c>overflow</style>",
+            false,
+        );
+        let text = " ".repeat(MAX_STYLE_BYTES / 2);
+        for selector in ["#a", "#b"] {
+            page.document
+                .set_text_content(page.document.query_selector(selector).unwrap(), &text);
+        }
+        let sources = page.stylesheets();
+        assert_eq!(sources.len(), 2);
+        assert_eq!(
+            sources
+                .iter()
+                .map(|source| source.source.len())
+                .sum::<usize>(),
+            MAX_STYLE_BYTES
+        );
+        let page = Page::from_html(
+            Url::parse("https://example.test/").unwrap(),
+            &"<style>x</style>".repeat(crate::dom::MAX_INLINE_STYLES + 1),
+            false,
+        );
+        assert_eq!(page.stylesheets().len(), crate::dom::MAX_INLINE_STYLES);
+    }
+    #[test]
     fn png_ancillary_metadata_obeys_limits_during_decoder_construction() {
         use image::ImageDecoder;
         let icc = include_bytes!("../tests/fixtures/png-ancillary-icc-4k.png");
@@ -1121,7 +1292,8 @@ mod tests {
             false,
         );
         let x = page.document.query_selector("#x").unwrap();
-        let styles = css::compute_styles(&page.document, &page.stylesheets(), 400.0, 300.0);
+        let styles =
+            css::compute_styles_from_sources(&page.document, &page.stylesheets(), 400.0, 300.0);
         assert_eq!(styles[x].color, crate::graphics::Color::rgb(0, 128, 0));
         assert_eq!(styles[x].background_color.a, 0);
     }
@@ -1166,11 +1338,15 @@ mod tests {
         );
         let source: Arc<str> = " ".repeat(64 * 1024).into();
         for id in page.document.query_selector_all("link") {
-            page.external_styles.insert(id, vec![source.clone()]);
+            page.external_styles
+                .insert(id, vec![css::StyleSource::new(source.clone())]);
         }
         let stylesheets = page.stylesheets();
         assert_eq!(
-            stylesheets.iter().map(String::len).sum::<usize>(),
+            stylesheets
+                .iter()
+                .map(|sheet| sheet.source.len())
+                .sum::<usize>(),
             MAX_STYLE_BYTES
         );
         assert_eq!(stylesheets.len(), 128);

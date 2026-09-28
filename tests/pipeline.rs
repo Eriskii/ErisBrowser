@@ -778,3 +778,38 @@ fn template_demo_strict_callbacks_clone_cards_and_reflow_grid() {
     assert!(canvas.pixels.contains(&0x263c38));
     assert!(canvas.pixels.contains(&0xe0e7db));
 }
+
+#[test]
+fn event_demo_capture_custom_dispatch_and_imported_layers_reach_pixels() {
+    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("examples/events.html");
+    let mut page = Page::load(path.to_str().unwrap(), true).unwrap();
+    assert!(page.diagnostics.is_empty(), "{:?}", page.diagnostics);
+    let send = page.document.query_selector("#send").unwrap();
+    let status = page.document.query_selector("#status").unwrap();
+    let trace = page.document.query_selector("#trace").unwrap();
+    for count in 1..=3 {
+        assert!(page.click(send).is_none());
+        assert_eq!(
+            page.document.text_content(status),
+            format!("Signal {count} received · CustomEvent")
+        );
+        assert_eq!(
+            page.document.text_content(trace),
+            "document capture → panel capture → target → panel bubble → document bubble"
+        );
+    }
+    let fonts = Fonts::new();
+    let layout = page.layout(1100.0, 1600.0, &fonts);
+    assert!(layout.commands.iter().any(
+        |c| matches!(c, eris::graphics::DrawCommand::PushOpacity { opacity } if *opacity == 0.55)
+    ));
+    let mut canvas = Canvas::new(1100, 1600).unwrap();
+    canvas.paint(&layout.commands, &fonts, &page.images, 0.0, 0.0);
+    assert!(!canvas.exhausted());
+    assert!(
+        canvas.pixels.contains(&0x315f64),
+        "palette layer button color reaches pixels"
+    );
+    assert!(canvas.pixels.contains(&0xf4f0e7));
+    assert!(page.diagnostics.is_empty(), "{:?}", page.diagnostics);
+}

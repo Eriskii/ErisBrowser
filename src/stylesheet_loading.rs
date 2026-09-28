@@ -1,5 +1,6 @@
 //! Bounded stylesheet import loading. Fetch authority always remains the document.
 use crate::{
+    css::{CascadeLayer, StyleSource},
     net::{Fetcher, ResourceKind},
     text_encoding,
 };
@@ -11,7 +12,7 @@ const MAX_BYTES: usize = 8 * 1024 * 1024;
 const MAX_IMPORTS: usize = 256;
 const MAX_DEPTH: usize = 16;
 const MAX_URL_BYTES: usize = 32 * 1024 * 1024;
-pub(crate) type Sources = Vec<Arc<str>>;
+pub(crate) type Sources = Vec<StyleSource>;
 
 #[derive(Clone, Debug)]
 struct Sheet {
@@ -58,7 +59,13 @@ impl Loader {
         let sheet = self.fetch(fetcher, url, self.environment_encoding)?;
         self.charge_url_work(sheet.url.as_str().len())?;
         let mut path = vec![sheet.url.clone()];
-        let sources = self.expand(fetcher, &sheet, &mut path, diagnostics)?;
+        let sources = self.expand(
+            fetcher,
+            &sheet,
+            &mut path,
+            &StyleSource::new(""),
+            diagnostics,
+        )?;
         self.retain_sources(sources)
     }
 
@@ -80,7 +87,13 @@ impl Loader {
             url: base.clone(),
             encoding: self.environment_encoding,
         };
-        let sources = self.expand(fetcher, &sheet, &mut Vec::new(), diagnostics)?;
+        let sources = self.expand(
+            fetcher,
+            &sheet,
+            &mut Vec::new(),
+            &StyleSource::new(""),
+            diagnostics,
+        )?;
         self.retain_sources(sources)
     }
 
@@ -178,6 +191,7 @@ impl Loader {
         fetcher: &mut Fetcher,
         sheet: &Sheet,
         path: &mut Vec<Url>,
+        scope: &StyleSource,
         diagnostics: &mut Vec<String>,
     ) -> Result<Sources, String> {
         let source = sheet.source.as_ref();
@@ -229,9 +243,41 @@ impl Loader {
             if import.unsupported {
                 diagnostic(
                     diagnostics,
-                    "stylesheet import layers/supports conditions are unsupported",
+                    "stylesheet import supports conditions are unsupported",
                 );
                 continue;
+            }
+            // Order statements before an import establish its position. Preserve
+            // each original parser boundary while retaining shared anonymous
+            // layer identity and media conditions as metadata, never CSS text.
+            self.flush_source(&mut sources, &mut output, scope)?;
+            let mut import_scope = scope.clone();
+            if !import.media.is_empty() {
+                self.charge_expansion(import.media.len())?;
+                import_scope.media.push(import.media.into());
+            }
+            if let Some(layer) = import.layer {
+                let layer = match layer {
+                    ImportLayer::Anonymous => CascadeLayer::anonymous(scope.layer.clone()),
+                    ImportLayer::Named(name) => {
+                        self.charge_expansion(name.len())?;
+                        CascadeLayer::named(scope.layer.clone(), &name)
+                    }
+                };
+                let Some(layer) = layer else {
+                    diagnostic(
+                        diagnostics,
+                        "stylesheet import layer name/depth limit reached",
+                    );
+                    continue;
+                };
+                import_scope.layer = Some(layer);
+                // A valid layered import declares its layer even when fetching
+                // fails. Its media conditions still govern that declaration.
+                if sources.len() >= MAX_IMPORTS {
+                    return Err("stylesheet segment count exceeded".into());
+                }
+                sources.push(import_scope.clone());
             }
             self.imports += 1;
             if self.imports > MAX_IMPORTS || path.len() >= MAX_DEPTH {
@@ -281,7 +327,7 @@ impl Loader {
                 continue;
             }
             path.push(imported.url.clone());
-            let expanded = self.expand(fetcher, &imported, path, diagnostics);
+            let expanded = self.expand(fetcher, &imported, path, &import_scope, diagnostics);
             path.pop();
             match expanded {
                 Ok(imported) => {
@@ -289,24 +335,7 @@ impl Loader {
                         if sources.len() >= MAX_IMPORTS {
                             return Err("stylesheet segment count exceeded".into());
                         }
-                        if import.media.is_empty() {
-                            sources.push(part);
-                        } else {
-                            if !valid_media_source(&part) {
-                                diagnostic(
-                                    diagnostics,
-                                    "malformed stylesheet cannot be wrapped in a media condition",
-                                );
-                                continue;
-                            }
-                            let mut conditional = String::new();
-                            self.append(&mut conditional, "@media ")?;
-                            self.append(&mut conditional, &import.media)?;
-                            self.append(&mut conditional, " {\n")?;
-                            self.append(&mut conditional, &part)?;
-                            self.append(&mut conditional, "\n}\n")?;
-                            sources.push(conditional.into());
-                        }
+                        sources.push(part);
                     }
                 }
                 Err(error) => diagnostic(diagnostics, &error),
@@ -314,13 +343,35 @@ impl Loader {
         }
         // Parse boundaries prevent malformed imported EOF constructs from
         // consuming rules belonging to the importing sheet or its siblings.
+        self.flush_source(&mut sources, &mut output, scope)?;
+        Ok(sources)
+    }
+
+    fn charge_expansion(&mut self, bytes: usize) -> Result<(), String> {
+        if bytes > MAX_BYTES.saturating_sub(self.expanded) {
+            return Err("stylesheet expanded source budget exceeded".into());
+        }
+        self.expanded += bytes;
+        Ok(())
+    }
+
+    fn flush_source(
+        &self,
+        sources: &mut Sources,
+        output: &mut String,
+        scope: &StyleSource,
+    ) -> Result<(), String> {
         if !output.is_empty() {
             if sources.len() >= MAX_IMPORTS {
                 return Err("stylesheet segment count exceeded".into());
             }
-            sources.push(output.into());
+            sources.push(StyleSource {
+                source: std::mem::take(output).into(),
+                layer: scope.layer.clone(),
+                media: scope.media.clone(),
+            });
         }
-        Ok(sources)
+        Ok(())
     }
 }
 
@@ -330,10 +381,10 @@ fn diagnostic(diagnostics: &mut Vec<String>, message: &str) {
     }
 }
 
-/// Structural guard for text embedded in a generated @media prelude. This is
-/// not the full Media Queries grammar; matching supported features remains the
-/// CSS evaluator's job. Delimiters inside strings/escapes stay data, while bare
-/// rule delimiters, incomplete tokens and excessive nesting fail closed.
+/// Structural guard for media-condition metadata. This is not the full Media
+/// Queries grammar; matching supported features remains the CSS evaluator's
+/// job. Delimiters inside strings/escapes stay data, while bare rule delimiters,
+/// incomplete tokens and excessive nesting fail closed.
 pub(crate) fn valid_media_condition(source: &str) -> bool {
     if source.len() > 65_536 {
         return false;
@@ -371,62 +422,15 @@ pub(crate) fn valid_media_condition(source: &str) -> bool {
     brackets.is_empty()
 }
 
-/// A source segment must not be able to close its enclosing generated media
-/// block. Follow the CSS rule parser's lexical string/comment/escape boundaries;
-/// incomplete EOF constructs remain isolated inside their own segment. Dropping
-/// a sheet with a stray top-level closer is conservative CSS error recovery.
-pub(crate) fn valid_media_source(source: &str) -> bool {
-    if source.len() > MAX_BYTES {
-        return false;
-    }
-    let mut chars = source.chars().peekable();
-    let mut quote = None;
-    let mut escaped = false;
-    let mut depth = 0usize;
-    while let Some(ch) = chars.next() {
-        if escaped {
-            escaped = false;
-            continue;
-        }
-        if ch == '\\' {
-            escaped = true;
-            continue;
-        }
-        if let Some(q) = quote {
-            if ch == q {
-                quote = None;
-            }
-            continue;
-        }
-        if matches!(ch, '\'' | '"') {
-            quote = Some(ch);
-            continue;
-        }
-        if ch == '/' && chars.peek() == Some(&'*') {
-            chars.next();
-            let mut previous = ' ';
-            for ch in chars.by_ref() {
-                if previous == '*' && ch == '/' {
-                    break;
-                }
-                previous = ch;
-            }
-            continue;
-        }
-        match ch {
-            '{' => depth += 1,
-            '}' if depth == 0 => return false,
-            '}' => depth -= 1,
-            _ => {}
-        }
-    }
-    true
-}
-
 struct Import {
     url: String,
     media: String,
+    layer: Option<ImportLayer>,
     unsupported: bool,
+}
+enum ImportLayer {
+    Anonymous,
+    Named(String),
 }
 fn parse_import(source: &str) -> Option<Import> {
     let mut cursor = Cursor::new(source);
@@ -440,15 +444,48 @@ fn parse_import(source: &str) -> Option<Import> {
         cursor.url()?
     };
     cursor.space();
+    let before_conditions = cursor.at;
+    let first = cursor.ident();
+    let layer = if first.eq_ignore_ascii_case("layer") {
+        if cursor.eat('(') {
+            let start = cursor.at;
+            // Escaped closing parentheses belong to the layer-name token.
+            while let Some(ch) = cursor.peek() {
+                if cursor.rest().starts_with("/*") {
+                    cursor.at += cursor.rest().find("*/")? + 2;
+                    continue;
+                }
+                if ch == ')' {
+                    break;
+                }
+                cursor.next();
+                if ch == '\\' {
+                    cursor.escape()?;
+                }
+            }
+            let name = cursor.source[start..cursor.at].trim().to_owned();
+            if !cursor.eat(')') || CascadeLayer::named(None, &name).is_none() {
+                return None;
+            }
+            Some(ImportLayer::Named(name))
+        } else {
+            Some(ImportLayer::Anonymous)
+        }
+    } else {
+        cursor.at = before_conditions;
+        None
+    };
+    cursor.space();
     let media = cursor.rest().trim().to_owned();
     if !valid_media_condition(&media) {
         return None;
     }
     let first = cursor.ident();
-    let unsupported = first.eq_ignore_ascii_case("layer") || first.eq_ignore_ascii_case("supports");
+    let unsupported = first.eq_ignore_ascii_case("supports");
     Some(Import {
         url,
         media,
+        layer,
         unsupported,
     })
 }
@@ -528,11 +565,21 @@ impl<'a> Cursor<'a> {
         let mut value = String::new();
         while let Some(ch) = self.peek() {
             if ch == '\\' {
-                self.next();
-                let Some(escaped) = self.escape() else {
+                // A backslash followed by a newline is not a valid escape.
+                // Leave both code points for the surrounding grammar; dropping
+                // them can turn malformed input into import/url/layer keywords.
+                if self
+                    .rest()
+                    .chars()
+                    .nth(1)
+                    .is_some_and(|next| matches!(next, '\n' | '\r' | '\x0c'))
+                {
                     break;
-                };
-                value.push(escaped);
+                }
+                self.next();
+                // CSS Syntax consumes an EOF escape as U+FFFD, never as an
+                // empty string that would preserve the preceding keyword.
+                value.push(self.escape().unwrap_or('\u{fffd}'));
             } else if ch.is_ascii_alphanumeric() || ch == '-' || ch == '_' || !ch.is_ascii() {
                 self.next();
                 value.push(ch);
@@ -595,8 +642,8 @@ impl<'a> Cursor<'a> {
         self.eat(')').then_some(url)
     }
 
-    // Returns the prelude's end and whether a block follows. A balanced prelude
-    // prevents import conditions from breaking out of their generated wrapper.
+    // Returns the prelude's end and whether a block follows. Balanced tokens
+    // keep URL/string delimiters distinct from the enclosing at-rule boundary.
     fn statement_end(&mut self) -> Option<(usize, bool)> {
         let mut brackets = Vec::new();
         let mut invalid_closer = false;
@@ -610,7 +657,14 @@ impl<'a> Cursor<'a> {
                 continue;
             }
             if ch.is_ascii_alphanumeric() || matches!(ch, '-' | '_' | '\\') || !ch.is_ascii() {
+                let before = self.at;
                 let name = self.ident();
+                if self.at == before {
+                    // Invalid escape delimiters are still part of the raw
+                    // prelude. Consume one code point to make progress until
+                    // the rule's semicolon, where parse_import can reject it.
+                    self.next();
+                }
                 if name.eq_ignore_ascii_case("url") && self.eat('(') {
                     self.url()?;
                 }
@@ -651,6 +705,189 @@ impl<'a> Cursor<'a> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    fn cached_loader(sheets: &[(&str, Result<&str, &str>)]) -> (Loader, Url) {
+        let base = Url::parse("https://example.test/main.css").unwrap();
+        let mut loader = Loader::new(&base, encoding_rs::UTF_8);
+        for (name, source) in sheets {
+            let url = base.join(name).unwrap();
+            loader.cache.insert(
+                (url.to_string(), "UTF-8"),
+                match source {
+                    Ok(source) => Ok(Sheet {
+                        source: (*source).into(),
+                        url,
+                        encoding: encoding_rs::UTF_8,
+                    }),
+                    Err(error) => Err((*error).into()),
+                },
+            );
+        }
+        (loader, base)
+    }
+
+    #[test]
+    fn invalid_keyword_escapes_never_fetch_or_register_an_import_layer() {
+        for source in [
+            "@import 'a.css' layer\\\n;",
+            "@import 'a.css' layer\\\r;",
+            "@import 'a.css' layer\\\x0c;",
+            "@import 'a.css' layer\\",
+            "@import\\\n 'a.css' layer;",
+            "@import\\",
+            "@import url\\\n('a.css') layer;",
+            "@import url\\",
+            "@import 'a.css' supports\\\n(display:block);",
+            "@import 'a.css' supports\\",
+        ] {
+            let (mut loader, base) = cached_loader(&[("a.css", Ok("#x{color:red}"))]);
+            let output = loader
+                .inline(
+                    &mut Fetcher::for_document(&base),
+                    source,
+                    &base,
+                    &mut Vec::new(),
+                )
+                .unwrap();
+            assert_eq!(loader.imports, 0, "{source:?}");
+            assert!(output.iter().all(|part| part.layer.is_none()), "{source:?}");
+            let doc = crate::dom::Document::parse("<p id=x>text</p>");
+            let styles = crate::css::compute_styles_from_sources(&doc, &output, 400.0, 300.0);
+            assert_ne!(
+                styles[doc.query_selector("#x").unwrap()].color,
+                crate::graphics::Color::rgb(255, 0, 0),
+                "{source:?}"
+            );
+        }
+    }
+    #[test]
+    fn keyword_escape_recovery_preserves_later_imports_and_valid_escapes() {
+        for invalid in [
+            "@import 'a.css' layer\\\n;",
+            "@import\\\n 'a.css';",
+            "@import url\\\n('a.css');",
+        ] {
+            let (mut loader, base) = cached_loader(&[("a.css", Ok("#x{color:red}"))]);
+            let source = format!("{invalid} @\\69 mport u\\72 l('a.css') l\\61 yer(default);");
+            let output = loader
+                .inline(
+                    &mut Fetcher::for_document(&base),
+                    &source,
+                    &base,
+                    &mut Vec::new(),
+                )
+                .unwrap();
+            assert_eq!(loader.imports, 1, "{source:?}");
+            let doc = crate::dom::Document::parse("<p id=x>text</p>");
+            let styles = crate::css::compute_styles_from_sources(&doc, &output, 400.0, 300.0);
+            assert_eq!(
+                styles[doc.query_selector("#x").unwrap()].color,
+                crate::graphics::Color::rgb(255, 0, 0),
+                "{source:?}"
+            );
+        }
+        let mut cursor = Cursor::new("layer\\");
+        assert_eq!(cursor.ident(), "layer\u{fffd}");
+        assert!(cursor.rest().is_empty());
+        let mut cursor = Cursor::new("layer\\\n");
+        assert_eq!(cursor.ident(), "layer");
+        assert_eq!(cursor.rest(), "\\\n");
+        assert_eq!(Cursor::new("\\\n;").statement_end(), Some((2, false)));
+    }
+    #[test]
+    fn imported_layers_obey_prior_statements_and_reverse_important_order() {
+        let (mut loader, base) = cached_loader(&[
+            ("theme.css", Ok("#x{color:blue;background:blue!important}")),
+            ("base.css", Ok("#x{color:red;background:red!important}")),
+        ]);
+        let sources = loader.inline(&mut Fetcher::for_document(&base),
+            "@layer foundation, theme; @import 'theme.css' layer(theme); @import 'base.css' layer(foundation);",
+            &base, &mut Vec::new()).unwrap();
+        let doc = crate::dom::Document::parse("<p id=x>sample</p>");
+        let styles = crate::css::compute_styles_from_sources(&doc, &sources, 400.0, 300.0);
+        let style = &styles[doc.query_selector("#x").unwrap()];
+        assert_eq!(style.color, crate::graphics::Color::rgb(0, 0, 255));
+        assert_eq!(
+            style.background_color,
+            crate::graphics::Color::rgb(255, 0, 0)
+        );
+    }
+
+    #[test]
+    fn anonymous_import_is_one_shared_layer_across_separate_parser_inputs() {
+        let (mut loader, base) = cached_loader(&[
+            (
+                "outer.css",
+                Ok("@import 'inner.css'; @layer theme {#x{color:blue!important}}"),
+            ),
+            ("inner.css", Ok("@layer theme {#x{color:red!important}}")),
+        ]);
+        let sources = loader
+            .inline(
+                &mut Fetcher::for_document(&base),
+                "@import 'outer.css' layer;",
+                &base,
+                &mut Vec::new(),
+            )
+            .unwrap();
+        let layers = sources
+            .iter()
+            .filter_map(|s| s.layer.as_ref())
+            .collect::<Vec<_>>();
+        assert!(layers.len() >= 3);
+        assert!(layers.iter().all(|layer| Arc::ptr_eq(layer, layers[0])));
+        let doc = crate::dom::Document::parse("<p id=x>sample</p>");
+        let styles = crate::css::compute_styles_from_sources(&doc, &sources, 400.0, 300.0);
+        assert_eq!(
+            styles[doc.query_selector("#x").unwrap()].color,
+            crate::graphics::Color::rgb(0, 0, 255)
+        );
+    }
+
+    #[test]
+    fn failed_layer_import_registers_its_position_only_under_matching_media() {
+        let (mut loader, base) = cached_loader(&[("missing.css", Err("missing"))]);
+        let mut diagnostics = Vec::new();
+        let sources = loader.inline(&mut Fetcher::for_document(&base),
+            "@import 'missing.css' layer(theme) (min-width:400px); @layer base{#x{color:green}} @layer theme{#x{color:red}}",
+            &base, &mut diagnostics).unwrap();
+        assert_eq!(diagnostics.len(), 1);
+        let doc = crate::dom::Document::parse("<p id=x>sample</p>");
+        let x = doc.query_selector("#x").unwrap();
+        let narrow = crate::css::compute_styles_from_sources(&doc, &sources, 300.0, 200.0);
+        let wide = crate::css::compute_styles_from_sources(&doc, &sources, 500.0, 200.0);
+        assert_eq!(narrow[x].color, crate::graphics::Color::rgb(255, 0, 0));
+        assert_eq!(wide[x].color, crate::graphics::Color::rgb(0, 128, 0));
+    }
+
+    #[test]
+    fn nested_imports_retain_named_parent_and_independent_media_conditions() {
+        let (mut loader, base) = cached_loader(&[
+            (
+                "outer.css",
+                Ok(
+                    "@import 'inner.css' layer(child) (max-width:500px); @layer child{#x{color:blue!important}}",
+                ),
+            ),
+            ("inner.css", Ok("#x{color:red!important;background:green}")),
+        ]);
+        let sources = loader.inline(&mut Fetcher::for_document(&base),
+            "@import 'outer.css' layer(parent) (min-width:300px); @layer parent.child{#x{color:green!important}}",
+            &base, &mut Vec::new()).unwrap();
+        let doc = crate::dom::Document::parse("<p id=x>sample</p>");
+        let x = doc.query_selector("#x").unwrap();
+        for width in [200.0, 400.0, 600.0] {
+            let styles = crate::css::compute_styles_from_sources(&doc, &sources, width, 200.0);
+            assert_eq!(styles[x].color, crate::graphics::Color::rgb(0, 128, 0));
+            assert_eq!(
+                styles[x].background_color,
+                if width == 400.0 {
+                    crate::graphics::Color::rgb(0, 128, 0)
+                } else {
+                    crate::graphics::Color::TRANSPARENT
+                }
+            );
+        }
+    }
     #[test]
     fn malformed_prelude_recovers_at_semicolon_and_url_token_delimiters_remain_data() {
         let base = Url::parse("https://example.test/main.css").unwrap();
@@ -680,7 +917,10 @@ mod tests {
                 .unwrap();
             assert!(diagnostics.is_empty(), "{source}: {diagnostics:?}");
             assert_eq!(
-                sources.iter().map(|s| s.as_ref()).collect::<Vec<_>>(),
+                sources
+                    .iter()
+                    .map(|s| s.source.as_ref())
+                    .collect::<Vec<_>>(),
                 ["#x{color:red}"],
                 "{source}"
             );
@@ -744,28 +984,12 @@ mod tests {
             )
             .unwrap();
         let document = crate::dom::Document::parse("<p id=x>text</p>");
-        let sources = sources.iter().map(|s| s.to_string()).collect::<Vec<_>>();
-        let styles = crate::css::compute_styles(&document, &sources, 400.0, 300.0);
+        let styles = crate::css::compute_styles_from_sources(&document, &sources, 400.0, 300.0);
         assert_ne!(
             styles[document.query_selector("#x").unwrap()].color,
             crate::graphics::Color::rgb(255, 0, 0)
         );
-        assert!(
-            diagnostics
-                .iter()
-                .any(|d| d.contains("malformed stylesheet"))
-        );
-        for source in [
-            r#"p{content:"}"}"#,
-            r"p{content:\}}",
-            "/* } */ p{}",
-            "p{",
-            "p{content:'eof",
-            "/* eof",
-        ] {
-            assert!(valid_media_source(source), "{source}");
-        }
-        assert!(!valid_media_source("p{} } p{color:red}"));
+        assert!(diagnostics.is_empty());
     }
 
     #[test]
@@ -891,12 +1115,8 @@ mod tests {
                     &mut Vec::new(),
                 )
                 .unwrap();
-            let sources = sources
-                .iter()
-                .map(|source| source.to_string())
-                .collect::<Vec<_>>();
             assert_eq!(sources.len(), 2);
-            let styles = crate::css::compute_styles(&document, &sources, 400.0, 300.0);
+            let styles = crate::css::compute_styles_from_sources(&document, &sources, 400.0, 300.0);
             assert_eq!(
                 styles[x].color,
                 crate::graphics::Color::rgb(0, 128, 0),
@@ -935,7 +1155,7 @@ mod tests {
         assert!(diagnostics.is_empty());
         let expanded = expanded
             .iter()
-            .map(|s| s.as_ref())
+            .map(|s| s.source.as_ref())
             .collect::<Vec<_>>()
             .join("\n");
         assert_eq!(expanded.matches(".a {").count(), 2);
@@ -963,7 +1183,13 @@ mod tests {
                 .unwrap()
                 .unsupported
         );
-        assert!(parse_import("'a' layer(theme)").unwrap().unsupported);
+        assert!(!parse_import("'a' layer(theme)").unwrap().unsupported);
+        assert!(matches!(
+            parse_import("'a' layer").unwrap().layer,
+            Some(ImportLayer::Anonymous)
+        ));
+        assert!(parse_import("'a' layer()").is_none());
+        assert!(parse_import("'a' layer(initial)").is_none());
     }
     #[test]
     fn prelude_scanner_rejects_scope_breakouts_and_bounds_nesting() {

@@ -24,7 +24,7 @@ After the parser, JSON and flex compatibility increment, the same fixture/viewpo
 
 After the broker, namespace and Test262 increment, the same warm-render configuration recorded medians of 4.399 ms (home), 7.053 ms (gallery), and 5.203 ms (forms); p95 values were 4.542, 7.519 and 5.273 ms. [This record](benchmark-broker.json) retains the measured build/input hashes. It still excludes native process startup and IPC, so these timings do not measure the new broker's overhead or establish a Chromium comparison.
 
-`python3 tools/benchmark.py` records timings for five local fixtures in `artifacts/benchmark.json`, including source/assets/dependency input hashes, binary hash, CPU, OS, compiler and excluded phases. The template/Grid and positioning fixtures use their initially loaded documents; cloning, import loading and click handlers execute outside the measured warm-render loop.
+`python3 tools/benchmark.py` records timings for six local fixtures in `artifacts/benchmark.json`, including source/assets/dependency input hashes, binary hash, CPU, OS, compiler and excluded phases. The template/Grid, positioning and event/compositing fixtures use their initially loaded documents; cloning, import loading and click handlers execute outside the measured warm-render loop. The event fixture's opacity groups are composited inside that loop.
 
 ## Required comparison design
 
@@ -66,3 +66,15 @@ and binary hashes. The positioning fixture has no earlier recorded baseline;
 its CSS imports and script setup finish before measurement. These local
 observations do not establish a speed change, import/RegExp execution cost or
 performance relative to Chromium.
+
+The cascade-layer/event/group-opacity checkpoint recorded warm medians of
+4.938 ms (home), 7.982 ms (gallery), 5.797 ms (forms), 1.141 ms (templates),
+1.128 ms (positioning), and 11.047 ms (the new events fixture). Corresponding
+p95 values were 5.033, 8.673, 5.979, 1.183, 1.390 and 11.986 ms. This used
+100 iterations at 1180×880 after the native window and heavy checks finished.
+[The recorded JSON](benchmark-layers-events.json) retains verified source and
+release-binary hashes. The event fixture includes opacity allocation and
+compositing, even when the group's content is outside the viewport: intermediate
+surfaces currently use the full caller viewport. Group bounds or tiling remain
+performance work. Loading and event dispatch remain outside these measurements.
+These local observations do not establish Chromium-relative performance.

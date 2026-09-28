@@ -311,18 +311,239 @@ pub struct Declaration {
     pub name: String,
     pub value: String,
     pub important: bool,
+    // Pending substitution preserves shorthand semantics until var() resolves.
+    pending_shorthand: Option<Arc<str>>,
 }
 #[derive(Debug, Clone)]
 pub struct Rule {
     pub selectors: Vec<String>,
     pub declarations: Vec<Declaration>,
+    pub layer: Option<Arc<CascadeLayer>>,
+}
+
+const MAX_LAYERS: usize = 1024;
+const MAX_LAYER_DEPTH: usize = 16;
+const MAX_LAYER_NAME_BYTES: usize = 64 * 1024;
+const MAX_STYLE_BYTES: usize = 8 * 1024 * 1024;
+
+/// A source boundary preserves stylesheet EOF semantics and imported layers.
+#[derive(Debug, Clone)]
+pub struct StyleSource {
+    pub source: Arc<str>,
+    pub layer: Option<Arc<CascadeLayer>>,
+    /// Nested import/link conditions are a conjunction, not a textual wrapper.
+    pub media: Vec<Arc<str>>,
+}
+impl StyleSource {
+    pub fn new(source: impl Into<Arc<str>>) -> Self {
+        Self {
+            source: source.into(),
+            layer: None,
+            media: Vec::new(),
+        }
+    }
+}
+
+/// Named identities merge within their parent. Anonymous identities are the
+/// identity of this Arc allocation; they cannot collide with authored names.
+#[derive(Debug)]
+pub struct CascadeLayer {
+    name: Option<String>,
+    parent: Option<Arc<CascadeLayer>>,
+    depth: usize,
+}
+impl CascadeLayer {
+    pub fn named(parent: Option<Arc<Self>>, name: &str) -> Option<Arc<Self>> {
+        let names = layer_name(name)?;
+        let depth = parent.as_ref().map_or(0, |p| p.depth);
+        if names.len() + depth > MAX_LAYER_DEPTH {
+            return None;
+        }
+        let mut parent = parent;
+        for name in names {
+            let depth = parent.as_ref().map_or(1, |p| p.depth + 1);
+            parent = Some(Arc::new(Self {
+                name: Some(name),
+                parent,
+                depth,
+            }));
+        }
+        parent
+    }
+    pub fn anonymous(parent: Option<Arc<Self>>) -> Option<Arc<Self>> {
+        let depth = parent.as_ref().map_or(1, |p| p.depth + 1);
+        (depth <= MAX_LAYER_DEPTH).then(|| {
+            Arc::new(Self {
+                name: None,
+                parent,
+                depth,
+            })
+        })
+    }
+}
+
+// CSS <ident> tokens, including escaped code points. Layer names are case
+// sensitive; CSS-wide keywords are forbidden as individual components.
+fn layer_name(source: &str) -> Option<Vec<String>> {
+    if source.len() > 4096 {
+        return None;
+    }
+    let clean = strip_comments(source);
+    let mut rest = media_trim(&clean);
+    let mut names = Vec::new();
+    loop {
+        let (name, consumed) = css_identifier(rest)?;
+        if name.is_empty()
+            || name.len() > 1024
+            || matches!(
+                name.to_ascii_lowercase().as_str(),
+                "initial" | "inherit" | "unset" | "revert" | "revert-layer" | "revert-rule"
+            )
+        {
+            return None;
+        }
+        names.push(name);
+        if names.len() > MAX_LAYER_DEPTH {
+            return None;
+        }
+        rest = rest[consumed..].trim_start_matches(media_space);
+        if rest.is_empty() {
+            return Some(names);
+        }
+        rest = rest.strip_prefix('.')?.trim_start_matches(media_space);
+    }
+}
+
+fn css_identifier(rest: &str) -> Option<(String, usize)> {
+    let mut name = String::new();
+    let mut consumed = 0;
+    let mut chars = rest.char_indices().peekable();
+    let first = rest.chars().next()?;
+    let second = rest.chars().nth(1);
+    let start = |c: char| matches!(c, '_' | '\0') || c.is_ascii_alphabetic() || !c.is_ascii();
+    if !(start(first)
+        || first == '\\'
+        || first == '-' && second.is_some_and(|c| start(c) || matches!(c, '-' | '\\')))
+    {
+        return None;
+    }
+    while let Some((at, ch)) = chars.next() {
+        if name.len() > 1024 {
+            return None;
+        }
+        if ch == '\\' {
+            let (_, next) = chars.next()?;
+            if matches!(next, '\n' | '\r' | '\x0c') {
+                return None;
+            }
+            if next.is_ascii_hexdigit() {
+                let mut value = next.to_digit(16)?;
+                consumed = at + 1 + next.len_utf8();
+                for _ in 1..6 {
+                    if let Some((offset, digit)) = chars.peek().copied()
+                        && digit.is_ascii_hexdigit()
+                    {
+                        chars.next();
+                        value = value * 16 + digit.to_digit(16)?;
+                        consumed = offset + digit.len_utf8();
+                    } else {
+                        break;
+                    }
+                }
+                if let Some((offset, space)) = chars.peek().copied()
+                    && media_space(space)
+                {
+                    chars.next();
+                    consumed = offset + space.len_utf8();
+                    if space == '\r' && chars.peek().is_some_and(|(_, c)| *c == '\n') {
+                        let (offset, _) = chars.next()?;
+                        consumed = offset + 1;
+                    }
+                }
+                name.push(
+                    char::from_u32(value)
+                        .filter(|c| *c != '\0')
+                        .unwrap_or('\u{fffd}'),
+                );
+            } else {
+                name.push(if next == '\0' { '\u{fffd}' } else { next });
+                consumed = at + 1 + next.len_utf8();
+            }
+        } else if start(ch) || ch.is_ascii_digit() || ch == '-' {
+            name.push(if ch == '\0' { '\u{fffd}' } else { ch });
+            consumed = at + ch.len_utf8();
+        } else {
+            break;
+        }
+    }
+    (!name.is_empty() && name.len() <= 1024).then_some((name, consumed))
 }
 
 pub fn parse_stylesheet(source: &str, width: f32, height: f32) -> Vec<Rule> {
-    let clean = strip_comments(source);
-    let mut rules = vec![];
-    parse_rules(&clean, width, height, 0, &mut rules);
+    parse_stylesheet_in_layer(source, None, width, height)
+}
+pub fn parse_stylesheet_in_layer(
+    source: &str,
+    layer: Option<Arc<CascadeLayer>>,
+    width: f32,
+    height: f32,
+) -> Vec<Rule> {
+    let mut rules = Vec::new();
+    parse_source(
+        source,
+        &layer,
+        width,
+        height,
+        &mut rules,
+        &mut ParseBudget::new(),
+    );
     rules
+}
+fn parse_source(
+    source: &str,
+    layer: &Option<Arc<CascadeLayer>>,
+    width: f32,
+    height: f32,
+    rules: &mut Vec<Rule>,
+    budget: &mut ParseBudget,
+) {
+    if rules.len() >= 10_000 {
+        return;
+    }
+    let clean = strip_comments(source);
+    if let Some(layer) = layer {
+        rules.push(Rule {
+            selectors: vec![],
+            declarations: vec![],
+            layer: Some(layer.clone()),
+        });
+    }
+    parse_rules(&clean, width, height, 0, layer, true, rules, budget);
+}
+
+struct ParseBudget {
+    work: usize,
+    names: usize,
+    layers: usize,
+    declarations: usize,
+}
+impl ParseBudget {
+    fn new() -> Self {
+        Self {
+            work: MAX_STYLE_BYTES * 4,
+            names: MAX_LAYER_NAME_BYTES,
+            layers: 10_000,
+            declarations: 16 * 1024 * 1024,
+        }
+    }
+    fn layer(&mut self, name: &str) -> bool {
+        if self.layers == 0 || name.len() > self.names {
+            return false;
+        }
+        self.layers -= 1;
+        self.names -= name.len();
+        true
+    }
 }
 fn strip_comments(source: &str) -> String {
     let source = if source.len() > 8 * 1024 * 1024 {
@@ -375,10 +596,21 @@ fn strip_comments(source: &str) -> String {
     }
     out
 }
-fn parse_rules(source: &str, width: f32, height: f32, depth: usize, rules: &mut Vec<Rule>) {
-    if depth > 16 {
+#[allow(clippy::too_many_arguments)]
+fn parse_rules(
+    source: &str,
+    width: f32,
+    height: f32,
+    depth: usize,
+    layer: &Option<Arc<CascadeLayer>>,
+    apply: bool,
+    rules: &mut Vec<Rule>,
+    budget: &mut ParseBudget,
+) {
+    if depth > 16 || source.len() > budget.work {
         return;
     }
+    budget.work -= source.len();
     let bytes = source.as_bytes();
     let mut start = 0;
     let mut i = 0;
@@ -415,6 +647,7 @@ fn parse_rules(source: &str, width: f32, height: f32, depth: usize, rules: &mut 
             parens -= 1;
         }
         if c == b';' && parens == 0 {
+            layer_statement(&source[start..i], layer, rules, budget);
             start = i + 1;
         } else if c == b'{' && parens == 0 {
             let header = source[start..i].trim();
@@ -455,19 +688,44 @@ fn parse_rules(source: &str, width: f32, height: f32, depth: usize, rules: &mut 
                 i += 1;
             }
             let body = &source[body_start..i];
-            if let Some(media) = header.strip_prefix("@media") {
+            if let Some(media) = at_rule(header, "media") {
                 if media_matches(media, width, height) {
-                    parse_rules(body, width, height, depth + 1, rules);
+                    parse_rules(body, width, height, depth + 1, layer, apply, rules, budget);
                 }
-            } else if let Some(supports) = header.strip_prefix("@supports") {
+            } else if let Some(supports) = at_rule(header, "supports") {
                 if supports_matches(supports) {
-                    parse_rules(body, width, height, depth + 1, rules);
+                    parse_rules(body, width, height, depth + 1, layer, apply, rules, budget);
                 }
-            } else if header.starts_with("@layer") || header.starts_with("@container") {
-                if header.starts_with("@layer") {
-                    parse_rules(body, width, height, depth + 1, rules);
+            } else if let Some(name) = at_rule(header, "layer") {
+                if budget.layer(name) {
+                    let child = if name.is_empty() {
+                        CascadeLayer::anonymous(layer.clone())
+                    } else {
+                        CascadeLayer::named(layer.clone(), name)
+                    };
+                    if let Some(child) = child {
+                        rules.push(Rule {
+                            selectors: vec![],
+                            declarations: vec![],
+                            layer: Some(child.clone()),
+                        });
+                        parse_rules(
+                            body,
+                            width,
+                            height,
+                            depth + 1,
+                            &Some(child),
+                            apply,
+                            rules,
+                            budget,
+                        );
+                    }
                 }
-            } else if !header.starts_with('@') && !header.is_empty() {
+            } else if at_rule(header, "container").is_some() {
+                // Element-dependent conditions always establish global layer
+                // order. Container matching itself is not implemented.
+                parse_rules(body, width, height, depth + 1, layer, false, rules, budget);
+            } else if apply && !header.starts_with('@') && !header.is_empty() {
                 let selectors = split_top_level(header, ',')
                     .into_iter()
                     .filter(|s| !s.is_empty() && s.len() <= 4096)
@@ -476,13 +734,53 @@ fn parse_rules(source: &str, width: f32, height: f32, depth: usize, rules: &mut 
                     .collect();
                 rules.push(Rule {
                     selectors,
-                    declarations: parse_declarations(body),
+                    declarations: parse_declarations_with_limit(body, &mut budget.declarations),
+                    layer: layer.clone(),
                 });
             }
             start = i.saturating_add(1);
         }
         i += 1;
     }
+    if start < source.len() && rules.len() < 10_000 {
+        layer_statement(&source[start..], layer, rules, budget);
+    }
+}
+fn layer_statement(
+    header: &str,
+    layer: &Option<Arc<CascadeLayer>>,
+    rules: &mut Vec<Rule>,
+    budget: &mut ParseBudget,
+) {
+    if let Some(names) = at_rule(header.trim(), "layer") {
+        let names = split_top_level(names, ',');
+        // An invalid name invalidates the entire order statement.
+        if !names.is_empty() && names.iter().all(|name| layer_name(name).is_some()) {
+            for name in names {
+                if !budget.layer(name) {
+                    break;
+                }
+                if let Some(child) = CascadeLayer::named(layer.clone(), name) {
+                    rules.push(Rule {
+                        selectors: vec![],
+                        declarations: vec![],
+                        layer: Some(child),
+                    });
+                }
+                if rules.len() >= 10_000 {
+                    break;
+                }
+            }
+        }
+    }
+}
+
+fn at_rule<'a>(header: &'a str, name: &str) -> Option<&'a str> {
+    let rest = header.strip_prefix('@')?;
+    let (keyword, consumed) = css_identifier(rest)?;
+    keyword
+        .eq_ignore_ascii_case(name)
+        .then(|| media_trim(&rest[consumed..]))
 }
 /// Bounded subset of Media Queries 4: types, modifiers, comma lists and plain
 /// feature conjunctions. Unknown feature values retain the third truth value
@@ -775,8 +1073,17 @@ fn supports_matches(query: &str) -> bool {
     }
 }
 pub fn parse_declarations(source: &str) -> Vec<Declaration> {
+    parse_declarations_with_limit(&strip_comments(source), &mut (1024 * 1024))
+}
+fn parse_declarations_with_limit(source: &str, bytes_left: &mut usize) -> Vec<Declaration> {
+    if source.len() > MAX_STYLE_BYTES {
+        return Vec::new();
+    }
     let mut declarations = vec![];
     for part in split_top_level(source, ';').into_iter().take(4096) {
+        if declarations.len() >= 8192 {
+            break;
+        }
         let Some((name, value)) = part.split_once(':') else {
             continue;
         };
@@ -786,7 +1093,7 @@ pub fn parse_declarations(source: &str) -> Vec<Declaration> {
             name.trim().to_ascii_lowercase()
         };
         let mut value = value.trim();
-        if name.is_empty() || value.is_empty() || name.len() > 256 || value.len() > 65_536 {
+        if name.is_empty() || value.is_empty() || name.len() > 256 || value.len() > 4096 {
             continue;
         }
         let lower = value.to_ascii_lowercase();
@@ -798,20 +1105,24 @@ pub fn parse_declarations(source: &str) -> Vec<Declaration> {
         }
         if matches!(name.as_str(), "float" | "clear") && !value.contains("var(") {
             let keyword = value.to_ascii_lowercase();
-            if !(matches!(
-                keyword.as_str(),
-                "none" | "left" | "right" | "inherit" | "initial" | "unset" | "revert"
-            ) || name == "clear" && keyword == "both")
+            if !(css_wide(value)
+                || matches!(
+                    keyword.as_str(),
+                    "none"
+                        | "left"
+                        | "right"
+                        | "inherit"
+                        | "initial"
+                        | "unset"
+                        | "revert"
+                        | "revert-layer"
+                )
+                || name == "clear" && keyword == "both")
             {
                 continue;
             }
         }
-        if !value.contains("var(")
-            && !matches!(
-                value.to_ascii_lowercase().as_str(),
-                "inherit" | "initial" | "unset" | "revert"
-            )
-        {
+        if !value.contains("var(") && !css_wide(value) {
             let valid = match name.as_str() {
                 "grid-template-columns"
                 | "grid-template-rows"
@@ -833,7 +1144,17 @@ pub fn parse_declarations(source: &str) -> Vec<Declaration> {
                 continue;
             }
         }
+        let start = declarations.len();
         expand_declaration(&name, value, important, &mut declarations);
+        let cost: usize = declarations[start..]
+            .iter()
+            .map(|decl| decl.name.len() + decl.value.len())
+            .sum();
+        if cost > *bytes_left || declarations.len() > 8192 {
+            declarations.truncate(start);
+            break;
+        }
+        *bytes_left -= cost;
     }
     declarations
 }
@@ -882,7 +1203,123 @@ fn words(source: &str) -> Vec<&str> {
     }
     result
 }
+fn wide_keyword(value: &str) -> Option<String> {
+    let (word, consumed) = css_identifier(value)?;
+    if consumed != value.len() {
+        return None;
+    }
+    let word = word.to_ascii_lowercase();
+    matches!(
+        word.as_str(),
+        "inherit" | "initial" | "unset" | "revert" | "revert-layer"
+    )
+    .then_some(word)
+}
+fn css_wide(value: &str) -> bool {
+    wide_keyword(value).is_some()
+}
+
+fn shorthand_properties(name: &str) -> Option<Vec<String>> {
+    let list: &[&str] = match name {
+        "all" => SUPPORTED_PROPERTIES,
+        "gap" | "grid-gap" => &["row-gap", "column-gap"],
+        "grid-row" => &["grid-row-start", "grid-row-end"],
+        "grid-column" => &["grid-column-start", "grid-column-end"],
+        "grid-area" => &[
+            "grid-row-start",
+            "grid-column-start",
+            "grid-row-end",
+            "grid-column-end",
+        ],
+        "place-items" => &["align-items", "justify-items"],
+        "place-self" => &["align-self", "justify-self"],
+        "place-content" => &["align-content", "justify-content"],
+        "inset" => &["top", "right", "bottom", "left"],
+        "background" => &["background-color"],
+        "flex" => &["flex-grow", "flex-shrink", "flex-basis"],
+        "flex-flow" => &["flex-direction", "flex-wrap"],
+        "font" => &[
+            "font-size",
+            "font-family",
+            "font-weight",
+            "font-style",
+            "line-height",
+        ],
+        "margin" | "padding" | "border-width" | "border-color" | "border-style" => {
+            return Some(
+                ["top", "right", "bottom", "left"]
+                    .iter()
+                    .map(|side| {
+                        if let Some(suffix) = name.strip_prefix("border-") {
+                            format!("border-{side}-{suffix}")
+                        } else {
+                            format!("{name}-{side}")
+                        }
+                    })
+                    .collect(),
+            );
+        }
+        "margin-inline" | "padding-inline" | "margin-block" | "padding-block" => {
+            let prefix = name.split('-').next()?;
+            let sides = if name.ends_with("inline") {
+                ["left", "right"]
+            } else {
+                ["top", "bottom"]
+            };
+            return Some(
+                sides
+                    .into_iter()
+                    .map(|side| format!("{prefix}-{side}"))
+                    .collect(),
+            );
+        }
+        "border" | "border-top" | "border-right" | "border-bottom" | "border-left" => {
+            let sides: &[&str] = if name == "border" {
+                &["top", "right", "bottom", "left"]
+            } else {
+                &[name.strip_prefix("border-")?]
+            };
+            return Some(
+                sides
+                    .iter()
+                    .flat_map(|side| {
+                        ["width", "style", "color"]
+                            .into_iter()
+                            .map(move |part| format!("border-{side}-{part}"))
+                    })
+                    .collect(),
+            );
+        }
+        _ => return None,
+    };
+    Some(list.iter().map(|name| (*name).into()).collect())
+}
 fn expand_declaration(name: &str, value: &str, important: bool, out: &mut Vec<Declaration>) {
+    let global = css_wide(value);
+    let has_vars = value.contains("var(");
+    if let Some(properties) = shorthand_properties(name) {
+        if global || has_vars {
+            let pending = has_vars.then(|| Arc::<str>::from(name));
+            for name in properties {
+                out.push(Declaration {
+                    name,
+                    value: if global {
+                        wide_keyword(value).unwrap_or_default()
+                    } else {
+                        value.into()
+                    },
+                    important,
+                    pending_shorthand: pending.clone(),
+                });
+            }
+            return;
+        }
+        if name == "all" || words(value).iter().any(|word| css_wide(word)) {
+            return;
+        }
+    }
+    let global_value = wide_keyword(value);
+    let value = global_value.as_deref().unwrap_or(value);
     let normalized = (!value.to_ascii_lowercase().contains("var(")
         && (name.starts_with("grid-")
             || name.starts_with("place-")
@@ -894,6 +1331,7 @@ fn expand_declaration(name: &str, value: &str, important: bool, out: &mut Vec<De
             name: name.into(),
             value: value.into(),
             important,
+            pending_shorthand: None,
         })
     };
     if matches!(name, "gap" | "grid-gap") {
@@ -1140,9 +1578,56 @@ pub fn compute_styles(
     width: f32,
     height: f32,
 ) -> Vec<ComputedStyle> {
-    let mut rules = vec![];
+    let mut bytes_left = MAX_STYLE_BYTES;
+    let sources: Vec<_> = sources
+        .iter()
+        .take(256)
+        .take_while(|source| {
+            if source.len() > bytes_left {
+                return false;
+            }
+            bytes_left -= source.len();
+            true
+        })
+        .map(|source| StyleSource::new(source.as_str()))
+        .collect();
+    compute_styles_from_sources(doc, &sources, width, height)
+}
+pub fn compute_styles_from_sources(
+    doc: &Document,
+    sources: &[StyleSource],
+    width: f32,
+    height: f32,
+) -> Vec<ComputedStyle> {
+    let mut rules = Vec::new();
+    let mut budget = ParseBudget::new();
+    let mut bytes_left = MAX_STYLE_BYTES;
     for source in sources.iter().take(256) {
-        rules.extend(parse_stylesheet(source, width, height));
+        if source.media.len() > 32 {
+            continue;
+        }
+        let cost = source.media.iter().fold(source.source.len(), |sum, media| {
+            sum.saturating_add(media.len())
+        });
+        if cost > bytes_left {
+            break;
+        }
+        bytes_left -= cost;
+        if !source
+            .media
+            .iter()
+            .all(|media| media_matches(media, width, height))
+        {
+            continue;
+        }
+        parse_source(
+            &source.source,
+            &source.layer,
+            width,
+            height,
+            &mut rules,
+            &mut budget,
+        );
         if rules.len() >= 10_000 {
             rules.truncate(10_000);
             break;
@@ -1150,14 +1635,196 @@ pub fn compute_styles(
     }
     compute_styles_with_rules(doc, &rules, width, height)
 }
+
+// Layer precedence is a postorder walk: each parent's implicit final
+// sublayer follows its named children; the root is unlayered author CSS.
+#[derive(Default)]
+struct LayerNode {
+    children: Vec<usize>,
+}
+struct LayerRegistry {
+    nodes: Vec<LayerNode>,
+    named: HashMap<(usize, String), usize>,
+    identities: HashMap<usize, Option<usize>>,
+    names_left: usize,
+}
+impl LayerRegistry {
+    fn new() -> Self {
+        Self {
+            nodes: vec![LayerNode::default()],
+            named: HashMap::new(),
+            identities: HashMap::new(),
+            names_left: MAX_LAYER_NAME_BYTES,
+        }
+    }
+    fn register(&mut self, layer: &Arc<CascadeLayer>) -> Option<usize> {
+        let pointer = Arc::as_ptr(layer) as usize;
+        if let Some(id) = self.identities.get(&pointer) {
+            return *id;
+        }
+        let parent = match &layer.parent {
+            Some(p) => self.register(p)?,
+            None => 0,
+        };
+        if let Some(name) = &layer.name
+            && let Some(&id) = self.named.get(&(parent, name.clone()))
+        {
+            self.identities.insert(pointer, Some(id));
+            return Some(id);
+        }
+        let bytes = layer.name.as_ref().map_or(0, String::len);
+        let id = if self.nodes.len() > MAX_LAYERS || bytes > self.names_left {
+            None
+        } else {
+            self.names_left -= bytes;
+            let id = self.nodes.len();
+            self.nodes.push(LayerNode::default());
+            self.nodes[parent].children.push(id);
+            if let Some(name) = &layer.name {
+                self.named.insert((parent, name.clone()), id);
+            }
+            Some(id)
+        };
+        self.identities.insert(pointer, id);
+        id
+    }
+    fn ranks(&self) -> Vec<usize> {
+        fn visit(nodes: &[LayerNode], id: usize, ranks: &mut [usize], next: &mut usize) {
+            for &child in &nodes[id].children {
+                visit(nodes, child, ranks, next);
+            }
+            ranks[id] = *next;
+            *next += 1;
+        }
+        let mut ranks = vec![0; self.nodes.len()];
+        visit(&self.nodes, 0, &mut ranks, &mut 0);
+        ranks
+    }
+}
 struct IndexedRule<'a> {
     selector: &'a str,
     specificity: u32,
     declarations: &'a [Declaration],
     order: u32,
+    layer: usize,
 }
-type CascadePriority = (bool, u32, u32, u32);
-type CascadedProperties = BTreeMap<String, (CascadePriority, String)>;
+type CascadePriority = (bool, bool, usize, u32, u32, u32);
+type CascadeBucket = (bool, bool, usize);
+struct Candidate {
+    priority: CascadePriority,
+    value: String,
+    pending_shorthand: Option<Arc<str>>,
+}
+#[derive(Default)]
+struct CascadedProperties {
+    properties: BTreeMap<String, BTreeMap<CascadeBucket, Candidate>>,
+    count: usize,
+    bytes: usize,
+}
+impl CascadedProperties {
+    fn insert(&mut self, decl: &Declaration, inline: bool, layer: usize, tail: (u32, u32, u32)) {
+        let (name, value, important) = (decl.name.as_str(), decl.value.as_str(), decl.important);
+        let precedence = if important {
+            MAX_LAYERS + 1 - layer
+        } else {
+            layer
+        };
+        let priority = (important, inline, precedence, tail.0, tail.1, tail.2);
+        let bucket = (important, inline, layer);
+        let old = self.properties.get(name).and_then(|p| p.get(&bucket));
+        if old.is_some_and(|c| c.priority > priority) {
+            return;
+        }
+        let old_bytes = old.map_or(0, |c| c.value.len() + name.len());
+        let bytes = self.bytes - old_bytes + value.len() + name.len();
+        if bytes > 1024 * 1024 || old.is_none() && self.count >= 4096 {
+            return;
+        }
+        if old.is_none() {
+            self.count += 1;
+        }
+        self.bytes = bytes;
+        self.properties.entry(name.into()).or_default().insert(
+            bucket,
+            Candidate {
+                priority,
+                value: value.into(),
+                pending_shorthand: decl.pending_shorthand.clone(),
+            },
+        );
+    }
+}
+// Rollback excludes every declaration between a layer's normal and important
+// positions. Inline important rollback is explicitly exempt: it removes just
+// the element-attached declarations and can expose stylesheet !important.
+fn cascaded_value(
+    name: &str,
+    candidates: &BTreeMap<CascadeBucket, Candidate>,
+    variables: Option<&BTreeMap<String, String>>,
+    work: &mut usize,
+) -> Option<String> {
+    let sort_cost = candidates
+        .len()
+        .saturating_mul(candidates.len().max(1).ilog2() as usize + 1);
+    if sort_cost > *work {
+        *work = 0;
+        return None;
+    }
+    *work -= sort_cost;
+    let mut ordered: Vec<_> = candidates.iter().collect();
+    ordered.sort_unstable_by_key(|(_, candidate)| std::cmp::Reverse(candidate.priority));
+    let mut remove_inline = false;
+    let mut earlier_than = None;
+    for (&(important, inline, layer), candidate) in ordered {
+        if remove_inline && inline
+            || earlier_than.is_some_and(|rank| important || inline || layer >= rank)
+        {
+            continue;
+        }
+        if candidate.value.len() > *work {
+            *work = 0;
+            return None;
+        }
+        *work -= candidate.value.len();
+        let value = if let Some(variables) = variables {
+            let value = resolve_vars(&candidate.value, variables, 0, work)
+                .unwrap_or_else(|| "unset".into());
+            if let Some(shorthand) = &candidate.pending_shorthand {
+                let count =
+                    shorthand_properties(shorthand).map_or(1, |properties| properties.len());
+                let cost = value.len().saturating_mul(count);
+                if cost > *work {
+                    *work = 0;
+                    return None;
+                }
+                *work -= cost;
+                let mut expanded = Vec::new();
+                expand_declaration(shorthand, &value, false, &mut expanded);
+                expanded
+                    .into_iter()
+                    .find(|decl| decl.name == name)
+                    .map_or_else(|| "unset".into(), |decl| decl.value)
+            } else {
+                value
+            }
+        } else {
+            candidate.value.clone()
+        };
+        let value = wide_keyword(&value).unwrap_or(value);
+        if value == "revert-layer" {
+            if inline {
+                remove_inline = true;
+            } else {
+                earlier_than = Some(layer);
+            }
+        } else if value == "revert" {
+            return None;
+        } else {
+            return Some(value);
+        }
+    }
+    None
+}
 pub fn compute_styles_with_rules(
     doc: &Document,
     rules: &[Rule],
@@ -1166,8 +1833,27 @@ pub fn compute_styles_with_rules(
 ) -> Vec<ComputedStyle> {
     let mut indexed = vec![];
     let mut by_key: HashMap<String, Vec<usize>> = HashMap::new();
+    let mut layers = LayerRegistry::new();
+    let rule_layers: Vec<_> = rules
+        .iter()
+        .take(10_000)
+        .map(|rule| {
+            rule.layer
+                .as_ref()
+                .map_or(Some(0), |layer| layers.register(layer))
+        })
+        .collect();
+    let ranks = layers.ranks();
     for (order, rule) in rules.iter().enumerate().take(10_000) {
-        for selector in &rule.selectors {
+        let Some(layer) = rule_layers[order] else {
+            continue;
+        };
+        for selector in rule
+            .selectors
+            .iter()
+            .take(128)
+            .filter(|selector| selector.len() <= 4096)
+        {
             let index = indexed.len();
             by_key
                 .entry(selector_key(selector))
@@ -1178,10 +1864,12 @@ pub fn compute_styles_with_rules(
                 specificity: specificity(selector),
                 declarations: &rule.declarations,
                 order: order as u32,
+                layer: ranks[layer],
             });
         }
     }
     let mut styles = vec![ComputedStyle::default(); doc.nodes.len()];
+    let mut border_styles = vec![Edges::all(false); doc.nodes.len()];
     let empty_variables = Arc::new(BTreeMap::new());
     let mut variables: Vec<Arc<BTreeMap<String, String>>> = vec![empty_variables; doc.nodes.len()];
     let mut pending = vec![doc.root];
@@ -1221,7 +1909,7 @@ pub fn compute_styles_with_rules(
             .unwrap_or_default();
         let mut vars = inherited_vars;
         // Origin, importance, selector specificity and source order are applied per property.
-        let mut cascade: CascadedProperties = BTreeMap::new();
+        let mut cascade = CascadedProperties::default();
         if !tag.is_empty() {
             let mut candidates = BTreeSet::new();
             for key in ["*".to_owned(), format!("t:{}", tag.to_ascii_lowercase())] {
@@ -1272,60 +1960,68 @@ pub fn compute_styles_with_rules(
                             break;
                         }
                         work -= cost;
-                        let priority = (
-                            decl.important,
-                            rule.specificity,
-                            rule.order,
-                            decl_order as u32,
+                        cascade.insert(
+                            decl,
+                            false,
+                            rule.layer,
+                            (rule.specificity, rule.order, decl_order as u32),
                         );
-                        if cascade
-                            .get(&decl.name)
-                            .is_none_or(|(old, _)| priority >= *old)
-                        {
-                            cascade.insert(decl.name.clone(), (priority, decl.value.clone()));
-                        }
                     }
                 }
             }
-            if let Some(inline) = doc.attr(id, "style") {
+            if let Some(inline) = doc.attr(id, "style")
+                && inline.len() <= work
+            {
+                work -= inline.len();
                 for (decl_order, decl) in parse_declarations(inline).into_iter().enumerate() {
                     if !supported_property(&decl.name) || decl.value.len() > 4096 {
                         continue;
                     }
-                    let priority = (decl.important, 1 << 30, u32::MAX, decl_order as u32);
-                    if cascade
-                        .get(&decl.name)
-                        .is_none_or(|(old, _)| priority >= *old)
-                    {
-                        cascade.insert(decl.name, (priority, decl.value));
+                    let cost = decl.name.len() + decl.value.len();
+                    if cost > work {
+                        work = 0;
+                        break;
                     }
+                    work -= cost;
+                    cascade.insert(
+                        &decl,
+                        true,
+                        ranks[0],
+                        (1 << 30, u32::MAX, decl_order as u32),
+                    );
+                }
+            }
+            let mut custom = BTreeMap::new();
+            for (name, candidates) in &cascade.properties {
+                if name.starts_with("--")
+                    && let Some(value) = cascaded_value(name, candidates, None, &mut work)
+                {
+                    custom.insert(name.clone(), value);
                 }
             }
             let inherited_variable_size: usize = vars.iter().map(|(k, v)| k.len() + v.len()).sum();
-            let new_variable_size: usize = cascade
-                .iter()
-                .filter(|(k, _)| k.starts_with("--"))
-                .map(|(k, (_, v))| k.len() + v.len())
-                .sum();
+            let new_variable_size: usize = custom.iter().map(|(k, v)| k.len() + v.len()).sum();
             if new_variable_size > 0
                 && retained_variable_bytes + inherited_variable_size + new_variable_size
                     <= 8 * 1024 * 1024
             {
                 retained_variable_bytes += inherited_variable_size + new_variable_size;
                 let map = Arc::make_mut(&mut vars);
-                for (name, (_, value)) in &cascade {
-                    if name.starts_with("--")
+                for (name, value) in custom {
+                    if value.eq_ignore_ascii_case("initial") {
+                        map.remove(&name);
+                    } else if !matches!(value.to_ascii_lowercase().as_str(), "inherit" | "unset")
                         && value.len() <= 4096
-                        && (map.len() < 128 || map.contains_key(name))
+                        && (map.len() < 128 || map.contains_key(&name))
                     {
-                        map.insert(name.clone(), value.clone());
+                        map.insert(name, value);
                     }
                 }
             }
             let mut resolved: BTreeMap<String, String> = BTreeMap::new();
-            for (name, (_, value)) in &cascade {
+            for (name, candidates) in &cascade.properties {
                 if !name.starts_with("--")
-                    && let Some(value) = resolve_vars(value, &vars, 0)
+                    && let Some(value) = cascaded_value(name, candidates, Some(&vars), &mut work)
                 {
                     resolved.insert(name.clone(), value);
                 }
@@ -1367,9 +2063,25 @@ pub fn compute_styles_with_rules(
             for side in ["top", "right", "bottom", "left"] {
                 let border_style = resolved
                     .get(&format!("border-{side}-style"))
-                    .map(String::as_str)
-                    .unwrap_or(if native_border { "solid" } else { "none" });
-                if matches!(border_style, "none" | "hidden") {
+                    .map(|value| value.to_ascii_lowercase());
+                let visible = match border_style.as_deref() {
+                    Some("inherit") => {
+                        node.parent
+                            .and_then(|p| border_styles.get(p))
+                            .is_some_and(|edges| {
+                                let mut edges = *edges;
+                                *edge_mut(&mut edges, side)
+                            })
+                    }
+                    Some("initial" | "unset" | "none" | "hidden") => false,
+                    Some(
+                        "solid" | "dotted" | "dashed" | "double" | "groove" | "ridge" | "inset"
+                        | "outset",
+                    ) => true,
+                    _ => native_border,
+                };
+                *edge_mut(&mut border_styles[id], side) = visible;
+                if !visible {
                     *edge_mut(&mut style.border_width, side) = 0.0;
                 }
             }
@@ -1392,89 +2104,88 @@ pub fn compute_styles_with_rules(
     }
     styles
 }
+const SUPPORTED_PROPERTIES: &[&str] = &[
+    "display",
+    "float",
+    "clear",
+    "width",
+    "height",
+    "min-width",
+    "min-height",
+    "max-width",
+    "max-height",
+    "margin-top",
+    "margin-right",
+    "margin-bottom",
+    "margin-left",
+    "padding-top",
+    "padding-right",
+    "padding-bottom",
+    "padding-left",
+    "border-top-width",
+    "border-right-width",
+    "border-bottom-width",
+    "border-left-width",
+    "border-top-style",
+    "border-right-style",
+    "border-bottom-style",
+    "border-left-style",
+    "border-top-color",
+    "border-right-color",
+    "border-bottom-color",
+    "border-left-color",
+    "color",
+    "background-color",
+    "font-size",
+    "font-family",
+    "font-style",
+    "font-weight",
+    "line-height",
+    "text-align",
+    "white-space",
+    "text-decoration",
+    "flex-direction",
+    "flex-wrap",
+    "justify-content",
+    "align-items",
+    "align-self",
+    "order",
+    "row-gap",
+    "column-gap",
+    "flex-grow",
+    "flex-shrink",
+    "flex-basis",
+    "grid-template-columns",
+    "grid-template-rows",
+    "grid-auto-columns",
+    "grid-auto-rows",
+    "grid-auto-flow",
+    "grid-column-start",
+    "grid-column-end",
+    "grid-row-start",
+    "grid-row-end",
+    "justify-items",
+    "justify-self",
+    "align-content",
+    "position",
+    "z-index",
+    "top",
+    "right",
+    "bottom",
+    "left",
+    "overflow",
+    "overflow-x",
+    "overflow-y",
+    "border-radius",
+    "opacity",
+    "box-sizing",
+    "list-style-type",
+    "vertical-align",
+];
 fn supported_property(name: &str) -> bool {
-    name.starts_with("--")
-        || matches!(
-            name,
-            "display"
-                | "float"
-                | "clear"
-                | "width"
-                | "height"
-                | "min-width"
-                | "min-height"
-                | "max-width"
-                | "max-height"
-                | "margin-top"
-                | "margin-right"
-                | "margin-bottom"
-                | "margin-left"
-                | "padding-top"
-                | "padding-right"
-                | "padding-bottom"
-                | "padding-left"
-                | "border-top-width"
-                | "border-right-width"
-                | "border-bottom-width"
-                | "border-left-width"
-                | "border-top-style"
-                | "border-right-style"
-                | "border-bottom-style"
-                | "border-left-style"
-                | "border-top-color"
-                | "border-right-color"
-                | "border-bottom-color"
-                | "border-left-color"
-                | "color"
-                | "background-color"
-                | "font-size"
-                | "font-family"
-                | "font-style"
-                | "font-weight"
-                | "line-height"
-                | "text-align"
-                | "white-space"
-                | "text-decoration"
-                | "flex-direction"
-                | "flex-wrap"
-                | "justify-content"
-                | "align-items"
-                | "align-self"
-                | "order"
-                | "gap"
-                | "row-gap"
-                | "column-gap"
-                | "flex-grow"
-                | "flex-shrink"
-                | "flex-basis"
-                | "grid-template-columns"
-                | "grid-template-rows"
-                | "grid-auto-columns"
-                | "grid-auto-rows"
-                | "grid-auto-flow"
-                | "grid-column-start"
-                | "grid-column-end"
-                | "grid-row-start"
-                | "grid-row-end"
-                | "justify-items"
-                | "justify-self"
-                | "align-content"
-                | "position"
-                | "z-index"
-                | "top"
-                | "right"
-                | "bottom"
-                | "left"
-                | "overflow"
-                | "overflow-x"
-                | "overflow-y"
-                | "border-radius"
-                | "opacity"
-                | "box-sizing"
-                | "list-style-type"
-                | "vertical-align"
-        )
+    name.starts_with("--") || SUPPORTED_PROPERTIES.contains(&name)
 }
+
 fn selector_key(selector: &str) -> String {
     // Index only the final compound, outside functional pseudo selectors and attributes.
     let mut start = 0;
@@ -1647,7 +2358,17 @@ fn specificity_inner(selector: &str, depth: usize) -> u32 {
     }
     score
 }
-fn resolve_vars(value: &str, variables: &BTreeMap<String, String>, depth: usize) -> Option<String> {
+fn resolve_vars(
+    value: &str,
+    variables: &BTreeMap<String, String>,
+    depth: usize,
+    work: &mut usize,
+) -> Option<String> {
+    if value.len() > *work {
+        *work = 0;
+        return None;
+    }
+    *work -= value.len();
     if depth > 16 || value.len() > 65_536 {
         return None;
     }
@@ -1676,9 +2397,13 @@ fn resolve_vars(value: &str, variables: &BTreeMap<String, String>, depth: usize)
         .get(key)
         .map(String::as_str)
         .or_else(|| args.get(1).copied())?;
-    let replacement = resolve_vars(replacement, variables, depth + 1)?;
+    let replacement = resolve_vars(replacement, variables, depth + 1, work)?;
+    let size = start + replacement.len() + value.len() - end - 1;
+    if size > 65_536 || size > *work {
+        return None;
+    }
     let new = format!("{}{}{}", &value[..start], replacement, &value[end + 1..]);
-    resolve_vars(&new, variables, depth + 1)
+    resolve_vars(&new, variables, depth + 1, work)
 }
 fn apply_user_agent(s: &mut ComputedStyle, doc: &Document, id: NodeId, tag: &str) {
     if doc.namespace(id) != Some(Namespace::Html) {
@@ -1900,7 +2625,8 @@ fn apply_property(
         return;
     }
     let initial = ComputedStyle::default();
-    if matches!(value, "inherit" | "initial" | "unset" | "revert") {
+    if css_wide(value) {
+        let value = value.to_ascii_lowercase();
         let inherited = matches!(
             name,
             "color"
@@ -1918,6 +2644,18 @@ fn apply_property(
         } else {
             &initial
         };
+        if value != "inherit"
+            && let Some(rest) = name.strip_prefix("border-")
+        {
+            if let Some(side) = rest.strip_suffix("-width") {
+                *edge_mut(&mut s.border_width, side) = 3.0;
+                return;
+            }
+            if rest.ends_with("-color") {
+                s.border_color = s.color;
+                return;
+            }
+        }
         copy_property(s, from, name);
         return;
     }
@@ -2317,6 +3055,8 @@ fn copy_property(s: &mut ComputedStyle, p: &ComputedStyle, name: &str) {
         "white-space" => s.white_space = p.white_space.clone(),
         "text-decoration" => s.text_decoration = p.text_decoration.clone(),
         "list-style-type" => s.list_style_type = p.list_style_type.clone(),
+        "vertical-align" => s.vertical_align = p.vertical_align.clone(),
+        "border-radius" => s.border_radius = p.border_radius,
         "position" => s.position = p.position.clone(),
         "z-index" => s.z_index = p.z_index,
         "overflow" | "overflow-x" | "overflow-y" => s.overflow = p.overflow.clone(),
@@ -2359,6 +3099,13 @@ fn copy_property(s: &mut ComputedStyle, p: &ComputedStyle, name: &str) {
             } else if let Some(side) = name.strip_prefix("padding-") {
                 let mut e = p.padding;
                 *edge_mut(&mut s.padding, side) = *edge_mut(&mut e, side);
+            } else if let Some(rest) = name.strip_prefix("border-") {
+                if let Some(side) = rest.strip_suffix("-width") {
+                    let mut e = p.border_width;
+                    *edge_mut(&mut s.border_width, side) = *edge_mut(&mut e, side);
+                } else if rest.ends_with("-color") {
+                    s.border_color = p.border_color;
+                }
             }
         }
     }
@@ -2871,6 +3618,330 @@ impl<T> TransposeOption<T> for Option<Option<T>> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    fn layered_style(css: &str, inline: &str) -> ComputedStyle {
+        let doc = Document::parse(&format!("<div id=target style='{inline}'>text</div>"));
+        compute_styles(&doc, &[css.into()], 800.0, 600.0)[doc.query_selector("#target").unwrap()]
+            .clone()
+    }
+
+    #[test]
+    fn layer_syntax_handles_escaped_at_rules_eof_and_invalid_statements_atomically() {
+        let doc = Document::parse("<div></div>");
+        let sources = [
+            r"@\6c ayer first,second".into(),
+            "@layer second{div{color:blue}} @layer first{div{color:red}}".into(),
+        ];
+        assert_eq!(
+            compute_styles(&doc, &sources, 800.0, 600.0)[doc.query_selector("div").unwrap()].color,
+            Color::rgb(0, 0, 255)
+        );
+        let css =
+            "@layer first,initial; @layer second{div{color:blue}} @layer first{div{color:red}}";
+        assert_eq!(layered_style(css, "").color, Color::rgb(255, 0, 0));
+        let css = "@layer first; @layer first,second {div{display:none}} div{color:green}";
+        assert_eq!(layered_style(css, "").display, Display::Block);
+        assert!(layer_name("a\u{000b}.b").is_none());
+        assert_eq!(
+            layered_style(
+                r"@layer a {div{color:red}} @layer b{div{color:\72 evert-layer}}",
+                ""
+            )
+            .color,
+            Color::rgb(255, 0, 0)
+        );
+        assert_eq!(
+            layered_style("div{color:red}", "color:revert-layer/* comment */").color,
+            Color::rgb(255, 0, 0)
+        );
+    }
+    #[test]
+    fn global_border_keywords_and_expansion_storage_have_real_computed_semantics() {
+        let css = "@layer a{div{border:5px solid red}} @layer b{div{border-top-style:initial;border-left-color:initial;color:blue}}";
+        let style = layered_style(css, "");
+        assert_eq!(style.border_width.top, 0.0);
+        let doc = Document::parse(
+            "<section style='border:0 solid red'><div style='border:5px solid blue;border-style:inherit'></div></section>",
+        );
+        let styles = compute_styles(&doc, &[], 800.0, 600.0);
+        assert_eq!(
+            styles[doc.query_selector("div").unwrap()].border_width.top,
+            5.0
+        );
+        let style = layered_style("div{border:5px solid red;border-width:initial}", "");
+        assert_eq!(style.border_width.top, 3.0);
+        let source = format!("all:var(--x,{});", "x".repeat(4000)).repeat(100);
+        let declarations = parse_declarations(&source);
+        assert!(
+            declarations
+                .iter()
+                .map(|d| d.name.len() + d.value.len())
+                .sum::<usize>()
+                <= 1024 * 1024
+        );
+        assert!(declarations.len() <= 8192);
+    }
+    #[test]
+    fn layers_override_specificity_and_reopening_preserves_first_order() {
+        let css = "@layer first, second; @layer second {div{color:blue}} @layer first {#target{color:red}}";
+        assert_eq!(layered_style(css, "").color, Color::rgb(0, 0, 255));
+        assert_eq!(
+            layered_style(&format!("{css} div{{color:green}}"), "").color,
+            Color::rgb(0, 128, 0)
+        );
+        assert_eq!(
+            layered_style(css, "color:purple").color,
+            Color::rgb(128, 0, 128)
+        );
+        let doc = Document::parse("<div></div>");
+        let sources = [
+            "@layer first,second;".into(),
+            "@layer second {div{color:blue}}".into(),
+            "@layer first {div{color:red}}".into(),
+        ];
+        let styles = compute_styles(&doc, &sources, 800.0, 600.0);
+        assert_eq!(
+            styles[doc.query_selector("div").unwrap()].color,
+            Color::rgb(0, 0, 255)
+        );
+    }
+    #[test]
+    fn nested_layers_have_implicit_final_sublayers_and_important_reverses() {
+        let css = "@layer first,second; @layer first.inner {div{color:red}} @layer first {div{color:green}} @layer second {div{color:blue}}";
+        assert_eq!(layered_style(css, "").color, Color::rgb(0, 0, 255));
+        let first_only = "@layer first.inner {div{color:red}} @layer first {div{color:green}}";
+        assert_eq!(layered_style(first_only, "").color, Color::rgb(0, 128, 0));
+        let important = css
+            .replace("color:red", "color:red!important")
+            .replace("color:green", "color:green!important")
+            .replace("color:blue", "color:blue!important");
+        assert_eq!(
+            layered_style(
+                &format!("{important} #target{{color:black!important}}"),
+                "color:yellow"
+            )
+            .color,
+            Color::rgb(255, 0, 0)
+        );
+        assert_eq!(
+            layered_style(&important, "color:purple!important").color,
+            Color::rgb(128, 0, 128)
+        );
+    }
+    #[test]
+    fn layer_names_decode_escapes_and_keep_case_and_anonymous_identity() {
+        let css = r"@layer \66 irst, Second; @layer Second {div{color:blue}} @layer first {div{color:red}} @layer second {div{color:green}}";
+        assert_eq!(layered_style(css, "").color, Color::rgb(0, 128, 0));
+        let css = r"@layer a\.b, a.b; @layer a.b {div{color:blue}} @layer a\.b {div{color:red}}";
+        assert_eq!(layered_style(css, "").color, Color::rgb(0, 0, 255));
+        assert!(CascadeLayer::named(None, "outer/**/.inner").is_some());
+        assert!(CascadeLayer::named(None, "foo/**/bar").is_none());
+        assert!(CascadeLayer::named(None, "default").is_some());
+        assert!(CascadeLayer::named(None, "revert-rule").is_none());
+        assert_eq!(
+            layered_style("@layer default {div{color:red}}", "").color,
+            Color::rgb(255, 0, 0)
+        );
+        for invalid in [
+            "",
+            "initial",
+            "x.REVERT-LAYER",
+            "a..b",
+            "1x",
+            "-1x",
+            "a, b",
+            "a b",
+            "a.",
+            "a\\\n",
+        ] {
+            assert!(CascadeLayer::named(None, invalid).is_none(), "{invalid:?}");
+        }
+        let shared = CascadeLayer::anonymous(None).unwrap();
+        let make = |source, layer| StyleSource {
+            source: Arc::from(source),
+            layer: Some(layer),
+            media: vec![],
+        };
+        let sources = [
+            make("@layer theme {div{color:red}}", shared.clone()),
+            make("div{color:blue}", CascadeLayer::anonymous(None).unwrap()),
+            make("@layer theme {div{color:green}}", shared),
+        ];
+        let doc = Document::parse("<div></div>");
+        assert_eq!(
+            compute_styles_from_sources(&doc, &sources, 800.0, 600.0)
+                [doc.query_selector("div").unwrap()]
+            .color,
+            Color::rgb(0, 0, 255)
+        );
+    }
+    #[test]
+    fn conditional_layers_register_only_under_matching_global_conditions() {
+        for conditional in ["@media print", "@supports (unknown: invalid)"] {
+            let css = format!(
+                "{conditional} {{ @layer first; }} @layer second {{div{{color:blue}}}} @layer first {{div{{color:red}}}}"
+            );
+            assert_eq!(layered_style(&css, "").color, Color::rgb(255, 0, 0));
+        }
+        let css = "@container (width > 10px) {@layer first {div{color:purple}}} @layer second{div{color:blue}} @layer first{div{color:red}}";
+        assert_eq!(layered_style(css, "").color, Color::rgb(0, 0, 255));
+        let doc = Document::parse("<div></div>");
+        let id = doc.query_selector("div").unwrap();
+        let empty = StyleSource {
+            source: "".into(),
+            layer: CascadeLayer::named(None, "first"),
+            media: vec!["print".into()],
+        };
+        let rest = StyleSource::new("@layer second{div{color:blue}} @layer first{div{color:red}}");
+        assert_eq!(
+            compute_styles_from_sources(&doc, &[empty.clone(), rest.clone()], 800.0, 600.0)[id]
+                .color,
+            Color::rgb(255, 0, 0)
+        );
+        let empty = StyleSource {
+            media: vec!["screen".into()],
+            ..empty
+        };
+        assert_eq!(
+            compute_styles_from_sources(&doc, &[empty, rest], 800.0, 600.0)[id].color,
+            Color::rgb(0, 0, 255)
+        );
+    }
+    #[test]
+    fn revert_layer_rolls_back_the_entire_layer_and_intervening_tiers() {
+        let base = "@layer first {div{color:red}} @layer second {div{color:blue} #target{color:revert-layer}}";
+        assert_eq!(layered_style(base, "").color, Color::rgb(255, 0, 0));
+        assert_eq!(
+            layered_style(&format!("{base} div{{color:green;color:revert-layer}}"), "").color,
+            Color::rgb(255, 0, 0)
+        );
+        let important = "@layer first {div{color:red}} @layer second {div{color:blue!important;color:revert-layer!important}} @layer third {div{color:green!important}}";
+        assert_eq!(
+            layered_style(important, "color:purple").color,
+            Color::rgb(255, 0, 0)
+        );
+        let earliest = "@layer first{div{color:revert-layer!important}} @layer second{div{color:blue!important}}";
+        assert_eq!(
+            layered_style(earliest, "").color,
+            ComputedStyle::default().color
+        );
+        let sheet = "@layer first{div{color:red!important}} div{color:blue!important}";
+        assert_eq!(
+            layered_style(sheet, "color:green;color:revert-layer!important").color,
+            Color::rgb(255, 0, 0)
+        );
+        assert_eq!(
+            layered_style("div{color:blue}", "color:green;color:revert-layer").color,
+            Color::rgb(0, 0, 255)
+        );
+        // Origin rollback ignores every author layer; UA div display remains block.
+        assert_eq!(
+            layered_style("@layer first{div{display:none}} div{display:revert}", "").display,
+            Display::Block
+        );
+    }
+    #[test]
+    fn revert_layer_expands_shorthands_aliases_and_all_without_resetting_custom_properties() {
+        let css = "@layer base {div{margin:1px 2px 3px 4px;border:5px solid red;font:italic bold 20px/2 monospace;flex:2 3 10px;background:blue;height:17px;--ink:green}} @layer theme{div{margin:99px;border:9px solid green;font:10px serif;flex:9;background:red;height:99px; margin:revert-layer;border:revert-layer;font:revert-layer;flex:revert-layer;background:revert-layer;block-size:revert-layer}}";
+        let style = layered_style(css, "");
+        assert_eq!(style.margin.left, Length::Px(4.0));
+        assert_eq!(style.border_width.top, 5.0);
+        assert_eq!(style.font_size, 20.0);
+        assert_eq!(style.font_weight, 700);
+        assert_eq!(style.font_style, "italic");
+        assert_eq!(style.flex_grow, 2.0);
+        assert_eq!(style.flex_shrink, 3.0);
+        assert_eq!(style.flex_basis, Length::Px(10.0));
+        assert_eq!(style.background_color, Color::rgb(0, 0, 255));
+        assert_eq!(style.height, Length::Px(17.0));
+        let all = "@layer base{div{width:31px;color:red}} @layer theme{div{width:99px;color:blue;--ink:green;all:revert-layer}} div{background:var(--ink)}";
+        let style = layered_style(all, "");
+        assert_eq!(style.width, Length::Px(31.0));
+        assert_eq!(style.color, Color::rgb(255, 0, 0));
+        assert_eq!(style.background_color, Color::rgb(0, 128, 0));
+    }
+    #[test]
+    fn layered_custom_properties_and_pending_shorthands_follow_rollback() {
+        let css = "@layer base{div{--ink:red;--space:1px 2px;color:var(--ink);margin:var(--space)}} @layer theme{div{--ink:blue;--ink:revert-layer;margin:var(--missing,revert-layer)}}";
+        let style = layered_style(css, "");
+        assert_eq!(style.color, Color::rgb(255, 0, 0));
+        assert_eq!(style.margin.right, Length::Px(2.0));
+        let style = layered_style(
+            "@layer base{div{--ink:red}} @layer theme{div{--ink:initial}} div{color:var(--ink,blue)}",
+            "",
+        );
+        assert_eq!(style.color, Color::rgb(0, 0, 255));
+        let style = layered_style(
+            "@layer base{div{color:red}} @layer theme{div{color:var(--missing,revert-layer)}}",
+            "",
+        );
+        assert_eq!(style.color, Color::rgb(255, 0, 0));
+        let doc = Document::parse("<section style='--ink:green'><div id=target></div></section>");
+        let styles = compute_styles(
+            &doc,
+            &["@layer a{div{--ink:blue}} @layer b{div{--ink:inherit;color:var(--ink)}}".into()],
+            800.0,
+            600.0,
+        );
+        assert_eq!(
+            styles[doc.query_selector("div").unwrap()].color,
+            Color::rgb(0, 128, 0)
+        );
+    }
+    #[test]
+    fn layer_and_candidate_limits_are_bounded_and_do_not_promote_rejected_layers() {
+        let mut registry = LayerRegistry::new();
+        let mut retained = Vec::new();
+        for _ in 0..MAX_LAYERS {
+            let layer = CascadeLayer::anonymous(None).unwrap();
+            assert!(registry.register(&layer).is_some());
+            retained.push(layer);
+        }
+        assert!(
+            registry
+                .register(&CascadeLayer::anonymous(None).unwrap())
+                .is_none()
+        );
+        assert_eq!(registry.ranks().len(), MAX_LAYERS + 1);
+        let mut css = (0..MAX_LAYERS)
+            .map(|i| format!("@layer n{i};"))
+            .collect::<String>();
+        css.push_str("@layer beyond {div{display:none}}");
+        assert_eq!(layered_style(&css, "").display, Display::Block);
+        let mut parent = None;
+        for _ in 0..MAX_LAYER_DEPTH {
+            parent = CascadeLayer::anonymous(parent);
+            assert!(parent.is_some());
+        }
+        assert!(CascadeLayer::anonymous(parent).is_none());
+        let mut cascade = CascadedProperties::default();
+        for n in 0..5000 {
+            let decl = Declaration {
+                name: format!("--v{n}"),
+                value: "x".repeat(512),
+                important: false,
+                pending_shorthand: None,
+            };
+            cascade.insert(&decl, false, 0, (0, 0, n));
+        }
+        assert!(cascade.count <= 4096);
+        assert!(cascade.bytes <= 1024 * 1024);
+        let doc = Document::parse("<div></div>");
+        let source = StyleSource {
+            source: "div{display:none}".into(),
+            layer: None,
+            media: vec!["screen".into(); 33],
+        };
+        assert_eq!(
+            compute_styles_from_sources(&doc, &[source], 800.0, 600.0)
+                [doc.query_selector("div").unwrap()]
+            .display,
+            Display::Block
+        );
+        let variables = BTreeMap::from([("--x".into(), "var(--x)var(--x)".into())]);
+        let mut work = 20;
+        assert!(resolve_vars("var(--x)", &variables, 0, &mut work).is_none());
+        assert_eq!(work, 0);
+    }
     #[test]
     fn media_types_modifiers_conjunctions_and_lists_have_explicit_grammar() {
         for query in [
@@ -3393,7 +4464,8 @@ mod tests {
             resolve_vars(
                 "var(--x)",
                 &BTreeMap::from([("--x".into(), "var(--x)".into())]),
-                0
+                0,
+                &mut 100_000,
             )
             .is_none()
         );

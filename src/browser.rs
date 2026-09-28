@@ -1742,6 +1742,8 @@ fn scaled_command(command: &DrawCommand, z: f32) -> DrawCommand {
         DrawCommand::PopClip => DrawCommand::PopClip,
         DrawCommand::PushFixed => DrawCommand::PushFixed,
         DrawCommand::PopFixed => DrawCommand::PopFixed,
+        DrawCommand::PushOpacity { opacity } => DrawCommand::PushOpacity { opacity: *opacity },
+        DrawCommand::PopOpacity => DrawCommand::PopOpacity,
         DrawCommand::Rect {
             rect: r,
             color,

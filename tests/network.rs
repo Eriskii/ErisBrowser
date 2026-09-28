@@ -167,6 +167,66 @@ fn byte_response(mime: &str, body: &[u8]) -> Vec<u8> {
 
 #[test]
 #[ignore = "requires permission to bind a loopback test server"]
+fn layered_imports_keep_network_order_shared_layers_and_unsupported_condition_policy() {
+    use eris::{css, graphics::Color};
+    let server = Server::new(vec![
+        (
+            "/",
+            response(
+                "200 OK",
+                "text/html",
+                "",
+                r#"<!doctype html><style>
+          @layer base, theme;
+          @import '/theme.css' layer(th\65me);
+          @import '/base.css' layer(base);
+          @import '/must-not-fetch.css' layer(unused) supports(display:bogus);
+          @layer theme { #x{background:blue} }
+          </style><p id=x>sample</p>"#,
+            ),
+        ),
+        (
+            "/theme.css",
+            response(
+                "200 OK",
+                "text/css",
+                "",
+                "@import '/tokens.css' layer(tokens);#x{color:blue;border-color:blue!important}",
+            ),
+        ),
+        (
+            "/tokens.css",
+            response("200 OK", "text/css", "", "#x{background:red!important}"),
+        ),
+        (
+            "/base.css",
+            response(
+                "200 OK",
+                "text/css",
+                "",
+                "#x{color:red;border-color:red!important}",
+            ),
+        ),
+    ]);
+    let page = Page::load(server.base.as_str(), false).unwrap();
+    assert_eq!(page.diagnostics.len(), 1, "{:?}", page.diagnostics);
+    assert!(page.diagnostics[0].contains("supports conditions are unsupported"));
+    let x = page.document.query_selector("#x").unwrap();
+    let styles =
+        css::compute_styles_from_sources(&page.document, &page.stylesheets(), 400.0, 300.0);
+    assert_eq!(styles[x].color, Color::rgb(0, 0, 255));
+    assert_eq!(styles[x].border_color, Color::rgb(255, 0, 0));
+    assert_eq!(styles[x].background_color, Color::rgb(255, 0, 0));
+    let paths = server
+        .requests()
+        .into_iter()
+        .map(|r| r.path)
+        .collect::<Vec<_>>();
+    assert_eq!(paths, ["/", "/theme.css", "/tokens.css", "/base.css"]);
+}
+
+#[test]
+#[ignore = "requires permission to bind a loopback test server"]
 fn base_urls_and_recursive_imports_preserve_redirect_bases_encoding_order_and_media() {
     use eris::{css, graphics::Color};
     let (child, _, errors) =
@@ -222,8 +282,8 @@ fn base_urls_and_recursive_imports_preserve_redirect_bases_encoding_order_and_me
     assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
     let x = p.document.query_selector("#x").unwrap();
     assert_eq!(p.document.attr(x, "loaded"), Some("yes"));
-    let narrow = css::compute_styles(&p.document, &p.stylesheets(), 300.0, 200.0);
-    let wide = css::compute_styles(&p.document, &p.stylesheets(), 600.0, 200.0);
+    let narrow = css::compute_styles_from_sources(&p.document, &p.stylesheets(), 300.0, 200.0);
+    let wide = css::compute_styles_from_sources(&p.document, &p.stylesheets(), 600.0, 200.0);
     assert_eq!(narrow[x].color, Color::rgb(0, 128, 0));
     assert_eq!(narrow[x].background_color, Color::rgb(255, 0, 0));
     assert_eq!(wide[x].background_color, Color::rgb(0, 0, 255));
@@ -366,7 +426,7 @@ fn script_charset_cache_and_stylesheet_charset_choose_their_own_encodings() {
     assert!(
         p.stylesheets()
             .iter()
-            .any(|sheet| sheet.contains(".café{background:red}"))
+            .any(|sheet| sheet.source.contains(".café{background:red}"))
     );
     let fonts = eris::graphics::Fonts::new();
     let layout = p.layout(200.0, 100.0, &fonts);
@@ -495,7 +555,13 @@ fn external_css_and_scripts_are_loaded_over_http() {
             .text_content(p.document.query_selector("#x").unwrap()),
         "loaded"
     );
-    assert_eq!(p.stylesheets(), vec!["p{color:rebeccapurple}"]);
+    assert_eq!(
+        p.stylesheets()
+            .iter()
+            .map(|s| s.source.as_ref())
+            .collect::<Vec<_>>(),
+        vec!["p{color:rebeccapurple}"]
+    );
 }
 
 #[test]

@@ -7,6 +7,8 @@ const MAX_PAINT_GLYPHS: usize = 100_000;
 const MAX_TEXT_GLYPHS: usize = 32_768;
 const MAX_PAINT_PIXELS: u64 = 32_000_000;
 const MAX_CLIP_DEPTH: usize = 128;
+const MAX_LAYER_PIXELS: usize = 8_388_608;
+const MAX_LAYER_ALLOCATED_PIXELS: usize = 16_777_216;
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct Color {
@@ -70,6 +72,11 @@ pub enum DrawCommand {
     PushFixed,
     /// Restore the enclosing coordinate and clipping scope.
     PopFixed,
+    /// Composite enclosed commands as one isolated, transparent group.
+    PushOpacity {
+        opacity: f32,
+    },
+    PopOpacity,
     Rect {
         rect: Rect,
         color: Color,
@@ -223,6 +230,27 @@ struct PaintBudget {
     glyphs: usize,
 }
 
+/// Pixels are premultiplied RGBA16; the public window framebuffer remains RGB.
+/// A layer covers the caller viewport, rather than the current clip: a fixed
+/// descendant may legitimately escape that clip while retaining group opacity.
+struct OpacityLayer {
+    x: usize,
+    y: usize,
+    width: usize,
+    height: usize,
+    pixels: Vec<u64>,
+    opacity: f32,
+}
+
+fn premultiplied_over(source: u64, destination: u64) -> u64 {
+    let inverse = 65_535 - (source >> 48);
+    let channel = |shift: u32| {
+        ((source >> shift) & 65_535u64)
+            + (((destination >> shift) & 65_535u64) * inverse + 32_767) / 65_535
+    };
+    (channel(48) << 48) | (channel(32) << 32) | (channel(16) << 16) | channel(0)
+}
+
 pub struct Canvas {
     pub width: u32,
     pub height: u32,
@@ -230,6 +258,7 @@ pub struct Canvas {
     clip: Rect,
     budget: Option<PaintBudget>,
     paint_exhausted: bool,
+    layers: Vec<OpacityLayer>,
 }
 impl Canvas {
     pub fn new(width: u32, height: u32) -> Result<Self, String> {
@@ -253,6 +282,7 @@ impl Canvas {
             },
             budget: None,
             paint_exhausted: false,
+            layers: Vec::new(),
         })
     }
 
@@ -308,6 +338,100 @@ impl Canvas {
             })
         };
     }
+
+    fn suppressed(&self) -> bool {
+        self.layers
+            .last()
+            .is_some_and(|layer| layer.pixels.is_empty())
+    }
+
+    fn begin_opacity(
+        &mut self,
+        opacity: f32,
+        viewport: Rect,
+        allocated: &mut usize,
+        live: &mut usize,
+    ) -> bool {
+        let x = viewport.x.ceil().max(0.0) as usize;
+        let y = viewport.y.ceil().max(0.0) as usize;
+        let width = ((viewport.x + viewport.width).ceil().max(0.0) as usize).saturating_sub(x);
+        let height = ((viewport.y + viewport.height).ceil().max(0.0) as usize).saturating_sub(y);
+        let count = if opacity == 0.0 || self.suppressed() {
+            0
+        } else {
+            width * height
+        };
+        if count > MAX_LAYER_PIXELS.saturating_sub(*live)
+            || count > MAX_LAYER_ALLOCATED_PIXELS.saturating_sub(*allocated)
+            || !self.consume_pixels(count as u64)
+        {
+            self.paint_exhausted = true;
+            return false;
+        }
+        let mut pixels = Vec::new();
+        if pixels.try_reserve_exact(count).is_err() {
+            self.paint_exhausted = true;
+            return false;
+        }
+        pixels.resize(count, 0);
+        *live += count;
+        *allocated += count;
+        self.layers.push(OpacityLayer {
+            x,
+            y,
+            width,
+            height,
+            pixels,
+            opacity,
+        });
+        true
+    }
+
+    fn end_opacity(&mut self, live: &mut usize) -> bool {
+        let Some(layer) = self.layers.pop() else {
+            self.paint_exhausted = true;
+            return false;
+        };
+        *live = live.saturating_sub(layer.pixels.len());
+        if !self.consume_pixels(layer.pixels.len() as u64) {
+            return false;
+        }
+        for (index, pixel) in layer.pixels.into_iter().enumerate() {
+            // Keep opacity unquantized until compositing. RGBA16 retains enough
+            // intermediate precision to avoid dark fringes and repeated 8-bit
+            // rounding through nested translucent groups.
+            let inverse = 1.0 - (pixel >> 48) as f32 / 65_535.0 * layer.opacity;
+            let channel = |shift: u32, destination: f32| {
+                ((pixel >> shift) & 65_535u64) as f32 * layer.opacity + destination * inverse
+            };
+            let x = layer.x + index % layer.width;
+            let y = layer.y + index / layer.width;
+            if let Some(parent) = self.layers.last_mut() {
+                // All nonempty layers use the same caller-viewport rectangle.
+                if let Some(destination) = parent.pixels.get_mut(index) {
+                    let component = |shift: u32| {
+                        channel(shift, ((*destination >> shift) & 65_535u64) as f32).round() as u64
+                    };
+                    *destination = (component(48) << 48)
+                        | (component(32) << 32)
+                        | (component(16) << 16)
+                        | component(0);
+                }
+            } else {
+                let destination = &mut self.pixels[y * self.width as usize + x];
+                let component = |source_shift: u32, destination_shift: u32| {
+                    (channel(
+                        source_shift,
+                        (((*destination >> destination_shift) & 255u32) * 257) as f32,
+                    ) / 257.0)
+                        .round() as u32
+                };
+                *destination =
+                    (component(32, 16) << 16) | (component(16, 8) << 8) | component(0, 0);
+            }
+        }
+        true
+    }
     fn blend(&mut self, x: i32, y: i32, color: Color, coverage: u8) {
         if x < 0
             || y < 0
@@ -319,6 +443,28 @@ impl Canvas {
         }
         let a = u32::from(color.a) * u32::from(coverage) / 255;
         if a == 0 {
+            return;
+        }
+        if let Some(layer) = self.layers.last_mut() {
+            if layer.pixels.is_empty() {
+                return;
+            }
+            let x = x as usize;
+            let y = y as usize;
+            if x < layer.x
+                || y < layer.y
+                || x >= layer.x + layer.width
+                || y >= layer.y + layer.height
+            {
+                return;
+            }
+            let alpha = u64::from(a) * 257;
+            let source = (alpha << 48)
+                | (((u64::from(color.r) * alpha + 127) / 255) << 32)
+                | (((u64::from(color.g) * alpha + 127) / 255) << 16)
+                | ((u64::from(color.b) * alpha + 127) / 255);
+            let pixel = &mut layer.pixels[(y - layer.y) * layer.width + x - layer.x];
+            *pixel = premultiplied_over(source, *pixel);
             return;
         }
         let p = &mut self.pixels[y as usize * self.width as usize + x as usize];
@@ -333,9 +479,10 @@ impl Canvas {
         *p = (r << 16) | (g << 8) | b;
     }
     pub fn rect(&mut self, rect: Rect, color: Color, radius: f32) {
-        if ![rect.x, rect.y, rect.width, rect.height, radius]
-            .iter()
-            .all(|v| v.is_finite())
+        if self.suppressed()
+            || ![rect.x, rect.y, rect.width, rect.height, radius]
+                .iter()
+                .all(|v| v.is_finite())
             || rect.width <= 0.0
             || rect.height <= 0.0
             || color.a == 0
@@ -356,7 +503,7 @@ impl Canvas {
             return;
         }
         let radius = radius.max(0.0).min(rect.width / 2.0).min(rect.height / 2.0);
-        if radius == 0.0 && color.a == 255 {
+        if radius == 0.0 && color.a == 255 && self.layers.is_empty() {
             for y in y0..y1 {
                 if x1 > x0 {
                     self.pixels[y as usize * self.width as usize + x0 as usize
@@ -398,7 +545,12 @@ impl Canvas {
         italic: bool,
         monospace: bool,
     ) {
-        if !x.is_finite() || !y.is_finite() || !size.is_finite() || color.a == 0 {
+        if self.suppressed()
+            || !x.is_finite()
+            || !y.is_finite()
+            || !size.is_finite()
+            || color.a == 0
+        {
             return;
         }
         let size = size.clamp(1.0, 512.0);
@@ -452,7 +604,8 @@ impl Canvas {
         }
     }
     pub fn image(&mut self, rect: Rect, img: &RasterImage) {
-        if rect.width <= 0.0
+        if self.suppressed()
+            || rect.width <= 0.0
             || rect.height <= 0.0
             || img.width == 0
             || img.height == 0
@@ -514,11 +667,14 @@ impl Canvas {
         enum Scope {
             Clip(Rect),
             Fixed { clip: Rect, offset: (f32, f32) },
+            Opacity { layer: bool },
         }
         self.paint_exhausted = false;
+        self.layers.clear();
         let caller_clip = self.clip;
         let mut scopes = Vec::new();
         let (mut dx, mut dy) = document_offset;
+        let (mut allocated, mut live) = (0usize, 0usize);
         self.budget = Some(PaintBudget {
             pixels: (u64::from(self.width) * u64::from(self.height) * 16)
                 .clamp(1_000_000, MAX_PAINT_PIXELS),
@@ -573,6 +729,31 @@ impl Canvas {
                     self.clip = clip;
                     (dx, dy) = offset;
                 }
+                DrawCommand::PushOpacity { opacity } => {
+                    if scopes.len() >= MAX_CLIP_DEPTH
+                        || !opacity.is_finite()
+                        || !(0.0..=1.0).contains(opacity)
+                    {
+                        self.paint_exhausted = true;
+                        break;
+                    }
+                    let layer = *opacity < 1.0;
+                    if layer
+                        && !self.begin_opacity(*opacity, caller_clip, &mut allocated, &mut live)
+                    {
+                        break;
+                    }
+                    scopes.push(Scope::Opacity { layer });
+                }
+                DrawCommand::PopOpacity => {
+                    let Some(Scope::Opacity { layer }) = scopes.pop() else {
+                        self.paint_exhausted = true;
+                        break;
+                    };
+                    if layer && !self.end_opacity(&mut live) {
+                        break;
+                    }
+                }
                 DrawCommand::Rect {
                     rect,
                     color,
@@ -623,6 +804,10 @@ impl Canvas {
         }
         // Browser chrome uses direct primitives after the page display list;
         // a hostile page cannot consume the toolbar's ability to paint.
+        self.paint_exhausted |= !scopes.is_empty();
+        // Unfinished groups never leak partially composited layers into the UI
+        // or retain temporary memory after invalid input or quota exhaustion.
+        self.layers.clear();
         self.budget = None;
         self.clip = caller_clip;
     }
@@ -640,6 +825,252 @@ impl Canvas {
 #[cfg(test)]
 mod tests {
     use super::*;
+    fn colored_rect(x: f32, y: f32, width: f32, height: f32, color: Color) -> DrawCommand {
+        DrawCommand::Rect {
+            rect: Rect {
+                x,
+                y,
+                width,
+                height,
+            },
+            color,
+            radius: 0.0,
+        }
+    }
+
+    #[test]
+    fn group_opacity_composites_overlap_once_and_preserves_transparent_holes() {
+        let mut canvas = Canvas::new(8, 4).unwrap();
+        canvas.paint(
+            &[
+                DrawCommand::PushOpacity { opacity: 0.5 },
+                colored_rect(0.0, 0.0, 4.0, 4.0, Color::rgb(255, 0, 0)),
+                colored_rect(2.0, 0.0, 4.0, 4.0, Color::rgb(0, 0, 255)),
+                DrawCommand::PopOpacity,
+            ],
+            &Fonts::new(),
+            &ImageStore::new(),
+            0.0,
+            0.0,
+        );
+        assert_eq!(canvas.pixels[0], 0xff8080);
+        assert_eq!(canvas.pixels[2], 0x8080ff);
+        assert_eq!(canvas.pixels[5], 0x8080ff);
+        assert_eq!(canvas.pixels[6], 0xffffff);
+        assert!(!canvas.exhausted());
+        assert!(canvas.layers.is_empty());
+    }
+
+    #[test]
+    fn nested_opacity_and_translucent_images_use_premultiplied_alpha() {
+        let mut images = ImageStore::new();
+        images.insert(
+            "alpha".into(),
+            Arc::new(RasterImage {
+                width: 1,
+                height: 1,
+                rgba: vec![255, 0, 0, 128],
+            }),
+        );
+        let mut canvas = Canvas::new(8, 4).unwrap();
+        canvas.paint(
+            &[
+                DrawCommand::PushOpacity { opacity: 0.5 },
+                colored_rect(0.0, 0.0, 2.0, 4.0, Color::rgb(255, 0, 0)),
+                DrawCommand::PushOpacity { opacity: 0.5 },
+                colored_rect(0.0, 0.0, 4.0, 4.0, Color::rgb(0, 0, 255)),
+                DrawCommand::PopOpacity,
+                DrawCommand::Image {
+                    rect: Rect {
+                        x: 4.0,
+                        y: 0.0,
+                        width: 2.0,
+                        height: 4.0,
+                    },
+                    key: "alpha".into(),
+                },
+                DrawCommand::PopOpacity,
+            ],
+            &Fonts::new(),
+            &images,
+            0.0,
+            0.0,
+        );
+        assert_eq!(canvas.pixels[0], 0xbf80bf);
+        assert_eq!(canvas.pixels[2], 0xbfbfff);
+        assert_eq!(canvas.pixels[4], 0xffbfbf);
+        assert_eq!(canvas.pixels[6], 0xffffff);
+        assert!(!canvas.exhausted());
+    }
+
+    #[test]
+    fn opacity_groups_include_text_coverage_and_opaque_background() {
+        let fonts = Fonts::new();
+        let content = vec![
+            colored_rect(0.0, 0.0, 64.0, 32.0, Color::rgb(200, 80, 20)),
+            DrawCommand::Text {
+                x: 2.0,
+                y: 0.0,
+                text: "Hi".into(),
+                size: 24.0,
+                color: Color::BLACK,
+                bold: false,
+                italic: false,
+                monospace: false,
+            },
+        ];
+        let mut direct = Canvas::new(64, 32).unwrap();
+        direct.paint(&content, &fonts, &ImageStore::new(), 0.0, 0.0);
+        let mut grouped = Canvas::new(64, 32).unwrap();
+        let mut commands = vec![DrawCommand::PushOpacity { opacity: 0.5 }];
+        commands.extend(content);
+        commands.push(DrawCommand::PopOpacity);
+        grouped.paint(&commands, &fonts, &ImageStore::new(), 0.0, 0.0);
+        assert!(direct.pixels.contains(&0));
+        for (before, after) in direct.pixels.iter().zip(&grouped.pixels) {
+            for shift in [0, 8, 16] {
+                let expected = ((((before >> shift) & 255) as f32 + 255.0) * 0.5).round() as i32;
+                let actual = ((after >> shift) & 255) as i32;
+                assert!((expected - actual).abs() <= 1);
+            }
+        }
+        assert!(!grouped.exhausted());
+    }
+
+    #[test]
+    fn fixed_descendants_escape_clips_but_retain_group_opacity() {
+        let mut canvas = Canvas::new(12, 12).unwrap();
+        let viewport = Rect {
+            x: 0.0,
+            y: 2.0,
+            width: 12.0,
+            height: 8.0,
+        };
+        canvas.set_clip(viewport);
+        canvas.paint_with_viewport(
+            &[
+                DrawCommand::PushOpacity { opacity: 0.5 },
+                DrawCommand::PushClip {
+                    rect: Rect {
+                        x: 0.0,
+                        y: 8.0,
+                        width: 3.0,
+                        height: 3.0,
+                    },
+                },
+                DrawCommand::PushFixed,
+                colored_rect(0.0, 0.0, 12.0, 12.0, Color::rgb(255, 0, 0)),
+                DrawCommand::PushClip {
+                    rect: Rect {
+                        x: 4.0,
+                        y: 1.0,
+                        width: 2.0,
+                        height: 2.0,
+                    },
+                },
+                colored_rect(0.0, 0.0, 12.0, 12.0, Color::rgb(0, 0, 255)),
+                DrawCommand::PopClip,
+                DrawCommand::PopFixed,
+                DrawCommand::PopClip,
+                DrawCommand::PopOpacity,
+            ],
+            &Fonts::new(),
+            &ImageStore::new(),
+            (0.0, -6.0),
+            (0.0, 2.0),
+        );
+        assert_eq!(canvas.pixels[12], 0xffffff);
+        assert_eq!(canvas.pixels[3 * 12 + 4], 0x8080ff);
+        assert_eq!(canvas.pixels[6 * 12 + 8], 0xff8080);
+        assert_eq!(canvas.pixels[10 * 12], 0xffffff);
+        assert_eq!(canvas.clip, viewport);
+        assert!(!canvas.exhausted());
+    }
+
+    #[test]
+    fn invalid_and_exhausted_opacity_streams_release_surfaces_and_restore_caller() {
+        let fonts = Fonts::new();
+        for tail in [
+            vec![],
+            vec![DrawCommand::PopClip],
+            vec![DrawCommand::PushOpacity { opacity: f32::NAN }],
+            vec![DrawCommand::PushOpacity { opacity: -0.1 }],
+            vec![DrawCommand::PushOpacity { opacity: 1.1 }],
+            vec![DrawCommand::PushOpacity { opacity: 0.5 }; MAX_CLIP_DEPTH],
+        ] {
+            let mut canvas = Canvas::new(128, 128).unwrap();
+            let viewport = Rect {
+                x: 2.0,
+                y: 2.0,
+                width: 124.0,
+                height: 124.0,
+            };
+            canvas.set_clip(viewport);
+            let mut commands = vec![
+                DrawCommand::PushOpacity { opacity: 0.5 },
+                colored_rect(0.0, 0.0, 128.0, 128.0, Color::BLACK),
+            ];
+            commands.extend(tail);
+            canvas.paint(&commands, &fonts, &ImageStore::new(), 0.0, 0.0);
+            assert!(canvas.exhausted());
+            assert!(canvas.layers.is_empty());
+            assert_eq!(canvas.clip, viewport);
+            assert!(canvas.pixels.iter().all(|pixel| *pixel == 0xffffff));
+            canvas.rect(viewport, Color::BLACK, 0.0);
+            assert_eq!(canvas.pixels[2 * 128 + 2], 0);
+        }
+    }
+
+    #[test]
+    fn opacity_storage_caps_are_checked_before_allocation_and_zero_groups_allocate_nothing() {
+        let mut canvas = Canvas::new(8, 8).unwrap();
+        let viewport = canvas.clip;
+        let mut allocated = MAX_LAYER_ALLOCATED_PIXELS - 64;
+        let mut live = MAX_LAYER_PIXELS - 64;
+        assert!(canvas.begin_opacity(0.5, viewport, &mut allocated, &mut live));
+        assert_eq!(canvas.layers[0].pixels.len(), 64);
+        assert!(!canvas.begin_opacity(0.5, viewport, &mut allocated, &mut live));
+        assert_eq!(live, MAX_LAYER_PIXELS);
+        assert!(canvas.end_opacity(&mut live));
+        assert!(!canvas.begin_opacity(0.5, viewport, &mut allocated, &mut live));
+        assert!(canvas.layers.is_empty());
+        let mut commands = vec![DrawCommand::PushOpacity { opacity: 0.0 }; 128];
+        commands.extend((0..1000).map(|_| colored_rect(0.0, 0.0, 1e6, 1e6, Color::BLACK)));
+        commands.extend(vec![DrawCommand::PopOpacity; 128]);
+        canvas.paint(&commands, &Fonts::new(), &ImageStore::new(), 0.0, 0.0);
+        assert!(!canvas.exhausted());
+        assert!(canvas.layers.is_empty());
+        assert!(canvas.pixels.iter().all(|pixel| *pixel == 0xffffff));
+    }
+
+    #[test]
+    fn nested_viewport_surfaces_hit_peak_storage_before_the_pixel_work_limit() {
+        // Seven RGBA16 viewports need 68.36 MiB simultaneously. Their combined
+        // initialization/compositing work is 17.92M pixels, below this canvas's
+        // 20.48M work allowance, so the independent peak-storage cap must win.
+        let mut canvas = Canvas::new(1600, 800).unwrap();
+        let mut commands = vec![DrawCommand::PushOpacity { opacity: 0.5 }; 7];
+        commands.extend(vec![DrawCommand::PopOpacity; 7]);
+        canvas.paint(&commands, &Fonts::new(), &ImageStore::new(), 0.0, 0.0);
+        assert!(canvas.exhausted());
+        assert!(canvas.layers.is_empty());
+        assert!(canvas.pixels.iter().all(|pixel| *pixel == 0xffffff));
+        // Opacity-one scopes need no surface and preserve ordinary paint.
+        canvas.paint(
+            &[
+                DrawCommand::PushOpacity { opacity: 1.0 },
+                colored_rect(0.0, 0.0, 1.0, 1.0, Color::BLACK),
+                DrawCommand::PopOpacity,
+            ],
+            &Fonts::new(),
+            &ImageStore::new(),
+            0.0,
+            0.0,
+        );
+        assert!(!canvas.exhausted());
+        assert_eq!(canvas.pixels[0], 0);
+    }
+
     #[test]
     fn fixed_scope_uses_viewport_origin_and_restores_document_clips() {
         let mut canvas = Canvas::new(12, 12).unwrap();

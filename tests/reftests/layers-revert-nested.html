@@ -1,0 +1,6 @@
+<!doctype html><style>
+@layer outer { @layer first, second; @layer second {#a,#b{background:red}} @layer first{#a{background:blue}} #b{background:green} }
+@layer reset {#c,#d{background:blue}}
+@layer theme {#c{background:red;background:revert-layer}#d{background:red;background:var(--absent,revert-layer)}}
+body{margin:0}.box{position:absolute;width:60px;height:40px}#a{left:10px;top:10px}#b{left:80px;top:10px}#c{left:10px;top:60px}#d{left:80px;top:60px}
+</style><div id=a class=box></div><div id=b class=box></div><div id=c class=box></div><div id=d class=box></div>

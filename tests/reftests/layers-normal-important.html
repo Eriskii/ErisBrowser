@@ -1,0 +1,6 @@
+<!doctype html><style>
+@layer early, late;
+@layer late { #a,#b,#c,#d{background:blue} #b,#c{background:blue!important} }
+@layer early { #a,#b,#c,#d{background:red} #b,#c{background:red!important} }
+body{margin:0}.box{position:absolute;width:60px;height:40px}#a{left:10px;top:10px}#b{left:80px;top:10px}#c{left:10px;top:60px}#d{left:80px;top:60px;background:green}
+</style><div id=a class=box></div><div id=b class=box></div><div id=c class=box style="background:orange!important"></div><div id=d class=box></div>

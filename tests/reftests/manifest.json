@@ -194,6 +194,60 @@
       "description": "Relative visual offsets preserve the position of the following normal-flow block.",
       "test": "position-relative-flow.html",
       "reference": "position-relative-flow-ref.html"
+    },
+    {
+      "name": "opacity-overlap-border",
+      "description": "One group composites its border, background and overlapping opaque descendants once.",
+      "test": "opacity-overlap-border.html",
+      "reference": "opacity-overlap-border-ref.html"
+    },
+    {
+      "name": "opacity-nested-context",
+      "description": "Nested opacity isolates a high z-index descendant from a later sibling.",
+      "test": "opacity-nested-context.html",
+      "reference": "opacity-nested-context-ref.html"
+    },
+    {
+      "name": "opacity-fixed-clips",
+      "description": "Fixed content escapes ancestor overflow while remaining inside ancestor opacity and its own clip.",
+      "test": "opacity-fixed-clips.html",
+      "reference": "opacity-fixed-clips-ref.html"
+    },
+    {
+      "name": "opacity-inline-group",
+      "description": "An inline opacity ancestor groups overlapping positioned descendants.",
+      "test": "opacity-inline-group.html",
+      "reference": "opacity-inline-group-ref.html"
+    },
+    {
+      "name": "opacity-image-alpha",
+      "description": "Source image alpha composites into the opaque group before group opacity is applied.",
+      "test": "opacity-image-alpha.html",
+      "reference": "opacity-image-alpha-ref.html"
+    },
+    {
+      "name": "opacity-root-background",
+      "description": "Root opacity applies once to its propagated canvas background and descendants.",
+      "test": "opacity-root-background.html",
+      "reference": "opacity-root-background-ref.html"
+    },
+    {
+      "name": "layers-normal-important",
+      "description": "Normal/important cascade layer order, unlayered declarations and inline priority.",
+      "test": "layers-normal-important.html",
+      "reference": "layers-normal-important-ref.html"
+    },
+    {
+      "name": "layers-revert-nested",
+      "description": "Nested layer precedence and direct/variable shorthand rollback.",
+      "test": "layers-revert-nested.html",
+      "reference": "layers-revert-nested-ref.html"
+    },
+    {
+      "name": "layers-import-anonymous",
+      "description": "Imported source boundaries share anonymous layer identities and preserve import order.",
+      "test": "layers-import-anonymous.html",
+      "reference": "layers-import-anonymous-ref.html"
     }
   ]
 }

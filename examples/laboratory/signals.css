@@ -1,0 +1,30 @@
+body { font-family:sans-serif; font-size:16px; line-height:1.5 }
+header { padding:25px 6%; border-bottom:1px solid #c7cdc4; display:flex; align-items:center; gap:22px }
+header strong { font-size:21px; letter-spacing:2px }
+header span { font-size:11px; color:#547277 }
+header a { margin-left:auto; color:#315f64; font-size:13px; text-decoration:none }
+main { max-width:1000px; margin:0 auto; padding:62px 45px 24px }
+.eyebrow, .panel-label { font-size:11px; font-weight:bold; color:#9b5635; margin-bottom:20px }
+h1 { font-size:86px; line-height:1.08; margin:0 0 30px }
+.intro { max-width:610px; font-size:19px; color:#547277; margin-bottom:48px }
+.panel { background:white; padding:34px; border:1px solid #d0d5ca }
+.panel h2 { font-size:33px; line-height:1.2; margin:0 0 16px }
+.panel p { color:#547277 }
+button { padding:13px 24px; border:0; border-radius:3px; font-weight:bold; margin:12px 0 20px }
+.status { font-weight:bold; color:#315f64; margin-bottom:14px }
+pre { white-space:pre-wrap; background:#edf0e7; padding:16px; font-size:12px; margin:0 }
+.composite { position:relative; margin:65px 0; min-height:310px }
+.ink-group { position:absolute; left:0; top:0; width:53%; height:300px; opacity:0.55 }
+.ink-a,.ink-b { position:absolute; background:#a83a25; width:66%; height:225px }
+.ink-a { left:0; top:0 }
+.ink-b { right:0; bottom:0 }
+.ink-group span { position:absolute; left:20px; top:20px; color:white; font-size:11px; font-weight:bold }
+.composite-caption { margin-left:60%; padding-top:12px }
+.composite-caption h2 { font-size:31px; line-height:1.2; margin:0 0 18px }
+.composite-caption p { font-size:14px; color:#547277 }
+.notes { display:grid; grid-template-columns:1fr 1fr 1fr; gap:30px; border-top:1px solid #c7cdc4; padding-top:28px }
+.number { font-size:30px; color:#9b5635 }
+.notes h3 { font-size:19px; margin:12px 0 }
+.notes p { font-size:13px; color:#547277 }
+footer { margin-top:60px; border-top:1px solid #c7cdc4; padding-top:18px; color:#547277; font-size:11px }
+@media (max-width:650px) { main { padding:35px 22px 20px } h1 { font-size:60px } header { padding:20px } header span { display:none } .notes { grid-template-columns:1fr } .composite { min-height:570px } .ink-group { width:100% } .composite-caption { margin-left:0; padding-top:330px } }

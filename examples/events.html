@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Signals — Eris Browser</title>
+  <style>
+    @layer reset, palette, components;
+    @import "laboratory/signals.css" layer(components);
+    @layer reset { * { box-sizing:border-box } body { margin:0 } }
+    @layer palette { body { color:#1c3036; background:#f4f0e7 } button { background:#315f64; color:white } }
+  </style>
+</head>
+<body>
+  <header><strong>ERIS</strong><span>FIELD STUDIES / 07</span><a href="positioning.html">Position laboratory →</a></header>
+  <main>
+    <div class="eyebrow">EVENTS · CASCADE · COMPOSITING</div>
+    <h1>Follow<br>the signal.</h1>
+    <p class="intro">A click travels down the document, reaches its target, and bubbles back. Each listener has a place in that journey.</p>
+    <section id="panel" class="panel">
+      <div class="panel-label">THE EVENT PATH</div>
+      <h2>One action.<br>Several listeners.</h2>
+      <p>Send a signal to inspect capture, target, and bubble order.</p>
+      <button id="send" type="button">Send a signal ↗</button>
+      <div id="status" class="status">Ready to dispatch.</div>
+      <pre id="trace">document → panel → target → panel → document</pre>
+    </section>
+    <section class="composite">
+      <div class="ink-group"><div class="ink-a"></div><div class="ink-b"></div><span>ONE GROUP / 55% OPACITY</span></div>
+      <div class="composite-caption"><div class="eyebrow">COMPOSITE ONCE</div><h2>Overlap<br>without buildup.</h2><p>These opaque shapes are painted together, then the group's opacity is applied once. Their overlap keeps the same density.</p></div>
+    </section>
+    <section class="notes">
+      <article><div class="number">01</div><h3>Capture</h3><p>Listeners on the document and panel run before the target receives the event.</p></article>
+      <article><div class="number">02</div><h3>Target</h3><p>The button dispatches a CustomEvent with a counter stored in its detail object.</p></article>
+      <article><div class="number">03</div><h3>Bubble</h3><p>The event returns through its ancestors. The final listener publishes the trace below the button.</p></article>
+    </section>
+    <footer>Rendered by Eris's custom Rust engine. No embedded browser or external JavaScript engine.</footer>
+  </main>
+  <script>
+    'use strict';
+    var panel = document.getElementById('panel');
+    var send = document.getElementById('send');
+    var trace = [];
+    var count = 0;
+    document.addEventListener('click', function(event) {
+      if (event.target === send) { trace = ['document capture']; }
+    }, true);
+    panel.addEventListener('click', function() { trace.push('panel capture'); }, {capture:true});
+    panel.addEventListener('signal', function(event) {
+      document.getElementById('status').textContent = 'Signal ' + event.detail.count + ' received · CustomEvent';
+    });
+    send.addEventListener('click', function() {
+      trace.push('target');
+      count++;
+      send.dispatchEvent(new CustomEvent('signal', {bubbles:true, detail:{count:count}}));
+    });
+    panel.addEventListener('click', function() { trace.push('panel bubble'); });
+    document.addEventListener('click', function(event) {
+      if (event.target === send) {
+        trace.push('document bubble');
+        document.getElementById('trace').textContent = trace.join(' → ');
+      }
+    });
+  </script>
+</body>
+</html>

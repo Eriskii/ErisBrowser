@@ -58,9 +58,8 @@ Limits and remaining gaps:
   nested relative-inline fragmentation are incomplete.
 - Sticky scroll constraints, transforms, filters, perspective, anchor positioning,
   top-layer/popover painting and generated pseudo-element stacking are absent.
-- Opacity establishes a stacking context but does not yet render the entire
-  group to an intermediate layer before alpha compositing. Per-primitive alpha
-  is not equivalent for overlapping descendants.
+- Opacity now composites whole isolated groups; its surface/work limits and
+  remaining compositor gaps are described in [opacity coverage](opacity.md).
 - Table-specific positioned/stacking behavior, collapsed-border painting and
   several detailed inline decoration/background phases remain partial.
 - Positioned work shares a two-million-operation budget for ancestry, geometry
@@ -70,10 +69,10 @@ Limits and remaining gaps:
   share the hit allocation budget, matching the native snapshot limit.
   Source work is never refunded when fragments are measured again. Reordering
   may need extra clip transitions; it reserves closure slots and stops safely
-  before exceeding 200,000 final commands or 128 combined clip/fixed scopes.
+  before exceeding 200,000 final commands or 128 combined clip/fixed/opacity scopes.
   Associated hit regions beyond the paint cutoff are removed.
 
-The deep quota regression combines twelve fixed/overflow pairs with 40,000
+The deep quota regression combines twelve fixed/overflow/opacity pairs with 40,000
 positioned leaves. It checks actual truncation, typed scope nesting, closure
 balance, command count and hit count. The mutation harness independently rejects
 cross-kind scope closures, unclosed scopes and combined nesting beyond 128.
