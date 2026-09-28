@@ -15,6 +15,7 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 ./run.sh ./examples/namespaces.html
 ./run.sh ./examples/flow.html
 ./run.sh ./examples/templates.html
+./run.sh ./examples/positioning.html
 ```
 
 The launcher builds the release executable and exposes installed desktop libraries on NixOS. Rust, Cargo, Python 3, and a Wayland or X11 desktop are required. Native browsing currently requires Linux with Landlock ABI 6 enabled (normally kernel 6.12 or newer), mounted procfs, and seccomp support; sandbox setup fails closed. The validated platform is x86-64 Linux. Fonts are bundled. On a conventional desktop with the shared libraries available:
@@ -52,7 +53,7 @@ cargo run --locked --release -- --benchmark 100 --output artifacts/benchmark.png
 
 The native UI loads each document in a fresh child process. Its address bar, clipboard and software painter stay in the UI process; a separate broker supplies resources and authoritative redirect URLs, while validated document and drawing snapshots return from the renderer. The renderer cannot directly read files or open sockets. Cross-origin images use a fresh restricted decoder, which returns pixels without exposing their raw responses to the renderer. See [the security boundary](docs/SECURITY.md) for remaining gaps.
 
-For a JSON report covering the home, gallery, form, and template/Grid fixtures, run `python3 tools/benchmark.py`.
+For a JSON report covering the home, gallery, form, template/Grid and positioning fixtures, run `python3 tools/benchmark.py`.
 
 The benchmark measures **warm-cache CSS computation + layout + software painting of the loaded page**. It excludes parsing, scripts, network, image decoding, PNG encoding, and native presentation. It is not a Chromium comparison or a general web-performance score. See [performance](docs/PERFORMANCE.md).
 
@@ -67,6 +68,7 @@ cargo build --locked --release
 python3 tools/reftest.py --binary target/release/eris-browser
 python3 tools/html_conformance.py --baseline tests/conformance/html-tree-current.json
 python3 tools/test262_conformance.py --baseline tests/conformance/test262-current.json
+python3 tools/test262_conformance.py --profile regexp --baseline tests/conformance/test262-regexp-current.json
 python3 -m unittest discover -s tools -p 'test_*.py'
 cargo run --locked --release --bin eris-stress -- 5000
 ```
@@ -85,10 +87,12 @@ The [architecture notes](docs/ARCHITECTURE.md) describe the page pipeline and na
 | `css.rs` | CSS parsing, indexed cascade, inheritance, lengths, colors, variables, media queries |
 | `layout.rs` | Block/inline flow, floats, flex, Grid placement/tracks, tables, controls, display lists, hit regions |
 | `script.rs` | Custom lexer, parser, interpreter, lexical environments, DOM bindings and events |
+| `regexp.rs` | Custom bounded UTF-16 regular-expression parser and backtracking matcher |
 | `svg.rs` | Custom SVG geometry, paths, transforms and bounded RGBA rasterization |
 | `graphics.rs` | Font metrics, cached glyph masks, clipped/limited software painting, PNG output |
 | `net.rs` | HTTP/TLS resource loading, redirect and file policies, decoding and byte limits |
 | `text_encoding.rs` | HTML encoding prescan/reparse selection, MIME charset parameters, CSS and classic script decoding |
+| `document_url.rs`, `stylesheet_loading.rs` | Document URL resolution and bounded stylesheet import loading |
 | `page.rs` | Resource ordering, page lifecycle, scripting, forms and layout integration |
 | `worker.rs`, `worker/` | Per-document child processes, bounded binary IPC, validated snapshots and Linux confinement |
 | `js_string.rs` | UTF-16 code-unit strings and explicit scalar-text conversion |

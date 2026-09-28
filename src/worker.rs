@@ -30,6 +30,19 @@ pub struct Snapshot {
     pub diagnostics: Vec<String>,
     pub load_ms: f64,
 }
+impl Snapshot {
+    pub fn navigate_fragment(&mut self, target: Url) -> bool {
+        let Ok(current) = Url::parse(&self.url) else {
+            return false;
+        };
+        if !crate::page::same_document_url(&current, &target) {
+            return false;
+        }
+        self.document.set_url(target.clone());
+        self.url = target.into();
+        true
+    }
+}
 #[derive(Debug)]
 pub enum Command {
     Load {
@@ -436,13 +449,7 @@ pub fn serve() -> Result<(), String> {
             Command::Fragment { address } => {
                 let page = page.as_mut().ok_or("no page")?;
                 if let Ok(target) = Url::parse(&address) {
-                    let mut before = page.url.clone();
-                    before.set_fragment(None);
-                    let mut after = target.clone();
-                    after.set_fragment(None);
-                    if before == after {
-                        page.url = target;
-                    }
+                    page.navigate_fragment(target);
                 }
             }
             Command::Render { width, height } => {

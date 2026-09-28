@@ -57,14 +57,14 @@ results from replacing newer input.
 Snapshots contain the DOM, display list, hit regions, shared raster images and
 page metadata. The parent checks their graph structure, namespace bindings,
 storage limits, geometry and raster dimensions before publishing them to the
-UI. The ERW4 format also validates reciprocal template/fragment ownership,
-host-inclusive cycles/depth and canonical encoding metadata. Resource traffic has separate request/response messages. All pipe channels
+UI. The ERW5 format also validates reciprocal template/fragment ownership,
+host-inclusive cycles/depth, canonical encoding metadata, frozen base URLs, fixed hit coordinates and typed clip/fixed display scopes. Resource traffic has separate request/response messages. All pipe channels
 use bounded framing, nonblocking I/O and deadlines; cancellation remains latched
 across nested broker and decoder exchanges. Failure or replacement kills and reaps the
 corresponding children.
 
 The painter runs in the UI and draws validated commands with bundled fonts and
-a glyph cache. Scrolling reuses the display list; edits currently recompute
+a glyph cache. Fixed scopes retain viewport coordinates and reset document ancestor clips to the caller viewport clip; both native and headless scrolling keep these offsets separate. Scrolling reuses the display list; edits currently recompute
 styles and layout. Rendering is CPU based, without a GPU compositor or general
 incremental invalidation. The existing warm-render benchmark excludes process
 startup, resource transfer and snapshot serialization, so it cannot measure the
@@ -77,6 +77,12 @@ or script execution; it never repeats the navigation request. CSS and classic
 scripts select their own encodings using the referring document as a fallback.
 The string-based DOM APIs already receive Unicode and never reinterpret bytes.
 See [encoding behavior](ENCODING.md) for precedence, tests and remaining limits.
+
+Document base URL metadata changes resolution without changing fetch authority.
+Stylesheet imports retain separate parse inputs and conditional media scopes;
+cycles, repeated scans, URL copies/cache storage and expanded source all have
+shared limits. The custom RegExp parser and explicit backtracking matcher use
+runtime work/allocation limits and introduce no external execution engine.
 
 See [security](SECURITY.md) for exact grants, limits and remaining attack surface,
 [compatibility](COMPATIBILITY.md) for implemented subsets, and

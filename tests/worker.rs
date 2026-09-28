@@ -89,6 +89,58 @@ fn exchange_empty(client: &mut WorkerClient, command: WorkerCommand) {
     assert!(reply.snapshot.is_none());
     assert!(reply.navigation.is_none());
 }
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn confined_stylesheet_imports_and_fixed_scopes_survive_snapshot_transfer() {
+    let fixture = Fixture::new(
+        "<!doctype html><base href='assets/'><link rel=stylesheet href='root.css'><div id=f>fixed</div><div id=body>body</div>",
+    );
+    fs::create_dir(fixture.directory.join("assets")).unwrap();
+    fs::write(fixture.directory.join("assets/root.css"), "@import 'palette.css'; body{margin:0} #f{position:fixed;left:10px;top:12px;width:40px;height:20px} #body{height:900px}").unwrap();
+    fs::write(
+        fixture.directory.join("assets/palette.css"),
+        "#f{background:red}",
+    )
+    .unwrap();
+    let mut client = fixture.spawn(false, 90);
+    load(&mut client, &fixture.navigation);
+    let snapshot = render(&mut client);
+    assert!(
+        snapshot
+            .diagnostics
+            .iter()
+            .all(|message| message.starts_with("Page process ")
+                || message.starts_with("Resource broker ")),
+        "{:?}",
+        snapshot.diagnostics
+    );
+    assert_eq!(snapshot.document.url().as_str(), snapshot.url);
+    let fixed = snapshot.document.query_selector("#f").unwrap();
+    assert!(
+        snapshot
+            .layout
+            .hit_regions
+            .iter()
+            .any(|h| h.node == fixed && h.fixed && h.rect.x == 10.0 && h.rect.y == 12.0)
+    );
+    assert!(
+        snapshot
+            .layout
+            .commands
+            .iter()
+            .any(|c| matches!(c, eris::graphics::DrawCommand::PushFixed))
+    );
+    let mut canvas = eris::graphics::Canvas::new(320, 240).unwrap();
+    canvas.paint_with_viewport(
+        &snapshot.layout.commands,
+        &eris::graphics::Fonts::new(),
+        &snapshot.images,
+        (0.0, -400.0),
+        (0.0, 0.0),
+    );
+    assert_eq!(canvas.pixels[13 * 320 + 11], 0xff0000);
+}
 fn process_exists(pid: u32) -> bool {
     Path::new("/proc").join(pid.to_string()).exists()
 }
@@ -867,12 +919,12 @@ fn image_decoder_confines_decodes_once_and_exits_without_response_body_leaks() {
         let mut output = child.0.stdout.take().unwrap();
         let flags = rustix::fs::fcntl_getfl(&output).unwrap();
         rustix::fs::fcntl_setfl(&output, flags | rustix::fs::OFlags::NONBLOCK).unwrap();
-        send(&mut input, b"ERW4\x06");
-        assert_eq!(receive(&mut output), b"ERW4\x02\x01\x00\x00");
+        send(&mut input, b"ERW5\x06");
+        assert_eq!(receive(&mut output), b"ERW5\x02\x01\x00\x00");
         let status = fs::read_to_string(format!("/proc/{pid}/status")).unwrap();
         assert!(status.contains("NoNewPrivs:\t1"));
         assert!(status.contains("Seccomp:\t2"));
-        let mut request = b"ERW4\x07".to_vec();
+        let mut request = b"ERW5\x07".to_vec();
         request.extend_from_slice(&(mime.len() as u32).to_le_bytes());
         request.extend_from_slice(mime.as_bytes());
         request.extend_from_slice(&budget.to_le_bytes());
@@ -880,7 +932,7 @@ fn image_decoder_confines_decodes_once_and_exits_without_response_body_leaks() {
         request.extend_from_slice(body);
         send(&mut input, &request);
         let response = receive(&mut output);
-        assert_eq!(&response[..5], b"ERW4\x08");
+        assert_eq!(&response[..5], b"ERW5\x08");
         assert_eq!(response[5], u8::from(success));
         if success {
             assert_eq!(u32::from_le_bytes(response[6..10].try_into().unwrap()), 2);

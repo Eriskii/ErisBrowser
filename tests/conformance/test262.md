@@ -110,23 +110,22 @@ python3 tools/test262_conformance.py --record-baseline tests/conformance/test262
 python3 tools/test262_conformance.py --baseline tests/conformance/test262-current.json
 ```
 
-The recorded release measurement contains **532 passed and 120 unsupported
+The recorded release measurement contains **534 passed and 118 unsupported
 variants**, with all 32 preflights verified and no failed, harness, resource,
-timeout or adapter outcomes. Each execution mode has 266 passes and 60
-unsupported cases. Before changing the strict-mode runner policy, the old policy
-gate preserved all 265 previous passes and added the comma-expression slice
-case. A subsequent explicit comparison preserved all 652 source/mode/harness
-fingerprints and all prior passes while enabling strict execution. The freshly
-recorded baseline gate has zero regressions. CI runs it after building the
-release adapter.
+timeout or adapter outcomes. Each execution mode has 267 passes and 59
+unsupported cases. The RegExp increment preserved all 532 previous passes,
+all 652 source/mode/harness fingerprints and the original runner policy, then
+added both variants of the existing JSON RegExp-object case. The recorded
+baseline gate has zero regressions. CI runs it after building the release
+adapter.
 
-The four remaining previously failing sources require template interpolation,
-regular-expression literals or dynamic eval; both variants of each are now
-explicitly unsupported. These are missing general language capabilities, not
-replaced test bodies. Other unsupported outcomes retain their declared-feature
-or interpreter reasons, including Reflect, Proxy, Symbol, BigInt, complete
-JSON source-context semantics, dynamic Function construction and array descriptor
-mutation.
+The three remaining previously failing sources require template interpolation
+or dynamic eval; both variants of each remain explicitly unsupported. Other
+unsupported outcomes retain their declared-feature or interpreter reasons,
+including Reflect, Proxy, Symbol, BigInt, complete JSON source-context semantics,
+dynamic Function construction and array descriptor mutation. A separate
+[RegExp prototype selection](test262-regexp.md) adds its own unchanged corpus,
+mode inventory, report and baseline without replacing this selection.
 
 Strict code retains exact raw directives, inherits strictness lexically, checks
 restricted bindings/assignments and duplicate simple parameters, rejects legacy
@@ -136,7 +135,7 @@ restricted callee accessor; supported sloppy arguments map indices to parameters
 until deletion or descriptor changes detach them. Lexical bindings include
 initialization checks, declaration conflicts and per-iteration loop environments.
 The implementation remains a subset: classes/modules, destructuring/default/rest
-parameters, dynamic eval/Function, regular expressions, labeled control flow,
+parameters, dynamic eval/Function, full Unicode regular expressions, labeled control flow,
 complete Annex B behavior and other grammar/runtime features are absent.
 
 Ordinary object descriptors support writable, enumerable and configurable data

@@ -34,7 +34,8 @@ def main():
         digest.update(b'\0')
     cases = []
     for name, address in [('home', 'eris:home'), ('gallery', 'examples/gallery.html'),
-                          ('forms', 'examples/forms.html'), ('templates', 'examples/templates.html')]:
+                          ('forms', 'examples/forms.html'), ('templates', 'examples/templates.html'),
+                          ('positioning', 'examples/positioning.html')]:
         command = [str(args.binary.resolve()), address, '--benchmark', str(args.iterations),
                    '--width', '1180', '--height', '880', '--output', str(output.parent / f'benchmark-{name}.png')]
         result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=180)
@@ -54,7 +55,8 @@ def main():
                   binary_sha256=hashlib.sha256(args.binary.read_bytes()).hexdigest(),
                   viewport=[1180, 880], iterations=args.iterations,
                   measured='warm-cache style computation + layout + software paint',
-                  excluded=['network', 'HTML parsing', 'script execution', 'image decoding', 'PNG encoding', 'native presentation'],
+                  excluded=['network', 'HTML parsing', 'script execution', 'image decoding', 'PNG encoding',
+                            'native process startup', 'IPC encoding/validation/copying', 'native presentation'],
                   chromium_comparison=False, controlled_environment=False, cases=cases)
     output.write_text(json.dumps(report, indent=2) + '\n')
     for case in cases:

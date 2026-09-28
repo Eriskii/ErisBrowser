@@ -11,6 +11,53 @@ fn page(source: &str) -> Page {
         true,
     )
 }
+
+#[test]
+fn positioning_demo_loads_imports_executes_regexp_and_keeps_fixed_pixels_during_scroll() {
+    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("examples/positioning.html");
+    let mut p = Page::load(Url::from_file_path(path).unwrap().as_str(), true).unwrap();
+    assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+    assert_eq!(p.document.url(), &p.url);
+    p.click(p.document.query_selector("#extract").unwrap());
+    assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+    assert_eq!(
+        p.document
+            .text_content(p.document.query_selector("#result").unwrap()),
+        "128 · 64 · 3"
+    );
+    let fonts = Fonts::new();
+    let layout = p.layout(960.0, 800.0, &fonts);
+    assert!(layout.content_height > 800.0);
+    let header = p.document.query_selector(".masthead").unwrap();
+    assert!(
+        layout
+            .hit_regions
+            .iter()
+            .any(|h| h.node == header && h.fixed)
+    );
+    assert!(
+        layout
+            .commands
+            .iter()
+            .any(|c| matches!(c, DrawCommand::PushFixed))
+    );
+    let mut before = Canvas::new(960, 800).unwrap();
+    let mut after = Canvas::new(960, 800).unwrap();
+    before.clear(Color::WHITE);
+    after.clear(Color::WHITE);
+    before.paint_with_viewport(&layout.commands, &fonts, &p.images, (0.0, 0.0), (0.0, 0.0));
+    after.paint_with_viewport(
+        &layout.commands,
+        &fonts,
+        &p.images,
+        (0.0, -500.0),
+        (0.0, 0.0),
+    );
+    assert_eq!(before.pixels[10 * 960 + 10], 0x142c35);
+    assert_eq!(before.pixels[..72 * 960], after.pixels[..72 * 960]);
+    assert_ne!(before.pixels[100 * 960..], after.pixels[100 * 960..]);
+    assert!(!before.exhausted() && !after.exhausted());
+}
 #[test]
 fn script_click_flows_through_dom_style_layout_and_pixels() {
     let mut p = page(

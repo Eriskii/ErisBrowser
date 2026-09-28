@@ -795,10 +795,81 @@ fn grid_alignment<'a>(
     }
 }
 
+const MAX_POSITION_WORK: usize = 2_000_000;
+
+#[derive(Clone, Copy)]
+struct PaintOwner {
+    node: NodeId,
+    background: bool,
+}
+#[derive(Clone, Copy)]
+struct BoxGeometry {
+    node: NodeId,
+    border: Rect,
+    padding: Rect,
+    content: Rect,
+    fixed: bool,
+    inline: bool,
+}
+#[derive(Clone, Copy)]
+struct PositionJob {
+    node: NodeId,
+    x: f32,
+    y: f32,
+    fixed: bool,
+    depth: usize,
+}
+
+/// Solve one positioned axis in border-box units. Fixed opposing insets make
+/// an auto non-replaced size fill the remaining space; otherwise the caller's
+/// shrink-to-fit/natural size supplies the missing dimension. Minimums win.
+#[derive(Clone, Copy)]
+struct PositionedAxis {
+    containing: f32,
+    start: Option<f32>,
+    end: Option<f32>,
+    size: Option<f32>,
+    natural: f32,
+    min: f32,
+    max: f32,
+    margin_start: Option<f32>,
+    margin_end: Option<f32>,
+    static_start: f32,
+    horizontal: bool,
+}
+fn positioned_axis(axis: PositionedAxis) -> (f32, f32) {
+    let mut first = axis.margin_start.unwrap_or(0.0);
+    let last = axis.margin_end.unwrap_or(0.0);
+    let fill = match (axis.start, axis.end) {
+        (Some(start), Some(end)) => Some(axis.containing - start - end - first - last),
+        _ => None,
+    };
+    let size = extent(axis.size.or(fill).unwrap_or(axis.natural)).clamp(axis.min, axis.max);
+    let offset = match (axis.start, axis.end) {
+        (Some(start), Some(end)) => {
+            // Re-solving after min/max is the specified-size equation. Auto
+            // margins divide the residue; over-constrained LTR keeps start.
+            let free = axis.containing - start - end - size - first - last;
+            match (axis.margin_start, axis.margin_end) {
+                (None, None) if free >= 0.0 || !axis.horizontal => first = free / 2.0,
+                (None, Some(_)) => first = free,
+                _ => {}
+            }
+            start + first
+        }
+        (Some(start), None) => start + first,
+        (None, Some(end)) => axis.containing - end - last - size,
+        (None, None) => axis.static_start + first,
+    };
+    (finite(offset, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT), size)
+}
+
 #[derive(Debug, Clone)]
 pub struct HitRegion {
     pub node: NodeId,
     pub rect: Rect,
+    /// Coordinates are viewport-relative when true, document-relative otherwise.
+    pub fixed: bool,
 }
 
 pub struct LayoutResult {
@@ -846,7 +917,10 @@ struct Size {
 struct Fragment {
     size: Size,
     commands: Vec<DrawCommand>,
+    owners: Vec<PaintOwner>,
     hits: Vec<HitRegion>,
+    boxes: Vec<BoxGeometry>,
+    positioned: Vec<PositionJob>,
     rounded_border: bool,
 }
 
@@ -855,6 +929,7 @@ enum InlineKind {
     Space(String),
     Box(Fragment, Sides),
     Float(NodeId),
+    Positioned(NodeId),
     Break,
 }
 
@@ -907,8 +982,15 @@ struct Engine<'a> {
     fonts: &'a Fonts,
     viewport: Size,
     commands: Vec<DrawCommand>,
+    owners: Vec<PaintOwner>,
     hits: Vec<HitRegion>,
+    boxes: Vec<BoxGeometry>,
+    positioned: Vec<PositionJob>,
+    paint_owner: PaintOwner,
+    flow_height_reference: Option<f32>,
+    position_work_left: usize,
     visits: usize,
+    hits_created: usize,
     glyphs_left: usize,
     emitted_glyphs_left: usize,
     intrinsic_work_left: Counter<usize>,
@@ -958,8 +1040,18 @@ pub fn layout(
         fonts,
         viewport,
         commands: Vec::new(),
+        owners: Vec::new(),
         hits: Vec::new(),
+        boxes: Vec::new(),
+        positioned: Vec::new(),
+        paint_owner: PaintOwner {
+            node: doc.root,
+            background: true,
+        },
+        flow_height_reference: Some(viewport.height),
+        position_work_left: MAX_POSITION_WORK,
         visits: 0,
+        hits_created: 0,
         glyphs_left: MAX_GLYPHS,
         emitted_glyphs_left: MAX_GLYPHS,
         intrinsic_work_left: Counter::new(MAX_GLYPHS),
@@ -988,10 +1080,11 @@ pub fn layout(
     } else {
         Size::default()
     };
+    engine.resolve_positioned();
     let painted_bottom = engine
         .hits
         .iter()
-        .filter(|hit| hit.rect.width > 0.0 && hit.rect.height > 0.0)
+        .filter(|hit| !hit.fixed && hit.rect.width > 0.0 && hit.rect.height > 0.0)
         .map(|hit| hit.rect.y + hit.rect.height)
         .fold(size.height, f32::max);
     let content_height = painted_bottom.max(viewport.height).min(MAX_EXTENT);
@@ -1000,6 +1093,7 @@ pub fn layout(
     {
         rect.height = content_height;
     }
+    engine.restack();
     engine.commands.retain(|command| match command {
         DrawCommand::Rect { rect, color, .. } => {
             color.a > 0 && rect.width > 0.0 && rect.height > 0.0
@@ -1044,6 +1138,7 @@ impl Engine<'_> {
     fn enter(&mut self, id: NodeId, depth: usize) -> bool {
         if depth > MAX_DEPTH
             || self.visits >= MAX_VISITS
+            || self.hits_created >= MAX_VISITS
             || self.commands_created + self.open_clips >= MAX_COMMANDS.saturating_sub(8)
             || self.doc.nodes.get(id).is_none()
         {
@@ -1053,17 +1148,24 @@ impl Engine<'_> {
         true
     }
 
+    fn push_hit(&mut self, hit: HitRegion) {
+        if self.hits_created < MAX_VISITS {
+            self.hits_created += 1;
+            self.hits.push(hit);
+        }
+    }
+
     fn push(&mut self, mut command: DrawCommand) -> bool {
         // Closing every emitted clip is part of the allocation, including clips
         // around a fragment whose descendants consume the remaining quota.
         match command {
-            DrawCommand::PushClip { .. } => {
+            DrawCommand::PushClip { .. } | DrawCommand::PushFixed => {
                 if self.commands_created + self.open_clips + 2 > MAX_COMMANDS {
                     return false;
                 }
                 self.open_clips += 1;
             }
-            DrawCommand::PopClip => {
+            DrawCommand::PopClip | DrawCommand::PopFixed => {
                 if self.open_clips == 0 {
                     return false;
                 }
@@ -1089,6 +1191,7 @@ impl Engine<'_> {
         }
         self.commands_created += 1;
         self.commands.push(command);
+        self.owners.push(self.paint_owner);
         true
     }
 
@@ -1271,11 +1374,17 @@ impl Engine<'_> {
             return Size::default();
         }
         let style = self.style(id).clone();
+        let previous_owner = self.paint_owner;
+        let previous_flow_height = self.flow_height_reference;
+        self.paint_owner = PaintOwner {
+            node: id,
+            background: true,
+        };
         if style.position == "relative" {
             x += resolve(style.left, available)
                 .unwrap_or_else(|| -resolve(style.right, available).unwrap_or(0.0));
-            y += resolve(style.top, self.viewport.height)
-                .unwrap_or_else(|| -resolve(style.bottom, self.viewport.height).unwrap_or(0.0));
+            y += grid_length(style.top, previous_flow_height)
+                .unwrap_or_else(|| -grid_length(style.bottom, previous_flow_height).unwrap_or(0.0));
         }
         let padding = self.padding(id, available);
         let border = self.borders(id);
@@ -1309,7 +1418,13 @@ impl Engine<'_> {
             .grid_height_reference
             .filter(|(node, _)| *node == id)
             .map(|(_, reference)| reference)
-            .unwrap_or(Some(self.viewport.height));
+            .unwrap_or_else(|| {
+                if self.doc.nodes[id].parent == Some(self.doc.root) {
+                    Some(self.viewport.height)
+                } else {
+                    previous_flow_height
+                }
+            });
         let definite_height = forced.1.or_else(|| {
             grid_length(style.height, height_reference).map(|height| {
                 let (min, max) =
@@ -1317,6 +1432,7 @@ impl Engine<'_> {
                 (height + css_to_border).clamp(min, max)
             })
         });
+        self.flow_height_reference = definite_height.map(|height| (height - extras).max(0.0));
         let paint_start = self.commands.len();
         // Reserve paint slots before descendants, then fill in the height.
         for _ in 0..5 {
@@ -1326,8 +1442,10 @@ impl Engine<'_> {
                 radius: 0.0,
             });
         }
+        self.paint_owner.background = false;
         let hit_start = self.hits.len();
-        self.hits.push(HitRegion {
+        self.push_hit(HitRegion {
+            fixed: false,
             node: id,
             rect: rect(x, y, width, 0.0),
         });
@@ -1480,6 +1598,19 @@ impl Engine<'_> {
             }
         }
         self.hits[hit_start].rect.height = height;
+        self.boxes.push(BoxGeometry {
+            node: id,
+            border: rect(x, y, width, height),
+            padding: rect(
+                x + border.left,
+                y + border.top,
+                width - border.horizontal(),
+                height - border.vertical(),
+            ),
+            content: rect(inner_x, inner_y, inner_width, height - extras),
+            fixed: false,
+            inline: false,
+        });
         if tag == "li" && style.list_style_type != "none" {
             self.paint_list_marker(id, inner_x, inner_y, &style);
         }
@@ -1495,7 +1626,9 @@ impl Engine<'_> {
             }
             self.push(DrawCommand::PopClip);
             for hit in &mut self.hits[hit_start + 1..] {
-                hit.rect = hit.rect.intersect(clip);
+                if !hit.fixed {
+                    hit.rect = hit.rect.intersect(clip);
+                }
             }
             // overflow:clip does not establish a formatting context. Floats
             // escape its flow height, but their deferred paint remains clipped.
@@ -1508,18 +1641,27 @@ impl Engine<'_> {
                         .commands
                         .insert(0, DrawCommand::PushClip { rect: local });
                     paint.fragment.commands.push(DrawCommand::PopClip);
+                    paint.fragment.owners.insert(0, self.paint_owner);
+                    paint.fragment.owners.push(self.paint_owner);
                     for hit in &mut paint.fragment.hits {
-                        hit.rect = hit.rect.intersect(local);
+                        if !hit.fixed {
+                            hit.rect = hit.rect.intersect(local);
+                        }
                     }
                 } else {
                     paint.fragment.commands.clear();
+                    paint.fragment.owners.clear();
                     paint.fragment.hits.clear();
+                    paint.fragment.boxes.clear();
+                    paint.fragment.positioned.clear();
                 }
             }
         }
         if let Some(parent) = outer_floats {
             self.floats = parent;
         }
+        self.paint_owner = previous_owner;
+        self.flow_height_reference = previous_flow_height;
         Size { width, height }
     }
 
@@ -1535,14 +1677,13 @@ impl Engine<'_> {
         let mut cursor = y;
         let mut previous_bottom = 0.0;
         let mut inline = Vec::new();
-        let mut positioned = Vec::new();
         for &child in children {
             let style = self.style(child);
             if self.is_hidden(child) {
                 continue;
             }
             if style.position == "absolute" || style.position == "fixed" {
-                positioned.push(child);
+                self.enqueue_positioned(child, x, cursor + previous_bottom, depth);
                 continue;
             }
             if self.is_float(child) {
@@ -1618,60 +1759,458 @@ impl Engine<'_> {
                 previous_bottom = 0.0;
             }
         }
-        let flow_height = extent(cursor - y + previous_bottom);
-        for child in positioned {
-            self.layout_positioned(
-                child,
-                x,
-                y,
-                Size {
-                    width,
-                    height: flow_height,
-                },
-                depth,
-            );
-        }
-        flow_height
+        extent(cursor - y + previous_bottom)
     }
 
-    fn layout_positioned(&mut self, child: NodeId, x: f32, y: f32, size: Size, depth: usize) {
-        let width = size.width;
-        let flow_height = size.height;
-        let style = self.style(child).clone();
-        let fixed = style.position == "fixed";
-        let reference_width = if fixed { self.viewport.width } else { width };
-        let reference_height = if fixed {
-            self.viewport.height
-        } else {
-            flow_height
-        };
-        let bx = if fixed { 0.0 } else { x };
-        let by = if fixed { 0.0 } else { y };
-        let left = resolve(style.left, reference_width);
-        let right = resolve(style.right, reference_width);
-        let mut child_width = self.width_for(child, reference_width, reference_width);
-        if matches!(style.width, Length::Auto) {
-            child_width = match (left, right) {
-                (Some(l), Some(r)) => (reference_width - l - r).max(0.0),
-                _ => self
-                    .intrinsic_width(child, reference_width)
-                    .min(reference_width),
+    fn resolve_positioned(&mut self) {
+        let mut geometry = vec![None; self.doc.nodes.len()];
+        merge_geometry(&mut geometry, &self.boxes);
+        let mut processed = vec![false; self.doc.nodes.len()];
+        let mut cursor = 0;
+        while cursor < self.positioned.len() && grid_charge(&mut self.position_work_left, 1) {
+            let job = self.positioned[cursor];
+            cursor += 1;
+            if processed[job.node] {
+                continue;
+            }
+            processed[job.node] = true;
+            let style = self.style(job.node).clone();
+            let viewport_fixed = style.position == "fixed";
+            let mut containing = None;
+            let mut ancestor = self.doc.nodes[job.node].parent;
+            let mut depth = 0;
+            if !viewport_fixed {
+                while let Some(id) = ancestor {
+                    if depth >= MAX_DEPTH || !grid_charge(&mut self.position_work_left, 1) {
+                        break;
+                    }
+                    depth += 1;
+                    if self.style(id).position != "static" {
+                        containing = Some(id);
+                        break;
+                    }
+                    ancestor = self.doc.nodes[id].parent;
+                }
+            }
+            let containing_geometry = containing.and_then(|id| geometry[id]);
+            if containing.is_some() && containing_geometry.is_none() {
+                continue;
+            }
+            let cb = containing_geometry
+                .map(|g: BoxGeometry| g.padding)
+                .unwrap_or(rect(0.0, 0.0, self.viewport.width, self.viewport.height));
+            let fixed = viewport_fixed || containing_geometry.is_some_and(|g| g.fixed);
+            let padding = self.padding(job.node, cb.width);
+            let border = self.borders(job.node);
+            let extra_x = padding.horizontal() + border.horizontal();
+            let extra_y = padding.vertical() + border.vertical();
+            let border_box = style.box_sizing == "border-box";
+            let replaced = matches!(
+                self.layout_tag(job.node),
+                "img" | "svg" | "canvas" | "video" | "input" | "textarea" | "select"
+            );
+            let (min_width, max_width) = self.flex_limits(job.node, cb.width, cb.width, false);
+            let (min_height, max_height) = self.flex_limits(job.node, cb.width, cb.height, true);
+            let left = resolve(style.left, cb.width);
+            let right = resolve(style.right, cb.width);
+            let margin_left = resolve(style.margin.left, cb.width);
+            let margin_right = resolve(style.margin.right, cb.width);
+            let (preferred_min, preferred_max) = self.preferred_widths(job.node, cb.width, 0);
+            let remaining = cb.width
+                - left.unwrap_or(0.0)
+                - right.unwrap_or(0.0)
+                - margin_left.unwrap_or(0.0)
+                - margin_right.unwrap_or(0.0);
+            let (dx, width) = positioned_axis(PositionedAxis {
+                containing: cb.width,
+                start: left,
+                end: right,
+                size: resolve(style.width, cb.width)
+                    .map(|v| v + if border_box { 0.0 } else { extra_x })
+                    .or_else(|| replaced.then_some(preferred_max)),
+                natural: preferred_max.min(remaining.max(preferred_min)),
+                min: min_width,
+                max: max_width,
+                margin_start: margin_left,
+                margin_end: margin_right,
+                static_start: job.x - cb.x,
+                horizontal: true,
+            });
+            let top = resolve(style.top, cb.height);
+            let bottom = resolve(style.bottom, cb.height);
+            let specified_height = resolve(style.height, cb.height)
+                .map(|v| v + if border_box { 0.0 } else { extra_y });
+            let height_axis = PositionedAxis {
+                containing: cb.height,
+                start: top,
+                end: bottom,
+                size: specified_height,
+                natural: 0.0,
+                min: min_height,
+                max: max_height,
+                margin_start: resolve(style.margin.top, cb.width),
+                margin_end: resolve(style.margin.bottom, cb.width),
+                static_start: job.y - cb.y,
+                horizontal: false,
             };
+            let forced_height = (specified_height.is_some()
+                || !replaced && top.is_some() && bottom.is_some())
+            .then(|| positioned_axis(height_axis).1);
+            let saved_height = self
+                .grid_height_reference
+                .replace((job.node, Some(cb.height)));
+            let mut fragment =
+                self.fragment_sized(job.node, cb.width, width, forced_height, job.depth);
+            self.grid_height_reference = saved_height;
+            let (dy, _) = positioned_axis(PositionedAxis {
+                natural: fragment.size.height,
+                size: specified_height.or_else(|| replaced.then_some(fragment.size.height)),
+                ..height_axis
+            });
+            translate_fragment(&mut fragment, cb.x + dx, cb.y + dy);
+            // Absolute descendants are clipped by their containing block and its
+            // ancestors, not by intervening static overflow boxes (CSS 2.2 11.1).
+            let mut clips = Vec::new();
+            if !viewport_fixed {
+                let mut ancestor = containing;
+                while let Some(id) = ancestor {
+                    if clips.len() >= MAX_DEPTH || !grid_charge(&mut self.position_work_left, 1) {
+                        break;
+                    }
+                    if let Some(g) = geometry[id] {
+                        if !g.inline
+                            && matches!(self.style(id).overflow.as_str(), "hidden" | "clip")
+                        {
+                            clips.push(g.padding);
+                        }
+                        if self.style(id).position == "fixed" {
+                            break;
+                        }
+                    }
+                    ancestor = self.doc.nodes[id].parent;
+                }
+            }
+            let scope_cost = (clips.len() + usize::from(fixed)) * 2;
+            if scope_cost + self.commands_created + self.open_clips > MAX_COMMANDS {
+                continue;
+            }
+            self.commands_created += scope_cost;
+            for hit in &mut fragment.hits {
+                if !hit.fixed {
+                    for clip in &clips {
+                        hit.rect = hit.rect.intersect(*clip);
+                    }
+                }
+                hit.fixed |= fixed;
+            }
+            for g in &mut fragment.boxes {
+                g.fixed |= fixed;
+            }
+            for job in &mut fragment.positioned {
+                job.fixed |= fixed;
+            }
+            let owner = PaintOwner {
+                node: job.node,
+                background: false,
+            };
+            let mut commands = Vec::with_capacity(fragment.commands.len() + scope_cost);
+            let mut owners = Vec::with_capacity(commands.capacity());
+            if fixed {
+                commands.push(DrawCommand::PushFixed);
+                owners.push(owner);
+            }
+            for clip in clips.iter().rev() {
+                commands.push(DrawCommand::PushClip { rect: *clip });
+                owners.push(owner);
+            }
+            commands.append(&mut fragment.commands);
+            owners.append(&mut fragment.owners);
+            for _ in &clips {
+                commands.push(DrawCommand::PopClip);
+                owners.push(owner);
+            }
+            if fixed {
+                commands.push(DrawCommand::PopFixed);
+                owners.push(owner);
+            }
+            fragment.commands = commands;
+            fragment.owners = owners;
+            merge_geometry(&mut geometry, &fragment.boxes);
+            self.append_fragment(fragment, 0.0, 0.0);
         }
-        let px = bx
-            + left.unwrap_or_else(|| {
-                reference_width - right.unwrap_or(reference_width - child_width) - child_width
-            });
-        let top = resolve(style.top, reference_height);
-        let bottom = resolve(style.bottom, reference_height);
-        let fragment = self.fragment(child, reference_width, child_width, depth);
-        let py = by
-            + top.unwrap_or_else(|| {
-                bottom
-                    .map(|b| reference_height - b - fragment.size.height)
-                    .unwrap_or(0.0)
-            });
-        self.append_fragment(fragment, px, py);
+    }
+
+    fn restack(&mut self) {
+        if self.doc.nodes.get(self.doc.root).is_none() {
+            self.commands.clear();
+            self.hits.clear();
+            return;
+        }
+        // Build CSS paint groups from DOM ancestry, not the order in which
+        // deferred geometry happened to be measured. A positioned auto-z group
+        // is atomic for its ordinary descendants; real child stacking contexts
+        // still participate in the nearest real ancestor context.
+        #[derive(Clone, Copy)]
+        enum Entry {
+            Owner(NodeId, bool),
+            Group(usize),
+        }
+        struct Group {
+            entries: Vec<((u8, i32, usize), Entry)>,
+        }
+        let mut groups = vec![Group {
+            entries: Vec::new(),
+        }];
+        let mut ranks = vec![[usize::MAX; 2]; self.doc.nodes.len()];
+        let mut traversal = vec![(self.doc.root, 0usize, 0usize)];
+        let mut seen = vec![false; self.doc.nodes.len()];
+        let mut order = 0usize;
+        while let Some((id, parent_group, real_parent)) = traversal.pop() {
+            if seen[id] || !grid_charge(&mut self.position_work_left, 1) {
+                continue;
+            }
+            seen[id] = true;
+            let style = self.style(id);
+            if self.is_hidden(id) {
+                continue;
+            }
+            let positioned = style.position != "static";
+            let item = self.doc.nodes[id]
+                .parent
+                .is_some_and(|p| matches!(self.style(p).display, Display::Flex | Display::Grid));
+            let real = id == self.doc.root
+                || style.opacity < 1.0
+                || style.position == "fixed"
+                || style.z_index.is_some() && (positioned || item);
+            let floating = self.is_float(id);
+            let pseudo = positioned || floating || item || style.display == Display::InlineBlock;
+            let mut group = parent_group;
+            let mut real_group = real_parent;
+            if id != self.doc.root && (real || pseudo) {
+                group = groups.len();
+                groups.push(Group {
+                    entries: Vec::new(),
+                });
+                let z = if real && (positioned || item) {
+                    style.z_index.unwrap_or(0)
+                } else {
+                    0
+                };
+                let phase = if real {
+                    if z < 0 {
+                        1
+                    } else if z > 0 {
+                        6
+                    } else {
+                        5
+                    }
+                } else if positioned {
+                    5
+                } else if floating {
+                    3
+                } else {
+                    4
+                };
+                let parent = if real { real_parent } else { parent_group };
+                groups[parent]
+                    .entries
+                    .push(((phase, z, order), Entry::Group(group)));
+                if real {
+                    real_group = group;
+                }
+            }
+            let owns_group = id == self.doc.root || real || pseudo;
+            let background_phase = if owns_group {
+                0
+            } else if style.display == Display::Inline {
+                4
+            } else {
+                2
+            };
+            groups[group]
+                .entries
+                .push(((background_phase, 0, order), Entry::Owner(id, true)));
+            groups[group]
+                .entries
+                .push(((4, 0, order), Entry::Owner(id, false)));
+            order += 1;
+            let mut children = self.doc.nodes[id].children.clone();
+            if matches!(style.display, Display::Flex | Display::Grid) {
+                children.sort_by_key(|child| self.style(*child).order);
+            }
+            traversal.extend(
+                children
+                    .into_iter()
+                    .rev()
+                    .map(|child| (child, group, real_group)),
+            );
+        }
+        for group in &mut groups {
+            group.entries.sort_by_key(|entry| entry.0);
+        }
+        let mut pending = vec![(0usize, 0usize)];
+        let mut next_rank = 0usize;
+        while let Some((group, index)) = pending.pop() {
+            let Some((_, entry)) = groups[group].entries.get(index).copied() else {
+                continue;
+            };
+            pending.push((group, index + 1));
+            match entry {
+                Entry::Group(child) => pending.push((child, 0)),
+                Entry::Owner(node, background) => {
+                    ranks[node][usize::from(!background)] = next_rank;
+                    next_rank += 1;
+                }
+            }
+        }
+        #[derive(Clone, Copy)]
+        struct Chain {
+            parent: usize,
+            rect: Rect,
+            depth: usize,
+        }
+        struct Atom {
+            command: DrawCommand,
+            rank: usize,
+            chain: usize,
+            fixed: bool,
+            sequence: usize,
+        }
+        let mut chains = vec![Chain {
+            parent: 0,
+            rect: Rect::default(),
+            depth: 0,
+        }];
+        let (mut chain, mut fixed) = (0usize, false);
+        let mut scopes = Vec::new();
+        let mut atoms = Vec::new();
+        for (sequence, (command, owner)) in std::mem::take(&mut self.commands)
+            .into_iter()
+            .zip(std::mem::take(&mut self.owners))
+            .enumerate()
+        {
+            match command {
+                DrawCommand::PushClip { rect } => {
+                    scopes.push((chain, fixed, false));
+                    chains.push(Chain {
+                        parent: chain,
+                        rect,
+                        depth: chains[chain].depth + 1,
+                    });
+                    chain = chains.len() - 1;
+                }
+                DrawCommand::PushFixed => {
+                    scopes.push((chain, fixed, true));
+                    chain = 0;
+                    fixed = true;
+                }
+                DrawCommand::PopClip | DrawCommand::PopFixed => {
+                    if let Some((old_chain, old_fixed, _)) = scopes.pop() {
+                        chain = old_chain;
+                        fixed = old_fixed;
+                    }
+                }
+                _ => {
+                    let visible = match &command {
+                        DrawCommand::Rect { rect, color, .. } => {
+                            color.a > 0 && rect.width > 0.0 && rect.height > 0.0
+                        }
+                        DrawCommand::Text { text, color, .. } => !text.is_empty() && color.a > 0,
+                        _ => true,
+                    };
+                    if visible {
+                        atoms.push(Atom {
+                            command,
+                            rank: ranks[owner.node][usize::from(!owner.background)],
+                            chain,
+                            fixed,
+                            sequence,
+                        });
+                    }
+                }
+            }
+        }
+        atoms.sort_by_key(|atom| (atom.rank, atom.sequence));
+        let (mut current_chain, mut current_fixed) = (0usize, false);
+        let mut open = 0usize;
+        let mut cutoff = usize::MAX;
+        for atom in atoms {
+            if !grid_charge(&mut self.position_work_left, 1) {
+                cutoff = atom.rank;
+                break;
+            }
+            // Close to the common ancestor; fixed/document coordinates have
+            // independent clip roots. Scope transitions are charged and closure
+            // slots reserved before emitting any part of the next atom.
+            let mut common = if current_fixed == atom.fixed {
+                current_chain
+            } else {
+                0
+            };
+            let mut target = atom.chain;
+            while chains[common].depth > chains[target].depth {
+                common = chains[common].parent;
+            }
+            while chains[target].depth > chains[common].depth {
+                target = chains[target].parent;
+            }
+            while common != target {
+                common = chains[common].parent;
+                target = chains[target].parent;
+            }
+            let mut path = Vec::new();
+            let mut target = atom.chain;
+            while target != common {
+                path.push(target);
+                target = chains[target].parent;
+            }
+            let closes = chains[current_chain].depth - chains[common].depth;
+            let fixed_changes = if current_fixed == atom.fixed {
+                0
+            } else {
+                usize::from(current_fixed) + usize::from(atom.fixed)
+            };
+            let final_open = chains[atom.chain].depth + usize::from(atom.fixed);
+            let cost = closes + fixed_changes + path.len() + 1;
+            if final_open > MAX_DEPTH
+                || self.commands.len() + cost + final_open > MAX_COMMANDS
+                || !grid_charge(&mut self.position_work_left, cost)
+            {
+                cutoff = atom.rank;
+                break;
+            }
+            for _ in 0..closes {
+                self.commands.push(DrawCommand::PopClip);
+            }
+            if current_fixed != atom.fixed {
+                if current_fixed {
+                    self.commands.push(DrawCommand::PopFixed);
+                }
+                if atom.fixed {
+                    self.commands.push(DrawCommand::PushFixed);
+                }
+            }
+            for id in path.into_iter().rev() {
+                self.commands.push(DrawCommand::PushClip {
+                    rect: chains[id].rect,
+                });
+            }
+            self.commands.push(atom.command);
+            current_chain = atom.chain;
+            current_fixed = atom.fixed;
+            open = final_open;
+        }
+        for _ in 0..open.saturating_sub(usize::from(current_fixed)) {
+            self.commands.push(DrawCommand::PopClip);
+        }
+        if current_fixed {
+            self.commands.push(DrawCommand::PopFixed);
+        }
+        let hit_rank = |hit: &HitRegion| {
+            ranks[hit.node][usize::from(matches!(self.doc.nodes[hit.node].kind, NodeKind::Text(_)))]
+        };
+        self.hits.retain(|hit| hit_rank(hit) < cutoff);
+        self.hits.sort_by_key(hit_rank);
     }
 
     fn block_left(&self, id: NodeId, width: f32, box_width: f32, margin: Sides) -> f32 {
@@ -1701,13 +2240,18 @@ impl Engine<'_> {
     ) -> Fragment {
         let command_start = self.commands.len();
         let hit_start = self.hits.len();
+        let box_start = self.boxes.len();
+        let positioned_start = self.positioned.len();
         let old_fragment_root = self.fragment_root.replace(id);
         let size = self.layout_box_sized(id, 0.0, 0.0, available, (Some(width), height), depth);
         self.fragment_root = old_fragment_root;
         Fragment {
             size,
             commands: self.commands.split_off(command_start),
+            owners: self.owners.split_off(command_start),
             hits: self.hits.split_off(hit_start),
+            boxes: self.boxes.split_off(box_start),
+            positioned: self.positioned.split_off(positioned_start),
             rounded_border: self.rounded_border(id),
         }
     }
@@ -1725,25 +2269,24 @@ impl Engine<'_> {
     }
 
     fn append_fragment(&mut self, mut fragment: Fragment, x: f32, y: f32) {
-        for command in &mut fragment.commands {
-            translate(command, x, y);
+        translate_fragment(&mut fragment, x, y);
+        self.commands.extend(fragment.commands);
+        self.owners.extend(fragment.owners);
+        self.hits.extend(fragment.hits);
+        self.boxes.extend(fragment.boxes);
+        self.positioned.extend(fragment.positioned);
+    }
+
+    fn enqueue_positioned(&mut self, node: NodeId, x: f32, y: f32, depth: usize) {
+        if self.positioned.len() < MAX_VISITS && grid_charge(&mut self.position_work_left, 1) {
+            self.positioned.push(PositionJob {
+                node,
+                x,
+                y,
+                fixed: false,
+                depth,
+            });
         }
-        for hit in &mut fragment.hits {
-            hit.rect.x = finite(hit.rect.x + x, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
-            hit.rect.y = finite(hit.rect.y + y, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
-        }
-        self.commands.extend(
-            fragment
-                .commands
-                .into_iter()
-                .take(MAX_COMMANDS.saturating_sub(self.commands.len())),
-        );
-        self.hits.extend(
-            fragment
-                .hits
-                .into_iter()
-                .take(MAX_COMMANDS.saturating_sub(self.hits.len())),
-        );
     }
 
     fn collect_inline(
@@ -1755,6 +2298,17 @@ impl Engine<'_> {
         output: &mut Vec<InlineItem>,
     ) {
         if !self.enter(id, depth) || self.is_hidden(id) {
+            return;
+        }
+        if matches!(self.style(id).position.as_str(), "absolute" | "fixed") {
+            output.push(InlineItem {
+                node: id,
+                owner: id,
+                kind: InlineKind::Positioned(id),
+                width: 0.0,
+                height: 0.0,
+                preserve: false,
+            });
             return;
         }
         if self.is_float(id) {
@@ -2212,6 +2766,55 @@ impl Engine<'_> {
         extent(cursor - y)
     }
 
+    fn inline_offset(&mut self, node: NodeId, width: f32) -> (f32, f32) {
+        let mut ancestor = self.doc.nodes[node].parent;
+        let (mut x, mut y) = (0.0, 0.0);
+        for _ in 0..MAX_DEPTH {
+            let Some(id) = ancestor else { break };
+            if !grid_charge(&mut self.position_work_left, 1) {
+                break;
+            }
+            let style = self.style(id);
+            if style.display != Display::Inline {
+                break;
+            }
+            if style.position == "relative" {
+                x += resolve(style.left, width)
+                    .unwrap_or_else(|| -resolve(style.right, width).unwrap_or(0.0));
+                y += grid_length(style.top, self.flow_height_reference).unwrap_or_else(|| {
+                    -grid_length(style.bottom, self.flow_height_reference).unwrap_or(0.0)
+                });
+            }
+            ancestor = self.doc.nodes[id].parent;
+        }
+        (
+            finite(x, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT),
+            finite(y, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT),
+        )
+    }
+
+    fn record_inline_boxes(&mut self, node: NodeId, area: Rect) {
+        let mut ancestor = self.doc.nodes[node].parent;
+        for _ in 0..MAX_DEPTH {
+            let Some(id) = ancestor else { break };
+            if !grid_charge(&mut self.position_work_left, 1) {
+                break;
+            }
+            if self.style(id).display != Display::Inline {
+                break;
+            }
+            self.boxes.push(BoxGeometry {
+                node: id,
+                border: area,
+                padding: area,
+                content: area,
+                fixed: false,
+                inline: true,
+            });
+            ancestor = self.doc.nodes[id].parent;
+        }
+    }
+
     fn paint_line(
         &mut self,
         mut line: Vec<InlineItem>,
@@ -2269,19 +2872,34 @@ impl Engine<'_> {
             "right" | "end" => (available - width).max(0.0),
             _ => 0.0,
         };
+        let saved_owner = self.paint_owner;
         for item in line {
+            if matches!(item.kind, InlineKind::Text(_) | InlineKind::Space(_))
+                && self.hits_created >= MAX_VISITS
+            {
+                cursor += item.width;
+                continue;
+            }
+            let (relative_x, relative_y) = self.inline_offset(item.node, available);
+            let visual_x = cursor + relative_x;
+            let visual_y = y + relative_y;
+            self.paint_owner = PaintOwner {
+                node: item.node,
+                background: false,
+            };
             let style = self.style(item.node).clone();
             let is_space = matches!(item.kind, InlineKind::Space(_));
             match item.kind {
                 InlineKind::Text(text) | InlineKind::Space(text) => {
                     let size = font_size(&style);
-                    let text_y = y + baseline - size * 0.95;
+                    let text_y = visual_y + baseline - size * 0.95;
                     let item_rect = rect(
-                        cursor,
-                        y,
+                        visual_x,
+                        visual_y,
                         item.width + if is_space { extra_space } else { 0.0 },
                         height,
                     );
+                    self.record_inline_boxes(item.node, item_rect);
                     let owner_style = self.style(item.owner);
                     if owner_style.background_color.a > 0 && owner_style.display == Display::Inline
                     {
@@ -2292,7 +2910,7 @@ impl Engine<'_> {
                         });
                     }
                     self.push(DrawCommand::Text {
-                        x: cursor,
+                        x: visual_x,
                         y: text_y,
                         text,
                         size,
@@ -2303,9 +2921,9 @@ impl Engine<'_> {
                     });
                     if style.text_decoration.contains("underline") {
                         self.push(DrawCommand::Line {
-                            x1: cursor,
+                            x1: visual_x,
                             y1: text_y + size * 1.12,
-                            x2: cursor + item.width,
+                            x2: visual_x + item.width,
                             y2: text_y + size * 1.12,
                             color: style.color,
                             width: (size / 16.0).max(1.0),
@@ -2313,15 +2931,16 @@ impl Engine<'_> {
                     }
                     if style.text_decoration.contains("line-through") {
                         self.push(DrawCommand::Line {
-                            x1: cursor,
+                            x1: visual_x,
                             y1: text_y + size * 0.65,
-                            x2: cursor + item.width,
+                            x2: visual_x + item.width,
                             y2: text_y + size * 0.65,
                             color: style.color,
                             width: (size / 16.0).max(1.0),
                         });
                     }
-                    self.hits.push(HitRegion {
+                    self.push_hit(HitRegion {
+                        fixed: false,
                         node: item.node,
                         rect: item_rect,
                     });
@@ -2333,12 +2952,25 @@ impl Engine<'_> {
                         "bottom" | "text-bottom" => height - item.height,
                         _ => baseline - item.height,
                     };
-                    self.append_fragment(fragment, cursor + margin.left, y + offset + margin.top);
+                    self.record_inline_boxes(
+                        item.node,
+                        rect(visual_x, visual_y + offset, item.width, item.height),
+                    );
+                    self.append_fragment(
+                        fragment,
+                        visual_x + margin.left,
+                        visual_y + offset + margin.top,
+                    );
+                }
+                InlineKind::Positioned(id) => {
+                    self.record_inline_boxes(id, rect(visual_x, visual_y, 0.0, height));
+                    self.enqueue_positioned(id, visual_x, visual_y, 0);
                 }
                 InlineKind::Break | InlineKind::Float(_) => {}
             }
             cursor += item.width + if is_space { extra_space } else { 0.0 };
         }
+        self.paint_owner = saved_owner;
         height
     }
 
@@ -2425,6 +3057,13 @@ impl Engine<'_> {
         style: &ComputedStyle,
         depth: usize,
     ) -> f32 {
+        for &id in children {
+            if !self.is_hidden(id)
+                && matches!(self.style(id).position.as_str(), "absolute" | "fixed")
+            {
+                self.enqueue_positioned(id, x, y, depth);
+            }
+        }
         let mut items = self.flow_items(children);
         // Stable visual order never changes the DOM or sequential navigation order.
         items.sort_by_key(|id| self.style(*id).order);
@@ -2784,12 +3423,17 @@ impl Engine<'_> {
                     self.width_for(item.id, space, area_width)
                 };
             self.grid_height_reference = Some((item.id, None));
-            let checkpoint = (self.commands_created, self.emitted_glyphs_left);
+            let checkpoint = (
+                self.commands_created,
+                self.emitted_glyphs_left,
+                self.hits_created,
+            );
             let fragment = self.fragment(item.id, area_width, child_width, depth);
             let natural_height = fragment.size.height;
             let paint_cost = (
                 self.commands_created.saturating_sub(checkpoint.0),
                 checkpoint.1.saturating_sub(self.emitted_glyphs_left),
+                self.hits_created.saturating_sub(checkpoint.2),
             );
             row_contributions.push(GridContribution {
                 start: area.row,
@@ -2873,6 +3517,7 @@ impl Engine<'_> {
             if (child_height - measured_height).abs() > 0.001 {
                 drop(fragment);
                 self.commands_created = self.commands_created.saturating_sub(paint_cost.0);
+                self.hits_created = self.hits_created.saturating_sub(paint_cost.2);
                 self.emitted_glyphs_left =
                     (self.emitted_glyphs_left + paint_cost.1).min(MAX_GLYPHS);
                 self.grid_height_reference = Some((id, Some(area_height)));
@@ -2886,21 +3531,11 @@ impl Engine<'_> {
                 y + row_positions[area.row] + margin.top + dy,
             );
         }
-        // Out-of-flow children neither reserve cells nor size implicit tracks.
         for &id in children {
             if !self.is_hidden(id)
                 && matches!(self.style(id).position.as_str(), "absolute" | "fixed")
             {
-                self.layout_positioned(
-                    id,
-                    x,
-                    y,
-                    Size {
-                        width,
-                        height: height.unwrap_or(natural_height),
-                    },
-                    depth,
-                );
+                self.enqueue_positioned(id, x, y, depth);
             }
         }
         natural_height
@@ -3077,7 +3712,8 @@ impl Engine<'_> {
                 color: faded(style.background_color, style.opacity),
                 radius: 0.0,
             });
-            self.hits.push(HitRegion {
+            self.push_hit(HitRegion {
+                fixed: false,
                 node: id,
                 rect: row_rect,
             });
@@ -3120,7 +3756,9 @@ impl Engine<'_> {
     fn flow_items(&mut self, children: &[NodeId]) -> Vec<NodeId> {
         let mut items = Vec::new();
         for &id in children {
-            if self.is_hidden(id) {
+            if self.is_hidden(id)
+                || matches!(self.style(id).position.as_str(), "absolute" | "fixed")
+            {
                 continue;
             }
             let visible = match self.doc.nodes.get(id).map(|node| &node.kind) {
@@ -3656,6 +4294,57 @@ fn distribution(justify: &str, free: f32, count: usize) -> (f32, f32) {
     }
 }
 
+fn merge_geometry(target: &mut [Option<BoxGeometry>], boxes: &[BoxGeometry]) {
+    for &g in boxes {
+        if let Some(old) = target[g.node].as_mut().filter(|old| old.inline && g.inline) {
+            let right = (old.padding.x + old.padding.width).max(g.padding.x + g.padding.width);
+            let bottom = (old.padding.y + old.padding.height).max(g.padding.y + g.padding.height);
+            old.padding.x = old.padding.x.min(g.padding.x);
+            old.padding.y = old.padding.y.min(g.padding.y);
+            old.padding.width = extent(right - old.padding.x);
+            old.padding.height = extent(bottom - old.padding.y);
+            old.border = old.padding;
+            old.content = old.padding;
+        } else {
+            target[g.node] = Some(g);
+        }
+    }
+}
+
+fn translate_fragment(fragment: &mut Fragment, dx: f32, dy: f32) {
+    let mut fixed = 0usize;
+    for command in &mut fragment.commands {
+        match command {
+            DrawCommand::PushFixed => fixed += 1,
+            DrawCommand::PopFixed => fixed = fixed.saturating_sub(1),
+            _ if fixed == 0 => translate(command, dx, dy),
+            _ => {}
+        }
+    }
+    let move_rect = |r: &mut Rect| {
+        r.x = finite(r.x + dx, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
+        r.y = finite(r.y + dy, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
+    };
+    for hit in &mut fragment.hits {
+        if !hit.fixed {
+            move_rect(&mut hit.rect);
+        }
+    }
+    for geometry in &mut fragment.boxes {
+        if !geometry.fixed {
+            move_rect(&mut geometry.border);
+            move_rect(&mut geometry.padding);
+            move_rect(&mut geometry.content);
+        }
+    }
+    for job in &mut fragment.positioned {
+        if !job.fixed {
+            job.x = finite(job.x + dx, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
+            job.y = finite(job.y + dy, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
+        }
+    }
+}
+
 fn translate(command: &mut DrawCommand, dx: f32, dy: f32) {
     match command {
         DrawCommand::Rect { rect, .. }
@@ -3674,7 +4363,7 @@ fn translate(command: &mut DrawCommand, dx: f32, dy: f32) {
             *y1 = finite(*y1 + dy, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
             *y2 = finite(*y2 + dy, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
         }
-        DrawCommand::PopClip => {}
+        DrawCommand::PopClip | DrawCommand::PushFixed | DrawCommand::PopFixed => {}
     }
 }
 
@@ -3685,6 +4374,14 @@ fn stretch_fragment(fragment: &mut Fragment, height: f32) {
         hit.rect.height = height;
     }
     let old_height = fragment.size.height;
+    if let Some(node) = fragment.hits.first().map(|hit| hit.node)
+        && let Some(g) = fragment.boxes.iter_mut().find(|g| g.node == node)
+    {
+        let extra = height - old_height;
+        g.border.height += extra;
+        g.padding.height += extra;
+        g.content.height += extra;
+    }
     for (index, command) in fragment.commands.iter_mut().take(5).enumerate() {
         if let DrawCommand::Rect { rect, .. } = command {
             match index {
@@ -3797,6 +4494,333 @@ mod tests {
             .find(|hit| hit.node == node)
             .expect("element is laid out")
             .rect
+    }
+
+    #[test]
+    fn token_and_detached_fragment_hits_share_the_native_snapshot_budget() {
+        let source = format!(
+            "<style>body{{margin:0}}span{{display:inline-block;width:180px}}</style><span>{}</span><span>{}</span>",
+            "x ".repeat(30_000),
+            "y ".repeat(30_000)
+        );
+        let (_, result) = render(&source, 400.0);
+        assert!(result.hit_regions.len() <= MAX_VISITS);
+        assert!(
+            result.hit_regions.len() > 90_000,
+            "fixture must exercise the shared hit limit"
+        );
+        assert!(result.commands.len() <= MAX_COMMANDS);
+    }
+
+    #[test]
+    fn invalid_document_root_does_not_enter_stacking_traversal() {
+        let mut document = Document::parse("");
+        document.root = usize::MAX;
+        let result = layout(&document, &[], 200.0, 100.0, &Fonts::new());
+        assert!(result.commands.is_empty());
+        assert!(result.hit_regions.is_empty());
+    }
+
+    #[test]
+    fn overlapping_auto_z_grid_items_paint_their_text_as_an_atomic_group() {
+        use crate::graphics::{Canvas, ImageStore};
+        let (_, result) = render(
+            "<style>body{margin:0}main{display:grid;grid-template-columns:40px;grid-template-rows:40px}div{grid-area:1/1;width:40px;height:40px;font-size:30px}#b{background:blue}</style><main><div>MMM</div><div id=b></div></main>",
+            200.0,
+        );
+        let mut canvas = Canvas::new(200, 100).unwrap();
+        canvas.paint(
+            &result.commands,
+            &Fonts::new(),
+            &ImageStore::new(),
+            0.0,
+            0.0,
+        );
+        for y in 0..40 {
+            for x in 0..40 {
+                assert_eq!(canvas.pixels[y * 200 + x], 0x0000ff, "{x},{y}");
+            }
+        }
+    }
+
+    #[test]
+    fn absolute_replaced_auto_sizes_use_intrinsic_ratio_with_opposing_insets() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{position:relative;width:200px;height:200px}img{position:absolute;left:0;right:0;top:0;bottom:0;margin:auto;width:100px}</style><main><img id=a data-eris-natural-width=200 data-eris-natural-height=100></main>",
+            300.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a"), rect(50.0, 75.0, 100.0, 50.0));
+    }
+
+    #[test]
+    fn percentage_height_uses_definite_parent_and_relative_auto_parent_ignores_percentage_top() {
+        let (doc, result) = render(
+            "<style>html,body{height:100%;margin:0}main{height:50%;position:relative}#child{height:50%}section{position:relative}#relative{position:relative;top:50%;height:20px}</style><main><div id=child></div></main><section><div id=relative></div></section>",
+            300.0,
+        );
+        assert_eq!(bounds(&doc, &result, "main").height, 200.0);
+        assert_eq!(bounds(&doc, &result, "#child").height, 100.0);
+        assert_eq!(bounds(&doc, &result, "#relative").y, 200.0);
+    }
+
+    #[test]
+    fn stacking_ties_follow_mutated_dom_tree_order_instead_of_arena_ids() {
+        let mut document = Document::parse(
+            "<style>body{margin:0}div{position:absolute;left:0;top:0;width:50px;height:50px}#a{background:red}#b{background:blue}</style><main><div id=a></div><div id=b></div></main>",
+        );
+        let parent = document.query_selector("main").unwrap();
+        let a = document.query_selector("#a").unwrap();
+        document.append_child(parent, a);
+        let styles = crate::css::compute_styles(&document, &document.stylesheets(), 200.0, 100.0);
+        let result = layout(&document, &styles, 200.0, 100.0, &Fonts::new());
+        assert_eq!(pixel(&result, 10, 10), 0xff0000);
+        assert_eq!(result.hit_test(10.0, 10.0), Some(a));
+    }
+
+    #[test]
+    fn deep_fixed_clip_scopes_and_exhausted_command_quota_remain_typed_and_balanced() {
+        let mut source = String::from(
+            "<style>body{margin:0}.outer{overflow:hidden;position:relative;width:40px;height:40px}.fixed{position:fixed;overflow:hidden;left:0;top:0;width:40px;height:40px}.leaf{position:relative;overflow:hidden;height:1px;background:red}.leaf:nth-child(2n){z-index:1}</style>",
+        );
+        for _ in 0..12 {
+            source.push_str("<div class=outer><div class=fixed>");
+        }
+        source.push_str(&"<div class=leaf>x</div>".repeat(40_000));
+        for _ in 0..12 {
+            source.push_str("</div></div>");
+        }
+        let (doc, result) = render(&source, 200.0);
+        let leaves = result
+            .hit_regions
+            .iter()
+            .filter(|hit| doc.attr(hit.node, "class") == Some("leaf"))
+            .count();
+        assert!(
+            (1..40_000).contains(&leaves),
+            "expected actual quota truncation: {leaves}"
+        );
+        let mut scopes = Vec::new();
+        let mut saw_fixed = false;
+        for command in &result.commands {
+            match command {
+                DrawCommand::PushFixed => {
+                    saw_fixed = true;
+                    scopes.push(true);
+                }
+                DrawCommand::PushClip { .. } => scopes.push(false),
+                DrawCommand::PopFixed => assert_eq!(scopes.pop(), Some(true)),
+                DrawCommand::PopClip => assert_eq!(scopes.pop(), Some(false)),
+                _ => {}
+            }
+            assert!(scopes.len() <= 128);
+        }
+        assert!(saw_fixed);
+        assert!(scopes.is_empty());
+        assert!(result.commands.len() <= MAX_COMMANDS);
+        assert!(result.hit_regions.len() <= MAX_VISITS);
+    }
+
+    #[test]
+    fn positioned_axis_clamps_before_solving_and_handles_negative_auto_margin_residue() {
+        let axis = PositionedAxis {
+            containing: 100.0,
+            start: Some(10.0),
+            end: Some(10.0),
+            size: Some(120.0),
+            natural: 0.0,
+            min: 0.0,
+            max: MAX_EXTENT,
+            margin_start: None,
+            margin_end: None,
+            static_start: 0.0,
+            horizontal: true,
+        };
+        assert_eq!(positioned_axis(axis), (10.0, 120.0));
+        assert_eq!(
+            positioned_axis(PositionedAxis {
+                horizontal: false,
+                ..axis
+            }),
+            (-10.0, 120.0)
+        );
+        assert_eq!(
+            positioned_axis(PositionedAxis { max: 40.0, ..axis }),
+            (30.0, 40.0)
+        );
+        assert_eq!(
+            positioned_axis(PositionedAxis {
+                size: None,
+                min: 120.0,
+                ..axis
+            }),
+            (10.0, 120.0)
+        );
+    }
+
+    #[test]
+    fn absolute_containing_block_skips_static_intermediates_and_uses_padding_box() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{position:relative;width:200px;height:120px;padding:20px;border:5px solid}section{margin:30px;padding:10px}#a{position:absolute;left:10%;right:20px;top:10px;bottom:30px;padding:3px;border:2px solid}</style><main><section><i id=a></i></section></main>",
+            400.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a"), rect(29.0, 15.0, 196.0, 120.0));
+        assert_eq!(bounds(&doc, &result, "main"), rect(0.0, 0.0, 250.0, 170.0));
+    }
+
+    #[test]
+    fn absolute_auto_height_ancestor_and_min_max_rebalance_auto_margins() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{position:relative;width:200px;padding:10px}section{height:80px}#a{position:absolute;left:10px;right:10px;top:10px;bottom:10px;max-width:100px;max-height:40px;margin:auto}#b{position:absolute;right:0;bottom:0;width:20px;height:10px}</style><main><section></section><i id=a></i><i id=b></i></main>",
+            400.0,
+        );
+        assert_eq!(bounds(&doc, &result, "main").height, 100.0);
+        assert_eq!(bounds(&doc, &result, "#a"), rect(60.0, 30.0, 100.0, 40.0));
+        assert_eq!(bounds(&doc, &result, "#b"), rect(200.0, 90.0, 20.0, 10.0));
+    }
+
+    #[test]
+    fn absolute_shrink_to_fit_keeps_out_of_flow() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{position:relative;width:200px}#a{position:absolute;padding:5px;right:10px}#a b{display:block;width:60px;height:20px}#after{height:10px}</style><main><aside id=a><b></b></aside><div id=after></div></main>",
+            400.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a"), rect(120.0, 0.0, 70.0, 30.0));
+        assert_eq!(bounds(&doc, &result, "#after"), rect(0.0, 0.0, 200.0, 10.0));
+    }
+
+    #[test]
+    fn relative_offsets_preserve_normal_flow_and_inline_containing_geometry() {
+        let (doc, result) = render(
+            "<style>body{margin:0}#a{position:relative;left:20px;top:30px;height:40px}#b{height:10px}span{position:relative;left:10px;top:5px}i{position:absolute;left:0;top:0;width:5px;height:5px}</style><div id=a></div><div id=b></div><p style='margin:0'><span>word<i id=inside></i></span></p>",
+            400.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a"), rect(20.0, 30.0, 400.0, 40.0));
+        assert_eq!(bounds(&doc, &result, "#b").y, 40.0);
+        let text = result
+            .hit_regions
+            .iter()
+            .find(|h| matches!(&doc.nodes[h.node].kind,NodeKind::Text(t) if t=="word"))
+            .unwrap();
+        assert_eq!(bounds(&doc, &result, "#inside").x, text.rect.x);
+        assert_eq!(bounds(&doc, &result, "#inside").y, text.rect.y);
+    }
+
+    #[test]
+    fn absolute_descendants_escape_static_overflow_but_honor_containing_clip() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{position:relative;width:100px;height:100px;overflow:hidden}section{width:20px;height:20px;overflow:hidden}#a{position:absolute;left:50px;top:50px;width:100px;height:100px;background:red}</style><main><section><a id=a></a></section></main>",
+            400.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a"), rect(50.0, 50.0, 50.0, 50.0));
+        assert_eq!(result.hit_test(60.0, 60.0), doc.query_selector("#a"));
+        assert_ne!(result.hit_test(110.0, 60.0), doc.query_selector("#a"));
+    }
+
+    #[test]
+    fn absolute_items_leave_flex_and_grid_flow_and_use_positioned_ancestor() {
+        for display in ["flex", "grid"] {
+            let (doc, result) = render(
+                &format!(
+                    "<style>body{{margin:0}}main{{position:relative;width:200px;height:100px;padding:10px}}section{{display:{display};grid-template-columns:20px 20px}}b{{width:20px;height:10px}}i{{position:absolute;right:0;bottom:0;width:30px;height:20px}}</style><main><section><b id=a></b><i id=abs></i><b id=b></b></section></main>"
+                ),
+                400.0,
+            );
+            assert_eq!(
+                bounds(&doc, &result, "#abs"),
+                rect(190.0, 100.0, 30.0, 20.0),
+                "{display}"
+            );
+            assert_eq!(bounds(&doc, &result, "#b").x, 30.0, "{display}");
+        }
+    }
+
+    #[test]
+    fn fixed_descendants_escape_overflow_and_do_not_extend_scroll_height() {
+        use crate::graphics::{Canvas, ImageStore};
+        let (doc, result) = render(
+            "<style>body{margin:0}main{position:relative;overflow:hidden;width:20px;height:20px;margin:100px}#a{position:fixed;left:30px;top:40px;width:40px;height:30px;background:red}#b{position:absolute;left:10px;top:10px;width:10px;height:10px;background:blue}</style><main><div id=a><i id=b></i></div></main>",
+            200.0,
+        );
+        assert_eq!(bounds(&doc, &result, "#a"), rect(30.0, 40.0, 40.0, 30.0));
+        assert_eq!(bounds(&doc, &result, "#b"), rect(40.0, 50.0, 10.0, 10.0));
+        assert!(
+            result
+                .hit_regions
+                .iter()
+                .filter(|h| [
+                    doc.query_selector("#a").unwrap(),
+                    doc.query_selector("#b").unwrap()
+                ]
+                .contains(&h.node))
+                .all(|h| h.fixed)
+        );
+        let mut canvas = Canvas::new(200, 100).unwrap();
+        canvas.paint_with_viewport(
+            &result.commands,
+            &Fonts::new(),
+            &ImageStore::new(),
+            (0.0, -100.0),
+            (0.0, 0.0),
+        );
+        assert_eq!(canvas.pixels[45 * 200 + 35], 0xff0000);
+        assert_eq!(canvas.pixels[55 * 200 + 45], 0x0000ff);
+        assert_eq!(result.content_height, 400.0);
+    }
+
+    fn pixel(result: &LayoutResult, x: usize, y: usize) -> u32 {
+        use crate::graphics::{Canvas, ImageStore};
+        let mut canvas = Canvas::new(200, 150).unwrap();
+        canvas.paint(
+            &result.commands,
+            &Fonts::new(),
+            &ImageStore::new(),
+            0.0,
+            0.0,
+        );
+        canvas.pixels[y * 200 + x]
+    }
+
+    #[test]
+    fn stacking_levels_isolate_real_contexts_and_hit_the_top_painted_box() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{position:relative;z-index:0;width:100px;height:100px}div{position:absolute;width:80px;height:80px;left:0;top:0}#low{z-index:1;background:red}#high{z-index:2;background:blue}#nested{z-index:999;background:lime}</style><main><div id=high></div><div id=low><div id=nested></div></div></main>",
+            200.0,
+        );
+        assert_eq!(pixel(&result, 10, 10), 0x0000ff);
+        assert_eq!(result.hit_test(10.0, 10.0), doc.query_selector("#high"));
+    }
+
+    #[test]
+    fn positioned_auto_context_allows_real_descendant_to_escape_and_keeps_clip() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{position:relative;width:100px;height:100px}div{position:absolute;left:0;top:0;width:80px;height:80px}#auto{overflow:hidden;width:40px}#high{z-index:2;background:blue}#nested{z-index:9;background:lime}</style><main><div id=auto><div id=nested></div></div><div id=high></div></main>",
+            200.0,
+        );
+        assert_eq!(pixel(&result, 10, 10), 0x00ff00);
+        assert_eq!(pixel(&result, 60, 10), 0x0000ff);
+        assert_eq!(result.hit_test(10.0, 10.0), doc.query_selector("#nested"));
+        assert_eq!(result.hit_test(60.0, 10.0), doc.query_selector("#high"));
+    }
+
+    #[test]
+    fn negative_context_paints_above_own_context_background_below_normal_children() {
+        let (_, result) = render(
+            "<style>body{margin:0}main{position:relative;z-index:0;width:100px;height:100px;background:red}#neg{position:absolute;z-index:-1;left:0;top:0;width:80px;height:80px;background:lime}#flow{width:40px;height:40px;background:blue}</style><main><i id=neg></i><div id=flow></div></main>",
+            200.0,
+        );
+        assert_eq!(pixel(&result, 10, 10), 0x0000ff);
+        assert_eq!(pixel(&result, 60, 10), 0x00ff00);
+        assert_eq!(pixel(&result, 90, 10), 0xff0000);
+    }
+
+    #[test]
+    fn grid_item_z_index_creates_context_without_position_and_respects_dom_order() {
+        let (doc, result) = render(
+            "<style>body{margin:0}main{display:grid;grid-template-columns:80px}div{grid-area:1/1;width:80px;height:80px}#a{z-index:2;background:red}#b{z-index:1;background:blue}</style><main><div id=a></div><div id=b></div></main>",
+            200.0,
+        );
+        assert_eq!(pixel(&result, 10, 10), 0xff0000);
+        assert_eq!(result.hit_test(10.0, 10.0), doc.query_selector("#a"));
     }
 
     #[test]
@@ -4813,7 +5837,7 @@ mod tests {
                     width,
                     ..
                 } => vec![*x1, *y1, *x2, *y2, *width],
-                DrawCommand::PopClip => vec![],
+                DrawCommand::PopClip | DrawCommand::PushFixed | DrawCommand::PopFixed => vec![],
             };
             assert!(coordinates.iter().all(|value| value.is_finite()));
         }
@@ -5063,10 +6087,12 @@ mod tests {
             commands: Vec::new(),
             hit_regions: vec![
                 HitRegion {
+                    fixed: false,
                     node: 1,
                     rect: rect(0.0, 0.0, 100.0, 100.0),
                 },
                 HitRegion {
+                    fixed: false,
                     node: 2,
                     rect: rect(20.0, 20.0, 20.0, 20.0),
                 },

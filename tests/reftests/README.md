@@ -1,6 +1,6 @@
 # Focused rendering reference tests
 
-These twenty-six self-authored cases compare Eris rendering against independently
+These thirty-two self-authored cases compare Eris rendering against independently
 expressed reference layouts at 320 × 240 pixels. They exercise specific HTML/CSS
 behaviors; they are not the Web Platform Tests, a browser compatibility score, or
 a Chromium performance comparison. Passing a pair cannot detect a defect shared
@@ -26,3 +26,7 @@ The six float cases and the associated geometry coverage are described in
 The seven additional grid cases and the associated geometry coverage are
 described in [`grid.md`](grid.md), including supported syntax and remaining
 sizing and placement limitations.
+
+The six positioned-layout cases and their geometry/stacking coverage are
+described in [`positioning.md`](positioning.md), including the remaining
+static-position, inline-fragment and compositing limitations.

@@ -178,6 +178,17 @@ class ExecutionTests(unittest.TestCase):
 
 
 class IntegrityTests(unittest.TestCase):
+    def test_regexp_profile_is_complete_and_cannot_replace_original_inventory(self):
+        directory = runner.ROOT / 'tests/upstream/test262-regexp'
+        manifest, _, cases, fixtures, _ = runner.load_corpus(directory, 'regexp')
+        self.assertEqual(manifest['test_files'], 145)
+        self.assertEqual(len(cases), 290)
+        self.assertEqual(fixtures, [])
+        self.assertEqual({case['mode'] for case in cases}, {'sloppy', 'strict'})
+        self.assertTrue(all(case['file'].startswith('test/built-ins/RegExp/prototype/') for case in cases))
+        with self.assertRaisesRegex(ValueError, 'inventory'):
+            runner.load_corpus(directory)
+
     def test_full_pinned_inventory_and_every_mode_are_present(self):
         manifest, _, cases, fixtures, _ = runner.load_corpus(runner.ROOT / 'tests/upstream/test262')
         self.assertEqual(manifest['test_files'], 326)

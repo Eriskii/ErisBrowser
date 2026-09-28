@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "f073410553ed7cac9c6ddb0d5d10da1e52616d067a0310578e84cbf000df4191",
   "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
-  "binary_sha256": "f9f4187912cbf808bbd7317293e9bfea527b1570de63bdea7997953cc37594e4",
+  "binary_sha256": "f01d1bc534b9401ab22ced44cc9d1e3a87eb012ac77aee96ada2f5ae4cfed0b3",
   "cases": {
     "test/built-ins/JSON/parse/15.12.1.1-0-1.js:sloppy": {
       "status": "passed",
@@ -1405,12 +1405,12 @@
       "source_sha256": "88e4838a16bb8a811a7843836d32688e00d1e51614514cf35d3fe3b3ca7422ed"
     },
     "test/built-ins/JSON/stringify/value-tojson-not-function.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "02e505e60ecda2f5722c2109c7f38d4a3220039af54009212012ccb1516a0749",
       "source_sha256": "0207ba9ecec0650b33c105c6d46b03b39e1149247eb25dfaf99633d64f0c7c92"
     },
     "test/built-ins/JSON/stringify/value-tojson-not-function.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "90060416a9b05a766ddc0e075ccbac0f93a0b1095e52a3134057b9cdacf2cea2",
       "source_sha256": "0207ba9ecec0650b33c105c6d46b03b39e1149247eb25dfaf99633d64f0c7c92"
     },

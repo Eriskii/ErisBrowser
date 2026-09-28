@@ -24,7 +24,7 @@ After the parser, JSON and flex compatibility increment, the same fixture/viewpo
 
 After the broker, namespace and Test262 increment, the same warm-render configuration recorded medians of 4.399 ms (home), 7.053 ms (gallery), and 5.203 ms (forms); p95 values were 4.542, 7.519 and 5.273 ms. [This record](benchmark-broker.json) retains the measured build/input hashes. It still excludes native process startup and IPC, so these timings do not measure the new broker's overhead or establish a Chromium comparison.
 
-`python3 tools/benchmark.py` records timings for four local fixtures in `artifacts/benchmark.json`, including source/assets/dependency input hashes, binary hash, CPU, OS, compiler and excluded phases. The template/Grid fixture uses its initially populated document; cloning and click handlers execute outside the measured warm-render loop.
+`python3 tools/benchmark.py` records timings for five local fixtures in `artifacts/benchmark.json`, including source/assets/dependency input hashes, binary hash, CPU, OS, compiler and excluded phases. The template/Grid and positioning fixtures use their initially loaded documents; cloning, import loading and click handlers execute outside the measured warm-render loop.
 
 ## Required comparison design
 
@@ -55,3 +55,14 @@ were checked against the frozen build. [The recorded JSON](benchmark-templates-g
 contains the complete environment and phase definitions. It is an uncontrolled
 local observation; the new fixture has no earlier recorded comparison, and none
 of these measurements establish Chromium-relative performance.
+
+The HTML/base-URL/RegExp/positioning/import checkpoint recorded warm medians of
+4.470 ms (home), 7.106 ms (gallery), 5.250 ms (forms), 1.119 ms (templates), and
+1.117 ms (the new positioning fixture). Corresponding p95 values were 4.497,
+7.256, 5.292, 1.187 and 1.204 ms. This used the same 100-iteration, 1180×880
+configuration after the native window and other heavy checks finished.
+[The recorded JSON](benchmark-positioning-regexp.json) retains verified source
+and binary hashes. The positioning fixture has no earlier recorded baseline;
+its CSS imports and script setup finish before measurement. These local
+observations do not establish a speed change, import/RegExp execution cost or
+performance relative to Chromium.

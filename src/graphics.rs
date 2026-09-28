@@ -66,6 +66,10 @@ pub enum DrawCommand {
         rect: Rect,
     },
     PopClip,
+    /// Enter viewport coordinates, retaining only the caller's viewport clip.
+    PushFixed,
+    /// Restore the enclosing coordinate and clipping scope.
+    PopFixed,
     Rect {
         rect: Rect,
         color: Color,
@@ -497,9 +501,24 @@ impl Canvas {
         dx: f32,
         dy: f32,
     ) {
+        self.paint_with_viewport(commands, fonts, images, (dx, dy), (dx, dy));
+    }
+    pub fn paint_with_viewport(
+        &mut self,
+        commands: &[DrawCommand],
+        fonts: &Fonts,
+        images: &ImageStore,
+        document_offset: (f32, f32),
+        viewport_offset: (f32, f32),
+    ) {
+        enum Scope {
+            Clip(Rect),
+            Fixed { clip: Rect, offset: (f32, f32) },
+        }
         self.paint_exhausted = false;
         let caller_clip = self.clip;
-        let mut clips = Vec::new();
+        let mut scopes = Vec::new();
+        let (mut dx, mut dy) = document_offset;
         self.budget = Some(PaintBudget {
             pixels: (u64::from(self.width) * u64::from(self.height) * 16)
                 .clamp(1_000_000, MAX_PAINT_PIXELS),
@@ -512,11 +531,11 @@ impl Canvas {
             }
             match command {
                 DrawCommand::PushClip { rect } => {
-                    if clips.len() >= MAX_CLIP_DEPTH {
+                    if scopes.len() >= MAX_CLIP_DEPTH {
                         self.paint_exhausted = true;
                         break;
                     }
-                    clips.push(self.clip);
+                    scopes.push(Scope::Clip(self.clip));
                     let nested = rect.translated(dx, dy);
                     if [nested.x, nested.y, nested.width, nested.height]
                         .iter()
@@ -528,9 +547,31 @@ impl Canvas {
                     }
                 }
                 DrawCommand::PopClip => {
-                    if let Some(previous) = clips.pop() {
-                        self.clip = previous;
+                    let Some(Scope::Clip(previous)) = scopes.pop() else {
+                        self.paint_exhausted = true;
+                        break;
+                    };
+                    self.clip = previous;
+                }
+                DrawCommand::PushFixed => {
+                    if scopes.len() >= MAX_CLIP_DEPTH {
+                        self.paint_exhausted = true;
+                        break;
                     }
+                    scopes.push(Scope::Fixed {
+                        clip: self.clip,
+                        offset: (dx, dy),
+                    });
+                    self.clip = caller_clip;
+                    (dx, dy) = viewport_offset;
+                }
+                DrawCommand::PopFixed => {
+                    let Some(Scope::Fixed { clip, offset }) = scopes.pop() else {
+                        self.paint_exhausted = true;
+                        break;
+                    };
+                    self.clip = clip;
+                    (dx, dy) = offset;
                 }
                 DrawCommand::Rect {
                     rect,
@@ -599,6 +640,74 @@ impl Canvas {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn fixed_scope_uses_viewport_origin_and_restores_document_clips() {
+        let mut canvas = Canvas::new(12, 12).unwrap();
+        canvas.clear(Color::WHITE);
+        let viewport = Rect {
+            x: 0.0,
+            y: 2.0,
+            width: 12.0,
+            height: 8.0,
+        };
+        canvas.set_clip(viewport);
+        let rect = Rect {
+            x: 0.0,
+            y: 0.0,
+            width: 12.0,
+            height: 12.0,
+        };
+        canvas.paint_with_viewport(
+            &[
+                DrawCommand::PushClip {
+                    rect: Rect {
+                        x: 0.0,
+                        y: 8.0,
+                        width: 3.0,
+                        height: 3.0,
+                    },
+                },
+                DrawCommand::PushFixed,
+                DrawCommand::Rect {
+                    rect,
+                    color: Color::rgb(255, 0, 0),
+                    radius: 0.0,
+                },
+                DrawCommand::PushClip {
+                    rect: Rect {
+                        x: 4.0,
+                        y: 1.0,
+                        width: 2.0,
+                        height: 2.0,
+                    },
+                },
+                DrawCommand::Rect {
+                    rect,
+                    color: Color::rgb(0, 0, 255),
+                    radius: 0.0,
+                },
+                DrawCommand::PopClip,
+                DrawCommand::PopFixed,
+                DrawCommand::Rect {
+                    rect: Rect { y: 8.0, ..rect },
+                    color: Color::rgb(0, 255, 0),
+                    radius: 0.0,
+                },
+                DrawCommand::PopClip,
+            ],
+            &Fonts::new(),
+            &ImageStore::new(),
+            (0.0, -6.0),
+            (0.0, 2.0),
+        );
+        assert_eq!(canvas.pixels[12], 0xffffff); // Toolbar remains outside caller clip.
+        assert_eq!(canvas.pixels[2 * 12 + 1], 0x00ff00); // Document offset restored.
+        assert_eq!(canvas.pixels[3 * 12 + 4], 0x0000ff); // Nested fixed clip.
+        assert_eq!(canvas.pixels[6 * 12 + 8], 0xff0000); // Ancestor document clip escaped.
+        assert_eq!(canvas.pixels[10 * 12], 0xffffff); // Status area remains protected.
+        assert!(!canvas.exhausted());
+        assert_eq!(canvas.clip, viewport);
+    }
     #[test]
     fn opaque_fast_path_respects_fractional_clip_edges() {
         let mut canvas = Canvas::new(8, 8).unwrap();

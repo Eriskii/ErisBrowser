@@ -564,7 +564,7 @@ impl Browser {
                 self.focused = None;
                 self.selection.end(&self.address);
                 if let Some(snapshot) = &mut self.snapshot {
-                    snapshot.url = address.clone();
+                    snapshot.navigate_fragment(target.clone());
                 }
                 self.jump_to(target.fragment().unwrap_or(""));
                 let _ = self.tx.send(Request::Fragment {
@@ -620,6 +620,7 @@ impl Browser {
         if let Some(s) = &self.snapshot
             && let Some(id) = eris::page::find_fragment(&s.document, fragment)
             && let Some(hit) = s.layout.hit_regions.iter().find(|r| r.node == id)
+            && !hit.fixed
         {
             self.scroll = hit.rect.y * self.zoom;
             self.clamp_scroll();
@@ -655,8 +656,10 @@ impl Browser {
             .iter()
             .rev()
             .find(|h| {
-                h.rect
-                    .contains(x / self.zoom, (y - TOOLBAR + self.scroll) / self.zoom)
+                h.rect.contains(
+                    x / self.zoom,
+                    (y - TOOLBAR + if h.fixed { 0.0 } else { self.scroll }) / self.zoom,
+                )
             })
             .map(|h| h.node)
     }
@@ -1233,12 +1236,12 @@ impl Browser {
         canvas.set_clip(viewport);
         if let Some(snapshot) = &self.snapshot {
             if (self.zoom - 1.0).abs() < 0.001 {
-                canvas.paint(
+                canvas.paint_with_viewport(
                     &snapshot.layout.commands,
                     &self.fonts,
                     &snapshot.images,
-                    0.0,
-                    TOOLBAR - self.scroll,
+                    (0.0, TOOLBAR - self.scroll),
+                    (0.0, TOOLBAR),
                 );
             } else {
                 let commands = snapshot
@@ -1247,12 +1250,12 @@ impl Browser {
                     .iter()
                     .map(|c| scaled_command(c, self.zoom))
                     .collect::<Vec<_>>();
-                canvas.paint(
+                canvas.paint_with_viewport(
                     &commands,
                     &self.fonts,
                     &snapshot.images,
-                    0.0,
-                    TOOLBAR - self.scroll,
+                    (0.0, TOOLBAR - self.scroll),
+                    (0.0, TOOLBAR),
                 );
             }
             if let Some(node) = self.focused
@@ -1260,7 +1263,7 @@ impl Browser {
             {
                 let r = Rect {
                     x: hit.rect.x * self.zoom,
-                    y: hit.rect.y * self.zoom + TOOLBAR - self.scroll,
+                    y: hit.rect.y * self.zoom + TOOLBAR - if hit.fixed { 0.0 } else { self.scroll },
                     width: hit.rect.width * self.zoom,
                     height: hit.rect.height * self.zoom,
                 };
@@ -1737,6 +1740,8 @@ fn scaled_command(command: &DrawCommand, z: f32) -> DrawCommand {
     match command {
         DrawCommand::PushClip { rect: r } => DrawCommand::PushClip { rect: rect(r) },
         DrawCommand::PopClip => DrawCommand::PopClip,
+        DrawCommand::PushFixed => DrawCommand::PushFixed,
+        DrawCommand::PopFixed => DrawCommand::PopFixed,
         DrawCommand::Rect {
             rect: r,
             color,
@@ -1793,6 +1798,44 @@ mod tests {
     use eris::{
         dom::Document, graphics::ImageStore, layout::LayoutResult, page::Page, worker::apply_edit,
     };
+
+    #[test]
+    fn fixed_hit_regions_keep_viewport_coordinates_after_scroll_and_zoom() {
+        let mut browser =
+            editing_browser("<button id=f>fixed</button><button id=n>normal</button>");
+        let snapshot = browser.snapshot.as_mut().unwrap();
+        let fixed = snapshot.document.query_selector("#f").unwrap();
+        let normal = snapshot.document.query_selector("#n").unwrap();
+        let rect = Rect {
+            x: 20.0,
+            y: 20.0,
+            width: 100.0,
+            height: 30.0,
+        };
+        snapshot.layout.hit_regions = vec![
+            eris::layout::HitRegion {
+                node: normal,
+                rect,
+                fixed: false,
+            },
+            eris::layout::HitRegion {
+                node: fixed,
+                rect,
+                fixed: true,
+            },
+        ];
+        browser.scroll = 800.0;
+        browser.zoom = 2.0;
+        browser.cursor = (60.0, TOOLBAR + 60.0);
+        assert_eq!(browser.hit(), Some(fixed));
+        browser.cursor = (60.0, TOOLBAR - 1.0);
+        assert_eq!(browser.hit(), None);
+        browser.snapshot.as_mut().unwrap().layout.hit_regions.pop();
+        browser.cursor = (60.0, TOOLBAR + 60.0);
+        assert_eq!(browser.hit(), None);
+        browser.scroll = 0.0;
+        assert_eq!(browser.hit(), Some(normal));
+    }
 
     fn document_layout(document: &Document, fonts: &Fonts) -> LayoutResult {
         let styles = eris::css::compute_styles(document, &document.stylesheets(), 1180.0, 739.0);
@@ -2030,6 +2073,20 @@ mod tests {
         assert!(!browser.loading);
         assert_eq!(browser.address, target);
         assert_eq!(browser.snapshot.as_ref().unwrap().url, target);
+        assert_eq!(
+            browser.snapshot.as_ref().unwrap().document.url().as_str(),
+            target
+        );
+        assert_eq!(
+            browser
+                .snapshot
+                .as_ref()
+                .unwrap()
+                .document
+                .base_url()
+                .as_str(),
+            target
+        );
         assert_eq!(browser.history, [original, target]);
         assert_eq!(browser.history_index, 1);
         assert!(

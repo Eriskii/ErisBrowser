@@ -158,6 +158,42 @@
       "description": "Implicit tracks before and after the explicit grid cycle through the declared track sizes.",
       "test": "grid-implicit-negative.html",
       "reference": "grid-implicit-negative-ref.html"
+    },
+    {
+      "name": "position-containing-block",
+      "description": "Absolute percentage insets use the positioned ancestor padding box across static intermediates.",
+      "test": "position-containing-block.html",
+      "reference": "position-containing-block-ref.html"
+    },
+    {
+      "name": "position-opposing-insets",
+      "description": "Opposing insets plus maximum sizes redistribute auto margins on both axes.",
+      "test": "position-opposing-insets.html",
+      "reference": "position-opposing-insets-ref.html"
+    },
+    {
+      "name": "position-stacking-isolation",
+      "description": "Nested high z-index remains inside its lower real stacking context.",
+      "test": "position-stacking-isolation.html",
+      "reference": "position-stacking-isolation-ref.html"
+    },
+    {
+      "name": "position-auto-context-clip",
+      "description": "An auto-z ancestor lets a real descendant rise above its sibling while retaining the ancestor clip.",
+      "test": "position-auto-context-clip.html",
+      "reference": "position-auto-context-clip-ref.html"
+    },
+    {
+      "name": "position-fixed-viewport",
+      "description": "Fixed descendants escape an overflow ancestor and keep viewport coordinates.",
+      "test": "position-fixed-viewport.html",
+      "reference": "position-fixed-viewport-ref.html"
+    },
+    {
+      "name": "position-relative-flow",
+      "description": "Relative visual offsets preserve the position of the following normal-flow block.",
+      "test": "position-relative-flow.html",
+      "reference": "position-relative-flow-ref.html"
     }
   ]
 }

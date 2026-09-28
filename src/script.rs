@@ -8,6 +8,7 @@
 
 use crate::dom::{Document, Namespace, NodeId, NodeKind};
 use crate::js_string::{JsString, is_js_whitespace, radix_number};
+use crate::regexp::{self, RegExp};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
 use std::rc::Rc;
@@ -249,6 +250,13 @@ impl fmt::Display for ScriptError {
 }
 impl std::error::Error for ScriptError {}
 type Result<T> = std::result::Result<T, ScriptError>;
+fn regexp_error(error: regexp::Error) -> ScriptError {
+    match error {
+        regexp::Error::Syntax(message) => ScriptError::syntax(message),
+        regexp::Error::Unsupported(message) => ScriptError::unsupported(message),
+        regexp::Error::Resource(message) => ScriptError::resource(message),
+    }
+}
 
 #[derive(Clone, Debug)]
 enum TokenKind {
@@ -256,6 +264,8 @@ enum TokenKind {
     Number(f64),
     String(JsString),
     Symbol(String),
+    RegExp(Rc<RegExp>),
+    Invalid(ScriptError),
     End,
 }
 #[derive(Clone, Debug)]
@@ -275,258 +285,278 @@ fn lex(source: &str) -> Result<Vec<Token>> {
     let mut tokens = Vec::new();
     let mut pos = 0;
     let mut line_break_before = false;
-    while pos < source.len() {
-        let ch = source[pos..].chars().next().unwrap();
-        if ch.is_whitespace() {
-            line_break_before |= matches!(ch, '\n' | '\r' | '\u{2028}' | '\u{2029}');
-            pos += ch.len_utf8();
-            continue;
-        }
-        if source[pos..].starts_with("//") {
-            pos += source[pos..]
-                .find(['\n', '\r', '\u{2028}', '\u{2029}'])
-                .unwrap_or(source.len() - pos);
-            continue;
-        }
-        if source[pos..].starts_with("/*") {
-            let end = source[pos + 2..]
-                .find("*/")
-                .ok_or_else(|| ScriptError::at("unterminated comment", pos))?;
-            line_break_before |=
-                source[pos..pos + end + 4].contains(['\n', '\r', '\u{2028}', '\u{2029}']);
-            pos += end + 4;
-            continue;
-        }
-        let start = pos;
-        let mut legacy_literal = false;
-        let kind = if ch == '\'' || ch == '"' || ch == '`' {
-            let quote = ch;
-            pos += 1;
-            let mut value = Vec::<u16>::new();
-            let mut closed = false;
-            while pos < source.len() {
-                let c = source[pos..].chars().next().unwrap();
-                pos += c.len_utf8();
-                if c == quote {
-                    closed = true;
-                    break;
-                }
-                if quote == '`' && c == '$' && source[pos..].starts_with('{') {
-                    return Err(ScriptError::unsupported(
-                        "template interpolation is not implemented",
-                    ));
-                }
-                if c == '\\' {
-                    let e = source[pos..]
-                        .chars()
-                        .next()
-                        .ok_or_else(|| ScriptError::at("unterminated escape", pos))?;
-                    pos += e.len_utf8();
-                    match e {
-                        'n' => value.push(10),
-                        'r' => value.push(13),
-                        't' => value.push(9),
-                        'b' => value.push(8),
-                        'f' => value.push(12),
-                        'v' => value.push(11),
-                        '0'..='7' => {
-                            let mut n = e as u16 - '0' as u16;
-                            let mut count = 1;
-                            while count < if e <= '3' { 3 } else { 2 }
-                                && source
-                                    .as_bytes()
-                                    .get(pos)
-                                    .is_some_and(|b| (b'0'..=b'7').contains(b))
-                            {
-                                n = n * 8 + u16::from(source.as_bytes()[pos] - b'0');
-                                pos += 1;
-                                count += 1;
-                            }
-                            legacy_literal |= e != '0'
-                                || count > 1
-                                || source.as_bytes().get(pos).is_some_and(u8::is_ascii_digit);
-                            value.push(n);
-                        }
-                        '8' | '9' => {
-                            legacy_literal = true;
-                            value.push(e as u16);
-                        }
-                        '\n' | '\u{2028}' | '\u{2029}' => {}
-                        '\r' => {
-                            if source.as_bytes().get(pos) == Some(&b'\n') {
-                                pos += 1;
-                            }
-                        }
-                        'u' | 'x' => {
-                            if e == 'u' && source.as_bytes().get(pos) == Some(&b'{') {
-                                pos += 1;
-                                let start = pos;
-                                while source
-                                    .as_bytes()
-                                    .get(pos)
-                                    .is_some_and(u8::is_ascii_hexdigit)
+    // The parser supplies the RegExp lexical goal at a primary expression.
+    // Keep provisional division-goal errors as tokens: quotes and comments
+    // inside a yet-unrecognized pattern must not reject the whole script.
+    let result = (|| -> Result<()> {
+        while pos < source.len() {
+            let ch = source[pos..].chars().next().unwrap();
+            if ch.is_whitespace() {
+                line_break_before |= matches!(ch, '\n' | '\r' | '\u{2028}' | '\u{2029}');
+                pos += ch.len_utf8();
+                continue;
+            }
+            if source[pos..].starts_with("//") {
+                pos += source[pos..]
+                    .find(['\n', '\r', '\u{2028}', '\u{2029}'])
+                    .unwrap_or(source.len() - pos);
+                continue;
+            }
+            if source[pos..].starts_with("/*") {
+                let end = source[pos + 2..]
+                    .find("*/")
+                    .ok_or_else(|| ScriptError::at("unterminated comment", pos))?;
+                line_break_before |=
+                    source[pos..pos + end + 4].contains(['\n', '\r', '\u{2028}', '\u{2029}']);
+                pos += end + 4;
+                continue;
+            }
+            let start = pos;
+            let mut legacy_literal = false;
+            let kind = if ch == '\'' || ch == '"' || ch == '`' {
+                let quote = ch;
+                pos += 1;
+                let mut value = Vec::<u16>::new();
+                let mut closed = false;
+                while pos < source.len() {
+                    let c = source[pos..].chars().next().unwrap();
+                    pos += c.len_utf8();
+                    if c == quote {
+                        closed = true;
+                        break;
+                    }
+                    if quote == '`' && c == '$' && source[pos..].starts_with('{') {
+                        return Err(ScriptError::unsupported(
+                            "template interpolation is not implemented",
+                        ));
+                    }
+                    if c == '\\' {
+                        let e = source[pos..]
+                            .chars()
+                            .next()
+                            .ok_or_else(|| ScriptError::at("unterminated escape", pos))?;
+                        pos += e.len_utf8();
+                        match e {
+                            'n' => value.push(10),
+                            'r' => value.push(13),
+                            't' => value.push(9),
+                            'b' => value.push(8),
+                            'f' => value.push(12),
+                            'v' => value.push(11),
+                            '0'..='7' => {
+                                let mut n = e as u16 - '0' as u16;
+                                let mut count = 1;
+                                while count < if e <= '3' { 3 } else { 2 }
+                                    && source
+                                        .as_bytes()
+                                        .get(pos)
+                                        .is_some_and(|b| (b'0'..=b'7').contains(b))
                                 {
+                                    n = n * 8 + u16::from(source.as_bytes()[pos] - b'0');
+                                    pos += 1;
+                                    count += 1;
+                                }
+                                legacy_literal |= e != '0'
+                                    || count > 1
+                                    || source.as_bytes().get(pos).is_some_and(u8::is_ascii_digit);
+                                value.push(n);
+                            }
+                            '8' | '9' => {
+                                legacy_literal = true;
+                                value.push(e as u16);
+                            }
+                            '\n' | '\u{2028}' | '\u{2029}' => {}
+                            '\r' => {
+                                if source.as_bytes().get(pos) == Some(&b'\n') {
                                     pos += 1;
                                 }
-                                if start == pos
-                                    || pos - start > 6
-                                    || source.as_bytes().get(pos) != Some(&b'}')
-                                {
-                                    return Err(ScriptError::at(
-                                        "invalid Unicode code point escape",
-                                        start,
-                                    ));
-                                }
-                                let point =
-                                    u32::from_str_radix(&source[start..pos], 16).map_err(|_| {
-                                        ScriptError::at("invalid Unicode code point escape", start)
-                                    })?;
-                                if point > 0x10ffff {
-                                    return Err(ScriptError::at(
-                                        "Unicode code point exceeds range",
-                                        start,
-                                    ));
-                                }
-                                if point <= 0xffff {
-                                    value.push(point as u16);
-                                } else {
-                                    let point = point - 0x10000;
-                                    value.push(0xd800 + (point >> 10) as u16);
-                                    value.push(0xdc00 + (point & 0x3ff) as u16);
-                                }
-                                pos += 1;
-                                continue;
                             }
-                            let len = if e == 'u' { 4 } else { 2 };
-                            let end = pos
-                                .checked_add(len)
-                                .filter(|end| *end <= source.len())
-                                .ok_or_else(|| {
+                            'u' | 'x' => {
+                                if e == 'u' && source.as_bytes().get(pos) == Some(&b'{') {
+                                    pos += 1;
+                                    let start = pos;
+                                    while source
+                                        .as_bytes()
+                                        .get(pos)
+                                        .is_some_and(u8::is_ascii_hexdigit)
+                                    {
+                                        pos += 1;
+                                    }
+                                    if start == pos
+                                        || pos - start > 6
+                                        || source.as_bytes().get(pos) != Some(&b'}')
+                                    {
+                                        return Err(ScriptError::at(
+                                            "invalid Unicode code point escape",
+                                            start,
+                                        ));
+                                    }
+                                    let point = u32::from_str_radix(&source[start..pos], 16)
+                                        .map_err(|_| {
+                                            ScriptError::at(
+                                                "invalid Unicode code point escape",
+                                                start,
+                                            )
+                                        })?;
+                                    if point > 0x10ffff {
+                                        return Err(ScriptError::at(
+                                            "Unicode code point exceeds range",
+                                            start,
+                                        ));
+                                    }
+                                    if point <= 0xffff {
+                                        value.push(point as u16);
+                                    } else {
+                                        let point = point - 0x10000;
+                                        value.push(0xd800 + (point >> 10) as u16);
+                                        value.push(0xdc00 + (point & 0x3ff) as u16);
+                                    }
+                                    pos += 1;
+                                    continue;
+                                }
+                                let len = if e == 'u' { 4 } else { 2 };
+                                let end = pos
+                                    .checked_add(len)
+                                    .filter(|end| *end <= source.len())
+                                    .ok_or_else(|| {
                                     ScriptError::at("incomplete character escape", pos)
                                 })?;
-                            let hex = source
-                                .get(pos..end)
-                                .ok_or_else(|| ScriptError::at("invalid character escape", pos))?;
-                            let n = u32::from_str_radix(hex, 16)
-                                .map_err(|_| ScriptError::at("invalid character escape", pos))?;
-                            value.push(n as u16);
-                            pos = end;
+                                let hex = source.get(pos..end).ok_or_else(|| {
+                                    ScriptError::at("invalid character escape", pos)
+                                })?;
+                                let n = u32::from_str_radix(hex, 16).map_err(|_| {
+                                    ScriptError::at("invalid character escape", pos)
+                                })?;
+                                value.push(n as u16);
+                                pos = end;
+                            }
+                            _ => {
+                                let mut units = [0; 2];
+                                value.extend_from_slice(e.encode_utf16(&mut units));
+                            }
                         }
-                        _ => {
-                            let mut units = [0; 2];
-                            value.extend_from_slice(e.encode_utf16(&mut units));
-                        }
-                    }
-                } else {
-                    if matches!(c, '\n' | '\r') && quote != '`' {
-                        return Err(ScriptError::at("newline in string", pos));
-                    }
-                    let mut units = [0; 2];
-                    value.extend_from_slice(c.encode_utf16(&mut units));
-                }
-            }
-            if !closed {
-                return Err(ScriptError::at("unterminated string", start));
-            }
-            if quote == '`' && legacy_literal {
-                return Err(ScriptError::at(
-                    "legacy escapes are forbidden in template literals",
-                    start,
-                ));
-            }
-            TokenKind::String(JsString::from(value))
-        } else if ch.is_ascii_digit()
-            || (ch == '.'
-                && source
-                    .as_bytes()
-                    .get(pos + 1)
-                    .is_some_and(u8::is_ascii_digit))
-        {
-            if source[pos..].starts_with("0x") || source[pos..].starts_with("0X") {
-                pos += 2;
-                let digits = pos;
-                while source
-                    .as_bytes()
-                    .get(pos)
-                    .is_some_and(u8::is_ascii_hexdigit)
-                {
-                    pos += 1;
-                }
-                let n = u64::from_str_radix(&source[digits..pos], 16)
-                    .map_err(|_| ScriptError::at("invalid hexadecimal number", start))?;
-                TokenKind::Number(n as f64)
-            } else {
-                while source.as_bytes().get(pos).is_some_and(u8::is_ascii_digit) {
-                    pos += 1;
-                }
-                if source.as_bytes().get(pos) == Some(&b'.') {
-                    pos += 1;
-                    while source.as_bytes().get(pos).is_some_and(u8::is_ascii_digit) {
-                        pos += 1;
-                    }
-                }
-                if matches!(source.as_bytes().get(pos), Some(b'e' | b'E')) {
-                    pos += 1;
-                    if matches!(source.as_bytes().get(pos), Some(b'+' | b'-')) {
-                        pos += 1;
-                    }
-                    while source.as_bytes().get(pos).is_some_and(u8::is_ascii_digit) {
-                        pos += 1;
-                    }
-                }
-                let raw = &source[start..pos];
-                legacy_literal =
-                    raw.len() > 1 && raw.starts_with('0') && raw.as_bytes()[1].is_ascii_digit();
-                TokenKind::Number(
-                    if legacy_literal && raw.bytes().all(|b| (b'0'..=b'7').contains(&b)) {
-                        raw.bytes().fold(0.0, |n, b| n * 8.0 + f64::from(b - b'0'))
                     } else {
-                        raw.parse()
-                            .map_err(|_| ScriptError::at("invalid number", start))?
-                    },
-                )
-            }
-        } else if ch.is_alphabetic() || ch == '_' || ch == '$' {
-            pos += ch.len_utf8();
-            while let Some(c) = source[pos..].chars().next() {
-                if !(c.is_alphanumeric() || c == '_' || c == '$') {
-                    break;
+                        if matches!(c, '\n' | '\r') && quote != '`' {
+                            return Err(ScriptError::at("newline in string", pos));
+                        }
+                        let mut units = [0; 2];
+                        value.extend_from_slice(c.encode_utf16(&mut units));
+                    }
                 }
-                pos += c.len_utf8();
-            }
-            TokenKind::Word(source[start..pos].to_owned())
-        } else {
-            let operator = [
-                "===", "!==", ">>>", "**=", "=>", "==", "!=", "<=", ">=", "&&", "||", "??", "++",
-                "--", "+=", "-=", "*=", "/=", "%=", "**", "<<", ">>",
-            ]
-            .into_iter()
-            .find(|op| source[pos..].starts_with(op));
-            if let Some(op) = operator {
-                pos += op.len();
-                TokenKind::Symbol(op.to_owned())
-            } else if "{}[]().,;:?+-*/%<>=!~&|^".contains(ch) {
-                pos += 1;
-                TokenKind::Symbol(ch.to_string())
+                if !closed {
+                    return Err(ScriptError::at("unterminated string", start));
+                }
+                if quote == '`' && legacy_literal {
+                    return Err(ScriptError::at(
+                        "legacy escapes are forbidden in template literals",
+                        start,
+                    ));
+                }
+                TokenKind::String(JsString::from(value))
+            } else if ch.is_ascii_digit()
+                || (ch == '.'
+                    && source
+                        .as_bytes()
+                        .get(pos + 1)
+                        .is_some_and(u8::is_ascii_digit))
+            {
+                if source[pos..].starts_with("0x") || source[pos..].starts_with("0X") {
+                    pos += 2;
+                    let digits = pos;
+                    while source
+                        .as_bytes()
+                        .get(pos)
+                        .is_some_and(u8::is_ascii_hexdigit)
+                    {
+                        pos += 1;
+                    }
+                    let n = u64::from_str_radix(&source[digits..pos], 16)
+                        .map_err(|_| ScriptError::at("invalid hexadecimal number", start))?;
+                    TokenKind::Number(n as f64)
+                } else {
+                    while source.as_bytes().get(pos).is_some_and(u8::is_ascii_digit) {
+                        pos += 1;
+                    }
+                    if source.as_bytes().get(pos) == Some(&b'.') {
+                        pos += 1;
+                        while source.as_bytes().get(pos).is_some_and(u8::is_ascii_digit) {
+                            pos += 1;
+                        }
+                    }
+                    if matches!(source.as_bytes().get(pos), Some(b'e' | b'E')) {
+                        pos += 1;
+                        if matches!(source.as_bytes().get(pos), Some(b'+' | b'-')) {
+                            pos += 1;
+                        }
+                        while source.as_bytes().get(pos).is_some_and(u8::is_ascii_digit) {
+                            pos += 1;
+                        }
+                    }
+                    let raw = &source[start..pos];
+                    legacy_literal =
+                        raw.len() > 1 && raw.starts_with('0') && raw.as_bytes()[1].is_ascii_digit();
+                    TokenKind::Number(
+                        if legacy_literal && raw.bytes().all(|b| (b'0'..=b'7').contains(&b)) {
+                            raw.bytes().fold(0.0, |n, b| n * 8.0 + f64::from(b - b'0'))
+                        } else {
+                            raw.parse()
+                                .map_err(|_| ScriptError::at("invalid number", start))?
+                        },
+                    )
+                }
+            } else if ch.is_alphabetic() || ch == '_' || ch == '$' {
+                pos += ch.len_utf8();
+                while let Some(c) = source[pos..].chars().next() {
+                    if !(c.is_alphanumeric() || c == '_' || c == '$') {
+                        break;
+                    }
+                    pos += c.len_utf8();
+                }
+                TokenKind::Word(source[start..pos].to_owned())
             } else {
-                return Err(ScriptError::at(
-                    format!("unsupported character {ch:?}"),
-                    pos,
-                ));
+                let operator = [
+                    "===", "!==", ">>>", "**=", "=>", "==", "!=", "<=", ">=", "&&", "||", "??",
+                    "++", "--", "+=", "-=", "*=", "/=", "%=", "**", "<<", ">>",
+                ]
+                .into_iter()
+                .find(|op| source[pos..].starts_with(op));
+                if let Some(op) = operator {
+                    pos += op.len();
+                    TokenKind::Symbol(op.to_owned())
+                } else if "{}[]().,;:?+-*/%<>=!~&|^".contains(ch) {
+                    pos += 1;
+                    TokenKind::Symbol(ch.to_string())
+                } else {
+                    return Err(ScriptError::at(
+                        format!("unsupported character {ch:?}"),
+                        pos,
+                    ));
+                }
+            };
+            tokens.push(Token {
+                kind,
+                offset: start,
+                line_break_before,
+                string_literal: matches!(ch, '\'' | '"'),
+                use_strict: matches!(&source[start..pos], "\"use strict\"" | "'use strict'"),
+                legacy_literal,
+            });
+            line_break_before = false;
+            if tokens.len() > MAX_TOKENS {
+                return Err(ScriptError::resource("script token limit exceeded"));
             }
-        };
-        tokens.push(Token {
-            kind,
-            offset: start,
-            line_break_before,
-            string_literal: matches!(ch, '\'' | '"'),
-            use_strict: matches!(&source[start..pos], "\"use strict\"" | "'use strict'"),
-            legacy_literal,
-        });
-        line_break_before = false;
-        if tokens.len() > MAX_TOKENS {
-            return Err(ScriptError::resource("script token limit exceeded"));
         }
+        Ok(())
+    })();
+    if let Err(error) = result {
+        tokens.push(Token {
+            offset: error.offset.unwrap_or(pos),
+            kind: TokenKind::Invalid(error),
+            line_break_before,
+            string_literal: false,
+            use_strict: false,
+            legacy_literal: false,
+        });
     }
     tokens.push(Token {
         kind: TokenKind::End,
@@ -553,15 +583,17 @@ struct FunctionCode {
 struct Program {
     body: Vec<Stmt>,
     strict: bool,
+    compiled_storage: usize,
 }
 #[derive(Clone, Debug)]
 enum Expr {
     Literal(Value),
+    RegExp(Rc<RegExp>),
     Ident(String),
     Array(Vec<Option<Expr>>),
     Object(Vec<(JsString, ObjectEntry)>),
     Unary(String, Box<Expr>),
-    Binary(String, Box<Expr>, Box<Expr>),
+    BinaryChain(Box<Expr>, Vec<(String, Expr)>),
     Conditional(Box<Expr>, Box<Expr>, Box<Expr>),
     Assign(String, Box<Expr>, Box<Expr>),
     Update(Box<Expr>, f64, bool),
@@ -584,6 +616,7 @@ enum Stmt {
     Block(Vec<Stmt>),
     If(Expr, Box<Stmt>, Option<Box<Stmt>>),
     While(Expr, Box<Stmt>),
+    DoWhile(Expr, Box<Stmt>),
     For(Option<Box<Stmt>>, Option<Expr>, Option<Expr>, Box<Stmt>),
     ForIn(ForBinding, Expr, Box<Stmt>),
     Switch(Expr, Vec<(Option<Expr>, Vec<Stmt>)>),
@@ -614,6 +647,9 @@ enum DeclarationKind {
 
 struct Parser {
     tokens: Vec<Token>,
+    source: String,
+    lex_work: usize,
+    compile_budget: regexp::Budget,
     pos: usize,
     depth: usize,
     function_depth: usize,
@@ -629,6 +665,14 @@ impl Parser {
     fn program_context(source: &str, function: bool, strict: bool) -> Result<Program> {
         let mut parser = Self {
             tokens: lex(source)?,
+            source: source.into(),
+            lex_work: source.len(),
+            compile_budget: regexp::Budget {
+                steps: MAX_STEPS,
+                allocated: 0,
+                heap_limit: MAX_HEAP,
+                stack_limit: 16,
+            },
             pos: 0,
             depth: 0,
             function_depth: usize::from(function),
@@ -642,6 +686,7 @@ impl Parser {
         Ok(Program {
             body,
             strict: parser.strict,
+            compiled_storage: parser.compile_budget.allocated,
         })
     }
     fn directive_body(&mut self, block: bool) -> Result<Vec<Stmt>> {
@@ -699,6 +744,9 @@ impl Parser {
         }
     }
     fn error(&self, message: impl Into<String>) -> ScriptError {
+        if let TokenKind::Invalid(error) = &self.tokens[self.pos].kind {
+            return error.clone();
+        }
         ScriptError::at(message, self.tokens[self.pos].offset)
     }
     fn resource_error(&self, message: impl Into<String>) -> ScriptError {
@@ -924,6 +972,17 @@ impl Parser {
             let body = self.controlled_statement()?;
             self.loop_depth -= 1;
             return Ok(Stmt::While(condition, Box::new(body)));
+        }
+        if self.eat("do") {
+            self.loop_depth += 1;
+            let body = self.controlled_statement()?;
+            self.loop_depth -= 1;
+            self.expect("while")?;
+            self.expect("(")?;
+            let condition = self.sequence()?;
+            self.expect(")")?;
+            self.eat(";");
+            return Ok(Stmt::DoWhile(condition, Box::new(body)));
         }
         if self.eat("for") {
             self.expect("(")?;
@@ -1207,7 +1266,7 @@ impl Parser {
                     Self::var_names(no, names);
                 }
             }
-            Stmt::While(_, body) => Self::var_names(body, names),
+            Stmt::While(_, body) | Stmt::DoWhile(_, body) => Self::var_names(body, names),
             Stmt::For(init, _, _, body) => {
                 if let Some(init) = init {
                     Self::var_names(init, names);
@@ -1417,7 +1476,8 @@ impl Parser {
         result
     }
     fn binary_inner(&mut self, min_precedence: u8) -> Result<Expr> {
-        let mut left = self.unary()?;
+        let left = self.unary()?;
+        let mut operations = Vec::new();
         let mut chain = 0;
         while let TokenKind::Symbol(s) | TokenKind::Word(s) = &self.tokens[self.pos].kind {
             let op = s.clone();
@@ -1442,7 +1502,7 @@ impl Parser {
                 break;
             }
             chain += 1;
-            if chain > MAX_DEPTH / 2 {
+            if chain > 4096 {
                 return Err(self.resource_error("expression chain limit exceeded"));
             }
             self.pos += 1;
@@ -1451,9 +1511,49 @@ impl Parser {
             } else {
                 precedence + 1
             })?;
-            left = Expr::Binary(op, Box::new(left), Box::new(right));
+            operations.push((op, right));
         }
-        Ok(left)
+        // Folding an all-literal string addition chain preserves evaluation
+        // order and avoids constructing every quadratic intermediate string.
+        if let Expr::Literal(Value::String(first)) = &left
+            && !operations.is_empty()
+            && operations
+                .iter()
+                .all(|(op, value)| op == "+" && matches!(value, Expr::Literal(Value::String(_))))
+        {
+            let length = operations.iter().fold(first.len(), |length, (_, value)| {
+                if let Expr::Literal(Value::String(text)) = value {
+                    length.saturating_add(text.len())
+                } else {
+                    unreachable!()
+                }
+            });
+            if length > MAX_STRING {
+                return Err(self.resource_error("script string limit exceeded"));
+            }
+            self.compile_budget
+                .work(length / 8 + 1)
+                .map_err(regexp_error)?;
+            self.compile_budget.allocated =
+                self.compile_budget.allocated.saturating_add(length * 4);
+            if self.compile_budget.allocated > MAX_HEAP {
+                return Err(self.resource_error("script allocation limit exceeded"));
+            }
+            let mut units = Vec::with_capacity(length);
+            units.extend_from_slice(first.units());
+            for (_, value) in operations {
+                let Expr::Literal(Value::String(text)) = value else {
+                    unreachable!()
+                };
+                units.extend_from_slice(text.units());
+            }
+            return Ok(Expr::Literal(Value::String(units.into())));
+        }
+        Ok(if operations.is_empty() {
+            left
+        } else {
+            Expr::BinaryChain(Box::new(left), operations)
+        })
     }
     fn unary(&mut self) -> Result<Expr> {
         self.enter()?;
@@ -1528,6 +1628,9 @@ impl Parser {
         Ok(value)
     }
     fn primary(&mut self) -> Result<Expr> {
+        if self.is("/") || self.is("/=") {
+            return self.regexp_literal();
+        }
         if self.eat("(") {
             let saved = self.pos;
             let mut params = Vec::new();
@@ -1656,9 +1759,8 @@ impl Parser {
             self.pos += 1;
         }
         match token.kind {
-            TokenKind::Symbol(s) if s == "/" => Err(ScriptError::unsupported(
-                "regular expression literals are not implemented",
-            )),
+            TokenKind::RegExp(pattern) => Ok(Expr::RegExp(pattern)),
+            TokenKind::Invalid(error) => Err(error),
             TokenKind::Number(n) => Ok(Expr::Literal(Value::Number(n))),
             TokenKind::String(s) => Ok(Expr::Literal(Value::String(s))),
             TokenKind::Word(s) if s == "true" || s == "false" => {
@@ -1677,6 +1779,78 @@ impl Parser {
             }
             _ => Err(ScriptError::at("expected expression", token.offset)),
         }
+    }
+    fn regexp_literal(&mut self) -> Result<Expr> {
+        let start = self.tokens[self.pos].offset;
+        let mut at = start + 1;
+        let mut class = false;
+        let mut escaped = false;
+        let mut end = None;
+        while at < self.source.len() {
+            let ch = self.source[at..].chars().next().unwrap();
+            if matches!(ch, '\n' | '\r' | '\u{2028}' | '\u{2029}') {
+                return Err(ScriptError::at("line terminator in RegExp literal", at));
+            }
+            if !escaped {
+                if ch == '/' && !class {
+                    end = Some(at);
+                    break;
+                }
+                if ch == '[' {
+                    class = true;
+                }
+                if ch == ']' {
+                    class = false;
+                }
+            }
+            escaped = !escaped && ch == '\\';
+            at += ch.len_utf8();
+        }
+        let end = end.ok_or_else(|| ScriptError::at("unterminated RegExp literal", start))?;
+        at = end + 1;
+        while at < self.source.len() {
+            let ch = self.source[at..].chars().next().unwrap();
+            if !(ch.is_alphanumeric() || matches!(ch, '_' | '$' | '\\')) {
+                break;
+            }
+            at += ch.len_utf8();
+        }
+        let pattern = RegExp::compile(
+            self.source[start + 1..end].into(),
+            &self.source[end + 1..at].into(),
+            &mut self.compile_budget,
+        )
+        .map_err(|error| {
+            let mut error = regexp_error(error);
+            if !error.is_resource_limit() && !error.is_unsupported() {
+                error.offset = Some(start);
+            }
+            error
+        })?;
+        let pattern = Rc::new(pattern);
+        self.tokens[self.pos].kind = TokenKind::RegExp(pattern.clone());
+        self.pos += 1;
+        self.tokens.truncate(self.pos);
+        self.lex_work = self.lex_work.saturating_add(self.source.len() - at);
+        if self.lex_work > MAX_SOURCE * 32 {
+            return Err(ScriptError::resource(
+                "script lexical rescan limit exceeded",
+            ));
+        }
+        let suffix = lex(&self.source[at..])?;
+        if self.tokens.len().saturating_add(suffix.len()) > MAX_TOKENS {
+            return Err(ScriptError::resource("script token limit exceeded"));
+        }
+        self.tokens.extend(suffix.into_iter().map(|mut token| {
+            token.offset += at;
+            if let TokenKind::Invalid(error) = &mut token.kind
+                && let Some(offset) = &mut error.offset
+            {
+                *offset += at;
+            }
+            token
+        }));
+        Ok(Expr::RegExp(pattern))
     }
     fn new_expression(&mut self) -> Result<Expr> {
         self.enter()?;
@@ -1810,6 +1984,7 @@ struct ScriptObject {
     intrinsic_error: Option<&'static str>,
     parameter_map: BTreeMap<JsString, (usize, String)>,
     arguments: bool,
+    regexp: Option<Rc<RegExp>>,
 }
 impl ScriptObject {
     fn get(&self, key: impl Into<JsString>) -> Option<&Value> {
@@ -1937,6 +2112,7 @@ impl Runtime {
             "Object",
             "Array",
             "Function",
+            "RegExp",
             "Error",
             "TypeError",
             "SyntaxError",
@@ -2017,6 +2193,7 @@ impl Runtime {
             "String",
             "Number",
             "Boolean",
+            "RegExp",
             "Error",
             "TypeError",
             "SyntaxError",
@@ -2086,6 +2263,7 @@ impl Runtime {
             "String",
             "Number",
             "Boolean",
+            "RegExp",
             "Error",
             "TypeError",
             "SyntaxError",
@@ -2098,7 +2276,10 @@ impl Runtime {
             let prototype = self.prototypes[name];
             let Value::Object(properties) = self.object_ordered([
                 ("name".into(), Value::String(name.into())),
-                ("length".into(), Value::Number(1.0)),
+                (
+                    "length".into(),
+                    Value::Number(if name == "RegExp" { 2.0 } else { 1.0 }),
+                ),
                 (
                     "prototype".into(),
                     if name == "Function" {
@@ -2196,6 +2377,12 @@ impl Runtime {
             ("String", "endsWith", 1),
             ("String", "indexOf", 1),
             ("String", "split", 2),
+            ("String", "match", 1),
+            ("String", "search", 1),
+            ("String", "replace", 2),
+            ("RegExp", "exec", 1),
+            ("RegExp", "test", 1),
+            ("RegExp", "toString", 0),
             ("String", "trim", 0),
             ("String", "toUpperCase", 0),
             ("String", "toLowerCase", 0),
@@ -2211,6 +2398,32 @@ impl Runtime {
             let full = format!("{name}.{key}");
             let value = self.intrinsic_function(&full, key, length)?;
             self.objects[self.prototypes[name]].insert_hidden(key.into(), value);
+        }
+        for key in [
+            "source",
+            "flags",
+            "global",
+            "ignoreCase",
+            "multiline",
+            "dotAll",
+            "sticky",
+            "hasIndices",
+            "unicode",
+            "unicodeSets",
+        ] {
+            let get =
+                self.intrinsic_function(&format!("RegExp.get.{key}"), &format!("get {key}"), 0)?;
+            self.objects[self.prototypes["RegExp"]].insert_property(
+                key.into(),
+                Property {
+                    value: PropertyValue::Accessor {
+                        get,
+                        set: Value::Undefined,
+                    },
+                    enumerable: false,
+                    configurable: true,
+                },
+            );
         }
         for (owner, key, length) in [
             ("String", "fromCharCode", 1),
@@ -2322,6 +2535,7 @@ impl Runtime {
         document: &mut Document,
     ) -> Result<Value> {
         self.charge(source.len().saturating_mul(3))?;
+        self.charge(program.compiled_storage)?;
         self.steps = MAX_STEPS;
         let saved = self.environments[1].strict;
         self.environments[1].strict = program.strict;
@@ -2671,7 +2885,7 @@ impl Runtime {
                     self.hoist_statement(no, owner)?;
                 }
             }
-            Stmt::While(_, body) => self.hoist_statement(body, owner)?,
+            Stmt::While(_, body) | Stmt::DoWhile(_, body) => self.hoist_statement(body, owner)?,
             Stmt::For(init, _, _, body) => {
                 if let Some(init) = init {
                     self.hoist_statement(init, owner)?;
@@ -2853,6 +3067,17 @@ impl Runtime {
                     }
                 }
             }
+            Stmt::DoWhile(condition, body) => loop {
+                self.tick()?;
+                match self.statement(body, env, doc)? {
+                    Flow::Break => break,
+                    Flow::Return(value) => return Ok(Flow::Return(value)),
+                    _ => {}
+                }
+                if !self.eval(condition, env, doc)?.truthy() {
+                    break;
+                }
+            },
             Stmt::For(init, condition, update, body) => {
                 return self.for_loop(
                     init.as_deref(),
@@ -3191,6 +3416,7 @@ impl Runtime {
         self.tick()?;
         match expression {
             Expr::Literal(value) => Ok(value.clone()),
+            Expr::RegExp(pattern) => self.regexp_object(pattern.clone()),
             Expr::Ident(name) => {
                 let (owner, _) = self
                     .lookup(env, name)
@@ -3311,19 +3537,24 @@ impl Runtime {
                     _ => Err(ScriptError::new("unknown unary operator")),
                 }
             }
-            Expr::Binary(op, left, right) => {
-                let left = self.eval(left, env, doc)?;
-                if op == "&&" && !left.truthy()
-                    || op == "||" && left.truthy()
-                    || op == "??" && !matches!(left, Value::Undefined | Value::Null)
-                {
-                    return Ok(left);
+            Expr::BinaryChain(left, operations) => {
+                let mut left = self.eval(left, env, doc)?;
+                for (op, right) in operations {
+                    self.tick()?;
+                    if op == "&&" && !left.truthy()
+                        || op == "||" && left.truthy()
+                        || op == "??" && !matches!(left, Value::Undefined | Value::Null)
+                    {
+                        continue;
+                    }
+                    let right = self.eval(right, env, doc)?;
+                    left = if matches!(op.as_str(), "&&" | "||" | "??") {
+                        right
+                    } else {
+                        self.binary_value(op, left, right, doc)?
+                    };
                 }
-                let right = self.eval(right, env, doc)?;
-                if op == "&&" || op == "||" || op == "??" {
-                    return Ok(right);
-                }
-                self.binary_value(op, left, right, doc)
+                Ok(left)
             }
             Expr::Conditional(condition, yes, no) => {
                 if self.eval(condition, env, doc)?.truthy() {
@@ -4182,6 +4413,16 @@ impl Runtime {
         doc: &mut Document,
     ) -> Result<Value> {
         match &constructor {
+            Value::Native(native)
+                if native.name == "RegExp" && native.receiver == Value::Window =>
+            {
+                self.regexp_create(
+                    arguments.first().cloned().unwrap_or(Value::Undefined),
+                    arguments.get(1).cloned().unwrap_or(Value::Undefined),
+                    false,
+                    doc,
+                )
+            }
             Value::Function(id) if self.functions[*id].bound.is_some() => {
                 let bound = self.functions[*id].bound.clone().unwrap();
                 self.charge(
@@ -4267,9 +4508,17 @@ impl Runtime {
     ) -> Result<()> {
         self.work(1 + key.len() / 8)?;
         if matches!(receiver, Value::Document)
-            && ["characterSet", "charset", "inputEncoding", "compatMode"]
-                .iter()
-                .any(|name| key == &JsString::from(*name))
+            && [
+                "characterSet",
+                "charset",
+                "inputEncoding",
+                "compatMode",
+                "URL",
+                "documentURI",
+                "baseURI",
+            ]
+            .iter()
+            .any(|name| key == &JsString::from(*name))
         {
             return Self::failed_write(strict);
         }
@@ -4353,6 +4602,16 @@ impl Runtime {
             return Ok(Value::Undefined);
         }
         if matches!(receiver, Value::Document)
+            && !matches!(
+                key,
+                "URL"
+                    | "documentURI"
+                    | "baseURI"
+                    | "characterSet"
+                    | "charset"
+                    | "inputEncoding"
+                    | "compatMode"
+            )
             || matches!(key, "textContent" | "innerText" | "innerHTML" | "outerHTML")
         {
             self.work(1 + doc.nodes.len() / 8)?;
@@ -4462,6 +4721,10 @@ impl Runtime {
                 }
             }
             Value::Document => match key {
+                "URL" | "documentURI" => return self.string(doc.url().as_str()),
+                "baseURI" => {
+                    return self.string(doc.base_url().as_str());
+                }
                 "characterSet" | "charset" | "inputEncoding" => {
                     return self.string(doc.character_set());
                 }
@@ -4716,6 +4979,7 @@ impl Runtime {
                 self.ensure_dom_capacity(doc, 1)?;
                 let text = value.to_string();
                 self.charge(text.len())?;
+                self.charge_dom_clear(id, doc)?;
                 doc.set_text_content(id, &text);
             }
             Value::Node(id) => {
@@ -4752,6 +5016,7 @@ impl Runtime {
                 match key {
                     "textContent" | "innerText" => {
                         self.ensure_dom_capacity(doc, 1)?;
+                        self.charge_dom_clear(id, doc)?;
                         doc.set_text_content(id, &text);
                     }
                     "innerHTML" => self.set_inner_html(id, &text, doc)?,
@@ -4762,10 +5027,13 @@ impl Runtime {
                         self.work(1 + text.len() / 16)?;
                         self.charge(text.len().saturating_mul(2))?;
                         let text = text.replace("\r\n", "\n").replace('\r', "\n");
+                        self.charge_dom_clear(id, doc)?;
                         doc.set_text_content(id, &text);
                     }
                     "className" => doc.set_attr(id, "class", &text),
                     "id" | "title" | "value" | "href" | "src" | "type" => {
+                        let work = doc.base_attribute_work(id, key);
+                        self.work(work.saturating_add(if work > 0 { text.len() } else { 0 }))?;
                         doc.set_attr(id, key, &text)
                     }
                     "checked" | "disabled" | "hidden" => {
@@ -4842,6 +5110,7 @@ impl Runtime {
         self.charge(32)?;
         let mut pending = vec![(child, 1usize)];
         let mut visited = 0;
+        let mut contains_base = false;
         while let Some((id, depth)) = pending.pop() {
             self.tick()?;
             visited += 1;
@@ -4849,6 +5118,8 @@ impl Runtime {
                 return Ok(());
             }
             let children = &doc.nodes[id].children;
+            contains_base |= matches!(&doc.nodes[id].kind, NodeKind::Element(element)
+                if element.namespace == Namespace::Html && element.tag == "base" && element.attrs.contains_key("href"));
             let contents = doc.template_contents(id);
             let edges = children.len() + usize::from(contents.is_some());
             self.work(edges)?;
@@ -4870,11 +5141,20 @@ impl Runtime {
             }
             1
         };
+        self.work(doc.base_tree_change_work(parent, child, contains_base))?;
         self.charge(inserted.saturating_mul(2 * std::mem::size_of::<NodeId>()))
     }
 
     fn charge_dom_remove(&mut self, parent: NodeId, doc: &Document) -> Result<()> {
         self.work(doc.nodes[parent].children.len())
+    }
+    fn charge_dom_clear(&mut self, parent: NodeId, doc: &Document) -> Result<()> {
+        self.work(
+            doc.nodes[parent]
+                .children
+                .len()
+                .saturating_add(doc.base_clear_work(parent)),
+        )
     }
 
     fn set_inner_html(&mut self, id: NodeId, source: &str, doc: &mut Document) -> Result<()> {
@@ -4906,15 +5186,16 @@ impl Runtime {
                 pending.push((contents, depth));
             }
         }
-        self.ensure_dom_capacity(doc, fragment.nodes.len())?;
+        self.ensure_dom_capacity(doc, fragment.nodes.len().saturating_add(1))?;
         let id = doc.template_contents(id).unwrap_or(id);
-        for child in doc.nodes[id].children.clone() {
-            doc.nodes[child].parent = None;
-        }
-        doc.nodes[id].children.clear();
+        let staging = doc.create_document_fragment();
         for child in fragment.nodes[fragment.root].children.clone() {
-            import_node(doc, id, &fragment, child, 0);
+            import_node(doc, staging, &fragment, child, 0);
         }
+        self.charge_dom_clear(id, doc)?;
+        self.charge_dom_append(id, staging, doc)?;
+        doc.clear_children(id);
+        doc.append_child(id, staging);
         Ok(())
     }
     fn clone_dom_node(&mut self, source: NodeId, deep: bool, doc: &mut Document) -> Result<NodeId> {
@@ -5516,6 +5797,667 @@ impl Runtime {
         self.string(output)
     }
 
+    fn regexp_slot(&self, value: &Value) -> Option<Rc<RegExp>> {
+        if let Value::Object(id) = value {
+            self.objects[*id].regexp.clone()
+        } else {
+            None
+        }
+    }
+    fn regexp_object(&mut self, pattern: Rc<RegExp>) -> Result<Value> {
+        let value = self.object_ordered([])?;
+        let Value::Object(id) = value else {
+            unreachable!()
+        };
+        self.objects[id].prototype = Some(Value::Object(self.prototypes["RegExp"]));
+        self.objects[id].regexp = Some(pattern);
+        self.objects[id].insert_property(
+            "lastIndex".into(),
+            Property::data(Value::Number(0.0), true, false, false),
+        );
+        Ok(value)
+    }
+    fn regexp_budget(&self) -> regexp::Budget {
+        regexp::Budget {
+            steps: self.steps,
+            allocated: 0,
+            heap_limit: MAX_HEAP.saturating_sub(self.allocated),
+            stack_limit: MAX_STACK_UNITS.saturating_sub(self.stack_units) / 4,
+        }
+    }
+    fn regexp_create(
+        &mut self,
+        pattern: Value,
+        flags: Value,
+        identity: bool,
+        doc: &mut Document,
+    ) -> Result<Value> {
+        let existing = self.regexp_slot(&pattern);
+        if identity
+            && existing.is_some()
+            && flags == Value::Undefined
+            && self.get(pattern.clone(), "constructor", doc)?
+                == Self::native("RegExp", Value::Window)
+        {
+            return Ok(pattern);
+        }
+        let source = if let Some(existing) = &existing {
+            existing.source.clone()
+        } else if pattern == Value::Undefined {
+            JsString::default()
+        } else {
+            self.json_text(pattern, doc, &mut Vec::new())?
+        };
+        let flags = if flags == Value::Undefined {
+            existing.map_or_else(JsString::default, |p| p.flags.text())
+        } else {
+            self.json_text(flags, doc, &mut Vec::new())?
+        };
+        let mut budget = self.regexp_budget();
+        let result = RegExp::compile(source, &flags, &mut budget);
+        self.steps = budget.steps;
+        self.allocated = self.allocated.saturating_add(budget.allocated);
+        self.regexp_object(Rc::new(result.map_err(regexp_error)?))
+    }
+    fn regexp_find(
+        &mut self,
+        pattern: &RegExp,
+        text: &JsString,
+        start: usize,
+        sticky: bool,
+    ) -> Result<Option<regexp::Match>> {
+        let mut budget = self.regexp_budget();
+        let result = pattern.find(text.units(), start, sticky, &mut budget);
+        self.steps = budget.steps;
+        self.allocated = self.allocated.saturating_add(budget.allocated);
+        result.map_err(regexp_error)
+    }
+    fn regexp_last_index(&mut self, value: Value, index: usize, doc: &mut Document) -> Result<()> {
+        self.write_reference(
+            Reference::Property(value, "lastIndex".into(), true),
+            Value::Number(index as f64),
+            doc,
+        )
+    }
+    fn regexp_builtin_exec(
+        &mut self,
+        receiver: Value,
+        text: JsString,
+        doc: &mut Document,
+    ) -> Result<Value> {
+        let pattern = self
+            .regexp_slot(&receiver)
+            .ok_or_else(|| ScriptError::type_error("RegExp receiver lacks pattern slots"))?;
+        let index = self.get(receiver.clone(), "lastIndex", doc)?;
+        let index =
+            integer_or_infinity(self.number_value(index, doc)?).clamp(0.0, 9007199254740991.0);
+        let start = if pattern.flags.global || pattern.flags.sticky {
+            index as usize
+        } else {
+            0
+        };
+        let result = self.regexp_find(&pattern, &text, start, pattern.flags.sticky)?;
+        let Some(found) = result else {
+            if pattern.flags.global || pattern.flags.sticky {
+                self.regexp_last_index(receiver, 0, doc)?;
+            }
+            return Ok(Value::Null);
+        };
+        if pattern.flags.global || pattern.flags.sticky {
+            self.regexp_last_index(receiver, found.span().1, doc)?;
+        }
+        self.regexp_match_array(&pattern, &text, &found)
+    }
+    fn regexp_match_array(
+        &mut self,
+        pattern: &RegExp,
+        text: &JsString,
+        found: &regexp::Match,
+    ) -> Result<Value> {
+        self.charge(pattern.names.len() * std::mem::size_of::<(&JsString, &usize)>())?;
+        self.work(
+            pattern.names.len() * (pattern.names.len().checked_ilog2().unwrap_or(0) as usize + 1),
+        )?;
+        let mut names: Vec<_> = pattern.names.iter().collect();
+        names.sort_unstable_by_key(|(_, index)| **index);
+        let mut captures = Vec::new();
+        for span in &found.captures {
+            captures.push(match span {
+                Some((start, end)) => self.string(&text.units()[*start..*end])?,
+                None => Value::Undefined,
+            });
+        }
+        let mut groups = Value::Undefined;
+        if !pattern.names.is_empty() {
+            groups = self.object_ordered(
+                names
+                    .iter()
+                    .map(|(key, index)| ((*key).clone(), captures[**index].clone())),
+            )?;
+            if let Value::Object(id) = groups {
+                self.objects[id].prototype = None;
+            }
+        }
+        let result = self.array(captures)?;
+        let Value::Array(id) = result else {
+            unreachable!()
+        };
+        let properties = self.array_properties[id];
+        self.objects[properties].insert("index".into(), Value::Number(found.span().0 as f64));
+        self.objects[properties].insert("input".into(), Value::String(text.clone()));
+        self.objects[properties].insert("groups".into(), groups);
+        if pattern.flags.indices {
+            let mut indices = Vec::new();
+            for span in &found.captures {
+                indices.push(match span {
+                    Some((start, end)) => self.array(vec![
+                        Value::Number(*start as f64),
+                        Value::Number(*end as f64),
+                    ])?,
+                    None => Value::Undefined,
+                });
+            }
+            let mut groups = Value::Undefined;
+            if !pattern.names.is_empty() {
+                groups = self.object_ordered(
+                    names
+                        .iter()
+                        .map(|(key, index)| ((*key).clone(), indices[**index].clone())),
+                )?;
+                if let Value::Object(id) = groups {
+                    self.objects[id].prototype = None;
+                }
+            }
+            let indices = self.array(indices)?;
+            let Value::Array(index_id) = indices else {
+                unreachable!()
+            };
+            self.objects[self.array_properties[index_id]].insert("groups".into(), groups);
+            self.objects[properties].insert("indices".into(), indices);
+        }
+        Ok(result)
+    }
+    fn regexp_exec(
+        &mut self,
+        receiver: Value,
+        text: &JsString,
+        doc: &mut Document,
+    ) -> Result<Value> {
+        let exec = self.get(receiver.clone(), "exec", doc)?;
+        if json_callable(&exec) {
+            let result = self.call(exec, vec![Value::String(text.clone())], receiver, doc)?;
+            if result != Value::Null && !js_object(&result) {
+                return Err(ScriptError::type_error(
+                    "RegExp exec must return an object or null",
+                ));
+            }
+            Ok(result)
+        } else {
+            self.regexp_builtin_exec(receiver, text.clone(), doc)
+        }
+    }
+    fn regexp_native(
+        &mut self,
+        name: &str,
+        receiver: Value,
+        args: &[Value],
+        doc: &mut Document,
+    ) -> Result<Value> {
+        if let Some(key) = name.strip_prefix("get.") {
+            if key == "flags" {
+                if !js_object(&receiver) {
+                    return Err(ScriptError::type_error(
+                        "RegExp flags receiver must be an object",
+                    ));
+                }
+                let mut flags = String::new();
+                for (key, flag) in [
+                    ("hasIndices", 'd'),
+                    ("global", 'g'),
+                    ("ignoreCase", 'i'),
+                    ("multiline", 'm'),
+                    ("dotAll", 's'),
+                    ("unicode", 'u'),
+                    ("unicodeSets", 'v'),
+                    ("sticky", 'y'),
+                ] {
+                    if self.get(receiver.clone(), key, doc)?.truthy() {
+                        flags.push(flag);
+                    }
+                }
+                return self.string(flags);
+            }
+            let pattern = self.regexp_slot(&receiver);
+            if pattern.is_none() && receiver == Value::Object(self.prototypes["RegExp"]) {
+                return if key == "source" {
+                    self.string("(?:)")
+                } else {
+                    Ok(Value::Undefined)
+                };
+            }
+            let pattern = pattern.ok_or_else(|| {
+                ScriptError::type_error("RegExp getter receiver lacks pattern slots")
+            })?;
+            if key == "source" {
+                self.work(pattern.source.len() + 1)?;
+                self.charge(pattern.source.byte_len().saturating_mul(6))?;
+                return self.string(pattern.escaped_source());
+            }
+            return Ok(Value::Bool(match key {
+                "global" => pattern.flags.global,
+                "ignoreCase" => pattern.flags.ignore_case,
+                "multiline" => pattern.flags.multiline,
+                "dotAll" => pattern.flags.dot_all,
+                "sticky" => pattern.flags.sticky,
+                "hasIndices" => pattern.flags.indices,
+                "unicode" | "unicodeSets" => false,
+                _ => unreachable!(),
+            }));
+        }
+        if name == "toString" {
+            if !js_object(&receiver) {
+                return Err(ScriptError::type_error(
+                    "RegExp toString receiver must be an object",
+                ));
+            }
+            let source = self.get(receiver.clone(), "source", doc)?;
+            let source = self.json_text(source, doc, &mut Vec::new())?;
+            let flags = self.get(receiver, "flags", doc)?;
+            let flags = self.json_text(flags, doc, &mut Vec::new())?;
+            let len = source.len().saturating_add(flags.len()).saturating_add(2);
+            if len > MAX_STRING {
+                return Err(ScriptError::resource("script string limit exceeded"));
+            }
+            self.charge(len * 2)?;
+            let mut result = vec![47];
+            result.extend_from_slice(source.units());
+            result.push(47);
+            result.extend_from_slice(flags.units());
+            return self.string(result);
+        }
+        if !js_object(&receiver) || name == "exec" && self.regexp_slot(&receiver).is_none() {
+            return Err(ScriptError::type_error(
+                "RegExp method receiver is incompatible",
+            ));
+        }
+        let text = self.json_text(
+            args.first().cloned().unwrap_or(Value::Undefined),
+            doc,
+            &mut Vec::new(),
+        )?;
+        if name == "exec" {
+            self.regexp_builtin_exec(receiver, text, doc)
+        } else if name == "test" {
+            Ok(Value::Bool(
+                self.regexp_exec(receiver, &text, doc)? != Value::Null,
+            ))
+        } else {
+            Err(ScriptError::unsupported("RegExp method is not implemented"))
+        }
+    }
+
+    fn advance_regexp(
+        &mut self,
+        receiver: Value,
+        text: &JsString,
+        unicode: bool,
+        doc: &mut Document,
+    ) -> Result<()> {
+        let index = self.get(receiver.clone(), "lastIndex", doc)?;
+        let index = integer_or_infinity(self.number_value(index, doc)?)
+            .clamp(0.0, 9007199254740991.0) as usize;
+        let pair = unicode
+            && text
+                .units()
+                .get(index)
+                .is_some_and(|u| (0xd800..=0xdbff).contains(u))
+            && text
+                .units()
+                .get(index.saturating_add(1))
+                .is_some_and(|u| (0xdc00..=0xdfff).contains(u));
+        self.regexp_last_index(
+            receiver,
+            index.saturating_add(if pair { 2 } else { 1 }),
+            doc,
+        )
+    }
+    fn string_regexp(
+        &mut self,
+        name: &str,
+        text: JsString,
+        pattern: Value,
+        argument: Value,
+        doc: &mut Document,
+    ) -> Result<Value> {
+        let regex = self.regexp_slot(&pattern);
+        if name == "split" {
+            return self.regexp_split(regex.as_ref().unwrap(), text, argument, doc);
+        }
+        let receiver = if matches!(name, "match" | "search") && regex.is_none() {
+            self.regexp_create(pattern, Value::Undefined, false, doc)?
+        } else {
+            pattern
+        };
+        if name == "search" {
+            let previous = self.get(receiver.clone(), "lastIndex", doc)?;
+            if !json_same_value(&previous, &Value::Number(0.0)) {
+                self.regexp_last_index(receiver.clone(), 0, doc)?;
+            }
+            let result = self.regexp_exec(receiver.clone(), &text, doc)?;
+            let current = self.get(receiver.clone(), "lastIndex", doc)?;
+            if !json_same_value(&current, &previous) {
+                self.write_reference(
+                    Reference::Property(receiver, "lastIndex".into(), true),
+                    previous,
+                    doc,
+                )?;
+            }
+            return if result == Value::Null {
+                Ok(Value::Number(-1.0))
+            } else {
+                self.get(result, "index", doc)
+            };
+        }
+        if name == "match" {
+            let (global, unicode) = self.regexp_iteration_flags(receiver.clone(), doc)?;
+            if !global {
+                return self.regexp_exec(receiver, &text, doc);
+            }
+            self.regexp_last_index(receiver.clone(), 0, doc)?;
+            let mut results = Vec::new();
+            loop {
+                self.tick()?;
+                let result = self.regexp_exec(receiver.clone(), &text, doc)?;
+                if result == Value::Null {
+                    break;
+                }
+                let matched = self.get(result, "0", doc)?;
+                let matched = self.json_text(matched, doc, &mut Vec::new())?;
+                if results.len() >= 65536 {
+                    return Err(ScriptError::resource("array length limit exceeded"));
+                }
+                self.charge(std::mem::size_of::<Value>())?;
+                results.push(Value::String(matched.clone()));
+                if matched.is_empty() {
+                    self.advance_regexp(receiver.clone(), &text, unicode, doc)?;
+                }
+            }
+            return if results.is_empty() {
+                Ok(Value::Null)
+            } else {
+                self.array(results)
+            };
+        }
+        let plain_needle = if regex.is_none() {
+            Some(self.json_text(receiver.clone(), doc, &mut Vec::new())?)
+        } else {
+            None
+        };
+        let replacement = if json_callable(&argument) {
+            None
+        } else {
+            Some(self.json_text(argument.clone(), doc, &mut Vec::new())?)
+        };
+        let mut results = Vec::new();
+        if regex.is_some() {
+            let (global, unicode) = self.regexp_iteration_flags(receiver.clone(), doc)?;
+            if global {
+                self.regexp_last_index(receiver.clone(), 0, doc)?;
+            }
+            loop {
+                self.tick()?;
+                let result = self.regexp_exec(receiver.clone(), &text, doc)?;
+                if result == Value::Null {
+                    break;
+                }
+                self.charge(std::mem::size_of::<Value>())?;
+                results.push(result.clone());
+                if !global {
+                    break;
+                }
+                let matched = self.get(result, "0", doc)?;
+                if self.json_text(matched, doc, &mut Vec::new())?.is_empty() {
+                    self.advance_regexp(receiver.clone(), &text, unicode, doc)?;
+                }
+            }
+        } else {
+            let needle = plain_needle.unwrap();
+            if let Some(index) = self.string_find(text.units(), needle.units(), 0)? {
+                let result = self.array(vec![Value::String(needle)])?;
+                if let Value::Array(id) = result {
+                    self.objects[self.array_properties[id]]
+                        .insert("index".into(), Value::Number(index as f64));
+                }
+                results.push(result);
+            }
+        }
+        let mut output = Vec::new();
+        let mut next = 0;
+        for result in results {
+            let length = self.get(result.clone(), "length", doc)?;
+            let length =
+                integer_or_infinity(self.number_value(length, doc)?).clamp(0.0, 65537.0) as usize;
+            if length > 65536 {
+                return Err(ScriptError::resource(
+                    "RegExp capture result length limit exceeded",
+                ));
+            }
+            let matched = self.get(result.clone(), "0", doc)?;
+            let matched = self.json_text(matched, doc, &mut Vec::new())?;
+            let position = self.get(result.clone(), "index", doc)?;
+            let position = integer_or_infinity(self.number_value(position, doc)?)
+                .clamp(0.0, text.len() as f64) as usize;
+            let mut captures = Vec::new();
+            self.charge(length.saturating_mul(std::mem::size_of::<Value>()))?;
+            for index in 1..length {
+                let capture = self.get(result.clone(), &index.to_string(), doc)?;
+                captures.push(if capture == Value::Undefined {
+                    Value::Undefined
+                } else {
+                    Value::String(self.json_text(capture, doc, &mut Vec::new())?)
+                });
+            }
+            let groups = self.get(result, "groups", doc)?;
+            let replacement = if let Some(replacement) = &replacement {
+                self.regexp_substitution(
+                    replacement,
+                    (&matched, position),
+                    &text,
+                    &captures,
+                    groups,
+                    doc,
+                )?
+            } else {
+                let mut args = vec![Value::String(matched.clone())];
+                args.extend(captures);
+                args.push(Value::Number(position as f64));
+                args.push(Value::String(text.clone()));
+                if groups != Value::Undefined {
+                    args.push(groups);
+                }
+                let result = self.call(argument.clone(), args, Value::Undefined, doc)?;
+                self.json_text(result, doc, &mut Vec::new())?
+            };
+            if position >= next {
+                self.regexp_output(&mut output, &text.units()[next..position])?;
+                self.regexp_output(&mut output, replacement.units())?;
+                next = position.saturating_add(matched.len()).min(text.len());
+            }
+        }
+        self.regexp_output(&mut output, &text.units()[next..])?;
+        self.string(output)
+    }
+    fn regexp_iteration_flags(
+        &mut self,
+        receiver: Value,
+        doc: &mut Document,
+    ) -> Result<(bool, bool)> {
+        let flags = self.get(receiver, "flags", doc)?;
+        let flags = self.json_text(flags, doc, &mut Vec::new())?;
+        self.work(flags.len().saturating_mul(3))?;
+        Ok((
+            flags.units().contains(&u16::from(b'g')),
+            flags.units().contains(&u16::from(b'u')) || flags.units().contains(&u16::from(b'v')),
+        ))
+    }
+    fn regexp_output(&mut self, output: &mut Vec<u16>, addition: &[u16]) -> Result<()> {
+        if output.len().saturating_add(addition.len()) > MAX_STRING {
+            return Err(ScriptError::resource("script string limit exceeded"));
+        }
+        self.work(1 + addition.len() / 8)?;
+        self.charge(addition.len().saturating_mul(4))?;
+        output.extend_from_slice(addition);
+        Ok(())
+    }
+    fn regexp_substitution(
+        &mut self,
+        replacement: &JsString,
+        match_at: (&JsString, usize),
+        text: &JsString,
+        captures: &[Value],
+        groups: Value,
+        doc: &mut Document,
+    ) -> Result<JsString> {
+        let (matched, position) = match_at;
+        let groups = if groups != Value::Undefined {
+            self.coerce_object(groups)?
+        } else {
+            groups
+        };
+        let mut output = Vec::new();
+        let units = replacement.units();
+        let mut at = 0;
+        while at < units.len() {
+            self.tick()?;
+            if units[at] != 36 || at + 1 == units.len() {
+                self.regexp_output(&mut output, &units[at..at + 1])?;
+                at += 1;
+                continue;
+            }
+            let next = units[at + 1];
+            let mut consumed = 2;
+            match next {
+                36 => self.regexp_output(&mut output, &[36])?,
+                38 => self.regexp_output(&mut output, matched.units())?,
+                96 => self.regexp_output(&mut output, &text.units()[..position])?,
+                39 => self.regexp_output(
+                    &mut output,
+                    &text.units()[position.saturating_add(matched.len()).min(text.len())..],
+                )?,
+                48..=57 => {
+                    let mut index = (next - 48) as usize;
+                    if let Some(second @ 48..=57) = units.get(at + 2) {
+                        let combined = index * 10 + (*second - 48) as usize;
+                        if combined > 0 && combined <= captures.len() {
+                            index = combined;
+                            consumed = 3;
+                        }
+                    }
+                    if index > 0 && index <= captures.len() {
+                        if let Value::String(capture) = &captures[index - 1] {
+                            self.regexp_output(&mut output, capture.units())?;
+                        }
+                    } else {
+                        self.regexp_output(&mut output, &[36])?;
+                        consumed = 1;
+                    }
+                }
+                60 if groups != Value::Undefined => {
+                    self.work(units.len() - at - 2)?;
+                    let end = units[at + 2..]
+                        .iter()
+                        .position(|unit| *unit == 62)
+                        .map(|index| at + 2 + index);
+                    if let Some(end) = end {
+                        let key = JsString::from(&units[at + 2..end]);
+                        let value = self.get_key(groups.clone(), &key, doc)?;
+                        if value != Value::Undefined {
+                            let value = self.json_text(value, doc, &mut Vec::new())?;
+                            self.regexp_output(&mut output, value.units())?;
+                        }
+                        consumed = end - at + 1;
+                    } else {
+                        self.regexp_output(&mut output, &[36])?;
+                        consumed = 1;
+                    }
+                }
+                _ => {
+                    self.regexp_output(&mut output, &[36])?;
+                    consumed = 1;
+                }
+            }
+            at += consumed;
+        }
+        Ok(output.into())
+    }
+    fn regexp_split(
+        &mut self,
+        pattern: &RegExp,
+        text: JsString,
+        limit: Value,
+        doc: &mut Document,
+    ) -> Result<Value> {
+        let limit = if limit == Value::Undefined {
+            u32::MAX as usize
+        } else {
+            to_i32(self.number_value(limit, doc)?) as u32 as usize
+        };
+        if limit == 0 {
+            return self.array(Vec::new());
+        }
+        if text.is_empty() {
+            return if self.regexp_find(pattern, &text, 0, true)?.is_some() {
+                self.array(Vec::new())
+            } else {
+                self.array(vec![Value::String(text)])
+            };
+        }
+        let mut values = Vec::new();
+        let mut previous = 0;
+        let mut position = 0;
+        while position < text.len() {
+            self.tick()?;
+            let Some(found) = self.regexp_find(pattern, &text, position, true)? else {
+                position += 1;
+                continue;
+            };
+            let end = found.span().1;
+            if end == previous {
+                position += 1;
+                continue;
+            }
+            if values.len() >= 65536 {
+                return Err(ScriptError::resource("array length limit exceeded"));
+            }
+            self.charge(std::mem::size_of::<Value>())?;
+            values.push(self.string(&text.units()[previous..position])?);
+            if values.len() == limit {
+                return self.array(values);
+            }
+            for span in found.captures.iter().skip(1) {
+                if values.len() >= 65536 {
+                    return Err(ScriptError::resource("array length limit exceeded"));
+                }
+                self.charge(std::mem::size_of::<Value>())?;
+                values.push(match span {
+                    Some((a, b)) => self.string(&text.units()[*a..*b])?,
+                    None => Value::Undefined,
+                });
+                if values.len() == limit {
+                    return self.array(values);
+                }
+            }
+            previous = end;
+            position = end;
+        }
+        if values.len() >= 65536 {
+            return Err(ScriptError::resource("array length limit exceeded"));
+        }
+        self.charge(std::mem::size_of::<Value>())?;
+        values.push(self.string(&text.units()[previous..])?);
+        self.array(values)
+    }
+
     fn native_call(
         &mut self,
         native: &Native,
@@ -5570,6 +6512,17 @@ impl Runtime {
             native
         };
         let name = native.name.as_str();
+        if let Some(method) = name.strip_prefix("RegExp.") {
+            return self.regexp_native(method, native.receiver.clone(), &args, doc);
+        }
+        if name == "RegExp" && native.receiver == Value::Window {
+            return self.regexp_create(
+                args.first().cloned().unwrap_or(Value::Undefined),
+                args.get(1).cloned().unwrap_or(Value::Undefined),
+                true,
+                doc,
+            );
+        }
         if name == "ThrowTypeError" {
             return Err(ScriptError::type_error(
                 "restricted function or arguments property",
@@ -5706,6 +6659,7 @@ impl Runtime {
                     Value::Number(_) => "Number",
                     Value::Bool(_) => "Boolean",
                     Value::Object(id) if self.objects[*id].arguments => "Arguments",
+                    Value::Object(id) if self.objects[*id].regexp.is_some() => "RegExp",
                     Value::Object(id) => match self.objects[*id].boxed {
                         Some(Value::String(_)) => "String",
                         Some(Value::Number(_)) => "Number",
@@ -6254,6 +7208,18 @@ impl Runtime {
                 }
             }
             Value::String(text) => {
+                if matches!(name, "match" | "search" | "replace")
+                    || name == "split" && self.regexp_slot(&arg(0)).is_some()
+                {
+                    return self.string_regexp(name, text.clone(), arg(0), arg(1), doc);
+                }
+                if matches!(name, "includes" | "startsWith" | "endsWith")
+                    && self.regexp_slot(&arg(0)).is_some()
+                {
+                    return Err(ScriptError::type_error(
+                        "String search argument must not be a RegExp",
+                    ));
+                }
                 let needle = if matches!(
                     name,
                     "includes" | "indexOf" | "startsWith" | "endsWith" | "split"
@@ -6637,11 +7603,15 @@ impl Runtime {
                     let key = arg(0).to_string();
                     let text = arg(1).to_string();
                     self.charge(key.len() + text.len() + 64)?;
+                    let work = doc.base_attribute_work(id, &key);
+                    self.work(work.saturating_add(if work > 0 { text.len() } else { 0 }))?;
                     doc.set_attr(id, &key, &text);
                     return Ok(Value::Undefined);
                 }
                 "removeAttribute" => {
-                    doc.remove_attr(id, &arg(0).to_string());
+                    let key = arg(0).to_string();
+                    self.work(doc.base_attribute_work(id, &key))?;
+                    doc.remove_attr(id, &key);
                     return Ok(Value::Undefined);
                 }
                 "appendChild" | "removeChild" => {
@@ -6656,8 +7626,8 @@ impl Runtime {
                             return Err(ScriptError::new("node is not a child"));
                         }
                         self.charge_dom_remove(id, doc)?;
-                        doc.nodes[id].children.retain(|item| *item != child);
-                        doc.nodes[child].parent = None;
+                        self.work(doc.base_remove_work(child))?;
+                        doc.remove_child(id, child);
                     }
                     return Ok(Value::Node(child));
                 }
@@ -6679,8 +7649,8 @@ impl Runtime {
                 "remove" => {
                     if let Some(parent) = doc.nodes[id].parent {
                         self.charge_dom_remove(parent, doc)?;
-                        doc.nodes[parent].children.retain(|child| *child != id);
-                        doc.nodes[id].parent = None;
+                        self.work(doc.base_remove_work(id))?;
+                        doc.remove_child(parent, id);
                     }
                     return Ok(Value::Undefined);
                 }
@@ -9080,6 +10050,277 @@ mod tests {
                 .unwrap(),
             Value::String("undefined".into())
         );
+    }
+    #[test]
+    fn regexp_literals_use_parser_lexical_goals_and_constructor_identity() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            assert.sameValue(12 / 3 / 2,2);
+            assert.sameValue(/=/.test('='),true);
+            assert.sameValue(/["']/.test("'"),true);
+            assert.sameValue(/[/*]/.test('/'),true);
+            assert.sameValue(/[/]/.test('/'),true);
+            function pattern(){return /a\/b/i;}
+            assert.sameValue(pattern().test('A/b'),true);
+            if(true) /a/.test('a');
+            var re=/a/g;
+            assert.sameValue(re instanceof RegExp,true);
+            assert.sameValue(RegExp(re),re);
+            assert.notSameValue(new RegExp(re),re);
+            assert.sameValue(new RegExp(re).flags,'g');
+            assert.sameValue(new RegExp(re,'i').flags,'i');
+            assert.sameValue(RegExp().source,'(?:)');
+            assert.sameValue(String(/a/gi),'/a/gi');
+            assert.sameValue(Object.prototype.toString.call(re),'[object RegExp]');
+            assert.sameValue(JSON.stringify({re:re}),'{"re":{}}');
+            assert.sameValue(new RegExp('/\n').source,'\\/\\n');
+            verifyProperty(re,'lastIndex',{value:0,writable:true,enumerable:false,configurable:false});
+            verifyProperty(RegExp,'length',{value:2,writable:false,enumerable:false,configurable:true});
+            verifyProperty(RegExp.prototype.exec,'length',{value:1,writable:false,enumerable:false,configurable:true});
+            assert.throws(SyntaxError,()=>new RegExp('('));
+            assert.throws(SyntaxError,()=>new RegExp('a','gg'));
+            assert.throws(SyntaxError,()=>new RegExp('(?<x>a)\\k'));
+            assert.throws(SyntaxError,()=>new RegExp('[\\k](?<x>a)'));
+            assert.throws(TypeError,()=>RegExp.prototype.exec.call({},'a'));
+            assert.throws(TypeError,()=>RegExp.prototype.test.call(null,'a'));
+        "#,&mut document).unwrap();
+        assert!(Runtime::parse_only("/[/").unwrap_err().is_parse_error());
+        assert!(Runtime::parse_only("/a/gg").unwrap_err().is_parse_error());
+        for source in [r"/(?<x>a)\k/", r"/[\k](?<x>a)/"] {
+            let error = Runtime::parse_only(source).unwrap_err();
+            assert!(error.is_parse_error());
+            assert_eq!(error.intrinsic_error_name(), Some("SyntaxError"));
+        }
+        assert!(Runtime::parse_only("/a/u").unwrap_err().is_unsupported());
+    }
+    #[test]
+    fn flat_binary_chains_and_do_while_preserve_evaluation_and_abrupt_flow() {
+        let (mut runtime, mut document) = property_harness();
+        runtime
+            .execute(
+                r#"
+            var trace='';function value(n){trace+=n;return n;}
+            assert.sameValue(value(2)*value(3)+value(4)*value(5)-value(1),25);
+            assert.sameValue(trace,'23451');
+            var n=0;do {n++;if(n<3)continue;break;}while(n<8);
+            assert.sameValue(n,3);
+            var once=0;do {once++;}while(false);assert.sameValue(once,1);
+            function f(){do {try{return 1;}finally{return 2;}}while(true);}
+            assert.sameValue(f(),2);
+            assert.sameValue(false && missing || 3,3);
+        "#,
+                &mut document,
+            )
+            .unwrap();
+        assert_eq!(
+            run(&format!("0{}", "+1".repeat(1000))).unwrap(),
+            Value::Number(1000.0)
+        );
+        assert_eq!(
+            run(&format!("''{}", "+'x'".repeat(1000))).unwrap(),
+            Value::String("x".repeat(1000).into())
+        );
+        assert!(run("do {} while(true)").unwrap_err().is_resource_limit());
+    }
+    #[test]
+    fn document_url_and_base_mutations_use_frozen_cache_and_preflight_quotas() {
+        let mut document =
+            Document::parse("<head><base id=base href='../one/'></head><body><p>old</p></body>");
+        document.initialize_url(url::Url::parse("https://site.test/a/page.html").unwrap());
+        let mut runtime = Runtime::new();
+        runtime
+            .execute(
+                "function eq(a,b){if(a!==b)throw new Error('unexpected base URL');}",
+                &mut document,
+            )
+            .unwrap();
+        runtime
+            .execute(
+                r#"
+            eq(document.URL,'https://site.test/a/page.html');eq(document.documentURI,document.URL);
+            eq(document.baseURI,'https://site.test/one/');
+            var base=document.getElementById('base');base.href='../two/';
+            eq(document.baseURI,'https://site.test/two/');
+            base.removeAttribute('href');eq(document.baseURI,document.URL);
+            document.body.innerHTML='<base href="/dynamic/"><p>new</p>';
+            eq(document.baseURI,'https://site.test/dynamic/');
+            document.body.textContent='done';eq(document.baseURI,document.URL);
+            var card=document.createElement('template');card.innerHTML='<base href="/template/">';
+            eq(document.baseURI,document.URL);document.body.appendChild(card.content);
+            eq(document.baseURI,'https://site.test/template/');
+            document.querySelector('body base').remove();eq(document.baseURI,document.URL);
+        "#,
+                &mut document,
+            )
+            .unwrap();
+        let mut document = Document::parse(&format!(
+            "<base id=base href='/old/'><body><main>{}</main></body>",
+            "<i></i>".repeat(1000)
+        ));
+        document.initialize_url(url::Url::parse("https://site.test/page").unwrap());
+        let base = document.query_selector("#base").unwrap();
+        let body = document.query_selector("body").unwrap();
+        let old_children = document.nodes[body].children.clone();
+        let mut runtime = Runtime::new();
+        runtime.steps = 128;
+        let error = runtime
+            .set_inner_html(body, "<base href='/new/'>changed", &mut document)
+            .unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(document.nodes[body].children, old_children);
+        assert_eq!(document.base_url().as_str(), "https://site.test/old/");
+        runtime.steps = 128;
+        let error = runtime
+            .native_call(
+                &Native {
+                    name: "setAttribute".into(),
+                    receiver: Value::Node(base),
+                },
+                vec![Value::String("href".into()), Value::String("/new/".into())],
+                &mut document,
+            )
+            .unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(document.attr(base, "href"), Some("/old/"));
+        assert_eq!(document.base_url().as_str(), "https://site.test/old/");
+    }
+    #[test]
+    fn regexp_exec_indices_named_captures_and_last_index_are_observable() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var re=/(?<letter>a)(b)?/dg;var found=re.exec('xa ab');
+            assert.sameValue(found[0],'a');assert.sameValue(found[1],'a');assert.sameValue(found[2],undefined);
+            assert.sameValue(found.index,1);assert.sameValue(found.input,'xa ab');
+            assert.sameValue(found.groups.letter,'a');assert.sameValue(Object.getPrototypeOf(found.groups),null);
+            assert.sameValue(found.indices[0][0],1);assert.sameValue(found.indices[0][1],2);
+            assert.sameValue(found.indices.groups.letter,found.indices[1]);
+            var ordered=/(?<b>x)(?<a>y)/d.exec('xy');
+            assert.sameValue(Object.keys(ordered.groups).join(','),'b,a');
+            assert.sameValue(Object.keys(ordered.indices.groups).join(','),'b,a');
+            assert.sameValue(ordered.indices.groups.b,ordered.indices[1]);
+            assert.sameValue(ordered.indices.groups.a,ordered.indices[2]);
+            assert.sameValue(found.indices[2],undefined);assert.sameValue(re.lastIndex,2);
+            assert.sameValue(re.exec('xa ab')[0],'ab');assert.sameValue(re.lastIndex,5);
+            assert.sameValue(re.exec('xa ab'),null);assert.sameValue(re.lastIndex,0);
+            var sticky=/a/y;sticky.lastIndex=1;
+            assert.sameValue(sticky.exec('ba')[0],'a');assert.sameValue(sticky.lastIndex,2);
+            sticky.lastIndex=0;assert.sameValue(sticky.exec('ba'),null);assert.sameValue(sticky.lastIndex,0);
+            var plain=/a/;plain.lastIndex=99;assert.sameValue(plain.exec('ba').index,1);assert.sameValue(plain.lastIndex,99);
+            var empty=/(?:)/g;assert.sameValue(empty.exec('x')[0],'');assert.sameValue(empty.lastIndex,0);
+            var reads=0;plain.lastIndex={valueOf(){reads++;return 99;}};
+            plain.exec('a');assert.sameValue(reads,1);
+            var frozen=/a/g;Object.defineProperty(frozen,'lastIndex',{writable:false});
+            assert.throws(TypeError,()=>frozen.exec('a'));
+            var other={exec(s){assert.sameValue(s,'abc');return {};}};
+            assert.sameValue(RegExp.prototype.test.call(other,'abc'),true);
+            other.exec=function(){return 1;};assert.throws(TypeError,()=>RegExp.prototype.test.call(other,'abc'));
+        "#,&mut document).unwrap();
+    }
+    #[test]
+    fn regexp_backtracking_assertions_and_utf16_preserve_capture_semantics() {
+        let (mut runtime, mut document) = property_harness();
+        runtime
+            .execute(
+                r#"
+            assert.sameValue(/(a|ab)+?b/.exec('aab')[0],'aab');
+            assert.sameValue(/a+?/.exec('aaaa')[0],'a');
+            assert.sameValue(/(a?)*$/.exec('')[1],undefined);
+            assert.sameValue(/(a?){2}/.exec('')[1],'');
+            assert.sameValue(/(a|(b))+/.exec('ba')[2],undefined);
+            assert.sameValue(/(?=(a+))a*b\1/.exec('baaabac')[0],'aba');
+            assert.sameValue(/^(?<word>\w+)\s+\k<word>$/i.test('Hello HELLO'),true);
+            assert.sameValue(/\b(?!bad)\w+\b/.exec('bad good')[0],'good');
+            assert.sameValue(/a$/.test('a\n'),false);assert.sameValue(/^b$/m.test('a\nb\nc'),true);
+            assert.sameValue(/./.test('\n'),false);assert.sameValue(/./s.test('\n'),true);
+            assert.sameValue(/[^]/.test('\n'),true);assert.sameValue(/[]/.test('a'),false);
+            assert.sameValue(/[\s\S]/.test('\uD800'),true);
+            assert.sameValue(/../.exec('😀')[0].length,2);
+            assert.sameValue(/\uD800/.exec('\uD800')[0].charCodeAt(0),55296);
+            assert.sameValue(/[a-z]/i.test('ſ'),false);assert.sameValue(/[ς]/i.test('Σ'),true);
+        "#,
+                &mut document,
+            )
+            .unwrap();
+    }
+    #[test]
+    fn regexp_string_methods_handle_empty_matches_captures_and_replacement_callbacks() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            assert.sameValue('aba'.match(/a/g).join(','),'a,a');
+            assert.sameValue('aba'.match(/z/g),null);
+            assert.sameValue('a'.match(/(?:)/g).length,2);
+            assert.sameValue('😀'.match(/./g).length,2);
+            assert.sameValue('abc'.match('b').index,1);
+            var re=/b/g;re.lastIndex=-0;assert.sameValue('abc'.search(re),1);assert.sameValue(re.lastIndex,-0);
+            assert.sameValue('ab12cd34'.replace(/(\d+)/g,'[$1]'),'ab[12]cd[34]');
+            assert.sameValue('abc'.replace(/b/,'$$:$&:$'+String.fromCharCode(96)+':$\''),'a$:b:a:cc');
+            assert.sameValue('ab'.replace(/(?<a>a)(b)?/,'$<a>:$2:$3:$01'),'a:b:$3:a');
+            assert.sameValue('ab'.replace('b','$&$&'),'abb');
+            var calls=0;var expression=/\d/g;
+            assert.sameValue('a1b2'.replace(expression,function(m,offset,input){
+                assert.sameValue(expression.lastIndex,0);assert.sameValue(input,'a1b2');calls++;return offset;
+            }),'a1b3');assert.sameValue(calls,2);
+            assert.sameValue('ab'.replace(/(?:)/g,'-'),'-a-b-');
+            assert.sameValue('a,b;c'.split(/([,;])/).join('|'),'a|,|b|;|c');
+            assert.sameValue('ab'.split(/(?:)/).join(','),'a,b');
+            assert.sameValue(''.split(/(?:)/).length,0);
+            assert.sameValue('a,'.split(/,/).join('|'),'a|');
+            assert.sameValue('ab'.split(/(x)?b/)[1],undefined);
+            assert.sameValue('a,b'.split(/,/ ,1).length,1);
+            assert.throws(TypeError,()=>'a'.includes(/a/));
+            assert.throws(TypeError,()=>'a'.startsWith(/a/));
+        "#,&mut document).unwrap();
+    }
+    #[test]
+    fn regexp_string_iteration_observes_flags_once_and_preserves_coercion_order() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var re=/a/g;
+            Object.defineProperty(re,'flags',{value:'',configurable:true});
+            Object.defineProperty(re,'global',{get(){throw new Error('unexpected global read');}});
+            var result='aa'.match(re);
+            assert.sameValue(result.length,1);assert.sameValue(result.index,0);
+            re.lastIndex=0;assert.sameValue('aa'.replace(re,'b'),'ba');
+            var trace='';
+            Object.defineProperty(re,'flags',{get(){
+                trace+='flags;';
+                return {toString(){trace+='convert;';return '';}};
+            }});
+            re.lastIndex=0;
+            assert.sameValue('aa'.replace(re,{toString(){trace+='replacement;';return 'b';}}),'ba');
+            assert.sameValue(trace,'replacement;flags;convert;');
+            trace='';re.lastIndex=0;assert.sameValue('aa'.match(re).length,1);
+            assert.sameValue(trace,'flags;convert;');
+            var empty=/(?:)/g;Object.defineProperty(empty,'flags',{value:'gu'});
+            assert.sameValue('😀'.match(empty).length,2);
+            assert.sameValue('😀'.replace(empty,'-'),'-😀-');
+            var broken=/a/g;broken.lastIndex=1;
+            Object.defineProperty(broken,'flags',{get(){throw new TypeError('flags');}});
+            assert.throws(TypeError,()=>'aa'.match(broken));assert.sameValue(broken.lastIndex,1);
+            assert.throws(TypeError,()=>'aa'.replace(broken,'b'));assert.sameValue(broken.lastIndex,1);
+        "#,&mut document).unwrap();
+    }
+    #[test]
+    fn regexp_hostile_backtracking_and_native_callbacks_share_uncatchable_budgets() {
+        for source in [
+            "var caught=false;try { /(a+)+$/.test('aaaaaaaaaaaaaaaaaaaaaaaa!'); } catch(e) {caught=true;}",
+            "var caught=false;try { var re=/a/g;re.exec=function(){return {0:'',length:1,index:0};};'a'.match(re); } catch(e){caught=true;}",
+            "var caught=false;try { function f(){return 'a'.replace(/a/,f);}f(); } catch(e){caught=true;}",
+        ] {
+            let mut runtime = Runtime::new();
+            let mut document = Document::parse("");
+            assert!(
+                runtime
+                    .execute(source, &mut document)
+                    .unwrap_err()
+                    .is_resource_limit(),
+                "{source}"
+            );
+            assert_eq!(
+                runtime.environments[0].bindings["caught"].value,
+                Value::Bool(false)
+            );
+        }
     }
     #[test]
     fn repeated_dom_moves_charge_template_subtrees_and_leave_failed_moves_unapplied() {

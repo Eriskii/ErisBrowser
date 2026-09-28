@@ -126,16 +126,11 @@ fn run() -> Result<(), String> {
         if let Some(target) = page.click(node) {
             if target.form_body.is_none()
                 && let Ok(url) = url::Url::parse(&target.address)
+                && (url.fragment().is_some() || page.url.fragment().is_some())
+                && page.navigate_fragment(url.clone())
             {
-                let mut destination = url.clone();
-                let mut current = page.url.clone();
-                destination.set_fragment(None);
-                current.set_fragment(None);
-                if destination == current && url.fragment().is_some() {
-                    fragment = url.fragment().map(str::to_owned);
-                    page.url = url;
-                    continue;
-                }
+                fragment = url.fragment().map(str::to_owned);
+                continue;
             }
             page = Page::load_navigation(&target, scripts)?;
             fragment = page.url.fragment().map(str::to_owned);
@@ -145,6 +140,7 @@ fn run() -> Result<(), String> {
     let scroll = fragment
         .and_then(|fragment| eris::page::find_fragment(&page.document, &fragment))
         .and_then(|node| layout.hit_regions.iter().find(|hit| hit.node == node))
+        .filter(|hit| !hit.fixed)
         .map(|hit| {
             hit.rect
                 .y
@@ -152,7 +148,13 @@ fn run() -> Result<(), String> {
         })
         .unwrap_or(0.0);
     canvas.clear(Color::WHITE);
-    canvas.paint(&layout.commands, &fonts, &page.images, 0.0, -scroll);
+    canvas.paint_with_viewport(
+        &layout.commands,
+        &fonts,
+        &page.images,
+        (0.0, -scroll),
+        (0.0, 0.0),
+    );
     if canvas.exhausted() {
         return Err("page exceeds the raster work budget; render is incomplete".into());
     }
@@ -202,7 +204,13 @@ fn run() -> Result<(), String> {
             let layout =
                 eris::layout::layout(&page.document, &styles, width as f32, height as f32, &fonts);
             canvas.clear(Color::WHITE);
-            canvas.paint(&layout.commands, &fonts, &page.images, 0.0, -scroll);
+            canvas.paint_with_viewport(
+                &layout.commands,
+                &fonts,
+                &page.images,
+                (0.0, -scroll),
+                (0.0, 0.0),
+            );
             if canvas.exhausted() {
                 return Err("benchmark page exceeds the raster work budget".into());
             }

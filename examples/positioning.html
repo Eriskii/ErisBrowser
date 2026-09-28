@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Layers — Eris Browser</title>
+  <base href="laboratory/">
+  <link rel="stylesheet" href="theme.css">
+</head>
+<body>
+  <header class="masthead">
+    <div class="wordmark">ERIS <span>/ LAYOUT LABORATORY</span></div>
+    <a href="../templates.html">Template workshop →</a>
+  </header>
+  <main>
+    <div class="eyebrow">EXPERIMENT 06 · POSITION &amp; PATTERN</div>
+    <h1>Layers,<br>anchored.</h1>
+    <p class="intro">A custom renderer puts every rectangle in its place. Scroll the page: the navigation and corner marker stay attached to the viewport.</p>
+    <section class="composition">
+      <div class="art-label">THE CONTAINING BLOCK</div>
+      <div class="tile tile-back"><span>01 / BELOW</span></div>
+      <div class="static-wrapper"><div class="tile tile-front"><span>02 / ABOVE</span><strong>Order has<br>dimensions.</strong></div></div>
+      <div class="tile tile-note">The front tile resolves its offsets through a static wrapper.</div>
+    </section>
+    <section class="workbench">
+      <div class="eyebrow">CUSTOM JAVASCRIPT · REGULAR EXPRESSIONS</div>
+      <h2>Find the signal.</h2>
+      <p>Extract the numbered measurements from this field note.</p>
+      <pre id="note">north: 128px / east: 64px / depth: 3 layers</pre>
+      <button id="extract">Extract measurements</button>
+      <p id="result" class="result">Ready for a pattern.</p>
+    </section>
+    <section class="observations">
+      <article><div class="number">01</div><h2>Position</h2><p>An absolutely positioned box uses its positioned ancestor. Ordinary wrappers keep their place in the document.</p></article>
+      <article><div class="number">02</div><h2>Stack</h2><p>Stacking contexts group descendants. A high layer inside a lower context remains within that context.</p></article>
+      <article><div class="number">03</div><h2>Import</h2><p>This page's stylesheet imports its color palette. Imported rules enter the cascade before the page's local rules.</p></article>
+    </section>
+    <footer>Built with Eris's own HTML, CSS, JavaScript, layout and software paint implementations.</footer>
+  </main>
+  <div class="viewport-marker">VIEWPORT<br><strong>FIXED ↗</strong></div>
+  <script>
+    document.getElementById('extract').addEventListener('click', function () {
+      'use strict';
+      var note = document.getElementById('note').textContent;
+      var values = note.match(/[0-9]+/g);
+      document.getElementById('result').textContent = values.join(' · ');
+    });
+  </script>
+</body>
+</html>

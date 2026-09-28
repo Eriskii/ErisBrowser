@@ -18,6 +18,11 @@ DIRECTORIES = {
     'String/prototype/substring': 46, 'String/fromCharCode': 17,
     'String/fromCodePoint': 11,
 }
+REGEXP_DIRECTORIES = {
+    'RegExp/prototype/exec': 79, 'RegExp/prototype/test': 45,
+    'RegExp/prototype/toString': 9, 'RegExp/prototype/source': 12,
+}
+PROFILES = {'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES}
 MAX_FILE = 2 * 1024 * 1024
 MAX_TOTAL = 16 * 1024 * 1024
 METADATA_KEYS = {'description', 'esid', 'es5id', 'es6id', 'info', 'author',
@@ -111,11 +116,11 @@ def fetch(url):
     return data
 
 
-def import_corpus(output):
+def import_corpus(output, profile='string-json'):
     raw = f'https://raw.githubusercontent.com/{REPOSITORY}/{REVISION}/'
     inventory = {}
     entries = {}
-    for directory, expected in DIRECTORIES.items():
+    for directory, expected in PROFILES[profile].items():
         remote = f'test/built-ins/{directory}'
         listing = json.loads(fetch(f'https://api.github.com/repos/{REPOSITORY}/contents/{remote}?ref={REVISION}'))
         names = []
@@ -147,8 +152,11 @@ def import_corpus(output):
         sources.update(zip(additional, pool.map(lambda path: fetch(raw + path), additional)))
     if sum(map(len, sources.values())) > MAX_TOTAL:
         raise ValueError('Test262 selection exceeds aggregate import limit')
+    scope = ('all direct .js files in nine built-ins directories; no implementation'
+             if profile == 'string-json' else
+             'all direct .js files in four RegExp prototype directories; no implementation')
     manifest = dict(format=1, repository=f'https://github.com/{REPOSITORY}', revision=REVISION,
-                    scope='all direct .js files in nine built-ins directories; no implementation',
+                    scope=scope,
                     directories=inventory, test_files=len(paths), files=[])
     for path, data in sorted(sources.items()):
         target = output / path
@@ -162,9 +170,12 @@ def import_corpus(output):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--output', type=Path, default=ROOT / 'tests/upstream/test262')
+    parser.add_argument('--profile', choices=PROFILES, default='string-json')
+    parser.add_argument('--output', type=Path)
     args = parser.parse_args()
-    import_corpus(args.output)
+    output = args.output or ROOT / 'tests/upstream' / (
+        'test262' if args.profile == 'string-json' else 'test262-regexp')
+    import_corpus(output, args.profile)
 
 
 if __name__ == '__main__':

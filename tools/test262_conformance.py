@@ -13,10 +13,11 @@ import sys
 import time
 
 from html_conformance import bounded_process, paths_alias
-from import_test262 import DIRECTORIES, MAX_FILE, MAX_TOTAL, REPOSITORY, REVISION, parse_metadata
+from import_test262 import DIRECTORIES, PROFILES, MAX_FILE, MAX_TOTAL, REPOSITORY, REVISION, parse_metadata
 
 ROOT = Path(__file__).resolve().parents[1]
 SUPPORTED_FEATURES = {'arrow-function', 'String.fromCodePoint', 'well-formed-json-stringify', 'for-in-order'}
+REGEXP_FEATURES = SUPPORTED_FEATURES | {'regexp-dotall', 'regexp-match-indices', 'regexp-named-groups', 'regexp-sticky'}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -49,7 +50,8 @@ def harness_names(metadata):
     return names + metadata['includes']
 
 
-def load_corpus(directory):
+def load_corpus(directory, profile='string-json'):
+    directories = PROFILES[profile]
     manifest_bytes = (directory / 'manifest.json').read_bytes()
     if len(manifest_bytes) > MAX_FILE:
         raise ValueError('manifest exceeds size limit')
@@ -58,10 +60,10 @@ def load_corpus(directory):
             or manifest.get('repository') != f'https://github.com/{REPOSITORY}'):
         raise ValueError('unexpected Test262 corpus format, repository or pinned revision')
     inventory = manifest.get('directories', {})
-    if inventory.keys() != DIRECTORIES.keys():
+    if inventory.keys() != directories.keys():
         raise ValueError('Test262 directory inventory differs from pinned selection')
     expected_tests = set()
-    for name, count in DIRECTORIES.items():
+    for name, count in directories.items():
         filenames = inventory[name]
         if (not isinstance(filenames, list) or len(filenames) != count
                 or len(set(filenames)) != count
@@ -128,7 +130,7 @@ def case_fingerprint(case):
     return digest(json.dumps(identity, sort_keys=True, ensure_ascii=True).encode())
 
 
-def unsupported_reason(case):
+def unsupported_reason(case, supported_features=SUPPORTED_FEATURES):
     metadata = case['metadata']
     flags = set(metadata['flags'])
     if case['mode'] == 'module' or (metadata['negative'] or {}).get('phase') == 'resolution':
@@ -145,7 +147,7 @@ def unsupported_reason(case):
         return 'locale-dependent execution is not implemented'
     if metadata.get('timeout'):
         return 'metadata-specific timeout policy is not implemented'
-    unavailable = set(metadata['features']) - SUPPORTED_FEATURES
+    unavailable = set(metadata['features']) - supported_features
     if unavailable:
         return 'unimplemented declared features: ' + ', '.join(sorted(unavailable))
     sources = [case['source']] + [source for _, source in case['harness']]
@@ -212,11 +214,11 @@ def classify(case, observation):
             and observation['error_identity'] == expected['type'] else 'failed')
 
 
-def run_case(case, binary, timeout):
+def run_case(case, binary, timeout, supported_features=SUPPORTED_FEATURES):
     result = {key: case[key] for key in ('id', 'file', 'mode', 'case_sha256')}
     result['source_sha256'] = digest(case['source'])
     result['expected_negative'] = case['metadata']['negative']
-    reason = unsupported_reason(case)
+    reason = unsupported_reason(case, supported_features)
     if reason:
         return dict(result, status='unsupported', reason=reason)
     try:
@@ -233,7 +235,7 @@ def run_case(case, binary, timeout):
         return dict(result, status='adapter-error', reason=str(error))
 
 
-def harness_preflight(files, binary, timeout):
+def harness_preflight(files, binary, timeout, profile='string-json'):
     """Fail closed if the upstream assertions no longer enforce basic failures."""
     scripts = [
         ('success', 'assert.sameValue(1, 1); assert.sameValue(NaN, NaN);', 'passed'),
@@ -260,6 +262,17 @@ def harness_preflight(files, binary, timeout):
         ('strict-arguments', "function f(a){arguments[0]=2;assert.sameValue(a,1);assert.throws(TypeError,()=>arguments.callee);}f(1);", 'passed', 'strict'),
         ('strict-tdz', "assert.throws(ReferenceError,function(){typeof x;let x;});", 'passed', 'strict'),
     ]
+    if profile == 'regexp':
+        checks = [
+            ('regexp-success', "var r=/(?<x>a)(b)?/dg;var m=r.exec('xa');assert.sameValue(m.index,1);assert.sameValue(m.groups.x,'a');assert.sameValue(m[2],undefined);assert.sameValue(m.indices[0][1],2);assert.sameValue(r.lastIndex,2);", 'passed'),
+            ('regexp-no-match', "assert(/x/.test('y'));", 'failed'),
+            ('regexp-capture-mismatch', "assert.sameValue(/(a)/.exec('a')[1],'b');", 'failed'),
+            ('regexp-last-index-mismatch', "var r=/a/g;r.test('a');assert.sameValue(r.lastIndex,0);", 'failed'),
+            ('regexp-string-methods', "assert.sameValue('a1b2'.replace(/(\\d)/g,'[$1]'),'a[1]b[2]');assert.sameValue('ab'.match(/(?:)/g).length,3);assert.sameValue('a,b'.split(/(,)/)[1],',');", 'passed'),
+            ('regexp-unsupported-unicode', "new RegExp('a','u');", 'unsupported'),
+        ]
+        variants += [(name, source, expected, mode)
+                     for mode in ('sloppy', 'strict') for name, source, expected in checks]
     outcomes = []
     for name, source, expected, mode in variants:
         includes = ['propertyHelper.js'] if 'property-' in name else []
@@ -296,13 +309,18 @@ def check_baseline(previous, current):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--binary', type=Path, default=ROOT / 'target/release/eris-js')
-    parser.add_argument('--corpus', type=Path, default=ROOT / 'tests/upstream/test262')
-    parser.add_argument('--output', type=Path, default=ROOT / 'artifacts/test262-report.json')
+    parser.add_argument('--profile', choices=PROFILES, default='string-json')
+    parser.add_argument('--corpus', type=Path)
+    parser.add_argument('--output', type=Path)
     parser.add_argument('--baseline', type=Path)
     parser.add_argument('--record-baseline', type=Path)
     parser.add_argument('--jobs', type=int, default=4)
     parser.add_argument('--timeout', type=float, default=3.0)
     args = parser.parse_args()
+    args.corpus = args.corpus or ROOT / 'tests/upstream' / (
+        'test262' if args.profile == 'string-json' else 'test262-regexp')
+    args.output = args.output or ROOT / 'artifacts' / (
+        'test262-report.json' if args.profile == 'string-json' else 'test262-regexp-report.json')
     if args.baseline and args.record_baseline:
         parser.error('baseline checking and recording are mutually exclusive')
     if any(path is not None and paths_alias(path, args.output)
@@ -312,15 +330,16 @@ def main():
         parser.error('jobs must be 1..16 and timeout must be (0,60] seconds')
     started = time.monotonic()
     try:
-        manifest, files, cases, fixtures, corpus_hash = load_corpus(args.corpus)
+        manifest, files, cases, fixtures, corpus_hash = load_corpus(args.corpus, args.profile)
         binary = args.binary.resolve()
         binary_hash = digest(binary.read_bytes())
-        preflight = harness_preflight(files, binary, args.timeout)
+        preflight = harness_preflight(files, binary, args.timeout, args.profile)
         preflight_ok = all(item['verified'] for item in preflight)
+        supported_features = SUPPORTED_FEATURES if args.profile == 'string-json' else REGEXP_FEATURES
         with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as pool:
-            results = list(pool.map(lambda case: run_case(case, binary, args.timeout), cases))
+            results = list(pool.map(lambda case: run_case(case, binary, args.timeout, supported_features), cases))
         counts = dict(Counter(result['status'] for result in results))
-        policy = dict(format=2, supported_features=sorted(SUPPORTED_FEATURES),
+        policy = dict(format=2, supported_features=sorted(supported_features),
                       negative_intrinsic_errors=sorted(INTRINSIC_ERRORS), strict=True,
                       modules=False, async_completion=False, host_hooks=False,
                       timeout_seconds=args.timeout)
@@ -334,7 +353,7 @@ def main():
         regressions, improvements = [], []
         if args.baseline:
             regressions, improvements = check_baseline(json.loads(args.baseline.read_bytes()), current)
-        report = dict(suite='pinned-test262-string-json-selection', full_test262_conformance=False,
+        report = dict(suite=f'pinned-test262-{args.profile}-selection', full_test262_conformance=False,
                       repository=manifest['repository'], revision=manifest['revision'],
                       corpus_manifest_sha256=corpus_hash, runner_policy=policy, runner_policy_sha256=policy_hash,
                       source_files=manifest['test_files'], source_tests=len({case['file'] for case in cases}),

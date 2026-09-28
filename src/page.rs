@@ -43,11 +43,21 @@ pub struct Page {
     pub load_ms: f64,
     pub scripts_enabled: bool,
     image_origins: HashMap<String, bool>,
-    external_styles: HashMap<NodeId, Arc<str>>,
+    external_styles: HashMap<NodeId, crate::stylesheet_loading::Sources>,
+    inline_styles: HashMap<NodeId, (Arc<str>, crate::stylesheet_loading::Sources)>,
     policy_blocks_styles: bool,
 }
 
 impl Page {
+    /// Apply a same-document URL change without reloading or refreezing a base.
+    pub fn navigate_fragment(&mut self, target: Url) -> bool {
+        if !same_document_url(&self.url, &target) {
+            return false;
+        }
+        self.document.set_url(target.clone());
+        self.url = target;
+        true
+    }
     pub fn load(address: &str, scripts_enabled: bool) -> Result<Self, String> {
         Self::load_navigation(&Navigation::get(address), scripts_enabled)
     }
@@ -113,19 +123,22 @@ impl Page {
             }
             page.document.set_encoding(encoding);
         }
+        page.document.initialize_url(page.url.clone());
         let environment_encoding =
             encoding_rs::Encoding::for_label(page.document.character_set().as_bytes())
                 .expect("document encoding is canonical");
         page.apply_author_policy(csp);
-        let ids = page.document.query_selector_all("link, script, img");
+        let ids = page.document.query_selector_all("style, link, script, img");
+        let base = crate::document_url::base_url(&page.document);
+        let mut styles = crate::stylesheet_loading::Loader::new(&page.url, environment_encoding);
         let mut script_sources: HashMap<NodeId, Arc<str>> = HashMap::new();
         let mut text_cache: HashMap<(ResourceKind, String, &'static str), Arc<str>> =
             HashMap::new();
         let mut image_cache: HashMap<String, (Arc<RasterImage>, bool)> = HashMap::new();
         let mut failed = HashSet::new();
         let mut decoded_bytes = 0usize;
-        let mut style_bytes = 0usize;
         let mut script_bytes = 0usize;
+        let mut resource_url_work = 32usize * 1024 * 1024;
         for id in ids {
             if page.policy_blocks_styles {
                 break;
@@ -133,13 +146,32 @@ impl Page {
             if !page.is_active_node(id) {
                 continue;
             }
+            if page.document.tag(id) == Some("style")
+                && matches!(
+                    page.document.namespace(id),
+                    Some(Namespace::Html | Namespace::Svg)
+                )
+            {
+                if !page.css_type_supported(id) {
+                    continue;
+                }
+                let original: Arc<str> = page.document.text_content(id).into();
+                match styles.inline(&mut fetcher, &original, &base, &mut page.diagnostics) {
+                    Ok(expanded) => {
+                        page.inline_styles.insert(id, (original, expanded));
+                    }
+                    Err(error) => page.diagnostics.push(error),
+                }
+                continue;
+            }
             let tag = page.html_tag(id).unwrap_or("");
             let (href, kind) = match tag {
                 "link"
-                    if page.document.attr(id, "rel").is_some_and(|r| {
-                        r.split_ascii_whitespace()
-                            .any(|s| s.eq_ignore_ascii_case("stylesheet"))
-                    }) =>
+                    if page.css_type_supported(id)
+                        && page.document.attr(id, "rel").is_some_and(|r| {
+                            r.split_ascii_whitespace()
+                                .any(|s| s.eq_ignore_ascii_case("stylesheet"))
+                        }) =>
                 {
                     (page.document.attr(id, "href"), ResourceKind::Style)
                 }
@@ -157,7 +189,20 @@ impl Page {
             let Some(href) = href.map(str::to_owned) else {
                 continue;
             };
-            let mut target = match page.url.join(&href) {
+            // A long base copied for thousands of tiny references can otherwise
+            // multiply allocation and parsing work before fetch limits apply.
+            let work = base
+                .as_str()
+                .len()
+                .saturating_add(href.len().saturating_mul(8))
+                .saturating_add(1);
+            if work > resource_url_work {
+                page.diagnostics
+                    .push("resource URL work budget exceeded".into());
+                break;
+            }
+            resource_url_work -= work;
+            let mut target = match crate::document_url::parse(&page.document, &base, &href) {
                 Ok(url) => url,
                 Err(error) => {
                     page.diagnostics.push(format!("resource URL: {error}"));
@@ -165,6 +210,15 @@ impl Page {
                 }
             };
             target.set_fragment(None);
+            if kind == ResourceKind::Style {
+                match styles.external(&mut fetcher, &target, &mut page.diagnostics) {
+                    Ok(source) => {
+                        page.external_styles.insert(id, source);
+                    }
+                    Err(error) => page.diagnostics.push(format!("stylesheet: {error}")),
+                }
+                continue;
+            }
             let key = target.to_string();
             let fallback_encoding = if kind == ResourceKind::Script {
                 page.document
@@ -184,11 +238,7 @@ impl Page {
                     continue;
                 }
             } else if let Some(source) = text_cache.get(&text_key).cloned() {
-                if kind == ResourceKind::Style {
-                    page.external_styles.insert(id, source);
-                } else {
-                    script_sources.insert(id, source);
-                }
+                script_sources.insert(id, source);
                 continue;
             }
             let mut resource = match fetcher.fetch(&target, Some(&page.url), kind) {
@@ -201,47 +251,24 @@ impl Page {
                 }
             };
             match kind {
-                ResourceKind::Style | ResourceKind::Script => {
-                    let encoding = if kind == ResourceKind::Style {
-                        crate::text_encoding::css_encoding(
-                            &resource.bytes,
-                            &resource.content_type,
-                            environment_encoding,
-                        )
-                    } else {
-                        crate::text_encoding::script_encoding(
-                            &resource.bytes,
-                            &resource.content_type,
-                            None,
-                            fallback_encoding,
-                        )
-                    };
+                ResourceKind::Script => {
+                    let encoding = crate::text_encoding::script_encoding(
+                        &resource.bytes,
+                        &resource.content_type,
+                        None,
+                        fallback_encoding,
+                    );
                     let source = crate::text_encoding::decode(&resource.bytes, encoding);
-                    let (used, limit) = if kind == ResourceKind::Style {
-                        (&mut style_bytes, MAX_STYLE_BYTES)
-                    } else {
-                        (&mut script_bytes, MAX_SCRIPT_BYTES)
-                    };
-                    if source.len() > limit.saturating_sub(*used) {
+                    if source.len() > MAX_SCRIPT_BYTES.saturating_sub(script_bytes) {
                         failed.insert((kind, key));
-                        page.diagnostics.push(format!(
-                            "{} source budget exceeded",
-                            if kind == ResourceKind::Style {
-                                "stylesheet"
-                            } else {
-                                "script"
-                            }
-                        ));
+                        page.diagnostics
+                            .push("script source budget exceeded".into());
                         continue;
                     }
-                    *used += source.len();
+                    script_bytes += source.len();
                     let source: Arc<str> = source.into();
                     text_cache.insert(text_key, source.clone());
-                    if kind == ResourceKind::Style {
-                        page.external_styles.insert(id, source);
-                    } else {
-                        script_sources.insert(id, source);
-                    }
+                    script_sources.insert(id, source);
                 }
                 ResourceKind::Image => {
                     let remaining = MAX_DECODED_IMAGE_BYTES.saturating_sub(decoded_bytes);
@@ -281,7 +308,7 @@ impl Page {
                         }
                     }
                 }
-                ResourceKind::Document => {}
+                ResourceKind::Document | ResourceKind::Style => {}
             }
         }
         page.run_scripts(&script_sources);
@@ -290,9 +317,11 @@ impl Page {
         Ok(page)
     }
     fn unexecuted(url: Url, html: &str, scripts_enabled: bool) -> Self {
+        let mut document = Document::parse_with_scripting(html, scripts_enabled);
+        document.initialize_url(url.clone());
         Self {
             url,
-            document: Document::parse_with_scripting(html, scripts_enabled),
+            document,
             runtime: Runtime::new(),
             images: HashMap::new(),
             diagnostics: Vec::new(),
@@ -300,6 +329,7 @@ impl Page {
             scripts_enabled,
             image_origins: HashMap::new(),
             external_styles: HashMap::new(),
+            inline_styles: HashMap::new(),
             policy_blocks_styles: false,
         }
     }
@@ -491,7 +521,7 @@ impl Page {
         let mut sources = Vec::new();
         let mut bytes = 0usize;
         for id in self.document.query_selector_all("style, link") {
-            if !self.is_active_node(id) {
+            if !self.is_active_node(id) || !self.css_type_supported(id) {
                 continue;
             }
             let style_element = self.document.tag(id) == Some("style")
@@ -499,8 +529,13 @@ impl Page {
                     self.document.namespace(id),
                     Some(Namespace::Html | Namespace::Svg)
                 );
-            let source: Arc<str> = if style_element {
-                self.document.text_content(id).into()
+            let parts = if style_element {
+                let current = self.document.text_content(id);
+                self.inline_styles
+                    .get(&id)
+                    .filter(|(original, _)| original.as_ref() == current)
+                    .map(|(_, expanded)| expanded.clone())
+                    .unwrap_or_else(|| vec![current.into()])
             } else if let Some(source) = self
                 .external_styles
                 .get(&id)
@@ -511,18 +546,37 @@ impl Page {
                 continue;
             };
             let media = self.document.attr(id, "media");
-            let size = source.len() + media.map_or(0, |m| m.len() + 12);
-            if sources.len() >= 256 || size > MAX_STYLE_BYTES.saturating_sub(bytes) {
-                break;
+            if media.is_some_and(|media| !crate::stylesheet_loading::valid_media_condition(media)) {
+                continue;
             }
-            bytes += size;
-            sources.push(if let Some(media) = media {
-                format!("@media {media} {{{source}}}")
-            } else {
-                source.to_string()
-            });
+            for source in parts {
+                let size = source.len() + media.map_or(0, |m| m.len() + 12);
+                if sources.len() >= 256 || size > MAX_STYLE_BYTES.saturating_sub(bytes) {
+                    return sources;
+                }
+                if media.is_some() && !crate::stylesheet_loading::valid_media_source(&source) {
+                    continue;
+                }
+                bytes += size;
+                sources.push(if let Some(media) = media {
+                    format!("@media {media} {{{source}}}")
+                } else {
+                    source.to_string()
+                });
+            }
         }
         sources
+    }
+    fn css_type_supported(&self, node: NodeId) -> bool {
+        self.document.attr(node, "type").is_none_or(|kind| {
+            kind.trim().is_empty()
+                || kind
+                    .split(';')
+                    .next()
+                    .unwrap_or("")
+                    .trim()
+                    .eq_ignore_ascii_case("text/css")
+        })
     }
     pub fn layout(&self, width: f32, height: f32, fonts: &Fonts) -> LayoutResult {
         let styles = css::compute_styles(&self.document, &self.stylesheets(), width, height);
@@ -687,6 +741,7 @@ impl Page {
         let action = submitter
             .and_then(|node| self.document.attr(node, "formaction"))
             .or_else(|| self.document.attr(form, "action"))
+            .filter(|action| !action.is_empty())
             .unwrap_or(self.url.as_str());
         let mut target = self
             .resolve_navigation(action)
@@ -828,11 +883,20 @@ impl Page {
         if address.len() > net::MAX_RESOURCE_BYTES * 2 {
             return Err("navigation URL exceeds size limit".into());
         }
-        let target = self.url.join(address).map_err(|e| e.to_string())?;
+        let target = crate::document_url::parse(
+            &self.document,
+            &crate::document_url::base_url(&self.document),
+            address,
+        )
+        .map_err(|e| e.to_string())?;
         if !target.username().is_empty() || target.password().is_some() {
             return Err("URLs containing credentials are blocked".into());
         }
-        if address.starts_with('#') {
+        let mut current = self.url.clone();
+        let mut without_fragment = target.clone();
+        current.set_fragment(None);
+        without_fragment.set_fragment(None);
+        if current == without_fragment {
             return Ok(target.to_string());
         }
         if target.scheme() == "file" && self.url.scheme() != "file" {
@@ -859,6 +923,13 @@ impl Page {
         }
         Ok(target.to_string())
     }
+}
+pub(crate) fn same_document_url(left: &Url, right: &Url) -> bool {
+    let mut left = left.clone();
+    let mut right = right.clone();
+    left.set_fragment(None);
+    right.set_fragment(None);
+    left == right
 }
 fn form_line_breaks(value: &str) -> String {
     let mut result = String::with_capacity(value.len());
@@ -1043,6 +1114,18 @@ mod tests {
         assert_eq!(p.resolve_navigation("/a").unwrap(), "https://example.com/a");
     }
     #[test]
+    fn invalid_media_wrappers_and_non_css_types_cannot_introduce_rules() {
+        let page = Page::from_html(
+            Url::parse("https://example.test/").unwrap(),
+            "<style>p{color:green}</style><style media=\"print {} p {color:red} @media screen\">p{background:blue}</style><style type=text/plain>p{color:red}</style><style media=print>} p{color:red}</style><p id=x>text</p>",
+            false,
+        );
+        let x = page.document.query_selector("#x").unwrap();
+        let styles = css::compute_styles(&page.document, &page.stylesheets(), 400.0, 300.0);
+        assert_eq!(styles[x].color, crate::graphics::Color::rgb(0, 128, 0));
+        assert_eq!(styles[x].background_color.a, 0);
+    }
+    #[test]
     fn plaintext_escaping() {
         assert_eq!(escape_html("<script>&\""), "&lt;script&gt;&amp;&quot;");
     }
@@ -1083,7 +1166,7 @@ mod tests {
         );
         let source: Arc<str> = " ".repeat(64 * 1024).into();
         for id in page.document.query_selector_all("link") {
-            page.external_styles.insert(id, source.clone());
+            page.external_styles.insert(id, vec![source.clone()]);
         }
         let stylesheets = page.stylesheets();
         assert_eq!(

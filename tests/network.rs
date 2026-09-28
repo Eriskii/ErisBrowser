@@ -167,6 +167,122 @@ fn byte_response(mime: &str, body: &[u8]) -> Vec<u8> {
 
 #[test]
 #[ignore = "requires permission to bind a loopback test server"]
+fn base_urls_and_recursive_imports_preserve_redirect_bases_encoding_order_and_media() {
+    use eris::{css, graphics::Color};
+    let (child, _, errors) =
+        encoding_rs::SHIFT_JIS.encode("@import 'parent.css'; .日本{color:blue;background:red}");
+    assert!(!errors);
+    let (parent, _, errors) = encoding_rs::SHIFT_JIS
+        .encode("@import url('child.css?name=日本'); #x{color:green} @import 'late.css';");
+    assert!(!errors);
+    let s = Server::new_bytes(vec![
+        (
+            "/docs/page",
+            byte_response(
+                "text/html; charset=utf-8",
+                br#"<!doctype html>
+            <base href='/assets/'><base href='/ignored/'>
+            <link rel=stylesheet href='entry.css'>
+            <style>@import 'inline.css' screen and (min-width: 400px);</style>
+            <div id=x class='&#26085;&#26412;'>test</div><a id=link href='#section'>link</a>
+            <script src='code.js'></script>"#,
+            ),
+        ),
+        (
+            "/assets/entry.css",
+            response(
+                "302 Found",
+                "text/css",
+                "Location: /styles/parent.css\r\n",
+                "",
+            )
+            .into_bytes(),
+        ),
+        (
+            "/styles/parent.css",
+            byte_response("text/css; charset=shift_jis", &parent),
+        ),
+        (
+            "/styles/child.css?name=%E6%97%A5%E6%9C%AC",
+            byte_response("text/css", &child),
+        ),
+        (
+            "/assets/inline.css",
+            byte_response("text/css", b"#x{background:blue}"),
+        ),
+        (
+            "/assets/code.js",
+            byte_response(
+                "text/javascript",
+                b"document.getElementById('x').setAttribute('loaded','yes');",
+            ),
+        ),
+    ]);
+    let p = Page::load(s.base.join("docs/page").unwrap().as_str(), true).unwrap();
+    assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+    let x = p.document.query_selector("#x").unwrap();
+    assert_eq!(p.document.attr(x, "loaded"), Some("yes"));
+    let narrow = css::compute_styles(&p.document, &p.stylesheets(), 300.0, 200.0);
+    let wide = css::compute_styles(&p.document, &p.stylesheets(), 600.0, 200.0);
+    assert_eq!(narrow[x].color, Color::rgb(0, 128, 0));
+    assert_eq!(narrow[x].background_color, Color::rgb(255, 0, 0));
+    assert_eq!(wide[x].background_color, Color::rgb(0, 0, 255));
+    assert_eq!(
+        p.resolve_navigation("#section").unwrap(),
+        s.base.join("assets/#section").unwrap().as_str()
+    );
+    assert_eq!(p.document.url(), &p.url);
+    let paths: Vec<_> = s.requests().into_iter().map(|r| r.path).collect();
+    assert_eq!(
+        paths,
+        [
+            "/docs/page",
+            "/assets/entry.css",
+            "/styles/parent.css",
+            "/styles/child.css?name=%E6%97%A5%E6%9C%AC",
+            "/assets/inline.css",
+            "/assets/code.js"
+        ]
+    );
+}
+
+#[test]
+#[ignore = "requires permission to bind a loopback test server"]
+fn base_and_import_urls_cannot_broaden_document_fetch_authority() {
+    let other = Server::new(vec![]);
+    let html = format!(
+        "<!doctype html><base href='{}'><link rel=stylesheet href='secret.css'><script src='secret.js'></script>",
+        other.base
+    );
+    let s = Server::new(vec![
+        ("/base", response("200 OK", "text/html", "", &html)),
+        (
+            "/import",
+            response(
+                "200 OK",
+                "text/html",
+                "",
+                &format!(
+                    "<!doctype html><style>@import '{}secret.css'; @import 'never.css' supports(display:grid); p{{color:green}}</style><style type='text/plain'>@import 'inert.css';</style><p>x",
+                    other.base
+                ),
+            ),
+        ),
+    ]);
+    let base = Page::load(s.base.join("base").unwrap().as_str(), true).unwrap();
+    assert_eq!(base.diagnostics.len(), 2);
+    let imported = Page::load(s.base.join("import").unwrap().as_str(), false).unwrap();
+    assert_eq!(imported.diagnostics.len(), 2, "{:?}", imported.diagnostics);
+    assert!(other.requests().is_empty());
+    assert_eq!(s.requests().len(), 2);
+    for base in ["file:///etc/", "eris:home"] {
+        let p = Page::from_html(s.base.clone(), &format!("<base href='{base}'>"), false);
+        assert!(p.resolve_navigation("#fragment").is_err());
+    }
+}
+
+#[test]
+#[ignore = "requires permission to bind a loopback test server"]
 fn late_encoding_reparse_does_not_repeat_post_and_subresources_inherit_encoding() {
     use eris::graphics::{Canvas, Fonts};
     let source = format!(

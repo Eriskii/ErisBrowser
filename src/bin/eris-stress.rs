@@ -27,6 +27,8 @@ const DEFAULT_SEED: u64 = 0xe215_2026;
 const SCRIPT_DOCUMENT: &str = "<!doctype html><body><button id='go'>Go</button><div id='out'>Initial</div><input id='field' value='test'></body>";
 
 const HTML_SEEDS: &[&str] = &[
+    "<style>main{position:relative;width:120px;padding:10px;border:2px solid;z-index:0}section{overflow:hidden;width:40px}i{position:absolute;left:10%;right:5px;top:2px;height:20px;z-index:-1;background:red}b{position:fixed;bottom:3px;right:4px;width:20px;height:15px;z-index:2147483647;background:blue}</style><main><section><i><b></b></i></section><p>stacked text</p></main>",
+    "<style>main{display:grid;grid-template-columns:40px 40px;position:relative}div{grid-area:1/1;z-index:2;background:coral}span{position:relative;left:-3px;top:2px}i{position:absolute;left:0;right:0;max-width:20px;margin:auto;height:8px}</style><main><div><span>word<i></i></span></div><div style='z-index:1'>lower</div></main>",
     "<style>main{display:grid;grid-template-columns:minmax(20px,1fr) 2fr;grid-template-rows:30px auto;grid-auto-rows:20px 40px;grid-auto-columns:min-content 50px;grid-auto-flow:row dense;gap:3px 7px}i{padding:2px}#wide{grid-column:span 2}#past{grid-column:-5;grid-row:4 / span 2}</style><main><i id=wide>Spanning text</i><i>Auto</i><i id=past>Implicit</i><i style='order:-1;align-self:end'>Ordered</i></main>",
     "<!doctype html><template id=outer><table><tr><td>Hosted cell</td></tr></table><template id=nested><svg><foreignObject><p>Nested content</p></foreignObject></svg></template></template><main><p>Active sibling</p><template><select><option>Inert choice</option></select></template></main><script>const t=document.createElement('template');t.innerHTML='<section><template><b>nested</b></template><i>fragment</i></section>';document.body.appendChild(t.content.cloneNode(true));</script>",
     "<style>body{margin:0}.left{float:left;width:32%;margin:2px;padding:3px;background:coral}.right{float:right;width:40px;height:50px}.clear{clear:both}.isolate{display:flow-root;overflow:hidden}</style><div class=left>Floating <b>text</b></div><div class=right>Right</div><p>Lines around two floats with different heights and margins.</p><section class=isolate><span class=left>Nested float</span>Separate context</section><p class=clear>After floats</p>",
@@ -47,6 +49,8 @@ const HTML_SEEDS: &[&str] = &[
     "<style>.a{position:relative;left:-2px;top:3px;width:90%;max-width:150px;min-height:20px}.b{font-size:125%;vertical-align:middle}a[href^='https']{color:rebeccapurple}</style><p class=a>Text <span class=b>large</span> <a href=https://example.com>link</a></p><img width=16 height=16 alt=missing>",
 ];
 const SCRIPT_SEEDS: &[&str] = &[
+    r#"const pattern=/(?<name>[A-Z]+)-(\d+)/g; const text='AX-12 BY-34'; const match=pattern.exec(text); document.getElementById('out').textContent=match.groups.name+':'+text.replace(pattern,'$2/$<name>');"#,
+    r#"const pattern=/((a|b)+)\1/d; const match=pattern.exec('abbaabba'); document.getElementById('out').textContent=match[0]+':'+match.indices[1].join(',')+':'+('one  two').split(/\s+/).join('/');"#,
     "x=0;function remove(){delete globalThis.x;return 1;}x=remove();document.getElementById('out').textContent=String(x);",
     "'use strict';function inspect(value){arguments[0]=9;return value+':'+arguments[0];}let result='';try{result+=typeof later;let later=2;}catch(error){result+=error.name;}const t=document.createElement('template');t.innerHTML='<section><b>Cloned</b><template><i>Nested</i></template></section>';const clone=t.content.cloneNode(true);document.getElementById('out').appendChild(clone);document.getElementById('field').value=result+':'+inspect(3);",
     "let saved=3;const object={};Object.defineProperty(object,'value',{get:function(){return saved;},set:function(x){saved=x;},enumerable:true,configurable:true});object.value=7;const child=Object.create(object);child.own=2;let result='';for(let key in child){result+=key+':'+child[key]+';';}const descriptor=Object.getOwnPropertyDescriptor(object,'value');document.getElementById('out').textContent=result+descriptor.enumerable;delete object.value;",
@@ -441,6 +445,30 @@ struct CaseResult {
     commands: usize,
     paint_limited: bool,
 }
+fn scope_invariants(commands: &[DrawCommand]) -> Result<(), String> {
+    let mut scopes = Vec::new();
+    for command in commands {
+        match command {
+            DrawCommand::PushClip { .. } => scopes.push(false),
+            DrawCommand::PushFixed => scopes.push(true),
+            DrawCommand::PopClip if scopes.pop() != Some(false) => {
+                return Err("clip scope mismatch".into());
+            }
+            DrawCommand::PopFixed if scopes.pop() != Some(true) => {
+                return Err("fixed scope mismatch".into());
+            }
+            _ => {}
+        }
+        if scopes.len() > 128 {
+            return Err("display list scope depth exceeded".into());
+        }
+    }
+    if !scopes.is_empty() {
+        return Err("unclosed display list scope".into());
+    }
+    Ok(())
+}
+
 fn pipeline(
     document: &Document,
     fonts: &Fonts,
@@ -468,6 +496,7 @@ fn pipeline(
     {
         return Err("layout output exceeded resource or extent limits".into());
     }
+    scope_invariants(&layout.commands)?;
     let mut glyphs = 0usize;
     for command in &layout.commands {
         match command {
@@ -482,7 +511,7 @@ fn pipeline(
                 glyphs = glyphs.saturating_add(text.chars().count());
             }
             DrawCommand::Image { rect, .. } | DrawCommand::PushClip { rect } => rectangle(*rect)?,
-            DrawCommand::PopClip => {}
+            DrawCommand::PushFixed | DrawCommand::PopFixed | DrawCommand::PopClip => {}
             DrawCommand::Line {
                 x1,
                 y1,
@@ -709,6 +738,36 @@ fn run() -> Result<(), String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn display_list_scope_invariant_distinguishes_fixed_from_clip_and_bounds_depth() {
+        let clip = DrawCommand::PushClip {
+            rect: Rect::default(),
+        };
+        assert!(
+            scope_invariants(&[
+                DrawCommand::PushFixed,
+                clip.clone(),
+                DrawCommand::PopClip,
+                DrawCommand::PopFixed
+            ])
+            .is_ok()
+        );
+        assert!(
+            scope_invariants(&[
+                DrawCommand::PushFixed,
+                clip.clone(),
+                DrawCommand::PopFixed,
+                DrawCommand::PopClip
+            ])
+            .is_err()
+        );
+        assert!(scope_invariants(&[DrawCommand::PopFixed]).is_err());
+        assert!(scope_invariants(std::slice::from_ref(&clip)).is_err());
+        let mut deep = vec![clip; 129];
+        deep.extend(vec![DrawCommand::PopClip; 129]);
+        assert!(scope_invariants(&deep).is_err());
+    }
 
     #[test]
     fn template_invariants_check_ownership_fragment_parents_and_host_cycles() {

@@ -21,7 +21,7 @@ pub(super) const MAX_REQUEST: usize = 18 * 1024 * 1024;
 const MAX_STRING: usize = 16 * 1024 * 1024;
 const MAX_IMAGES: usize = 64 * 1024 * 1024;
 const MAX_COMMANDS: usize = 200_000;
-const MAGIC: &[u8] = b"ERW4";
+const MAGIC: &[u8] = b"ERW5";
 type Result<T> = std::result::Result<T, String>;
 
 pub(super) fn read_frame(input: &mut impl Read, limit: usize) -> Result<Vec<u8>> {
@@ -376,6 +376,11 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
         DocumentMode::Quirks => 2,
     });
     e.string(s.document.character_set());
+    e.boolean(s.document.frozen_base().is_some());
+    if let Some((node, url)) = s.document.frozen_base() {
+        e.u32(node);
+        e.string(url.as_str());
+    }
     e.u32(s.document.nodes.len());
     for node in &s.document.nodes {
         e.boolean(node.parent.is_some());
@@ -471,6 +476,7 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
     for hit in &s.layout.hit_regions {
         e.u32(hit.node);
         e.rect(hit.rect);
+        e.boolean(hit.fixed);
     }
     e.u32(s.layout.commands.len());
     for command in &s.layout.commands {
@@ -480,6 +486,8 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
                 e.rect(*rect);
             }
             DrawCommand::PopClip => e.byte(1),
+            DrawCommand::PushFixed => e.byte(6),
+            DrawCommand::PopFixed => e.byte(7),
             DrawCommand::Rect {
                 rect,
                 color,
@@ -555,6 +563,17 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
     let encoding = encoding_rs::Encoding::for_label(encoding_name.as_bytes())
         .filter(|encoding| encoding.name() == encoding_name)
         .ok_or("invalid IPC document encoding")?;
+    let frozen_base = if d.boolean()? {
+        let node = d.count(MAX_NODES - 1)?;
+        let mut base_url_bytes = MAX_DOM_BYTES;
+        let url = d.budget_string(&mut base_url_bytes)?;
+        Some((
+            node,
+            url::Url::parse(&url).map_err(|_| "invalid IPC base URL")?,
+        ))
+    } else {
+        None
+    };
     let count = d.count(MAX_NODES)?;
     let mut nodes = Vec::new();
     let mut dom_bytes = MAX_DOM_BYTES;
@@ -666,6 +685,12 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
     }
     let mut document = Document::from_snapshot(nodes, root, scripting, mode)?;
     document.set_encoding(encoding);
+    document.initialize_url(url::Url::parse(&url).map_err(|_| "invalid IPC document URL")?);
+    if let Some((node, base)) = frozen_base {
+        document.restore_frozen_base(node, base)?;
+    } else if document.frozen_base().is_some() {
+        return Err("missing IPC frozen base URL".into());
+    }
     let mut images = ImageStore::new();
     let mut rasters = Vec::new();
     let mut image_bytes = MAX_IMAGES;
@@ -703,26 +728,27 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
     for _ in 0..d.count(MAX_COMMANDS)? {
         let node = d.count(document.nodes.len() - 1)?;
         let rect = d.rect()?;
-        hit_regions.push(HitRegion { node, rect });
+        let fixed = d.boolean()?;
+        hit_regions.push(HitRegion { node, rect, fixed });
     }
     let mut commands = Vec::new();
     let mut text_bytes = 8 * 1024 * 1024;
     let mut glyphs = 500_000usize;
-    let mut clips = 0;
+    // One typed stack prevents PopClip from escaping a fixed viewport scope.
+    let mut scopes = Vec::new();
     for _ in 0..d.count(MAX_COMMANDS)? {
         let command = match d.byte()? {
             0 => {
-                clips += 1;
-                if clips > 128 {
+                if scopes.len() >= 128 {
                     return Err("IPC clip depth exceeded".into());
                 }
+                scopes.push(false);
                 DrawCommand::PushClip { rect: d.rect()? }
             }
             1 => {
-                if clips == 0 {
+                if scopes.pop() != Some(false) {
                     return Err("unbalanced IPC clips".into());
                 }
-                clips -= 1;
                 DrawCommand::PopClip
             }
             2 => {
@@ -787,12 +813,25 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
                     width,
                 }
             }
+            6 => {
+                if scopes.len() >= 128 {
+                    return Err("IPC display scope depth exceeded".into());
+                }
+                scopes.push(true);
+                DrawCommand::PushFixed
+            }
+            7 => {
+                if scopes.pop() != Some(true) {
+                    return Err("unbalanced IPC fixed scopes".into());
+                }
+                DrawCommand::PopFixed
+            }
             _ => return Err("unknown IPC display command".into()),
         };
         commands.push(command);
     }
-    if clips != 0 {
-        return Err("unclosed IPC clips".into());
+    if !scopes.is_empty() {
+        return Err("unclosed IPC display scopes".into());
     }
     Ok(Snapshot {
         generation,
@@ -1263,6 +1302,7 @@ mod tests {
         e.boolean(false);
         e.byte(0); // no-quirks mode
         e.string("UTF-8");
+        e.boolean(false); // no frozen base
         e.u32(1); // nodes
         e.boolean(false); // parent
         e.u32(0); // children
@@ -1294,6 +1334,52 @@ mod tests {
     }
     fn reply() -> Reply {
         reply_with_html("<p>Hello</p>")
+    }
+    #[test]
+    fn frozen_base_roundtrip_preserves_old_fragment_and_rejects_forged_identity() {
+        let old = "https://example.test/page#old-base-marker";
+        let current = "https://example.test/page#current";
+        let mut reply = reply_with_html("<base href='javascript:ignored'><base href='/later/'>");
+        let snapshot = reply.snapshot.as_mut().unwrap();
+        snapshot
+            .document
+            .initialize_url(url::Url::parse(old).unwrap());
+        snapshot.document.set_url(url::Url::parse(current).unwrap());
+        snapshot.url = current.into();
+        let bytes = encode_reply(&reply).unwrap();
+        let decoded = decode_reply(&bytes).unwrap().snapshot.unwrap();
+        assert_eq!(decoded.document.url().as_str(), current);
+        assert_eq!(decoded.document.base_url().as_str(), old);
+        let start = bytes
+            .windows(old.len())
+            .position(|part| part == old.as_bytes())
+            .unwrap();
+        let mut forged = bytes.clone();
+        forged[start - 8..start - 4].copy_from_slice(&0u32.to_le_bytes());
+        assert!(decode_reply(&forged).is_err());
+        let mut missing = bytes;
+        missing[start - 9] = 0;
+        missing.drain(start - 8..start + old.len());
+        assert!(
+            matches!(decode_reply(&missing), Err(error) if error == "missing IPC frozen base URL")
+        );
+    }
+    #[test]
+    fn percent_encoded_frozen_base_uses_its_own_dom_sized_budget() {
+        let href = format!("/{}", "é".repeat(3 * 1024 * 1024));
+        let mut reply = reply_with_html(&format!("<base href='{href}'>"));
+        let snapshot = reply.snapshot.as_mut().unwrap();
+        snapshot.url = "https://example.test/page".into();
+        snapshot
+            .document
+            .initialize_url(url::Url::parse(&snapshot.url).unwrap());
+        assert!(snapshot.document.base_url().as_str().len() > MAX_STRING);
+        let bytes = encode_reply(&reply).unwrap();
+        let decoded = decode_reply(&bytes).unwrap().snapshot.unwrap();
+        assert_eq!(
+            decoded.document.base_url(),
+            reply.snapshot.as_ref().unwrap().document.base_url()
+        );
     }
     #[test]
     fn template_fragments_mode_and_encoding_roundtrip_with_graph_validation() {
@@ -1571,6 +1657,24 @@ mod tests {
                 monospace: false,
             }],
             vec![DrawCommand::PopClip],
+            vec![DrawCommand::PopFixed],
+            vec![DrawCommand::PushFixed],
+            vec![
+                DrawCommand::PushFixed,
+                DrawCommand::PopClip,
+                DrawCommand::PopFixed,
+            ],
+            vec![
+                DrawCommand::PushClip { rect },
+                DrawCommand::PushFixed,
+                DrawCommand::PopClip,
+                DrawCommand::PopFixed,
+            ],
+            vec![
+                DrawCommand::PushFixed,
+                DrawCommand::PushClip { rect },
+                DrawCommand::PopFixed,
+            ],
             vec![DrawCommand::PushClip { rect }],
             (0..129)
                 .map(|_| DrawCommand::PushClip { rect })

@@ -108,6 +108,10 @@ pub struct Document {
     mode: DocumentMode,
     encoding: &'static encoding_rs::Encoding,
     encoding_declaration: Option<&'static encoding_rs::Encoding>,
+    url: url::Url,
+    first_base: Option<(NodeId, url::Url)>,
+    base_tracking: bool,
+    base_href_bytes: usize,
 }
 
 impl Default for Document {
@@ -247,6 +251,10 @@ impl Document {
             mode,
             encoding: encoding_rs::UTF_8,
             encoding_declaration: None,
+            url: url::Url::parse("about:blank").expect("constant URL"),
+            first_base: None,
+            base_tracking: true,
+            base_href_bytes: 0,
         })
     }
     pub fn parse(source: &str) -> Self {
@@ -296,6 +304,7 @@ impl Document {
         let mut builder = TreeBuilder::new(self.scripting_enabled);
         builder.doc.mode = mode;
         builder.doc.encoding = self.encoding;
+        builder.doc.url = self.url.clone();
         let html = builder.element(&HtmlToken::start("html"), false, true);
         builder.html = Some(html);
         let context_id = builder.doc.nodes.len();
@@ -343,6 +352,176 @@ impl Document {
     }
     pub fn scripting_enabled(&self) -> bool {
         self.scripting_enabled
+    }
+    pub fn url(&self) -> &url::Url {
+        &self.url
+    }
+    pub(crate) fn set_url(&mut self, url: url::Url) {
+        self.url = url;
+    }
+    /// Set the initial navigation URL after byte decoding, before scripts or
+    /// resources run. Later same-document URL changes use set_url instead.
+    pub(crate) fn initialize_url(&mut self, url: url::Url) {
+        self.url = url;
+        self.initialize_base_tracking();
+    }
+    pub fn base_url(&self) -> &url::Url {
+        self.first_base.as_ref().map_or(&self.url, |(_, url)| url)
+    }
+    pub(crate) fn frozen_base(&self) -> Option<(NodeId, &url::Url)> {
+        self.first_base.as_ref().map(|(id, url)| (*id, url))
+    }
+    pub(crate) fn restore_frozen_base(&mut self, id: NodeId, url: url::Url) -> Result<(), String> {
+        if self.first_base_in_tree() != Some(id) || url.as_str().len() > MAX_DOM_BYTES {
+            return Err("invalid frozen base identity or URL size".into());
+        }
+        if matches!(url.scheme(), "data" | "javascript") {
+            let mut fallback = self.url.clone();
+            let mut frozen = url.clone();
+            fallback.set_fragment(None);
+            frozen.set_fragment(None);
+            if fallback != frozen {
+                return Err("disallowed frozen base URL scheme".into());
+            }
+        }
+        self.first_base = Some((id, url));
+        Ok(())
+    }
+    fn in_document_tree(&self, mut id: NodeId) -> bool {
+        for _ in 0..=MAX_DEPTH {
+            if id == self.root {
+                return true;
+            }
+            let Some(parent) = self.nodes.get(id).and_then(|node| node.parent) else {
+                return false;
+            };
+            id = parent;
+        }
+        false
+    }
+    fn is_base_with_href(&self, id: NodeId) -> bool {
+        matches!(self.nodes.get(id).map(|node| &node.kind), Some(NodeKind::Element(element)) if element.namespace == Namespace::Html && element.tag == "base" && element.attrs.contains_key("href"))
+    }
+    fn first_base_in_tree(&self) -> Option<NodeId> {
+        let mut pending = vec![self.root];
+        for _ in 0..self.nodes.len().min(MAX_NODES) {
+            let id = pending.pop()?;
+            let node = self.nodes.get(id)?;
+            if self.is_base_with_href(id) {
+                return Some(id);
+            }
+            // Hosted template fragments are not in the document tree.
+            pending.extend(node.children.iter().rev().copied());
+        }
+        None
+    }
+    fn initialize_base_tracking(&mut self) {
+        self.base_tracking = true;
+        self.base_href_bytes = self
+            .nodes
+            .iter()
+            .filter_map(|node| match &node.kind {
+                NodeKind::Element(element)
+                    if element.namespace == Namespace::Html && element.tag == "base" =>
+                {
+                    element.attrs.get("href").map(String::len)
+                }
+                _ => None,
+            })
+            .sum();
+        self.first_base = None;
+        self.refresh_base_url(None);
+    }
+    fn refresh_base_url(&mut self, changed: Option<NodeId>) {
+        if !self.base_tracking {
+            return;
+        }
+        let first = self.first_base_in_tree();
+        if self.first_base.as_ref().map(|(id, _)| *id) == first
+            && (first.is_none() || first != changed)
+        {
+            return;
+        }
+        self.first_base = first.map(|id| {
+            let url =
+                crate::document_url::parse(self, &self.url, self.attr(id, "href").unwrap_or(""))
+                    .ok()
+                    .filter(|url| {
+                        !matches!(url.scheme(), "data" | "javascript")
+                            && url.as_str().len() <= MAX_DOM_BYTES
+                    })
+                    .unwrap_or_else(|| self.url.clone());
+            (id, url)
+        });
+    }
+    fn base_recompute_work(&self) -> usize {
+        self.nodes
+            .len()
+            .saturating_add(self.base_href_bytes)
+            .saturating_add(self.url.as_str().len())
+            .saturating_add(1)
+    }
+    fn subtree_contains_first_base(&self, ancestor: NodeId) -> bool {
+        let Some((id, _)) = self.first_base.as_ref() else {
+            return false;
+        };
+        let mut id = *id;
+        for _ in 0..=MAX_DEPTH {
+            if id == ancestor {
+                return true;
+            }
+            let Some(parent) = self.nodes.get(id).and_then(|node| node.parent) else {
+                return false;
+            };
+            id = parent;
+        }
+        false
+    }
+    /// Script callers discover contains_base during their existing subtree
+    /// preflight, then charge this extra scan/URL work before any mutation.
+    pub(crate) fn base_tree_change_work(
+        &self,
+        parent: NodeId,
+        child: NodeId,
+        contains_base: bool,
+    ) -> usize {
+        if self.base_tracking
+            && contains_base
+            && (self.in_document_tree(parent) || self.in_document_tree(child))
+        {
+            self.base_recompute_work()
+        } else {
+            0
+        }
+    }
+    pub(crate) fn base_remove_work(&self, child: NodeId) -> usize {
+        if self.base_tracking && self.subtree_contains_first_base(child) {
+            self.base_recompute_work()
+        } else {
+            0
+        }
+    }
+    pub(crate) fn base_clear_work(&self, parent: NodeId) -> usize {
+        if self
+            .first_base
+            .as_ref()
+            .is_some_and(|(id, _)| *id != parent)
+        {
+            self.base_remove_work(parent)
+        } else {
+            0
+        }
+    }
+    pub(crate) fn base_attribute_work(&self, id: NodeId, name: &str) -> usize {
+        if self.base_tracking
+            && name.eq_ignore_ascii_case("href")
+            && matches!(self.nodes.get(id).map(|node| &node.kind), Some(NodeKind::Element(element)) if element.namespace == Namespace::Html && element.tag == "base")
+            && self.in_document_tree(id)
+        {
+            self.base_recompute_work()
+        } else {
+            0
+        }
     }
     pub fn mode(&self) -> DocumentMode {
         self.mode
@@ -465,15 +644,24 @@ impl Document {
             *t = text.to_owned();
             return;
         }
-        let children = std::mem::take(&mut self.nodes[id].children);
-        for child in children {
-            if let Some(n) = self.nodes.get_mut(child) {
-                n.parent = None;
-            }
-        }
+        self.clear_children(id);
         if !text.is_empty() && self.nodes.len() < MAX_NODES {
             let child = self.create_text_node(text);
             self.append_child(id, child);
+        }
+    }
+    pub fn clear_children(&mut self, id: NodeId) {
+        if id >= self.nodes.len() {
+            return;
+        }
+        let refresh = self.base_clear_work(id) != 0;
+        for child in std::mem::take(&mut self.nodes[id].children) {
+            if let Some(node) = self.nodes.get_mut(child) {
+                node.parent = None;
+            }
+        }
+        if refresh {
+            self.refresh_base_url(None);
         }
     }
     pub fn create_element(&mut self, tag: &str) -> NodeId {
@@ -615,12 +803,14 @@ impl Document {
         }
         let mut pending = vec![(child, 1usize)];
         let mut visited = 0;
+        let mut contains_base = false;
         while let Some((id, depth)) = pending.pop() {
             visited += 1;
             if ancestors + depth > MAX_DEPTH || visited > MAX_NODES {
                 return;
             }
             if let Some(n) = self.nodes.get(id) {
+                contains_base |= self.is_base_with_href(id);
                 pending.extend(n.children.iter().map(|n| (*n, depth + 1)));
                 if let NodeKind::Element(element) = &n.kind
                     && let Some(content) = element.template_contents
@@ -629,11 +819,19 @@ impl Document {
                 }
             }
         }
+        let refresh = self.base_tree_change_work(parent, child, contains_base) != 0;
+        let moved_first = self
+            .subtree_contains_first_base(child)
+            .then(|| self.first_base.as_ref().map(|(id, _)| *id))
+            .flatten();
         if matches!(self.nodes[child].kind, NodeKind::DocumentFragment { .. }) {
             let children = std::mem::take(&mut self.nodes[child].children);
             for child in children {
                 self.nodes[child].parent = Some(parent);
                 self.nodes[parent].children.push(child);
+            }
+            if refresh {
+                self.refresh_base_url(moved_first);
             }
             return;
         }
@@ -644,15 +842,22 @@ impl Document {
         }
         self.nodes[child].parent = Some(parent);
         self.nodes[parent].children.push(child);
+        if refresh {
+            self.refresh_base_url(moved_first);
+        }
     }
     pub fn remove_child(&mut self, parent: NodeId, child: NodeId) {
         if self.nodes.get(child).and_then(|n| n.parent) == Some(parent) {
+            let refresh = self.base_remove_work(child) != 0;
             self.nodes[parent].children.retain(|n| *n != child);
             self.nodes[child].parent = None;
+            if refresh {
+                self.refresh_base_url(None);
+            }
         }
     }
     pub fn set_attr(&mut self, id: NodeId, name: &str, value: &str) {
-        let mut name = name[..floor_boundary(name, name.len().min(1024))].to_owned();
+        let mut name = name[..floor_boundary(name, name.len().min(MAX_TEXT))].to_owned();
         if self.namespace(id) == Some(Namespace::Html) {
             name.make_ascii_lowercase();
         }
@@ -681,6 +886,7 @@ impl Document {
         value: &str,
         namespace: Option<AttributeNamespace>,
     ) {
+        let refresh = self.base_attribute_work(id, name) != 0;
         if let Some(Node {
             kind: NodeKind::Element(el),
             ..
@@ -704,6 +910,12 @@ impl Document {
             }
             let value = &value
                 [..floor_boundary(value, value.len().min(MAX_TEXT).min(remaining - name_size))];
+            if el.namespace == Namespace::Html && el.tag == "base" && name == "href" {
+                self.base_href_bytes = self
+                    .base_href_bytes
+                    .saturating_sub(old.map_or(0, String::len))
+                    .saturating_add(value.len());
+            }
             self.retained_bytes =
                 self.retained_bytes.saturating_sub(old_size) + name_size + value.len();
             el.attrs.insert(name.into(), value.into());
@@ -711,8 +923,12 @@ impl Document {
                 el.attr_namespaces.insert(name.into(), namespace);
             }
         }
+        if refresh {
+            self.refresh_base_url(Some(id));
+        }
     }
     pub fn remove_attr(&mut self, id: NodeId, name: &str) {
+        let refresh = self.base_attribute_work(id, name) != 0;
         let name = if self.namespace(id) == Some(Namespace::Html) {
             name.to_ascii_lowercase()
         } else {
@@ -724,10 +940,16 @@ impl Document {
         }) = self.nodes.get_mut(id)
             && let Some(old) = el.attrs.remove(&name)
         {
+            if el.namespace == Namespace::Html && el.tag == "base" && name == "href" {
+                self.base_href_bytes = self.base_href_bytes.saturating_sub(old.len());
+            }
             self.retained_bytes = self.retained_bytes.saturating_sub(name.len() + old.len());
             if el.attr_namespaces.remove(&name).is_some() {
                 self.retained_bytes = self.retained_bytes.saturating_sub(name.len());
             }
+        }
+        if refresh {
+            self.refresh_base_url(Some(id));
         }
     }
     pub fn retained_bytes(&self) -> usize {
@@ -1147,9 +1369,15 @@ fn closes_p(tag: &str) -> bool {
             | "article"
             | "aside"
             | "blockquote"
+            | "center"
+            | "details"
+            | "dialog"
+            | "dir"
             | "div"
             | "dl"
             | "fieldset"
+            | "figcaption"
+            | "figure"
             | "footer"
             | "form"
             | "h1"
@@ -1162,11 +1390,16 @@ fn closes_p(tag: &str) -> bool {
             | "hgroup"
             | "hr"
             | "main"
+            | "menu"
             | "nav"
             | "ol"
             | "p"
             | "pre"
+            | "listing"
+            | "plaintext"
+            | "search"
             | "section"
+            | "summary"
             | "table"
             | "ul"
     )
@@ -1218,7 +1451,6 @@ struct HtmlTokenizer<'a> {
     source: &'a str,
     position: usize,
     raw: Option<(String, bool)>,
-    skip_lf: bool,
     foreign: bool,
     foreign_characters: bool,
 }
@@ -1228,19 +1460,12 @@ impl<'a> HtmlTokenizer<'a> {
             source,
             position: 0,
             raw: None,
-            skip_lf: false,
             foreign: false,
             foreign_characters: false,
         }
     }
     fn next(&mut self) -> HtmlToken {
         let bytes = self.source.as_bytes();
-        if self.skip_lf {
-            if bytes.get(self.position) == Some(&b'\n') {
-                self.position += 1;
-            }
-            self.skip_lf = false;
-        }
         if let Some((tag, entities)) = self.raw.take() {
             let start = self.position;
             let close = format!("</{tag}");
@@ -1314,7 +1539,7 @@ impl<'a> HtmlTokenizer<'a> {
             }
             let data = &self.source[start..self.position];
             return HtmlToken::Characters(if self.foreign_characters {
-                decode_entities(data)
+                decode_entities_in_state(data, false, false)
             } else {
                 decode_entities(&data.replace('\0', ""))
             });
@@ -1338,14 +1563,11 @@ impl<'a> HtmlTokenizer<'a> {
                 .map(|offset| begin + offset)
                 .unwrap_or(bytes.len());
             self.position = (end + 3).min(bytes.len());
-            return HtmlToken::Characters(self.source[begin..end].replace(
-                '\0',
-                if self.foreign_characters {
-                    "\u{fffd}"
-                } else {
-                    ""
-                },
-            ));
+            return HtmlToken::Characters(if self.foreign_characters {
+                self.source[begin..end].to_owned()
+            } else {
+                self.source[begin..end].replace('\0', "")
+            });
         }
         if self.source[start..].starts_with("<?") {
             self.position += 2;
@@ -1762,6 +1984,13 @@ enum InsertionMode {
     AfterBody,
     AfterAfterBody,
 }
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Scope {
+    Regular,
+    Button,
+    ListItem,
+    Table,
+}
 struct TreeBuilder {
     doc: Document,
     stack: Vec<NodeId>,
@@ -1780,6 +2009,9 @@ struct TreeBuilder {
     raw_node: Option<(NodeId, InsertionMode)>,
     pending_table_text: String,
     skip_lf: bool,
+    // Parser-time selectedcontent connections; disabled primary entries remain
+    // present so a later non-primary element cannot take over their identity.
+    selected_contents: BTreeMap<NodeId, Option<NodeId>>,
     work: usize,
 }
 impl TreeBuilder {
@@ -1797,6 +2029,10 @@ impl TreeBuilder {
                 mode: DocumentMode::NoQuirks,
                 encoding: encoding_rs::UTF_8,
                 encoding_declaration: None,
+                url: url::Url::parse("about:blank").expect("constant URL"),
+                first_base: None,
+                base_tracking: false,
+                base_href_bytes: 0,
             },
             stack: vec![],
             formatting: vec![],
@@ -1813,11 +2049,244 @@ impl TreeBuilder {
             raw_node: None,
             pending_table_text: String::new(),
             skip_lf: false,
+            selected_contents: BTreeMap::new(),
             work: 50_000_000,
         }
     }
     fn current(&self) -> NodeId {
         self.stack.last().copied().unwrap_or(self.doc.root)
+    }
+    fn pop_open(&mut self) -> Option<NodeId> {
+        let id = self.stack.pop()?;
+        if self.html_tag(id) == Some("option") {
+            self.complete_option(id);
+        }
+        Some(id)
+    }
+    fn truncate_open(&mut self, length: usize) {
+        while self.stack.len() > length {
+            self.pop_open();
+        }
+    }
+    fn option_select(&mut self, option: NodeId) -> Option<NodeId> {
+        let mut ancestor = self.doc.nodes[option].parent;
+        let mut optgroup = false;
+        while let Some(id) = ancestor {
+            if !self.spend(1) {
+                return None;
+            }
+            match self.html_tag(id) {
+                Some("option" | "datalist" | "hr") => return None,
+                Some("optgroup") if optgroup => return None,
+                Some("optgroup") => optgroup = true,
+                Some("select") => return Some(id),
+                _ => {}
+            }
+            ancestor = self.doc.nodes[id].parent;
+        }
+        None
+    }
+    fn complete_option(&mut self, option: NodeId) {
+        if let Some(select) = self.option_select(option)
+            && let Some(Some(target)) = self.selected_contents.get(&select).copied()
+            && self.initial_selected_option(select) == Some(option)
+        {
+            self.clone_option_contents(option, target);
+        }
+    }
+    fn connect_selectedcontent(&mut self, id: NodeId) {
+        let mut ancestor = self.doc.nodes[id].parent;
+        let mut select = None;
+        let mut disabled = false;
+        let mut root = id;
+        while let Some(parent) = ancestor {
+            if !self.spend(1) {
+                return;
+            }
+            match self.html_tag(parent) {
+                Some("select") if select.is_none() => select = Some(parent),
+                Some("select" | "option" | "selectedcontent") => disabled = true,
+                _ => {}
+            }
+            root = parent;
+            ancestor = self.doc.nodes[parent].parent;
+        }
+        // Template contents are not connected. No form-element connection
+        // steps run until a later insertion connects them to a document.
+        let Some(select) = select.filter(|_| root == self.doc.root) else {
+            return;
+        };
+        if self.selected_contents.contains_key(&select) {
+            return;
+        }
+        disabled |= self.doc.attr(select, "multiple").is_some();
+        self.selected_contents
+            .insert(select, (!disabled).then_some(id));
+        if !disabled && let Some(option) = self.initial_selected_option(select) {
+            self.clone_option_contents(option, id);
+        }
+    }
+    fn initial_selected_option(&mut self, select: NodeId) -> Option<NodeId> {
+        if self.doc.attr(select, "multiple").is_some() {
+            return None;
+        }
+        let children = &self.doc.nodes[select].children;
+        if children.len() > self.work {
+            self.work = 0;
+            return None;
+        }
+        self.work -= children.len();
+        let mut pending = children
+            .iter()
+            .rev()
+            .map(|&id| (id, false, false))
+            .collect::<Vec<_>>();
+        let mut first = None;
+        let mut selected = None;
+        while let Some((id, group, group_disabled)) = pending.pop() {
+            if !self.spend(1) {
+                return None;
+            }
+            let tag = self.html_tag(id).unwrap_or("");
+            if tag == "option" {
+                if self.doc.attr(id, "selected").is_some() {
+                    selected = Some(id);
+                }
+                if first.is_none() && !group_disabled && self.doc.attr(id, "disabled").is_none() {
+                    first = Some(id);
+                }
+                continue;
+            }
+            if matches!(tag, "select" | "hr" | "datalist") || tag == "optgroup" && group {
+                continue;
+            }
+            let group_disabled =
+                group_disabled || tag == "optgroup" && self.doc.attr(id, "disabled").is_some();
+            let group = group || tag == "optgroup";
+            let children = &self.doc.nodes[id].children;
+            if children.len() > self.work {
+                self.work = 0;
+                return None;
+            }
+            self.work -= children.len();
+            pending.extend(
+                children
+                    .iter()
+                    .rev()
+                    .map(|&child| (child, group, group_disabled)),
+            );
+        }
+        let size_bytes = self.doc.attr(select, "size").map_or(0, str::len);
+        if !self.spend(size_bytes) {
+            return None;
+        }
+        let size = self
+            .doc
+            .attr(select, "size")
+            .and_then(|value| {
+                let value =
+                    value.trim_start_matches(|ch: char| ch.is_ascii() && is_space(ch as u8));
+                let value = value.strip_prefix('+').unwrap_or(value);
+                let end = value.bytes().take_while(u8::is_ascii_digit).count();
+                value[..end].parse::<u64>().ok()
+            })
+            .unwrap_or(1);
+        selected.or_else(|| (size == 1).then_some(first).flatten())
+    }
+    /// Clone the selected option's actual children. Preflight includes hosted
+    /// template fragments and charges bytes, nodes, traversal and destination
+    /// depth before changing the target, so a quota failure is atomic.
+    fn clone_option_contents(&mut self, option: NodeId, target: NodeId) {
+        let mut depth = 0usize;
+        let mut ancestor = Some(target);
+        while let Some(id) = ancestor {
+            if !self.spend(1) || depth >= MAX_DEPTH {
+                return;
+            }
+            depth += 1;
+            ancestor = self.doc.host_including_parent(id);
+        }
+        let base = self.doc.nodes.len();
+        let roots = &self.doc.nodes[option].children;
+        if roots.len() > self.work {
+            self.work = 0;
+            return;
+        }
+        self.work -= roots.len();
+        let mut pending = roots
+            .iter()
+            .rev()
+            .map(|&id| (id, Some(target), None, depth))
+            .collect::<Vec<_>>();
+        let mut plan = Vec::new();
+        let mut bytes = 0usize;
+        while let Some((source, parent, host, depth)) = pending.pop() {
+            if depth > MAX_DEPTH || base + plan.len() >= MAX_NODES {
+                return;
+            }
+            let node = &self.doc.nodes[source];
+            let own_bytes = match &node.kind {
+                NodeKind::Element(element) => element.retained_bytes(),
+                NodeKind::Text(value) | NodeKind::Comment(value) => value.len(),
+                NodeKind::ProcessingInstruction { target, data } => target.len() + data.len(),
+                NodeKind::DocumentFragment { .. } => 0,
+                _ => return,
+            };
+            let cost = own_bytes
+                .saturating_add(node.children.len())
+                .saturating_add(2);
+            if cost > self.work {
+                self.work = 0;
+                return;
+            }
+            self.work -= cost;
+            bytes += own_bytes;
+            if bytes > MAX_DOM_BYTES.saturating_sub(self.doc.retained_bytes) {
+                return;
+            }
+            let clone = base + plan.len();
+            plan.push((source, parent, host));
+            pending.extend(
+                node.children
+                    .iter()
+                    .rev()
+                    .map(|&child| (child, Some(clone), None, depth + 1)),
+            );
+            if let NodeKind::Element(element) = &node.kind
+                && let Some(content) = element.template_contents
+            {
+                pending.push((content, None, Some(clone), depth + 1));
+            }
+        }
+        if !self.spend(self.doc.nodes[target].children.len()) {
+            return;
+        }
+        for child in std::mem::take(&mut self.doc.nodes[target].children) {
+            self.doc.nodes[child].parent = None;
+        }
+        for (source, parent, host) in plan {
+            let mut kind = self.doc.nodes[source].kind.clone();
+            match &mut kind {
+                NodeKind::Element(element) => element.template_contents = None,
+                NodeKind::DocumentFragment { host: cloned_host } => *cloned_host = host,
+                _ => {}
+            }
+            let id = self.doc.nodes.len();
+            self.doc.nodes.push(Node {
+                parent,
+                children: vec![],
+                kind,
+            });
+            if let Some(parent) = parent {
+                self.doc.nodes[parent].children.push(id);
+            }
+            if let Some(host) = host
+                && let NodeKind::Element(element) = &mut self.doc.nodes[host].kind
+            {
+                element.template_contents = Some(id);
+            }
+        }
+        self.doc.retained_bytes += bytes;
     }
     fn adjusted_current(&self) -> NodeId {
         if self.stack.len() == 1 {
@@ -1897,10 +2366,10 @@ impl TreeBuilder {
     fn in_foreign(&mut self, token: &HtmlToken) -> bool {
         match token {
             HtmlToken::Characters(text) => {
-                if !text.bytes().all(is_space) {
+                if !text.bytes().all(|byte| byte == 0 || is_space(byte)) {
                     self.frameset_ok = false;
                 }
-                self.text(text, false);
+                self.text(&text.replace('\0', "\u{fffd}"), false);
             }
             HtmlToken::Comment(text) => self.comment(text, None),
             HtmlToken::ProcessingInstruction { target, data } => {
@@ -1919,7 +2388,7 @@ impl TreeBuilder {
                     if !self.spend(1) {
                         return true;
                     }
-                    self.stack.pop();
+                    self.pop_open();
                 }
                 return false;
             }
@@ -1939,7 +2408,7 @@ impl TreeBuilder {
                         .tag(id)
                         .is_some_and(|name| name.eq_ignore_ascii_case(tag))
                     {
-                        self.stack.truncate(index);
+                        self.truncate_open(index);
                         return true;
                     }
                     if self.doc.namespace(self.stack[index - 1]) == Some(Namespace::Html) {
@@ -1950,7 +2419,8 @@ impl TreeBuilder {
         }
         true
     }
-    fn scope(&self, tags: &[&str], table: bool) -> Option<usize> {
+    fn scope(&self, tags: &[&str], scope: Scope) -> Option<usize> {
+        let table = scope == Scope::Table;
         for (index, id) in self.stack.iter().enumerate().rev() {
             let tag = self.html_tag(*id).unwrap_or("");
             if tags.contains(&tag) {
@@ -1961,8 +2431,10 @@ impl TreeBuilder {
                 || !table
                     && matches!(
                         tag,
-                        "applet" | "caption" | "td" | "th" | "marquee" | "object" | "button"
+                        "applet" | "caption" | "td" | "th" | "marquee" | "object" | "select"
                     )
+                || scope == Scope::Button && tag == "button"
+                || scope == Scope::ListItem && matches!(tag, "ol" | "ul")
             {
                 return None;
             }
@@ -1971,7 +2443,7 @@ impl TreeBuilder {
     }
     fn clear_to(&mut self, tags: &[&str]) {
         while self.stack.len() > 1 && !tags.contains(&self.current_tag()) {
-            self.stack.pop();
+            self.pop_open();
         }
     }
     fn in_template(&self) -> bool {
@@ -2000,18 +2472,18 @@ impl TreeBuilder {
         };
         // Thorough implied-end-tag generation and the subsequent pop have the
         // same final stack here; this parser does not expose parse-error counts.
-        self.stack.truncate(index);
+        self.truncate_open(index);
         self.clear_formatting();
         self.template_modes.pop();
         self.reset_mode();
         true
     }
-    fn close_in_scope(&mut self, tags: &[&str], table: bool) -> bool {
-        if let Some(index) = self.scope(tags, table) {
+    fn close_in_scope(&mut self, tags: &[&str], scope: Scope) -> bool {
+        if let Some(index) = self.scope(tags, scope) {
             let clear_formatting = self
                 .html_tag(self.stack[index])
                 .is_some_and(formatting_marker);
-            self.stack.truncate(index);
+            self.truncate_open(index);
             if clear_formatting {
                 self.clear_formatting();
             }
@@ -2019,6 +2491,36 @@ impl TreeBuilder {
         } else {
             false
         }
+    }
+    fn implied_end_tags(&mut self, except: Option<&str>) {
+        while Some(self.current_tag()) != except
+            && matches!(
+                self.current_tag(),
+                "dd" | "dt" | "li" | "optgroup" | "option" | "p" | "rb" | "rp" | "rt" | "rtc"
+            )
+        {
+            if !self.spend(1) {
+                return;
+            }
+            self.pop_open();
+        }
+    }
+    fn close_list_item(&mut self, tags: &[&str]) {
+        for index in (0..self.stack.len()).rev() {
+            if !self.spend(1) {
+                return;
+            }
+            let id = self.stack[index];
+            let tag = self.html_tag(id).unwrap_or("");
+            if tags.contains(&tag) {
+                self.truncate_open(index);
+                break;
+            }
+            if self.special_node(id) && !matches!(tag, "address" | "div" | "p") {
+                break;
+            }
+        }
+        self.close_in_scope(&["p"], Scope::Button);
     }
     fn reset_mode(&mut self) {
         self.mode = self
@@ -2159,6 +2661,12 @@ impl TreeBuilder {
         }
         let (parent, before) = self.location(foster);
         self.attach(id, parent, before);
+        if namespace == Namespace::Html
+            && tag == "selectedcontent"
+            && self.doc.nodes[id].parent.is_some()
+        {
+            self.connect_selectedcontent(id);
+        }
         if namespace == Namespace::Html
             && tag == "meta"
             && self.fragment_context.is_none()
@@ -2455,7 +2963,7 @@ impl TreeBuilder {
         for index in (0..self.stack.len()).rev() {
             let current = self.html_tag(self.stack[index]).unwrap_or("");
             if current == subject {
-                self.stack.truncate(index);
+                self.truncate_open(index);
                 return;
             }
             if self.special_node(self.stack[index]) {
@@ -2468,7 +2976,7 @@ impl TreeBuilder {
             return;
         }
         if self.current_tag() == subject && !self.formatting.contains(&Some(self.current())) {
-            self.stack.pop();
+            self.pop_open();
             return;
         }
         for _ in 0..8 {
@@ -2494,7 +3002,7 @@ impl TreeBuilder {
             let Some(block_index) = (stack_index + 1..self.stack.len())
                 .find(|index| self.special_node(self.stack[*index]))
             else {
-                self.stack.truncate(stack_index);
+                self.truncate_open(stack_index);
                 self.formatting.remove(format_index);
                 return;
             };
@@ -2671,7 +3179,7 @@ impl TreeBuilder {
                     }
                     HtmlToken::End(tag) if self.html_tag(node) == Some(tag) => {
                         if self.stack.last() == Some(&node) {
-                            self.stack.pop();
+                            self.pop_open();
                         }
                         self.raw_node = None;
                         self.mode = original_mode;
@@ -2679,7 +3187,7 @@ impl TreeBuilder {
                     }
                     HtmlToken::Eof => {
                         if self.stack.last() == Some(&node) {
-                            self.stack.pop();
+                            self.pop_open();
                         }
                         self.raw_node = None;
                         self.mode = original_mode;
@@ -2728,7 +3236,6 @@ impl TreeBuilder {
                         | "iframe"
                         | "noembed"
                         | "noframes"
-                        | "plaintext"
                 ) || self.scripting && self.current_tag() == "noscript"
                 {
                     self.text(text, false);
@@ -2774,7 +3281,7 @@ impl TreeBuilder {
                         | "noframes"
                 )
             {
-                self.stack.pop();
+                self.pop_open();
                 return;
             }
             match self.mode {
@@ -2886,7 +3393,7 @@ impl TreeBuilder {
                         && self.scripting
                         && self.current_tag() == "noscript" =>
                     {
-                        self.stack.pop();
+                        self.pop_open();
                         return;
                     }
                     _ if start && tag == "template" => {
@@ -2905,7 +3412,7 @@ impl TreeBuilder {
                     _ => {
                         self.clear_to(&["head", "html"]);
                         if self.current_tag() == "head" {
-                            self.stack.pop();
+                            self.pop_open();
                         }
                         self.mode = AfterHead;
                         if end && tag == "head" {
@@ -2915,7 +3422,7 @@ impl TreeBuilder {
                 },
                 InHeadNoscript => match &token {
                     _ if end && tag == "noscript" => {
-                        self.stack.pop();
+                        self.pop_open();
                         self.mode = InHead;
                         return;
                     }
@@ -2944,7 +3451,7 @@ impl TreeBuilder {
                         return;
                     }
                     _ => {
-                        self.stack.pop();
+                        self.pop_open();
                         self.mode = InHead;
                     }
                 },
@@ -3037,7 +3544,7 @@ impl TreeBuilder {
                             )
                         || end && tag == "table"
                     {
-                        if !self.close_in_scope(&["caption"], true) {
+                        if !self.close_in_scope(&["caption"], Scope::Table) {
                             return;
                         }
                         self.mode = InTable;
@@ -3092,7 +3599,7 @@ impl TreeBuilder {
                         if self.current_tag() != "colgroup" {
                             return;
                         }
-                        self.stack.pop();
+                        self.pop_open();
                         self.mode = InTable;
                         if end && tag == "colgroup" {
                             return;
@@ -3113,9 +3620,9 @@ impl TreeBuilder {
                         continue;
                     }
                     if end && matches!(tag, "tbody" | "tfoot" | "thead") {
-                        if self.scope(&[tag], true).is_some() {
+                        if self.scope(&[tag], Scope::Table).is_some() {
                             self.clear_to(&["tbody", "tfoot", "thead", "template", "html"]);
-                            self.stack.pop();
+                            self.pop_open();
                             self.mode = InTable;
                         }
                         return;
@@ -3127,11 +3634,14 @@ impl TreeBuilder {
                         )
                         || end && tag == "table"
                     {
-                        if self.scope(&["tbody", "thead", "tfoot"], true).is_none() {
+                        if self
+                            .scope(&["tbody", "thead", "tfoot"], Scope::Table)
+                            .is_none()
+                        {
                             return;
                         }
                         self.clear_to(&["tbody", "tfoot", "thead", "template", "html"]);
-                        self.stack.pop();
+                        self.pop_open();
                         self.mode = InTable;
                         continue;
                     }
@@ -3156,7 +3666,7 @@ impl TreeBuilder {
                         return;
                     }
                     if end && tag == "tr" {
-                        if self.close_in_scope(&["tr"], true) {
+                        if self.close_in_scope(&["tr"], Scope::Table) {
                             self.mode = InTableBody;
                         }
                         return;
@@ -3168,10 +3678,10 @@ impl TreeBuilder {
                         )
                         || end && matches!(tag, "table" | "tbody" | "tfoot" | "thead")
                     {
-                        if end && tag != "table" && self.scope(&[tag], true).is_none() {
+                        if end && tag != "table" && self.scope(&[tag], Scope::Table).is_none() {
                             return;
                         }
-                        if !self.close_in_scope(&["tr"], true) {
+                        if !self.close_in_scope(&["tr"], Scope::Table) {
                             return;
                         }
                         self.mode = InTableBody;
@@ -3192,7 +3702,7 @@ impl TreeBuilder {
                 }
                 InCell => {
                     if end && matches!(tag, "td" | "th") {
-                        if self.close_in_scope(&[tag], true) {
+                        if self.close_in_scope(&[tag], Scope::Table) {
                             self.mode = InRow;
                         }
                         return;
@@ -3212,10 +3722,10 @@ impl TreeBuilder {
                         )
                         || end && matches!(tag, "table" | "tbody" | "tfoot" | "thead" | "tr")
                     {
-                        if end && self.scope(&[tag], true).is_none() {
+                        if end && self.scope(&[tag], Scope::Table).is_none() {
                             return;
                         }
-                        if !self.close_in_scope(&["td", "th"], true) {
+                        if !self.close_in_scope(&["td", "th"], Scope::Table) {
                             return;
                         }
                         self.mode = InRow;
@@ -3314,7 +3824,13 @@ impl TreeBuilder {
                 }
                 AfterFrameset | AfterAfterFrameset => {
                     match &token {
-                        HtmlToken::Characters(text) if token.whitespace() => self.text(text, false),
+                        HtmlToken::Characters(text) => {
+                            let spaces = text
+                                .chars()
+                                .filter(|ch| ch.is_ascii() && is_space(*ch as u8))
+                                .collect::<String>();
+                            self.text(&spaces, false);
+                        }
                         HtmlToken::Comment(text) => {
                             self.comment(
                                 text,
@@ -3349,7 +3865,7 @@ impl TreeBuilder {
                         }
                         _ if start && tag == "noframes" => self.raw_element(&token, false),
                         _ if end && tag == "frameset" && self.current_tag() != "html" => {
-                            self.stack.pop();
+                            self.pop_open();
                             if self.fragment_context.is_none() && self.current_tag() != "frameset" {
                                 self.mode = AfterFrameset;
                             }
@@ -3400,7 +3916,7 @@ impl TreeBuilder {
                 return true;
             }
             _ if tag == "table" => {
-                if self.close_in_scope(&["table"], true) {
+                if self.close_in_scope(&["table"], Scope::Table) {
                     self.reset_mode();
                     return start;
                 }
@@ -3475,6 +3991,14 @@ impl TreeBuilder {
                 {
                     return;
                 }
+                if matches!(tag, "input" | "select")
+                    && let Some(index) = self.scope(&["select"], Scope::Regular)
+                {
+                    self.truncate_open(index);
+                    if tag == "select" {
+                        return;
+                    }
+                }
                 if tag == "frameset" {
                     if self.stack.len() < 2
                         || self.html_tag(self.stack[1]) != Some("body")
@@ -3486,7 +4010,7 @@ impl TreeBuilder {
                     if let Some(parent) = self.doc.nodes[body].parent {
                         self.doc.remove_child(parent, body);
                     }
-                    self.stack.truncate(1);
+                    self.truncate_open(1);
                     self.element(token, false, true);
                     self.mode = InFrameset;
                     return;
@@ -3586,23 +4110,34 @@ impl TreeBuilder {
                     self.push_formatting(id);
                     return;
                 }
-                if closes_p(tag) && !(tag == "table" && self.doc.mode == DocumentMode::Quirks) {
-                    self.close_in_scope(&["p"], false);
+                if matches!(tag, "li" | "dd" | "dt") {
+                    self.close_list_item(if tag == "li" { &["li"] } else { &["dd", "dt"] });
                 }
-                let same = match tag {
-                    "li" => Some(&["li"][..]),
-                    "dt" | "dd" => Some(&["dt", "dd"][..]),
-                    "option" => Some(&["option"][..]),
-                    "button" => Some(&["button"][..]),
-                    _ => None,
-                };
-                if let Some(tags) = same {
-                    self.close_in_scope(tags, false);
+                if closes_p(tag) && !(tag == "table" && self.doc.mode == DocumentMode::Quirks) {
+                    self.close_in_scope(&["p"], Scope::Button);
+                }
+                if tag == "button" {
+                    self.close_in_scope(&["button"], Scope::Regular);
+                }
+                if matches!(tag, "option" | "optgroup") {
+                    if self.scope(&["select"], Scope::Regular).is_some() {
+                        self.implied_end_tags((tag == "option").then_some("optgroup"));
+                    } else if self.current_tag() == "option" {
+                        self.pop_open();
+                    }
+                }
+                if tag == "hr" && self.scope(&["select"], Scope::Regular).is_some() {
+                    self.implied_end_tags(None);
+                }
+                if matches!(tag, "rb" | "rtc" | "rp" | "rt")
+                    && self.scope(&["ruby"], Scope::Regular).is_some()
+                {
+                    self.implied_end_tags(matches!(tag, "rp" | "rt").then_some("rtc"));
                 }
                 if matches!(tag, "h1" | "h2" | "h3" | "h4" | "h5" | "h6")
                     && matches!(self.current_tag(), "h1" | "h2" | "h3" | "h4" | "h5" | "h6")
                 {
-                    self.stack.pop();
+                    self.pop_open();
                 }
                 if tag == "image" {
                     self.reconstruct_formatting(foster);
@@ -3625,7 +4160,7 @@ impl TreeBuilder {
                 ) || tag == "noscript" && self.scripting
                 {
                     if tag == "xmp" {
-                        self.close_in_scope(&["p"], false);
+                        self.close_in_scope(&["p"], Scope::Button);
                         self.reconstruct_formatting(foster);
                     }
                     if self.work == 0 {
@@ -3672,11 +4207,11 @@ impl TreeBuilder {
                     return;
                 }
                 if matches!(tag, "applet" | "marquee" | "object") {
-                    self.close_in_scope(&[tag], false);
+                    self.close_in_scope(&[tag], Scope::Regular);
                     return;
                 }
                 if matches!(tag, "body" | "html") {
-                    if self.scope(&["body"], false).is_some() {
+                    if self.scope(&["body"], Scope::Regular).is_some() {
                         self.mode = if tag == "html" && self.fragment_context.is_none() {
                             AfterAfterBody
                         } else {
@@ -3686,10 +4221,10 @@ impl TreeBuilder {
                     return;
                 }
                 if tag == "p" {
-                    if self.scope(&["p"], false).is_none() {
+                    if self.scope(&["p"], Scope::Button).is_none() {
                         self.element(&HtmlToken::start("p"), foster, true);
                     }
-                    self.close_in_scope(&["p"], false);
+                    self.close_in_scope(&["p"], Scope::Button);
                     return;
                 }
                 if tag == "br" {
@@ -3702,7 +4237,7 @@ impl TreeBuilder {
                 }
                 if tag == "form" {
                     if self.in_template() {
-                        self.close_in_scope(&["form"], false);
+                        self.close_in_scope(&["form"], Scope::Regular);
                     } else if let Some(form) = self.form.take()
                         && let Some(index) = self.stack.iter().position(|id| *id == form)
                     {
@@ -3714,8 +4249,12 @@ impl TreeBuilder {
                     self.close_template();
                     return;
                 }
+                if tag == "li" {
+                    self.close_in_scope(&["li"], Scope::ListItem);
+                    return;
+                }
                 if matches!(tag, "h1" | "h2" | "h3" | "h4" | "h5" | "h6") {
-                    self.close_in_scope(&["h1", "h2", "h3", "h4", "h5", "h6"], false);
+                    self.close_in_scope(&["h1", "h2", "h3", "h4", "h5", "h6"], Scope::Regular);
                     return;
                 }
                 if matches!(
@@ -3745,13 +4284,13 @@ impl TreeBuilder {
                         | "pre"
                         | "search"
                         | "section"
+                        | "select"
                         | "summary"
                         | "ul"
-                        | "li"
                         | "dd"
                         | "dt"
                 ) {
-                    self.close_in_scope(&[tag], false);
+                    self.close_in_scope(&[tag], Scope::Regular);
                     return;
                 }
                 self.generic_end(tag);
@@ -4172,16 +4711,24 @@ fn parse_with_builder(source: &str, mut builder: TreeBuilder) -> Document {
     let mut tokenizer = HtmlTokenizer::new(&normalized);
     loop {
         tokenizer.raw = builder.raw.take();
-        tokenizer.skip_lf = std::mem::take(&mut builder.skip_lf);
+        let skip_lf = std::mem::take(&mut builder.skip_lf);
         tokenizer.foreign = builder.foreign();
         tokenizer.foreign_characters = builder.foreign_characters();
-        let token = tokenizer.next();
+        let mut token = tokenizer.next();
+        if skip_lf
+            && let HtmlToken::Characters(text) = &mut token
+            && text.starts_with('\n')
+        {
+            text.remove(0);
+        }
         let eof = matches!(token, HtmlToken::Eof);
         builder.process(token);
         if eof || builder.work == 0 || builder.doc.nodes.len() >= MAX_NODES {
             break;
         }
     }
+    builder.truncate_open(0);
+    builder.doc.initialize_base_tracking();
     builder.doc
 }
 
@@ -4189,13 +4736,20 @@ pub fn decode_entities(s: &str) -> String {
     decode_entities_context(s, false)
 }
 fn decode_entities_context(s: &str, in_attribute: bool) -> String {
+    decode_entities_in_state(s, in_attribute, true)
+}
+fn decode_entities_in_state(s: &str, in_attribute: bool, replace_null: bool) -> String {
     let mut out = String::with_capacity(s.len());
     let bytes = s.as_bytes();
     let mut i = 0;
     while i < bytes.len() {
         if bytes[i] != b'&' {
             let c = s[i..].chars().next().unwrap_or('\u{fffd}');
-            out.push(if c == '\0' { '\u{fffd}' } else { c });
+            out.push(if c == '\0' && replace_null {
+                '\u{fffd}'
+            } else {
+                c
+            });
             i += c.len_utf8();
             continue;
         }
@@ -7092,6 +7646,202 @@ fn nth_matches(s: &str, index: usize) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn block_starts_and_end_tag_scopes_keep_paragraph_and_button_boundaries() {
+        for tag in [
+            "center",
+            "details",
+            "dialog",
+            "dir",
+            "figcaption",
+            "figure",
+            "listing",
+            "menu",
+            "search",
+            "summary",
+        ] {
+            let d = Document::parse(&format!("<!doctype html><p>A<{tag}>B<p>C"));
+            assert_eq!(
+                d.outer_html(d.query_selector("body").unwrap()),
+                format!("<body><p>A</p><{tag}>B<p>C</p></{tag}></body>")
+            );
+        }
+        let d = Document::parse("<address><button></address>A<p><button><div>B");
+        assert_eq!(
+            d.outer_html(d.query_selector("body").unwrap()),
+            "<body><address><button></button></address>A<p><button><div>B</div></button></p></body>"
+        );
+    }
+    #[test]
+    fn ruby_implied_end_tags_respect_rtc_and_scope_boundaries() {
+        for (source, expected) in [
+            (
+                "<ruby>A<rb>B<rt>C<rp>D<rtc>E<rt>F<rt>G<rb>H",
+                "<ruby>A<rb>B</rb><rt>C</rt><rp>D</rp><rtc>E<rt>F</rt><rt>G</rt></rtc><rb>H</rb></ruby>",
+            ),
+            (
+                "<ruby><div><p>A<rp>B",
+                "<ruby><div><p>A</p><rp>B</rp></div></ruby>",
+            ),
+            (
+                "<ruby><table><td><p>A<rp>B",
+                "<ruby><table><tbody><tr><td><p>A<rp>B</rp></p></td></tr></tbody></table></ruby>",
+            ),
+        ] {
+            let d = Document::parse(source);
+            assert_eq!(d.outer_html(d.query_selector("ruby").unwrap()), expected);
+        }
+    }
+    #[test]
+    fn list_item_scope_and_customizable_select_recovery_follow_current_rules() {
+        for (source, expected) in [
+            (
+                "<ul><li>A<ul></li><li>B</ul>C",
+                "<body><ul><li>A<ul><li>B</li></ul>C</li></ul></body>",
+            ),
+            (
+                "<p>A<dd>B<dt>C",
+                "<body><p>A</p><dd>B</dd><dt>C</dt></body>",
+            ),
+            (
+                "<select><option>A<optgroup><option>B<hr><input>C",
+                "<body><select><option>A</option><optgroup><option>B</option></optgroup><hr></select><input>C</body>",
+            ),
+            (
+                "<select><button><select>D",
+                "<body><select><button></button></select>D</body>",
+            ),
+            (
+                "<option><span>A<option>B",
+                "<body><option><span>A<option>B</option></span></option></body>",
+            ),
+        ] {
+            let d = Document::parse(source);
+            assert_eq!(
+                d.outer_html(d.query_selector("body").unwrap()),
+                expected,
+                "{source}"
+            );
+        }
+    }
+    #[test]
+    fn decoded_lf_plaintext_and_foreign_null_frameset_rules_are_distinct() {
+        for tag in ["pre", "listing", "textarea"] {
+            let d = Document::parse(&format!("<{tag}>&#10;&#x0a;A</{tag}>"));
+            assert_eq!(d.text_content(d.query_selector(tag).unwrap()), "\nA");
+        }
+        let d = Document::parse("<pre><!--comment-->\nA</pre><p><b><plaintext>B");
+        assert_eq!(d.text_content(d.query_selector("pre").unwrap()), "\nA");
+        assert_eq!(
+            d.outer_html(d.query_selector("plaintext").unwrap()),
+            "<plaintext><b>B</b></plaintext>"
+        );
+        for source in [
+            "<svg>\0 </svg><frameset>",
+            "<svg><![CDATA[\0 ]]></svg><frameset>",
+        ] {
+            let d = Document::parse(source);
+            assert!(d.query_selector("frameset").is_some());
+            assert!(d.query_selector("body").is_none());
+        }
+        for source in ["<svg>�</svg><frameset>", "<svg>&#0;</svg><frameset>"] {
+            assert!(Document::parse(source).query_selector("frameset").is_none());
+        }
+        let d = Document::parse("<frameset></frameset> A\tB\nC");
+        assert_eq!(d.text_content(d.query_selector("html").unwrap()), " \t\n");
+    }
+    #[test]
+    fn long_attribute_names_preserve_distinct_identity_and_owner_urls_are_inherited() {
+        let first = format!("data-{}", "é".repeat(800));
+        let second = format!("{first}x");
+        let mut d = Document::parse(&format!("<div {first}=A {second}=B></div>"));
+        let id = d.query_selector("div").unwrap();
+        assert_eq!(d.attr(id, &first), Some("A"));
+        assert_eq!(d.attr(id, &second), Some("B"));
+        assert_eq!(d.url().as_str(), "about:blank");
+        d.set_url(url::Url::parse("https://example.test/a/b?q=1#f").unwrap());
+        assert_eq!(d.parse_fragment(id, "<p>x").unwrap().url(), d.url());
+        assert_bounded_forest(&d);
+        assert!(Document::from_snapshot(d.nodes.clone(), d.root, false, d.mode).is_ok());
+    }
+    #[test]
+    fn selectedcontent_clones_real_option_trees_at_insertion_and_completion() {
+        let d = Document::parse(
+            "<select><button><selectedcontent></button><option>A<option selected><i>B</i><svg><lineargradient xlink:href='#paint'/></svg><template><b>C</b></template><!--D-->",
+        );
+        let selected = d.query_selector("selectedcontent").unwrap();
+        let option = d.query_selector("option[selected]").unwrap();
+        assert_eq!(d.text_content(selected), "B");
+        assert_ne!(d.nodes[selected].children, d.nodes[option].children);
+        let clone = d.query_selector_from(selected, "linearGradient").unwrap();
+        assert_eq!(d.namespace(clone), Some(Namespace::Svg));
+        assert!(
+            matches!(&d.nodes[clone].kind, NodeKind::Element(el) if el.attr_namespaces.get("xlink:href") == Some(&AttributeNamespace::XLink))
+        );
+        let template = d.query_selector_from(selected, "template").unwrap();
+        assert_eq!(d.text_content(d.template_contents(template).unwrap()), "C");
+        assert_bounded_forest(&d);
+        assert!(Document::from_snapshot(d.nodes.clone(), d.root, false, d.mode).is_ok());
+        for (source, expected) in [
+            (
+                "<select><option selected>A<option selected>B</option><selectedcontent>",
+                "B",
+            ),
+            (
+                "<select><selectedcontent></selectedcontent><optgroup disabled><option>A</optgroup><option>B",
+                "B",
+            ),
+            (
+                "<select size=2><selectedcontent></selectedcontent><option>A",
+                "",
+            ),
+            (
+                "<select multiple><selectedcontent></selectedcontent><option selected>A",
+                "",
+            ),
+            ("<select><option><selectedcontent></selectedcontent>A", ""),
+            (
+                "<template><select><selectedcontent></selectedcontent><option>A",
+                "",
+            ),
+        ] {
+            let d = Document::parse(source);
+            let id = d.nodes.iter().position(|node| matches!(&node.kind, NodeKind::Element(el) if el.tag == "selectedcontent")).unwrap();
+            assert_eq!(d.text_content(id), expected, "{source}");
+        }
+    }
+    #[test]
+    fn selectedcontent_clone_preflight_and_repeated_selection_share_parser_limits() {
+        let mut builder = TreeBuilder::new(false);
+        builder.doc = Document::parse(
+            "<select><selectedcontent></selectedcontent><option>A<b>B</b></option></select>",
+        );
+        let target = builder.doc.query_selector("selectedcontent").unwrap();
+        let option = builder.doc.query_selector("option").unwrap();
+        builder.doc.set_text_content(target, "unchanged");
+        let nodes = builder.doc.nodes.len();
+        builder.work = 1;
+        builder.clone_option_contents(option, target);
+        assert_eq!(builder.doc.text_content(target), "unchanged");
+        assert_eq!(builder.doc.nodes.len(), nodes);
+        builder.work = 50_000;
+        builder.doc.retained_bytes = MAX_DOM_BYTES;
+        builder.clone_option_contents(option, target);
+        assert_eq!(builder.doc.text_content(target), "unchanged");
+        assert_eq!(builder.doc.nodes.len(), nodes);
+        let mut builder = TreeBuilder::new(false);
+        builder.work = 5000;
+        let d = parse_with_builder(
+            &format!(
+                "<select><selectedcontent></selectedcontent>{}",
+                "<option selected><b>A</b>".repeat(20_000)
+            ),
+            builder,
+        );
+        assert!(d.nodes.len() < 5000);
+        assert_bounded_forest(&d);
+        assert!(Document::from_snapshot(d.nodes.clone(), d.root, false, d.mode).is_ok());
+    }
     fn fragment(namespace: Namespace, tag: &str, source: &str, scripting: bool) -> Document {
         let mut owner = Document::parse_with_scripting("", scripting);
         let context = owner.create_element_ns(namespace, tag);
