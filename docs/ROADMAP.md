@@ -1,12 +1,11 @@
 # Development docket
 
-The [Window reflection checkpoint](../tests/conformance/window-reflection.md) adds
-ordered key enumeration, own membership and intrinsic binding flags, following
-the [DOM conversion work](../tests/conformance/dom-string-conversion.md).
-Next work includes general Window property definitions/accessors and private
-binding separation, complete DOMString storage and Web IDL interfaces, remaining
-Symbol consumers, iterator infrastructure and broader ECMAScript dependencies.
-These sit alongside the Vulkan milestones below.
+The [Window global-binding checkpoint](../tests/conformance/window-global-bindings.md)
+adds general data/accessor definitions, exact UTF-16 property keys, private
+execution receivers and global declaration validation. Next work includes
+Window extensibility and interface coverage, complete DOMString storage and Web
+IDL interfaces, remaining Symbol consumers, iterator infrastructure and broader
+ECMAScript dependencies. These sit alongside the Vulkan milestones below.
 
 The goal remains an independent, fully web-compatible Rust browser with a
 defensible security boundary and measured performance within the requested

@@ -1,0 +1,3673 @@
+{
+  "kind": "Window definitions, UTF-16 properties, private execution receivers and global declaration integration",
+  "full_web_compatibility": false,
+  "full_window_conformance": false,
+  "prior_commit": "5e69e4abaca69c0722c0464f6938a310556c915b",
+  "prior_ci": {
+    "run": 36490270776,
+    "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/36490270776",
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": {
+      "minimum-rust": "success",
+      "test": "success",
+      "vulkan-probe": "success"
+    }
+  },
+  "prior_source_input_sha256": "0cdae35a472b7abde5b6a09efd8353781a89c912a32d1d6fa36c3d7540081894",
+  "source_input_sha256": "74c36d0bc0ec7fea3e6539f8ec349f272e3cebf8ae7c1861e623d0fe298b5315",
+  "source_files": {
+    "src/script.rs": "aac6ff49a80d69ea8dcf124a003051a95c85b2eeefae4bea5776b4f961b78b99",
+    "src/script/window.rs": "c11348fbf8ce1dd4cec72b3245ee7dfb5d897e482acc987c0f2e64d27abd1544",
+    "src/script/symbols.rs": "1b628d669b72fc89e77a09f02482d047a3548a32322a8a2328c9e2d3ba4a075c",
+    "src/script/machine.rs": "7419800de68fffd902394ce89f6bde722e5575eebe2dac3b8b5a46bca7229e5f",
+    "src/script/machine/calls.rs": "405bb22e4affc2d180b7d994396002213aa08eed63626a02467a5ca4b1b48ed4",
+    "src/script/machine/statements.rs": "6fda5a222f32aebd07828f9eccdbec82ab5caea63bc487593fded4c9b1f1cbcd",
+    "tests/fixtures/window-reflection.tsv": "8e6e97d047ee850abbaa9800826f1c92acc0d3ce3dcb532e9ce796799f3e42cc",
+    "tests/fixtures/window-global-bindings.tsv": "2c42eb02bc277f41ca585145af68b1879860b5f262114f896008ba38719c4014"
+  },
+  "release_binary_sha256": {
+    "eris-browser": "f1c045697ef098bfad59b7081de87add60a0faf682dcf5a8b5713b3bd36a0883",
+    "eris-js": "a519399c2e4b00ba30c33ca58c71d06332e06ef45d624a26a938295cf0bd7d43",
+    "eris-dom": "b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb",
+    "eris-stress": "e660063ebf8498e0356f7d70a6bfe8b79a58df2eb428e8c06e37a854c1da8128"
+  },
+  "self_authored_probes": {
+    "before_counts": {
+      "unsupported": 24,
+      "failed": 8,
+      "passed": 32
+    },
+    "after_counts": {
+      "passed": 64
+    },
+    "unchanged_sources_modes_and_fingerprints": true,
+    "newly_passing": 32,
+    "lost_passes": 0,
+    "cases": [
+      {
+        "source": "Object.defineProperty(window,'newGlobal',{value:1,writable:false,enumerable:true,configurable:true});assert.sameValue(newGlobal,1);assert.sameValue(Object.getOwnPropertyDescriptor(window,'newGlobal').writable,false);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "window-defined-data:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "7aafd7395945e341a938e7985f4d4ec49df5b290bb77ee1fde21b95f8d15fbd6",
+          "source_sha256": "16dd93fb07dd456746730702f4160f8ad98134223d7f9c18742c63b19c3e1b63",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-defined-data:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "7aafd7395945e341a938e7985f4d4ec49df5b290bb77ee1fde21b95f8d15fbd6",
+          "source_sha256": "16dd93fb07dd456746730702f4160f8ad98134223d7f9c18742c63b19c3e1b63",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "Object.defineProperty(window,'newGlobal',{value:1,writable:false,enumerable:true,configurable:true});assert.sameValue(newGlobal,1);assert.sameValue(Object.getOwnPropertyDescriptor(window,'newGlobal').writable,false);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "window-defined-data:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "861651bed28e7afc906df4b6fb1ed1dad8868b20928e900dd734e98270f578d3",
+          "source_sha256": "16dd93fb07dd456746730702f4160f8ad98134223d7f9c18742c63b19c3e1b63",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-defined-data:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "861651bed28e7afc906df4b6fb1ed1dad8868b20928e900dd734e98270f578d3",
+          "source_sha256": "16dd93fb07dd456746730702f4160f8ad98134223d7f9c18742c63b19c3e1b63",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var value=1;Object.defineProperty(window,'newGlobal',{get:function(){assert.sameValue(this,window);return value;},set:function(v){assert.sameValue(this,window);value=v;},configurable:true});assert.sameValue(newGlobal,1);newGlobal=2;assert.sameValue(value,2);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "window-defined-accessor:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "6273b526597eae564c65487cda140b591349a9e553486f436cd045ddca7a2a7a",
+          "source_sha256": "8b7526d0cb5206c23bfc2e436fc1a0d60246b9a5eb4add4cbc77d257120e33a8",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-defined-accessor:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "6273b526597eae564c65487cda140b591349a9e553486f436cd045ddca7a2a7a",
+          "source_sha256": "8b7526d0cb5206c23bfc2e436fc1a0d60246b9a5eb4add4cbc77d257120e33a8",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var value=1;Object.defineProperty(window,'newGlobal',{get:function(){assert.sameValue(this,window);return value;},set:function(v){assert.sameValue(this,window);value=v;},configurable:true});assert.sameValue(newGlobal,1);newGlobal=2;assert.sameValue(value,2);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "window-defined-accessor:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "a5bfe3a052a045608af8d0e2d17efcf2ff29bcec94b05fb259f80671071b00ee",
+          "source_sha256": "8b7526d0cb5206c23bfc2e436fc1a0d60246b9a5eb4add4cbc77d257120e33a8",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-defined-accessor:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "a5bfe3a052a045608af8d0e2d17efcf2ff29bcec94b05fb259f80671071b00ee",
+          "source_sha256": "8b7526d0cb5206c23bfc2e436fc1a0d60246b9a5eb4add4cbc77d257120e33a8",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "assert.sameValue(window['this'],undefined);assert.sameValue(this,window);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "private-this-not-author-property:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "2c0152b39007a68dbdb29dfdcd87a15df813217c9b6d56e626e2e641954f7712",
+          "source_sha256": "6049dc4ba6485266f4325c672393c100e64214ea420b1fa1c167d83763f7a6bd",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "private-this-not-author-property:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "2c0152b39007a68dbdb29dfdcd87a15df813217c9b6d56e626e2e641954f7712",
+          "source_sha256": "6049dc4ba6485266f4325c672393c100e64214ea420b1fa1c167d83763f7a6bd",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "assert.sameValue(window['this'],undefined);assert.sameValue(this,window);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "private-this-not-author-property:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "2619dd9c36b9248855a8357059b56f9a417ace74679a6455270f7cc7ccc2c492",
+          "source_sha256": "6049dc4ba6485266f4325c672393c100e64214ea420b1fa1c167d83763f7a6bd",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "private-this-not-author-property:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "2619dd9c36b9248855a8357059b56f9a417ace74679a6455270f7cc7ccc2c492",
+          "source_sha256": "6049dc4ba6485266f4325c672393c100e64214ea420b1fa1c167d83763f7a6bd",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "window['this']=7;assert.sameValue(window['this'],7);assert.sameValue(this,window);assert.sameValue((function(){return this;}).call(window),window);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "author-this-keeps-realm-identity:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "edc6db2be18da5f7cd5cba0a480e0c6e86e64a83ae02c208884f4ef6005bb0c9",
+          "source_sha256": "14033d38a8770118cdc589e69682baf37566408ed4e06acf2c98a2d0c26d753a",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "author-this-keeps-realm-identity:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "edc6db2be18da5f7cd5cba0a480e0c6e86e64a83ae02c208884f4ef6005bb0c9",
+          "source_sha256": "14033d38a8770118cdc589e69682baf37566408ed4e06acf2c98a2d0c26d753a",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "window['this']=7;assert.sameValue(window['this'],7);assert.sameValue(this,window);assert.sameValue((function(){return this;}).call(window),window);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "author-this-keeps-realm-identity:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "ab99e318b2ffaf2c252dc2ab2c56666ac9106f40d0950ea951a2cfc401e39865",
+          "source_sha256": "14033d38a8770118cdc589e69682baf37566408ed4e06acf2c98a2d0c26d753a",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "Test262Error",
+            "error_identity": "",
+            "message": "uncaught exception: [object Object]",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "author-this-keeps-realm-identity:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "ab99e318b2ffaf2c252dc2ab2c56666ac9106f40d0950ea951a2cfc401e39865",
+          "source_sha256": "14033d38a8770118cdc589e69682baf37566408ed4e06acf2c98a2d0c26d753a",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "Object.defineProperty(window,'this',{value:9,writable:true,enumerable:true,configurable:true});assert.sameValue(window['this'],9);assert.sameValue(this,window);delete window['this'];assert.sameValue(window['this'],undefined);assert.sameValue(this,window);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "defined-this-keeps-realm-identity:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "e9c035023ad1b00397d9f2429f149a1453eeb281d6ab7f24dad43cf42a9269fd",
+          "source_sha256": "583dc5ac613b7226b65e6da879749cd47ab0b3ae727ba04844161bcf8ff59280",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "defined-this-keeps-realm-identity:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "e9c035023ad1b00397d9f2429f149a1453eeb281d6ab7f24dad43cf42a9269fd",
+          "source_sha256": "583dc5ac613b7226b65e6da879749cd47ab0b3ae727ba04844161bcf8ff59280",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "Object.defineProperty(window,'this',{value:9,writable:true,enumerable:true,configurable:true});assert.sameValue(window['this'],9);assert.sameValue(this,window);delete window['this'];assert.sameValue(window['this'],undefined);assert.sameValue(this,window);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "defined-this-keeps-realm-identity:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "06ec425fac9d3ee81c3fcc8f1435d892b95d95093b7523280f02385a5ffdbf2d",
+          "source_sha256": "583dc5ac613b7226b65e6da879749cd47ab0b3ae727ba04844161bcf8ff59280",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "defined-this-keeps-realm-identity:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "06ec425fac9d3ee81c3fcc8f1435d892b95d95093b7523280f02385a5ffdbf2d",
+          "source_sha256": "583dc5ac613b7226b65e6da879749cd47ab0b3ae727ba04844161bcf8ff59280",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "Object.prototype.inheritedGlobal=7;assert.sameValue(inheritedGlobal,7);assert.sameValue(window.inheritedGlobal,7);assert.sameValue(window.hasOwnProperty('inheritedGlobal'),false);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "inherited-global-read:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "13897fa7d451d67c9d64cfb2cbe1b19590ec18eea04d08016a4da9685094d563",
+          "source_sha256": "26a34c86e38a85e4fe1c3eba7cffff42af808cfb0c4625f50f32ce0a453059fb",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "ReferenceError",
+            "error_identity": "ReferenceError",
+            "message": "'inheritedGlobal' is not defined",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "inherited-global-read:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "13897fa7d451d67c9d64cfb2cbe1b19590ec18eea04d08016a4da9685094d563",
+          "source_sha256": "26a34c86e38a85e4fe1c3eba7cffff42af808cfb0c4625f50f32ce0a453059fb",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "Object.prototype.inheritedGlobal=7;assert.sameValue(inheritedGlobal,7);assert.sameValue(window.inheritedGlobal,7);assert.sameValue(window.hasOwnProperty('inheritedGlobal'),false);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "inherited-global-read:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "eda669a218748724f955bcac16333c41a8078636bbc34e7da2a9efc5d220f5c2",
+          "source_sha256": "26a34c86e38a85e4fe1c3eba7cffff42af808cfb0c4625f50f32ce0a453059fb",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "ReferenceError",
+            "error_identity": "ReferenceError",
+            "message": "'inheritedGlobal' is not defined",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "inherited-global-read:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "eda669a218748724f955bcac16333c41a8078636bbc34e7da2a9efc5d220f5c2",
+          "source_sha256": "26a34c86e38a85e4fe1c3eba7cffff42af808cfb0c4625f50f32ce0a453059fb",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var saved=1;Object.defineProperty(Object.prototype,'inheritedGlobal',{get:function(){assert.sameValue(this,window);return saved;},set:function(v){assert.sameValue(this,window);saved=v;},configurable:true});assert.sameValue(inheritedGlobal,1);inheritedGlobal=4;assert.sameValue(saved,4);assert.sameValue(window.hasOwnProperty('inheritedGlobal'),false);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "inherited-global-accessor:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "a639185840f000bce16386e887fa5eba346b74a9b8156e5ef21469aaf97437c3",
+          "source_sha256": "df4f8c2ff962e438c5adbbc8bb6a60eae59703f02731dd835f6b75e22c1925b6",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "ReferenceError",
+            "error_identity": "ReferenceError",
+            "message": "'inheritedGlobal' is not defined",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "inherited-global-accessor:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "a639185840f000bce16386e887fa5eba346b74a9b8156e5ef21469aaf97437c3",
+          "source_sha256": "df4f8c2ff962e438c5adbbc8bb6a60eae59703f02731dd835f6b75e22c1925b6",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var saved=1;Object.defineProperty(Object.prototype,'inheritedGlobal',{get:function(){assert.sameValue(this,window);return saved;},set:function(v){assert.sameValue(this,window);saved=v;},configurable:true});assert.sameValue(inheritedGlobal,1);inheritedGlobal=4;assert.sameValue(saved,4);assert.sameValue(window.hasOwnProperty('inheritedGlobal'),false);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "inherited-global-accessor:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "56d83147703b645f2b48aa3765dc25cfb729fd150b3b31127848946559a4786c",
+          "source_sha256": "df4f8c2ff962e438c5adbbc8bb6a60eae59703f02731dd835f6b75e22c1925b6",
+          "expected_negative": null,
+          "status": "failed",
+          "observation": {
+            "status": "exception",
+            "phase": "runtime",
+            "error_type": "ReferenceError",
+            "error_identity": "ReferenceError",
+            "message": "'inheritedGlobal' is not defined",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "inherited-global-accessor:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "56d83147703b645f2b48aa3765dc25cfb729fd150b3b31127848946559a4786c",
+          "source_sha256": "df4f8c2ff962e438c5adbbc8bb6a60eae59703f02731dd835f6b75e22c1925b6",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var reason={},seen;Object.defineProperty(window,'newGlobal',{get:function(){throw reason;},configurable:true});try{newGlobal;}catch(e){seen=e;}assert.sameValue(seen,reason);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "bare-global-getter-throw-identity:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "875179d48e3935ad679d1ce23e64f9888356dae7a55149e46fd0d269a4277abd",
+          "source_sha256": "aef077219debc6d407fce0406f0921842823e9671ba7330a7d9381e0f5a3b4c5",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "bare-global-getter-throw-identity:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "875179d48e3935ad679d1ce23e64f9888356dae7a55149e46fd0d269a4277abd",
+          "source_sha256": "aef077219debc6d407fce0406f0921842823e9671ba7330a7d9381e0f5a3b4c5",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var reason={},seen;Object.defineProperty(window,'newGlobal',{get:function(){throw reason;},configurable:true});try{newGlobal;}catch(e){seen=e;}assert.sameValue(seen,reason);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "bare-global-getter-throw-identity:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "98e0b58cae25518e4b46556c283dad5e9c5ac5430530abb843d339ed4087633e",
+          "source_sha256": "aef077219debc6d407fce0406f0921842823e9671ba7330a7d9381e0f5a3b4c5",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "bare-global-getter-throw-identity:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "98e0b58cae25518e4b46556c283dad5e9c5ac5430530abb843d339ed4087633e",
+          "source_sha256": "aef077219debc6d407fce0406f0921842823e9671ba7330a7d9381e0f5a3b4c5",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var gets=0;Object.defineProperty(window,'newGlobal',{get:function(){gets++;return 9;},configurable:true});let newGlobal=2;assert.sameValue(newGlobal,2);assert.sameValue(gets,0);assert.sameValue(window.newGlobal,9);assert.sameValue(gets,1);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "global-accessor-lexical-shadow:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "1498829ad988c17764ea2e5ac2e84e210de18eab83773ab676f05d84faacfe00",
+          "source_sha256": "7d746d8ea3920388b38c56d07826dd2f5b0d12c627908b0f4b6413b9390650c8",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-accessor-lexical-shadow:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "1498829ad988c17764ea2e5ac2e84e210de18eab83773ab676f05d84faacfe00",
+          "source_sha256": "7d746d8ea3920388b38c56d07826dd2f5b0d12c627908b0f4b6413b9390650c8",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var gets=0;Object.defineProperty(window,'newGlobal',{get:function(){gets++;return 9;},configurable:true});let newGlobal=2;assert.sameValue(newGlobal,2);assert.sameValue(gets,0);assert.sameValue(window.newGlobal,9);assert.sameValue(gets,1);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "global-accessor-lexical-shadow:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "95acc798a77e807a5dd6ff2939e3ad476a76153844d9d149bcd3d718c270a4e9",
+          "source_sha256": "7d746d8ea3920388b38c56d07826dd2f5b0d12c627908b0f4b6413b9390650c8",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-accessor-lexical-shadow:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "95acc798a77e807a5dd6ff2939e3ad476a76153844d9d149bcd3d718c270a4e9",
+          "source_sha256": "7d746d8ea3920388b38c56d07826dd2f5b0d12c627908b0f4b6413b9390650c8",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var marker={};var desc={get value(){Object.defineProperty(window,'newGlobal',{value:1,writable:false,configurable:false});return 2;}};assert.throws(TypeError,function(){Object.defineProperty(window,'newGlobal',desc);});assert.sameValue(newGlobal,1);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "global-definition-reentrancy:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "e94eeb7da5e0fd1f080b93e1d956fc1e47f1d41a130dcbd2fc015e9d2c14dcb1",
+          "source_sha256": "04ec25a31383008a31e76cba67d5aaafc65958a16eebde41203d1b7b5951cf78",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-definition-reentrancy:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "e94eeb7da5e0fd1f080b93e1d956fc1e47f1d41a130dcbd2fc015e9d2c14dcb1",
+          "source_sha256": "04ec25a31383008a31e76cba67d5aaafc65958a16eebde41203d1b7b5951cf78",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var marker={};var desc={get value(){Object.defineProperty(window,'newGlobal',{value:1,writable:false,configurable:false});return 2;}};assert.throws(TypeError,function(){Object.defineProperty(window,'newGlobal',desc);});assert.sameValue(newGlobal,1);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "global-definition-reentrancy:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "51e657bb2d4358672e354713c13e05efdde5030b6c40fae5802ac2a7fda66238",
+          "source_sha256": "04ec25a31383008a31e76cba67d5aaafc65958a16eebde41203d1b7b5951cf78",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-definition-reentrancy:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "51e657bb2d4358672e354713c13e05efdde5030b6c40fae5802ac2a7fda66238",
+          "source_sha256": "04ec25a31383008a31e76cba67d5aaafc65958a16eebde41203d1b7b5951cf78",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "Object.defineProperty(window,'newGlobal',{value:1,writable:false,enumerable:false,configurable:true});assert.sameValue(newGlobal,1);assert.sameValue(Object.getOwnPropertyDescriptor(window,'newGlobal').writable,false);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "configurable-readonly-global:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "f2e2c1cea744e0ab5e6c3981c793acbd349445125e4b54f46975f58f1178c6df",
+          "source_sha256": "d306756ee9c6999468cffdf59d8f65da27d0c95f143134e2a4a1274f1aeadafc",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "configurable-readonly-global:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "f2e2c1cea744e0ab5e6c3981c793acbd349445125e4b54f46975f58f1178c6df",
+          "source_sha256": "d306756ee9c6999468cffdf59d8f65da27d0c95f143134e2a4a1274f1aeadafc",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "Object.defineProperty(window,'newGlobal',{value:1,writable:false,enumerable:false,configurable:true});assert.sameValue(newGlobal,1);assert.sameValue(Object.getOwnPropertyDescriptor(window,'newGlobal').writable,false);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "configurable-readonly-global:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "a1215ab885763fd88251b8558a3b07e24fc08a6a62bd484620f64b723e076665",
+          "source_sha256": "d306756ee9c6999468cffdf59d8f65da27d0c95f143134e2a4a1274f1aeadafc",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "configurable-readonly-global:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "a1215ab885763fd88251b8558a3b07e24fc08a6a62bd484620f64b723e076665",
+          "source_sha256": "d306756ee9c6999468cffdf59d8f65da27d0c95f143134e2a4a1274f1aeadafc",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "Object.defineProperty(window,'\\ud800',{value:1,writable:true,enumerable:true,configurable:true});Object.defineProperty(window,'\\ufffd',{value:2,writable:true,enumerable:true,configurable:true});assert.sameValue(window['\\ud800'],1);assert.sameValue(window['\\ufffd'],2);assert.sameValue(window.hasOwnProperty('\\ud800'),true);assert.sameValue(delete window['\\ud800'],true);assert.sameValue(window['\\ufffd'],2);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "global-surrogate-keys:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "4dfeeaf2882a73a3110299a458cc85d9bfadc9004d24926be3f171bec077faed",
+          "source_sha256": "a1970e39cc50c34e560737b7dae2ffe02c8b0585eadc387fe140afebb8797d79",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-surrogate-keys:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "4dfeeaf2882a73a3110299a458cc85d9bfadc9004d24926be3f171bec077faed",
+          "source_sha256": "a1970e39cc50c34e560737b7dae2ffe02c8b0585eadc387fe140afebb8797d79",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "Object.defineProperty(window,'\\ud800',{value:1,writable:true,enumerable:true,configurable:true});Object.defineProperty(window,'\\ufffd',{value:2,writable:true,enumerable:true,configurable:true});assert.sameValue(window['\\ud800'],1);assert.sameValue(window['\\ufffd'],2);assert.sameValue(window.hasOwnProperty('\\ud800'),true);assert.sameValue(delete window['\\ud800'],true);assert.sameValue(window['\\ufffd'],2);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "global-surrogate-keys:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "f17d91a415a087f43c37f973608b5c4cbc142631b1b81cf39575fca30b8f689d",
+          "source_sha256": "a1970e39cc50c34e560737b7dae2ffe02c8b0585eadc387fe140afebb8797d79",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-surrogate-keys:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "f17d91a415a087f43c37f973608b5c4cbc142631b1b81cf39575fca30b8f689d",
+          "source_sha256": "a1970e39cc50c34e560737b7dae2ffe02c8b0585eadc387fe140afebb8797d79",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "assert.sameValue(delete window.absentNewGlobal,true);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "missing-global-member-delete:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "88187227490a929c39c198574caa13d46fa6da141858637ffac0145900e025cd",
+          "source_sha256": "e566ccd772776615f1a1ee14bfeda35dc707d86dff82b6b4090a0f4ec6c83c20",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property deletion is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "missing-global-member-delete:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "88187227490a929c39c198574caa13d46fa6da141858637ffac0145900e025cd",
+          "source_sha256": "e566ccd772776615f1a1ee14bfeda35dc707d86dff82b6b4090a0f4ec6c83c20",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "assert.sameValue(delete window.absentNewGlobal,true);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "missing-global-member-delete:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "127c08df329a6bc819783601338e05839cabb3d28f90fb3fc058443ecdc59971",
+          "source_sha256": "e566ccd772776615f1a1ee14bfeda35dc707d86dff82b6b4090a0f4ec6c83c20",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property deletion is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "missing-global-member-delete:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "127c08df329a6bc819783601338e05839cabb3d28f90fb3fc058443ecdc59971",
+          "source_sha256": "e566ccd772776615f1a1ee14bfeda35dc707d86dff82b6b4090a0f4ec6c83c20",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "window.newGlobal=1;var d=Object.getOwnPropertyDescriptor(window,'newGlobal');newGlobal=2;var e=Object.getOwnPropertyDescriptor(window,'newGlobal');assert.sameValue(e.value,2);assert.sameValue(e.enumerable,d.enumerable);assert.sameValue(e.configurable,d.configurable);assert.sameValue(e.writable,d.writable);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "global-own-data-write-keeps-flags:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "e3cc7debcb02b58fdef69a21db873fbbcfce012c6ee9d965c21ee7f0f28479fa",
+          "source_sha256": "696a3801e3bcec5e388d7e65334d1d0eca38818f30cd6f9ca95f4ffdc17a52cc",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-own-data-write-keeps-flags:sloppy",
+          "file": "<local-global-bindings-probe>",
+          "mode": "sloppy",
+          "case_sha256": "e3cc7debcb02b58fdef69a21db873fbbcfce012c6ee9d965c21ee7f0f28479fa",
+          "source_sha256": "696a3801e3bcec5e388d7e65334d1d0eca38818f30cd6f9ca95f4ffdc17a52cc",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "window.newGlobal=1;var d=Object.getOwnPropertyDescriptor(window,'newGlobal');newGlobal=2;var e=Object.getOwnPropertyDescriptor(window,'newGlobal');assert.sameValue(e.value,2);assert.sameValue(e.enumerable,d.enumerable);assert.sameValue(e.configurable,d.configurable);assert.sameValue(e.writable,d.writable);",
+        "inventory": "reflection-next-global-bindings-probes",
+        "before": {
+          "id": "global-own-data-write-keeps-flags:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "020bb66f2b64e33d96636b2de5d004eca3d5a70924dbeb3508984b673ef1a54d",
+          "source_sha256": "696a3801e3bcec5e388d7e65334d1d0eca38818f30cd6f9ca95f4ffdc17a52cc",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-own-data-write-keeps-flags:strict",
+          "file": "<local-global-bindings-probe>",
+          "mode": "strict",
+          "case_sha256": "020bb66f2b64e33d96636b2de5d004eca3d5a70924dbeb3508984b673ef1a54d",
+          "source_sha256": "696a3801e3bcec5e388d7e65334d1d0eca38818f30cd6f9ca95f4ffdc17a52cc",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var caught;function strictMode(){return this===undefined;}window.newGlobal=1;function removeGlobal(){delete window.newGlobal;return 2;}try{newGlobal=removeGlobal();}catch(e){caught=e;}if(strictMode()){assert(caught instanceof ReferenceError);assert.sameValue(window.hasOwnProperty('newGlobal'),false);}else{assert.sameValue(caught,undefined);assert.sameValue(newGlobal,2);}",
+        "inventory": "reflection-next-global-rhs-probes",
+        "before": {
+          "id": "captured-global-deleted-by-rhs:sloppy",
+          "file": "<local-global-rhs-probe>",
+          "mode": "sloppy",
+          "case_sha256": "b0f1a6516636023832402be80efbf91ee4aaf3b914305c101ab1250bc35bf5c7",
+          "source_sha256": "c15934ca74c996fd6d8800edbfaf84426d5030b664d6e463363273c60c3caa72",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "captured-global-deleted-by-rhs:sloppy",
+          "file": "<local-global-rhs-probe>",
+          "mode": "sloppy",
+          "case_sha256": "b0f1a6516636023832402be80efbf91ee4aaf3b914305c101ab1250bc35bf5c7",
+          "source_sha256": "c15934ca74c996fd6d8800edbfaf84426d5030b664d6e463363273c60c3caa72",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var caught;function strictMode(){return this===undefined;}window.newGlobal=1;function removeGlobal(){delete window.newGlobal;return 2;}try{newGlobal=removeGlobal();}catch(e){caught=e;}if(strictMode()){assert(caught instanceof ReferenceError);assert.sameValue(window.hasOwnProperty('newGlobal'),false);}else{assert.sameValue(caught,undefined);assert.sameValue(newGlobal,2);}",
+        "inventory": "reflection-next-global-rhs-probes",
+        "before": {
+          "id": "captured-global-deleted-by-rhs:strict",
+          "file": "<local-global-rhs-probe>",
+          "mode": "strict",
+          "case_sha256": "86538bc4a51915671122b30ab7b2e99a27d37262a6d5f6dd8e7cd640bd68c9e7",
+          "source_sha256": "c15934ca74c996fd6d8800edbfaf84426d5030b664d6e463363273c60c3caa72",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "captured-global-deleted-by-rhs:strict",
+          "file": "<local-global-rhs-probe>",
+          "mode": "strict",
+          "case_sha256": "86538bc4a51915671122b30ab7b2e99a27d37262a6d5f6dd8e7cd640bd68c9e7",
+          "source_sha256": "c15934ca74c996fd6d8800edbfaf84426d5030b664d6e463363273c60c3caa72",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var calls=0,saved;window.newGlobal=1;function installSetter(){Object.defineProperty(window,'newGlobal',{set:function(v){assert.sameValue(this,window);calls++;saved=v;},configurable:true});return 7;}newGlobal=installSetter();assert.sameValue(calls,1);assert.sameValue(saved,7);",
+        "inventory": "reflection-next-global-rhs-probes",
+        "before": {
+          "id": "global-setter-installed-by-rhs:sloppy",
+          "file": "<local-global-rhs-probe>",
+          "mode": "sloppy",
+          "case_sha256": "9d4f44092bd96e2d6423093a7c11b69aebc5ff27797de10b5dbcc9db0082c484",
+          "source_sha256": "a7212e8ac1f985ffbd9eac28e9616698851505c9f96527e875cbf41419b31c5d",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-setter-installed-by-rhs:sloppy",
+          "file": "<local-global-rhs-probe>",
+          "mode": "sloppy",
+          "case_sha256": "9d4f44092bd96e2d6423093a7c11b69aebc5ff27797de10b5dbcc9db0082c484",
+          "source_sha256": "a7212e8ac1f985ffbd9eac28e9616698851505c9f96527e875cbf41419b31c5d",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var calls=0,saved;window.newGlobal=1;function installSetter(){Object.defineProperty(window,'newGlobal',{set:function(v){assert.sameValue(this,window);calls++;saved=v;},configurable:true});return 7;}newGlobal=installSetter();assert.sameValue(calls,1);assert.sameValue(saved,7);",
+        "inventory": "reflection-next-global-rhs-probes",
+        "before": {
+          "id": "global-setter-installed-by-rhs:strict",
+          "file": "<local-global-rhs-probe>",
+          "mode": "strict",
+          "case_sha256": "b202929ac88af0257abc2237374858de22912c6cec1026633d7b3bf8022a8675",
+          "source_sha256": "a7212e8ac1f985ffbd9eac28e9616698851505c9f96527e875cbf41419b31c5d",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-setter-installed-by-rhs:strict",
+          "file": "<local-global-rhs-probe>",
+          "mode": "strict",
+          "case_sha256": "b202929ac88af0257abc2237374858de22912c6cec1026633d7b3bf8022a8675",
+          "source_sha256": "a7212e8ac1f985ffbd9eac28e9616698851505c9f96527e875cbf41419b31c5d",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "verifyProperty(globalThis,'Symbol',{writable:true,enumerable:false,configurable:true});",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "global-symbol-descriptor:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "1a99df82d1c2d54c25d0a22820fa39d6c0d9a2d45ac5a3497122e9d20e87cc7b",
+          "source_sha256": "3ab8d6928f7a74ff67b0b523976c93a04e8551bcdcf92dac99b63ee2a5d485f5",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-symbol-descriptor:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "1a99df82d1c2d54c25d0a22820fa39d6c0d9a2d45ac5a3497122e9d20e87cc7b",
+          "source_sha256": "3ab8d6928f7a74ff67b0b523976c93a04e8551bcdcf92dac99b63ee2a5d485f5",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "verifyProperty(globalThis,'Symbol',{writable:true,enumerable:false,configurable:true});",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "global-symbol-descriptor:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "8c58d4d436d4cb037d4a569340e4c6b42d2d693f39078f3ea5a6da62dbb34741",
+          "source_sha256": "3ab8d6928f7a74ff67b0b523976c93a04e8551bcdcf92dac99b63ee2a5d485f5",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-symbol-descriptor:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "8c58d4d436d4cb037d4a569340e4c6b42d2d693f39078f3ea5a6da62dbb34741",
+          "source_sha256": "3ab8d6928f7a74ff67b0b523976c93a04e8551bcdcf92dac99b63ee2a5d485f5",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "verifyProperty(globalThis,'Reflect',{writable:true,enumerable:false,configurable:true});",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "global-reflect-descriptor:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "d148819da459f3abff9826727b5e12510ef6391b637ecf4dc603c63b067ee60b",
+          "source_sha256": "6e129395aaa87692ad046c10a18aebe37d2bbea02f415f19a07ce5b3ec4a9385",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-reflect-descriptor:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "d148819da459f3abff9826727b5e12510ef6391b637ecf4dc603c63b067ee60b",
+          "source_sha256": "6e129395aaa87692ad046c10a18aebe37d2bbea02f415f19a07ce5b3ec4a9385",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "verifyProperty(globalThis,'Reflect',{writable:true,enumerable:false,configurable:true});",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "global-reflect-descriptor:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "e62340a18ddec8c9d982e596222d30ac61c6c44f1fe38f9e895b9958a122b3bc",
+          "source_sha256": "6e129395aaa87692ad046c10a18aebe37d2bbea02f415f19a07ce5b3ec4a9385",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-reflect-descriptor:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "e62340a18ddec8c9d982e596222d30ac61c6c44f1fe38f9e895b9958a122b3bc",
+          "source_sha256": "6e129395aaa87692ad046c10a18aebe37d2bbea02f415f19a07ce5b3ec4a9385",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "assert.sameValue(Object.prototype.hasOwnProperty.call(window,'globalThis'),true);assert.sameValue(Object.prototype.hasOwnProperty.call(window,'this'),false);assert.sameValue(Object.prototype.hasOwnProperty.call(window,'toString'),false);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-own-membership:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "d3866c1e34db3a164b804c8ef2d17c1fde0b549cb79d062951e55407f5729d67",
+          "source_sha256": "6d7e3c96f60fd31ebcf4381764a9c703718262ffe9dbea9aceaf22b3973ecc49",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-own-membership:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "d3866c1e34db3a164b804c8ef2d17c1fde0b549cb79d062951e55407f5729d67",
+          "source_sha256": "6d7e3c96f60fd31ebcf4381764a9c703718262ffe9dbea9aceaf22b3973ecc49",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "assert.sameValue(Object.prototype.hasOwnProperty.call(window,'globalThis'),true);assert.sameValue(Object.prototype.hasOwnProperty.call(window,'this'),false);assert.sameValue(Object.prototype.hasOwnProperty.call(window,'toString'),false);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-own-membership:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "b108d0efd97d8d82392a5cc7c4d4a826231b39f08cbc694d99aa27d35ac14b7e",
+          "source_sha256": "6d7e3c96f60fd31ebcf4381764a9c703718262ffe9dbea9aceaf22b3973ecc49",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-own-membership:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "b108d0efd97d8d82392a5cc7c4d4a826231b39f08cbc694d99aa27d35ac14b7e",
+          "source_sha256": "6d7e3c96f60fd31ebcf4381764a9c703718262ffe9dbea9aceaf22b3973ecc49",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "assert.sameValue(Object.prototype.propertyIsEnumerable.call(window,'NaN'),false);assert.sameValue(Object.prototype.propertyIsEnumerable.call(window,'self'),true);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-enumerability:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "e420be12090bd848dea206ac4c9d74c87ac692e950f44f7692db34be661783aa",
+          "source_sha256": "1f037010d9ab36dd2bd0d63118074c9759e7000a4e14e459437378eae7c9b9ae",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-enumerability:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "e420be12090bd848dea206ac4c9d74c87ac692e950f44f7692db34be661783aa",
+          "source_sha256": "1f037010d9ab36dd2bd0d63118074c9759e7000a4e14e459437378eae7c9b9ae",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "assert.sameValue(Object.prototype.propertyIsEnumerable.call(window,'NaN'),false);assert.sameValue(Object.prototype.propertyIsEnumerable.call(window,'self'),true);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-enumerability:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "cd1ba1b44d88331e52b23012a2437b6e5493d113b57590c787ec4b9b58057fd0",
+          "source_sha256": "1f037010d9ab36dd2bd0d63118074c9759e7000a4e14e459437378eae7c9b9ae",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-enumerability:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "cd1ba1b44d88331e52b23012a2437b6e5493d113b57590c787ec4b9b58057fd0",
+          "source_sha256": "1f037010d9ab36dd2bd0d63118074c9759e7000a4e14e459437378eae7c9b9ae",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var a=Object.getOwnPropertyNames(window);assert(a.indexOf('Object')>=0);assert(a.indexOf('Symbol')>=0);assert.sameValue(a.indexOf('this'),-1);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-own-names:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "02a061ce238e8556a9e92ba723a215be0ae92c51ecb6ad107fcd812ede1ab8e1",
+          "source_sha256": "bad734accbc70d6d7bbeaf7896d5c31e70cc7c4960843d93c3f16d78af9ee1da",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-own-names:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "02a061ce238e8556a9e92ba723a215be0ae92c51ecb6ad107fcd812ede1ab8e1",
+          "source_sha256": "bad734accbc70d6d7bbeaf7896d5c31e70cc7c4960843d93c3f16d78af9ee1da",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var a=Object.getOwnPropertyNames(window);assert(a.indexOf('Object')>=0);assert(a.indexOf('Symbol')>=0);assert.sameValue(a.indexOf('this'),-1);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-own-names:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "4f4243b7c33dc20cf3a30e999a3bb369c259532c58567588e871c4f8ebdd4038",
+          "source_sha256": "bad734accbc70d6d7bbeaf7896d5c31e70cc7c4960843d93c3f16d78af9ee1da",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-own-names:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "4f4243b7c33dc20cf3a30e999a3bb369c259532c58567588e871c4f8ebdd4038",
+          "source_sha256": "bad734accbc70d6d7bbeaf7896d5c31e70cc7c4960843d93c3f16d78af9ee1da",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "let reflectionLexical=1;const reflectionConst=2;var names=Object.getOwnPropertyNames(window);assert.sameValue(names.indexOf('reflectionLexical'),-1);assert.sameValue(names.indexOf('reflectionConst'),-1);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-lexicals-not-properties:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "c4d8cc869172a9103699dfd1566d671bce6c3ad968de9cc467415b831d900401",
+          "source_sha256": "3bbecfe9e046984ad6fcdafdaf68ac27e3374e75a5e47269cb2e58c54f190503",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-lexicals-not-properties:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "c4d8cc869172a9103699dfd1566d671bce6c3ad968de9cc467415b831d900401",
+          "source_sha256": "3bbecfe9e046984ad6fcdafdaf68ac27e3374e75a5e47269cb2e58c54f190503",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "let reflectionLexical=1;const reflectionConst=2;var names=Object.getOwnPropertyNames(window);assert.sameValue(names.indexOf('reflectionLexical'),-1);assert.sameValue(names.indexOf('reflectionConst'),-1);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-lexicals-not-properties:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "e433433d0a9bb69e1f285fa1834895a7cd82cfd4847a038a0b0adea73c18fbd6",
+          "source_sha256": "3bbecfe9e046984ad6fcdafdaf68ac27e3374e75a5e47269cb2e58c54f190503",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-lexicals-not-properties:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "e433433d0a9bb69e1f285fa1834895a7cd82cfd4847a038a0b0adea73c18fbd6",
+          "source_sha256": "3bbecfe9e046984ad6fcdafdaf68ac27e3374e75a5e47269cb2e58c54f190503",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "window.zzReflection=1;window.aaReflection=2;var keys=Object.keys(window);assert(keys.indexOf('zzReflection')<keys.indexOf('aaReflection'));",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-creation-order:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "cc21883ecbb6202dbab62912116d1265513ff915858ea258f218a0b718e8b112",
+          "source_sha256": "4b81674b3cf3251c351c3e18fe638d00ea778f88bd5331fc7e928c09803e5e28",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-creation-order:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "cc21883ecbb6202dbab62912116d1265513ff915858ea258f218a0b718e8b112",
+          "source_sha256": "4b81674b3cf3251c351c3e18fe638d00ea778f88bd5331fc7e928c09803e5e28",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "window.zzReflection=1;window.aaReflection=2;var keys=Object.keys(window);assert(keys.indexOf('zzReflection')<keys.indexOf('aaReflection'));",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-creation-order:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "95a3d258edab613ad615d53ed6e2691f6fc9eaa6df368562652661be615e923e",
+          "source_sha256": "4b81674b3cf3251c351c3e18fe638d00ea778f88bd5331fc7e928c09803e5e28",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-creation-order:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "95a3d258edab613ad615d53ed6e2691f6fc9eaa6df368562652661be615e923e",
+          "source_sha256": "4b81674b3cf3251c351c3e18fe638d00ea778f88bd5331fc7e928c09803e5e28",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "window[19]=1;window[2]=2;var keys=Object.getOwnPropertyNames(window);assert.sameValue(keys[0],'2');assert.sameValue(keys[1],'19');",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-numeric-order:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "c385203dde0d9f3acb3850abd2aeff828e5a46a64b6afb447df1919871813409",
+          "source_sha256": "7e2aecb31695a054c5048428f963b2b123ad66f26a2a1eadfa81c0753e713e5e",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-numeric-order:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "c385203dde0d9f3acb3850abd2aeff828e5a46a64b6afb447df1919871813409",
+          "source_sha256": "7e2aecb31695a054c5048428f963b2b123ad66f26a2a1eadfa81c0753e713e5e",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "window[19]=1;window[2]=2;var keys=Object.getOwnPropertyNames(window);assert.sameValue(keys[0],'2');assert.sameValue(keys[1],'19');",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-numeric-order:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "435fc639643b9d074f76d7b950f088ad102af08e3ae9777a156fa78dfd6f8a29",
+          "source_sha256": "7e2aecb31695a054c5048428f963b2b123ad66f26a2a1eadfa81c0753e713e5e",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-numeric-order:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "435fc639643b9d074f76d7b950f088ad102af08e3ae9777a156fa78dfd6f8a29",
+          "source_sha256": "7e2aecb31695a054c5048428f963b2b123ad66f26a2a1eadfa81c0753e713e5e",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "window.zzReflection=1;window.aaReflection=2;delete window.zzReflection;window.zzReflection=3;var keys=Object.keys(window);assert(keys.indexOf('aaReflection')<keys.indexOf('zzReflection'));",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-delete-reinsert-order:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "ae7f62a21ff734816a67f3a7accf47f91f5e359bc0dbaa0231860e62496596d9",
+          "source_sha256": "9b5c9c8c89b15fbc4d6c3e1b672f2ac8b134e782f16d176659c3a28142a627b9",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-delete-reinsert-order:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "ae7f62a21ff734816a67f3a7accf47f91f5e359bc0dbaa0231860e62496596d9",
+          "source_sha256": "9b5c9c8c89b15fbc4d6c3e1b672f2ac8b134e782f16d176659c3a28142a627b9",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "window.zzReflection=1;window.aaReflection=2;delete window.zzReflection;window.zzReflection=3;var keys=Object.keys(window);assert(keys.indexOf('aaReflection')<keys.indexOf('zzReflection'));",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-delete-reinsert-order:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "19552778e5a4e93a22734e26d5f7acea188a3e18e5d14379bc458fed535ed289",
+          "source_sha256": "9b5c9c8c89b15fbc4d6c3e1b672f2ac8b134e782f16d176659c3a28142a627b9",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-delete-reinsert-order:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "19552778e5a4e93a22734e26d5f7acea188a3e18e5d14379bc458fed535ed289",
+          "source_sha256": "9b5c9c8c89b15fbc4d6c3e1b672f2ac8b134e782f16d176659c3a28142a627b9",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var d=Object.getOwnPropertyDescriptor(window,'Object');assert.sameValue(d.writable,true);assert.sameValue(d.enumerable,false);assert.sameValue(d.configurable,true);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "global-constructor-flags:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "61659b4ca69bdff7cbc3c414e58437c1eb2441f0bbe4641a6c296395ffc2e856",
+          "source_sha256": "081744282fa2b3595dbe365b2c999e48859929fa43142e50b33c9538ad3ef843",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-constructor-flags:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "61659b4ca69bdff7cbc3c414e58437c1eb2441f0bbe4641a6c296395ffc2e856",
+          "source_sha256": "081744282fa2b3595dbe365b2c999e48859929fa43142e50b33c9538ad3ef843",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var d=Object.getOwnPropertyDescriptor(window,'Object');assert.sameValue(d.writable,true);assert.sameValue(d.enumerable,false);assert.sameValue(d.configurable,true);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "global-constructor-flags:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "f5c06f2c153d934a0b388b939ba507153fbc01164fe9d63ca02bb9a7ab0d866c",
+          "source_sha256": "081744282fa2b3595dbe365b2c999e48859929fa43142e50b33c9538ad3ef843",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-constructor-flags:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "f5c06f2c153d934a0b388b939ba507153fbc01164fe9d63ca02bb9a7ab0d866c",
+          "source_sha256": "081744282fa2b3595dbe365b2c999e48859929fa43142e50b33c9538ad3ef843",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var d=Object.getOwnPropertyDescriptor(window,'Math');assert.sameValue(d.writable,true);assert.sameValue(d.enumerable,false);assert.sameValue(d.configurable,true);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "global-math-flags:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "272f5c989ec2abfd4d1409e93d00c35fa00885ff60eb8adbb3d318a58d945e99",
+          "source_sha256": "0fbf73c3a5f62eaa55af77b9103ca59f4a90edf687d2c0b703c60010e1325c66",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-math-flags:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "272f5c989ec2abfd4d1409e93d00c35fa00885ff60eb8adbb3d318a58d945e99",
+          "source_sha256": "0fbf73c3a5f62eaa55af77b9103ca59f4a90edf687d2c0b703c60010e1325c66",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var d=Object.getOwnPropertyDescriptor(window,'Math');assert.sameValue(d.writable,true);assert.sameValue(d.enumerable,false);assert.sameValue(d.configurable,true);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "global-math-flags:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "d855983f9b463831f38bff9ab8373c9f27f4132f5cfce1830b1d80bedbf9135e",
+          "source_sha256": "0fbf73c3a5f62eaa55af77b9103ca59f4a90edf687d2c0b703c60010e1325c66",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "global-math-flags:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "d855983f9b463831f38bff9ab8373c9f27f4132f5cfce1830b1d80bedbf9135e",
+          "source_sha256": "0fbf73c3a5f62eaa55af77b9103ca59f4a90edf687d2c0b703c60010e1325c66",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "Object.defineProperty(window,'reflectionData',{value:1,writable:false,enumerable:true,configurable:true});assert.sameValue(reflectionData,1);assert.sameValue(Object.getOwnPropertyDescriptor(window,'reflectionData').writable,false);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-defined-data:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "2352b754427d31c764250b44fa1e5fa0f8a1ba843cd73344462d0c1daeb64282",
+          "source_sha256": "00976e95dd334ba5a41905330590255e47927f87283c52401e456b82261524d7",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-defined-data:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "2352b754427d31c764250b44fa1e5fa0f8a1ba843cd73344462d0c1daeb64282",
+          "source_sha256": "00976e95dd334ba5a41905330590255e47927f87283c52401e456b82261524d7",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "Object.defineProperty(window,'reflectionData',{value:1,writable:false,enumerable:true,configurable:true});assert.sameValue(reflectionData,1);assert.sameValue(Object.getOwnPropertyDescriptor(window,'reflectionData').writable,false);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-defined-data:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "ecbdae7e9e0dbdb567232d7f4a4e9200164e8f69534917ba8449d491c63e6b8b",
+          "source_sha256": "00976e95dd334ba5a41905330590255e47927f87283c52401e456b82261524d7",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-defined-data:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "ecbdae7e9e0dbdb567232d7f4a4e9200164e8f69534917ba8449d491c63e6b8b",
+          "source_sha256": "00976e95dd334ba5a41905330590255e47927f87283c52401e456b82261524d7",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var value=1;Object.defineProperty(window,'reflectionAccessor',{get:function(){assert.sameValue(this,window);return value;},set:function(v){assert.sameValue(this,window);value=v;},configurable:true});assert.sameValue(reflectionAccessor,1);reflectionAccessor=2;assert.sameValue(value,2);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-defined-accessor:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "9b2a07e8b502e0c3a0af8761f95bb8fcb9485854dfe0362ffbdaa6c7103cb0b5",
+          "source_sha256": "0ecbc76cefe4ebb15fcc7a2af196196ef8787b57ab0577d34c9bf6d53d32e665",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-defined-accessor:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "9b2a07e8b502e0c3a0af8761f95bb8fcb9485854dfe0362ffbdaa6c7103cb0b5",
+          "source_sha256": "0ecbc76cefe4ebb15fcc7a2af196196ef8787b57ab0577d34c9bf6d53d32e665",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var value=1;Object.defineProperty(window,'reflectionAccessor',{get:function(){assert.sameValue(this,window);return value;},set:function(v){assert.sameValue(this,window);value=v;},configurable:true});assert.sameValue(reflectionAccessor,1);reflectionAccessor=2;assert.sameValue(value,2);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-defined-accessor:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "36765e21a34228c841721ec8b87b6b236dbe7ec90082970234fa1cc953ee0efc",
+          "source_sha256": "0ecbc76cefe4ebb15fcc7a2af196196ef8787b57ab0577d34c9bf6d53d32e665",
+          "expected_negative": null,
+          "status": "unsupported",
+          "observation": {
+            "status": "unsupported",
+            "phase": "runtime",
+            "error_type": "UnsupportedFeature",
+            "error_identity": "",
+            "message": "host property definition is not implemented",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-defined-accessor:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "36765e21a34228c841721ec8b87b6b236dbe7ec90082970234fa1cc953ee0efc",
+          "source_sha256": "0ecbc76cefe4ebb15fcc7a2af196196ef8787b57ab0577d34c9bf6d53d32e665",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var s=Symbol('reflection');window[s]=1;window.zzReflection=2;var keys=Reflect.ownKeys(window);assert.sameValue(keys[keys.length-1],s);assert(keys.indexOf('zzReflection')>=0);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-string-symbol-order:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "6152b111f164084a00a8a74700cce76a50f59b41fe1bd910cd9fa02217b2edab",
+          "source_sha256": "995b5b80af44cbf4d5c26520b1eecf56e7dcc84c9b88f99c5978ec526e7d9004",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-string-symbol-order:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "6152b111f164084a00a8a74700cce76a50f59b41fe1bd910cd9fa02217b2edab",
+          "source_sha256": "995b5b80af44cbf4d5c26520b1eecf56e7dcc84c9b88f99c5978ec526e7d9004",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var s=Symbol('reflection');window[s]=1;window.zzReflection=2;var keys=Reflect.ownKeys(window);assert.sameValue(keys[keys.length-1],s);assert(keys.indexOf('zzReflection')>=0);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-string-symbol-order:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "ed6c3d23118ef51751468e94405bfee5d277c0cd3100ca5b78eb4d9b87b4e86b",
+          "source_sha256": "995b5b80af44cbf4d5c26520b1eecf56e7dcc84c9b88f99c5978ec526e7d9004",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-string-symbol-order:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "ed6c3d23118ef51751468e94405bfee5d277c0cd3100ca5b78eb4d9b87b4e86b",
+          "source_sha256": "995b5b80af44cbf4d5c26520b1eecf56e7dcc84c9b88f99c5978ec526e7d9004",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var seen=false;Object.prototype.NaN=1;for(var k in window){if(k==='NaN')seen=true;}assert.sameValue(seen,false);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-for-in-shadowing:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "009e6868c35e4dc606474ad19fee4e14b2aef218c527f27d79a796a5bbf31108",
+          "source_sha256": "9da3dff5c71db3c94aebd68487a05b008065e70f2934d32d70a42cf352019fd3",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-for-in-shadowing:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "009e6868c35e4dc606474ad19fee4e14b2aef218c527f27d79a796a5bbf31108",
+          "source_sha256": "9da3dff5c71db3c94aebd68487a05b008065e70f2934d32d70a42cf352019fd3",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var seen=false;Object.prototype.NaN=1;for(var k in window){if(k==='NaN')seen=true;}assert.sameValue(seen,false);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-for-in-shadowing:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "c46cf75bed55cbcc15a189344da47274eb72679c0b275523103f14d15d5526e5",
+          "source_sha256": "9da3dff5c71db3c94aebd68487a05b008065e70f2934d32d70a42cf352019fd3",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-for-in-shadowing:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "c46cf75bed55cbcc15a189344da47274eb72679c0b275523103f14d15d5526e5",
+          "source_sha256": "9da3dff5c71db3c94aebd68487a05b008065e70f2934d32d70a42cf352019fd3",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var n=0;Object.defineProperty(window,'globalThis',{get:function(){n++;return window;},configurable:true});var d=Object.getOwnPropertyDescriptor(window,'globalThis');assert.sameValue(typeof d.get,'function');assert.sameValue(n,0);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-descriptor-does-not-call-global-accessor:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "5b2d79f981c84e2391d5d8ae5af48617c9caa2c64c450aff35224c235ad3583b",
+          "source_sha256": "68fe1be4cc959565381ea1bcda2fa63d82063806f8a54139bdea39acb2d18bbc",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-descriptor-does-not-call-global-accessor:sloppy",
+          "file": "<local-global-probe>",
+          "mode": "sloppy",
+          "case_sha256": "5b2d79f981c84e2391d5d8ae5af48617c9caa2c64c450aff35224c235ad3583b",
+          "source_sha256": "68fe1be4cc959565381ea1bcda2fa63d82063806f8a54139bdea39acb2d18bbc",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "source": "var n=0;Object.defineProperty(window,'globalThis',{get:function(){n++;return window;},configurable:true});var d=Object.getOwnPropertyDescriptor(window,'globalThis');assert.sameValue(typeof d.get,'function');assert.sameValue(n,0);",
+        "inventory": "global-reflection-final-probes",
+        "before": {
+          "id": "window-descriptor-does-not-call-global-accessor:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "4d6623c53835ba6ca894a56172c84305a1c993a567e88d9055eb0194ba56ee44",
+          "source_sha256": "68fe1be4cc959565381ea1bcda2fa63d82063806f8a54139bdea39acb2d18bbc",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "window-descriptor-does-not-call-global-accessor:strict",
+          "file": "<local-global-probe>",
+          "mode": "strict",
+          "case_sha256": "4d6623c53835ba6ca894a56172c84305a1c993a567e88d9055eb0194ba56ee44",
+          "source_sha256": "68fe1be4cc959565381ea1bcda2fa63d82063806f8a54139bdea39acb2d18bbc",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      }
+    ]
+  },
+  "rust": {
+    "passed": 988,
+    "library_passed": 806,
+    "ignored": 0,
+    "new_test_groups": 7
+  },
+  "python": {
+    "passed": 155
+  },
+  "pixel_references": {
+    "passed": 57,
+    "failed": 0,
+    "external_conformance_claim": false
+  },
+  "mutation_smoke": {
+    "cases": 15000,
+    "seed": "0x00000000e2152026",
+    "caught_panics": 0,
+    "invariant_failures": 0,
+    "coverage_guided": false
+  },
+  "formatting": "passed",
+  "strict_all_target_clippy": "passed",
+  "release_build": "passed",
+  "initial_test_failures": "Three existing groups expected general Window definitions to be unsupported. They retain those operations and now assert successful values and key separation. Event-handler descriptor/deletion refusals remain explicit; the original 32 reflection modes and 32 general/RHS modes all remain in the comparison.",
+  "upstream": {
+    "mode_cases": 7121,
+    "verified_controls": 1744,
+    "healthy_baseline_gates": 17,
+    "resource_observation_profiles": 4,
+    "all_fingerprints_and_policies_unchanged": true,
+    "newly_passing": 13,
+    "lost_passes": 0,
+    "unchanged_observations_except_documented_gains": true,
+    "profiles": [
+      {
+        "profile": "symbols",
+        "source_files": 123,
+        "mode_cases": 242,
+        "before_counts": {
+          "passed": 168,
+          "unsupported": 68,
+          "failed": 6
+        },
+        "after_counts": {
+          "passed": 168,
+          "unsupported": 68,
+          "failed": 6
+        },
+        "preflights": 64,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "c234ca3a603d668cff1b769612b3574cf2e59cfa5d21cd70695300e18751f127",
+        "runner_policy_sha256": "34973c30f01597f7a0d535832c49d33b6f9b8d87746ad679a68ab2b74ebaa053",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/symbols-global-reflection-final.json",
+        "before_raw_report_sha256": "d20e4282d63b4b5c3d1e5770056a9f53762bbf85bbc56764fa5c5f598ca74160",
+        "after_raw_report": "artifacts/symbols-global-bindings-final.json",
+        "after_raw_report_sha256": "88a92d2a747005bd607545516fc26f8461b6546b553aff6ced32f772bb4c7ef5"
+      },
+      {
+        "profile": "string-json",
+        "source_files": 326,
+        "mode_cases": 652,
+        "before_counts": {
+          "passed": 536,
+          "unsupported": 116
+        },
+        "after_counts": {
+          "passed": 536,
+          "unsupported": 116
+        },
+        "preflights": 32,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "f073410553ed7cac9c6ddb0d5d10da1e52616d067a0310578e84cbf000df4191",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/string-json-global-reflection-final.json",
+        "before_raw_report_sha256": "917c252b481bf7f738a744e02fd00782b320527cd5a05d7e936ec19e9aa10afa",
+        "after_raw_report": "artifacts/string-json-global-bindings-final.json",
+        "after_raw_report_sha256": "1602a60e88432527a3246d360e290eb13e9a01387020bbb92ddcc521affd3a7c"
+      },
+      {
+        "profile": "regexp",
+        "source_files": 145,
+        "mode_cases": 290,
+        "before_counts": {
+          "passed": 250,
+          "unsupported": 40
+        },
+        "after_counts": {
+          "passed": 252,
+          "unsupported": 38
+        },
+        "preflights": 44,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "33c8319c02da5367a5ac2596cbb48fc3176839740935966754ea0370f4408fa0",
+        "runner_policy_sha256": "0997761beccb3ac2d6d387c373fe92b5fc59157e9a2e1114677d99433f867e4f",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [
+          "test/built-ins/RegExp/prototype/toString/called-as-function.js:sloppy",
+          "test/built-ins/RegExp/prototype/toString/called-as-function.js:strict"
+        ],
+        "changed_observations": [
+          {
+            "id": "test/built-ins/RegExp/prototype/toString/called-as-function.js:sloppy",
+            "before": {
+              "id": "test/built-ins/RegExp/prototype/toString/called-as-function.js:sloppy",
+              "file": "test/built-ins/RegExp/prototype/toString/called-as-function.js",
+              "mode": "sloppy",
+              "case_sha256": "52e663c7c84e1f0e6755292a7767767f6e2215661fb375c581190645d39e1878",
+              "source_sha256": "9897ed57c5dcbdfc7c40bd8d6af0cb3809012b7221f5dcb26aeb6788e744bb1f",
+              "expected_negative": null,
+              "status": "unsupported",
+              "observation": {
+                "status": "unsupported",
+                "phase": "runtime",
+                "error_type": "UnsupportedFeature",
+                "error_identity": "",
+                "message": "host property definition is not implemented",
+                "harness": ""
+              }
+            },
+            "after": {
+              "id": "test/built-ins/RegExp/prototype/toString/called-as-function.js:sloppy",
+              "file": "test/built-ins/RegExp/prototype/toString/called-as-function.js",
+              "mode": "sloppy",
+              "case_sha256": "52e663c7c84e1f0e6755292a7767767f6e2215661fb375c581190645d39e1878",
+              "source_sha256": "9897ed57c5dcbdfc7c40bd8d6af0cb3809012b7221f5dcb26aeb6788e744bb1f",
+              "expected_negative": null,
+              "status": "passed",
+              "observation": {
+                "status": "complete",
+                "phase": "runtime",
+                "error_type": "",
+                "error_identity": "",
+                "message": "",
+                "harness": ""
+              }
+            }
+          },
+          {
+            "id": "test/built-ins/RegExp/prototype/toString/called-as-function.js:strict",
+            "before": {
+              "id": "test/built-ins/RegExp/prototype/toString/called-as-function.js:strict",
+              "file": "test/built-ins/RegExp/prototype/toString/called-as-function.js",
+              "mode": "strict",
+              "case_sha256": "75f2b606955afa92d365ef01ad8a2beae595ea50f30bb379ccf6f5eee7203bac",
+              "source_sha256": "9897ed57c5dcbdfc7c40bd8d6af0cb3809012b7221f5dcb26aeb6788e744bb1f",
+              "expected_negative": null,
+              "status": "unsupported",
+              "observation": {
+                "status": "unsupported",
+                "phase": "runtime",
+                "error_type": "UnsupportedFeature",
+                "error_identity": "",
+                "message": "host property definition is not implemented",
+                "harness": ""
+              }
+            },
+            "after": {
+              "id": "test/built-ins/RegExp/prototype/toString/called-as-function.js:strict",
+              "file": "test/built-ins/RegExp/prototype/toString/called-as-function.js",
+              "mode": "strict",
+              "case_sha256": "75f2b606955afa92d365ef01ad8a2beae595ea50f30bb379ccf6f5eee7203bac",
+              "source_sha256": "9897ed57c5dcbdfc7c40bd8d6af0cb3809012b7221f5dcb26aeb6788e744bb1f",
+              "expected_negative": null,
+              "status": "passed",
+              "observation": {
+                "status": "complete",
+                "phase": "runtime",
+                "error_type": "",
+                "error_identity": "",
+                "message": "",
+                "harness": ""
+              }
+            }
+          }
+        ],
+        "before_raw_report": "artifacts/regexp-global-reflection-final.json",
+        "before_raw_report_sha256": "84889eca626feb5532f557eed3656529e63d61d84ed3e3606ed368dc24711af7",
+        "after_raw_report": "artifacts/regexp-global-bindings-final.json",
+        "after_raw_report_sha256": "0379b589674bda59478f65043b09e05efe523b8b616765816a36e0172d6ce9ce"
+      },
+      {
+        "profile": "template-literal",
+        "source_files": 57,
+        "mode_cases": 114,
+        "before_counts": {
+          "unsupported": 32,
+          "passed": 82
+        },
+        "after_counts": {
+          "unsupported": 32,
+          "passed": 82
+        },
+        "preflights": 44,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "58951312763d816ca4cc139a4fcb2bf63f43a81414b91bf673f65c450b217d94",
+        "runner_policy_sha256": "17b229706fb4915c6c9d5daf4daa74129f2ac470bba8d993487356f12384517e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/template-literal-global-reflection-final.json",
+        "before_raw_report_sha256": "1e616b726c7874c7a3cbe667787cc0caa74ebe310dfb108c41dd88bd9ef8bd9e",
+        "after_raw_report": "artifacts/template-literal-global-bindings-final.json",
+        "after_raw_report_sha256": "207369ea297a1aacf1fd78a3dbe9c527a50b2d58a87b97b60770c106e5dad2c2"
+      },
+      {
+        "profile": "functions",
+        "source_files": 663,
+        "mode_cases": 1131,
+        "before_counts": {
+          "passed": 511,
+          "unsupported": 620
+        },
+        "after_counts": {
+          "passed": 511,
+          "unsupported": 620
+        },
+        "preflights": 48,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "15281ebe6e6c980c547f113563df7d2b5d346ac0db5c9c4aca75dbb6fc60b330",
+        "runner_policy_sha256": "952e68b04e464d1a954c5949b0b9bbd8924472b8fba70a719a20a754d4d03439",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/functions-global-reflection-final.json",
+        "before_raw_report_sha256": "ca525269bca88822b557d61ead75e673b23ae843e3c6cfec88384e6839068abd",
+        "after_raw_report": "artifacts/functions-global-bindings-final.json",
+        "after_raw_report_sha256": "3d67db0348352edb7c94ae32182bd24009a53b95e2ce26d927ae27959da78b5a"
+      },
+      {
+        "profile": "rest-parameters",
+        "source_files": 11,
+        "mode_cases": 22,
+        "before_counts": {
+          "unsupported": 6,
+          "passed": 16
+        },
+        "after_counts": {
+          "unsupported": 6,
+          "passed": 16
+        },
+        "preflights": 64,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "a3e15e061fc8c9cac736e081554f3e42b497d805ebfd7647ea49736cb2d83be5",
+        "runner_policy_sha256": "b579a37e261689714f4b2e41fe933581aa246348bafa391f2dba7c8aec4edacc",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/rest-parameters-global-reflection-final.json",
+        "before_raw_report_sha256": "fd716993c96035c39cf66e5386f1febc2946d3c01e8408f0f4771dac619dc857",
+        "after_raw_report": "artifacts/rest-parameters-global-bindings-final.json",
+        "after_raw_report_sha256": "36fe2f17d5d7f7ea26ffa7e34dd5cda8f2f51d8e924689e5cab0261e27c8b778"
+      },
+      {
+        "profile": "is-prototype-of",
+        "source_files": 10,
+        "mode_cases": 20,
+        "before_counts": {
+          "unsupported": 10,
+          "passed": 10
+        },
+        "after_counts": {
+          "unsupported": 10,
+          "passed": 10
+        },
+        "preflights": 64,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "f019dcc5e150cf14a6b144577a30937ed1314c6b5de3dd331ad574585f16d461",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/is-prototype-of-global-reflection-final.json",
+        "before_raw_report_sha256": "d729c6c98a974472c1b59923e66c949fb43562fbb910c495332f105c18cf79e0",
+        "after_raw_report": "artifacts/is-prototype-of-global-bindings-final.json",
+        "after_raw_report_sha256": "5b102266e709431d64745d91311b26e2c537f1d865974fec38813c434005927d"
+      },
+      {
+        "profile": "global-values",
+        "source_files": 49,
+        "mode_cases": 88,
+        "before_counts": {
+          "passed": 64,
+          "failed": 6,
+          "unsupported": 18
+        },
+        "after_counts": {
+          "passed": 64,
+          "failed": 6,
+          "unsupported": 18
+        },
+        "preflights": 64,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "c1b627a7249d3ab460d5be88b54f34ead98c375c160bee9e72379aef213894a4",
+        "runner_policy_sha256": "f096c9be039b6e5a005d3997e38d8da419399e8c6e8d3a23d2162d20c1763d03",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/global-values-global-reflection-final.json",
+        "before_raw_report_sha256": "85347e3a66c4504abbd3dd79c4b3dff95b59f0d62ce5be40bf5bedac31e14e1a",
+        "after_raw_report": "artifacts/global-values-global-bindings-final.json",
+        "after_raw_report_sha256": "46e52ae00fa1e5f0308a0b97159668beb9a13697f6d38903720b25fb83f53580"
+      },
+      {
+        "profile": "array-sort",
+        "source_files": 54,
+        "mode_cases": 107,
+        "before_counts": {
+          "passed": 57,
+          "unsupported": 46,
+          "resource": 4
+        },
+        "after_counts": {
+          "passed": 57,
+          "unsupported": 46,
+          "resource": 4
+        },
+        "preflights": 80,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "d6f43dd379ae49ae08f959596852e28e6bd33a0420eb699d763ff696b0e961d2",
+        "runner_policy_sha256": "8621a5b10295e4a41806178744c4e906157ef78c884220a154860fae829fd205",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/array-sort-global-reflection-final.json",
+        "before_raw_report_sha256": "64d5eaee8e4d29aab3b583bf959b20efd61af5c95ce319cb4ae48490e91688f7",
+        "after_raw_report": "artifacts/array-sort-global-bindings-final.json",
+        "after_raw_report_sha256": "5ebb1661f51c23e40b96aaf5fb245be4797f9680035c5b26f8f4b154970810be"
+      },
+      {
+        "profile": "identifiers",
+        "source_files": 335,
+        "mode_cases": 669,
+        "before_counts": {
+          "passed": 509,
+          "unsupported": 154,
+          "resource": 6
+        },
+        "after_counts": {
+          "passed": 509,
+          "unsupported": 154,
+          "resource": 6
+        },
+        "preflights": 88,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "b93b9e76f5231a3d342d95fe0a8cf47ca79c2a3101f2a78e4d5bb564c4d06ea8",
+        "runner_policy_sha256": "bdbeba5b53e7ef315e7f06e78fe8c66247cd7dd9ae2545ac5ec25749b94d95d5",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/identifiers-global-reflection-final.json",
+        "before_raw_report_sha256": "e6e1d7f3ac69c8d89fd933e2d1aed4582d769bd1406df9124d14c2eae9acd168",
+        "after_raw_report": "artifacts/identifiers-global-bindings-final.json",
+        "after_raw_report_sha256": "e1296c245e690a4ae7afe645d475bb223189b930f4abd0e0be8a42f321098645"
+      },
+      {
+        "profile": "array-reduce",
+        "source_files": 520,
+        "mode_cases": 1034,
+        "before_counts": {
+          "passed": 856,
+          "failed": 8,
+          "unsupported": 170
+        },
+        "after_counts": {
+          "passed": 856,
+          "failed": 8,
+          "unsupported": 170
+        },
+        "preflights": 128,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "77ee716188d99fdba64adbe151ef4efd915fbaa6345b2b0ec8fe3550efb5ec24",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/array-reduce-global-reflection-final.json",
+        "before_raw_report_sha256": "bdc091669172fb743697799b87e04f5e45d34d0feb854108f1f52b09ac770198",
+        "after_raw_report": "artifacts/array-reduce-global-bindings-final.json",
+        "after_raw_report_sha256": "23c92c7069be406e97355c353b0a217459c17f1cc039bf9a461a0b93c5f380d3"
+      },
+      {
+        "profile": "number-statics",
+        "source_files": 170,
+        "mode_cases": 340,
+        "before_counts": {
+          "passed": 250,
+          "unsupported": 90
+        },
+        "after_counts": {
+          "passed": 250,
+          "unsupported": 90
+        },
+        "preflights": 104,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "3c5c2503458843bfc64eaf546ee08b6e693714f561df42330d9001a2ec8216cd",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/number-statics-global-reflection-final.json",
+        "before_raw_report_sha256": "1e555755f25a0358f673c7daa2f1ec736d7b520be895d5e3d9ed8a80f9451031",
+        "after_raw_report": "artifacts/number-statics-global-bindings-final.json",
+        "after_raw_report_sha256": "9c3ad6084e30ea9ce2e5aba54960c32b687bc11607874df2688956632163b864"
+      },
+      {
+        "profile": "numeric-conversion",
+        "source_files": 30,
+        "mode_cases": 60,
+        "before_counts": {
+          "passed": 28,
+          "unsupported": 32
+        },
+        "after_counts": {
+          "passed": 28,
+          "unsupported": 32
+        },
+        "preflights": 80,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "de7cf1098618ad0fdb7786d4ab4f6c648bfb6fe2543981fe21ca6e0cba50928f",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/numeric-conversion-global-reflection-final.json",
+        "before_raw_report_sha256": "407571d68b660062aa6e79c5105033f792125a9b8c0e2e8e15c45b912cf341d4",
+        "after_raw_report": "artifacts/numeric-conversion-global-bindings-final.json",
+        "after_raw_report_sha256": "a6b50b1d0940c0a7ba144febe9c714131d97de91bed620dc135e5a108e6fbd24"
+      },
+      {
+        "profile": "numeric-parsing",
+        "source_files": 109,
+        "mode_cases": 218,
+        "before_counts": {
+          "passed": 172,
+          "unsupported": 38,
+          "resource": 8
+        },
+        "after_counts": {
+          "passed": 172,
+          "unsupported": 38,
+          "resource": 8
+        },
+        "preflights": 80,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "f8959cc2e43d94b5b0c671105f87d3fc831fa6359065566791707a6f9b400c6a",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/numeric-parsing-global-reflection-final.json",
+        "before_raw_report_sha256": "57512175d53ed81985227ad9a32e6553f05fc1e2bf891c9feb37b829b8366884",
+        "after_raw_report": "artifacts/numeric-parsing-global-bindings-final.json",
+        "after_raw_report_sha256": "0326fae51b9515f1810442048fd2e23cbce8b7506aa22758abf02ca6656940c2"
+      },
+      {
+        "profile": "compound-assignment",
+        "source_files": 454,
+        "mode_cases": 786,
+        "before_counts": {
+          "unsupported": 180,
+          "passed": 606
+        },
+        "after_counts": {
+          "unsupported": 169,
+          "passed": 617
+        },
+        "preflights": 128,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "edc2b04b5e9f810e1757a327f5d2a32c240f41d61e8a6d2a89cb35c3ec14f1d0",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--1.js:sloppy",
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--11.js:sloppy",
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--13.js:sloppy",
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--15.js:sloppy",
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--17.js:sloppy",
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--19.js:sloppy",
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--21.js:sloppy",
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--3.js:sloppy",
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--5.js:sloppy",
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--7.js:sloppy",
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--9.js:sloppy"
+        ],
+        "changed_observations": [
+          {
+            "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--1.js:sloppy",
+            "before": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--1.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--1.js",
+              "mode": "sloppy",
+              "case_sha256": "7f32bb313d5bc69579b5b9106f78960d535b8626443250a9f9f7706a95cf0f91",
+              "source_sha256": "f192d3a7e5d5ec36d841fe4c8ddd1ef1215277a9efc3c28b9c4995e9470820ab",
+              "expected_negative": null,
+              "status": "unsupported",
+              "observation": {
+                "status": "unsupported",
+                "phase": "runtime",
+                "error_type": "UnsupportedFeature",
+                "error_identity": "",
+                "message": "host property definition is not implemented",
+                "harness": ""
+              }
+            },
+            "after": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--1.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--1.js",
+              "mode": "sloppy",
+              "case_sha256": "7f32bb313d5bc69579b5b9106f78960d535b8626443250a9f9f7706a95cf0f91",
+              "source_sha256": "f192d3a7e5d5ec36d841fe4c8ddd1ef1215277a9efc3c28b9c4995e9470820ab",
+              "expected_negative": null,
+              "status": "passed",
+              "observation": {
+                "status": "complete",
+                "phase": "runtime",
+                "error_type": "",
+                "error_identity": "",
+                "message": "",
+                "harness": ""
+              }
+            }
+          },
+          {
+            "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--11.js:sloppy",
+            "before": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--11.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--11.js",
+              "mode": "sloppy",
+              "case_sha256": "71268064d5c3de5ea55913ea4055722f9a5b975d3a4689ba3a134b46c56b30e0",
+              "source_sha256": "cf84f1cb7f3b316d88ddae9be3045942d8b55a4ac36731ec0a000efc54ac7142",
+              "expected_negative": null,
+              "status": "unsupported",
+              "observation": {
+                "status": "unsupported",
+                "phase": "runtime",
+                "error_type": "UnsupportedFeature",
+                "error_identity": "",
+                "message": "host property definition is not implemented",
+                "harness": ""
+              }
+            },
+            "after": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--11.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--11.js",
+              "mode": "sloppy",
+              "case_sha256": "71268064d5c3de5ea55913ea4055722f9a5b975d3a4689ba3a134b46c56b30e0",
+              "source_sha256": "cf84f1cb7f3b316d88ddae9be3045942d8b55a4ac36731ec0a000efc54ac7142",
+              "expected_negative": null,
+              "status": "passed",
+              "observation": {
+                "status": "complete",
+                "phase": "runtime",
+                "error_type": "",
+                "error_identity": "",
+                "message": "",
+                "harness": ""
+              }
+            }
+          },
+          {
+            "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--13.js:sloppy",
+            "before": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--13.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--13.js",
+              "mode": "sloppy",
+              "case_sha256": "36c26c0fad59d506852be98824592240ae924d84455234cc34ce61f8d1539d40",
+              "source_sha256": "272199d642521fa0947d565676e1f59fda464fb1cdd7439c9c47620a28a4d3be",
+              "expected_negative": null,
+              "status": "unsupported",
+              "observation": {
+                "status": "unsupported",
+                "phase": "runtime",
+                "error_type": "UnsupportedFeature",
+                "error_identity": "",
+                "message": "host property definition is not implemented",
+                "harness": ""
+              }
+            },
+            "after": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--13.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--13.js",
+              "mode": "sloppy",
+              "case_sha256": "36c26c0fad59d506852be98824592240ae924d84455234cc34ce61f8d1539d40",
+              "source_sha256": "272199d642521fa0947d565676e1f59fda464fb1cdd7439c9c47620a28a4d3be",
+              "expected_negative": null,
+              "status": "passed",
+              "observation": {
+                "status": "complete",
+                "phase": "runtime",
+                "error_type": "",
+                "error_identity": "",
+                "message": "",
+                "harness": ""
+              }
+            }
+          },
+          {
+            "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--15.js:sloppy",
+            "before": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--15.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--15.js",
+              "mode": "sloppy",
+              "case_sha256": "726451c41791a64785c60e8d1689ccf6dc10a80ba6c21b507bcd2775a1c479c7",
+              "source_sha256": "36cecc9fb5062310238cc54560a28f2c8d9c6772cc075a88924ea6044fcbc5c2",
+              "expected_negative": null,
+              "status": "unsupported",
+              "observation": {
+                "status": "unsupported",
+                "phase": "runtime",
+                "error_type": "UnsupportedFeature",
+                "error_identity": "",
+                "message": "host property definition is not implemented",
+                "harness": ""
+              }
+            },
+            "after": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--15.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--15.js",
+              "mode": "sloppy",
+              "case_sha256": "726451c41791a64785c60e8d1689ccf6dc10a80ba6c21b507bcd2775a1c479c7",
+              "source_sha256": "36cecc9fb5062310238cc54560a28f2c8d9c6772cc075a88924ea6044fcbc5c2",
+              "expected_negative": null,
+              "status": "passed",
+              "observation": {
+                "status": "complete",
+                "phase": "runtime",
+                "error_type": "",
+                "error_identity": "",
+                "message": "",
+                "harness": ""
+              }
+            }
+          },
+          {
+            "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--17.js:sloppy",
+            "before": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--17.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--17.js",
+              "mode": "sloppy",
+              "case_sha256": "3826011723ddfbb8074de6fd549a68d00967d9ebddfb93651d4665efc208d53f",
+              "source_sha256": "224c15a0b5876424303a1ed5e49ec3363ea722fe78aae6402f0e6d8a76136450",
+              "expected_negative": null,
+              "status": "unsupported",
+              "observation": {
+                "status": "unsupported",
+                "phase": "runtime",
+                "error_type": "UnsupportedFeature",
+                "error_identity": "",
+                "message": "host property definition is not implemented",
+                "harness": ""
+              }
+            },
+            "after": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--17.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--17.js",
+              "mode": "sloppy",
+              "case_sha256": "3826011723ddfbb8074de6fd549a68d00967d9ebddfb93651d4665efc208d53f",
+              "source_sha256": "224c15a0b5876424303a1ed5e49ec3363ea722fe78aae6402f0e6d8a76136450",
+              "expected_negative": null,
+              "status": "passed",
+              "observation": {
+                "status": "complete",
+                "phase": "runtime",
+                "error_type": "",
+                "error_identity": "",
+                "message": "",
+                "harness": ""
+              }
+            }
+          },
+          {
+            "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--19.js:sloppy",
+            "before": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--19.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--19.js",
+              "mode": "sloppy",
+              "case_sha256": "b36870dd7237dee8ea2e9f1f076be88b0114fe0fc82244204de293bcd7a753e2",
+              "source_sha256": "a20b552e2d67b6e20d182835316480677ad537ae4e25d1f37f345fd153ea7860",
+              "expected_negative": null,
+              "status": "unsupported",
+              "observation": {
+                "status": "unsupported",
+                "phase": "runtime",
+                "error_type": "UnsupportedFeature",
+                "error_identity": "",
+                "message": "host property definition is not implemented",
+                "harness": ""
+              }
+            },
+            "after": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--19.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--19.js",
+              "mode": "sloppy",
+              "case_sha256": "b36870dd7237dee8ea2e9f1f076be88b0114fe0fc82244204de293bcd7a753e2",
+              "source_sha256": "a20b552e2d67b6e20d182835316480677ad537ae4e25d1f37f345fd153ea7860",
+              "expected_negative": null,
+              "status": "passed",
+              "observation": {
+                "status": "complete",
+                "phase": "runtime",
+                "error_type": "",
+                "error_identity": "",
+                "message": "",
+                "harness": ""
+              }
+            }
+          },
+          {
+            "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--21.js:sloppy",
+            "before": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--21.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--21.js",
+              "mode": "sloppy",
+              "case_sha256": "134cafb2ffb8f1ade2b3a4e71a4daf3174146bebddc4482dc76e7e70116f2cb9",
+              "source_sha256": "388066f13dd03902caef6def2121382ebcbd5c87b24128735d4a05bf965fe395",
+              "expected_negative": null,
+              "status": "unsupported",
+              "observation": {
+                "status": "unsupported",
+                "phase": "runtime",
+                "error_type": "UnsupportedFeature",
+                "error_identity": "",
+                "message": "host property definition is not implemented",
+                "harness": ""
+              }
+            },
+            "after": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--21.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--21.js",
+              "mode": "sloppy",
+              "case_sha256": "134cafb2ffb8f1ade2b3a4e71a4daf3174146bebddc4482dc76e7e70116f2cb9",
+              "source_sha256": "388066f13dd03902caef6def2121382ebcbd5c87b24128735d4a05bf965fe395",
+              "expected_negative": null,
+              "status": "passed",
+              "observation": {
+                "status": "complete",
+                "phase": "runtime",
+                "error_type": "",
+                "error_identity": "",
+                "message": "",
+                "harness": ""
+              }
+            }
+          },
+          {
+            "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--3.js:sloppy",
+            "before": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--3.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--3.js",
+              "mode": "sloppy",
+              "case_sha256": "aaff394a905d87981abce7afde531a7711fb488cf3390570a0bcc0d235dce020",
+              "source_sha256": "a207d221eb31f41a84194549c70548a73840b850746688163ec552bce094c67f",
+              "expected_negative": null,
+              "status": "unsupported",
+              "observation": {
+                "status": "unsupported",
+                "phase": "runtime",
+                "error_type": "UnsupportedFeature",
+                "error_identity": "",
+                "message": "host property definition is not implemented",
+                "harness": ""
+              }
+            },
+            "after": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--3.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--3.js",
+              "mode": "sloppy",
+              "case_sha256": "aaff394a905d87981abce7afde531a7711fb488cf3390570a0bcc0d235dce020",
+              "source_sha256": "a207d221eb31f41a84194549c70548a73840b850746688163ec552bce094c67f",
+              "expected_negative": null,
+              "status": "passed",
+              "observation": {
+                "status": "complete",
+                "phase": "runtime",
+                "error_type": "",
+                "error_identity": "",
+                "message": "",
+                "harness": ""
+              }
+            }
+          },
+          {
+            "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--5.js:sloppy",
+            "before": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--5.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--5.js",
+              "mode": "sloppy",
+              "case_sha256": "0ded7a2d5a4c081e6c8c97a553d37673e271a03e6a41cb4382a3299b58d6b125",
+              "source_sha256": "38899185bdab53a660e40893192516c3fb3a3e8c64a49ea03a6cc70c7bc1e4d9",
+              "expected_negative": null,
+              "status": "unsupported",
+              "observation": {
+                "status": "unsupported",
+                "phase": "runtime",
+                "error_type": "UnsupportedFeature",
+                "error_identity": "",
+                "message": "host property definition is not implemented",
+                "harness": ""
+              }
+            },
+            "after": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--5.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--5.js",
+              "mode": "sloppy",
+              "case_sha256": "0ded7a2d5a4c081e6c8c97a553d37673e271a03e6a41cb4382a3299b58d6b125",
+              "source_sha256": "38899185bdab53a660e40893192516c3fb3a3e8c64a49ea03a6cc70c7bc1e4d9",
+              "expected_negative": null,
+              "status": "passed",
+              "observation": {
+                "status": "complete",
+                "phase": "runtime",
+                "error_type": "",
+                "error_identity": "",
+                "message": "",
+                "harness": ""
+              }
+            }
+          },
+          {
+            "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--7.js:sloppy",
+            "before": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--7.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--7.js",
+              "mode": "sloppy",
+              "case_sha256": "06269587bf41cb738bc38da4ce8486c35e013621d2c23a10008e42e3f455d3a9",
+              "source_sha256": "c7cde287e461928d147c00be325484f0dd781ddc7c755ebcd5160f21eda1c062",
+              "expected_negative": null,
+              "status": "unsupported",
+              "observation": {
+                "status": "unsupported",
+                "phase": "runtime",
+                "error_type": "UnsupportedFeature",
+                "error_identity": "",
+                "message": "host property definition is not implemented",
+                "harness": ""
+              }
+            },
+            "after": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--7.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--7.js",
+              "mode": "sloppy",
+              "case_sha256": "06269587bf41cb738bc38da4ce8486c35e013621d2c23a10008e42e3f455d3a9",
+              "source_sha256": "c7cde287e461928d147c00be325484f0dd781ddc7c755ebcd5160f21eda1c062",
+              "expected_negative": null,
+              "status": "passed",
+              "observation": {
+                "status": "complete",
+                "phase": "runtime",
+                "error_type": "",
+                "error_identity": "",
+                "message": "",
+                "harness": ""
+              }
+            }
+          },
+          {
+            "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--9.js:sloppy",
+            "before": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--9.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--9.js",
+              "mode": "sloppy",
+              "case_sha256": "c125d8ce9287494894506d17e4f1070a5a5d92b95cc42c24900e4ef0741b83de",
+              "source_sha256": "66b7c91a6f8c053c87a9c118fa9e0610ba83916a0b52983894473c0b04f100f0",
+              "expected_negative": null,
+              "status": "unsupported",
+              "observation": {
+                "status": "unsupported",
+                "phase": "runtime",
+                "error_type": "UnsupportedFeature",
+                "error_identity": "",
+                "message": "host property definition is not implemented",
+                "harness": ""
+              }
+            },
+            "after": {
+              "id": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--9.js:sloppy",
+              "file": "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--9.js",
+              "mode": "sloppy",
+              "case_sha256": "c125d8ce9287494894506d17e4f1070a5a5d92b95cc42c24900e4ef0741b83de",
+              "source_sha256": "66b7c91a6f8c053c87a9c118fa9e0610ba83916a0b52983894473c0b04f100f0",
+              "expected_negative": null,
+              "status": "passed",
+              "observation": {
+                "status": "complete",
+                "phase": "runtime",
+                "error_type": "",
+                "error_identity": "",
+                "message": "",
+                "harness": ""
+              }
+            }
+          }
+        ],
+        "before_raw_report": "artifacts/compound-assignment-global-reflection-final.json",
+        "before_raw_report_sha256": "cd886b0d8c59b7fa413e6b0069a0d8cc4d7575399b2d1a8c8d96cbf8762b0b8a",
+        "after_raw_report": "artifacts/compound-assignment-global-bindings-final.json",
+        "after_raw_report_sha256": "a94a9d81df70efc71668e54ab62bf694f7b3c7a7157c2cce18b32bf34b86a453"
+      },
+      {
+        "profile": "addition",
+        "source_files": 48,
+        "mode_cases": 95,
+        "before_counts": {
+          "unsupported": 28,
+          "passed": 65,
+          "failed": 2
+        },
+        "after_counts": {
+          "unsupported": 28,
+          "passed": 65,
+          "failed": 2
+        },
+        "preflights": 64,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "56088f55075e4d44da6915ca41383604182a8a72aaef8230af61369513cbdc0c",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/addition-global-reflection-final.json",
+        "before_raw_report_sha256": "9f92f44aead0367aad81568e37147c3a72534272f24bb9380abbcf10dd1c2b9b",
+        "after_raw_report": "artifacts/addition-global-bindings-final.json",
+        "after_raw_report_sha256": "c92c5c8d381b374b23dba2bd7b25400e2287c9c2eec5e450175d994a7ac34537"
+      },
+      {
+        "profile": "logical-assignment",
+        "source_files": 78,
+        "mode_cases": 132,
+        "before_counts": {
+          "unsupported": 48,
+          "passed": 78,
+          "failed": 6
+        },
+        "after_counts": {
+          "unsupported": 48,
+          "passed": 78,
+          "failed": 6
+        },
+        "preflights": 104,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "a83f71b8a6b6a1523951d73a4711f024cf77ad3bf90e6698bc6224e7bfabf1a3",
+        "runner_policy_sha256": "6f127a653c09ef49d48382570086b28407a0b1f6426fd888045621d72d3e89af",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/logical-assignment-global-reflection-final.json",
+        "before_raw_report_sha256": "39ca759be2f07f8611a75fd38badd5114e60d96eeab3d8cfa98e5931b36f407d",
+        "after_raw_report": "artifacts/logical-assignment-global-bindings-final.json",
+        "after_raw_report_sha256": "3ec8c29270991cf2ec2a861bbe8cbce7a7b671acc8cd4df07dffeefa0a46838a"
+      },
+      {
+        "profile": "uri",
+        "source_files": 173,
+        "mode_cases": 346,
+        "before_counts": {
+          "resource": 112,
+          "passed": 226,
+          "unsupported": 8
+        },
+        "after_counts": {
+          "resource": 112,
+          "passed": 226,
+          "unsupported": 8
+        },
+        "preflights": 128,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "bf48d1dddac882a9609fe78aea7521e7477c1cef2ba6036a74c48513ad28ab8f",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/uri-global-reflection-final.json",
+        "before_raw_report_sha256": "08a33865e0bf8a060bda6e23a9611dcad146e8625347fc2faa04a81f75e7a5d0",
+        "after_raw_report": "artifacts/uri-global-bindings-final.json",
+        "after_raw_report_sha256": "481c5c393f71d47c3f23a5b2b6eae61532667fac6c5086caf19310999c4ebff9"
+      },
+      {
+        "profile": "relational",
+        "source_files": 184,
+        "mode_cases": 364,
+        "before_counts": {
+          "unsupported": 64,
+          "passed": 300
+        },
+        "after_counts": {
+          "unsupported": 64,
+          "passed": 300
+        },
+        "preflights": 128,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "34497c818a4de422d2628afe1270525fe6c5467bbb43126c1796324a5bc8f138",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/relational-global-reflection-final.json",
+        "before_raw_report_sha256": "bad62a881974f454d1ebb6cc75e1a55417751df7a4cb9869c090c288862d7a60",
+        "after_raw_report": "artifacts/relational-global-bindings-final.json",
+        "after_raw_report_sha256": "6456f90abc5f3ffd1df8bfc2088b37eaacbc72b44a47d5510b9c120c85676436"
+      },
+      {
+        "profile": "equality",
+        "source_files": 145,
+        "mode_cases": 286,
+        "before_counts": {
+          "unsupported": 96,
+          "passed": 190
+        },
+        "after_counts": {
+          "unsupported": 96,
+          "passed": 190
+        },
+        "preflights": 128,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "b1d07bdfaee72e164608d7ed3351ab70d05931ffda34f174f6c3f99bf12a0046",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/equality-global-reflection-final.json",
+        "before_raw_report_sha256": "57fe5370949d8dc83c193db7d4ff5e41a7140fb83e9510b67144f6cf02016a02",
+        "after_raw_report": "artifacts/equality-global-bindings-final.json",
+        "after_raw_report_sha256": "e01af37f8668a8535a013305d44c5d9216645071535d9d960b6a27a1012b4fd5"
+      },
+      {
+        "profile": "labels",
+        "source_files": 68,
+        "mode_cases": 125,
+        "before_counts": {
+          "passed": 100,
+          "unsupported": 25
+        },
+        "after_counts": {
+          "passed": 100,
+          "unsupported": 25
+        },
+        "preflights": 80,
+        "all_preflights_verified": true,
+        "corpus_manifest_sha256": "32889cc4ab3de15132243dae4981418ba559cd10294df9222329070b8f74649b",
+        "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+        "all_case_fingerprints_identical": true,
+        "all_preflight_fingerprints_and_observations_identical": true,
+        "changed_preflight_observations": [],
+        "lost_passes": [],
+        "newly_passing": [],
+        "changed_observations": [],
+        "before_raw_report": "artifacts/labels-global-reflection-final.json",
+        "before_raw_report_sha256": "a62fff8122619d699a8878a783f372e93faf779e2854e259e50a44e05d977fec",
+        "after_raw_report": "artifacts/labels-global-bindings-final.json",
+        "after_raw_report_sha256": "8a434361223ba419fc6af555406943da030f3a8b0a7d5f7c40dd6ff5abafac04"
+      }
+    ],
+    "baseline_updates": [
+      {
+        "profile": "regexp",
+        "path": "tests/conformance/test262-regexp-current.json",
+        "before_sha256": "abc887ad63aa114bb019baf1610962d68fcf787a0844a1ea6c86736d49eee787",
+        "after_sha256": "c0e7aa2a3ed69f7be2098782b814fc18f3b5f664b5efd2f0ae37327887fdf82a",
+        "newly_passing": [
+          "test/built-ins/RegExp/prototype/toString/called-as-function.js:sloppy",
+          "test/built-ins/RegExp/prototype/toString/called-as-function.js:strict"
+        ],
+        "lost_passes": []
+      },
+      {
+        "profile": "compound-assignment",
+        "path": "tests/conformance/test262-compound-assignment-current.json",
+        "before_sha256": "11cd52f4c5416495f0653d4444f798e70beecd6afd2de328980f7025dddb5213",
+        "after_sha256": "303664bc491844757af648332609aac2cfa01a5917012c803b30c2bcae5e166c",
+        "newly_passing": [
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--1.js:sloppy",
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--11.js:sloppy",
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--13.js:sloppy",
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--15.js:sloppy",
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--17.js:sloppy",
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--19.js:sloppy",
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--21.js:sloppy",
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--3.js:sloppy",
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--5.js:sloppy",
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--7.js:sloppy",
+          "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--9.js:sloppy"
+        ],
+        "lost_passes": []
+      }
+    ]
+  },
+  "html": {
+    "counts": {
+      "matched": 3868,
+      "mismatched": 2,
+      "unsupported": 6
+    },
+    "mode_cases": 3876,
+    "regressions": [],
+    "improvements": [],
+    "binary_sha256": "b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb"
+  },
+  "local_evidence_sha256": {
+    "artifacts/global-bindings-final-validation.log": "34fc72a9c492f494ef529ac2d3042b2c912a40ef375bf559fa0d7666cffdec33",
+    "artifacts/rust-global-bindings-final.log": "6f11887169f888277b5229933bfef1813052f89ee1afdfd0ce94fd16879615c3",
+    "artifacts/python-global-bindings-final.log": "0e0a6d89fbcc23f5455e1410b059010e696838d6e533bdc4b863ae8d098f9fa7",
+    "artifacts/pixels-global-bindings-final.log": "65a7c09285171cfd984cead2159af7b7eed3112b78e7fb914ca08bfaee8ad96b",
+    "artifacts/stress-global-bindings-final.log": "434b62969bace34b1c5005c22bd2b2add5df797ac7bc4b57a841fd3d0f5332be",
+    "artifacts/global-bindings-final-probes.json": "0312752889bc402bfc57a65678a5a8e4431a8827075781a6793aaff0e3ebb200",
+    "artifacts/html-global-bindings-final.json": "321cb5de9317ab21825709bdcb859ec86ea440f42c2ab2077b2f78db5dea8cca",
+    "artifacts/global-bindings-first-lib.log": "70e512a0fe89aa05cdbb3fbc981fe97618c78f9da86561136705819001ea38f5",
+    "artifacts/global-bindings-comparison.log": "9cc94c61f264068bd78509f5b5da8813ccf4f3767d6f5e38dc8161c5a41a2d13"
+  },
+  "limits": {
+    "quotas_changed": false,
+    "allocation_accounting": "estimated",
+    "independent_agent_review": false,
+    "security_audit": false,
+    "chromium_comparison": false,
+    "native_window_check": false,
+    "vulkan_browser_integration": false
+  },
+  "remaining_gaps": [
+    "Window event-handler descriptor definition/reflection and deletion remain explicitly unsupported.",
+    "Window extensibility, full interfaces and Web IDL behavior remain incomplete.",
+    "WindowProxy, frame/named properties and cross-origin/realm behavior remain incomplete.",
+    "Other DOM host storage does not yet preserve arbitrary UTF-16 DOMString values.",
+    "Full web compatibility, production security and the Chromium performance target remain unmet."
+  ]
+}

@@ -1,5 +1,10 @@
 # Pinned Test262 compound-assignment inventory
 
+The [general Window binding follow-up](window-global-bindings.md) raises this
+profile to **617 passed / 169 unsupported**. Eleven strict captured-global writes
+now reach their expected ReferenceError after a getter deletes the property.
+Source inventory and policy are unchanged.
+
 This profile retains every direct JavaScript file in
 [language/expressions/compound-assignment](https://github.com/tc39/test262/tree/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/language/expressions/compound-assignment)
 at revision `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`: **454 sources, 453,728

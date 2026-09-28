@@ -188,7 +188,7 @@ fn setup(
         } else {
             runtime.coerce_object(receiver)?
         };
-        runtime.define(env, "this", receiver, false)?;
+        runtime.environments[env].this_binding = Some(receiver);
     }
     let parameter_expressions = code.has_parameter_expressions();
     // Every formal exists before the first initializer; expression parameters

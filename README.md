@@ -226,7 +226,10 @@ Complete DOMString storage and Web IDL interfaces remain incomplete.
 Supported [Window binding reflection](tests/conformance/window-reflection.md) now
 preserves numeric/string/symbol key order, intrinsic flags and live for-in behavior.
 The unchanged upstream inventories gain 54 passes without losing previous passes.
-General Window property definitions and full interface behavior remain incomplete.
+[General Window properties and global bindings](tests/conformance/window-global-bindings.md)
+now add data/accessor definitions, exact UTF-16 keys and private execution receivers.
+This follow-up gains another 13 upstream passes and completes all 64 frozen local
+Window probe modes. Full Window interfaces and extensibility remain incomplete.
 
 ## Implementation
 

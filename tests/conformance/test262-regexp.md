@@ -1,5 +1,10 @@
 # Pinned Test262 RegExp selection
 
+The [general Window binding follow-up](window-global-bindings.md) raises this
+profile to **252 passed / 38 unsupported**. Both detached `toString` modes now
+pass because their throwing global accessor setup is supported. Source inventory
+and policy are unchanged.
+
 This separate selection measures Eris's custom bounded RegExp implementation
 against unchanged Test262 sources and harness files. It does not replace the
 [String/JSON selection](test262.md), and it is not full ECMAScript or RegExp

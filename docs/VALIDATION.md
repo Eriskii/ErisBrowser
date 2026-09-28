@@ -1,5 +1,36 @@
 # Validation record
 
+## Window properties and global bindings
+
+The [binding checkpoint](../tests/conformance/window-global-bindings.md) adds
+ordinary Window definitions/accessors, exact UTF-16 keys, private execution
+receivers and general global declaration validation. **988 Rust tests** pass
+with `--include-ignored` (806 library, none ignored), along with formatting,
+strict all-target Clippy, release compilation, **155 Python checks**, **57 exact
+pixel references**, and **15,000 mutation cases** with no caught panic or invariant
+failure. Seven new Rust groups cover the change. Three older groups initially
+expected definitions to be unsupported; they retain the original operations and
+now check successful property creation. Unimplemented event-handler deletion
+remains an explicit unsupported result.
+
+All **64 frozen self-authored modes** now pass: 32 gains and 32 preserved passes.
+Their sources, language modes and fingerprints are unchanged. All **21 upstream
+profiles / 7,121 modes / 1,744 controls** retain their inventories and policies.
+**13 cases gain passes** (11 compound assignment, two RegExp), with no lost passes
+or other observation/control changes. Both healthy improved baselines preserve
+all cases. All 17 healthy gates pass; four resource-stopped profiles remain
+observations. HTML retains 3,868 matched / two mismatched / six unsupported.
+
+The [public comparison](../tests/conformance/window-global-bindings.json) records
+source/release hashes, exact probe outcomes, full profile comparisons and baseline
+updates. Local evidence is `artifacts/*global-bindings*`. Prior commit `5e69e4a`
+passed all jobs in [CI run 36490270776](https://github.com/Eriskii/ErisBrowser/actions/runs/36490270776).
+Quotas are unchanged; accounting remains estimated. Agent sessions were unavailable,
+so no independent-agent review is claimed. Full Window/ECMAScript compatibility,
+production security and the Chromium target remain unmet. No native-window check
+or browser Vulkan integration is claimed for this change.
+
+
 ## Window property order and reflection
 
 Formatting, strict all-target Clippy and release compilation pass. **981 Rust

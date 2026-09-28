@@ -1,5 +1,9 @@
 # Window binding reflection
 
+Historical checkpoint: the later [general global-binding work](window-global-bindings.md)
+completes the four definition probe modes retained here and adds exact UTF-16
+Window property storage. The original comparison below remains unchanged.
+
 The supported Window object-environment properties now participate in
 `hasOwnProperty`, `propertyIsEnumerable`, `Object.keys`, `Object.values`,
 `Object.getOwnPropertyNames`, `Reflect.ownKeys` and `for-in`. Reflection uses the

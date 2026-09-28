@@ -2,7 +2,7 @@
 //! one driver; native callbacks and constructors retain guarded bridges.
 use super::{
     Document, Flow, MAX_CALLS, MAX_HEAP, PropertyDescriptor, PropertyKey, Reference, Result,
-    Runtime, ScriptError, TrackedGlobal, Value, code, js_object, to_i32,
+    Runtime, ScriptError, Value, code, js_object, to_i32,
 };
 use std::collections::BTreeSet;
 use std::rc::Rc;
@@ -690,10 +690,8 @@ fn delete_name(runtime: &mut Runtime, env: usize, name: &str) -> Result<Value> {
         return Ok(Value::Bool(true));
     }
     if let Some(owner) = runtime.resolve_binding(env, name)? {
-        if owner == 0
-            && let Some(kind) = TrackedGlobal::from_name(name)
-        {
-            let key = runtime.global_key(kind);
+        if owner == 0 {
+            let key = runtime.global_name_key(name)?;
             return runtime
                 .delete_property(Value::Window, &key)
                 .map(Value::Bool);

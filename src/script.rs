@@ -1236,6 +1236,8 @@ impl Binding {
 }
 struct Environment {
     bindings: BTreeMap<String, Binding>,
+    // Execution receiver, never an author-visible property or lexical name.
+    this_binding: Option<Value>,
     parent: Option<usize>,
     function_scope: bool,
     strict: bool,
@@ -1301,7 +1303,6 @@ enum Reference {
         owner: Option<usize>,
         strict: bool,
     },
-    Binding(usize, String, bool),
     // Computed names stay uncoerced until GetValue/PutValue. A successful read
     // replaces the name with a string or symbol so compound assignments convert once.
     Property(Value, Value, bool),
@@ -1526,6 +1527,7 @@ pub struct Runtime {
     pub last_default_prevented: bool,
     tracked_global_keys: [JsString; 5],
     next_global_order: u64,
+    global_non_scalar: BTreeMap<JsString, window::GlobalProperty>,
 }
 
 impl Default for Runtime {
@@ -1543,7 +1545,6 @@ impl Runtime {
             ("document", Value::Document),
             ("window", Value::Window),
             ("globalThis", Value::Window),
-            ("this", Value::Window),
             ("console", Value::Console),
             ("Math", Value::Math),
             ("JSON", Value::Json),
@@ -1559,7 +1560,7 @@ impl Runtime {
                     mutable: matches!(name, "globalThis" | "Math" | "JSON"),
                     initialized: true,
                     strict_immutable: false,
-                    global_property: name != "this",
+                    global_property: true,
                     global_order: order as u64,
                     enumerable: !matches!(
                         name,
@@ -1625,12 +1626,14 @@ impl Runtime {
             environments: vec![
                 Environment {
                     bindings,
+                    this_binding: Some(Value::Window),
                     parent: None,
                     function_scope: true,
                     strict: false,
                 },
                 Environment {
                     bindings: BTreeMap::new(),
+                    this_binding: None,
                     parent: Some(0),
                     function_scope: false,
                     strict: false,
@@ -1656,6 +1659,7 @@ impl Runtime {
             started: std::time::Instant::now(),
             steps: MAX_STEPS,
             allocated: 2048
+                + 2 * std::mem::size_of::<Option<Value>>()
                 + initial_binding_bytes
                 + TrackedGlobal::ALL
                     .iter()
@@ -1670,6 +1674,7 @@ impl Runtime {
             last_default_prevented: false,
             tracked_global_keys: TrackedGlobal::ALL.map(|kind| kind.name().into()),
             next_global_order,
+            global_non_scalar: BTreeMap::new(),
         };
         machine::initialize(&mut runtime)
             .expect("fixed expression frame bootstrap fits runtime limits");
@@ -3483,10 +3488,11 @@ impl Runtime {
         Ok(Value::Object(id))
     }
     fn environment(&mut self, parent: usize) -> Result<usize> {
-        self.charge(128)?;
+        self.charge(128 + std::mem::size_of::<Option<Value>>())?;
         let id = self.environments.len();
         self.environments.push(Environment {
             bindings: BTreeMap::new(),
+            this_binding: None,
             parent: Some(parent),
             function_scope: false,
             strict: self.environments[parent].strict,
@@ -3534,21 +3540,36 @@ impl Runtime {
         self.tracked_global_keys[kind as usize].clone()
     }
     fn resolve_binding(&mut self, env: usize, name: &str) -> Result<Option<usize>> {
+        if name == "this" {
+            let mut cursor = env;
+            loop {
+                self.tick()?;
+                if self.environments[cursor].this_binding.is_some() {
+                    return Ok(Some(cursor));
+                }
+                let Some(parent) = self.environments[cursor].parent else {
+                    return Ok(None);
+                };
+                cursor = parent;
+            }
+        }
         if let Some((owner, _)) = self.lookup(env, name) {
             return Ok(Some(owner));
         }
-        if let Some(kind) = TrackedGlobal::from_name(name) {
-            let key = self.global_key(kind);
-            if self.find_property(&Value::Window, &key)?.is_some() {
-                return Ok(Some(0));
-            }
+        let key = self.global_name_key(name)?;
+        if self.find_property(&Value::Window, &key)?.is_some() {
+            return Ok(Some(0));
         }
         Ok(None)
     }
     fn binding_value(&mut self, env: usize, name: &str, doc: &mut Document) -> Result<Value> {
-        if env == 0
-            && let Some(kind) = TrackedGlobal::from_name(name)
-        {
+        if name == "this" {
+            return self.environments[env]
+                .this_binding
+                .clone()
+                .ok_or_else(|| ScriptError::reference("missing execution receiver"));
+        }
+        if env == 0 {
             // Ordinary own data bindings need neither prototype traversal nor
             // a property-key conversion. Accessors/absence use the live object.
             if let Some(binding) = self.environments[0].bindings.get(name)
@@ -3556,7 +3577,7 @@ impl Runtime {
             {
                 return Ok(binding.value.clone());
             }
-            let key = self.global_key(kind);
+            let key = self.global_name_key(name)?;
             return self
                 .lookup_property(&Value::Window, &key, doc)?
                 .ok_or_else(|| ScriptError::reference(format!("'{name}' is not defined")));
@@ -3795,99 +3816,15 @@ impl Runtime {
         body: &[code::StmtId],
         env: usize,
     ) -> Result<()> {
-        let mut tracked_functions = [None; 5];
         if env == 1 {
-            // Validate declarations before inserting lexical, var, or function
-            // bindings. Tracked globals may be immutable or author-locked.
-            self.work(body.len().saturating_add(1))?;
-            self.validate_lexical(unit, body, env)?;
-            for statement in body {
-                if let code::Stmt::Function(name, _) = unit.stmt(*statement)
-                    && self.environments[1].bindings.contains_key(name)
-                {
-                    return Err(ScriptError::syntax(format!(
-                        "global lexical binding conflicts with function '{name}'"
-                    )));
-                }
-            }
-            for (index, statement) in body.iter().enumerate().rev() {
-                self.tick()?;
-                if let code::Stmt::Function(name, _) = unit.stmt(*statement)
-                    && let Some(kind) = TrackedGlobal::from_name(name)
-                {
-                    tracked_functions[kind as usize].get_or_insert(index);
-                }
-            }
-            if tracked_functions.iter().any(Option::is_some) {
-                // Earlier lexical-name checks precede CanDeclareGlobalFunction.
-                self.hoist_vars_mode(unit, body, env, false)?;
-                for (index, statement) in body.iter().enumerate().rev() {
-                    self.tick()?;
-                    if let code::Stmt::Function(name, _) = unit.stmt(*statement)
-                        && let Some(kind) = TrackedGlobal::from_name(name)
-                        && tracked_functions[kind as usize] == Some(index)
-                        && self
-                            .own_property(&Value::Window, &self.global_key(kind))
-                            .is_some_and(|property| {
-                                !(property.configurable
-                                    || property.enumerable
-                                        && matches!(
-                                            property.value,
-                                            PropertyValue::Data { writable: true, .. }
-                                        ))
-                            })
-                    {
-                        return Err(ScriptError::type_error(format!(
-                            "global function conflicts with {name} property"
-                        )));
-                    }
-                }
-            }
+            return self.instantiate_global_statements(unit, body);
         }
         self.instantiate_lexical(unit, body, env)?;
         self.hoist_vars(unit, body, env)?;
-        for (index, statement) in body.iter().enumerate() {
+        for statement in body {
             if let code::Stmt::Function(name, code) = unit.stmt(*statement) {
-                if env == 1 && self.environments[1].bindings.contains_key(name) {
-                    return Err(ScriptError::syntax(format!(
-                        "global lexical binding conflicts with function '{name}'"
-                    )));
-                }
-                let tracked = if env == 1 {
-                    TrackedGlobal::from_name(name)
-                } else {
-                    None
-                };
-                if let Some(kind) = tracked
-                    && tracked_functions[kind as usize] != Some(index)
-                {
-                    continue;
-                }
-                let current = if let Some(kind) = tracked {
-                    self.tick()?;
-                    self.own_property(&Value::Window, &self.global_key(kind))
-                } else {
-                    None
-                };
                 let function = self.function_value(&code::FunctionRef::new(unit, *code), env)?;
-                if let Some(kind) = tracked {
-                    let desc = if current.is_some_and(|property| !property.configurable) {
-                        PropertyDescriptor {
-                            value: Some(function),
-                            ..PropertyDescriptor::default()
-                        }
-                    } else {
-                        PropertyDescriptor::data_property(function, true, true, false)
-                    };
-                    let key = self.global_key(kind);
-                    if !self.define_own(&Value::Window, &key, desc)? {
-                        return Err(ScriptError::type_error(format!(
-                            "cannot define global {name} function"
-                        )));
-                    }
-                } else {
-                    self.define(if env == 1 { 0 } else { env }, name, function, true)?;
-                }
+                self.define(env, name, function, true)?;
             }
         }
         Ok(())
@@ -4245,7 +4182,6 @@ impl Runtime {
                     None => Err(ScriptError::reference(format!("'{name}' is not defined"))),
                 }
             }
-            Reference::Binding(env, name, _) => self.binding_value(*env, name, doc),
             Reference::Property(object, name, _) => {
                 let key = self.reference_key(object, name.clone(), doc)?;
                 *name = key.value();
@@ -4271,9 +4207,6 @@ impl Runtime {
                 };
                 self.write_name(owner, name, strict, value, doc)
             }
-            Reference::Binding(env, name, strict) => {
-                self.write_name(Some(env), &name, strict, value, doc)
-            }
             Reference::Property(object, key, strict) => {
                 let key = self.reference_key(&object, key, doc)?;
                 self.set_property_key(object, &key, value, strict, doc)
@@ -4289,17 +4222,23 @@ impl Runtime {
         doc: &mut Document,
     ) -> Result<()> {
         if let Some(env) = owner {
-            if env == 0
-                && let Some(kind) = TrackedGlobal::from_name(name)
-            {
-                let key = self.global_key(kind);
+            if env == 0 {
+                if let Some(binding) = self.environments[0].bindings.get_mut(name)
+                    && binding.accessor.is_none()
+                {
+                    if !binding.mutable {
+                        return Self::failed_write(strict);
+                    }
+                    binding.value = value;
+                    return Ok(());
+                }
+                let key = self.global_name_key(name)?;
                 if strict && self.find_property(&Value::Window, &key)?.is_none() {
                     return Err(ScriptError::reference(format!("'{name}' is not defined")));
                 }
                 return self.set_key_strict(Value::Window, &key, value, strict, doc);
             }
-            // RHS evaluation may delete a captured global binding. Recreate it
-            // only for a sloppy global write; preserve TDZ/immutable behavior.
+            // Declarative bindings preserve TDZ and immutable-binding rules.
             if let Some(binding) = self.environments[env].bindings.get_mut(name) {
                 if !binding.initialized {
                     return Err(ScriptError::reference(format!(
@@ -4318,25 +4257,15 @@ impl Runtime {
                 binding.value = value;
                 return Ok(());
             }
-            if env != 0 || strict {
-                return Err(ScriptError::reference(format!("'{name}' is not defined")));
-            }
+            return Err(ScriptError::reference(format!("'{name}' is not defined")));
         }
         if strict {
             return Err(ScriptError::reference(format!("'{name}' is not defined")));
         }
-        if let Some(kind) = TrackedGlobal::from_name(name) {
-            let key = self.global_key(kind);
-            return self.set_key_strict(Value::Window, &key, value, false, doc);
-        }
-        self.define(0, name, value, true)?;
-        self.environments[0]
-            .bindings
-            .get_mut(name)
-            .unwrap()
-            .deletable = true;
-        Ok(())
+        let key = self.global_name_key(name)?;
+        self.set_key_strict(Value::Window, &key, value, false, doc)
     }
+
     fn call(
         &mut self,
         function: Value,
@@ -4442,12 +4371,14 @@ impl Runtime {
                     .get(kind.name())
                     .map(Binding::property);
             }
-            let key = key.to_utf8().ok()?;
-            return self.environments[0]
-                .bindings
-                .get(&key)
-                .filter(|b| b.global_property)
-                .map(Binding::property);
+            return match key.to_utf8() {
+                Ok(key) => self.environments[0]
+                    .bindings
+                    .get(&key)
+                    .filter(|b| b.global_property)
+                    .map(Binding::property),
+                Err(_) => self.global_non_scalar.get(key).map(|p| p.property.clone()),
+            };
         }
         if let Some(id) = self.property_object(receiver)
             && let Some(property) = self.objects[id].values.get(&key.into())
@@ -4513,6 +4444,9 @@ impl Runtime {
                 return Ok(None);
             };
             self.work(1 + key.len() / 16)?;
+            if value == Value::Window {
+                self.window_lookup_budget(key)?;
+            }
             if let Some(property) = self.own_property(&value, key) {
                 return Ok(Some(property));
             }
@@ -4663,8 +4597,8 @@ impl Runtime {
         desc: PropertyDescriptor,
     ) -> Result<bool> {
         self.work(1 + key.byte_len() / 2 / 8)?;
-        let tracked_global = if receiver == &Value::Window {
-            key.as_string().and_then(TrackedGlobal::from_key)
+        let window_key = if receiver == &Value::Window {
+            key.as_string()
         } else {
             None
         };
@@ -4673,7 +4607,7 @@ impl Runtime {
         } else {
             self.property_object(receiver)
         };
-        if object_id.is_none() && tracked_global.is_none() {
+        if object_id.is_none() && window_key.is_none() {
             return Err(ScriptError::unsupported(
                 "host property definition is not implemented",
             ));
@@ -4686,6 +4620,9 @@ impl Runtime {
             return Err(ScriptError::unsupported(
                 "array indexed/length descriptor mutation is not implemented",
             ));
+        }
+        if let Some(key) = window_key {
+            self.window_lookup_budget(key)?;
         }
         let current = self.own_property_key(receiver, key);
         if let Some(current) = &current {
@@ -4772,8 +4709,8 @@ impl Runtime {
                 }
             }
         }
-        if let Some(kind) = tracked_global {
-            self.store_global_property(kind, property)?;
+        if let Some(key) = window_key {
+            self.store_window_property(key, property)?;
             return Ok(true);
         }
         let id = object_id.unwrap();
@@ -4795,8 +4732,7 @@ impl Runtime {
         }
         Ok(true)
     }
-    fn store_global_property(&mut self, kind: TrackedGlobal, property: Property) -> Result<()> {
-        let name = kind.name();
+    fn store_global_property(&mut self, name: &str, property: Property) -> Result<()> {
         let new = !self.environments[0].bindings.contains_key(name);
         let accessor_bytes = if matches!(property.value, PropertyValue::Accessor { .. }) {
             16 + std::mem::size_of::<BindingAccessor>()
@@ -4865,8 +4801,16 @@ impl Runtime {
             ));
         }
         self.work(1 + key.len() / 8)?;
+        if receiver == Value::Window {
+            self.window_lookup_budget(key)?;
+            if key.to_utf8().is_ok_and(|name| event_handler_name(&name)) {
+                return Err(ScriptError::unsupported(
+                    "Window event-handler property deletion is not implemented",
+                ));
+            }
+        }
         let Some(property) = self.own_property(&receiver, key) else {
-            if receiver == Value::Window && TrackedGlobal::from_key(key).is_some() {
+            if receiver == Value::Window {
                 return Ok(true);
             }
             if self.property_object(&receiver).is_none() && js_object(&receiver) {
@@ -4884,6 +4828,8 @@ impl Runtime {
                 self.environments[0].bindings.remove(kind.name());
             } else if let Ok(key) = key.to_utf8() {
                 self.environments[0].bindings.remove(&key);
+            } else {
+                self.global_non_scalar.remove(key);
             }
             return Ok(true);
         }
@@ -5582,34 +5528,12 @@ impl Runtime {
         } else if !js_object(&receiver) && !matches!(receiver, Value::Null | Value::Undefined) {
             return Self::failed_write(strict);
         }
-        if receiver == Value::Window
-            && let Some(kind) = TrackedGlobal::from_key(key)
-        {
-            // Accessors/readonly data were handled above. Do not route a data
-            // write back through the identifier path, which also uses [[Set]].
-            if let Some(binding) = self.environments[0].bindings.get_mut(kind.name()) {
-                binding.value = value;
-                return Ok(());
-            }
-            return if self.define_own(
-                &receiver,
-                key,
-                PropertyDescriptor::data_property(value, true, true, true),
-            )? {
-                Ok(())
-            } else {
-                Self::failed_write(strict)
-            };
+        if receiver == Value::Window {
+            return self.window_write_data(key, value);
         }
         let key = key
             .to_utf8()
             .map_err(|_| ScriptError::type_error("non-scalar host property name is unsupported"))?;
-        if matches!(receiver, Value::Window)
-            && let Some(binding) = self.environments[0].bindings.get(&key)
-            && binding.global_property
-        {
-            return self.write_reference(Reference::Binding(0, key, strict), value, doc);
-        }
         self.set(receiver, &key, value, doc)
     }
     fn failed_write(strict: bool) -> Result<()> {
@@ -5727,11 +5651,6 @@ impl Runtime {
             }
             Value::Number(_) | Value::Bool(_) if key == "toString" => {
                 return Ok(Self::native(key, receiver));
-            }
-            Value::Window => {
-                if let Some((env, _)) = self.lookup(0, key) {
-                    return self.binding_value(env, key, doc);
-                }
             }
             Value::Console if ["log", "warn", "error", "info", "debug"].contains(&key) => {
                 return Ok(Self::native(key, receiver));
@@ -5993,16 +5912,8 @@ impl Runtime {
                 }
             }
             Value::Window => {
-                if let Some((env, _)) = self.lookup(0, key) {
-                    self.write_reference(Reference::Binding(env, key.into(), false), value, doc)?;
-                } else {
-                    self.define(0, key, value, true)?;
-                    self.environments[0]
-                        .bindings
-                        .get_mut(key)
-                        .unwrap()
-                        .deletable = true;
-                }
+                let key = self.global_name_key(key)?;
+                self.set_key_strict(Value::Window, &key, value, false, doc)?;
             }
             Value::Document if key == "title" => {
                 let text = self.dom_string(value, doc)?;
@@ -10851,16 +10762,17 @@ mod tests {
             "'undefined '",
             "'NaN\\uFFFD'",
         ] {
-            assert!(
-                run(&format!("Object.defineProperty(window,{key},{{value:1}})"))
-                    .unwrap_err()
-                    .is_unsupported()
+            assert_eq!(
+                run(&format!(
+                    "Object.defineProperty(window,{key},{{value:1}});window[{key}]"
+                ))
+                .unwrap(),
+                Value::Number(1.0)
             );
         }
-        assert!(
-            run("Object.defineProperty(window,'other',{value:1})")
-                .unwrap_err()
-                .is_unsupported()
+        assert_eq!(
+            run("Object.defineProperty(window,'other',{value:1});other").unwrap(),
+            Value::Number(1.0)
         );
         assert!(matches!(
             run("Object.keys(window)").unwrap(),
@@ -11288,9 +11200,10 @@ mod tests {
             log='';Object.defineProperty(object,functionKey,descriptor);assert.sameValue(log,'fv');
         "#,&mut document).unwrap();
         for key in ["'self\\u0000'", "'self\\uD800'"] {
-            let error =
-                run(&format!("Object.defineProperty(window,{key},{{value:1}})")).unwrap_err();
-            assert!(error.is_unsupported());
+            assert_eq!(
+                run(&format!("Object.defineProperty(window,{key},{{value:1}});window[{key}]===1&&self===window")).unwrap(),
+                Value::Bool(true)
+            );
         }
     }
 
@@ -12562,12 +12475,18 @@ mod tests {
 
     #[test]
     fn window_descriptor_increment_preserves_explicit_host_limitations() {
+        assert_eq!(
+            run("Object.defineProperty(window, 'CSS', {value: 1});CSS").unwrap(),
+            Value::Number(1.0)
+        );
         for source in [
             "Object.getOwnPropertyDescriptor(window, 'onclick')",
             "window.onclick = function(){}; Object.getOwnPropertyDescriptor(window, 'onclick')",
             "Object.getOwnPropertyDescriptor(document, 'title')",
             "Object.getOwnPropertyDescriptor(document.createElement('div'), 'textContent')",
-            "Object.defineProperty(window, 'CSS', {value: 1})",
+            "Object.defineProperty(window, 'onclick', {value: 1})",
+            "delete window.onclick",
+            "window.onclick = function(){}; delete window.onclick",
         ] {
             assert!(run(source).unwrap_err().is_unsupported(), "{source}");
         }

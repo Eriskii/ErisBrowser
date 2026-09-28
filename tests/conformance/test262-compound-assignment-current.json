@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "edc2b04b5e9f810e1757a327f5d2a32c240f41d61e8a6d2a89cb35c3ec14f1d0",
   "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
-  "binary_sha256": "c9e47a8245eaa6e14c60f1ae0874213bdef2b00a6dacb4648c845155fdb136a3",
+  "binary_sha256": "a519399c2e4b00ba30c33ca58c71d06332e06ef45d624a26a938295cf0bd7d43",
   "cases": {
     "test/language/expressions/compound-assignment/11.13.2-1-s.js:sloppy": {
       "status": "unsupported",
@@ -3095,7 +3095,7 @@
       "source_sha256": "510b288c3f7d581e01b25c657a7c8a848aeeb7abeb4c6016eed6fecc6c0d1056"
     },
     "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--1.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "7f32bb313d5bc69579b5b9106f78960d535b8626443250a9f9f7706a95cf0f91",
       "source_sha256": "f192d3a7e5d5ec36d841fe4c8ddd1ef1215277a9efc3c28b9c4995e9470820ab"
     },
@@ -3105,7 +3105,7 @@
       "source_sha256": "27de2d17e00e2a22b4f1f9aae4fc495a510ec3046ed17e6e40ac9100b0a02be5"
     },
     "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--11.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "71268064d5c3de5ea55913ea4055722f9a5b975d3a4689ba3a134b46c56b30e0",
       "source_sha256": "cf84f1cb7f3b316d88ddae9be3045942d8b55a4ac36731ec0a000efc54ac7142"
     },
@@ -3115,7 +3115,7 @@
       "source_sha256": "f902050db7d613b6213e471323665fd9335cf9bd7655ff26ec86d34d06871a08"
     },
     "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--13.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "36c26c0fad59d506852be98824592240ae924d84455234cc34ce61f8d1539d40",
       "source_sha256": "272199d642521fa0947d565676e1f59fda464fb1cdd7439c9c47620a28a4d3be"
     },
@@ -3125,7 +3125,7 @@
       "source_sha256": "1e7747c7d7441c2c6402d1c3f9ddd9517982b193ed3c63ac6452463a1426c48b"
     },
     "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--15.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "726451c41791a64785c60e8d1689ccf6dc10a80ba6c21b507bcd2775a1c479c7",
       "source_sha256": "36cecc9fb5062310238cc54560a28f2c8d9c6772cc075a88924ea6044fcbc5c2"
     },
@@ -3135,7 +3135,7 @@
       "source_sha256": "7c4c234973caecc1961c7d9fbc996821b1b0898aab963706a89f7c9fade21301"
     },
     "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--17.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "3826011723ddfbb8074de6fd549a68d00967d9ebddfb93651d4665efc208d53f",
       "source_sha256": "224c15a0b5876424303a1ed5e49ec3363ea722fe78aae6402f0e6d8a76136450"
     },
@@ -3145,7 +3145,7 @@
       "source_sha256": "afaf512125bbf300eb1ffca128c92fdf3582e19d970ead24acea3c88d8c52834"
     },
     "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--19.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "b36870dd7237dee8ea2e9f1f076be88b0114fe0fc82244204de293bcd7a753e2",
       "source_sha256": "a20b552e2d67b6e20d182835316480677ad537ae4e25d1f37f345fd153ea7860"
     },
@@ -3160,12 +3160,12 @@
       "source_sha256": "b1df1934b1bc0dfac6695449a6178d7ea4ffa6048875531896c1d83aa4ef1952"
     },
     "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--21.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "134cafb2ffb8f1ade2b3a4e71a4daf3174146bebddc4482dc76e7e70116f2cb9",
       "source_sha256": "388066f13dd03902caef6def2121382ebcbd5c87b24128735d4a05bf965fe395"
     },
     "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--3.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "aaff394a905d87981abce7afde531a7711fb488cf3390570a0bcc0d235dce020",
       "source_sha256": "a207d221eb31f41a84194549c70548a73840b850746688163ec552bce094c67f"
     },
@@ -3175,7 +3175,7 @@
       "source_sha256": "53cc910969502a5e2edb1d753d520550971d95130b34d84c5a2df70c51d0059e"
     },
     "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--5.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "0ded7a2d5a4c081e6c8c97a553d37673e271a03e6a41cb4382a3299b58d6b125",
       "source_sha256": "38899185bdab53a660e40893192516c3fb3a3e8c64a49ea03a6cc70c7bc1e4d9"
     },
@@ -3185,7 +3185,7 @@
       "source_sha256": "74a648b04d18cbbdea3690ecef8d25e90e7888463d65360ff3a084c6180cd40e"
     },
     "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--7.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "06269587bf41cb738bc38da4ce8486c35e013621d2c23a10008e42e3f455d3a9",
       "source_sha256": "c7cde287e461928d147c00be325484f0dd781ddc7c755ebcd5160f21eda1c062"
     },
@@ -3195,7 +3195,7 @@
       "source_sha256": "7dbc3ed6a1179f4688f0dbd31ee9174419ba3fc30bcdb923e98043293e6fab89"
     },
     "test/language/expressions/compound-assignment/compound-assignment-operator-calls-putvalue-lref--v--9.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "c125d8ce9287494894506d17e4f1070a5a5d92b95cc42c24900e4ef0741b83de",
       "source_sha256": "66b7c91a6f8c053c87a9c118fa9e0610ba83916a0b52983894473c0b04f100f0"
     },

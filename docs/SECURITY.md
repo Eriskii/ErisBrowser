@@ -161,8 +161,13 @@ vector reservations are fallible. The binding ledger includes each creation seri
 and serial exhaustion rejects a new property before publication. Descriptor and
 membership queries do not invoke author getters or expose global lexical bindings.
 The [reflection checks](../tests/conformance/window-reflection.json) cover refused
-storage/work and counter exhaustion; quotas remain unchanged. General Window
-definitions, full interface reflection and WindowProxy semantics remain incomplete.
+storage/work and counter exhaustion; quotas remain unchanged. The later
+[general binding work](../tests/conformance/window-global-bindings.md) also charges
+private receiver slots, declaration selection maps, UTF-16 property records and
+key conversions. Author `this` properties cannot replace execution receivers.
+Getter/setter callbacks share existing limits and unwind on uncatchable resource
+errors. Event-handler descriptor/deletion behavior, full interface reflection and
+WindowProxy semantics remain incomplete.
 
 ## Remaining work
 

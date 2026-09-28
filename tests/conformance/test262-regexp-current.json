@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "33c8319c02da5367a5ac2596cbb48fc3176839740935966754ea0370f4408fa0",
   "runner_policy_sha256": "0997761beccb3ac2d6d387c373fe92b5fc59157e9a2e1114677d99433f867e4f",
-  "binary_sha256": "f01d1bc534b9401ab22ced44cc9d1e3a87eb012ac77aee96ada2f5ae4cfed0b3",
+  "binary_sha256": "a519399c2e4b00ba30c33ca58c71d06332e06ef45d624a26a938295cf0bd7d43",
   "cases": {
     "test/built-ins/RegExp/prototype/exec/15.10.6.2-9-e-1.js:sloppy": {
       "status": "passed",
@@ -1425,12 +1425,12 @@
       "source_sha256": "74e1243499c853e75a6a18bb10e8d1415197443f6dc58d82c612fdd0cb876cd3"
     },
     "test/built-ins/RegExp/prototype/toString/called-as-function.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "52e663c7c84e1f0e6755292a7767767f6e2215661fb375c581190645d39e1878",
       "source_sha256": "9897ed57c5dcbdfc7c40bd8d6af0cb3809012b7221f5dcb26aeb6788e744bb1f"
     },
     "test/built-ins/RegExp/prototype/toString/called-as-function.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "75f2b606955afa92d365ef01ad8a2beae595ea50f30bb379ccf6f5eee7203bac",
       "source_sha256": "9897ed57c5dcbdfc7c40bd8d6af0cb3809012b7221f5dcb26aeb6788e744bb1f"
     },
