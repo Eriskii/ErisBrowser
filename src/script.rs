@@ -963,6 +963,15 @@ enum Stmt {
     Break(Option<usize>),
     Continue(Option<usize>),
 }
+impl Stmt {
+    fn is_lexical_declaration(&self, block_functions: bool) -> bool {
+        matches!(
+            self,
+            Self::Var(_, DeclarationKind::Let | DeclarationKind::Const)
+        ) || block_functions && matches!(self, Self::Function(..))
+    }
+}
+
 #[derive(Clone, Debug)]
 enum ForBinding {
     Declaration(String, DeclarationKind),
@@ -979,6 +988,143 @@ enum DeclarationKind {
     Var,
     Let,
     Const,
+}
+
+// Borrow statement children in source order without visiting expression or
+// function bodies. One cursor represents one ancestor, independent of width.
+#[derive(Clone, Copy)]
+enum StatementChildren<'a> {
+    Empty,
+    Branches {
+        first: Option<&'a Stmt>,
+        middle: &'a [Stmt],
+        last: Option<&'a Stmt>,
+    },
+    Cases {
+        cases: &'a [(Option<Expr>, Vec<Stmt>)],
+        body: &'a [Stmt],
+    },
+}
+
+impl<'a> StatementChildren<'a> {
+    fn of(statement: &'a Stmt) -> Self {
+        let (first, middle, last) = match statement {
+            Stmt::Block(body) => (None, body.as_slice(), None),
+            Stmt::If(_, yes, no) => (Some(&**yes), &[][..], no.as_deref()),
+            Stmt::Label(_, body) | Stmt::While(_, body) | Stmt::DoWhile(_, body) => {
+                (Some(&**body), &[][..], None)
+            }
+            Stmt::For(init, _, _, body) => (init.as_deref(), &[][..], Some(&**body)),
+            Stmt::ForIn(_, _, body) => (Some(&**body), &[][..], None),
+            Stmt::Try(body, handler, finalizer) => (
+                Some(&**body),
+                handler.as_ref().map_or(&[][..], |handler| &handler.body),
+                finalizer.as_deref(),
+            ),
+            Stmt::Switch(_, cases) if !cases.is_empty() => {
+                return Self::Cases { cases, body: &[] };
+            }
+            _ => return Self::Empty,
+        };
+        if first.is_none() && middle.is_empty() && last.is_none() {
+            Self::Empty
+        } else {
+            Self::Branches {
+                first,
+                middle,
+                last,
+            }
+        }
+    }
+
+    fn next(&mut self, work: &mut impl FnMut() -> Result<()>) -> Result<Option<&'a Stmt>> {
+        work()?;
+        match self {
+            Self::Empty => Ok(None),
+            Self::Branches {
+                first,
+                middle,
+                last,
+            } => {
+                if let Some(first) = first.take() {
+                    return Ok(Some(first));
+                }
+                if let Some((statement, rest)) = middle.split_first() {
+                    *middle = rest;
+                    return Ok(Some(statement));
+                }
+                Ok(last.take())
+            }
+            Self::Cases { cases, body } => loop {
+                if let Some((statement, rest)) = body.split_first() {
+                    *body = rest;
+                    return Ok(Some(statement));
+                }
+                let Some(((_, statements), rest)) = cases.split_first() else {
+                    return Ok(None);
+                };
+                // Empty case lists still consume work before advancing.
+                work()?;
+                *cases = rest;
+                *body = statements;
+            },
+        }
+    }
+}
+
+struct StatementWalk<'a, I> {
+    roots: I,
+    ancestors: [StatementChildren<'a>; MAX_DEPTH],
+    depth: usize,
+    done: bool,
+}
+
+impl<'a, I: Iterator<Item = &'a Stmt>> StatementWalk<'a, I> {
+    fn new(roots: I) -> Self {
+        Self {
+            roots,
+            ancestors: [StatementChildren::Empty; MAX_DEPTH],
+            depth: 0,
+            done: false,
+        }
+    }
+
+    fn next(&mut self, mut work: impl FnMut() -> Result<()>) -> Result<Option<&'a Stmt>> {
+        if self.done {
+            return Ok(None);
+        }
+        let result = self.advance(&mut work);
+        if !matches!(result, Ok(Some(_))) {
+            self.done = true;
+        }
+        result
+    }
+
+    fn advance(&mut self, work: &mut impl FnMut() -> Result<()>) -> Result<Option<&'a Stmt>> {
+        loop {
+            let statement = if self.depth == 0 {
+                work()?;
+                let Some(root) = self.roots.next() else {
+                    return Ok(None);
+                };
+                root
+            } else if let Some(child) = self.ancestors[self.depth - 1].next(work)? {
+                child
+            } else {
+                self.depth -= 1;
+                continue;
+            };
+            let children = StatementChildren::of(statement);
+            if !matches!(children, StatementChildren::Empty) {
+                if self.depth == self.ancestors.len() {
+                    return Err(ScriptError::resource("statement traversal depth exceeded"));
+                }
+                self.ancestors[self.depth] = children;
+                self.depth += 1;
+            }
+            return Ok(Some(statement));
+        }
+    }
 }
 
 #[derive(Clone, Copy)]
@@ -1037,16 +1183,19 @@ impl<'source> Parser<'source> {
             allow_in: true,
             strict,
         };
-        let (body, _) = parser.directive_body(false)?;
-        Self::check_scope(&body, false)?;
+        let (body, _, has_lexical) = parser.directive_body(false)?;
+        if has_lexical {
+            parser.check_scope(body.iter(), false)?;
+        }
         Ok(Program {
             body,
             strict: parser.strict,
             compiled_storage: parser.compile_budget.allocated,
         })
     }
-    fn directive_body(&mut self, block: bool) -> Result<(Vec<Stmt>, bool)> {
+    fn directive_body(&mut self, block: bool) -> Result<(Vec<Stmt>, bool, bool)> {
         let mut own_strict = false;
+        let mut has_lexical = false;
         let mut body = Vec::new();
         let mut prologue = true;
         let start = self.pos;
@@ -1076,9 +1225,10 @@ impl<'source> Parser<'source> {
             } else {
                 prologue = false;
             }
+            has_lexical |= statement.is_lexical_declaration(false);
             body.push(statement);
         }
-        Ok((body, own_strict))
+        Ok((body, own_strict, has_lexical))
     }
     fn done(&self) -> bool {
         matches!(self.tokens[self.pos].kind, TokenKind::End)
@@ -1473,6 +1623,7 @@ impl<'source> Parser<'source> {
         self.expect("{")?;
         let mut cases = Vec::new();
         let mut has_default = false;
+        let mut has_lexical = false;
         self.switch_depth += 1;
         while !self.eat("}") {
             let condition = if self.eat("case") {
@@ -1492,16 +1643,21 @@ impl<'source> Parser<'source> {
                 if self.done() {
                     return Err(self.error("unterminated switch"));
                 }
-                body.push(self.statement()?);
+                let statement = self.statement()?;
+                has_lexical |= statement.is_lexical_declaration(true);
+                body.push(statement);
             }
             cases.push((condition, body));
         }
         self.switch_depth -= 1;
-        let combined = cases
-            .iter()
-            .flat_map(|(_, body)| body.iter().cloned())
-            .collect::<Vec<_>>();
-        Self::check_scope(&combined, true)?;
+        if has_lexical {
+            // The two flattened root passes can skip empty case lists without
+            // yielding a statement. Charge those case visits before scanning.
+            self.compile_budget
+                .work(cases.len().saturating_mul(2))
+                .map_err(regexp_error)?;
+            self.check_scope(cases.iter().flat_map(|(_, body)| body.iter()), true)?;
+        }
         Ok(Stmt::Switch(value, cases))
     }
     fn parse_if_statement(&mut self) -> Result<Stmt> {
@@ -1578,7 +1734,7 @@ impl<'source> Parser<'source> {
                 && *kind != DeclarationKind::Var
             {
                 let mut vars = BTreeSet::new();
-                Self::var_names(&body, &mut vars);
+                self.var_names(std::iter::once(&body), &mut vars)?;
                 if vars.contains(name.as_str()) {
                     return Err(self.error("for-in lexical binding conflicts with var"));
                 }
@@ -1606,14 +1762,14 @@ impl<'source> Parser<'source> {
             && *kind != DeclarationKind::Var
         {
             let mut vars = BTreeSet::new();
-            Self::var_names(&body, &mut vars);
+            self.var_names(std::iter::once(&body), &mut vars)?;
             if bindings
                 .iter()
                 .any(|(name, _)| vars.contains(name.as_str()))
             {
                 return Err(self.error("for lexical binding conflicts with var"));
             }
-            Self::check_scope(std::slice::from_ref(&**init), false)?;
+            self.check_scope(std::iter::once(&**init), false)?;
         }
         Ok(Stmt::For(init, test, update, Box::new(body)))
     }
@@ -1704,18 +1860,28 @@ impl<'source> Parser<'source> {
     }
     fn block(&mut self) -> Result<Vec<Stmt>> {
         let mut body = Vec::new();
+        let mut has_lexical = false;
         while !self.eat("}") {
             if self.done() {
                 return Err(self.error("unterminated block"));
             }
-            body.push(self.statement()?);
+            let statement = self.statement()?;
+            has_lexical |= statement.is_lexical_declaration(true);
+            body.push(statement);
         }
-        Self::check_scope(&body, true)?;
+        if has_lexical {
+            self.check_scope(body.iter(), true)?;
+        }
         Ok(body)
     }
-    fn check_scope(body: &[Stmt], block_functions: bool) -> Result<()> {
+    fn check_scope<'a>(
+        &mut self,
+        body: impl Iterator<Item = &'a Stmt> + Clone,
+        block_functions: bool,
+    ) -> Result<()> {
         let mut lexical = BTreeSet::new();
-        for statement in body {
+        for statement in body.clone() {
+            self.compile_budget.work(1).map_err(regexp_error)?;
             match statement {
                 Stmt::Var(bindings, kind) if *kind != DeclarationKind::Var => {
                     for (name, _) in bindings {
@@ -1736,12 +1902,16 @@ impl<'source> Parser<'source> {
                 _ => {}
             }
         }
-        let mut vars = BTreeSet::new();
-        for statement in body {
-            Self::var_names(statement, &mut vars);
+        // With no direct lexical declarations there is no possible name
+        // intersection. Avoid rescanning an entire subtree just to discard it.
+        if lexical.is_empty() {
+            return Ok(());
         }
+        let mut vars = BTreeSet::new();
+        self.var_names(body.clone(), &mut vars)?;
         if !block_functions {
             for statement in body {
+                self.compile_budget.work(1).map_err(regexp_error)?;
                 if let Stmt::Function(name, _) = statement {
                     vars.insert(name.as_str());
                 }
@@ -1755,57 +1925,26 @@ impl<'source> Parser<'source> {
         }
         Ok(())
     }
-    fn var_names<'a>(statement: &'a Stmt, names: &mut BTreeSet<&'a str>) {
-        match statement {
-            Stmt::Var(bindings, DeclarationKind::Var) => {
-                names.extend(bindings.iter().map(|(name, _)| name.as_str()))
-            }
-            Stmt::Block(body) => {
-                for statement in body {
-                    Self::var_names(statement, names);
+    fn var_names<'a>(
+        &mut self,
+        body: impl Iterator<Item = &'a Stmt>,
+        names: &mut BTreeSet<&'a str>,
+    ) -> Result<()> {
+        let mut walk = StatementWalk::new(body);
+        while let Some(statement) =
+            walk.next(|| self.compile_budget.work(1).map_err(regexp_error))?
+        {
+            match statement {
+                Stmt::Var(bindings, DeclarationKind::Var) => {
+                    names.extend(bindings.iter().map(|(name, _)| name.as_str()));
                 }
-            }
-            Stmt::If(_, yes, no) => {
-                Self::var_names(yes, names);
-                if let Some(no) = no {
-                    Self::var_names(no, names);
-                }
-            }
-            Stmt::Label(_, body) | Stmt::While(_, body) | Stmt::DoWhile(_, body) => {
-                Self::var_names(body, names)
-            }
-            Stmt::For(init, _, _, body) => {
-                if let Some(init) = init {
-                    Self::var_names(init, names);
-                }
-                Self::var_names(body, names);
-            }
-            Stmt::ForIn(binding, _, body) => {
-                if let ForBinding::Declaration(name, DeclarationKind::Var) = binding {
+                Stmt::ForIn(ForBinding::Declaration(name, DeclarationKind::Var), _, _) => {
                     names.insert(name);
                 }
-                Self::var_names(body, names);
+                _ => {}
             }
-            Stmt::Switch(_, cases) => {
-                for (_, body) in cases {
-                    for statement in body {
-                        Self::var_names(statement, names);
-                    }
-                }
-            }
-            Stmt::Try(body, handler, finalizer) => {
-                Self::var_names(body, names);
-                if let Some(handler) = handler {
-                    for statement in &handler.body {
-                        Self::var_names(statement, names);
-                    }
-                }
-                if let Some(finalizer) = finalizer {
-                    Self::var_names(finalizer, names);
-                }
-            }
-            _ => {}
         }
+        Ok(())
     }
     fn object_key(&mut self) -> Result<PropertyName> {
         if self.eat("[") {
@@ -1922,8 +2061,10 @@ impl<'source> Parser<'source> {
             }
         }
         self.expect("{")?;
-        let (body, own_strict) = self.directive_body(true)?;
-        Self::check_scope(&body, false)?;
+        let (body, own_strict, has_lexical) = self.directive_body(true)?;
+        if has_lexical {
+            self.check_scope(body.iter(), false)?;
+        }
         self.function_depth -= 1;
         let strict = self.strict;
         let non_simple = params.iter().any(|parameter| !parameter.is_simple());
@@ -1967,16 +2108,18 @@ impl<'source> Parser<'source> {
         self.switch_depth = 0;
         self.allow_in = true;
         self.function_depth += 1;
-        let (body, own_strict) = if self.eat("{") {
+        let (body, own_strict, has_lexical) = if self.eat("{") {
             self.directive_body(true)?
         } else {
-            (vec![Stmt::Return(Some(self.expression()?))], false)
+            (vec![Stmt::Return(Some(self.expression()?))], false, false)
         };
         let strict = self.strict;
         if own_strict && params.iter().any(|parameter| !parameter.is_simple()) {
             return Err(self.error("use strict directive with non-simple parameters"));
         }
-        Self::check_scope(&body, false)?;
+        if has_lexical {
+            self.check_scope(body.iter(), false)?;
+        }
         self.check_parameter_lexicals(params.iter().map(|p| p.name.as_str()), &body, true)?;
         for param in &params {
             self.validate_identifier(&param.name, true)?;
@@ -5166,81 +5309,30 @@ impl Runtime {
     }
     fn hoist_vars_mode(&mut self, body: &[Stmt], env: usize, insert: bool) -> Result<()> {
         let owner = self.var_scope(env);
-        for statement in body {
-            self.hoist_statement(statement, owner, insert)?;
+        let mut walk = StatementWalk::new(body.iter());
+        while let Some(statement) = walk.next(|| self.tick())? {
+            match statement {
+                Stmt::Var(bindings, DeclarationKind::Var) => {
+                    for (name, _) in bindings {
+                        self.hoist_name(name, owner, insert)?;
+                    }
+                }
+                Stmt::ForIn(ForBinding::Declaration(name, DeclarationKind::Var), _, _) => {
+                    self.hoist_name(name, owner, insert)?;
+                }
+                _ => {}
+            }
         }
         Ok(())
     }
-    fn hoist_statement(&mut self, statement: &Stmt, owner: usize, insert: bool) -> Result<()> {
-        self.enter_stack(1)?;
-        let result = self.hoist_statement_inner(statement, owner, insert);
-        self.stack_units -= 1;
-        result
-    }
-    fn hoist_statement_inner(
-        &mut self,
-        statement: &Stmt,
-        owner: usize,
-        insert: bool,
-    ) -> Result<()> {
-        self.tick()?;
-        match statement {
-            Stmt::Var(bindings, DeclarationKind::Var) => {
-                for (name, _) in bindings {
-                    if owner == 0 && self.environments[1].bindings.contains_key(name) {
-                        return Err(ScriptError::syntax(format!(
-                            "global lexical binding conflicts with var '{name}'"
-                        )));
-                    }
-                    if insert && !self.environments[owner].bindings.contains_key(name) {
-                        self.define(owner, name, Value::Undefined, true)?;
-                    }
-                }
-            }
-            Stmt::Block(body) => self.hoist_vars_mode(body, owner, insert)?,
-            Stmt::If(_, yes, no) => {
-                self.hoist_statement(yes, owner, insert)?;
-                if let Some(no) = no {
-                    self.hoist_statement(no, owner, insert)?;
-                }
-            }
-            Stmt::Label(_, body) | Stmt::While(_, body) | Stmt::DoWhile(_, body) => {
-                self.hoist_statement(body, owner, insert)?
-            }
-            Stmt::For(init, _, _, body) => {
-                if let Some(init) = init {
-                    self.hoist_statement(init, owner, insert)?;
-                }
-                self.hoist_statement(body, owner, insert)?;
-            }
-            Stmt::ForIn(binding, _, body) => {
-                if let ForBinding::Declaration(name, DeclarationKind::Var) = binding {
-                    if owner == 0 && self.environments[1].bindings.contains_key(name) {
-                        return Err(ScriptError::syntax(format!(
-                            "global lexical binding conflicts with var '{name}'"
-                        )));
-                    }
-                    if insert && !self.environments[owner].bindings.contains_key(name) {
-                        self.define(owner, name, Value::Undefined, true)?;
-                    }
-                }
-                self.hoist_statement(body, owner, insert)?;
-            }
-            Stmt::Switch(_, cases) => {
-                for (_, body) in cases {
-                    self.hoist_vars_mode(body, owner, insert)?;
-                }
-            }
-            Stmt::Try(body, handler, finalizer) => {
-                self.hoist_statement(body, owner, insert)?;
-                if let Some(handler) = handler {
-                    self.hoist_vars_mode(&handler.body, owner, insert)?;
-                }
-                if let Some(finalizer) = finalizer {
-                    self.hoist_statement(finalizer, owner, insert)?;
-                }
-            }
-            _ => {}
+    fn hoist_name(&mut self, name: &str, owner: usize, insert: bool) -> Result<()> {
+        if owner == 0 && self.environments[1].bindings.contains_key(name) {
+            return Err(ScriptError::syntax(format!(
+                "global lexical binding conflicts with var '{name}'"
+            )));
+        }
+        if insert && !self.environments[owner].bindings.contains_key(name) {
+            self.define(owner, name, Value::Undefined, true)?;
         }
         Ok(())
     }
@@ -17865,6 +17957,202 @@ mod tests {
             };
             result.unwrap_or_else(|error| panic!("strict={strict}: {error}"));
         }
+    }
+
+    #[test]
+    fn scope_walk_preserves_declaration_order_and_function_boundaries() {
+        let program = Parser::program(
+            r#"
+            var first;
+            if(false){var yes;}else{var no;}
+            mark:while(false){var loopName;}
+            do{var doName;}while(false);
+            for(var init;false;){var forName;}
+            for(var key in {}){var inName;}
+            switch(0){case 0:var caseName;break;default:var defaultName;}
+            try{var tried;}catch(error){var caught;}finally{var finalized;}
+            function hidden(){var secret;}
+            var expression=function(){var secretToo;};
+            "#,
+        )
+        .unwrap();
+        let mut walk = StatementWalk::new(program.body.iter());
+        let mut names = Vec::new();
+        while let Some(statement) = walk.next(|| Ok(())).unwrap() {
+            match statement {
+                Stmt::Var(bindings, DeclarationKind::Var) => {
+                    names.extend(bindings.iter().map(|(name, _)| name.as_str()))
+                }
+                Stmt::ForIn(ForBinding::Declaration(name, DeclarationKind::Var), _, _) => {
+                    names.push(name)
+                }
+                _ => {}
+            }
+        }
+        assert_eq!(
+            names,
+            [
+                "first",
+                "yes",
+                "no",
+                "loopName",
+                "doName",
+                "init",
+                "forName",
+                "key",
+                "inName",
+                "caseName",
+                "defaultName",
+                "tried",
+                "caught",
+                "finalized",
+                "expression",
+            ]
+        );
+        let mut runtime = Runtime::new();
+        runtime.hoist_vars(&program.body, 1).unwrap();
+        for name in names {
+            assert_eq!(runtime.lookup(1, name).unwrap().1, Value::Undefined);
+        }
+        for name in ["secret", "secretToo", "error", "hidden"] {
+            assert!(runtime.lookup(1, name).is_none(), "{name}");
+        }
+    }
+
+    #[test]
+    fn scope_walk_rejects_depth_and_work_before_advancing_and_stays_terminal() {
+        let mut nested = Stmt::Empty;
+        for _ in 0..MAX_DEPTH {
+            nested = Stmt::Block(vec![nested]);
+        }
+        let mut walk = StatementWalk::new(std::iter::once(&nested));
+        let mut count = 0;
+        while walk.next(|| Ok(())).unwrap().is_some() {
+            count += 1;
+        }
+        assert_eq!(count, MAX_DEPTH + 1);
+        let excessive = Stmt::Block(vec![nested]);
+        let mut walk = StatementWalk::new(std::iter::once(&excessive));
+        let error = loop {
+            match walk.next(|| Ok(())) {
+                Ok(Some(_)) => {}
+                Ok(None) => panic!("missing traversal depth stop"),
+                Err(error) => break error,
+            }
+        };
+        assert!(error.is_resource_limit());
+        assert!(
+            walk.next(|| panic!("terminal traversal did work"))
+                .unwrap()
+                .is_none()
+        );
+
+        let cases = Stmt::Switch(
+            Expr::Literal(Value::Number(0.0)),
+            (0..1024).map(|_| (None, Vec::new())).collect(),
+        );
+        let mut walk = StatementWalk::new(std::iter::once(&cases));
+        assert!(walk.next(|| Ok(())).unwrap().is_some());
+        let mut work = 0;
+        assert!(
+            walk.next(|| {
+                work += 1;
+                Ok(())
+            })
+            .unwrap()
+            .is_none()
+        );
+        assert!(work >= 1024, "empty case lists must consume work");
+        let mut walk = StatementWalk::new(std::iter::once(&cases));
+        assert!(
+            walk.next(|| Err(ScriptError::resource("test budget")))
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(walk.depth, 0, "failed precharge must not push children");
+        assert!(
+            walk.next(|| panic!("terminal traversal did work"))
+                .unwrap()
+                .is_none()
+        );
+    }
+
+    #[test]
+    fn scope_walk_width_uses_one_cursor_and_hoisting_shares_runtime_work() {
+        let wide = Stmt::Block(vec![Stmt::Empty; 16_000]);
+        let mut walk = StatementWalk::new(std::iter::once(&wide));
+        let mut count = 0;
+        while walk.next(|| Ok(())).unwrap().is_some() {
+            assert!(walk.depth <= 1);
+            count += 1;
+        }
+        assert_eq!(count, 16_001);
+        let body = [Stmt::Var(
+            vec![("unreached".into(), None)],
+            DeclarationKind::Var,
+        )];
+        let mut runtime = Runtime::new();
+        runtime.steps = 0;
+        assert!(
+            runtime
+                .hoist_vars(&body, 1)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert!(runtime.lookup(1, "unreached").is_none());
+        runtime.steps = MAX_STEPS;
+        runtime.stack_units = MAX_STACK_UNITS;
+        runtime.hoist_vars(&body, 1).unwrap();
+        assert_eq!(runtime.stack_units, MAX_STACK_UNITS);
+        assert_eq!(runtime.lookup(1, "unreached").unwrap().1, Value::Undefined);
+    }
+
+    #[test]
+    fn scope_walk_keeps_nested_lexical_conflicts_and_scope_boundaries() {
+        for strict in [false, true] {
+            for source in [
+                "let x;{var x;}",
+                "let x;label:{var x;}",
+                "let x;if(false){var x;}",
+                "let x;while(false){var x;}",
+                "let x;do{var x;}while(false);",
+                "let x;for(var x;false;){}",
+                "let x;for(var x in {}){}",
+                "let x;try{var x;}finally{}",
+                "let x;try{}catch(e){var x;}",
+                "let x;try{}finally{var x;}",
+                "for(let x;;){label:{var x;}}",
+                "for(let x in {}){if(false){var x;}}",
+                "switch(0){case 0:let x;break;case 1:var x;}",
+                "switch(0){case 0:let x;break;default:let x;}",
+                "switch(0){case 0:function x(){}break;default:let x;}",
+                "function f(){let x;function x(){}}",
+                "var f=()=>{let x;{var x;}};",
+            ] {
+                let error = Parser::program_context(source, false, strict).unwrap_err();
+                assert!(error.is_parse_error(), "strict={strict}: {source}: {error}");
+            }
+            for source in [
+                "let x;function f(){var x;}",
+                "let x;var f=function(){var x;};",
+                "let x;var f=()=>{var x;};",
+                "let x;{let x;}",
+                "switch(0){case 0:{let x;}break;default:{let x;}}",
+                "for(let x;;){function f(){var x;}break;}",
+                "for(let x in {}){var f=function(){var x;};}",
+                "function f(){var x;function x(){}}",
+            ] {
+                Parser::program_context(source, false, strict)
+                    .unwrap_or_else(|error| panic!("strict={strict}: {source}: {error}"));
+            }
+        }
+        let error = Parser::program("let z;let a;let z;let a;").unwrap_err();
+        assert_eq!(error.message, "duplicate lexical binding 'z'");
+        let error = Parser::program("let z;let a;{var z;var a;}").unwrap_err();
+        assert_eq!(
+            error.message,
+            "lexical and var declarations conflict for 'a'"
+        );
     }
 
     fn labels_modes(source: &str) {

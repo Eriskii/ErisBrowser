@@ -1,6 +1,67 @@
 # Validation record
 
+## Bounded borrowed declaration traversal
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **911 Rust tests** pass with `--include-ignored`: 730 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 53 pipeline, nine completion and 44 confined-worker tests.
+None remain ignored. All **151 Python checks** and **57 exact pixel references**
+pass.
+
+The [implementation and evidence](../tests/conformance/scope-walk.md) replace
+recursive declaration-name collection and var hoisting with a borrowed preorder
+walk. Ninety-six fixed ancestor cursors bound depth independently of list width;
+work is charged before advancing, including empty case lists, and errors are
+terminal. Switch scope checks no longer recursively clone their bodies. Parsing
+records direct lexical declarations and skips unnecessary conflict analysis when
+none exist. Owner scope, function boundaries, diagnostic order and declaration
+insertion/validation modes are preserved. Existing limits are unchanged.
+
+Four focused groups exercise order/boundaries, 96/97-depth handling, terminal
+work failures, empty cases, 16,000-statement width and lexical conflicts. The
+nine completion groups also pass. Initial unnecessary analysis scans exhausted
+the compile allowance on the preserved 8,327-declaration Unicode 10 identifier
+case; eliminating actual redundant scans/set construction restores both modes.
+No quota increase or source change was used. Final validation includes the later
+empty root-case precharge; preliminary results remain separate local artifacts.
+
+All **20 Test262 profiles / 6,879 modes / 1,680 controls** preserve every case and
+preflight fingerprint, policy and observation. Every control verifies; fifteen
+healthy gates pass. Resource-stopped profiles remain nonpassing observations,
+with no baseline re-recording. HTML stays at 3,868 matches, two mismatches and
+six unsupported modes.
+
+The **15,000-case** deterministic mutation smoke run reports zero caught panics
+or invariant failures: 5,000 accepted HTML, 623 accepted/4,377 rejected scripts,
+and 3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and
+display-list size 1,173 commands; 17 cases stop within paint limits.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+| --- | --- |
+| `eris-browser` | `d1ffd7ec0925c7e65d9bd5564c1c6f56a08ad814973798d3d9267b6b4b7d9b27` |
+| `eris-js` | `93e5893a39bbdb36398561bb518be6b3649c0a8d64981fcef342528938c117e2` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `ff770b0b0eaf6ea2ae72deabea8e1cb24ca01a5339e316ebb6b05fd759d39ba2` |
+
+Source-input SHA-256:
+`d12aeb709649fe291b6a24ef70fdd555b2c58ffca5ed7cda83864efe929b7fe4`.
+Local records are `artifacts/*scope-walk*`; the
+[public comparison](../tests/conformance/scope-walk.json) retains report/provenance
+hashes. Borrowed name-set comparison/storage accounting needs further auditing;
+owned syntax and parser/evaluator execution still have recursive paths. Agent
+sessions remain unavailable, so this is local validation without independent-agent
+review. No native-window, Vulkan or Chromium performance result is assigned.
+Full compatibility, production security and the requested performance threshold
+remain unverified.
+
 ## Statement completion values and runtime stack correction
+
+Published checkpoint `a56597e` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36453447238),
+including all existing conformance gates, Rust 1.88 and the Vulkan probe.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **907 Rust tests** pass with `--include-ignored`: 726 library,

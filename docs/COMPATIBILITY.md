@@ -68,7 +68,7 @@ indexed/length descriptor definitions are still incomplete. See the
 [implementation scope](../tests/conformance/array-reduce.md) and
 [complete paired upstream inventory](../tests/conformance/test262-array-reduce.md).
 
-Strictness follows exact unescaped directive prologues and lexical function inheritance. Supported code checks restricted names, duplicate simple parameters, legacy literals and identifier deletion; strict calls preserve the supplied `this`, and failed writes/deletes throw. Strict arguments and arguments of functions with defaults or rest parameters are unmapped and have a throwing `callee` accessor; supported sloppy functions with simple parameter lists retain aliases until deletion or descriptor changes detach them. Lexical bindings include initialization checks, declaration conflicts and per-iteration loop environments. This does not implement the complete ECMAScript grammar or all Annex B behaviors. Unsupported dynamic eval, tagged templates, destructured parameters and labeled control flow are reported explicitly.
+Strictness follows exact unescaped directive prologues and lexical function inheritance. Supported code checks restricted names, duplicate simple parameters, legacy literals and identifier deletion; strict calls preserve the supplied `this`, and failed writes/deletes throw. Strict arguments and arguments of functions with defaults or rest parameters are unmapped and have a throwing `callee` accessor; supported sloppy functions with simple parameter lists retain aliases until deletion or descriptor changes detach them. Lexical bindings include initialization checks, declaration conflicts and per-iteration loop environments. This does not implement the complete ECMAScript grammar or all Annex B behaviors. Unsupported dynamic eval, tagged templates and destructured parameters are reported explicitly.
 
 Identifier default parameters run left to right for omitted or undefined values,
 with all parameter bindings created before initialization. Initializer closures
@@ -110,6 +110,11 @@ anonymous function/arrow expressions; member targets retain unnamed functions.
 Strict/readonly/const rules apply only to actual writes. The complete profile
 retains 72 passes, twelve class/Symbol failures and 48 unsupported modes, with
 104 verified controls.
+
+[Declaration traversal](../tests/conformance/scope-walk.md) uses bounded borrowed
+ancestor cursors for name collection and hoisting. Switch scopes no longer clone
+statement trees. This preserves scope behavior without making the parser or
+evaluator fully iterative; name-set resource accounting remains further work.
 
 [Labeled break and continue](../tests/conformance/labels.md) resolve ordinary
 statement/loop targets, propagate through nested loops and switches, and preserve

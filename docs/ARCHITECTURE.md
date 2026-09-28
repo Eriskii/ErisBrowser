@@ -102,6 +102,13 @@ cycles, repeated scans, URL copies/cache storage and expanded source all have
 shared limits. The custom RegExp parser and explicit backtracking matcher use
 runtime work/allocation limits and introduce no external execution engine.
 
+JavaScript declaration analysis and hoisting share a fixed-depth traversal of
+borrowed statements. It visits control-flow bodies in source order and stops at
+function boundaries. Switch scopes use borrowed case statements, and parsing
+records whether a scope contains lexical declarations to skip unnecessary name
+analysis. This removes recursive declaration walks and temporary syntax clones;
+the parser, evaluator and owned syntax trees still have recursive paths.
+
 Media-query conditions use bounded recursive evaluation with unknown-value
 logic and share work across stylesheet sources. Flex layout forms row or column
 lines, resolves flexible sizes per line, and distributes their cross sizes before

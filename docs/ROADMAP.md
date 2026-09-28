@@ -67,8 +67,10 @@ an execution barrier.
 
 The planned progression is:
 
-1. Introduce flat executable-code ownership and charged iterative scope/hoist
-   walks. Account for retained code and temporary lowering storage, and preserve
+1. Introduce flat executable-code ownership. Declaration-name collection and
+   hoisting now use a bounded borrowed traversal; switch scope checking no longer
+   clones syntax trees. Finish auditing name-set work/storage and account for
+   retained code and temporary lowering storage. Preserve
    existing parser limits while recursive syntax ownership remains.
 2. Move ordinary expression, statement and function execution to an explicit
    continuation stack. Preserve evaluation order, lexical environments,
@@ -81,5 +83,6 @@ The planned progression is:
 Each stage needs independent allocation, callback, cleanup and small-native-stack
 checks. Keep the original 32-function test and all previous passing cases in the
 inventory throughout; only the combined parser and runtime work can establish
-that test's improved result. This architecture is planned and has not been
-implemented.
+that test's improved result. The borrowed declaration traversal is an initial
+step; flat code ownership, explicit execution continuations and an iterative
+parser remain unimplemented.
