@@ -119,8 +119,15 @@ function ID. An iterative lowering pass consumes the remaining compile ledger,
 then releases the temporary parser tree. Callbacks carry their own unit explicitly,
 including calls across separately compiled scripts. Retaining one closure retains
 its complete unit; the compile charge includes the unit's known allocations.
-Inline handlers use the same representation. Execution remains recursive and
-keeps the existing native-stack, logical-call and work guards.
+Inline handlers use the same representation. Expressions, references and all
+supported statements share an explicit continuation driver. Typed list locators
+select bodies without copying them. Ordinary errors unwind to try continuations;
+resource/unsupported termination bypasses catch/finally. Reentrant drives preserve
+their outer frame boundary and restore counters without allocating during cleanup.
+Frame growth consumes cumulative work/storage allowances before checked reservation.
+Function activation/default initialization and native callback bridges still use
+guarded recursion. Existing expression/statement, logical-call and work guards
+remain until the remaining activation paths are converted and verified.
 
 Token storage uses 128-record pages, so appending tokens moves page descriptors
 rather than the complete prefix. Page growth and lexical rescans share cumulative

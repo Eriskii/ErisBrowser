@@ -73,13 +73,14 @@ The planned progression is:
    and comparisons. Temporary parser trees still have recursive ownership and
    incomplete allocation accounting. Preserve their existing limits during the
    remaining parser work.
-2. Expression and reference evaluation now uses [explicit continuations](../tests/conformance/expression-frames.md),
-   including frame-base preservation across reentrant callbacks and precharged
-   frame/payload growth. Existing depth counters remain. Move statements,
-   function bodies and default initialization into the same driver next. Preserve
+2. Expression, reference and statement execution now uses [shared continuations](../tests/conformance/statement-frames.md),
+   including loops, try/finally, frame-base preservation across callbacks and
+   precharged frame/payload growth. Existing depth counters remain. Move function
+   activation and default initialization into this driver next; bodies already
+   execute through it but still enter from recursive native invocation. Preserve
    evaluation order, lexical environments, return/throw/finally behavior and quota
-   cleanup. Keep logical call limits and guards on native helpers that can call
-   author code.
+   cleanup. Keep logical call limits and guards on native helpers that call author
+   code.
 3. Convert the recursive parser paths to bounded continuations with flat syntax
    ownership. Preserve strict-context checks, RegExp/template lexical goals,
    early errors and safe destruction of partially parsed input.
@@ -88,7 +89,7 @@ Each stage needs independent allocation, callback, cleanup and small-native-stac
 checks. Keep the original 32-function test and all previous passing cases in the
 inventory throughout; only the combined parser and runtime work can establish
 that test's improved result. Flat executable ownership, bounded declaration
-traversal and expression/reference continuations are implemented. Statement/call
-continuations and an iterative parser remain unimplemented. The recorded
-[480 depth observations](../tests/conformance/expression-frames-depth.json) retain
-the existing parser and call frontiers through this first continuation stage.
+traversal and expression/reference/statement continuations are implemented.
+Activation/default continuations and an iterative parser remain unimplemented.
+The recorded [480 depth observations](../tests/conformance/statement-frames-depth.json)
+retain the existing parser and call frontiers through these continuation stages.

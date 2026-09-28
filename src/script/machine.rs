@@ -1,18 +1,35 @@
-//! Resumable expression and reference evaluation. Ordinary calls and statements
-//! still use guarded native bridges until their continuation stages are added.
+//! Resumable expression, reference and statement evaluation. Ordinary calls and
+//! default initialization still use guarded native bridges.
 use super::{
-    Document, JsString, MAX_DEPTH, MAX_STACK_UNITS, PropertyDescriptor, Reference, Result, Runtime,
-    ScriptError, TrackedGlobal, Value, code, js_object, to_i32,
+    Document, Flow, JsString, MAX_DEPTH, MAX_STACK_UNITS, PropertyDescriptor, Reference, Result,
+    Runtime, ScriptError, TrackedGlobal, Value, code, js_object, to_i32,
 };
 use std::collections::BTreeSet;
 use std::rc::Rc;
 
-// Each guarded expression can suspend at most one unticked reference job.
-// Remaining native entry paths still consume their existing stack units.
-const MAX_FRAMES: usize = 2 * MAX_STACK_UNITS;
+mod statements;
+pub(super) use statements::ListOwner;
+
+// Each guarded expression/statement can suspend one reference/list job. The
+// program's root list needs one extra slot. Reentrant function lists have the
+// existing four-unit native-call guard. No execution-depth ceiling changes.
+const MAX_FRAMES: usize = 2 * MAX_STACK_UNITS + 1;
 const INITIAL_FRAMES: usize = 8;
 
-pub(super) struct Frame {
+pub(super) enum Frame {
+    Expression(ExprFrame),
+    Statement(statements::Frame),
+}
+impl Frame {
+    fn weights(&self) -> (usize, usize) {
+        match self {
+            Self::Expression(frame) if !frame.reference => (1, 1),
+            Self::Statement(frame) if frame.is_statement() => (0, 1),
+            _ => (0, 0),
+        }
+    }
+}
+pub(super) struct ExprFrame {
     unit: Rc<code::Unit>,
     expression: code::ExprId,
     env: usize,
@@ -73,6 +90,7 @@ enum Phase {
     },
 }
 enum Output {
+    Flow(Flow),
     Value(Value),
     Reference(Reference),
 }
@@ -94,11 +112,11 @@ pub(super) fn initialize(runtime: &mut Runtime) -> Result<()> {
     runtime
         .frames
         .try_reserve_exact(INITIAL_FRAMES)
-        .map_err(|_| ScriptError::resource("expression frame allocation failed"))
+        .map_err(|_| ScriptError::resource("execution frame allocation failed"))
 }
 fn push(runtime: &mut Runtime, frame: Frame) -> Result<()> {
     if runtime.frames.len() == MAX_FRAMES {
-        return Err(ScriptError::resource("expression frame limit exceeded"));
+        return Err(ScriptError::resource("execution frame limit exceeded"));
     }
     if runtime.frames.len() == runtime.frames.capacity() {
         let capacity = runtime
@@ -111,43 +129,47 @@ fn push(runtime: &mut Runtime, frame: Frame) -> Result<()> {
         runtime
             .frames
             .try_reserve_exact(capacity - runtime.frames.len())
-            .map_err(|_| ScriptError::resource("expression frame allocation failed"))?;
+            .map_err(|_| ScriptError::resource("execution frame allocation failed"))?;
     }
     runtime.frames.push(frame);
     Ok(())
 }
-fn enter(runtime: &mut Runtime, frame: Frame) -> Result<()> {
-    if !frame.reference {
-        if runtime.eval_depth >= MAX_DEPTH {
-            return Err(ScriptError::resource(
-                "expression evaluation nesting limit exceeded",
-            ));
-        }
-        runtime.enter_stack(1)?;
-        runtime.eval_depth += 1;
+fn enter_frame(runtime: &mut Runtime, frame: Frame) -> Result<()> {
+    let (expressions, stack) = frame.weights();
+    if expressions != 0 && runtime.eval_depth >= MAX_DEPTH {
+        return Err(ScriptError::resource(
+            "expression evaluation nesting limit exceeded",
+        ));
+    }
+    if stack != 0 {
+        runtime.enter_stack(stack)?;
+        runtime.eval_depth += expressions;
     }
     push(runtime, frame)
 }
+fn enter(runtime: &mut Runtime, frame: ExprFrame) -> Result<()> {
+    enter_frame(runtime, Frame::Expression(frame))
+}
 fn child(
     runtime: &mut Runtime,
-    parent: Frame,
+    parent: ExprFrame,
     expression: code::ExprId,
     reference: bool,
 ) -> Result<Option<Output>> {
-    let next = Frame {
+    let next = ExprFrame {
         unit: parent.unit.clone(),
         expression,
         env: parent.env,
         reference,
         phase: Phase::Start,
     };
-    push(runtime, parent)?;
+    push(runtime, Frame::Expression(parent))?;
     enter(runtime, next)?;
     Ok(None)
 }
 fn eval_child(
     runtime: &mut Runtime,
-    mut frame: Frame,
+    mut frame: ExprFrame,
     phase: Phase,
     expression: code::ExprId,
 ) -> Result<Option<Output>> {
@@ -156,7 +178,7 @@ fn eval_child(
 }
 fn reference_child(
     runtime: &mut Runtime,
-    mut frame: Frame,
+    mut frame: ExprFrame,
     phase: Phase,
     expression: code::ExprId,
 ) -> Result<Option<Output>> {
@@ -172,19 +194,20 @@ pub(super) fn evaluate(
 ) -> Result<Value> {
     match drive(
         runtime,
-        Frame {
+        Frame::Expression(ExprFrame {
             unit: unit.clone(),
             expression,
             env,
             reference: false,
             phase: Phase::Start,
-        },
+        }),
         doc,
     )? {
         Output::Value(value) => Ok(value),
         _ => unreachable!("expression root"),
     }
 }
+#[cfg(test)]
 pub(super) fn evaluate_reference(
     runtime: &mut Runtime,
     unit: &Rc<code::Unit>,
@@ -194,17 +217,33 @@ pub(super) fn evaluate_reference(
 ) -> Result<Reference> {
     match drive(
         runtime,
-        Frame {
+        Frame::Expression(ExprFrame {
             unit: unit.clone(),
             expression,
             env,
             reference: true,
             phase: Phase::Start,
-        },
+        }),
         doc,
     )? {
         Output::Reference(value) => Ok(value),
         _ => unreachable!("reference root"),
+    }
+}
+pub(super) fn evaluate_statements(
+    runtime: &mut Runtime,
+    unit: &Rc<code::Unit>,
+    owner: ListOwner,
+    env: usize,
+    doc: &mut Document,
+) -> Result<Flow> {
+    match drive(
+        runtime,
+        Frame::Statement(statements::Frame::list(unit, owner, env)),
+        doc,
+    )? {
+        Output::Flow(flow) => Ok(flow),
+        _ => unreachable!("statement-list root"),
     }
 }
 fn drive(runtime: &mut Runtime, root: Frame, doc: &mut Document) -> Result<Output> {
@@ -212,18 +251,30 @@ fn drive(runtime: &mut Runtime, root: Frame, doc: &mut Document) -> Result<Outpu
     let depth = runtime.eval_depth;
     let stack = runtime.stack_units;
     let result = (|| {
-        enter(runtime, root)?;
-        let mut output = None;
+        enter_frame(runtime, root)?;
+        let mut output: Option<Result<Output>> = None;
         while runtime.frames.len() > base {
             let frame = runtime.frames.pop().unwrap();
-            let entered = !frame.reference;
-            output = step(runtime, frame, output.take(), doc)?;
-            if output.is_some() && entered {
-                runtime.eval_depth -= 1;
-                runtime.stack_units -= 1;
-            }
+            let (expressions, stack) = frame.weights();
+            let result = match frame {
+                Frame::Expression(frame) => match output.take().transpose() {
+                    Ok(output) => step(runtime, frame, output, doc),
+                    Err(error) => Err(error),
+                },
+                Frame::Statement(frame) => statements::step(runtime, frame, output.take(), doc),
+            };
+            output = match result {
+                Ok(None) => continue,
+                Ok(Some(output)) => Some(Ok(output)),
+                Err(error) if error.is_resource_limit() || error.is_unsupported() => {
+                    return Err(error);
+                }
+                Err(error) => Some(Err(error)),
+            };
+            runtime.eval_depth -= expressions;
+            runtime.stack_units -= stack;
         }
-        Ok(output.expect("completed expression drive"))
+        output.expect("completed execution drive")
     })();
     // Cleanup is bounded and cannot need another allocation or author callback.
     runtime.frames.truncate(base);
@@ -233,7 +284,7 @@ fn drive(runtime: &mut Runtime, root: Frame, doc: &mut Document) -> Result<Outpu
 }
 fn step(
     runtime: &mut Runtime,
-    mut frame: Frame,
+    mut frame: ExprFrame,
     output: Option<Output>,
     doc: &mut Document,
 ) -> Result<Option<Output>> {
@@ -441,7 +492,7 @@ fn step(
     }
 }
 
-fn start(runtime: &mut Runtime, frame: Frame, doc: &mut Document) -> Result<Option<Output>> {
+fn start(runtime: &mut Runtime, frame: ExprFrame, doc: &mut Document) -> Result<Option<Output>> {
     let unit = frame.unit.clone();
     let id = frame.expression;
     let env = frame.env;
@@ -550,7 +601,7 @@ fn start(runtime: &mut Runtime, frame: Frame, doc: &mut Document) -> Result<Opti
 }
 fn binary_next(
     runtime: &mut Runtime,
-    frame: Frame,
+    frame: ExprFrame,
     mut index: usize,
     left: Value,
 ) -> Result<Option<Output>> {
@@ -630,7 +681,7 @@ fn delete_name(runtime: &mut Runtime, env: usize, name: &str) -> Result<Value> {
 }
 fn assign_reference(
     runtime: &mut Runtime,
-    frame: Frame,
+    frame: ExprFrame,
     mut reference: Reference,
     doc: &mut Document,
 ) -> Result<Option<Output>> {
@@ -677,7 +728,7 @@ fn reserve_values(runtime: &mut Runtime, length: usize, array: bool) -> Result<V
 }
 fn array_next(
     runtime: &mut Runtime,
-    frame: Frame,
+    frame: ExprFrame,
     mut index: usize,
     mut values: Vec<Value>,
     mut holes: BTreeSet<usize>,
@@ -712,7 +763,7 @@ fn array_next(
 }
 fn object_next(
     runtime: &mut Runtime,
-    frame: Frame,
+    frame: ExprFrame,
     index: usize,
     object: Value,
 ) -> Result<Option<Output>> {
@@ -745,7 +796,7 @@ fn object_next(
 }
 fn object_entry(
     runtime: &mut Runtime,
-    frame: Frame,
+    frame: ExprFrame,
     mut index: usize,
     object: Value,
     mut key: JsString,
@@ -821,7 +872,7 @@ fn object_entry(
 }
 fn arguments_start(
     runtime: &mut Runtime,
-    frame: Frame,
+    frame: ExprFrame,
     function: Value,
     receiver: Value,
     doc: &mut Document,
@@ -836,7 +887,7 @@ fn arguments_start(
 }
 fn arguments_next(
     runtime: &mut Runtime,
-    frame: Frame,
+    frame: ExprFrame,
     index: usize,
     function: Value,
     receiver: Value,

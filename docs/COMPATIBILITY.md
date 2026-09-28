@@ -120,9 +120,12 @@ preserving duplicate and scope-conflict behavior.
 
 [Flat executable ownership](../tests/conformance/flat-code.md) stores syntax edges
 as typed IDs within immutable shared units. Escaping closures and cross-script
-callbacks retain their own units. The parser and evaluator still use guarded
-native recursion; this ownership change does not establish deeper source or call
-acceptance. Token pages avoid relocating the accumulated token prefix.
+callbacks retain their own units. Token pages avoid relocating the accumulated
+token prefix. [Shared execution continuations](../tests/conformance/statement-frames.md)
+now cover expressions, references and supported statements, including loops and
+try/finally. Function activation/defaults and the parser still use guarded native
+recursion. Existing depth counters remain, so these stages do not establish
+deeper source or call acceptance.
 
 [Labeled break and continue](../tests/conformance/labels.md) resolve ordinary
 statement/loop targets, propagate through nested loops and switches, and preserve

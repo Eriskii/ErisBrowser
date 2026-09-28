@@ -1,0 +1,701 @@
+{
+  "recorded_date_utc": "2026-09-28",
+  "kind": "shared expression/reference/statement continuation comparison",
+  "before": {
+    "commit": "57e9a0ca54107054ce2a376b5f59931cd195eeb1",
+    "input_sha256": "cbd36365629468ceb6322490c597fc068966802abde992f16488423a1a8dcd23",
+    "binary_sha256": "4c9fbe276d4fd08006b692613513d6e5d3479c969d5ea389439a50e650d80081",
+    "source_files": {
+      "script.rs": "b49445193554d9c30698d5e8cc643d1487d22c30cee1584c7cc7cd1667e78e89",
+      "script/machine.rs": "71b5adcdce3a2569df25c9e82630662d6cf213599c473377da4e7807f148c932",
+      "script/code.rs": "0a64752ebc1411e90428874ad0b7341d02ab169d949adabf819180691f97d141"
+    }
+  },
+  "source_input_sha256": "b745b416797170ae95f7d7986ad447d0b7c400e966151895c1f1d56e5ca3a809",
+  "source_files": {
+    "src/script.rs": "7cc8660be2e3ee40b130c332f218c813ee151173b87fbe236430a5fd73944438",
+    "src/script/names.rs": "6ccbc235c97507315f65c827169270e30c0bb4bb2533ed435fa9b5cddc138332",
+    "src/script/code.rs": "41fe714a77a4745a251e339859278df1b7a9595aee108e0e32d556ca29139a28",
+    "src/script/machine.rs": "f01abc20d2ea691774c1208c265d6de4a169477ae418c49cd103ff9142f11abf",
+    "src/script/machine/statements.rs": "975f1bd84ac15b38493eb22948a6b6292d3f2a456b6a5ec26d2cba10fecdcb76",
+    "src/script/tokens.rs": "b044323426c54e4c8eef93312eae0d0b45ab5b6019a796321c7d73085c373342",
+    "src/js_uri.rs": "4759c1634201f4f6720871e240201c35a08e81addc30417376a45f69fc4830e6",
+    "src/js_identifier.rs": "49187f73fcbae9d685e7848c6a412315c247a7fbfd4f3919bd5c08f8a6a7b552",
+    "src/lib.rs": "d96945bd6e61e3f7e5e2210b4df69e51f61d82a9c1fd945313666709e2de9d92",
+    "src/bin/eris-stress.rs": "c4768e4028c34c9e891e24d39d3ec8573c8411fc72c4f93d000923d86e7e4743",
+    "tests/fixtures/script-completion.tsv": "7a53bb8b0b6e5d2f8eb1ff782ac139fb5dd302df3feae3391b2f20de0edcd90b",
+    "tests/script_completion.rs": "a8188f0b8c9c8c186bc9a8c1fa4f8823228193163e49918826d2d51fe61d23da",
+    "tests/fixtures/scope-names.tsv": "58415bfd670354c04027df2eae0dcdc2d56efaf7db30fd2973ddcf0e5faa60f7",
+    "tests/scope_names.rs": "172fa7d2cd0ea996d1a7e2e0fc01feb6a35461b2d838468ce97b573b375c4c7f",
+    "tests/pipeline.rs": "b50f3bf725f79a31ab28cec4983a4aedf3c007208a8557f49bd2b0ff95657f3f",
+    "tests/worker.rs": "ca479ad64df4a01481beba3980ee0821d6fed255852f25a237982e2e7b7bc79d"
+  },
+  "release_binaries": {
+    "eris-browser": "83f06d277b5c776a082ec42782806ef335b846eaaae6d29d419cb0b74b699639",
+    "eris-js": "9cbd79075a71145f7f6fb7f7c646a87b64ea0d8c462d6c95fee45f338cdbe706",
+    "eris-dom": "b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb",
+    "eris-stress": "a2fd6339ad68ebd6aa649e4738e4193e00445c7503ecb59673721eeaf73280bc"
+  },
+  "contract_sha256": "beec82eade00ebb60785436ec80626d9a5f76349cac5ef44f583f30185069ea7",
+  "upstream_profiles": [
+    {
+      "profile": "string-json",
+      "source_files": 326,
+      "mode_cases": 652,
+      "before_counts": {
+        "passed": 536,
+        "unsupported": 116
+      },
+      "after_counts": {
+        "passed": 536,
+        "unsupported": 116
+      },
+      "preflights": 32,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "f073410553ed7cac9c6ddb0d5d10da1e52616d067a0310578e84cbf000df4191",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-current.json",
+      "prior_public_report_sha256": "5fd495beea57cc15da9a4a1de7f530eb57c8e9ba942ca5a18dc725d8e26f8733",
+      "before_raw_report": "artifacts/string-json-expression-frames-final.json",
+      "before_raw_report_sha256": "57b3f4bbaa6030f63f3c614d90890076e35abde8eb41098b4c9205fcacd2a73a",
+      "after_raw_report": "artifacts/string-json-statement-frames-final.json",
+      "after_raw_report_sha256": "0ecda6ee686393f7d30230ada2972c94f0b8885fa1de64a4be989d518c67ae6e"
+    },
+    {
+      "profile": "regexp",
+      "source_files": 145,
+      "mode_cases": 290,
+      "before_counts": {
+        "passed": 250,
+        "unsupported": 40
+      },
+      "after_counts": {
+        "passed": 250,
+        "unsupported": 40
+      },
+      "preflights": 44,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "33c8319c02da5367a5ac2596cbb48fc3176839740935966754ea0370f4408fa0",
+      "runner_policy_sha256": "0997761beccb3ac2d6d387c373fe92b5fc59157e9a2e1114677d99433f867e4f",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-regexp-current.json",
+      "prior_public_report_sha256": "abc887ad63aa114bb019baf1610962d68fcf787a0844a1ea6c86736d49eee787",
+      "before_raw_report": "artifacts/regexp-expression-frames-final.json",
+      "before_raw_report_sha256": "0637b7ec00d9dba7f5c65d24ee855da05e41a81c5151a9c10e4adb8db533f85b",
+      "after_raw_report": "artifacts/regexp-statement-frames-final.json",
+      "after_raw_report_sha256": "aa831eaffdf2871c59b0887e085c43aedbf2b334b1af0c68d17ed7f8bae8675e"
+    },
+    {
+      "profile": "template-literal",
+      "source_files": 57,
+      "mode_cases": 114,
+      "before_counts": {
+        "unsupported": 32,
+        "passed": 82
+      },
+      "after_counts": {
+        "unsupported": 32,
+        "passed": 82
+      },
+      "preflights": 44,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "58951312763d816ca4cc139a4fcb2bf63f43a81414b91bf673f65c450b217d94",
+      "runner_policy_sha256": "17b229706fb4915c6c9d5daf4daa74129f2ac470bba8d993487356f12384517e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-template-literal-current.json",
+      "prior_public_report_sha256": "78df751741907b64bc65f8d88bd70d300df7d9b650630e5ec07b13c0dd594077",
+      "before_raw_report": "artifacts/template-literal-expression-frames-final.json",
+      "before_raw_report_sha256": "dffd92d2dda597a08884b3f761e46e19cae1c9e52b54d3b08e2c2c1b9dea22c3",
+      "after_raw_report": "artifacts/template-literal-statement-frames-final.json",
+      "after_raw_report_sha256": "6e863b8672399ec38c3a04cfba8e32b4a0d2fe078bcffe990f4544f10f7cfd8d"
+    },
+    {
+      "profile": "rest-parameters",
+      "source_files": 11,
+      "mode_cases": 22,
+      "before_counts": {
+        "unsupported": 6,
+        "passed": 16
+      },
+      "after_counts": {
+        "unsupported": 6,
+        "passed": 16
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "a3e15e061fc8c9cac736e081554f3e42b497d805ebfd7647ea49736cb2d83be5",
+      "runner_policy_sha256": "b579a37e261689714f4b2e41fe933581aa246348bafa391f2dba7c8aec4edacc",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-rest-parameters-current.json",
+      "prior_public_report_sha256": "24ff3862abfa3e83d4f6533f5e2603e975fe155b97d2f4d1475cc8dd8c64db16",
+      "before_raw_report": "artifacts/rest-parameters-expression-frames-final.json",
+      "before_raw_report_sha256": "b6213bf02b9b056a3fe4a9eeeb9184067aef9e6d9a8ab08daa0b7a399b0f45ba",
+      "after_raw_report": "artifacts/rest-parameters-statement-frames-final.json",
+      "after_raw_report_sha256": "adbf7648303362ea76f3a4385bceddcdbae4c76367b0be33a96e990889eb8d55"
+    },
+    {
+      "profile": "is-prototype-of",
+      "source_files": 10,
+      "mode_cases": 20,
+      "before_counts": {
+        "unsupported": 10,
+        "passed": 10
+      },
+      "after_counts": {
+        "unsupported": 10,
+        "passed": 10
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "f019dcc5e150cf14a6b144577a30937ed1314c6b5de3dd331ad574585f16d461",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-is-prototype-of-current.json",
+      "prior_public_report_sha256": "3d9c290af97e33fdaf3383e72ab319240802c6f10a6fce680d15e0bd338c775d",
+      "before_raw_report": "artifacts/is-prototype-of-expression-frames-final.json",
+      "before_raw_report_sha256": "0fa93b921c7a58b68574d210ef19f996110964c9aa1f145d70ac4c3fe847f2c2",
+      "after_raw_report": "artifacts/is-prototype-of-statement-frames-final.json",
+      "after_raw_report_sha256": "ac91ca16721f2ed7211034e758fe61d8588fbd72d7d83b33766b319824ae997c"
+    },
+    {
+      "profile": "global-values",
+      "source_files": 49,
+      "mode_cases": 88,
+      "before_counts": {
+        "passed": 42,
+        "unsupported": 40,
+        "failed": 6
+      },
+      "after_counts": {
+        "passed": 42,
+        "unsupported": 40,
+        "failed": 6
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "c1b627a7249d3ab460d5be88b54f34ead98c375c160bee9e72379aef213894a4",
+      "runner_policy_sha256": "f096c9be039b6e5a005d3997e38d8da419399e8c6e8d3a23d2162d20c1763d03",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-global-values-current.json",
+      "prior_public_report_sha256": "ea3dd8c07ab8a76f22e02b4de9ce01035547ec06c37ef4f08569d922425196ee",
+      "before_raw_report": "artifacts/global-values-expression-frames-final.json",
+      "before_raw_report_sha256": "6016f7725a50f65b89c25d836c86e9f35bc2e484d30f7ba38020a5aa8d9117d2",
+      "after_raw_report": "artifacts/global-values-statement-frames-final.json",
+      "after_raw_report_sha256": "e43111b2bc105385239c1490a88ce00ffa85f91cb0d64be6f5dcdc0deff684a5"
+    },
+    {
+      "profile": "array-reduce",
+      "source_files": 520,
+      "mode_cases": 1034,
+      "before_counts": {
+        "passed": 848,
+        "failed": 16,
+        "unsupported": 170
+      },
+      "after_counts": {
+        "passed": 848,
+        "failed": 16,
+        "unsupported": 170
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "77ee716188d99fdba64adbe151ef4efd915fbaa6345b2b0ec8fe3550efb5ec24",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-array-reduce-current.json",
+      "prior_public_report_sha256": "0eeff1f9bdccb1a035ed2d5e888390352f1f9a2704511a4f979085a26ed79c76",
+      "before_raw_report": "artifacts/array-reduce-expression-frames-final.json",
+      "before_raw_report_sha256": "ccc3d0f5443d772076a13140590dd9dc23e70ee1bebce2357aac89b057b3b38a",
+      "after_raw_report": "artifacts/array-reduce-statement-frames-final.json",
+      "after_raw_report_sha256": "fe8d181904dad7da4796d78094b6e495ef6ef8e728728766fa283190c4cf9da3"
+    },
+    {
+      "profile": "number-statics",
+      "source_files": 170,
+      "mode_cases": 340,
+      "before_counts": {
+        "passed": 248,
+        "unsupported": 92
+      },
+      "after_counts": {
+        "passed": 248,
+        "unsupported": 92
+      },
+      "preflights": 104,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "3c5c2503458843bfc64eaf546ee08b6e693714f561df42330d9001a2ec8216cd",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-number-statics-current.json",
+      "prior_public_report_sha256": "8b4837fb66a9ced2a9e1910830bc5a8aa67d81d52b6766764c2aceddef7b8717",
+      "before_raw_report": "artifacts/number-statics-expression-frames-final.json",
+      "before_raw_report_sha256": "077968614c9e2cffdfc1f43f2461de3700757ed44d6dffe5871fbcdc8793c8bd",
+      "after_raw_report": "artifacts/number-statics-statement-frames-final.json",
+      "after_raw_report_sha256": "28f1e9f3516a4454b8477c9f8c4fb7343e5c06c2769099600fe771e23d3dc7c9"
+    },
+    {
+      "profile": "numeric-conversion",
+      "source_files": 30,
+      "mode_cases": 60,
+      "before_counts": {
+        "passed": 24,
+        "unsupported": 36
+      },
+      "after_counts": {
+        "passed": 24,
+        "unsupported": 36
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "de7cf1098618ad0fdb7786d4ab4f6c648bfb6fe2543981fe21ca6e0cba50928f",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-numeric-conversion-current.json",
+      "prior_public_report_sha256": "8fec4cd70dfea5f1c1f49e91a2fb491be0eb70cc2af18ed30afb92cda2797a7b",
+      "before_raw_report": "artifacts/numeric-conversion-expression-frames-final.json",
+      "before_raw_report_sha256": "b9c364d82f68a06427155b595be674e525eb0999ec61ff649b325ef10fe09ceb",
+      "after_raw_report": "artifacts/numeric-conversion-statement-frames-final.json",
+      "after_raw_report_sha256": "6277d8f87503360def07fd4f7f7eea2bf26f3fcb0ffdcdcbbd8556f5dcac1560"
+    },
+    {
+      "profile": "compound-assignment",
+      "source_files": 454,
+      "mode_cases": 786,
+      "before_counts": {
+        "unsupported": 180,
+        "passed": 606
+      },
+      "after_counts": {
+        "unsupported": 180,
+        "passed": 606
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "edc2b04b5e9f810e1757a327f5d2a32c240f41d61e8a6d2a89cb35c3ec14f1d0",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-compound-assignment-current.json",
+      "prior_public_report_sha256": "11cd52f4c5416495f0653d4444f798e70beecd6afd2de328980f7025dddb5213",
+      "before_raw_report": "artifacts/compound-assignment-expression-frames-final.json",
+      "before_raw_report_sha256": "f6ca83d83401af384e64b1f062497d82c28bbabb2c713663f21c60d6d7a8e655",
+      "after_raw_report": "artifacts/compound-assignment-statement-frames-final.json",
+      "after_raw_report_sha256": "840a9a16e00192dcc828126f707f36ec0da5e75bc2fd5b131279cc9cd028aa08"
+    },
+    {
+      "profile": "addition",
+      "source_files": 48,
+      "mode_cases": 95,
+      "before_counts": {
+        "unsupported": 28,
+        "passed": 65,
+        "failed": 2
+      },
+      "after_counts": {
+        "unsupported": 28,
+        "passed": 65,
+        "failed": 2
+      },
+      "preflights": 64,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "56088f55075e4d44da6915ca41383604182a8a72aaef8230af61369513cbdc0c",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-addition-current.json",
+      "prior_public_report_sha256": "d2770943fb2be1285decb499952fd908ca8021a49e321f5be26dab71a45dfd57",
+      "before_raw_report": "artifacts/addition-expression-frames-final.json",
+      "before_raw_report_sha256": "805a4d7d49e333aaea831a50d2697bc33ec603f4ccb8ffb60bc6a66493e9d3d4",
+      "after_raw_report": "artifacts/addition-statement-frames-final.json",
+      "after_raw_report_sha256": "0db91660aa38b58b0b0ef3659c52c1bccca68257b9c7c68463c108a4f24d36df"
+    },
+    {
+      "profile": "logical-assignment",
+      "source_files": 78,
+      "mode_cases": 132,
+      "before_counts": {
+        "unsupported": 48,
+        "passed": 72,
+        "failed": 12
+      },
+      "after_counts": {
+        "unsupported": 48,
+        "passed": 72,
+        "failed": 12
+      },
+      "preflights": 104,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "a83f71b8a6b6a1523951d73a4711f024cf77ad3bf90e6698bc6224e7bfabf1a3",
+      "runner_policy_sha256": "6f127a653c09ef49d48382570086b28407a0b1f6426fd888045621d72d3e89af",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-logical-assignment-current.json",
+      "prior_public_report_sha256": "ad49bf074436d4b37a00ad41064f45f477e8aad81ae15fc4df3eadcb14e7742a",
+      "before_raw_report": "artifacts/logical-assignment-expression-frames-final.json",
+      "before_raw_report_sha256": "af094daa81123d2b8086d6499d5ae628dec1671a2fb51c447430dfaf10ad0624",
+      "after_raw_report": "artifacts/logical-assignment-statement-frames-final.json",
+      "after_raw_report_sha256": "c33a7464a017d56d1138cb6f95139222cb95dc2cbc534267b0125a0fc9356ba7"
+    },
+    {
+      "profile": "relational",
+      "source_files": 184,
+      "mode_cases": 364,
+      "before_counts": {
+        "unsupported": 64,
+        "passed": 300
+      },
+      "after_counts": {
+        "unsupported": 64,
+        "passed": 300
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "34497c818a4de422d2628afe1270525fe6c5467bbb43126c1796324a5bc8f138",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-relational-current.json",
+      "prior_public_report_sha256": "e86260961b586de3423fbd9bab9bed25559745c314803d1107ad02a1b58078d1",
+      "before_raw_report": "artifacts/relational-expression-frames-final.json",
+      "before_raw_report_sha256": "1ec2ebf4797e579d14982eb94b29ede75c9654b4595d4042dce0b9ed0ea3efe7",
+      "after_raw_report": "artifacts/relational-statement-frames-final.json",
+      "after_raw_report_sha256": "dd443ff7f31763a1b67954d47b9614445804a50983518043421811479c6d7ab8"
+    },
+    {
+      "profile": "equality",
+      "source_files": 145,
+      "mode_cases": 286,
+      "before_counts": {
+        "unsupported": 96,
+        "passed": 190
+      },
+      "after_counts": {
+        "unsupported": 96,
+        "passed": 190
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "b1d07bdfaee72e164608d7ed3351ab70d05931ffda34f174f6c3f99bf12a0046",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-equality-current.json",
+      "prior_public_report_sha256": "91e65f1532487a2b2d552e4c95f118e07249f23abc1d4dd65de56fb9103f262c",
+      "before_raw_report": "artifacts/equality-expression-frames-final.json",
+      "before_raw_report_sha256": "f27bdbe06f6612955e028a6b1f175b9a1363d35f5693e558835769d1104c8425",
+      "after_raw_report": "artifacts/equality-statement-frames-final.json",
+      "after_raw_report_sha256": "000cf8e2da1f91b026599ef2e61e1e1d80b7779d931b359c6dbac18259124865"
+    },
+    {
+      "profile": "labels",
+      "source_files": 68,
+      "mode_cases": 125,
+      "before_counts": {
+        "passed": 100,
+        "unsupported": 25
+      },
+      "after_counts": {
+        "passed": 100,
+        "unsupported": 25
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "32889cc4ab3de15132243dae4981418ba559cd10294df9222329070b8f74649b",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-labels-current.json",
+      "prior_public_report_sha256": "5a84e2f694ccb009e7a7e21d501df73c346368df454d43d9618965a02753c22f",
+      "before_raw_report": "artifacts/labels-expression-frames-final.json",
+      "before_raw_report_sha256": "41bc56f28c723d6d44edb2aa9ef87d43dc179a0165b68fb1e5ffaf0a27783f3b",
+      "after_raw_report": "artifacts/labels-statement-frames-final.json",
+      "after_raw_report_sha256": "e3c2a97073566e16c216f177bb0329b8c4aa7729d2b55ef3f47e835a530ed0bc"
+    },
+    {
+      "profile": "functions",
+      "source_files": 663,
+      "mode_cases": 1131,
+      "before_counts": {
+        "passed": 509,
+        "unsupported": 620,
+        "resource": 2
+      },
+      "after_counts": {
+        "passed": 509,
+        "unsupported": 620,
+        "resource": 2
+      },
+      "preflights": 48,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "15281ebe6e6c980c547f113563df7d2b5d346ac0db5c9c4aca75dbb6fc60b330",
+      "runner_policy_sha256": "952e68b04e464d1a954c5949b0b9bbd8924472b8fba70a719a20a754d4d03439",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-functions-identifiers.json",
+      "prior_public_report_sha256": "2902b700a5861e68886cfef65ed1bb2feed32d13cd3e9a2fed7968efcfb4d575",
+      "before_raw_report": "artifacts/functions-expression-frames-final.json",
+      "before_raw_report_sha256": "f647fe036ba607985c955aea96a4f735b8dd99a1fc2b5151e476932b4f3c6e6a",
+      "after_raw_report": "artifacts/functions-statement-frames-final.json",
+      "after_raw_report_sha256": "7bb50cbf8c17f9e593b216f8187ae0615041f2ea4a94f50fbec5ca8020de9cde"
+    },
+    {
+      "profile": "uri",
+      "source_files": 173,
+      "mode_cases": 346,
+      "before_counts": {
+        "resource": 112,
+        "passed": 210,
+        "unsupported": 24
+      },
+      "after_counts": {
+        "resource": 112,
+        "passed": 210,
+        "unsupported": 24
+      },
+      "preflights": 128,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "bf48d1dddac882a9609fe78aea7521e7477c1cef2ba6036a74c48513ad28ab8f",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-uri-labels.json",
+      "prior_public_report_sha256": "eb7f76b625fa2fe581fcc289f3b77729cc102e43c9a60171f7ca58ee894613db",
+      "before_raw_report": "artifacts/uri-expression-frames-final.json",
+      "before_raw_report_sha256": "e3dcb3c5eac564734a56469e5f044f33f269bbf55f987e2d20e7a45c20575650",
+      "after_raw_report": "artifacts/uri-statement-frames-final.json",
+      "after_raw_report_sha256": "da02fd309ad6e454a8dc68cfb8957e524367d403bf7c105899cab30787fc0108"
+    },
+    {
+      "profile": "numeric-parsing",
+      "source_files": 109,
+      "mode_cases": 218,
+      "before_counts": {
+        "passed": 164,
+        "unsupported": 46,
+        "resource": 8
+      },
+      "after_counts": {
+        "passed": 164,
+        "unsupported": 46,
+        "resource": 8
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "f8959cc2e43d94b5b0c671105f87d3fc831fa6359065566791707a6f9b400c6a",
+      "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-numeric-parsing-compound-assignment.json",
+      "prior_public_report_sha256": "bffcd9ab4898076622c1002fc11c3a6523eb1185981c27f44468ca7fb6520950",
+      "before_raw_report": "artifacts/numeric-parsing-expression-frames-final.json",
+      "before_raw_report_sha256": "730867775aa7d734c3010eeed7ee18e128f795ce39489202b3771ca7b8907804",
+      "after_raw_report": "artifacts/numeric-parsing-statement-frames-final.json",
+      "after_raw_report_sha256": "1186ed3aac1f3ec451018b245ebd077423d3d919ab624679bd632407d08d7d59"
+    },
+    {
+      "profile": "array-sort",
+      "source_files": 54,
+      "mode_cases": 107,
+      "before_counts": {
+        "passed": 57,
+        "unsupported": 46,
+        "resource": 4
+      },
+      "after_counts": {
+        "passed": 57,
+        "unsupported": 46,
+        "resource": 4
+      },
+      "preflights": 80,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "d6f43dd379ae49ae08f959596852e28e6bd33a0420eb699d763ff696b0e961d2",
+      "runner_policy_sha256": "8621a5b10295e4a41806178744c4e906157ef78c884220a154860fae829fd205",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-array-sort-flat-code.json",
+      "prior_public_report_sha256": "5f38ae6296fdee99ad917f4816a8fabbccaac5fb6ace808cc979b4f151f19976",
+      "before_raw_report": "artifacts/array-sort-expression-frames-final.json",
+      "before_raw_report_sha256": "acf85f83b9f4fb6fc6c63992f52907da687bf998ec6ca2e341d00ed4f73694e4",
+      "after_raw_report": "artifacts/array-sort-statement-frames-final.json",
+      "after_raw_report_sha256": "43792d3167866d4abf5de6b31e0f71b95f67ebea950530c1329d6a0e21c85e05"
+    },
+    {
+      "profile": "identifiers",
+      "source_files": 335,
+      "mode_cases": 669,
+      "before_counts": {
+        "passed": 509,
+        "unsupported": 154,
+        "resource": 6
+      },
+      "after_counts": {
+        "passed": 509,
+        "unsupported": 154,
+        "resource": 6
+      },
+      "preflights": 88,
+      "all_preflights_verified": true,
+      "corpus_manifest_sha256": "b93b9e76f5231a3d342d95fe0a8cf47ca79c2a3101f2a78e4d5bb564c4d06ea8",
+      "runner_policy_sha256": "bdbeba5b53e7ef315e7f06e78fe8c66247cd7dd9ae2545ac5ec25749b94d95d5",
+      "all_case_fingerprints_and_observations_identical": true,
+      "all_preflight_fingerprints_and_observations_identical": true,
+      "lost_passes": [],
+      "newly_passing": [],
+      "changed_observations": [],
+      "prior_public_report": "test262-identifiers-flat-code.json",
+      "prior_public_report_sha256": "cafe035932b135e20929d47a341214bba4e3ab8c07f74b281ebd479fcf59893c",
+      "before_raw_report": "artifacts/identifiers-expression-frames-final.json",
+      "before_raw_report_sha256": "e1a5e3d8298ed67133ea9fe72ee024cc8c55b86085a28deef3abaf2584bb211f",
+      "after_raw_report": "artifacts/identifiers-statement-frames-final.json",
+      "after_raw_report_sha256": "2e242aece3ce46dc1970e94964dad9660a6a9a1e077d264c49d787f460047d84"
+    }
+  ],
+  "upstream_mode_cases": 6879,
+  "upstream_preflights": 1680,
+  "healthy_baseline_gates": 15,
+  "new_baselines_recorded": false,
+  "lost_passes": 0,
+  "newly_passing": 0,
+  "changed_observations": 0,
+  "validation": {
+    "rust_tests": 937,
+    "rust_library_tests": 755,
+    "rust_ignored": 0,
+    "python_checks": 151,
+    "exact_pixel_references": 57,
+    "mutation_smoke_cases": 15000,
+    "caught_panics": 0,
+    "independent_agent_review": false,
+    "chromium_comparison": false,
+    "production_vulkan": false
+  },
+  "implementation": {
+    "expression_reference_statement_continuations": true,
+    "ordinary_call_and_default_continuations": false,
+    "typed_statement_list_locators": true,
+    "no_body_vector_copies": true,
+    "for_let_iteration_names_borrowed_from_code": true,
+    "frame_cache_initial_slots": 8,
+    "frame_slots_limit_before": 192,
+    "frame_slots_limit_after": 193,
+    "frame_limit_basis": "two slots per existing guarded stack unit plus one program root list; reentrant function lists retain the four-unit native-call guard",
+    "frame_growth_precharged": true,
+    "frame_growth_work_precharged": true,
+    "ordinary_errors_unwind_to_try_frames": true,
+    "host_errors_bypass_catch_and_finally": true,
+    "frame_base_preserved_on_reentry": true,
+    "existing_depth_counters_retained": true,
+    "execution_quota_increases": false
+  },
+  "focused_checks": {
+    "new_statement_test_groups": 5,
+    "existing_expression_test_groups": 6,
+    "all_work_cuts_for_eight_statement_sources": true,
+    "storage_cutoffs_for_five_statement_sources": true,
+    "cross_unit_reentrant_callbacks_and_exception_identity": true,
+    "finally_return_and_throw_overrides": true,
+    "per_iteration_closure_capture": true,
+    "live_for_in_deletion_and_prototype_snapshot": true,
+    "code_handle_release_after_completion_and_refusal": true,
+    "small_native_stack_execution": {
+      "requested_stack_bytes": 131072,
+      "directly_constructed_block_depths_completed": [
+        80,
+        94
+      ],
+      "first_refused_block_depth": 95,
+      "leaf_statement_and_expression_consume_two_stack_units": true,
+      "guard_message": "combined script nesting limit exceeded",
+      "cached_frame_slots": 193,
+      "no_deeper_call_or_parser_claim": true
+    },
+    "depth_frontier": {
+      "report": "statement-frames-depth.json",
+      "report_sha256": "5ca37e88c713f312878424d48dbddbd3553d942f254877716d023f761e0748a2",
+      "mode_goal_cases": 480,
+      "all_observations_unchanged": true,
+      "ordinary_complete_calls": 13,
+      "ordinary_first_runtime_stop": 14,
+      "default_initializer_complete_calls": 15,
+      "default_initializer_first_runtime_stop": 16,
+      "nested_iife_complete_depth": 10,
+      "nested_iife_first_parser_stop": 11,
+      "shape_specific": true
+    }
+  },
+  "limitations": [
+    "Ordinary call bodies and defaults still enter through guarded native invocation; constructors and native callbacks also retain guarded native recursion. The next stage must schedule activation and defaults in this driver before claiming deeper calls.",
+    "All previous runtime depth counters remain. The continuation slot ceiling grows by one to hold the program root list, without raising execution-depth, work, heap, logical-call or parser ceilings.",
+    "Temporary parser syntax is recursive and its allocations are not comprehensively accounted; the compile ledger does not prove total peak memory.",
+    "Frame and payload charges are cumulative without refunds. This does not comprehensively meter every runtime arena or native helper allocation.",
+    "Five Test262 profiles still contain resource stops; no healthy baselines are recorded for them.",
+    "No native-window, Vulkan, Chromium-relative performance, full-compatibility or production-security claim."
+  ]
+}

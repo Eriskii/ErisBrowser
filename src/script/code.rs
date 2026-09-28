@@ -98,6 +98,9 @@ pub(super) struct FunctionRef {
     id: FunctionId,
 }
 impl FunctionRef {
+    pub fn id(&self) -> FunctionId {
+        self.id
+    }
     pub fn new(unit: &Rc<Unit>, id: FunctionId) -> Self {
         Self {
             unit: unit.clone(),

@@ -1,6 +1,65 @@
 # Validation record
 
+## Shared statement continuations
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **937 Rust tests** pass with `--include-ignored`: 755 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 53 pipeline, one declaration-name matrix, nine completion
+and 44 confined-worker tests. None remain ignored. All **151 Python checks**
+and **57 exact pixel references** pass.
+
+[Statement/list continuations](../tests/conformance/statement-frames.md) share
+the expression driver, including declarations, branches, loops, switch and
+try/catch/finally. Typed body locators avoid copying lists; for-loop iteration
+bindings borrow their declaration names. Ordinary exceptions unwind to try
+continuations; resource/unsupported host termination bypasses catch/finally.
+Reentrant drives retain their own frame boundaries. Existing depth counters and
+execution quotas remain; one additional continuation slot accommodates the
+program root list. Function activation and defaults still enter through native
+recursion, so this stage establishes no deeper-call acceptance.
+
+Five new test groups check work/storage cutoffs, cleanup/code release, cross-unit
+callback exceptions, finally overrides, per-iteration closures and live for-in
+mutation. A thread requesting a 128 KiB native stack executes directly constructed
+80- and 94-block chains. The 95-block fixture retains the existing combined-depth
+refusal; the frame cache reaches its 193-slot bound. These isolate execution from
+parsing. Existing 144 declaration-name and 240 scalar completion variants pass.
+
+All **20 Test262 profiles / 6,879 modes / 1,680 controls** retain identical case
+identities, policies and every observation. All controls verify; fifteen healthy
+baseline gates pass. Five resource-stopped profiles remain nonpassing observations,
+with no new baselines. All [480 depth observations](../tests/conformance/statement-frames-depth.json)
+are unchanged. HTML stays at 3,868 matches, two mismatches and six unsupported
+modes. The **15,000-case** mutation smoke run has zero caught panics or invariant
+failures: 5,000 accepted HTML, 623 accepted/4,377 rejected scripts and 3,347 accepted/
+1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and display-list size
+1,173 commands; 17 cases stop within paint limits.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+| --- | --- |
+| `eris-browser` | `83f06d277b5c776a082ec42782806ef335b846eaaae6d29d419cb0b74b699639` |
+| `eris-js` | `9cbd79075a71145f7f6fb7f7c646a87b64ea0d8c462d6c95fee45f338cdbe706` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `a2fd6339ad68ebd6aa649e4738e4193e00445c7503ecb59673721eeaf73280bc` |
+
+Source-input SHA-256:
+`b745b416797170ae95f7d7986ad447d0b7c400e966151895c1f1d56e5ca3a809`.
+Local records are `artifacts/*statement-frames*`; the
+[public comparison](../tests/conformance/statement-frames.json) preserves provenance
+and all profile checks. Parser syntax remains recursive and incompletely
+accounted; runtime allocation accounting is also incomplete. Agent sessions
+remain unavailable, so no independent-agent review is assigned. No native-window,
+Vulkan or Chromium performance result is assigned. Full compatibility, production
+security and the requested performance threshold remain unverified.
+
 ## Expression and reference continuations
+
+Published checkpoint `57e9a0c` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36465368973),
+including all existing conformance gates, Rust 1.88 and the Vulkan probe.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **932 Rust tests** pass with `--include-ignored`: 750 library,
