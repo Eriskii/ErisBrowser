@@ -419,7 +419,7 @@ fn layer_name(source: &str) -> Option<Vec<String>> {
     }
 }
 
-fn css_identifier(rest: &str) -> Option<(String, usize)> {
+pub(crate) fn css_identifier(rest: &str) -> Option<(String, usize)> {
     let mut name = String::new();
     let mut consumed = 0;
     let mut chars = rest.char_indices().peekable();
@@ -1690,7 +1690,7 @@ fn supports_color(value: &str) -> bool {
     };
     valid && parse_color(value).is_some()
 }
-fn supports_property(name: &str, value: &str) -> bool {
+pub(crate) fn supports_property(name: &str, value: &str) -> bool {
     let known = matches!(
         name,
         "display"
@@ -2129,7 +2129,7 @@ fn css_wide(value: &str) -> bool {
     wide_keyword(value).is_some()
 }
 
-fn shorthand_properties(name: &str) -> Option<Vec<String>> {
+pub(crate) fn shorthand_properties(name: &str) -> Option<Vec<String>> {
     let list: &[&str] = match name {
         "all" => SUPPORTED_PROPERTIES,
         "gap" | "grid-gap" => &["row-gap", "column-gap"],
@@ -2205,7 +2205,12 @@ fn shorthand_properties(name: &str) -> Option<Vec<String>> {
     };
     Some(list.iter().map(|name| (*name).into()).collect())
 }
-fn expand_declaration(name: &str, value: &str, important: bool, out: &mut Vec<Declaration>) {
+pub(crate) fn expand_declaration(
+    name: &str,
+    value: &str,
+    important: bool,
+    out: &mut Vec<Declaration>,
+) {
     if name == "list-style" && !css_wide(value) && !contains_var_function(value) {
         let lower = value.to_ascii_lowercase();
         let parts = words(&lower);
@@ -3151,7 +3156,7 @@ const SUPPORTED_PROPERTIES: &[&str] = &[
     "list-style-position",
     "vertical-align",
 ];
-fn supported_property(name: &str) -> bool {
+pub(crate) fn supported_property(name: &str) -> bool {
     name.starts_with("--") || SUPPORTED_PROPERTIES.contains(&name)
 }
 
@@ -3358,7 +3363,7 @@ const MAX_VARIABLE_DEPTH: usize = 16;
 const MAX_RETAINED_VARIABLE_BYTES: usize = 8 * 1024 * 1024;
 type CustomProperties = BTreeMap<String, Arc<str>>;
 
-fn contains_var_function(source: &str) -> bool {
+pub(crate) fn contains_var_function(source: &str) -> bool {
     use crate::selectors::{Kind, Token};
     if !source.contains('(') {
         return false;
@@ -3386,6 +3391,11 @@ fn contains_var_function(source: &str) -> bool {
         at += count;
     }
     false
+}
+
+// CSSOM validates complete token input before retaining or expanding a value.
+pub(crate) fn valid_variable_value(source: &str, work: &mut usize) -> bool {
+    VariableSyntax::parse(source, work).is_some()
 }
 
 struct VariableReference {

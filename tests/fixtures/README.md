@@ -8,6 +8,12 @@ result and reject injected property/value syntax. It loads no external assets.
 the parent's computed color despite a child override, then recomputes after a
 click changes the parent's inline declaration. It loads no external assets.
 
+`inline-style.html` checks six green initial samples and blue clicked samples
+through both the direct page and confined worker. Its script checks declaration
+priorities, invalid-write preservation, case-sensitive custom names, quoted
+delimiters, property aliases, removal, null values and reentrant string
+conversion. It loads no external assets.
+
 ## Synthetic image allocation fixtures
 
 These original fixtures are 1×1 RGBA PNGs, with valid chunk CRCs and 4,096 bytes

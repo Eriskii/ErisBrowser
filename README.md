@@ -94,6 +94,8 @@ Network and sandbox integration tests explicitly opt in: they bind temporary loo
 CI uses a Cargo target runner to close ambient build/runner descriptors before
 each Rust test executable starts. Worker rejection of unexpected descriptors,
 including descriptors deliberately opened by a test, remains enforced.
+An additional job compiles all engine targets with the package's declared
+minimum Rust version, 1.88, using the checked-in lockfile.
 
 The [validation record](docs/VALIDATION.md) lists observed results and their limits. A pinned upstream HTML tree corpus now provides exact-tree comparisons and a regression baseline; [its documentation](tests/conformance/README.md) records all mismatches, unsupported modes, and untested semantics. A pinned [Test262 selection](tests/conformance/test262.md) runs unchanged upstream tests and assertion harnesses with explicit failure/unsupported categories. Neither runner establishes platform-wide compatibility.
 
@@ -106,6 +108,7 @@ The [development docket](docs/ROADMAP.md) includes a planned Vulkan rendering ba
 |---|---|
 | `dom.rs` | Bounded HTML tree construction, arena DOM, entities, selector matching, serialization |
 | `css.rs` | CSS parsing, indexed cascade and layers, inheritance, lengths, colors, variables, media queries |
+| `cssom.rs` | Bounded inline declaration storage, queries, priorities and staged mutation |
 | `selectors.rs` | Bounded CSS tokens and selector grammar shared by matching and feature queries |
 | `layout.rs` | Block/inline flow, floats, flex, Grid placement/tracks, tables, controls, display lists, hit regions |
 | `script.rs` | Custom lexer, parser, interpreter, lexical environments, DOM bindings and events |
@@ -118,7 +121,8 @@ The [development docket](docs/ROADMAP.md) includes a planned Vulkan rendering ba
 | `page.rs` | Resource ordering, page lifecycle, scripting, forms and layout integration |
 | `worker.rs`, `worker/` | Per-document child processes, bounded binary IPC, validated snapshots and Linux confinement |
 | `js_string.rs` | UTF-16 code-unit strings and explicit scalar-text conversion |
-| `browser.rs` | Native window, address bar, history, input, worker coordination and presentation |
+| `browser.rs` | Native window, address bar, history, input and worker coordination |
+| `presenter.rs` | Checked completed CPU frames and exclusive ownership of the software surface |
 | `edit.rs` | Unicode scalar cursor movement, selections, replacements and deletion |
 
 Infrastructure dependencies provide TLS/HTTP (`ureq`/`rustls`), URLs (`url`), character encodings, font outline rasterization (`ab_glyph`), image codecs (`image`), native clipboard access (`arboard`), window events (`winit`), a pixel surface (`softbuffer`), and OS confinement wrappers (`landlock`, `rustix`, `seccompiler`). These are not web layout or script engines. Their transitive dependencies remain part of the security surface. The source forbids application-level `unsafe` Rust; dependencies can contain unsafe code.

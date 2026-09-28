@@ -13,6 +13,29 @@ fn page(source: &str) -> Page {
 }
 
 #[test]
+fn inline_style_mutations_preserve_values_priorities_and_visible_output() {
+    let mut p = page(include_str!("fixtures/inline-style.html"));
+    let fonts = Fonts::new();
+    for (state, color) in [("ready", 0x008000), ("clicked", 0x0000ff)] {
+        if state == "clicked" {
+            let button = p.document.query_selector("#change").unwrap();
+            assert!(p.click(button).is_none());
+        }
+        assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+        let body = p.document.query_selector("body").unwrap();
+        assert_eq!(p.document.attr(body, "class"), Some(state));
+        let layout = p.layout(320.0, 240.0, &fonts);
+        let mut canvas = Canvas::new(320, 240).unwrap();
+        canvas.clear(Color::WHITE);
+        canvas.paint(&layout.commands, &fonts, &p.images, 0.0, 0.0);
+        assert!(!canvas.exhausted());
+        for x in [10, 60, 110, 160, 210, 260] {
+            assert_eq!(canvas.pixels[10 * 320 + x], color, "{state}, x={x}");
+        }
+    }
+}
+
+#[test]
 fn custom_properties_recompute_inherited_aliases_after_parent_changes() {
     let mut p = page(include_str!("fixtures/custom-properties.html"));
     let fonts = Fonts::new();

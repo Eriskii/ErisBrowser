@@ -1,5 +1,69 @@
 # Validation record
 
+## Inline CSSOM and computed property references
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **676 Rust tests** pass with `--include-ignored`: 546 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 31 pipeline and 24 real-worker tests. None remain ignored.
+The existing **47 Python checks** and all **52 exact pixel references** pass.
+
+Inline declaration bindings now use bounded token-aware storage, ordered author
+conversions and a single final DOM write. Eight helper groups and seven script
+groups exercise priorities, aliases, shorthands, custom names, reentrancy,
+serialization boundaries and resource nonmutation. Three further script groups
+check deferred computed-key conversion and cached keys for compound operations.
+The [CSSOM scope record](../tests/conformance/cssom-inline.md) documents the
+supported operations and remaining storage, grammar and reflection limitations.
+
+Independent final-binary probes pass **42 binding, key-order and malformed-value
+cases**, plus **47 preservation/precedence cases**. A separate deterministic
+robustness audit uses seed `0x4353534f4d202609`: **2,120 cases** produce 2,060
+successful evaluations and 60 expected resource failures, all failures preserving
+the original style attribute byte for byte, with no other errors or caught
+panics. Another **90 name/value injection combinations** preserve sentinel
+declarations across serialization and reparsing. These scratch audits used
+external 30-second wall, 10-second CPU and 512 MiB address-space limits. They are
+focused safety checks, not upstream WPT conformance or performance measurements.
+
+Pinned upstream outcomes remain HTML **3,868 matched / two mismatched / six
+unsupported**, Test262 **536 passed / 116 unsupported**, RegExp **250 / 40**, and
+templates **82 / 32**, with passing preflights and no regressions or improvements.
+Corpus bytes, runner policies and baselines are unchanged. A separate
+**15,000-case** mutation run has zero caught panics or invariant failures:
+5,000 accepted HTML, 642 accepted/4,358 rejected scripts, and 3,347 accepted/1,653
+rejected SVG inputs. Maximum DOM size is 229 nodes, maximum display-list size
+349 commands, and 21 cases stop within paint limits. The added CSSOM seed changes
+the inventory; these counts are not an acceptance-rate comparison.
+
+The inline-style fixture passes direct Page and confined-worker tests for six
+green initial samples and six blue samples after a click. A bounded native
+software-window run exits successfully and reaps the UI, renderer and broker
+processes. Inspection of its own framebuffer confirms the initial green samples
+and browser chrome; no compositor capture or Vulkan backend is involved.
+Nine existing 1180×880 views remain pixel-identical to frozen commit `738f492`.
+This comparison measures decoded pixels only, not speed.
+
+Final release SHA-256 values:
+
+| Binary | SHA-256 |
+|---|---|
+| `eris-browser` | `7497619b9c11606fd6415a387860d9ee395e8cfbf56da5def70e53136f355783` |
+| `eris-js` | `15902a07b1ef9c866942c9418264a3fee8e5d045ef64ccef8b60a83794f75edc` |
+| `eris-dom` | `ecf9052c43c5a3a968596c31c43a6baca92a4bdd3b309d127ebe23058d64bafc` |
+| `eris-stress` | `ec0cd72c861a2e23d1cd3e5a84e41b9923c376714edef788794d245ba3a28c31` |
+
+The source-input digest is
+`5fb0934ebb83e25d634853caac2d6ef133aaa1458313a4bcfe182acc063dcb14`,
+using the benchmark tool's documented inventory. Session logs and reports use
+the `cssom-final` suffix or `cssom-native` / `cssom-pixels` directories under
+`artifacts/`. Local checks used Rust 1.95. A new engine CI job checks all targets
+with the declared Rust 1.88 minimum; its result must be observed separately.
+The previous software-presenter checkpoint passed
+[GitHub CI](https://github.com/Eriskii/ErisBrowser/actions/runs/36399652737).
+Full web compatibility, independently audited security and the requested
+Chromium-relative performance threshold remain unverified.
+
 ## Software presentation boundary and native Vulkan investigation
 
 Recorded September 28, 2026 UTC. The software presenter extraction passes all

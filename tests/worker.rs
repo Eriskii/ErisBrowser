@@ -92,6 +92,65 @@ fn exchange_empty(client: &mut WorkerClient, command: WorkerCommand) {
 
 #[test]
 #[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn inline_style_mutations_preserve_the_same_pixels_through_the_confined_worker() {
+    use eris::graphics::{Canvas, Color, Fonts};
+    let source = include_str!("fixtures/inline-style.html");
+    let fixture = Fixture::new(source);
+    let mut client = fixture.spawn(true, 117);
+    load(&mut client, &fixture.navigation);
+    let mut direct = eris::page::Page::from_html(
+        Url::parse(&fixture.navigation.address).unwrap(),
+        source,
+        true,
+    );
+    let fonts = Fonts::new();
+    for (state, color) in [("ready", 0x008000), ("clicked", 0x0000ff)] {
+        if state == "clicked" {
+            let node = direct.document.query_selector("#change").unwrap();
+            assert!(direct.click(node).is_none());
+            exchange_empty(&mut client, WorkerCommand::Click { node });
+        }
+        let snapshot = render(&mut client);
+        let body = snapshot.document.query_selector("body").unwrap();
+        assert_eq!(snapshot.document.attr(body, "class"), Some(state));
+        assert!(direct.diagnostics.is_empty(), "{:?}", direct.diagnostics);
+        assert!(
+            snapshot
+                .diagnostics
+                .iter()
+                .all(|line| line.starts_with("Page process ")
+                    || line.starts_with("Resource broker ")),
+            "{:?}",
+            snapshot.diagnostics
+        );
+        let mut expected = Canvas::new(320, 240).unwrap();
+        expected.clear(Color::WHITE);
+        expected.paint(
+            &direct.layout(320.0, 240.0, &fonts).commands,
+            &fonts,
+            &direct.images,
+            0.0,
+            0.0,
+        );
+        let mut actual = Canvas::new(320, 240).unwrap();
+        actual.clear(Color::WHITE);
+        actual.paint(
+            &snapshot.layout.commands,
+            &fonts,
+            &snapshot.images,
+            0.0,
+            0.0,
+        );
+        assert!(!actual.exhausted() && !expected.exhausted());
+        assert_eq!(actual.pixels, expected.pixels);
+        for x in [10, 60, 110, 160, 210, 260] {
+            assert_eq!(actual.pixels[10 * 320 + x], color, "{state}, x={x}");
+        }
+    }
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
 fn custom_properties_recompute_inherited_aliases_through_the_confined_worker() {
     use eris::graphics::{Canvas, Color, Fonts};
     let source = include_str!("fixtures/custom-properties.html");

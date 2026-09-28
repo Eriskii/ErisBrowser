@@ -1,0 +1,78 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Inline style mutations preserve declarations</title>
+<style>
+body { margin: 0 }
+.sample { position: absolute; top: 0; width: 40px; height: 40px; background-color: red }
+#priority { left: 0 }
+#case { left: 50px }
+#delimited { left: 100px }
+#aliases { left: 150px }
+#removed { left: 200px; background-color: green }
+#converted { left: 250px; background-color: green }
+#change { position: absolute; top: 60px; left: 0 }
+</style>
+<div class="sample" id="priority" style="background-color: red; background-color: green !important; background-color: red"></div>
+<div class="sample" id="case" style="--Tone:green; --tone:red; background-color:var(--Tone)"></div>
+<div class="sample" id="delimited" style='--note:"x;y:z"; background-color:red'></div>
+<div class="sample" id="aliases"></div>
+<div class="sample" id="removed" style="background-color:red !important"></div>
+<div class="sample" id="converted" style="background-color:red"></div>
+<button id="change" type="button">Change the six samples</button>
+<script>
+function check(value, message) {
+  if (!value) throw new Error(message);
+}
+const priority = document.getElementById('priority').style;
+const cases = document.getElementById('case').style;
+const delimited = document.getElementById('delimited').style;
+const aliases = document.getElementById('aliases').style;
+const removed = document.getElementById('removed').style;
+const converted = document.getElementById('converted').style;
+
+check(priority.getPropertyValue('BACKGROUND-COLOR') === 'green', 'important declaration wins');
+check(priority.getPropertyPriority('background-color') === 'important', 'priority is separate');
+priority.setProperty('background-color', 'red', 'invalid');
+priority.setProperty('background-color', 'red; width: 200px');
+check(priority.getPropertyValue('background-color') === 'green', 'invalid writes do not mutate');
+
+cases.setProperty('--tone', 'blue');
+check(cases.getPropertyValue('--Tone') === 'green', 'custom names preserve case');
+check(cases.getPropertyValue('--tone') === 'blue', 'custom names remain distinct');
+
+delimited.setProperty('background-color', 'green');
+check(delimited.getPropertyValue('--note') === '"x;y:z"', 'quoted delimiters survive mutation');
+
+check('backgroundColor' in aliases && 'background-color' in aliases, 'supported aliases exist');
+check('cssFloat' in aliases && 'float' in aliases, 'float aliases exist');
+check(!('erisInvalidStyle' in aliases) && aliases.erisInvalidStyle === undefined, 'unknown properties are absent');
+aliases.backgroundColor = 'green';
+check(aliases['background-color'] === 'green', 'dashed and camel aliases agree');
+check(removed.removeProperty('BACKGROUND-COLOR') === 'red', 'removal returns value without priority');
+check(removed.getPropertyPriority('background-color') === '', 'removal clears priority');
+
+converted.backgroundColor = null;
+check(converted.backgroundColor === '', 'null assignment removes declaration');
+let conversions = '';
+converted.setProperty(
+  { toString: function () { conversions += 'p'; return 'background-color'; } },
+  { toString: function () { conversions += 'v'; converted.setProperty('--saved', '"a;b:c"'); return 'green'; } },
+  { toString: function () { conversions += 'i'; return 'IMPORTANT'; } }
+);
+check(conversions === 'pvi', 'author conversions follow argument order');
+check(converted.getPropertyValue('--saved') === '"a;b:c"', 'reentrant mutation survives');
+check(converted.getPropertyPriority('background-color') === 'important', 'converted priority applies');
+document.body.className = 'ready';
+
+document.getElementById('change').onclick = function () {
+  priority.setProperty('background-color', 'blue', 'IMPORTANT');
+  cases.setProperty('--Tone', 'blue');
+  delimited.setProperty('background-color', 'blue');
+  aliases['background-color'] = 'blue';
+  removed.setProperty('background-color', 'blue');
+  converted.backgroundColor = 'blue';
+  check(converted.getPropertyPriority('background-color') === '', 'property assignment resets priority');
+  check(delimited.getPropertyValue('--note') === '"x;y:z"', 'second mutation preserves quoted value');
+  document.body.className = 'clicked';
+};
+</script>

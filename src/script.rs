@@ -2071,7 +2071,9 @@ enum Flow {
 enum Reference {
     Binding(usize, String, bool),
     Unresolvable(String, bool),
-    Property(Value, JsString, bool),
+    // Computed names stay uncoerced until GetValue/PutValue. A successful read
+    // replaces the name with a String so compound assignments convert once.
+    Property(Value, Value, bool),
 }
 
 #[derive(Clone, Debug)]
@@ -2724,6 +2726,15 @@ impl Runtime {
             );
         }
         self.initialize_events()?;
+        for (name, length) in [
+            ("getPropertyValue", 1),
+            ("getPropertyPriority", 1),
+            ("setProperty", 2),
+            ("removeProperty", 1),
+            ("item", 1),
+        ] {
+            self.intrinsic_function(&format!("CSSStyleDeclaration.{name}"), name, length)?;
+        }
         let supports = self.intrinsic_function("CSS.supports", "supports", 1)?;
         let namespace = self.object_ordered([("supports".into(), supports)])?;
         if let Value::Object(id) = namespace {
@@ -4934,7 +4945,7 @@ impl Runtime {
                         Expr::Member(object, key) => {
                             let object = self.eval(object, env, doc)?;
                             let value = self.eval(key, env, doc)?;
-                            let key = self.json_text(value, doc, &mut Vec::new())?;
+                            let key = self.reference_key(&object, value, doc)?;
                             let deleted = self.delete_property(object, &key)?;
                             if !deleted && self.environments[env].strict {
                                 return Err(ScriptError::type_error(
@@ -5017,9 +5028,9 @@ impl Runtime {
                 }
             }
             Expr::Assign(op, left, right) => {
-                let reference = self.reference(left, env, doc)?;
+                let mut reference = self.reference(left, env, doc)?;
                 let old = if op != "=" {
-                    Some(self.read_reference(&reference, doc)?)
+                    Some(self.read_reference(&mut reference, doc)?)
                 } else {
                     None
                 };
@@ -5031,8 +5042,8 @@ impl Runtime {
                 Ok(value)
             }
             Expr::Update(target, delta, prefix) => {
-                let reference = self.reference(target, env, doc)?;
-                let previous = self.read_reference(&reference, doc)?;
+                let mut reference = self.reference(target, env, doc)?;
+                let previous = self.read_reference(&mut reference, doc)?;
                 if let Value::String(text) = &previous {
                     self.work(1 + text.len() / 8)?;
                 }
@@ -5044,14 +5055,14 @@ impl Runtime {
             Expr::Member(object, property) => {
                 let object = self.eval(object, env, doc)?;
                 let value = self.eval(property, env, doc)?;
-                let property = self.json_text(value, doc, &mut Vec::new())?;
+                let property = self.reference_key(&object, value, doc)?;
                 self.get_key(object, &property, doc)
             }
             Expr::Call(callee, arguments) => {
                 let (function, receiver) = if let Expr::Member(object, property) = &**callee {
                     let receiver = self.eval(object, env, doc)?;
                     let value = self.eval(property, env, doc)?;
-                    let property = self.json_text(value, doc, &mut Vec::new())?;
+                    let property = self.reference_key(&receiver, value, doc)?;
                     (self.get_key(receiver.clone(), &property, doc)?, receiver)
                 } else {
                     (self.eval(callee, env, doc)?, Value::Undefined)
@@ -5134,9 +5145,11 @@ impl Runtime {
                     "in right-hand side is not an object",
                 ));
             }
-            return Ok(Value::Bool(
-                self.find_property(&right, &left.js_string())?.is_some(),
-            ));
+            let key = self.string_hint(left, doc)?;
+            if let Value::Style(id) = right {
+                return self.style_has(id, &key, doc).map(Value::Bool);
+            }
+            return Ok(Value::Bool(self.find_property(&right, &key)?.is_some()));
         }
         if op == "+" && (matches!(left, Value::String(_)) || matches!(right, Value::String(_))) {
             let a = left.js_string();
@@ -5219,23 +5232,41 @@ impl Runtime {
             Expr::Member(object, property) => {
                 let object = self.eval(object, env, doc)?;
                 let value = self.eval(property, env, doc)?;
-                let property = self.json_text(value, doc, &mut Vec::new())?;
                 Ok(Reference::Property(
                     object,
-                    property,
+                    value,
                     self.environments[env].strict,
                 ))
             }
             _ => Err(ScriptError::type_error("invalid assignment target")),
         }
     }
-    fn read_reference(&mut self, reference: &Reference, doc: &mut Document) -> Result<Value> {
+    fn reference_key(
+        &mut self,
+        base: &Value,
+        value: Value,
+        doc: &mut Document,
+    ) -> Result<JsString> {
+        // ToObject's only observable primitive effect here is rejecting null
+        // and undefined. Keep the original primitive receiver for accessors.
+        if matches!(base, Value::Null | Value::Undefined) {
+            return Err(ScriptError::type_error(
+                "cannot access property of null or undefined",
+            ));
+        }
+        self.string_hint(value, doc)
+    }
+    fn read_reference(&mut self, reference: &mut Reference, doc: &mut Document) -> Result<Value> {
         match reference {
             Reference::Binding(env, name, _) => self.binding_value(*env, name),
             Reference::Unresolvable(name, _) => {
                 Err(ScriptError::reference(format!("'{name}' is not defined")))
             }
-            Reference::Property(object, key, _) => self.get_key(object.clone(), key, doc),
+            Reference::Property(object, name, _) => {
+                let key = self.reference_key(object, name.clone(), doc)?;
+                *name = Value::String(key.clone());
+                self.get_key(object.clone(), &key, doc)
+            }
         }
     }
     fn write_reference(
@@ -5287,6 +5318,7 @@ impl Runtime {
                 Ok(())
             }
             Reference::Property(object, key, strict) => {
+                let key = self.reference_key(&object, key, doc)?;
                 self.set_key_strict(object, &key, value, strict, doc)
             }
         }
@@ -6095,6 +6127,16 @@ impl Runtime {
 
     fn get_key(&mut self, receiver: Value, key: &JsString, doc: &mut Document) -> Result<Value> {
         self.work(1 + key.len() / 8)?;
+        if let Value::Style(id) = receiver {
+            self.work(key.len().saturating_add(1))?;
+            self.charge(24 + key.len().saturating_mul(6))?;
+            return match key.to_utf8() {
+                Ok(key) => self.style_get(id, &key, doc),
+                Err(_) => Ok(self
+                    .lookup_property(&Value::Style(id), key, doc)?
+                    .unwrap_or(Value::Undefined)),
+            };
+        }
         if let Some(value) = self.lookup_property(&receiver, key, doc)? {
             return Ok(value);
         }
@@ -6124,6 +6166,14 @@ impl Runtime {
         doc: &mut Document,
     ) -> Result<()> {
         self.work(1 + key.len() / 8)?;
+        if let Value::Style(id) = receiver {
+            self.work(key.len().saturating_add(1))?;
+            self.charge(24 + key.len().saturating_mul(6))?;
+            let key = key.to_utf8().map_err(|_| {
+                ScriptError::unsupported("non-scalar style expando properties are not implemented")
+            })?;
+            return self.style_set(id, &key, value, strict, doc);
+        }
         if matches!(receiver, Value::Node(_) | Value::Document | Value::Window)
             && let Ok(name) = key.to_utf8()
             && event_handler_name(&name)
@@ -6213,6 +6263,9 @@ impl Runtime {
         }
     }
     fn get(&mut self, receiver: Value, key: &str, doc: &mut Document) -> Result<Value> {
+        if let Value::Style(id) = receiver {
+            return self.style_get(id, key, doc);
+        }
         if matches!(receiver, Value::Node(_) | Value::Document | Value::Window)
             && event_handler_name(key)
         {
@@ -6502,16 +6555,6 @@ impl Runtime {
                     _ => {}
                 }
             }
-            Value::Style(id) => {
-                self.work(1 + doc.attr(*id, "style").unwrap_or("").len() / 16)?;
-                if ["setProperty", "getPropertyValue", "removeProperty"].contains(&key) {
-                    return Ok(Self::native(key, receiver));
-                }
-                if key == "cssText" {
-                    return self.string(doc.attr(*id, "style").unwrap_or(""));
-                }
-                return self.string(style_get(doc, *id, &css_name(key)));
-            }
             Value::ClassList(id) => {
                 if ["add", "remove", "toggle", "contains"].contains(&key) {
                     return Ok(Self::native(key, receiver));
@@ -6681,16 +6724,7 @@ impl Runtime {
                     }
                 }
             }
-            Value::Style(id) => {
-                self.work(1 + doc.attr(id, "style").unwrap_or("").len() / 16)?;
-                let text = value.to_string();
-                self.charge(text.len())?;
-                if key == "cssText" {
-                    doc.set_attr(id, "style", &text);
-                } else {
-                    style_set(doc, id, &css_name(key), &text);
-                }
-            }
+            Value::Style(id) => return self.style_set(id, key, value, false, doc),
             _ => {
                 return Err(ScriptError::type_error(format!(
                     "cannot set property '{key}'"
@@ -7614,7 +7648,7 @@ impl Runtime {
     }
     fn regexp_last_index(&mut self, value: Value, index: usize, doc: &mut Document) -> Result<()> {
         self.write_reference(
-            Reference::Property(value, "lastIndex".into(), true),
+            Reference::Property(value, Value::String("lastIndex".into()), true),
             Value::Number(index as f64),
             doc,
         )
@@ -7887,7 +7921,7 @@ impl Runtime {
             let current = self.get(receiver.clone(), "lastIndex", doc)?;
             if !json_same_value(&current, &previous) {
                 self.write_reference(
-                    Reference::Property(receiver, "lastIndex".into(), true),
+                    Reference::Property(receiver, Value::String("lastIndex".into()), true),
                     previous,
                     doc,
                 )?;
@@ -8198,6 +8232,243 @@ impl Runtime {
         self.array(values)
     }
 
+    fn style_property_name(&mut self, name: &str) -> Result<Option<String>> {
+        self.work(name.len().saturating_add(1))?;
+        if name.len() > 256 || name.starts_with("--") {
+            return Ok(None);
+        }
+        self.charge(64 + name.len().saturating_mul(4))?;
+        let property = if name == "cssFloat" {
+            "float".to_owned()
+        } else {
+            css_name(name)
+        };
+        Ok(crate::cssom::recognized_property(&property).then_some(property))
+    }
+
+    fn style_source(&mut self, text: &JsString) -> Result<String> {
+        self.work(text.len().saturating_add(1))?;
+        if text.len() > crate::cssom::MAX_INLINE_BYTES {
+            return Err(ScriptError::resource("inline style string limit exceeded"));
+        }
+        self.charge(24 + text.len().saturating_mul(6))?;
+        // The CSSOMString boundary consistently uses USVString, as CSS.supports
+        // does. JavaScript keys and strings themselves remain UTF-16.
+        let text = text.to_utf8_lossy();
+        if text.len() > crate::cssom::MAX_INLINE_BYTES {
+            return Err(ScriptError::resource("inline style string limit exceeded"));
+        }
+        Ok(text)
+    }
+
+    fn style_parse(
+        &mut self,
+        id: NodeId,
+        extra_bytes: usize,
+        doc: &Document,
+    ) -> Result<crate::cssom::InlineStyle> {
+        let source = doc.attr(id, "style").unwrap_or("");
+        self.charge(crate::cssom::scratch_bytes(
+            source.len().saturating_add(extra_bytes),
+        ))?;
+        crate::cssom::InlineStyle::parse(source, &mut self.steps).map_err(style_limit)
+    }
+
+    fn style_commit(
+        &mut self,
+        id: NodeId,
+        style: &crate::cssom::InlineStyle,
+        doc: &mut Document,
+    ) -> Result<()> {
+        let source = style.serialize(&mut self.steps).map_err(style_limit)?;
+        self.work(source.len().saturating_add(1))?;
+        self.charge(source.len().saturating_add(24))?;
+        doc.set_attr(id, "style", &source);
+        Ok(())
+    }
+
+    fn style_get(&mut self, id: NodeId, key: &str, doc: &mut Document) -> Result<Value> {
+        self.work(key.len().saturating_add(1))?;
+        if let Some(method) = style_method(key) {
+            self.charge(64 + method.len())?;
+            return Ok(Self::native(method, Value::Undefined));
+        }
+        if key == "parentRule" {
+            return Ok(Value::Null);
+        }
+        if matches!(key, "cssText" | "length") || style_index(key).is_some() {
+            let style = self.style_parse(id, key.len(), doc)?;
+            if key == "length" {
+                return Ok(Value::Number(style.len() as f64));
+            }
+            if let Some(index) = style_index(key) {
+                return if index < style.len() {
+                    self.string(style.item(index))
+                } else {
+                    Ok(Value::Undefined)
+                };
+            }
+            let source = style.serialize(&mut self.steps).map_err(style_limit)?;
+            return self.string(source);
+        }
+        if let Some(property) = self.style_property_name(key)? {
+            let style = self.style_parse(id, property.len(), doc)?;
+            let value = style
+                .get_property_value(&property, &mut self.steps)
+                .map_err(style_limit)?;
+            return self.string(value);
+        }
+        self.charge(24 + key.len().saturating_mul(2))?;
+        Ok(self
+            .lookup_property(&Value::Style(id), &key.into(), doc)?
+            .unwrap_or(Value::Undefined))
+    }
+
+    fn style_has(&mut self, id: NodeId, key: &JsString, doc: &mut Document) -> Result<bool> {
+        self.work(key.len().saturating_add(1))?;
+        self.charge(24 + key.len().saturating_mul(6))?;
+        if let Ok(name) = key.to_utf8() {
+            if style_method(&name).is_some()
+                || matches!(name.as_str(), "cssText" | "length" | "parentRule")
+                || self.style_property_name(&name)?.is_some()
+            {
+                return Ok(true);
+            }
+            if let Some(index) = style_index(&name) {
+                return Ok(index < self.style_parse(id, name.len(), doc)?.len());
+            }
+        }
+        Ok(self.find_property(&Value::Style(id), key)?.is_some())
+    }
+
+    fn style_set(
+        &mut self,
+        id: NodeId,
+        key: &str,
+        value: Value,
+        strict: bool,
+        doc: &mut Document,
+    ) -> Result<()> {
+        self.work(key.len().saturating_add(1))?;
+        if matches!(key, "length" | "parentRule") || style_index(key).is_some() {
+            return Self::failed_write(strict);
+        }
+        if key == "cssText" {
+            let value = self.string_hint(value, doc)?;
+            let source = self.style_source(&value)?;
+            self.charge(crate::cssom::scratch_bytes(source.len()))?;
+            let style =
+                crate::cssom::InlineStyle::parse(&source, &mut self.steps).map_err(style_limit)?;
+            return self.style_commit(id, &style, doc);
+        }
+        let Some(property) = self.style_property_name(key)? else {
+            return Err(ScriptError::unsupported(
+                "inline style expando or method replacement is not implemented",
+            ));
+        };
+        let value = if value == Value::Null {
+            JsString::default()
+        } else {
+            self.string_hint(value, doc)?
+        };
+        let value = self.style_source(&value)?;
+        // Author conversion may have changed this node's style. Parse only now.
+        let mut style = self.style_parse(id, property.len().saturating_add(value.len()), doc)?;
+        if style
+            .set_property(&property, &value, "", &mut self.steps)
+            .map_err(style_limit)?
+        {
+            self.style_commit(id, &style, doc)?;
+        }
+        Ok(())
+    }
+
+    fn style_native(
+        &mut self,
+        method: &str,
+        receiver: Value,
+        args: &[Value],
+        doc: &mut Document,
+    ) -> Result<Value> {
+        let Value::Style(id) = receiver else {
+            return Err(ScriptError::type_error(
+                "CSSStyleDeclaration receiver required",
+            ));
+        };
+        let required = if method == "setProperty" { 2 } else { 1 };
+        if args.len() < required {
+            return Err(ScriptError::type_error(
+                "not enough CSSStyleDeclaration arguments",
+            ));
+        }
+        if method == "item" {
+            let index = to_i32(self.number_value(args[0].clone(), doc)?) as u32 as usize;
+            let style = self.style_parse(id, 0, doc)?;
+            return self.string(style.item(index));
+        }
+        let name = self.string_hint(args[0].clone(), doc)?;
+        // Web IDL conversion completes left-to-right before the CSS operation,
+        // including value/priority for an unsupported or malformed property.
+        let mut value = JsString::default();
+        let mut priority = JsString::default();
+        if method == "setProperty" {
+            if args[1] != Value::Null {
+                value = self.string_hint(args[1].clone(), doc)?;
+            }
+            if let Some(argument) = args.get(2)
+                && !matches!(argument, Value::Undefined | Value::Null)
+            {
+                priority = self.string_hint(argument.clone(), doc)?;
+            }
+        }
+        let name = self.style_source(&name)?;
+        let value = self.style_source(&value)?;
+        let priority = self.style_source(&priority)?;
+        let extra = name
+            .len()
+            .saturating_add(value.len())
+            .saturating_add(priority.len());
+        let mut style = self.style_parse(id, extra, doc)?;
+        match method {
+            "getPropertyValue" => {
+                let value = style
+                    .get_property_value(&name, &mut self.steps)
+                    .map_err(style_limit)?;
+                self.string(value)
+            }
+            "getPropertyPriority" => {
+                let value = style
+                    .get_property_priority(&name, &mut self.steps)
+                    .map_err(style_limit)?;
+                self.string(value)
+            }
+            "removeProperty" => {
+                let previous_length = style.len();
+                let previous = style
+                    .remove_property(&name, &mut self.steps)
+                    .map_err(style_limit)?;
+                // Allocate the result before the one final DOM mutation.
+                let result = self.string(previous)?;
+                if style.len() != previous_length {
+                    self.style_commit(id, &style, doc)?;
+                }
+                Ok(result)
+            }
+            "setProperty" => {
+                if style
+                    .set_property(&name, &value, &priority, &mut self.steps)
+                    .map_err(style_limit)?
+                {
+                    self.style_commit(id, &style, doc)?;
+                }
+                Ok(Value::Undefined)
+            }
+            _ => Err(ScriptError::unsupported(
+                "unknown CSSStyleDeclaration operation",
+            )),
+        }
+    }
+
     fn css_supports(&mut self, args: &[Value], doc: &mut Document) -> Result<Value> {
         let Some(first) = args.first() else {
             return Err(ScriptError::type_error(
@@ -8263,6 +8534,9 @@ impl Runtime {
         args: Vec<Value>,
         doc: &mut Document,
     ) -> Result<Value> {
+        if let Some(method) = native.name.strip_prefix("CSSStyleDeclaration.") {
+            return self.style_native(method, native.receiver.clone(), &args, doc);
+        }
         if native.name == "CSS.supports" {
             return self.css_supports(&args, doc);
         }
@@ -9286,26 +9560,6 @@ impl Runtime {
                 }
                 return self.string(native.receiver.js_string());
             }
-            Value::Style(id) => {
-                self.work(1 + doc.attr(*id, "style").unwrap_or("").len() / 16)?;
-                let property = arg(0).to_string();
-                let previous = style_get(doc, *id, &property);
-                if name == "getPropertyValue" {
-                    return self.string(previous);
-                }
-                let value = if name == "removeProperty" {
-                    String::new()
-                } else {
-                    arg(1).to_string()
-                };
-                self.charge(property.len() + value.len() + 64)?;
-                style_set(doc, *id, &property, &value);
-                return if name == "removeProperty" {
-                    self.string(previous)
-                } else {
-                    Ok(Value::Undefined)
-                };
-            }
             Value::ClassList(id) => {
                 self.work(1 + doc.attr(*id, "class").unwrap_or("").len() / 16)?;
                 let mut classes: Vec<String> = doc
@@ -9999,30 +10253,31 @@ fn css_name(name: &str) -> String {
     }
     result
 }
-fn style_get(doc: &Document, id: NodeId, key: &str) -> String {
-    doc.attr(id, "style")
-        .unwrap_or("")
-        .split(';')
-        .filter_map(|entry| entry.split_once(':'))
-        .filter(|(name, _)| name.trim().eq_ignore_ascii_case(key))
-        .map(|(_, value)| value.trim())
-        .next_back()
-        .unwrap_or("")
-        .to_owned()
+fn style_limit(_: crate::cssom::Error) -> ScriptError {
+    ScriptError::resource("inline declaration limit exceeded")
 }
-fn style_set(doc: &mut Document, id: NodeId, key: &str, value: &str) {
-    let mut styles: Vec<String> = doc
-        .attr(id, "style")
-        .unwrap_or("")
-        .split(';')
-        .filter_map(|entry| entry.split_once(':'))
-        .filter(|(name, _)| !name.trim().eq_ignore_ascii_case(key))
-        .map(|(name, value)| format!("{}: {}", name.trim(), value.trim()))
-        .collect();
-    if !value.is_empty() {
-        styles.push(format!("{key}: {value}"));
+fn style_method(key: &str) -> Option<&'static str> {
+    match key {
+        "getPropertyValue" => Some("CSSStyleDeclaration.getPropertyValue"),
+        "getPropertyPriority" => Some("CSSStyleDeclaration.getPropertyPriority"),
+        "setProperty" => Some("CSSStyleDeclaration.setProperty"),
+        "removeProperty" => Some("CSSStyleDeclaration.removeProperty"),
+        "item" => Some("CSSStyleDeclaration.item"),
+        _ => None,
     }
-    doc.set_attr(id, "style", &styles.join("; "));
+}
+fn style_index(key: &str) -> Option<usize> {
+    if key.is_empty() || key.len() > 10 || key.starts_with('0') && key != "0" {
+        return None;
+    }
+    if !key.bytes().all(|byte| byte.is_ascii_digit()) {
+        return None;
+    }
+    // Web IDL indexed property names exclude 2^32 - 1.
+    key.parse::<u32>()
+        .ok()
+        .filter(|index| *index != u32::MAX)
+        .map(|index| index as usize)
 }
 fn document_element(doc: &Document) -> Option<NodeId> {
     doc.nodes
@@ -10155,6 +10410,303 @@ mod tests {
     use super::*;
     fn run(source: &str) -> Result<Value> {
         Runtime::new().execute(source, &mut Document::parse("<body></body>"))
+    }
+
+    #[test]
+    fn inline_style_aliases_existence_and_indexed_reads_agree() {
+        assert_eq!(
+            run(r#"
+            var style = document.body.style;
+            style.backgroundColor = 'red';
+            style.cssFloat = 'left';
+            style.setProperty('--Tone', 'blue');
+            ('backgroundColor' in style) && ('background-color' in style) &&
+            ('cssFloat' in style) && ('float' in style) && ('color' in style) &&
+            !('COLOR' in style) && !('--Tone' in style) &&
+            !('inventedStyle' in style) && style.inventedStyle === undefined &&
+            style['--Tone'] === undefined && style.color === '' &&
+            style['background-color'] === 'red' && style.float === 'left' &&
+            style.getPropertyValue('--Tone') === 'blue' &&
+            style.length === 3 && style[0] === 'background-color' &&
+            ('0' in style) && !('3' in style) && !('01' in style) &&
+            style[3] === undefined && style.item(3) === '' &&
+            style.item(4294967296) === 'background-color' &&
+            style.parentRule === null;
+        "#)
+            .unwrap(),
+            Value::Bool(true)
+        );
+        for source in [
+            "document.body.style.inventedStyle = 'red'",
+            "Object.getOwnPropertyDescriptor(document.body.style, 'color')",
+        ] {
+            assert!(run(source).unwrap_err().is_unsupported(), "{source}");
+        }
+        assert_eq!(run("'use strict'; try { document.body.style.length = 3; } catch(e) { e instanceof TypeError; }").unwrap(), Value::Bool(true));
+    }
+
+    #[test]
+    fn inline_style_methods_have_metadata_brand_and_argument_conversion() {
+        assert_eq!(
+            run(r#"
+            var style = document.body.style;
+            var other = document.createElement('i').style;
+            var method = style.setProperty;
+            var name = Object.getOwnPropertyDescriptor(method, 'name');
+            var length = Object.getOwnPropertyDescriptor(method, 'length');
+            var order = '';
+            var text = {toString(){order += 'x'; return 'color';}};
+            var errors = 0;
+            try { method(text, text); } catch(e) { if(e instanceof TypeError) errors++; }
+            try { style.setProperty(text); } catch(e) { if(e instanceof TypeError) errors++; }
+            method.call(other, 'color', 'red', undefined, text);
+            var required = [style.getPropertyValue, style.getPropertyPriority,
+                            style.removeProperty, style.item];
+            for(var i = 0; i < required.length; i++) {
+                try { required[i].call(style); } catch(e) { if(e instanceof TypeError) errors++; }
+            }
+            errors === 6 && order === '' && other.color === 'red' && style.color === '' &&
+            method === other.setProperty && method.name === 'setProperty' && method.length === 2 &&
+            !('prototype' in method) && !name.writable && !name.enumerable && name.configurable &&
+            !length.writable && !length.enumerable && length.configurable &&
+            style.getPropertyValue.length === 1 && style.item.length === 1;
+        "#)
+            .unwrap(),
+            Value::Bool(true)
+        );
+    }
+
+    #[test]
+    fn inline_style_author_conversions_precede_snapshot_and_short_circuit_throws() {
+        assert_eq!(run(r#"
+            var style = document.body.style;
+            var order = '';
+            style.setProperty(
+                {toString(){order += 'p'; return 'COLOR';}},
+                {toString(){order += 'v'; style.setProperty('--saved', 'blue'); return 'red';}},
+                {toString(){order += 'i'; return 'IMPORTANT';}}
+            );
+            var first = order === 'pvi' && style.color === 'red' &&
+                style.getPropertyValue('--saved') === 'blue' && style.getPropertyPriority('color') === 'important';
+            order = '';
+            style.setProperty({toString(){order += 'p'; return 'bogus';}},
+                {toString(){order += 'v'; return 'red';}},
+                {toString(){order += 'i'; return '';}});
+            var invalid = order === 'pvi';
+            order = '';
+            try { style.setProperty('color', {toString(){order += 'v'; throw 42;}},
+                {toString(){order += 'i'; return '';}}); } catch(e) { order += e; }
+            first && invalid && order === 'v42' && style.color === 'red';
+        "#).unwrap(), Value::Bool(true));
+    }
+
+    #[test]
+    fn inline_style_priorities_null_undefined_and_case_are_distinct() {
+        assert_eq!(run(r#"
+            var style = document.body.style;
+            style.setProperty('COLOR', 'red', 'IMPORTANT');
+            style.setProperty('color', 'blue', ' important ');
+            var initial = style.color === 'red' && style.getPropertyPriority('cOlOr') === 'important';
+            style.setProperty('color', 'blue', undefined);
+            var reset = style.color === 'blue' && style.getPropertyPriority('color') === '';
+            style.setProperty('--Tone', undefined);
+            style.setProperty('--tone', 'red');
+            var cases = style.getPropertyValue('--Tone') === 'undefined' && style.getPropertyValue('--tone') === 'red';
+            style.color = null;
+            style.setProperty('--tone', null, 'invalid');
+            var removed = style.color === '' && style.getPropertyValue('--tone') === '';
+            style.setProperty('color', 'red', null);
+            style.setProperty('color', '', 'invalid');
+            initial && reset && cases && removed && style.color === '';
+        "#).unwrap(), Value::Bool(true));
+    }
+
+    #[test]
+    fn inline_style_noop_removal_does_not_create_or_normalize_attributes() {
+        let mut doc = Document::parse(
+            "<body><div id='raw' style='color:red; COLOR:blue !important; bogus:yes; color:green'></div></body>",
+        );
+        let raw = doc.query_selector("#raw").unwrap();
+        let original = doc.attr(raw, "style").unwrap().to_owned();
+        let mut runtime = Runtime::new();
+        assert_eq!(
+            runtime
+                .execute(
+                    r#"
+            var body = document.body.style;
+            var raw = document.getElementById('raw').style;
+            body.removeProperty('color') === '' && raw.removeProperty('width') === '';
+        "#,
+                    &mut doc
+                )
+                .unwrap(),
+            Value::Bool(true)
+        );
+        assert_eq!(doc.attr(doc.query_selector("body").unwrap(), "style"), None);
+        assert_eq!(doc.attr(raw, "style"), Some(original.as_str()));
+        assert_eq!(
+            runtime
+                .execute("raw.removeProperty('color')", &mut doc)
+                .unwrap(),
+            Value::String("blue".into())
+        );
+        assert_eq!(doc.attr(raw, "style"), Some(""));
+        doc.set_attr(raw, "style", "--empty: ; color: red");
+        assert_eq!(
+            runtime
+                .execute("raw.removeProperty('--empty')", &mut doc)
+                .unwrap(),
+            Value::String("".into())
+        );
+        assert!(!doc.attr(raw, "style").unwrap().contains("--empty"));
+    }
+
+    #[test]
+    fn inline_style_token_boundaries_and_utf16_css_boundary_are_preserved() {
+        assert_eq!(
+            run(r#"
+            var style = document.body.style;
+            style.cssText = '--note: "a;b:c"; color:red; color:blue !important; color:green';
+            var first = style.color === 'blue' && style.getPropertyValue('--note') === '"a;b:c"';
+            style.setProperty('color', 'red; width: 300px');
+            style.setProperty('color', 'red !important');
+            var invalid = style.color === 'blue' && style.width === '';
+            style.setProperty('--unicode', '\uD800');
+            var unicode = style.getPropertyValue('--unicode') === '\uFFFD';
+            var absent = style['\uD800'] === undefined && !('\uD800' in style);
+            style.cssText = {toString(){return 'color: red';}};
+            var canonical = style.cssText === 'color: red;';
+            style.cssText = null;
+            first && invalid && unicode && absent && canonical && style.length === 0;
+        "#)
+            .unwrap(),
+            Value::Bool(true)
+        );
+    }
+
+    #[test]
+    fn inline_style_quota_failures_are_uncatchable_and_leave_dom_unchanged() {
+        let mut doc = Document::parse("<body style='color: red'></body>");
+        let body = doc.query_selector("body").unwrap();
+        let mut runtime = Runtime::new();
+        runtime.steps = MAX_STEPS;
+        runtime.allocated = MAX_HEAP - 100;
+        let error = runtime
+            .style_set(body, "color", Value::String("blue".into()), false, &mut doc)
+            .unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(doc.attr(body, "style"), Some("color: red"));
+        let mut runtime = Runtime::new();
+        let error = runtime.execute("try { for(var n=0;n<10000;n++) document.body.style.color; } catch(e) { document.body.textContent='caught'; }", &mut doc).unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(doc.text_content(body), "");
+        assert_eq!(doc.attr(body, "style"), Some("color: red"));
+        doc.set_attr(
+            body,
+            "style",
+            &format!("--large: {}", "x".repeat(crate::cssom::MAX_INLINE_BYTES)),
+        );
+        let original = doc.attr(body, "style").unwrap().to_owned();
+        let error = Runtime::new()
+            .execute("document.body.style.color='blue'", &mut doc)
+            .unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(doc.attr(body, "style"), Some(original.as_str()));
+    }
+
+    #[test]
+    fn member_keys_use_string_hint_at_reference_consumption_and_keep_utf16() {
+        assert_eq!(run(r#"
+            var order = '';
+            var style = document.body.style;
+            var key = [];
+            key.toString = function(){order += 'k'; return 'backgroundColor';};
+            key.valueOf = function(){throw 'wrong hint';};
+            function receiver(){order += 'r'; return style;}
+            function value(){order += 'v'; return 'red';}
+            receiver()[key] = value();
+            var assigned = order === 'rvk';
+            order = '';
+            var read = receiver()[key];
+            var readOrder = order === 'rk';
+            function methodKey(){}
+            methodKey.toString = function(){order += 'm'; return 'setProperty';};
+            order = '';
+            receiver()[methodKey]('color', value());
+            var callOrder = order === 'rmv';
+            var plain = {};
+            var scalar = {toString(){return 'x';}, valueOf(){throw 'wrong hint';}};
+            plain[scalar] = 4;
+            var ordinary = plain.x === 4 && (scalar in plain) && delete plain[scalar] && !('x' in plain);
+            var nonscalar = [];
+            nonscalar.toString = function(){return '\uD800';};
+            plain[nonscalar] = 7;
+            plain['\uFFFD'] = 8;
+            var units = plain[nonscalar] === 7 && plain['\uFFFD'] === 8 && delete plain[nonscalar] && plain['\uD800'] === undefined;
+            Object.defineProperty(Object.prototype, '\uD800', {value: 19, configurable: true});
+            units = units && ('\uD800' in style) && style['\uD800'] === 19 && style['\uFFFD'] === undefined;
+            order = '';
+            try { receiver()[{toString(){order += 'e'; throw 5;}}] = value(); } catch(e) { order += e; }
+            assigned && readOrder && read === 'red' && callOrder && style.color === 'red' &&
+            ordinary && units && order === 'rve5';
+        "#).unwrap(), Value::Bool(true));
+    }
+
+    #[test]
+    fn member_references_defer_plain_assignment_and_cache_compound_and_update_keys() {
+        assert_eq!(run(r#"
+            var order = '';
+            var object = {};
+            var name = 'before';
+            var key = {toString(){order += 'k'; return name;}};
+            function rhs(){order += 'r'; name = 'after'; return 3;}
+            object[key] = rhs();
+            var plain = order === 'rk' && object.after === 3 && object.before === undefined;
+            object.after = 4;
+            order = '';
+            function compound(){order += 'r'; name = 'other'; return 2;}
+            object[key] += compound();
+            var compoundResult = order === 'kr' && object.after === 6 && object.other === undefined;
+            name = 'after';
+            object.after = {valueOf(){order += 'v'; name = 'other'; return 10;}};
+            order = '';
+            var previous = object[key]++;
+            var update = previous === 10 && order === 'kv' && object.after === 11 && object.other === undefined;
+            order = '';
+            try { object[key] = (function(){order += 'r'; throw 7;})(); } catch(e) { order += e; }
+            plain && compoundResult && update && order === 'r7';
+        "#).unwrap(), Value::Bool(true));
+    }
+
+    #[test]
+    fn member_null_bases_throw_before_key_coercion_but_after_assignment_rhs() {
+        for (expression, expected) in [
+            ("null[key]", "T"),
+            ("undefined[key]", "T"),
+            ("null[key](rhs())", "T"),
+            ("delete null[key]", "T"),
+            ("null[key]++", "T"),
+            ("null[key] += rhs()", "T"),
+            ("null[key] = rhs()", "rT"),
+            ("null[(order += 'e', key)]", "eT"),
+            ("null[(order += 'e', key)] = rhs()", "erT"),
+            ("null[key] = (function(){order += 'r'; throw 2;})()", "r2"),
+        ] {
+            let source = format!(
+                r#"
+                var order = '';
+                var key = {{toString(){{order += 'k'; return 'x';}}}};
+                function rhs(){{order += 'r'; return 1;}}
+                try {{ {expression}; }} catch(e) {{ order += e instanceof TypeError ? 'T' : e; }}
+                order;
+            "#
+            );
+            assert_eq!(
+                run(&source).unwrap(),
+                Value::String(expected.into()),
+                "{expression}"
+            );
+        }
     }
 
     #[test]
@@ -10569,7 +11121,10 @@ mod tests {
         runtime.dispatch_click(target, &mut doc).unwrap();
         let counter = doc.query_selector("#count").unwrap();
         assert_eq!(doc.text_content(counter), "2");
-        assert_eq!(style_get(&doc, counter, "color"), "red");
+        assert_eq!(
+            runtime.execute("out.style.color", &mut doc).unwrap(),
+            Value::String("red".into())
+        );
     }
 
     #[test]
