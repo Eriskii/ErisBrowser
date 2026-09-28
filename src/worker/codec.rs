@@ -8,7 +8,7 @@ use crate::{
     },
     graphics::{Color, DrawCommand, ImageStore, RasterImage, Rect},
     layout::{HitAction, HitRegion, LayoutResult},
-    page::Navigation,
+    page::{Navigation, TaskState},
 };
 use std::{
     collections::{BTreeMap, HashMap},
@@ -21,7 +21,7 @@ pub(super) const MAX_REQUEST: usize = 18 * 1024 * 1024;
 const MAX_STRING: usize = 16 * 1024 * 1024;
 const MAX_IMAGES: usize = 64 * 1024 * 1024;
 const MAX_COMMANDS: usize = 200_000;
-const MAGIC: &[u8] = b"ERW7";
+const MAGIC: &[u8] = b"ERW8";
 type Result<T> = std::result::Result<T, String>;
 
 pub(super) fn read_frame(input: &mut impl Read, limit: usize) -> Result<Vec<u8>> {
@@ -287,6 +287,7 @@ pub(super) fn encode_command(command: &Command) -> Result<Vec<u8>> {
             e.f32(*width);
             e.f32(*height);
         }
+        Command::RunTasks => e.byte(6),
     }
     let bytes = e.finish()?;
     if bytes.len() > MAX_REQUEST {
@@ -318,6 +319,7 @@ pub(super) fn decode_command(bytes: &[u8]) -> Result<Command> {
         5 => Command::DefaultSummary {
             node: d.count(MAX_NODES - 1)?,
         },
+        6 => Command::RunTasks,
         _ => return Err("unknown page command".into()),
     };
     d.end()?;
@@ -368,6 +370,11 @@ pub(super) fn decode_reply(bytes: &[u8]) -> Result<Reply> {
 fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
     e.u64(s.generation);
     e.u64(s.processed_edit_sequence);
+    e.byte(match s.task_state {
+        TaskState::Idle => 0,
+        TaskState::Pending => 1,
+        TaskState::Suspended => 2,
+    });
     e.string(&s.title);
     e.string(&s.url);
     e.f64(s.load_ms);
@@ -560,6 +567,12 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
 fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
     let generation = d.u64()?;
     let processed_edit_sequence = d.u64()?;
+    let task_state = match d.byte()? {
+        0 => TaskState::Idle,
+        1 => TaskState::Pending,
+        2 => TaskState::Suspended,
+        _ => return Err("unknown IPC task state".into()),
+    };
     let title = d.string(2048)?;
     let url = d.string(MAX_STRING)?;
     let load_ms = d.f64()?;
@@ -892,6 +905,7 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
     Ok(Snapshot {
         generation,
         processed_edit_sequence,
+        task_state,
         layout: LayoutResult {
             commands,
             hit_regions,
@@ -1350,6 +1364,7 @@ mod tests {
         let mut e = Encoder::new(99);
         e.u64(1); // generation
         e.u64(0); // edit sequence
+        e.byte(0); // idle tasks
         e.string("");
         e.string("about:blank");
         e.f64(0.0);
@@ -1487,6 +1502,7 @@ mod tests {
             let mut e = Encoder::new(99);
             e.u64(1);
             e.u64(0);
+            e.byte(0);
             e.string("");
             e.string("about:blank");
             e.f64(0.0);
@@ -1509,6 +1525,7 @@ mod tests {
             snapshot: Some(Snapshot {
                 generation: 7,
                 processed_edit_sequence: 3,
+                task_state: TaskState::Idle,
                 layout: page.layout(400.0, 300.0, &crate::graphics::Fonts::new()),
                 images: page.images,
                 document: page.document,
@@ -1519,6 +1536,27 @@ mod tests {
             }),
         }
     }
+    #[test]
+    fn task_commands_and_states_round_trip_and_unknown_states_reject_before_allocation() {
+        assert!(matches!(
+            decode_command(&encode_command(&Command::RunTasks).unwrap()).unwrap(),
+            Command::RunTasks
+        ));
+        for state in [TaskState::Idle, TaskState::Pending, TaskState::Suspended] {
+            let mut reply = reply_with_html("<details open>content</details>");
+            reply.snapshot.as_mut().unwrap().task_state = state;
+            let decoded = decode_reply(&encode_reply(&reply).unwrap()).unwrap();
+            assert_eq!(decoded.snapshot.unwrap().task_state, state);
+        }
+        let mut e = Encoder::new(99);
+        e.u64(1);
+        e.u64(0);
+        e.byte(3);
+        let bytes = e.finish().unwrap();
+        let mut d = Decoder::new(&bytes, 99).unwrap();
+        assert!(matches!(decode_snapshot(&mut d), Err(error) if error == "unknown IPC task state"));
+    }
+
     #[test]
     fn details_generated_summary_actions_round_trip_and_reject_forged_targets() {
         let mut reply = reply_with_html("<details id=d>contents</details><p id=p>ordinary</p>");

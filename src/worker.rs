@@ -9,7 +9,7 @@ use crate::{
     graphics::{Fonts, ImageStore},
     layout::LayoutResult,
     net,
-    page::{Navigation, Page},
+    page::{Navigation, Page, TaskState},
 };
 use std::{
     cell::Cell,
@@ -22,6 +22,7 @@ use url::Url;
 pub struct Snapshot {
     pub generation: u64,
     pub processed_edit_sequence: u64,
+    pub task_state: TaskState,
     pub layout: LayoutResult,
     pub images: ImageStore,
     pub document: Document,
@@ -66,6 +67,7 @@ pub enum Command {
         width: f32,
         height: f32,
     },
+    RunTasks,
 }
 pub struct Reply {
     pub snapshot: Option<Snapshot>,
@@ -89,6 +91,7 @@ pub struct WorkerClient {
     broker: Option<broker::BrokerClient>,
     executable: PathBuf,
     generation: u64,
+    scripts: bool,
     root: Option<PathBuf>,
     initial: Url,
     authorized: Navigation,
@@ -157,6 +160,7 @@ impl WorkerClient {
             broker: None,
             executable: executable.to_owned(),
             generation,
+            scripts,
             root,
             initial,
             authorized,
@@ -307,11 +311,7 @@ impl WorkerClient {
         };
         let validation = (|| {
             if let Some(snapshot) = &mut reply.snapshot {
-                if snapshot.generation != self.generation
-                    || !matches!(command, Command::Render { .. })
-                {
-                    return Err("unexpected page snapshot".to_owned());
-                }
+                validate_snapshot_metadata(snapshot, self.generation, self.scripts, &command)?;
                 if !(self.document_failed && snapshot.url == "eris:error") {
                     let committed = self
                         .committed
@@ -369,6 +369,20 @@ impl WorkerClient {
         }
         Ok(())
     }
+}
+fn validate_snapshot_metadata(
+    snapshot: &Snapshot,
+    generation: u64,
+    scripts: bool,
+    command: &Command,
+) -> Result<(), String> {
+    if snapshot.generation != generation || !matches!(command, Command::Render { .. }) {
+        return Err("unexpected page snapshot".into());
+    }
+    if !scripts && snapshot.task_state != TaskState::Idle {
+        return Err("page scheduled tasks without script authorization".into());
+    }
+    Ok(())
 }
 fn validate_committed(initial: &Url, committed: &Url) -> Result<(), String> {
     validate_address(committed)?;
@@ -467,6 +481,7 @@ pub fn serve() -> Result<(), String> {
                     page.navigate_fragment(target);
                 }
             }
+            Command::RunTasks => page.as_mut().ok_or("no page")?.run_pending_tasks(),
             Command::Render { width, height } => {
                 if !width.is_finite()
                     || !height.is_finite()
@@ -489,6 +504,7 @@ pub fn serve() -> Result<(), String> {
                 reply.snapshot = Some(Snapshot {
                     generation: init.generation,
                     processed_edit_sequence,
+                    task_state: page.task_state(),
                     layout: page.layout(width, height, &fonts),
                     images: page.images.clone(),
                     document: page.document.clone(),
@@ -527,6 +543,43 @@ pub fn apply_edit(page: &mut Page, node: NodeId, value: &str) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn forged_task_metadata_cannot_schedule_work_when_scripts_are_disabled() {
+        let page = Page::from_html(
+            Url::parse("about:blank").unwrap(),
+            "<details open></details>",
+            false,
+        );
+        let mut snapshot = Snapshot {
+            generation: 11,
+            processed_edit_sequence: 0,
+            task_state: TaskState::Idle,
+            layout: page.layout(320.0, 240.0, &Fonts::new()),
+            images: page.images,
+            document: page.document,
+            title: String::new(),
+            url: "about:blank".into(),
+            diagnostics: Vec::new(),
+            load_ms: 0.0,
+        };
+        let render = Command::Render {
+            width: 320.0,
+            height: 240.0,
+        };
+        assert!(validate_snapshot_metadata(&snapshot, 11, false, &render).is_ok());
+        for forged in [TaskState::Pending, TaskState::Suspended] {
+            snapshot.task_state = forged;
+            assert!(
+                validate_snapshot_metadata(&snapshot, 11, false, &render)
+                    .unwrap_err()
+                    .contains("without script authorization")
+            );
+            assert!(validate_snapshot_metadata(&snapshot, 11, true, &render).is_ok());
+        }
+        // Task execution returns an empty acknowledgement, never a snapshot.
+        assert!(validate_snapshot_metadata(&snapshot, 11, true, &Command::RunTasks).is_err());
+        assert!(validate_snapshot_metadata(&snapshot, 12, true, &render).is_err());
+    }
     #[test]
     fn committed_urls_come_from_checked_network_redirects() {
         let initial = Url::parse("https://first.example/").unwrap();

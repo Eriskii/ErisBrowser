@@ -25,6 +25,15 @@ pub struct Navigation {
     pub address: String,
     pub form_body: Option<String>,
 }
+
+/// Only details toggle tasks are currently hosted. This does not represent a
+/// complete HTML event loop or the JavaScript microtask queue.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum TaskState {
+    Idle,
+    Pending,
+    Suspended,
+}
 impl Navigation {
     pub fn get(address: impl Into<String>) -> Self {
         Self {
@@ -46,6 +55,7 @@ pub struct Page {
     external_styles: HashMap<NodeId, crate::stylesheet_loading::Sources>,
     inline_styles: HashMap<NodeId, (Arc<str>, crate::stylesheet_loading::Sources)>,
     policy_blocks_styles: bool,
+    tasks_suspended: bool,
 }
 
 impl Page {
@@ -349,6 +359,7 @@ impl Page {
             external_styles: HashMap::new(),
             inline_styles: HashMap::new(),
             policy_blocks_styles: false,
+            tasks_suspended: false,
         }
     }
     pub fn from_html(url: Url, html: &str, scripts_enabled: bool) -> Self {
@@ -655,12 +666,36 @@ impl Page {
     fn interaction_blocked(&self, node: NodeId) -> bool {
         self.document.interaction_blocked(node)
     }
+    pub fn task_state(&self) -> TaskState {
+        if !self.scripts_enabled {
+            TaskState::Idle
+        } else if self.tasks_suspended {
+            TaskState::Suspended
+        } else if self.document.has_pending_details_toggles() {
+            TaskState::Pending
+        } else {
+            TaskState::Idle
+        }
+    }
     pub fn disclosure_checkpoint(&mut self) {
-        if self.scripts_enabled
-            && self.document.has_pending_details_toggles()
+        if self.task_state() == TaskState::Pending
             && let Err(error) = self.runtime.dispatch_details_toggles(&mut self.document)
         {
-            self.diagnostics.push(format!("toggle: {error}"));
+            // A persistent allocation failure must not drive an idle IPC loop.
+            // Keep unstarted tasks but require a new document before retrying.
+            self.tasks_suspended = true;
+            self.diagnostics.push(format!(
+                "toggle: {error}; automatic task dispatch suspended until reload"
+            ));
+        }
+    }
+    /// Continue one bounded batch without requiring a click or edit. Rendering
+    /// itself never runs author callbacks, keeping snapshots deterministic.
+    pub fn run_pending_tasks(&mut self) {
+        if self.task_state() == TaskState::Pending {
+            self.disclosure_checkpoint();
+            // Quota failures can still leave visible, valid partial mutations.
+            self.refresh_inline_svg();
         }
     }
     pub fn click(&mut self, id: NodeId) -> Option<Navigation> {
@@ -1156,6 +1191,142 @@ fn bounded_image_decoder(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn idle_task_batches_finish_without_input_and_layout_never_dispatches() {
+        let mut page = Page::from_html(
+            Url::parse("https://example.test/").unwrap(),
+            &format!(
+                "<!doctype html><input id=n value=0 readonly>{}<script>let count=0;const n=document.getElementById('n');document.addEventListener('toggle',()=>{{count++;n.value=count;}},true);</script>",
+                "<details open></details>".repeat(150)
+            ),
+            true,
+        );
+        let output = page.document.query_selector("#n").unwrap();
+        assert_eq!(page.document.attr(output, "value").unwrap(), "64");
+        assert_eq!(page.task_state(), TaskState::Pending);
+        let fonts = Fonts::new();
+        page.layout(320.0, 240.0, &fonts);
+        page.layout(640.0, 480.0, &fonts);
+        assert_eq!(page.document.attr(output, "value").unwrap(), "64");
+        page.run_pending_tasks();
+        assert_eq!(page.document.attr(output, "value").unwrap(), "128");
+        assert_eq!(page.task_state(), TaskState::Pending);
+        page.run_pending_tasks();
+        assert_eq!(page.document.attr(output, "value").unwrap(), "150");
+        assert_eq!(page.task_state(), TaskState::Idle);
+        page.run_pending_tasks();
+        assert_eq!(page.document.attr(output, "value").unwrap(), "150");
+        assert!(page.diagnostics.is_empty(), "{:?}", page.diagnostics);
+    }
+    #[test]
+    fn task_quota_suspends_retries_without_losing_unstarted_work_or_svg_mutations() {
+        let mut page = Page::from_html(
+            Url::parse("https://example.test/").unwrap(),
+            &format!(
+                "<style>body{{margin:0}}details{{display:none}}svg{{position:absolute;left:0;top:40px}}</style><input id=n value=0 readonly>{}<svg width=20 height=10><rect id=r width=10 height=10 fill=red /></svg><script>let count=0;const n=document.getElementById('n');document.addEventListener('toggle',e=>{{count++;n.value=count;if(count===65){{e.target.open=false;const r=document.getElementById('r');r.setAttribute('fill','blue');r.setAttribute('width','20');while(true){{}}}}}},true);</script>",
+                "<details open></details>".repeat(150)
+            ),
+            true,
+        );
+        let output = page.document.query_selector("#n").unwrap();
+        assert_eq!(page.document.attr(output, "value").unwrap(), "64");
+        assert_eq!(painted_inline_svg_pixels(&page), (0xff0000, 0xffffff));
+        page.run_pending_tasks();
+        assert_eq!(page.document.attr(output, "value").unwrap(), "65");
+        assert_eq!(page.task_state(), TaskState::Suspended);
+        assert!(page.document.has_pending_details_toggles());
+        assert_eq!(painted_inline_svg_pixels(&page), (0x0000ff, 0x0000ff));
+        let diagnostics = page.diagnostics.clone();
+        assert_eq!(diagnostics.len(), 1);
+        assert!(diagnostics[0].contains("suspended until reload"));
+        for _ in 0..3 {
+            page.run_pending_tasks();
+            page.disclosure_checkpoint();
+        }
+        assert_eq!(page.document.attr(output, "value").unwrap(), "65");
+        assert_eq!(page.diagnostics, diagnostics);
+        assert!(page.document.has_pending_details_toggles());
+    }
+    #[test]
+    fn persistent_allocation_failure_suspends_task_preflight_without_consuming_the_task() {
+        let html = "<details id=d></details><input id=n value=untouched><script>const d=document.getElementById('d');const out=document.getElementById('n');d.ontoggle=()=>{out.value='ran';};</script>";
+        let mut page = Page::from_html(Url::parse("https://example.test/").unwrap(), html, true);
+        assert_eq!(page.task_state(), TaskState::Idle);
+        page.runtime
+            .execute("d.open=true", &mut page.document)
+            .unwrap();
+        assert_eq!(page.task_state(), TaskState::Pending);
+        let queued = page.document.peek_details_toggle().unwrap();
+        let output = page.document.query_selector("#n").unwrap();
+
+        // Each execution gets a fresh instruction budget, but retained runtime
+        // allocations share one document budget. Reach that budget through the
+        // public interpreter instead of directly changing its private counters.
+        let mut exhausted = false;
+        for _ in 0..100 {
+            if let Err(error) = page.runtime.execute("new Array(10000)", &mut page.document) {
+                assert!(error.is_resource_limit(), "{error}");
+                assert!(error.message.contains("allocation"), "{error}");
+                exhausted = true;
+                break;
+            }
+        }
+        assert!(
+            exhausted,
+            "fixture must exhaust the persistent allocation budget"
+        );
+        assert!(page.diagnostics.is_empty());
+        page.run_pending_tasks();
+        assert_eq!(page.task_state(), TaskState::Suspended);
+        assert_eq!(page.document.peek_details_toggle(), Some(queued));
+        assert!(!page.document.details_toggle_running());
+        assert_eq!(page.document.attr(output, "value"), Some("untouched"));
+        let diagnostics = page.diagnostics.clone();
+        assert_eq!(diagnostics.len(), 1);
+        assert!(diagnostics[0].contains("allocation limit"));
+        assert!(diagnostics[0].contains("suspended until reload"));
+        for _ in 0..10 {
+            page.run_pending_tasks();
+            page.disclosure_checkpoint();
+        }
+        assert_eq!(page.document.peek_details_toggle(), Some(queued));
+        assert!(!page.document.details_toggle_running());
+        assert_eq!(page.document.attr(output, "value"), Some("untouched"));
+        assert_eq!(page.diagnostics, diagnostics);
+
+        let mut fresh = Page::from_html(Url::parse("https://example.test/").unwrap(), html, true);
+        fresh
+            .runtime
+            .execute("d.open=true", &mut fresh.document)
+            .unwrap();
+        assert_eq!(fresh.task_state(), TaskState::Pending);
+        fresh.run_pending_tasks();
+        assert_eq!(fresh.task_state(), TaskState::Idle);
+        assert!(!fresh.document.has_pending_details_toggles());
+        let output = fresh.document.query_selector("#n").unwrap();
+        assert_eq!(fresh.document.attr(output, "value"), Some("ran"));
+        assert!(fresh.diagnostics.is_empty());
+    }
+    #[test]
+    fn disabled_scripts_never_schedule_parse_generated_tasks() {
+        for html in [
+            "<details open></details>",
+            "<meta http-equiv=Content-Security-Policy content=\"default-src 'none'\"><details open></details>",
+        ] {
+            for scripts in [false, true] {
+                if scripts && !html.starts_with("<meta") {
+                    continue;
+                }
+                let mut page =
+                    Page::from_html(Url::parse("https://example.test/").unwrap(), html, scripts);
+                assert!(page.document.has_pending_details_toggles());
+                assert_eq!(page.task_state(), TaskState::Idle);
+                page.run_pending_tasks();
+                assert!(page.document.has_pending_details_toggles());
+                assert_eq!(page.task_state(), TaskState::Idle);
+            }
+        }
+    }
     fn painted_inline_svg_pixels(page: &Page) -> (u32, u32) {
         let fonts = Fonts::new();
         let layout = page.layout(80.0, 80.0, &fonts);

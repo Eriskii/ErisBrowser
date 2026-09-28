@@ -286,6 +286,12 @@
       "reference": "flex-align-content-distributed-ref.html"
     },
     {
+      "name": "selector-comments",
+      "description": "Selector comments preserve token boundaries and real whitespace across matching and supports conditions.",
+      "test": "selector-comments.html",
+      "reference": "selector-comments-ref.html"
+    },
+    {
       "name": "details-closed-open",
       "description": "Closed disclosure omits its content; presence of open, including open=false, reveals it.",
       "test": "details-closed-open.html",

@@ -1,5 +1,81 @@
 # Validation record
 
+## Selector tokens and bounded native task continuation
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and the explicit `--include-ignored` run pass. The **628 Rust tests**
+comprise 508 library, 35 browser/editor, four HTML adapter, six JavaScript
+adapter, five stress-invariant, four CLI, 17 network, 28 pipeline and 21
+real-worker tests. None remain ignored. **47 Python checks** and **51 exact
+pixel references** pass, including the new independent selector-comment pair.
+These are bounded implementation checks, not platform-wide conformance or an
+independent security audit.
+
+Matching, specificity, candidate indexing and selector capability queries now
+share token-aware grammar. Comments preserve token separation without creating
+whitespace or merging names. Direct conditions, raw stylesheet preludes and
+conditional imports agree. Review corrected malformed functional pseudo
+acceptance, quoted delimiters affecting specificity, pseudo/modifier casing,
+large `An+B` arithmetic and empty forgiving-list behavior. Thirteen independent
+DOM/CSS matching comparisons, 10,000 UTF-8-safe mutations and four hostile
+bounds probes pass. Escaped selectors, namespaces, advanced selector features
+and complete declaration tokenization remain unsupported; the
+[feature-query record](../tests/conformance/supports.md) gives exact scope and
+work/storage bounds.
+
+Disclosure tasks now keep queued records, element trackers and the active task
+separate. Reentrant changes retain the correct original old state; finishing
+clears the tracker without deleting its queued replacement. Exact identities,
+nested synthetic dispatch, named groups, batch-boundary interleavings and
+failure cleanup are covered. All **119 script tests** pass.
+
+The native bridge continues pending notifications in interruptible batches,
+with at most 64 events and one shared 100,000-step budget per checkpoint. Input,
+navigation and shutdown retain priority. ERW8 carries validated
+idle/pending/suspended state and a separate task command; rendering invokes no
+author callbacks. The parent also checks task state against its trusted script
+authorization. Quota failure suspends automatic retries until document
+replacement, preserving unstarted notifications. Regressions cover 150 queued
+events, persistent allocation exhaustion, callback instruction exhaustion,
+partial SVG updates, disabled scripts and cancellation after sending the task
+command. The complete HTML event loop, timers and microtasks remain absent.
+
+The native-window probe first captured **64** delivered notifications. A later
+capture of that same owned window showed **150**, without clicking or editing
+page controls. UI process `1876256` exited with status zero; it, renderer `1876259`
+and broker `1876260` were all gone afterward. The later compositor
+capture was restricted to the focused test window; it is a visual continuation
+check, not a GPU backend result. Session artifacts are
+`artifacts/window-idle-tasks.png`, `window-idle-tasks-settled.png` and
+`window-idle-tasks-processes.json`.
+
+Pinned upstream results remain **3,868 matched / two mismatched / six
+unsupported** HTML trees; Test262 **536 passed / 116 unsupported**, RegExp
+**250 / 40**, and templates **82 / 32**. Harness preflights pass and no prior
+pass regresses. Corpus bytes, selection policy and baselines are unchanged.
+The final 15,000-case deterministic mutation run reports zero caught panics or
+invariant failures. A new comment-token seed changes the HTML mutation inputs;
+its acceptance/output counts are not a comparison against earlier seeds.
+
+The [warm measurement](benchmark-tasks-selectors.json) covers nine views at
+1180×880 over 100 iterations, with verified input/binary hashes. It measures
+style/layout/software painting, excludes task execution and the native loop,
+and establishes no Chromium performance result. Vulkan remains a documented
+[future backend](vulkan-rendering.md).
+
+Final release SHA-256 values:
+
+| Binary | SHA-256 |
+|---|---|
+| `eris-browser` | `f9cd09b5d56b79e4ac8c157047e03b1cf8ae5edbf747455317e1bc2073114a1f` |
+| `eris-js` | `52a14ad7a57803237be0c9b020321528171221024476324f5b20644a5c86a8da` |
+| `eris-dom` | `ecf9052c43c5a3a968596c31c43a6baca92a4bdd3b309d127ebe23058d64bafc` |
+| `eris-stress` | `165bdaa729f49e142a77c9ba93bfcd8e61365f8ac929354652cf8f9dc0d76f68` |
+
+Detailed session logs and reports use the `tasks-selectors-final` suffix under
+`artifacts/`. Source, adapter and benchmark hashes were checked after the final
+build. The earlier records below retain their own historical scope and counts.
+
 ## Disclosures, feature queries, object literals and worker measurements
 
 Recorded September 28, 2026 UTC on the same x86-64 Linux/Rust setup. The final

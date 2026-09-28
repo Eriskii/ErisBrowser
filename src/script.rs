@@ -3868,6 +3868,11 @@ impl Runtime {
     /// Host task checkpoint: coalesced details notifications share one budget.
     /// Tasks beyond the checkpoint limit remain queued for a later checkpoint.
     pub fn dispatch_details_toggles(&mut self, document: &mut Document) -> Result<()> {
+        if document.details_toggle_running() {
+            return Err(ScriptError::type_error(
+                "details checkpoint is already running",
+            ));
+        }
         self.steps = MAX_STEPS;
         for _ in 0..64 {
             let Some(task) = document.peek_details_toggle() else {
@@ -3876,7 +3881,7 @@ impl Runtime {
             // Preflight the event and path before consuming the queued task.
             // Once dispatch starts, ordinary listener errors are reported and
             // quota errors terminate the task without replaying its callbacks.
-            let mut cursor = Some(task.node);
+            let mut cursor = Some(task.event.node);
             let mut path_length = 2usize; // Document/window upper bound.
             while let Some(node) = cursor {
                 self.tick()?;
@@ -3886,20 +3891,41 @@ impl Runtime {
                 path_length += 1;
                 cursor = document.nodes.get(node).and_then(|node| node.parent);
             }
-            self.work(path_length)?;
+            // Reserve the bounded ordered-map operations for begin and finish.
+            // Cleanup must run even if callbacks spend the remaining budget.
+            self.work(128 + path_length)?;
             self.charge(path_length.saturating_mul(std::mem::size_of::<EventTarget>()))?;
             let event =
                 self.event_object("toggle".into(), false, false, false, Value::Null, false)?;
             self.attach_toggle_state(
                 &event,
-                if task.old_open { "open" } else { "closed" }.into(),
-                if task.new_open { "open" } else { "closed" }.into(),
+                if task.event.old_open {
+                    "open"
+                } else {
+                    "closed"
+                }
+                .into(),
+                if task.event.new_open {
+                    "open"
+                } else {
+                    "closed"
+                }
+                .into(),
                 Value::Null,
             )?;
             let id = self.event_index(&event)?;
             self.events[id].trusted = true;
-            document.take_details_toggle();
-            self.dispatch_event_object(EventTarget::Node(task.node), event, None, document)?;
+            let task = document
+                .begin_details_toggle(task.id)
+                .ok_or_else(|| ScriptError::new("details task changed during preflight"))?;
+            let result = self.dispatch_event_object(
+                EventTarget::Node(task.event.node),
+                event,
+                None,
+                document,
+            );
+            document.finish_details_toggle(task.id);
+            result?;
         }
         Ok(())
     }
@@ -12223,7 +12249,7 @@ mod tests {
         "#,&mut document).unwrap();
         runtime.dispatch_details_toggles(&mut document).unwrap();
         runtime.execute(r#"
-            assert.sameValue(count,3);assert.sameValue(trace,'closed>open;open>closed;');assert.sameValue(d.open,false);
+            assert.sameValue(count,3);assert.sameValue(trace,'closed>open;closed>closed;');assert.sameValue(d.open,false);
             assert.sameValue(inlineCount,1);assert.sameValue(last.defaultPrevented,false);
             var detached=document.createElement('details'),detachedCount=0;
             detached.ontoggle=function(e){detachedCount++;assert.sameValue(e.composedPath().length,1);};detached.open=true;
@@ -12263,6 +12289,7 @@ mod tests {
         let mut document = Document::parse("<details></details>");
         let node = document.query_selector("details").unwrap();
         document.set_attr(node, "open", "");
+        let queued = document.peek_details_toggle().unwrap();
         runtime.allocated = MAX_HEAP;
         assert!(
             runtime
@@ -12270,8 +12297,19 @@ mod tests {
                 .unwrap_err()
                 .is_resource_limit()
         );
-        assert_eq!(document.peek_details_toggle().unwrap().node, node);
+        assert_eq!(document.peek_details_toggle(), Some(queued));
+        assert!(!document.details_toggle_running());
+        document.remove_attr(node, "open");
+        let coalesced = document.peek_details_toggle().unwrap();
+        assert_eq!(
+            (coalesced.event.old_open, coalesced.event.new_open),
+            (false, false)
+        );
+        document.begin_details_toggle(coalesced.id).unwrap();
+        assert!(!document.has_pending_details_toggles());
+        assert!(document.finish_details_toggle(coalesced.id));
         assert_eq!(runtime.stack_units, 0);
+        assert!(!document.details_toggle_running());
 
         let mut runtime = Runtime::new();
         let mut document = Document::parse("<details id=a></details><details id=b></details>");
@@ -12286,13 +12324,185 @@ mod tests {
                 .unwrap_err()
                 .is_resource_limit()
         );
-        assert_eq!(document.peek_details_toggle().unwrap().node, b);
+        assert_eq!(document.peek_details_toggle().unwrap().event.node, b);
         assert_eq!(runtime.stack_units, 0);
         assert!(!runtime.events.last().unwrap().dispatching);
         assert_eq!(
             runtime.execute("caught", &mut document).unwrap(),
             Value::Bool(false)
         );
+    }
+
+    #[test]
+    fn disclosure_reentrant_trackers_cover_multiple_listeners_nested_events_and_groups() {
+        let cases = [
+            (
+                "<details id=d></details>",
+                r#"
+                var d=document.getElementById('d'),count=0,trace='';
+                d.addEventListener('toggle',function(e){count++;trace+=e.oldState+'>'+e.newState+';';});
+                d.addEventListener('toggle',function(){if(count===1)d.open=false;});
+                d.addEventListener('toggle',function(){if(count===1)d.open=true;});
+                d.open=true;
+            "#,
+                "closed>open;closed>open;",
+            ),
+            (
+                "<details id=d></details>",
+                r#"
+                var d=document.getElementById('d'),count=0,trace='';
+                d.ontoggle=function(e){
+                    trace+=(e.isTrusted?'N:':'S:')+e.oldState+'>'+e.newState+';';
+                    if(e.isTrusted && count++===0)d.dispatchEvent(new ToggleEvent('toggle',{oldState:'old',newState:'new'}));
+                    else if(!e.isTrusted)d.open=false;
+                };
+                d.open=true;
+            "#,
+                "N:closed>open;S:old>new;N:closed>closed;",
+            ),
+            (
+                "<details id=a name=g></details><details id=b name=g></details>",
+                r#"
+                var a=document.getElementById('a'),b=document.getElementById('b'),trace='';
+                document.addEventListener('toggle',function(e){trace+=e.target.id+':'+e.oldState+'>'+e.newState+';';},true);
+                a.ontoggle=function(e){if(e.newState==='open')b.open=true;};
+                a.open=true;
+            "#,
+                "a:closed>open;b:closed>open;a:closed>closed;",
+            ),
+        ];
+        for (html, source, expected) in cases {
+            let mut runtime = Runtime::new();
+            let mut document = Document::parse(html);
+            runtime.execute(source, &mut document).unwrap();
+            runtime.dispatch_details_toggles(&mut document).unwrap();
+            assert_eq!(
+                runtime.execute("trace", &mut document).unwrap().to_string(),
+                expected
+            );
+            assert!(!document.details_toggle_running());
+            assert!(!document.has_pending_details_toggles());
+        }
+    }
+
+    #[test]
+    fn disclosure_untracked_task_uses_newer_tracker_across_checkpoint_boundaries() {
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse(&format!(
+            "{}<details id=d></details>",
+            "<details></details>".repeat(63)
+        ));
+        runtime
+            .execute(
+                r#"
+            var d=document.getElementById('d'),count=0,trace='';
+            d.ontoggle=function(e){
+                count++;trace+=e.oldState+'>'+e.newState+';';
+                if(count===1){d.open=false;d.open=true;}
+                else if(count===2){d.open=true;}
+            };
+        "#,
+                &mut document,
+            )
+            .unwrap();
+        for node in document.query_selector_all("details") {
+            document.set_attr(node, "open", "");
+        }
+        runtime.dispatch_details_toggles(&mut document).unwrap();
+        assert_eq!(
+            runtime.execute("trace", &mut document).unwrap().to_string(),
+            "closed>open;"
+        );
+        let untracked = document.peek_details_toggle().unwrap();
+        assert_eq!(
+            (untracked.event.old_open, untracked.event.new_open),
+            (false, true)
+        );
+        runtime.execute("d.open=false;", &mut document).unwrap();
+        assert_eq!(document.peek_details_toggle(), Some(untracked));
+        runtime.dispatch_details_toggles(&mut document).unwrap();
+        assert_eq!(
+            runtime
+                .execute("trace+'|'+d.open", &mut document)
+                .unwrap()
+                .to_string(),
+            "closed>open;closed>open;open>open;|true"
+        );
+        assert!(!document.details_toggle_running());
+        assert!(!document.has_pending_details_toggles());
+    }
+
+    #[test]
+    fn disclosure_task_cleanup_preserves_reentrant_queue_after_resource_or_listener_errors() {
+        for failure in ["throw new Error('reported');", "while(true){}"] {
+            let mut runtime = Runtime::new();
+            let mut document = Document::parse("<details id=a></details><details id=b></details>");
+            runtime.execute(&format!(r#"
+                var a=document.getElementById('a'),b=document.getElementById('b'),count=0,trace='',caught=false;
+                a.ontoggle=function(e){{
+                    count++;trace+=e.oldState+'>'+e.newState+';';
+                    if(count===1){{a.open=false;try{{{failure}}}catch(e){{caught=true;throw e;}}}}
+                }};
+                a.open=true;b.open=true;
+            "#), &mut document).unwrap();
+            let result = runtime.dispatch_details_toggles(&mut document);
+            assert!(!document.details_toggle_running());
+            assert_eq!(runtime.calls, 0);
+            assert_eq!(runtime.stack_units, 0);
+            if failure.starts_with("while") {
+                assert!(result.unwrap_err().is_resource_limit());
+                assert_eq!(
+                    document.peek_details_toggle().unwrap().event.node,
+                    document.query_selector("#b").unwrap()
+                );
+                assert_eq!(
+                    runtime.execute("caught", &mut document).unwrap(),
+                    Value::Bool(false)
+                );
+                // Cleared tracker must not cancel the already queued closed>closed task.
+                runtime.execute("a.open=true;", &mut document).unwrap();
+                runtime.dispatch_details_toggles(&mut document).unwrap();
+                assert_eq!(
+                    runtime.execute("trace", &mut document).unwrap().to_string(),
+                    "closed>open;closed>closed;closed>open;"
+                );
+            } else {
+                result.unwrap();
+                assert_eq!(
+                    runtime.execute("trace", &mut document).unwrap().to_string(),
+                    "closed>open;closed>closed;"
+                );
+                assert_eq!(
+                    runtime.execute("caught", &mut document).unwrap(),
+                    Value::Bool(true)
+                );
+            }
+            assert!(!document.details_toggle_running());
+            assert!(!document.has_pending_details_toggles());
+        }
+    }
+
+    #[test]
+    fn disclosure_nested_checkpoint_rejection_does_not_reset_work_or_clear_active_task() {
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("<details id=a></details><details id=b></details>");
+        for node in document.query_selector_all("details") {
+            document.set_attr(node, "open", "");
+        }
+        let active = document.peek_details_toggle().unwrap();
+        document.begin_details_toggle(active.id).unwrap();
+        let pending = document.peek_details_toggle();
+        runtime.steps = 7;
+        let allocated = runtime.allocated;
+        let error = runtime.dispatch_details_toggles(&mut document).unwrap_err();
+        assert_eq!(error.intrinsic_error_name(), Some("TypeError"));
+        assert_eq!(runtime.steps, 7);
+        assert_eq!(runtime.allocated, allocated);
+        assert!(document.details_toggle_running());
+        assert_eq!(document.peek_details_toggle(), pending);
+        assert!(document.finish_details_toggle(active.id));
+        runtime.dispatch_details_toggles(&mut document).unwrap();
+        assert!(!document.has_pending_details_toggles());
     }
 
     #[test]
@@ -12360,7 +12570,10 @@ mod tests {
 
         let mut runtime = Runtime::new();
         let mut document = Document::parse(&format!("<main>{markup}</main>"));
-        while document.take_details_toggle().is_some() {}
+        while let Some(task) = document.peek_details_toggle() {
+            document.begin_details_toggle(task.id).unwrap();
+            assert!(document.finish_details_toggle(task.id));
+        }
         let source = document.query_selector("main").unwrap();
         let before = document.nodes.len();
         assert!(

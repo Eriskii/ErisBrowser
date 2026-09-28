@@ -188,3 +188,30 @@ confined phases are retained in the JSON. PNG encoding and native presentation
 remain excluded. The disclosure fixture and confined path have no earlier
 recorded equivalent baseline. Vulkan and the requested Chromium threshold remain
 unverified.
+
+
+## Token-aware selectors and native task continuation
+
+Recorded September 28, 2026 UTC with the same 1180×880, 100-iteration
+warm style/layout/software-paint configuration. The [measurement record](benchmark-tasks-selectors.json)
+retains verified source and release-binary hashes.
+
+| Local fixture | Median | p95 |
+|---|---:|---:|
+| home | 5.065 ms | 5.265 ms |
+| gallery | 8.205 ms | 8.601 ms |
+| forms | 6.072 ms | 6.195 ms |
+| templates | 1.151 ms | 1.405 ms |
+| positioning | 1.127 ms | 1.252 ms |
+| events | 1.147 ms | 1.378 ms |
+| events-visible | 12.359 ms | 13.427 ms |
+| responsive | 2.001 ms | 2.427 ms |
+| disclosures | 1.216 ms | 1.293 ms |
+
+The warm loop includes the new shared selector compilation and matching path.
+It excludes script callbacks and native idle scheduling, along with the
+previously listed loading, IPC and presentation phases. No confined-worker
+benchmark was repeated for this checkpoint. These uncontrolled desktop
+measurements do not establish a causal speed change or the requested Chromium
+threshold. The [Vulkan design](vulkan-rendering.md) is published, but no GPU
+backend or GPU performance result exists yet.

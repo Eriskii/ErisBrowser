@@ -58,11 +58,25 @@ results from replacing newer input.
 Snapshots contain the DOM, display list, hit regions, shared raster images and
 page metadata. The parent checks their graph structure, namespace bindings,
 storage limits, geometry and raster dimensions before publishing them to the
-UI. The ERW7 format also validates reciprocal template/fragment ownership,
+UI. The ERW8 format also validates reciprocal template/fragment ownership,
 host-inclusive cycles/depth, canonical encoding metadata, frozen base URLs, fixed hit coordinates, generated-summary action hints and typed clip/fixed/opacity display scopes. Generated-summary hints require an active, visible HTML details element without an authored direct summary. Resource traffic has separate request/response messages. All pipe channels
 use bounded framing, nonblocking I/O and deadlines; cancellation remains latched
 across nested broker and decoder exchanges. Failure or replacement kills and reaps the
 corresponding children.
+
+Snapshots report an explicit idle, pending or suspended task state. While a
+document has pending disclosure notifications, the native bridge waits on its
+interruptible request condition with a 16 ms deadline, then sends `RunTasks`
+and renders another snapshot. Queued input, navigation and shutdown take
+precedence; the timer adds no request backlog. Each batch retains the shared
+100,000-step/64-notification limit. A checkpoint failure suspends automatic
+dispatch until document replacement, retaining unstarted notifications and
+preventing repeated attempts against an exhausted allocation budget. Task
+callbacks refresh inline SVG even after partial mutation followed by failure.
+`Render` runs no author callbacks. Headless/library callers can explicitly use
+`Page::run_pending_tasks`; CLI renders and benchmarks retain their fixed
+post-load checkpoint. This is an idle continuation mechanism for disclosure
+tasks, not the complete HTML event loop, timers or a microtask implementation.
 
 The painter runs in the UI and draws validated commands with bundled fonts and
 a glyph cache. Fixed scopes retain viewport coordinates and reset document ancestor clips to the caller viewport clip; both native and headless scrolling keep these offsets separate. Scrolling reuses the display list; edits currently recompute

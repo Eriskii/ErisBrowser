@@ -3,7 +3,7 @@ use eris::{
     dom::{Namespace, NodeId},
     graphics::{Canvas, Color, DrawCommand, Fonts, Rect},
     layout::HitAction,
-    page::Navigation,
+    page::{Navigation, TaskState},
     worker::{Command, Snapshot, WorkerClient},
 };
 use std::{
@@ -15,7 +15,7 @@ use std::{
         atomic::{AtomicU64, Ordering},
     },
     thread,
-    time::Instant,
+    time::{Duration, Instant},
 };
 use winit::{
     application::ApplicationHandler,
@@ -105,10 +105,12 @@ enum Request {
         generation: u64,
         address: String,
     },
+    RunTasks,
     Stop,
 }
 
 const MAX_PENDING_REQUESTS: usize = 64;
+const TASK_BATCH_INTERVAL: Duration = Duration::from_millis(16);
 
 #[derive(Default)]
 struct RequestState {
@@ -209,7 +211,7 @@ impl RequestQueue {
         Ok(())
     }
 
-    fn recv(&self) -> Option<Request> {
+    fn recv(&self, task_deadline: Option<Instant>) -> Option<Request> {
         let mut state = self.state.lock().unwrap_or_else(|error| error.into_inner());
         loop {
             if let Some(request) = state.pending.pop_front() {
@@ -218,10 +220,25 @@ impl RequestQueue {
             if state.stopped {
                 return None;
             }
-            state = self
-                .ready
-                .wait(state)
-                .unwrap_or_else(|error| error.into_inner());
+            if let Some(deadline) = task_deadline {
+                let now = Instant::now();
+                if now >= deadline {
+                    return Some(Request::RunTasks);
+                }
+                // Always recheck requests and Stop after wakeup, including
+                // timeout/spurious wakeups. UI work takes precedence over a
+                // ready page task; no timer request is added to the queue.
+                state = self
+                    .ready
+                    .wait_timeout(state, deadline - now)
+                    .unwrap_or_else(|error| error.into_inner())
+                    .0;
+            } else {
+                state = self
+                    .ready
+                    .wait(state)
+                    .unwrap_or_else(|error| error.into_inner());
+            }
         }
     }
 
@@ -285,7 +302,8 @@ fn worker(
     let mut edit_sequence = 0;
     let mut width = 1180.0;
     let mut height = 739.0;
-    while let Some(request) = requests.recv() {
+    let mut task_deadline = None;
+    while let Some(request) = requests.recv(task_deadline) {
         let command = match request {
             Request::Stop => break,
             Request::Load {
@@ -297,6 +315,7 @@ fn worker(
                 }
                 // A new document always gets a fresh sandbox and process.
                 drop(client.take());
+                task_deadline = None;
                 generation = id;
                 edit_sequence = 0;
                 match WorkerClient::spawn(scripts, &navigation, generation) {
@@ -361,6 +380,14 @@ fn worker(
                 }
                 Some(Command::Fragment { address })
             }
+            Request::RunTasks => {
+                task_deadline = None;
+                if client.is_none() || requests.cancelled(generation, &current) {
+                    drop(client.take());
+                    continue;
+                }
+                Some(Command::RunTasks)
+            }
         };
         let Some(active) = client.as_mut() else {
             continue;
@@ -399,6 +426,8 @@ fn worker(
             {
                 return Err("Page process returned an inconsistent document generation or edit acknowledgement".into());
             }
+            task_deadline = (snapshot.task_state == TaskState::Pending)
+                .then(|| Instant::now() + TASK_BATCH_INTERVAL);
             Ok(Some(snapshot))
         })();
         match result {
@@ -412,10 +441,12 @@ fn worker(
             Ok(_) => {
                 if requests.cancelled(generation, &current) {
                     drop(client.take());
+                    task_deadline = None;
                 }
             }
             Err(error) => {
                 drop(client.take());
+                task_deadline = None;
                 if !requests.cancelled(generation, &current)
                     && proxy
                         .send_event(Event::Failed { generation, error })
@@ -1911,6 +1942,7 @@ mod tests {
         let snapshot = Snapshot {
             generation: 1,
             processed_edit_sequence: 0,
+            task_state: TaskState::Idle,
             layout: document_layout(&document, &fonts),
             images: ImageStore::new(),
             document,
@@ -1977,12 +2009,12 @@ mod tests {
         browser.tab_focus();
         assert_eq!(browser.focused, Some(s));
         browser.key(Key::Named(NamedKey::Enter), None);
-        assert!(matches!(browser.tx.recv(),Some(Request::Click{node,..}) if node==s));
+        assert!(matches!(browser.tx.recv(None),Some(Request::Click{node,..}) if node==s));
         browser.tab_focus();
         assert_eq!(browser.focused, Some(fallback));
         browser.key(Key::Named(NamedKey::Space), None);
         assert!(
-            matches!(browser.tx.recv(),Some(Request::DefaultSummary{node,..}) if node==fallback)
+            matches!(browser.tx.recv(None),Some(Request::DefaultSummary{node,..}) if node==fallback)
         );
         let header = browser
             .snapshot
@@ -1998,7 +2030,7 @@ mod tests {
         browser.click();
         assert_eq!(browser.focused, Some(fallback));
         assert!(
-            matches!(browser.tx.recv(),Some(Request::DefaultSummary{node,..}) if node==fallback)
+            matches!(browser.tx.recv(None),Some(Request::DefaultSummary{node,..}) if node==fallback)
         );
         let mut clipped = editing_browser(
             "<style>details{height:0;overflow:hidden;border:2px solid}</style><details id=d></details><button id=b>end</button>",
@@ -2043,6 +2075,7 @@ mod tests {
         Snapshot {
             generation: old.generation,
             processed_edit_sequence: sequence,
+            task_state: old.task_state,
             layout: document_layout(&document, &browser.fonts),
             images: ImageStore::new(),
             document,
@@ -2141,7 +2174,7 @@ mod tests {
             Some("AÉ")
         );
         assert!(
-            matches!(browser.tx.recv(),Some(Request::Edit { sequence:2,value,.. }) if value=="aé")
+            matches!(browser.tx.recv(None),Some(Request::Edit { sequence:2,value,.. }) if value=="aé")
         );
     }
 
@@ -2161,7 +2194,7 @@ mod tests {
                 node: edited,
                 value,
                 ..
-            }) = browser.tx.recv()
+            }) = browser.tx.recv(None)
             else {
                 panic!("expected queued edit");
             };
@@ -2197,7 +2230,7 @@ mod tests {
         assert_eq!(browser.input_value, "é");
         browser.erase_text(true);
         assert!(
-            matches!(browser.tx.recv(),Some(Request::Edit { sequence:1,value,.. }) if value.is_empty())
+            matches!(browser.tx.recv(None),Some(Request::Edit { sequence:1,value,.. }) if value.is_empty())
         );
     }
 
@@ -2236,7 +2269,7 @@ mod tests {
         assert_eq!(browser.history, [original, target]);
         assert_eq!(browser.history_index, 1);
         assert!(
-            matches!(browser.tx.recv(),Some(Request::Fragment { generation:1,address }) if address==target)
+            matches!(browser.tx.recv(None),Some(Request::Fragment { generation:1,address }) if address==target)
         );
         browser.accept_snapshot(stale);
         assert_eq!(browser.address, target);
@@ -2256,7 +2289,7 @@ mod tests {
         assert_eq!(browser.generation(), 2);
         assert_eq!(browser.edit_sequence, 0);
         assert!(
-            matches!(browser.tx.recv(),Some(Request::Load { generation:2,navigation }) if navigation.address==address)
+            matches!(browser.tx.recv(None),Some(Request::Load { generation:2,navigation }) if navigation.address==address)
         );
     }
 
@@ -2274,14 +2307,14 @@ mod tests {
         assert_eq!(browser.history_index, 0);
         assert_eq!(browser.generation(), 1);
         assert!(
-            matches!(browser.tx.recv(),Some(Request::Fragment { address,.. }) if address==first)
+            matches!(browser.tx.recv(None),Some(Request::Fragment { address,.. }) if address==first)
         );
         browser.forward();
         assert_eq!(browser.address, second);
         assert_eq!(browser.history_index, 1);
         assert_eq!(browser.generation(), 1);
         assert!(
-            matches!(browser.tx.recv(),Some(Request::Fragment { address,.. }) if address==second)
+            matches!(browser.tx.recv(None),Some(Request::Fragment { address,.. }) if address==second)
         );
         assert_eq!(browser.history, [first, second]);
     }
@@ -2298,7 +2331,7 @@ mod tests {
         browser.navigate_request(Navigation::get("https://old.example/#target"), true);
         assert_eq!(browser.generation(), 3);
         assert!(matches!(
-            browser.tx.recv(),
+            browser.tx.recv(None),
             Some(Request::Load { generation: 3, .. })
         ));
         browser.accept_snapshot(stale);
@@ -2347,7 +2380,7 @@ mod tests {
         browser.focus_input(node);
         browser.insert_text("🦀");
         assert!(
-            matches!(browser.tx.recv(),Some(Request::Edit { generation:1,sequence:1,node:edited,value }) if edited==node && value=="é🦀")
+            matches!(browser.tx.recv(None),Some(Request::Edit { generation:1,sequence:1,node:edited,value }) if edited==node && value=="é🦀")
         );
         browser.input_value = "x".repeat(65_537);
         browser.send_edit(node);
@@ -2535,7 +2568,7 @@ mod tests {
         browser.focus_input(node);
         browser.insert_text("-pending");
         assert!(matches!(
-            browser.tx.recv(),
+            browser.tx.recv(None),
             Some(Request::Edit { sequence: 1, .. })
         ));
         let mut document = browser.snapshot.as_ref().unwrap().document.clone();
@@ -2625,7 +2658,7 @@ mod tests {
             browser.focus_input(node);
             browser.insert_text("-pending");
             assert!(matches!(
-                browser.tx.recv(),
+                browser.tx.recv(None),
                 Some(Request::Edit { sequence: 1, .. })
             ));
             let mut document = browser.snapshot.as_ref().unwrap().document.clone();
@@ -2746,18 +2779,21 @@ mod tests {
             .unwrap();
         assert_eq!(queue.state.lock().unwrap().pending.len(), 4);
         assert!(matches!(
-            queue.recv(),
+            queue.recv(None),
             Some(Request::Resize {
                 width: 1024.0,
                 height: 700.0
             })
         ));
         assert!(
-            matches!(queue.recv(), Some(Request::Edit { sequence:2,value, .. }) if value == "ab")
+            matches!(queue.recv(None), Some(Request::Edit { sequence:2,value, .. }) if value == "ab")
         );
-        assert!(matches!(queue.recv(), Some(Request::Click { node: 7, .. })));
+        assert!(matches!(
+            queue.recv(None),
+            Some(Request::Click { node: 7, .. })
+        ));
         assert!(
-            matches!(queue.recv(), Some(Request::Edit { sequence:3,value, .. }) if value == "abc")
+            matches!(queue.recv(None), Some(Request::Edit { sequence:3,value, .. }) if value == "abc")
         );
     }
 
@@ -2792,11 +2828,11 @@ mod tests {
             .unwrap();
         assert_eq!(queue.state.lock().unwrap().pending.len(), 2);
         assert!(matches!(
-            queue.recv(),
+            queue.recv(None),
             Some(Request::Resize { width: 1300.0, .. })
         ));
         assert!(
-            matches!(queue.recv(), Some(Request::Load { generation: 3, navigation }) if navigation.address == "https://latest.example/")
+            matches!(queue.recv(None), Some(Request::Load { generation: 3, navigation }) if navigation.address == "https://latest.example/")
         );
     }
 
@@ -2844,10 +2880,85 @@ mod tests {
     }
 
     #[test]
+    fn ready_tasks_yield_to_input_navigation_and_stop_without_queueing_timer_requests() {
+        let queue = RequestQueue::default();
+        let expired = Some(Instant::now());
+        assert!(matches!(queue.recv(expired), Some(Request::RunTasks)));
+        assert!(!queue.has_pending());
+        queue
+            .send(Request::Click {
+                generation: 1,
+                node: 7,
+            })
+            .unwrap();
+        assert!(matches!(
+            queue.recv(expired),
+            Some(Request::Click { node: 7, .. })
+        ));
+        queue
+            .send(Request::Load {
+                generation: 2,
+                navigation: Navigation::get("about:blank"),
+            })
+            .unwrap();
+        assert!(matches!(
+            queue.recv(expired),
+            Some(Request::Load { generation: 2, .. })
+        ));
+        queue.send(Request::Stop).unwrap();
+        assert!(queue.recv(expired).is_none());
+    }
+
+    #[test]
+    fn idle_task_deadline_wait_is_interrupted_by_input_and_shutdown() {
+        for stop in [false, true] {
+            let queue = Arc::new(RequestQueue::default());
+            let receiver = queue.clone();
+            let (started, start) = std::sync::mpsc::channel();
+            let (finished, finish) = std::sync::mpsc::channel();
+            let worker = thread::spawn(move || {
+                started.send(()).unwrap();
+                let request = receiver.recv(Some(Instant::now() + Duration::from_secs(30)));
+                finished
+                    .send(if stop {
+                        request.is_none()
+                    } else {
+                        matches!(request, Some(Request::Resize { .. }))
+                    })
+                    .unwrap();
+            });
+            start.recv_timeout(Duration::from_secs(2)).unwrap();
+            queue
+                .send(if stop {
+                    Request::Stop
+                } else {
+                    Request::Resize {
+                        width: 320.0,
+                        height: 240.0,
+                    }
+                })
+                .unwrap();
+            let result = finish.recv_timeout(Duration::from_secs(2));
+            // Wake a failed implementation before joining so failure does not
+            // strand a bridge thread for the full artificial deadline.
+            queue.send(Request::Stop).ok();
+            worker.join().unwrap();
+            assert!(result.unwrap());
+        }
+        let queue = RequestQueue::default();
+        let deadline = Instant::now() + Duration::from_millis(5);
+        assert!(matches!(
+            queue.recv(Some(deadline)),
+            Some(Request::RunTasks)
+        ));
+        assert!(Instant::now() >= deadline);
+    }
+
+    #[test]
     fn stop_wakes_worker_and_rejects_later_requests() {
         let queue = Arc::new(RequestQueue::default());
         let receiver = queue.clone();
-        let worker = thread::spawn(move || receiver.recv().is_none());
+        let worker = thread::spawn(move || receiver.recv(None).is_none());
         queue.send(Request::Stop).unwrap();
         assert!(worker.join().unwrap());
         assert!(

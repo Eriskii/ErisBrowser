@@ -171,26 +171,37 @@ allocation allowance and existing stack limits. Native notifications are trusted
 ToggleEvents with non-bubbling, non-cancelable defaults and null source. Ancestor
 capture listeners can observe them. Reentrant changes queue another notification.
 
-Event/path allocation is preflighted before taking a queued notification. A task
-that has begun dispatch is consumed even if a listener exhausts quota; its
-callbacks are not replayed. Tasks not yet started, including those beyond the
-64-task limit, remain pending. This bounded host checkpoint is a task-loop
-approximation: it does not implement the HTML event loop, microtask checkpoints,
-task-source interleaving or full timing guarantees. No popover/dialog activation
-or `beforetoggle` default action is supplied by the constructor.
+Event/path allocation and bounded task-map work are preflighted before starting
+a queued notification. A task that has begun dispatch is finished even if a
+listener exhausts quota; its callbacks are not replayed. Tasks not yet started,
+including callback-created replacements and those beyond the 64-task limit,
+remain queued. A nested host checkpoint is rejected before resetting work.
+The native host continues pending batches with input priority; a checkpoint
+error suspends automatic dispatch until reload. Direct Runtime callers retain
+explicit retry control. This bounded host checkpoint does not implement the
+complete HTML event loop, microtask checkpoints, timers, general task-source
+interleaving or full timing guarantees. No popover/dialog activation or
+`beforetoggle` default action is supplied by the constructor.
 
-Reentrant state coalescing also differs from the HTML task tracker: this
-checkpoint consumes a record before invoking callbacks. A listener closing an
-element during its closed-to-open notification therefore queues an open-to-closed
-notification. The current HTML algorithm keeps the original tracker until after
-firing and can retain the original `closed` old state for that reentrant task.
-This implementation does not claim that task-tracker behavior.
+Task identity, the element's tracker and active dispatch state are independent.
+Starting a task preserves the existing tracker; mutations during callbacks
+inherit its old state and cancel its referenced task only if still queued.
+Finishing clears that element's tracker even if a callback replaced it, without
+removing the replacement task. A listener closing an element during its
+closed-to-open notification therefore queues a closed-to-closed notification.
+An untracked older task can coexist with a newer tracked task and must preserve
+that newer tracker when it begins. Nested synthetic dispatch changes none of
+these host task identities. FIFO ordering and rejection of nested host
+checkpoints bound storage to two live task records per element, one tracker
+per element, and one active task per document.
 
-Six focused runtime groups are selected by
+Ten focused runtime groups are selected by
 `cargo test --locked --offline --lib script::tests::disclosure_`. They cover
 constructor getter/coercion order, receiver brands and readonly state, reflection
 and namespaces, deferred/coalesced delivery, trusted flags and capture,
-reentrant/detached targets, queue limits, preservation of unstarted tasks, and
+reentrant/detached targets, multiple listeners, nested synthetic dispatch,
+named-group effects, untracked/newer-task interleaving across the batch boundary,
+reentrancy guards, queue limits, preservation of unstarted tasks, and
 uncatchable constructor/mutation/callback exhaustion and preflight of named-group
 work before clone/import allocation or target replacement. These are local regression
 tests, not upstream WPT conformance counts. DOM/layout/activation scope is

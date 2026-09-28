@@ -11,6 +11,7 @@ pub mod net;
 pub mod page;
 mod regexp;
 pub mod script;
+mod selectors;
 mod stylesheet_loading;
 pub mod svg;
 mod text_encoding;

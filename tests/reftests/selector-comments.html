@@ -1,0 +1,27 @@
+<!doctype html>
+<style>
+body { margin: 0 }
+i { position: absolute; top: 20px; width: 30px; height: 40px; background: red }
+.ok { background: green }
+#a { left: 10px } #b { left: 50px } #c { left: 90px } #d { left: 130px }
+#e { left: 170px } #f { left: 210px }
+#g { left: 10px; top: 80px } #h { left: 50px; top: 80px }
+#i { left: 90px; top: 80px } #j { left: 130px; top: 80px }
+#k { left: 170px; top: 80px } #l { left: 210px; top: 80px }
+i/**/.compound { background: green }
+div /**/i#b { background: green }
+div/**/i#c { background: red }
+#/**/d { background: red }
+./**/comment-class { background: green }
+:is/**/(#f) { background: red }
+:/**/is(#g) { background: green }
+[data-token~/**/=a] { background: green }
+[data-bad~ /**/=a] { background: red }
+[data-literal="/* kept */"] { background: green }
+@supports selector(i/**/.compound) { #k { background: green } }
+@supports selector(div/**/i) { #l { background: red } }
+</style>
+<i id=a class=compound></i><div><i id=b></i><i id=c class=ok></i></div>
+<i id=d class=ok></i><i id=e class=comment-class></i><i id=f class=ok></i>
+<i id=g></i><i id=h data-token=a></i><i id=i class=ok data-bad=a></i>
+<i id=j data-literal="/* kept */"></i><i id=k></i><i id=l class=ok></i>

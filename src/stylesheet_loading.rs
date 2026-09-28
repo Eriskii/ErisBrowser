@@ -662,54 +662,34 @@ impl<'a> Cursor<'a> {
         while !self.source.is_char_boundary(end) {
             end -= 1;
         }
-        let mut cursor = Cursor::new(&self.source[start..end]);
+        let source = &self.source[start..end];
+        // Reuse the shared tokenizer: comments produce no tokens, while URL
+        // contents and bad-URL remnants retain their own boundaries.
+        let mut work = 256 * 1024;
+        let tokens = crate::selectors::tokens(source, &mut work).ok()?;
         let mut brackets = vec!['('];
-        while let Some(ch) = cursor.peek() {
-            if cursor.rest().starts_with("/*") {
-                let end = cursor.rest().find("*/")?;
-                cursor.at += end + 2;
-                continue;
-            }
-            if matches!(ch, '\'' | '"') {
-                cursor.string()?;
-                continue;
-            }
-            if ch.is_ascii_alphabetic() || matches!(ch, '-' | '_' | '\\') || !ch.is_ascii() {
-                let before = cursor.at;
-                let name = cursor.ident();
-                if before == cursor.at {
-                    cursor.next();
+        for token in tokens {
+            if let Some(open) = token.open() {
+                if brackets.len() >= 16 {
+                    return None;
                 }
-                if name.eq_ignore_ascii_case("url") && cursor.eat('(') {
-                    cursor.url()?;
-                }
-                continue;
-            }
-            let at = cursor.at;
-            cursor.next();
-            match ch {
-                '(' | '[' | '{' => {
-                    if brackets.len() >= 16 {
-                        return None;
+                brackets.push(open);
+            } else if let crate::selectors::Kind::Close(close) = token.kind {
+                if brackets.pop()?
+                    != match close {
+                        ')' => '(',
+                        ']' => '[',
+                        _ => '{',
                     }
-                    brackets.push(ch);
+                {
+                    return None;
                 }
-                ')' | ']' | '}' => {
-                    if brackets.pop()?
-                        != match ch {
-                            ')' => '(',
-                            ']' => '[',
-                            _ => '{',
-                        }
-                    {
-                        return None;
-                    }
-                    if brackets.is_empty() {
-                        self.at = start + cursor.at;
-                        return Some(&self.source[start..start + at]);
-                    }
+                if brackets.is_empty() {
+                    self.at = start + token.end;
+                    return Some(&self.source[start..start + token.start]);
                 }
-                _ => {}
+            } else if token.kind == crate::selectors::Kind::Bad {
+                return None;
             }
         }
         None
@@ -800,6 +780,54 @@ mod tests {
     }
 
     #[test]
+    fn supports_import_comment_tokens_share_query_and_matching_semantics() {
+        for (condition, expected) in [
+            ("selector(div/**/.x)", true),
+            ("selector(./**/x)", true),
+            ("selector(:/**/IS(.x))", true),
+            ("selector([x~/**/=a])", true),
+            ("selector([x~ /**/=a])", false),
+            ("selector(#/**/x)", false),
+            ("selector(:is/**/(.x))", false),
+            ("not/**/selector(div/**/span)", true),
+            (r#"selector(div/* ) } '" */span) or (display:flex)"#, true),
+            ("not selector(svg/**/|rect)", false),
+            ("future(url(foo/**/bar)) or selector(div)", true),
+            (r#"selector([data-v="/* ) ] */"] )"#, true),
+        ] {
+            let (mut loader, base) = cached_loader(&[("good.css", Ok("div/**/.x{color:green}"))]);
+            let source = format!(
+                "@import 'good.css' layer(theme) supports({condition}); @layer theme{{.x{{color:red}}}}"
+            );
+            let sources = loader
+                .inline(
+                    &mut Fetcher::for_document(&base),
+                    &source,
+                    &base,
+                    &mut Vec::new(),
+                )
+                .unwrap();
+            assert_eq!(loader.imports, usize::from(expected), "{condition}");
+            assert_eq!(
+                sources.iter().any(|s| s.layer.is_some()),
+                expected,
+                "{condition}"
+            );
+            let doc = crate::dom::Document::parse("<div class=x id=x></div>");
+            let styles = crate::css::compute_styles_from_sources(&doc, &sources, 400.0, 300.0);
+            assert_eq!(
+                styles[doc.query_selector("#x").unwrap()].color,
+                if expected {
+                    crate::graphics::Color::rgb(0, 128, 0)
+                } else {
+                    crate::graphics::Color::rgb(255, 0, 0)
+                },
+                "{condition}"
+            );
+        }
+    }
+
+    #[test]
     fn supports_imports_skip_fetch_and_layer_registration_when_false_or_invalid() {
         for condition in [
             "display:subgrid",
@@ -811,8 +839,6 @@ mod tests {
             "not future(url(foo bar))",
             "position:sticky",
             "selector(div/**/span)",
-            "not selector(div/**/span)",
-            "selector(div/* ) } ' */span) or (display:flex)",
         ] {
             let (mut loader, base) = cached_loader(&[("missing.css", Err("must not fetch"))]);
             let mut diagnostics = Vec::new();

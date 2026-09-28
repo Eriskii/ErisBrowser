@@ -106,6 +106,7 @@ The [development docket](docs/ROADMAP.md) includes a planned Vulkan rendering ba
 |---|---|
 | `dom.rs` | Bounded HTML tree construction, arena DOM, entities, selector matching, serialization |
 | `css.rs` | CSS parsing, indexed cascade and layers, inheritance, lengths, colors, variables, media queries |
+| `selectors.rs` | Bounded CSS tokens and selector grammar shared by matching and feature queries |
 | `layout.rs` | Block/inline flow, floats, flex, Grid placement/tracks, tables, controls, display lists, hit regions |
 | `script.rs` | Custom lexer, parser, interpreter, lexical environments, DOM bindings and events |
 | `regexp.rs` | Custom bounded UTF-16 regular-expression parser and backtracking matcher |

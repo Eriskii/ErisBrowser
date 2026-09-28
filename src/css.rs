@@ -1,6 +1,6 @@
 //! Independent CSS parsing, selector cascade, inheritance and computed values.
 use crate::dom::{
-    Document, Namespace, NodeId, NodeKind, matches_selector_with_budget, split_top_level,
+    Document, Namespace, NodeId, NodeKind, matches_compiled_selector, split_top_level,
 };
 use crate::graphics::Color;
 use std::collections::{BTreeMap, BTreeSet, HashMap};
@@ -749,11 +749,10 @@ fn parse_rules(
                 // order. Container matching itself is not implemented.
                 parse_rules(body, width, height, depth + 1, layer, false, rules, budget);
             } else if apply && !header.starts_with('@') && !header.is_empty() {
-                let selectors = split_top_level(header, ',')
+                let selectors = crate::selectors::parse_list(raw_header, &mut budget.work)
+                    .unwrap_or_default()
                     .into_iter()
-                    .filter(|s| !s.is_empty() && s.len() <= 4096)
-                    .take(128)
-                    .map(str::to_owned)
+                    .map(|selector| selector.source)
                     .collect();
                 rules.push(Rule {
                     selectors,
@@ -1132,212 +1131,21 @@ enum MediaToken {
 // does not retain token values or fetch URLs. In particular, punctuation inside
 // an unquoted URL is data, and bad URL remnants consume through their own `)`.
 fn media_token(source: &str) -> (MediaToken, usize) {
-    let first = source.chars().next().unwrap();
-    if matches!(first, '\'' | '"') {
-        let mut at = 1;
-        while at < source.len() {
-            let ch = source[at..].chars().next().unwrap();
-            if ch == first {
-                return (MediaToken::Other, at + 1);
-            }
-            if matches!(ch, '\n' | '\r' | '\x0c') {
-                return (MediaToken::Bad, at);
-            }
-            if ch == '\\' {
-                at += 1;
-                if source[at..].starts_with("\r\n") {
-                    at += 2;
-                } else if source[at..].starts_with(['\n', '\r', '\x0c']) {
-                    at += 1;
-                } else {
-                    at = media_escape(source, at).1;
-                }
-            } else {
-                at += ch.len_utf8();
-            }
-        }
-        return (MediaToken::Other, at);
-    }
-    if let Some(mut end) = media_number_end(source) {
-        if media_ident_start(&source[end..]) {
-            end += media_ident_sequence(&source[end..]).0;
-        }
-        return (MediaToken::Other, end);
-    }
-    if matches!(first, '@' | '#') {
-        let rest = &source[1..];
-        if media_ident_start(rest)
-            || first == '#' && rest.chars().next().is_some_and(media_name_char)
-        {
-            return (MediaToken::Other, 1 + media_ident_sequence(rest).0);
-        }
-    }
-    if media_ident_start(source) {
-        let (end, url) = media_ident_sequence(source);
-        if source[end..].starts_with('(') {
-            if url && !media_url_quoted(&source[end..]) {
-                return media_url_token(source, end + 1);
-            }
-            return (MediaToken::Open('('), end + 1);
-        }
-        return (MediaToken::Other, end);
-    }
-    let token = match first {
-        '(' | '[' | '{' => MediaToken::Open(first),
-        ')' | ']' | '}' => MediaToken::Close(first),
-        ',' => MediaToken::Comma,
-        _ => MediaToken::Other,
-    };
-    (token, first.len_utf8())
-}
-fn media_name_char(ch: char) -> bool {
-    ch.is_ascii_alphanumeric() || matches!(ch, '-' | '_' | '\0') || !ch.is_ascii()
-}
-fn media_ident_start(source: &str) -> bool {
-    let mut chars = source.chars();
-    let Some(first) = chars.next() else {
-        return false;
-    };
-    let start = |ch: char| ch.is_ascii_alphabetic() || matches!(ch, '_' | '\0') || !ch.is_ascii();
-    let escape =
-        |rest: &str| rest.starts_with('\\') && !rest[1..].starts_with(['\n', '\r', '\x0c']);
-    start(first)
-        || escape(source)
-        || first == '-'
-            && (chars.next().is_some_and(|ch| start(ch) || ch == '-') || escape(&source[1..]))
-}
-fn media_ident_sequence(source: &str) -> (usize, bool) {
-    let mut at = 0;
-    let mut count = 0;
-    let mut url = true;
-    while at < source.len() {
-        let mut ch = source[at..].chars().next().unwrap();
-        if ch == '\\' && !source[at + 1..].starts_with(['\n', '\r', '\x0c']) {
-            (ch, at) = media_escape(source, at + 1);
-        } else if media_name_char(ch) {
-            at += ch.len_utf8();
-        } else {
-            break;
-        }
-        url &= Some(ch.to_ascii_lowercase()) == ['u', 'r', 'l'].get(count).copied();
-        count += 1;
-    }
-    (at, url && count == 3)
-}
-// `at` follows the backslash. Input preprocessing's CRLF/FF rules are applied
-// locally while consuming optional escape whitespace, without allocating.
-fn media_escape(source: &str, mut at: usize) -> (char, usize) {
-    let Some(ch) = source[at..].chars().next() else {
-        return ('\u{fffd}', at);
-    };
-    if !ch.is_ascii_hexdigit() {
-        return (ch, at + ch.len_utf8());
-    }
-    let mut value = 0;
-    for _ in 0..6 {
-        let Some(ch) = source
-            .as_bytes()
-            .get(at)
-            .filter(|ch| ch.is_ascii_hexdigit())
-        else {
-            break;
-        };
-        value = value * 16 + char::from(*ch).to_digit(16).unwrap();
-        at += 1;
-    }
-    if source[at..].starts_with("\r\n") {
-        at += 2;
-    } else if source[at..].chars().next().is_some_and(media_space) {
-        at += 1;
-    }
+    use crate::selectors::Kind;
+    let (kind, count) = crate::selectors::token(source);
     (
-        char::from_u32(value)
-            .filter(|ch| *ch != '\0')
-            .unwrap_or('\u{fffd}'),
-        at,
-    )
-}
-fn media_url_quoted(rest: &str) -> bool {
-    rest.strip_prefix('(').is_some_and(|inner| {
-        inner
-            .trim_start_matches(media_space)
-            .starts_with(['\'', '"'])
-    })
-}
-fn media_url_token(source: &str, mut at: usize) -> (MediaToken, usize) {
-    while source[at..].chars().next().is_some_and(media_space) {
-        at += 1;
-    }
-    let mut bad = false;
-    while at < source.len() {
-        let ch = source[at..].chars().next().unwrap();
-        at += ch.len_utf8();
-        if ch == ')' {
-            return (
-                if bad {
-                    MediaToken::Bad
-                } else {
-                    MediaToken::Other
-                },
-                at,
-            );
-        }
-        if ch == '\\' && !source[at..].starts_with(['\n', '\r', '\x0c']) {
-            at = media_escape(source, at).1;
-        } else if !bad {
-            if media_space(ch) {
-                while source[at..].chars().next().is_some_and(media_space) {
-                    at += 1;
-                }
-                bad = at < source.len() && !source[at..].starts_with(')');
-            } else if matches!(ch, '\'' | '"' | '(' | '\\' | '\x01'..='\x08' | '\x0b' | '\x0e'..='\x1f' | '\x7f')
-            {
-                bad = true;
-            }
-        }
-    }
-    (
-        if bad {
-            MediaToken::Bad
-        } else {
-            MediaToken::Other
+        match kind {
+            Kind::Function => MediaToken::Open('('),
+            Kind::Open(ch) => MediaToken::Open(ch),
+            Kind::Close(ch) => MediaToken::Close(ch),
+            Kind::Comma => MediaToken::Comma,
+            Kind::Bad => MediaToken::Bad,
+            _ => MediaToken::Other,
         },
-        at,
+        count,
     )
 }
-fn media_number_end(value: &str) -> Option<usize> {
-    let bytes = value.as_bytes();
-    let mut at = usize::from(matches!(bytes.first(), Some(b'+' | b'-')));
-    let start = at;
-    while bytes.get(at).is_some_and(u8::is_ascii_digit) {
-        at += 1;
-    }
-    let mut digits = at - start;
-    if bytes.get(at) == Some(&b'.') && bytes.get(at + 1).is_some_and(u8::is_ascii_digit) {
-        at += 1;
-        let start = at;
-        while bytes.get(at).is_some_and(u8::is_ascii_digit) {
-            at += 1;
-        }
-        digits += at - start;
-    }
-    if digits == 0 {
-        return None;
-    }
-    if matches!(bytes.get(at), Some(b'e' | b'E')) {
-        let mut exponent = at + 1;
-        if matches!(bytes.get(exponent), Some(b'+' | b'-')) {
-            exponent += 1;
-        }
-        if bytes.get(exponent).is_some_and(u8::is_ascii_digit) {
-            at = exponent + 1;
-            while bytes.get(at).is_some_and(u8::is_ascii_digit) {
-                at += 1;
-            }
-        }
-    }
-    Some(at)
-}
+use crate::selectors::{number_end as media_number_end, url_quoted as media_url_quoted};
 #[derive(Clone, Copy, PartialEq)]
 enum MediaComparison {
     Less,
@@ -1545,45 +1353,17 @@ pub(crate) fn supports_matches_with_budget(
     };
     let result = (|| {
         evaluator.spend(query.len().saturating_mul(3) + 1)?;
-        if supports_commented_selector(query) {
-            return Err(());
-        }
+        let tokens = crate::selectors::tokens(query, &mut evaluator.work).map_err(|_| ())?;
+        evaluator.tokens(&tokens)?;
         let clean = strip_comments(query);
-        let clean = media_trim(&clean);
-        // Validate even branches whose truth value cannot change the result.
-        // A lexical/depth failure is never an unsupported feature to negate.
-        evaluator.tokens(clean)?;
-        if implied_declaration && supports_declaration_parts(clean).is_some() {
-            evaluator.declaration(clean)
+        if implied_declaration && supports_declaration_parts(media_trim(&clean)).is_some() {
+            evaluator.declaration(media_trim(&clean))
         } else {
-            evaluator.condition(clean, 0)
+            evaluator.condition(query, &tokens, 0)
         }
     })();
     *work -= available - evaluator.work;
     result == Ok(true) && !evaluator.exhausted
-}
-// In selectors, replacing a comment with whitespace can invent a descendant
-// combinator (div/**/span). Until selector tokenization preserves that distinction,
-// decline complete capability queries combining selector() and actual comments.
-fn supports_commented_selector(source: &str) -> bool {
-    let mut comment = false;
-    let mut selector = false;
-    let mut at = 0;
-    while at < source.len() {
-        let rest = &source[at..];
-        if let Some(comment_text) = rest.strip_prefix("/*") {
-            comment = true;
-            at = comment_text
-                .find("*/")
-                .map_or(source.len(), |end| at + end + 4);
-            continue;
-        }
-        if let Some((name, rest)) = media_word(rest) {
-            selector |= name == "selector" && rest.starts_with('(');
-        }
-        at += media_token(rest).1;
-    }
-    comment && selector
 }
 struct SupportsEvaluator {
     work: usize,
@@ -1608,108 +1388,118 @@ impl SupportsEvaluator {
         self.terms -= 1;
         Ok(())
     }
-    fn tokens(&mut self, source: &str) -> Result<(), ()> {
-        self.spend(source.len() + 1)?;
+    fn tokens(&mut self, tokens: &[crate::selectors::Token<'_>]) -> Result<(), ()> {
+        use crate::selectors::Kind;
+        self.spend(tokens.len() + 1)?;
         let mut stack = Vec::new();
-        let mut at = 0;
-        while at < source.len() {
-            let (token, count) = media_token(&source[at..]);
-            match token {
-                MediaToken::Open(ch) => {
-                    if stack.len() >= MAX_MEDIA_DEPTH {
-                        self.exhausted = true;
-                        return Err(());
-                    }
-                    stack.push(ch);
+        for token in tokens {
+            if let Some(open) = token.open() {
+                if stack.len() >= MAX_MEDIA_DEPTH {
+                    self.exhausted = true;
+                    return Err(());
                 }
-                MediaToken::Close(ch)
-                    if stack.pop()
-                        != Some(match ch {
-                            ')' => '(',
-                            ']' => '[',
-                            _ => '{',
-                        }) =>
+                stack.push(open);
+            } else if let Kind::Close(close) = token.kind {
+                if stack.pop()
+                    != Some(match close {
+                        ')' => '(',
+                        ']' => '[',
+                        _ => '{',
+                    })
                 {
                     return Err(());
                 }
-                MediaToken::Bad => return Err(()),
-                _ => {}
+            } else if token.kind == Kind::Bad {
+                return Err(());
             }
-            at += count;
         }
         if stack.is_empty() { Ok(()) } else { Err(()) }
     }
-    fn condition(&mut self, query: &str, depth: usize) -> Result<bool, ()> {
-        self.spend(query.len() + 1)?;
+    fn condition(
+        &mut self,
+        source: &str,
+        tokens: &[crate::selectors::Token<'_>],
+        depth: usize,
+    ) -> Result<bool, ()> {
+        use crate::selectors::{Kind, trim};
+        self.spend(tokens.len() + 1)?;
         if depth >= MAX_MEDIA_DEPTH {
             self.exhausted = true;
             return Err(());
         }
-        let query = media_trim(query);
-        if let Some(rest) = media_operator(query, "not") {
-            let (value, rest) = self.leaf(rest, depth)?;
-            return if media_trim(rest).is_empty() {
+        let tokens = trim(tokens);
+        if tokens
+            .first()
+            .is_some_and(|t| t.kind == Kind::Ident && t.is_name("not"))
+        {
+            let rest = trim(&tokens[1..]);
+            let (value, consumed) = self.leaf(source, rest, depth)?;
+            return if trim(&rest[consumed..]).is_empty() {
                 Ok(!value)
             } else {
                 Err(())
             };
         }
-        let (mut value, mut rest) = self.leaf(query, depth)?;
+        let (mut value, consumed) = self.leaf(source, tokens, depth)?;
+        let mut rest = trim(&tokens[consumed..]);
         let mut operator = None;
-        loop {
-            rest = media_trim(rest);
-            if rest.is_empty() {
-                return Ok(value);
-            }
-            let (and, next) = if let Some(next) = media_operator(rest, "and") {
-                (true, next)
-            } else if let Some(next) = media_operator(rest, "or") {
-                (false, next)
+        while !rest.is_empty() {
+            let token = &rest[0];
+            let and = if token.kind == Kind::Ident && token.is_name("and") {
+                true
+            } else if token.kind == Kind::Ident && token.is_name("or") {
+                false
             } else {
                 return Err(());
             };
-            if operator.is_some_and(|previous| previous != and) {
+            if operator.is_some_and(|old| old != and) {
                 return Err(());
             }
             operator = Some(and);
-            let (right, tail) = self.leaf(next, depth)?;
+            rest = trim(&rest[1..]);
+            let (right, consumed) = self.leaf(source, rest, depth)?;
             value = if and { value & right } else { value | right };
-            rest = tail;
+            rest = trim(&rest[consumed..]);
         }
+        Ok(value)
     }
-    fn leaf<'a>(&mut self, query: &'a str, depth: usize) -> Result<(bool, &'a str), ()> {
-        self.spend(query.len() + 1)?;
-        if query.starts_with('(') {
-            let (inner, tail) = media_parentheses(query).ok_or(())?;
-            let inner = media_trim(inner);
-            if supports_declaration_parts(inner).is_some() {
-                return Ok((self.declaration(inner)?, tail));
-            }
-            // Recognized condition syntax must parse completely. Unknown future
-            // enclosed syntax is false; malformed known operators are invalid.
-            if inner.starts_with('(')
-                || media_operator(inner, "not").is_some()
-                || media_word(inner).is_some_and(|(_, rest)| rest.starts_with('('))
-            {
-                return Ok((self.condition(inner, depth + 1)?, tail));
-            }
-            self.term()?;
-            return Ok((false, tail));
-        }
-        let (name, rest) = media_word(query).ok_or(())?;
-        if name == "url" && !media_url_quoted(rest) {
+    fn leaf(
+        &mut self,
+        source: &str,
+        tokens: &[crate::selectors::Token<'_>],
+        depth: usize,
+    ) -> Result<(bool, usize), ()> {
+        use crate::selectors::{Kind, closing, trim};
+        self.spend(tokens.len() + 1)?;
+        let first = tokens.first().ok_or(())?;
+        if !matches!(first.kind, Kind::Open('(') | Kind::Function) {
             return Err(());
         }
-        let (inner, tail) = media_parentheses(rest).ok_or(())?;
+        let end = closing(tokens, 0, MAX_MEDIA_DEPTH, &mut self.work).map_err(|_| ())?;
+        let inner = trim(&tokens[1..end]);
+        let raw = &source[first.end..tokens[end].start];
+        if first.kind == Kind::Open('(') {
+            let clean = strip_comments(raw);
+            let clean = media_trim(&clean);
+            if supports_declaration_parts(clean).is_some() {
+                return Ok((self.declaration(clean)?, end + 1));
+            }
+            if inner.first().is_some_and(|t| {
+                matches!(t.kind, Kind::Open('(') | Kind::Function)
+                    || t.kind == Kind::Ident && t.is_name("not")
+            }) {
+                return Ok((self.condition(source, inner, depth + 1)?, end + 1));
+            }
+            self.term()?;
+            return Ok((false, end + 1));
+        }
         self.term()?;
-        self.spend(inner.len() + 1)?;
-        let value = if name == "selector" {
-            let mut parts = 64;
-            supports_selector(inner, 0, &mut parts, &mut self.work)?
+        let value = if first.is_name("selector") {
+            crate::selectors::supports(raw, &mut self.work).map_err(|_| ())?
         } else {
             false
         };
-        Ok((value, tail))
+        Ok((value, end + 1))
     }
     fn declaration(&mut self, source: &str) -> Result<bool, ()> {
         self.term()?;
@@ -2039,194 +1829,6 @@ fn supports_tracks(value: &str, depth: usize) -> bool {
         Some(total)
     }
     count(value, depth).is_some()
-}
-// A syntax-only positive subset of the matcher. Matching against a fabricated
-// DOM cannot determine support, especially inside :not() or forgiving :is().
-fn supports_selector(
-    source: &str,
-    depth: usize,
-    parts: &mut usize,
-    work: &mut usize,
-) -> Result<bool, ()> {
-    if source.len() > 4096 || depth >= 16 || source.len() + 1 > *work {
-        return Err(());
-    }
-    *work -= source.len() + 1;
-    // @namespace is not implemented. An undeclared named prefix invalidates
-    // the conditional rule itself, including under `not` (Conditional 4 §2).
-    let mut at = 0;
-    while at < source.len() {
-        if media_ident_start(&source[at..]) {
-            let n = media_ident_sequence(&source[at..]).0;
-            let rest = &source[at + n..];
-            if rest.starts_with('|') && !rest.starts_with("|=") && !rest.starts_with("||") {
-                return Err(());
-            }
-        }
-        at += media_token(&source[at..]).1;
-    }
-    if source.contains('\\') {
-        return Ok(false);
-    }
-    let mut rest = media_trim(source);
-    let mut need_compound = true;
-    while !rest.is_empty() {
-        if *parts == 0 {
-            return Err(());
-        }
-        *parts -= 1;
-        let before = rest;
-        let mut found = false;
-        if let Some(next) = rest.strip_prefix('*') {
-            rest = next;
-            found = true;
-        } else if let Some((_, n)) = css_identifier(rest) {
-            rest = &rest[n..];
-            found = true;
-        }
-        loop {
-            if let Some(next) = rest.strip_prefix(['.', '#']) {
-                let Some((_, n)) = css_identifier(next) else {
-                    return Ok(false);
-                };
-                rest = &next[n..];
-                found = true;
-            } else if let Some(next) = rest.strip_prefix('[') {
-                let Some(end) = next.find(']') else {
-                    return Ok(false);
-                };
-                if !supports_attribute(&next[..end]) {
-                    return Ok(false);
-                }
-                rest = &next[end + 1..];
-                found = true;
-            } else if let Some(next) = rest.strip_prefix(':') {
-                let Some((name, n)) = css_identifier(next) else {
-                    return Ok(false);
-                };
-                rest = &next[n..];
-                if rest.starts_with('(') {
-                    let Some((inner, tail)) = media_parentheses(rest) else {
-                        return Ok(false);
-                    };
-                    if matches!(name.as_str(), "is" | "where" | "not") {
-                        let list = split_top_level(inner, ',');
-                        if list.is_empty() || list.len() > 64 {
-                            return Ok(false);
-                        }
-                        for item in list {
-                            if !supports_selector(item, depth + 1, parts, work)? {
-                                return Ok(false);
-                            }
-                        }
-                    } else if matches!(
-                        name.as_str(),
-                        "nth-child" | "nth-last-child" | "nth-of-type" | "nth-last-of-type"
-                    ) {
-                        if !supports_nth(inner) {
-                            return Ok(false);
-                        }
-                    } else {
-                        return Ok(false);
-                    }
-                    rest = tail;
-                } else if !matches!(
-                    name.as_str(),
-                    "root"
-                        | "empty"
-                        | "first-child"
-                        | "last-child"
-                        | "only-child"
-                        | "first-of-type"
-                        | "last-of-type"
-                        | "only-of-type"
-                ) {
-                    return Ok(false);
-                }
-                found = true;
-            } else {
-                break;
-            }
-        }
-        if !found || before.len() == rest.len() {
-            return Ok(false);
-        }
-        need_compound = false;
-        let trimmed = media_trim(rest);
-        let whitespace = trimmed.len() != rest.len();
-        rest = trimmed;
-        if rest.is_empty() {
-            break;
-        }
-        if let Some(next) = rest.strip_prefix(['>', '+', '~']) {
-            rest = media_trim(next);
-        } else if !whitespace {
-            return Ok(false);
-        }
-        need_compound = true;
-    }
-    Ok(!need_compound)
-}
-fn supports_attribute(source: &str) -> bool {
-    let source = media_trim(source);
-    let Some((_, n)) = css_identifier(source) else {
-        return false;
-    };
-    let mut rest = media_trim(&source[n..]);
-    if rest.is_empty() {
-        return true;
-    }
-    if let Some(next) = rest.strip_prefix(['~', '|', '^', '$', '*']) {
-        rest = next;
-    }
-    let Some(next) = rest.strip_prefix('=') else {
-        return false;
-    };
-    rest = media_trim(next);
-    if rest.starts_with(['\'', '"']) {
-        let quote = rest.as_bytes()[0] as char;
-        let Some(end) = rest[1..].find(quote) else {
-            return false;
-        };
-        if rest[1..end + 1].contains(['\n', '\r', '\x0c']) {
-            return false;
-        }
-        rest = &rest[end + 2..];
-    } else {
-        let Some((_, n)) = css_identifier(rest) else {
-            return false;
-        };
-        rest = &rest[n..];
-    }
-    rest.is_empty()
-        || rest.chars().next().is_some_and(media_space)
-            && matches!(media_trim(rest), "" | "i" | "I" | "s")
-}
-fn supports_nth(source: &str) -> bool {
-    if source.contains(['\t', '\r', '\n', '\x0c']) {
-        return false;
-    }
-    let lower = media_trim(source).to_ascii_lowercase();
-    if matches!(lower.as_str(), "odd" | "even") || supports_integer(&lower) {
-        return true;
-    }
-    let Some((a, b)) = lower.split_once('n') else {
-        return false;
-    };
-    if !(matches!(a, "" | "+" | "-") || supports_integer(a)) {
-        return false;
-    }
-    let b = b.trim();
-    if b.is_empty() {
-        return true;
-    }
-    let Some(unsigned) = b.strip_prefix(['+', '-']) else {
-        return false;
-    };
-    let unsigned = unsigned.trim_start();
-    !unsigned.is_empty()
-        && unsigned.bytes().all(|b| b.is_ascii_digit())
-        && unsigned.parse::<i32>().is_ok()
 }
 pub fn parse_declarations(source: &str) -> Vec<Declaration> {
     parse_declarations_with_limit(&strip_comments(source), &mut (1024 * 1024))
@@ -2911,7 +2513,7 @@ impl LayerRegistry {
     }
 }
 struct IndexedRule<'a> {
-    selector: &'a str,
+    selector: String,
     specificity: u32,
     declarations: &'a [Declaration],
     order: u32,
@@ -3041,6 +2643,8 @@ pub fn compute_styles_with_rules(
     height: f32,
 ) -> Vec<ComputedStyle> {
     let mut indexed = vec![];
+    let mut selector_bytes = 0usize;
+    let mut work = 20_000_000usize;
     let mut by_key: HashMap<String, Vec<usize>> = HashMap::new();
     let mut layers = LayerRegistry::new();
     let rule_layers: Vec<_> = rules
@@ -3063,18 +2667,27 @@ pub fn compute_styles_with_rules(
             .take(128)
             .filter(|selector| selector.len() <= 4096)
         {
-            let index = indexed.len();
-            by_key
-                .entry(selector_key(selector))
-                .or_default()
-                .push(index);
-            indexed.push(IndexedRule {
-                selector,
-                specificity: specificity(selector),
-                declarations: &rule.declarations,
-                order: order as u32,
-                layer: ranks[layer],
-            });
+            let Ok(compiled) = crate::selectors::parse_list(selector, &mut work) else {
+                continue;
+            };
+            for selector in compiled {
+                let key = selector_key(&selector.source);
+                let cost =
+                    selector.source.len() + key.len() + std::mem::size_of::<IndexedRule<'_>>() + 16;
+                if cost > MAX_STYLE_BYTES.saturating_sub(selector_bytes) {
+                    break;
+                }
+                selector_bytes += cost;
+                let index = indexed.len();
+                by_key.entry(key).or_default().push(index);
+                indexed.push(IndexedRule {
+                    specificity: specificity_inner(&selector.source, 0),
+                    selector: selector.source,
+                    declarations: &rule.declarations,
+                    order: order as u32,
+                    layer: ranks[layer],
+                });
+            }
         }
     }
     let mut styles = vec![ComputedStyle::default(); doc.nodes.len()];
@@ -3084,7 +2697,6 @@ pub fn compute_styles_with_rules(
     let mut variables: Vec<Arc<BTreeMap<String, String>>> = vec![empty_variables; doc.nodes.len()];
     let mut pending = vec![doc.root];
     let mut visited = vec![false; doc.nodes.len()];
-    let mut work = 20_000_000usize;
     let mut retained_variable_bytes = 0usize;
     let mut grid_tracks = GridTrackPool::default();
     let mut root_font = 16.0;
@@ -3166,7 +2778,7 @@ pub fn compute_styles_with_rules(
                     break;
                 }
                 let rule = &indexed[candidate];
-                if matches_selector_with_budget(doc, id, rule.selector, &mut work) {
+                if matches_compiled_selector(doc, id, &rule.selector, &mut work) {
                     for (decl_order, decl) in rule.declarations.iter().enumerate() {
                         if !supported_property(&decl.name) || decl.value.len() > 4096 {
                             continue;
@@ -3483,7 +3095,14 @@ fn identifier_end(s: &str, start: usize) -> usize {
     end
 }
 pub fn specificity(selector: &str) -> u32 {
-    specificity_inner(selector, 0)
+    crate::selectors::parse_list(selector, &mut 100_000)
+        .map(|list| {
+            list.iter()
+                .map(|s| specificity_inner(&s.source, 0))
+                .max()
+                .unwrap_or(0)
+        })
+        .unwrap_or(0)
 }
 fn specificity_inner(selector: &str, depth: usize) -> u32 {
     if depth > 32 {
@@ -3502,10 +3121,8 @@ fn specificity_inner(selector: &str, depth: usize) -> u32 {
             }
             b'[' => {
                 score = score.saturating_add(1 << 10);
-                i = selector[i..]
-                    .find(']')
-                    .map(|n| i + n + 1)
-                    .unwrap_or(selector.len());
+                i = selector_block_end(selector, i, b'[', b']')
+                    .map_or(selector.len(), |end| end + 1);
                 expect_type = false;
             }
             b':' => {
@@ -3517,21 +3134,9 @@ fn specificity_inner(selector: &str, depth: usize) -> u32 {
                 let mut argument = None;
                 if selector.as_bytes().get(i) == Some(&b'(') {
                     let start = i + 1;
-                    let mut level = 1;
-                    i += 1;
-                    while i < selector.len() {
-                        if selector.as_bytes()[i] == b'(' {
-                            level += 1;
-                        } else if selector.as_bytes()[i] == b')' {
-                            level -= 1;
-                            if level == 0 {
-                                break;
-                            }
-                        }
-                        i += 1;
-                    }
-                    argument = Some(&selector[start..i]);
-                    i = (i + 1).min(selector.len());
+                    let end = selector_block_end(selector, i, b'(', b')').unwrap_or(selector.len());
+                    argument = Some(&selector[start..end]);
+                    i = (end + 1).min(selector.len());
                 }
                 if name != "where" {
                     score = score.saturating_add(if pseudo_element {
@@ -3575,6 +3180,38 @@ fn specificity_inner(selector: &str, depth: usize) -> u32 {
         }
     }
     score
+}
+fn selector_block_end(source: &str, start: usize, open: u8, close: u8) -> Option<usize> {
+    let mut depth = 0usize;
+    let mut quote = None;
+    let mut escaped = false;
+    for (at, byte) in source.bytes().enumerate().skip(start) {
+        if escaped {
+            escaped = false;
+            continue;
+        }
+        if byte == b'\\' {
+            escaped = true;
+            continue;
+        }
+        if let Some(q) = quote {
+            if byte == q {
+                quote = None;
+            }
+            continue;
+        }
+        if matches!(byte, b'\'' | b'"') {
+            quote = Some(byte);
+        } else if byte == open {
+            depth += 1;
+        } else if byte == close {
+            depth = depth.checked_sub(1)?;
+            if depth == 0 {
+                return Some(at);
+            }
+        }
+    }
+    None
 }
 fn resolve_vars(
     value: &str,
@@ -4863,15 +4500,77 @@ impl<T> TransposeOption<T> for Option<Option<T>> {
 #[cfg(test)]
 mod tests {
     #[test]
+    fn supports_comment_tokens_agree_across_queries_blocks_and_actual_selectors() {
+        for (selector, valid) in [
+            ("div/**/.x", true),
+            ("div /**/.x", true),
+            ("./**/x", true),
+            ("div/**/span", false),
+            ("#/**/id", false),
+            (":/**/IS(.x)", true),
+            (":is/**/(.x)", false),
+            ("[x~/**/=a]", true),
+            ("[x~ /**/=a]", false),
+            ("[x=a/**/S]", true),
+            ("p:nth-child(2n/**/+/**/1)", true),
+            ("p:nth-child(2/**/n+1)", false),
+            (":empty(p)", false),
+            (r#"[x="/* ) ] #fake */"]"#, true),
+        ] {
+            let query = format!("selector({selector})");
+            assert_eq!(supports_matches(&query), valid, "{query}");
+            assert_eq!(
+                supports_matches(&format!("not/**/{query}")),
+                !valid,
+                "{query}"
+            );
+            let doc = Document::parse("<p id=x></p>");
+            let sheet = format!("#x{{color:red}} @supports {query} {{#x{{color:green}}}}");
+            let styles = compute_styles(&doc, &[sheet], 400.0, 300.0);
+            assert_eq!(
+                styles[doc.query_selector("#x").unwrap()].color,
+                if valid {
+                    Color::rgb(0, 128, 0)
+                } else {
+                    Color::rgb(255, 0, 0)
+                },
+                "{query}"
+            );
+        }
+        assert!(supports_matches("selector(div) /* unterminated"));
+        assert!(supports_matches(
+            r#"selector(div/* ) } '" */span) or (display:flex)"#
+        ));
+        assert!(supports_matches("(display:flex)and/**/selector(./**/x)"));
+        assert!(supports_matches(
+            "unknown(url(foo/**/bar)) or selector(div)"
+        ));
+        assert!(!supports_matches("not selector(svg/**/|rect)"));
+        let doc = Document::parse(
+            r#"<div id=own class=x data-v="] #fake"><span id=child class=x></span></div>"#,
+        );
+        let sheet = r#".x{color:red} div/**/.x{color:green} div /**/.x{background:blue}
+            [data-v="] #fake"]{width:10px} #own{width:20px}"#;
+        let styles = compute_styles(&doc, &[sheet.into()], 400.0, 300.0);
+        let own = &styles[doc.query_selector("#own").unwrap()];
+        let child = &styles[doc.query_selector("#child").unwrap()];
+        assert_eq!(own.color, Color::rgb(0, 128, 0));
+        assert_eq!(child.color, Color::rgb(255, 0, 0));
+        assert_eq!(child.background_color, Color::rgb(0, 0, 255));
+        assert_eq!(own.width, Length::Px(20.0));
+        assert_eq!(specificity("div/**/.x"), specificity("div.x"));
+        assert_eq!(specificity(r#":is([data-v=") #fake"],.x)"#), 1024);
+        assert_eq!(specificity(r#"[data-v="] #fake"]"#), 1024);
+        assert_eq!(specificity("div/**/span"), 0);
+    }
+
+    #[test]
     fn supports_review_regressions_preserve_raw_comments_namespaces_and_capabilities() {
         let long_prefix = "x".repeat(1100);
         for query in [
             "(position:sticky)".to_owned(),
             "selector(div/**/span)".into(),
             r"s\65 lector(div/**/span)".into(),
-            "not selector(div/**/span)".into(),
-            "selector(div/* ) } '\" */span) or (display:flex)".into(),
-            "selector(div) /* unterminated".into(),
             format!("not selector({long_prefix}|rect)"),
             format!("(display:flex) or selector(a[{long_prefix}|href])"),
         ] {
@@ -5083,6 +4782,7 @@ mod tests {
             "[data-x^=prefix i]",
             "[lang|=en]",
             "div:first-child",
+            "DIV:FIRST-CHILD",
             "div:nth-child(2n + 1)",
             "div:nth-last-of-type(-n+3)",
             "div:not(.a,.b)",
@@ -5123,7 +4823,6 @@ mod tests {
             ":not(:unknown)",
             ":where(div,)",
             r".a\62",
-            "DIV:FIRST-CHILD",
         ] {
             assert!(
                 !supports_matches(&format!("selector({selector})")),

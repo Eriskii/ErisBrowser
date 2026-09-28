@@ -92,6 +92,85 @@ fn exchange_empty(client: &mut WorkerClient, command: WorkerCommand) {
 
 #[test]
 #[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn idle_task_batches_cross_ipc_without_render_running_scripts() {
+    use eris::page::TaskState;
+    let fixture = Fixture::new(&format!(
+        "<!doctype html><input id=n value=0 readonly>{}<script>let count=0;const n=document.getElementById('n');document.addEventListener('toggle',()=>{{count++;n.value=count;}},true);</script>",
+        "<details open></details>".repeat(150)
+    ));
+    let mut client = fixture.spawn(true, 101);
+    load(&mut client, &fixture.navigation);
+    for (count, state) in [
+        ("64", TaskState::Pending),
+        ("128", TaskState::Pending),
+        ("150", TaskState::Idle),
+        ("150", TaskState::Idle),
+    ] {
+        for _ in 0..2 {
+            let snapshot = render(&mut client);
+            assert_eq!(snapshot.task_state, state);
+            assert_eq!(snapshot.generation, 101);
+            assert_eq!(snapshot.processed_edit_sequence, 0);
+            assert_eq!(
+                snapshot
+                    .document
+                    .attr(snapshot.document.query_selector("#n").unwrap(), "value")
+                    .unwrap(),
+                count
+            );
+        }
+        exchange_empty(&mut client, WorkerCommand::RunTasks);
+    }
+    drop(client);
+    let mut disabled = fixture.spawn(false, 102);
+    load(&mut disabled, &fixture.navigation);
+    exchange_empty(&mut disabled, WorkerCommand::RunTasks);
+    let snapshot = render(&mut disabled);
+    assert_eq!(snapshot.task_state, TaskState::Idle);
+    assert_eq!(
+        snapshot
+            .document
+            .attr(snapshot.document.query_selector("#n").unwrap(), "value")
+            .unwrap(),
+        "0"
+    );
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn idle_task_quota_failure_suspends_automatic_retries_across_ipc() {
+    use eris::page::TaskState;
+    let fixture = Fixture::new(&format!(
+        "<!doctype html><input id=n value=0 readonly>{}<script>let count=0;const n=document.getElementById('n');document.addEventListener('toggle',e=>{{count++;n.value=count;if(count===65){{e.target.open=false;while(true){{}}}}}},true);</script>",
+        "<details open></details>".repeat(150)
+    ));
+    let mut client = fixture.spawn(true, 103);
+    load(&mut client, &fixture.navigation);
+    assert_eq!(render(&mut client).task_state, TaskState::Pending);
+    for _ in 0..3 {
+        exchange_empty(&mut client, WorkerCommand::RunTasks);
+        let snapshot = render(&mut client);
+        assert_eq!(snapshot.task_state, TaskState::Suspended);
+        assert_eq!(
+            snapshot
+                .document
+                .attr(snapshot.document.query_selector("#n").unwrap(), "value")
+                .unwrap(),
+            "65"
+        );
+        assert_eq!(
+            snapshot
+                .diagnostics
+                .iter()
+                .filter(|diagnostic| diagnostic.contains("suspended until reload"))
+                .count(),
+            1
+        );
+    }
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
 fn generated_summary_actions_survive_ipc_and_cannot_activate_ordinary_nodes() {
     use eris::layout::HitAction;
     let fixture = Fixture::new(
@@ -1120,6 +1199,56 @@ fn cancellation_reaps_child_and_makes_old_client_unavailable() {
 
 #[test]
 #[ignore = "requires Linux Landlock ABI 6 and launches the real confined browser worker"]
+fn cancellation_after_sending_run_tasks_reaps_renderer_and_broker() {
+    use eris::page::TaskState;
+    let fixture = Fixture::new(&format!(
+        "<!doctype html><input id=n value=0 readonly>{}<script>let count=0;const n=document.getElementById('n');document.addEventListener('toggle',()=>{{count++;n.value=count;}},true);</script>",
+        "<details open></details>".repeat(150)
+    ));
+    let mut client = fixture.spawn(true, 104);
+    load(&mut client, &fixture.navigation);
+    let snapshot = render(&mut client);
+    assert_eq!(snapshot.task_state, TaskState::Pending);
+    let output = snapshot.document.query_selector("#n").unwrap();
+    assert_eq!(snapshot.document.attr(output, "value"), Some("64"));
+    let renderer_pid = client.pid();
+    let broker_pid = client.broker_pid().expect("local document uses a broker");
+    assert!(process_exists(renderer_pid));
+    assert!(process_exists(broker_pid));
+
+    let started = Instant::now();
+    let cancellation_checks = Cell::new(0);
+    let error = client
+        .exchange(WorkerCommand::RunTasks, || {
+            let checks = cancellation_checks.get() + 1;
+            cancellation_checks.set(checks);
+            // The preceding Render completed and drained the request pipe.
+            // The first channel iteration writes this ten-byte framed command;
+            // cancel on the next iteration, before reading its response.
+            checks >= 2
+        })
+        .err()
+        .expect("an already-sent task transaction must be cancellable");
+    assert_eq!(cancellation_checks.get(), 2);
+    assert!(error.contains("cancelled"), "{error}");
+    assert!(started.elapsed() < Duration::from_secs(2));
+    assert!(
+        !process_exists(renderer_pid),
+        "task cancellation must reap the renderer"
+    );
+    assert!(
+        !process_exists(broker_pid),
+        "task cancellation must reap the renderer's broker"
+    );
+    let error = client
+        .exchange(WorkerCommand::RunTasks, || false)
+        .err()
+        .expect("cancelled task clients cannot be reused");
+    assert!(error.contains("unavailable"), "{error}");
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6 and launches the real confined browser worker"]
 fn dropping_an_idle_client_leaves_no_child_process() {
     let navigation = Navigation::get("about:blank");
     let client = WorkerClient::spawn_at(Path::new(BINARY), false, &navigation, 8).unwrap();
@@ -1307,12 +1436,12 @@ fn image_decoder_confines_decodes_once_and_exits_without_response_body_leaks() {
         let mut output = child.0.stdout.take().unwrap();
         let flags = rustix::fs::fcntl_getfl(&output).unwrap();
         rustix::fs::fcntl_setfl(&output, flags | rustix::fs::OFlags::NONBLOCK).unwrap();
-        send(&mut input, b"ERW7\x06");
-        assert_eq!(receive(&mut output), b"ERW7\x02\x01\x00\x00");
+        send(&mut input, b"ERW8\x06");
+        assert_eq!(receive(&mut output), b"ERW8\x02\x01\x00\x00");
         let status = fs::read_to_string(format!("/proc/{pid}/status")).unwrap();
         assert!(status.contains("NoNewPrivs:\t1"));
         assert!(status.contains("Seccomp:\t2"));
-        let mut request = b"ERW7\x07".to_vec();
+        let mut request = b"ERW8\x07".to_vec();
         request.extend_from_slice(&(mime.len() as u32).to_le_bytes());
         request.extend_from_slice(mime.as_bytes());
         request.extend_from_slice(&budget.to_le_bytes());
@@ -1320,7 +1449,7 @@ fn image_decoder_confines_decodes_once_and_exits_without_response_body_leaks() {
         request.extend_from_slice(body);
         send(&mut input, &request);
         let response = receive(&mut output);
-        assert_eq!(&response[..5], b"ERW7\x08");
+        assert_eq!(&response[..5], b"ERW8\x08");
         assert_eq!(response[5], u8::from(success));
         if success {
             assert_eq!(u32::from_le_bytes(response[6..10].try_into().unwrap()), 2);

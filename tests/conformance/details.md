@@ -37,22 +37,39 @@ newly hidden native edit focus even before a pending edit acknowledgement.
 ## Toggle checkpoint
 
 DOM mutations queue records rather than synchronously invoking listeners.
-Repeated transitions coalesce, retaining the earliest old state and the latest
-new state; the coalesced record moves to the queue's end. Equal initial/final
-states are still observable. Merely changing a present `open` attribute's text
-does not queue another transition.
+Repeated transitions with a tracker coalesce, retaining the tracker's old state
+and the latest new state; the replacement task moves to the queue's end. Equal
+initial/final states are still observable. Merely changing a present `open`
+attribute's text does not queue another transition.
+
+The task queue, each element's task tracker, and the active task are separate.
+Starting a task removes it from the queue without clearing or replacing its
+element's tracker. A reentrant mutation inherits that tracker's old state.
+Finishing clears the element's tracker unconditionally, even if a callback
+replaced it, while preserving any queued replacement task. Such an untracked
+task can coexist with a newer tracked task; starting it must preserve the newer
+tracker. For example, closing a just-opened element from its first toggle
+listener yields `closed → open`, then `closed → closed` notifications. Closing
+and reopening it in that listener yields two `closed → open` notifications.
 
 Page loading (after the current readiness dispatch), native clicks, and native
 input edits run an explicit host checkpoint. It dispatches at most 64 records
-under one interpreter instruction budget. Unstarted records survive a preflight
-failure or batch limit for a later checkpoint. Listener-triggered transitions
-also consume that batch's budget. See [event coverage](events.md) for
-the implemented `ToggleEvent` interface and interpreter limits.
+under one 100,000-step interpreter budget. Event/path allocations and task-map
+work are preflighted before beginning a task. Unstarted tasks survive a preflight
+failure or batch limit for a later checkpoint. An active task is finished even
+after callback resource termination; its callbacks are not replayed and its
+queued replacements are preserved. Listener-triggered transitions also consume
+that batch's budget. See [event coverage](events.md) for the implemented
+`ToggleEvent` interface and interpreter limits.
 
-This is not a complete browser task loop: there is no independent idle task
-pump, timer/microtask ordering guarantee, or streaming-parser event timing.
-Remaining records can wait until another supported host operation. Native
-events use trusted toggle state; script-constructed events remain untrusted.
+The native host schedules bounded continuation batches while disclosure work is
+pending, with ordinary input requests taking priority. A checkpoint error
+suspends automatic task dispatch until reload, retaining unstarted tasks;
+ordinary listener exceptions are reported without failing the checkpoint.
+Direct Runtime callers retain explicit retry control. This is not a complete
+browser task loop: timers, microtask checkpoints, general task-source ordering
+and streaming-parser event timing remain unsupported. Native events use trusted
+toggle state; script-constructed events remain untrusted.
 Because the checkpoint consumes a record before callbacks, reentrant state
 coalescing differs from HTML's tracker, which stays present during firing; the
 [event coverage](events.md) gives the exact closed/open example.
@@ -66,10 +83,14 @@ text/display-list budgets. The fallback header contributes intrinsic width.
 Visibility is precomputed in one tree traversal; first-summary lookups are
 cached and invalidated by child-list mutations, avoiding repeated broad scans.
 
-The group index retains at most one open member per group. Pending events have
-one record per node; repeated toggling cannot append unbounded stale records.
-These structures are bounded by the existing 100,000-node/32 MiB retained DOM
-limits. Group/name work is precharged at script mutation entry points, including
+The group index retains at most one open member per group. FIFO tasks with
+non-reentrant host checkpoints retain at most two live task records per node:
+an older untracked task and a newer tracked task. Each node has at most one
+tracker, and the document has at most one active task. Repeated transitions
+replace the tracked task rather than appending unbounded stale records. These
+structures remain bounded by the existing 100,000-node arena limit; retained
+DOM text has its separate 32 MiB limit. Group/name work is precharged at script
+mutation entry points, including
 bulk cloning and fragment import. Existing layout visitation, geometry, paint,
 glyph, and combined scope limits remain in effect.
 
@@ -90,7 +111,8 @@ this increment. Script `dispatchEvent` does not acquire native default actions.
 ## Regression evidence
 
 - DOM: first-summary cache invalidation, 20,000 broad siblings, exact name
-  groups, detached roots, bulk moves, repeated transition coalescing.
+  groups, detached roots, bulk moves, repeated transition coalescing, task
+  identities, tracker cleanup and 20,000 deterministic queue transitions.
 - Layout: summary-first order, closed fixed descendants, intrinsic widths,
   generated-header hits and clipping, no synthetic DOM insertion.
 - Page: click cancellation and ordering, listener reparenting/removal,

@@ -116,17 +116,28 @@ pub struct Document {
     base_href_bytes: usize,
     details_groups: BTreeMap<(NodeId, String), NodeId>,
     details_toggles: BTreeMap<u64, DetailsToggle>,
-    details_pending: BTreeMap<NodeId, u64>,
+    details_trackers: BTreeMap<NodeId, DetailsToggleTracker>,
+    details_active: Option<DetailsToggleTask>,
     details_sequence: u64,
     details_name_bytes: usize,
     details_summaries: std::cell::RefCell<BTreeMap<NodeId, Option<NodeId>>>,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) struct DetailsToggle {
     pub node: NodeId,
     pub old_open: bool,
     pub new_open: bool,
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) struct DetailsToggleTask {
+    pub id: u64,
+    pub event: DetailsToggle,
+}
+#[derive(Debug, Clone, Copy)]
+struct DetailsToggleTracker {
+    task: u64,
+    old_open: bool,
 }
 
 impl Default for Document {
@@ -272,7 +283,8 @@ impl Document {
             base_href_bytes: 0,
             details_groups: BTreeMap::new(),
             details_toggles: BTreeMap::new(),
-            details_pending: BTreeMap::new(),
+            details_trackers: BTreeMap::new(),
+            details_active: None,
             details_sequence: 0,
             details_name_bytes: 0,
             details_summaries: std::cell::RefCell::new(BTreeMap::new()),
@@ -1136,7 +1148,13 @@ impl Document {
         self.query_selector_impl(root, selector, false)
     }
     fn query_selector_impl(&self, root: NodeId, selector: &str, first: bool) -> Vec<NodeId> {
+        if selector.len() > 4096 {
+            return Vec::new();
+        }
         let mut budget = 4_000_000usize;
+        let Ok(selectors) = crate::selectors::parse_list(selector, &mut budget) else {
+            return Vec::new();
+        };
         let mut result = vec![];
         let mut pending = self
             .nodes
@@ -1150,7 +1168,9 @@ impl Document {
             }
             if let Some(node) = self.nodes.get(id) {
                 if matches!(node.kind, NodeKind::Element(_))
-                    && matches_selector_with_budget(self, id, selector, &mut budget)
+                    && selectors.iter().any(|selector| {
+                        matches_compiled_selector(self, id, &selector.source, &mut budget)
+                    })
                 {
                     result.push(id);
                     if first {
@@ -1352,14 +1372,23 @@ impl Document {
         result
     }
     fn queue_details_toggle(&mut self, node: NodeId, old_open: bool, new_open: bool) {
-        let old_open = self
-            .details_pending
-            .remove(&node)
-            .and_then(|sequence| self.details_toggles.remove(&sequence))
-            .map_or(old_open, |event| event.old_open);
+        let old_open = if let Some(tracker) = self.details_trackers.remove(&node) {
+            // The referenced task may already be running. Its old state still
+            // participates in coalescing even though it is no longer queued.
+            self.details_toggles.remove(&tracker.task);
+            tracker.old_open
+        } else {
+            old_open
+        };
         let sequence = self.details_sequence;
         self.details_sequence = self.details_sequence.saturating_add(1);
-        self.details_pending.insert(node, sequence);
+        self.details_trackers.insert(
+            node,
+            DetailsToggleTracker {
+                task: sequence,
+                old_open,
+            },
+        );
         self.details_toggles.insert(
             sequence,
             DetailsToggle {
@@ -1369,15 +1398,37 @@ impl Document {
             },
         );
     }
-    pub(crate) fn peek_details_toggle(&self) -> Option<DetailsToggle> {
+    pub(crate) fn peek_details_toggle(&self) -> Option<DetailsToggleTask> {
         self.details_toggles
             .first_key_value()
-            .map(|(_, event)| *event)
+            .map(|(&id, &event)| DetailsToggleTask { id, event })
     }
-    pub(crate) fn take_details_toggle(&mut self) -> Option<DetailsToggle> {
-        let (_, event) = self.details_toggles.pop_first()?;
-        self.details_pending.remove(&event.node);
-        Some(event)
+    /// Start only the expected FIFO task, keeping the element's tracker intact.
+    /// An untracked task must not replace a newer task's tracker on entry.
+    pub(crate) fn begin_details_toggle(&mut self, expected_id: u64) -> Option<DetailsToggleTask> {
+        if self.details_active.is_some() {
+            return None;
+        }
+        let task = self.peek_details_toggle()?;
+        if task.id != expected_id {
+            return None;
+        }
+        self.details_toggles.pop_first();
+        self.details_active = Some(task);
+        Some(task)
+    }
+    /// Finishing clears the element's tracker even if a callback replaced it.
+    /// It never cancels the queued task referenced by that replacement tracker.
+    pub(crate) fn finish_details_toggle(&mut self, id: u64) -> bool {
+        let Some(task) = self.details_active.filter(|task| task.id == id) else {
+            return false;
+        };
+        self.details_trackers.remove(&task.event.node);
+        self.details_active = None;
+        true
+    }
+    pub(crate) fn details_toggle_running(&self) -> bool {
+        self.details_active.is_some()
     }
     pub(crate) fn has_pending_details_toggles(&self) -> bool {
         !self.details_toggles.is_empty()
@@ -2429,7 +2480,8 @@ impl TreeBuilder {
                 base_href_bytes: 0,
                 details_groups: BTreeMap::new(),
                 details_toggles: BTreeMap::new(),
-                details_pending: BTreeMap::new(),
+                details_trackers: BTreeMap::new(),
+                details_active: None,
                 details_sequence: 0,
                 details_name_bytes: 0,
                 details_summaries: std::cell::RefCell::new(BTreeMap::new()),
@@ -7535,11 +7587,21 @@ pub fn matches_selector_with_budget(
     if selector.len() > 4096 || doc.tag(id).is_none() || *budget == 0 {
         return false;
     }
-    split_top_level(selector, ',')
-        .into_iter()
-        .take(128)
-        .any(|s| matches_complex(doc, id, s, 0, budget))
+    crate::selectors::parse_list(selector, budget).is_ok_and(|selectors| {
+        selectors
+            .iter()
+            .any(|selector| matches_compiled_selector(doc, id, &selector.source, budget))
+    })
 }
+pub(crate) fn matches_compiled_selector(
+    doc: &Document,
+    id: NodeId,
+    selector: &str,
+    budget: &mut usize,
+) -> bool {
+    doc.tag(id).is_some() && matches_complex(doc, id, selector, 0, budget)
+}
+
 fn matches_complex(doc: &Document, id: NodeId, s: &str, depth: usize, budget: &mut usize) -> bool {
     if depth > 64 {
         return false;
@@ -7873,7 +7935,11 @@ fn matches_compound(doc: &Document, id: NodeId, s: &str, depth: usize, budget: &
                             && doc.attr(id, "href").is_some()
                     }
                     "lang" => {
-                        let lang = argument.trim_matches(['\'', '"']);
+                        let lang = if argument.starts_with(['\'', '"']) {
+                            &argument[1..argument.len() - 1]
+                        } else {
+                            argument
+                        };
                         let mut n = Some(id);
                         let mut found = false;
                         let mut count = 0;
@@ -7976,7 +8042,11 @@ fn matches_attr(doc: &Document, id: NodeId, s: &str, budget: &mut usize) -> bool
     } else {
         raw
     };
-    let expected = raw.trim_matches(['\'', '"']);
+    let expected = if raw.starts_with(['\'', '"']) {
+        &raw[1..raw.len() - 1]
+    } else {
+        raw
+    };
     let (actual, expected) = if insensitive {
         (actual.to_ascii_lowercase(), expected.to_ascii_lowercase())
     } else {
@@ -8034,9 +8104,10 @@ fn nth_matches(s: &str, index: usize) -> bool {
                 Err(_) => return false,
             }
         };
-        let Some(diff) = (index as i64).checked_sub(b) else {
-            return false;
-        };
+        // Parsed coefficients are i64; wider arithmetic keeps their full
+        // mathematical range without overflow in subtraction or division.
+        let diff = index as i128 - i128::from(b);
+        let a = i128::from(a);
         a == 0 && diff == 0 || a != 0 && diff % a == 0 && diff / a >= 0
     } else {
         s.parse::<usize>().ok() == Some(index)
@@ -8117,21 +8188,142 @@ mod tests {
         d.set_attr(a, "open", "");
         d.set_attr(b, "open", "");
         d.remove_attr(a, "open");
-        let event = d.take_details_toggle().unwrap();
+        let task = d.peek_details_toggle().unwrap();
+        let event = d.begin_details_toggle(task.id).unwrap().event;
+        assert!(d.finish_details_toggle(task.id));
         assert_eq!(event.node, b);
-        let event = d.take_details_toggle().unwrap();
+        let task = d.peek_details_toggle().unwrap();
+        let event = d.begin_details_toggle(task.id).unwrap().event;
+        assert!(d.finish_details_toggle(task.id));
         assert_eq!(
             (event.node, event.old_open, event.new_open),
             (a, false, false)
         );
         d.set_attr(b, "open", "different value");
-        assert!(d.take_details_toggle().is_none());
+        assert!(d.peek_details_toggle().is_none());
         for _ in 0..20_000 {
             d.set_attr(a, "open", "");
             d.remove_attr(a, "open");
         }
-        assert_eq!(d.details_pending.len(), 1);
+        assert_eq!(d.details_trackers.len(), 1);
         assert_eq!(d.details_toggles.len(), 1);
+    }
+
+    #[test]
+    fn details_task_identity_preserves_tracker_through_reentrant_mutations_and_finish() {
+        let mut d = Document::parse("<details id=d></details>");
+        let node = d.query_selector("#d").unwrap();
+        d.set_attr(node, "open", "");
+        let first = d.peek_details_toggle().unwrap();
+        assert!(d.begin_details_toggle(first.id + 1).is_none());
+        assert_eq!(d.peek_details_toggle(), Some(first));
+        assert_eq!(d.begin_details_toggle(first.id), Some(first));
+        assert!(d.details_toggle_running());
+        assert_eq!(d.details_trackers[&node].task, first.id);
+        assert!(!d.has_pending_details_toggles());
+        d.remove_attr(node, "open");
+        let replacement = d.peek_details_toggle().unwrap();
+        assert_ne!(replacement.id, first.id);
+        assert_eq!(
+            (replacement.event.old_open, replacement.event.new_open),
+            (false, false)
+        );
+        assert_eq!(d.details_trackers[&node].task, replacement.id);
+        assert!(d.begin_details_toggle(replacement.id).is_none());
+        assert!(!d.finish_details_toggle(replacement.id));
+        assert_eq!(d.details_trackers[&node].task, replacement.id);
+        assert!(d.finish_details_toggle(first.id));
+        assert!(!d.details_toggle_running());
+        assert!(d.details_trackers.is_empty());
+        assert_eq!(d.peek_details_toggle(), Some(replacement));
+        assert!(!d.finish_details_toggle(first.id));
+        d.begin_details_toggle(replacement.id).unwrap();
+        assert!(
+            d.details_trackers.is_empty(),
+            "starting an untracked task does not recreate a tracker"
+        );
+        assert!(d.finish_details_toggle(replacement.id));
+    }
+
+    #[test]
+    fn details_untracked_task_preserves_and_coalesces_with_a_newer_tracker() {
+        let mut d = Document::parse("<details id=d></details>");
+        let node = d.query_selector("#d").unwrap();
+        d.set_attr(node, "open", "");
+        let first = d.peek_details_toggle().unwrap();
+        d.begin_details_toggle(first.id).unwrap();
+        d.remove_attr(node, "open");
+        d.set_attr(node, "open", "");
+        let second = d.peek_details_toggle().unwrap();
+        assert_eq!(
+            (second.event.old_open, second.event.new_open),
+            (false, true)
+        );
+        assert!(d.finish_details_toggle(first.id));
+        d.remove_attr(node, "open");
+        assert_eq!(d.details_toggles.len(), 2);
+        let third = d.details_trackers[&node].task;
+        assert!(d.details_toggles[&third].old_open);
+        d.begin_details_toggle(second.id).unwrap();
+        assert_eq!(d.details_trackers[&node].task, third);
+        d.set_attr(node, "open", "");
+        let fourth = d.peek_details_toggle().unwrap();
+        assert!(!d.details_toggles.contains_key(&third));
+        assert_ne!(fourth.id, third);
+        assert_eq!((fourth.event.old_open, fourth.event.new_open), (true, true));
+        assert!(d.finish_details_toggle(second.id));
+        assert!(d.details_trackers.is_empty());
+        assert_eq!(d.peek_details_toggle(), Some(fourth));
+        d.begin_details_toggle(fourth.id).unwrap();
+        assert!(d.finish_details_toggle(fourth.id));
+        assert!(!d.has_pending_details_toggles());
+    }
+
+    #[test]
+    fn details_task_queue_retains_at_most_two_live_records_per_element() {
+        let mut d = Document::parse(&"<details></details>".repeat(8));
+        let nodes = d.query_selector_all("details");
+        let mut random = 0x544f4747u64;
+        for _ in 0..20_000 {
+            random ^= random << 13;
+            random ^= random >> 7;
+            random ^= random << 17;
+            match random % 4 {
+                0 | 1 => {
+                    let node = nodes[(random as usize >> 8) % nodes.len()];
+                    if d.attr(node, "open").is_some() {
+                        d.remove_attr(node, "open");
+                    } else {
+                        d.set_attr(node, "open", "");
+                    }
+                }
+                2 => {
+                    if let Some(task) = d.peek_details_toggle() {
+                        d.begin_details_toggle(task.id);
+                    }
+                }
+                _ => {
+                    if let Some(task) = d.details_active {
+                        assert!(d.finish_details_toggle(task.id));
+                    }
+                }
+            }
+            let mut counts = BTreeMap::<NodeId, usize>::new();
+            for task in d.details_toggles.values() {
+                *counts.entry(task.node).or_default() += 1;
+            }
+            if let Some(task) = d.details_active {
+                *counts.entry(task.event.node).or_default() += 1;
+            }
+            assert!(counts.values().all(|&count| count <= 2));
+            assert!(d.details_trackers.len() <= nodes.len());
+            for tracker in d.details_trackers.values() {
+                assert!(
+                    d.details_toggles.contains_key(&tracker.task)
+                        || d.details_active.is_some_and(|task| task.id == tracker.task)
+                );
+            }
+        }
     }
     #[test]
     fn details_first_summary_lookup_is_shared_across_broad_sibling_sets() {
@@ -9750,7 +9942,7 @@ mod tests {
             &mut budget
         ));
         assert_eq!(budget, 0);
-        assert!(!nth_matches("n-9223372036854775808", 2));
+        assert!(nth_matches("n-9223372036854775808", 2));
     }
     #[test]
     fn repeated_mutations_keep_retained_text_and_attributes_bounded() {
@@ -9812,6 +10004,47 @@ mod tests {
             "hello <b>if (a < b) { x = '&amp;' }"
         );
     }
+    #[test]
+    fn selector_comments_keep_actual_relationships_strings_and_nth_arithmetic() {
+        let d = Document::parse(
+            r#"<div id=own class=x data-a=Ab data-v="'"><span id=child class=x></span></div><p id=first></p><p id=second></p>"#,
+        );
+        let own = d.query_selector("#own").unwrap();
+        let child = d.query_selector("#child").unwrap();
+        assert_eq!(d.query_selector("div/**/.x"), Some(own));
+        assert_eq!(d.query_selector("div /**/.x"), Some(child));
+        assert_eq!(d.query_selector("div/**/>/**/./**/x"), Some(child));
+        assert_eq!(d.query_selector(r#"[data-v="'"]"#), Some(own));
+        assert_eq!(d.query_selector("[data-a=Ab/**/S]"), Some(own));
+        assert_eq!(d.query_selector(":/**/IS(div.x)"), Some(own));
+        assert_eq!(d.query_selector("div:FIRST-CHILD"), Some(own));
+        for selector in [
+            "div/**/span",
+            "#/**/own",
+            ":is/**/(div)",
+            ":empty(div)",
+            ":not(:madeup)",
+            "[data-a~ /**/=Ab]",
+        ] {
+            assert!(d.query_selector(selector).is_none(), "{selector}");
+        }
+        let d = Document::parse("<p id=first></p><p></p>");
+        assert_eq!(d.query_selector_all("p,:is()"), d.query_selector_all("p"));
+        assert_eq!(
+            d.query_selector_all("p:not(:is(:madeup))"),
+            d.query_selector_all("p")
+        );
+        assert_eq!(
+            d.query_selector("p:nth-child(3074457345618258603n-9223372036854775808)"),
+            d.query_selector("#first")
+        );
+        assert_eq!(
+            d.query_selector("p:nth-child(2n/**/-/**/1)"),
+            d.query_selector("#first")
+        );
+        assert!(d.query_selector("p:nth-child(2/**/n-1)").is_none());
+    }
+
     #[test]
     fn selectors_combinators_and_attributes() {
         let d = parse(
