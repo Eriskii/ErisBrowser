@@ -161,6 +161,12 @@ fn numeric_conversion_preserves_pixels_and_hooks_through_the_worker() {
 
 #[test]
 #[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn numeric_parsing_preserves_pixels_and_aliases_through_the_worker() {
+    assert_six_scripted_samples_through_worker(include_str!("fixtures/numeric-parsing.html"), 153);
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
 fn number_statics_preserve_pixels_and_native_aliases_through_the_worker() {
     assert_six_scripted_samples_through_worker(include_str!("fixtures/number-statics.html"), 147);
 }

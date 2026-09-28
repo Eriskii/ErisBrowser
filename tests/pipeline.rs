@@ -58,6 +58,11 @@ fn array_reductions_preserve_direction_live_values_and_accumulator_identity() {
 }
 
 #[test]
+fn numeric_parsing_preserves_prefixes_conversion_order_and_alias_callbacks() {
+    assert_six_scripted_samples(include_str!("fixtures/numeric-parsing.html"));
+}
+
+#[test]
 fn numeric_conversion_preserves_hooks_boxes_and_saved_callbacks() {
     assert_six_scripted_samples(include_str!("fixtures/numeric-conversion.html"));
 }

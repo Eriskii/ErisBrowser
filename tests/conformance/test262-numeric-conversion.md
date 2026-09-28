@@ -84,8 +84,14 @@ python3 tools/test262_conformance.py --profile numeric-conversion --baseline tes
 | Candidate report | `620625bdd6528b8732961c2f6d90dab9602cda512d6861c649013225199fc589` |
 | Current baseline | `8fec4cd70dfea5f1c1f49e91a2fb491be0eb70cc2af18ed30afb92cda2797a7b` |
 | Number comparison | `d09587b9bd1f8922d0b2797d5ddcb3592505d4c74e9067c9e8f818f5970d2c78` |
-| Updated Number baseline | `03c6fad5ceb5f119df2dc5db1d432bece74bba5b6cadc6aead3300c75882a427` |
+| Number baseline at cf28fc4 | `03c6fad5ceb5f119df2dc5db1d432bece74bba5b6cadc6aead3300c75882a427` |
 
 The [implementation scope](numeric-conversion.md) and
 [validation record](../../docs/VALIDATION.md) distinguish ordinary conversion
 from missing Symbol, BigInt, host and constructor infrastructure.
+
+The subsequent [parsing increment](test262-numeric-parsing.md) resolves the four
+Number alias failures. The Number baseline hash above refers to
+[checkpoint cf28fc4](https://github.com/Eriskii/ErisBrowser/blob/cf28fc4eba40b5a22f8ea1632e33825a3c751fc1/tests/conformance/test262-number-statics-current.json);
+the current baseline and separate comparison are linked from the parsing report.
+This profile's 24 passes and 36 unsupported outcomes remain unchanged.

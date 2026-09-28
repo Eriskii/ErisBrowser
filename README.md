@@ -139,15 +139,21 @@ passes with no losses. All 128 assertion checks verify; CI preserves the passing
 cases and the full unchanged inventory.
 
 The [Number static builtin inventory](tests/conformance/test262-number-statics.md)
-retains 340 variants: 244 pass, four fail on parsing aliases and 92 remain
-unsupported. Constants, non-coercing predicates and ordinary constructor
-conversion add 86 passes with no losses. All 104 assertion checks verify, and
+retains 340 variants: 248 pass and 92 remain unsupported. Constants, static
+predicates, ordinary constructor conversion and parsing aliases add 90 passes
+with no losses. All 104 assertion checks verify, and
 the complete regression baseline runs in CI.
 
 The complete [coercing global predicate directories](tests/conformance/test262-numeric-conversion.md)
 retain 60 variants: 24 pass and 36 remain unsupported. Ordinary numeric conversion
 adds eight passes with no losses. All 80 assertion controls verify, and CI
 preserves the complete inventory and passing outcomes.
+
+The complete [numeric parsing directories](tests/conformance/test262-numeric-parsing.md)
+retain 218 variants: 164 pass, 46 remain unsupported, four encounter an unchanged
+helper parse error and four exceed the instruction budget. All 80 assertion
+controls verify. The 22 gains lose no prior passes; the retained helper errors
+and resource stops prevent a healthy regression baseline.
 
 The complete [identifier and whitespace directories](tests/conformance/test262-identifiers.md)
 retain 669 variants: 507 pass, 154 remain unsupported and eight reach compile

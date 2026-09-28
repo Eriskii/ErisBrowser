@@ -30,6 +30,7 @@ IDENTIFIER_FEATURES = SUPPORTED_FEATURES | {'u180e'}
 ARRAY_REDUCE_FEATURES = SUPPORTED_FEATURES.copy()
 NUMBER_STATIC_FEATURES = SUPPORTED_FEATURES.copy()
 NUMERIC_CONVERSION_FEATURES = SUPPORTED_FEATURES.copy()
+NUMERIC_PARSING_FEATURES = SUPPORTED_FEATURES.copy()
 PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -37,7 +38,8 @@ PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES
                     'global-values': GLOBAL_VALUE_FEATURES, 'array-sort': ARRAY_SORT_FEATURES,
                     'identifiers': IDENTIFIER_FEATURES, 'array-reduce': ARRAY_REDUCE_FEATURES,
                     'number-statics': NUMBER_STATIC_FEATURES,
-                    'numeric-conversion': NUMERIC_CONVERSION_FEATURES}
+                    'numeric-conversion': NUMERIC_CONVERSION_FEATURES,
+                    'numeric-parsing': NUMERIC_PARSING_FEATURES}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -406,6 +408,58 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                 for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
                     source = guard + setup + f'assert.sameValue({actual},{value});'
                     variants.append(('array-sort-' + name + suffix, source, expected, mode))
+    if profile == 'numeric-parsing':
+        for method in ('parseInt', 'parseFloat'):
+            guard = (f"var m={method};assert.sameValue(typeof m,'function');"
+                     "assert.sameValue(m({toString:function(){return '12';}},10),12);"
+                     f"assert.sameValue(Number.{method},m);")
+            grammar = ("assert.sameValue(m('  -0tail',10),-0);assert.sameValue(m('0x10'),16);"
+                       "assert.sameValue(m('0b11'),0);assert.sameValue(m('11',4294967298),3);"
+                       "assert.sameValue(m('11',-4294967294),3);assert.sameValue(m('11',Infinity),11);"
+                       "assert.sameValue(m('11',1),NaN);assert.sameValue(m('z',36),35);"
+                       if method == 'parseInt' else
+                       "assert.sameValue(m('  -0tail'),-0);assert.sameValue(m('1.25e2x'),125);"
+                       "assert.sameValue(m('1e+'),1);assert.sameValue(m('0x10'),0);"
+                       "assert.sameValue(m('+Infinityx'),Infinity);assert.sameValue(m('.5x'),0.5);"
+                       "assert.sameValue(m('.x'),NaN);assert.sameValue(m('inf'),NaN);")
+            radix_order = ("var r={get valueOf(){trace+='R';return function(){trace+='r';return 10;};}};"
+                           "assert.sameValue(m(o,r),12);" if method == 'parseInt' else
+                           "var r={get valueOf(){throw 'ignored';}};assert.sameValue(m(o,r),12);")
+            trace = "'TtvRr'" if method == 'parseInt' else "'Ttv'"
+            length = '2' if method == 'parseInt' else '1'
+            pairs = [
+                ('grammar', grammar + "assert.sameValue(m(),NaN);assert.sameValue(m('\\uD80012'),NaN);"
+                 "assert.sameValue(m('\\uFEFF12\\uD800'),12);",
+                 "m('12tail')", '12', '13'),
+                ('hook-radix-order', "var trace='',o={get toString(){trace+='T';return function(){assert.sameValue(this,o);trace+='t';return {};};},"
+                 "valueOf:function(){assert.sameValue(this,o);trace+='v';return '12';}};" + radix_order,
+                 'trace', trace, "''"),
+                ('abrupt', "var reason={},seen,called=false,o={get toString(){throw reason;},valueOf:function(){called=true;return 1;}};"
+                 "try{m(o,{valueOf:function(){called=true;return 10;}});}catch(e){seen=e;}"
+                 "assert.sameValue(seen,reason);assert.throws(TypeError,function(){m({toString:null,valueOf:null});});",
+                 'called', 'false', 'true'),
+                ('property-metadata', f"verifyProperty(Number,'{method}',{{value:m,writable:true,enumerable:false,configurable:true}},{{restore:true}});"
+                 f"verifyProperty(m,'name',{{value:'{method}',writable:false,enumerable:false,configurable:true}},{{restore:true}});"
+                 f"verifyProperty(m,'length',{{value:{length},writable:false,enumerable:false,configurable:true}},{{restore:true}});"
+                 "assert.sameValue(Object.getPrototypeOf(m),Function.prototype);assert.sameValue(Object.getOwnPropertyDescriptor(m,'prototype'),undefined);"
+                 "assert.throws(TypeError,function(){new m('1');});",
+                 'm.length', length, '3'),
+                ('arguments-receiver', "var trace='',bomb={get toString(){throw 'receiver';},get valueOf(){throw 'receiver';}};"
+                 "function first(){trace+='a';return {toString:function(){trace+='s';return '12';}};}"
+                 "function extra(){trace+='b';return bomb;}assert.sameValue(m.call(bomb,first(),10,extra()),12);"
+                 "assert.sameValue(m.apply(null,['12',10,bomb]),12);",
+                 'trace', "'abs'", "'asb'"),
+                ('alias-mutation', f"var owner=Number,alias=owner.{method};{method}=function(){{throw 'global';}};"
+                 f"assert.sameValue(owner.{method},alias);owner.{method}=function(){{throw 'static';}};"
+                 "Number={};Object.defineProperty(alias,'name',{value:'changed'});"
+                 "assert.sameValue(alias.bind(null)({toString:function(){return '13';}},10),13);",
+                 "m({toString:function(){return '14';}},10)", '14', '15'),
+            ]
+            for mode in ('sloppy', 'strict'):
+                for name, setup, actual, good, bad in pairs:
+                    for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                        variants.append(('numeric-parsing-' + method + '-' + name + suffix,
+                                         guard + setup + f'assert.sameValue({actual},{value});', expected, mode))
     if profile == 'numeric-conversion':
         guard = ("var N=Number;assert.sameValue(typeof N,'function');"
                  "assert.sameValue(N({valueOf:function(){return 5;}}),5);")

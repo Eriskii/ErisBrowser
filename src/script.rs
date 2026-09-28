@@ -3356,6 +3356,16 @@ impl Runtime {
             binding.value = function;
             binding.enumerable = false;
         }
+        for (name, length) in [("parseInt", 2), ("parseFloat", 1)] {
+            self.work(1 + name.len())?;
+            // Native metadata, registry strings and Number's additional key.
+            self.charge(1280 + name.len() * 10)?;
+            let function = self.intrinsic_function(name, name, length)?;
+            let binding = self.environments[0].bindings.get_mut(name).unwrap();
+            binding.value = function.clone();
+            binding.enumerable = false;
+            self.objects[self.native_properties["Number"]].insert_hidden(name.into(), function);
+        }
         for name in ["JSON", "Math"] {
             let Value::Object(id) = self.object_ordered([])? else {
                 unreachable!()
@@ -8506,6 +8516,7 @@ impl Runtime {
         let mut primitive = value.clone();
         if js_object(&value) {
             for key in ["toString", "valueOf"] {
+                self.charge(64)?;
                 let method = self.get(value.clone(), key, doc)?;
                 if json_callable(&method) {
                     primitive = self.call(method, Vec::new(), value.clone(), doc)?;
@@ -9936,6 +9947,30 @@ impl Runtime {
                 _ => Value::Bool(number.is_nan()),
             });
         }
+        if matches!(native.name.as_str(), "parseInt" | "parseFloat") {
+            self.tick()?;
+            let text = self.string_hint(args.first().cloned().unwrap_or(Value::Undefined), doc)?;
+            let radix = if native.name == "parseInt" {
+                to_i32(self.number_value(args.get(1).cloned().unwrap_or(Value::Undefined), doc)?)
+            } else {
+                0
+            };
+            if native.name == "parseInt" && radix != 0 && !(2..=36).contains(&radix) {
+                return Ok(Value::Number(f64::NAN));
+            }
+            // UTF-16 decoding, UTF-8 capacity growth, whitespace/prefix scans
+            // and numeric parsing are bounded by the converted first string.
+            // Non-ASCII scalars and replacement characters terminate the same
+            // ASCII numeric prefix, including an isolated input surrogate.
+            self.work(1 + text.len())?;
+            self.charge(32 + text.len().saturating_mul(6))?;
+            let text = text.to_utf8_lossy();
+            return Ok(Value::Number(if native.name == "parseInt" {
+                parse_int(&text, f64::from(radix))
+            } else {
+                parse_float(&text)
+            }));
+        }
         if matches!(native.name.as_str(), "Array.reduce" | "Array.reduceRight") {
             return self.array_reduce(
                 native.receiver.clone(),
@@ -10580,7 +10615,7 @@ impl Runtime {
             Value::Json if name == "stringify" => {
                 return self.json_stringify(arg(0), arg(1), arg(2), doc);
             }
-            Value::Window if ["String", "Boolean", "parseInt", "parseFloat"].contains(&name) => {
+            Value::Window if ["String", "Boolean"].contains(&name) => {
                 let value = arg(0);
                 return match name {
                     "String" => {
@@ -10592,13 +10627,6 @@ impl Runtime {
                         self.string(text)
                     }
                     "Boolean" => Ok(Value::Bool(value.truthy())),
-                    "parseFloat" => Ok(Value::Number(parse_float(
-                        &value.js_string().to_utf8_lossy(),
-                    ))),
-                    "parseInt" => Ok(Value::Number(parse_int(
-                        &value.js_string().to_utf8_lossy(),
-                        args.get(1).map(Value::number).unwrap_or(0.0),
-                    ))),
                     _ => unreachable!(),
                 };
             }
@@ -17440,6 +17468,244 @@ mod tests {
                 runtime.execute(source, &mut document)
             };
             result.unwrap_or_else(|error| panic!("strict={strict}: {error}"));
+        }
+    }
+
+    #[test]
+    fn numeric_parsing_converts_string_before_radix_and_reads_live_fallback() {
+        number_static_modes(
+            r#"
+            var methods=[parseInt,parseFloat];
+            for(var i=0;i<2;i++){
+                var m=methods[i],trace='',o={get toString(){trace+='T';return function(){
+                    assert.sameValue(this,o);trace+='t';Object.defineProperty(o,'valueOf',{
+                        get:function(){trace+='V';return function(){assert.sameValue(this,o);trace+='v';return '12';};},configurable:true});return {};};},
+                    valueOf:function(){throw 'stale';}};
+                var r={get valueOf(){trace+='R';return function(){assert.sameValue(this,r);trace+='r';return 10;};}};
+                assert.sameValue(m(o,r),12);assert.sameValue(trace,i===0?'TtVvRr':'TtVv');
+                assert.sameValue(m({toString:null,valueOf:function(){return '13';}},10),13);
+                assert.sameValue(m({toString:function(){return 14;},get valueOf(){throw 'unused';}},10),14);
+                assert.throws(TypeError,function(){m({toString:function(){return {};},valueOf:function(){return [];}});});
+            }
+            var trace='',input={toString:function(){trace+='s';radix.valueOf=function(){trace+='r';return 16;};return '10';}},radix={};
+            assert.sameValue(parseInt(input,radix),16);assert.sameValue(trace,'sr');
+            trace='';assert.sameValue(parseInt({toString:function(){trace+='s';return '12';}},1),NaN);
+            assert.sameValue(trace,'s');
+        "#,
+        );
+    }
+
+    #[test]
+    fn numeric_parsing_preserves_abrupt_identity_and_argument_evaluation() {
+        number_static_modes(
+            r#"
+            var methods=[parseInt,parseFloat];
+            for(var i=0;i<2;i++){
+                var m=methods[i],trace='',reason={},seen;
+                function first(){trace+='a';return {toString:function(){trace+='s';throw reason;}};}
+                function extra(){trace+='b';return {get toString(){throw 'unused';}};}
+                try{m(first(),10,extra());}catch(e){seen=e;}
+                assert.sameValue(seen,reason);assert.sameValue(trace,'abs');trace='';seen=undefined;
+                try{m(first(),10,(function(){trace+='t';throw reason;})());}catch(e){seen=e;}
+                assert.sameValue(seen,reason);assert.sameValue(trace,'at');
+                var later=false;seen=undefined;
+                try{m({get toString(){throw reason;}},{get valueOf(){later=true;return function(){return 10;};}});}catch(e){seen=e;}
+                assert.sameValue(seen,reason);assert.sameValue(later,false);
+            }
+            var trace='',reason={},seen;
+            try{parseInt({toString:function(){trace+='s';return '12';}},{valueOf:function(){trace+='r';throw reason;}});}catch(e){seen=e;}
+            assert.sameValue(seen,reason);assert.sameValue(trace,'sr');
+        "#,
+        );
+    }
+
+    #[test]
+    fn numeric_parsing_aliases_metadata_and_nonconstruction_keep_identity() {
+        number_static_modes(
+            r#"
+            var N=Number,methods=[parseInt,parseFloat],names=['parseInt','parseFloat'];
+            for(var i=0;i<2;i++){
+                var m=methods[i],name=names[i],length=i===0?2:1;
+                assert.sameValue(N[name],m);assert.sameValue(m.name,name);assert.sameValue(m.length,length);
+                var d=Object.getOwnPropertyDescriptor(N,name);
+                assert.sameValue(d.value,m);assert.sameValue(d.writable,true);
+                assert.sameValue(d.enumerable,false);assert.sameValue(d.configurable,true);
+                var n=Object.getOwnPropertyDescriptor(m,'name'),l=Object.getOwnPropertyDescriptor(m,'length');
+                assert.sameValue(n.writable,false);assert.sameValue(n.enumerable,false);assert.sameValue(n.configurable,true);
+                assert.sameValue(l.writable,false);assert.sameValue(l.enumerable,false);assert.sameValue(l.configurable,true);
+                assert.sameValue(Object.getPrototypeOf(m),Function.prototype);
+                assert.sameValue(Object.getOwnPropertyDescriptor(m,'prototype'),undefined);
+                assert.throws(TypeError,function(){new m('1');});
+                var bound=m.bind(null,'12',10);assert.throws(TypeError,function(){new bound();});
+                Object.defineProperty(m,'name',{value:'changed'});assert.sameValue(bound(),12);
+                N[name]=function(){throw 'replacement';};assert.sameValue(m('13',10),13);
+                assert.sameValue(delete N[name],true);Object.defineProperty(N,name,d);
+            }
+            var I=parseInt,F=parseFloat;parseInt=function(){throw 1;};parseFloat=parseInt;Number={};
+            assert.sameValue(N.parseInt,I);assert.sameValue(N.parseFloat,F);
+            assert.sameValue(I({toString:function(){return '14';}},10),14);
+            assert.sameValue(F({toString:function(){return '1.5';}}),1.5);
+        "#,
+        );
+    }
+
+    #[test]
+    fn numeric_parsing_prefix_grammar_radix_wrapping_and_rounding() {
+        number_static_modes(
+            r#"
+            var cases=[['  -0x10tail',undefined,-16],['0b11',undefined,0],['0o11',undefined,0],
+                ['0x10',10,0],['0x10',16,16],['08',undefined,8],['11',4294967298,3],
+                ['11',-4294967294,3],['12',4294967296,12],['12',NaN,12],['12',Infinity,12],
+                ['12',2.9,1],['12',-2,NaN],['12',37,NaN],['-0tail',10,-0],['+zZ',36,1295],
+                ['\uFEFF12\uD800',10,12],['\uD80012',10,NaN],['\u180E12',10,NaN],
+                ['0x',16,NaN],['+',10,NaN],['1_2',10,1],['１２',10,NaN],
+                ['900719925474099267',10,900719925474099300],['20000000000003',16,9007199254740996]];
+            for(var i=0;i<cases.length;i++)assert.sameValue(parseInt(cases[i][0],cases[i][1]),cases[i][2]);
+            var floats=[['1.25e2x',125],['1e+',1],['1.e-',1],['.5x',0.5],['.e1',NaN],['+Infinityx',Infinity],
+                ['-Infinityx',-Infinity],['inf',NaN],['-0tail',-0],['-1e-999',-0],['1e309',Infinity],
+                ['0x10',0],['0b1',0],['\u00A0\u202912.5\uDC00',12.5],['\u008512',NaN],
+                ['1_2',1],['\uD80012',NaN],['1.00000000000000011102230246251565404236316680908203125',1]];
+            for(var i=0;i<floats.length;i++)assert.sameValue(parseFloat(floats[i][0]),floats[i][1]);
+            assert.sameValue(parseFloat(),NaN);assert.sameValue(parseInt(),NaN);
+            assert.sameValue(parseFloat(true),NaN);assert.sameValue(parseInt(null),NaN);
+            assert.sameValue(parseFloat([12]),12);assert.sameValue(parseInt(new Number(12)),12);
+        "#,
+        );
+    }
+
+    #[test]
+    fn numeric_parsing_precharges_only_required_converted_input() {
+        for name in ["parseInt", "parseFloat"] {
+            let mut runtime = Runtime::new();
+            let mut document = Document::parse("");
+            let function = runtime.environments[0].bindings[name].value.clone();
+            let huge = Value::String(JsString::from(vec![120; MAX_STRING]));
+            let radix = if name == "parseInt" {
+                Value::Number(10.0)
+            } else {
+                huge.clone()
+            };
+            runtime.allocated = MAX_HEAP - 44;
+            runtime.steps = 5;
+            assert_eq!(
+                runtime
+                    .call(
+                        function.clone(),
+                        vec![Value::String("12".into()), radix, huge.clone()],
+                        Value::Document,
+                        &mut document
+                    )
+                    .unwrap(),
+                Value::Number(12.0)
+            );
+            assert_eq!(
+                (
+                    runtime.allocated,
+                    runtime.steps,
+                    runtime.calls,
+                    runtime.stack_units
+                ),
+                (MAX_HEAP, 0, 0, 0)
+            );
+            runtime.steps = MAX_STEPS;
+            assert!(
+                runtime
+                    .call(
+                        function,
+                        vec![Value::String("12".into())],
+                        Value::Null,
+                        &mut document
+                    )
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!((runtime.calls, runtime.stack_units), (0, 0));
+            if name == "parseInt" {
+                runtime.steps = 2;
+                let function = runtime.environments[0].bindings[name].value.clone();
+                let Value::Number(result) = runtime
+                    .call(
+                        function,
+                        vec![huge, Value::Number(1.0)],
+                        Value::Document,
+                        &mut document,
+                    )
+                    .unwrap()
+                else {
+                    panic!("number result")
+                };
+                assert!(result.is_nan());
+                assert_eq!(
+                    (
+                        runtime.allocated,
+                        runtime.steps,
+                        runtime.calls,
+                        runtime.stack_units
+                    ),
+                    // Failed charges remain in the shared ledger; the invalid
+                    // radix return neither allocates nor refunds that charge.
+                    (MAX_HEAP + 44, 0, 0, 0)
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn numeric_parsing_preserves_hook_effects_before_scratch_failure() {
+        for name in ["parseInt", "parseFloat"] {
+            let mut runtime = Runtime::new();
+            let mut document = Document::parse("");
+            let source = format!(
+                "var stringRead=false,radixRead=false,text='{}';var input={{toString:function(){{stringRead=true;return text;}}}},radix={{valueOf:function(){{radixRead=true;return 10;}}}};",
+                "1".repeat(8192)
+            );
+            runtime.execute(&source, &mut document).unwrap();
+            let function = runtime.environments[0].bindings[name].value.clone();
+            let arguments = vec![
+                runtime.environments[0].bindings["input"].value.clone(),
+                runtime.environments[0].bindings["radix"].value.clone(),
+            ];
+            runtime.allocated = MAX_HEAP - 4096;
+            runtime.steps = MAX_STEPS;
+            let error = runtime
+                .call(function, arguments, Value::Null, &mut document)
+                .unwrap_err();
+            assert!(error.is_resource_limit());
+            assert!(error.to_string().contains("allocation"), "{error}");
+            assert_eq!(
+                runtime.environments[0].bindings["stringRead"].value,
+                Value::Bool(true)
+            );
+            assert_eq!(
+                runtime.environments[0].bindings["radixRead"].value,
+                Value::Bool(name == "parseInt")
+            );
+            assert_eq!((runtime.calls, runtime.stack_units), (0, 0));
+        }
+    }
+
+    #[test]
+    fn numeric_parsing_recursive_and_looping_hooks_share_uncatchable_limits() {
+        for name in ["parseInt", "parseFloat"] {
+            for body in [format!("return {name}(o);"), "while(true){}".into()] {
+                let mut runtime = Runtime::new();
+                let mut document = Document::parse("");
+                runtime.execute("var caught=false;", &mut document).unwrap();
+                let source = format!(
+                    "var o={{toString:function(){{{body}}}}};try{{{name}(o);}}catch(e){{caught=true;}}"
+                );
+                assert!(
+                    runtime
+                        .execute(&source, &mut document)
+                        .unwrap_err()
+                        .is_resource_limit()
+                );
+                assert_eq!(
+                    runtime.environments[0].bindings["caught"].value,
+                    Value::Bool(false)
+                );
+                assert_eq!((runtime.calls, runtime.stack_units), (0, 0));
+            }
         }
     }
 

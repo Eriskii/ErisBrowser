@@ -43,7 +43,8 @@ samples before and after an event callback that uses saved conversion functions.
 
 This scope does not implement Symbol.toPrimitive, Symbol or BigInt conversion,
 Reflect/newTarget/subclass semantics, cross-realm behavior, Date, general host
-object conversion, Number.parseInt/parseFloat aliases or numeric formatting.
+object conversion or numeric formatting. Number.parseInt/parseFloat aliases
+were added in the subsequent [parsing increment](numeric-parsing.md).
 The [complete global inventory](test262-numeric-conversion.md) and existing
 [Number inventory](test262-number-statics.md) preserve those outstanding outcomes.
 

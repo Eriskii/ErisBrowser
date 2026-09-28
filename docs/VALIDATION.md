@@ -1,6 +1,82 @@
 # Validation record
 
+## Numeric parsing conversion and aliases
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **830 Rust tests** pass with `--include-ignored`: 672 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 46 pipeline and 37 confined-worker tests. None remain
+ignored. All **109 Python checks** and **57 exact pixel references** pass.
+
+The [implementation](../tests/conformance/numeric-parsing.md) gives parseInt and
+parseFloat ordinary string-hint conversion, with parseInt's radix converted
+afterward. Live hooks, receiver identity, argument effects and abrupt completion
+are preserved. Number.parseInt and Number.parseFloat share the global intrinsic
+objects; standard metadata and independent mutable bindings preserve aliases.
+Dispatch avoids scanning ignored values. Shared conversion keys and worst-case
+UTF-8 scratch are precharged; all resource ceilings are unchanged.
+
+Seven focused groups cover these semantics, prefix grammar, radix wrapping,
+signed zero, rounding and shared resource termination. An initially incorrect
+private-test expectation that failed charges were refunded was corrected; the
+runtime's cumulative ledger was preserved. Page and actual confined-worker
+fixtures retain six green then six blue pixel samples through a callback using
+saved aliases after both global and Number-property replacement.
+
+The new [complete parsing profile](../tests/conformance/test262-numeric-parsing.md)
+retains **109 sources / 218 modes / 80 preflights**. It moves from **142 passed /
+20 failed / 48 unsupported / four harness errors / four resources** to **164
+passed / 46 unsupported / four harness errors / four resources**. All 80 controls
+verify. Twenty gains resolve failures and two resolve parseInt's own length
+reflection. Every prior pass is retained. The unchanged hexadecimal helper uses
+unsupported >>>= syntax; full nested radix loops retain instruction-limit stops.
+An actual baseline-recording attempt reproduces the candidate and refuses to
+create a baseline. This profile remains a complete local observation.
+
+The [Number comparison](../tests/conformance/test262-number-statics-numeric-parsing.json)
+adds four alias passes: **248 passed / 92 unsupported**, with all 104 controls.
+Actual recording and a subsequent gate preserve identical results; the existing
+Number CI gate protects the gains. All twelve prior profiles retain **4,527 case
+and 840 preflight fingerprints**. Every result in the other eleven profiles is
+identical, including all prior resources. HTML remains at 3,868 matches, two
+mismatches and six unsupported modes.
+
+A root-authored supplemental matrix checks **1,050 signed inputs** across radices
+2–36 and widths 1–10. Python integer arithmetic supplies expectations below 2^53;
+direct calls and coercing aliases pass **4,200 assertions / 132 bounded batches**
+in both modes. The frozen before adapter fails at the guard in every batch;
+a wrong candidate assertion throws Test262Error. These cases do not replace
+upstream loops or remove their resource outcomes. Input SHA-256:
+`0b09024529f5d2cf8488e9741faccee6ef103e2a56f15ba10c844a1a89574073`.
+
+The **15,000-case** deterministic smoke run reports zero caught panics or
+invariant failures: 5,000 accepted HTML, 630 accepted/4,370 rejected scripts and
+3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size is 191 nodes and
+display-list size is 1,173 commands; 17 cases stop within paint limits. The new
+seed changes the inventory; counts are not an acceptance-rate comparison.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+| --- | --- |
+| `eris-browser` | `d2dd4c8ac2526202e35bef4dc1672d28fc1568e9f9887e1104fc6c136806984b` |
+| `eris-js` | `528693af5794bc16e18b956ffe781cbab91b335615c82ea773eca6fe2b13c126` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `dfdfde7d066e0c411f2523aa3dc16d2adb5a279e9cd36c00b434b05aad3b4aab` |
+
+Source-input SHA-256:
+`4e98b1e45cd79f3b964d213cfc6c2bbfd012977d7243e9a1e9fe69bfd144a58c`.
+Local records are `artifacts/*numeric-parsing*`; matrix source is retained in
+session scratch storage. Agent sessions remain unavailable, so this is local
+validation, not independent-agent review. No native-window, Vulkan or Chromium
+performance measurement is assigned to this checkpoint. Full compatibility,
+production security and the requested performance threshold remain unverified.
+
 ## Ordinary numeric conversion
+
+Published checkpoint `cf28fc4` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36434500199),
+including the new conversion regression gate, Rust 1.88 and the Vulkan probe.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **821 Rust tests** pass with `--include-ignored`: 665 library,

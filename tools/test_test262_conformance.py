@@ -191,6 +191,143 @@ class ExecutionTests(unittest.TestCase):
 
 
 class IntegrityTests(unittest.TestCase):
+    def test_numeric_parsing_retains_complete_global_directories_and_helpers(self):
+        manifest, files, cases, fixtures, manifest_hash = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-numeric-parsing', 'numeric-parsing')
+        self.assertEqual({key: len(value) for key, value in manifest['directories'].items()},
+                         {'parseInt': 55, 'parseFloat': 54})
+        self.assertEqual(manifest_hash, 'f8959cc2e43d94b5b0c671105f87d3fc831fa6359065566791707a6f9b400c6a')
+        self.assertEqual((manifest['test_files'], len(cases), fixtures), (109, 218, []))
+        self.assertTrue(all(not c['metadata']['flags'] and c['metadata']['negative'] is None for c in cases))
+        self.assertEqual(sum(c['mode'] == 'sloppy' for c in cases), 109)
+        self.assertEqual(sum(len(v) for p, v in files.items() if p.startswith('test/')), 110341)
+        self.assertEqual({p for p in files if p.startswith('harness/')}, {
+            'harness/assert.js', 'harness/sta.js', 'harness/propertyHelper.js',
+            'harness/isConstructor.js', 'harness/decimalToHexString.js'})
+        _, old, _, _, _ = runner.load_corpus(runner.ROOT / 'tests/upstream/test262-number-statics', 'number-statics')
+        for path, data in files.items():
+            if not path.startswith('test/') and path in old:
+                self.assertEqual(data, old[path])
+
+    def test_numeric_parsing_core_policy_preserves_excluded_prerequisites(self):
+        self.assertEqual(runner.NUMERIC_PARSING_FEATURES, runner.SUPPORTED_FEATURES)
+        _, _, cases, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-numeric-parsing', 'numeric-parsing')
+        excluded = [c for c in cases if runner.unsupported_reason(c, runner.NUMERIC_PARSING_FEATURES)]
+        self.assertEqual((len(excluded), len({c['file'] for c in excluded})), (38, 19))
+        self.assertTrue(all(set(c['metadata']['features']) & {'numeric-separator-literal', 'u180e', 'Reflect.construct', 'arrow-function'} for c in excluded))
+
+    def test_numeric_parsing_pairs_guard_conversion_and_preserve_identical_setup(self):
+        _, files, _, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-numeric-parsing', 'numeric-parsing')
+        captured = []
+        def capture(case, *args):
+            captured.append(case)
+            return dict(status='passed')
+        with patch.object(runner, 'run_case', side_effect=capture):
+            runner.harness_preflight(files, Path('/fake'), 1, 'numeric-parsing')
+        added = captured[32:]
+        self.assertEqual(len(added), 48)
+        self.assertEqual({c['mode'] for c in added}, {'strict', 'sloppy'})
+        for case in added:
+            method = 'parseFloat' if 'numeric-parsing-parseFloat-' in case['id'] else 'parseInt'
+            guard = (f"var m={method};assert.sameValue(typeof m,'function');"
+                     "assert.sameValue(m({toString:function(){return '12';}},10),12);"
+                     f"assert.sameValue(Number.{method},m);")
+            self.assertTrue(case['source'].startswith(guard.encode()))
+            if b'assert.throws' in case['source']:
+                self.assertGreater(case['source'].index(b'assert.throws'), len(guard) - 1)
+            if 'property-metadata' in case['id']:
+                self.assertEqual(case['source'].count(b'{restore:true}'), 3)
+            self.assertEqual([name for name, _ in case['harness']], ['assert.js', 'sta.js'] +
+                             (['propertyHelper.js'] if 'property-' in case['id'] else []))
+        for offset in range(0, len(added), 2):
+            good, bad = added[offset:offset + 2]
+            self.assertEqual(good['source'].rsplit(b'assert.sameValue(', 1)[0],
+                             bad['source'].rsplit(b'assert.sameValue(', 1)[0])
+            self.assertNotEqual(good['source'], bad['source'])
+
+    def test_numeric_parsing_preflights_require_actual_assertion_failures(self):
+        _, files, _, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-numeric-parsing', 'numeric-parsing')
+        with patch.object(runner, 'bounded_process', return_value=(0, response('complete'), b'')):
+            old = runner.harness_preflight(files, Path('/fake'), 1)
+            current = runner.harness_preflight(files, Path('/fake'), 1, 'numeric-parsing')
+        self.assertEqual(current[:32], old)
+        self.assertEqual(len(current), 80)
+        self.assertEqual(sum(p['verified'] for p in current[32:]), 24)
+        for error_type in ('TypeError', 'ReferenceError', 'SyntaxError'):
+            with patch.object(runner, 'bounded_process', return_value=(
+                    0, response('exception', 'runtime', error_type), b'')):
+                wrong = runner.harness_preflight(files, Path('/fake'), 1, 'numeric-parsing')
+            self.assertFalse(any(p['verified'] for p in wrong[32:]))
+        with patch.object(runner, 'bounded_process', return_value=(
+                0, response('exception', 'runtime', 'Test262Error'), b'')):
+            wrong = runner.harness_preflight(files, Path('/fake'), 1, 'numeric-parsing')
+        self.assertTrue(all(p['verified'] == (p['expected'] == 'failed') for p in wrong[32:]))
+        self.assertFalse(all(p['verified'] for p in wrong))
+
+    def test_numeric_parsing_import_checks_every_directory_and_source_blob(self):
+        _, files, _, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-numeric-parsing', 'numeric-parsing')
+        raw = f'https://raw.githubusercontent.com/{importer.REPOSITORY}/{importer.REVISION}/'
+        api = f'https://api.github.com/repos/{importer.REPOSITORY}/contents/test/built-ins/'
+        listings = {name: [] for name in importer.NUMERIC_PARSING_DIRECTORIES}
+        for path, data in files.items():
+            if path.startswith('test/'):
+                directory = str(Path(path).parent).removeprefix('test/built-ins/')
+                listings[directory].append(dict(type='file', name=Path(path).name,
+                    sha=importer.hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()))
+        def fetch(url):
+            if url.startswith(api):
+                name = url[len(api):].removesuffix('?ref=' + importer.REVISION)
+                return json.dumps(listings[name]).encode()
+            self.assertTrue(url.startswith(raw))
+            return files[url[len(raw):]]
+        with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch), contextlib.redirect_stdout(io.StringIO()):
+            importer.import_corpus(Path(temporary), 'numeric-parsing')
+            _, imported, cases, fixtures, _ = runner.load_corpus(Path(temporary), 'numeric-parsing')
+            self.assertEqual(imported, files)
+            self.assertEqual((len(cases), fixtures), (218, []))
+        for name in listings:
+            saved = listings[name][0]['sha']
+            listings[name][0]['sha'] = '0' * 40
+            with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch):
+                with self.assertRaisesRegex(ValueError, 'pinned Git blob'):
+                    importer.import_corpus(Path(temporary), 'numeric-parsing')
+                self.assertFalse(any(Path(temporary).iterdir()))
+            listings[name][0]['sha'] = saved
+            item = listings[name].pop()
+            with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch):
+                with self.assertRaisesRegex(ValueError, 'inventory mismatch'):
+                    importer.import_corpus(Path(temporary), 'numeric-parsing')
+                self.assertFalse(any(Path(temporary).iterdir()))
+            listings[name].append(item)
+
+    def test_numeric_parsing_preserves_all_twelve_prior_profile_contracts(self):
+        profiles = ('string-json', 'regexp', 'template-literal', 'functions', 'rest-parameters',
+                    'is-prototype-of', 'global-values', 'array-sort', 'identifiers', 'array-reduce', 'number-statics', 'numeric-conversion')
+        retained = {}
+        for name in profiles:
+            _, files, cases, fixtures, manifest_hash = runner.load_corpus(
+                runner.ROOT / 'tests/upstream' / runner.corpus_name(name), name)
+            captured = []
+            def capture(case, *args):
+                captured.append(dict(name=case['id'], mode=case['mode'], case_sha256=case['case_sha256'],
+                                     source_sha256=runner.digest(case['source'])))
+                return dict(status='passed', mode=case['mode'], case_sha256=case['case_sha256'],
+                            source_sha256=runner.digest(case['source']))
+            with patch.object(runner, 'run_case', side_effect=capture):
+                runner.harness_preflight(files, Path('/fake'), 3, name)
+            retained[name] = dict(manifest_sha256=manifest_hash,
+                                 cases={c['id']: c['case_sha256'] for c in cases},
+                                 preflights=captured, fixtures=fixtures,
+                                 features=sorted(runner.PROFILE_FEATURES[name]))
+        self.assertEqual(sum(len(v['cases']) for v in retained.values()), 4527)
+        self.assertEqual(sum(len(v['preflights']) for v in retained.values()), 840)
+        self.assertEqual(runner.digest(json.dumps(retained, sort_keys=True, separators=(',', ':')).encode()),
+                         'ad0c739d73c9593801c2f8524fc70ef679a58372f7da1b69a26c39f31b7fdd97')
+
     def test_numeric_conversion_retains_complete_global_directories_and_helpers(self):
         manifest, files, cases, fixtures, manifest_hash = runner.load_corpus(
             runner.ROOT / 'tests/upstream/test262-numeric-conversion', 'numeric-conversion')

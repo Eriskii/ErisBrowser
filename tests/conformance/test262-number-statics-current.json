@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "3c5c2503458843bfc64eaf546ee08b6e693714f561df42330d9001a2ec8216cd",
   "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
-  "binary_sha256": "b3b0964931661f63d570d6b3bbb52061a9054fe00e4ec8a1025f624326c95d12",
+  "binary_sha256": "528693af5794bc16e18b956ffe781cbab91b335615c82ea773eca6fe2b13c126",
   "cases": {
     "test/built-ins/Number/15.7.3-1.js:sloppy": {
       "status": "passed",
@@ -1295,22 +1295,22 @@
       "source_sha256": "c0ffc8fb43abb762f4454e7c78217ca79c09aff837e816b018f16069860009ad"
     },
     "test/built-ins/Number/parseFloat.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "3ef5416fe787b8dd10b4870e43b252445220c4ef4f89bea9ad5dac1580e0f959",
       "source_sha256": "56ea4a72e93d7122bdad9c34492448cea9161c47af7d7624487cd59edb2dad65"
     },
     "test/built-ins/Number/parseFloat.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "b4fb018669a5b3e05b755544e561cde6eba0ae80ce462fb83ff0c40c2ab991f2",
       "source_sha256": "56ea4a72e93d7122bdad9c34492448cea9161c47af7d7624487cd59edb2dad65"
     },
     "test/built-ins/Number/parseInt.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "6a4febbd0da11837cc824dfeaca2d204751695b09ab37f3945f1e5545a9b8733",
       "source_sha256": "a56bf47c394d27906bc3ddadb35186b6201a8ac2d35ad4c81c26266c016836ae"
     },
     "test/built-ins/Number/parseInt.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "e4b1354b82ca9d6d0520272b75777a7cbbcb67b087c12ebd4f59d6e94fad79c7",
       "source_sha256": "a56bf47c394d27906bc3ddadb35186b6201a8ac2d35ad4c81c26266c016836ae"
     },

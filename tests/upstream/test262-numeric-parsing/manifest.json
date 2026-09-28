@@ -1,0 +1,820 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all direct .js files in built-ins/parseInt and parseFloat; no implementation",
+  "directories": {
+    "parseInt": [
+      "15.1.2.2-2-1.js",
+      "S15.1.2.2_A1_T1.js",
+      "S15.1.2.2_A1_T2.js",
+      "S15.1.2.2_A1_T3.js",
+      "S15.1.2.2_A1_T4.js",
+      "S15.1.2.2_A1_T5.js",
+      "S15.1.2.2_A1_T6.js",
+      "S15.1.2.2_A1_T7.js",
+      "S15.1.2.2_A2_T1.js",
+      "S15.1.2.2_A2_T10.js",
+      "S15.1.2.2_A2_T10_U180E.js",
+      "S15.1.2.2_A2_T2.js",
+      "S15.1.2.2_A2_T3.js",
+      "S15.1.2.2_A2_T4.js",
+      "S15.1.2.2_A2_T5.js",
+      "S15.1.2.2_A2_T6.js",
+      "S15.1.2.2_A2_T7.js",
+      "S15.1.2.2_A2_T8.js",
+      "S15.1.2.2_A2_T9.js",
+      "S15.1.2.2_A3.1_T1.js",
+      "S15.1.2.2_A3.1_T2.js",
+      "S15.1.2.2_A3.1_T3.js",
+      "S15.1.2.2_A3.1_T4.js",
+      "S15.1.2.2_A3.1_T5.js",
+      "S15.1.2.2_A3.1_T6.js",
+      "S15.1.2.2_A3.1_T7.js",
+      "S15.1.2.2_A3.2_T1.js",
+      "S15.1.2.2_A3.2_T2.js",
+      "S15.1.2.2_A3.2_T3.js",
+      "S15.1.2.2_A4.1_T1.js",
+      "S15.1.2.2_A4.1_T2.js",
+      "S15.1.2.2_A4.2_T1.js",
+      "S15.1.2.2_A4.2_T2.js",
+      "S15.1.2.2_A5.1_T1.js",
+      "S15.1.2.2_A5.2_T1.js",
+      "S15.1.2.2_A5.2_T2.js",
+      "S15.1.2.2_A6.1_T1.js",
+      "S15.1.2.2_A6.1_T2.js",
+      "S15.1.2.2_A6.1_T3.js",
+      "S15.1.2.2_A6.1_T4.js",
+      "S15.1.2.2_A6.1_T5.js",
+      "S15.1.2.2_A6.1_T6.js",
+      "S15.1.2.2_A7.1_T1.js",
+      "S15.1.2.2_A7.1_T2.js",
+      "S15.1.2.2_A7.2_T1.js",
+      "S15.1.2.2_A7.2_T2.js",
+      "S15.1.2.2_A7.2_T3.js",
+      "S15.1.2.2_A7.3_T1.js",
+      "S15.1.2.2_A7.3_T2.js",
+      "S15.1.2.2_A7.3_T3.js",
+      "S15.1.2.2_A8.js",
+      "S15.1.2.2_A9.5.js",
+      "S15.1.2.2_A9.6.js",
+      "not-a-constructor.js",
+      "prop-desc.js"
+    ],
+    "parseFloat": [
+      "15.1.2.3-2-1.js",
+      "S15.1.2.3_A1_T1.js",
+      "S15.1.2.3_A1_T2.js",
+      "S15.1.2.3_A1_T3.js",
+      "S15.1.2.3_A1_T4.js",
+      "S15.1.2.3_A1_T5.js",
+      "S15.1.2.3_A1_T6.js",
+      "S15.1.2.3_A1_T7.js",
+      "S15.1.2.3_A2_T1.js",
+      "S15.1.2.3_A2_T10.js",
+      "S15.1.2.3_A2_T10_U180E.js",
+      "S15.1.2.3_A2_T2.js",
+      "S15.1.2.3_A2_T3.js",
+      "S15.1.2.3_A2_T4.js",
+      "S15.1.2.3_A2_T5.js",
+      "S15.1.2.3_A2_T6.js",
+      "S15.1.2.3_A2_T7.js",
+      "S15.1.2.3_A2_T8.js",
+      "S15.1.2.3_A2_T9.js",
+      "S15.1.2.3_A3_T1.js",
+      "S15.1.2.3_A3_T2.js",
+      "S15.1.2.3_A3_T3.js",
+      "S15.1.2.3_A4_T1.js",
+      "S15.1.2.3_A4_T2.js",
+      "S15.1.2.3_A4_T3.js",
+      "S15.1.2.3_A4_T4.js",
+      "S15.1.2.3_A4_T5.js",
+      "S15.1.2.3_A4_T6.js",
+      "S15.1.2.3_A4_T7.js",
+      "S15.1.2.3_A5_T1.js",
+      "S15.1.2.3_A5_T2.js",
+      "S15.1.2.3_A5_T3.js",
+      "S15.1.2.3_A5_T4.js",
+      "S15.1.2.3_A6.js",
+      "S15.1.2.3_A7.5.js",
+      "S15.1.2.3_A7.6.js",
+      "S15.1.2.3_A7.7.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "tonumber-numeric-separator-literal-dd-dot-dd-ep-sign-minus-dd-nsl-dd.js",
+      "tonumber-numeric-separator-literal-dd-dot-dd-ep-sign-minus-dds-nsl-dd.js",
+      "tonumber-numeric-separator-literal-dd-dot-dd-ep-sign-plus-dd-nsl-dd.js",
+      "tonumber-numeric-separator-literal-dd-dot-dd-ep-sign-plus-dds-nsl-dd.js",
+      "tonumber-numeric-separator-literal-dd-nsl-dd-one-of.js",
+      "tonumber-numeric-separator-literal-dds-dot-dd-nsl-dd-ep-dd.js",
+      "tonumber-numeric-separator-literal-dds-nsl-dd.js",
+      "tonumber-numeric-separator-literal-dot-dd-nsl-dd-ep.js",
+      "tonumber-numeric-separator-literal-dot-dd-nsl-dds-ep.js",
+      "tonumber-numeric-separator-literal-dot-dds-nsl-dd-ep.js",
+      "tonumber-numeric-separator-literal-dot-dds-nsl-dds-ep.js",
+      "tonumber-numeric-separator-literal-nzd-nsl-dd-one-of.js",
+      "tonumber-numeric-separator-literal-nzd-nsl-dd.js",
+      "tonumber-numeric-separator-literal-nzd-nsl-dds.js",
+      "tonumber-numeric-separator-literal-sign-plus-dds-nsl-dd.js"
+    ]
+  },
+  "test_files": 109,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/decimalToHexString.js",
+      "upstream_path": "harness/decimalToHexString.js",
+      "bytes": 641,
+      "sha256": "bc8786436987220b53cbc28443697f1fb61d5818fbf4f0741fd80a736d1d4ff5"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/built-ins/parseFloat/15.1.2.3-2-1.js",
+      "upstream_path": "test/built-ins/parseFloat/15.1.2.3-2-1.js",
+      "bytes": 361,
+      "sha256": "26ec6b4daf221e52a16fb923be6d3f28316c5d5db1704872bf88b1d5a4de9731"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A1_T1.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A1_T1.js",
+      "bytes": 346,
+      "sha256": "12580248b7ca7c486957ec04aa100f3d47c3c4c2654a3a3f16771d2ddb40d1af"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A1_T2.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A1_T2.js",
+      "bytes": 1205,
+      "sha256": "7706fc341094a464a6a6238b7893918f9df5477500425b86b1524568e5e73933"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A1_T3.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A1_T3.js",
+      "bytes": 355,
+      "sha256": "f58d4fc9f681de9c3cb0797c43d46f63198d4aa724ddeb6042a38c35477eefd9"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A1_T4.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A1_T4.js",
+      "bytes": 395,
+      "sha256": "a48fc34ef5e24850ffdcfb39b1ac7dc9ffc0d3ff0477df4ffbc50bba5cb367f3"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A1_T5.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A1_T5.js",
+      "bytes": 1066,
+      "sha256": "2a34392bd2fd069b5715b41dd322439018d67510181e4d18aa170d70addd5eb2"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A1_T6.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A1_T6.js",
+      "bytes": 1297,
+      "sha256": "5ae8dcf4e7e1f6b59d0e9cdc54dc71a949cc08ea393d69db26b120b7c3563733"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A1_T7.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A1_T7.js",
+      "bytes": 3509,
+      "sha256": "88a8da4566cdc38774d2b57c6ee2bcf217b51ba6f06429715b81a3fcbf968d01"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A2_T1.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A2_T1.js",
+      "bytes": 1298,
+      "sha256": "a2e9da99e136314da8a7ef5057bc5be1720f27878c67c04ae68e74a2566d2cfe"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A2_T10.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A2_T10.js",
+      "bytes": 1010,
+      "sha256": "da05a29687ceeac98fa536c7f1ddb623d91a55331ce582104605315929726aa5"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A2_T10_U180E.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A2_T10_U180E.js",
+      "bytes": 1129,
+      "sha256": "610d34bede1ea336f63451eee64605c0aec855ce20d20ac562f03675f2bd0c66"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A2_T2.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A2_T2.js",
+      "bytes": 1321,
+      "sha256": "4230bdb8f62aeb036a55c8879ac95ccb14866bc66c536770462d40609090f184"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A2_T3.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A2_T3.js",
+      "bytes": 719,
+      "sha256": "d3365830626f27e821918454b75643210ba8e9ced5316b1bbc8f0fbdb32fdf69"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A2_T4.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A2_T4.js",
+      "bytes": 717,
+      "sha256": "f3af0745e48c151f83ec9b15ea624f3501aa66ac8bab233640efb50a37f9ef44"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A2_T5.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A2_T5.js",
+      "bytes": 717,
+      "sha256": "addea47c11190250e3c908cde4fe19ba893b19da37028d3d953960ecbe5729ed"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A2_T6.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A2_T6.js",
+      "bytes": 717,
+      "sha256": "a4f3bc9839284a16e1c45bf07067a40e531fba10d2588f5c4cf8257248822cd7"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A2_T7.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A2_T7.js",
+      "bytes": 717,
+      "sha256": "99b97fd23e010a90ba81711e705ed1e2b43c756295d2ab2c622613eb742501c0"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A2_T8.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A2_T8.js",
+      "bytes": 717,
+      "sha256": "4b6161a088e62a5ae493ca950698abc5650d6ec1231b334e877a9b14e161eeff"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A2_T9.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A2_T9.js",
+      "bytes": 717,
+      "sha256": "0a0fd6fc7e4039a978ae8e0cfcc03e9ccdbc22448a3afcd59488f44e5d9f0f93"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A3_T1.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A3_T1.js",
+      "bytes": 541,
+      "sha256": "4691c4a19c364d0ed8de3090effddc5ba1e431bfc4be79d9bf9c9bf456f1eaa8"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A3_T2.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A3_T2.js",
+      "bytes": 682,
+      "sha256": "5cdf4dd125972c332fe466bb6f6e377aa9f6e6a1842fed43748b669e88264bdb"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A3_T3.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A3_T3.js",
+      "bytes": 562,
+      "sha256": "31e781e94aad850c4b609f2c5ad79ce4cb575cc62a989c3b30f8b2087104c9e0"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A4_T1.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A4_T1.js",
+      "bytes": 1575,
+      "sha256": "069c65ea18b1e47f349c039a119ea31d2481a894a7dbe8626e352ea24afff0a4"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A4_T2.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A4_T2.js",
+      "bytes": 1050,
+      "sha256": "6f055e48f9fdb04cb86e8118fd5bf6f6557cdfcc5efeabf9ec8701f1eb8c212a"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A4_T3.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A4_T3.js",
+      "bytes": 2502,
+      "sha256": "b88f7cfbb5080aea55e384330b51bec73aa14ec3269adcd83b075b26c47dd9c6"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A4_T4.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A4_T4.js",
+      "bytes": 951,
+      "sha256": "0e81286d326fc15a1c649b6d350948b065dde213bc1c2d1bebe195bf6117c928"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A4_T5.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A4_T5.js",
+      "bytes": 2002,
+      "sha256": "094927eb6b566617383a39fed90a49d2dfb6e08e256f413a621f09743223507a"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A4_T6.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A4_T6.js",
+      "bytes": 851,
+      "sha256": "33f2886656b2f1eb27ad4badf7ec0114422111d592f525cff70a358c892df6ae"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A4_T7.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A4_T7.js",
+      "bytes": 1454,
+      "sha256": "6fe047f1c9c5276aced258fc62cc8690a6829d58d8d2005836bf6a6bbd817e8a"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A5_T1.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A5_T1.js",
+      "bytes": 846,
+      "sha256": "2c4413c3defd9f1f3c7dbc59720a6e67d7019de912a6fbdb1b381615a18e63ba"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A5_T2.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A5_T2.js",
+      "bytes": 1736,
+      "sha256": "5b5ff2f0cb6ea9421c060c35976bd2fefe000781ca8fe48a122e6710842ef952"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A5_T3.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A5_T3.js",
+      "bytes": 711,
+      "sha256": "c3756532c97477e3324e7a33658b350b1b10983502218f509c9ea59a40cc8c27"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A5_T4.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A5_T4.js",
+      "bytes": 1242,
+      "sha256": "f2d878f5332c393ea18eb0a8c2ea5125e73d2b634b053af6f193fa9279201952"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A6.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A6.js",
+      "bytes": 1726,
+      "sha256": "e53e97da27a6e3b70839867b49ad6d1153bbfb58f9edbfe93c3b6a09d0f137f3"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A7.5.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A7.5.js",
+      "bytes": 751,
+      "sha256": "8b225bc49097b08c5fedf7af02d598517feeb8a921147feb523bdb371916950b"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A7.6.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A7.6.js",
+      "bytes": 431,
+      "sha256": "71e7d0d4dc04afcfdee89d245a3dadd0b7d666adfba60ec7198c5db07edacf7d"
+    },
+    {
+      "path": "test/built-ins/parseFloat/S15.1.2.3_A7.7.js",
+      "upstream_path": "test/built-ins/parseFloat/S15.1.2.3_A7.7.js",
+      "bytes": 635,
+      "sha256": "3c569c1af0b1a053852afca5ed1e3640586983644e1386bcef51d45b72a310aa"
+    },
+    {
+      "path": "test/built-ins/parseFloat/not-a-constructor.js",
+      "upstream_path": "test/built-ins/parseFloat/not-a-constructor.js",
+      "bytes": 841,
+      "sha256": "4a193ef1315ecc6f92ab94e977e6a3cebb18b2a5b566d0c57c43fc8ed446ba27"
+    },
+    {
+      "path": "test/built-ins/parseFloat/prop-desc.js",
+      "upstream_path": "test/built-ins/parseFloat/prop-desc.js",
+      "bytes": 526,
+      "sha256": "b13cf1fe268d3d0dbf6d4362bb071f0569ecc54101610583dfad8a318c2ea726"
+    },
+    {
+      "path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dd-dot-dd-ep-sign-minus-dd-nsl-dd.js",
+      "upstream_path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dd-dot-dd-ep-sign-minus-dd-nsl-dd.js",
+      "bytes": 607,
+      "sha256": "5c1fb92d0bcbb3141accfa38578f5417a5d85f393f3afe32a6cce6f53c8bf0e0"
+    },
+    {
+      "path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dd-dot-dd-ep-sign-minus-dds-nsl-dd.js",
+      "upstream_path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dd-dot-dd-ep-sign-minus-dds-nsl-dd.js",
+      "bytes": 609,
+      "sha256": "f15a33f5673e849bb9f9e0c39d1aa08dd7cbcc2f25dff03c8bd25cd682d27d38"
+    },
+    {
+      "path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dd-dot-dd-ep-sign-plus-dd-nsl-dd.js",
+      "upstream_path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dd-dot-dd-ep-sign-plus-dd-nsl-dd.js",
+      "bytes": 607,
+      "sha256": "3696de8359d6ce5589d398841ce9012792e4635f814f282ab5d1f86be024fb47"
+    },
+    {
+      "path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dd-dot-dd-ep-sign-plus-dds-nsl-dd.js",
+      "upstream_path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dd-dot-dd-ep-sign-plus-dds-nsl-dd.js",
+      "bytes": 609,
+      "sha256": "ceac570a1e16ee42c5f77743cee23ace1e87779bf379db5b824794a11681ce09"
+    },
+    {
+      "path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dd-nsl-dd-one-of.js",
+      "upstream_path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dd-nsl-dd-one-of.js",
+      "bytes": 909,
+      "sha256": "13d7d2faaf3bc0b11e5c4c1faf60011024ce024ff392f44b99728e15147d1fa1"
+    },
+    {
+      "path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dds-dot-dd-nsl-dd-ep-dd.js",
+      "upstream_path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dds-dot-dd-nsl-dd-ep-dd.js",
+      "bytes": 566,
+      "sha256": "da87ff9dc93ba85a1a596e328be466f5b5d93277654a4762267d906931b6d22b"
+    },
+    {
+      "path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dds-nsl-dd.js",
+      "upstream_path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dds-nsl-dd.js",
+      "bytes": 968,
+      "sha256": "649671341b46aa2bf217dafcd2eedc0846cc76a1bfa86ad430ff48a1784356d0"
+    },
+    {
+      "path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dot-dd-nsl-dd-ep.js",
+      "upstream_path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dot-dd-nsl-dd-ep.js",
+      "bytes": 550,
+      "sha256": "95829f823f981f887f3e4fea18545229f985cd53f36933ea49eb4f3234491950"
+    },
+    {
+      "path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dot-dd-nsl-dds-ep.js",
+      "upstream_path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dot-dd-nsl-dds-ep.js",
+      "bytes": 551,
+      "sha256": "eeea0d1d8ca679047e48c4e96ba6b0a70d7306cd8c7609d5e85ccf019f604324"
+    },
+    {
+      "path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dot-dds-nsl-dd-ep.js",
+      "upstream_path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dot-dds-nsl-dd-ep.js",
+      "bytes": 544,
+      "sha256": "4d2638defcf3d5340d6261762922553465492b6f421bc6c96cab5761cb10bb40"
+    },
+    {
+      "path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dot-dds-nsl-dds-ep.js",
+      "upstream_path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-dot-dds-nsl-dds-ep.js",
+      "bytes": 545,
+      "sha256": "ebce9e8512175759a3eb8b583b56409ac548610ddb0dd586cf9f915a450365bc"
+    },
+    {
+      "path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-nzd-nsl-dd-one-of.js",
+      "upstream_path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-nzd-nsl-dd-one-of.js",
+      "bytes": 978,
+      "sha256": "5a0320d77f82016c6fcf5f8bf77213d19f3a323691108e02c01413018a2c70cb"
+    },
+    {
+      "path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-nzd-nsl-dd.js",
+      "upstream_path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-nzd-nsl-dd.js",
+      "bytes": 456,
+      "sha256": "5e6ea722710677b3e0a03ace7e91bfc171283c1055854716f292ce244b3c6074"
+    },
+    {
+      "path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-nzd-nsl-dds.js",
+      "upstream_path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-nzd-nsl-dds.js",
+      "bytes": 453,
+      "sha256": "49f7e0cdf65edded85e193c5bd9c0f04e09b2689477e47a1fe2bbe7917a50459"
+    },
+    {
+      "path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-sign-plus-dds-nsl-dd.js",
+      "upstream_path": "test/built-ins/parseFloat/tonumber-numeric-separator-literal-sign-plus-dds-nsl-dd.js",
+      "bytes": 1040,
+      "sha256": "ab7d09e61cf5e3e43256125b02a20065e437e4f3b05068cb41264e2626a697b0"
+    },
+    {
+      "path": "test/built-ins/parseInt/15.1.2.2-2-1.js",
+      "upstream_path": "test/built-ins/parseInt/15.1.2.2-2-1.js",
+      "bytes": 362,
+      "sha256": "1892c10c84972aed25bcf7ef40b9b0992a11c32073c0683b577c34dcd5e086d3"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A1_T1.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A1_T1.js",
+      "bytes": 398,
+      "sha256": "ad0b033ccace714207b0c04397d0335a0c1f00399f090a31b8b659b265c32b59"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A1_T2.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A1_T2.js",
+      "bytes": 624,
+      "sha256": "d75bc32cb08e073fa2e90a7322093e65a3fa918e0edc0c5f871919c4ae6c15d6"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A1_T3.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A1_T3.js",
+      "bytes": 407,
+      "sha256": "34ebd86a594e9098489a84201f35aa41466e4baf1928234762c8da9f6de50fa4"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A1_T4.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A1_T4.js",
+      "bytes": 447,
+      "sha256": "40c9868f58ceb9344dd5aa01f95ff1e824d515dba21305e544f784fa1b7f1dd2"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A1_T5.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A1_T5.js",
+      "bytes": 638,
+      "sha256": "dcf257ae7ea5ad6e70cfd0988e0ae4b5fad53a60b45275b12654ec611eb1b0cf"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A1_T6.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A1_T6.js",
+      "bytes": 773,
+      "sha256": "eff5f3b5334899887a17f4091fd2c88969478d7cf04b5775e7fa1da7cc767b99"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A1_T7.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A1_T7.js",
+      "bytes": 2648,
+      "sha256": "683ffece380818865067e79d5742be41775032d5ee6e8396d3cdb18ea580deee"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A2_T1.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A2_T1.js",
+      "bytes": 1047,
+      "sha256": "fb0150d16a1618feee0328168294d364ecb4b26526684e042e72384eb65d72ff"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A2_T10.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A2_T10.js",
+      "bytes": 1092,
+      "sha256": "a1721a536bde28a9cb316fcc0b6f743e2efc4feb0ec8bbed1ef849b03315d9dd"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A2_T10_U180E.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A2_T10_U180E.js",
+      "bytes": 1347,
+      "sha256": "b8dbdee45be6d8d3b76e9fb8c67dc4261fe44341ec74064db1fa86899d7bc4d6"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A2_T2.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A2_T2.js",
+      "bytes": 1065,
+      "sha256": "3131682c8a11b729f6b8c0662f03611d11e621829c7c4d5276dc21fefa0dce0c"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A2_T3.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A2_T3.js",
+      "bytes": 648,
+      "sha256": "b41c35a56633c925cf0bd0d36d9faa84f5d41d7b12bdb2e34b8ca9075e490852"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A2_T4.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A2_T4.js",
+      "bytes": 646,
+      "sha256": "094294d7dcd4cfc4e4f7fa6aec6b686630c29f06fe415612b67fcbe5ff63d6ef"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A2_T5.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A2_T5.js",
+      "bytes": 646,
+      "sha256": "56611d1ce2bda93418824e0f7d07c7f92c9b8fb798321c820323c87bda2c2d2f"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A2_T6.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A2_T6.js",
+      "bytes": 646,
+      "sha256": "879d21ba7c07b5b6945bb05451051b7f2209467cebbdd254b55253e95baced4e"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A2_T7.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A2_T7.js",
+      "bytes": 646,
+      "sha256": "aac50462eb54dbfc2cc0712f909f00f0d35c148da0a4e3c083b251c52b6973ad"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A2_T8.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A2_T8.js",
+      "bytes": 646,
+      "sha256": "839980d2d819f5e17f378535259f68d8e4e9be75ac07b0c297346131cddc8213"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A2_T9.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A2_T9.js",
+      "bytes": 663,
+      "sha256": "18b3620ecbf4a896a3534b184e62d2b7478a629e552602dac2f679f20fc59447"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A3.1_T1.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A3.1_T1.js",
+      "bytes": 490,
+      "sha256": "6dd0b126324d4e4ad26c68f8f8cb5d8680d5b5d52e63f1ecea1b477189527736"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A3.1_T2.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A3.1_T2.js",
+      "bytes": 665,
+      "sha256": "7b597fd20c251e9e0fd3f68f4ca6c8c03fd3b0f79d4b2efa314a894d8ff70397"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A3.1_T3.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A3.1_T3.js",
+      "bytes": 553,
+      "sha256": "471f797aace0b41b9cb3408cd257ef9df0e99fd506f2277919b9bd01412f986e"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A3.1_T4.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A3.1_T4.js",
+      "bytes": 553,
+      "sha256": "b4008d69a5e7a1b7a37da1ed2296fff465cf962c81fd62fc466fc4446fa50f66"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A3.1_T5.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A3.1_T5.js",
+      "bytes": 606,
+      "sha256": "ab1454ec859ce26f5cc2178b2766b2023069991e2f7e906f5710096a693cc9df"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A3.1_T6.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A3.1_T6.js",
+      "bytes": 639,
+      "sha256": "ff35a312ec3ec785ca0787dec28793efd22e078b37e9c0b2c6aa0e11611eff53"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A3.1_T7.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A3.1_T7.js",
+      "bytes": 3126,
+      "sha256": "189ade974f65b679346476c4603436022aa78ab1462a9a4aef67cdca938f0181"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A3.2_T1.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A3.2_T1.js",
+      "bytes": 1081,
+      "sha256": "892e02b19920c6e15d6371a8f71c267e82f740ee76de498aa81962f6c24a743b"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A3.2_T2.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A3.2_T2.js",
+      "bytes": 988,
+      "sha256": "139fb351103d70a2ecc86806cd073d4845f6a947e8f2e33305931ee273d7631f"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A3.2_T3.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A3.2_T3.js",
+      "bytes": 822,
+      "sha256": "03a2bf4cb0be992cd7c58598f376a6de2d47312c3935fd210cded67d0ac0d4f6"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A4.1_T1.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A4.1_T1.js",
+      "bytes": 1978,
+      "sha256": "24de3d91890f50c15f5ad882d060534727ff706c738ade38e1be4a404694f1d4"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A4.1_T2.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A4.1_T2.js",
+      "bytes": 1908,
+      "sha256": "2f569b93b5570dbd3cd7064ff84ac8fe04d23b2baf2a46fc1e7d42528e25a40e"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A4.2_T1.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A4.2_T1.js",
+      "bytes": 1167,
+      "sha256": "f137231cd334afdb67c598f2aebb6e40cb09dd7f783b4dc1057d8ab6e314cf07"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A4.2_T2.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A4.2_T2.js",
+      "bytes": 1192,
+      "sha256": "950273d6a033534de8167c3b098c643a0278a7e04e8271fe387ca57607dd72b5"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A5.1_T1.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A5.1_T1.js",
+      "bytes": 562,
+      "sha256": "745937f849d52ed034e55a39c794f614d0b4b4f8c6a30f4fe99e7962331b8686"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A5.2_T1.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A5.2_T1.js",
+      "bytes": 2838,
+      "sha256": "c6439581d33e0c455a9d3e02bc94afb66aba41625d6f60eaa71e494a5799a40e"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A5.2_T2.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A5.2_T2.js",
+      "bytes": 2727,
+      "sha256": "b29bc22e8e23204ece30ff0d026e3abc4129656d9eb819bca8294f497676f79a"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A6.1_T1.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A6.1_T1.js",
+      "bytes": 549,
+      "sha256": "a799f55d4307aa538d63e70dccfd7ae6ab7b59553d3a16892d06ba5207152942"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A6.1_T2.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A6.1_T2.js",
+      "bytes": 782,
+      "sha256": "ac965f90d8c20ed76f24df3446e777798e45f02685ff6fb899e932b35794827c"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A6.1_T3.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A6.1_T3.js",
+      "bytes": 782,
+      "sha256": "b557018c92bc9b763eb297753d87c359c53aca4daada92f931dac8f7b9c8f83a"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A6.1_T4.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A6.1_T4.js",
+      "bytes": 820,
+      "sha256": "0c209da631bb9163ed3c68a2fe836f2ff6d6c2d0bebc62789f8597a43d2e06df"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A6.1_T5.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A6.1_T5.js",
+      "bytes": 820,
+      "sha256": "65e6fe289138ce48fb9c481267743190952c507caa593817f31b7db4dfdc7972"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A6.1_T6.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A6.1_T6.js",
+      "bytes": 1375,
+      "sha256": "0d7313e7821de25edf5ec4d6b24f20c138cdb818e12f7c3a2a8ab8327e63a51a"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A7.1_T1.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A7.1_T1.js",
+      "bytes": 384,
+      "sha256": "6b88d2abd964bc90a49d2c921bb02ce43bf8609bde269f76b2505406fe904b1c"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A7.1_T2.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A7.1_T2.js",
+      "bytes": 613,
+      "sha256": "7bbbabde13262914f9d84b95120cd5dfe7aa77e22f8f298be605b201f18d8a7f"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A7.2_T1.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A7.2_T1.js",
+      "bytes": 1329,
+      "sha256": "a8a4234ec0b14605ee8cffeaba08e4c412aee1e0c911ce250ec791e0a5c6beaa"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A7.2_T2.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A7.2_T2.js",
+      "bytes": 2385,
+      "sha256": "375a3f22fa55a9366e7d64fc3120a9d3e73d1b62cc4449f38bf7fa4abe0f5b5a"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A7.2_T3.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A7.2_T3.js",
+      "bytes": 2919,
+      "sha256": "86b2bb5fdf25712b1d337cb330aa725bf11670a2003a1ed148cc08b75e434e6d"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A7.3_T1.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A7.3_T1.js",
+      "bytes": 1226,
+      "sha256": "f8ee6f09c135bd03cd773f201cd3582eb9e4e311551391a283523ddbd0e4dc91"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A7.3_T2.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A7.3_T2.js",
+      "bytes": 2288,
+      "sha256": "a8e6b3fda7950f9280b5439d03d24be3dff10f058f987919b8b73f2e7a3a47fc"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A7.3_T3.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A7.3_T3.js",
+      "bytes": 2664,
+      "sha256": "7363ec4f62a649a34a0ee05bdaf0a9bfdcf665e4df49a572bbf7acd6061deb4f"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A8.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A8.js",
+      "bytes": 1816,
+      "sha256": "fd1f595a482b841bbf0ae02b8b80fe58ffcef9609afc4d9f4501e86b721235d9"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A9.5.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A9.5.js",
+      "bytes": 591,
+      "sha256": "58e3c51e7e0e9796966931a826f7c3ba58ea7275535d0015be646a3e72c3526f"
+    },
+    {
+      "path": "test/built-ins/parseInt/S15.1.2.2_A9.6.js",
+      "upstream_path": "test/built-ins/parseInt/S15.1.2.2_A9.6.js",
+      "bytes": 441,
+      "sha256": "ef7361030b690911ab11216a662b928bf4227312d1c2e5f35d988aa7adc56b2d"
+    },
+    {
+      "path": "test/built-ins/parseInt/not-a-constructor.js",
+      "upstream_path": "test/built-ins/parseInt/not-a-constructor.js",
+      "bytes": 833,
+      "sha256": "2d84b4761057266e0abc645d4cc5dbd1914d5b8801c2fee3ad3f5fb2971db70f"
+    },
+    {
+      "path": "test/built-ins/parseInt/prop-desc.js",
+      "upstream_path": "test/built-ins/parseInt/prop-desc.js",
+      "bytes": 520,
+      "sha256": "92631ef05b93bd41f06bb1404cde2cb8237839e635ac47947a97e7f6ac69a1db"
+    }
+  ]
+}

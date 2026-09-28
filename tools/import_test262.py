@@ -40,6 +40,7 @@ NUMBER_STATIC_DIRECTORIES = {
     'Number/isFinite': 8, 'Number/isInteger': 9, 'Number/isNaN': 7, 'Number/isSafeInteger': 10,
 }
 NUMERIC_CONVERSION_DIRECTORIES = {'isFinite': 15, 'isNaN': 15}
+NUMERIC_PARSING_DIRECTORIES = {'parseInt': 55, 'parseFloat': 54}
 PROFILES = {'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
             'rest-parameters': REST_PARAMETER_DIRECTORIES,
@@ -47,13 +48,15 @@ PROFILES = {'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'global-values': GLOBAL_VALUE_DIRECTORIES, 'array-sort': ARRAY_SORT_DIRECTORIES,
             'identifiers': IDENTIFIER_DIRECTORIES, 'array-reduce': ARRAY_REDUCE_DIRECTORIES,
             'number-statics': NUMBER_STATIC_DIRECTORIES,
-            'numeric-conversion': NUMERIC_CONVERSION_DIRECTORIES}
+            'numeric-conversion': NUMERIC_CONVERSION_DIRECTORIES,
+            'numeric-parsing': NUMERIC_PARSING_DIRECTORIES}
 PROFILE_ROOTS = {'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
                  'template-literal': 'test/language', 'functions': 'test/language',
                  'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins',
                  'global-values': 'test/built-ins', 'array-sort': 'test/built-ins',
                  'identifiers': 'test/language', 'array-reduce': 'test/built-ins',
-                 'number-statics': 'test/built-ins', 'numeric-conversion': 'test/built-ins'}
+                 'number-statics': 'test/built-ins', 'numeric-conversion': 'test/built-ins',
+                 'numeric-parsing': 'test/built-ins'}
 
 
 def corpus_name(profile):
@@ -211,6 +214,7 @@ def import_corpus(output, profile='string-json'):
         'array-reduce': 'all direct .js files in built-ins/Array/prototype/reduce and reduceRight; no implementation',
         'number-statics': 'all direct .js files in built-ins/Number and eight Number constant/predicate directories; no implementation',
         'numeric-conversion': 'all direct .js files in built-ins/isFinite and isNaN; no implementation',
+        'numeric-parsing': 'all direct .js files in built-ins/parseInt and parseFloat; no implementation',
     }[profile]
     manifest = dict(format=1, repository=f'https://github.com/{REPOSITORY}', revision=REVISION,
                     scope=scope,

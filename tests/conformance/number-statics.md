@@ -42,8 +42,9 @@ native aliases through an event callback.
 
 The Number constructor and global coercing isFinite/isNaN functions are separate
 APIs; their subsequent [ordinary conversion increment](numeric-conversion.md)
-is measured separately. Number.parseInt and Number.parseFloat remain missing
-aliases in the [complete pinned inventory](test262-number-statics.md). These
+is measured separately. Number.parseInt and Number.parseFloat now share the
+global functions in the subsequent [parsing increment](numeric-parsing.md). The
+[complete pinned inventory](test262-number-statics.md) retains remaining gaps. These
 increments do not add Symbol, BigInt, Reflect, cross-realm behavior or numeric
 formatting.
 

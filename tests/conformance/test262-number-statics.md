@@ -122,8 +122,18 @@ The [numeric conversion increment](test262-numeric-conversion.md) resolves all
 ten constructor-conversion failures: **244 passed, four failed, 92 unsupported**.
 The [full comparison](test262-number-statics-numeric-conversion.json) retains
 all 340 case identities and 104 verified preflights with no lost passes.
-The [current baseline](test262-number-statics-current.json) protects those gains;
-its SHA-256 is
+The [baseline at cf28fc4](https://github.com/Eriskii/ErisBrowser/blob/cf28fc4eba40b5a22f8ea1632e33825a3c751fc1/tests/conformance/test262-number-statics-current.json)
+protects those gains; its SHA-256 is
 `03c6fad5ceb5f119df2dc5db1d432bece74bba5b6cadc6aead3300c75882a427`.
 Both modes of parseFloat.js and parseInt.js remain failed. Original reports and
 the original baseline linked above remain historical evidence.
+
+## Subsequent parsing aliases
+
+The [numeric parsing increment](test262-numeric-parsing.md) resolves the four
+remaining alias failures: **248 passed / 92 unsupported**, with all 104 controls
+verified. The [complete comparison](test262-number-statics-numeric-parsing.json)
+retains every case and adds four passes without losses. The
+[current baseline](test262-number-statics-current.json) protects these gains;
+SHA-256 `8b4837fb66a9ced2a9e1910830bc5a8aa67d81d52b6766764c2aceddef7b8717`.
+Earlier reports and linked checkpoint baselines remain historical evidence.

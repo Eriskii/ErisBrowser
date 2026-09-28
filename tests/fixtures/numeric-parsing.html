@@ -1,0 +1,42 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Numeric parsing and shared Number aliases</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#integer{left:0}#float{left:50px}#hooks{left:100px}#abrupt{left:150px}#aliases{left:200px}#metadata{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="integer" class="sample"></div><div id="float" class="sample"></div>
+<div id="hooks" class="sample"></div><div id="abrupt" class="sample"></div>
+<div id="aliases" class="sample"></div><div id="metadata" class="sample"></div>
+<button id="change" type="button">Parse through saved aliases</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color='green'){document.getElementById(id).style.backgroundColor=color;}
+const N=Number,I=parseInt,F=parseFloat;
+check(I('0x10')===16&&I('11',4294967298)===3&&1/I('-0tail',10)===-Infinity,'integer grammar');
+check(I('20000000000003',16)===9007199254740996&&I('08')===8,'integer rounding and radix');mark('integer');
+check(F('1.25e2tail')===125&&F('1e+')===1&&F('0x10')===0,'float prefix');
+check(F('+Infinitytail')===Infinity&&1/F('-1e-999')===-Infinity,'float bounds');mark('float');
+let trace='';const input={toString(){trace+='s';return '12';}},radix={valueOf(){trace+='r';return 10;}};
+check(I(input,radix)===12&&trace==='sr','string before radix');trace='';
+check(F(input,radix)===12&&trace==='s','float ignores radix');mark('hooks');
+const reason={};let seen,after=false;
+try{I({get toString(){throw reason;}},{valueOf(){after=true;return 10;}});}catch(error){seen=error;}
+check(seen===reason&&!after,'abrupt identity and order');mark('abrupt');
+check(N.parseInt===I&&N.parseFloat===F,'identical aliases');
+const bound=I.bind({get toString(){throw 'receiver';}},'13',10);check(bound()===13,'bound parse');mark('aliases');
+check(I.name==='parseInt'&&I.length===2&&F.name==='parseFloat'&&F.length===1,'function metadata');
+const d=Object.getOwnPropertyDescriptor(N,'parseInt');
+check(d.value===I&&d.writable&&!d.enumerable&&d.configurable,'alias descriptor');mark('metadata');
+document.getElementById('result').textContent='ready';document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  parseInt=function(){throw 'global';};parseFloat=parseInt;N.parseInt=parseInt;N.parseFloat=parseInt;
+  const count=['1tail','2tail'].reduce(function(total,text){return total+I({toString(){return text;}},10);},0);
+  check(count===3&&F({toString(){return '3.5tail';}})===3.5,'retained native aliases');
+  parseInt=I;parseFloat=F;N.parseInt=I;N.parseFloat=F;
+  document.getElementById('result').textContent=String(count);
+  mark('integer','blue');mark('float','blue');mark('hooks','blue');
+  mark('abrupt','blue');mark('aliases','blue');mark('metadata','blue');document.body.className='clicked';
+};
+</script>
