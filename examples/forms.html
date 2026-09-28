@@ -1,0 +1,10 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Forms and flow</title><style>
+body { background: #f7f4ec; color: #26313b; max-width: 800px; margin: 40px auto; font-family: sans-serif; line-height: 1.6; }
+h1 { color: #295750; } section { background: white; padding: 24px; border: 1px solid #ccd8d1; margin: 20px 0; border-radius: 10px; }
+label { display: block; margin: 12px 0; } input { padding: 8px; border: 1px solid #71887d; } button { background: #295750; color: white; padding: 10px 20px; border-radius: 5px; }
+</style></head><body><h1>Forms and document flow</h1><p>A local page for keyboard input, lists, links, and script updates.</p>
+<section><form action="forms.html" method="get"><label>Name <input name="name" placeholder="Type your name"></label><label><input type="checkbox" name="updates" value="yes"> Receive updates</label><button type="submit">Submit query</button></form></section>
+<section><h2>Inline formatting</h2><p>Normal text, <strong>bold text</strong>, <em>italic text</em>, <code>monospace text</code>, and <a href="home.html">a local link</a> share a line and wrap.</p><ul><li>First list item</li><li>Second list item, with more text</li></ul><ol><li>Number one</li><li>Number two</li></ol></section>
+<section><h2>Dynamic content</h2><p id="message">Waiting for a click.</p><button id="change">Change the message</button></section>
+<script>document.getElementById('change').addEventListener('click', function () { document.getElementById('message').textContent = 'The document changed.'; });</script>
+</body></html>

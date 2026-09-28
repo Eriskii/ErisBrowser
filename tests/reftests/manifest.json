@@ -1,0 +1,67 @@
+{
+  "description": "Self-authored focused render comparisons. These are not the Web Platform Tests and do not establish browser conformance.",
+  "width": 320,
+  "height": 240,
+  "cases": [
+    {
+      "name": "overflow-clip",
+      "description": "Overflow clips descendants at the padding edge and restores clipping for a following sibling.",
+      "test": "overflow-clip.html",
+      "reference": "overflow-clip-ref.html"
+    },
+    {
+      "name": "fractional-grid-gap",
+      "description": "Fractional grid tracks share space in a 1:2 ratio after subtracting a gap.",
+      "test": "fractional-grid-gap.html",
+      "reference": "fractional-grid-gap-ref.html"
+    },
+    {
+      "name": "box-model",
+      "description": "Content width/height, padding, solid border and margins produce the specified outer rectangle.",
+      "test": "box-model.html",
+      "reference": "box-model-ref.html"
+    },
+    {
+      "name": "cascade-inheritance",
+      "description": "An important selector beats inline color; descendants inherit font size and selected children override color.",
+      "test": "cascade-inheritance.html",
+      "reference": "cascade-inheritance-ref.html"
+    },
+    {
+      "name": "flex-grow-gap",
+      "description": "Flex distributes remaining width in a 1:2 ratio after subtracting the inter-item gap.",
+      "test": "flex-grow-gap.html",
+      "reference": "flex-grow-gap-ref.html"
+    },
+    {
+      "name": "grid-tracks",
+      "description": "Two explicit grid column tracks and a gap place four cells in two rows.",
+      "test": "grid-tracks.html",
+      "reference": "grid-tracks-ref.html"
+    },
+    {
+      "name": "hidden-template",
+      "description": "Hidden attributes, display:none subtrees and template contents contribute no paint or flow height.",
+      "test": "hidden-template.html",
+      "reference": "hidden-template-ref.html"
+    },
+    {
+      "name": "preformatted-lines",
+      "description": "Preformatted spaces and an explicit newline retain spaces and use the specified line height.",
+      "test": "preformatted-lines.html",
+      "reference": "preformatted-lines-ref.html"
+    },
+    {
+      "name": "table-default-spacing",
+      "description": "The implicit tbody and two rows use explicit cell widths with the default 2px table spacing.",
+      "test": "table-default-spacing.html",
+      "reference": "table-default-spacing-ref.html"
+    },
+    {
+      "name": "media-custom-properties",
+      "description": "A matching screen-width media rule selects a custom property used by the background shorthand.",
+      "test": "media-custom-properties.html",
+      "reference": "media-custom-properties-ref.html"
+    }
+  ]
+}

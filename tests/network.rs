@@ -1,0 +1,553 @@
+//! Loopback tests: `cargo test --test network -- --include-ignored`.
+use eris::{
+    net::{Fetcher, ResourceKind},
+    page::{Navigation, Page},
+};
+use std::{
+    collections::HashMap,
+    io::{Read, Write},
+    net::TcpListener,
+    sync::{
+        Arc, Mutex,
+        atomic::{AtomicBool, Ordering},
+    },
+    thread,
+    time::Duration,
+};
+use url::Url;
+#[derive(Clone, Debug)]
+struct Request {
+    method: String,
+    path: String,
+    headers: HashMap<String, String>,
+    body: Vec<u8>,
+}
+fn read_request(stream: &mut impl Read) -> std::io::Result<Request> {
+    let mut bytes = Vec::new();
+    let mut chunk = [0u8; 4096];
+    let boundary = loop {
+        if let Some(end) = bytes.windows(4).position(|part| part == b"\r\n\r\n") {
+            break end + 4;
+        }
+        if bytes.len() > 64 * 1024 {
+            return Err(std::io::Error::other("request header limit"));
+        }
+        let n = stream.read(&mut chunk)?;
+        if n == 0 {
+            return Err(std::io::Error::from(std::io::ErrorKind::UnexpectedEof));
+        }
+        bytes.extend_from_slice(&chunk[..n]);
+    };
+    let header = String::from_utf8(bytes[..boundary].to_vec()).map_err(std::io::Error::other)?;
+    let mut lines = header.split("\r\n");
+    let request_line = lines
+        .next()
+        .unwrap_or("")
+        .split_ascii_whitespace()
+        .collect::<Vec<_>>();
+    if request_line.len() != 3 {
+        return Err(std::io::Error::other("invalid request line"));
+    }
+    let headers: HashMap<String, String> = lines
+        .filter_map(|line| line.split_once(':'))
+        .map(|(name, value)| (name.to_ascii_lowercase(), value.trim().to_owned()))
+        .collect();
+    if headers.contains_key("transfer-encoding") {
+        return Err(std::io::Error::other("expected a known Content-Length"));
+    }
+    let length = headers
+        .get("content-length")
+        .map(|length| length.parse::<usize>())
+        .transpose()
+        .map_err(std::io::Error::other)?
+        .unwrap_or(0);
+    if length > eris::net::MAX_FORM_BODY_BYTES {
+        return Err(std::io::Error::other("request body limit"));
+    }
+    while bytes.len() - boundary < length {
+        let n = stream.read(&mut chunk)?;
+        if n == 0 {
+            return Err(std::io::Error::from(std::io::ErrorKind::UnexpectedEof));
+        }
+        bytes.extend_from_slice(&chunk[..n]);
+    }
+    Ok(Request {
+        method: request_line[0].into(),
+        path: request_line[1].into(),
+        headers,
+        body: bytes[boundary..boundary + length].to_vec(),
+    })
+}
+struct Server {
+    base: Url,
+    requests: Arc<Mutex<Vec<Request>>>,
+    stop: Arc<AtomicBool>,
+    worker: Option<thread::JoinHandle<()>>,
+}
+impl Server {
+    fn new(routes: Vec<(&str, String)>) -> Self {
+        Self::new_bytes(
+            routes
+                .into_iter()
+                .map(|(path, response)| (path, response.into_bytes()))
+                .collect(),
+        )
+    }
+    fn new_bytes(routes: Vec<(&str, Vec<u8>)>) -> Self {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        listener.set_nonblocking(true).unwrap();
+        let base = Url::parse(&format!("http://{}/", listener.local_addr().unwrap())).unwrap();
+        let routes: HashMap<String, Vec<u8>> =
+            routes.into_iter().map(|(k, v)| (k.into(), v)).collect();
+        let stop = Arc::new(AtomicBool::new(false));
+        let signal = stop.clone();
+        let requests = Arc::new(Mutex::new(Vec::new()));
+        let recorded = requests.clone();
+        let worker = thread::spawn(move || {
+            while !signal.load(Ordering::Relaxed) {
+                match listener.accept() {
+                    Ok((mut stream, _)) => {
+                        stream
+                            .set_read_timeout(Some(Duration::from_secs(2)))
+                            .unwrap();
+                        let request = match read_request(&mut stream) {
+                            Ok(request) => request,
+                            Err(_) => {
+                                let _ = stream.write_all(
+                                    response("400 Bad Request", "text/plain", "", "bad request")
+                                        .as_bytes(),
+                                );
+                                continue;
+                            }
+                        };
+                        let response = routes.get(&request.path).cloned().unwrap_or_else(|| {
+                            response("404 Not Found", "text/plain", "", "missing").into_bytes()
+                        });
+                        recorded.lock().unwrap().push(request);
+                        let _ = stream.write_all(&response);
+                    }
+                    Err(e) if e.kind() == std::io::ErrorKind::WouldBlock => {
+                        thread::sleep(Duration::from_millis(2))
+                    }
+                    Err(_) => break,
+                }
+            }
+        });
+        Self {
+            base,
+            requests,
+            stop,
+            worker: Some(worker),
+        }
+    }
+    fn requests(&self) -> Vec<Request> {
+        self.requests.lock().unwrap().clone()
+    }
+}
+impl Drop for Server {
+    fn drop(&mut self) {
+        self.stop.store(true, Ordering::Relaxed);
+        if let Some(worker) = self.worker.take() {
+            worker.join().unwrap();
+        }
+    }
+}
+fn response(status: &str, mime: &str, headers: &str, body: &str) -> String {
+    format!(
+        "HTTP/1.1 {status}\r\nContent-Type: {mime}\r\nContent-Length: {}\r\nConnection: close\r\n{headers}\r\n{body}",
+        body.len()
+    )
+}
+
+#[test]
+#[ignore = "requires permission to bind a loopback test server"]
+fn redirects_revalidate_file_policy_and_cycles_stop() {
+    let s = Server::new(vec![
+        (
+            "/file",
+            response(
+                "302 Found",
+                "text/html",
+                "Location: file:///etc/passwd\r\n",
+                "",
+            ),
+        ),
+        (
+            "/loop",
+            response("302 Found", "text/html", "Location: /loop\r\n", ""),
+        ),
+        (
+            "/next",
+            response("302 Found", "text/html", "Location: /done\r\n", ""),
+        ),
+        (
+            "/done",
+            response("200 OK", "text/html", "", "<h1>Done</h1>"),
+        ),
+    ]);
+    let mut f = Fetcher::default();
+    assert!(
+        f.fetch(&s.base.join("file").unwrap(), None, ResourceKind::Document)
+            .is_err()
+    );
+    assert!(
+        f.fetch(&s.base.join("loop").unwrap(), None, ResourceKind::Document)
+            .is_err()
+    );
+    let r = f
+        .fetch(&s.base.join("next").unwrap(), None, ResourceKind::Document)
+        .unwrap();
+    assert_eq!(r.url.path(), "/done");
+    assert_eq!(r.text(), "<h1>Done</h1>");
+}
+#[test]
+#[ignore = "requires permission to bind a loopback test server"]
+fn csp_and_script_mime_fail_closed() {
+    let s = Server::new(vec![
+        (
+            "/csp",
+            response(
+                "200 OK",
+                "text/html",
+                "Content-Security-Policy: script-src 'none'\r\n",
+                "<p id=x>original</p><script>document.getElementById('x').textContent='unsafe';</script>",
+            ),
+        ),
+        (
+            "/mime",
+            response(
+                "200 OK",
+                "text/html",
+                "",
+                "<p id=x>original</p><script src=/wrong.js></script>",
+            ),
+        ),
+        (
+            "/wrong.js",
+            response(
+                "200 OK",
+                "text/plain",
+                "",
+                "document.getElementById('x').textContent='unsafe';",
+            ),
+        ),
+    ]);
+    for path in ["csp", "mime"] {
+        let p = Page::load(s.base.join(path).unwrap().as_str(), true).unwrap();
+        assert_eq!(
+            p.document
+                .text_content(p.document.query_selector("#x").unwrap()),
+            "original"
+        );
+        assert!(!p.diagnostics.is_empty());
+    }
+}
+#[test]
+#[ignore = "requires permission to bind a loopback test server"]
+fn external_css_and_scripts_are_loaded_over_http() {
+    let s = Server::new(vec![
+        (
+            "/",
+            response(
+                "200 OK",
+                "text/html",
+                "",
+                "<link rel=stylesheet href=/a.css><p id=x>original</p><script src=/a.js></script>",
+            ),
+        ),
+        (
+            "/a.css",
+            response("200 OK", "text/css", "", "p{color:rebeccapurple}"),
+        ),
+        (
+            "/a.js",
+            response(
+                "200 OK",
+                "text/javascript",
+                "",
+                "document.getElementById('x').textContent='loaded';",
+            ),
+        ),
+    ]);
+    let p = Page::load(s.base.as_str(), true).unwrap();
+    assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
+    assert_eq!(
+        p.document
+            .text_content(p.document.query_selector("#x").unwrap()),
+        "loaded"
+    );
+    assert_eq!(p.stylesheets(), vec!["p{color:rebeccapurple}"]);
+}
+
+#[test]
+#[ignore = "requires permission to bind a loopback test server"]
+fn failed_status_scripts_never_execute_and_svg_mime_is_case_insensitive() {
+    let s = Server::new(vec![
+        (
+            "/",
+            response(
+                "200 OK",
+                "text/html",
+                "",
+                "<style>body{margin:0}</style><p id=x>original</p><script src=/missing.js></script><img src=/image.svg>",
+            ),
+        ),
+        (
+            "/missing.js",
+            response(
+                "404 Not Found",
+                "text/javascript",
+                "",
+                "document.getElementById('x').textContent='unsafe';",
+            ),
+        ),
+        (
+            "/image.svg",
+            response(
+                "200 OK",
+                "Image/Svg+Xml; charset=utf-8",
+                "",
+                "<svg width='8' height='8'><rect width='8' height='8' fill='#123456'/></svg>",
+            ),
+        ),
+    ]);
+    let p = Page::load(s.base.as_str(), true).unwrap();
+    assert_eq!(
+        p.document
+            .text_content(p.document.query_selector("#x").unwrap()),
+        "original"
+    );
+    assert!(p.diagnostics.iter().any(|d| d.contains("HTTP 404")));
+    let image = p.images.get("/image.svg").unwrap();
+    assert_eq!((image.width, image.height), (8, 8));
+    let center = (4 * 8 + 4) * 4;
+    assert_eq!(&image.rgba[center..center + 4], &[0x12, 0x34, 0x56, 255]);
+}
+
+#[test]
+#[ignore = "requires permission to bind a loopback test server"]
+fn script_redirect_cannot_escape_initiating_origin() {
+    let other = Server::new(vec![(
+        "/foreign.js",
+        response(
+            "200 OK",
+            "text/javascript",
+            "",
+            "document.getElementById('x').textContent='unsafe';",
+        ),
+    )]);
+    let s = Server::new(vec![
+        (
+            "/",
+            response(
+                "200 OK",
+                "text/html",
+                "",
+                "<p id=x>original</p><script src=/redirect.js></script>",
+            ),
+        ),
+        (
+            "/redirect.js",
+            response(
+                "302 Found",
+                "text/javascript",
+                &format!("Location: {}\r\n", other.base.join("foreign.js").unwrap()),
+                "",
+            ),
+        ),
+    ]);
+    let p = Page::load(s.base.as_str(), true).unwrap();
+    assert_eq!(
+        p.document
+            .text_content(p.document.query_selector("#x").unwrap()),
+        "original"
+    );
+    assert!(
+        p.diagnostics
+            .iter()
+            .any(|d| d.contains("cross-origin active subresource blocked"))
+    );
+}
+
+#[test]
+#[ignore = "requires permission to bind a loopback test server"]
+fn post_form_sends_encoded_body_content_type_and_preserves_action_query() {
+    let s = Server::new(vec![(
+        "/submit?existing=1",
+        response(
+            "200 OK",
+            "text/html",
+            "Set-Cookie: ignored=1; Path=/\r\n",
+            "<p id=result>posted</p>",
+        ),
+    )]);
+    let mut source = Page::from_html(
+        s.base.clone(),
+        "<form method=post action='/submit?existing=1'><input name=q value='hello world &amp; α'><input type=checkbox name=flag checked><input name=disabled disabled value=secret><button name=send value=yes>Send</button></form>",
+        false,
+    );
+    let navigation = source
+        .click(source.document.query_selector("button").unwrap())
+        .unwrap();
+    assert_eq!(
+        navigation.form_body.as_deref(),
+        Some("q=hello+world+%26+%CE%B1&flag=on&send=yes")
+    );
+    assert_eq!(
+        Url::parse(&navigation.address).unwrap().query(),
+        Some("existing=1")
+    );
+    let loaded = Page::load_navigation(&navigation, false).unwrap();
+    assert_eq!(
+        loaded
+            .document
+            .text_content(loaded.document.query_selector("#result").unwrap()),
+        "posted"
+    );
+    let request = &s.requests()[0];
+    assert_eq!(request.method, "POST");
+    assert_eq!(request.path, "/submit?existing=1");
+    assert_eq!(
+        request.headers.get("content-type").map(String::as_str),
+        Some("application/x-www-form-urlencoded")
+    );
+    assert_eq!(
+        request.body,
+        navigation.form_body.as_ref().unwrap().as_bytes()
+    );
+    assert_eq!(
+        request
+            .headers
+            .get("content-length")
+            .unwrap()
+            .parse::<usize>()
+            .unwrap(),
+        request.body.len()
+    );
+    assert!(!request.headers.contains_key("cookie"));
+    assert!(!request.headers.contains_key("authorization"));
+    // The GET wrapper has no saved body or cookie state to replay on reload/history.
+    Page::load(&navigation.address, false).unwrap();
+    let reloaded = &s.requests()[1];
+    assert_eq!(reloaded.method, "GET");
+    assert!(reloaded.body.is_empty());
+    assert!(!reloaded.headers.contains_key("cookie"));
+}
+
+#[test]
+#[ignore = "requires permission to bind a loopback test server"]
+fn post_redirects_rewrite_301_302_303_and_preserve_307_308() {
+    for status in [301, 302, 303, 307, 308] {
+        let s = Server::new(vec![
+            (
+                "/start",
+                response(
+                    &format!("{status} Redirect"),
+                    "text/html",
+                    "Location: /finished?keep=1#anchor\r\n",
+                    "",
+                ),
+            ),
+            (
+                "/finished?keep=1",
+                response("200 OK", "text/html", "", "<p>done</p>"),
+            ),
+        ]);
+        let navigation = Navigation {
+            address: s.base.join("start").unwrap().to_string(),
+            form_body: Some("name=one+two&encoded=%CE%B1".into()),
+        };
+        let page = Page::load_navigation(&navigation, false).unwrap();
+        assert_eq!(page.url.path(), "/finished");
+        assert_eq!(page.url.fragment(), Some("anchor"));
+        let requests = s.requests();
+        assert_eq!(requests.len(), 2);
+        assert_eq!(requests[0].method, "POST");
+        assert_eq!(
+            requests[0].body,
+            navigation.form_body.as_ref().unwrap().as_bytes()
+        );
+        let preserved = matches!(status, 307 | 308);
+        assert_eq!(requests[1].method, if preserved { "POST" } else { "GET" });
+        if preserved {
+            assert_eq!(requests[1].body, requests[0].body);
+            assert_eq!(
+                requests[1].headers.get("content-type"),
+                requests[0].headers.get("content-type")
+            );
+        } else {
+            assert!(requests[1].body.is_empty());
+            assert!(!requests[1].headers.contains_key("content-type"));
+        }
+    }
+}
+
+#[test]
+#[ignore = "requires permission to bind a loopback test server"]
+fn post_rejects_non_http_redirects_and_oversized_bodies_before_sending() {
+    let s = Server::new(vec![(
+        "/escape",
+        response(
+            "307 Temporary Redirect",
+            "text/html",
+            "Location: data:text/html,unsafe\r\n",
+            "",
+        ),
+    )]);
+    let mut fetcher = Fetcher::default();
+    let url = s.base.join("escape").unwrap();
+    assert!(fetcher.fetch_document(&url, Some("private=value")).is_err());
+    assert_eq!(s.requests().len(), 1);
+    assert!(
+        fetcher
+            .fetch_document(&url, Some(&"a".repeat(eris::net::MAX_FORM_BODY_BYTES + 1)))
+            .is_err()
+    );
+    assert_eq!(s.requests().len(), 1);
+}
+
+#[test]
+#[ignore = "requires permission to bind a loopback test server"]
+fn http_text_is_decoded_once_and_bom_precedes_charset_header() {
+    fn encoded_response(body: &[u8]) -> Vec<u8> {
+        let mut response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=windows-1252\r\nContent-Length: {}\r\nConnection: close\r\n\r\n", body.len()).into_bytes();
+        response.extend_from_slice(body);
+        response
+    }
+    let s = Server::new_bytes(vec![
+        ("/latin", encoded_response(b"caf\xe9")),
+        ("/bom", encoded_response(b"\xef\xbb\xbfcaf\xc3\xa9")),
+    ]);
+    for path in ["latin", "bom"] {
+        let mut fetcher = Fetcher::default();
+        let resource = fetcher
+            .fetch_document(&s.base.join(path).unwrap(), None)
+            .unwrap();
+        assert_eq!(resource.text(), "café", "{path}");
+    }
+}
+
+#[test]
+#[ignore = "requires permission to bind a loopback test server"]
+fn encoded_gzip_header_is_bounded_before_it_produces_decoded_bytes() {
+    // A valid gzip FNAME field can be arbitrarily long while producing no body output.
+    // Chunked transfer omits Content-Length, so the raw-stream limit must stop it.
+    let mut gzip = vec![0x1f, 0x8b, 8, 8, 0, 0, 0, 0, 0, 255];
+    gzip.extend(std::iter::repeat_n(
+        b'a',
+        eris::net::MAX_RESOURCE_BYTES + 64,
+    ));
+    gzip.push(0);
+    gzip.extend_from_slice(&[3, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    let mut encoded = b"HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Encoding: gzip\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n".to_vec();
+    encoded.extend_from_slice(format!("{:x}\r\n", gzip.len()).as_bytes());
+    encoded.extend_from_slice(&gzip);
+    encoded.extend_from_slice(b"\r\n0\r\n\r\n");
+    let s = Server::new_bytes(vec![("/gzip", encoded)]);
+    let mut fetcher = Fetcher::default();
+    assert!(
+        fetcher
+            .fetch_document(&s.base.join("gzip").unwrap(), None)
+            .is_err()
+    );
+}

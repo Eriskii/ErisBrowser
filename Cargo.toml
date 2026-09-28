@@ -1,0 +1,38 @@
+[package]
+name = "eris-browser"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.88"
+description = "An independent experimental Rust browser and software web renderer"
+license = "MIT"
+default-run = "eris-browser"
+
+[lib]
+name = "eris"
+path = "src/lib.rs"
+
+[[bin]]
+name = "eris-browser"
+path = "src/main.rs"
+
+[dependencies]
+ab_glyph = "0.2.32"
+arboard = { version = "3.6.1", default-features = false }
+image = { version = "0.25.10", default-features = false, features = ["png", "jpeg", "gif", "webp", "bmp"] }
+ureq = "3.4.0"
+url = "2.5.8"
+encoding_rs = "0.8.35"
+base64 = "0.22.1"
+winit = { version = "0.30.13", default-features = false, features = ["rwh_06", "x11", "wayland", "wayland-dlopen"] }
+softbuffer = { version = "0.4.8", default-features = false, features = ["x11", "x11-dlopen", "wayland", "wayland-dlopen"] }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = "warn"

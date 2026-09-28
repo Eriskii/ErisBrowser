@@ -1,0 +1,7 @@
+/target/
+/artifacts/
+*.ppm
+*.profraw
+/render.png
+__pycache__/
+*.pyc

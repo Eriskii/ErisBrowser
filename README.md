@@ -1,0 +1,85 @@
+# Eris Browser
+
+An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, a JavaScript subset interpreter, SVG handling, and software painting. There is no Chromium, Firefox, WebKit, Servo, Ladybird, embedded webview, or external JavaScript engine in the rendering path.
+
+**Status: an early browser implementation, not a fully web-compatible or production-secure browser.** The original requirements—every web standard, production security, and performance within 30% of Chromium—are not achieved. Many modern websites will not function. See [compatibility](docs/COMPATIBILITY.md) and [security](docs/SECURITY.md) for concrete boundaries.
+
+## Open the browser
+
+```sh
+./run.sh
+./run.sh https://example.com
+./run.sh ./examples/forms.html
+```
+
+The launcher builds the release executable and exposes installed desktop libraries on NixOS. Rust, Cargo, Python 3, and a Wayland or X11 desktop are required for this launcher on Linux. Fonts are bundled. On a conventional desktop with the shared libraries available:
+
+```sh
+cargo run --locked --release -- https://example.com
+```
+
+`./run.sh` does not install anything, change system settings, or use another browser to render pages. The `shell.nix` file offers a Nix development environment. Headless rendering does not require a display server.
+
+## Use it
+
+- Enter a URL or local HTML file with **Ctrl+L**, then Enter.
+- **Alt+Left / Alt+Right** navigate history; **Ctrl+R** or F5 reloads.
+- Scroll with the wheel, arrow keys, Page Up/Down, Home, and End.
+- **Ctrl+Plus / Ctrl+Minus / Ctrl+0** change page zoom.
+- Click links and buttons; Tab moves among basic form fields and links.
+- Text fields support typing, cursor movement, Shift-selection, Backspace/Delete, and native Ctrl+C/X/V clipboard shortcuts. Basic GET and URL-encoded POST forms are supported.
+- The home page's **Add one** button executes this engine's own script interpreter.
+- `--no-scripts` disables scripting. Diagnostics are printed to the terminal.
+
+Text editing is based on Unicode scalar boundaries; grapheme-aware movement, rich editing, full IME behavior, and accessibility are unfinished. Clipboard support uses the native platform backend (X11/XWayland on Linux). History and reload use GET and do not automatically resubmit POST bodies.
+
+## Render and measure
+
+```sh
+cargo run --locked --release -- --render --output artifacts/home.png
+cargo run --locked --release -- --render examples/forms.html --output artifacts/forms.png
+cargo run --locked --release -- --render --click '#increment' --click '#increment' --output artifacts/counter.png
+cargo run --locked --release -- --render --width 600 --height 1000 --output artifacts/narrow.png
+cargo run --locked --release -- --benchmark 100 --output artifacts/benchmark.png
+```
+
+`--dump-dom` prints the resulting DOM. `--window-screenshot artifacts/window.png --exit-after 5` captures the browser's own framebuffer during a short native-window smoke test. Run `--help` for CLI details.
+
+For a JSON report covering the home, gallery, and form fixtures, run `python3 tools/benchmark.py`.
+
+The benchmark measures **warm-cache CSS computation + layout + software painting of the loaded page**. It excludes parsing, scripts, network, image decoding, PNG encoding, and native presentation. It is not a Chromium comparison or a general web-performance score. See [performance](docs/PERFORMANCE.md).
+
+## Check the implementation
+
+```sh
+cargo fmt --all -- --check
+cargo clippy --locked --all-targets -- -D warnings
+cargo test --locked
+cargo test --locked --test network -- --include-ignored
+cargo build --locked --release
+python3 tools/reftest.py --binary target/release/eris-browser
+cargo run --locked --release --bin eris-stress -- 5000
+```
+
+Network integration tests explicitly opt in because they bind temporary loopback HTTP servers. They require no public network. Other tests cover parser recovery, selectors and cascade, box layout, DOM/script interaction, script exhaustion, file scopes, geometry and raster limits. Reference tests compare independently constructed pages pixel-for-pixel with this renderer. They are a small self-authored suite, not a claim to pass the Web Platform Tests. The deterministic stress harness mutates HTML/CSS, script, and SVG seeds and checks bounded-output invariants; it is smoke fuzzing, not coverage-guided fuzzing.
+
+The initial implementation's [validation record](docs/VALIDATION.md) lists the observed results and what they do not establish.
+
+## Implementation
+
+| Module | Responsibility |
+|---|---|
+| `dom.rs` | Bounded HTML tree construction, arena DOM, entities, selector matching, serialization |
+| `css.rs` | CSS parsing, indexed cascade, inheritance, lengths, colors, variables, media queries |
+| `layout.rs` | Block/inline flow, line wrapping, basic flex/grid/tables, controls, display lists, hit regions |
+| `script.rs` | Custom lexer, parser, interpreter, lexical environments, DOM bindings and events |
+| `svg.rs` | Custom SVG geometry, paths, transforms and bounded RGBA rasterization |
+| `graphics.rs` | Font metrics, cached glyph masks, clipped/limited software painting, PNG output |
+| `net.rs` | HTTP/TLS resource loading, redirect and file policies, decoding and byte limits |
+| `page.rs` | Resource ordering, page lifecycle, scripting, forms and layout integration |
+| `browser.rs` | Native window, address bar, history, input, worker coordination and presentation |
+| `edit.rs` | Unicode scalar cursor movement, selections, replacements and deletion |
+
+Infrastructure dependencies provide TLS/HTTP (`ureq`/`rustls`), URLs (`url`), character encodings, font outline rasterization (`ab_glyph`), image codecs (`image`), native clipboard access (`arboard`), window events (`winit`), and a pixel surface (`softbuffer`). These are not web layout or script engines. Their transitive dependencies remain part of the security surface. The source forbids application-level `unsafe` Rust; dependencies can contain unsafe code.
+
+Fonts are DejaVu; redistribution notices are in [assets/FONTS-LICENSE.txt](assets/FONTS-LICENSE.txt). Project code is MIT licensed.

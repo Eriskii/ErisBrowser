@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Eris — A browser of its own</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; background: #10131b; color: #edf0f7; font-family: sans-serif; font-size: 16px; line-height: 1.55; }
+main { max-width: 1060px; margin: 0 auto; padding: 44px 42px; }
+nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 52px; }
+.brand { font-size: 24px; font-weight: bold; letter-spacing: 2px; color: #f4c36a; }
+.badge { color: #a9b7cc; font-size: 13px; border: 1px solid #354056; border-radius: 18px; padding: 7px 15px; }
+.eyebrow { color: #f4c36a; font-size: 13px; font-weight: bold; margin-bottom: 12px; }
+h1 { font-size: 54px; line-height: 1.12; margin: 0 0 24px; max-width: 790px; }
+.intro { max-width: 710px; font-size: 19px; color: #b7c2d6; margin-bottom: 34px; }
+.actions { display: flex; gap: 14px; margin-bottom: 44px; }
+a { color: #f4c36a; }
+.primary, button { background: #f4c36a; color: #171922; border: 0; border-radius: 8px; padding: 12px 20px; font-weight: bold; text-decoration: none; }
+.secondary { padding: 12px 20px; border: 1px solid #48536a; border-radius: 8px; color: #eef0f7; text-decoration: none; }
+.cards { display: flex; gap: 18px; margin-bottom: 28px; }
+.card { flex: 1; background: #1a2030; border: 1px solid #303a50; border-radius: 12px; padding: 24px; }
+.number { color: #f4c36a; font-size: 13px; font-weight: bold; margin: 0 0 16px; }
+h2 { font-size: 21px; margin: 0 0 12px; }
+.card p { color: #acbad1; font-size: 14px; }
+.workbench { background: #191e2b; border: 1px solid #303a50; border-radius: 12px; padding: 26px; margin-bottom: 30px; }
+.row { display: flex; gap: 22px; align-items: center; }
+#count { font-size: 26px; color: #f4c36a; font-weight: bold; }
+.muted { color: #94a2bb; font-size: 13px; }
+footer { padding-top: 14px; color: #93a0b7; font-size: 13px; border-top: 1px solid #2d3547; }
+@media (max-width: 720px) { main { padding: 24px; } h1 { font-size: 36px; } .cards { flex-direction: column; } nav { margin-bottom: 30px; } }
+</style>
+</head>
+<body>
+<main>
+<nav><span class="brand">ERIS /</span><span class="badge">INDEPENDENT ENGINE · EARLY DEVELOPMENT</span></nav>
+<p class="eyebrow">AN OPEN WINDOW. A NEW FOUNDATION.</p>
+<h1>A browser of its own.</h1>
+<p class="intro">From the first HTML token to the last painted pixel. Explore a new Rust browser with its own document, style, layout, and scripting engines.</p>
+<div class="actions"><a class="primary" href="https://example.com">Open example.com →</a><a class="secondary" href="#workbench">Try the workbench ↓</a></div>
+<div class="cards">
+<section class="card"><p class="number">01 / DOCUMENT</p><h2>Structure becomes a page.</h2><p>HTML elements, links, images, and forms flow through a custom document tree.</p></section>
+<section class="card"><p class="number">02 / PRESENTATION</p><h2>Style becomes geometry.</h2><p>CSS selectors, the cascade, text wrapping, and flexible boxes shape the view.</p></section>
+<section class="card"><p class="number">03 / INTERACTION</p><h2>A click becomes a change.</h2><p>A small custom script interpreter connects events to live document updates.</p></section>
+</div>
+<section class="workbench" id="workbench"><h2>A little proof of life.</h2><p class="muted">This button runs page JavaScript and changes the document.</p><div class="row"><button id="increment">Add one</button><span id="count">0</span><span class="muted">clicks, rendered here</span></div></section>
+<footer>Ctrl+L to enter an address · Alt+← / → for history · Ctrl+R to reload<br>Experimental: partial web support. Many modern sites and APIs are not implemented.</footer>
+</main>
+<script>
+let count = 0;
+document.getElementById('increment').addEventListener('click', function () {
+  count = count + 1;
+  document.getElementById('count').textContent = count;
+});
+</script>
+</body>
+</html>

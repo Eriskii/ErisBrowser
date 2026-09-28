@@ -1,0 +1,999 @@
+//! Page lifecycle connecting independent parsing, scripting, layout and paint.
+use crate::{
+    css,
+    dom::{Document, NodeId},
+    graphics::{Fonts, ImageStore, RasterImage},
+    layout::{self, LayoutResult},
+    net::{self, Fetcher, ResourceKind},
+    script::Runtime,
+};
+use std::{
+    collections::{HashMap, HashSet},
+    io::Cursor,
+    sync::Arc,
+    time::Instant,
+};
+
+const MAX_DECODED_IMAGE_BYTES: usize = 64 * 1024 * 1024;
+const MAX_STYLE_BYTES: usize = 8 * 1024 * 1024;
+const MAX_SCRIPT_BYTES: usize = 1024 * 1024;
+const MAX_FORM_BYTES: usize = net::MAX_FORM_BODY_BYTES;
+use url::Url;
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Navigation {
+    pub address: String,
+    pub form_body: Option<String>,
+}
+impl Navigation {
+    pub fn get(address: impl Into<String>) -> Self {
+        Self {
+            address: address.into(),
+            form_body: None,
+        }
+    }
+}
+
+pub struct Page {
+    pub url: Url,
+    pub document: Document,
+    pub runtime: Runtime,
+    pub images: ImageStore,
+    pub diagnostics: Vec<String>,
+    pub load_ms: f64,
+    pub scripts_enabled: bool,
+    external_styles: HashMap<NodeId, Arc<str>>,
+    policy_blocks_styles: bool,
+}
+
+impl Page {
+    pub fn load(address: &str, scripts_enabled: bool) -> Result<Self, String> {
+        Self::load_navigation(&Navigation::get(address), scripts_enabled)
+    }
+    pub fn load_navigation(navigation: &Navigation, scripts_enabled: bool) -> Result<Self, String> {
+        let start = Instant::now();
+        let url = net::parse_address(&navigation.address)?;
+        if navigation.form_body.is_some() && !matches!(url.scheme(), "http" | "https") {
+            return Err("POST form submissions require HTTP or HTTPS".into());
+        }
+        if url.scheme() == "eris" && url.path() == "home" {
+            return Ok(Self::from_html(
+                url,
+                include_str!("../assets/home.html"),
+                scripts_enabled,
+            ));
+        }
+        if url.scheme() == "about" && url.path() == "blank" {
+            return Ok(Self::from_html(
+                url,
+                "<!doctype html><title>Blank</title>",
+                scripts_enabled,
+            ));
+        }
+        let mut fetcher = Fetcher::for_document(&url);
+        let response = fetcher.fetch_document(&url, navigation.form_body.as_deref())?;
+        let csp = response.headers.contains_key("content-security-policy");
+        let mime = response
+            .content_type
+            .split(';')
+            .next()
+            .unwrap_or("")
+            .trim()
+            .to_ascii_lowercase();
+        let html = if mime == "text/html" || mime.is_empty() {
+            response.text()
+        } else if mime.starts_with("image/") {
+            format!(
+                "<!doctype html><title>Image</title><body><img src=\"{}\"></body>",
+                escape_html(response.url.as_str())
+            )
+        } else {
+            format!(
+                "<!doctype html><title>Text</title><pre>{}</pre>",
+                escape_html(&response.text())
+            )
+        };
+        let mut page = Self::unexecuted(response.url, &html, scripts_enabled);
+        page.apply_author_policy(csp);
+        let ids = page.document.query_selector_all("link, script, img");
+        let mut script_sources: HashMap<NodeId, Arc<str>> = HashMap::new();
+        let mut text_cache: HashMap<(ResourceKind, String), Arc<str>> = HashMap::new();
+        let mut image_cache: HashMap<String, Arc<RasterImage>> = HashMap::new();
+        let mut failed = HashSet::new();
+        let mut decoded_bytes = 0usize;
+        let mut style_bytes = 0usize;
+        let mut script_bytes = 0usize;
+        for id in ids {
+            if page.policy_blocks_styles {
+                break;
+            }
+            if !page.is_active_node(id) {
+                continue;
+            }
+            let tag = page.document.tag(id).unwrap_or("");
+            let (href, kind) = match tag {
+                "link"
+                    if page.document.attr(id, "rel").is_some_and(|r| {
+                        r.split_ascii_whitespace()
+                            .any(|s| s.eq_ignore_ascii_case("stylesheet"))
+                    }) =>
+                {
+                    (page.document.attr(id, "href"), ResourceKind::Style)
+                }
+                "script"
+                    if page.scripts_enabled
+                        && page.document.attr(id, "type").is_none_or(|kind| {
+                            kind.is_empty() || net::is_javascript_mime(kind)
+                        }) =>
+                {
+                    (page.document.attr(id, "src"), ResourceKind::Script)
+                }
+                "img" => (page.document.attr(id, "src"), ResourceKind::Image),
+                _ => continue,
+            };
+            let Some(href) = href.map(str::to_owned) else {
+                continue;
+            };
+            let mut target = match page.url.join(&href) {
+                Ok(url) => url,
+                Err(error) => {
+                    page.diagnostics.push(format!("resource URL: {error}"));
+                    continue;
+                }
+            };
+            target.set_fragment(None);
+            let key = target.to_string();
+            if failed.contains(&(kind, key.clone())) {
+                continue;
+            }
+            if kind == ResourceKind::Image {
+                if let Some(image) = image_cache.get(&key).cloned() {
+                    page.attach_image(id, href, image);
+                    continue;
+                }
+            } else if let Some(source) = text_cache.get(&(kind, key.clone())).cloned() {
+                if kind == ResourceKind::Style {
+                    page.external_styles.insert(id, source);
+                } else {
+                    script_sources.insert(id, source);
+                }
+                continue;
+            }
+            let resource = match fetcher.fetch(&target, Some(&page.url), kind) {
+                Ok(resource) => resource,
+                Err(error) => {
+                    failed.insert((kind, key));
+                    page.diagnostics
+                        .push(format!("resource {}: {error}", diagnostic_url(&href)));
+                    continue;
+                }
+            };
+            match kind {
+                ResourceKind::Style | ResourceKind::Script => {
+                    let source = resource.text();
+                    let (used, limit) = if kind == ResourceKind::Style {
+                        (&mut style_bytes, MAX_STYLE_BYTES)
+                    } else {
+                        (&mut script_bytes, MAX_SCRIPT_BYTES)
+                    };
+                    if source.len() > limit.saturating_sub(*used) {
+                        failed.insert((kind, key));
+                        page.diagnostics.push(format!(
+                            "{} source budget exceeded",
+                            if kind == ResourceKind::Style {
+                                "stylesheet"
+                            } else {
+                                "script"
+                            }
+                        ));
+                        continue;
+                    }
+                    *used += source.len();
+                    let source: Arc<str> = source.into();
+                    text_cache.insert((kind, key), source.clone());
+                    if kind == ResourceKind::Style {
+                        page.external_styles.insert(id, source);
+                    } else {
+                        script_sources.insert(id, source);
+                    }
+                }
+                ResourceKind::Image => {
+                    let result = if resource
+                        .content_type
+                        .split(';')
+                        .next()
+                        .unwrap_or("")
+                        .trim()
+                        .eq_ignore_ascii_case("image/svg+xml")
+                    {
+                        crate::svg::render(&resource.text(), None, None)
+                    } else {
+                        decode_image(&resource.bytes)
+                    };
+                    match result {
+                        Ok(image) => {
+                            if image.rgba.len()
+                                > MAX_DECODED_IMAGE_BYTES.saturating_sub(decoded_bytes)
+                            {
+                                failed.insert((kind, key));
+                                page.diagnostics
+                                    .push("decoded image budget exceeded".into());
+                                continue;
+                            }
+                            decoded_bytes += image.rgba.len();
+                            let image = Arc::new(image);
+                            image_cache.insert(key, image.clone());
+                            page.attach_image(id, href, image);
+                        }
+                        Err(error) => {
+                            failed.insert((kind, key));
+                            page.diagnostics
+                                .push(format!("image {}: {error}", diagnostic_url(&href)));
+                        }
+                    }
+                }
+                ResourceKind::Document => {}
+            }
+        }
+        page.run_scripts(&script_sources);
+        page.refresh_inline_svg();
+        page.load_ms = start.elapsed().as_secs_f64() * 1000.0;
+        Ok(page)
+    }
+    fn unexecuted(url: Url, html: &str, scripts_enabled: bool) -> Self {
+        Self {
+            url,
+            document: Document::parse(html),
+            runtime: Runtime::new(),
+            images: HashMap::new(),
+            diagnostics: Vec::new(),
+            load_ms: 0.0,
+            scripts_enabled,
+            external_styles: HashMap::new(),
+            policy_blocks_styles: false,
+        }
+    }
+    pub fn from_html(url: Url, html: &str, scripts_enabled: bool) -> Self {
+        let started = Instant::now();
+        let mut page = Self::unexecuted(url, html, scripts_enabled);
+        page.apply_author_policy(false);
+        page.run_scripts(&HashMap::new());
+        page.refresh_inline_svg();
+        page.load_ms = started.elapsed().as_secs_f64() * 1000.0;
+        page
+    }
+    fn apply_author_policy(&mut self, header_csp: bool) {
+        let meta_csp = self
+            .document
+            .query_selector_all("meta")
+            .into_iter()
+            .any(|id| {
+                self.is_active_node(id)
+                    && self
+                        .document
+                        .attr(id, "http-equiv")
+                        .is_some_and(|v| v.eq_ignore_ascii_case("content-security-policy"))
+            });
+        if !(header_csp || meta_csp) || self.policy_blocks_styles {
+            return;
+        }
+        // This deliberately refuses all active content instead of partially implementing CSP.
+        self.scripts_enabled = false;
+        self.policy_blocks_styles = true;
+        for id in 0..self.document.nodes.len() {
+            self.document.remove_attr(id, "style");
+        }
+        self.diagnostics.push("CSP present: scripts, author styles and external resources disabled by conservative policy".into());
+    }
+    fn is_active_node(&self, id: NodeId) -> bool {
+        let mut current = Some(id);
+        for _ in 0..crate::dom::MAX_DEPTH {
+            let Some(id) = current else {
+                return false;
+            };
+            if id == self.document.root {
+                return true;
+            }
+            if self.document.tag(id) == Some("template") {
+                return false;
+            }
+            current = self.document.nodes.get(id).and_then(|n| n.parent);
+        }
+        false
+    }
+    fn attach_image(&mut self, id: NodeId, key: String, image: Arc<RasterImage>) {
+        self.document
+            .set_attr(id, "data-eris-natural-width", &image.width.to_string());
+        self.document
+            .set_attr(id, "data-eris-natural-height", &image.height.to_string());
+        self.images.insert(key, image);
+    }
+    pub fn refresh_inline_svg(&mut self) {
+        // A DOM replacement must release rasters belonging to removed or now-inert SVG nodes.
+        self.images
+            .retain(|key, _| !key.starts_with("eris-inline-svg:"));
+        let mut seen = HashSet::new();
+        let mut image_bytes = self
+            .images
+            .values()
+            .filter(|image| seen.insert(Arc::as_ptr(image)))
+            .map(|image| image.rgba.len())
+            .sum::<usize>();
+        let mut source_bytes = 0usize;
+        let mut count = 0usize;
+        for id in self.document.query_selector_all("svg") {
+            if !self.is_active_node(id) {
+                continue;
+            }
+            let mut ancestor = self.document.nodes[id].parent;
+            let mut nested = false;
+            while let Some(node) = ancestor {
+                if self.document.tag(node) == Some("svg") {
+                    nested = true;
+                    break;
+                }
+                ancestor = self.document.nodes[node].parent;
+            }
+            if nested {
+                continue;
+            }
+            if count >= 16 {
+                self.diagnostics
+                    .push("inline SVG count budget exceeded".into());
+                break;
+            }
+            count += 1;
+            let source = self.document.outer_html(id);
+            source_bytes += source.len();
+            if source_bytes > MAX_SCRIPT_BYTES {
+                self.diagnostics
+                    .push("inline SVG source budget exceeded".into());
+                break;
+            }
+            match crate::svg::render(&source, None, None) {
+                Ok(image) => {
+                    if image.rgba.len() > MAX_DECODED_IMAGE_BYTES.saturating_sub(image_bytes) {
+                        self.diagnostics
+                            .push("decoded image budget exceeded".into());
+                        break;
+                    }
+                    image_bytes += image.rgba.len();
+                    self.attach_image(id, format!("eris-inline-svg:{id}"), Arc::new(image));
+                }
+                Err(error) => self.diagnostics.push(format!("inline SVG: {error}")),
+            }
+        }
+    }
+    pub fn error(address: &str, message: &str) -> Self {
+        let html = format!(
+            "<!doctype html><title>Unable to open page</title><style>body{{font-family:sans-serif;background:#131620;color:#edf0fa;margin:60px;max-width:850px}}h1{{font-size:36px}}p{{line-height:1.6;color:#bec7dc}}pre{{background:#202638;padding:24px;white-space:pre-wrap}}</style><h1>Unable to open page</h1><p>{}</p><pre>{}</pre><p>Use the address bar to try another address.</p>",
+            escape_html(address),
+            escape_html(message)
+        );
+        Self::from_html(
+            Url::parse("eris:error").expect("constant URL"),
+            &html,
+            false,
+        )
+    }
+    fn run_scripts(&mut self, external: &HashMap<NodeId, Arc<str>>) {
+        if !self.scripts_enabled {
+            return;
+        }
+        let mut source_bytes = 0usize;
+        let mut count = 0usize;
+        for id in self.document.query_selector_all("script") {
+            if !self.is_active_node(id) {
+                continue;
+            }
+            if count >= 64 {
+                self.diagnostics
+                    .push("page script count budget exceeded".into());
+                break;
+            }
+            count += 1;
+            let kind = self.document.attr(id, "type").unwrap_or("");
+            if !kind.is_empty() && !net::is_javascript_mime(kind) {
+                self.diagnostics
+                    .push(format!("unsupported script type: {kind}"));
+                continue;
+            }
+            let source = if self.document.attr(id, "src").is_some() {
+                external.get(&id).cloned()
+            } else {
+                Some(Arc::from(self.document.text_content(id)))
+            };
+            if let Some(source) = source {
+                source_bytes += source.len();
+                if source_bytes > 1024 * 1024 {
+                    self.diagnostics
+                        .push("page script source budget exceeded".into());
+                    break;
+                }
+                if let Err(error) = self.runtime.execute(&source, &mut self.document) {
+                    self.diagnostics.push(format!("script: {error}"));
+                }
+            }
+        }
+        if let Err(error) = self.runtime.dispatch_dom_content_loaded(&mut self.document) {
+            self.diagnostics.push(format!("DOMContentLoaded: {error}"));
+        }
+    }
+    pub fn stylesheets(&self) -> Vec<String> {
+        if self.policy_blocks_styles {
+            return Vec::new();
+        }
+        let mut sources = Vec::new();
+        let mut bytes = 0usize;
+        for id in self.document.query_selector_all("style, link") {
+            if !self.is_active_node(id) {
+                continue;
+            }
+            let source: Arc<str> = if self.document.tag(id) == Some("style") {
+                self.document.text_content(id).into()
+            } else if let Some(source) = self.external_styles.get(&id) {
+                source.clone()
+            } else {
+                continue;
+            };
+            let media = self.document.attr(id, "media");
+            let size = source.len() + media.map_or(0, |m| m.len() + 12);
+            if sources.len() >= 256 || size > MAX_STYLE_BYTES.saturating_sub(bytes) {
+                break;
+            }
+            bytes += size;
+            sources.push(if let Some(media) = media {
+                format!("@media {media} {{{source}}}")
+            } else {
+                source.to_string()
+            });
+        }
+        sources
+    }
+    pub fn layout(&self, width: f32, height: f32, fonts: &Fonts) -> LayoutResult {
+        let styles = css::compute_styles(&self.document, &self.stylesheets(), width, height);
+        layout::layout(&self.document, &styles, width, height, fonts)
+    }
+    pub fn title(&self) -> String {
+        let title = self.document.title();
+        if title.is_empty() {
+            self.url.to_string()
+        } else {
+            title
+        }
+    }
+    fn is_descendant_of(&self, mut node: NodeId, ancestor: NodeId) -> bool {
+        for _ in 0..crate::dom::MAX_DEPTH {
+            if node == ancestor {
+                return true;
+            }
+            let Some(parent) = self.document.nodes.get(node).and_then(|node| node.parent) else {
+                return false;
+            };
+            node = parent;
+        }
+        false
+    }
+    fn disabled_control(&self, node: NodeId) -> bool {
+        let tag = self.document.tag(node).unwrap_or("");
+        if !matches!(
+            tag,
+            "input" | "button" | "select" | "textarea" | "option" | "optgroup"
+        ) {
+            return false;
+        }
+        if self.document.attr(node, "disabled").is_some() {
+            return true;
+        }
+        let mut ancestor = self.document.nodes.get(node).and_then(|node| node.parent);
+        for _ in 0..crate::dom::MAX_DEPTH {
+            let Some(id) = ancestor else {
+                break;
+            };
+            if tag == "option"
+                && self.document.tag(id) == Some("optgroup")
+                && self.document.attr(id, "disabled").is_some()
+            {
+                return true;
+            }
+            if self.document.tag(id) == Some("fieldset")
+                && self.document.attr(id, "disabled").is_some()
+            {
+                let first_legend = self.document.nodes[id]
+                    .children
+                    .iter()
+                    .copied()
+                    .find(|&child| self.document.tag(child) == Some("legend"));
+                if !first_legend.is_some_and(|legend| self.is_descendant_of(node, legend)) {
+                    return true;
+                }
+            }
+            ancestor = self.document.nodes.get(id).and_then(|node| node.parent);
+        }
+        false
+    }
+    fn interaction_blocked(&self, node: NodeId) -> bool {
+        if !self.is_active_node(node) {
+            return true;
+        }
+        let mut ancestor = Some(node);
+        for _ in 0..crate::dom::MAX_DEPTH {
+            let Some(id) = ancestor else {
+                return false;
+            };
+            if self.document.attr(id, "inert").is_some() || self.disabled_control(id) {
+                return true;
+            }
+            ancestor = self.document.nodes.get(id).and_then(|node| node.parent);
+        }
+        true
+    }
+    pub fn click(&mut self, id: NodeId) -> Option<Navigation> {
+        let original_id = id;
+        if self.interaction_blocked(id) {
+            return None;
+        }
+        if self.scripts_enabled {
+            if let Err(error) = self.runtime.dispatch_click(id, &mut self.document) {
+                self.diagnostics.push(format!("click: {error}"));
+            }
+            self.refresh_inline_svg();
+            if self.runtime.last_default_prevented {
+                return None;
+            }
+        }
+        if self.interaction_blocked(id) {
+            return None;
+        }
+        let mut node = Some(id);
+        while let Some(id) = node {
+            if self.document.tag(id) == Some("input") {
+                match self
+                    .document
+                    .attr(id, "type")
+                    .unwrap_or("text")
+                    .to_ascii_lowercase()
+                    .as_str()
+                {
+                    "checkbox" => {
+                        if self.document.attr(id, "checked").is_some() {
+                            self.document.remove_attr(id, "checked");
+                        } else {
+                            self.document.set_attr(id, "checked", "");
+                        }
+                        return None;
+                    }
+                    "radio" => {
+                        let name = self.document.attr(id, "name").unwrap_or("").to_owned();
+                        let form = self.ancestor_form(id);
+                        for radio in self.document.query_selector_all("input") {
+                            if self.is_active_node(radio)
+                                && !name.is_empty()
+                                && self
+                                    .document
+                                    .attr(radio, "type")
+                                    .is_some_and(|kind| kind.eq_ignore_ascii_case("radio"))
+                                && self.document.attr(radio, "name") == Some(&name)
+                                && self.ancestor_form(radio) == form
+                            {
+                                self.document.remove_attr(radio, "checked");
+                            }
+                        }
+                        self.document.set_attr(id, "checked", "");
+                        return None;
+                    }
+                    "submit" => {
+                        return self
+                            .ancestor_form(id)
+                            .and_then(|form| self.submit_form(form, Some(id)));
+                    }
+                    _ => return None,
+                }
+            }
+            if self.document.tag(id) == Some("button") {
+                if self
+                    .document
+                    .attr(id, "type")
+                    .unwrap_or("submit")
+                    .eq_ignore_ascii_case("submit")
+                {
+                    return self
+                        .ancestor_form(id)
+                        .and_then(|form| self.submit_form(form, Some(id)));
+                }
+                return None;
+            }
+            if self.document.tag(id) == Some("form") && original_id == id {
+                return self.submit_form(id, None);
+            }
+            if self.document.tag(id) == Some("a")
+                && let Some(href) = self.document.attr(id, "href")
+            {
+                return self.resolve_navigation(href).ok().map(Navigation::get);
+            }
+            node = self.document.nodes.get(id).and_then(|n| n.parent);
+        }
+        None
+    }
+    pub fn can_edit_control(&self, node: NodeId) -> bool {
+        if self.interaction_blocked(node) || self.document.attr(node, "readonly").is_some() {
+            return false;
+        }
+        match self.document.tag(node) {
+            Some("textarea") => true,
+            Some("input") => !matches!(
+                self.document
+                    .attr(node, "type")
+                    .unwrap_or("text")
+                    .to_ascii_lowercase()
+                    .as_str(),
+                "checkbox"
+                    | "radio"
+                    | "submit"
+                    | "button"
+                    | "reset"
+                    | "hidden"
+                    | "file"
+                    | "range"
+                    | "color"
+            ),
+            _ => false,
+        }
+    }
+    fn ancestor_form(&self, mut node: NodeId) -> Option<NodeId> {
+        for _ in 0..crate::dom::MAX_DEPTH {
+            if self.document.tag(node) == Some("form") {
+                return Some(node);
+            }
+            node = self.document.nodes.get(node)?.parent?;
+        }
+        None
+    }
+    pub fn submit_form(&mut self, form: NodeId, submitter: Option<NodeId>) -> Option<Navigation> {
+        if self.document.tag(form) != Some("form")
+            || self.interaction_blocked(form)
+            || submitter.is_some_and(|node| {
+                self.interaction_blocked(node) || self.ancestor_form(node) != Some(form)
+            })
+        {
+            return None;
+        }
+        if self.scripts_enabled {
+            if let Err(error) = self
+                .runtime
+                .dispatch_event(form, "submit", &mut self.document)
+            {
+                self.diagnostics.push(format!("submit: {error}"));
+            }
+            if self.runtime.last_default_prevented {
+                return None;
+            }
+        }
+        if !self.is_active_node(form) || self.interaction_blocked(form) {
+            return None;
+        }
+        let method = submitter
+            .and_then(|node| self.document.attr(node, "formmethod"))
+            .or_else(|| self.document.attr(form, "method"))
+            .unwrap_or("get")
+            .to_ascii_lowercase();
+        if !matches!(method.as_str(), "get" | "post") {
+            self.diagnostics
+                .push("form: only GET and POST submission are implemented".into());
+            return None;
+        }
+        let encoding = submitter
+            .and_then(|node| self.document.attr(node, "formenctype"))
+            .or_else(|| self.document.attr(form, "enctype"))
+            .unwrap_or("application/x-www-form-urlencoded");
+        if method == "post" && !encoding.eq_ignore_ascii_case("application/x-www-form-urlencoded") {
+            self.diagnostics
+                .push("form: POST supports only application/x-www-form-urlencoded".into());
+            return None;
+        }
+        let action = submitter
+            .and_then(|node| self.document.attr(node, "formaction"))
+            .or_else(|| self.document.attr(form, "action"))
+            .unwrap_or(self.url.as_str());
+        let mut target = self
+            .resolve_navigation(action)
+            .ok()
+            .and_then(|u| Url::parse(&u).ok())?;
+        if method == "post" {
+            if !matches!(target.scheme(), "http" | "https") {
+                self.diagnostics
+                    .push("form: POST submissions require HTTP or HTTPS".into());
+                return None;
+            }
+            if self.url.scheme() == "https" && target.scheme() != "https" {
+                self.diagnostics
+                    .push("form: HTTPS downgrade submission blocked".into());
+                return None;
+            }
+        }
+        let mut pairs = Vec::new();
+        let mut form_bytes = 0usize;
+        for node in self
+            .document
+            .query_selector_all("input, textarea, select, button")
+        {
+            if !self.is_active_node(node)
+                || self.ancestor_form(node) != Some(form)
+                || self.disabled_control(node)
+            {
+                continue;
+            }
+            let Some(name) = self.document.attr(node, "name").filter(|s| !s.is_empty()) else {
+                continue;
+            };
+            let kind = self
+                .document
+                .attr(node, "type")
+                .unwrap_or("text")
+                .to_ascii_lowercase();
+            if matches!(kind.as_str(), "reset" | "button" | "file") {
+                continue;
+            }
+            if (kind == "submit" || self.document.tag(node) == Some("button"))
+                && submitter != Some(node)
+            {
+                continue;
+            }
+            if matches!(kind.as_str(), "checkbox" | "radio")
+                && self.document.attr(node, "checked").is_none()
+            {
+                continue;
+            }
+            let value = if self.document.tag(node) == Some("textarea") {
+                self.document.text_content(node)
+            } else if self.document.tag(node) == Some("select") {
+                let mut options = Vec::new();
+                let mut pending = self.document.nodes[node].children.clone();
+                pending.reverse();
+                while let Some(child) = pending.pop() {
+                    if self.document.tag(child) == Some("option") {
+                        if !self.disabled_control(child) && self.is_active_node(child) {
+                            options.push(child);
+                        }
+                    } else if self.document.tag(child) == Some("optgroup") {
+                        pending.extend(self.document.nodes[child].children.iter().rev().copied());
+                    }
+                }
+                let multiple = self.document.attr(node, "multiple").is_some();
+                let selected = options
+                    .iter()
+                    .copied()
+                    .filter(|&id| self.document.attr(id, "selected").is_some())
+                    .collect::<Vec<_>>();
+                let selected = if multiple {
+                    selected
+                } else {
+                    selected
+                        .first()
+                        .or_else(|| options.first())
+                        .copied()
+                        .into_iter()
+                        .collect()
+                };
+                for option in selected {
+                    let value = self
+                        .document
+                        .attr(option, "value")
+                        .map(str::to_owned)
+                        .unwrap_or_else(|| self.document.text_content(option));
+                    form_bytes += name.len() + value.len();
+                    if form_bytes > MAX_FORM_BYTES {
+                        self.diagnostics
+                            .push("form submission byte budget exceeded".into());
+                        return None;
+                    }
+                    pairs.push((name.to_owned(), value));
+                }
+                continue;
+            } else {
+                self.document
+                    .attr(node, "value")
+                    .unwrap_or(if matches!(kind.as_str(), "checkbox" | "radio") {
+                        "on"
+                    } else {
+                        ""
+                    })
+                    .into()
+            };
+            form_bytes += name.len() + value.len();
+            if form_bytes > MAX_FORM_BYTES {
+                self.diagnostics
+                    .push("form submission byte budget exceeded".into());
+                return None;
+            }
+            pairs.push((name.to_owned(), value));
+        }
+        let body = url::form_urlencoded::Serializer::new(String::new())
+            .extend_pairs(
+                pairs
+                    .into_iter()
+                    .map(|(name, value)| (form_line_breaks(&name), form_line_breaks(&value))),
+            )
+            .finish();
+        if body.len() > MAX_FORM_BYTES {
+            self.diagnostics
+                .push("form submission byte budget exceeded".into());
+            return None;
+        }
+        if method == "post" {
+            Some(Navigation {
+                address: target.to_string(),
+                form_body: Some(body),
+            })
+        } else {
+            target.set_query(Some(&body));
+            Some(Navigation::get(target.to_string()))
+        }
+    }
+    pub fn resolve_navigation(&self, address: &str) -> Result<String, String> {
+        if address.len() > net::MAX_RESOURCE_BYTES * 2 {
+            return Err("navigation URL exceeds size limit".into());
+        }
+        let target = self.url.join(address).map_err(|e| e.to_string())?;
+        if !target.username().is_empty() || target.password().is_some() {
+            return Err("URLs containing credentials are blocked".into());
+        }
+        if address.starts_with('#') {
+            return Ok(target.to_string());
+        }
+        if target.scheme() == "file" && self.url.scheme() != "file" {
+            return Err("remote page cannot navigate to local files".into());
+        }
+        if !matches!(target.scheme(), "http" | "https" | "file") {
+            return Err("page requested unsupported navigation scheme".into());
+        }
+        if target.scheme() == "file" {
+            let root = self
+                .url
+                .to_file_path()
+                .map_err(|_| "invalid local URL")?
+                .canonicalize()
+                .map_err(|e| e.to_string())?;
+            let path = target
+                .to_file_path()
+                .map_err(|_| "invalid local URL")?
+                .canonicalize()
+                .map_err(|e| e.to_string())?;
+            if !root.parent().is_some_and(|r| path.starts_with(r)) {
+                return Err("link escapes the opened document directory".into());
+            }
+        }
+        Ok(target.to_string())
+    }
+}
+fn form_line_breaks(value: &str) -> String {
+    let mut result = String::with_capacity(value.len());
+    let mut chars = value.chars().peekable();
+    while let Some(ch) = chars.next() {
+        if ch == '\r' {
+            if chars.peek() == Some(&'\n') {
+                chars.next();
+            }
+            result.push_str("\r\n");
+        } else if ch == '\n' {
+            result.push_str("\r\n");
+        } else {
+            result.push(ch);
+        }
+    }
+    result
+}
+fn diagnostic_url(value: &str) -> String {
+    let mut result: String = value.chars().take(200).collect();
+    if result.len() < value.len() {
+        result.push('…');
+    }
+    result
+}
+pub fn escape_html(input: &str) -> String {
+    input
+        .replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
+        .replace('"', "&quot;")
+}
+pub fn find_fragment(document: &Document, fragment: &str) -> Option<NodeId> {
+    let bytes = net::percent_decode(fragment).ok()?;
+    let fragment = String::from_utf8_lossy(&bytes);
+    (0..document.nodes.len()).find(|&node| {
+        document.attr(node, "id") == Some(fragment.as_ref())
+            || document.attr(node, "name") == Some(fragment.as_ref())
+    })
+}
+pub fn decode_image(bytes: &[u8]) -> Result<RasterImage, String> {
+    let mut reader = image::ImageReader::new(Cursor::new(bytes))
+        .with_guessed_format()
+        .map_err(|e| e.to_string())?;
+    let mut limits = image::Limits::default();
+    limits.max_image_width = Some(4096);
+    limits.max_image_height = Some(4096);
+    limits.max_alloc = Some(64 * 1024 * 1024);
+    reader.limits(limits);
+    let image = reader.decode().map_err(|e| e.to_string())?.into_rgba8();
+    Ok(RasterImage {
+        width: image.width(),
+        height: image.height(),
+        rgba: image.into_raw(),
+    })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn builtin_pages_preserve_query_and_fragment_without_resource_fetches() {
+        for address in [
+            "eris:home#section",
+            "eris:home?theme=dark#section",
+            "about:blank#target",
+            "about:blank?x=1#target",
+        ] {
+            let page = Page::load(address, false).unwrap();
+            assert_eq!(page.url.as_str(), address);
+            assert!(page.diagnostics.is_empty(), "{:?}", page.diagnostics);
+            if address.starts_with("about:") {
+                assert_eq!(page.title(), "Blank");
+            }
+        }
+        assert!(Page::load("about:unsupported#target", false).is_err());
+        assert!(Page::load("eris:unsupported?x=1", false).is_err());
+    }
+    #[test]
+    fn inert_ancestors_prevent_text_editing_and_detached_forms_do_not_submit() {
+        let mut page = Page::from_html(
+            Url::parse("https://example.test/").unwrap(),
+            "<div inert><input id=blocked><textarea id=blocked-text></textarea></div><input id=editable><div id=holder><form method=post onsubmit=\"document.getElementById('holder').textContent='removed'\"><input name=private value=test><button>Send</button></form></div>",
+            true,
+        );
+        assert!(!page.can_edit_control(page.document.query_selector("#blocked").unwrap()));
+        assert!(!page.can_edit_control(page.document.query_selector("#blocked-text").unwrap()));
+        assert!(page.can_edit_control(page.document.query_selector("#editable").unwrap()));
+        assert!(
+            page.click(page.document.query_selector("button").unwrap())
+                .is_none()
+        );
+        assert_eq!(
+            page.document
+                .text_content(page.document.query_selector("#holder").unwrap()),
+            "removed"
+        );
+    }
+    #[test]
+    fn page_cannot_navigate_to_files_or_javascript() {
+        let p = Page::from_html(
+            Url::parse("https://example.com/").unwrap(),
+            "<a href='file:///etc/passwd'>bad</a>",
+            false,
+        );
+        assert!(p.resolve_navigation("file:///etc/passwd").is_err());
+        assert!(p.resolve_navigation("javascript:alert(1)").is_err());
+        assert_eq!(p.resolve_navigation("/a").unwrap(), "https://example.com/a");
+    }
+    #[test]
+    fn plaintext_escaping() {
+        assert_eq!(escape_html("<script>&\""), "&lt;script&gt;&amp;&quot;");
+    }
+    #[test]
+    fn repeated_cached_stylesheets_have_a_bounded_cascade_input() {
+        let mut page = Page::from_html(
+            Url::parse("https://example.test").unwrap(),
+            &"<link rel=stylesheet href=large.css>".repeat(300),
+            false,
+        );
+        let source: Arc<str> = " ".repeat(64 * 1024).into();
+        for id in page.document.query_selector_all("link") {
+            page.external_styles.insert(id, source.clone());
+        }
+        let stylesheets = page.stylesheets();
+        assert_eq!(
+            stylesheets.iter().map(String::len).sum::<usize>(),
+            MAX_STYLE_BYTES
+        );
+        assert_eq!(stylesheets.len(), 128);
+    }
+}

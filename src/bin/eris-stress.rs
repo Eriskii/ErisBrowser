@@ -1,0 +1,597 @@
+//! Deterministic mutation smoke tests, not coverage-guided fuzzing.
+//!
+//! Run under an operating-system timeout when testing untrusted changes:
+//! `timeout 180s cargo run --release --bin eris-stress -- 5000 0xe2152026`.
+//! A caught panic or invariant failure writes its input and reproduction metadata
+//! to `artifacts/stress-failure/` and exits unsuccessfully. Resource-limit errors
+//! from the intentionally bounded script/SVG implementations are expected.
+
+use eris::{
+    css::{self, ComputedStyle, Length},
+    dom::Document,
+    graphics::{Canvas, Color, DrawCommand, Fonts, ImageStore, Rect},
+    layout,
+    script::Runtime,
+    svg,
+};
+use std::{
+    any::Any,
+    fs,
+    panic::{AssertUnwindSafe, catch_unwind},
+    path::PathBuf,
+    time::Instant,
+};
+
+const MAX_SAMPLE: usize = 8192;
+const DEFAULT_SEED: u64 = 0xe215_2026;
+const SCRIPT_DOCUMENT: &str = "<!doctype html><body><button id='go'>Go</button><div id='out'>Initial</div><input id='field' value='test'></body>";
+
+const HTML_SEEDS: &[&str] = &[
+    "<style>body{margin:0}.clip{overflow:hidden;width:100px;height:50px;padding:3px;background:#eee}.wide{width:240px;height:90px;background:#d93}.inner{overflow:clip;width:40px;height:20px}</style><div class=clip><div class=wide><div class=inner><a href='/next'>Clipped text content</a></div></div></div>",
+    "<!doctype html><style>body{margin:8px;background:#eef}h1{font-size:24px}p{color:#135;line-height:1.4}</style><h1>Render 🦀</h1><p>Hello <strong>bold</strong> café &amp; 日本語</p>",
+    "<style>.row{display:flex;gap:4px;flex-wrap:wrap}.row div{padding:6px;border:1px solid #963;width:44px}</style><main class=row><div>first</div><div>second</div><div>third</div></main>",
+    "<style>.grid{display:grid;grid-template-columns:1fr 2fr;gap:5px}.grid p{margin:0;padding:4px;background:rgb(30 80 120 / .5)}</style><div class=grid><p>one</p><p>two</p><p>three</p><p>four</p></div>",
+    "<table style='border:2px solid blue'><caption>Data</caption><thead><tr><th>Name<th>Value<tbody><tr><td>A<td>10<tr><td>B<td>20</table><ul><li>first<li>second</ul>",
+    "<form><label>Name <input id=field name=q placeholder=Search></label><input type=checkbox checked><button>Submit</button><textarea>Multiline\nvalue</textarea><select><option>Alpha<option selected>Beta</select></form>",
+    "<style>:root{--ink:#246;--w:80%}#box{color:var(--ink);width:var(--w);padding:calc(2px + 1vw)}@media(max-width:300px){#box{background:lavender}}div:not(.hidden)>span:first-child{font-weight:bold}</style><div id=box><span>Variables</span> and selectors</div>",
+    "<!doctype html><style>body{margin:0}div{border-radius:12px;opacity:.6;background:#fc7;padding:5px}pre{white-space:pre-wrap}</style><div><div><div>Nested</div></div></div><pre> x  y\n é Ω 🦀 &lt;&gt;</pre><hr><br>End",
+    "<style>.a{position:relative;left:-2px;top:3px;width:90%;max-width:150px;min-height:20px}.b{font-size:125%;vertical-align:middle}a[href^='https']{color:rebeccapurple}</style><p class=a>Text <span class=b>large</span> <a href=https://example.com>link</a></p><img width=16 height=16 alt=missing>",
+];
+const SCRIPT_SEEDS: &[&str] = &[
+    "let value = ''; try { throw {name:'test', number:4}; } catch (error) { value = error.name; } finally { value += '-done'; } document.getElementById('out').textContent = value;",
+    "let sum = 0; for (let i = 0; i < 6; i++) { sum += i; } document.getElementById('out').textContent = String(sum);",
+    "let count = 0; document.getElementById('go').addEventListener('click', () => { count++; document.getElementById('out').textContent = count; });",
+    "function twice(x) { return x * 2; } const values = [1,2,3].map(twice); document.querySelector('#out').textContent = values.join('-');",
+    "const item = document.createElement('p'); item.textContent = 'café Ω 🦀'; item.classList.add('active'); item.style.backgroundColor = '#aef'; document.getElementById('out').appendChild(item);",
+    "function counter() { let n = 0; return () => ++n; } const next = counter(); let result = next() + next(); console.log(result, Math.max(2, 5));",
+    "document.addEventListener('DOMContentLoaded', event => { document.querySelector('#out').innerHTML = '<b>ready</b>'; }); document.getElementById('go').onclick = event => { event.preventDefault(); return false; };",
+    "const data = { name: 'example', total: 3 }; data.total += 2; if (data.total > 3 && data.name.includes('amp')) { document.getElementById('out').textContent = data.name.toUpperCase(); }",
+    "let n = 4; while (n > 0) { n--; } const text = '12.5e2 trailing'; document.querySelector('#out').textContent = parseFloat(text);",
+];
+const SVG_SEEDS: &[&str] = &[
+    "<svg width='128' height='96' viewBox='0 0 128 96'><rect x='4' y='4' width='120' height='88' rx='8' fill='#243'/><circle cx='64' cy='48' r='28' fill='orange'/></svg>",
+    "<svg width='128' height='96'><g transform='translate(10 8) rotate(5)' fill='blue' opacity='.6'><rect width='50' height='40'/><ellipse cx='70' cy='55' rx='30' ry='20' fill='red'/></g></svg>",
+    "<svg width='128' height='96'><path d='M8 48 C8 0 120 0 120 48 Q64 96 8 48Z' fill='coral' stroke='black' stroke-width='2'/></svg>",
+    "<svg width='128' height='96'><path d='M20 40 A24 24 0 1 0 68 40 A24 24 0 1 0 20 40Z M32 40A12 12 0 1 1 56 40A12 12 0 1 1 32 40Z' fill-rule='evenodd' fill='#6af'/></svg>",
+    "<svg width='128' height='96'><polyline points='5,70 30,10 70,80 120,20' fill='none' stroke='#b13' stroke-width='4'/><polygon points='20,20 70,20 45,60' fill='#7c9'/></svg>",
+    "<svg width='128' height='96' viewBox='-10 -10 100 75'><rect x='-10' y='-10' width='100' height='75' fill='#eef'/><text x='40' y='35' text-anchor='middle' font-size='13' fill='#234'>Hello é</text></svg>",
+    "<svg width='128' height='96'><path d='M4 40 q24 -40 48 0 t48 0 m-40 30 h40 v15 h-40z' fill='gold' stroke='#345'/><line x1='0' y1='90' x2='128' y2='90' stroke='blue'/></svg>",
+];
+
+#[derive(Clone, Copy)]
+enum Kind {
+    Html,
+    Script,
+    Svg,
+}
+impl Kind {
+    fn name(self) -> &'static str {
+        match self {
+            Self::Html => "html",
+            Self::Script => "script",
+            Self::Svg => "svg",
+        }
+    }
+    fn extension(self) -> &'static str {
+        match self {
+            Self::Html => "html",
+            Self::Script => "js",
+            Self::Svg => "svg",
+        }
+    }
+    fn seeds(self) -> &'static [&'static str] {
+        match self {
+            Self::Html => HTML_SEEDS,
+            Self::Script => SCRIPT_SEEDS,
+            Self::Svg => SVG_SEEDS,
+        }
+    }
+}
+
+struct Random {
+    state: u64,
+}
+impl Random {
+    fn new(seed: u64) -> Self {
+        Self {
+            state: if seed == 0 { DEFAULT_SEED } else { seed },
+        }
+    }
+    fn next(&mut self) -> u64 {
+        self.state ^= self.state << 13;
+        self.state ^= self.state >> 7;
+        self.state ^= self.state << 17;
+        self.state
+    }
+    fn index(&mut self, len: usize) -> usize {
+        if len == 0 {
+            0
+        } else {
+            self.next() as usize % len
+        }
+    }
+    fn boundary(&mut self, text: &str) -> usize {
+        let mut index = self.index(text.len() + 1);
+        while !text.is_char_boundary(index) {
+            index -= 1;
+        }
+        index
+    }
+}
+
+fn mutate(kind: Kind, random: &mut Random, iteration: usize) -> String {
+    let seeds = kind.seeds();
+    let mut text = seeds[random.index(seeds.len())].to_owned();
+    let count = if iteration.is_multiple_of(10) {
+        0
+    } else {
+        1 + random.index(8)
+    };
+    for _ in 0..count {
+        let at = random.boundary(&text);
+        match random.index(8) {
+            0 => {
+                let inserts = [
+                    "<", ">", "\"", "'", "/>", "</div>", "=", "!", ";", "{", "}", "(", ")", "[",
+                    "]", "/*", "*/", "\\", "\n", "&amp;", "🦀", "é", "\0", "<!--", "-->",
+                ];
+                text.insert_str(at, inserts[random.index(inserts.len())]);
+            }
+            1 => {
+                let mut end = (at + 1 + random.index(40)).min(text.len());
+                while !text.is_char_boundary(end) {
+                    end -= 1;
+                }
+                text.replace_range(at..end, "");
+            }
+            2 => text.truncate(at),
+            3 => {
+                let mut end = (at + 1 + random.index(96)).min(text.len());
+                while !text.is_char_boundary(end) {
+                    end -= 1;
+                }
+                let piece = text[at..end].repeat(2 + random.index(8));
+                text.insert_str(at, &piece);
+            }
+            4 => {
+                let values = [
+                    "0",
+                    "-1",
+                    "1e99",
+                    "NaN",
+                    "Infinity",
+                    "999999",
+                    "0.000001",
+                    "100%",
+                    "calc(1px + 5%)",
+                    "var(--cycle)",
+                    "1/0",
+                ];
+                let end = text[at..]
+                    .chars()
+                    .next()
+                    .map_or(at, |ch| at + ch.len_utf8());
+                text.replace_range(at..end, values[random.index(values.len())]);
+            }
+            5 => {
+                let (open, close) = match kind {
+                    Kind::Html => ("<div>", "</div>"),
+                    Kind::Script => ("(", ")"),
+                    Kind::Svg => ("<g>", "</g>"),
+                };
+                let depth = 1 + random.index(24);
+                text = format!("{}{}{}", open.repeat(depth), text, close.repeat(depth));
+            }
+            6 => {
+                let punctuation = b"<>!+-=/:;,(){}[]0123456789eE&";
+                let end = text[at..]
+                    .chars()
+                    .next()
+                    .map_or(at, |ch| at + ch.len_utf8());
+                text.replace_range(
+                    at..end,
+                    &(punctuation[random.index(punctuation.len())] as char).to_string(),
+                );
+            }
+            _ => {
+                let other = seeds[random.index(seeds.len())];
+                let start = random.boundary(other);
+                let mut end = (start + 1 + random.index(128)).min(other.len());
+                while !other.is_char_boundary(end) {
+                    end -= 1;
+                }
+                text.insert_str(at, &other[start..end]);
+            }
+        }
+        let mut end = text.len().min(MAX_SAMPLE);
+        while !text.is_char_boundary(end) {
+            end -= 1;
+        }
+        text.truncate(end);
+    }
+    text
+}
+
+fn finite(values: &[f32], name: &str) -> Result<(), String> {
+    if values.iter().any(|value| !value.is_finite()) {
+        return Err(format!("non-finite {name}: {values:?}"));
+    }
+    Ok(())
+}
+fn rectangle(rect: Rect) -> Result<(), String> {
+    finite(&[rect.x, rect.y, rect.width, rect.height], "rectangle")?;
+    if rect.width < 0.0 || rect.height < 0.0 {
+        return Err(format!("negative rectangle dimensions: {rect:?}"));
+    }
+    Ok(())
+}
+fn style_invariants(style: &ComputedStyle) -> Result<(), String> {
+    finite(
+        &[
+            style.font_size,
+            style.line_height,
+            style.gap,
+            style.flex_grow,
+            style.flex_shrink,
+            style.border_radius,
+            style.opacity,
+            style.border_width.top,
+            style.border_width.right,
+            style.border_width.bottom,
+            style.border_width.left,
+        ],
+        "computed style",
+    )?;
+    let lengths = [
+        style.width,
+        style.height,
+        style.min_width,
+        style.min_height,
+        style.max_width,
+        style.max_height,
+        style.flex_basis,
+        style.top,
+        style.right,
+        style.bottom,
+        style.left,
+        style.margin.top,
+        style.margin.right,
+        style.margin.bottom,
+        style.margin.left,
+        style.padding.top,
+        style.padding.right,
+        style.padding.bottom,
+        style.padding.left,
+    ];
+    for length in lengths.iter().chain(&style.grid_template_columns) {
+        match length {
+            Length::Auto => {}
+            Length::Px(value) | Length::Percent(value) | Length::Fr(value) => {
+                finite(&[*value], "CSS length")?
+            }
+        }
+    }
+    Ok(())
+}
+fn dom_invariants(document: &Document) -> Result<(), String> {
+    if document.nodes.len() > 100_000 || document.retained_bytes() > 32 * 1024 * 1024 {
+        return Err("DOM resource limit exceeded".into());
+    }
+    if document.root >= document.nodes.len() || document.nodes[document.root].parent.is_some() {
+        return Err("invalid DOM root".into());
+    }
+    let mut incoming = vec![0usize; document.nodes.len()];
+    for (id, node) in document.nodes.iter().enumerate() {
+        for child in &node.children {
+            if *child >= document.nodes.len()
+                || *child == id
+                || document.nodes[*child].parent != Some(id)
+            {
+                return Err("inconsistent DOM parent/child relationship".into());
+            }
+            incoming[*child] += 1;
+            if incoming[*child] > 1 {
+                return Err("duplicate child in DOM".into());
+            }
+        }
+        if node
+            .parent
+            .is_some_and(|parent| parent >= document.nodes.len())
+        {
+            return Err("DOM parent index exceeds arena length".into());
+        }
+    }
+    let mut roots = Vec::new();
+    for (id, node) in document.nodes.iter().enumerate() {
+        if incoming[id] != usize::from(node.parent.is_some()) {
+            return Err("DOM parent does not contain child".into());
+        }
+        if node.parent.is_none() {
+            roots.push(id);
+        }
+    }
+    let mut seen = vec![false; document.nodes.len()];
+    while let Some(id) = roots.pop() {
+        if seen[id] {
+            return Err("cycle in DOM".into());
+        }
+        seen[id] = true;
+        roots.extend(document.nodes[id].children.iter().copied());
+    }
+    if seen.iter().any(|visited| !visited) {
+        return Err("cycle in detached DOM".into());
+    }
+    Ok(())
+}
+
+#[derive(Default)]
+struct CaseResult {
+    rejected: bool,
+    nodes: usize,
+    commands: usize,
+    paint_limited: bool,
+}
+fn pipeline(
+    document: &Document,
+    fonts: &Fonts,
+    width: u32,
+    height: u32,
+) -> Result<CaseResult, String> {
+    dom_invariants(document)?;
+    let styles = css::compute_styles(
+        document,
+        &document.stylesheets(),
+        width as f32,
+        height as f32,
+    );
+    if styles.len() != document.nodes.len() {
+        return Err("computed styles do not match DOM arena length".into());
+    }
+    for style in &styles {
+        style_invariants(style)?;
+    }
+    let layout = layout::layout(document, &styles, width as f32, height as f32, fonts);
+    finite(&[layout.content_height], "content height")?;
+    if layout.content_height < 0.0
+        || layout.commands.len() > 200_000
+        || layout.hit_regions.len() > 100_000
+    {
+        return Err("layout output exceeded resource or extent limits".into());
+    }
+    let mut glyphs = 0usize;
+    for command in &layout.commands {
+        match command {
+            DrawCommand::Rect { rect, radius, .. } => {
+                rectangle(*rect)?;
+                finite(&[*radius], "border radius")?;
+            }
+            DrawCommand::Text {
+                x, y, size, text, ..
+            } => {
+                finite(&[*x, *y, *size], "text geometry")?;
+                glyphs = glyphs.saturating_add(text.chars().count());
+            }
+            DrawCommand::Image { rect, .. } | DrawCommand::PushClip { rect } => rectangle(*rect)?,
+            DrawCommand::PopClip => {}
+            DrawCommand::Line {
+                x1,
+                y1,
+                x2,
+                y2,
+                width,
+                ..
+            } => finite(&[*x1, *y1, *x2, *y2, *width], "line geometry")?,
+        }
+    }
+    if glyphs > 500_000 {
+        return Err("layout glyph limit exceeded".into());
+    }
+    for hit in &layout.hit_regions {
+        if hit.node >= document.nodes.len() {
+            return Err("hit region refers to missing DOM node".into());
+        }
+        rectangle(hit.rect)?;
+    }
+    let mut canvas = Canvas::new(width, height)?;
+    canvas.clear(Color::WHITE);
+    canvas.paint(&layout.commands, fonts, &ImageStore::new(), 0.0, 0.0);
+    if canvas.pixels.len() != width as usize * height as usize {
+        return Err("raster buffer length mismatch".into());
+    }
+    Ok(CaseResult {
+        nodes: document.nodes.len(),
+        commands: layout.commands.len(),
+        paint_limited: canvas.exhausted(),
+        ..CaseResult::default()
+    })
+}
+
+fn exercise(
+    kind: Kind,
+    source: &str,
+    fonts: &Fonts,
+    iteration: usize,
+) -> Result<CaseResult, String> {
+    if source.len() > MAX_SAMPLE {
+        return Err("harness sample exceeds 8 KiB".into());
+    }
+    match kind {
+        Kind::Html => pipeline(
+            &Document::parse(source),
+            fonts,
+            160 + (iteration % 4) as u32 * 48,
+            120,
+        ),
+        Kind::Script => {
+            let mut document = Document::parse(SCRIPT_DOCUMENT);
+            let mut runtime = Runtime::new();
+            let mut rejected = runtime.execute(source, &mut document).is_err();
+            if !rejected {
+                rejected |= runtime.dispatch_dom_content_loaded(&mut document).is_err();
+                if let Some(button) = document.query_selector("#go") {
+                    rejected |= runtime.dispatch_click(button, &mut document).is_err();
+                }
+            }
+            let mut result = pipeline(&document, fonts, 192, 120)?;
+            result.rejected = rejected;
+            Ok(result)
+        }
+        Kind::Svg => match svg::render(source, Some(128), Some(96)) {
+            Ok(image) => {
+                if image.width > 4096
+                    || image.height > 4096
+                    || image.rgba.len() != image.width as usize * image.height as usize * 4
+                    || image.rgba.len() > 4_194_304 * 4
+                {
+                    return Err("SVG image exceeded resource bounds".into());
+                }
+                Ok(CaseResult::default())
+            }
+            Err(_) => Ok(CaseResult {
+                rejected: true,
+                ..CaseResult::default()
+            }),
+        },
+    }
+}
+
+fn panic_message(payload: Box<dyn Any + Send>) -> String {
+    if let Some(message) = payload.downcast_ref::<String>() {
+        message.clone()
+    } else if let Some(message) = payload.downcast_ref::<&str>() {
+        (*message).to_owned()
+    } else {
+        "non-string panic payload".into()
+    }
+}
+fn preserve_failure(
+    kind: Kind,
+    iteration: usize,
+    seed: u64,
+    state: u64,
+    source: &str,
+    error: &str,
+) -> Result<PathBuf, String> {
+    let directory = PathBuf::from("artifacts/stress-failure");
+    fs::create_dir_all(&directory).map_err(|e| e.to_string())?;
+    let basename = format!("{}-{iteration}-{seed:016x}", kind.name());
+    let path = directory.join(format!("{basename}.{}", kind.extension()));
+    fs::write(&path, source).map_err(|e| e.to_string())?;
+    let metadata = format!(
+        "Deterministic mutation smoke test failure\nkind: {}\niteration (zero-based): {iteration}\ninitial seed: 0x{seed:016x}\ngenerator state before sample: 0x{state:016x}\nsource bytes: {}\nfailure: {error}\nreproduce all preceding cases: cargo run --release --bin eris-stress -- {} 0x{seed:016x}\nThis is smoke fuzzing, not coverage-guided fuzzing or a security certification.\n",
+        kind.name(),
+        source.len(),
+        iteration + 1
+    );
+    fs::write(directory.join(format!("{basename}.txt")), metadata).map_err(|e| e.to_string())?;
+    Ok(path)
+}
+
+fn main() {
+    if let Err(error) = run() {
+        eprintln!("eris-stress: {error}");
+        std::process::exit(1);
+    }
+}
+fn run() -> Result<(), String> {
+    let mut args = std::env::args().skip(1);
+    let first = args.next();
+    if first
+        .as_deref()
+        .is_some_and(|arg| arg == "--help" || arg == "-h")
+    {
+        println!(
+            "Usage: eris-stress [ITERATIONS [SEED]]\n\nDefaults: 2000 iterations, seed 0x{DEFAULT_SEED:x}. Each iteration exercises one mutated HTML/CSS, JavaScript, and SVG input. Seeds accept decimal or 0x hexadecimal. Run under an OS timeout. Panics and invariant failures save reproducers in artifacts/stress-failure/.\n\nThis is deterministic mutation smoke fuzzing, not coverage-guided fuzzing or proof of security."
+        );
+        return Ok(());
+    }
+    let iterations: usize = first
+        .map(|arg| arg.parse())
+        .transpose()
+        .map_err(|_| "invalid iteration count")?
+        .unwrap_or(2000);
+    if !(1..=1_000_000).contains(&iterations) {
+        return Err("iterations must be between 1 and 1000000".into());
+    }
+    let seed = match args.next() {
+        Some(value) => if let Some(hex) = value
+            .strip_prefix("0x")
+            .or_else(|| value.strip_prefix("0X"))
+        {
+            u64::from_str_radix(hex, 16)
+        } else {
+            value.parse()
+        }
+        .map_err(|_| "invalid seed")?,
+        None => DEFAULT_SEED,
+    };
+    if args.next().is_some() {
+        return Err("too many arguments; use --help".into());
+    }
+    let start = Instant::now();
+    let mut random = Random::new(seed);
+    let fonts = Fonts::new();
+    let mut accepted = [0usize; 3];
+    let mut rejected = [0usize; 3];
+    let mut paint_limited = 0;
+    let mut max_nodes = 0;
+    let mut max_commands = 0;
+    println!(
+        "Deterministic mutation smoke fuzzing: {iterations} iterations, {} cases, seed 0x{seed:016x}; inputs <=8 KiB; no network",
+        iterations * 3
+    );
+    for iteration in 0..iterations {
+        for (index, kind) in [Kind::Html, Kind::Script, Kind::Svg]
+            .into_iter()
+            .enumerate()
+        {
+            let state = random.state;
+            let source = mutate(kind, &mut random, iteration);
+            let result = catch_unwind(AssertUnwindSafe(|| {
+                exercise(kind, &source, &fonts, iteration)
+            }));
+            let result = match result {
+                Ok(result) => result,
+                Err(payload) => Err(format!("panic: {}", panic_message(payload))),
+            };
+            match result {
+                Ok(result) => {
+                    if result.rejected {
+                        rejected[index] += 1;
+                    } else {
+                        accepted[index] += 1;
+                    }
+                    paint_limited += usize::from(result.paint_limited);
+                    max_nodes = max_nodes.max(result.nodes);
+                    max_commands = max_commands.max(result.commands);
+                }
+                Err(error) => {
+                    let path = preserve_failure(kind, iteration, seed, state, &source, &error)?;
+                    return Err(format!(
+                        "{} case {iteration} failed: {error}; reproducer {}",
+                        kind.name(),
+                        path.display()
+                    ));
+                }
+            }
+        }
+        if (iteration + 1).is_multiple_of(500) {
+            eprintln!(
+                "checked {} cases ({:.2}s)",
+                (iteration + 1) * 3,
+                start.elapsed().as_secs_f64()
+            );
+        }
+    }
+    println!(
+        "PASS: {} generated cases, zero caught panics or invariant failures in {:.2}s\nHTML pipeline: {} accepted; scripts: {} accepted / {} expected rejections; SVG: {} accepted / {} expected rejections\nMaximum DOM nodes: {max_nodes}; display commands: {max_commands}; bounded paint stops: {paint_limited}\nThis smoke run is not coverage-guided fuzzing, full conformance testing, or proof of security.",
+        iterations * 3,
+        start.elapsed().as_secs_f64(),
+        accepted[0],
+        accepted[1],
+        rejected[1],
+        accepted[2],
+        rejected[2]
+    );
+    Ok(())
+}
