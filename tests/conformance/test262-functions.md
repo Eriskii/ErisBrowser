@@ -81,6 +81,22 @@ Its source-input digest is
 The [implementation scope](default-parameters.md) records remaining syntax and
 host limits, including the next unchanged WPT harness blocker.
 
+## Prototype-membership checkpoint
+
+The [later complete report](test262-functions-prototypes.json) records
+**500 passed / 620 unsupported / nine failed / two resource stops** after
+implementing `Object.prototype.isPrototypeOf`. Ten variants from five existing
+files now pass: function-valued constructor prototypes, primitive constructor
+prototype fallback and Function.prototype ancestry. The comparison preserves
+all source/harness/mode identities and the same execution policy, with no lost
+passes. All 48 existing preflights still pass.
+
+The unchanged two resource stops still prevent a healthy functions baseline.
+The nine remaining failures include missing Array sorting, identifier escapes
+and a host `self` binding defect; none was filtered or relabeled to improve
+these counts. The separate [method inventory](test262-is-prototype-of.md) adds
+its own complete-directory measurement and assertion preflight.
+
 This selection is broader than default-parameter syntax and deliberately keeps
 unrelated function tests. It is not full Test262, Web Platform Tests, or web
 compatibility coverage. The vendored data retains its

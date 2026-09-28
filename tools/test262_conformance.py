@@ -23,9 +23,11 @@ TEMPLATE_FEATURES = SUPPORTED_FEATURES | {'template', 'u180e'}
 FUNCTION_FEATURES = SUPPORTED_FEATURES | {'default-parameters', 'object-methods',
                                           'computed-property-names', 'trailing-function-commas'}
 REST_PARAMETER_FEATURES = FUNCTION_FEATURES | {'rest-parameters'}
+IS_PROTOTYPE_OF_FEATURES = SUPPORTED_FEATURES.copy()
 PROFILE_FEATURES = {'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
-                    'rest-parameters': REST_PARAMETER_FEATURES}
+                    'rest-parameters': REST_PARAMETER_FEATURES,
+                    'is-prototype-of': IS_PROTOTYPE_OF_FEATURES}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -315,6 +317,27 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
             ('rest-unmapped-mismatch', "function f(a,...r){arguments[0]=9;assert.sameValue(a,9);}f(1,2);", 'failed'),
             ('rest-length', "function f(a,b,...r){}function g(a=1,...r){}assert.sameValue(f.length,2);assert.sameValue(g.length,0);", 'passed'),
             ('rest-length-mismatch', "function f(a,b,...r){}assert.sameValue(f.length,3);", 'failed'),
+        ]
+        variants += [(name, source, expected, mode)
+                     for mode in ('sloppy', 'strict') for name, source, expected in checks]
+    if profile == 'is-prototype-of':
+        checks = [
+            ('prototype-chain', "var p={};var q=Object.create(p);var o=Object.create(q);var m=Object.prototype.isPrototypeOf;assert.sameValue(m.call(p,o),true);assert.sameValue(m.call(q,o),true);assert.sameValue(m.call({},o),false);", 'passed'),
+            ('prototype-chain-mismatch', "var p={};var o=Object.create(p);assert.sameValue(p.isPrototypeOf(o),false);", 'failed'),
+            ('prototype-self', "var p={};assert.sameValue(p.isPrototypeOf(p),false);assert.sameValue(Object.prototype.isPrototypeOf(Object.create(null)),false);", 'passed'),
+            ('prototype-self-mismatch', "var p={};assert.sameValue(p.isPrototypeOf(p),true);", 'failed'),
+            ('prototype-conversion-order', "var m=Object.prototype.isPrototypeOf;assert.sameValue(m.call(null,undefined),false);assert.sameValue(m.call(undefined,null),false);assert.sameValue(m.call(null,0),false);assert.sameValue(m.call(undefined,''),false);assert.sameValue(m.call(null,false),false);", 'passed'),
+            ('prototype-conversion-order-mismatch', "assert.throws(TypeError,function(){Object.prototype.isPrototypeOf.call(null,1);});", 'failed'),
+            ('prototype-object-receiver', "var m=Object.prototype.isPrototypeOf;assert.throws(TypeError,function(){m.call(null,{});});assert.throws(TypeError,function(){m.call(undefined,function(){});});", 'passed'),
+            ('prototype-object-receiver-mismatch', "assert.throws(RangeError,function(){Object.prototype.isPrototypeOf.call(null,{});});", 'failed'),
+            ('prototype-no-getters', "var calls=0;var p={toString:function(){calls++;throw 1;},valueOf:function(){calls++;throw 2;}};var o=Object.create(p);Object.defineProperty(o,'__proto__',{get:function(){calls++;throw 3;}});Object.defineProperty(o,'prototype',{get:function(){calls++;throw 4;}});assert.sameValue(p.isPrototypeOf(o),true);assert.sameValue(calls,0);", 'passed'),
+            ('prototype-no-getters-mismatch', "var calls=0;var p={valueOf:function(){calls++;return 1;}};p.isPrototypeOf(Object.create(p));assert.sameValue(calls,1);", 'failed'),
+            ('prototype-boxed-identity', "var m=Object.prototype.isPrototypeOf;var box=Object(1);var o=Object.create(box);assert.sameValue(m.call(box,o),true);assert.sameValue(m.call(1,o),false);assert.sameValue(m.call('x',{}),false);assert.sameValue(m.call(false,{}),false);", 'passed'),
+            ('prototype-boxed-identity-mismatch', "var box=Object(1);assert.sameValue(Object.prototype.isPrototypeOf.call(1,Object.create(box)),true);", 'failed'),
+            ('prototype-intrinsics', "var m=Object.prototype.isPrototypeOf;assert.sameValue(m.call(Array.prototype,[]),true);assert.sameValue(m.call(Function.prototype,function(){}),true);assert.sameValue(m.call(Function.prototype,m),true);assert.sameValue(m.call(Object.prototype,[]),true);", 'passed'),
+            ('prototype-intrinsics-mismatch', "assert.sameValue(Object.prototype.isPrototypeOf.call(Array.prototype,[]),false);", 'failed'),
+            ('prototype-property-metadata', "var m=Object.prototype.isPrototypeOf;verifyProperty(Object.prototype,'isPrototypeOf',{value:m,writable:true,enumerable:false,configurable:true});verifyProperty(m,'length',{value:1,writable:false,enumerable:false,configurable:true});verifyProperty(m,'name',{value:'isPrototypeOf',writable:false,enumerable:false,configurable:true});assert.sameValue(Object.getPrototypeOf(m),Function.prototype);assert.sameValue(Object.prototype.hasOwnProperty.call(m,'prototype'),false);assert.throws(TypeError,function(){new m({});});", 'passed'),
+            ('prototype-property-metadata-mismatch', "verifyProperty(Object.prototype.isPrototypeOf,'length',{value:2});", 'failed'),
         ]
         variants += [(name, source, expected, mode)
                      for mode in ('sloppy', 'strict') for name, source, expected in checks]

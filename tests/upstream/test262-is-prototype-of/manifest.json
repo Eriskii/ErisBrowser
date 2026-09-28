@@ -1,0 +1,131 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all direct .js files in built-ins/Object/prototype/isPrototypeOf; no implementation",
+  "directories": {
+    "Object/prototype/isPrototypeOf": [
+      "arg-is-proxy.js",
+      "builtin.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "null-this-and-object-arg-throws.js",
+      "null-this-and-primitive-arg-returns-false.js",
+      "this-value-is-in-prototype-chain-of-arg.js",
+      "undefined-this-and-object-arg-throws.js",
+      "undefined-this-and-primitive-arg-returns-false.js"
+    ]
+  },
+  "test_files": 10,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/proxyTrapsHelper.js",
+      "upstream_path": "harness/proxyTrapsHelper.js",
+      "bytes": 1851,
+      "sha256": "0fb687804ab799e320c5dc4a0d4316162e6a14c286873405d881a151cb15787a"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/built-ins/Object/prototype/isPrototypeOf/arg-is-proxy.js",
+      "upstream_path": "test/built-ins/Object/prototype/isPrototypeOf/arg-is-proxy.js",
+      "bytes": 731,
+      "sha256": "e069d3e963b1df3f5fe8bf2868441e9e4df902b210142ead475f42939d7e1db0"
+    },
+    {
+      "path": "test/built-ins/Object/prototype/isPrototypeOf/builtin.js",
+      "upstream_path": "test/built-ins/Object/prototype/isPrototypeOf/builtin.js",
+      "bytes": 1134,
+      "sha256": "95f6bb0450a58e6c1a24c35fdcb8f1c87c0c546d07557189ae1502f2d14a7d7a"
+    },
+    {
+      "path": "test/built-ins/Object/prototype/isPrototypeOf/length.js",
+      "upstream_path": "test/built-ins/Object/prototype/isPrototypeOf/length.js",
+      "bytes": 681,
+      "sha256": "803aabd22d84cbe825c395ef496cbaf7cb96db6db9cde90defc19011ac53e1b6"
+    },
+    {
+      "path": "test/built-ins/Object/prototype/isPrototypeOf/name.js",
+      "upstream_path": "test/built-ins/Object/prototype/isPrototypeOf/name.js",
+      "bytes": 884,
+      "sha256": "b1cc81e7180b3c38a74738527480b02fddc9cbd0655d823891b0b78f729d052a"
+    },
+    {
+      "path": "test/built-ins/Object/prototype/isPrototypeOf/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Object/prototype/isPrototypeOf/not-a-constructor.js",
+      "bytes": 930,
+      "sha256": "68297e803cf54c40f7dcd5d5cf39d623b71c382e1629d91bb7699c335a569be7"
+    },
+    {
+      "path": "test/built-ins/Object/prototype/isPrototypeOf/null-this-and-object-arg-throws.js",
+      "upstream_path": "test/built-ins/Object/prototype/isPrototypeOf/null-this-and-object-arg-throws.js",
+      "bytes": 630,
+      "sha256": "c9c889fcfeced0f5b58cd49023a219b84d14e82aaaeb5829abb132270d211116"
+    },
+    {
+      "path": "test/built-ins/Object/prototype/isPrototypeOf/null-this-and-primitive-arg-returns-false.js",
+      "upstream_path": "test/built-ins/Object/prototype/isPrototypeOf/null-this-and-primitive-arg-returns-false.js",
+      "bytes": 992,
+      "sha256": "3b67f3593ae27f464264f8c739998e3162d77bd4a13a65e61de4e212d73d7014"
+    },
+    {
+      "path": "test/built-ins/Object/prototype/isPrototypeOf/this-value-is-in-prototype-chain-of-arg.js",
+      "upstream_path": "test/built-ins/Object/prototype/isPrototypeOf/this-value-is-in-prototype-chain-of-arg.js",
+      "bytes": 1092,
+      "sha256": "0860f5217e735cdbcc8525033cc05d2eb52e4682b508e12fc1510f3492cd0020"
+    },
+    {
+      "path": "test/built-ins/Object/prototype/isPrototypeOf/undefined-this-and-object-arg-throws.js",
+      "upstream_path": "test/built-ins/Object/prototype/isPrototypeOf/undefined-this-and-object-arg-throws.js",
+      "bytes": 624,
+      "sha256": "a6065672ccee5cc8575ffac4f1ff0ce8401d02a82be7fdb66d94bd5bba368215"
+    },
+    {
+      "path": "test/built-ins/Object/prototype/isPrototypeOf/undefined-this-and-primitive-arg-returns-false.js",
+      "upstream_path": "test/built-ins/Object/prototype/isPrototypeOf/undefined-this-and-primitive-arg-returns-false.js",
+      "bytes": 1032,
+      "sha256": "48cc73fd561ed84de4b33f9a114d802c77a8a508b33b4acc8dc271a828446805"
+    }
+  ]
+}

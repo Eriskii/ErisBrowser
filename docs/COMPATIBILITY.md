@@ -30,6 +30,14 @@ The URL parser and encoding libraries are infrastructure libraries, not independ
 
 Ordinary objects support descriptor defaults, writable/enumerable/configurable checks, getters/setters, reflective descriptor queries and deletion. Enumeration visits own keys and inherited enumerable keys while respecting shadowing. Window descriptor queries expose existing global data-binding records, including the CSS namespace, with ordered property-key conversion and current flags/values; Window accessors, own-key enumeration, definition and named-property behavior remain unsupported. Array holes and virtual array/string properties have targeted reflection support; indexed/length descriptor mutation, array extensibility restrictions, other host reflection and generic Array receivers remain incomplete. The unchanged upstream property-helper harness runs directly; no native test assertion shims replace it.
 
+`Object.prototype.isPrototypeOf` checks internal prototype links and object
+identity, with the primitive-argument test preceding receiver conversion. It
+observes current prototype mutations without reading author `__proto__` or
+constructor properties. Traversal shares the existing work and depth limits;
+Proxy traps and complete host prototype behavior remain unsupported. See
+[prototype membership](../tests/conformance/is-prototype-of.md) and its
+[pinned upstream inventory](../tests/conformance/test262-is-prototype-of.md).
+
 Strictness follows exact unescaped directive prologues and lexical function inheritance. Supported code checks restricted names, duplicate simple parameters, legacy literals and identifier deletion; strict calls preserve the supplied `this`, and failed writes/deletes throw. Strict arguments and arguments of functions with defaults or rest parameters are unmapped and have a throwing `callee` accessor; supported sloppy functions with simple parameter lists retain aliases until deletion or descriptor changes detach them. Lexical bindings include initialization checks, declaration conflicts and per-iteration loop environments. This does not implement the complete ECMAScript grammar or all Annex B behaviors. Unsupported dynamic eval, tagged templates, destructured parameters and labeled control flow are reported explicitly.
 
 Identifier default parameters run left to right for omitted or undefined values,

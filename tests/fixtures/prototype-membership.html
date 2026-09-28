@@ -1,0 +1,53 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Prototype membership and mutation</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#chain{left:0}#order{left:50px}#coercion{left:100px}#identity{left:150px}#builtins{left:200px}#mutation{left:250px}
+#change{position:absolute;top:60px;left:0}
+</style>
+<div id="chain" class="sample"></div><div id="order" class="sample"></div>
+<div id="coercion" class="sample"></div><div id="identity" class="sample"></div>
+<div id="builtins" class="sample"></div><div id="mutation" class="sample"></div>
+<button id="change" type="button">Change the samples</button>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color='green'){document.getElementById(id).style.backgroundColor=color;}
+const hasPrototype=Object.prototype.isPrototypeOf;
+const base={},middle=Object.create(base),leaf=Object.create(middle);
+check(base.isPrototypeOf(leaf)&&middle.isPrototypeOf(leaf)&&!leaf.isPrototypeOf(base),'walk actual prototype chain');
+check(hasPrototype===base.isPrototypeOf,'inherited method has intrinsic identity');mark('chain');
+
+check(hasPrototype.call(null,3)===false&&hasPrototype.call(undefined,null)===false,'primitive argument precedes receiver conversion');
+let nullFailed=false,undefinedFailed=false;
+try{hasPrototype.call(null,{});}catch(error){nullFailed=error instanceof TypeError;}
+try{hasPrototype.call(undefined,{});}catch(error){undefinedFailed=error instanceof TypeError;}
+check(nullFailed&&undefinedFailed,'object argument requires object receiver');mark('order');
+
+let calls=0;
+const poison={toString(){calls++;throw 1;},valueOf(){calls++;throw 2;}};
+const child=Object.create(poison);
+Object.defineProperty(child,'__proto__',{get(){calls++;throw 3;}});
+check(hasPrototype.call(poison,child)&&calls===0,'walk does not read author prototype properties or coerce objects');
+check(hasPrototype.call(1,child)===false&&calls===0,'primitive receiver is freshly boxed');mark('coercion');
+
+check(!base.isPrototypeOf(base)&&!hasPrototype.call(Object.create(null),leaf),'membership compares identity and excludes self');
+check(!Object.prototype.isPrototypeOf(Object.create(null)),'null prototype terminates chain');mark('identity');
+
+function Item(){}
+check(Item.prototype.isPrototypeOf(new Item()),'constructor instance uses actual prototype');
+check(Function.prototype.isPrototypeOf(Item)&&Array.prototype.isPrototypeOf([])&&Object.prototype.isPrototypeOf([]),'function and array prototype chains');mark('builtins');
+
+const replacement={};
+Object.setPrototypeOf(middle,replacement);
+check(!base.isPrototypeOf(leaf)&&replacement.isPrototypeOf(leaf),'membership sees prototype mutation');
+mark('mutation');document.body.className='ready';
+
+document.getElementById('change').onclick=function(){
+  Object.setPrototypeOf(middle,base);
+  check(base.isPrototypeOf(leaf)&&!replacement.isPrototypeOf(leaf),'callback sees restored chain');
+  mark('chain','blue');mark('order','blue');mark('coercion','blue');
+  mark('identity','blue');mark('builtins','blue');mark('mutation','blue');
+  document.body.className='clicked';
+};
+</script>

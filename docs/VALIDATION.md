@@ -1,6 +1,75 @@
 # Validation record
 
+## Prototype membership
+
+Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
+compilation and **720 Rust tests** pass with `--include-ignored`: 582 library,
+39 browser/editor, four HTML adapter, six JavaScript adapter, five stress,
+four CLI, 17 network, 35 pipeline and 28 confined-worker tests. None remain
+ignored. All **59 Python checks** and **57 exact pixel references** pass.
+
+The [prototype-membership implementation](../tests/conformance/is-prototype-of.md)
+preserves receiver-conversion order and walks internal links without invoking
+author getters. Six new script groups check metadata/aliases, identity and
+mutation, ordering, noncoercion, work/allocation limits and ten unchanged
+upstream function variants. Direct Page and real-worker fixtures verify six
+green samples and six blue samples after a callback changes a prototype link.
+
+Independent final-release review passes **48 semantic probes** across sloppy
+and strict modes, including native/array/function identity and current host
+links. The private malformed-graph/resource group also passes under 512 MiB,
+three-second CPU and eight-second wall limits: valid-record cycles, exact
+96/97-read boundaries, retained-allocation nonmutation, shared work exhaustion
+and low-heap boxing. Frozen binary and source hashes remain unchanged. These
+checks do not establish unrestricted depth, Proxy or full host conformance.
+
+The complete new [method inventory](../tests/conformance/test262-is-prototype-of.md)
+records **ten passed / ten unsupported**, with all **64 preflights verified**.
+Compared with the frozen pre-method adapter, six variants newly pass and none
+lose a pass; every source/harness/mode and execution-policy fingerprint matches.
+The old four receiver-error passes could arise from calling a missing method;
+its failing positive method preflight correctly prevented a healthy baseline.
+The new baseline and its CLI gate now pass while retaining all ten Proxy,
+Reflect.construct and Symbol-dependent unsupported variants.
+
+The complete unchanged functions profile improves to **500 passed / 620
+unsupported / nine failed / two resource stops**. Ten previously failing
+variants now pass with no lost passes and all 48 existing preflights verified.
+The full [comparison report](../tests/conformance/test262-functions-prototypes.json)
+retains the same 1,131 identities and policy. The two resource stops still
+prevent recording a healthy functions baseline.
+
+All other pinned outcomes are unchanged: HTML **3,868 matched / two mismatched /
+six unsupported**, String/JSON **536 passed / 116 unsupported**, RegExp **250 / 40**,
+templates **82 / 32**, and rest parameters **16 / six**. Their corpus bytes,
+policies and baselines are unchanged. A **15,000-case** mutation smoke run has
+zero caught panics or invariant failures: 5,000 accepted HTML, 617 accepted/4,383
+rejected scripts, and 3,347 accepted/1,653 rejected SVG inputs. Maximum DOM size
+is 191 nodes and display-list size is 1,173 commands; 17 cases stop within paint
+limits. One new prototype-mutation seed changes the inventory, so these counts
+are not an acceptance-rate comparison.
+
+Release SHA-256 values:
+
+| Binary | SHA-256 |
+|---|---|
+| `eris-browser` | `975853abcae9e7e6ce9ccb68e040fcd76f09df3846b0946dd521172629597684` |
+| `eris-js` | `566886403cd490547bf5475078b60f68fdc0a5d5c5f3007d36ee1179a50f6e0c` |
+| `eris-dom` | `b775436e90fd2c6c8ffd97f0fabffebde7129b6c206f0efe325e4276b22a1bfb` |
+| `eris-stress` | `25a575936a81c4cc2731927d152cb1da4e55a542c8ac7f0f4d3a68fe98f594f2` |
+
+The source-input digest is
+`ebcdac762343020bcb6ba88090738526933567fdf496d0468c204706b71f9a17`.
+Session logs use `prototype-final` under `artifacts/`; reviewer probes remain
+separate session scratch files. No new performance claim is assigned to this
+runtime increment. Full web compatibility, independently audited security and
+Chromium-relative performance remain unverified.
+
 ## Identifier rest parameters
+
+Published checkpoint `5a38ff7` passed
+[all GitHub CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36406582688),
+including the rest-parameter regression gate and Rust 1.88 compilation.
 
 Recorded September 28, 2026 UTC. Formatting, strict all-target Clippy, release
 compilation and **712 Rust tests** pass with `--include-ignored`: 576 library,

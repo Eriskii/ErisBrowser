@@ -2746,6 +2746,7 @@ impl Runtime {
             ("Object", "toString", "Object.toString"),
             ("Object", "valueOf", "Object.valueOf"),
             ("Object", "hasOwnProperty", "Object.hasOwnProperty"),
+            ("Object", "isPrototypeOf", "Object.isPrototypeOf"),
             (
                 "Object",
                 "propertyIsEnumerable",
@@ -5760,6 +5761,25 @@ impl Runtime {
             _ => "Object",
         };
         self.prototypes.get(name).copied().map(Value::Object)
+    }
+    fn object_is_prototype_of(&mut self, receiver: Value, mut value: Value) -> Result<Value> {
+        self.tick()?;
+        // Unlike most Object methods, a primitive argument returns before ToObject(this).
+        if !js_object(&value) {
+            return Ok(Value::Bool(false));
+        }
+        let object = self.coerce_object(receiver)?;
+        for _ in 0..MAX_DEPTH {
+            self.tick()?;
+            let Some(prototype) = self.prototype_of(&value) else {
+                return Ok(Value::Bool(false));
+            };
+            if prototype == object {
+                return Ok(Value::Bool(true));
+            }
+            value = prototype;
+        }
+        Err(ScriptError::resource("prototype chain limit exceeded"))
     }
     fn set_object_prototype(&mut self, object: &Value, prototype: Value) -> Result<()> {
         let id = self.property_object(object).ok_or_else(|| {
@@ -8813,6 +8833,13 @@ impl Runtime {
         args: Vec<Value>,
         doc: &mut Document,
     ) -> Result<Value> {
+        if native.name == "Object.isPrototypeOf" {
+            // Only identities and prototype links are examined, not argument contents.
+            return self.object_is_prototype_of(
+                native.receiver.clone(),
+                args.first().cloned().unwrap_or(Value::Undefined),
+            );
+        }
         if let Some(method) = native.name.strip_prefix("CSSStyleDeclaration.") {
             return self.style_native(method, native.receiver.clone(), &args, doc);
         }
@@ -10689,6 +10716,262 @@ mod tests {
     use super::*;
     fn run(source: &str) -> Result<Value> {
         Runtime::new().execute(source, &mut Document::parse("<body></body>"))
+    }
+
+    #[test]
+    fn is_prototype_of_follows_identity_and_internal_chain_changes() {
+        let (mut runtime, mut document) = property_harness();
+        runtime
+            .execute(
+                r#"
+            var p={},middle=Object.create(p),child=Object.create(middle),other={};
+            assert.sameValue(p.isPrototypeOf(child),true);
+            assert.sameValue(middle.isPrototypeOf(child),true);
+            assert.sameValue(child.isPrototypeOf(child),false);
+            assert.sameValue(p.isPrototypeOf(p),false);
+            assert.sameValue(other.isPrototypeOf(child),false);
+            assert.sameValue(Object.prototype.isPrototypeOf(Object.create(null)),false);
+            assert.sameValue(Object.prototype.isPrototypeOf(child),true);
+            Object.setPrototypeOf(child,other);
+            assert.sameValue(p.isPrototypeOf(child),false);
+            assert.sameValue(other.isPrototypeOf(child),true);
+            assert.throws(TypeError,function(){Object.setPrototypeOf(other,child);});
+            assert.sameValue(Object.getPrototypeOf(other),Object.prototype);
+            assert.sameValue(other.isPrototypeOf(child),true);
+            Object.setPrototypeOf(child,null);
+            assert.sameValue(Object.prototype.isPrototypeOf(child),false);
+            function Factory(){}function FunctionParent(){}
+            Factory.prototype=FunctionParent;
+            assert.sameValue(FunctionParent.isPrototypeOf(new Factory()),true);
+            Factory.prototype=1;
+            assert.sameValue(Object.prototype.isPrototypeOf(new Factory()),true);
+            assert.sameValue(Function.prototype.isPrototypeOf(Factory),true);
+            assert.sameValue(Function.prototype.isPrototypeOf(()=>0),true);
+            assert.sameValue(Function.prototype.isPrototypeOf(Factory.bind(null)),true);
+            assert.sameValue(Function.prototype.isPrototypeOf(Object),true);
+            assert.sameValue(Array.prototype.isPrototypeOf([]),true);
+            assert.sameValue(Object.prototype.isPrototypeOf([]),true);
+            var native=Object.prototype.isPrototypeOf;
+            assert.sameValue(Function.prototype.isPrototypeOf(native),true);
+            assert.sameValue(native.call(native,Object.create(native)),true);
+            assert.sameValue(native.call(Object,Object.create(Object)),true);
+        "#,
+                &mut document,
+            )
+            .unwrap();
+    }
+
+    #[test]
+    fn is_prototype_of_has_intrinsic_metadata_and_dynamic_alias_receivers() {
+        let (mut runtime, mut document) = property_harness();
+        runtime.execute(r#"
+            var method=Object.prototype.isPrototypeOf,p={},child=Object.create(p);
+            verifyProperty(Object.prototype,'isPrototypeOf',{value:method,writable:true,enumerable:false,configurable:true});
+            verifyProperty(method,'name',{value:'isPrototypeOf',writable:false,enumerable:false,configurable:true});
+            verifyProperty(method,'length',{value:1,writable:false,enumerable:false,configurable:true});
+            assert.sameValue(method.hasOwnProperty('prototype'),false);
+            assert.sameValue(Object.getPrototypeOf(method),Function.prototype);
+            assert.sameValue(method.call(p,child),true);
+            assert.sameValue(method.apply(p,[child]),true);
+            assert.sameValue(method.bind(p)(child),true);
+            assert.sameValue(method.bind(p,child)(),true);
+            assert.sameValue(method.call({},child),false);
+            assert.throws(TypeError,function(){new method(child);});
+            assert.throws(TypeError,function(){method(child);});
+            assert.sameValue(method(1),false);
+            Object.prototype.isPrototypeOf=function(){return 'replacement';};
+            assert.sameValue(p.isPrototypeOf(child),'replacement');
+            assert.sameValue(method.call(p,child),true);
+            delete Object.prototype.isPrototypeOf;
+            assert.sameValue(p.isPrototypeOf,undefined);
+            assert.sameValue(method.call(p,child),true);
+        "#, &mut document).unwrap();
+    }
+
+    #[test]
+    fn is_prototype_of_checks_argument_type_before_receiver_boxing() {
+        let (mut runtime, mut document) = property_harness();
+        runtime
+            .execute(
+                r#"
+            var method=Object.prototype.isPrototypeOf;
+            var primitives=[undefined,null,false,true,0,-0,NaN,Infinity,'','x'];
+            for(var i=0;i<primitives.length;i++){
+                assert.sameValue(method.call(null,primitives[i]),false);
+                assert.sameValue(method.call(undefined,primitives[i]),false);
+                assert.sameValue(method.call({},primitives[i]),false);
+            }
+            assert.sameValue(method.call(null),false);
+            assert.sameValue(method.call(undefined),false);
+            assert.throws(TypeError,function(){method.call(null,{});});
+            assert.throws(TypeError,function(){method.call(undefined,{});});
+            assert.throws(TypeError,function(){method.call(null,new Number(0));});
+            assert.throws(TypeError,function(){method.call(undefined,new String(''));});
+            assert.sameValue(method.call(1,Object.create(Number.prototype)),false);
+            assert.sameValue(method.call(false,Object.create(Boolean.prototype)),false);
+            assert.sameValue(method.call('x',Object.create(String.prototype)),false);
+            var boxed=new Number(1),child=Object.create(boxed);
+            assert.sameValue(method.call(boxed,child),true);
+            assert.sameValue(method.call(1,child),false);
+        "#,
+                &mut document,
+            )
+            .unwrap();
+    }
+
+    #[test]
+    fn is_prototype_of_does_not_read_author_properties_or_coerce_unused_arguments() {
+        let (mut runtime, mut document) = property_harness();
+        runtime
+            .execute(
+                r#"
+            var method=Object.prototype.isPrototypeOf,reads=0,p={},child=Object.create(p);
+            function poison(){reads++;throw 'property must not be read';}
+            var keys=['constructor','prototype','__proto__','valueOf','toString'];
+            for(var i=0;i<keys.length;i++){
+                Object.defineProperty(p,keys[i],{get:poison,configurable:true});
+                Object.defineProperty(child,keys[i],{get:poison,configurable:true});
+            }
+            Object.getPrototypeOf=poison;
+            assert.sameValue(method.call(p,child),true);
+            assert.sameValue(method.call(child,p),false);
+            assert.sameValue(method.call(null,1),false);
+            var extra={get toString(){return poison;},get valueOf(){return poison;}},log='';
+            function evaluated(){log+='extra;';return extra;}
+            assert.sameValue(method.call(p,child,evaluated()),true);
+            assert.sameValue(log,'extra;');assert.sameValue(reads,0);
+        "#,
+                &mut document,
+            )
+            .unwrap();
+    }
+
+    #[test]
+    fn is_prototype_of_shares_work_and_limits_cycles_without_retained_allocations() {
+        let mut runtime = Runtime::new();
+        let object = runtime.object_ordered([]).unwrap();
+        let other = runtime.object_ordered([]).unwrap();
+        let id = runtime.property_object(&object).unwrap();
+        runtime.objects[id].prototype = Some(object.clone());
+        let allocated = runtime.allocated;
+        let steps = runtime.steps;
+        assert!(
+            runtime
+                .object_is_prototype_of(other.clone(), object.clone())
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(runtime.steps, steps - MAX_DEPTH - 1);
+        assert_eq!(runtime.allocated, allocated);
+        assert_eq!(runtime.objects[id].prototype, Some(object.clone()));
+
+        runtime.objects[id].prototype = None;
+        let mut tail = object;
+        for _ in 1..MAX_DEPTH {
+            let next = runtime.object_ordered([]).unwrap();
+            let id = runtime.property_object(&next).unwrap();
+            runtime.objects[id].prototype = Some(tail);
+            tail = next;
+        }
+        let allocated = runtime.allocated;
+        assert_eq!(
+            runtime
+                .object_is_prototype_of(other.clone(), tail.clone())
+                .unwrap(),
+            Value::Bool(false)
+        );
+        assert_eq!(runtime.allocated, allocated);
+        let beyond = runtime.object_ordered([]).unwrap();
+        let id = runtime.property_object(&beyond).unwrap();
+        runtime.objects[id].prototype = Some(tail.clone());
+        let allocated = runtime.allocated;
+        assert!(
+            runtime
+                .object_is_prototype_of(other.clone(), beyond)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(runtime.allocated, allocated);
+        runtime.steps = 2;
+        assert!(
+            runtime
+                .object_is_prototype_of(other, tail)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(runtime.steps, 0);
+        assert_eq!(runtime.allocated, allocated);
+
+        let mut runtime = Runtime::new();
+        let object = runtime.object_ordered([]).unwrap();
+        let count = runtime.objects.len();
+        runtime.allocated = MAX_HEAP;
+        assert_eq!(
+            runtime
+                .object_is_prototype_of(Value::Number(1.0), Value::Null)
+                .unwrap(),
+            Value::Bool(false)
+        );
+        assert_eq!(runtime.allocated, MAX_HEAP);
+        assert!(
+            runtime
+                .object_is_prototype_of(Value::Number(1.0), object)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(runtime.objects.len(), count);
+
+        let error=run("var p={},c=p;for(var i=0;i<70;i++)c=Object.create(c);try{for(var j=0;j<2000;j++)p.isPrototypeOf(c);}catch(e){throw 'caught';}").unwrap_err();
+        assert!(error.is_resource_limit());
+        let mut runtime = Runtime::new();
+        let mut document = Document::parse("");
+        let long = Value::String(JsString::from("x".repeat(MAX_STRING)));
+        runtime.steps = 1;
+        assert_eq!(
+            runtime
+                .native_call(
+                    &Native {
+                        name: "Object.isPrototypeOf".into(),
+                        receiver: Value::Null
+                    },
+                    vec![long.clone(), long],
+                    &mut document
+                )
+                .unwrap(),
+            Value::Bool(false)
+        );
+        assert_eq!(runtime.steps, 0);
+    }
+
+    #[test]
+    fn is_prototype_of_executes_unchanged_existing_function_cases() {
+        for source in [
+            include_str!(
+                "../tests/upstream/test262-functions/test/language/statements/function/S13.2.2_A1_T1.js"
+            ),
+            include_str!(
+                "../tests/upstream/test262-functions/test/language/statements/function/S13.2.2_A1_T2.js"
+            ),
+            include_str!(
+                "../tests/upstream/test262-functions/test/language/statements/function/S13.2.2_A3_T1.js"
+            ),
+            include_str!(
+                "../tests/upstream/test262-functions/test/language/statements/function/S13.2.2_A3_T2.js"
+            ),
+            include_str!(
+                "../tests/upstream/test262-functions/test/language/statements/function/S13.2_A5.js"
+            ),
+        ] {
+            for strict in [false, true] {
+                let (mut runtime, mut document) = upstream_harness();
+                if strict {
+                    runtime.execute_strict(source, &mut document)
+                } else {
+                    runtime.execute(source, &mut document)
+                }
+                .unwrap();
+            }
+        }
     }
 
     #[test]

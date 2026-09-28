@@ -27,6 +27,11 @@ fn rest_parameter_arrays_preserve_scope_and_run_in_event_callbacks() {
     assert_six_scripted_samples(include_str!("fixtures/rest-parameters.html"));
 }
 
+#[test]
+fn prototype_membership_observes_identity_and_event_mutations() {
+    assert_six_scripted_samples(include_str!("fixtures/prototype-membership.html"));
+}
+
 fn assert_six_scripted_samples(source: &str) {
     let mut p = page(source);
     let fonts = Fonts::new();

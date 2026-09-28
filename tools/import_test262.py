@@ -29,12 +29,14 @@ FUNCTION_DIRECTORIES = {
     'expressions/arrow-function': 55, 'expressions/object/method-definition': 283,
 }
 REST_PARAMETER_DIRECTORIES = {'rest-parameters': 11}
+IS_PROTOTYPE_OF_DIRECTORIES = {'Object/prototype/isPrototypeOf': 10}
 PROFILES = {'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
-            'rest-parameters': REST_PARAMETER_DIRECTORIES}
+            'rest-parameters': REST_PARAMETER_DIRECTORIES,
+            'is-prototype-of': IS_PROTOTYPE_OF_DIRECTORIES}
 PROFILE_ROOTS = {'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
                  'template-literal': 'test/language', 'functions': 'test/language',
-                 'rest-parameters': 'test/language'}
+                 'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins'}
 
 
 def corpus_name(profile):
@@ -158,7 +160,7 @@ def import_corpus(output, profile='string-json'):
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
         sources = dict(zip(paths, pool.map(lambda path: fetch(raw + path), paths)))
     harness = {'assert.js', 'sta.js'}
-    if profile in {'template-literal', 'functions', 'rest-parameters'}:
+    if profile in {'template-literal', 'functions', 'rest-parameters', 'is-prototype-of'}:
         # These unchanged helpers support the assertion-integrity preflight,
         # even when no selected test requests them directly.
         harness.update({'propertyHelper.js', 'compareArray.js'})
@@ -185,6 +187,7 @@ def import_corpus(output, profile='string-json'):
         'template-literal': 'all direct .js files in language/expressions/template-literal; no implementation',
         'functions': 'all direct .js files in four language function/arrow/object-method directories; no implementation',
         'rest-parameters': 'all direct .js files in language/rest-parameters; no implementation',
+        'is-prototype-of': 'all direct .js files in built-ins/Object/prototype/isPrototypeOf; no implementation',
     }[profile]
     manifest = dict(format=1, repository=f'https://github.com/{REPOSITORY}', revision=REVISION,
                     scope=scope,

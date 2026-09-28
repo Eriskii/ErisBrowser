@@ -191,6 +191,102 @@ class ExecutionTests(unittest.TestCase):
 
 
 class IntegrityTests(unittest.TestCase):
+    def test_is_prototype_of_inventory_retains_complete_directory_and_modes(self):
+        directory = runner.ROOT / 'tests/upstream/test262-is-prototype-of'
+        manifest, files, cases, fixtures, _ = runner.load_corpus(directory, 'is-prototype-of')
+        expected = {
+            'arg-is-proxy.js', 'builtin.js', 'length.js', 'name.js', 'not-a-constructor.js',
+            'null-this-and-object-arg-throws.js', 'null-this-and-primitive-arg-returns-false.js',
+            'this-value-is-in-prototype-chain-of-arg.js',
+            'undefined-this-and-object-arg-throws.js',
+            'undefined-this-and-primitive-arg-returns-false.js',
+        }
+        self.assertEqual(manifest['test_files'], 10)
+        self.assertEqual(set(manifest['directories']['Object/prototype/isPrototypeOf']), expected)
+        self.assertEqual({Path(case['file']).name for case in cases}, expected)
+        self.assertEqual(len(cases), 20)
+        self.assertEqual(sum(case['mode'] == 'sloppy' for case in cases), 10)
+        self.assertEqual(sum(case['mode'] == 'strict' for case in cases), 10)
+        self.assertFalse(any(case['metadata']['negative'] for case in cases))
+        self.assertEqual(fixtures, [])
+        self.assertEqual({path for path in files if path.startswith('harness/')}, {
+            'harness/assert.js', 'harness/sta.js', 'harness/compareArray.js',
+            'harness/propertyHelper.js', 'harness/isConstructor.js', 'harness/proxyTrapsHelper.js',
+        })
+        self.assertIn(b'Reflect.construct', files['harness/isConstructor.js'])
+        self.assertIn(b'new Proxy', files['test/built-ins/Object/prototype/isPrototypeOf/arg-is-proxy.js'])
+        with self.assertRaisesRegex(ValueError, 'inventory'):
+            runner.load_corpus(directory, 'string-json')
+
+    def test_is_prototype_of_policy_does_not_admit_proxy_reflect_or_symbol(self):
+        self.assertEqual(runner.IS_PROTOTYPE_OF_FEATURES, runner.SUPPORTED_FEATURES)
+        for feature in ('Proxy', 'Reflect.construct', 'Symbol', 'rest-parameters'):
+            case = sample(('/*---\nfeatures: [' + feature + ']\n---*/\n').encode())
+            self.assertIn(feature, runner.unsupported_reason(case, runner.IS_PROTOTYPE_OF_FEATURES))
+        _, _, cases, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-is-prototype-of', 'is-prototype-of')
+        executed = [case for case in cases
+                    if runner.unsupported_reason(case, runner.IS_PROTOTYPE_OF_FEATURES) is None]
+        self.assertEqual(len(executed), 10)
+        self.assertEqual({Path(case['file']).name for case in executed}, {
+            'length.js', 'name.js', 'null-this-and-object-arg-throws.js',
+            'this-value-is-in-prototype-chain-of-arg.js', 'undefined-this-and-object-arg-throws.js',
+        })
+
+    def test_is_prototype_of_preflight_retains_core_and_rejects_disabled_assertions(self):
+        _, files, _, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-is-prototype-of', 'is-prototype-of')
+        with patch.object(runner, 'bounded_process', return_value=(0, response('complete'), b'')):
+            previous = runner.harness_preflight(files, Path('/fake'), 1)
+            results = runner.harness_preflight(files, Path('/fake'), 1, 'is-prototype-of')
+        self.assertEqual(len(previous), 32)
+        self.assertEqual(results[:32], previous)
+        self.assertEqual(len(results), 64)
+        checks = results[32:]
+        self.assertEqual(sum(result['verified'] for result in checks), 16)
+        self.assertEqual({result['name'] for result in checks if not result['verified']}, {
+            'prototype-chain-mismatch', 'prototype-self-mismatch',
+            'prototype-conversion-order-mismatch', 'prototype-object-receiver-mismatch',
+            'prototype-no-getters-mismatch', 'prototype-boxed-identity-mismatch',
+            'prototype-intrinsics-mismatch', 'prototype-property-metadata-mismatch',
+        })
+        self.assertEqual({result['result']['mode'] for result in checks}, {'sloppy', 'strict'})
+        with patch.object(runner, 'bounded_process', return_value=(
+                0, response('exception', 'runtime', 'TypeError'), b'')):
+            wrong_error = runner.harness_preflight(files, Path('/fake'), 1, 'is-prototype-of')
+        self.assertFalse(any(result['verified'] for result in wrong_error[32:]))
+
+    def test_is_prototype_of_import_checks_every_blob_and_rejects_inventory_changes(self):
+        _, files, _, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-is-prototype-of', 'is-prototype-of')
+        raw = f'https://raw.githubusercontent.com/{importer.REPOSITORY}/{importer.REVISION}/'
+        inventory = [dict(type='file', name=Path(path).name,
+                          sha=importer.hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest())
+                     for path, data in files.items() if path.startswith('test/')]
+        listing_url = (f'https://api.github.com/repos/{importer.REPOSITORY}/contents/'
+                       f'test/built-ins/Object/prototype/isPrototypeOf?ref={importer.REVISION}')
+        def fetch(url):
+            if url == listing_url:
+                return json.dumps(inventory).encode()
+            self.assertTrue(url.startswith(raw))
+            return files[url[len(raw):]]
+        with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch), contextlib.redirect_stdout(io.StringIO()):
+            output = Path(temporary)
+            importer.import_corpus(output, 'is-prototype-of')
+            _, imported, cases, _, _ = runner.load_corpus(output, 'is-prototype-of')
+            self.assertEqual(imported, files)
+            self.assertEqual(len(cases), 20)
+        inventory[0]['sha'] = '0' * 40
+        with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch):
+            with self.assertRaisesRegex(ValueError, 'pinned Git blob'):
+                importer.import_corpus(Path(temporary), 'is-prototype-of')
+            self.assertFalse(any(Path(temporary).iterdir()))
+        inventory.pop()
+        with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch):
+            with self.assertRaisesRegex(ValueError, 'inventory mismatch'):
+                importer.import_corpus(Path(temporary), 'is-prototype-of')
+            self.assertFalse(any(Path(temporary).iterdir()))
+
     def test_rest_inventory_retains_every_source_and_required_mode(self):
         directory = runner.ROOT / 'tests/upstream/test262-rest-parameters'
         manifest, files, cases, fixtures, _ = runner.load_corpus(directory, 'rest-parameters')

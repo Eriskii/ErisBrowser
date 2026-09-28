@@ -24,6 +24,11 @@ scope and temporal dead zones, lexical arrows, methods, bound construction,
 apply and event callback arguments. Page and confined-worker tests check six
 green initial samples and blue clicked samples. It loads no external assets.
 
+`prototype-membership.html` checks actual prototype-chain identity, receiver
+conversion order, avoidance of author getters/coercion, built-in chains and
+mutation. Page and confined-worker tests compare six green initial samples and
+blue samples after a callback restores a prototype link. It loads no external assets.
+
 `calc-resize.html` uses mixed length-percentage widths and margins. Page and
 confined-worker tests verify exact geometry and pixels at 320 and 520 pixels,
 then repeat after CSSOM mutation, including a resize back to the smaller viewport.

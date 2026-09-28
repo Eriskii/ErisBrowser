@@ -1,0 +1,1747 @@
+{
+  "suite": "pinned-test262-is-prototype-of-selection",
+  "full_test262_conformance": false,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "corpus_manifest_sha256": "f019dcc5e150cf14a6b144577a30937ed1314c6b5de3dd331ad574585f16d461",
+  "runner_policy": {
+    "format": 2,
+    "supported_features": [
+      "String.fromCodePoint",
+      "arrow-function",
+      "for-in-order",
+      "well-formed-json-stringify"
+    ],
+    "negative_intrinsic_errors": [
+      "Error",
+      "EvalError",
+      "RangeError",
+      "ReferenceError",
+      "SyntaxError",
+      "TypeError",
+      "URIError"
+    ],
+    "strict": true,
+    "modules": false,
+    "async_completion": false,
+    "host_hooks": false,
+    "timeout_seconds": 3.0
+  },
+  "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+  "source_files": 10,
+  "source_tests": 10,
+  "negative_source_tests": 0,
+  "fixture_files": [],
+  "mode_cases": 20,
+  "counts": {
+    "unsupported": 10,
+    "passed": 10
+  },
+  "seconds": 0.128,
+  "binary_sha256": "566886403cd490547bf5475078b60f68fdc0a5d5c5f3007d36ee1179a50f6e0c",
+  "harness_preflight": [
+    {
+      "name": "success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:success",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "7fe7d94d9e84765c39e095ba88d5f54cb937df0d780785e185ff5dfd3bb74291",
+        "source_sha256": "2485acdeffa6a0eaa6c2483198a4384021f8b3dda5fbe0e31889ab4a21637849",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "assert-false",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:assert-false",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "6470c0827c0de6472342233bbb189008df60df75393ac98843660e2729be2e41",
+        "source_sha256": "d0d1f50a5cc28c1ea72f93a59ff43e2de631ed7fb9add9964dd1f29a38d065f4",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:same-value",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a4d7d481cb816dc706a6b8f84e7dbcea5f1d7c6393094ab35cb6d47ab0d39494",
+        "source_sha256": "22ae75695ff709309cb80f46b82cf58252826926b3bd8e3fadfae56c72c2f031",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "signed-zero",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:signed-zero",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "8e329999cda16ae14b530d61dcc7794f2b572e0809370e4c6b8ee9faff63d074",
+        "source_sha256": "862870d24485db4c8763181434fcc45886c6504cb6c14f24740f0f8107cf665a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "not-same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:not-same-value",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "738a0dd64663125af510063f604bec8e8f914f340be2cd3f430eaf1e5cf2cc0c",
+        "source_sha256": "524aa491b0239cd572a71a972f22557d333509659a55e3cb894bee0534ae8415",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "throws-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:throws-success",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "bdf648715c68784de062689b85db48546e44e14dc31df5644ff1e420e5623d1c",
+        "source_sha256": "06adf2351bff48eebd68184c6e4a9fb74e0c00f9acc6e14f4d35808a2a5017a7",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "throws-wrong-type",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:throws-wrong-type",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "d0f5b25203199d201f006e90e7bb6b78023d5bb7ea803581daf5caf2d52fcf9c",
+        "source_sha256": "99982c4b3bd8f707222e78c1742c855cbc5428ffb83171661392e6e461be1336",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "throws-missing",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:throws-missing",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "29bc8742a93e811f9680ef2098bfcb4984e86673ea3da41c377e907067cde255",
+        "source_sha256": "25cc89bd353c7f8aa2fb23afb2e1f2e52324e36a385647a498e157e5ccd29f5c",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "array-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:array-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a883850a23bc0f55e12bb5f3d09780b9935eb141e2af3892dabc5b5a35172096",
+        "source_sha256": "fccb44163731695919a45cb9cfbb1c99f5c508778937eac46f5fa5e97f5f60ea",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-success",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "b35a36c10460a813dbcc5a40b356d1ae07c2d54c272b35a717dd6bddf667c51e",
+        "source_sha256": "5f3a5de6c5896c29b489bec40463fbf565e86f993f00ca214a7e65241be28f04",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-writable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-writable",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "6cbcbbbcae8167c890124971bd07ceb81f6daf8e286ad12025bb4a82a0672944",
+        "source_sha256": "58e50c0eb345267a90f035e104dc54b60455d981e5364651b5e0c1e4fda0deb5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-enumerable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-enumerable",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "2a651b1aefd71f4a017d564e91b842569e6cd78d0145d03b20b48d0836c3c56d",
+        "source_sha256": "6a029d9d45542346ad7bf0b5036fa32346522b049c4925588dc40db894ea19a5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-configurable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-configurable",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "e18cf4dde2cd44993c84b43d6a01e68c021d56365f4e15673fe1fa2bdb774cd8",
+        "source_sha256": "f0ec83e690c6d34e68680b9d10a7931ee5b4fba6810ee920902881494202d2e6",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-success",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "3c5650218df0ef937e5a3ecd6f9c7460f960e61f0c9832515a63b77b832d78cd",
+        "source_sha256": "2485acdeffa6a0eaa6c2483198a4384021f8b3dda5fbe0e31889ab4a21637849",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-assert-false",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-assert-false",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "11fe2e709b0565e340d83176bc248895795e43c8d9eaa47619dcd939374937e7",
+        "source_sha256": "d0d1f50a5cc28c1ea72f93a59ff43e2de631ed7fb9add9964dd1f29a38d065f4",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-same-value",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "03efed7bd86096fb67e4d8e0941b4768e61e8f7068c95f9b5ac63c86a95ee96f",
+        "source_sha256": "22ae75695ff709309cb80f46b82cf58252826926b3bd8e3fadfae56c72c2f031",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-signed-zero",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-signed-zero",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "b4ce5d0baa51a09beb8d14cc65bf66e805a4f48e03ad306bd044f6bf0fba7631",
+        "source_sha256": "862870d24485db4c8763181434fcc45886c6504cb6c14f24740f0f8107cf665a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-not-same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-not-same-value",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "615fa57db6e08e455e124d6f3eaf118f2e4eab20161f51aab723923c9a0f8d36",
+        "source_sha256": "524aa491b0239cd572a71a972f22557d333509659a55e3cb894bee0534ae8415",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-throws-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-throws-success",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "bafcbdea8809ac7c1628fe502c6a060a0e2ad7ca9a8598faf3e902734673c4e4",
+        "source_sha256": "06adf2351bff48eebd68184c6e4a9fb74e0c00f9acc6e14f4d35808a2a5017a7",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-throws-wrong-type",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-throws-wrong-type",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "f83aeacb9dc37b65255ab7bfd51a0d8052e8da2915d8fb7fe06777292780b078",
+        "source_sha256": "99982c4b3bd8f707222e78c1742c855cbc5428ffb83171661392e6e461be1336",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-throws-missing",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-throws-missing",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "a6d552fcd92dddd52b6239ebe82177f95648349f2b07847a36307aada0579e35",
+        "source_sha256": "25cc89bd353c7f8aa2fb23afb2e1f2e52324e36a385647a498e157e5ccd29f5c",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-array-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-array-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "8f8086b6d6f7fc051eac7270c9ca4be3f85cbcb5ae935dabd4c6d264cc917338",
+        "source_sha256": "fccb44163731695919a45cb9cfbb1c99f5c508778937eac46f5fa5e97f5f60ea",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-success",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "a46db4f2087865126ceac90ba93407c3877f00c0c698d8f4e604111f395780ba",
+        "source_sha256": "5f3a5de6c5896c29b489bec40463fbf565e86f993f00ca214a7e65241be28f04",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-writable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-writable",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "412b91a8d1093f526f34b58ad29668225c387226712184ef8d79e36cd470bccd",
+        "source_sha256": "58e50c0eb345267a90f035e104dc54b60455d981e5364651b5e0c1e4fda0deb5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-enumerable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-enumerable",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "c571e812c4ddab362d7caabd07b4b3ed427f9962e91e728c61b272fe7f8004eb",
+        "source_sha256": "6a029d9d45542346ad7bf0b5036fa32346522b049c4925588dc40db894ea19a5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-configurable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-configurable",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "634b734df32d4d581162c58f74ddb831dc337fce988dd52d74f23fca1d93a126",
+        "source_sha256": "f0ec83e690c6d34e68680b9d10a7931ee5b4fba6810ee920902881494202d2e6",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-receiver",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-receiver",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "9e721632d9643b3489c411eb2d5a3f87a08c3bea9f9cf9a673ebb102b24a5974",
+        "source_sha256": "d0e7bb44576a0bf890774b1736e79cd0166a2e32fe030a3ba86e5015f2c244bf",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-unbound-write",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-unbound-write",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "2916d638664aa431071561dff0ba0337d5f005f08424cfe8c67d07c93c0cf792",
+        "source_sha256": "150659db8ea36d09b80df3f046ab341af7b1f64b691051fa9c866e2da4c5314d",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-readonly-write",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-readonly-write",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "937d5d1a945b824e6d6d60304aea3337db809214469240d437ba6081a9bec231",
+        "source_sha256": "a1cce38d2daa07cbcc33a2d2db74f0e720a5f0deee03767480c699db33b4882b",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-delete",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-delete",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "2c630739c1458f6444b889a03992a2be2de36b0e00dd56522bf0844fe2c54a2c",
+        "source_sha256": "cb997e967d015ba97c122c1ea746bdd0fbcb2659573645728918558d1349a965",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-arguments",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-arguments",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "54df002c837ca5ed70e5d5b49dc0375e40bbfb6b88580dfdc66b5ee7bec44171",
+        "source_sha256": "a77f7981af7c3910476440f16ac4c18b7ffaf381714ad33e70fa0d0d5c953887",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-tdz",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-tdz",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "cf503031beb1832405ad98ea6ca81c8b6de9bb1f90143829dac8788b2affbbfd",
+        "source_sha256": "2e0d83e7123f5fa749a3f10484c95aa95eac4140438da59faa19edfb82d1061f",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-chain",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-chain",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "3af1274ad73ec50caf527b978c6981c2ad70509bf210ae41a998ccb21752a50a",
+        "source_sha256": "b6df129c91d834d0b9c97257e41f6d3d0c9d04fdf500f9c9b7866b8efc2f49ea",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-chain-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-chain-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "1e44345a2459b41a125ab1525b7a9d2ffcab99a847e1fb20e129363cf2adb232",
+        "source_sha256": "2b0edf7a2c44b0d8cc5209823535df4c944f9c15ef8e39cce914a341a967a4c5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-self",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-self",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "cee10aea7075b5c2340e16762696c8d4f083eb769f96fbb9928335637c269f4e",
+        "source_sha256": "adc1869acc51ee934f7bcfc4c6ba580d1dc143b608b99c7920301113aa429caf",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-self-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-self-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "fb9100414597765dff785d44bcb048fe83d4908f2ef832708aa5a0136367a9c1",
+        "source_sha256": "880d0e78f6663680ebbad27041421f5db221de666dd357128de1c32e64b7d040",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-conversion-order",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-conversion-order",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "0462f86f12b2689539bdfad7e95593393fe35f3ac001602a7ddeb65e226a4ee2",
+        "source_sha256": "2c4718f14781da08bda704ef22edb0fdaaf62f9533151a327910bd310f6e2cfa",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-conversion-order-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-conversion-order-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "5ea39adfc647d7507914cbded4a6413a306a612e58a75c966d05b2f7cab0f3c0",
+        "source_sha256": "28273a1f9fd416ade76b36990a73af616a66fd7e8e20a1dc983af257c2f6ed48",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-object-receiver",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-object-receiver",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "121c0e2c8eeaee98ad507c3d269ac2fe2cb81dbac511931cb52a57c1e18d66fe",
+        "source_sha256": "68b1e60e2f5ef3b3a6d9af7062418c8a97f9c2d0bd8a65dce4984d5465df3849",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-object-receiver-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-object-receiver-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "42b84bcf5491dd8139bba16e31cb6caf516e264ad5f2550a0d6e4b43f55a160a",
+        "source_sha256": "04cfd1b3feef34198c096c0f797a97274804251a2767a95c909ee177a9c5ff92",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-no-getters",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-no-getters",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "cc2defe23fbbe55c16867859cfe918439bae8450a137b504a2837c9c0aca342a",
+        "source_sha256": "c833cd38adf3fbc3d7cda864342db5030562ff1669f41342328ebedc2cbc894b",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-no-getters-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-no-getters-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "4e0acb00311b73acefde93850bec0cc9770b3fdf960c281aa70f14ce74964a5b",
+        "source_sha256": "e902ffc4090554c8460140176dc0ef5d3707116de57fe5144407b5600a02e585",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-boxed-identity",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-boxed-identity",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a86082d7bce1150dfb85f4125d64b5b059e27e365471311cb039a3f90ddeb56e",
+        "source_sha256": "b222fc9cdb61a301bf425e8848f40c4044c42728bc3c4d541cdb50c153f1219b",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-boxed-identity-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-boxed-identity-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a11cb6f60cfedbe31b31778eff6649dc96a4fb8c38cc8ba0a56133cb4747b04d",
+        "source_sha256": "6aeca374f95612e4ef80eeff771b21ee75847b49c7765576095bfca78a36bf32",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-intrinsics",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-intrinsics",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "1f3d5ef9eb34f62b632d1358aed251e466d7bf22ac91d8358f43e99ac640ab24",
+        "source_sha256": "8301cd6c3338f1d21d2b13d40a4fb9fb8078c2b4af83b2246934717716ee83e5",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-intrinsics-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-intrinsics-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "3694e251e5fc44170f85b1b6272c5eb3bd65a21747bc98f3dd08a9ca89f6317a",
+        "source_sha256": "41e7d47625dfaa0af0ce36cbd9b6b01509d0146d28d1c6dec89ef0b4db49b08e",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-property-metadata",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-property-metadata",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "87096e075284052f94698bf8c4be52ebd6851e7c802f73cff7d3632259421370",
+        "source_sha256": "fc24c59ca35bd67257642bf3a4b6842b191c5fdc0771e8e5b142f6a9632017eb",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-property-metadata-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-property-metadata-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "279dab66cbd309d737df040120d3936849d325eaec88f95c830026e5ef1af1da",
+        "source_sha256": "9bd09c9cd316c626dc500a622e1a65ce02308ccd2ddf47aa3a00771dde7710a8",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-chain",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-chain",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "f308534b74f27a80f6aa2ce3f62e0734578aca0bb155fe0a664e061d8ef82150",
+        "source_sha256": "b6df129c91d834d0b9c97257e41f6d3d0c9d04fdf500f9c9b7866b8efc2f49ea",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-chain-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-chain-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "99f42f85dedcbd617083e2a64bd90452298987bd29875461a1a612fb24198d08",
+        "source_sha256": "2b0edf7a2c44b0d8cc5209823535df4c944f9c15ef8e39cce914a341a967a4c5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-self",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-self",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "073db914466c01aa65f839aa79c34e293d73ab28ccf0d58fd26712de16559988",
+        "source_sha256": "adc1869acc51ee934f7bcfc4c6ba580d1dc143b608b99c7920301113aa429caf",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-self-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-self-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "b8cc9c6677291f1db17314561be5ffbe9b30d774dba803af5ccedbf371bdc539",
+        "source_sha256": "880d0e78f6663680ebbad27041421f5db221de666dd357128de1c32e64b7d040",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-conversion-order",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-conversion-order",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "e236de7fe702b9d6cb1734bd6082d5d379e8ec8640a73ac1e7d9df36f17b8f5a",
+        "source_sha256": "2c4718f14781da08bda704ef22edb0fdaaf62f9533151a327910bd310f6e2cfa",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-conversion-order-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-conversion-order-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "cd6187386663bd86b0e8103102b68d4f5f096e5aeb86fb656cbb7253ffae59c0",
+        "source_sha256": "28273a1f9fd416ade76b36990a73af616a66fd7e8e20a1dc983af257c2f6ed48",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-object-receiver",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-object-receiver",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "fb0c25021769370a5591e874c30f9d1ec1ac0375242303e6bad3d7eb546a6737",
+        "source_sha256": "68b1e60e2f5ef3b3a6d9af7062418c8a97f9c2d0bd8a65dce4984d5465df3849",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-object-receiver-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-object-receiver-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "d82db48157b4bf86a57ec18433c718da5edbf9a3070ac64b6e5408abe283ff7c",
+        "source_sha256": "04cfd1b3feef34198c096c0f797a97274804251a2767a95c909ee177a9c5ff92",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-no-getters",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-no-getters",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "ad4074e312916fd461267e053944009ef5c158822f4680628bc96ce5be83d4cf",
+        "source_sha256": "c833cd38adf3fbc3d7cda864342db5030562ff1669f41342328ebedc2cbc894b",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-no-getters-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-no-getters-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "2d89a52865f3e45b618cc3a484dc203b3e7f21bf8900ea95f4b85b3d6c2be347",
+        "source_sha256": "e902ffc4090554c8460140176dc0ef5d3707116de57fe5144407b5600a02e585",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-boxed-identity",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-boxed-identity",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "c1569f782bcb54f598781044d193b0a7b0c910bcfee7b40fd2ef1bffff7ef26d",
+        "source_sha256": "b222fc9cdb61a301bf425e8848f40c4044c42728bc3c4d541cdb50c153f1219b",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-boxed-identity-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-boxed-identity-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "adb4904430b232eba458e146057a837baf762b07c32c6b444d8b6cc97d31a83d",
+        "source_sha256": "6aeca374f95612e4ef80eeff771b21ee75847b49c7765576095bfca78a36bf32",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-intrinsics",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-intrinsics",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "39bf24fb193e05fdcd2c926138b01bc207cae4c22e97a8f316b3e9cefde7c07b",
+        "source_sha256": "8301cd6c3338f1d21d2b13d40a4fb9fb8078c2b4af83b2246934717716ee83e5",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-intrinsics-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-intrinsics-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "50e88180f217e356499080e34a17d48a5cfd25d34db3d0713261a929b1b99c43",
+        "source_sha256": "41e7d47625dfaa0af0ce36cbd9b6b01509d0146d28d1c6dec89ef0b4db49b08e",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-property-metadata",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-property-metadata",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "5a76e99a16212a84849a2b14039a417c9ed50b0dc6759520ed01f614658d4d3e",
+        "source_sha256": "fc24c59ca35bd67257642bf3a4b6842b191c5fdc0771e8e5b142f6a9632017eb",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "prototype-property-metadata-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:prototype-property-metadata-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "a496c95dd3c743466045cf6fa614798596c8ca9473870105007968ef86fcd16f",
+        "source_sha256": "9bd09c9cd316c626dc500a622e1a65ce02308ccd2ddf47aa3a00771dde7710a8",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    }
+  ],
+  "harness_preflight_passed": true,
+  "regressions": [],
+  "improvements": [],
+  "cases": [
+    {
+      "id": "test/built-ins/Object/prototype/isPrototypeOf/arg-is-proxy.js:sloppy",
+      "file": "test/built-ins/Object/prototype/isPrototypeOf/arg-is-proxy.js",
+      "mode": "sloppy",
+      "case_sha256": "9ae1f482fdb0afb68f82f1ec6c56466d3348adcd014067bc7d36c0346415a989",
+      "source_sha256": "e069d3e963b1df3f5fe8bf2868441e9e4df902b210142ead475f42939d7e1db0",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Proxy"
+    },
+    {
+      "id": "test/built-ins/Object/prototype/isPrototypeOf/arg-is-proxy.js:strict",
+      "file": "test/built-ins/Object/prototype/isPrototypeOf/arg-is-proxy.js",
+      "mode": "strict",
+      "case_sha256": "2b3442d0280fc0508dae592fbfbfc349dd269a416749d1286e740db52a8534b4",
+      "source_sha256": "e069d3e963b1df3f5fe8bf2868441e9e4df902b210142ead475f42939d7e1db0",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Proxy"
+    },
+    {
+      "id": "test/built-ins/Object/prototype/isPrototypeOf/builtin.js:sloppy",
+      "file": "test/built-ins/Object/prototype/isPrototypeOf/builtin.js",
+      "mode": "sloppy",
+      "case_sha256": "d0203db3d7d12a913e1f2a43402c07bae48d169daae48132d1d6deb75b0b939f",
+      "source_sha256": "95f6bb0450a58e6c1a24c35fdcb8f1c87c0c546d07557189ae1502f2d14a7d7a",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Reflect.construct"
+    },
+    {
+      "id": "test/built-ins/Object/prototype/isPrototypeOf/builtin.js:strict",
+      "file": "test/built-ins/Object/prototype/isPrototypeOf/builtin.js",
+      "mode": "strict",
+      "case_sha256": "f2ad41ce1bb89a8e8994e80d2e9e500fbfcb6649ee4fae0e9588c0a4ed627fbe",
+      "source_sha256": "95f6bb0450a58e6c1a24c35fdcb8f1c87c0c546d07557189ae1502f2d14a7d7a",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Reflect.construct"
+    },
+    {
+      "id": "test/built-ins/Object/prototype/isPrototypeOf/length.js:sloppy",
+      "file": "test/built-ins/Object/prototype/isPrototypeOf/length.js",
+      "mode": "sloppy",
+      "case_sha256": "0d8daaf1b035854d379827728564ea1420475f3f645d210848c45d6574275f65",
+      "source_sha256": "803aabd22d84cbe825c395ef496cbaf7cb96db6db9cde90defc19011ac53e1b6",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/prototype/isPrototypeOf/length.js:strict",
+      "file": "test/built-ins/Object/prototype/isPrototypeOf/length.js",
+      "mode": "strict",
+      "case_sha256": "0703b474e513b48958aa0c5e3e537c217b3302ae25e48f78ccbbb99eaa3e7266",
+      "source_sha256": "803aabd22d84cbe825c395ef496cbaf7cb96db6db9cde90defc19011ac53e1b6",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/prototype/isPrototypeOf/name.js:sloppy",
+      "file": "test/built-ins/Object/prototype/isPrototypeOf/name.js",
+      "mode": "sloppy",
+      "case_sha256": "1d073610e7b48068177fc579bcad4c1e3604e443dace56bbf740a902bded9549",
+      "source_sha256": "b1cc81e7180b3c38a74738527480b02fddc9cbd0655d823891b0b78f729d052a",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/prototype/isPrototypeOf/name.js:strict",
+      "file": "test/built-ins/Object/prototype/isPrototypeOf/name.js",
+      "mode": "strict",
+      "case_sha256": "ab595714845abdb9e389b564b2156bde0900564c0af230b3d9870fa9d41818f7",
+      "source_sha256": "b1cc81e7180b3c38a74738527480b02fddc9cbd0655d823891b0b78f729d052a",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/prototype/isPrototypeOf/not-a-constructor.js:sloppy",
+      "file": "test/built-ins/Object/prototype/isPrototypeOf/not-a-constructor.js",
+      "mode": "sloppy",
+      "case_sha256": "3cc107915db8f7336b6ccbefd2254eadcf8aabb2302ab39dea989abbcb086a8c",
+      "source_sha256": "68297e803cf54c40f7dcd5d5cf39d623b71c382e1629d91bb7699c335a569be7",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Reflect.construct"
+    },
+    {
+      "id": "test/built-ins/Object/prototype/isPrototypeOf/not-a-constructor.js:strict",
+      "file": "test/built-ins/Object/prototype/isPrototypeOf/not-a-constructor.js",
+      "mode": "strict",
+      "case_sha256": "4dbc584ba0067878e13693326b39d2d287f5c1478fac9f125ad097bdcae1985a",
+      "source_sha256": "68297e803cf54c40f7dcd5d5cf39d623b71c382e1629d91bb7699c335a569be7",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Reflect.construct"
+    },
+    {
+      "id": "test/built-ins/Object/prototype/isPrototypeOf/null-this-and-object-arg-throws.js:sloppy",
+      "file": "test/built-ins/Object/prototype/isPrototypeOf/null-this-and-object-arg-throws.js",
+      "mode": "sloppy",
+      "case_sha256": "41c5dab3689f0c29e5d55d37a5d5373b1995c6ba593ace22073f6732d0f2b62d",
+      "source_sha256": "c9c889fcfeced0f5b58cd49023a219b84d14e82aaaeb5829abb132270d211116",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/prototype/isPrototypeOf/null-this-and-object-arg-throws.js:strict",
+      "file": "test/built-ins/Object/prototype/isPrototypeOf/null-this-and-object-arg-throws.js",
+      "mode": "strict",
+      "case_sha256": "c8034e3c1bc4d44517d1a952d3d95ad7c183ece7ff6b2eabcfd63792d1577d50",
+      "source_sha256": "c9c889fcfeced0f5b58cd49023a219b84d14e82aaaeb5829abb132270d211116",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/prototype/isPrototypeOf/null-this-and-primitive-arg-returns-false.js:sloppy",
+      "file": "test/built-ins/Object/prototype/isPrototypeOf/null-this-and-primitive-arg-returns-false.js",
+      "mode": "sloppy",
+      "case_sha256": "5b918dc37ea6fef0e5a3981a42e2b1d1e3f7f58121eae5f7f1bf08eca018484e",
+      "source_sha256": "3b67f3593ae27f464264f8c739998e3162d77bd4a13a65e61de4e212d73d7014",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol"
+    },
+    {
+      "id": "test/built-ins/Object/prototype/isPrototypeOf/null-this-and-primitive-arg-returns-false.js:strict",
+      "file": "test/built-ins/Object/prototype/isPrototypeOf/null-this-and-primitive-arg-returns-false.js",
+      "mode": "strict",
+      "case_sha256": "c3d900c8e9ff596c7af027ca79dc5195878619856b80b6b9956135316a8537a8",
+      "source_sha256": "3b67f3593ae27f464264f8c739998e3162d77bd4a13a65e61de4e212d73d7014",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol"
+    },
+    {
+      "id": "test/built-ins/Object/prototype/isPrototypeOf/this-value-is-in-prototype-chain-of-arg.js:sloppy",
+      "file": "test/built-ins/Object/prototype/isPrototypeOf/this-value-is-in-prototype-chain-of-arg.js",
+      "mode": "sloppy",
+      "case_sha256": "cd86e5d7e3a49c7b08e615a9427cae212f4785eb2c6cc6efe6a66920b309d10b",
+      "source_sha256": "0860f5217e735cdbcc8525033cc05d2eb52e4682b508e12fc1510f3492cd0020",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/prototype/isPrototypeOf/this-value-is-in-prototype-chain-of-arg.js:strict",
+      "file": "test/built-ins/Object/prototype/isPrototypeOf/this-value-is-in-prototype-chain-of-arg.js",
+      "mode": "strict",
+      "case_sha256": "3b5b23edf9dc55b0d22ac5d2e90e6e3a8d209995bccf24f078b99624a3944fb2",
+      "source_sha256": "0860f5217e735cdbcc8525033cc05d2eb52e4682b508e12fc1510f3492cd0020",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/prototype/isPrototypeOf/undefined-this-and-object-arg-throws.js:sloppy",
+      "file": "test/built-ins/Object/prototype/isPrototypeOf/undefined-this-and-object-arg-throws.js",
+      "mode": "sloppy",
+      "case_sha256": "cc179d41ae9d59a37841d87ee99e7709a60366bc02bcf1cc35e277f08352ee3d",
+      "source_sha256": "a6065672ccee5cc8575ffac4f1ff0ce8401d02a82be7fdb66d94bd5bba368215",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/prototype/isPrototypeOf/undefined-this-and-object-arg-throws.js:strict",
+      "file": "test/built-ins/Object/prototype/isPrototypeOf/undefined-this-and-object-arg-throws.js",
+      "mode": "strict",
+      "case_sha256": "6e37cbd2a72ee9f55e8315c5a9478bb0efa396b61160d26aa08ffab2a12f3981",
+      "source_sha256": "a6065672ccee5cc8575ffac4f1ff0ce8401d02a82be7fdb66d94bd5bba368215",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/prototype/isPrototypeOf/undefined-this-and-primitive-arg-returns-false.js:sloppy",
+      "file": "test/built-ins/Object/prototype/isPrototypeOf/undefined-this-and-primitive-arg-returns-false.js",
+      "mode": "sloppy",
+      "case_sha256": "185e403f5650de021d609324fa39777a3eddffb68e875c6e6ab9d11a8147fca8",
+      "source_sha256": "48cc73fd561ed84de4b33f9a114d802c77a8a508b33b4acc8dc271a828446805",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol"
+    },
+    {
+      "id": "test/built-ins/Object/prototype/isPrototypeOf/undefined-this-and-primitive-arg-returns-false.js:strict",
+      "file": "test/built-ins/Object/prototype/isPrototypeOf/undefined-this-and-primitive-arg-returns-false.js",
+      "mode": "strict",
+      "case_sha256": "77142a06966977398f1920254879dcc1c9ffdff9cd01f5b2241b8785551fb426",
+      "source_sha256": "48cc73fd561ed84de4b33f9a114d802c77a8a508b33b4acc8dc271a828446805",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: Symbol"
+    }
+  ],
+  "source_input_sha256": "ebcdac762343020bcb6ba88090738526933567fdf496d0468c204706b71f9a17",
+  "healthy": true,
+  "baseline_recorded": true,
+  "comparison": {
+    "before_report": "test262-is-prototype-of-initial.json",
+    "same_corpus": true,
+    "same_execution_policy": true,
+    "same_source_harness_and_mode_fingerprints": true,
+    "same_preflight_fingerprints": true,
+    "new_passes": [
+      "test/built-ins/Object/prototype/isPrototypeOf/length.js:sloppy",
+      "test/built-ins/Object/prototype/isPrototypeOf/length.js:strict",
+      "test/built-ins/Object/prototype/isPrototypeOf/name.js:sloppy",
+      "test/built-ins/Object/prototype/isPrototypeOf/name.js:strict",
+      "test/built-ins/Object/prototype/isPrototypeOf/this-value-is-in-prototype-chain-of-arg.js:sloppy",
+      "test/built-ins/Object/prototype/isPrototypeOf/this-value-is-in-prototype-chain-of-arg.js:strict"
+    ],
+    "regressions": []
+  },
+  "note": "Healthy regression baseline retains all 20 variants and 10 unsupported outcomes; this is not complete isPrototypeOf or Object conformance."
+}

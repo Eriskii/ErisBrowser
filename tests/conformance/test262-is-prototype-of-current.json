@@ -1,0 +1,108 @@
+{
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "corpus_manifest_sha256": "f019dcc5e150cf14a6b144577a30937ed1314c6b5de3dd331ad574585f16d461",
+  "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
+  "binary_sha256": "566886403cd490547bf5475078b60f68fdc0a5d5c5f3007d36ee1179a50f6e0c",
+  "cases": {
+    "test/built-ins/Object/prototype/isPrototypeOf/arg-is-proxy.js:sloppy": {
+      "status": "unsupported",
+      "case_sha256": "9ae1f482fdb0afb68f82f1ec6c56466d3348adcd014067bc7d36c0346415a989",
+      "source_sha256": "e069d3e963b1df3f5fe8bf2868441e9e4df902b210142ead475f42939d7e1db0"
+    },
+    "test/built-ins/Object/prototype/isPrototypeOf/arg-is-proxy.js:strict": {
+      "status": "unsupported",
+      "case_sha256": "2b3442d0280fc0508dae592fbfbfc349dd269a416749d1286e740db52a8534b4",
+      "source_sha256": "e069d3e963b1df3f5fe8bf2868441e9e4df902b210142ead475f42939d7e1db0"
+    },
+    "test/built-ins/Object/prototype/isPrototypeOf/builtin.js:sloppy": {
+      "status": "unsupported",
+      "case_sha256": "d0203db3d7d12a913e1f2a43402c07bae48d169daae48132d1d6deb75b0b939f",
+      "source_sha256": "95f6bb0450a58e6c1a24c35fdcb8f1c87c0c546d07557189ae1502f2d14a7d7a"
+    },
+    "test/built-ins/Object/prototype/isPrototypeOf/builtin.js:strict": {
+      "status": "unsupported",
+      "case_sha256": "f2ad41ce1bb89a8e8994e80d2e9e500fbfcb6649ee4fae0e9588c0a4ed627fbe",
+      "source_sha256": "95f6bb0450a58e6c1a24c35fdcb8f1c87c0c546d07557189ae1502f2d14a7d7a"
+    },
+    "test/built-ins/Object/prototype/isPrototypeOf/length.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "0d8daaf1b035854d379827728564ea1420475f3f645d210848c45d6574275f65",
+      "source_sha256": "803aabd22d84cbe825c395ef496cbaf7cb96db6db9cde90defc19011ac53e1b6"
+    },
+    "test/built-ins/Object/prototype/isPrototypeOf/length.js:strict": {
+      "status": "passed",
+      "case_sha256": "0703b474e513b48958aa0c5e3e537c217b3302ae25e48f78ccbbb99eaa3e7266",
+      "source_sha256": "803aabd22d84cbe825c395ef496cbaf7cb96db6db9cde90defc19011ac53e1b6"
+    },
+    "test/built-ins/Object/prototype/isPrototypeOf/name.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "1d073610e7b48068177fc579bcad4c1e3604e443dace56bbf740a902bded9549",
+      "source_sha256": "b1cc81e7180b3c38a74738527480b02fddc9cbd0655d823891b0b78f729d052a"
+    },
+    "test/built-ins/Object/prototype/isPrototypeOf/name.js:strict": {
+      "status": "passed",
+      "case_sha256": "ab595714845abdb9e389b564b2156bde0900564c0af230b3d9870fa9d41818f7",
+      "source_sha256": "b1cc81e7180b3c38a74738527480b02fddc9cbd0655d823891b0b78f729d052a"
+    },
+    "test/built-ins/Object/prototype/isPrototypeOf/not-a-constructor.js:sloppy": {
+      "status": "unsupported",
+      "case_sha256": "3cc107915db8f7336b6ccbefd2254eadcf8aabb2302ab39dea989abbcb086a8c",
+      "source_sha256": "68297e803cf54c40f7dcd5d5cf39d623b71c382e1629d91bb7699c335a569be7"
+    },
+    "test/built-ins/Object/prototype/isPrototypeOf/not-a-constructor.js:strict": {
+      "status": "unsupported",
+      "case_sha256": "4dbc584ba0067878e13693326b39d2d287f5c1478fac9f125ad097bdcae1985a",
+      "source_sha256": "68297e803cf54c40f7dcd5d5cf39d623b71c382e1629d91bb7699c335a569be7"
+    },
+    "test/built-ins/Object/prototype/isPrototypeOf/null-this-and-object-arg-throws.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "41c5dab3689f0c29e5d55d37a5d5373b1995c6ba593ace22073f6732d0f2b62d",
+      "source_sha256": "c9c889fcfeced0f5b58cd49023a219b84d14e82aaaeb5829abb132270d211116"
+    },
+    "test/built-ins/Object/prototype/isPrototypeOf/null-this-and-object-arg-throws.js:strict": {
+      "status": "passed",
+      "case_sha256": "c8034e3c1bc4d44517d1a952d3d95ad7c183ece7ff6b2eabcfd63792d1577d50",
+      "source_sha256": "c9c889fcfeced0f5b58cd49023a219b84d14e82aaaeb5829abb132270d211116"
+    },
+    "test/built-ins/Object/prototype/isPrototypeOf/null-this-and-primitive-arg-returns-false.js:sloppy": {
+      "status": "unsupported",
+      "case_sha256": "5b918dc37ea6fef0e5a3981a42e2b1d1e3f7f58121eae5f7f1bf08eca018484e",
+      "source_sha256": "3b67f3593ae27f464264f8c739998e3162d77bd4a13a65e61de4e212d73d7014"
+    },
+    "test/built-ins/Object/prototype/isPrototypeOf/null-this-and-primitive-arg-returns-false.js:strict": {
+      "status": "unsupported",
+      "case_sha256": "c3d900c8e9ff596c7af027ca79dc5195878619856b80b6b9956135316a8537a8",
+      "source_sha256": "3b67f3593ae27f464264f8c739998e3162d77bd4a13a65e61de4e212d73d7014"
+    },
+    "test/built-ins/Object/prototype/isPrototypeOf/this-value-is-in-prototype-chain-of-arg.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "cd86e5d7e3a49c7b08e615a9427cae212f4785eb2c6cc6efe6a66920b309d10b",
+      "source_sha256": "0860f5217e735cdbcc8525033cc05d2eb52e4682b508e12fc1510f3492cd0020"
+    },
+    "test/built-ins/Object/prototype/isPrototypeOf/this-value-is-in-prototype-chain-of-arg.js:strict": {
+      "status": "passed",
+      "case_sha256": "3b5b23edf9dc55b0d22ac5d2e90e6e3a8d209995bccf24f078b99624a3944fb2",
+      "source_sha256": "0860f5217e735cdbcc8525033cc05d2eb52e4682b508e12fc1510f3492cd0020"
+    },
+    "test/built-ins/Object/prototype/isPrototypeOf/undefined-this-and-object-arg-throws.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "cc179d41ae9d59a37841d87ee99e7709a60366bc02bcf1cc35e277f08352ee3d",
+      "source_sha256": "a6065672ccee5cc8575ffac4f1ff0ce8401d02a82be7fdb66d94bd5bba368215"
+    },
+    "test/built-ins/Object/prototype/isPrototypeOf/undefined-this-and-object-arg-throws.js:strict": {
+      "status": "passed",
+      "case_sha256": "6e37cbd2a72ee9f55e8315c5a9478bb0efa396b61160d26aa08ffab2a12f3981",
+      "source_sha256": "a6065672ccee5cc8575ffac4f1ff0ce8401d02a82be7fdb66d94bd5bba368215"
+    },
+    "test/built-ins/Object/prototype/isPrototypeOf/undefined-this-and-primitive-arg-returns-false.js:sloppy": {
+      "status": "unsupported",
+      "case_sha256": "185e403f5650de021d609324fa39777a3eddffb68e875c6e6ab9d11a8147fca8",
+      "source_sha256": "48cc73fd561ed84de4b33f9a114d802c77a8a508b33b4acc8dc271a828446805"
+    },
+    "test/built-ins/Object/prototype/isPrototypeOf/undefined-this-and-primitive-arg-returns-false.js:strict": {
+      "status": "unsupported",
+      "case_sha256": "77142a06966977398f1920254879dcc1c9ffdff9cd01f5b2241b8785551fb426",
+      "source_sha256": "48cc73fd561ed84de4b33f9a114d802c77a8a508b33b4acc8dc271a828446805"
+    }
+  }
+}
