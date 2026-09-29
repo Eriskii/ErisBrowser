@@ -264,8 +264,14 @@ String search/split selection, which records 470 passed, two failed and 12
 unsupported modes. Generic receivers and needles use ordinary string conversion;
 search methods consult `Symbol.match`, and custom `Symbol.split` hooks receive
 the original arguments. All 8,006 mode fingerprints and prior passes remain
-preserved, with 2,144 verified assertion controls. The built-in RegExp split
-protocol and other String symbol protocols remain incomplete.
+preserved, with 2,144 verified assertion controls.
+
+[RegExp splitting and species construction](tests/conformance/regexp-split.md)
+now honor constructor, flags, execution and capture hooks, adding 86 passes in a
+complete new 48-source selection. It records 88 passed, two failed and six
+unsupported modes. All 8,006 older case observations remain identical; the full
+inventory reaches 8,102 modes and 2,216 verified assertion controls. Unicode
+regexp parsing, realms, Date and the other String symbol protocols remain incomplete.
 
 ## Implementation
 

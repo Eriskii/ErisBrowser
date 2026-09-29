@@ -1,11 +1,17 @@
 # Compatibility status
 
+[RegExp split and species](../tests/conformance/regexp-split.md) now use a separately
+constructed splitter and observable execution, index and capture hooks. The new
+96-mode selection records 88 passed, two failed on missing Date and six unsupported
+modes. Unicode regexp parsing, realms, other symbol methods and complete RegExp
+constructor conversion remain incomplete.
+
 [String conversion, search and custom splitting](../tests/conformance/string-conversion.md)
 now respect ordinary receiver/needle conversion, `Symbol.match` classification
 and object separators' `Symbol.split` hooks. The new 484-mode selection records
 470 passed, two failed and 12 unsupported modes; the two older slice failures
-also pass. Built-in RegExp split/species behavior and other String symbol
-protocols remain incomplete.
+also pass. The built-in split protocol is covered by the follow-up above;
+other String symbol protocols remain incomplete.
 
 [Dynamic ordinary Function construction](../tests/conformance/function-constructor.md)
 now uses global scope, separate parameter/body grammar and the caller's remaining

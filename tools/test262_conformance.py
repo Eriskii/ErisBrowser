@@ -50,7 +50,8 @@ SYMBOL_FEATURES = SUPPORTED_FEATURES | {
 CONSTRUCTION_FEATURES = SYMBOL_FEATURES | FUNCTION_FEATURES | {'new.target', 'Reflect.apply', 'Reflect.construct', 'template'}
 FUNCTION_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REST_PARAMETER_FEATURES
 STRING_SEARCH_FEATURES = SYMBOL_FEATURES | FUNCTION_FEATURES | {'String.prototype.includes', 'String.prototype.endsWith'}
-PROFILE_FEATURES = {'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+REGEXP_SPLIT_FEATURES = CONSTRUCTION_FEATURES
+PROFILE_FEATURES = {'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'reflect-construction': CONSTRUCTION_FEATURES, 'new-target': CONSTRUCTION_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -991,6 +992,23 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
             ('concat-utf16', r"var text='\ud800'.concat('\udfff');", 'text.charCodeAt(1)', '0xdfff', '0xfffd'),
             ('concat-null', "assert.sameValue(typeof String.prototype.concat,'function');var caught;try{String.prototype.concat.call(null);}catch(e){caught=e;}", 'caught instanceof TypeError', 'true', 'false'),
             ('concat-name', '', 'String.prototype.concat.name', "'concat'", "'wrong'"),
+        ]
+        for mode in ('sloppy', 'strict'):
+            for name, setup, actual, good, bad in pairs:
+                for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                    variants.append((name + suffix, setup + f'assert.sameValue({actual},{value});', expected, mode))
+    if profile == 'regexp-split':
+        pairs = [
+            ('regexp-split-default', "var r=/(b)/;", "'abc'.split(r).join('|')", "'a|b|c'", "'wrong'"),
+            ('regexp-split-receiver', "var r=/x/;r.lastIndex=9;'axb'.split(r);", 'r.lastIndex', '9', '0'),
+            ('regexp-split-species-getter', "var get=Object.getOwnPropertyDescriptor(RegExp,Symbol.species).get;", 'get.call(null)', 'null', 'undefined'),
+            ('regexp-split-species-args', "var r={flags:'g',constructor:{}},seen;r.constructor[Symbol.species]=function(p,f){assert.sameValue(p,r);seen=f;return {exec:function(){return null;}};};RegExp.prototype[Symbol.split].call(r,'x');", 'seen', "'gy'", "'g'"),
+            ('regexp-split-order', "var log='',r={flags:'',constructor:{}};r.constructor[Symbol.species]=function(){log+='c';return {exec:function(){throw 1;}};};RegExp.prototype[Symbol.split].call(r,{toString:function(){log+='s';return 'x';}},{valueOf:function(){log+='l';return 0;}});", 'log', "'scl'", "'slc'"),
+            ('regexp-split-empty', "var r={flags:'',constructor:{}},n=0;r.constructor[Symbol.species]=function(){var s={exec:function(){n++;return null;}};Object.defineProperty(s,'lastIndex',{set:function(){throw 1;}});return s;};var a=RegExp.prototype[Symbol.split].call(r,'');assert.sameValue(a[0],'');", 'n', '1', '0'),
+            ('regexp-split-capture-limit', "var r={flags:'',constructor:{}},marker={};r.constructor[Symbol.species]=function(){return {exec:function(){this.lastIndex=1;return {length:Infinity,1:marker};}};};var a=RegExp.prototype[Symbol.split].call(r,'ab',2);", 'a[1]===marker', 'true', 'false'),
+            ('regexp-split-index-clamp', "var r={flags:'',constructor:{}};r.constructor[Symbol.species]=function(){return {exec:function(){this.lastIndex=Infinity;return {length:0};}};};", "RegExp.prototype[Symbol.split].call(r,'abc').join('|')", "'|'", "'wrong'"),
+            ('regexp-split-null-hook', "var r=/x/;r[Symbol.split]=null;", "'a/x/b'.split(r).join('|')", "'a|b'", "'wrong'"),
+            ('regexp-split-unicode', r"var log='',r={flags:'v',constructor:{}};r.constructor[Symbol.species]=function(){return {exec:function(){log+=this.lastIndex;return null;}};};RegExp.prototype[Symbol.split].call(r,'\ud800\udc00x');", 'log', "'02'", "'012'"),
         ]
         for mode in ('sloppy', 'strict'):
             for name, setup, actual, good, bad in pairs:

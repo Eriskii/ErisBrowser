@@ -156,6 +156,7 @@ impl Runtime {
             );
             self.symbols.well_known.insert(name, symbol);
         }
+        self.initialize_regexp_symbols()?;
         for (name, length) in [("for", 1), ("keyFor", 1)] {
             let function = self.intrinsic_function(&format!("Symbol.{name}"), name, length)?;
             self.objects[constructor].insert_hidden(name.into(), function);

@@ -1,0 +1,393 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all direct .js files in built-ins/RegExp/prototype/Symbol.split and RegExp/Symbol.species; no implementation",
+  "directories": {
+    "RegExp/prototype/Symbol.split": [
+      "coerce-flags-err.js",
+      "coerce-flags.js",
+      "coerce-limit-err.js",
+      "coerce-limit.js",
+      "coerce-string-err.js",
+      "coerce-string.js",
+      "get-flags-err.js",
+      "last-index-exceeds-str-size.js",
+      "length.js",
+      "limit-0-bail.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "species-ctor-ctor-get-err.js",
+      "species-ctor-ctor-non-obj.js",
+      "species-ctor-ctor-undef.js",
+      "species-ctor-err.js",
+      "species-ctor-species-get-err.js",
+      "species-ctor-species-non-ctor.js",
+      "species-ctor-species-undef.js",
+      "species-ctor-y.js",
+      "species-ctor.js",
+      "splitter-proto-from-ctor-realm.js",
+      "str-adv-thru-empty-match.js",
+      "str-coerce-lastindex-err.js",
+      "str-coerce-lastindex.js",
+      "str-empty-match-err.js",
+      "str-empty-match.js",
+      "str-empty-no-match.js",
+      "str-get-lastindex-err.js",
+      "str-limit-capturing.js",
+      "str-limit.js",
+      "str-match-err.js",
+      "str-result-coerce-length-err.js",
+      "str-result-coerce-length.js",
+      "str-result-get-capture-err.js",
+      "str-result-get-length-err.js",
+      "str-set-lastindex-err.js",
+      "str-set-lastindex-match.js",
+      "str-set-lastindex-no-match.js",
+      "str-trailing-chars.js",
+      "this-val-non-obj.js",
+      "u-lastindex-adv-thru-failure.js",
+      "u-lastindex-adv-thru-match.js"
+    ],
+    "RegExp/Symbol.species": [
+      "length.js",
+      "return-value.js",
+      "symbol-species-name.js",
+      "symbol-species.js"
+    ]
+  },
+  "test_files": 48,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/built-ins/RegExp/Symbol.species/length.js",
+      "upstream_path": "test/built-ins/RegExp/Symbol.species/length.js",
+      "bytes": 1135,
+      "sha256": "75605ea49dadc39be5683d0a71850081e377e12b4a0c9f4d7d7e6e52ae9c927c"
+    },
+    {
+      "path": "test/built-ins/RegExp/Symbol.species/return-value.js",
+      "upstream_path": "test/built-ins/RegExp/Symbol.species/return-value.js",
+      "bytes": 448,
+      "sha256": "fdb4efab2c33a35bf62b6276106a1e98bf9f82eb01316600d7be34d99a50eac3"
+    },
+    {
+      "path": "test/built-ins/RegExp/Symbol.species/symbol-species-name.js",
+      "upstream_path": "test/built-ins/RegExp/Symbol.species/symbol-species-name.js",
+      "bytes": 633,
+      "sha256": "845969e26bb0589c24eaaecf6d224d24e3d7ad99c152a3c0e349465d3eab2f7a"
+    },
+    {
+      "path": "test/built-ins/RegExp/Symbol.species/symbol-species.js",
+      "upstream_path": "test/built-ins/RegExp/Symbol.species/symbol-species.js",
+      "bytes": 615,
+      "sha256": "7277ef0d27234c3bc664a8761a363805046a7cfafc491e3e534a612f310d94e4"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/coerce-flags-err.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/coerce-flags-err.js",
+      "bytes": 720,
+      "sha256": "058aaf654e2a16f964855b5f3d9a3d28036c678694156f8c55bf01297ac49ae6"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/coerce-flags.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/coerce-flags.js",
+      "bytes": 758,
+      "sha256": "c852c94a05180d935a49c50d0ade8c9293dea20178c5ee6aa5e9ba475f350796"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/coerce-limit-err.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/coerce-limit-err.js",
+      "bytes": 658,
+      "sha256": "c4e7a14f69f6d649ff0ebeeaed2030ff1b6176217b9012dc3339e410b5949259"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/coerce-limit.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/coerce-limit.js",
+      "bytes": 755,
+      "sha256": "e57560780458c7e4e45bf1e9d36e271d0e0aedb4272d0be6cd15f51ef99afb01"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/coerce-string-err.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/coerce-string-err.js",
+      "bytes": 591,
+      "sha256": "142cb777536c713669fce28c0d0eae85bd1d016ed89c3037664f07cfb359f4d6"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/coerce-string.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/coerce-string.js",
+      "bytes": 572,
+      "sha256": "358b94dc1aada9c326587757848b9bed7e68a84948a8e944080607e29b886c1b"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/get-flags-err.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/get-flags-err.js",
+      "bytes": 538,
+      "sha256": "bc0e9629599cfe99d834c00f6b263bf5498022ed1a1802b8cad14c739584ff96"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/last-index-exceeds-str-size.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/last-index-exceeds-str-size.js",
+      "bytes": 823,
+      "sha256": "c1f86c9e8ee250b051b0356b1e971505f22973400643928f06087f758ca2dc9f"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/length.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/length.js",
+      "bytes": 695,
+      "sha256": "c0fe88ae0407de335191a696db7a68639e6080512a978b6562a98b815cde9cdf"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/limit-0-bail.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/limit-0-bail.js",
+      "bytes": 689,
+      "sha256": "efc43ed283042d2482bc7aae61bfb96d2071e4a664e61b60781fe17fdbd8b7ee"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/name.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/name.js",
+      "bytes": 740,
+      "sha256": "a0613f91825238565445c3b6a45f1703ff21c95ae7a852756318d59e1e4a2621"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/not-a-constructor.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/not-a-constructor.js",
+      "bytes": 961,
+      "sha256": "f73643d2113c31ac85d58e029f1dc8471383e08253b9e6413d53b1c532aa783b"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/prop-desc.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/prop-desc.js",
+      "bytes": 637,
+      "sha256": "1b3b4babf4dc9c932da1bb6b27cd809346290407f31ef54da031ff735e238ff3"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/species-ctor-ctor-get-err.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/species-ctor-ctor-get-err.js",
+      "bytes": 715,
+      "sha256": "f424e18bac63f4a295b253b21242f2326b558cff895282d0f04950dd06cf08a9"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/species-ctor-ctor-non-obj.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/species-ctor-ctor-non-obj.js",
+      "bytes": 1337,
+      "sha256": "df8751db63c0f83bcf50b993cf3ef317fb1f24ae8511ffb3c0a7613a73d1c232"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/species-ctor-ctor-undef.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/species-ctor-ctor-undef.js",
+      "bytes": 831,
+      "sha256": "4be58339ca63c3f4a07142c698908ef0f1c92603c64ea75ab355590bd2df7866"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/species-ctor-err.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/species-ctor-err.js",
+      "bytes": 1098,
+      "sha256": "761fd61bf931d6e9d179bd25d5bd4f643851ad2911302c14a82eb7d603ab45f9"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/species-ctor-species-get-err.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/species-ctor-species-get-err.js",
+      "bytes": 1027,
+      "sha256": "4187a459fbae8e81940ccb05e09f77554c9af6bbf2b98b4482b441314c5f8232"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/species-ctor-species-non-ctor.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/species-ctor-species-non-ctor.js",
+      "bytes": 1537,
+      "sha256": "ca9b6ad4a779a941dfa45993acaed0eeca434f0ff98490ce7c13230105648209"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/species-ctor-species-undef.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/species-ctor-species-undef.js",
+      "bytes": 1405,
+      "sha256": "4282af90e6002ada8bf18ab236d87b359441be62db13c75d8a6ba7f86f00aa24"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/species-ctor-y.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/species-ctor-y.js",
+      "bytes": 1221,
+      "sha256": "23f0b5f0e950839450be7afad5b354e57531abce3d307cc88a7bdc136c6f5c31"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/species-ctor.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/species-ctor.js",
+      "bytes": 1435,
+      "sha256": "3f2236f1cc0e63927af18efe3e0f1b1f40b9e357491f68fb82d44d33aa2b8f43"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/splitter-proto-from-ctor-realm.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/splitter-proto-from-ctor-realm.js",
+      "bytes": 994,
+      "sha256": "ae7d54151fa4cf39b40139f8aed13f578e5bc4851546c6fafca5d2ab46935148"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/str-adv-thru-empty-match.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/str-adv-thru-empty-match.js",
+      "bytes": 991,
+      "sha256": "83b29c1a79a61501075fa53e207d7f899300c0bf5182cbaa658887c4a00dfc11"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/str-coerce-lastindex-err.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/str-coerce-lastindex-err.js",
+      "bytes": 1189,
+      "sha256": "8dadf9a716fdc2bcbd2d5d8236c23a1a8b61aadb8d0d985c2cd329a73ca80fe9"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/str-coerce-lastindex.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/str-coerce-lastindex.js",
+      "bytes": 1086,
+      "sha256": "3f6170d1a0028f895429b0d4b17bb8d4e8e1cce295593178e85308720ef1af38"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/str-empty-match-err.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/str-empty-match-err.js",
+      "bytes": 673,
+      "sha256": "5448631fdc9a63a1190097b37256b54751d992150d3477c371df7c7e2e51d85c"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/str-empty-match.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/str-empty-match.js",
+      "bytes": 505,
+      "sha256": "2902a9cef5e9f3ddeff846955255d6c0528264a7ea70e65fca51393014e93610"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/str-empty-no-match.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/str-empty-no-match.js",
+      "bytes": 700,
+      "sha256": "56e99c345d2566cac6d57c3916e6413ede33075eb56be3643da1d5c92231a86d"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/str-get-lastindex-err.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/str-get-lastindex-err.js",
+      "bytes": 1053,
+      "sha256": "340d691aa46c1c000d2b006b985032b4e146b3f4294cc1c2fc87cf78fbfdfa2a"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/str-limit-capturing.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/str-limit-capturing.js",
+      "bytes": 865,
+      "sha256": "380542cf779d4523f8650eac6983be1bd9bac830692fccd114609b28892e2579"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/str-limit.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/str-limit.js",
+      "bytes": 927,
+      "sha256": "7b96aa707113b1e8c77ec1ebc746de2d069c38516489271ac2cd5d2f23e70c41"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/str-match-err.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/str-match-err.js",
+      "bytes": 703,
+      "sha256": "7c1e92d84c7b7291a76e6dfb10723c931701d58b2cfa7bc2f2074407234a7e92"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/str-result-coerce-length-err.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/str-result-coerce-length-err.js",
+      "bytes": 1234,
+      "sha256": "81c2d1b195f1cc4398930fcfe313f87be17224a2efa888711ebdb2af85dfecf2"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/str-result-coerce-length.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/str-result-coerce-length.js",
+      "bytes": 1214,
+      "sha256": "00192d30636ddb53a931993d2374d0723b807103fd30c6a2b0c228eb6b285904"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/str-result-get-capture-err.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/str-result-get-capture-err.js",
+      "bytes": 1178,
+      "sha256": "9bb6fe281c9b7cf2b3c44a1892298c6434593f5850c2b0e2ff20fc27b61780ec"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/str-result-get-length-err.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/str-result-get-length-err.js",
+      "bytes": 1056,
+      "sha256": "d22b6090577719356facb9bd487a01499decc60468f93dabd949e3b2db5455c8"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/str-set-lastindex-err.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/str-set-lastindex-err.js",
+      "bytes": 825,
+      "sha256": "7947e6395ff840482ec71390d819b081a7efdd806fc17a3ed7608517bae88067"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/str-set-lastindex-match.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/str-set-lastindex-match.js",
+      "bytes": 1152,
+      "sha256": "50ff91f71fc3ceee320e276f2aa12ac524c9eac0ab5acc7ff29c900547739bda"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/str-set-lastindex-no-match.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/str-set-lastindex-no-match.js",
+      "bytes": 838,
+      "sha256": "aff86a6525457a3662b4632277dcecf60ea1a2b1fb48b7aeea11d875aa4edb32"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/str-trailing-chars.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/str-trailing-chars.js",
+      "bytes": 772,
+      "sha256": "7273787d7594e17748c0cbaa896fa21afc40b71667670278190df00933f75af3"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/this-val-non-obj.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/this-val-non-obj.js",
+      "bytes": 972,
+      "sha256": "d5453accca944b19405631f5d6c39c8ae55fc45cece5326f9786081978c580ca"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/u-lastindex-adv-thru-failure.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/u-lastindex-adv-thru-failure.js",
+      "bytes": 944,
+      "sha256": "745c6ee598316ab45eb8045d8cd917ffcfb5d359b228ed1a4045ba9df39b151d"
+    },
+    {
+      "path": "test/built-ins/RegExp/prototype/Symbol.split/u-lastindex-adv-thru-match.js",
+      "upstream_path": "test/built-ins/RegExp/prototype/Symbol.split/u-lastindex-adv-thru-match.js",
+      "bytes": 1209,
+      "sha256": "b56ac85f1c57b19250dc2ae02b41eb85a23ba67c680ac7647edeef3108e7d645"
+    }
+  ]
+}

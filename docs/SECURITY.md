@@ -237,5 +237,12 @@ dispatch invoke ordinary getters/callbacks under the existing shared runtime
 limits. Split-hook argument storage is charged before calling author code.
 Recursive getter/conversion/hook regressions verify resource exhaustion and
 counter/frame cleanup; a heap-exhausted split cannot invoke the hook. No quotas,
-dependencies or process authorities change. The built-in RegExp split protocol
-remains incomplete; see the [coverage and limits](../tests/conformance/string-conversion.md).
+dependencies or process authorities change. See the [coverage and limits](../tests/conformance/string-conversion.md).
+
+The [RegExp split follow-up](../tests/conformance/regexp-split.md) runs species,
+flags, execution and capture callbacks under the same resource guards. It charges
+flag assembly, constructor arguments, substring copies and result growth; the
+private result array cannot expose intermediate values to inherited setters.
+Tests cover recursive callbacks, unbounded capture lengths, backward-moving match
+indices, heap refusal and frame cleanup. No complete allocation-accounting or
+independent security-audit claim follows from these checks.

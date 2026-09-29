@@ -61,6 +61,10 @@ all 470 new-profile passes and the entire unchanged inventory.
 
 ## Validation and boundaries
 
+The later [RegExp split/species checkpoint](regexp-split.md) replaces the direct
+regexp fallback described below with the observable built-in protocol. This
+record retains the original checkpoint's measurements and boundaries.
+
 Rust 1.88 and 1.95 pass strict all-target Clippy and all **1,011 default / 1,022
 Vulkan-feature tests**, with none ignored. Both release configurations preserve
 all **57 CPU pixel references**. **168 Python tests** and **45,000 deterministic

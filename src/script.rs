@@ -23,6 +23,7 @@ mod machine;
 mod names;
 mod parser;
 mod property_keys;
+mod regexp_builtins;
 mod string_builtins;
 mod symbols;
 mod window;
@@ -7006,6 +7007,17 @@ impl Runtime {
         args: &[Value],
         doc: &mut Document,
     ) -> Result<Value> {
+        if name == "species" {
+            return Ok(receiver);
+        }
+        if name == "symbolSplit" {
+            return self.regexp_symbol_split(
+                receiver,
+                args.first().cloned().unwrap_or(Value::Undefined),
+                args.get(1).cloned().unwrap_or(Value::Undefined),
+                doc,
+            );
+        }
         if let Some(key) = name.strip_prefix("get.") {
             if key == "flags" {
                 if !js_object(&receiver) {
@@ -7133,9 +7145,6 @@ impl Runtime {
         doc: &mut Document,
     ) -> Result<Value> {
         let regex = self.regexp_slot(&pattern);
-        if name == "split" {
-            return self.regexp_split(regex.as_ref().unwrap(), text, argument, doc);
-        }
         let receiver = if matches!(name, "match" | "search") && regex.is_none() {
             self.regexp_create(pattern, Value::Undefined, false, doc)?
         } else {
@@ -7393,74 +7402,6 @@ impl Runtime {
         }
         Ok(output.into())
     }
-    fn regexp_split(
-        &mut self,
-        pattern: &RegExp,
-        text: JsString,
-        limit: Value,
-        doc: &mut Document,
-    ) -> Result<Value> {
-        let limit = if limit == Value::Undefined {
-            u32::MAX as usize
-        } else {
-            to_i32(self.number_value(limit, doc)?) as u32 as usize
-        };
-        if limit == 0 {
-            return self.array(Vec::new());
-        }
-        if text.is_empty() {
-            return if self.regexp_find(pattern, &text, 0, true)?.is_some() {
-                self.array(Vec::new())
-            } else {
-                self.array(vec![Value::String(text)])
-            };
-        }
-        let mut values = Vec::new();
-        let mut previous = 0;
-        let mut position = 0;
-        while position < text.len() {
-            self.tick()?;
-            let Some(found) = self.regexp_find(pattern, &text, position, true)? else {
-                position += 1;
-                continue;
-            };
-            let end = found.span().1;
-            if end == previous {
-                position += 1;
-                continue;
-            }
-            if values.len() >= 65536 {
-                return Err(ScriptError::resource("array length limit exceeded"));
-            }
-            self.charge(std::mem::size_of::<Value>())?;
-            values.push(self.string(&text.units()[previous..position])?);
-            if values.len() == limit {
-                return self.array(values);
-            }
-            for span in found.captures.iter().skip(1) {
-                if values.len() >= 65536 {
-                    return Err(ScriptError::resource("array length limit exceeded"));
-                }
-                self.charge(std::mem::size_of::<Value>())?;
-                values.push(match span {
-                    Some((a, b)) => self.string(&text.units()[*a..*b])?,
-                    None => Value::Undefined,
-                });
-                if values.len() == limit {
-                    return self.array(values);
-                }
-            }
-            previous = end;
-            position = end;
-        }
-        if values.len() >= 65536 {
-            return Err(ScriptError::resource("array length limit exceeded"));
-        }
-        self.charge(std::mem::size_of::<Value>())?;
-        values.push(self.string(&text.units()[previous..])?);
-        self.array(values)
-    }
-
     fn style_property_name(&mut self, name: &str) -> Result<Option<String>> {
         self.work(name.len().saturating_add(1))?;
         if name.len() > 256 || name.starts_with("--") {
@@ -8783,9 +8724,7 @@ impl Runtime {
                 }
             }
             Value::String(text) => {
-                if matches!(name, "match" | "search" | "replace")
-                    || name == "split" && self.regexp_slot(&arg(0)).is_some()
-                {
+                if matches!(name, "match" | "search" | "replace") {
                     return self.string_regexp(name, text.clone(), arg(0), arg(1), doc);
                 }
                 if matches!(name, "includes" | "startsWith" | "endsWith")

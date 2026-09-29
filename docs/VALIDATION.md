@@ -1,5 +1,24 @@
 # Validation record
 
+## RegExp split and species construction
+
+The [implementation record](../tests/conformance/regexp-split.md) and
+[evidence](../tests/conformance/regexp-split.json) cover 48 complete pinned sources:
+**88 passed / 2 failed / 6 unsupported modes**, gaining **86 passes** over the
+preserved `cd1c016` binary. The remaining failures now reach missing Date; realm
+and Unicode regexp prerequisites remain unsupported. Every older case object and
+assertion control is identical. The inventory reaches **27 profiles / 8,102 modes /
+2,216 verified controls**, with only one new baseline and no old policy changes.
+
+All **32 supported local modes** pass; the two original array-descriptor
+prerequisite modes remain unsupported. Rust **1.88 / 1.95**, strict all-target
+Clippy and full tests pass: **1,014 default / 1,025 Vulkan-feature tests**, none
+ignored. Both release builds preserve all **57 CPU pixel references**. **171
+Python tests**, **45,000 mutation cases** and the unchanged upstream HTML baseline
+pass. Resource tests cover recursive callbacks, hostile capture lengths and
+indices, heap refusal and cleanup. Agent quota remains unavailable; no independent
+agent review, GPU rendering or Chromium comparison is claimed.
+
 ## String conversion, search and custom splitting
 
 The [implementation record](../tests/conformance/string-conversion.md) and
