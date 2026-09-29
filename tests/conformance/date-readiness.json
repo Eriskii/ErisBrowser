@@ -1,0 +1,181 @@
+{
+  "kind": "Deadline-bounded readiness waits for host timezone discovery",
+  "parent_commit": "a978af13dc0bc2766d05fda8033a03606ba1208e",
+  "parent_ci": {
+    "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/36535049402",
+    "conclusion": "success",
+    "path": "/tmp/eris-date-readiness-before/remote-ci-final.json",
+    "sha256": "5af3230464b692456d145addda4761d51303f7aa8fd485c401100dcc860e0673"
+  },
+  "production_input_sha256": "7a1bcda0e3f121542761245cfc32830edce9959373c93690741506bd96c0ffea",
+  "input_manifest": {
+    "path": "/tmp/eris-date-readiness-after/inputs.json",
+    "sha256": "6a164fa93c1fdcae8b1d2b627f41c30b1bd56814dc02eacf6a998b37d808bcb4"
+  },
+  "source_archive": {
+    "path": "/tmp/eris-date-readiness-after/source.tar",
+    "sha256": "8c9e175a7852c0cfc7e5da0b70e7a863dab3efee574e3badb66ebb846654bd84"
+  },
+  "captured_before_build": true,
+  "changed_sources": [
+    {
+      "path": "src/date_host/tests.rs",
+      "sha256": "ee918a22fcbe76be7fb1e98765864c37186ef3942ce6b21d9698c3453b741fda"
+    },
+    {
+      "path": "src/date_host.rs",
+      "sha256": "2c8ef2a33174f53c4bb11a7633addecae6958aa471d7274284cb5dfa99cc0ba0"
+    }
+  ],
+  "binaries": {
+    "default": {
+      "eris-browser": "d7b3e030c45ec5cfe3db4e2fee63e95d678defb7c5f43fbc8f0878767e1cfa63",
+      "eris-js": "aae61052e935bebf797f05a412d78b1d677b80ff66cd9369d0fbafe332cb8d22",
+      "eris-dom": "e6d8f63edb88bd11f5987c8be0e1898c385155a1e017125497316c0f36627bce",
+      "eris-stress": "2622d70c44dcfbdb746bfcb6b65e82627dcebc0167a417ada9ddf7b65b94fdeb"
+    },
+    "feature": {
+      "eris-browser": "fdd10a7db6fc9b16156ecd42cdf47c4ee0caa18e46f9d410ae4d1d2e44390265",
+      "eris-js": "b7f54141568564e3c457b598a70d9c953ea63c025ce1215a80702a68dc9ff26e",
+      "eris-dom": "6ae167f09eee3e5844d6552f3971168eac56dac11e026c3b7a81568dfcf43dc5",
+      "eris-stress": "96973a957f1b87b2af4a672da327e21cdc3bb0ad4b0d6d3af76e7e6f49d4152a"
+    }
+  },
+  "rust_checks": {
+    "198-default-clippy": {
+      "path": "/tmp/eris-date-readiness-after/198-default-clippy.log",
+      "sha256": "049f8069069b17bb644f71a58d7cb988e2a7c4e07b2fadea01cc3bcd2bbe5f2c",
+      "passed": true
+    },
+    "198-feature-clippy": {
+      "path": "/tmp/eris-date-readiness-after/198-feature-clippy.log",
+      "sha256": "53700bbf91266ca02d9759497d791b8aca3521f69376f4cf87877b8e9702c5c0",
+      "passed": true
+    },
+    "188-feature-clippy": {
+      "path": "/tmp/eris-date-readiness-after/188-feature-clippy.log",
+      "sha256": "931337f51e50dda89232c9cff15f8dab07519bbcd32a4d97d1a5a331ea2d6edd",
+      "passed": true
+    },
+    "198-default-tests": {
+      "path": "/tmp/eris-date-readiness-after/198-default-tests.log",
+      "sha256": "13812acc58bbc61d6169dd25204d297035703ccb5069e559fbbe657337d61786",
+      "passed": 1144,
+      "failed": 0,
+      "ignored": 0
+    },
+    "198-feature-tests": {
+      "path": "/tmp/eris-date-readiness-after/198-feature-tests.log",
+      "sha256": "3678acd32f1b377a2190839b5fe0c57071d0e9da5910b94516b1ac1d7da625a8",
+      "passed": 1155,
+      "failed": 0,
+      "ignored": 0
+    }
+  },
+  "focused_host_tests": {
+    "passed": 17,
+    "new_groups": 6,
+    "coverage": [
+      "blocked request writes with readable output and final HUP",
+      "EINTR, absolute deadline and cancellation checks",
+      "fragmented helper response",
+      "EOF before child success, nonzero exit, cancellation or deadline",
+      "bounded private oversized request to exercise partial writes; public cap unchanged",
+      "silent helper cancellation and timeout"
+    ]
+  },
+  "formal_profiles": {
+    "comparison": {
+      "path": "/tmp/eris-date-readiness-after/profiles-comparison.json",
+      "sha256": "d7488d2a86997190a730bf80455ba43b2f8b90ff98f99edef6c9f5bcda34e898"
+    },
+    "profiles": 36,
+    "cases": 16146,
+    "controls": 3592,
+    "observation_changes": 0,
+    "control_changes": 0,
+    "existing_baseline_gates_passed": 29,
+    "baseline_changes": false,
+    "policy_changes": false,
+    "fixture_changes": false
+  },
+  "local_date": {
+    "report": {
+      "path": "/tmp/eris-date-readiness-after/local-final.json",
+      "sha256": "e205ea4aff37fbf512e275dd71a79f221be268a5b41c4900dfa9f35ef91b23b2"
+    },
+    "semantic_modes_passed": 406,
+    "controls_verified": 12
+  },
+  "pixel_references": {
+    "default": {
+      "path": "/tmp/eris-date-readiness-after/reftest-default/report.json",
+      "sha256": "8f114fc79eb7ab130853b1f85a5362f4de2ac56e769ebbb40767c2396aece197",
+      "passed": 57,
+      "failed": 0
+    },
+    "feature": {
+      "path": "/tmp/eris-date-readiness-after/reftest-feature/report.json",
+      "sha256": "cc3508df18c99793bc1f42f8c55f45b509eebeac057c0d50681893b9320cd94f",
+      "passed": 57,
+      "failed": 0
+    }
+  },
+  "worker_timing": {
+    "comparison": {
+      "path": "docs/benchmark-worker-date-readiness.json",
+      "sha256": "dfd1e8bb842289ced784a6d20e4a7e7d62933cbddcdc1cc6d76c2d8e90d71aa3"
+    },
+    "fresh_workers_per_variant_per_binary": 27,
+    "warm_frames_per_variant_per_binary": 540,
+    "identical_final_fixture_png_pairs": 18,
+    "observations": {
+      "default": {
+        "startup_median_delta_ms_range": [
+          -9.273078,
+          -9.004649
+        ],
+        "startup_after_median_ms_range": [
+          2.038693,
+          2.207162
+        ],
+        "warm_frame_median_delta_ms_range": [
+          -0.07903599999999988,
+          0.10222200000000115
+        ]
+      },
+      "feature": {
+        "startup_median_delta_ms_range": [
+          -8.484967,
+          -8.204577
+        ],
+        "startup_after_median_ms_range": [
+          3.6259,
+          3.924335
+        ],
+        "warm_frame_median_delta_ms_range": [
+          -0.09199699999999922,
+          0.36585
+        ]
+      }
+    },
+    "controlled_environment": false,
+    "chromium_comparison": false,
+    "vulkan_execution_measured": false
+  },
+  "unchanged_binary_checks": {
+    "eris-dom": "Default and feature binaries are byte-identical to the parent checkpoint; existing HTML observations retained, not rerun.",
+    "eris-stress": "Default and feature binaries are byte-identical to the parent checkpoint; existing stress observations retained, not rerun."
+  },
+  "review": {
+    "path": "/tmp/eris-date-readiness-focused-review.json",
+    "sha256": "23a3954649a4296ea0330f654cb0f7c7ee28b6d17dabd23ec0852cb8d151ac51"
+  },
+  "remote_ci": "pending publication; parent CI is a separate completed run",
+  "remaining_limits": [
+    "Exit observation retains a deadline-capped polling fallback; this change does not promise the elimination of all scheduling delays.",
+    "The service retains ownership through actual child reaping; an application timeout does not bound a blocked kernel operation or cleanup.",
+    "Custom Vulkan rasterization, full web compatibility, comprehensive security assurance and Chromium performance parity remain incomplete."
+  ],
+  "full_goal_complete": false
+}

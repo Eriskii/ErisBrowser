@@ -1,0 +1,510 @@
+{
+  "kind": "Date helper readiness worker comparison",
+  "before_commit": "a978af13dc0bc2766d05fda8033a03606ba1208e",
+  "variants": {
+    "default": {
+      "before_report_path": "/tmp/eris-date-readiness-before/default/worker-timing.json",
+      "before_report_sha256": "a888c1fedaf3ceeace0429e533a3739c853b6817a48816163dc1b1eaf2f5d184",
+      "after_report_path": "/tmp/eris-date-readiness-after/default/worker-timing.json",
+      "after_report_sha256": "3ebd789a39050c9c419de0f5d463fa202fbc2097512b7aafcabfe00fa07149a6",
+      "before_input_sha256": "fb9df6d5d132062d3f19e71ed32843abe3439542ab1ade7fefefda632bcd4ed1",
+      "after_input_sha256": "7a1bcda0e3f121542761245cfc32830edce9959373c93690741506bd96c0ffea",
+      "before_binary_sha256": "0bdbc48b5aeb016a7d3d2133981465360842a8c16efbe2dc162d7abde3cad928",
+      "after_binary_sha256": "d7b3e030c45ec5cfe3db4e2fee63e95d678defb7c5f43fbc8f0878767e1cfa63",
+      "fresh_workers_per_binary": 27,
+      "warm_frames_per_binary": 540,
+      "cases": [
+        {
+          "name": "home",
+          "startup_before_ms": {
+            "samples": 3,
+            "median_ms": 11.205289,
+            "p95_ms": 11.272637
+          },
+          "startup_after_ms": {
+            "samples": 3,
+            "median_ms": 2.053961,
+            "p95_ms": 2.250123
+          },
+          "startup_median_delta_ms": -9.151328,
+          "warm_before_ms": {
+            "samples": 60,
+            "median_ms": 5.354519,
+            "p95_ms": 5.941432
+          },
+          "warm_after_ms": {
+            "samples": 60,
+            "median_ms": 5.34133,
+            "p95_ms": 5.782526
+          },
+          "final_fresh_run_png_sha256": "d50ff8128d00a969734ba321ae821a40381d8d54a2bad26624a9a754e7ed52c0",
+          "final_fresh_run_png_byte_identical": true
+        },
+        {
+          "name": "gallery",
+          "startup_before_ms": {
+            "samples": 3,
+            "median_ms": 11.211811,
+            "p95_ms": 11.355173
+          },
+          "startup_after_ms": {
+            "samples": 3,
+            "median_ms": 2.207162,
+            "p95_ms": 2.212722
+          },
+          "startup_median_delta_ms": -9.004649,
+          "warm_before_ms": {
+            "samples": 60,
+            "median_ms": 8.709374,
+            "p95_ms": 9.401737
+          },
+          "warm_after_ms": {
+            "samples": 60,
+            "median_ms": 8.718027,
+            "p95_ms": 9.425868
+          },
+          "final_fresh_run_png_sha256": "0443d68d38d6a6a248e66a203699d86d398f985df7731dbbbf4d5510de63a6c1",
+          "final_fresh_run_png_byte_identical": true
+        },
+        {
+          "name": "forms",
+          "startup_before_ms": {
+            "samples": 3,
+            "median_ms": 11.206391,
+            "p95_ms": 11.35878
+          },
+          "startup_after_ms": {
+            "samples": 3,
+            "median_ms": 2.038693,
+            "p95_ms": 2.182234
+          },
+          "startup_median_delta_ms": -9.167698,
+          "warm_before_ms": {
+            "samples": 60,
+            "median_ms": 6.158223,
+            "p95_ms": 6.34598
+          },
+          "warm_after_ms": {
+            "samples": 60,
+            "median_ms": 6.158979,
+            "p95_ms": 6.475598
+          },
+          "final_fresh_run_png_sha256": "e7cc477b0c919e403f82e562efbacc08f8e80bf22eb497cfddd981c249523aac",
+          "final_fresh_run_png_byte_identical": true
+        },
+        {
+          "name": "templates",
+          "startup_before_ms": {
+            "samples": 3,
+            "median_ms": 11.278318,
+            "p95_ms": 11.355304
+          },
+          "startup_after_ms": {
+            "samples": 3,
+            "median_ms": 2.058139,
+            "p95_ms": 2.120397
+          },
+          "startup_median_delta_ms": -9.220179,
+          "warm_before_ms": {
+            "samples": 60,
+            "median_ms": 1.349651,
+            "p95_ms": 1.541064
+          },
+          "warm_after_ms": {
+            "samples": 60,
+            "median_ms": 1.275767,
+            "p95_ms": 1.589131
+          },
+          "final_fresh_run_png_sha256": "4b075bd60bc8243937c30cfb8d4b789b8dcd5ee5f2b610ec4e2f43f87c5fee14",
+          "final_fresh_run_png_byte_identical": true
+        },
+        {
+          "name": "positioning",
+          "startup_before_ms": {
+            "samples": 3,
+            "median_ms": 11.202033,
+            "p95_ms": 11.382175
+          },
+          "startup_after_ms": {
+            "samples": 3,
+            "median_ms": 2.125166,
+            "p95_ms": 2.210989
+          },
+          "startup_median_delta_ms": -9.076867,
+          "warm_before_ms": {
+            "samples": 60,
+            "median_ms": 1.321217,
+            "p95_ms": 1.540823
+          },
+          "warm_after_ms": {
+            "samples": 60,
+            "median_ms": 1.353094,
+            "p95_ms": 1.594441
+          },
+          "final_fresh_run_png_sha256": "4f78e0a10aab6f107650bc4b979d9e817afb48fdb253287fd5e7eca98a216658",
+          "final_fresh_run_png_byte_identical": true
+        },
+        {
+          "name": "events",
+          "startup_before_ms": {
+            "samples": 3,
+            "median_ms": 11.170113,
+            "p95_ms": 11.276434
+          },
+          "startup_after_ms": {
+            "samples": 3,
+            "median_ms": 2.119034,
+            "p95_ms": 2.12162
+          },
+          "startup_median_delta_ms": -9.051079000000001,
+          "warm_before_ms": {
+            "samples": 60,
+            "median_ms": 1.323601,
+            "p95_ms": 1.534491
+          },
+          "warm_after_ms": {
+            "samples": 60,
+            "median_ms": 1.334899,
+            "p95_ms": 1.502527
+          },
+          "final_fresh_run_png_sha256": "5b0404e46ae3e6f4b9038c9b9250ce4dac49c6b1f0fc2fbc1ba9028e95a43209",
+          "final_fresh_run_png_byte_identical": true
+        },
+        {
+          "name": "events-visible",
+          "startup_before_ms": {
+            "samples": 3,
+            "median_ms": 11.350625,
+            "p95_ms": 11.370452
+          },
+          "startup_after_ms": {
+            "samples": 3,
+            "median_ms": 2.097685,
+            "p95_ms": 2.145164
+          },
+          "startup_median_delta_ms": -9.25294,
+          "warm_before_ms": {
+            "samples": 60,
+            "median_ms": 12.578223,
+            "p95_ms": 14.134516
+          },
+          "warm_after_ms": {
+            "samples": 60,
+            "median_ms": 12.680445,
+            "p95_ms": 14.162262
+          },
+          "final_fresh_run_png_sha256": "79b68171bb388fd5513cd418344e2848610a7341afd4100de8847326d75cc11d",
+          "final_fresh_run_png_byte_identical": true
+        },
+        {
+          "name": "responsive",
+          "startup_before_ms": {
+            "samples": 3,
+            "median_ms": 11.404136,
+            "p95_ms": 11.513323
+          },
+          "startup_after_ms": {
+            "samples": 3,
+            "median_ms": 2.131058,
+            "p95_ms": 2.194397
+          },
+          "startup_median_delta_ms": -9.273078,
+          "warm_before_ms": {
+            "samples": 60,
+            "median_ms": 2.278092,
+            "p95_ms": 2.626453
+          },
+          "warm_after_ms": {
+            "samples": 60,
+            "median_ms": 2.199056,
+            "p95_ms": 2.569378
+          },
+          "final_fresh_run_png_sha256": "1b3d62738f5f9d44721b14b3f52b5a43a7b61bd32dc272527d7d33bee8fcf9c0",
+          "final_fresh_run_png_byte_identical": true
+        },
+        {
+          "name": "disclosures",
+          "startup_before_ms": {
+            "samples": 3,
+            "median_ms": 11.339985,
+            "p95_ms": 11.355885
+          },
+          "startup_after_ms": {
+            "samples": 3,
+            "median_ms": 2.108064,
+            "p95_ms": 2.654509
+          },
+          "startup_median_delta_ms": -9.231921,
+          "warm_before_ms": {
+            "samples": 60,
+            "median_ms": 1.432107,
+            "p95_ms": 1.709654
+          },
+          "warm_after_ms": {
+            "samples": 60,
+            "median_ms": 1.424549,
+            "p95_ms": 1.627694
+          },
+          "final_fresh_run_png_sha256": "946c5641287b432ca865ea8169dd4077ede0c340722c7e943e13661596af571f",
+          "final_fresh_run_png_byte_identical": true
+        }
+      ]
+    },
+    "feature": {
+      "before_report_path": "/tmp/eris-date-readiness-before/feature/worker-timing.json",
+      "before_report_sha256": "c54ca86bf0c3cd9438be3f278aedddbd8d6b8c92fd2b62c74ece19c0f43a169c",
+      "after_report_path": "/tmp/eris-date-readiness-after/feature/worker-timing.json",
+      "after_report_sha256": "04b8bb19e6d66cd511d02f97366c7cf0f85866bc26e2d4fc594e2c3dea7910de",
+      "before_input_sha256": "fb9df6d5d132062d3f19e71ed32843abe3439542ab1ade7fefefda632bcd4ed1",
+      "after_input_sha256": "7a1bcda0e3f121542761245cfc32830edce9959373c93690741506bd96c0ffea",
+      "before_binary_sha256": "87977e80fbf61aefd0f25ccf40f91f5ee67bd1225861faa72d9b6c048c9e896b",
+      "after_binary_sha256": "fdd10a7db6fc9b16156ecd42cdf47c4ee0caa18e46f9d410ae4d1d2e44390265",
+      "fresh_workers_per_binary": 27,
+      "warm_frames_per_binary": 540,
+      "cases": [
+        {
+          "name": "home",
+          "startup_before_ms": {
+            "samples": 3,
+            "median_ms": 12.02303,
+            "p95_ms": 12.430333
+          },
+          "startup_after_ms": {
+            "samples": 3,
+            "median_ms": 3.781244,
+            "p95_ms": 3.814457
+          },
+          "startup_median_delta_ms": -8.241786000000001,
+          "warm_before_ms": {
+            "samples": 60,
+            "median_ms": 5.207229,
+            "p95_ms": 5.82983
+          },
+          "warm_after_ms": {
+            "samples": 60,
+            "median_ms": 5.513837,
+            "p95_ms": 6.211077
+          },
+          "final_fresh_run_png_sha256": "d50ff8128d00a969734ba321ae821a40381d8d54a2bad26624a9a754e7ed52c0",
+          "final_fresh_run_png_byte_identical": true
+        },
+        {
+          "name": "gallery",
+          "startup_before_ms": {
+            "samples": 3,
+            "median_ms": 12.128912,
+            "p95_ms": 12.238048
+          },
+          "startup_after_ms": {
+            "samples": 3,
+            "median_ms": 3.924335,
+            "p95_ms": 4.096943
+          },
+          "startup_median_delta_ms": -8.204577,
+          "warm_before_ms": {
+            "samples": 60,
+            "median_ms": 8.640794,
+            "p95_ms": 9.681948
+          },
+          "warm_after_ms": {
+            "samples": 60,
+            "median_ms": 8.548797,
+            "p95_ms": 9.286885
+          },
+          "final_fresh_run_png_sha256": "0443d68d38d6a6a248e66a203699d86d398f985df7731dbbbf4d5510de63a6c1",
+          "final_fresh_run_png_byte_identical": true
+        },
+        {
+          "name": "forms",
+          "startup_before_ms": {
+            "samples": 3,
+            "median_ms": 12.030254,
+            "p95_ms": 12.131376
+          },
+          "startup_after_ms": {
+            "samples": 3,
+            "median_ms": 3.713445,
+            "p95_ms": 3.951837
+          },
+          "startup_median_delta_ms": -8.316809,
+          "warm_before_ms": {
+            "samples": 60,
+            "median_ms": 6.180977,
+            "p95_ms": 6.774553
+          },
+          "warm_after_ms": {
+            "samples": 60,
+            "median_ms": 6.294666,
+            "p95_ms": 6.89848
+          },
+          "final_fresh_run_png_sha256": "e7cc477b0c919e403f82e562efbacc08f8e80bf22eb497cfddd981c249523aac",
+          "final_fresh_run_png_byte_identical": true
+        },
+        {
+          "name": "templates",
+          "startup_before_ms": {
+            "samples": 3,
+            "median_ms": 12.126136,
+            "p95_ms": 12.185548
+          },
+          "startup_after_ms": {
+            "samples": 3,
+            "median_ms": 3.834235,
+            "p95_ms": 3.84249
+          },
+          "startup_median_delta_ms": -8.291901000000001,
+          "warm_before_ms": {
+            "samples": 60,
+            "median_ms": 1.371533,
+            "p95_ms": 1.766251
+          },
+          "warm_after_ms": {
+            "samples": 60,
+            "median_ms": 1.342704,
+            "p95_ms": 1.691344
+          },
+          "final_fresh_run_png_sha256": "4b075bd60bc8243937c30cfb8d4b789b8dcd5ee5f2b610ec4e2f43f87c5fee14",
+          "final_fresh_run_png_byte_identical": true
+        },
+        {
+          "name": "positioning",
+          "startup_before_ms": {
+            "samples": 3,
+            "median_ms": 12.325774,
+            "p95_ms": 12.396058
+          },
+          "startup_after_ms": {
+            "samples": 3,
+            "median_ms": 3.840807,
+            "p95_ms": 3.914246
+          },
+          "startup_median_delta_ms": -8.484967,
+          "warm_before_ms": {
+            "samples": 60,
+            "median_ms": 1.394506,
+            "p95_ms": 1.574857
+          },
+          "warm_after_ms": {
+            "samples": 60,
+            "median_ms": 1.369144,
+            "p95_ms": 1.619027
+          },
+          "final_fresh_run_png_sha256": "4f78e0a10aab6f107650bc4b979d9e817afb48fdb253287fd5e7eca98a216658",
+          "final_fresh_run_png_byte_identical": true
+        },
+        {
+          "name": "events",
+          "startup_before_ms": {
+            "samples": 3,
+            "median_ms": 11.862516,
+            "p95_ms": 11.878998
+          },
+          "startup_after_ms": {
+            "samples": 3,
+            "median_ms": 3.654805,
+            "p95_ms": 3.824086
+          },
+          "startup_median_delta_ms": -8.207711,
+          "warm_before_ms": {
+            "samples": 60,
+            "median_ms": 1.357045,
+            "p95_ms": 1.563606
+          },
+          "warm_after_ms": {
+            "samples": 60,
+            "median_ms": 1.313499,
+            "p95_ms": 1.606374
+          },
+          "final_fresh_run_png_sha256": "5b0404e46ae3e6f4b9038c9b9250ce4dac49c6b1f0fc2fbc1ba9028e95a43209",
+          "final_fresh_run_png_byte_identical": true
+        },
+        {
+          "name": "events-visible",
+          "startup_before_ms": {
+            "samples": 3,
+            "median_ms": 12.087753,
+            "p95_ms": 12.199305
+          },
+          "startup_after_ms": {
+            "samples": 3,
+            "median_ms": 3.6259,
+            "p95_ms": 3.823144
+          },
+          "startup_median_delta_ms": -8.461853,
+          "warm_before_ms": {
+            "samples": 60,
+            "median_ms": 12.749248,
+            "p95_ms": 13.72001
+          },
+          "warm_after_ms": {
+            "samples": 60,
+            "median_ms": 13.115098,
+            "p95_ms": 14.912454
+          },
+          "final_fresh_run_png_sha256": "79b68171bb388fd5513cd418344e2848610a7341afd4100de8847326d75cc11d",
+          "final_fresh_run_png_byte_identical": true
+        },
+        {
+          "name": "responsive",
+          "startup_before_ms": {
+            "samples": 3,
+            "median_ms": 11.9861,
+            "p95_ms": 12.105977
+          },
+          "startup_after_ms": {
+            "samples": 3,
+            "median_ms": 3.687788,
+            "p95_ms": 3.846006
+          },
+          "startup_median_delta_ms": -8.298312000000001,
+          "warm_before_ms": {
+            "samples": 60,
+            "median_ms": 2.211646,
+            "p95_ms": 2.717315
+          },
+          "warm_after_ms": {
+            "samples": 60,
+            "median_ms": 2.221789,
+            "p95_ms": 2.55999
+          },
+          "final_fresh_run_png_sha256": "1b3d62738f5f9d44721b14b3f52b5a43a7b61bd32dc272527d7d33bee8fcf9c0",
+          "final_fresh_run_png_byte_identical": true
+        },
+        {
+          "name": "disclosures",
+          "startup_before_ms": {
+            "samples": 3,
+            "median_ms": 12.061554,
+            "p95_ms": 12.081942
+          },
+          "startup_after_ms": {
+            "samples": 3,
+            "median_ms": 3.749034,
+            "p95_ms": 3.776405
+          },
+          "startup_median_delta_ms": -8.31252,
+          "warm_before_ms": {
+            "samples": 60,
+            "median_ms": 1.407841,
+            "p95_ms": 1.615054
+          },
+          "warm_after_ms": {
+            "samples": 60,
+            "median_ms": 1.395904,
+            "p95_ms": 1.627855
+          },
+          "final_fresh_run_png_sha256": "946c5641287b432ca865ea8169dd4077ede0c340722c7e943e13661596af571f",
+          "final_fresh_run_png_byte_identical": true
+        }
+      ]
+    }
+  },
+  "chromium_comparison": false,
+  "controlled_environment": false,
+  "limitations": [
+    "Sequential local observations; OS caches were not flushed.",
+    "Feature binaries are exercised headlessly; these timings do not measure Vulkan presentation.",
+    "Each PNG represents the final fresh run for that fixture; timing samples retain every fresh run.",
+    "Native process exit observation retains a finite polling fallback; pipe readiness alone does not eliminate every scheduling delay."
+  ]
+}

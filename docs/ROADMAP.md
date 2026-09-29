@@ -7,9 +7,12 @@ and iteration, and 22 retain metadata exclusions. Iterator infrastructure,
 Intl/Temporal, broader legacy parsing and cross-realm behavior remain ahead.
 The custom Vulkan rasterizer and compositing milestones below remain on the
 docket alongside standards work.
-The immediate Date performance follow-up is replacing helper I/O polling sleeps
-with deadline-bounded readiness waits: the current measured startup cost is
-about 10 ms, documented in [the worker comparison](benchmark-worker-date.json).
+The [Date helper performance follow-up](../tests/conformance/date-readiness.md)
+replaces I/O polling sleeps with deadline-bounded readiness waits. Local worker
+startup medians improved by about 9 ms in the default build and 8 ms in the
+feature build, with unchanged fixture pixels. A race-dependent exit wait remains;
+these measurements establish no Chromium or GPU speed comparison. The earlier
+[Date startup measurements](benchmark-worker-date.json) remain preserved.
 
 The [Window global-binding checkpoint](../tests/conformance/window-global-bindings.md)
 adds general data/accessor definitions, exact UTF-16 property keys, private

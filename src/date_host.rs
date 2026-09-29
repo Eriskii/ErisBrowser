@@ -489,9 +489,7 @@ fn run_capture(request: &CaptureRequest) -> Result<CapturedTimeZone, HostZoneErr
                     ) => {}
                 Err(_) => return Err(HostZoneError::Unavailable),
             }
-            std::thread::sleep(
-                POLL_SLICE.min(request.deadline.saturating_duration_since(Instant::now())),
-            );
+            wait_zone_io(request, input.as_ref(), &output)?;
         }
         stopped(request)?;
         let captured = decode_response(&response)?;
@@ -509,7 +507,9 @@ fn run_capture(request: &CaptureRequest) -> Result<CapturedTimeZone, HostZoneErr
             {
                 Some(status) if status.exit_status() == Some(0) => break,
                 Some(_) => return Err(HostZoneError::Unavailable),
-                None => std::thread::sleep(POLL_SLICE),
+                // EOF is no longer polled: its persistent HUP would spin. A
+                // race-dependent exit wait remains until a future pidfd change.
+                None => std::thread::sleep(zone_wait_duration(request)?),
             }
         }
         stopped(request)?;
@@ -533,6 +533,75 @@ fn run_capture(request: &CaptureRequest) -> Result<CapturedTimeZone, HostZoneErr
         }
     }
 }
+#[cfg(target_os = "linux")]
+fn zone_wait_duration(request: &CaptureRequest) -> Result<Duration, HostZoneError> {
+    stopped(request)?;
+    let remaining = request.deadline.saturating_duration_since(Instant::now());
+    if remaining.is_zero() {
+        return Err(HostZoneError::TimedOut);
+    }
+    Ok(remaining.min(POLL_SLICE))
+}
+#[cfg(target_os = "linux")]
+fn wait_zone_io(
+    request: &CaptureRequest,
+    input: Option<&std::process::ChildStdin>,
+    output: &std::process::ChildStdout,
+) -> Result<(), HostZoneError> {
+    use rustix::event::{PollFd, PollFlags, poll};
+    if let Some(input) = input {
+        poll_zone_fds(
+            request,
+            &mut [
+                PollFd::new(output, PollFlags::IN),
+                PollFd::new(input, PollFlags::OUT),
+            ],
+            poll,
+        )
+    } else {
+        poll_zone_fds(request, &mut [PollFd::new(output, PollFlags::IN)], poll)
+    }
+}
+#[cfg(target_os = "linux")]
+fn poll_zone_fds(
+    request: &CaptureRequest,
+    fds: &mut [rustix::event::PollFd<'_>],
+    poll: impl FnOnce(
+        &mut [rustix::event::PollFd<'_>],
+        Option<&rustix::event::Timespec>,
+    ) -> rustix::io::Result<usize>,
+) -> Result<(), HostZoneError> {
+    use rustix::event::{PollFlags, Timespec};
+    let duration = zone_wait_duration(request)?;
+    let timeout = Timespec {
+        tv_sec: 0,
+        tv_nsec: duration.subsec_nanos().into(),
+    };
+    let result = poll(fds, Some(&timeout));
+    // EINTR returns through the outer loop; neither interruption nor spurious
+    // readiness gets an unchecked fresh timeout or bypasses cancellation.
+    stopped(request)?;
+    match result {
+        Ok(_) => {
+            if fds[0]
+                .revents()
+                .intersects(PollFlags::ERR | PollFlags::NVAL)
+                || fds.get(1).is_some_and(|fd| {
+                    fd.revents()
+                        .intersects(PollFlags::ERR | PollFlags::NVAL | PollFlags::HUP)
+                })
+            {
+                return Err(HostZoneError::Unavailable);
+            }
+            // Output HUP is deliberately retained as read readiness. Buffered
+            // final bytes must be consumed before read() reports actual EOF.
+            Ok(())
+        }
+        Err(rustix::io::Errno::INTR) => Ok(()),
+        Err(_) => Err(HostZoneError::Unavailable),
+    }
+}
+
 #[cfg(not(target_os = "linux"))]
 fn run_capture(_request: &CaptureRequest) -> Result<CapturedTimeZone, HostZoneError> {
     Err(HostZoneError::Unavailable)
