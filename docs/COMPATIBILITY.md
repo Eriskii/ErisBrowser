@@ -1,10 +1,16 @@
 # Compatibility status
 
+[RegExp constructor classification and conversion](../tests/conformance/regexp-constructor.md)
+now handle Symbol.match-based identity, regexp-like source/flags and observable
+allocation/conversion order. Its complete 976-mode directory records 768 passed,
+200 unsupported and eight resource stops. Deep pattern parsing, Unicode regexp
+syntax, broader legacy grammar, realms and remaining symbol protocols need work.
+
 [RegExp split and species](../tests/conformance/regexp-split.md) now use a separately
 constructed splitter and observable execution, index and capture hooks. The new
 96-mode selection records 88 passed, two failed on missing Date and six unsupported
-modes. Unicode regexp parsing, realms, other symbol methods and complete RegExp
-constructor conversion remain incomplete.
+modes. Unicode regexp parsing, realms and other symbol methods remain incomplete;
+the constructor follow-up above addresses classification and conversion order.
 
 [String conversion, search and custom splitting](../tests/conformance/string-conversion.md)
 now respect ordinary receiver/needle conversion, `Symbol.match` classification

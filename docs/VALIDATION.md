@@ -1,5 +1,27 @@
 # Validation record
 
+## RegExp constructor classification and conversion
+
+The [implementation record](../tests/conformance/regexp-constructor.md) and
+[evidence](../tests/conformance/regexp-constructor.json) retain all 488 direct
+constructor-directory sources: **768 passed / 200 unsupported / 8 resource
+stops**, gaining **16 passes** over the preserved `f3a786b` binary. The resource
+cases remain identical and prevent a healthy baseline for this new profile.
+No old baseline changes. All **8,102 older case objects / 2,216 controls** remain
+identical; the combined inventory reaches **28 profiles / 9,078 modes / 2,288
+verified assertion controls**, with unchanged policies between comparisons.
+
+All **36 corrected local modes** pass. An added fixture's unrelated prototype
+assumption was corrected and remeasured on both binaries; its initial source and
+observations are retained, as are all 20 original diagnostic fingerprints. Rust
+**1.88 / 1.95** pass strict all-target Clippy and full tests: **1,017 default /
+1,028 Vulkan-feature tests**, none ignored. Both release builds preserve all
+**57 CPU pixel references**. **174 Python tests**, **45,000 mutation cases** and
+unchanged upstream HTML observations pass. Resource tests cover parser charges
+on success/failure, every representative work cutoff, recursion and heap refusal.
+Agent quota remains unavailable; no independent agent review, GPU rendering or
+Chromium comparison is claimed.
+
 ## RegExp split and species construction
 
 The [implementation record](../tests/conformance/regexp-split.md) and

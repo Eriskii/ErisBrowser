@@ -1770,7 +1770,7 @@ class IntegrityTests(unittest.TestCase):
             case = sample(('/*---\nfeatures: [' + feature + ']\n---*/\n').encode())
             self.assertIn(feature, runner.unsupported_reason(case, runner.IDENTIFIER_FEATURES))
         for name, policy in runner.PROFILE_FEATURES.items():
-            if name not in {'identifiers', 'template-literal'}:
+            if name not in {'identifiers', 'template-literal', 'regexp-constructor'}:
                 self.assertNotIn('u180e', policy)
 
     def test_identifier_preflight_keeps_core_and_rejects_disabled_or_wrong_assertions(self):

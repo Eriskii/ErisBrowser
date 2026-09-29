@@ -1,0 +1,3471 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all direct .js files in built-ins/RegExp; no implementation",
+  "directories": {
+    "RegExp": [
+      "15.10.2.15-6-1.js",
+      "15.10.2.5-3-1.js",
+      "15.10.4.1-1.js",
+      "15.10.4.1-2.js",
+      "15.10.4.1-3.js",
+      "15.10.4.1-4.js",
+      "S15.10.1_A1_T1.js",
+      "S15.10.1_A1_T10.js",
+      "S15.10.1_A1_T11.js",
+      "S15.10.1_A1_T12.js",
+      "S15.10.1_A1_T13.js",
+      "S15.10.1_A1_T14.js",
+      "S15.10.1_A1_T15.js",
+      "S15.10.1_A1_T16.js",
+      "S15.10.1_A1_T2.js",
+      "S15.10.1_A1_T3.js",
+      "S15.10.1_A1_T4.js",
+      "S15.10.1_A1_T5.js",
+      "S15.10.1_A1_T6.js",
+      "S15.10.1_A1_T7.js",
+      "S15.10.1_A1_T8.js",
+      "S15.10.1_A1_T9.js",
+      "S15.10.2.10_A1.1_T1.js",
+      "S15.10.2.10_A1.2_T1.js",
+      "S15.10.2.10_A1.3_T1.js",
+      "S15.10.2.10_A1.4_T1.js",
+      "S15.10.2.10_A1.5_T1.js",
+      "S15.10.2.10_A2.1_T1.js",
+      "S15.10.2.10_A2.1_T2.js",
+      "S15.10.2.10_A3.1_T1.js",
+      "S15.10.2.10_A3.1_T2.js",
+      "S15.10.2.10_A4.1_T1.js",
+      "S15.10.2.10_A4.1_T2.js",
+      "S15.10.2.10_A4.1_T3.js",
+      "S15.10.2.10_A5.1_T1.js",
+      "S15.10.2.11_A1_T1.js",
+      "S15.10.2.11_A1_T4.js",
+      "S15.10.2.11_A1_T5.js",
+      "S15.10.2.11_A1_T6.js",
+      "S15.10.2.11_A1_T7.js",
+      "S15.10.2.11_A1_T8.js",
+      "S15.10.2.11_A1_T9.js",
+      "S15.10.2.12_A3_T5.js",
+      "S15.10.2.12_A4_T5.js",
+      "S15.10.2.13_A1_T1.js",
+      "S15.10.2.13_A1_T10.js",
+      "S15.10.2.13_A1_T11.js",
+      "S15.10.2.13_A1_T12.js",
+      "S15.10.2.13_A1_T13.js",
+      "S15.10.2.13_A1_T14.js",
+      "S15.10.2.13_A1_T15.js",
+      "S15.10.2.13_A1_T17.js",
+      "S15.10.2.13_A1_T2.js",
+      "S15.10.2.13_A1_T3.js",
+      "S15.10.2.13_A1_T4.js",
+      "S15.10.2.13_A1_T5.js",
+      "S15.10.2.13_A1_T6.js",
+      "S15.10.2.13_A1_T7.js",
+      "S15.10.2.13_A1_T8.js",
+      "S15.10.2.13_A1_T9.js",
+      "S15.10.2.13_A2_T1.js",
+      "S15.10.2.13_A2_T2.js",
+      "S15.10.2.13_A2_T3.js",
+      "S15.10.2.13_A2_T4.js",
+      "S15.10.2.13_A2_T5.js",
+      "S15.10.2.13_A2_T6.js",
+      "S15.10.2.13_A2_T7.js",
+      "S15.10.2.13_A2_T8.js",
+      "S15.10.2.13_A3_T1.js",
+      "S15.10.2.13_A3_T2.js",
+      "S15.10.2.13_A3_T3.js",
+      "S15.10.2.13_A3_T4.js",
+      "S15.10.2.15_A1_T1.js",
+      "S15.10.2.15_A1_T10.js",
+      "S15.10.2.15_A1_T11.js",
+      "S15.10.2.15_A1_T12.js",
+      "S15.10.2.15_A1_T13.js",
+      "S15.10.2.15_A1_T14.js",
+      "S15.10.2.15_A1_T15.js",
+      "S15.10.2.15_A1_T16.js",
+      "S15.10.2.15_A1_T17.js",
+      "S15.10.2.15_A1_T18.js",
+      "S15.10.2.15_A1_T19.js",
+      "S15.10.2.15_A1_T2.js",
+      "S15.10.2.15_A1_T20.js",
+      "S15.10.2.15_A1_T21.js",
+      "S15.10.2.15_A1_T22.js",
+      "S15.10.2.15_A1_T23.js",
+      "S15.10.2.15_A1_T24.js",
+      "S15.10.2.15_A1_T25.js",
+      "S15.10.2.15_A1_T26.js",
+      "S15.10.2.15_A1_T27.js",
+      "S15.10.2.15_A1_T28.js",
+      "S15.10.2.15_A1_T29.js",
+      "S15.10.2.15_A1_T3.js",
+      "S15.10.2.15_A1_T30.js",
+      "S15.10.2.15_A1_T31.js",
+      "S15.10.2.15_A1_T32.js",
+      "S15.10.2.15_A1_T33.js",
+      "S15.10.2.15_A1_T34.js",
+      "S15.10.2.15_A1_T35.js",
+      "S15.10.2.15_A1_T36.js",
+      "S15.10.2.15_A1_T37.js",
+      "S15.10.2.15_A1_T38.js",
+      "S15.10.2.15_A1_T39.js",
+      "S15.10.2.15_A1_T4.js",
+      "S15.10.2.15_A1_T40.js",
+      "S15.10.2.15_A1_T41.js",
+      "S15.10.2.15_A1_T5.js",
+      "S15.10.2.15_A1_T6.js",
+      "S15.10.2.15_A1_T7.js",
+      "S15.10.2.15_A1_T8.js",
+      "S15.10.2.15_A1_T9.js",
+      "S15.10.2.3_A1_T1.js",
+      "S15.10.2.3_A1_T10.js",
+      "S15.10.2.3_A1_T11.js",
+      "S15.10.2.3_A1_T12.js",
+      "S15.10.2.3_A1_T13.js",
+      "S15.10.2.3_A1_T14.js",
+      "S15.10.2.3_A1_T15.js",
+      "S15.10.2.3_A1_T16.js",
+      "S15.10.2.3_A1_T17.js",
+      "S15.10.2.3_A1_T2.js",
+      "S15.10.2.3_A1_T3.js",
+      "S15.10.2.3_A1_T4.js",
+      "S15.10.2.3_A1_T5.js",
+      "S15.10.2.3_A1_T6.js",
+      "S15.10.2.3_A1_T7.js",
+      "S15.10.2.3_A1_T8.js",
+      "S15.10.2.3_A1_T9.js",
+      "S15.10.2.5_A1_T1.js",
+      "S15.10.2.5_A1_T2.js",
+      "S15.10.2.5_A1_T3.js",
+      "S15.10.2.5_A1_T4.js",
+      "S15.10.2.5_A1_T5.js",
+      "S15.10.2.6_A1_T1.js",
+      "S15.10.2.6_A1_T2.js",
+      "S15.10.2.6_A1_T3.js",
+      "S15.10.2.6_A1_T4.js",
+      "S15.10.2.6_A1_T5.js",
+      "S15.10.2.6_A2_T1.js",
+      "S15.10.2.6_A2_T10.js",
+      "S15.10.2.6_A2_T2.js",
+      "S15.10.2.6_A2_T3.js",
+      "S15.10.2.6_A2_T4.js",
+      "S15.10.2.6_A2_T5.js",
+      "S15.10.2.6_A2_T6.js",
+      "S15.10.2.6_A2_T7.js",
+      "S15.10.2.6_A2_T8.js",
+      "S15.10.2.6_A2_T9.js",
+      "S15.10.2.6_A3_T1.js",
+      "S15.10.2.6_A3_T10.js",
+      "S15.10.2.6_A3_T11.js",
+      "S15.10.2.6_A3_T12.js",
+      "S15.10.2.6_A3_T13.js",
+      "S15.10.2.6_A3_T14.js",
+      "S15.10.2.6_A3_T15.js",
+      "S15.10.2.6_A3_T2.js",
+      "S15.10.2.6_A3_T3.js",
+      "S15.10.2.6_A3_T4.js",
+      "S15.10.2.6_A3_T5.js",
+      "S15.10.2.6_A3_T6.js",
+      "S15.10.2.6_A3_T7.js",
+      "S15.10.2.6_A3_T8.js",
+      "S15.10.2.6_A3_T9.js",
+      "S15.10.2.6_A4_T1.js",
+      "S15.10.2.6_A4_T2.js",
+      "S15.10.2.6_A4_T3.js",
+      "S15.10.2.6_A4_T4.js",
+      "S15.10.2.6_A4_T5.js",
+      "S15.10.2.6_A4_T6.js",
+      "S15.10.2.6_A4_T7.js",
+      "S15.10.2.6_A4_T8.js",
+      "S15.10.2.6_A5_T1.js",
+      "S15.10.2.6_A5_T2.js",
+      "S15.10.2.6_A6_T1.js",
+      "S15.10.2.6_A6_T2.js",
+      "S15.10.2.6_A6_T3.js",
+      "S15.10.2.6_A6_T4.js",
+      "S15.10.2.7_A1_T1.js",
+      "S15.10.2.7_A1_T10.js",
+      "S15.10.2.7_A1_T11.js",
+      "S15.10.2.7_A1_T12.js",
+      "S15.10.2.7_A1_T2.js",
+      "S15.10.2.7_A1_T3.js",
+      "S15.10.2.7_A1_T4.js",
+      "S15.10.2.7_A1_T5.js",
+      "S15.10.2.7_A1_T6.js",
+      "S15.10.2.7_A1_T7.js",
+      "S15.10.2.7_A1_T8.js",
+      "S15.10.2.7_A1_T9.js",
+      "S15.10.2.7_A2_T1.js",
+      "S15.10.2.7_A2_T2.js",
+      "S15.10.2.7_A2_T3.js",
+      "S15.10.2.7_A2_T4.js",
+      "S15.10.2.7_A3_T1.js",
+      "S15.10.2.7_A3_T10.js",
+      "S15.10.2.7_A3_T11.js",
+      "S15.10.2.7_A3_T12.js",
+      "S15.10.2.7_A3_T13.js",
+      "S15.10.2.7_A3_T14.js",
+      "S15.10.2.7_A3_T2.js",
+      "S15.10.2.7_A3_T3.js",
+      "S15.10.2.7_A3_T4.js",
+      "S15.10.2.7_A3_T5.js",
+      "S15.10.2.7_A3_T6.js",
+      "S15.10.2.7_A3_T7.js",
+      "S15.10.2.7_A3_T8.js",
+      "S15.10.2.7_A3_T9.js",
+      "S15.10.2.7_A4_T1.js",
+      "S15.10.2.7_A4_T10.js",
+      "S15.10.2.7_A4_T11.js",
+      "S15.10.2.7_A4_T12.js",
+      "S15.10.2.7_A4_T13.js",
+      "S15.10.2.7_A4_T14.js",
+      "S15.10.2.7_A4_T15.js",
+      "S15.10.2.7_A4_T16.js",
+      "S15.10.2.7_A4_T17.js",
+      "S15.10.2.7_A4_T18.js",
+      "S15.10.2.7_A4_T19.js",
+      "S15.10.2.7_A4_T2.js",
+      "S15.10.2.7_A4_T20.js",
+      "S15.10.2.7_A4_T21.js",
+      "S15.10.2.7_A4_T3.js",
+      "S15.10.2.7_A4_T4.js",
+      "S15.10.2.7_A4_T5.js",
+      "S15.10.2.7_A4_T6.js",
+      "S15.10.2.7_A4_T7.js",
+      "S15.10.2.7_A4_T8.js",
+      "S15.10.2.7_A4_T9.js",
+      "S15.10.2.7_A5_T1.js",
+      "S15.10.2.7_A5_T10.js",
+      "S15.10.2.7_A5_T11.js",
+      "S15.10.2.7_A5_T12.js",
+      "S15.10.2.7_A5_T2.js",
+      "S15.10.2.7_A5_T3.js",
+      "S15.10.2.7_A5_T4.js",
+      "S15.10.2.7_A5_T5.js",
+      "S15.10.2.7_A5_T6.js",
+      "S15.10.2.7_A5_T7.js",
+      "S15.10.2.7_A5_T8.js",
+      "S15.10.2.7_A5_T9.js",
+      "S15.10.2.7_A6_T1.js",
+      "S15.10.2.7_A6_T2.js",
+      "S15.10.2.7_A6_T3.js",
+      "S15.10.2.7_A6_T4.js",
+      "S15.10.2.7_A6_T5.js",
+      "S15.10.2.7_A6_T6.js",
+      "S15.10.2.8_A1_T1.js",
+      "S15.10.2.8_A1_T2.js",
+      "S15.10.2.8_A1_T3.js",
+      "S15.10.2.8_A1_T4.js",
+      "S15.10.2.8_A1_T5.js",
+      "S15.10.2.8_A2_T1.js",
+      "S15.10.2.8_A2_T10.js",
+      "S15.10.2.8_A2_T11.js",
+      "S15.10.2.8_A2_T2.js",
+      "S15.10.2.8_A2_T3.js",
+      "S15.10.2.8_A2_T4.js",
+      "S15.10.2.8_A2_T5.js",
+      "S15.10.2.8_A2_T6.js",
+      "S15.10.2.8_A2_T7.js",
+      "S15.10.2.8_A2_T8.js",
+      "S15.10.2.8_A2_T9.js",
+      "S15.10.2.8_A3_T1.js",
+      "S15.10.2.8_A3_T10.js",
+      "S15.10.2.8_A3_T11.js",
+      "S15.10.2.8_A3_T12.js",
+      "S15.10.2.8_A3_T13.js",
+      "S15.10.2.8_A3_T14.js",
+      "S15.10.2.8_A3_T15.js",
+      "S15.10.2.8_A3_T16.js",
+      "S15.10.2.8_A3_T17.js",
+      "S15.10.2.8_A3_T18.js",
+      "S15.10.2.8_A3_T19.js",
+      "S15.10.2.8_A3_T2.js",
+      "S15.10.2.8_A3_T20.js",
+      "S15.10.2.8_A3_T21.js",
+      "S15.10.2.8_A3_T22.js",
+      "S15.10.2.8_A3_T23.js",
+      "S15.10.2.8_A3_T24.js",
+      "S15.10.2.8_A3_T25.js",
+      "S15.10.2.8_A3_T26.js",
+      "S15.10.2.8_A3_T27.js",
+      "S15.10.2.8_A3_T28.js",
+      "S15.10.2.8_A3_T29.js",
+      "S15.10.2.8_A3_T3.js",
+      "S15.10.2.8_A3_T30.js",
+      "S15.10.2.8_A3_T31.js",
+      "S15.10.2.8_A3_T32.js",
+      "S15.10.2.8_A3_T33.js",
+      "S15.10.2.8_A3_T4.js",
+      "S15.10.2.8_A3_T5.js",
+      "S15.10.2.8_A3_T6.js",
+      "S15.10.2.8_A3_T7.js",
+      "S15.10.2.8_A3_T8.js",
+      "S15.10.2.8_A3_T9.js",
+      "S15.10.2.8_A4_T1.js",
+      "S15.10.2.8_A4_T2.js",
+      "S15.10.2.8_A4_T3.js",
+      "S15.10.2.8_A4_T4.js",
+      "S15.10.2.8_A4_T5.js",
+      "S15.10.2.8_A4_T6.js",
+      "S15.10.2.8_A4_T7.js",
+      "S15.10.2.8_A4_T8.js",
+      "S15.10.2.8_A4_T9.js",
+      "S15.10.2.8_A5_T1.js",
+      "S15.10.2.8_A5_T2.js",
+      "S15.10.2.9_A1_T1.js",
+      "S15.10.2.9_A1_T2.js",
+      "S15.10.2.9_A1_T3.js",
+      "S15.10.2.9_A1_T5.js",
+      "S15.10.2_A1_T1.js",
+      "S15.10.3.1_A1_T1.js",
+      "S15.10.3.1_A1_T2.js",
+      "S15.10.3.1_A1_T3.js",
+      "S15.10.3.1_A1_T4.js",
+      "S15.10.3.1_A1_T5.js",
+      "S15.10.3.1_A2_T1.js",
+      "S15.10.3.1_A2_T2.js",
+      "S15.10.3.1_A3_T1.js",
+      "S15.10.3.1_A3_T2.js",
+      "S15.10.4.1_A1_T1.js",
+      "S15.10.4.1_A1_T2.js",
+      "S15.10.4.1_A1_T3.js",
+      "S15.10.4.1_A1_T4.js",
+      "S15.10.4.1_A1_T5.js",
+      "S15.10.4.1_A2_T1.js",
+      "S15.10.4.1_A2_T2.js",
+      "S15.10.4.1_A3_T1.js",
+      "S15.10.4.1_A3_T2.js",
+      "S15.10.4.1_A3_T3.js",
+      "S15.10.4.1_A3_T4.js",
+      "S15.10.4.1_A3_T5.js",
+      "S15.10.4.1_A4_T1.js",
+      "S15.10.4.1_A4_T2.js",
+      "S15.10.4.1_A4_T3.js",
+      "S15.10.4.1_A4_T4.js",
+      "S15.10.4.1_A4_T5.js",
+      "S15.10.4.1_A5_T1.js",
+      "S15.10.4.1_A5_T3.js",
+      "S15.10.4.1_A5_T4.js",
+      "S15.10.4.1_A5_T6.js",
+      "S15.10.4.1_A5_T7.js",
+      "S15.10.4.1_A5_T8.js",
+      "S15.10.4.1_A5_T9.js",
+      "S15.10.4.1_A6_T1.js",
+      "S15.10.4.1_A7_T1.js",
+      "S15.10.4.1_A7_T2.js",
+      "S15.10.4.1_A8_T1.js",
+      "S15.10.4.1_A8_T10.js",
+      "S15.10.4.1_A8_T11.js",
+      "S15.10.4.1_A8_T12.js",
+      "S15.10.4.1_A8_T13.js",
+      "S15.10.4.1_A8_T2.js",
+      "S15.10.4.1_A8_T3.js",
+      "S15.10.4.1_A8_T4.js",
+      "S15.10.4.1_A8_T5.js",
+      "S15.10.4.1_A8_T6.js",
+      "S15.10.4.1_A8_T7.js",
+      "S15.10.4.1_A8_T8.js",
+      "S15.10.4.1_A8_T9.js",
+      "S15.10.4.1_A9_T1.js",
+      "S15.10.4.1_A9_T2.js",
+      "S15.10.4.1_A9_T3.js",
+      "S15.10.5_A1.js",
+      "S15.10.5_A2_T1.js",
+      "S15.10.5_A2_T2.js",
+      "S15.10.7_A1_T1.js",
+      "S15.10.7_A1_T2.js",
+      "S15.10.7_A2_T1.js",
+      "S15.10.7_A2_T2.js",
+      "S15.10.7_A3_T1.js",
+      "S15.10.7_A3_T2.js",
+      "call_with_non_regexp_same_constructor.js",
+      "call_with_regexp_match_falsy.js",
+      "call_with_regexp_not_same_constructor.js",
+      "character-class-escape-non-whitespace-u180e.js",
+      "character-class-escape-non-whitespace.js",
+      "duplicate-flags.js",
+      "duplicate-named-capturing-groups-syntax.js",
+      "early-err-modifiers-code-point-repeat-i-1.js",
+      "early-err-modifiers-code-point-repeat-i-2.js",
+      "early-err-modifiers-other-code-point-arbitrary.js",
+      "early-err-modifiers-other-code-point-combining-i.js",
+      "early-err-modifiers-other-code-point-combining-m.js",
+      "early-err-modifiers-other-code-point-combining-s.js",
+      "early-err-modifiers-other-code-point-d.js",
+      "early-err-modifiers-other-code-point-g.js",
+      "early-err-modifiers-other-code-point-non-display-1.js",
+      "early-err-modifiers-other-code-point-non-display-2.js",
+      "early-err-modifiers-other-code-point-non-flag.js",
+      "early-err-modifiers-other-code-point-u.js",
+      "early-err-modifiers-other-code-point-uppercase-I.js",
+      "early-err-modifiers-other-code-point-y.js",
+      "early-err-modifiers-other-code-point-zwj.js",
+      "early-err-modifiers-other-code-point-zwnbsp.js",
+      "early-err-modifiers-other-code-point-zwnj.js",
+      "early-err-modifiers-should-not-case-fold-i.js",
+      "early-err-modifiers-should-not-case-fold-m.js",
+      "early-err-modifiers-should-not-case-fold-s.js",
+      "early-err-modifiers-should-not-unicode-case-fold-i.js",
+      "early-err-modifiers-should-not-unicode-case-fold-s.js",
+      "from-regexp-like-flag-override.js",
+      "from-regexp-like-get-ctor-err.js",
+      "from-regexp-like-get-flags-err.js",
+      "from-regexp-like-get-source-err.js",
+      "from-regexp-like-short-circuit.js",
+      "from-regexp-like.js",
+      "is-a-constructor.js",
+      "lastIndex.js",
+      "lookahead-quantifier-match-groups.js",
+      "nullable-quantifier.js",
+      "prop-desc.js",
+      "proto-from-ctor-realm.js",
+      "quantifier-integer-limit.js",
+      "regexp-class-chars.js",
+      "syntax-err-arithmetic-modifiers-add-remove-i.js",
+      "syntax-err-arithmetic-modifiers-add-remove-m.js",
+      "syntax-err-arithmetic-modifiers-add-remove-multi-duplicate.js",
+      "syntax-err-arithmetic-modifiers-add-remove-s-escape.js",
+      "syntax-err-arithmetic-modifiers-add-remove-s.js",
+      "syntax-err-arithmetic-modifiers-both-empty.js",
+      "syntax-err-arithmetic-modifiers-code-point-repeat-i-1.js",
+      "syntax-err-arithmetic-modifiers-code-point-repeat-i-2.js",
+      "syntax-err-arithmetic-modifiers-other-code-point-arbitrary.js",
+      "syntax-err-arithmetic-modifiers-other-code-point-combining-i.js",
+      "syntax-err-arithmetic-modifiers-other-code-point-combining-m.js",
+      "syntax-err-arithmetic-modifiers-other-code-point-combining-s.js",
+      "syntax-err-arithmetic-modifiers-other-code-point-d.js",
+      "syntax-err-arithmetic-modifiers-other-code-point-g.js",
+      "syntax-err-arithmetic-modifiers-other-code-point-non-display-1.js",
+      "syntax-err-arithmetic-modifiers-other-code-point-non-display-2.js",
+      "syntax-err-arithmetic-modifiers-other-code-point-non-flag.js",
+      "syntax-err-arithmetic-modifiers-other-code-point-u.js",
+      "syntax-err-arithmetic-modifiers-other-code-point-uppercase-I.js",
+      "syntax-err-arithmetic-modifiers-other-code-point-y.js",
+      "syntax-err-arithmetic-modifiers-other-code-point-zwj.js",
+      "syntax-err-arithmetic-modifiers-other-code-point-zwnbsp.js",
+      "syntax-err-arithmetic-modifiers-other-code-point-zwnj.js",
+      "syntax-err-arithmetic-modifiers-reverse-add-remove-i.js",
+      "syntax-err-arithmetic-modifiers-reverse-add-remove-m.js",
+      "syntax-err-arithmetic-modifiers-reverse-add-remove-multi-duplicate.js",
+      "syntax-err-arithmetic-modifiers-reverse-add-remove-s-escape.js",
+      "syntax-err-arithmetic-modifiers-reverse-add-remove-s.js",
+      "syntax-err-arithmetic-modifiers-reverse-code-point-repeat-i-1.js",
+      "syntax-err-arithmetic-modifiers-reverse-code-point-repeat-i-2.js",
+      "syntax-err-arithmetic-modifiers-reverse-other-code-point-arbitrary.js",
+      "syntax-err-arithmetic-modifiers-reverse-other-code-point-combining-i.js",
+      "syntax-err-arithmetic-modifiers-reverse-other-code-point-combining-m.js",
+      "syntax-err-arithmetic-modifiers-reverse-other-code-point-combining-s.js",
+      "syntax-err-arithmetic-modifiers-reverse-other-code-point-d.js",
+      "syntax-err-arithmetic-modifiers-reverse-other-code-point-g.js",
+      "syntax-err-arithmetic-modifiers-reverse-other-code-point-non-display-1.js",
+      "syntax-err-arithmetic-modifiers-reverse-other-code-point-non-display-2.js",
+      "syntax-err-arithmetic-modifiers-reverse-other-code-point-non-flag.js",
+      "syntax-err-arithmetic-modifiers-reverse-other-code-point-u.js",
+      "syntax-err-arithmetic-modifiers-reverse-other-code-point-uppercase-I.js",
+      "syntax-err-arithmetic-modifiers-reverse-other-code-point-y.js",
+      "syntax-err-arithmetic-modifiers-reverse-other-code-point-zwj.js",
+      "syntax-err-arithmetic-modifiers-reverse-other-code-point-zwnbsp.js",
+      "syntax-err-arithmetic-modifiers-reverse-other-code-point-zwnj.js",
+      "syntax-err-arithmetic-modifiers-reverse-should-not-case-fold-i.js",
+      "syntax-err-arithmetic-modifiers-reverse-should-not-case-fold-m.js",
+      "syntax-err-arithmetic-modifiers-reverse-should-not-case-fold-s.js",
+      "syntax-err-arithmetic-modifiers-reverse-should-not-unicode-case-fold-i.js",
+      "syntax-err-arithmetic-modifiers-reverse-should-not-unicode-case-fold-s.js",
+      "syntax-err-arithmetic-modifiers-should-not-case-fold-i.js",
+      "syntax-err-arithmetic-modifiers-should-not-case-fold-m.js",
+      "syntax-err-arithmetic-modifiers-should-not-case-fold-s.js",
+      "syntax-err-arithmetic-modifiers-should-not-unicode-case-fold-i.js",
+      "syntax-err-arithmetic-modifiers-should-not-unicode-case-fold-s.js",
+      "u180e.js",
+      "unicode_character_class_backspace_escape.js",
+      "unicode_full_case_folding.js",
+      "unicode_identity_escape.js",
+      "unicode_restricted_brackets.js",
+      "unicode_restricted_character_class_escape.js",
+      "unicode_restricted_identity_escape.js",
+      "unicode_restricted_identity_escape_alpha.js",
+      "unicode_restricted_identity_escape_c.js",
+      "unicode_restricted_identity_escape_u.js",
+      "unicode_restricted_identity_escape_x.js",
+      "unicode_restricted_incomplete_quantifier.js",
+      "unicode_restricted_octal_escape.js",
+      "unicode_restricted_quantifiable_assertion.js",
+      "unicode_restricted_quantifier_without_atom.js",
+      "valid-flags-y.js"
+    ]
+  },
+  "test_files": 488,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/built-ins/RegExp/15.10.2.15-6-1.js",
+      "upstream_path": "test/built-ins/RegExp/15.10.2.15-6-1.js",
+      "bytes": 424,
+      "sha256": "371a6b078435472f3d4f3b2ffaa5ed277a067ff9028916bb448d1a019267b346"
+    },
+    {
+      "path": "test/built-ins/RegExp/15.10.2.5-3-1.js",
+      "upstream_path": "test/built-ins/RegExp/15.10.2.5-3-1.js",
+      "bytes": 360,
+      "sha256": "30dc4a713761412451a00a090f47430c9c5cccde72514784bd4a8290e403e846"
+    },
+    {
+      "path": "test/built-ins/RegExp/15.10.4.1-1.js",
+      "upstream_path": "test/built-ins/RegExp/15.10.4.1-1.js",
+      "bytes": 413,
+      "sha256": "d38ef39493ab50ef936dd66f801c6a4d6017f74458bb878bc25ae6a16874ef48"
+    },
+    {
+      "path": "test/built-ins/RegExp/15.10.4.1-2.js",
+      "upstream_path": "test/built-ins/RegExp/15.10.4.1-2.js",
+      "bytes": 401,
+      "sha256": "23117a16aeb6059a9c1efbbd58b9e85ab573d291b5c1f00193d160d512f40cce"
+    },
+    {
+      "path": "test/built-ins/RegExp/15.10.4.1-3.js",
+      "upstream_path": "test/built-ins/RegExp/15.10.4.1-3.js",
+      "bytes": 401,
+      "sha256": "1d48d0b7941510ed0da5df8cd48e4f099263a1d427f8a760c75c2d5e523cf1e8"
+    },
+    {
+      "path": "test/built-ins/RegExp/15.10.4.1-4.js",
+      "upstream_path": "test/built-ins/RegExp/15.10.4.1-4.js",
+      "bytes": 282,
+      "sha256": "27e47c38aaf5cc4154a7bccddf0cfdb37faa9057a6cb15bd10274d755516aa44"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.1_A1_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.1_A1_T1.js",
+      "bytes": 588,
+      "sha256": "df10ab4d3fbbbef2fc69c4c0427eda589d2c5d9ce0bab8c2580ce18fae8b51f5"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.1_A1_T10.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.1_A1_T10.js",
+      "bytes": 589,
+      "sha256": "98355aff872dc17304d06217eb2f26c98d684c363adb568b1b05ff4a8c37ea35"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.1_A1_T11.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.1_A1_T11.js",
+      "bytes": 586,
+      "sha256": "fbbcffaa1240d732d7bb9c6069f189472f394097aa438d3ee95d0229538b3b45"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.1_A1_T12.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.1_A1_T12.js",
+      "bytes": 589,
+      "sha256": "59869f1e703526323f6a5c129a2e198b417eb4aa03d9efbd2bc2c71bf4c578cd"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.1_A1_T13.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.1_A1_T13.js",
+      "bytes": 604,
+      "sha256": "d48957680582bc4cb23a8251f930433ea9dd26f90b238fe82de5d09c6f660141"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.1_A1_T14.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.1_A1_T14.js",
+      "bytes": 607,
+      "sha256": "12c7aae0599e721b66cec2d32cd8e8c47a34fab1c6e5b9ee5090992fe7fe7c34"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.1_A1_T15.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.1_A1_T15.js",
+      "bytes": 604,
+      "sha256": "0ba2062ee8172df5235ffd3daafefa2699b317f271726368ae0475982c07a82f"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.1_A1_T16.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.1_A1_T16.js",
+      "bytes": 610,
+      "sha256": "0f503d55b915750bb0ac262066f7719f8d9aabd7bad513461000e680d87622ed"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.1_A1_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.1_A1_T2.js",
+      "bytes": 591,
+      "sha256": "07e64feb42cc43de84cb4a98ecdbfe10ebafdceceeee003e36a80068fc43c4e5"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.1_A1_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.1_A1_T3.js",
+      "bytes": 588,
+      "sha256": "e14223d417bdce78e335ac8bb05dd1af9e852acd3da338a528ff27b113678071"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.1_A1_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.1_A1_T4.js",
+      "bytes": 591,
+      "sha256": "219aff338431d221cf9688bf32723823b8dd82f7769ac56fd47bdd476c7cf65b"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.1_A1_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.1_A1_T5.js",
+      "bytes": 591,
+      "sha256": "504755eec4c17a4aeda750794045e5a97169956aa5486f988f98190ab128dd15"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.1_A1_T6.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.1_A1_T6.js",
+      "bytes": 594,
+      "sha256": "8eaf62ac421458cafe40bef3d75ff4d75a9c8f1a85bfcf8445c410a490d467e6"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.1_A1_T7.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.1_A1_T7.js",
+      "bytes": 585,
+      "sha256": "d9507e014b8b962c9d5c7f68de19c7e6cf96d42b80e51a3348a253bd6620f1ab"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.1_A1_T8.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.1_A1_T8.js",
+      "bytes": 588,
+      "sha256": "11eb5c2d69a0fd86fceb74904267d93168e8e1d08d06eecb6d667cdf5faffa5a"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.1_A1_T9.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.1_A1_T9.js",
+      "bytes": 585,
+      "sha256": "bbb83a6718cfedbd2394d8355b31f949a5ed72183b784b5dd9aba1cea5df38b3"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.10_A1.1_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.10_A1.1_T1.js",
+      "bytes": 752,
+      "sha256": "a73ca4632358a2850e0297ab2215da6cec6596f90defaaa07b02cac9d1c702b8"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.10_A1.2_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.10_A1.2_T1.js",
+      "bytes": 752,
+      "sha256": "6a1984580fe9fdccd96e324e093831ce71c64657c5da678f9bc336fde58e7305"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.10_A1.3_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.10_A1.3_T1.js",
+      "bytes": 752,
+      "sha256": "e252cfe1b1337345ddbc34e4ece7700393d60d8a316f993ef4d78b40c683b62b"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.10_A1.4_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.10_A1.4_T1.js",
+      "bytes": 752,
+      "sha256": "efaa8191fad439811a8e5cbf4b1dcdaa422c2eb4cbb010f23ccbc9ca80303c5b"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.10_A1.5_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.10_A1.5_T1.js",
+      "bytes": 752,
+      "sha256": "007a4b140940ec16dff7d2128f489648a423a087738bb02346d8e0941885582b"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.10_A2.1_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.10_A2.1_T1.js",
+      "bytes": 593,
+      "sha256": "c44eb109d0612642c6bcfc020c2c8e0d07721c61a7a61882f1f58d07e6940ec0"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.10_A2.1_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.10_A2.1_T2.js",
+      "bytes": 593,
+      "sha256": "9d3c40cbddaa74a418218370b9570263a321758a1856d839e88084d5aeb8160f"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.10_A3.1_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.10_A3.1_T1.js",
+      "bytes": 1092,
+      "sha256": "01e0a51bce2dc692d07fc5bd9f0a8ce2143121a540945c0741096ca76a098257"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.10_A3.1_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.10_A3.1_T2.js",
+      "bytes": 1675,
+      "sha256": "489d46e70d242f3aa4f33af09e1a779f93f0084dc61ac7bcb0e1355d70d2ab96"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.10_A4.1_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.10_A4.1_T1.js",
+      "bytes": 1548,
+      "sha256": "1c4789c0788de0e215ebbc779c4d134929fd6519930c33d915e02f1243bfd7d1"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.10_A4.1_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.10_A4.1_T2.js",
+      "bytes": 1832,
+      "sha256": "304bf352e5a42ad6ec345206ccd48cf233605ab3868abf4f2ab319066201469b"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.10_A4.1_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.10_A4.1_T3.js",
+      "bytes": 2406,
+      "sha256": "c46051c170fdee33031d49061d0b2c18af50bf5985284941aded82e50779b389"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.10_A5.1_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.10_A5.1_T1.js",
+      "bytes": 638,
+      "sha256": "c192018645591036f83dfc143c1785b32febd3bd14abb7e8acb532c53c76759c"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.11_A1_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.11_A1_T1.js",
+      "bytes": 798,
+      "sha256": "ac07d9b4ab467787e5d45ebd39c754b0d017a18991d901d5acd4ff21bf28e423"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.11_A1_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.11_A1_T4.js",
+      "bytes": 633,
+      "sha256": "07690d4eece8be80a6617472205ee98cc000b3a408bc8b1f471ba597c42f6a20"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.11_A1_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.11_A1_T5.js",
+      "bytes": 631,
+      "sha256": "c09858aea554d677eda9779468665379de532e297b68c1103f28607dbb876180"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.11_A1_T6.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.11_A1_T6.js",
+      "bytes": 816,
+      "sha256": "de9e7dd84e71f3a558ba82f9d1ef60084322877088a4e84e92300852b8bf02b7"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.11_A1_T7.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.11_A1_T7.js",
+      "bytes": 810,
+      "sha256": "961172ca265a3866018725260f8fb55153d509d4eafaa55adeb92957852d320f"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.11_A1_T8.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.11_A1_T8.js",
+      "bytes": 853,
+      "sha256": "5e9572a2d28558a5d66f0d729093998a5376ad7a978927b11f94a2a11c85d08c"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.11_A1_T9.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.11_A1_T9.js",
+      "bytes": 853,
+      "sha256": "1657e295ff930d3dc019b70a6ff33d283f09d2ea2dd85e820c4f44ea7f0be2af"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.12_A3_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.12_A3_T5.js",
+      "bytes": 812,
+      "sha256": "54dfc8f2d450150cd49fb1ffb3acd05c354b8d3b03b29962d7165cef5fac028d"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.12_A4_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.12_A4_T5.js",
+      "bytes": 836,
+      "sha256": "02373ceb10402f3d7fa82c7869855a1e1c5ad69ff94e9e20397ae023ff51b81d"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A1_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A1_T1.js",
+      "bytes": 538,
+      "sha256": "f6d81138930b1a07da6b570734b20fdf91b0570e89dbd06936729ba67ba97ca5"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A1_T10.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A1_T10.js",
+      "bytes": 1252,
+      "sha256": "f00d03427d9fed769570eb4855ffb0bc83909d803ab3224bf6d2e0c0098ea3b6"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A1_T11.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A1_T11.js",
+      "bytes": 1205,
+      "sha256": "056a2d8b0b4aa788aa6a80e971b31e9552842a454f715c6d82a6f73e92ed024a"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A1_T12.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A1_T12.js",
+      "bytes": 1201,
+      "sha256": "54d3b38ce4c609af80a9b2170a89fb66416fe9d3be36dc0309cce24a835e3e18"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A1_T13.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A1_T13.js",
+      "bytes": 1294,
+      "sha256": "07bd62e87cc40352786ef89a202d5e6f050987f88dd038e1ec0ed977540653c6"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A1_T14.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A1_T14.js",
+      "bytes": 1225,
+      "sha256": "27c4bc9f202cf911ed06cbabe731ef30a84f3fe561c86f719cc319f318aa1c11"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A1_T15.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A1_T15.js",
+      "bytes": 1245,
+      "sha256": "f468219916071da732df65edaec73b91462c2684e2d826e6819d70cd0f674fcb"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A1_T17.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A1_T17.js",
+      "bytes": 564,
+      "sha256": "01690795f041d07e47a9807335955cb0324e3a0c64ce2e072453d8e935735d9b"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A1_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A1_T2.js",
+      "bytes": 538,
+      "sha256": "52d0a4fef91616490fed82b84c6c6d79f961c2e598e117c3d3378e70acf918e6"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A1_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A1_T3.js",
+      "bytes": 1225,
+      "sha256": "4ccd2c7fdccf4074386f9fe3d7f18add601f6a37d6a9c2484203e0d1c82a977a"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A1_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A1_T4.js",
+      "bytes": 1228,
+      "sha256": "9737fcf19e69c1b6eb1e0c4b3841eb7d89ca69feaf818fda4ca8790cd2f0412e"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A1_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A1_T5.js",
+      "bytes": 1240,
+      "sha256": "855f32bf6a7c643f86f389b0cffd56d6ad6677e62012d42f7f5efc78f95fd3e3"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A1_T6.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A1_T6.js",
+      "bytes": 1220,
+      "sha256": "8be83e3b67cdde4fb29500f1396204ded0904f5bab58ec2b3ddbeac2fc420699"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A1_T7.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A1_T7.js",
+      "bytes": 551,
+      "sha256": "c93d8c551ba8cde6be44117100fbcfd17c1a510070c0f5007acfadedbb1681bf"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A1_T8.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A1_T8.js",
+      "bytes": 1231,
+      "sha256": "801c0c653c18d95b5b7751f68478d7b1de3ddeeb0ac67b62face01e12c64832d"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A1_T9.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A1_T9.js",
+      "bytes": 1246,
+      "sha256": "c95ac0ebc576b6425382f6374c69ef8f5d3bae057615ce3e4c3cfdef8f1a2fc7"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A2_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A2_T1.js",
+      "bytes": 1188,
+      "sha256": "6dafc6af588e3bc46ece544cc1619b07585006996b90048748a3c6b0d8b71c5b"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A2_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A2_T2.js",
+      "bytes": 1192,
+      "sha256": "f1ba9de41eb2a2219e233c142ef1e997465a928375bf32adcbc353cc018d9df1"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A2_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A2_T3.js",
+      "bytes": 1219,
+      "sha256": "4808be86d33a66417fbd3bef9a91ce2a39bafc8abcaa1d25787e0f635c36142f"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A2_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A2_T4.js",
+      "bytes": 1229,
+      "sha256": "b3d68b454a1b476680f7e5e309ffde0407ef1d20b5d117a347f7b44e839f97b5"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A2_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A2_T5.js",
+      "bytes": 1185,
+      "sha256": "ec739c8165026942171af4cf281a225d488ad5962996970779da7a9989e237a8"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A2_T6.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A2_T6.js",
+      "bytes": 518,
+      "sha256": "79244c197b0d3137e4f7ff20e00885650b55b6082739dea861a44c9ba3a5f81f"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A2_T7.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A2_T7.js",
+      "bytes": 1227,
+      "sha256": "38cef4cb83ed2f8a00dfc24623c0817acb5815cfb64b0a5f41e8aaf90fbc3e20"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A2_T8.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A2_T8.js",
+      "bytes": 1212,
+      "sha256": "29228d146fe36babb6a15f0765bfd88d3a679409eb3bf0f74fd7e6c48f1cf1b4"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A3_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A3_T1.js",
+      "bytes": 1085,
+      "sha256": "b3beefc65edf3477b0ee557b0ffde76e2c0299935f50f472e6ae3314960f5dc9"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A3_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A3_T2.js",
+      "bytes": 1107,
+      "sha256": "bd19280dfe38c6655df0936d69e32cc0ae3edc0acfcb771e527adf0c17b28b73"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A3_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A3_T3.js",
+      "bytes": 1092,
+      "sha256": "e3aab686e6e40edc6aa900d43055370228e9e7de3219f18dd1a43797f233b33c"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.13_A3_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.13_A3_T4.js",
+      "bytes": 1089,
+      "sha256": "790c8a87b3507dcdb303230fb995e64dcc3068568416fa8b64ae36f9d2da0c28"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T1.js",
+      "bytes": 988,
+      "sha256": "da7dd485cb313debc3bbac125b3c51148d4fa2d8b1791b4336f28b38276f9720"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T10.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T10.js",
+      "bytes": 991,
+      "sha256": "a987699c6f33622999937da8a1bba514b45c69feefb71cd0e4d9cb8b5122cef8"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T11.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T11.js",
+      "bytes": 988,
+      "sha256": "d9c06e60c721df5106c65bdcf127381dd0ab43ea44cbdd87405b917f93ae7852"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T12.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T12.js",
+      "bytes": 988,
+      "sha256": "2614675fb58b1cd34806b0ba1c6320172b7ff4cf1a5ef8485dbaac64d9ae3f9b"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T13.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T13.js",
+      "bytes": 988,
+      "sha256": "692373a04af91fc02295b889891fbd7aef90800ae463761d6967d56714f5c095"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T14.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T14.js",
+      "bytes": 988,
+      "sha256": "ce62c0a1cfe5f58383e8d3df050dad393ff89be0fa7445930b8055749c6f9c1d"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T15.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T15.js",
+      "bytes": 988,
+      "sha256": "e180ae6ba3bc7ac13b5c8f11d2eea4cf050ff323f93a5830da6be0682e4f56f1"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T16.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T16.js",
+      "bytes": 988,
+      "sha256": "6efa4065dc0e58596c01360389470a9b2f45a142e66bcb40ad2be30528a49f03"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T17.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T17.js",
+      "bytes": 988,
+      "sha256": "2f121cd23b5d0cf6ce558476779d6cd694e5475840411306d3d02af879014811"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T18.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T18.js",
+      "bytes": 1000,
+      "sha256": "66a0bcc5dcc8699f0973b357e3267ad78196441e838d89f7538de2da6cd1d5e4"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T19.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T19.js",
+      "bytes": 1000,
+      "sha256": "ff30dbbe4aea1377a959230a58db8add4d3b4bdf6ee20fa02d17105f43610824"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T2.js",
+      "bytes": 988,
+      "sha256": "3ecfddb5f86f5d4562f5d5a8065a233620da5bb6ca8e85f25b33b109515eb254"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T20.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T20.js",
+      "bytes": 1000,
+      "sha256": "824cbcff0b923495b377c66a063bfcdc415e9d3ced858cd3534ba841d28ac0b7"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T21.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T21.js",
+      "bytes": 988,
+      "sha256": "cf5caa2d8aa4c4df277549c93cf6267d7cd84fd8931fef5530c5c148c313dc80"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T22.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T22.js",
+      "bytes": 989,
+      "sha256": "e3f79694ed0904616f9f509d4741fc91208f84bb2dc8fbe213ff7e4cabe16f73"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T23.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T23.js",
+      "bytes": 988,
+      "sha256": "f05bc7b63c5e4f12246bf22b029bfa4154a39c1d79898ff2aeb61293c164e76c"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T24.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T24.js",
+      "bytes": 988,
+      "sha256": "3f0b22dfafdcb1eac7fdfde6350b39a7d3d1f07c94139eda0a906c78ef30964c"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T25.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T25.js",
+      "bytes": 988,
+      "sha256": "9649d7c12f7e46ca2168729107378d3015f453e9271e6b4b0bf065c7ae12e2ec"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T26.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T26.js",
+      "bytes": 988,
+      "sha256": "1369fc49c837a9af290a73d9252a4883359d55683502aed9925b0571ad36356e"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T27.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T27.js",
+      "bytes": 988,
+      "sha256": "7cf38e3cb6df177a05a96b9c585c8f07c254e79d849cd93468ee256e4ea6d2cb"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T28.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T28.js",
+      "bytes": 988,
+      "sha256": "737ff51437b50b0e38f98acc47ccbf3b443cce25ea0da38d6dba40597f086d7c"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T29.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T29.js",
+      "bytes": 988,
+      "sha256": "389d51e132fee473f658d2a73b7906f7ffe3783dc198581ccf11c8ae76ced4ca"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T3.js",
+      "bytes": 987,
+      "sha256": "c3f0a32bc22749bc71d0f7248959408e3dd99c2ecfef6fafca532ad364406b45"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T30.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T30.js",
+      "bytes": 991,
+      "sha256": "987941dcf01fbe002e036e135f8515b1000059faa0f883e3bf0777075ec4a3e1"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T31.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T31.js",
+      "bytes": 988,
+      "sha256": "38a025a7da05e281bb32a0b703fe64c15a0250a390ca5d07919af2d0850ceb83"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T32.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T32.js",
+      "bytes": 988,
+      "sha256": "d6e031c1ef2b2db6461eed58047ddf9b38cb7490817b4a1b42c49bbf1e1719a1"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T33.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T33.js",
+      "bytes": 988,
+      "sha256": "f70e90be9286c6028ffc3e15f02e32c74e8e7911fee515dc6070b9b0b735f35e"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T34.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T34.js",
+      "bytes": 988,
+      "sha256": "08bdf9bb3bdc757529b12e82b64b4817dbce18d73c2015e2074435f16335be94"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T35.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T35.js",
+      "bytes": 988,
+      "sha256": "096788b75ec606b51edf29af7a64f10bb6cacb0fb67f1c14ca0bdcaf33ce41dd"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T36.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T36.js",
+      "bytes": 988,
+      "sha256": "477e533076af68f6ab45df7bf98236094d0a1f27c55d59b5469486e872124da0"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T37.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T37.js",
+      "bytes": 988,
+      "sha256": "93c0be0b71d789f9919fb186ea0e263e4a2008752673abdca31fe1fa57691d67"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T38.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T38.js",
+      "bytes": 1000,
+      "sha256": "0448c69360fc175677e6f0244554ddf1a8eba23bf279e6151b72161064c03953"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T39.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T39.js",
+      "bytes": 1000,
+      "sha256": "7b6831eea9fc29ec693b9122325a2b1f08e20222157cc642eec4104d4ca6c4f8"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T4.js",
+      "bytes": 987,
+      "sha256": "17d87c1160f2ad8168bf142bf69b5e4a49dc8bbe610cab6414cb52d7a99b0bf4"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T40.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T40.js",
+      "bytes": 1000,
+      "sha256": "884db645d92586c86bcf1b9b5013fff28b3cd3a0d0ece8e7b8699fe6e46e618d"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T41.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T41.js",
+      "bytes": 988,
+      "sha256": "c08592a91d347218f3e0d03063347f156e41897d8bba1e38fac994bd1c1acad9"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T5.js",
+      "bytes": 987,
+      "sha256": "da486929692f72961bd72dc6daad3463bf01e11a2c629c817b5ac3f0dfd09b3d"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T6.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T6.js",
+      "bytes": 987,
+      "sha256": "902a57c22a597e1e099a5ffb225310654413d46d445890f01b6c56fff6b4ab2b"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T7.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T7.js",
+      "bytes": 987,
+      "sha256": "f20a08246c57dd219723b46a0b3260816e65cdb21e27524b9e9504bc4ba378df"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T8.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T8.js",
+      "bytes": 987,
+      "sha256": "4cdd9cfa0c088725f6a40aa4d8a92ecb4347a03d18ee065e30890a9c0d3d6c2f"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.15_A1_T9.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.15_A1_T9.js",
+      "bytes": 987,
+      "sha256": "a1ba003086f08b5552f6e29ef36060a38116e64dcdc795d789792c7879f40d5f"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.3_A1_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.3_A1_T1.js",
+      "bytes": 1290,
+      "sha256": "d1185dd1493d71814bac54381a722ce457fadb7125bc6c22d7e6a39611092470"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.3_A1_T10.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.3_A1_T10.js",
+      "bytes": 1334,
+      "sha256": "ad24e1933b7e35da606d40e4158248c98aed7f030e771aa818c002cb3b08ed4e"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.3_A1_T11.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.3_A1_T11.js",
+      "bytes": 1344,
+      "sha256": "46e6ea5b6ea54f6a7cea060867923bdd006def61766d296b0f014ab71dc3d427"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.3_A1_T12.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.3_A1_T12.js",
+      "bytes": 1299,
+      "sha256": "5ee6507247f50756dc4993bbd3526fd13d4c66c49c3e90279aef498a58c442b5"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.3_A1_T13.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.3_A1_T13.js",
+      "bytes": 1307,
+      "sha256": "5adedc2bfa6f239d32c783f0db02129ea0c4ad4b0f7f4e905449546d6996ecd9"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.3_A1_T14.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.3_A1_T14.js",
+      "bytes": 1349,
+      "sha256": "907b3b16edabf83e0fe9c3f3175e0bcea1b3ff82bd56e247d975fa3c59d8ed1a"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.3_A1_T15.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.3_A1_T15.js",
+      "bytes": 1398,
+      "sha256": "b28339d9367d751ffe81fcb33504ccd821cac6c2aa291f526cb728545da26520"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.3_A1_T16.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.3_A1_T16.js",
+      "bytes": 1282,
+      "sha256": "6c8410b3bd5e958dc64e30f20adfe45143a62312dfac07a3e3b55efddba0cb50"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.3_A1_T17.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.3_A1_T17.js",
+      "bytes": 1289,
+      "sha256": "94dd8ad9396c86d2beeaafcd15eb558353fca632016bc0c652c4a979d690b921"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.3_A1_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.3_A1_T2.js",
+      "bytes": 1368,
+      "sha256": "90fce6979c493ec43e5e3606fa5abecfa21f26b34b8571069d80016413b5db94"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.3_A1_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.3_A1_T3.js",
+      "bytes": 1402,
+      "sha256": "a1356c8cb052c8a3a400224a38cf251921521c90adb7bd2beb8b5e31df8c2c32"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.3_A1_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.3_A1_T4.js",
+      "bytes": 1425,
+      "sha256": "2b2406d45b550408dead7913fd8bd8f7360cc9e71d63f513453b286d4c62fea5"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.3_A1_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.3_A1_T5.js",
+      "bytes": 699,
+      "sha256": "b4d55dbbf67788886cf5fb4e7fbce25e808fda3af2f862c385836d71f81cac73"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.3_A1_T6.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.3_A1_T6.js",
+      "bytes": 1310,
+      "sha256": "fe2f52e012136885b009a25477a23179dff4785212039f863313ba5df56ba618"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.3_A1_T7.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.3_A1_T7.js",
+      "bytes": 643,
+      "sha256": "19abaffecabc3b9d06f3ab52b61e0b21baeb4ace1e25af7ea5a07ad42f36024c"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.3_A1_T8.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.3_A1_T8.js",
+      "bytes": 1324,
+      "sha256": "fc8024a2c37f59e25b3c9cee04789276535041634d323c7ac08ec8fe9f8e3ca8"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.3_A1_T9.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.3_A1_T9.js",
+      "bytes": 1332,
+      "sha256": "eb56ba0bd890d647fb43a427c9aaa2187ebd6d88daba6c7e16353f889dd1c952"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.5_A1_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.5_A1_T1.js",
+      "bytes": 1143,
+      "sha256": "4391d814eb8c3f1156043332ac39294e0017d2c03cd00a55000064f065906303"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.5_A1_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.5_A1_T2.js",
+      "bytes": 1143,
+      "sha256": "df7629856e2c9a35c08ddf164729c383cd0a098683b367919256d508cde9206f"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.5_A1_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.5_A1_T3.js",
+      "bytes": 1156,
+      "sha256": "526839e4eb7f234c3e5d30a455f85638f3afdf6f26fbeba1e4892d50b646d525"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.5_A1_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.5_A1_T4.js",
+      "bytes": 1200,
+      "sha256": "5b2af9ee2e309f36c8a275e012ab596e1c06c738294670cbf9a2030306710ce3"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.5_A1_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.5_A1_T5.js",
+      "bytes": 1128,
+      "sha256": "6ba39fd83bf47fde52b12f4c26256460661833f31b33115cb2a57ab6ea8b57ee"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A1_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A1_T1.js",
+      "bytes": 523,
+      "sha256": "1b5fba503be5eedb2f29807ae4106cf761b9e33f411a9ebc2f2149807573f425"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A1_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A1_T2.js",
+      "bytes": 1202,
+      "sha256": "b5cc4dae016c2a4210f3f3756ecfe2e0fcb4f57a39adf644937167ce5522d97b"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A1_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A1_T3.js",
+      "bytes": 1203,
+      "sha256": "4aa7e9e4097ffd5fce63ae207253c8fc5024127f3e0912aeaf66bc290047d326"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A1_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A1_T4.js",
+      "bytes": 1211,
+      "sha256": "a675e4bec1fd8afc124e672dfc727802c53cf50df89cd90b11ee7ebdbdcbcf65"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A1_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A1_T5.js",
+      "bytes": 1232,
+      "sha256": "87f26baea13735944121cd90ba2f3674ec565440337637da91141c1204fcc1b4"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A2_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A2_T1.js",
+      "bytes": 523,
+      "sha256": "f23b4e0bdaf4e841690a8960cc18d553c227a7bc61ae77119c478f76b2375529"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A2_T10.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A2_T10.js",
+      "bytes": 1183,
+      "sha256": "0ee83533aa124d71f5cbf7e6068e1b903f8497ff00c488242e85124d64d0cfdf"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A2_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A2_T2.js",
+      "bytes": 1203,
+      "sha256": "2f1bd92cab6f413adaa4726c3b9a7556d6475a10764c151f6ed966ba598e3e05"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A2_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A2_T3.js",
+      "bytes": 1243,
+      "sha256": "294a2a759ecc6f0cb61f4ff831acdee7795a8d8bda014e96abbd925e60d8a2b7"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A2_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A2_T4.js",
+      "bytes": 1246,
+      "sha256": "f2351555344fe0c40596901875c6636fbf38ecf6475dbf6be0c9dffd94d66dae"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A2_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A2_T5.js",
+      "bytes": 1240,
+      "sha256": "2e23c54edf6458f1fb27707964d05184919e79cf98e7e94a4eb7d5ea729795e7"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A2_T6.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A2_T6.js",
+      "bytes": 1159,
+      "sha256": "02137a547db6b5e59235bb448b16fce4dcdb182275fb4a4e4fd56e3ee527cd9e"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A2_T7.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A2_T7.js",
+      "bytes": 503,
+      "sha256": "4bf9ded496ac70fd3ff58e184e1031c2882fa09d43bdb8a4258a9ecef4e047a3"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A2_T8.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A2_T8.js",
+      "bytes": 497,
+      "sha256": "38d9c8c4f6b404f7584f453ed7ff46bbaa8bf6a962be4613ea35bfa799cdca4a"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A2_T9.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A2_T9.js",
+      "bytes": 1159,
+      "sha256": "332bc2d026fc7cb7b1d6a18c2b3f149119a660603f3c1cbed707cf10aab70730"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A3_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A3_T1.js",
+      "bytes": 1247,
+      "sha256": "a53eccdfa8cf438517dd7a42e8cbdd00d0ed489189cafa05e8be25637fc8ba76"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A3_T10.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A3_T10.js",
+      "bytes": 1265,
+      "sha256": "04bb9ba2bb2fa143918704eca93c36b310af839df5c762cff1c8ad1640556f3e"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A3_T11.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A3_T11.js",
+      "bytes": 1264,
+      "sha256": "61adb90a7e9c29564e0543d908600f3cf718f5af187d725594a3c986a0d2c2ab"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A3_T12.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A3_T12.js",
+      "bytes": 1252,
+      "sha256": "71170330c6254e9b9d64ce922a869ad518de5d5cc2286895f7fba973d4167e08"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A3_T13.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A3_T13.js",
+      "bytes": 561,
+      "sha256": "e14b0f2947b05b0b4aa0ce6ee2ff9689306bac3c32abe6a4c1364bbe1b641779"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A3_T14.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A3_T14.js",
+      "bytes": 1259,
+      "sha256": "472590acae47b6c19a7d70a284966f6b37e945047d7adfc43e1f5eed6adb7219"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A3_T15.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A3_T15.js",
+      "bytes": 569,
+      "sha256": "bb9a8614b5871e3657236b391a825ef0c41f66132f8e7b976898746b3a567072"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A3_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A3_T2.js",
+      "bytes": 1250,
+      "sha256": "7c532436aa24441edddad35d18c3419304e3b73ba5478b86f837d83766054a99"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A3_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A3_T3.js",
+      "bytes": 560,
+      "sha256": "12c6396d3e326bba11462a9429a076c6572a9acde9430a93f7b45e08cdc151de"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A3_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A3_T4.js",
+      "bytes": 1250,
+      "sha256": "a386174dc315ef0c607292cb2cd198a4f961a6aff200039d28885dca7e2315b6"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A3_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A3_T5.js",
+      "bytes": 560,
+      "sha256": "d41b3defe27278e739ff634044043618be39d256704c1372a7ae13a2a6f38aeb"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A3_T6.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A3_T6.js",
+      "bytes": 1256,
+      "sha256": "9ef15aa5c0332a04e72b3d95d89e71dc3f1e554f390587aefc396b5eda374fb5"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A3_T7.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A3_T7.js",
+      "bytes": 1259,
+      "sha256": "abfbf8f127e1fafb2baef945efacf50f4f9f789a06ca004a893b02ffdcd07141"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A3_T8.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A3_T8.js",
+      "bytes": 1251,
+      "sha256": "6967209d6417107c21a11d5b584f2d5117d2d647f205a5054fd8b7092f60c42e"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A3_T9.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A3_T9.js",
+      "bytes": 558,
+      "sha256": "566761abbcdb3e9ae856795141f4faf8b02d89d577e4cb061fbf6e0740e88278"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A4_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A4_T1.js",
+      "bytes": 1236,
+      "sha256": "8f3ba14fe8c637e11a457a3fdc057f5356348d7633754672ea507c1856943262"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A4_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A4_T2.js",
+      "bytes": 1237,
+      "sha256": "8a2e81b44e0ff50109ca3b364722e50d32cc68108ee798262ed79e5f7d48dcb2"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A4_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A4_T3.js",
+      "bytes": 1221,
+      "sha256": "dfb579ca3ef6a18af33d726e52b15816d1642360e588bf271f45a1aa282aa558"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A4_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A4_T4.js",
+      "bytes": 1221,
+      "sha256": "e9d79fb4227e3cb9c9dc14c496991c2530f20117af9fdd26b5bb68d2f9147c30"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A4_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A4_T5.js",
+      "bytes": 1217,
+      "sha256": "8aeaa46a4f663af219042eb81e527877b77dbd46d52ea3486a037761ddd08fa8"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A4_T6.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A4_T6.js",
+      "bytes": 1217,
+      "sha256": "31e129b46dd4a0b20f9473957c75035afd2c637fad915d7c06eaf889ee19d7e2"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A4_T7.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A4_T7.js",
+      "bytes": 1251,
+      "sha256": "1624f94521bfdd0ac715cbdf70a91018e4ff8912cb1c4fd1408989fcd0c5f640"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A4_T8.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A4_T8.js",
+      "bytes": 1248,
+      "sha256": "98cbd4adcb2adb03a6438c1b0bc65e39618ab30d6ac5e1e9c5516b4ee07c1151"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A5_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A5_T1.js",
+      "bytes": 1143,
+      "sha256": "722693601fd727617314a0e8620dded52fbd79fec8e9aa10ece1c10811c5bac7"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A5_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A5_T2.js",
+      "bytes": 1198,
+      "sha256": "836bef0fe28dc06392b3636ea9eaceb6ece44a315f7aa9d8c8d08ed4da7cf1b3"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A6_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A6_T1.js",
+      "bytes": 1101,
+      "sha256": "2d72109854135c98a3af71d0ce88cd0305c4275268d3c873740bff25d458298c"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A6_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A6_T2.js",
+      "bytes": 1053,
+      "sha256": "7f9e26d35a6e64d771add82b824ef67ca2918e06383ca8d333c3c60df9fa4f09"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A6_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A6_T3.js",
+      "bytes": 1082,
+      "sha256": "b1ed92ca5eb57b398ee25fb09b4af09c1b09860c04cda0435e6eb11308bbb0dc"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.6_A6_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.6_A6_T4.js",
+      "bytes": 1084,
+      "sha256": "09a236b7b9c03ca42a5e7832a56b8612d80b4ba7230876509a9aa75bdbdae833"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A1_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A1_T1.js",
+      "bytes": 1147,
+      "sha256": "3b98e9badd858a39ba3433156d4740f1ba047389f8bfd7dfab70c55591f825ea"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A1_T10.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A1_T10.js",
+      "bytes": 1167,
+      "sha256": "e33bc8e2fb18eb87bc9e95ecbc6d79f4d086b00b866fd6077edf3997b53b132a"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A1_T11.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A1_T11.js",
+      "bytes": 1166,
+      "sha256": "f6b1c7e2d0f5f2d4c969707babf3ca8d5ecb91468c01416bc0aca5acb934d4ab"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A1_T12.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A1_T12.js",
+      "bytes": 1133,
+      "sha256": "e1d2ef1593eedce92d993e76e1cc7c4c338e7f8abb6fcda15dd935783187c9d8"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A1_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A1_T2.js",
+      "bytes": 461,
+      "sha256": "79b4d142faa2d70cacd40d3e6494614abba783d9ee97bc89587d9b686949b329"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A1_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A1_T3.js",
+      "bytes": 1218,
+      "sha256": "2976ddddd6c67a64e900657aae1e380e3cfd18ed38068eced84851bbe46ad541"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A1_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A1_T4.js",
+      "bytes": 1169,
+      "sha256": "fe1ac334c365bb29343d2b730cd3e614af3f94bceb1aea1bcf835807333d55ae"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A1_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A1_T5.js",
+      "bytes": 1142,
+      "sha256": "2c2a39ce12abc1b271d5ee0323ea77ad02ed4ca7a7e4bfe3dff447d9b87af4c1"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A1_T6.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A1_T6.js",
+      "bytes": 1137,
+      "sha256": "085db9f934d0bb4118a1c11b5c0549dcb54b5ff257230359fe7bde2e4632d933"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A1_T7.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A1_T7.js",
+      "bytes": 1144,
+      "sha256": "6ee00d451dae90ce090186f0475567f83d8f1d2dd28297e6164858eec14e44f8"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A1_T8.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A1_T8.js",
+      "bytes": 1163,
+      "sha256": "a5e9ab52405e242b45e0f4920301be5ede3a5bab9acb7eaffc0f0068213394f7"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A1_T9.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A1_T9.js",
+      "bytes": 485,
+      "sha256": "4e98d2415910bec202f00db8b89876953485976c372ee772d2e28b77c5d018eb"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A2_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A2_T1.js",
+      "bytes": 1236,
+      "sha256": "34ac7dc131c71b17068704b2000a14c6cb80d5631097fa1741b18e8740190740"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A2_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A2_T2.js",
+      "bytes": 1220,
+      "sha256": "cde23d294541500aa681976a668c7599ef23b445e6ef9797041d92415926fab7"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A2_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A2_T3.js",
+      "bytes": 1229,
+      "sha256": "999b5b104c961c7b639125cbd5d8b025cd5a737cd4206288218bd441d741a4fd"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A2_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A2_T4.js",
+      "bytes": 547,
+      "sha256": "2c0ce89168bf39d1a91912f35f16de1f9792cd9fb5706899763a486ee68be97f"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A3_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A3_T1.js",
+      "bytes": 1161,
+      "sha256": "88c78a1a0433c69e8685968a5f3810be361a8b934ac5586710975e1d9b59f544"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A3_T10.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A3_T10.js",
+      "bytes": 447,
+      "sha256": "e6b7a55d0f4b7bbd680ff6c6efb5a4cf9c69459f57221261ef0fc663f2e3df55"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A3_T11.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A3_T11.js",
+      "bytes": 1112,
+      "sha256": "6b7e35ae52f6672429c5bda1393b6a4377647e2f177c30dd6dc35a67a030c045"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A3_T12.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A3_T12.js",
+      "bytes": 1160,
+      "sha256": "82aed7bff19c64e07f5885139b834f7743cbd643041a920a7de9f879f9c67b7e"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A3_T13.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A3_T13.js",
+      "bytes": 1149,
+      "sha256": "834b30cce07abb1d063d76aec0e4aac6c343f55f53dae7e0524cb71f00ede9ac"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A3_T14.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A3_T14.js",
+      "bytes": 1128,
+      "sha256": "d04f6ef6561e3c870e8e07ced1c074fc2f659ae923eef56339f5351de4a32c67"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A3_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A3_T2.js",
+      "bytes": 1155,
+      "sha256": "ba3e9812702040d55f0b79015ab632ae94b5ea8b916a555d34265a8cdcf0d214"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A3_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A3_T3.js",
+      "bytes": 480,
+      "sha256": "d562108af318463e5ccc9bb9ccf803fbddb014d1b6f4cd488f6bf9f207259d21"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A3_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A3_T4.js",
+      "bytes": 476,
+      "sha256": "3c5d71bff73b2edf79a6f651e9fd7a895bb734470f41fdc70b3d237ebf029c43"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A3_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A3_T5.js",
+      "bytes": 1200,
+      "sha256": "442ba5b4a247224063779d4559c13a87a3ef58f8fc9e431fc8334f6c2ab3c245"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A3_T6.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A3_T6.js",
+      "bytes": 1139,
+      "sha256": "4b7e68d1457ddc0b0ff3429c4b74049652b6dea241989cae16cf85781821a6dc"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A3_T7.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A3_T7.js",
+      "bytes": 1208,
+      "sha256": "5d0a863c1ab73359c1fd751f23b73ae124db4bd72124fec3df1984f6769f0246"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A3_T8.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A3_T8.js",
+      "bytes": 1149,
+      "sha256": "a5ff391bf5dd92641e5404204103c07a899c90481b8a93a0515fa6fae118ef82"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A3_T9.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A3_T9.js",
+      "bytes": 1127,
+      "sha256": "0b283d8f5ba1e5ec91179365bb9b61a22066cb49b6e08fb27c88119c8d60783f"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T1.js",
+      "bytes": 1144,
+      "sha256": "2d58dccaf2bd8c115db6983edafe610457fd3bb6ecad177934e2cc15d2574bc6"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T10.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T10.js",
+      "bytes": 1121,
+      "sha256": "2c7cfcf6a38ba3c0eb1b2b5f73148ea417c0ab9ef0fcfe5a1543d49631253c75"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T11.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T11.js",
+      "bytes": 1128,
+      "sha256": "7a20be876846e0944921dc23b561c973fb4a281691b703ab30dd3e40dc69944f"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T12.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T12.js",
+      "bytes": 1117,
+      "sha256": "d0afa7ef9af49ea0831e4760ebd702e7d83ae12927af230dcf30677c9d3d8979"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T13.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T13.js",
+      "bytes": 1143,
+      "sha256": "f605a719d8cb5bd9e866c953f94e6ee9d42e2a335dd5ef0e272e684e9926bce5"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T14.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T14.js",
+      "bytes": 1162,
+      "sha256": "b4ac1bf133908237d9dd1f338c65b72ff17944f3b87d6a0c25295288178de7c5"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T15.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T15.js",
+      "bytes": 1165,
+      "sha256": "20be7d47f16ecf5fde32d1bc192c0147aa24bdc6453b9c17b09a639cc9d219e9"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T16.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T16.js",
+      "bytes": 1143,
+      "sha256": "2d9e8f71fcfd3887b5b98f2d77693f52b284b3ff586f8bf9ce851625e80d0416"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T17.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T17.js",
+      "bytes": 1144,
+      "sha256": "9ec4d0c95da56ce53644afa718d2257471ec369eb5b77d97017d1691a41f122b"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T18.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T18.js",
+      "bytes": 1133,
+      "sha256": "7ca0c1eabf819de98a647680c69ae733b78317077d75e29d699038a8da2f10c9"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T19.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T19.js",
+      "bytes": 1137,
+      "sha256": "864afe6753d6b0ae2de1e7573d9c0bced95cf1298aebdff32f31cbff60ead8f3"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T2.js",
+      "bytes": 1174,
+      "sha256": "76512af8f8453f3718971610c1115aba92d723d96b6581d1d38e059b0f66ce2a"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T20.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T20.js",
+      "bytes": 1115,
+      "sha256": "44fcd7e41033b2cd185a846b48887e71953cdff0b866755264f53a3ab68bb830"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T21.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T21.js",
+      "bytes": 459,
+      "sha256": "d2086122b3bcab14bf8c6f82dcfcacebf1e73c3fed7021a5ef440fc6d0ae4d39"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T3.js",
+      "bytes": 1160,
+      "sha256": "f1f0750b471665f9befd65c0a9698cc51ce065a3549806740e4a30e82ad0c5de"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T4.js",
+      "bytes": 1187,
+      "sha256": "0ebd13750b21dcf0efe26ca4ee223490598d9e050e2e5c147499d7660a8522a4"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T5.js",
+      "bytes": 1201,
+      "sha256": "01e9de139634720e4695df558c0b35bbc3da1a97ac48856ac9a9137104815d65"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T6.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T6.js",
+      "bytes": 1221,
+      "sha256": "312311ff6cdbcd83661efd9ecf1c0b38784d83c372703980dfaa1f147f4e4450"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T7.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T7.js",
+      "bytes": 1212,
+      "sha256": "167d1896a6d46f9c205adb129ff6c3f9bbe8804b733ad2d613bd91ca484ab171"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T8.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T8.js",
+      "bytes": 512,
+      "sha256": "3e8dd688410474be89b0c1d7e000448de300602cf7b83035f09f576583946157"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A4_T9.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A4_T9.js",
+      "bytes": 1188,
+      "sha256": "dff02770fb1b31482c36e5ccb7606dcbdb6a8452dacb24896be58dafab96ac9e"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A5_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A5_T1.js",
+      "bytes": 1271,
+      "sha256": "e6d67329a93ffba8e7c2879d4a542d6c52118cf8d1dcec927899964c8596d31a"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A5_T10.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A5_T10.js",
+      "bytes": 1131,
+      "sha256": "1e7956799797bc9a90af7cea788e76bf7d211319e433d6ce7a41fdc2410bf068"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A5_T11.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A5_T11.js",
+      "bytes": 1131,
+      "sha256": "28d7c03012b4a6f0f8eb8d29e58b7744d453511302061501091c5b8a13868021"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A5_T12.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A5_T12.js",
+      "bytes": 1125,
+      "sha256": "20e2705ed33697ef8d015772bc4a85be7f604b0b7c3f6a428d49c485df7d2565"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A5_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A5_T2.js",
+      "bytes": 1272,
+      "sha256": "8e9a0498946de546e8054c16feefa4e26d176dce301fd83f0555e4968bd9c907"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A5_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A5_T3.js",
+      "bytes": 569,
+      "sha256": "efd269662f1f39ced25ee67809a692ea980b20e7b599525efc6037fcd7bee922"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A5_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A5_T4.js",
+      "bytes": 1109,
+      "sha256": "73a87a5ad7e69a0f32388bf0b0959013fe1e0048f809a08ec6b17d9c495b9697"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A5_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A5_T5.js",
+      "bytes": 1111,
+      "sha256": "07b4dc49850c416a21e103672789bd2d116280e34ae2bf586e5d0532c70e15bd"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A5_T6.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A5_T6.js",
+      "bytes": 1123,
+      "sha256": "8ed0b4fa9a560883c54c0a5321ad9d3477e64758a81a14b4428108cf1752d3cb"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A5_T7.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A5_T7.js",
+      "bytes": 1104,
+      "sha256": "80447e4c5ebb3de98b9825084b6dadd1faaf7d71ad446ef3e1872876e55d22f2"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A5_T8.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A5_T8.js",
+      "bytes": 1113,
+      "sha256": "245d301eb286fcce63e0794f2d8669f15db569547376f5c8a635bcfc3b7bcc3c"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A5_T9.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A5_T9.js",
+      "bytes": 1116,
+      "sha256": "de69c03960c3414d3961a54c47f31e27ab6e1799ff39618e601a9a8c12b48f4e"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A6_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A6_T1.js",
+      "bytes": 1232,
+      "sha256": "e5b926a71dedd9ffdbcd36e0142dd7077728e832fa7084dbfeae116333c1e69a"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A6_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A6_T2.js",
+      "bytes": 549,
+      "sha256": "ae99e300b91d1629fc5b565d5ba96d2a0cfe2684153b721c4f5942cb216f319d"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A6_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A6_T3.js",
+      "bytes": 1209,
+      "sha256": "2b3fa47557b17faf7a7b898e911b423ed8efabc4c781d25fdf24c7f581ee4612"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A6_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A6_T4.js",
+      "bytes": 1200,
+      "sha256": "b79c36b9a8a054132ffff382af193beb629b929de12b797fd35f3fef7e29c9be"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A6_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A6_T5.js",
+      "bytes": 1222,
+      "sha256": "8d3f93c2af22c3c474be3f35d72a60d4b963f2813051b41e48195253da150246"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.7_A6_T6.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.7_A6_T6.js",
+      "bytes": 1202,
+      "sha256": "c4329b4c7cc959538df17dcd1c922a2f31a0780209af0ed8ef045e501dbcb751"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A1_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A1_T1.js",
+      "bytes": 1372,
+      "sha256": "d868b89da67bf5261c78d7389ac9361ddc62226347d02b737d4e9e7b2df3928d"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A1_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A1_T2.js",
+      "bytes": 1383,
+      "sha256": "2169af5e8fedf705017d88be7b8cb8f64639c25eaafc9a10c2f3fce5e2dbb3b8"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A1_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A1_T3.js",
+      "bytes": 1504,
+      "sha256": "137e49b96e8b427d633a033061cb25b5982491e03a8c9e8747ce51072d85a939"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A1_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A1_T4.js",
+      "bytes": 1487,
+      "sha256": "7fa441ec8b83bc1fea1ff6132cc5b05727176f0699e9d008cdcbcab28f2b5f61"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A1_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A1_T5.js",
+      "bytes": 783,
+      "sha256": "014a6131c5c82add21954f93f2b7f7e6f92f8aaa738fb15190928281aab44fbe"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A2_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A2_T1.js",
+      "bytes": 1353,
+      "sha256": "23a63f090702d6879975d25bd8496e8c492825f821224e6be1c48732c3e95a15"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A2_T10.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A2_T10.js",
+      "bytes": 1262,
+      "sha256": "b2bc112dada92d1e8455e90f9c44a3a893491aa26a4c8002caabe9af03887df5"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A2_T11.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A2_T11.js",
+      "bytes": 1259,
+      "sha256": "12997dad6f824f012c8ff6be7179e3f6171ae75d4a0f651718416b9249897ce0"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A2_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A2_T2.js",
+      "bytes": 1400,
+      "sha256": "14d3bb693973e7326da8f8434180f21260ddfe3ce200edb1ad01efe5a4789b87"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A2_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A2_T3.js",
+      "bytes": 682,
+      "sha256": "5432d5098ea22e5bef72980fe26e175b857520137004274305af5d0b48bc3ba5"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A2_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A2_T4.js",
+      "bytes": 676,
+      "sha256": "cde875cfc34a292a93d255c50d12fbe9c711627a4b4648b8d7c4a82c1cb347ce"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A2_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A2_T5.js",
+      "bytes": 1360,
+      "sha256": "0d41f3cee0655e52d153205066f14f79b1478d5f2f7186dd6b17a3cbcd865947"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A2_T6.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A2_T6.js",
+      "bytes": 1300,
+      "sha256": "e723494d17730e5a85ff841a97a2472fdaa309c68e959ec79e3eefdafc642182"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A2_T7.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A2_T7.js",
+      "bytes": 1300,
+      "sha256": "a75a4a3a3c39469df33d80936bf84c3cfb4736b4ad8597e83b28a05bfdb5cf5f"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A2_T8.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A2_T8.js",
+      "bytes": 628,
+      "sha256": "b2b192aa425afefe4d91634a697e755d53aba395586791e2c77c8bf79f2b12f8"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A2_T9.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A2_T9.js",
+      "bytes": 1255,
+      "sha256": "ac1a5c9241246d1fa01d53032b6799be09562943608e2f60619f3fef8e77ffda"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T1.js",
+      "bytes": 1590,
+      "sha256": "4d53a2a40290fd7ba2e77f0d8fc86b896a6d1461ce8f7804010a853cc82a70d5"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T10.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T10.js",
+      "bytes": 1450,
+      "sha256": "977e3343b138e120d94c86eb19b300387a06d361022e5f3c3972a1e1d39971e5"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T11.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T11.js",
+      "bytes": 1421,
+      "sha256": "86f9deadcd1c33c1333f52c241256cad38b759e694c9aee4e1832366b63cd947"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T12.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T12.js",
+      "bytes": 1450,
+      "sha256": "27e13b75f621dab53c5c6ca74cd14b59ab985d4102ca683939451ca924098226"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T13.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T13.js",
+      "bytes": 1484,
+      "sha256": "8d9e723a800236bf6400f2145a46e2c2b8cd239f71b8293d4e5a9d56c4da7f02"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T14.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T14.js",
+      "bytes": 1401,
+      "sha256": "c5c97287b42800b1f1a81daca7d3fff8b9bd9a03b400b27334828788a186d91a"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T15.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T15.js",
+      "bytes": 1772,
+      "sha256": "fa2d28b262e96f06723e840575dc1bf7d5d0f510466462e5dd037e8d5f9d2b93"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T16.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T16.js",
+      "bytes": 1718,
+      "sha256": "35dd8fed43b5a81848fd079a99458e61837c62d4e5ca968c69b3c1c06946e26a"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T17.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T17.js",
+      "bytes": 1747,
+      "sha256": "5e9d666ed542dc8c18b1242b88971b0d05d5049d792b8306eec079431e8f7634"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T18.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T18.js",
+      "bytes": 995,
+      "sha256": "4a7036fa1d583bd8de9a09e7f8420c2943881e7780c1d46ab71248deeb222a8e"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T19.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T19.js",
+      "bytes": 1553,
+      "sha256": "bc783845f695df826d8676e0010241ea1ffacad365a8a3610077c7afb28360ec"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T2.js",
+      "bytes": 1573,
+      "sha256": "1511b78e3778cbaeb7b36f56f0a44746eee3cd3d730739868c9a68d600b52e7d"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T20.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T20.js",
+      "bytes": 1397,
+      "sha256": "809b9d359a0a251caf3e02b7c290777d6f6f80f7fdf5b6814a6aece4054c1cc7"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T21.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T21.js",
+      "bytes": 1392,
+      "sha256": "418ce1ca008bfb4531a19618d167adf323804c323a9dfb83f682f61bb6d638e3"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T22.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T22.js",
+      "bytes": 1394,
+      "sha256": "c3733eff2dc3e1f315722c20e30381648c82ff3b7fa51ab93660c974795cbb8f"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T23.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T23.js",
+      "bytes": 1523,
+      "sha256": "a42eabd52cb5002b6836cf757890df88026282baee67cb5a28f2c60cc5f7489f"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T24.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T24.js",
+      "bytes": 1519,
+      "sha256": "57ca9a8c4840dd49b388b58d8ff39323b1fc85c920e87e2ad20618eb28c0c4fc"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T25.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T25.js",
+      "bytes": 1522,
+      "sha256": "6f96df00c5d56e068b37111fb1243ca34b111e1c629f79c15e7ef25bcbb5eaa6"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T26.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T26.js",
+      "bytes": 1409,
+      "sha256": "d18379b956784edc84c4f20d47bbe33895dd01fce0a8fca293598f9a5f95cb10"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T27.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T27.js",
+      "bytes": 1409,
+      "sha256": "860e31f1c2f1723a8b77729ac391d6dc253ce77f0d4a2fc5044413989ce0604c"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T28.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T28.js",
+      "bytes": 1419,
+      "sha256": "0ee27a8d01151a012dec4dee8b5166994f7f9d6aa0ab6b0949cf36f5a334f4b7"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T29.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T29.js",
+      "bytes": 1436,
+      "sha256": "1bd646c30971eb6f6de57880c0dc259e9ed1e6ce53d7b052ce024c394f926208"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T3.js",
+      "bytes": 926,
+      "sha256": "6b8022a7cdacf9982d487c0a6036a06da34e369bb3ecf620685943f1be02bc3c"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T30.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T30.js",
+      "bytes": 1432,
+      "sha256": "5eeb394a33b09dba50c83a8868d6f5367107dfb4494c4e026e960f0adc8e760c"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T31.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T31.js",
+      "bytes": 1435,
+      "sha256": "f875ca2724918fcc3abea31e8d842724d07c63fb980f02c01842f84cf90f4026"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T32.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T32.js",
+      "bytes": 1493,
+      "sha256": "6f01d6a8927dd33a72639504dcaf2a48745fbeea8eb593bd9773643e6b78e5ed"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T33.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T33.js",
+      "bytes": 1500,
+      "sha256": "7e27bd5ecd05a3c6679867f946c855f1f8a1094f59c0b4e3f05c0428a92c8277"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T4.js",
+      "bytes": 1381,
+      "sha256": "3bffc93bed2573577f90842aea43f1423e986b4531c1cf7a57f4b704ce5cec29"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T5.js",
+      "bytes": 1413,
+      "sha256": "239adba0b5435dd6f662d793bd2cef46bffb67c94e6e7afb4855d9ee87553c75"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T6.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T6.js",
+      "bytes": 1421,
+      "sha256": "27620ee734d585147b442b64a59aeacb318580e991cf776329cbe829f202494d"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T7.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T7.js",
+      "bytes": 1413,
+      "sha256": "876d76734aa8fa4e104c45884155fb2dcee306cb924dc4604ff1d92d4693c080"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T8.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T8.js",
+      "bytes": 1411,
+      "sha256": "10c3299e3749015eb5f6f0a9f3e6d80e580803005ec9f3a8457bae3bd635ed4f"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A3_T9.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A3_T9.js",
+      "bytes": 1415,
+      "sha256": "8e4721c12857b9f4393cee2648197965d0ce617e89918090187e11e857b38d34"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A4_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A4_T1.js",
+      "bytes": 1279,
+      "sha256": "bfa267a50b27f500dfdee8490559420ed07416b41757f2632d4f45757cbbd0f6"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A4_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A4_T2.js",
+      "bytes": 1292,
+      "sha256": "0c353b2d86dabf4ddbea8b02a58c9ee89520434d0473d697eeb53b2d77f8e741"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A4_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A4_T3.js",
+      "bytes": 1307,
+      "sha256": "c9b210abcd5bcdc2e8075d468237cb9b21f33be2273b974ea8fbb012c71e3f12"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A4_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A4_T4.js",
+      "bytes": 1321,
+      "sha256": "1094bc1c2682972b9c8c69adcc77d3bedec59ebd0657bf894a3934e50fe11f8d"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A4_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A4_T5.js",
+      "bytes": 1270,
+      "sha256": "b3f86b930499b57591a2d1264ceb99aea0d01c78e214acd399b9a5c4a05190b9"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A4_T6.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A4_T6.js",
+      "bytes": 1336,
+      "sha256": "90cc17c9f9071d454c4786be0c5b6721545ecd441c9aa7b710f5e3509c432d5f"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A4_T7.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A4_T7.js",
+      "bytes": 1336,
+      "sha256": "5afdfa0e60a29359ec7b9aae7e97f71a8eb517ecd039335089be54c3884ddd7c"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A4_T8.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A4_T8.js",
+      "bytes": 1336,
+      "sha256": "d30b7f48576ce7625425930ed33d24b4f2d115614961f86cd6fd690bf8bb0af3"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A4_T9.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A4_T9.js",
+      "bytes": 1324,
+      "sha256": "3f0ed67257726fcc777992bbb146eea2955939c945781fa6c1e2aa0d5676ef2c"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A5_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A5_T1.js",
+      "bytes": 1189,
+      "sha256": "b59b6e750d4831d137a837d1164619ce20e6f5983d2eb91253ce54a6252683f8"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.8_A5_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.8_A5_T2.js",
+      "bytes": 1185,
+      "sha256": "29c19906a7a066eff37751fcb0760cf8c438925b3b846abb41e36b450a532f21"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.9_A1_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.9_A1_T1.js",
+      "bytes": 1275,
+      "sha256": "2ec056a582a7f9ce98fcc4ce056397f8703f885db10bafe563d2788e74639e65"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.9_A1_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.9_A1_T2.js",
+      "bytes": 1327,
+      "sha256": "ae34a26615f4495258aaa720693a35cd822ce1465ea022418a1f328a458dd8be"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.9_A1_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.9_A1_T3.js",
+      "bytes": 1329,
+      "sha256": "4caed29972f72a7c5162d2b75a3d536ea99908522416aacb9e3cc0a13812279d"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2.9_A1_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2.9_A1_T5.js",
+      "bytes": 1184,
+      "sha256": "a1156fa659b16e7d02ddf79d9bb92aaacbabc99df01e2b766dbc6abe1f186f7a"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.2_A1_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.2_A1_T1.js",
+      "bytes": 3697,
+      "sha256": "d140b0134c328c9c452f3b359a8991f918fca6a473d4f5a2564836796cae8c7f"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.3.1_A1_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.3.1_A1_T1.js",
+      "bytes": 514,
+      "sha256": "ab93c4f4db410aa1b143fc720fa5449b7ada3eb95b37cd4e12a52345d5712b2d"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.3.1_A1_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.3.1_A1_T2.js",
+      "bytes": 558,
+      "sha256": "8a07ab93c7efdd5d83da60a62343f6d29380a8e3d2e99e2d57b92bc6b0c4a505"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.3.1_A1_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.3.1_A1_T3.js",
+      "bytes": 585,
+      "sha256": "69158e3a885a2cb9ed429e7d6b77ef7270bb5eaa549bf04f49c658c2ce91c209"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.3.1_A1_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.3.1_A1_T4.js",
+      "bytes": 542,
+      "sha256": "97a82f121119e02518e5de09872c7dae34a06e8bdb45d92a8e3b82f8022c6219"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.3.1_A1_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.3.1_A1_T5.js",
+      "bytes": 538,
+      "sha256": "1c13366c44dabc01bb5f09778f35eb4683b4921ed47746d2201068b51bca00f9"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.3.1_A2_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.3.1_A2_T1.js",
+      "bytes": 851,
+      "sha256": "22b9424b274cfe934ce7ee7506f236ce431e65c485d91cc3dbbee2781cf29aa0"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.3.1_A2_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.3.1_A2_T2.js",
+      "bytes": 873,
+      "sha256": "d5116cc5f1221a4d9217f8efb3d94c282985b4a0c89911dd05a82f33fe76de7c"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.3.1_A3_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.3.1_A3_T1.js",
+      "bytes": 724,
+      "sha256": "727e4690240840849b51397c21c9e6e4b4b0e4d7b6e3458263ce81cdb190d1bf"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.3.1_A3_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.3.1_A3_T2.js",
+      "bytes": 781,
+      "sha256": "2760fff7bf3410df323bb0d6a4892f430303d0f17eb2f16c42e1ddb2aa93d370"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A1_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A1_T1.js",
+      "bytes": 1056,
+      "sha256": "dc0de36801ed1079278260405fe3bc584f29104eb87f809dd94866b9f6b44698"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A1_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A1_T2.js",
+      "bytes": 1112,
+      "sha256": "3346a911479d45aae0a34c28402222f84d3e345e8e1ade473ddc014ef3c93307"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A1_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A1_T3.js",
+      "bytes": 1079,
+      "sha256": "1b33683eec448ba2604437db9c98bd199d4470e4750a84e73911fc12f790229c"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A1_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A1_T4.js",
+      "bytes": 1089,
+      "sha256": "1a7c5a70b196e4989cce332e64ea6409a5ef584be2ecff60176e66390821cdf5"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A1_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A1_T5.js",
+      "bytes": 1129,
+      "sha256": "a95c3716fa6ceed00903449d0a404405bbfbf6230517dc6a98e6e954f7ad0160"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A2_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A2_T1.js",
+      "bytes": 470,
+      "sha256": "bba78819e491e095bd29ff05503c26c16f296495c09bdc32b5dfcd5d76204d93"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A2_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A2_T2.js",
+      "bytes": 809,
+      "sha256": "5ee48d1e85a1020103c158c4207d7b51c25bf3ffa5d8aa31ad1315d92c3e4128"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A3_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A3_T1.js",
+      "bytes": 567,
+      "sha256": "de88618691d2afcdebb199720f2f488cb31f72c88bf818ae7a9664860c258a16"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A3_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A3_T2.js",
+      "bytes": 583,
+      "sha256": "cfd091f0c3cd6e0850f6ddf531f8c2e6189daec17f3d773af1209be92b6dfe5a"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A3_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A3_T3.js",
+      "bytes": 612,
+      "sha256": "528fe9f968c26414f2d5da9d3e5af9d97f2f9cfce0a5e32258e83971ba8a5171"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A3_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A3_T4.js",
+      "bytes": 589,
+      "sha256": "b67b27f79f47d7be862c793298107ecb8610d773f2169678e22f64f7bf15edc4"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A3_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A3_T5.js",
+      "bytes": 603,
+      "sha256": "4bfb145f51c0ab5123c24a17b52d4bf201451df02020570fca3e8a18d01698e1"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A4_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A4_T1.js",
+      "bytes": 682,
+      "sha256": "9008de443d6454e89e6ba3c35b3d4c7db8a9d94dcc8373ead3fd64db8fb966b8"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A4_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A4_T2.js",
+      "bytes": 608,
+      "sha256": "b1f6f3a2d68cb1b8502c7a5d7f4f34284d41697c268a0cd07fcc1461f64ad81c"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A4_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A4_T3.js",
+      "bytes": 610,
+      "sha256": "ff59e2de7617c9f890e0f4c3863f7b946e70e77f6c4f1027e4fe0ba4c7cc4435"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A4_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A4_T4.js",
+      "bytes": 684,
+      "sha256": "8bc34ad2daaed4bd1e0fa66de83d809fe583b91054e0014cdec4a331fd53f5ac"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A4_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A4_T5.js",
+      "bytes": 608,
+      "sha256": "5e848a265da5f3ffd6e1fe1138ffdb2f1e156351e96dcfc82d313108c7afde33"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A5_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A5_T1.js",
+      "bytes": 741,
+      "sha256": "4b0fee1b626713009381677e88ab4af96ee9f264ef133735033cfbf6c5af9460"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A5_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A5_T3.js",
+      "bytes": 742,
+      "sha256": "27aa5356ec57605be4c1aca45a089f83f9527dfc9f3a01fbe59df684dc7b369e"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A5_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A5_T4.js",
+      "bytes": 730,
+      "sha256": "53805e14095729a1bbf949e8127f1cf362d2ec120f76f404f66724c79a915b3f"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A5_T6.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A5_T6.js",
+      "bytes": 741,
+      "sha256": "09607f965766be818a767bfa5d95b7630a5e7b514ce3ecb7a4bfa53bf2f8795a"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A5_T7.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A5_T7.js",
+      "bytes": 726,
+      "sha256": "ca5b9940e1d491cee1a7afe2b2479eef49e59ca51c7ee56e63a2fd0c60238208"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A5_T8.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A5_T8.js",
+      "bytes": 741,
+      "sha256": "5fecbfdcdaae6856f9187862e7a3d6410d8045baa77158160c9e397ef0f6f161"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A5_T9.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A5_T9.js",
+      "bytes": 804,
+      "sha256": "4d0ebf7eb61cab2bc1734abf73180029f1bc260adc81ce52b1b441b1f4935165"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A6_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A6_T1.js",
+      "bytes": 504,
+      "sha256": "13d6299c8017b8e8e002d1f1fb3524751ce3bd0a22b1c6ced805e1bab15db316"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A7_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A7_T1.js",
+      "bytes": 617,
+      "sha256": "469c1b8e99e7f1ff19c4be9b9fd672dc2cddbb2fe6e44de59a536387d0aea198"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A7_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A7_T2.js",
+      "bytes": 588,
+      "sha256": "37e9f3efbfa380d7b7f167d554b870e06d848b7b30a3529405ba58f46e51fec4"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A8_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A8_T1.js",
+      "bytes": 791,
+      "sha256": "7337b5d932a3cc7e341c154f658749b99125854bab373dc6ab0473d27d3c1266"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A8_T10.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A8_T10.js",
+      "bytes": 790,
+      "sha256": "4d418fa6706fc512d427a195954dd91a195957e4a568af74a0a3fcebca6b063b"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A8_T11.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A8_T11.js",
+      "bytes": 834,
+      "sha256": "c58da73ed4e9a237b19ddf8e0de9cf462e2128ad83fed642317bda14d5502d71"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A8_T12.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A8_T12.js",
+      "bytes": 716,
+      "sha256": "3a5e7de1c78e75534dd1f52c8c6612f93ea094783262fc38367b7d81ade8c32d"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A8_T13.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A8_T13.js",
+      "bytes": 652,
+      "sha256": "fb3c995cb1e761e5d7ea9826cb2356b8076e81680de99b0ce79cd386217350a3"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A8_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A8_T2.js",
+      "bytes": 841,
+      "sha256": "1f8194aec0ed17d1f859b67be0081fbd9ad66a4a319d8125b221341d039d5762"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A8_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A8_T3.js",
+      "bytes": 916,
+      "sha256": "f3ec0a5e801987fac0b4770a6132410b51780ab6029ac6b35eb68201acd2ea69"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A8_T4.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A8_T4.js",
+      "bytes": 990,
+      "sha256": "58fcca00848164e4f3862c702dc08c2dee3e879fbac1ec0c5515ca7d5adf9a15"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A8_T5.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A8_T5.js",
+      "bytes": 894,
+      "sha256": "6ea84176334296c23689faec35f8fe2e8e6e3ab82a48291aa25dff6c6542cd86"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A8_T6.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A8_T6.js",
+      "bytes": 651,
+      "sha256": "21e6f94e0c24f2a5f8eeb68bb6378ec8df291aa35eb2c00ca477f86ddc84046b"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A8_T7.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A8_T7.js",
+      "bytes": 689,
+      "sha256": "071a61e40ef2866819885396bf95a30be4b98a53111a64437b9ef530206803a2"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A8_T8.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A8_T8.js",
+      "bytes": 663,
+      "sha256": "8f731103a0cf998a8b3c013dd4d71f713c5a9b1b7e14984d921131617d2b182f"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A8_T9.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A8_T9.js",
+      "bytes": 808,
+      "sha256": "b81f1675eb1bfa23be6f3d85b6c57fe8da39298ec54f7368cef4b6848fec5b35"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A9_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A9_T1.js",
+      "bytes": 613,
+      "sha256": "dc602f577d2f06fe6df30bbe1d944230db64bee830a562775fa322efe085159e"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A9_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A9_T2.js",
+      "bytes": 622,
+      "sha256": "d5ba097bfd84da56f850ad10e090fa447f4c65f3bd96bbc536311242887735e6"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.4.1_A9_T3.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.4.1_A9_T3.js",
+      "bytes": 625,
+      "sha256": "026d128d8afc25f00f496f493e30f35fc2f373a8a36b93fe70139aefc2b01fac"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.5_A1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.5_A1.js",
+      "bytes": 356,
+      "sha256": "ac664c1d98e4fafd2c7d068b6b62de49a7b9e5709c4b338158c1eca770093888"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.5_A2_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.5_A2_T1.js",
+      "bytes": 488,
+      "sha256": "fddf775f59e682fc3495b3a1c332d435376e772868ada7386a2fa9b2362160fd"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.5_A2_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.5_A2_T2.js",
+      "bytes": 519,
+      "sha256": "ee2309d2a4e081db3383d30f00c8cc9d90350b764a9399c359e4518cc8370536"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.7_A1_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.7_A1_T1.js",
+      "bytes": 572,
+      "sha256": "b4d266ef4f017894437f6f85eb06f555b231bcc0505e397aeecf0b4e07a5fd4d"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.7_A1_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.7_A1_T2.js",
+      "bytes": 594,
+      "sha256": "22d343dab755faae773c78515bcca2276a4cea8a54f6cd32730c571d2cd56c2c"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.7_A2_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.7_A2_T1.js",
+      "bytes": 580,
+      "sha256": "1727031be0149c289f8b60bf4f76e6c27a3b443efc6548cdd096bbaa7f033dbb"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.7_A2_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.7_A2_T2.js",
+      "bytes": 592,
+      "sha256": "4fcd625cea580c32543f571002b7a53acb9d16fea9d76f7f21a43e0111b44414"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.7_A3_T1.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.7_A3_T1.js",
+      "bytes": 719,
+      "sha256": "0990771f7db1fad68ec41204db44d93bc3d9ccde0efe9462128eb1a20778e05e"
+    },
+    {
+      "path": "test/built-ins/RegExp/S15.10.7_A3_T2.js",
+      "upstream_path": "test/built-ins/RegExp/S15.10.7_A3_T2.js",
+      "bytes": 724,
+      "sha256": "a23a777874cd707a1db4e2bced45bf78639b467d70ccaa73113e6b3903ccbbb2"
+    },
+    {
+      "path": "test/built-ins/RegExp/call_with_non_regexp_same_constructor.js",
+      "upstream_path": "test/built-ins/RegExp/call_with_non_regexp_same_constructor.js",
+      "bytes": 769,
+      "sha256": "4e9feb2b89b50a87c2388d31bf2aa71129b7875a6b5e6a970fc9860db43e90a6"
+    },
+    {
+      "path": "test/built-ins/RegExp/call_with_regexp_match_falsy.js",
+      "upstream_path": "test/built-ins/RegExp/call_with_regexp_match_falsy.js",
+      "bytes": 768,
+      "sha256": "20c37c1d30d79a9a02ba6106e27fb94bf2d007ac5399a1a8bc1d0c0367fe93e8"
+    },
+    {
+      "path": "test/built-ins/RegExp/call_with_regexp_not_same_constructor.js",
+      "upstream_path": "test/built-ins/RegExp/call_with_regexp_not_same_constructor.js",
+      "bytes": 740,
+      "sha256": "9a1157eab2a9a66023d3e60c31a9e9ddeae433536c92099af8351c81ff5e6e4d"
+    },
+    {
+      "path": "test/built-ins/RegExp/character-class-escape-non-whitespace-u180e.js",
+      "upstream_path": "test/built-ins/RegExp/character-class-escape-non-whitespace-u180e.js",
+      "bytes": 653,
+      "sha256": "49a556a2874889e32b286edee142b2924bfc87383b92aeec8a563b1acc56bc3d"
+    },
+    {
+      "path": "test/built-ins/RegExp/character-class-escape-non-whitespace.js",
+      "upstream_path": "test/built-ins/RegExp/character-class-escape-non-whitespace.js",
+      "bytes": 1141,
+      "sha256": "1afceaefc8088925591df29d45730694af5de6d145bc6b1a555485999c9f6bb5"
+    },
+    {
+      "path": "test/built-ins/RegExp/duplicate-flags.js",
+      "upstream_path": "test/built-ins/RegExp/duplicate-flags.js",
+      "bytes": 1430,
+      "sha256": "869005d590daa52fc0e807206e492e3dbbfaef99cc9e2c4f0818b3add1557f6b"
+    },
+    {
+      "path": "test/built-ins/RegExp/duplicate-named-capturing-groups-syntax.js",
+      "upstream_path": "test/built-ins/RegExp/duplicate-named-capturing-groups-syntax.js",
+      "bytes": 615,
+      "sha256": "b5a190f3568efe9ec48fa583bc7cd733a55ce86a0ebf5173c694af0148bf2968"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-code-point-repeat-i-1.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-code-point-repeat-i-1.js",
+      "bytes": 778,
+      "sha256": "bdfae0fd87970f67d3bb8b2aa6480783d72b85ae9b2bdc9177a2f71b3ebd9408"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-code-point-repeat-i-2.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-code-point-repeat-i-2.js",
+      "bytes": 782,
+      "sha256": "9f9dc109e33fd3a2296fd28829bc77c0670f27cc335f585da6d4f2f72345ddd9"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-arbitrary.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-arbitrary.js",
+      "bytes": 776,
+      "sha256": "9c34a129020cd7404a8efea25082e496eb1a49bbbb2d5ed9cca348a04f0041e2"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-combining-i.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-combining-i.js",
+      "bytes": 780,
+      "sha256": "13e025f42d0a5ecc881c9e5a775a47ce3f944337cdc5fe5da50ed7a2e9f42bd4"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-combining-m.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-combining-m.js",
+      "bytes": 780,
+      "sha256": "617a002cc94274621c4ae60aba91f8a7bc46408ded49f88926b7235840a7dad5"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-combining-s.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-combining-s.js",
+      "bytes": 780,
+      "sha256": "966a88e74810dc418ece8ed315ee1a54e5075430b09fe7613aab36b75478dcbd"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-d.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-d.js",
+      "bytes": 776,
+      "sha256": "d620ea4672e9d5873db637346645ce84c2dd3fa9c6b6aa9b0b9773cd6edeeeba"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-g.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-g.js",
+      "bytes": 776,
+      "sha256": "5cc3d1cd3b039f1df58e546dd4b004fdf1e3b28cb44e6c12adec193b340849b1"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-non-display-1.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-non-display-1.js",
+      "bytes": 778,
+      "sha256": "f830cc7e281922cddf3b0b4bf37ca56d27f2309f14d9208d50a38c3837d396f0"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-non-display-2.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-non-display-2.js",
+      "bytes": 782,
+      "sha256": "9f325bf3a158ae2f2dd4ac7774be86c8d64d834fe7dec040da04ed1b1cb89d6a"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-non-flag.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-non-flag.js",
+      "bytes": 776,
+      "sha256": "3dd9dba8bfe6087a22e527aa94ef0499733dc1a60740e21636508eeb33462f75"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-u.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-u.js",
+      "bytes": 776,
+      "sha256": "1db424cbabaea32d157cb4e2f56260c3a386bb87c0cc66fd9f93e222c8966d7c"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-uppercase-I.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-uppercase-I.js",
+      "bytes": 776,
+      "sha256": "565d012fcc603c2f32414ca44af5fb9b20d05fca166522057d78c1ac716e4c6e"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-y.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-y.js",
+      "bytes": 776,
+      "sha256": "66a3f08c029d7dcd90e12b495283d55066d23eca3abf49072c0a468ea6a930db"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-zwj.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-zwj.js",
+      "bytes": 782,
+      "sha256": "5e026417a3da4083b4cc119814729596ba53fb3dda16ddb57310e5133ed8eaab"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-zwnbsp.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-zwnbsp.js",
+      "bytes": 782,
+      "sha256": "8efe2c77d763f449169904f6c08e36a5400d45591de210b128564ae2ed5ad66b"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-zwnj.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-other-code-point-zwnj.js",
+      "bytes": 782,
+      "sha256": "fde801417917f14029cebb45ca0d12f0ae539ed4ffbdecf1c9966e8df39173d3"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-should-not-case-fold-i.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-should-not-case-fold-i.js",
+      "bytes": 686,
+      "sha256": "959c898271daaed366b3ae3c9352490d1795e3723b7eb4dec123d54d72ead086"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-should-not-case-fold-m.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-should-not-case-fold-m.js",
+      "bytes": 686,
+      "sha256": "f53cfa11cf8d3c0c5506d3866349c8871809a57ef3128cb572c92ae8f596f91f"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-should-not-case-fold-s.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-should-not-case-fold-s.js",
+      "bytes": 686,
+      "sha256": "b0a291c0da32bde426b92169ff322cfc909bf1cf21de24e2db8ce258a19a89af"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-should-not-unicode-case-fold-i.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-should-not-unicode-case-fold-i.js",
+      "bytes": 690,
+      "sha256": "06a7c93f71815305d776e614a7b4a9b8465f777cf9e8ca89f4e897742a8ff21a"
+    },
+    {
+      "path": "test/built-ins/RegExp/early-err-modifiers-should-not-unicode-case-fold-s.js",
+      "upstream_path": "test/built-ins/RegExp/early-err-modifiers-should-not-unicode-case-fold-s.js",
+      "bytes": 688,
+      "sha256": "f6d9f01d99874c15f31fa26501771683a56aaeb982c7ccd13cfdaea2494f81e4"
+    },
+    {
+      "path": "test/built-ins/RegExp/from-regexp-like-flag-override.js",
+      "upstream_path": "test/built-ins/RegExp/from-regexp-like-flag-override.js",
+      "bytes": 1936,
+      "sha256": "d32af98c70a84cc073bc922476102b5b27e918707b771210293c7d3538dc5d67"
+    },
+    {
+      "path": "test/built-ins/RegExp/from-regexp-like-get-ctor-err.js",
+      "upstream_path": "test/built-ins/RegExp/from-regexp-like-get-ctor-err.js",
+      "bytes": 1323,
+      "sha256": "a9f70149e876ae1b8e4400664139c9ab32921373a1a16e24a101781d056434d3"
+    },
+    {
+      "path": "test/built-ins/RegExp/from-regexp-like-get-flags-err.js",
+      "upstream_path": "test/built-ins/RegExp/from-regexp-like-get-flags-err.js",
+      "bytes": 1103,
+      "sha256": "07a8bf162bf3225b700aa12bae8da6bafb86df484d0669186601521ef5c29017"
+    },
+    {
+      "path": "test/built-ins/RegExp/from-regexp-like-get-source-err.js",
+      "upstream_path": "test/built-ins/RegExp/from-regexp-like-get-source-err.js",
+      "bytes": 1227,
+      "sha256": "05e6dedd13b338d75e3b891a09b0d4a2ebbfbbc65602e3fbb8121296c8d3b727"
+    },
+    {
+      "path": "test/built-ins/RegExp/from-regexp-like-short-circuit.js",
+      "upstream_path": "test/built-ins/RegExp/from-regexp-like-short-circuit.js",
+      "bytes": 1101,
+      "sha256": "bfa45cf7e6c30de49708652bc74b7103bc8e9cc7bbc2599d501cdc46e680edca"
+    },
+    {
+      "path": "test/built-ins/RegExp/from-regexp-like.js",
+      "upstream_path": "test/built-ins/RegExp/from-regexp-like.js",
+      "bytes": 1733,
+      "sha256": "26373f02b5c6eab6d4ea3bb437af3e49cfc131ca6ecea914b1cb67af3de08eb4"
+    },
+    {
+      "path": "test/built-ins/RegExp/is-a-constructor.js",
+      "upstream_path": "test/built-ins/RegExp/is-a-constructor.js",
+      "bytes": 818,
+      "sha256": "d3f65ace88ccaabf1f7019b46fd71e5fc34f83ffc2e1557bac99c4e28eaf4fb6"
+    },
+    {
+      "path": "test/built-ins/RegExp/lastIndex.js",
+      "upstream_path": "test/built-ins/RegExp/lastIndex.js",
+      "bytes": 853,
+      "sha256": "b3fd262e0db16c56faeabb237767b23bc0669cf0eea033ac564c168093f0c144"
+    },
+    {
+      "path": "test/built-ins/RegExp/lookahead-quantifier-match-groups.js",
+      "upstream_path": "test/built-ins/RegExp/lookahead-quantifier-match-groups.js",
+      "bytes": 1596,
+      "sha256": "544f4598b8543682811ec9203079ca4e4fccac30184c155cad9011f950aab177"
+    },
+    {
+      "path": "test/built-ins/RegExp/nullable-quantifier.js",
+      "upstream_path": "test/built-ins/RegExp/nullable-quantifier.js",
+      "bytes": 1204,
+      "sha256": "56588387c64c0d9e4c5f8e2089d0be15d13dcc78dd271842ecb8c9c21c889935"
+    },
+    {
+      "path": "test/built-ins/RegExp/prop-desc.js",
+      "upstream_path": "test/built-ins/RegExp/prop-desc.js",
+      "bytes": 577,
+      "sha256": "b0bf4d000d16cd8ea8c5c3bbd43b26abc8f5ef9dbcd0be7cdeb1b4a3a9cca701"
+    },
+    {
+      "path": "test/built-ins/RegExp/proto-from-ctor-realm.js",
+      "upstream_path": "test/built-ins/RegExp/proto-from-ctor-realm.js",
+      "bytes": 941,
+      "sha256": "bb79b04a67aee329fe68b6d98662c973e5523e23b12c098afd159ee0e7af38dc"
+    },
+    {
+      "path": "test/built-ins/RegExp/quantifier-integer-limit.js",
+      "upstream_path": "test/built-ins/RegExp/quantifier-integer-limit.js",
+      "bytes": 1157,
+      "sha256": "4605bdc13b1d7de3945afcb6ba4d10d66f2ed2df2f7ff38222a176a865b6e78b"
+    },
+    {
+      "path": "test/built-ins/RegExp/regexp-class-chars.js",
+      "upstream_path": "test/built-ins/RegExp/regexp-class-chars.js",
+      "bytes": 919,
+      "sha256": "4eeb06eada181ce8ed6b1d88d756cd371ce7fae5a85c536de896436712d8118f"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-add-remove-i.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-add-remove-i.js",
+      "bytes": 655,
+      "sha256": "5db35ae1bbf1831f039c2025ad3759f81741def5113d26d611515855b70638bd"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-add-remove-m.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-add-remove-m.js",
+      "bytes": 655,
+      "sha256": "5ca886bb4f2c0aa7554ed07b83416627927cc913a665663b15daadbeaebcd8dc"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-add-remove-multi-duplicate.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-add-remove-multi-duplicate.js",
+      "bytes": 659,
+      "sha256": "a370bef8f605b6a4e750fe444ccc09b8d844614cc7e9161569deafa5822feb14"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-add-remove-s-escape.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-add-remove-s-escape.js",
+      "bytes": 669,
+      "sha256": "6c2709dd23c52f4931b49f3178ad3692ac5bf8b169dfc70481414d5006b26010"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-add-remove-s.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-add-remove-s.js",
+      "bytes": 655,
+      "sha256": "d774423e48d2095d8021942f30eb5d9838631e049da6421bbf884112e5ad20ef"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-both-empty.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-both-empty.js",
+      "bytes": 627,
+      "sha256": "4565f7e04dce8e5baa752a1a4344167c8f22593d36554d8fdf6fd16c6e607b18"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-code-point-repeat-i-1.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-code-point-repeat-i-1.js",
+      "bytes": 641,
+      "sha256": "c1d0f0b5af39ea60ebf881aca65124138967d3acc6903c6d94ec725c476fcb3d"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-code-point-repeat-i-2.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-code-point-repeat-i-2.js",
+      "bytes": 645,
+      "sha256": "be1cc4f0cf504e2700636a90527fd2772029a0c8e846741a5b0d560de2a0dec9"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-arbitrary.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-arbitrary.js",
+      "bytes": 639,
+      "sha256": "67d9600e5626a1e867656c0104a5c28a477d2ab72fa9caac076b4673a50f7c68"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-combining-i.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-combining-i.js",
+      "bytes": 643,
+      "sha256": "83f8c9bcb177c5acc3cd53bb632330a0dcba3d8f155648e376aa10a94f77bc79"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-combining-m.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-combining-m.js",
+      "bytes": 643,
+      "sha256": "916f5b442d410dda6283a7fe6b1d5b5559790052faa839f308b9a88ee8a5d962"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-combining-s.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-combining-s.js",
+      "bytes": 643,
+      "sha256": "0574bd6f362049812f963e37506d5db9623fb369b0dbe5f6b5f6dcfcb8fb2250"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-d.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-d.js",
+      "bytes": 639,
+      "sha256": "e2d9dc7ae5713aea1b417ff85bd32bc89554dcb75e4c5a3a489761f7f9c4608c"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-g.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-g.js",
+      "bytes": 639,
+      "sha256": "5109fd3478e2065194a0631f0a66129084d0023194c0fae4ccc3f87e21ee968a"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-non-display-1.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-non-display-1.js",
+      "bytes": 641,
+      "sha256": "c9633d39e73cb44f2f22023a9f00ebf278e303b1b0a5c8dadd60fee88eb87a57"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-non-display-2.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-non-display-2.js",
+      "bytes": 645,
+      "sha256": "e0882eced9e64f93df7e6f30717cc11820e997ff09f74dac275a8665129590f7"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-non-flag.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-non-flag.js",
+      "bytes": 639,
+      "sha256": "978ef20f4aa34d168243d12fad975b7c25704c2076fd6053a54da179777cdab5"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-u.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-u.js",
+      "bytes": 639,
+      "sha256": "9c1fad94cddd4002a4def840c56cff04480b957365be75471d43dd8b95968b0f"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-uppercase-I.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-uppercase-I.js",
+      "bytes": 639,
+      "sha256": "b765023648e247f4527d2b3efc16d8d8faad9c45ffd2370fa612bc18f2e2a6f9"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-y.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-y.js",
+      "bytes": 639,
+      "sha256": "752068c4079fa0e27139f8bd41d327a98675ca727d3b10f1d2aa24f050189abd"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-zwj.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-zwj.js",
+      "bytes": 645,
+      "sha256": "ca9e5440406be90601f526208430d5a26ed31031098ed40494ee626f80eb124d"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-zwnbsp.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-zwnbsp.js",
+      "bytes": 645,
+      "sha256": "f012be09376e6f6528c1a8e5f216bdec1f82d582a8f3eaff63e55955a35138d8"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-zwnj.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-other-code-point-zwnj.js",
+      "bytes": 645,
+      "sha256": "daa2ab5ba0f00be47d24bf41d4a6e26cfd74ff9eaabeae7444f82fcb9bdca0b0"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-add-remove-i.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-add-remove-i.js",
+      "bytes": 655,
+      "sha256": "5db35ae1bbf1831f039c2025ad3759f81741def5113d26d611515855b70638bd"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-add-remove-m.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-add-remove-m.js",
+      "bytes": 655,
+      "sha256": "5ca886bb4f2c0aa7554ed07b83416627927cc913a665663b15daadbeaebcd8dc"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-add-remove-multi-duplicate.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-add-remove-multi-duplicate.js",
+      "bytes": 659,
+      "sha256": "e3b443a5fb0cbb0ff05d5f3171201785de8bb109c7ff6f308f40cae1b5bc9b1c"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-add-remove-s-escape.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-add-remove-s-escape.js",
+      "bytes": 669,
+      "sha256": "6cacb86e646687108c4bfe98031595a49dd9f7a0094efdecf93cebd1dad5d45b"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-add-remove-s.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-add-remove-s.js",
+      "bytes": 655,
+      "sha256": "d774423e48d2095d8021942f30eb5d9838631e049da6421bbf884112e5ad20ef"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-code-point-repeat-i-1.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-code-point-repeat-i-1.js",
+      "bytes": 641,
+      "sha256": "b5e41a400737d43923a1c977aab29d6373422123f990e7d5411b4eaf9c22340a"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-code-point-repeat-i-2.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-code-point-repeat-i-2.js",
+      "bytes": 645,
+      "sha256": "c716bfc8581fd560f337b1e1d85f6ff252047350712d66f2009f1a3cc1ce5151"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-arbitrary.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-arbitrary.js",
+      "bytes": 639,
+      "sha256": "745e141f8075b90ca802ce00308dc24bd40dcab1e3ff1079d580e80cafea24ff"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-combining-i.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-combining-i.js",
+      "bytes": 643,
+      "sha256": "74ff5042baed163d8e8213b96249cbbf1b55c1ab6d82f478edb914fef637d39d"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-combining-m.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-combining-m.js",
+      "bytes": 643,
+      "sha256": "ae5a6427f7a8fb3ecf2531d90b24eb6d5b8fca81a194798492f4b9619e40ee6e"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-combining-s.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-combining-s.js",
+      "bytes": 643,
+      "sha256": "05261cb7220dca018bec4ae7f1af8c16b41da0b247f3fa8dca70908bc89b91f1"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-d.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-d.js",
+      "bytes": 639,
+      "sha256": "3edc724df0eb39fcba3f8b66b6c2e3a7182a5df425232b4276f7ca1507aaf8b9"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-g.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-g.js",
+      "bytes": 639,
+      "sha256": "4376e93e73d1db2b68f6c8beff513051f770fafdc2132b60eaf1cc9ecc963d34"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-non-display-1.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-non-display-1.js",
+      "bytes": 641,
+      "sha256": "b67c1c032c024635201511f51081f6ef768c64455ed5e8c137c8b14b76dd863b"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-non-display-2.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-non-display-2.js",
+      "bytes": 645,
+      "sha256": "cefd3954578db49255c368365f9bc5c5b8c3ebecc0835dc6f54f5d8649462f7c"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-non-flag.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-non-flag.js",
+      "bytes": 639,
+      "sha256": "3737e5c4dea1b14ca2d508ec0437dc4c1c0b5d90bcb81b28069aa93368e98cfc"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-u.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-u.js",
+      "bytes": 639,
+      "sha256": "e783afaf64380c006c3bd5ed70b4d2ec98856ed5c13c09d56e903e099dc460ba"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-uppercase-I.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-uppercase-I.js",
+      "bytes": 639,
+      "sha256": "3b13f3f8398a77fd238e28dc48b78d7c563bfa5707c9888ec33d811025b4b76b"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-y.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-y.js",
+      "bytes": 639,
+      "sha256": "b3fb073c414398829dd3fc678b4124d998e307048d848182b61371a355d263f2"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-zwj.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-zwj.js",
+      "bytes": 645,
+      "sha256": "d92a1dc34957d3a37c5060bd00b13503b89eb0e503ca1ec72205ab31907e0563"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-zwnbsp.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-zwnbsp.js",
+      "bytes": 645,
+      "sha256": "68cf10f4ae41cd0224a299b98f2448e181bf9e2ddfb5630a39c60c86eb4f3932"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-zwnj.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-other-code-point-zwnj.js",
+      "bytes": 645,
+      "sha256": "035b9f6465d8493bfde8763abe2d3c609cea8bf94b3fd5509a6e658de3918a9d"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-should-not-case-fold-i.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-should-not-case-fold-i.js",
+      "bytes": 549,
+      "sha256": "83a176b4943aa8495ab51696524b48b8cce55ecc1cc28b9f60eab2e0d9c91ad0"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-should-not-case-fold-m.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-should-not-case-fold-m.js",
+      "bytes": 549,
+      "sha256": "6ed7808bf419637999443235bb4f12050c5118075e12418db1519b3905ca9297"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-should-not-case-fold-s.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-should-not-case-fold-s.js",
+      "bytes": 549,
+      "sha256": "07545b09ddc3c699ee180f479430b567a931d49a5c473e6a8b7459c3acf3a117"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-should-not-unicode-case-fold-i.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-should-not-unicode-case-fold-i.js",
+      "bytes": 553,
+      "sha256": "c8dd8dd7dce04dc9d107596689a4b49c411b52e71f4bf983538af0c63a64d78c"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-should-not-unicode-case-fold-s.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-reverse-should-not-unicode-case-fold-s.js",
+      "bytes": 551,
+      "sha256": "5c85f4f863b48279c6a094c5f623d029ed4ca0f353f485725591efbc906916a4"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-should-not-case-fold-i.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-should-not-case-fold-i.js",
+      "bytes": 549,
+      "sha256": "95179710d76ecec3669ca336b7a5b472e6f3e03058ef69b59eda6465fa7c0fbf"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-should-not-case-fold-m.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-should-not-case-fold-m.js",
+      "bytes": 549,
+      "sha256": "71e15a99127bfd4aebfee00224d592d815fa3ec02ed20b3c12231fb2e3e5bbee"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-should-not-case-fold-s.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-should-not-case-fold-s.js",
+      "bytes": 549,
+      "sha256": "e95b8f83b48a1b64976ed4cff06454d17886f56a72c939ff8b492da133b6da8a"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-should-not-unicode-case-fold-i.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-should-not-unicode-case-fold-i.js",
+      "bytes": 553,
+      "sha256": "6fe0f4cb4e067e5edce46ffc7ab0d8d46deaa83e41827f716d15bff39efce334"
+    },
+    {
+      "path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-should-not-unicode-case-fold-s.js",
+      "upstream_path": "test/built-ins/RegExp/syntax-err-arithmetic-modifiers-should-not-unicode-case-fold-s.js",
+      "bytes": 551,
+      "sha256": "3e79bb5edd735bfcd89a69b96f459a4cfd17b3b1aabf9690c9d0864731f715fc"
+    },
+    {
+      "path": "test/built-ins/RegExp/u180e.js",
+      "upstream_path": "test/built-ins/RegExp/u180e.js",
+      "bytes": 875,
+      "sha256": "098cea72ff3cb1dc2ed76652d34a6d3dde936242828954d17d792b52b10904d6"
+    },
+    {
+      "path": "test/built-ins/RegExp/unicode_character_class_backspace_escape.js",
+      "upstream_path": "test/built-ins/RegExp/unicode_character_class_backspace_escape.js",
+      "bytes": 467,
+      "sha256": "a45e1c63998a09bbe605255435600b8d60a8ddd0849682b657a7082b665cbf79"
+    },
+    {
+      "path": "test/built-ins/RegExp/unicode_full_case_folding.js",
+      "upstream_path": "test/built-ins/RegExp/unicode_full_case_folding.js",
+      "bytes": 1133,
+      "sha256": "910b65ec1219372bc0b6e673df0c81e190e16d7fdc4c053d81e09844515a6f70"
+    },
+    {
+      "path": "test/built-ins/RegExp/unicode_identity_escape.js",
+      "upstream_path": "test/built-ins/RegExp/unicode_identity_escape.js",
+      "bytes": 2522,
+      "sha256": "1f368dd737453d39ddb7f988e927c4b347a5b22cfb4e56505cf032f516c955ee"
+    },
+    {
+      "path": "test/built-ins/RegExp/unicode_restricted_brackets.js",
+      "upstream_path": "test/built-ins/RegExp/unicode_restricted_brackets.js",
+      "bytes": 964,
+      "sha256": "91ade104046122c2ffc4e5ae0e7dde7868aa30b744de0fc6b85caa0019872548"
+    },
+    {
+      "path": "test/built-ins/RegExp/unicode_restricted_character_class_escape.js",
+      "upstream_path": "test/built-ins/RegExp/unicode_restricted_character_class_escape.js",
+      "bytes": 2420,
+      "sha256": "00afb0ef53d3695957272ae8650002efd522a96a03c1ad22142d0b92e1f5892c"
+    },
+    {
+      "path": "test/built-ins/RegExp/unicode_restricted_identity_escape.js",
+      "upstream_path": "test/built-ins/RegExp/unicode_restricted_identity_escape.js",
+      "bytes": 1707,
+      "sha256": "1e1b2118d47292673451d333fc8acc5dd75187726555169284577a3c749ab59e"
+    },
+    {
+      "path": "test/built-ins/RegExp/unicode_restricted_identity_escape_alpha.js",
+      "upstream_path": "test/built-ins/RegExp/unicode_restricted_identity_escape_alpha.js",
+      "bytes": 2652,
+      "sha256": "60780f0b5dfc2793e46cbb818027e6e094e88252a734675a0c906fac56040cf2"
+    },
+    {
+      "path": "test/built-ins/RegExp/unicode_restricted_identity_escape_c.js",
+      "upstream_path": "test/built-ins/RegExp/unicode_restricted_identity_escape_c.js",
+      "bytes": 1404,
+      "sha256": "9480bf38ae8b401ff0009af38a036534b448067cf255e08958de3dffdf1e3ff3"
+    },
+    {
+      "path": "test/built-ins/RegExp/unicode_restricted_identity_escape_u.js",
+      "upstream_path": "test/built-ins/RegExp/unicode_restricted_identity_escape_u.js",
+      "bytes": 2556,
+      "sha256": "4db625b16a3eec014b3af4409b80f3b7d9c8062758fac560a85db3a8e3715a4a"
+    },
+    {
+      "path": "test/built-ins/RegExp/unicode_restricted_identity_escape_x.js",
+      "upstream_path": "test/built-ins/RegExp/unicode_restricted_identity_escape_x.js",
+      "bytes": 1156,
+      "sha256": "37ce82044a39e0c49e6cfe251e2c89197ad414f51c0d8335f0d6ef2ae78e910e"
+    },
+    {
+      "path": "test/built-ins/RegExp/unicode_restricted_incomplete_quantifier.js",
+      "upstream_path": "test/built-ins/RegExp/unicode_restricted_incomplete_quantifier.js",
+      "bytes": 1212,
+      "sha256": "5183635e1573b7b09a8254a0ffbe85522cea68c0aafbb5567a3d4fcd455e78a8"
+    },
+    {
+      "path": "test/built-ins/RegExp/unicode_restricted_octal_escape.js",
+      "upstream_path": "test/built-ins/RegExp/unicode_restricted_octal_escape.js",
+      "bytes": 4602,
+      "sha256": "a4248c6b79c62377f44d8151dc586f94a55262a84153d55c552c8f71db141970"
+    },
+    {
+      "path": "test/built-ins/RegExp/unicode_restricted_quantifiable_assertion.js",
+      "upstream_path": "test/built-ins/RegExp/unicode_restricted_quantifiable_assertion.js",
+      "bytes": 3042,
+      "sha256": "600429753ad0fa76e3b5aacf52799aca769f489c9bd34e68ec82a4ccb6f52d9d"
+    },
+    {
+      "path": "test/built-ins/RegExp/unicode_restricted_quantifier_without_atom.js",
+      "upstream_path": "test/built-ins/RegExp/unicode_restricted_quantifier_without_atom.js",
+      "bytes": 1573,
+      "sha256": "af873abe0997e05591d5336d6b41e2d73bc55462cf13dd6e3ea2f285346ab556"
+    },
+    {
+      "path": "test/built-ins/RegExp/valid-flags-y.js",
+      "upstream_path": "test/built-ins/RegExp/valid-flags-y.js",
+      "bytes": 702,
+      "sha256": "ab67993e5e667417dfd557f8c556091233cf5f5f67ede1c0a1bc7093cad36e16"
+    }
+  ]
+}

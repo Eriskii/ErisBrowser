@@ -51,7 +51,8 @@ CONSTRUCTION_FEATURES = SYMBOL_FEATURES | FUNCTION_FEATURES | {'new.target', 'Re
 FUNCTION_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REST_PARAMETER_FEATURES
 STRING_SEARCH_FEATURES = SYMBOL_FEATURES | FUNCTION_FEATURES | {'String.prototype.includes', 'String.prototype.endsWith'}
 REGEXP_SPLIT_FEATURES = CONSTRUCTION_FEATURES
-PROFILE_FEATURES = {'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+REGEXP_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'u180e'}
+PROFILE_FEATURES = {'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'reflect-construction': CONSTRUCTION_FEATURES, 'new-target': CONSTRUCTION_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -992,6 +993,23 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
             ('concat-utf16', r"var text='\ud800'.concat('\udfff');", 'text.charCodeAt(1)', '0xdfff', '0xfffd'),
             ('concat-null', "assert.sameValue(typeof String.prototype.concat,'function');var caught;try{String.prototype.concat.call(null);}catch(e){caught=e;}", 'caught instanceof TypeError', 'true', 'false'),
             ('concat-name', '', 'String.prototype.concat.name', "'concat'", "'wrong'"),
+        ]
+        for mode in ('sloppy', 'strict'):
+            for name, setup, actual, good, bad in pairs:
+                for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                    variants.append((name + suffix, setup + f'assert.sameValue({actual},{value});', expected, mode))
+    if profile == 'regexp-constructor':
+        pairs = [
+            ('regexp-ctor-identity', "var r={constructor:RegExp};r[Symbol.match]=true;", 'RegExp(r)===r', 'true', 'false'),
+            ('regexp-ctor-disabled-match', "var r=/x/;r[Symbol.match]=false;", 'RegExp(r)===r', 'false', 'true'),
+            ('regexp-ctor-like', "var r={source:'a',flags:'i'};r[Symbol.match]=true;", "new RegExp(r).test('A')", 'true', 'false'),
+            ('regexp-ctor-order', "var log='',r={},nt=(function(){}).bind(null);Object.defineProperty(r,Symbol.match,{get:function(){log+='m';return true;}});Object.defineProperty(r,'source',{get:function(){log+='s';return {toString:function(){log+='t';return 'a';}};}});Object.defineProperty(r,'flags',{get:function(){log+='f';return 'g';}});Object.defineProperty(nt,'prototype',{get:function(){log+='p';return Object.prototype;}});Reflect.construct(RegExp,[r],nt);", 'log', "'msfpt'", "'wrong'"),
+            ('regexp-ctor-match-abrupt', "var marker={},caught,r={};Object.defineProperty(r,Symbol.match,{get:function(){throw marker;}});try{new RegExp(r,'g');}catch(e){caught=e;}", 'caught===marker', 'true', 'false'),
+            ('regexp-ctor-conversion', "var p=function(){},f=[];p.toString=function(){return 'a';};f.toString=function(){return 'g';};var r=new RegExp(p,f);", 'r.source+r.flags', "'ag'", "'wrong'"),
+            ('regexp-ctor-classify-slot', "var n=0,r=/x/g;Object.defineProperty(r,Symbol.match,{get:function(){n++;return false;}});new RegExp(r);", 'n', '1', '0'),
+            ('regexp-ctor-flags-error', "var marker={},caught,r={source:'a'};r[Symbol.match]=true;Object.defineProperty(r,'flags',{get:function(){throw marker;}});try{new RegExp(r);}catch(e){caught=e;}", 'caught===marker', 'true', 'false'),
+            ('regexp-ctor-explicit-flags', "var r={source:'a'};r[Symbol.match]=true;Object.defineProperty(r,'flags',{get:function(){throw 1;}});", "new RegExp(r,'i').source", "'a'", "'wrong'"),
+            ('regexp-ctor-split', "var r={source:'b',flags:''};r[Symbol.match]=true;", "RegExp.prototype[Symbol.split].call(r,'abc').join('|')", "'a|c'", "'wrong'"),
         ]
         for mode in ('sloppy', 'strict'):
             for name, setup, actual, good, bad in pairs:

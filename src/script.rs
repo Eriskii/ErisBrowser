@@ -6829,40 +6829,6 @@ impl Runtime {
             stack_limit: MAX_STACK_UNITS.saturating_sub(self.stack_units) / 4,
         }
     }
-    fn regexp_create(
-        &mut self,
-        pattern: Value,
-        flags: Value,
-        identity: bool,
-        doc: &mut Document,
-    ) -> Result<Value> {
-        let existing = self.regexp_slot(&pattern);
-        if identity
-            && existing.is_some()
-            && flags == Value::Undefined
-            && self.get(pattern.clone(), "constructor", doc)?
-                == Self::native("RegExp", Value::Window)
-        {
-            return Ok(pattern);
-        }
-        let source = if let Some(existing) = &existing {
-            existing.source.clone()
-        } else if pattern == Value::Undefined {
-            JsString::default()
-        } else {
-            self.json_text(pattern, doc, &mut Vec::new())?
-        };
-        let flags = if flags == Value::Undefined {
-            existing.map_or_else(JsString::default, |p| p.flags.text())
-        } else {
-            self.json_text(flags, doc, &mut Vec::new())?
-        };
-        let mut budget = self.regexp_budget();
-        let result = RegExp::compile(source, &flags, &mut budget);
-        self.steps = budget.steps;
-        self.allocated = self.allocated.saturating_add(budget.allocated);
-        self.regexp_object(Rc::new(result.map_err(regexp_error)?))
-    }
     fn regexp_find(
         &mut self,
         pattern: &RegExp,
@@ -7146,7 +7112,7 @@ impl Runtime {
     ) -> Result<Value> {
         let regex = self.regexp_slot(&pattern);
         let receiver = if matches!(name, "match" | "search") && regex.is_none() {
-            self.regexp_create(pattern, Value::Undefined, false, doc)?
+            self.regexp_create(pattern, Value::Undefined, doc)?
         } else {
             pattern
         };
@@ -7961,10 +7927,10 @@ impl Runtime {
             return self.regexp_native(method, native.receiver.clone(), &args, doc);
         }
         if name == "RegExp" && native.receiver == Value::Window {
-            return self.regexp_create(
+            return self.regexp_constructor(
                 args.first().cloned().unwrap_or(Value::Undefined),
                 args.get(1).cloned().unwrap_or(Value::Undefined),
-                true,
+                None,
                 doc,
             );
         }

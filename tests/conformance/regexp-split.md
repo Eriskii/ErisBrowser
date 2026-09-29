@@ -63,6 +63,10 @@ binaries, controls and validation hashes.
 
 ## Validation and limits
 
+The later [constructor checkpoint](regexp-constructor.md) addresses Symbol.match
+classification and regexp-like source/flags conversion in the default constructor.
+This record retains the earlier checkpoint's measured boundaries below.
+
 Rust 1.88 and 1.95 pass strict all-target Clippy and **1,014 default / 1,025
 Vulkan-feature tests**, none ignored. Both release builds preserve all **57 CPU
 pixel references**. **171 Python tests**, **45,000 deterministic mutations** and

@@ -246,3 +246,11 @@ private result array cannot expose intermediate values to inherited setters.
 Tests cover recursive callbacks, unbounded capture lengths, backward-moving match
 indices, heap refusal and frame cleanup. No complete allocation-accounting or
 independent security-audit claim follows from these checks.
+
+The [RegExp constructor follow-up](../tests/conformance/regexp-constructor.md)
+keeps classification, prototype lookup and ordinary conversion callbacks within
+the current runtime guards. Object/index-property allocation is charged before
+conversion; successful and failed parses retain their compiler charges. Tests
+cover work cutoffs, exact charge transfer, recursive getters and construction,
+caught syntax-error loops, heap refusal and cleanup. Existing nesting and work
+limits remain enforced; the new corpus's eight resource stops stay visible.

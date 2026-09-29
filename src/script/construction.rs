@@ -159,7 +159,7 @@ impl Runtime {
         Ok(arguments)
     }
 
-    fn constructor_prototype(
+    pub(super) fn constructor_prototype(
         &mut self,
         target: Value,
         intrinsic: &str,
@@ -290,16 +290,12 @@ impl Runtime {
                         let instance = self.call(constructor, arguments, Value::Window, doc)?;
                         Ok(self.constructed_prototype(instance, prototype))
                     }
-                    "RegExp" => {
-                        let prototype = self.constructor_prototype(new_target, name, doc)?;
-                        let instance = self.regexp_create(
-                            arguments.first().cloned().unwrap_or(Value::Undefined),
-                            arguments.get(1).cloned().unwrap_or(Value::Undefined),
-                            false,
-                            doc,
-                        )?;
-                        Ok(self.constructed_prototype(instance, prototype))
-                    }
+                    "RegExp" => self.regexp_constructor(
+                        arguments.first().cloned().unwrap_or(Value::Undefined),
+                        arguments.get(1).cloned().unwrap_or(Value::Undefined),
+                        Some(new_target),
+                        doc,
+                    ),
                     "Function" => self.dynamic_function(arguments, new_target, doc),
                     "Object" => self.call(constructor, arguments, Value::Window, doc),
                     "Event" | "CustomEvent" | "ToggleEvent" | "EventTarget" | "DOMException"

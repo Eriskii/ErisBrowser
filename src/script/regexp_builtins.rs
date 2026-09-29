@@ -2,6 +2,101 @@
 use super::*;
 
 impl Runtime {
+    pub(super) fn regexp_constructor(
+        &mut self,
+        pattern: Value,
+        mut flags: Value,
+        new_target: Option<Value>,
+        doc: &mut Document,
+    ) -> Result<Value> {
+        // Classification precedes identity, source access and allocation, even
+        // when an actual RegExp's internal source will subsequently be copied.
+        let is_regexp = self.is_regexp(pattern.clone(), doc)?;
+        let target = new_target
+            .clone()
+            .unwrap_or_else(|| Self::native("RegExp", Value::Window));
+        if new_target.is_none()
+            && is_regexp
+            && flags == Value::Undefined
+            && self.get(pattern.clone(), "constructor", doc)? == target
+        {
+            return Ok(pattern);
+        }
+        let source = if let Some(existing) = self.regexp_slot(&pattern) {
+            if flags == Value::Undefined {
+                self.charge(32)?;
+                flags = Value::String(existing.flags.text());
+            }
+            Value::String(existing.source.clone())
+        } else if is_regexp {
+            let source = self.get(pattern.clone(), "source", doc)?;
+            if flags == Value::Undefined {
+                flags = self.get(pattern, "flags", doc)?;
+            }
+            source
+        } else {
+            pattern
+        };
+        let object = self.regexp_allocate(target, doc)?;
+        self.regexp_initialize(object, source, flags, doc)
+    }
+
+    pub(super) fn regexp_create(
+        &mut self,
+        pattern: Value,
+        flags: Value,
+        doc: &mut Document,
+    ) -> Result<Value> {
+        // RegExpCreate is not a call to the RegExp constructor: String protocol
+        // fallback directly stringifies its pattern without IsRegExp or identity.
+        let object = self.regexp_allocate(Self::native("RegExp", Value::Window), doc)?;
+        self.regexp_initialize(object, pattern, flags, doc)
+    }
+
+    fn regexp_allocate(&mut self, target: Value, doc: &mut Document) -> Result<Value> {
+        let prototype = self.constructor_prototype(target, "RegExp", doc)?;
+        self.charge(256)?;
+        let object = self.object_ordered([])?;
+        let Value::Object(id) = object else {
+            unreachable!()
+        };
+        self.objects[id].prototype = Some(prototype);
+        self.objects[id].insert_property(
+            "lastIndex".into(),
+            Property::data(Value::Number(0.0), true, false, false),
+        );
+        Ok(object)
+    }
+
+    fn regexp_initialize(
+        &mut self,
+        object: Value,
+        pattern: Value,
+        flags: Value,
+        doc: &mut Document,
+    ) -> Result<Value> {
+        let source = if pattern == Value::Undefined {
+            JsString::default()
+        } else {
+            self.string_hint(pattern, doc)?
+        };
+        let flags = if flags == Value::Undefined {
+            JsString::default()
+        } else {
+            self.string_hint(flags, doc)?
+        };
+        let mut budget = self.regexp_budget();
+        let compiled = RegExp::compile(source, &flags, &mut budget);
+        self.steps = budget.steps;
+        self.allocated = self.allocated.saturating_add(budget.allocated);
+        let compiled = compiled.map_err(regexp_error)?;
+        let Value::Object(id) = object else {
+            unreachable!()
+        };
+        self.objects[id].regexp = Some(Rc::new(compiled));
+        Ok(object)
+    }
+
     pub(super) fn initialize_regexp_symbols(&mut self) -> Result<()> {
         let split = self.intrinsic_function("RegExp.symbolSplit", "[Symbol.split]", 2)?;
         let key = self.well_known_key("split");
@@ -209,6 +304,145 @@ mod tests {
         assert_eq!(runtime.eval_depth, 0);
         assert_eq!(runtime.json_depth, 0);
         assert!(runtime.frames.is_empty());
+    }
+
+    #[test]
+    fn frozen_constructor_cases_cover_classification_allocation_and_conversion() {
+        for fixture in include_str!("../../tests/conformance/regexp-constructor.js")
+            .split("// CASE: ")
+            .skip(1)
+        {
+            let (name, source) = fixture.split_once('\n').unwrap();
+            for strict in [false, true] {
+                let (mut runtime, mut doc) = harness();
+                let result = if strict {
+                    runtime.execute_strict(source, &mut doc)
+                } else {
+                    runtime.execute(source, &mut doc)
+                };
+                assert!(result.is_ok(), "{name}, strict={strict}: {result:?}");
+                clean(&runtime);
+            }
+        }
+    }
+
+    #[test]
+    fn abstract_creation_and_constructor_parse_budgets_remain_distinct() {
+        let (mut runtime, mut doc) = harness();
+        let pattern = runtime.execute("var reads=0,p={toString:function(){reads++;return 'a';}};Object.defineProperty(p,Symbol.match,{get:function(){throw 1;}});RegExp=function(){throw 2;};p", &mut doc).unwrap();
+        let value = runtime
+            .regexp_create(pattern, Value::Undefined, &mut doc)
+            .unwrap();
+        assert_eq!(
+            runtime.regexp_slot(&value).unwrap().source,
+            JsString::from("a")
+        );
+        assert_eq!(
+            runtime.environments[0].bindings["reads"].value,
+            Value::Number(1.0)
+        );
+        clean(&runtime);
+
+        for (pattern, flags, valid) in [
+            ("(a|b)+c", "g", true),
+            ("(a", "g", false),
+            ("a", "gg", false),
+        ] {
+            let mut finished = false;
+            for work in 0..512 {
+                let mut runtime = Runtime::new();
+                let mut doc = Document::parse("<title>compile limits</title>");
+                let allocated = runtime.allocated;
+                runtime.steps = work;
+                let result = runtime.regexp_constructor(
+                    Value::String(pattern.into()),
+                    Value::String(flags.into()),
+                    None,
+                    &mut doc,
+                );
+                assert!(runtime.steps <= work);
+                assert!(runtime.allocated >= allocated);
+                clean(&runtime);
+                match result {
+                    Ok(value) => {
+                        assert!(valid);
+                        assert!(runtime.regexp_slot(&value).is_some());
+                        assert!(runtime.steps < work);
+                        assert!(runtime.allocated > allocated);
+                        finished = true;
+                        break;
+                    }
+                    Err(error) if error.is_resource_limit() => {}
+                    Err(error) => {
+                        assert!(!valid);
+                        assert_eq!(error.intrinsic_error_name(), Some("SyntaxError"));
+                        assert!(runtime.steps < work);
+                        assert!(runtime.allocated > allocated);
+                        finished = true;
+                        break;
+                    }
+                }
+            }
+            assert!(
+                finished,
+                "representative parse did not finish: {pattern}/{flags}"
+            );
+        }
+        for pattern in ["(a|b)+c", "(a"] {
+            let mut runtime = Runtime::new();
+            let mut doc = Document::parse("<title>parse accounting</title>");
+            let object = runtime
+                .regexp_allocate(Runtime::native("RegExp", Value::Window), &mut doc)
+                .unwrap();
+            let allocated = runtime.allocated;
+            let mut expected = runtime.regexp_budget();
+            let parsed = RegExp::compile(pattern.into(), &"g".into(), &mut expected);
+            let initialized = runtime.regexp_initialize(
+                object,
+                Value::String(pattern.into()),
+                Value::String("g".into()),
+                &mut doc,
+            );
+            assert_eq!(initialized.is_ok(), parsed.is_ok());
+            assert_eq!(runtime.steps, expected.steps);
+            assert_eq!(runtime.allocated, allocated + expected.allocated);
+            assert!(expected.allocated > 0);
+        }
+    }
+
+    #[test]
+    fn constructor_getters_conversion_and_failed_parses_share_resource_guards() {
+        for source in [
+            "var r={};Object.defineProperty(r,Symbol.match,{get:function(){return RegExp(r);}});RegExp(r);",
+            "var r={};r[Symbol.match]=true;Object.defineProperty(r,'constructor',{get:function(){return RegExp(r);}});RegExp(r);",
+            "var r={};r[Symbol.match]=true;Object.defineProperty(r,'source',{get:function(){return new RegExp(r);}});new RegExp(r);",
+            "var r={};r[Symbol.match]=true;Object.defineProperty(r,'flags',{get:function(){return new RegExp(r);}});new RegExp(r);",
+            "var p={toString:function(){return new RegExp(p);}};new RegExp(p);",
+            "var nt=(function(){}).bind(null);Object.defineProperty(nt,'prototype',{get:function(){return Reflect.construct(RegExp,['x'],nt);}});Reflect.construct(RegExp,['x'],nt);",
+            "while(true){try{new RegExp('(');}catch(e){}}",
+        ] {
+            let (mut runtime, mut doc) = harness();
+            let error = runtime.execute(source, &mut doc).unwrap_err();
+            assert!(error.is_resource_limit(), "{source}: {error}");
+            clean(&runtime);
+        }
+        let (mut runtime, mut doc) = harness();
+        let pattern = runtime
+            .execute(
+                "var calls=0,p={toString:function(){calls++;return 'a';}};p",
+                &mut doc,
+            )
+            .unwrap();
+        runtime.allocated = MAX_HEAP;
+        let error = runtime
+            .regexp_constructor(pattern, Value::Undefined, None, &mut doc)
+            .unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(
+            runtime.environments[0].bindings["calls"].value,
+            Value::Number(0.0)
+        );
+        clean(&runtime);
     }
 
     #[test]

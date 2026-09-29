@@ -273,6 +273,13 @@ unsupported modes. All 8,006 older case observations remain identical; the full
 inventory reaches 8,102 modes and 2,216 verified assertion controls. Unicode
 regexp parsing, realms, Date and the other String symbol protocols remain incomplete.
 
+[RegExp constructor conversion](tests/conformance/regexp-constructor.md) now
+classifies through `Symbol.match` and preserves source/flags/prototype/conversion
+order. The complete new 488-source directory gains 16 passes, reaching 768 passed,
+200 unsupported and eight resource stops. All 8,102 older mode observations stay
+identical; the combined inventory reaches 9,078 modes and 2,288 verified controls.
+The resource stops keep this profile an observation report, with its limits visible.
+
 ## Implementation
 
 The [architecture notes](docs/ARCHITECTURE.md) describe the page pipeline and native process boundaries.
