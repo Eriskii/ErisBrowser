@@ -1,6 +1,9 @@
 //! Array methods expressed through live property operations, not dense storage.
 use super::*;
 
+#[cfg(test)]
+mod find_tests;
+
 const MAX_ARRAY_LIKE_LENGTH: u64 = 9_007_199_254_740_991;
 
 impl Runtime {
@@ -193,6 +196,47 @@ impl Runtime {
                     doc,
                 )?;
                 Ok(result)
+            }
+            "find" | "findIndex" | "findLast" | "findLastIndex" => {
+                let callback = args.first().cloned().unwrap_or(Value::Undefined);
+                if !json_callable(&callback) {
+                    return Err(ScriptError::type_error("array callback must be callable"));
+                }
+                let this_arg = args.get(1).cloned().unwrap_or(Value::Undefined);
+                let descending = matches!(name, "findLast" | "findLastIndex");
+                let return_index = matches!(name, "findIndex" | "findLastIndex");
+                for offset in 0..length {
+                    self.tick()?;
+                    let index = if descending {
+                        length - 1 - offset
+                    } else {
+                        offset
+                    };
+                    let key = self.reduce_index_key(index)?;
+                    // FindViaPredicate visits holes too. Read each value live
+                    // and retain it even if the predicate changes this slot.
+                    let value = self.reduce_get(&object, &key, doc)?;
+                    self.charge(32 + 3 * std::mem::size_of::<Value>())?;
+                    let mut parameters = Vec::new();
+                    parameters
+                        .try_reserve_exact(3)
+                        .map_err(|_| ScriptError::resource("array callback allocation failed"))?;
+                    parameters.extend([value.clone(), Value::Number(index as f64), object.clone()]);
+                    let returned =
+                        self.call(callback.clone(), parameters, this_arg.clone(), doc)?;
+                    if returned.truthy() {
+                        return Ok(if return_index {
+                            Value::Number(index as f64)
+                        } else {
+                            value
+                        });
+                    }
+                }
+                Ok(if return_index {
+                    Value::Number(-1.0)
+                } else {
+                    Value::Undefined
+                })
             }
             "forEach" | "map" | "filter" | "every" | "some" => {
                 let callback = args.first().cloned().unwrap_or(Value::Undefined);

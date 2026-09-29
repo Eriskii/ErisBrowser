@@ -49,10 +49,19 @@ Eight older descriptor modes also pass, with no previous pass lost. The new
 regression gate preserves the remaining 58 missing-prerequisite failures and
 38 unsupported modes. Host integrity, Proxy/typed-array semantics and untagged
 prerequisites remain explicit gaps.
-Date and BigInt dependencies,
-replacement/matchAll protocols, general matching performance, the remaining
-full-UTF-16 loop, Unicode regexp syntax and Function source retention remain
-concrete next dependencies.
+[Array find methods](../tests/conformance/array-find.md) now add ascending and
+descending predicate searches with live holes, captured length and saved values.
+The complete 94-source / 180-mode profile gains 116 passes, reaching
+140 passed, eight missing-`splice` failures and 32 metadata exclusions. All 504
+local variants and 288 upstream controls pass. Shared property lookup now
+precharges retained-tree comparisons and borrowed mapped binding names; no
+quota is raised. Actual-digit formatting restores two initial lastIndexOf
+resource regressions without weakening those charges. Every older observation
+is unchanged in the final comparison; the new baseline preserves its remaining
+failures and unsupported modes.
+Next dependencies include remaining Array mutation methods such as `splice`,
+Date and BigInt, replacement/matchAll protocols, general matching performance,
+the remaining full-UTF-16 loop, Unicode regexp syntax and Function source retention.
 
 The goal remains an independent, fully web-compatible Rust browser with a
 defensible security boundary and measured performance within the requested

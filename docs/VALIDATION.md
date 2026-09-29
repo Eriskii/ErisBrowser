@@ -1,5 +1,54 @@
 # Validation record
 
+## Array find methods
+
+The [implementation and frozen fixture](../tests/conformance/array-find.md)
+compare against published commit `9bb0684`. The corrected final release passes
+all **504 unchanged local variants** and verifies all **twelve controls**;
+the before release fails the semantic sources at method-availability guards.
+The [evidence record](../tests/conformance/array-find.json) retains the original
+source, mode, helper, expectation and runner identities. All **thirteen private
+groups** and **75 focused array groups** pass. One initial private test used an
+invalid native-callback lookup; its setup was corrected to retrieve installed
+Boolean. The failed run is retained, with no production or frozen fixture
+change for that correction.
+
+The [complete pinned profile](../tests/conformance/test262-array-find.md)
+retains **94 sources / 180 modes**. Its final release has **140 passed,
+eight failed and 32 metadata unsupported**, with **288 verified controls**.
+It gains **116 passes**; **64 other complete records** remain identical. The
+eight retained runtime TypeErrors now reach missing `splice` in callback bodies;
+source inspection establishes this dependency because the generic error text
+is unchanged. All 24 incidental before TypeError passes remain recorded, while
+all 128 new positive before controls fail availability. No healthy before
+baseline is claimed.
+
+The first release candidate regressed both modes of
+`Array/prototype/lastIndexOf/15.4.4.15-3-16.js` to work-limit stops. Stronger
+lookup charges combined with fixed sixteen-digit formatting charges over 2,574
+keys exhausted the existing budget. Decimal key construction now precharges
+one unit plus its actual one-to-sixteen digit count before the unchanged
+64-byte allocation charge, and fills exactly that many stack slots. Both cases
+pass again. Stronger lookup charges, all quotas and every corpus contract remain
+unchanged. Initial binaries, sources, full reports and the two regressions are
+preserved alongside the corrected release.
+
+All **34 prior profiles / 14,778 modes / 2,964 controls** retain their contracts
+and complete observations. No previous pass is lost. The combined inventory
+has **35 profiles / 14,958 modes / 3,252 verified controls** and **28 healthy
+regression gates**, including the new find baseline. Its gate passes while
+preserving all eight failures and 32 unsupported modes.
+
+Rust **1.88 / 1.95** pass strict all-target Clippy and **1,084 default / 1,095
+Vulkan-feature tests**, none ignored. All **207 Python tests** pass. Both release
+configurations preserve **57 CPU pixel references**, and all HTML observations
+are unchanged. The corrected deterministic mutation smoke completes **15,000
+cases** with zero caught panics or invariant failures in **3.31 seconds**;
+17 paint-limit stops remain within the checked invariants. This is smoke
+testing, not coverage-guided fuzzing. Final source and binary hashes are retained
+in the evidence. No GPU exercise, security certification or Chromium
+performance comparison was performed.
+
 ## Object integrity
 
 The [implementation and frozen local fixtures](../tests/conformance/object-integrity.md)

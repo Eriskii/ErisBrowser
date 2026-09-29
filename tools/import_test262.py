@@ -18,7 +18,9 @@ ARRAY_DESCRIPTOR_DIRECTORIES = {'Object/defineProperty': 1131, 'Object/definePro
 ARRAY_PREDICATE_DIRECTORIES = {'Array/prototype/every': 218, 'Array/prototype/some': 219}
 OBJECT_INTEGRITY_DIRECTORIES = {'Object/seal': 94, 'Object/freeze': 53,
                                 'Object/isSealed': 33, 'Object/isFrozen': 59}
-TREE_PROFILES = {'array-descriptors', 'array-predicates', 'object-integrity'}
+ARRAY_FIND_DIRECTORIES = {'Array/prototype/find': 23, 'Array/prototype/findIndex': 23,
+                          'Array/prototype/findLast': 24, 'Array/prototype/findLastIndex': 24}
+TREE_PROFILES = {'array-descriptors', 'array-predicates', 'object-integrity', 'array-find'}
 DIRECTORIES = {
     'JSON/parse': 77, 'JSON/stringify': 66,
     'String/prototype/charAt': 30, 'String/prototype/charCodeAt': 25,
@@ -96,7 +98,7 @@ SYMBOL_DIRECTORIES = {
     'Symbol/toStringTag': 2,
     'Symbol/unscopables': 2,
 }
-PROFILES = {'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates': ARRAY_PREDICATE_DIRECTORIES, 'array-descriptors': ARRAY_DESCRIPTOR_DIRECTORIES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_DIRECTORIES, 'string-last-index-of': STRING_LAST_INDEX_OF_DIRECTORIES, 'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
+PROFILES = {'array-find': ARRAY_FIND_DIRECTORIES, 'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates': ARRAY_PREDICATE_DIRECTORIES, 'array-descriptors': ARRAY_DESCRIPTOR_DIRECTORIES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_DIRECTORIES, 'string-last-index-of': STRING_LAST_INDEX_OF_DIRECTORIES, 'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'function-constructor': FUNCTION_CONSTRUCTOR_DIRECTORIES,
             'reflect-construction': REFLECT_CONSTRUCTION_DIRECTORIES, 'new-target': NEW_TARGET_DIRECTORIES,
             'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
@@ -109,7 +111,7 @@ PROFILES = {'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates'
             'numeric-parsing': NUMERIC_PARSING_DIRECTORIES,
             'compound-assignment': COMPOUND_ASSIGNMENT_DIRECTORIES,
             'addition': ADDITION_DIRECTORIES, 'logical-assignment': LOGICAL_ASSIGNMENT_DIRECTORIES, 'uri': URI_DIRECTORIES, 'relational': RELATIONAL_DIRECTORIES, 'equality': EQUALITY_DIRECTORIES, 'labels': LABELS_DIRECTORIES}
-PROFILE_ROOTS = {'object-integrity': 'test/built-ins', 'array-predicates': 'test/built-ins', 'array-descriptors': 'test/built-ins', 'array-last-index-of': 'test/built-ins', 'string-last-index-of': 'test/built-ins', 'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
+PROFILE_ROOTS = {'array-find': 'test/built-ins', 'object-integrity': 'test/built-ins', 'array-predicates': 'test/built-ins', 'array-descriptors': 'test/built-ins', 'array-last-index-of': 'test/built-ins', 'string-last-index-of': 'test/built-ins', 'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
                  'function-constructor': 'test/built-ins', 'reflect-construction': 'test/built-ins', 'new-target': 'test/language',
                  'template-literal': 'test/language', 'functions': 'test/language',
                  'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins',
@@ -362,6 +364,7 @@ def import_corpus(output, profile='string-json'):
     if sum(map(len, sources.values())) + sum(map(len, proof.values())) > MAX_TOTAL:
         raise ValueError('Test262 selection exceeds aggregate import limit')
     scope = {
+        'array-find': 'all direct .js files in Array/prototype/find, findIndex, findLast and findLastIndex; complete pinned Git trees; no implementation',
         'object-integrity': 'all direct .js files in Object/seal, Object/freeze, Object/isSealed and Object/isFrozen; complete pinned Git trees; no implementation',
         'array-predicates': 'all direct .js files in Array/prototype/every and Array/prototype/some; complete pinned Git trees; no implementation',
         'array-descriptors': 'all direct .js files in Object/defineProperty, Object/defineProperties and Array/length; complete pinned Git trees; no implementation',

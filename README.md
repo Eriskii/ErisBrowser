@@ -101,6 +101,7 @@ python3 tools/test262_conformance.py --profile equality --baseline tests/conform
 python3 tools/test262_conformance.py --profile labels --baseline tests/conformance/test262-labels-current.json
 python3 tools/test262_conformance.py --profile symbols --baseline tests/conformance/test262-symbols-current.json
 python3 tools/test262_conformance.py --profile object-integrity --baseline tests/conformance/test262-object-integrity-current.json
+python3 tools/test262_conformance.py --profile array-find --baseline tests/conformance/test262-array-find-current.json
 python3 -m unittest discover -s tools -p 'test_*.py'
 cargo run --locked --release --bin eris-stress -- 5000
 ```
@@ -379,6 +380,23 @@ retains 239 sources and 474 modes. The final release records 378 passed,
 58 missing-prerequisite failures and 38 unsupported modes, with all 224 controls
 verified. All 228 frozen local variants and their 12 controls also pass.
 Eight older descriptor modes gain passes, and all 14,296 other older
-observations are unchanged. The combined inventory has 34 profiles, 14,778
+observations are unchanged. That checkpoint has 34 profiles, 14,778
 modes, 2,964 verified controls and 27 healthy regression gates. Work and
 allocation quotas are unchanged; failed and unsupported cases remain visible.
+
+[Array find methods](tests/conformance/array-find.md) now support `find`,
+`findIndex`, `findLast` and `findLastIndex` on ordinary generic receivers.
+They visit holes through live property reads, preserve the captured length and
+traversal direction, and return the value saved before a matching callback.
+All 504 frozen local variants and twelve controls pass. The
+[complete four-directory profile](tests/conformance/test262-array-find.md)
+retains 94 sources and 180 modes: the final release has 140 passes, eight
+failures requiring missing `splice`, and 32 metadata exclusions, with all 288
+controls verified. It adds 116 passes and retains the other 64 complete records.
+All 34 older profile contracts and complete observations remain unchanged.
+The combined inventory has 35 profiles, 14,958 modes, 3,252 verified controls
+and 28 healthy regression gates, including the new find baseline. Shared
+property reads precharge retained-tree comparisons and mapped binding-name
+work. Actual-digit index formatting restores two initial lastIndexOf work-limit
+regressions while preserving these charges and every quota; both attempts are
+retained in the evidence. Failed and unsupported cases remain visible.

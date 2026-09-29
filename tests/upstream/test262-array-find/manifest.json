@@ -1,0 +1,804 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all direct .js files in Array/prototype/find, findIndex, findLast and findLastIndex; complete pinned Git trees; no implementation",
+  "directories": {
+    "Array/prototype/find": [
+      "array-altered-during-loop.js",
+      "call-with-boolean.js",
+      "callbackfn-resize-arraybuffer.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "predicate-call-parameters.js",
+      "predicate-call-this-non-strict.js",
+      "predicate-call-this-strict.js",
+      "predicate-called-for-each-array-property.js",
+      "predicate-is-not-callable-throws.js",
+      "predicate-not-called-on-empty-array.js",
+      "prop-desc.js",
+      "resizable-buffer-grow-mid-iteration.js",
+      "resizable-buffer-shrink-mid-iteration.js",
+      "resizable-buffer.js",
+      "return-abrupt-from-predicate-call.js",
+      "return-abrupt-from-property.js",
+      "return-abrupt-from-this-length-as-symbol.js",
+      "return-abrupt-from-this-length.js",
+      "return-abrupt-from-this.js",
+      "return-found-value-predicate-result-is-true.js",
+      "return-undefined-if-predicate-returns-false-value.js"
+    ],
+    "Array/prototype/findIndex": [
+      "array-altered-during-loop.js",
+      "call-with-boolean.js",
+      "callbackfn-resize-arraybuffer.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "predicate-call-parameters.js",
+      "predicate-call-this-non-strict.js",
+      "predicate-call-this-strict.js",
+      "predicate-called-for-each-array-property.js",
+      "predicate-is-not-callable-throws.js",
+      "predicate-not-called-on-empty-array.js",
+      "prop-desc.js",
+      "resizable-buffer-grow-mid-iteration.js",
+      "resizable-buffer-shrink-mid-iteration.js",
+      "resizable-buffer.js",
+      "return-abrupt-from-predicate-call.js",
+      "return-abrupt-from-property.js",
+      "return-abrupt-from-this-length-as-symbol.js",
+      "return-abrupt-from-this-length.js",
+      "return-abrupt-from-this.js",
+      "return-index-predicate-result-is-true.js",
+      "return-negative-one-if-predicate-returns-false-value.js"
+    ],
+    "Array/prototype/findLast": [
+      "array-altered-during-loop.js",
+      "call-with-boolean.js",
+      "callbackfn-resize-arraybuffer.js",
+      "length.js",
+      "maximum-index.js",
+      "name.js",
+      "not-a-constructor.js",
+      "predicate-call-parameters.js",
+      "predicate-call-this-non-strict.js",
+      "predicate-call-this-strict.js",
+      "predicate-called-for-each-array-property.js",
+      "predicate-is-not-callable-throws.js",
+      "predicate-not-called-on-empty-array.js",
+      "prop-desc.js",
+      "resizable-buffer-grow-mid-iteration.js",
+      "resizable-buffer-shrink-mid-iteration.js",
+      "resizable-buffer.js",
+      "return-abrupt-from-predicate-call.js",
+      "return-abrupt-from-property.js",
+      "return-abrupt-from-this-length-as-symbol.js",
+      "return-abrupt-from-this-length.js",
+      "return-abrupt-from-this.js",
+      "return-found-value-predicate-result-is-true.js",
+      "return-undefined-if-predicate-returns-false-value.js"
+    ],
+    "Array/prototype/findLastIndex": [
+      "array-altered-during-loop.js",
+      "call-with-boolean.js",
+      "callbackfn-resize-arraybuffer.js",
+      "length.js",
+      "maximum-index.js",
+      "name.js",
+      "not-a-constructor.js",
+      "predicate-call-parameters.js",
+      "predicate-call-this-non-strict.js",
+      "predicate-call-this-strict.js",
+      "predicate-called-for-each-array-property.js",
+      "predicate-is-not-callable-throws.js",
+      "predicate-not-called-on-empty-array.js",
+      "prop-desc.js",
+      "resizable-buffer-grow-mid-iteration.js",
+      "resizable-buffer-shrink-mid-iteration.js",
+      "resizable-buffer.js",
+      "return-abrupt-from-predicate-call.js",
+      "return-abrupt-from-property.js",
+      "return-abrupt-from-this-length-as-symbol.js",
+      "return-abrupt-from-this-length.js",
+      "return-abrupt-from-this.js",
+      "return-index-predicate-result-is-true.js",
+      "return-negative-one-if-predicate-returns-false-value.js"
+    ]
+  },
+  "test_files": 94,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/resizableArrayBufferUtils.js",
+      "upstream_path": "harness/resizableArrayBufferUtils.js",
+      "bytes": 3829,
+      "sha256": "029aa552050861eb85fe9d848a52716dfd24747dcaf06f2a8937cb510ab31f50"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "harness/testTypedArray.js",
+      "upstream_path": "harness/testTypedArray.js",
+      "bytes": 16526,
+      "sha256": "51eb50e53e6215f31f14d64d249bea2d08ad943c77835f63ba52ec694de2189a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/array-altered-during-loop.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/array-altered-during-loop.js",
+      "bytes": 1261,
+      "sha256": "e03d778ac8de4da83ce1252bf6aec2f9e7e3aef6f0ef54daf74daa74cc2040a5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/call-with-boolean.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/call-with-boolean.js",
+      "bytes": 533,
+      "sha256": "def23fc1bac18327a244d37db5a11ff0422f65b411f2e04f4f96c0e870b7a311"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/callbackfn-resize-arraybuffer.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/callbackfn-resize-arraybuffer.js",
+      "bytes": 2533,
+      "sha256": "c6716a08a1493216665b7924840cedff906879a7e49b25fb1290c2cb77b868c2"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/length.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/length.js",
+      "bytes": 451,
+      "sha256": "962ed1ba987ac9c10a60d8f8bd0e325169c86fc514376ff531aaf8c87a56727d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/name.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/name.js",
+      "bytes": 518,
+      "sha256": "ae74f2b4e96ab974e29777e91bd602b96fe94404276097af7335fc5d67afe3e6"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/not-a-constructor.js",
+      "bytes": 888,
+      "sha256": "7ff3167954c47f63b089402c94ba3bc22a0c5122c63cb5cc2fc7179104a87f2b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/predicate-call-parameters.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/predicate-call-parameters.js",
+      "bytes": 1231,
+      "sha256": "06b62d3c398e10be8d30803f7117ca4d387db8ce8fb0d9fee9485cb0fa28dc5d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/predicate-call-this-non-strict.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/predicate-call-this-non-strict.js",
+      "bytes": 706,
+      "sha256": "e076ffc4517cc7e48c3465fcce7dbf5e930fd1707582a72156319e855468a675"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/predicate-call-this-strict.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/predicate-call-this-strict.js",
+      "bytes": 713,
+      "sha256": "b4dd4f5e63e87cf3e03414ca6f82db8b3b5998009161d71db25ccebe926bff61"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/predicate-called-for-each-array-property.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/predicate-called-for-each-array-property.js",
+      "bytes": 642,
+      "sha256": "295dd46d4dbbe6c86393a30b47df3ee008ffdddd4c35039169296e21859b3316"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/predicate-is-not-callable-throws.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/predicate-is-not-callable-throws.js",
+      "bytes": 938,
+      "sha256": "0ba938b07151b3f0a24f4d8257694c721df5a00dcac53b79822c490f5901cec5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/predicate-not-called-on-empty-array.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/predicate-not-called-on-empty-array.js",
+      "bytes": 753,
+      "sha256": "79213c4b85cb27b8bbc8c14518f6ac1e8d43f77bf0bfa7cc3c39471e82ac95c2"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/prop-desc.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/prop-desc.js",
+      "bytes": 526,
+      "sha256": "cd29bd83c949f331a9ccc8b61e979fae773070feb073ac420000c89e25d80da6"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/resizable-buffer-grow-mid-iteration.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/resizable-buffer-grow-mid-iteration.js",
+      "bytes": 2525,
+      "sha256": "42ca1e689152410e146cf4057ce2e5723553137fc19a8367d3f2c8bfdb3571a2"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/resizable-buffer-shrink-mid-iteration.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/resizable-buffer-shrink-mid-iteration.js",
+      "bytes": 2671,
+      "sha256": "e2107b30f257ed0e8267634502af3a750c2a83323d147e7091f07e08237d5b56"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/resizable-buffer.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/resizable-buffer.js",
+      "bytes": 3902,
+      "sha256": "cd9535c5771262151c3c555427272d3d6a4a24a8ee318d94455caff7ee54710c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/return-abrupt-from-predicate-call.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/return-abrupt-from-predicate-call.js",
+      "bytes": 604,
+      "sha256": "bd7745b4e8dd070bf12de095bbf9f419231f9a25ce14016acaf48e717b16f704"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/return-abrupt-from-property.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/return-abrupt-from-property.js",
+      "bytes": 667,
+      "sha256": "cc74e02f2046ac87e92b06f631c80882d0caab3061a7df1557500c63c90932fd"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/return-abrupt-from-this-length-as-symbol.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/return-abrupt-from-this-length-as-symbol.js",
+      "bytes": 650,
+      "sha256": "6a5c0850c6746b9572353842a42b805e0f46816928c919eecfef3d04ad42217b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/return-abrupt-from-this-length.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/return-abrupt-from-this-length.js",
+      "bytes": 802,
+      "sha256": "1f2206e47f7c2d62e939c688b2f80ae0a84e7c65a3771d48c54cd597e0db4a3b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/return-abrupt-from-this.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/return-abrupt-from-this.js",
+      "bytes": 608,
+      "sha256": "013949442b4f5e87c7095bcfcc92329d282cfcc38bf42987bb30d193285f2f60"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/return-found-value-predicate-result-is-true.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/return-found-value-predicate-result-is-true.js",
+      "bytes": 1499,
+      "sha256": "82a77db5787a10d6f093b88b9d599740f785f49cd3f0a88fe7ca087567d4b0ee"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/find/return-undefined-if-predicate-returns-false-value.js",
+      "upstream_path": "test/built-ins/Array/prototype/find/return-undefined-if-predicate-returns-false-value.js",
+      "bytes": 1263,
+      "sha256": "d32c2612a1fdd61ffb3ca8fbd2fbbe2f81d04f6d788078eb6afaa46207f5cb25"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/array-altered-during-loop.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/array-altered-during-loop.js",
+      "bytes": 1281,
+      "sha256": "bc507d6440f5de7132659da52eca22cb93b3fe1491a83e4c8d6a42f4e32e15d9"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/call-with-boolean.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/call-with-boolean.js",
+      "bytes": 535,
+      "sha256": "a2312c595cc8c1bc3e4453e03df3848e3fe92d1ffca870f70ceb68ddc9d3b185"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/callbackfn-resize-arraybuffer.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/callbackfn-resize-arraybuffer.js",
+      "bytes": 2534,
+      "sha256": "68a349a52c1bae3cd0dd7c92ff28e4e64e7ec02bd3841cc323ef4904374ca9a8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/length.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/length.js",
+      "bytes": 466,
+      "sha256": "7dcb9134248a60a613550cdb0a01354802a3d381d396f1073556608b4dd3f0e4"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/name.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/name.js",
+      "bytes": 543,
+      "sha256": "7e23c7debe0e9e506aa17dd97072d9a16ca66bc0ae7bd7d90fd794b3fb06686d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/not-a-constructor.js",
+      "bytes": 916,
+      "sha256": "02fb114d165945a2c827c2a8a91f299c3bd97a2d351535cc337a62b9c780c2a5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/predicate-call-parameters.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/predicate-call-parameters.js",
+      "bytes": 1211,
+      "sha256": "c3df51a3f7864f46d75f4d5b22c5b7fcafa0e7f4a1370fcec9fc15bfe40fdc42"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/predicate-call-this-non-strict.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/predicate-call-this-non-strict.js",
+      "bytes": 716,
+      "sha256": "4222fda03d90ee23aab07bfad8d25f13e027ca18ed1e5d53ded8710811fc916f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/predicate-call-this-strict.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/predicate-call-this-strict.js",
+      "bytes": 723,
+      "sha256": "1fe1c3429e3e1c877f7738844001a92c7938d1e5e24ea494e39e619ca8f15558"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/predicate-called-for-each-array-property.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/predicate-called-for-each-array-property.js",
+      "bytes": 657,
+      "sha256": "07dab795d7d883a1dfa9b9db43b653be0355590c3b388e8a35d68ff9da3f8be7"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/predicate-is-not-callable-throws.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/predicate-is-not-callable-throws.js",
+      "bytes": 993,
+      "sha256": "68c9e2f7ee58fefa6592b7dec6c3afac4140acf6035c790144820fe9081c611b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/predicate-not-called-on-empty-array.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/predicate-not-called-on-empty-array.js",
+      "bytes": 776,
+      "sha256": "66817d3018a5846ef306ba0cdd2dc8a31c6b78755831736b2f9677ad075c593d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/prop-desc.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/prop-desc.js",
+      "bytes": 546,
+      "sha256": "0d0985b09fea0f1e086abb698618ad4f0915199281b4401118461833c592248c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/resizable-buffer-grow-mid-iteration.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/resizable-buffer-grow-mid-iteration.js",
+      "bytes": 2527,
+      "sha256": "6ccecdb9abf971d1b3e9b8dfb43c1b9bf5ee133d4ce56b6b39f23adb305bb5de"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/resizable-buffer-shrink-mid-iteration.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/resizable-buffer-shrink-mid-iteration.js",
+      "bytes": 2567,
+      "sha256": "01eceab38752983d55a5f653ee8b8f78327861e1eb7c7155224dcfb9d55b9d50"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/resizable-buffer.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/resizable-buffer.js",
+      "bytes": 3864,
+      "sha256": "8a1fd3caa4aca1c9a0cfd825cc3675f5d677a443660568314963be0cf182ef3c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/return-abrupt-from-predicate-call.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/return-abrupt-from-predicate-call.js",
+      "bytes": 619,
+      "sha256": "84f5c34e52c5b8cce0597f07090c7c6fb3b553e4350d1a67ffbd4b18e8d46120"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/return-abrupt-from-property.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/return-abrupt-from-property.js",
+      "bytes": 682,
+      "sha256": "a3eafceaccf9b4f04b9c474030a35d02dced8cda3345ddbeddbe901b9b729254"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/return-abrupt-from-this-length-as-symbol.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/return-abrupt-from-this-length-as-symbol.js",
+      "bytes": 671,
+      "sha256": "cd8d0c94d8552feeb47d3a407cd4018d75a940926328dab3eb121e798e51b212"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/return-abrupt-from-this-length.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/return-abrupt-from-this-length.js",
+      "bytes": 901,
+      "sha256": "db1005cadac08cc6d58de46a7fcbc2d0daced3035f249cab740285c7f0b2b88b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/return-abrupt-from-this.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/return-abrupt-from-this.js",
+      "bytes": 628,
+      "sha256": "7ab69f13877508584499b7d0c2c91781519ddb00a2dfd6dc7bdc848abe0602a6"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/return-index-predicate-result-is-true.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/return-index-predicate-result-is-true.js",
+      "bytes": 1492,
+      "sha256": "6b0a1889260dd3a31e3174c03dc8c2b289e03e66a74dda10bd722abb8508c730"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findIndex/return-negative-one-if-predicate-returns-false-value.js",
+      "upstream_path": "test/built-ins/Array/prototype/findIndex/return-negative-one-if-predicate-returns-false-value.js",
+      "bytes": 1247,
+      "sha256": "aa7e10e604d3c889ec44f9d25427c957bf99a1eb2ca100a28a413da19bad3d8a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/array-altered-during-loop.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/array-altered-during-loop.js",
+      "bytes": 1231,
+      "sha256": "97935f3d140c3e1462fdfe8e90e49bdccf77c1bc41a7ae580bbe439ae3083faa"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/call-with-boolean.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/call-with-boolean.js",
+      "bytes": 587,
+      "sha256": "7372649dde1e863749f2f032ff83ceb3883733f2bb44c1381007a647058f2194"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/callbackfn-resize-arraybuffer.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/callbackfn-resize-arraybuffer.js",
+      "bytes": 2531,
+      "sha256": "ea58f6e84aad357f1112f64d901365ff0945033800f0bd9233367b0a3dfb51ab"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/length.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/length.js",
+      "bytes": 589,
+      "sha256": "63e8ee8f87f563a73c244ea5cf08c2e72ff31f793248584613ec21a4e1ba6ffe"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/maximum-index.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/maximum-index.js",
+      "bytes": 1032,
+      "sha256": "6c4b2754aba1ce83b04bd6358d7d746dc6ce84b7251c7e91a3d66f41129ae25e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/name.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/name.js",
+      "bytes": 660,
+      "sha256": "325299b7aae76b9b3e919ccb85e40d40e6e16548f4ebc726144a37aa347ab5ad"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/not-a-constructor.js",
+      "bytes": 924,
+      "sha256": "dbfcc11d75a72a36f97e054e9e0e8150072e9def21f0fbe38e47e0868f885f21"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/predicate-call-parameters.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/predicate-call-parameters.js",
+      "bytes": 1204,
+      "sha256": "c3630a605105e293fe4694eebb52305adea25c0c2fe79b58ab6ee0035bb1c3be"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/predicate-call-this-non-strict.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/predicate-call-this-non-strict.js",
+      "bytes": 750,
+      "sha256": "945d754c8854a5decce15f19082d51d3579cb31c76a18d6e6b53975969b089af"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/predicate-call-this-strict.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/predicate-call-this-strict.js",
+      "bytes": 757,
+      "sha256": "6766f8c3be3afd9ae0d84868ca34911797328d55de346cb41a27ebd0d15e6aac"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/predicate-called-for-each-array-property.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/predicate-called-for-each-array-property.js",
+      "bytes": 617,
+      "sha256": "fa5e81c1d92cfad7328d8d22d0a34b8837d47ba9122e049b77a5d0446f6326a3"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/predicate-is-not-callable-throws.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/predicate-is-not-callable-throws.js",
+      "bytes": 993,
+      "sha256": "0fcf8880c4ac6b1a023bd0c730d9a48d8c78c3af1bf82deeed1aaa18e51fef93"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/predicate-not-called-on-empty-array.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/predicate-not-called-on-empty-array.js",
+      "bytes": 809,
+      "sha256": "5f9b43df2068113e6cc7a2af19c3df5ec5cf836735d26dcbc77bf97e2a217d02"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/prop-desc.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/prop-desc.js",
+      "bytes": 562,
+      "sha256": "55794f55e67d7614f2df690792bc9752b9ab3471130713d82d96348c076202a6"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/resizable-buffer-grow-mid-iteration.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/resizable-buffer-grow-mid-iteration.js",
+      "bytes": 2548,
+      "sha256": "ba180a9b84ec75ff42ddeb101956ea80310cc55fe600306533f825f2ddc932e5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/resizable-buffer-shrink-mid-iteration.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/resizable-buffer-shrink-mid-iteration.js",
+      "bytes": 2574,
+      "sha256": "f53e774e65f3f7ea10b0b4c5277dece7e2565c706b27466b639210371adebe59"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/resizable-buffer.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/resizable-buffer.js",
+      "bytes": 3990,
+      "sha256": "fd78620a520574bcaa015bcf82b8b59b6da5022df5fd7ce4fd48e2659c6411eb"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/return-abrupt-from-predicate-call.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/return-abrupt-from-predicate-call.js",
+      "bytes": 662,
+      "sha256": "fff9bf132248ec02319225600d6652a1ff773e5fc4b3fa3ffb4285a7ea231f01"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/return-abrupt-from-property.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/return-abrupt-from-property.js",
+      "bytes": 729,
+      "sha256": "90465b2421f241ca838d295f10d9b2171b2d3886f738bf7032c7571da5be85e8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/return-abrupt-from-this-length-as-symbol.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/return-abrupt-from-this-length-as-symbol.js",
+      "bytes": 611,
+      "sha256": "3a0264bdfa99febeffdb517682ac7b81d78d7b695725c89ae7d5d14de01c6a7f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/return-abrupt-from-this-length.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/return-abrupt-from-this-length.js",
+      "bytes": 777,
+      "sha256": "76478ce216273810d00b114fad5fd93fb9d2de890f3e017d1bbf33218554a45a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/return-abrupt-from-this.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/return-abrupt-from-this.js",
+      "bytes": 613,
+      "sha256": "8973d2cc1c2c5bb65c08bd1bde115fc5ed09a8a10c727f7c37bbab27ecc5e5ec"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/return-found-value-predicate-result-is-true.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/return-found-value-predicate-result-is-true.js",
+      "bytes": 1497,
+      "sha256": "5cff30df616235008de461aeddc59e3b7229fc22035819e3bf298cb3bf886486"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLast/return-undefined-if-predicate-returns-false-value.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLast/return-undefined-if-predicate-returns-false-value.js",
+      "bytes": 1296,
+      "sha256": "d93f617482dd7356612d0f6326169a66ec4577b84c73752c3642cc6a61b07f74"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/array-altered-during-loop.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/array-altered-during-loop.js",
+      "bytes": 1255,
+      "sha256": "357010e81ef9602acb8aa7142140d72301f723c4ecac3267f80d23c70a060f39"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/call-with-boolean.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/call-with-boolean.js",
+      "bytes": 589,
+      "sha256": "9590591f058e321c738e86c5040e91316f9e55cc82fa0ee0f0ad655a350d56e2"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/callbackfn-resize-arraybuffer.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/callbackfn-resize-arraybuffer.js",
+      "bytes": 2532,
+      "sha256": "a9501263e648ed3d904dcb942721ac5db0e50b341c9833eadd835da1f35b6198"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/length.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/length.js",
+      "bytes": 614,
+      "sha256": "1e1284c1a615411d3df2f1e8cebbbce0f1cab7b5e2caea505e5206617a6b4657"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/maximum-index.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/maximum-index.js",
+      "bytes": 1047,
+      "sha256": "90dc39cb2f67a38dfa19fdddfd01d2f47db89a9b55b3403959e97a9cfeb2813f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/name.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/name.js",
+      "bytes": 700,
+      "sha256": "96a7ed7f893ae93f3e36610bd8bc64104f7d8710a93dbe154a19d375746e373d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/not-a-constructor.js",
+      "bytes": 952,
+      "sha256": "99124edeeefd76d98939fce032634c438f28c4764092d2dd447d49d9b7ddd34d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/predicate-call-parameters.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/predicate-call-parameters.js",
+      "bytes": 1174,
+      "sha256": "8a65910f0d22d9b4ace192c76dc3bd39ecd4a91124b238bd0ae64547be68ceaa"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/predicate-call-this-non-strict.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/predicate-call-this-non-strict.js",
+      "bytes": 771,
+      "sha256": "4a95475011ba8d17a0ba29a3d1ca3c23ac7975168f710bd32dd20cdd60de127d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/predicate-call-this-strict.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/predicate-call-this-strict.js",
+      "bytes": 778,
+      "sha256": "13c9ec8bbddefae918f42faa61cc1932c7a6fbdf96547a2274f29584ee71a84e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/predicate-called-for-each-array-property.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/predicate-called-for-each-array-property.js",
+      "bytes": 632,
+      "sha256": "6b46f0f9a2c6169a25966695bcb3dbb67a9ee2863e14777c42b3646bc48faf9a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/predicate-is-not-callable-throws.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/predicate-is-not-callable-throws.js",
+      "bytes": 1048,
+      "sha256": "c230aaa4074207422934054b7d5a05a9e937bf43c8aa651c3dc246a442dcf544"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/predicate-not-called-on-empty-array.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/predicate-not-called-on-empty-array.js",
+      "bytes": 826,
+      "sha256": "df2ae2f350d496eb581bf67285fd349d4b9dcbc1b7c3a04b2d0c140a3612639f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/prop-desc.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/prop-desc.js",
+      "bytes": 582,
+      "sha256": "491642578273eaa49d149dd6fbe63215b148d4fd9f437b5f94897273af74edf5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/resizable-buffer-grow-mid-iteration.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/resizable-buffer-grow-mid-iteration.js",
+      "bytes": 2550,
+      "sha256": "d23f8af00c29147037f36f7250c19514ec839117b286464dd77d9cf0afb5f796"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/resizable-buffer-shrink-mid-iteration.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/resizable-buffer-shrink-mid-iteration.js",
+      "bytes": 2922,
+      "sha256": "2e66ebfbb6558807917579c9628441d6c235c2b02eb40d734575329f31c58ec0"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/resizable-buffer.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/resizable-buffer.js",
+      "bytes": 3953,
+      "sha256": "294606b537e04d31a00968e9ebc01fc2e83e2a5893e4e11371db5db2b6fb1d3a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/return-abrupt-from-predicate-call.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/return-abrupt-from-predicate-call.js",
+      "bytes": 678,
+      "sha256": "c0df6e682bf8ac2dd0741d418b57970b4769886950f9bca4879b24d60bfd2a56"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/return-abrupt-from-property.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/return-abrupt-from-property.js",
+      "bytes": 691,
+      "sha256": "e9a9ee126517fee37018405e29d57651f8edc957c78ef0e17bea6505bf88221e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/return-abrupt-from-this-length-as-symbol.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/return-abrupt-from-this-length-as-symbol.js",
+      "bytes": 631,
+      "sha256": "4292bafe56d086c5dd170ff5a5f330e22b9cb1b0c0333081b8362a06fc328a72"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/return-abrupt-from-this-length.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/return-abrupt-from-this-length.js",
+      "bytes": 876,
+      "sha256": "51decdc0f8e1bdc631c44ec4eb0d3787e22e8f0e0cf69688f3ea02b1a52c3852"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/return-abrupt-from-this.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/return-abrupt-from-this.js",
+      "bytes": 633,
+      "sha256": "0e327642965cdb8a8aba17ef330ddaa2b01099dd9d21954d48b16a6b8ff5dc20"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/return-index-predicate-result-is-true.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/return-index-predicate-result-is-true.js",
+      "bytes": 1501,
+      "sha256": "1c3083249adb690209883f4b538e6110d9ad5a72aa45011ed998eaa6154d91c9"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/findLastIndex/return-negative-one-if-predicate-returns-false-value.js",
+      "upstream_path": "test/built-ins/Array/prototype/findLastIndex/return-negative-one-if-predicate-returns-false-value.js",
+      "bytes": 1280,
+      "sha256": "3454342aab96cf259d64a3029cca429b2082197958836ad466b95bf1f654d601"
+    }
+  ],
+  "inventory_proof": {
+    "method": "complete-nonrecursive-git-trees",
+    "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+    "root_tree": "91b2052adad1f066ae031e2ff3a1e9bd6d732886",
+    "directory_trees": {
+      "Array/prototype/find": "a3ad4f58bd5c3f2023054163542c16b80c08142c",
+      "Array/prototype/findIndex": "04fd9cf0e6c9a5bb5c1af4be8be27b4ed2173969",
+      "Array/prototype/findLast": "c8f60ddbe2b16e1404501896bb482cdca1e2f4f7",
+      "Array/prototype/findLastIndex": "17a1cf1814e9b3a5ea41f0f144fa0226887db0c9"
+    },
+    "files": [
+      {
+        "path": "inventory-proof/commit.json",
+        "bytes": 1094,
+        "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0",
+        "url": "https://api.github.com/repos/tc39/test262/git/commits/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd"
+      },
+      {
+        "path": "inventory-proof/tree-04fd9cf0e6c9a5bb5c1af4be8be27b4ed2173969.json",
+        "bytes": 5549,
+        "sha256": "8f2ec4dbe91ec97c78f082ac8ad7bed25a70fea841ad9fbeac8e42cd0b7384f9",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/04fd9cf0e6c9a5bb5c1af4be8be27b4ed2173969"
+      },
+      {
+        "path": "inventory-proof/tree-17a1cf1814e9b3a5ea41f0f144fa0226887db0c9.json",
+        "bytes": 5770,
+        "sha256": "54aec43dbb1053c12418a5bea8e23d16d91a7b56d50301f66ac5f3c0aa4e72e9",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/17a1cf1814e9b3a5ea41f0f144fa0226887db0c9"
+      },
+      {
+        "path": "inventory-proof/tree-844a3c138c225949a547f9c1af66fb0fb518112d.json",
+        "bytes": 12652,
+        "sha256": "0876172da5b1f43e2a2035398dfee285693bdfad1c0477bea1c58a1b948b1e9c",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/844a3c138c225949a547f9c1af66fb0fb518112d"
+      },
+      {
+        "path": "inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+        "bytes": 5452,
+        "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/91b2052adad1f066ae031e2ff3a1e9bd6d732886"
+      },
+      {
+        "path": "inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+        "bytes": 1374,
+        "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/a2eada339f3c7e678edfc08497985f261a9ae258"
+      },
+      {
+        "path": "inventory-proof/tree-a3ad4f58bd5c3f2023054163542c16b80c08142c.json",
+        "bytes": 5552,
+        "sha256": "681456f3b2b134542b49acc8c2ca1c11db12464750a78b62ddd6bf02b2a36edd",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/a3ad4f58bd5c3f2023054163542c16b80c08142c"
+      },
+      {
+        "path": "inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+        "bytes": 13201,
+        "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/b42c4a8f19ad479b70ee2f64ecd683735d83cde9"
+      },
+      {
+        "path": "inventory-proof/tree-c8f60ddbe2b16e1404501896bb482cdca1e2f4f7.json",
+        "bytes": 5772,
+        "sha256": "cca7af2943115509b335559d716ca6f4fa2949851c67081c13b897595f0fb796",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/c8f60ddbe2b16e1404501896bb482cdca1e2f4f7"
+      },
+      {
+        "path": "inventory-proof/tree-f44a2cb0cd8f9fdf2c2c46ef3ab84f92348da233.json",
+        "bytes": 9669,
+        "sha256": "d7355199ec831aed4f0cf1ceb8b62c7df726a9cbcdbec1ef8181b0f81e23e4b3",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/f44a2cb0cd8f9fdf2c2c46ef3ab84f92348da233"
+      }
+    ]
+  }
+}

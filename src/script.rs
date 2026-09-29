@@ -1941,6 +1941,10 @@ impl Runtime {
             ("Array", "forEach", 1),
             ("Array", "every", 1),
             ("Array", "some", 1),
+            ("Array", "find", 1),
+            ("Array", "findIndex", 1),
+            ("Array", "findLast", 1),
+            ("Array", "findLastIndex", 1),
             ("Array", "filter", 1),
             ("Array", "includes", 1),
             ("Array", "indexOf", 1),
@@ -4931,16 +4935,56 @@ impl Runtime {
         Ok(result)
     }
     fn reduce_property(&mut self, receiver: &Value, key: &JsString) -> Result<Option<Property>> {
+        // Bounded short-key comparisons still depend on the stored tree's
+        // size. Empty trees need no comparison allowance. Ordinary key work
+        // uses eight-unit chunks, as the existing per-edge charge does.
+        fn lookup_work(entries: usize, units: usize) -> usize {
+            let levels = entries.checked_ilog2().map_or(0, |n| n as usize + 1);
+            (1 + units / 8).saturating_mul(4 * levels)
+        }
         let mut cursor = Some(receiver.clone());
         for _ in 0..MAX_DEPTH {
             let Some(value) = cursor else {
                 return Ok(None);
             };
             self.work(1 + key.len() / 8)?;
-            if self.property_object(&value).is_none() {
+            let native_name = match &value {
+                Value::Native(native) => Some(native.name.as_str()),
+                Value::Json => Some("JSON"),
+                Value::Math => Some("Math"),
+                _ => None,
+            };
+            if let Some(name) = native_name {
+                // Resolution here, in own_property and (if absent) in
+                // prototype_of can each consult this intrinsic-name tree.
+                self.work(lookup_work(self.native_properties.len(), name.len()).saturating_mul(3))?;
+            }
+            let Some(object) = self.property_object(&value) else {
                 return Err(ScriptError::unsupported(
                     "host prototype lookup during reduction is not implemented",
                 ));
+            };
+            let properties = &self.objects[object];
+            let table_work = lookup_work(properties.values.len(), key.len())
+                .saturating_add(
+                    lookup_work(properties.parameter_map.len(), key.len()).saturating_mul(2),
+                )
+                .saturating_add(match &value {
+                    Value::Array(id) => lookup_work(self.array_holes[*id].len(), 1),
+                    _ => 0,
+                });
+            // Covers both this mapping lookup and the later own-property
+            // lookup. No property value or mapped binding has been read yet.
+            self.work(table_work)?;
+            if let Some((env, name)) = self.objects[object].parameter_map.get(key) {
+                let levels = 1 + self.environments[*env]
+                    .bindings
+                    .len()
+                    .checked_ilog2()
+                    .unwrap_or(0) as usize;
+                // The binding's retained name can be much longer than "0".
+                // Borrow it and charge before own_property snapshots its value.
+                self.work((1 + name.len()).saturating_mul(4 * levels))?;
             }
             // Keys are either "length" or at most sixteen ASCII digits.
             // Retain the conservative per-edge storage estimate. Array index
@@ -4980,17 +5024,16 @@ impl Runtime {
                 "reduction index exceeds safe integer range",
             ));
         }
-        self.work(17)?;
+        // Precharge the actual decimal conversion, not sixteen digits for
+        // every small index. The range check above bounds this to 1..=16.
+        let count = index.checked_ilog10().unwrap_or(0) as usize + 1;
+        self.work(1 + count)?;
         self.charge(64)?;
         let mut digits = [0u16; 16];
-        let mut start = digits.len();
-        loop {
-            start -= 1;
-            digits[start] = u16::from(b'0') + (index % 10) as u16;
+        let start = digits.len() - count;
+        for digit in digits[start..].iter_mut().rev() {
+            *digit = u16::from(b'0') + (index % 10) as u16;
             index /= 10;
-            if index == 0 {
-                break;
-            }
         }
         Ok(JsString::from(&digits[start..]))
     }
@@ -7716,6 +7759,10 @@ impl Runtime {
                     | "forEach"
                     | "every"
                     | "some"
+                    | "find"
+                    | "findIndex"
+                    | "findLast"
+                    | "findLastIndex"
                     | "map"
                     | "filter"
             )
@@ -17982,7 +18029,7 @@ mod tests {
             assert_eq!(runtime.stack_units, 0);
         }
         let mut runtime = Runtime::new();
-        runtime.steps = 16;
+        runtime.steps = 1;
         let before = runtime.allocated;
         assert!(runtime.reduce_index_key(0).unwrap_err().is_resource_limit());
         assert_eq!(runtime.allocated, before);

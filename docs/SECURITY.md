@@ -342,3 +342,31 @@ shared-budget cleanup. Both supported Rust toolchains and release configurations
 pass the integrated checks; 15,000 mutation cases report no caught panic or
 invariant failure. These checks do not establish complete allocation accounting
 or a security audit.
+
+[Array find methods](../tests/conformance/array-find.md) stream captured logical
+indices without allocating a proportional list. Holes still cause live reads
+and predicate calls. Index keys, per-edge scratch and the three callback
+arguments are precharged before allocation or invocation. The shared array
+property walker now accounts for comparisons against retained property,
+parameter and hole trees, plus intrinsic-name lookup. Mapped argument reads
+borrow the binding name and charge its actual length and environment lookup
+bound before reading its value. These changes also protect existing consumers
+of that walker.
+
+Getters and callbacks run after the property read releases its storage borrow.
+They share cumulative work, heap and recursion guards; completed author effects
+remain when a later check fails. Huge sparse receivers can return on their
+first visit, while long scans terminate at the existing budgets. A fixed
+sixteen-digit index-formatting charge initially caused two older work-limit
+regressions. Formatting now precharges actual digit work and fills that many
+stack slots; the 64-byte allocation charge, lookup charges and all quotas
+remain unchanged. Both older cases pass, with their initial records retained.
+
+All 504 guarded local variants, thirteen private test groups and the final
+integrated checks pass. Private tests cover refusal before callback storage,
+completed getter effects, long mapped names, tree comparisons, lazy host/depth
+boundaries and terminal cleanup. The 15,000-case mutation smoke reports no
+caught panic or invariant failure. Exception rules and process authority
+are unchanged. Bounded independent code inspection found no concrete defect. These
+checks do not establish complete allocation accounting or a security audit;
+the Vulkan driver boundary is unchanged.

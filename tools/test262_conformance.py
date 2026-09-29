@@ -55,11 +55,12 @@ REGEXP_MATCH_SEARCH_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 ARRAY_DESCRIPTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 ARRAY_PREDICATE_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 OBJECT_INTEGRITY_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
+ARRAY_FIND_FEATURES = ARRAY_PREDICATE_FEATURES | {'array-find-from-last'}
 ARRAY_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 STRING_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 REGEXP_SPLIT_FEATURES = CONSTRUCTION_FEATURES
 REGEXP_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'u180e'}
-PROFILE_FEATURES = {'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+PROFILE_FEATURES = {'array-find': ARRAY_FIND_FEATURES, 'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'reflect-construction': CONSTRUCTION_FEATURES, 'new-target': CONSTRUCTION_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -1447,6 +1448,89 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                 for name, setup, actual, good, bad in pairs:
                     for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
                         variants.append(('object-integrity-' + method + '-' + name + suffix,
+                                         guard + setup + f'assert.sameValue({actual},{value});', expected, mode))
+    if profile == 'array-find':
+        for method in ('find', 'findIndex', 'findLast', 'findLastIndex'):
+            reverse = method in ('findLast', 'findLastIndex')
+            indexed = method in ('findIndex', 'findLastIndex')
+            first, last = (2, 0) if reverse else (0, 2)
+            absent = '-1' if indexed else 'undefined'
+            guard = (f"var find=Array.prototype.{method};assert.sameValue(typeof find,'function');"
+                     "var smokeCalls=0;assert.sameValue(find.call([7],function(){smokeCalls++;return true;}),"
+                     + ('0' if indexed else '7') + ");"
+                     "assert.sameValue(find.call([7],function(){smokeCalls++;return false;})," + absent + ");"
+                     "assert.sameValue(smokeCalls,2);")
+            pairs = [
+                ('empty', "var calls=0;var result=find.call([],function(){calls++;throw new Error('empty');});assert.sameValue(calls,0);",
+                 'result', absent, '0'),
+                ('direction-arguments', "var a=['a','b','c'],trace='';var result=find.call(a,function(value,index,object){"
+                 "assert.sameValue(arguments.length,3);assert.sameValue(object,a);trace+=index+':'+value+';';return false;});"
+                 "assert.sameValue(result," + absent + ");",
+                 'trace', "'2:c;1:b;0:a;'" if reverse else "'0:a;1:b;2:c;'", "''"),
+                ('holes-inherited', "var a=Object.create({1:9}),trace='';a.length=3;find.call(a,function(value,index,object){"
+                 "assert.sameValue(object,a);trace+=index+':'+value+';';return false;});assert.sameValue(0 in a,false);assert.sameValue(2 in a,false);",
+                 'trace', "'2:undefined;1:9;0:undefined;'" if reverse else "'0:undefined;1:9;2:undefined;'", "'1:9;'"),
+                ('captured-value', "var before={},after={},a=[before],seen;var result=find.call(a,function(value,index){"
+                 "seen=value;assert.sameValue(index,0);a[0]=after;return true;});assert.sameValue(a[0],after);assert.sameValue(seen,before);",
+                 'result', '0' if indexed else 'before', '1' if indexed else 'after'),
+                ('boolean-short-circuit', "var a=['a','b','c'],trace='',coerced=0,truthy={valueOf:function(){coerced++;throw new Error('coercion');},"
+                 "toString:function(){coerced++;throw new Error('coercion');}};"
+                 f"Object.defineProperty(a,'{last}',{{get:function(){{throw new Error('late read');}}}});"
+                 "var result=find.call(a,function(value,index){trace+=index;return index===1?truthy:0;});"
+                 "assert.sameValue(coerced,0);assert.sameValue(trace," + ("'21'" if reverse else "'01'") + ");",
+                 'result', '1' if indexed else "'b'", absent),
+                ('length-snapshot-live', "var a=[1,2,3],trace='';var result=find.call(a,function(value,index){trace+=index+':'+value+';';"
+                 f"if(index==={first}){{delete a[1];a[{last}]=9;a.length=5;a[3]=4;a[4]=5;}}return false;}});"
+                 "assert.sameValue(result," + absent + ");",
+                 'trace', "'2:3;1:undefined;0:9;'" if reverse else "'0:1;1:undefined;2:9;'", "''"),
+                ('length-before-callback', "var a={},trace='';Object.defineProperty(a,'length',{get:function(){trace+='L';"
+                 "return {valueOf:function(){trace+='N';return 0;}};}});"
+                 "assert.throws(TypeError,function(){find.call(a,42);});",
+                 'trace', "'LN'", "''"),
+                ('receiver-validation', "var calls=0,callback=function(){calls++;return true;};"
+                 "assert.throws(TypeError,function(){find.call(null,callback);});"
+                 "assert.throws(TypeError,function(){find.call(undefined,callback);});",
+                 'calls', '0', '1'),
+                ('strict-thisarg', "var marker={},calls=0;find.call([1],function(){'use strict';assert.sameValue(this,marker);calls++;return false;},marker);"
+                 "find.call([1],function(){'use strict';assert.sameValue(this,undefined);calls++;return false;});"
+                 "find.call([1],function(){'use strict';assert.sameValue(this,3);calls++;return false;},3);",
+                 'calls', '3', '0'),
+                ('sloppy-thisarg', "var boxed=Function('return typeof this===\"object\" && this.valueOf()===3;');"
+                 "var global=Function('return this===globalThis;');"
+                 "assert.sameValue(find.call([1],boxed,3)," + ('0' if indexed else '1') + ");"
+                 "var result=find.call([1],global);",
+                 'result', '0' if indexed else '1', absent),
+                ('callback-abrupt-identity', "var reason={},caught=false,trace='';try{find.call([1,2,3],function(value,index){trace+=index;throw reason;});}"
+                 "catch(e){assert.sameValue(e,reason);caught=true;}assert.sameValue(caught,true);",
+                 'trace', "'2'" if reverse else "'0'", "'012'"),
+                ('getter-abrupt-identity', "var a={length:3},reason={},caught=false,calls=0;"
+                 f"Object.defineProperty(a,'{first}',{{get:function(){{throw reason;}}}});"
+                 "try{find.call(a,function(){calls++;return false;});}catch(e){assert.sameValue(e,reason);caught=true;}assert.sameValue(caught,true);",
+                 'calls', '0', '1'),
+                ('live-getters', "var a={length:3},trace='';"
+                 f"Object.defineProperty(a,'{first}',{{get:function(){{trace+='G';return 7;}}}});"
+                 "find.call(a,function(value,index){trace+='C'+index;"
+                 f"if(index==={first}){{assert.sameValue(value,7);Object.defineProperty(a,'1',{{get:function(){{trace+='H';return 8;}}}});}}"
+                 "if(index===1)assert.sameValue(value,8);return false;});",
+                 'trace', "'GC2HC1C0'" if reverse else "'GC0HC1C2'", "''"),
+                ('generic-string', "var trace='',result=find.call('abc',function(value,index,object){"
+                 "assert.sameValue(typeof object,'object');assert.sameValue(object.length,3);trace+=index+value;return value==='b';});"
+                 "assert.sameValue(trace," + ("'2c1b'" if reverse else "'0a1b'") + ");",
+                 'result', '1' if indexed else "'b'", absent),
+                ('no-species', "var a=[4],reads=0;Object.defineProperty(a,'constructor',{get:function(){reads++;throw new Error('constructor');}});"
+                 "var result=find.call(a,function(){return true;});assert.sameValue(result," + ('0' if indexed else '4') + ");",
+                 'reads', '0', '1'),
+                ('property-metadata', f"verifyProperty(Array.prototype,'{method}',{{value:find,writable:true,enumerable:false,configurable:true}},{{restore:true}});"
+                 "verifyProperty(find,'length',{value:1,writable:false,enumerable:false,configurable:true},{restore:true});"
+                 f"verifyProperty(find,'name',{{value:'{method}',writable:false,enumerable:false,configurable:true}},{{restore:true}});"
+                 "assert.sameValue(Object.getOwnPropertyDescriptor(find,'prototype'),undefined);"
+                 "assert.throws(TypeError,function(){new find(function(){return true;});});",
+                 'find.length', '1', '2'),
+            ]
+            for mode in ('sloppy', 'strict'):
+                for name, setup, actual, good, bad in pairs:
+                    for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                        variants.append(('array-find-' + method + '-' + name + suffix,
                                          guard + setup + f'assert.sameValue({actual},{value});', expected, mode))
     outcomes = []
     identifier_controls = {}

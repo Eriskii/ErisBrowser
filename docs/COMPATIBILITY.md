@@ -1,5 +1,24 @@
 # Compatibility status
 
+[Array find methods](../tests/conformance/array-find.md) now support `find`,
+`findIndex`, `findLast` and `findLastIndex` on ordinary generic receivers.
+Their captured range includes holes and deleted indices, with live inherited
+property lookup in the required direction. A matching callback returns its
+previously read value or index; callback coercion, receiver and abrupt effects
+use the existing call path. All 504 frozen local variants and twelve controls
+pass.
+
+The [complete profile](../tests/conformance/test262-array-find.md) retains
+94 sources and 180 modes. Its final release records **140 passed, eight
+failed and 32 metadata unsupported**, with all 288 controls verified. It adds
+116 passes; the other 64 complete records are identical. The eight failures
+reach missing `splice` in upstream callback bodies. Proxy, typed/resizable
+arrays, general host receivers and complete `with`/unscopables remain gaps.
+Every older profile observation is unchanged, and the new baseline gate passes
+while retaining all failures and unsupported cases. Two initial lastIndexOf
+work-limit regressions were corrected by charging actual decimal-key digits;
+stronger property-lookup charges and all quotas remain in force.
+
 [Object integrity](../tests/conformance/object-integrity.md) now supports
 `Object.seal`, `Object.freeze`, `Object.isSealed` and `Object.isFrozen` on
 supported ECMAScript objects. Arrays retain holes and length flags; accessors
