@@ -1,0 +1,174 @@
+[
+  {
+    "name": "1.88.0-fmt",
+    "argv": [
+      "cargo",
+      "fmt",
+      "--",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.113,
+    "log": "1.88.0-fmt.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "1.88.0-test",
+    "argv": [
+      "cargo",
+      "test",
+      "--offline",
+      "--locked"
+    ],
+    "exit_code": 0,
+    "seconds": 1.614,
+    "log": "1.88.0-test.log",
+    "sha256": "67c88d61381abd421180fc4d5a194190dc5a42fad75edb8981f16be4318bf72b"
+  },
+  {
+    "name": "1.88.0-clippy",
+    "argv": [
+      "cargo",
+      "clippy",
+      "--offline",
+      "--locked",
+      "--all-targets",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit_code": 0,
+    "seconds": 0.414,
+    "log": "1.88.0-clippy.log",
+    "sha256": "535fe7288a0fbe4c1be1a95625870ba43958a18b3de6d3f5486631afdd3ea58f"
+  },
+  {
+    "name": "1.88.0-build",
+    "argv": [
+      "cargo",
+      "build",
+      "--offline",
+      "--locked",
+      "--bins"
+    ],
+    "exit_code": 0,
+    "seconds": 1.414,
+    "log": "1.88.0-build.log",
+    "sha256": "871d5abb1e512d68a7ccaade863fcaed50be73fa95df9497c6393f177c008062",
+    "binary": {
+      "path": "/tmp/eris-vulkan-alpha-candidate-2/eris-vulkan-raster-prototype-1.88.0",
+      "sha256": "c7d9cece1bb35e024032fb1a428abc2032aaed6d12691e10bc03ea91acf729ed",
+      "bytes": 18478880
+    }
+  },
+  {
+    "name": "1.98.0-fmt",
+    "argv": [
+      "cargo",
+      "fmt",
+      "--",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.113,
+    "log": "1.98.0-fmt.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "1.98.0-test",
+    "argv": [
+      "cargo",
+      "test",
+      "--offline",
+      "--locked"
+    ],
+    "exit_code": 0,
+    "seconds": 1.564,
+    "log": "1.98.0-test.log",
+    "sha256": "5133a8044c825ed86fd475db5d85a5f1a5d5c6839578b8c100e56d67b2e306a9"
+  },
+  {
+    "name": "1.98.0-clippy",
+    "argv": [
+      "cargo",
+      "clippy",
+      "--offline",
+      "--locked",
+      "--all-targets",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit_code": 0,
+    "seconds": 0.314,
+    "log": "1.98.0-clippy.log",
+    "sha256": "76823a02eefb30b4b4669f9522543922f688c23da51558ce8f59dac306228a45"
+  },
+  {
+    "name": "1.98.0-build",
+    "argv": [
+      "cargo",
+      "build",
+      "--offline",
+      "--locked",
+      "--bins"
+    ],
+    "exit_code": 0,
+    "seconds": 0.414,
+    "log": "1.98.0-build.log",
+    "sha256": "3b0968bff18d427364b520690245e56c9b0203f722f05bd0a0f4e3d81f1efc33",
+    "binary": {
+      "path": "/tmp/eris-vulkan-alpha-candidate-2/eris-vulkan-raster-prototype-1.98.0",
+      "sha256": "f160d5765d62a39b8bde7dc13a38926fdbfd8daf6526dd8bfe4bd879762091ad",
+      "bytes": 22279720
+    }
+  },
+  {
+    "name": "python",
+    "argv": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      ".",
+      "-p",
+      "test_*.py",
+      "-q"
+    ],
+    "exit_code": 0,
+    "seconds": 0.414,
+    "log": "python.log",
+    "sha256": "1441d04a6cc84808167d48b92b4c1c0f578347474ad2db4d9edd110ad089e15c"
+  },
+  {
+    "name": "wgsl-compile",
+    "argv": [
+      "/tmp/eris-vulkan-rustup/toolchains/1.98.0-x86_64-unknown-linux-gnu/bin/rustc",
+      "--edition=2024",
+      "/tmp/eris-vulkan-alpha-candidate-2/validate_wgsl.rs",
+      "--extern",
+      "naga=/tmp/eris-vulkan-raster-prototype/target-198/debug/deps/libnaga-214fba6b21bff5ad.rlib",
+      "-L",
+      "dependency=/tmp/eris-vulkan-raster-prototype/target-198/debug/deps",
+      "-C",
+      "link-arg=-Wl,--threads=1",
+      "-o",
+      "/tmp/eris-vulkan-alpha-candidate-2/validate_wgsl"
+    ],
+    "exit_code": 0,
+    "seconds": 0.163,
+    "log": "wgsl-compile.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "wgsl-validate",
+    "argv": [
+      "/tmp/eris-vulkan-alpha-candidate-2/validate_wgsl"
+    ],
+    "exit_code": 0,
+    "seconds": 0.007,
+    "log": "wgsl-validate.log",
+    "sha256": "d486a5902fb7c95570bea06037055abc224ed465bf36f284b4f4e961295f4db4"
+  }
+]

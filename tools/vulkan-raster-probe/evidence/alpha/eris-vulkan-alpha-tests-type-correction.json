@@ -1,0 +1,17 @@
+{
+  "format": "eris-vulkan-alpha-test-type-correction-v1",
+  "before": "f40fa9ad404a7597f8dc84d479c6eb075495ce181fea5f9eaa78d09378711f22",
+  "after": "d95493a6718c5c3ac82e14e5c5c0302e04eac3f4b401874985c617976991d993",
+  "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/tests.rs",
+  "failure_log": {
+    "path": "/tmp/eris-vulkan-alpha-candidate-1/1.88.0-test.log",
+    "sha256": "4d1d90ab0c56a14cfe40e0dfbd995e7f1a137abba9246ab2061e16ef8a2f1e29"
+  },
+  "delta": "Only channel closure parameter/return type and the two 255 masks explicitly use u32.",
+  "exact_three_line_only_delta_verified": true,
+  "literal_expectations_changed": false,
+  "formula_changed": false,
+  "rustfmt_and_owned_diff_check": true,
+  "tests_or_builds_run_by_agent": false,
+  "status": "Held and released for root candidate2 freeze."
+}

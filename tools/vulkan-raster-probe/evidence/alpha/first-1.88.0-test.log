@@ -1,0 +1,30 @@
+   Compiling eris-vulkan-raster-prototype v0.0.0 (/tmp/eris-vulkan-alpha-candidate-1/source)
+error[E0277]: no implementation for `u32 & i32`
+   --> src/tests.rs:308:51
+    |
+308 |                     let source = (color >> shift) & 255;
+    |                                                   ^ no implementation for `u32 & i32`
+    |
+    = help: the trait `BitAnd<i32>` is not implemented for `u32`
+    = help: the following other types implement trait `BitAnd<Rhs>`:
+              `&u32` implements `BitAnd<u32>`
+              `&u32` implements `BitAnd`
+              `u32` implements `BitAnd<&u32>`
+              `u32` implements `BitAnd`
+
+error[E0277]: no implementation for `u32 & i32`
+   --> src/tests.rs:309:57
+    |
+309 |                     let destination = (*pixel >> shift) & 255;
+    |                                                         ^ no implementation for `u32 & i32`
+    |
+    = help: the trait `BitAnd<i32>` is not implemented for `u32`
+    = help: the following other types implement trait `BitAnd<Rhs>`:
+              `&u32` implements `BitAnd<u32>`
+              `&u32` implements `BitAnd`
+              `u32` implements `BitAnd<&u32>`
+              `u32` implements `BitAnd`
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `eris-vulkan-raster-prototype` (lib test) due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...

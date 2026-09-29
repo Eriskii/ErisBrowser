@@ -7,9 +7,9 @@ unsupported modes and two ordinary hole-scan resource stops remain visible.
 All 40 older profiles and six selected local suites retain their complete
 observations. Resource outcomes prevent a new gate; the 33 established gates
 remain unchanged. Proxy, typed arrays, foreign realms, remaining Array methods
-and broader accounting remain ahead. The optional CPU-frame Vulkan presenter
-and standalone rectangle/image probe are unchanged; browser GPU rasterization
-and compositing remain open.
+and broader accounting remain ahead. That checkpoint left the optional
+CPU-frame Vulkan presenter and standalone raster probe unchanged; browser GPU
+rasterization and compositing remain open.
 
 [Array splice](../tests/conformance/array-splice.md) now streams live property
 operations with same-realm species, aliased results and ordered partial effects.
@@ -166,12 +166,16 @@ Acceptance work:
   performance result.
 
 The standalone [custom raster probe](../tools/vulkan-raster-probe/README.md)
-executes Eris WGSL shaders through Vulkan, with 21 exact offscreen fixtures on
-each of three host adapters (2,763,816 compared bytes). It rasterizes ordered
-opaque rectangles and nearest-neighbor images, including clip/fixed scopes,
-with original source colors and bounded scalar sampling tables. Source,
-metadata and target buffers share the unchanged 1 MiB explicit GPU limit.
-Browser integration, text, blending and compositing remain planned.
+executes Eris WGSL shaders through Vulkan, with **30 exact offscreen fixtures on
+each of three host adapters (2,764,860 compared bytes)**. It rasterizes ordered
+unrounded rectangles and nearest-neighbor images with integer source-over onto
+opaque RGB, including clip/fixed scopes and per-draw rounding. Nine independently
+frozen alpha fixtures join the unchanged 21 rectangle/image cases. Source,
+metadata and target buffers retain the 1 MiB explicit GPU limit, with unchanged
+work, command and scope caps. The [alpha evidence](../tools/vulkan-raster-probe/evidence/host-alpha.json)
+records 25 Rust tests per toolchain, ten Python tests and actual GPU readback.
+Browser integration, text, rounded coverage, group opacity, color conversion,
+production security and performance comparisons remain planned.
 The optional upload presenter continues to use CPU-painted frames. Production
 driver requirements and broader platform coverage remain undecided.
 

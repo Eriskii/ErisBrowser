@@ -1,0 +1,28 @@
+[
+  {
+    "name": "1.88.0-fmt",
+    "argv": [
+      "cargo",
+      "fmt",
+      "--",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.113,
+    "log": "1.88.0-fmt.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "1.88.0-test",
+    "argv": [
+      "cargo",
+      "test",
+      "--offline",
+      "--locked"
+    ],
+    "exit_code": 101,
+    "seconds": 0.614,
+    "log": "1.88.0-test.log",
+    "sha256": "4d1d90ab0c56a14cfe40e0dfbd995e7f1a137abba9246ab2061e16ef8a2f1e29"
+  }
+]

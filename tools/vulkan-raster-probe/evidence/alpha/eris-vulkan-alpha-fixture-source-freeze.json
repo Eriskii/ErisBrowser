@@ -1,0 +1,260 @@
+{
+  "format": "eris-vulkan-alpha-fixture-source-freeze-v1",
+  "status": "All nine fixture frame/source/command/pixel values and manual counters transcribed exactly; data-only independent source extraction passed.",
+  "inputs": [
+    {
+      "path": "/tmp/eris-vulkan-alpha-fixture-draft/fixtures.json",
+      "bytes": 43960,
+      "sha256": "a72c5dfc2331b61da90a4efc852592180eeee90021e8f267fab7dbe838aafe33"
+    },
+    {
+      "path": "/tmp/eris-vulkan-alpha-counter-freeze.json",
+      "bytes": 14014,
+      "sha256": "8bad259e2b0c7f2139a0089170279b928f6724c45b607a9ce6987ea748b3028f"
+    },
+    {
+      "path": "/tmp/eris-vulkan-alpha-oracle-review.json",
+      "bytes": 12776,
+      "sha256": "4cb885dade7c6ab7022f8b76cbd4c94bcd8f2f9c77718149dabcd9e733e22fb3"
+    }
+  ],
+  "source": {
+    "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/alpha_fixtures.rs",
+    "bytes": 25687,
+    "sha256": "4904499c2fc209083a3c928e575963cfe4a63a553dcc3bb3183e5fa9320708d5"
+  },
+  "transcriber": {
+    "path": "/tmp/eris-vulkan-alpha-transcribe.py",
+    "bytes": 12727,
+    "sha256": "4456d58ac2e1a237ea343f58611c17b21cefaa91b2d8ebb313d6469a9a05891a"
+  },
+  "independent_extractor": {
+    "path": "/tmp/eris-vulkan-alpha-transcription-check.py",
+    "bytes": 8245,
+    "sha256": "adceb937a85a54485fc887858756558ca6c74b0a570637585741e47e7fb7af52"
+  },
+  "checks": [
+    {
+      "name": "alpha-rectangle-six-boundaries",
+      "commands": 13,
+      "sources": 0,
+      "source_sha256": [],
+      "literal_pixels": 12,
+      "literal_pixel_sha256": "6235d00ccc9ebe197966fa33f5567290e532c7b0773c5ae1b8d009ff8c6fcba9",
+      "all_frame_and_command_f32_bits_equal": true
+    },
+    {
+      "name": "alpha-image-six-boundaries",
+      "commands": 2,
+      "sources": 1,
+      "source_sha256": [
+        "c8108aa1be41620aba71aed35a7bddc4fa7cbe5e671a2171cf6fba505d7025b6"
+      ],
+      "literal_pixels": 12,
+      "literal_pixel_sha256": "6235d00ccc9ebe197966fa33f5567290e532c7b0773c5ae1b8d009ff8c6fcba9",
+      "all_frame_and_command_f32_bits_equal": true
+    },
+    {
+      "name": "alpha-ordered-mixed-draws",
+      "commands": 10,
+      "sources": 3,
+      "source_sha256": [
+        "ee9c1470b119a6302d9d54ad4c65d8b5c4f65c6bf12d7db1630eb0181563f64c",
+        "b7d1b3a1104cc86b1cea310793cf777002db0517281d135a02de079b0ea87c23",
+        "1d89d17ddf37084f28b17459d47ac655f2f82929c7c537b5210e48fefb659aee"
+      ],
+      "literal_pixels": 4,
+      "literal_pixel_sha256": "de63a165775680aa0cd1789f8d2ec8e885e1a2b5a84416ceb747b167028a03bc",
+      "all_frame_and_command_f32_bits_equal": true
+    },
+    {
+      "name": "alpha-one-repeated-rounding",
+      "commands": 64,
+      "sources": 0,
+      "source_sha256": [],
+      "literal_pixels": 7,
+      "literal_pixel_sha256": "4928ef14e5ffe7d90ebe5c5018d48ae2f7ae03bffa074c0fdc2a6fd2c59ef6bf",
+      "all_frame_and_command_f32_bits_equal": true
+    },
+    {
+      "name": "alpha-subpixel-and-fractional-clip",
+      "commands": 6,
+      "sources": 1,
+      "source_sha256": [
+        "185768be7407732c96b285a363f4c0944d79f0313be2e493c1c9b3bb951ca4d8"
+      ],
+      "literal_pixels": 12,
+      "literal_pixel_sha256": "8c1a5a157d9981a39aede3227ea5692ea9e95a0f8b14e6c6a6ac6d91d8b05b9c",
+      "all_frame_and_command_f32_bits_equal": true
+    },
+    {
+      "name": "alpha-image-negative-fractional-original-origin",
+      "commands": 3,
+      "sources": 1,
+      "source_sha256": [
+        "49a8faa8ffb9c2a233175339702d90384ab761158b40154ee6aabd91ebe5a561"
+      ],
+      "literal_pixels": 15,
+      "literal_pixel_sha256": "931fd8c72ed95e497abd72c89f58c412300551d014825670d9ab87d5075126cf",
+      "all_frame_and_command_f32_bits_equal": true
+    },
+    {
+      "name": "alpha-fixed-reset-and-restoration",
+      "commands": 15,
+      "sources": 2,
+      "source_sha256": [
+        "ee9c1470b119a6302d9d54ad4c65d8b5c4f65c6bf12d7db1630eb0181563f64c",
+        "c8b022bf870c2a6d4485c309946f76cd83c98d9a7aeab440653d8c3d19d6cd47"
+      ],
+      "literal_pixels": 15,
+      "literal_pixel_sha256": "dace4579a50d3134a9188efa4e22ab59f4373c7bce0dcad9241c3ac91cf9b8ee",
+      "all_frame_and_command_f32_bits_equal": true
+    },
+    {
+      "name": "alpha-transparent-hidden-rgb",
+      "commands": 2,
+      "sources": 1,
+      "source_sha256": [
+        "c0c37552f47de67aadfe29bb0026454dd005f552e590fbdbf08027a4cf662876"
+      ],
+      "literal_pixels": 4,
+      "literal_pixel_sha256": "3e8d70339ea1aa50a27566a7fa863058028f884b9e21d9d0fa14832fdd27cf20",
+      "all_frame_and_command_f32_bits_equal": true
+    },
+    {
+      "name": "alpha-empty-clip-still-clears-opaque-target",
+      "commands": 4,
+      "sources": 1,
+      "source_sha256": [
+        "af1736078aea8960c0150e29221123a5f7e2849abedf69e99c33da954f26cf6e"
+      ],
+      "literal_pixels": 6,
+      "literal_pixel_sha256": "cd6d764aa7c7b3175857b955bea6c6051bc5bc893a22a3adfbad5cc78f170812",
+      "all_frame_and_command_f32_bits_equal": true
+    }
+  ],
+  "new_counter_tuples": [
+    [
+      "alpha-rectangle-six-boundaries",
+      6,
+      2,
+      12,
+      768,
+      3168,
+      48
+    ],
+    [
+      "alpha-image-six-boundaries",
+      6,
+      2,
+      3,
+      192,
+      944,
+      48
+    ],
+    [
+      "alpha-ordered-mixed-draws",
+      4,
+      1,
+      10,
+      640,
+      2644,
+      16
+    ],
+    [
+      "alpha-one-repeated-rounding",
+      7,
+      1,
+      65,
+      4160,
+      16696,
+      28
+    ],
+    [
+      "alpha-subpixel-and-fractional-clip",
+      4,
+      3,
+      4,
+      256,
+      1132,
+      48
+    ],
+    [
+      "alpha-image-negative-fractional-original-origin",
+      5,
+      3,
+      2,
+      128,
+      672,
+      60
+    ],
+    [
+      "alpha-fixed-reset-and-restoration",
+      5,
+      3,
+      6,
+      384,
+      1680,
+      60
+    ],
+    [
+      "alpha-transparent-hidden-rgb",
+      2,
+      2,
+      2,
+      128,
+      576,
+      16
+    ],
+    [
+      "alpha-empty-clip-still-clears-opaque-target",
+      3,
+      2,
+      1,
+      64,
+      304,
+      24
+    ]
+  ],
+  "totals": {
+    "fixtures": 9,
+    "pixels": 87,
+    "compared_bytes": 348,
+    "draws": 105,
+    "padded_invocations": 6720,
+    "sum_separate_fixture_buffer_bytes": 27816,
+    "largest_fixture_buffer_bytes": 16696
+  },
+  "original_21_fixture_sources_unchanged": {
+    "tools/vulkan-raster-probe/src/fixtures.rs": {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/fixtures.rs",
+      "bytes": 4785,
+      "sha256": "7779ecab36a587f2792acf258b28709b9b4606ece0976c48c0c04aa8e1a45ab8"
+    },
+    "tools/vulkan-raster-probe/src/image_fixtures.rs": {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/image_fixtures.rs",
+      "bytes": 19757,
+      "sha256": "d7fd6c1970f1bfad52021b0ae48401596d3124c5a7e29a1171a310d6d6f096ee"
+    }
+  },
+  "required_root_hooks": [
+    "pub mod alpha_fixtures in lib.rs",
+    "append alpha_fixtures::fixtures() through the existing ImageFixture execution route in main.rs"
+  ],
+  "public_api": "fixtures() -> Vec<image_fixtures::ImageFixture>; EXPECTED_COUNTERS: [ExpectedCounters; 9]",
+  "unit_tests_authored_not_executed": [
+    "alpha_fixture_inputs_and_literal_outputs_are_bounded",
+    "alpha_fixture_frozen_counter_arithmetic"
+  ],
+  "execution": {
+    "data_only_python_transcription_and_independent_extraction": true,
+    "rustfmt_one_owned_file": true,
+    "compiler": false,
+    "Rust_tests": false,
+    "planner": false,
+    "Canvas": false,
+    "engine": false,
+    "GPU": false
+  },
+  "ownership": "Only new tools/vulkan-raster-probe/src/alpha_fixtures.rs edited in repository. No hook, shader, protocol, docs, dependency or existing fixture edits."
+}

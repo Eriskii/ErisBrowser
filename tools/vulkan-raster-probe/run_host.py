@@ -50,6 +50,15 @@ EXPECTED_PASSES = [
     ("image-dispatch-tail-and-clear-border",320,240,2,153600,617160,307200),
     ("image-valid-empty-and-hidden",4,3,1,64,352,48),
     ("image-subnormal-origin-and-lost-extent",2,2,2,128,564,16),
+    ('alpha-rectangle-six-boundaries', 6, 2, 12, 768, 3168, 48),
+    ('alpha-image-six-boundaries', 6, 2, 3, 192, 944, 48),
+    ('alpha-ordered-mixed-draws', 4, 1, 10, 640, 2644, 16),
+    ('alpha-one-repeated-rounding', 7, 1, 65, 4160, 16696, 28),
+    ('alpha-subpixel-and-fractional-clip', 4, 3, 4, 256, 1132, 48),
+    ('alpha-image-negative-fractional-original-origin', 5, 3, 2, 128, 672, 60),
+    ('alpha-fixed-reset-and-restoration', 5, 3, 6, 384, 1680, 60),
+    ('alpha-transparent-hidden-rgb', 2, 2, 2, 128, 576, 16),
+    ('alpha-empty-clip-still-clears-opaque-target', 3, 2, 1, 64, 304, 24),
 ]
 def expected_lines():
     return [f"PASS {name} {w}x{h} draws={draws} invocations={work} gpu_buffers={buffers} compared_bytes={size} exact=true"
@@ -277,7 +286,7 @@ def run_host(binary: Path, output_dir: Path, loader_directory: Path | None = Non
     summary = {
         "schema": 1,
         "binary_sha256": binary_hash,
-        "scope": "offscreen custom WGSL opaque rectangle and nearest-neighbor image prototype; no native surface or performance claim",
+        "scope": "offscreen custom WGSL source-over rectangle and nearest-neighbor image prototype; no native surface or performance claim",
         "binary": os.path.relpath(binary.resolve(), ROOT),
         "loader_override": loader_directory is not None,
         "timeout_seconds": timeout,

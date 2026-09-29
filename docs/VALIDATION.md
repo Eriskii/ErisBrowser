@@ -1,5 +1,38 @@
 # Validation record
 
+## Standalone Vulkan source-alpha rasterization
+
+The [custom raster probe](../tools/vulkan-raster-probe/README.md) now blends
+unrounded rectangles and nearest-neighbor source images into an opaque RGB
+target using Canvas's integer source-over rule. The [alpha host record](../tools/vulkan-raster-probe/evidence/host-alpha.json)
+preserves actual offscreen Vulkan results: **all 30 fixtures pass on each of
+three adapters**, comparing **921,620 bytes per adapter / 2,764,860 total**.
+NVIDIA RTX 4070 SUPER (595.99.02), AMD RADV (Mesa 26.2.3) and llvmpipe
+(LLVM 21.1.8/Mesa 26.2.3) each exited normally with empty stderr, as did enumeration.
+The original 21 fixture definitions, expected pixels and protocol tuples remain
+unchanged; their earlier rectangle/image host records retain historical attribution.
+
+Nine independently frozen literal targets add alpha 0/1/127/128/254/255,
+ordered accumulation, fractional clips, fixed restoration and transparent hidden
+RGB. Valid alpha-zero rectangles are validated then omitted; visible images
+retain dispatch/source storage even for zero-alpha samples. Per-draw integer
+rounding and opaque clear are preserved. Translucent rectangles enforce both
+half-open clip edges; opaque fast-path coverage is unchanged. No oracle, work,
+scope, source or buffer limit changed after execution.
+
+Both **Rust 1.88.0 and 1.98.0** pass **25 tests**, formatting, strict all-target
+Clippy and builds. All **ten Python tests** pass, and both shaders pass offline
+**Naga 30.0.1** validation. The first alpha candidate's test-helper compile failure
+is retained; explicit `u32` types on three lines resolved it without changing
+production code, expectations or limits. Source and binary identities were
+checked before and after the actual GPU run.
+
+This is an isolated probe checkpoint. The browser still paints with the CPU,
+with an optional Vulkan upload presenter; software remains the default and
+headless path. Browser GPU integration, text, rounded coverage, group opacity,
+color conversion, production security and a performance comparison remain open.
+No new browser conformance or CPU pixel-reference execution is claimed here.
+
 ## Array concat, live spreadability and aliased results
 
 The [concat evidence](../tests/conformance/array-concat.json) compares against
@@ -49,9 +82,11 @@ write. Same-realm species can alias any input; prior effects remain observable
 after failure. Shared helper charges and constant-size loop state preserve the
 existing limits. Public huge hole walks are resource-policy checks; seeded
 private tests cover the later Array u32 length boundary. General accounting,
-unsupported prerequisites and broader compatibility remain open. New remote CI
-is pending publication; this checkpoint adds no GPU execution, performance
-comparison or production-security claim.
+unsupported prerequisites and broader compatibility remain open. Published
+concat commit `f65c666ffd22ed80759445e3af13531384b53f7c` passed all seven jobs in
+[CI run 36570342566](https://github.com/Eriskii/ErisBrowser/actions/runs/36570342566).
+That checkpoint added no GPU execution, performance comparison or
+production-security claim.
 
 ## Generic Array splice and same-realm species
 

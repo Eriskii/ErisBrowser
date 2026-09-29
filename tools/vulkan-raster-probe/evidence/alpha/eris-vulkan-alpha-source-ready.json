@@ -1,0 +1,66 @@
+{
+  "format": "eris-vulkan-source-alpha-source-ready-v1",
+  "created_utc": "2026-09-29T12:47:21.968263+00:00",
+  "status": "Held source for root consolidated validation; not built or executed",
+  "files": [
+    {
+      "path": "tools/vulkan-raster-probe/src/lib.rs",
+      "bytes": 17619,
+      "sha256": "1b0eaa97320f254e96e1df4907f4045c186b3faf1c1f50687c1b9279428437a3"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/rect.wgsl",
+      "bytes": 1593,
+      "sha256": "b0f67e88f3b5630cb98c8406ee20df6e8890b3ca42410451f105f64fb2a68afa"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/image.wgsl",
+      "bytes": 2959,
+      "sha256": "ede39857bf369d5a33f5503e7ae96bd04bd5ca06a11937f28fa97793011b3446"
+    }
+  ],
+  "planning_inputs": [
+    {
+      "path": "/tmp/eris-vulkan-alpha-next-notes.md",
+      "bytes": 3152,
+      "sha256": "e1f15266a973c1f819e8990ca96bfc5f8195e90f655c2e4a3030fe48169b662a"
+    },
+    {
+      "path": "/tmp/eris-vulkan-alpha-counter-freeze.json",
+      "bytes": 14014,
+      "sha256": "8bad259e2b0c7f2139a0089170279b928f6724c45b607a9ce6987ea748b3028f"
+    },
+    {
+      "path": "/tmp/eris-vulkan-alpha-oracle-review.json",
+      "bytes": 12776,
+      "sha256": "4cb885dade7c6ab7022f8b76cbd4c94bcd8f2f9c77718149dabcd9e733e22fb3"
+    }
+  ],
+  "changes": [
+    "Retain source alpha in existing Draw.color and image source words as 0xAARRGGBB; the reserved uniform word and all layouts/buffer strides remain unchanged.",
+    "Explicitly set clear source alpha to 255; shader clear replaces RGB without reading the old target and masks the high byte.",
+    "Validate rectangle geometry and zero radius before omitting alpha-zero rectangles; full scope-stream validation continues.",
+    "Use existing image upper-clip origin rules for nonzero translucent rectangles; opaque rectangle coverage remains unchanged.",
+    "Remove source alpha scans/rejection entirely. Structurally validate every supplied image; keep visible transparent image dispatches and pack all supplied words once whenever an image arena is needed.",
+    "Both shaders mask opaque writes, skip zero-alpha samples and compute (s*a+d*(255-a)+127)/255 per channel for each ordered pass; max numerator 65152 fits u32.",
+    "Register layout-owned alpha_fixtures module at root request."
+  ],
+  "limits": {
+    "all_published_constants_unchanged": true,
+    "constant_count": 11,
+    "new_buffers": false,
+    "new_source_scans": false,
+    "new_CPU_compositing": false,
+    "browser_integration": false,
+    "preserves_old_opaque_target_behavior": "By unchanged coverage/order and masking formerly opaque packed source words; external byte checks remain root-owned and pending."
+  },
+  "compatibility_note": "Internal opaque Draw.color and image words now include alpha 255. Test-only CPU interpreters/source-word assertions must decode/mask/blend them; original opaque expected output words remain unchanged. Public accessors and Draw fields are unchanged.",
+  "validation": {
+    "scoped_diff_check": "passed",
+    "rustfmt_or_compiler_run": false,
+    "planner_Canvas_test_run": false,
+    "GPU_run": false,
+    "review": "Self static source/Canvas algorithm inspection only; consolidated compiler/unit/shader/GPU checks remain pending with root."
+  },
+  "ownership": "Only the three listed implementation paths edited. Tests, fixtures, main, protocol and docs not edited."
+}

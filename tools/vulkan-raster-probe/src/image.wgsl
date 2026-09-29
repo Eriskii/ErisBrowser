@@ -1,4 +1,4 @@
-// Source colors and exact scalar sampling indices are immutable CPU inputs.
+// Source 0xAARRGGBB colors and exact sampling indices are immutable CPU inputs.
 // Each invocation gathers one original source pixel and writes one output pixel.
 // Display-list ordering is supplied by separate compute passes, not a barrier here.
 struct Params {
@@ -40,5 +40,19 @@ fn image(@builtin(global_invocation_id) id: vec3<u32>) {
     // The exact nonzero source dimensions above prove this product cannot wrap.
     let source_index = sy * p.source.y + sx;
     if (source_index >= p.source.w) { return; }
-    pixels[output_index] = inputs[p.source.x + source_index];
+    let source_color = inputs[p.source.x + source_index];
+    let alpha = source_color >> 24u;
+    if (alpha == 0u) { return; }
+    if (alpha == 255u) {
+        pixels[output_index] = source_color & 0x00ffffffu;
+        return;
+    }
+    let destination = pixels[output_index];
+    let inverse = 255u - alpha;
+    // Match Canvas::blend, rounding each ordered pass separately. Each
+    // channel numerator is at most 255*255+127, well within u32.
+    let r = (((source_color >> 16u) & 255u) * alpha + ((destination >> 16u) & 255u) * inverse + 127u) / 255u;
+    let g = (((source_color >> 8u) & 255u) * alpha + ((destination >> 8u) & 255u) * inverse + 127u) / 255u;
+    let b = ((source_color & 255u) * alpha + (destination & 255u) * inverse + 127u) / 255u;
+    pixels[output_index] = (r << 16u) | (g << 8u) | b;
 }

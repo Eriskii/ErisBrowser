@@ -1,0 +1,197 @@
+{
+  "schema": 1,
+  "scope": "Custom standalone Vulkan source-over unrounded rectangles and nearest-neighbor RGBA images on an opaque RGB target.",
+  "source_parent": "f65c666ffd22ed80759445e3af13531384b53f7c",
+  "source_freeze": {
+    "path": "alpha/freeze.json",
+    "sha256": "46a17aef0c17998274d3d7ef06f6680c4e34091bba2943bada0a23e4c7b91362"
+  },
+  "host": {
+    "path": "alpha/host-results.json",
+    "sha256": "b427eb4dd12d0b8308bb373d955f3a81120a3b7170c08503f5a972864aaec4f2"
+  },
+  "binary_sha256": "f160d5765d62a39b8bde7dc13a38926fdbfd8daf6526dd8bfe4bd879762091ad",
+  "results": {
+    "adapters": 3,
+    "fixtures_per_adapter": 30,
+    "compared_bytes_per_adapter": 921620,
+    "total_compared_bytes": 2764860,
+    "all_exact": true,
+    "all_four_processes_exit_zero": true,
+    "all_stderr_empty": true
+  },
+  "offline": {
+    "path": "alpha/offline-checks.json",
+    "rust_toolchains": [
+      "1.88.0",
+      "1.98.0"
+    ],
+    "rust_tests_per_toolchain": 25,
+    "failed_or_ignored": 0,
+    "python_tests": 10,
+    "formatting": true,
+    "strict_all_target_clippy": true,
+    "both_builds": true,
+    "naga_version": "30.0.1",
+    "shaders_parsed_and_validated": 2
+  },
+  "preparation": {
+    "fixture_oracle": "alpha-fixture-oracle.json",
+    "protocol_oracle": "alpha-protocol.json",
+    "independent_oracle_review": "alpha-oracle-review.json",
+    "original_21_fixture_sources_and_protocol_tuples_unchanged": true,
+    "first_candidate": "Test helper closure failed Rust type inference for two u32 bit masks. The retained correction adds explicit u32 types on three lines only; shader/planner/fixture bytes and expected outcomes did not change.",
+    "failed_log": "alpha/first-1.88.0-test.log",
+    "candidate2_only_delta": "alpha/eris-vulkan-alpha-tests-type-correction.json",
+    "retries_of_GPU_execution": 0
+  },
+  "behavior": [
+    "Integer source-over uses (src*a+dst*(255-a)+127)/255 independently per channel and ordered draw.",
+    "Clear is an unconditional alpha255 dispatch; target high bytes stay zero.",
+    "Zero-alpha rectangles validate geometry/radius before draw omission; entire typed scopes and all supplied sources still validate.",
+    "Reached image dispatches retain source/LUT/storage/work charges even when every source alpha is zero.",
+    "Opaque rectangle coverage is preserved; translucent rectangle upper clip edges follow Canvas per-pixel containment.",
+    "No buffer/work/source/scope/time quota increased; output has no COPY_DST usage."
+  ],
+  "limits": [
+    "No browser GPU rasterizer integration; the browser still CPU paints with optional Vulkan upload/presentation.",
+    "No opacity groups, transparent destination surfaces, text/glyphs, rounded edges or color-space conversion.",
+    "No Chromium-relative performance measurement, broad web conformance, driver sandbox or general security claim.",
+    "Counts cover explicit fixture buffer allocations and bounded probe work; opaque driver/staging/allocator resources are not proven globally bounded."
+  ],
+  "environment": {
+    "RUSTUP_HOME": "/tmp/eris-vulkan-rustup",
+    "CARGO_HOME": "/tmp/eris-vulkan-spike/cargo-home",
+    "note": "Selected per-command RUSTUP_TOOLCHAIN is named in offline records; dependency resolution stays locked/offline."
+  },
+  "published_artifacts": {
+    "adapter-0.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "adapter-0.stdout.log": {
+      "bytes": 3854,
+      "sha256": "a26a8bda066a19373385f55faa40146200a6dff8c55a6c76545999094415d68c"
+    },
+    "adapter-1.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "adapter-1.stdout.log": {
+      "bytes": 3854,
+      "sha256": "fa07469bc41234b92472e7ec4053d45fba836215bee3b393353acc99bf184472"
+    },
+    "adapter-2.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "adapter-2.stdout.log": {
+      "bytes": 3854,
+      "sha256": "b9144976b3f73a8d29de8b85012c2db291f3d6981ce03851061f8981be26e10f"
+    },
+    "enumeration.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "enumeration.stdout.log": {
+      "bytes": 465,
+      "sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    "host-results.json": {
+      "bytes": 14470,
+      "sha256": "b427eb4dd12d0b8308bb373d955f3a81120a3b7170c08503f5a972864aaec4f2"
+    },
+    "freeze.json": {
+      "bytes": 1976,
+      "sha256": "46a17aef0c17998274d3d7ef06f6680c4e34091bba2943bada0a23e4c7b91362"
+    },
+    "offline-checks.json": {
+      "bytes": 4104,
+      "sha256": "36b6a6390d64203cc04031b6f05c985ecccafce5f2794c14eee6ff90a6e6d4ba"
+    },
+    "host-start.json": {
+      "bytes": 1019,
+      "sha256": "a99d4b0a313f80814c4d8a94b718b1adaecca8447d974d1e574549c4f040b910"
+    },
+    "host-result.json": {
+      "bytes": 1203,
+      "sha256": "b9197bf63b48b86b7bfb57f136cce3155529a8624f129535c7bf5d4ffbbecbbe"
+    },
+    "host-supervisor.log": {
+      "bytes": 111,
+      "sha256": "93f00fc7ca01833075e1c19a45df4860f5f29d9dcab04306e48031ba7e9ea6c8"
+    },
+    "validate_wgsl.rs": {
+      "bytes": 1170,
+      "sha256": "046b0579342da64d89eb62f9c8709e6b18810c135e4d82f8d1fbba8c46588e7d"
+    },
+    "1.88.0-build.log": {
+      "bytes": 153,
+      "sha256": "871d5abb1e512d68a7ccaade863fcaed50be73fa95df9497c6393f177c008062"
+    },
+    "1.88.0-clippy.log": {
+      "bytes": 153,
+      "sha256": "535fe7288a0fbe4c1be1a95625870ba43958a18b3de6d3f5486631afdd3ea58f"
+    },
+    "1.88.0-fmt.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "1.88.0-test.log": {
+      "bytes": 2886,
+      "sha256": "67c88d61381abd421180fc4d5a194190dc5a42fad75edb8981f16be4318bf72b"
+    },
+    "1.98.0-build.log": {
+      "bytes": 153,
+      "sha256": "3b0968bff18d427364b520690245e56c9b0203f722f05bd0a0f4e3d81f1efc33"
+    },
+    "1.98.0-clippy.log": {
+      "bytes": 153,
+      "sha256": "76823a02eefb30b4b4669f9522543922f688c23da51558ce8f59dac306228a45"
+    },
+    "1.98.0-fmt.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "1.98.0-test.log": {
+      "bytes": 2884,
+      "sha256": "5133a8044c825ed86fd475db5d85a5f1a5d5c6839578b8c100e56d67b2e306a9"
+    },
+    "python.log": {
+      "bytes": 98,
+      "sha256": "1441d04a6cc84808167d48b92b4c1c0f578347474ad2db4d9edd110ad089e15c"
+    },
+    "wgsl-compile.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "wgsl-validate.log": {
+      "bytes": 279,
+      "sha256": "d486a5902fb7c95570bea06037055abc224ed465bf36f284b4f4e961295f4db4"
+    },
+    "first-freeze.json": {
+      "bytes": 1976,
+      "sha256": "329dd11a7e151586e610aeef71f3922688100828322cc5fc24dd494bd1b963bf"
+    },
+    "first-offline-checks.json": {
+      "bytes": 544,
+      "sha256": "1e29cb718fad333460b0ed605d0698a42c0927eabd35cb88b88bc01b94601773"
+    },
+    "first-1.88.0-test.log": {
+      "bytes": 1424,
+      "sha256": "4d1d90ab0c56a14cfe40e0dfbd995e7f1a137abba9246ab2061e16ef8a2f1e29"
+    },
+    "eris-vulkan-alpha-fixture-source-freeze.json": {
+      "bytes": 7745,
+      "sha256": "f5764d276d5a64c4f6b025d72f5b6788cf6ba7ee187aaa03dba0dee073d59caf"
+    },
+    "eris-vulkan-alpha-source-ready.json": {
+      "bytes": 3386,
+      "sha256": "747e1810836844e276fbea7fe3ae7b1da4b42f902b21aedb4f47abb0c99849c1"
+    },
+    "eris-vulkan-alpha-tests-type-correction.json": {
+      "bytes": 857,
+      "sha256": "2f12b8d28e761a2501908df905ba14002ea78e845355c24c7868dd43c349f12f"
+    }
+  }
+}

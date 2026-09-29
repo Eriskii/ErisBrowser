@@ -88,6 +88,12 @@ pub fn rect(x: f32, y: f32, width: f32, height: f32, color: u32) -> Command {
         radius: 0.0,
     }
 }
+fn packed_rgba(rgba: [u8; 4]) -> u32 {
+    (u32::from(rgba[3]) << 24)
+        | (u32::from(rgba[0]) << 16)
+        | (u32::from(rgba[1]) << 8)
+        | u32::from(rgba[2])
+}
 #[derive(Clone, Copy, Debug)]
 pub struct Frame {
     pub width: u32,
@@ -135,7 +141,7 @@ pub struct Draw {
     y: u32,
     width: u32,
     height: u32,
-    color: u32,
+    color: u32, // source 0xAARRGGBB, including the opaque clear
     image: Option<ImageParameters>,
 }
 impl Draw {
@@ -232,21 +238,9 @@ fn source_pixels(sources: &[SourceImage<'_>]) -> Result<usize> {
             return Err("source byte budget".into());
         }
     }
-    // Every supplied source, including unused/hidden sources, is checked once.
-    for source in sources {
-        if source
-            .rgba
-            .as_chunks::<4>()
-            .0
-            .iter()
-            .any(|pixel| pixel[3] != 255)
-        {
-            return Err("only opaque source images are supported".into());
-        }
-    }
     Ok(total as usize / 4)
 }
-fn coverage(rect: Rect, clip: Rect, frame: Frame, image: bool) -> Option<(u32, u32, u32, u32)> {
+fn coverage(rect: Rect, clip: Rect, frame: Frame, blend: bool) -> Option<(u32, u32, u32, u32)> {
     if rect.width <= 0.0 || rect.height <= 0.0 {
         return None;
     }
@@ -259,9 +253,9 @@ fn coverage(rect: Rect, clip: Rect, frame: Frame, image: bool) -> Option<(u32, u
     let y0 = visible.y.floor().max(clip.y.ceil()).max(0.0) as u32;
     let mut x1 = (visible.x + visible.width).ceil().min(frame.width as f32);
     let mut y1 = (visible.y + visible.height).ceil().min(frame.height as f32);
-    if image {
-        // Canvas::image's blend() tests half-open integer-origin containment,
-        // including both upper clip edges, after its own floor/ceil loop bounds.
+    if blend {
+        // Images and translucent rectangles use Canvas::blend's half-open
+        // integer-origin containment after their own floor/ceil loop bounds.
         x1 = x1.min((clip.x + clip.width).ceil());
         y1 = y1.min((clip.y + clip.height).ceil());
     }
@@ -375,7 +369,8 @@ pub fn plan_with_images(
         y: 0,
         width: frame.width,
         height: frame.height,
-        color: frame.clear,
+        // Clear uses the rectangle shader but must always replace the target.
+        color: 0xff00_0000 | frame.clear,
         image: None,
     };
     let mut pending = reserved(commands.len() + 1)?;
@@ -431,14 +426,13 @@ pub fn plan_with_images(
             }
             Command::Rect { rect, rgba, radius } => {
                 rect.validate()?;
-                if rgba[3] != 255 || radius != 0.0 {
-                    return Err("only opaque unrounded rectangles are supported".into());
+                if radius != 0.0 {
+                    return Err("only unrounded rectangles are supported".into());
                 }
-                (
-                    rect.translated(offset),
-                    (u32::from(rgba[0]) << 16) | (u32::from(rgba[1]) << 8) | u32::from(rgba[2]),
-                    None,
-                )
+                if rgba[3] == 0 {
+                    continue;
+                }
+                (rect.translated(offset), packed_rgba(rgba), None)
             }
             Command::Image { rect, source } => {
                 rect.validate()?;
@@ -450,7 +444,8 @@ pub fn plan_with_images(
                 (rect, 0, Some(ImageDraft { rect, source }))
             }
         };
-        let Some((x, y, width, height)) = coverage(rect, clip, frame, image.is_some()) else {
+        let blend = image.is_some() || color >> 24 != 255;
+        let Some((x, y, width, height)) = coverage(rect, clip, frame, blend) else {
             continue;
         };
         let draw = Draw {
@@ -501,17 +496,15 @@ pub fn plan_with_images(
         return Err("GPU buffer budget".into());
     }
     // Allocation/scanning below has already been bounded by the complete plan.
-    // A source gets one alpha pass above and, only when needed, one packing pass.
+    // Alpha never triggers a CPU scan or draw suppression. If any image is
+    // visible, all supplied source words get exactly one packing pass.
     let mut input = reserved(arena_bytes)?;
     let mut bases = [0u32; MAX_SOURCE_ENTRIES];
     if has_images {
         for (index, source) in sources.iter().enumerate() {
             bases[index] = (input.len() / 4) as u32;
             for rgba in source.rgba.as_chunks::<4>().0 {
-                word(
-                    &mut input,
-                    (u32::from(rgba[0]) << 16) | (u32::from(rgba[1]) << 8) | u32::from(rgba[2]),
-                );
+                word(&mut input, packed_rgba(*rgba));
             }
         }
     }
@@ -561,6 +554,7 @@ pub fn plan_with_images(
     })
 }
 
+pub mod alpha_fixtures;
 pub mod fixtures;
 pub mod image_fixtures;
 #[cfg(test)]

@@ -1,7 +1,8 @@
 #![forbid(unsafe_code)]
 
 use eris_vulkan_raster_prototype::{
-    DrawKind, MAX_GPU_BUFFER_BYTES, PARAM_STRIDE, Plan, Result, fixtures, image_fixtures,
+    DrawKind, MAX_GPU_BUFFER_BYTES, PARAM_STRIDE, Plan, Result, alpha_fixtures, fixtures,
+    image_fixtures,
 };
 use std::{
     future::Future,
@@ -162,11 +163,11 @@ fn raster(
     });
     for (index, draw) in p.draws().iter().enumerate() {
         deadline.remaining()?;
-        // Separate pass boundary for every draw; storage WAW transitions are
+        // Separate pass boundary for every draw; storage read/write transitions are
         // tracked/barriered by wgpu-core. Never dispatch overlapping writers in
         // one dispatch or rely on a workgroup barrier for cross-dispatch order.
         let mut pass = encoder.begin_compute_pass(&wgpu::ComputePassDescriptor {
-            label: Some("one ordered opaque draw"),
+            label: Some("one ordered source-over draw"),
             timestamp_writes: None,
         });
         let (pipeline, draw_group) = match draw.kind() {
@@ -241,7 +242,8 @@ fn run() -> Result<()> {
     };
     // Reject the entire CPU-planned input set before any Vulkan operation.
     let fixtures = fixtures::fixtures();
-    let images = image_fixtures::fixtures();
+    let mut images = image_fixtures::fixtures();
+    images.extend(alpha_fixtures::fixtures());
     let plans = fixtures
         .iter()
         .map(|f| Ok((f.name, f.expected.as_slice(), f.plan()?)))
@@ -284,7 +286,7 @@ fn run() -> Result<()> {
     let adapter = adapters.get(index).ok_or("adapter outside inventory")?;
     let (device, queue) = deadline
         .wait(adapter.request_device(&wgpu::DeviceDescriptor {
-            label: Some("bounded custom opaque rectangle and image experiment"),
+            label: Some("bounded custom rectangle and image blending experiment"),
             required_features: wgpu::Features::empty(),
             required_limits: wgpu::Limits::downlevel_defaults(),
             memory_hints: wgpu::MemoryHints::MemoryUsage,
@@ -329,7 +331,7 @@ fn run() -> Result<()> {
         source: wgpu::ShaderSource::Wgsl(include_str!("rect.wgsl").into()),
     });
     let pipeline = device.create_compute_pipeline(&wgpu::ComputePipelineDescriptor {
-        label: Some("opaque integer coverage"),
+        label: Some("integer coverage and source-over blending"),
         layout: Some(&pipeline_layout),
         module: &module,
         entry_point: Some("rectangle"),
@@ -377,11 +379,11 @@ fn run() -> Result<()> {
         immediate_size: 0,
     });
     let image_module = device.create_shader_module(wgpu::ShaderModuleDescriptor {
-        label: Some("custom WGSL opaque image rasterizer"),
+        label: Some("custom WGSL source-over image rasterizer"),
         source: wgpu::ShaderSource::Wgsl(include_str!("image.wgsl").into()),
     });
     let image_pipeline = device.create_compute_pipeline(&wgpu::ComputePipelineDescriptor {
-        label: Some("opaque integer nearest-neighbor gathering"),
+        label: Some("integer nearest-neighbor gathering and blending"),
         layout: Some(&image_pipeline_layout),
         module: &image_module,
         entry_point: Some("image"),

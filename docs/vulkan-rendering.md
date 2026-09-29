@@ -2,8 +2,8 @@
 
 Status: an **optional Linux Vulkan upload presenter** is implemented. Software
 remains the default and the only headless path. Both paths use Eris's custom CPU
-rasterizer. A standalone custom GPU probe passes rectangle/image fixtures;
-browser integration of those shaders and compositing remain future work.
+rasterizer. A standalone custom GPU probe passes rectangle/image source-alpha
+fixtures over opaque RGB; browser integration and group compositing remain future work.
 No GPU speedup or Chromium performance result is established. Earlier isolated
 experiments and their failed compositor comparisons remain recorded below.
 
@@ -268,14 +268,24 @@ do not establish recovery from a real driver hang.
 ## Milestone B: custom GPU rasterization
 
 The isolated [raster probe](../tools/vulkan-raster-probe/README.md) executes custom
-WGSL compute shaders for bounded, ordered opaque rectangles and nearest-neighbor
-images. Its [image host evidence](../tools/vulkan-raster-probe/evidence/host-images.json)
-records 21 exact offscreen fixtures per NVIDIA, AMD and software Vulkan adapter,
-totaling 2,763,816 compared bytes. The original seven rectangle fixtures and
-[earlier evidence](../tools/vulkan-raster-probe/evidence/host-raster.json) are
-preserved. Fourteen independently specified image fixtures cover scaling,
-original-origin sampling after clipping, fractional/ULP/subnormal geometry,
-fixed scopes, source reuse, draw order and dispatch tails.
+WGSL compute shaders for ordered unrounded rectangles and nearest-neighbor
+images with source alpha over opaque RGB. Its [alpha host evidence](../tools/vulkan-raster-probe/evidence/host-alpha.json)
+records **30 exact offscreen fixtures per NVIDIA, AMD and software Vulkan adapter,
+totaling 2,764,860 compared bytes**. All four processes, including enumeration,
+exited normally with empty stderr. The original seven rectangle and fourteen
+image fixture definitions and protocol tuples are unchanged. Their
+[rectangle](../tools/vulkan-raster-probe/evidence/host-raster.json) and
+[image](../tools/vulkan-raster-probe/evidence/host-images.json) evidence retain
+their original source/binary attribution.
+
+Nine new literal targets cover alpha 0/1/127/128/254/255, draw order, repeated
+rounding, clip/fixed behavior and transparent hidden RGB. Each ordered pass uses
+Canvas's integer source-over formula, with a zero target high byte. Valid
+alpha-zero rectangles are validated then omitted; transparent image samples
+retain the planned dispatch and skip their GPU store. Clear stays unconditional
+and opaque. Translucent rectangles enforce both half-open clip edges, while
+opaque rectangles retain the prior fast-path coverage. There is no CPU alpha
+scan, transparent-image suppression or color-space conversion.
 
 The GPU receives original source colors, metadata and separable sampling tables
 that preserve Canvas's scalar f32 operation order. Custom shaders perform the
@@ -283,13 +293,18 @@ clear and all target writes; the target is never uploaded. Plans own immutable
 data, validate every supplied source, and retain the existing 1 MiB explicit
 GPU-buffer and four-million-invocation limits. Those bounds exclude driver and
 upload staging allocations. This remains a standalone prototype with its own
-manifest and lockfile. Browser integration and performance measurement remain
-open, and the normal browser still uses the CPU rasterizer.
+manifest and lockfile. Both Rust 1.88 and 1.98 pass 25 tests, formatting, strict
+Clippy and builds; ten Python tests and both offline Naga shader checks pass.
+The first candidate's test-helper type-inference failure is retained; only
+explicit `u32` types on three lines changed before the successful build. Browser
+integration and performance measurement remain open, and the normal browser
+still uses the CPU rasterizer.
 
 Add a separate renderer entry that accepts the existing validated display list,
 images, viewport clip and document/fixed offsets. Initially accept a coherent
-subset: opaque, unrounded rectangles; opaque nearest-neighbor images; lines
-with the existing rectangle interpretation; and balanced clip/fixed scopes.
+subset: unrounded rectangles and nearest-neighbor images with source-over onto
+opaque RGB; lines with the existing rectangle interpretation; and balanced
+clip/fixed scopes. This browser integration remains to be implemented and tested.
 Resolve scopes and clipped bounds with bounded CPU work, then execute custom
 GPU kernels or draws in display-list order. Overlapping writes must be ordered;
 a single unordered dispatch over primitives would be incorrect.
@@ -301,7 +316,7 @@ rectangle/image pages; text-heavy pages still use software. Report which path
 actually rendered each measured frame.
 
 Subsequent bounded slices add existing CPU-generated glyph masks as a bounded
-atlas, rounded coverage, translucent primitives and group opacity. Reusing
+atlas, rounded coverage and group opacity. Reusing
 `ab_glyph` masks preserves the custom text-layout path; it does not delegate
 HTML/CSS rendering to another engine. Alpha groups need isolated transparent
 targets, nested composition, fixed-descendant clip behavior and deferred

@@ -1,0 +1,24 @@
+{
+  "utc": "2026-09-29T12:52:18.256499+00:00",
+  "command": [
+    "python3",
+    "/tmp/eris-vulkan-alpha-candidate-2/source/run_host.py",
+    "--allow-experimental-gpu",
+    "--binary",
+    "/tmp/eris-vulkan-alpha-candidate-2/eris-vulkan-raster-prototype-1.98.0",
+    "--output-dir",
+    "/tmp/eris-vulkan-alpha-candidate-2/host-run-1",
+    "--loader-directory",
+    "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib"
+  ],
+  "binary_sha256": "f160d5765d62a39b8bde7dc13a38926fdbfd8daf6526dd8bfe4bd879762091ad",
+  "loader_resolved": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib/libvulkan.so.1.4.357",
+  "loader_sha256": "c75ff661f583ea7308bc5526321f6d6c0527a12ec9cd708dfb21323ddbb297ba",
+  "freeze_sha256": "46a17aef0c17998274d3d7ef06f6680c4e34091bba2943bada0a23e4c7b91362",
+  "offline_checks_sha256": "36b6a6390d64203cc04031b6f05c985ecccafce5f2794c14eee6ff90a6e6d4ba",
+  "scope": "Actual offscreen Vulkan alpha rendering; no browser/native surface/performance claim",
+  "exit_code": 0,
+  "elapsed_seconds": 0.8457582030678168,
+  "source_after_exact": true,
+  "supervisor_log_sha256": "93f00fc7ca01833075e1c19a45df4860f5f29d9dcab04306e48031ba7e9ea6c8"
+}
