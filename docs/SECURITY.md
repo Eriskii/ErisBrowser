@@ -272,3 +272,12 @@ Tests preserve full captures against the unfiltered VM and exercise allocation
 refusal, scan exhaustion and zero VM allocation for rejected inputs. Two XML
 modes now pass; two full-UTF-16 script-loop stops remain. This optimization does
 not remove the need for budgets or establish complete allocation accounting.
+
+The [match/search protocols](../tests/conformance/regexp-match-search.md) keep
+custom hooks, flags/input conversion, execution and index access within the
+existing callback guards. Invocation arguments and private result-array growth
+are charged; inherited setters cannot intercept own match-result elements.
+Tests cover recursive callbacks, unbounded custom exec results, allocation
+refusal before the first global exec, and clean frame unwinding. The separate
+Array.prototype indexed-descriptor gap remains explicitly unsupported. These
+checks do not establish complete allocation accounting or audited security.

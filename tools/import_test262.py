@@ -28,6 +28,8 @@ NEW_TARGET_DIRECTORIES = {'expressions/new.target': 14}
 FUNCTION_CONSTRUCTOR_DIRECTORIES = {'Function': 179, 'Function/length': 13,
                                     'Function/internals/Construct': 6, 'Function/internals/Call': 2}
 REGEXP_CONSTRUCTOR_DIRECTORIES = {'RegExp': 488}
+REGEXP_MATCH_SEARCH_DIRECTORIES = {'String/prototype/match': 51, 'String/prototype/search': 43,
+                                   'RegExp/prototype/Symbol.match': 53, 'RegExp/prototype/Symbol.search': 23}
 REGEXP_SPLIT_DIRECTORIES = {'RegExp/prototype/Symbol.split': 44, 'RegExp/Symbol.species': 4}
 REGEXP_DIRECTORIES = {
     'RegExp/prototype/exec': 79, 'RegExp/prototype/test': 45,
@@ -85,7 +87,7 @@ SYMBOL_DIRECTORIES = {
     'Symbol/toStringTag': 2,
     'Symbol/unscopables': 2,
 }
-PROFILES = {'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
+PROFILES = {'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'function-constructor': FUNCTION_CONSTRUCTOR_DIRECTORIES,
             'reflect-construction': REFLECT_CONSTRUCTION_DIRECTORIES, 'new-target': NEW_TARGET_DIRECTORIES,
             'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
@@ -98,7 +100,7 @@ PROFILES = {'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split'
             'numeric-parsing': NUMERIC_PARSING_DIRECTORIES,
             'compound-assignment': COMPOUND_ASSIGNMENT_DIRECTORIES,
             'addition': ADDITION_DIRECTORIES, 'logical-assignment': LOGICAL_ASSIGNMENT_DIRECTORIES, 'uri': URI_DIRECTORIES, 'relational': RELATIONAL_DIRECTORIES, 'equality': EQUALITY_DIRECTORIES, 'labels': LABELS_DIRECTORIES}
-PROFILE_ROOTS = {'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
+PROFILE_ROOTS = {'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
                  'function-constructor': 'test/built-ins', 'reflect-construction': 'test/built-ins', 'new-target': 'test/language',
                  'template-literal': 'test/language', 'functions': 'test/language',
                  'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins',
@@ -229,7 +231,7 @@ def import_corpus(output, profile='string-json'):
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
         sources = dict(zip(paths, pool.map(lambda path: fetch(raw + path), paths)))
     harness = {'assert.js', 'sta.js'}
-    if profile in {'regexp-constructor', 'regexp-split', 'string-search', 'function-constructor', 'reflect-construction', 'new-target', 'string-concat', 'symbols', 'template-literal', 'functions', 'rest-parameters', 'is-prototype-of', 'identifiers', 'compound-assignment', 'addition', 'logical-assignment', 'uri', 'relational', 'equality', 'labels'}:
+    if profile in {'regexp-match-search', 'regexp-constructor', 'regexp-split', 'string-search', 'function-constructor', 'reflect-construction', 'new-target', 'string-concat', 'symbols', 'template-literal', 'functions', 'rest-parameters', 'is-prototype-of', 'identifiers', 'compound-assignment', 'addition', 'logical-assignment', 'uri', 'relational', 'equality', 'labels'}:
         # These unchanged helpers support the assertion-integrity preflight,
         # even when no selected test requests them directly.
         harness.update({'propertyHelper.js', 'compareArray.js'})
@@ -251,6 +253,7 @@ def import_corpus(output, profile='string-json'):
     if sum(map(len, sources.values())) > MAX_TOTAL:
         raise ValueError('Test262 selection exceeds aggregate import limit')
     scope = {
+        'regexp-match-search': 'all direct .js files in built-ins/String/prototype/match, String/prototype/search, RegExp/prototype/Symbol.match and RegExp/prototype/Symbol.search; no implementation',
         'regexp-constructor': 'all direct .js files in built-ins/RegExp; no implementation',
         'regexp-split': 'all direct .js files in built-ins/RegExp/prototype/Symbol.split and RegExp/Symbol.species; no implementation',
         'string-search': 'all direct .js files in built-ins/String/prototype/includes, indexOf, startsWith, endsWith and split; no implementation',

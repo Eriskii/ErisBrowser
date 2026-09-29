@@ -2,6 +2,41 @@
 use super::*;
 
 impl Runtime {
+    pub(super) fn string_match_search(
+        &mut self,
+        name: &str,
+        receiver: Value,
+        pattern: Value,
+        doc: &mut Document,
+    ) -> Result<Value> {
+        if matches!(receiver, Value::Null | Value::Undefined) {
+            return Err(ScriptError::type_error(
+                "String method receiver is null or undefined",
+            ));
+        }
+        let key = self.well_known_key(name);
+        // GetMethod precedes receiver conversion and is only performed for an
+        // object argument. The hook receives the original receiver unchanged.
+        if js_object(&pattern) {
+            let method = self.get_property_key(pattern.clone(), &key, doc)?;
+            if !matches!(method, Value::Null | Value::Undefined) {
+                if !json_callable(&method) {
+                    return Err(ScriptError::type_error(
+                        "String symbol hook must be callable",
+                    ));
+                }
+                self.charge(std::mem::size_of::<Value>())?;
+                return self.call(method, vec![receiver], pattern, doc);
+            }
+        }
+        let text = self.string_hint(receiver, doc)?;
+        let regexp = self.regexp_create(pattern, Value::Undefined, doc)?;
+        // Invoke must observe changes to the intrinsic prototype's method.
+        let method = self.get_property_key(regexp.clone(), &key, doc)?;
+        self.charge(std::mem::size_of::<Value>())?;
+        self.call(method, vec![Value::String(text)], regexp, doc)
+    }
+
     pub(super) fn string_split_hook(
         &mut self,
         receiver: Value,

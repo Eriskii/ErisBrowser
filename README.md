@@ -290,6 +290,13 @@ both XML-pattern modes by rejecting impossible matches before backtracking. The
 directory now records 774 passed, 200 unsupported and two script-work resource
 stops, with unchanged budgets. All other 9,076 observations remain identical.
 
+[String and RegExp match/search protocols](tests/conformance/regexp-match-search.md)
+now honor custom symbol hooks, conversion order, global empty-match advancement
+and exact search index restoration. A complete new 170-source inventory gains
+138 passes, reaching 304 passed, 16 failed and 20 unsupported modes. All 9,078
+older observations remain identical; the full inventory reaches 9,418 modes and
+2,368 verified controls. Missing lastIndexOf and BigInt dependencies remain visible.
+
 ## Implementation
 
 The [architecture notes](docs/ARCHITECTURE.md) describe the page pipeline and native process boundaries.

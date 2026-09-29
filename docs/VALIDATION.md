@@ -1,5 +1,27 @@
 # Validation record
 
+## String and RegExp match/search protocols
+
+The [implementation record](../tests/conformance/regexp-match-search.md) and
+[evidence](../tests/conformance/regexp-match-search.json) compare against `d7cee45`.
+The complete new **170-source / 340-mode** selection gains **138 passes**, reaching
+**304 passed / 16 failed / 20 unsupported**. Remaining failures expose lastIndexOf
+and BigInt dependencies. Every other new observation is identical, as are all
+**9,078 older observations / 2,288 older controls**. Source fingerprints, policies
+and 23 older baselines remain unchanged. The combined **29-profile / 9,418-mode**
+inventory has **2,368 verified controls** and adds a 24th regression gate.
+
+All **44 supported local modes** pass; two original modes still stop at the
+unimplemented Array indexed-descriptor API. Their source/outcomes and all 24
+original diagnostic fingerprints are retained. A separate inherited Object
+prototype setter test passes. All 80 new-profile controls verify, versus 56 before.
+Rust **1.88 / 1.95** pass strict all-target Clippy and **1,026 default / 1,037
+Vulkan-feature tests**, none ignored. Both releases preserve **57 CPU pixel
+references**. **177 Python tests**, **45,000 mutation cases** and unchanged HTML
+observations pass. Callback recursion, infinite match results, heap refusal and
+cleanup are tested. No independent agent review, GPU exercise or Chromium
+performance comparison was performed.
+
 ## Required literal counts before regexp matching
 
 The [implementation record](../tests/conformance/regexp-required-literals.md) and

@@ -24,9 +24,12 @@ observable construction, execution and captures.
 adds classification and ordered conversion with 16 more passes.
 [Flat bounded regexp group parsing](../tests/conformance/regexp-deep-groups.md)
 now adds four deep-pattern passes. [Required-literal rejection](../tests/conformance/regexp-required-literals.md)
-adds two XML-pattern passes without raising budgets. General matching performance,
-the remaining full-UTF-16 loop, Unicode regexp syntax, the other String symbol
-protocols and Function source retention remain concrete next dependencies.
+adds two XML-pattern passes without raising budgets.
+[Match/search symbol protocols](../tests/conformance/regexp-match-search.md) now add
+138 passes in a complete new inventory. String lastIndexOf and BigInt dependencies,
+replacement/matchAll protocols, general matching performance, the remaining
+full-UTF-16 loop, Unicode regexp syntax and Function source retention remain
+concrete next dependencies.
 
 The goal remains an independent, fully web-compatible Rust browser with a
 defensible security boundary and measured performance within the requested

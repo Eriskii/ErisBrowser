@@ -38,6 +38,8 @@ jobs:
         run: python3 tools/test262_conformance.py --profile reflect-construction --baseline tests/conformance/test262-reflect-construction-current.json --output artifacts/test262-reflect-construction-gate.json
       - name: Preserve pinned RegExp split and species cases
         run: python3 tools/test262_conformance.py --profile regexp-split --baseline tests/conformance/test262-regexp-split-current.json --output artifacts/test262-regexp-split-gate.json
+      - name: Preserve pinned String and RegExp match/search protocols
+        run: python3 tools/test262_conformance.py --profile regexp-match-search --baseline tests/conformance/test262-regexp-match-search-current.json --output artifacts/test262-regexp-match-search-gate.json
       - name: Preserve pinned String search and split cases
         run: python3 tools/test262_conformance.py --profile string-search --baseline tests/conformance/test262-string-search-current.json --output artifacts/test262-string-search-gate.json
       - name: Preserve pinned dynamic Function constructor cases

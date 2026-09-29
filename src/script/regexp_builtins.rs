@@ -1,4 +1,4 @@
-//! Observable RegExp splitting and species construction.
+//! Observable RegExp construction and symbol protocols.
 use super::*;
 
 impl Runtime {
@@ -98,11 +98,17 @@ impl Runtime {
     }
 
     pub(super) fn initialize_regexp_symbols(&mut self) -> Result<()> {
-        let split = self.intrinsic_function("RegExp.symbolSplit", "[Symbol.split]", 2)?;
-        let key = self.well_known_key("split");
-        self.charge(256)?;
-        self.objects[self.prototypes["RegExp"]]
-            .insert_property(key, Property::data(split, true, false, true));
+        for (symbol, native, name, length) in [
+            ("split", "RegExp.symbolSplit", "[Symbol.split]", 2),
+            ("match", "RegExp.symbolMatch", "[Symbol.match]", 1),
+            ("search", "RegExp.symbolSearch", "[Symbol.search]", 1),
+        ] {
+            let method = self.intrinsic_function(native, name, length)?;
+            let key = self.well_known_key(symbol);
+            self.charge(256)?;
+            self.objects[self.prototypes["RegExp"]]
+                .insert_property(key, Property::data(method, true, false, true));
+        }
         let getter = self.intrinsic_function("RegExp.species", "get [Symbol.species]", 0)?;
         let key = self.well_known_key("species");
         self.charge(256)?;
@@ -118,6 +124,81 @@ impl Runtime {
             },
         );
         Ok(())
+    }
+
+    pub(super) fn regexp_symbol_match(
+        &mut self,
+        receiver: Value,
+        argument: Value,
+        doc: &mut Document,
+    ) -> Result<Value> {
+        if !js_object(&receiver) {
+            return Err(ScriptError::type_error(
+                "RegExp match receiver must be an object",
+            ));
+        }
+        let text = self.string_hint(argument, doc)?;
+        let (global, unicode) = self.regexp_iteration_flags(receiver.clone(), doc)?;
+        if !global {
+            return self.regexp_exec(receiver, &text, doc);
+        }
+        self.regexp_last_index(receiver.clone(), 0, doc)?;
+        let array = self.array(Vec::new())?;
+        let Value::Array(id) = array else {
+            unreachable!()
+        };
+        loop {
+            self.tick()?;
+            let result = self.regexp_exec(receiver.clone(), &text, doc)?;
+            if result == Value::Null {
+                return Ok(if self.arrays[id].is_empty() {
+                    Value::Null
+                } else {
+                    array
+                });
+            }
+            let matched = self.get(result, "0", doc)?;
+            let matched = self.string_hint(matched, doc)?;
+            // Create own elements in the private array, without inherited
+            // setters or a public Array constructor call.
+            self.regexp_array_append(id, Value::String(matched.clone()))?;
+            if matched.is_empty() {
+                self.advance_regexp(receiver.clone(), &text, unicode, doc)?;
+            }
+        }
+    }
+
+    pub(super) fn regexp_symbol_search(
+        &mut self,
+        receiver: Value,
+        argument: Value,
+        doc: &mut Document,
+    ) -> Result<Value> {
+        if !js_object(&receiver) {
+            return Err(ScriptError::type_error(
+                "RegExp search receiver must be an object",
+            ));
+        }
+        let text = self.string_hint(argument, doc)?;
+        let previous = self.get(receiver.clone(), "lastIndex", doc)?;
+        if !json_same_value(&previous, &Value::Number(0.0)) {
+            self.regexp_last_index(receiver.clone(), 0, doc)?;
+        }
+        // An abrupt execution returns immediately, without restoring lastIndex.
+        let result = self.regexp_exec(receiver.clone(), &text, doc)?;
+        let current = self.get(receiver.clone(), "lastIndex", doc)?;
+        if !json_same_value(&current, &previous) {
+            self.write_reference(
+                Reference::Property(receiver, Value::String("lastIndex".into()), true),
+                previous,
+                doc,
+            )?;
+        }
+        if result == Value::Null {
+            Ok(Value::Number(-1.0))
+        } else {
+            self.get(result, "index", doc)
+        }
     }
 
     fn regexp_species(&mut self, receiver: Value, doc: &mut Document) -> Result<Value> {
@@ -200,7 +281,7 @@ impl Runtime {
         }
         if text.is_empty() {
             if self.regexp_exec(splitter, &text, doc)? == Value::Null {
-                self.split_append(id, Value::String(text))?;
+                self.regexp_array_append(id, Value::String(text))?;
             }
             return Ok(array);
         }
@@ -223,7 +304,7 @@ impl Runtime {
                 continue;
             }
             let piece = self.split_substring(&text, previous, position)?;
-            self.split_append(id, piece)?;
+            self.regexp_array_append(id, piece)?;
             if self.arrays[id].len() == limit {
                 return Ok(array);
             }
@@ -235,7 +316,7 @@ impl Runtime {
                 self.tick()?;
                 self.charge(32)?;
                 let capture = self.get(result.clone(), &index.to_string(), doc)?;
-                self.split_append(id, capture)?;
+                self.regexp_array_append(id, capture)?;
                 if self.arrays[id].len() == limit {
                     return Ok(array);
                 }
@@ -243,7 +324,7 @@ impl Runtime {
             position = previous;
         }
         let tail = self.split_substring(&text, previous, text.len())?;
-        self.split_append(id, tail)?;
+        self.regexp_array_append(id, tail)?;
         Ok(array)
     }
 
@@ -254,7 +335,7 @@ impl Runtime {
         self.string(&text.units()[start..end])
     }
 
-    fn split_append(&mut self, id: usize, value: Value) -> Result<()> {
+    fn regexp_array_append(&mut self, id: usize, value: Value) -> Result<()> {
         if self.arrays[id].len() >= 65536 {
             return Err(ScriptError::resource("array length limit exceeded"));
         }
@@ -262,7 +343,7 @@ impl Runtime {
         self.charge(std::mem::size_of::<Value>())?;
         self.arrays[id]
             .try_reserve(1)
-            .map_err(|_| ScriptError::resource("RegExp split array allocation failed"))?;
+            .map_err(|_| ScriptError::resource("RegExp result array allocation failed"))?;
         self.arrays[id].push(value);
         Ok(())
     }
@@ -304,6 +385,77 @@ mod tests {
         assert_eq!(runtime.eval_depth, 0);
         assert_eq!(runtime.json_depth, 0);
         assert!(runtime.frames.is_empty());
+    }
+
+    #[test]
+    fn frozen_match_search_cases_preserve_hooks_conversion_and_indices() {
+        for fixture in include_str!("../../tests/conformance/regexp-match-search.js")
+            .split("// CASE: ")
+            .skip(1)
+        {
+            let (name, source) = fixture.split_once('\n').unwrap();
+            for strict in [false, true] {
+                let (mut runtime, mut doc) = harness();
+                let result = if strict {
+                    runtime.execute_strict(source, &mut doc)
+                } else {
+                    runtime.execute(source, &mut doc)
+                };
+                if name == "match-result-ignores-array-prototype-setter" {
+                    // Preserve this fixture's independent Array descriptor gap.
+                    let error = result.unwrap_err();
+                    assert_eq!(error.name(), "UnsupportedFeature");
+                    assert!(
+                        error
+                            .to_string()
+                            .contains("array indexed/length descriptor")
+                    );
+                } else {
+                    assert!(result.is_ok(), "{name}, strict={strict}: {result:?}");
+                }
+                clean(&runtime);
+            }
+        }
+    }
+
+    #[test]
+    fn match_search_callbacks_and_unbounded_results_share_limits() {
+        for source in [
+            "var p={};p[Symbol.match]=function(){return ''.match(p);};''.match(p);",
+            "var p={};p[Symbol.search]=function(){return ''.search(p);};''.search(p);",
+            "var p={};Object.defineProperty(p,Symbol.match,{get:function(){return ''.match(p);}});''.match(p);",
+            "var r={exec:function(){return null;}};Object.defineProperty(r,'flags',{get:function(){return RegExp.prototype[Symbol.match].call(r,'');}});RegExp.prototype[Symbol.match].call(r,'');",
+            "var r={};Object.defineProperty(r,'lastIndex',{get:function(){return RegExp.prototype[Symbol.search].call(r,'');}});RegExp.prototype[Symbol.search].call(r,'');",
+            "var r={flags:'g',exec:function(){return {0:'x'};}};RegExp.prototype[Symbol.match].call(r,'x');",
+            "var r={flags:'g',exec:function(){return {0:''};}};RegExp.prototype[Symbol.match].call(r,'x');",
+            "var r=/x/,s={toString:function(){return RegExp.prototype[Symbol.search].call(r,s);}};RegExp.prototype[Symbol.search].call(r,s);",
+        ] {
+            let (mut runtime, mut doc) = harness();
+            let error = runtime.execute(source, &mut doc).unwrap_err();
+            assert!(error.is_resource_limit(), "{source}: {error}");
+            clean(&runtime);
+        }
+    }
+
+    #[test]
+    fn global_match_heap_exhaustion_prevents_first_exec_call() {
+        let (mut runtime, mut doc) = harness();
+        let receiver = runtime
+            .execute(
+                "var calls=0;({flags:'g',exec:function(){calls++;return null;}})",
+                &mut doc,
+            )
+            .unwrap();
+        runtime.allocated = MAX_HEAP;
+        let error = runtime
+            .regexp_symbol_match(receiver, Value::String("x".into()), &mut doc)
+            .unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(
+            runtime.environments[0].bindings["calls"].value,
+            Value::Number(0.0)
+        );
+        clean(&runtime);
     }
 
     #[test]

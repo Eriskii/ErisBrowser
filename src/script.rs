@@ -6955,6 +6955,7 @@ impl Runtime {
     ) -> Result<Value> {
         let exec = self.get(receiver.clone(), "exec", doc)?;
         if json_callable(&exec) {
+            self.charge(std::mem::size_of::<Value>())?;
             let result = self.call(exec, vec![Value::String(text.clone())], receiver, doc)?;
             if result != Value::Null && !js_object(&result) {
                 return Err(ScriptError::type_error(
@@ -6975,6 +6976,20 @@ impl Runtime {
     ) -> Result<Value> {
         if name == "species" {
             return Ok(receiver);
+        }
+        if name == "symbolMatch" {
+            return self.regexp_symbol_match(
+                receiver,
+                args.first().cloned().unwrap_or(Value::Undefined),
+                doc,
+            );
+        }
+        if name == "symbolSearch" {
+            return self.regexp_symbol_search(
+                receiver,
+                args.first().cloned().unwrap_or(Value::Undefined),
+                doc,
+            );
         }
         if name == "symbolSplit" {
             return self.regexp_symbol_split(
@@ -7102,70 +7117,14 @@ impl Runtime {
             doc,
         )
     }
-    fn string_regexp(
+    fn string_replace(
         &mut self,
-        name: &str,
         text: JsString,
-        pattern: Value,
+        receiver: Value,
         argument: Value,
         doc: &mut Document,
     ) -> Result<Value> {
-        let regex = self.regexp_slot(&pattern);
-        let receiver = if matches!(name, "match" | "search") && regex.is_none() {
-            self.regexp_create(pattern, Value::Undefined, doc)?
-        } else {
-            pattern
-        };
-        if name == "search" {
-            let previous = self.get(receiver.clone(), "lastIndex", doc)?;
-            if !json_same_value(&previous, &Value::Number(0.0)) {
-                self.regexp_last_index(receiver.clone(), 0, doc)?;
-            }
-            let result = self.regexp_exec(receiver.clone(), &text, doc)?;
-            let current = self.get(receiver.clone(), "lastIndex", doc)?;
-            if !json_same_value(&current, &previous) {
-                self.write_reference(
-                    Reference::Property(receiver, Value::String("lastIndex".into()), true),
-                    previous,
-                    doc,
-                )?;
-            }
-            return if result == Value::Null {
-                Ok(Value::Number(-1.0))
-            } else {
-                self.get(result, "index", doc)
-            };
-        }
-        if name == "match" {
-            let (global, unicode) = self.regexp_iteration_flags(receiver.clone(), doc)?;
-            if !global {
-                return self.regexp_exec(receiver, &text, doc);
-            }
-            self.regexp_last_index(receiver.clone(), 0, doc)?;
-            let mut results = Vec::new();
-            loop {
-                self.tick()?;
-                let result = self.regexp_exec(receiver.clone(), &text, doc)?;
-                if result == Value::Null {
-                    break;
-                }
-                let matched = self.get(result, "0", doc)?;
-                let matched = self.json_text(matched, doc, &mut Vec::new())?;
-                if results.len() >= 65536 {
-                    return Err(ScriptError::resource("array length limit exceeded"));
-                }
-                self.charge(std::mem::size_of::<Value>())?;
-                results.push(Value::String(matched.clone()));
-                if matched.is_empty() {
-                    self.advance_regexp(receiver.clone(), &text, unicode, doc)?;
-                }
-            }
-            return if results.is_empty() {
-                Ok(Value::Null)
-            } else {
-                self.array(results)
-            };
-        }
+        let regex = self.regexp_slot(&receiver);
         let plain_needle = if regex.is_none() {
             Some(self.json_text(receiver.clone(), doc, &mut Vec::new())?)
         } else {
@@ -7271,7 +7230,7 @@ impl Runtime {
         doc: &mut Document,
     ) -> Result<(bool, bool)> {
         let flags = self.get(receiver, "flags", doc)?;
-        let flags = self.json_text(flags, doc, &mut Vec::new())?;
+        let flags = self.string_hint(flags, doc)?;
         self.work(flags.len().saturating_mul(3))?;
         Ok((
             flags.units().contains(&u16::from(b'g')),
@@ -7863,6 +7822,14 @@ impl Runtime {
             let id = self.event_index(&event)?;
             self.events[id].initialized = false;
             return Ok(event);
+        }
+        if matches!(native.name.as_str(), "String.match" | "String.search") {
+            return self.string_match_search(
+                native.name.strip_prefix("String.").unwrap(),
+                native.receiver.clone(),
+                args.first().cloned().unwrap_or(Value::Undefined),
+                doc,
+            );
         }
         if native.name == "String.concat" {
             return self.string_concat(native.receiver.clone(), &args, doc);
@@ -8690,8 +8657,8 @@ impl Runtime {
                 }
             }
             Value::String(text) => {
-                if matches!(name, "match" | "search" | "replace") {
-                    return self.string_regexp(name, text.clone(), arg(0), arg(1), doc);
+                if name == "replace" {
+                    return self.string_replace(text.clone(), arg(0), arg(1), doc);
                 }
                 if matches!(name, "includes" | "startsWith" | "endsWith")
                     && self.is_regexp(arg(0), doc)?

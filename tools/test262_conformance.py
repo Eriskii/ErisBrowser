@@ -50,9 +50,10 @@ SYMBOL_FEATURES = SUPPORTED_FEATURES | {
 CONSTRUCTION_FEATURES = SYMBOL_FEATURES | FUNCTION_FEATURES | {'new.target', 'Reflect.apply', 'Reflect.construct', 'template'}
 FUNCTION_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REST_PARAMETER_FEATURES
 STRING_SEARCH_FEATURES = SYMBOL_FEATURES | FUNCTION_FEATURES | {'String.prototype.includes', 'String.prototype.endsWith'}
+REGEXP_MATCH_SEARCH_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 REGEXP_SPLIT_FEATURES = CONSTRUCTION_FEATURES
 REGEXP_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'u180e'}
-PROFILE_FEATURES = {'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+PROFILE_FEATURES = {'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'reflect-construction': CONSTRUCTION_FEATURES, 'new-target': CONSTRUCTION_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -998,6 +999,30 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
             for name, setup, actual, good, bad in pairs:
                 for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
                     variants.append((name + suffix, setup + f'assert.sameValue({actual},{value});', expected, mode))
+    if profile == 'regexp-match-search':
+        guard = ("assert.sameValue(typeof RegExp.prototype[Symbol.match],'function');"
+                 "assert.sameValue(typeof RegExp.prototype[Symbol.search],'function');"
+                 "assert.sameValue(RegExp.prototype[Symbol.match].call(/a/,'a')[0],'a');"
+                 "assert.sameValue(RegExp.prototype[Symbol.search].call(/a/,'ba'),1);")
+        pairs = [
+            ('match-hook', "var raw={toString:function(){throw 1;}},p={},out={};p[Symbol.match]=function(v){assert.sameValue(this,p);assert.sameValue(v,raw);return out;};", 'String.prototype.match.call(raw,p)===out', 'true', 'false'),
+            ('search-hook', "var raw={toString:function(){throw 1;}},p={},out={};p[Symbol.search]=function(v){assert.sameValue(this,p);assert.sameValue(v,raw);return out;};", 'String.prototype.search.call(raw,p)===out', 'true', 'false'),
+            ('match-fallback', "RegExp.prototype[Symbol.match]=function(s){assert.sameValue(s,'abc');assert.sameValue(this.source,'b');return 7;};", "'abc'.match('b')", '7', '8'),
+            ('search-fallback', "RegExp.prototype[Symbol.search]=function(s){assert.sameValue(s,'abc');assert.sameValue(this.source,'b');return 7;};", "'abc'.search('b')", '7', '8'),
+            ('match-property-descriptor', "var m=RegExp.prototype[Symbol.match];verifyProperty(m,'name',{value:'[Symbol.match]',writable:false,enumerable:false,configurable:true});verifyProperty(RegExp.prototype,Symbol.match,{value:m,writable:true,enumerable:false,configurable:true});assert.throws(TypeError,function(){new m();});", 'm.length', '1', '2'),
+            ('search-property-descriptor', "var m=RegExp.prototype[Symbol.search];verifyProperty(m,'name',{value:'[Symbol.search]',writable:false,enumerable:false,configurable:true});verifyProperty(RegExp.prototype,Symbol.search,{value:m,writable:true,enumerable:false,configurable:true});assert.throws(TypeError,function(){new m();});", 'm.length', '1', '2'),
+            ('match-unicode', r"var log='',r={flags:'gu',exec:function(){if(this.lastIndex>3)return null;log+=this.lastIndex+',';return {0:''};}};RegExp.prototype[Symbol.match].call(r,'\ud83d\ude00x');", 'log', "'0,2,3,'", "'0,1,2,3,'"),
+            ('match-unicode-sets', r"var log='',r={flags:'gv',exec:function(){if(this.lastIndex>3)return null;log+=this.lastIndex+',';return {0:''};}};RegExp.prototype[Symbol.match].call(r,'\ud83d\ude00x');", 'log', "'0,2,3,'", "'0,1,2,3,'"),
+            ('search-restore', "var token={},r={lastIndex:-0,exec:function(){assert.sameValue(this.lastIndex,0);this.lastIndex=9;return {index:token};}};assert.sameValue(RegExp.prototype[Symbol.search].call(r,'a'),token);", 'r.lastIndex', '-0', '0'),
+            ('search-abrupt', "var token={},caught,r={lastIndex:9,exec:function(){this.lastIndex=3;throw token;}};try{RegExp.prototype[Symbol.search].call(r,'a');}catch(e){caught=e;}assert.sameValue(caught,token);", 'r.lastIndex', '3', '9'),
+            ('match-order', "var log='',r={exec:function(s){log+='e';return null;}};Object.defineProperty(r,'flags',{get:function(){log+='f';return {toString:function(){log+='t';return '';}};}});RegExp.prototype[Symbol.match].call(r,{toString:function(){log+='s';return 'a';}});", 'log', "'sfte'", "'fste'"),
+            ('match-result', "var n=0,r={flags:'g',exec:function(){n++;return n==1?{0:{toString:function(){return 'x';}}}:null;}};", "RegExp.prototype[Symbol.match].call(r,'x')[0]", "'x'", "'wrong'"),
+        ]
+        for mode in ('sloppy', 'strict'):
+            for name, setup, actual, good, bad in pairs:
+                for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                    variants.append(('regexp-match-search-' + name + suffix,
+                                     guard + setup + f'assert.sameValue({actual},{value});', expected, mode))
     if profile == 'regexp-constructor':
         pairs = [
             ('regexp-ctor-identity', "var r={constructor:RegExp};r[Symbol.match]=true;", 'RegExp(r)===r', 'true', 'false'),

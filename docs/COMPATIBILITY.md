@@ -1,5 +1,12 @@
 # Compatibility status
 
+[String and RegExp match/search protocols](../tests/conformance/regexp-match-search.md)
+now support custom symbol hooks, raw receivers, observable fallback dispatch,
+global match collection and exact search index restoration. The complete new
+340-mode selection records 304 passed, 16 failed and 20 unsupported. String
+lastIndexOf, BigInt, Unicode pattern syntax and replacement/matchAll protocols
+remain incomplete.
+
 [RegExp constructor classification and conversion](../tests/conformance/regexp-constructor.md)
 now handle Symbol.match-based identity, regexp-like source/flags and observable
 allocation/conversion order. The [flat group parser](../tests/conformance/regexp-deep-groups.md)
