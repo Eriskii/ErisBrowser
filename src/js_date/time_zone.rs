@@ -448,7 +448,7 @@ impl<'a> Block<'a> {
         let ut = c.take(h.ut)?;
         let mut transitions = budget.vector(h.count)?;
         let mut types = budget.vector(h.types)?;
-        for (i, raw) in rawtypes.chunks_exact(6).enumerate() {
+        for (i, raw) in rawtypes.as_chunks::<6>().0.iter().enumerate() {
             let offset = i32::from_be_bytes(raw[..4].try_into().unwrap());
             if !(MIN_OFFSET..=MAX_OFFSET).contains(&offset) {
                 return Err(ZoneError::UnsupportedOffset);

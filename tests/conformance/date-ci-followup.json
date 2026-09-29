@@ -1,0 +1,869 @@
+{
+  "kind": "Rust 1.98 Clippy compatibility follow-up to the published Date checkpoint",
+  "published_commit": "4cbd72b6e86b7f3931cb199c2b0476a9b6b4faa1",
+  "published_date_evidence_unchanged": true,
+  "full_ecmascript_conformance": false,
+  "full_goal_complete": false,
+  "change": {
+    "file": "src/js_date/time_zone.rs",
+    "old": "rawtypes.chunks_exact(6).enumerate()",
+    "new": "rawtypes.as_chunks::<6>().0.iter().enumerate()",
+    "reason": "Rust 1.98 Clippy introduced chunks_exact_to_as_chunks under the existing -D warnings gate.",
+    "semantics": "The checked TZif type-record slice contains six bytes per record. Both forms visit the same records in order; no parsing, allocation, quota or timezone policy changes.",
+    "source_verification": {
+      "changed_sources": [
+        "src/js_date/time_zone.rs"
+      ],
+      "previous_production_input_sha256": "7bb6ff9b49fa7a66f88cf803a9fec4aee3eb0c4b76d3e14bd5472900c2218a02",
+      "followup_production_input_sha256": "fb9df6d5d132062d3f19e71ed32843abe3439542ab1ade7fefefda632bcd4ed1",
+      "source_file_before_sha256": "920d0e9ea50f122b2cbc84d8158ab61c72a9008cb39fd0132aac18de579d0189",
+      "source_file_after_sha256": "8c96e9f961e064e2779ea543a279bf3cb90d17c2a4f70bb428e83c98d29fd02b",
+      "exact_single_replacement_verified": true,
+      "source_delta_sha256": "9f5294b4919ef07b05d895da254120f5a74d52a4ba629b69af91b99b0537eca0",
+      "current_files_match_frozen_inputs": true,
+      "local_source_sha256": "9c7fd9adf2cb973f72747c200f2eaeb279afe65b72b1114af2a19237ae60089e",
+      "local_matrix_sha256": "b08f746d6f70f024cfe681b5be7256b2be068122aaf766720e1f8cc34588d852",
+      "local_final_report_sha256": "d19eeced4dd9998ed4e3014ae78448549b90a9702cfd84088610159ed5db9ded",
+      "local_published_report_sha256": "0a5f9ebbf0c92dc92b6fd59515af470692571b5fcb3fe9bf457becc351f2e960",
+      "local_semantic_modes": 406,
+      "local_controls": 12,
+      "semantic_and_control_observation_changes": 0,
+      "source_and_expectation_changes": 0
+    },
+    "patch_path": "/tmp/eris-date-ci-fix/source-delta.patch",
+    "patch_sha256": "9f5294b4919ef07b05d895da254120f5a74d52a4ba629b69af91b99b0537eca0"
+  },
+  "original_ci": {
+    "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/36533678216",
+    "head": "4cbd72b6e86b7f3931cb199c2b0476a9b6b4faa1",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "name": "test",
+        "conclusion": "failure"
+      },
+      {
+        "name": "presenter-variants (1.88.0)",
+        "conclusion": "cancelled"
+      },
+      {
+        "name": "vulkan-probe",
+        "conclusion": "success"
+      },
+      {
+        "name": "presenter-variants (1.88.0, --features vulkan-presenter)",
+        "conclusion": "cancelled"
+      },
+      {
+        "name": "minimum-rust",
+        "conclusion": "success"
+      },
+      {
+        "name": "presenter-variants (stable, --features vulkan-presenter)",
+        "conclusion": "failure"
+      }
+    ],
+    "failure": "Both stable jobs failed only at Clippy chunks_exact_to_as_chunks; minimum-rust and vulkan-probe succeeded; two presenter matrix jobs were cancelled.",
+    "record_path": "/tmp/eris-date-ci-fix/original-ci.json",
+    "record_sha256": "fd2b2f20d55a05fc13454f9227e3c8ffc195fd4e10a956fc3b446e2b9d43d0af",
+    "failed_log_path": "/tmp/eris-date-ci-fix/original-ci-failed.log",
+    "failed_log_sha256": "11741a7beab65d7042241deda0bd64bf3ae472b31545b18a6aff50cd04734bcf"
+  },
+  "followup_ci": {
+    "status": "pending publication and remote run",
+    "not_claimed_green": true
+  },
+  "provenance": {
+    "previous_input_sha256": "7bb6ff9b49fa7a66f88cf803a9fec4aee3eb0c4b76d3e14bd5472900c2218a02",
+    "production_input_sha256": "fb9df6d5d132062d3f19e71ed32843abe3439542ab1ade7fefefda632bcd4ed1",
+    "inputs_path": "/tmp/eris-date-ci-fix/inputs.json",
+    "inputs_sha256": "32cf742c33cac52ed22aefb5d6f464094bcd34e8ba67870ffe402476e4c01540",
+    "source_archive_path": "/tmp/eris-date-ci-fix/source.tar",
+    "source_archive_sha256": "9c2e6c1a083615af10da079af509facd5cce33ae798ce72ea3e47bbb679807af",
+    "binaries": {
+      "eris-browser": "0bdbc48b5aeb016a7d3d2133981465360842a8c16efbe2dc162d7abde3cad928",
+      "eris-js": "26f5aa3e7d8440ec652948567f6fa41c5973b3835f77fb51b64e2b4f040e097c",
+      "eris-dom": "e6d8f63edb88bd11f5987c8be0e1898c385155a1e017125497316c0f36627bce",
+      "eris-stress": "2622d70c44dcfbdb746bfcb6b65e82627dcebc0167a417ada9ddf7b65b94fdeb"
+    },
+    "original_date_adapter_sha256": "ab40a96f2cc1908359186e7c0648cecddc5ad8f8b2adf8a60de0e0d2c9a8f220",
+    "feature_binaries": {
+      "manifest_path": "/tmp/eris-date-ci-fix/feature-binaries.json",
+      "manifest_sha256": "9fb72c29f557b46de283439aa13c4a2d61f3846ec44a981df05fd02a918d7919",
+      "binaries": {
+        "eris-browser": "87977e80fbf61aefd0f25ccf40f91f5ee67bd1225861faa72d9b6c048c9e896b",
+        "eris-js": "7a978e513764e7f8fd10f57a9b27fab5eea17b40add2e383534fbd834980a5eb",
+        "eris-dom": "6ae167f09eee3e5844d6552f3971168eac56dac11e026c3b7a81568dfcf43dc5",
+        "eris-stress": "96973a957f1b87b2af4a672da327e21cdc3bb0ad4b0d6d3af76e7e6f49d4152a"
+      },
+      "paths_use_suffix": "-vulkan",
+      "semantic_replay_binary": "The full formal and local replay uses the frozen default eris-js binary above."
+    }
+  },
+  "local_checks": {
+    "rust_1_98_feature_clippy": {
+      "path": "/tmp/eris-date-ci-fix/198-clippy.log",
+      "sha256": "9bd6841dda9bdba7ce10274f9debc731ab6fa1dcffcce42e8e91b085f14f7f23",
+      "passed": true
+    },
+    "rust_1_98_default_clippy": {
+      "path": "/tmp/eris-date-ci-fix/198-default-clippy.log",
+      "sha256": "1f9c6da4788ce089e88046130da83d85a94a4ad79f9993f8518af66daf06715e",
+      "passed": true
+    },
+    "rust_1_88_feature_clippy": {
+      "path": "/tmp/eris-date-ci-188-clippy.log",
+      "sha256": "02c3a3aa71458b4b3b1e987dbbca27398abdfc840780a3fdb381c24edd39c98b",
+      "passed": true
+    },
+    "rust_1_98_feature_tests": {
+      "path": "/tmp/eris-date-ci-fix/198-feature-tests.log",
+      "sha256": "f6306e9922c7e5ff82ab91fea99914b97a6b6657a0710d2c9fa36d02728954fc",
+      "passed": 1149,
+      "failed": 0,
+      "ignored": 0
+    },
+    "rust_1_88_date_tests": {
+      "path": "/tmp/eris-date-ci-fix/188-date-tests.log",
+      "sha256": "1aa58fe0002e39d163a873767f061ac8f83e30242875ec0501c63d46d15003d7",
+      "passed": 30,
+      "failed": 0,
+      "ignored": 0
+    }
+  },
+  "local_date": {
+    "semantic_modes": 406,
+    "passed": 406,
+    "harness_controls_verified": 12,
+    "source_sha256": "9c7fd9adf2cb973f72747c200f2eaeb279afe65b72b1114af2a19237ae60089e",
+    "matrix_sha256": "b08f746d6f70f024cfe681b5be7256b2be068122aaf766720e1f8cc34588d852",
+    "report_path": "/tmp/eris-date-ci-fix/local.json",
+    "report_sha256": "d19eeced4dd9998ed4e3014ae78448549b90a9702cfd84088610159ed5db9ded",
+    "source_expectation_changes": 0,
+    "published_observation_changes": 0
+  },
+  "formal_profiles": {
+    "comparison_path": "/tmp/eris-date-ci-fix/profiles-comparison.json",
+    "comparison_sha256": "bc22f92ed9f5bc9b7ae99a563e938db0af6a1145efcb3a291d404f6777bb5ea9",
+    "counts": {
+      "profiles": 36,
+      "cases": 16146,
+      "controls": 3592,
+      "observation_changes": 0,
+      "control_changes": 0,
+      "existing_baseline_gates_passed": 29
+    },
+    "aggregate_statuses": {
+      "unsupported": 1999,
+      "passed": 13939,
+      "failed": 70,
+      "resource": 138
+    },
+    "profiles": [
+      {
+        "profile": "addition",
+        "published_report_sha256": "7971f410f7e8226de7712734e49f8b6cdef098a9445a7f72b1fb13f0d8dec37f",
+        "report_path": "/tmp/eris-date-ci-fix/profile-addition.json",
+        "report_sha256": "513712855e9a71fd432fc1f4bb8604fd28a0c7bc6653e3907377174613328d15",
+        "exit_code": 0,
+        "counts": {
+          "unsupported": 28,
+          "passed": 67
+        },
+        "cases": 95,
+        "controls": 64,
+        "controls_verified": 64,
+        "baseline_path": "tests/conformance/test262-addition-current.json",
+        "baseline_sha256": "69610fc6ff4ab4f2d72eae1aa5ccc6cc127af758f998448f6c9e15b76628fe4d",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "array-descriptors",
+        "published_report_sha256": "f7ad3b42bd4462c7ed32012f10bc90478de042fd7236dd3707e2dd35ab0307d1",
+        "report_path": "/tmp/eris-date-ci-fix/profile-array-descriptors.json",
+        "report_sha256": "e67f06336e9047577d258611f65e05c0fad90ffb5b8abb60e225c9894e0b7bb5",
+        "exit_code": 0,
+        "counts": {
+          "passed": 3554,
+          "unsupported": 20
+        },
+        "cases": 3574,
+        "controls": 84,
+        "controls_verified": 84,
+        "baseline_path": "tests/conformance/test262-array-descriptors-current.json",
+        "baseline_sha256": "16b9d7428696157b55284b8a7884b5f290e86756afcdf505ed99a3d49ae3501a",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "array-find",
+        "published_report_sha256": "21d46128e8b16eab34add566bb82aca3b05fd3885b1792bb78b4084195e45764",
+        "report_path": "/tmp/eris-date-ci-fix/profile-array-find.json",
+        "report_sha256": "eb99e6bd37e7d471473e65a9f8553e297c6b393ff73c320250072bea12b46c83",
+        "exit_code": 0,
+        "counts": {
+          "failed": 8,
+          "passed": 140,
+          "unsupported": 32
+        },
+        "cases": 180,
+        "controls": 288,
+        "controls_verified": 288,
+        "baseline_path": "tests/conformance/test262-array-find-current.json",
+        "baseline_sha256": "34b7a6debc04d9e96e6ee53d624c0335c53013df788150eccd68a1c4c2dc5bc0",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "array-last-index-of",
+        "published_report_sha256": "f4ce79d55d81c99cc4cf66bbf45cc37640f19b6b4eae3efc59228c22f0cf948e",
+        "report_path": "/tmp/eris-date-ci-fix/profile-array-last-index-of.json",
+        "report_sha256": "a7aaec389c4e6338a72b40a4b59842b5fdc432c3c15389b7bc49be2f8a02deef",
+        "exit_code": 1,
+        "counts": {
+          "passed": 385,
+          "resource": 2,
+          "unsupported": 8
+        },
+        "cases": 395,
+        "controls": 80,
+        "controls_verified": 80,
+        "baseline_path": null,
+        "baseline_sha256": null,
+        "baseline_gate_passed": null,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "array-predicates",
+        "published_report_sha256": "f9b77235e0e9ac98cae5e47e1621c729c0498e1624aa1402908537ba1f899f0b",
+        "report_path": "/tmp/eris-date-ci-fix/profile-array-predicates.json",
+        "report_sha256": "d5e403d1ff9498c6d23b9f30bbfb96c5162f2b91753dc60c236a55b416644ec6",
+        "exit_code": 1,
+        "counts": {
+          "passed": 847,
+          "resource": 4,
+          "unsupported": 16
+        },
+        "cases": 867,
+        "controls": 128,
+        "controls_verified": 128,
+        "baseline_path": null,
+        "baseline_sha256": null,
+        "baseline_gate_passed": null,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "array-reduce",
+        "published_report_sha256": "446a09ae8243d40ed0ab69386a9308a2aeba11ade55ee0bcb92a726bd4f3da81",
+        "report_path": "/tmp/eris-date-ci-fix/profile-array-reduce.json",
+        "report_sha256": "dfe105570f37b6d651c64083b6735860535844b951ead887161a41bb46abf9da",
+        "exit_code": 0,
+        "counts": {
+          "passed": 1018,
+          "unsupported": 16
+        },
+        "cases": 1034,
+        "controls": 128,
+        "controls_verified": 128,
+        "baseline_path": "tests/conformance/test262-array-reduce-current.json",
+        "baseline_sha256": "aaced8d7d1c9b079067e2abff639657adf89bc5c349ec19188c28314c82aebce",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "array-sort",
+        "published_report_sha256": "e7f97e565cb79d8993c7992ca1be228fb5ea74ae6c89a87584a3aa6f26e90147",
+        "report_path": "/tmp/eris-date-ci-fix/profile-array-sort.json",
+        "report_sha256": "b2e89cdf0b9c3d9b0f4c059e8522be02dc6b7eaa4d0c76d1f8af819f7d48b9c7",
+        "exit_code": 1,
+        "counts": {
+          "passed": 91,
+          "unsupported": 12,
+          "resource": 4
+        },
+        "cases": 107,
+        "controls": 80,
+        "controls_verified": 80,
+        "baseline_path": null,
+        "baseline_sha256": null,
+        "baseline_gate_passed": null,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "compound-assignment",
+        "published_report_sha256": "77a3f1e1079ee5aaeb5554eb408e56a78988a6fbab75862e0d632e2c8e7fd441",
+        "report_path": "/tmp/eris-date-ci-fix/profile-compound-assignment.json",
+        "report_sha256": "3d4b1c803bf0ab7587320a5c96e66c4df0b57da5bc442fea158619ff1b4b6095",
+        "exit_code": 0,
+        "counts": {
+          "unsupported": 169,
+          "passed": 617
+        },
+        "cases": 786,
+        "controls": 128,
+        "controls_verified": 128,
+        "baseline_path": "tests/conformance/test262-compound-assignment-current.json",
+        "baseline_sha256": "1ed2ffaad47349010ad532ba43e0cbaf59750c23d0d76c4e5174bc0090ea2dfd",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "date",
+        "published_report_sha256": "707bca7f9c434be49e4b11c42e9c7256256201656cfeabc5cc782a4505319826",
+        "report_path": "/tmp/eris-date-ci-fix/profile-date.json",
+        "report_sha256": "b13152e7c3c42ceb7c0ad60789f78a9d0e2cb73e9c73972e203637fcd71a8682",
+        "exit_code": 0,
+        "counts": {
+          "passed": 1162,
+          "failed": 4,
+          "unsupported": 22
+        },
+        "cases": 1188,
+        "controls": 340,
+        "controls_verified": 340,
+        "baseline_path": "tests/conformance/test262-date-current.json",
+        "baseline_sha256": "7922df2df34ca527566fb88cc65d801bf4ce392f2b7ef9e02d4def5ed75d2ab7",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "equality",
+        "published_report_sha256": "6295eff042458201c47fd686670b5ccacef3d328ffc61f5db0feb70fd633d788",
+        "report_path": "/tmp/eris-date-ci-fix/profile-equality.json",
+        "report_sha256": "9277d26aabf87643fd2f117648432a4dc8bb56fa247a9290b3c4ac9ed2c8fcfd",
+        "exit_code": 0,
+        "counts": {
+          "unsupported": 96,
+          "passed": 190
+        },
+        "cases": 286,
+        "controls": 128,
+        "controls_verified": 128,
+        "baseline_path": "tests/conformance/test262-equality-current.json",
+        "baseline_sha256": "c1418e959a4936d94cb24960c379dccee01af48d932fe4ff7622964129b227df",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "function-constructor",
+        "published_report_sha256": "9d26e53b930e88144102e8595001f84cc9a863286ecea79743ce4c6fa1f8a960",
+        "report_path": "/tmp/eris-date-ci-fix/profile-function-constructor.json",
+        "report_sha256": "d5591c66e10dbc1715f989b0d33c0ef479cf0f74f4412ca98a7066991bf5fdc1",
+        "exit_code": 0,
+        "counts": {
+          "passed": 241,
+          "unsupported": 50
+        },
+        "cases": 291,
+        "controls": 64,
+        "controls_verified": 64,
+        "baseline_path": "tests/conformance/test262-function-constructor-current.json",
+        "baseline_sha256": "f17ce66f9c4f5395ade2e9d607e806dce678c84558674d30e1a53e378e3136c0",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "functions",
+        "published_report_sha256": "d28a182697d77ec01005f91490dd56eee325447a121ad3a75330416690bfe98c",
+        "report_path": "/tmp/eris-date-ci-fix/profile-functions.json",
+        "report_sha256": "1d0c48be0ceca0147400257a52554769e717702c8a5ddf4ff19d2ac2743813e5",
+        "exit_code": 0,
+        "counts": {
+          "passed": 546,
+          "unsupported": 585
+        },
+        "cases": 1131,
+        "controls": 48,
+        "controls_verified": 48,
+        "baseline_path": "tests/conformance/test262-functions-current.json",
+        "baseline_sha256": "53627cfffdb3b01c7453aed80e750909ba0198a888747b2f3cb22674c3966040",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "global-values",
+        "published_report_sha256": "232b48f7557024af4f20786ab1f1044850022257b8c5eefc79fb5f5df594e315",
+        "report_path": "/tmp/eris-date-ci-fix/profile-global-values.json",
+        "report_sha256": "dc8cb4486fc32e0cf1910191d183a13afeb51739b22783ae473fb57e2b102274",
+        "exit_code": 0,
+        "counts": {
+          "passed": 70,
+          "unsupported": 18
+        },
+        "cases": 88,
+        "controls": 64,
+        "controls_verified": 64,
+        "baseline_path": "tests/conformance/test262-global-values-current.json",
+        "baseline_sha256": "05a82b4c2f40643fa91df9905e4be566332f4106592c3f99e9397819cec18803",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "identifiers",
+        "published_report_sha256": "04435d0b81b068505cb3326f14c6eb165e8dc270748ea5eea959db2879e5604d",
+        "report_path": "/tmp/eris-date-ci-fix/profile-identifiers.json",
+        "report_sha256": "e1d8d14db8463238561d6d16655937235305ce44cce2bf7e57cdfed3b6ee3426",
+        "exit_code": 1,
+        "counts": {
+          "passed": 509,
+          "unsupported": 154,
+          "resource": 6
+        },
+        "cases": 669,
+        "controls": 88,
+        "controls_verified": 88,
+        "baseline_path": null,
+        "baseline_sha256": null,
+        "baseline_gate_passed": null,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "is-prototype-of",
+        "published_report_sha256": "3cd0fc551da4319a68b884124fc458f77fb781d1867a28df3ebc507532bec291",
+        "report_path": "/tmp/eris-date-ci-fix/profile-is-prototype-of.json",
+        "report_sha256": "b1becede6a10df46b4163293c582c000067ac4bbed2c4ab8f00090581cbfee05",
+        "exit_code": 0,
+        "counts": {
+          "unsupported": 6,
+          "passed": 14
+        },
+        "cases": 20,
+        "controls": 64,
+        "controls_verified": 64,
+        "baseline_path": "tests/conformance/test262-is-prototype-of-current.json",
+        "baseline_sha256": "0c6a95e3eca5d1d8949f0770ff7dc2557dedfff8c96cd62ce5173ca5a1745efe",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "labels",
+        "published_report_sha256": "9fd81a2e6ef94862a327978a1e693c3e7fe0314b565b3a7e8b529354aa1bae2b",
+        "report_path": "/tmp/eris-date-ci-fix/profile-labels.json",
+        "report_sha256": "6fa51b3723bbfa2923b962b4309456a72f6942fe9fb2b94137fea33543428a12",
+        "exit_code": 0,
+        "counts": {
+          "passed": 100,
+          "unsupported": 25
+        },
+        "cases": 125,
+        "controls": 80,
+        "controls_verified": 80,
+        "baseline_path": "tests/conformance/test262-labels-current.json",
+        "baseline_sha256": "035145ff2b1d5df31077936c86d4ca54dc58185f7fb32ca812fd2ea96c1f07f3",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "logical-assignment",
+        "published_report_sha256": "740f9d9d7804ffe75daae23ba54e4922580f545430929e8a6a550e02d7563c20",
+        "report_path": "/tmp/eris-date-ci-fix/profile-logical-assignment.json",
+        "report_sha256": "4fdf40c164f72f42b0cdc368f8119fbac9f6abc33900f42c071c3de096ac35c6",
+        "exit_code": 0,
+        "counts": {
+          "unsupported": 48,
+          "passed": 78,
+          "failed": 6
+        },
+        "cases": 132,
+        "controls": 104,
+        "controls_verified": 104,
+        "baseline_path": "tests/conformance/test262-logical-assignment-current.json",
+        "baseline_sha256": "08550c1b03893e8b5e75ef8caa234b1ac7bb1c4f5f5e2dfaa37e69a0b38ac705",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "new-target",
+        "published_report_sha256": "72610fd1def8f41a91f6712b56a5e606ccf238e4096574d72b3bc08ade5910d1",
+        "report_path": "/tmp/eris-date-ci-fix/profile-new-target.json",
+        "report_sha256": "7381c3282c812f8ad5b158e5537e78b5dd15cf53a0e280671a27b6287c60258c",
+        "exit_code": 0,
+        "counts": {
+          "passed": 20,
+          "unsupported": 8
+        },
+        "cases": 28,
+        "controls": 96,
+        "controls_verified": 96,
+        "baseline_path": "tests/conformance/test262-new-target-current.json",
+        "baseline_sha256": "187696b419974db062b8eb5ddac457f7cc1fb849d3de6c495b91c7bb8026a2d7",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "number-statics",
+        "published_report_sha256": "c44b62d4fc5125f57b6e1e77cad5bec49517de5843c797ac987a4e8176ae0945",
+        "report_path": "/tmp/eris-date-ci-fix/profile-number-statics.json",
+        "report_sha256": "edea1dd6f83f85b54d8b05f156c885269116ab4cab1cb85e74a9af839f42405e",
+        "exit_code": 0,
+        "counts": {
+          "passed": 260,
+          "unsupported": 80
+        },
+        "cases": 340,
+        "controls": 104,
+        "controls_verified": 104,
+        "baseline_path": "tests/conformance/test262-number-statics-current.json",
+        "baseline_sha256": "2fbead399f2cf89c49a3d14a0a9b1202ef3021203f4bc393c93f05e66fcb7070",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "numeric-conversion",
+        "published_report_sha256": "4ae7741ebe886f47f8f2bbb62f4ee0ccba931b6a32838c1185a998901f3eadab",
+        "report_path": "/tmp/eris-date-ci-fix/profile-numeric-conversion.json",
+        "report_sha256": "30669633ac549c04d524b39ec5b9fa41059e1e11589f659cec071624640e8e43",
+        "exit_code": 0,
+        "counts": {
+          "passed": 32,
+          "unsupported": 28
+        },
+        "cases": 60,
+        "controls": 80,
+        "controls_verified": 80,
+        "baseline_path": "tests/conformance/test262-numeric-conversion-current.json",
+        "baseline_sha256": "2a14928428ef7fa112d0f4434eb7764a73b1685de2e494eaac9d3991a4cf187c",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "numeric-parsing",
+        "published_report_sha256": "5ecd8cf2577f5bca60dd4aa4ddfa7d445f9d0f87d6abd48898adfd1e13ee3e99",
+        "report_path": "/tmp/eris-date-ci-fix/profile-numeric-parsing.json",
+        "report_sha256": "9abdf12325c565bc259252a41923fd7565f803c698d1dba975fd2120b4bf966b",
+        "exit_code": 1,
+        "counts": {
+          "passed": 176,
+          "unsupported": 34,
+          "resource": 8
+        },
+        "cases": 218,
+        "controls": 80,
+        "controls_verified": 80,
+        "baseline_path": null,
+        "baseline_sha256": null,
+        "baseline_gate_passed": null,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "object-integrity",
+        "published_report_sha256": "a4b189e7b81fb75569e620043cb10cf4e932f856943ca920d4bfd2fb1d3e7ad9",
+        "report_path": "/tmp/eris-date-ci-fix/profile-object-integrity.json",
+        "report_sha256": "2b634904c9ef2f8299a03e7ee6b85a99de1e8ee350d457cf19ab174be00e0a41",
+        "exit_code": 0,
+        "counts": {
+          "passed": 394,
+          "unsupported": 38,
+          "failed": 42
+        },
+        "cases": 474,
+        "controls": 224,
+        "controls_verified": 224,
+        "baseline_path": "tests/conformance/test262-object-integrity-current.json",
+        "baseline_sha256": "59b2fff7ba920b4486cff5168cde5d4471ed7cefed080d6478399530da8d7736",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "reflect-construction",
+        "published_report_sha256": "0037eca0a769bffcbb89b0183e725af1a8290d8399ac041fa1c34d8ebdc0931e",
+        "report_path": "/tmp/eris-date-ci-fix/profile-reflect-construction.json",
+        "report_sha256": "3b89842227270ee477d27b0047b930d85610c4a7763f0a1f5c81acae6ca61e4f",
+        "exit_code": 0,
+        "counts": {
+          "passed": 38
+        },
+        "cases": 38,
+        "controls": 96,
+        "controls_verified": 96,
+        "baseline_path": "tests/conformance/test262-reflect-construction-current.json",
+        "baseline_sha256": "160ece084c889dd5693207aa59dcf0a732f04548eb15dbdacbcae3203680a22a",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "regexp",
+        "published_report_sha256": "72906dd90bc905452cbfc1581b81bae2f9b6f3957c1e9791789c16a5be6acfd1",
+        "report_path": "/tmp/eris-date-ci-fix/profile-regexp.json",
+        "report_sha256": "fcae8869c51400bcdb66b70b0fce7d9da52783510b7941b5c4e0bb5ab3d690df",
+        "exit_code": 0,
+        "counts": {
+          "passed": 262,
+          "unsupported": 28
+        },
+        "cases": 290,
+        "controls": 44,
+        "controls_verified": 44,
+        "baseline_path": "tests/conformance/test262-regexp-current.json",
+        "baseline_sha256": "07b65132730d23644e5405ba5990c7243870b2f3cef846864ad1d8dc3d5a43a5",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "regexp-constructor",
+        "published_report_sha256": "c3d9e9b896d82de1214738a9f76bfcdc6fa110c412f39ca75f0fde6ba6d90722",
+        "report_path": "/tmp/eris-date-ci-fix/profile-regexp-constructor.json",
+        "report_sha256": "af9a885d12c143806075d04420a6e34a80e1d8f47c4e27c3ce333525ae3ae169",
+        "exit_code": 1,
+        "counts": {
+          "passed": 774,
+          "unsupported": 200,
+          "resource": 2
+        },
+        "cases": 976,
+        "controls": 72,
+        "controls_verified": 72,
+        "baseline_path": null,
+        "baseline_sha256": null,
+        "baseline_gate_passed": null,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "regexp-match-search",
+        "published_report_sha256": "5cd3f55f65aba9423ec527fef471051a8366d189d16aaa6a53c5febe63d11249",
+        "report_path": "/tmp/eris-date-ci-fix/profile-regexp-match-search.json",
+        "report_sha256": "935acddb156511e1a7dab3064179cfdccf8243e956ed6d4d0aa479fc5205e6af",
+        "exit_code": 0,
+        "counts": {
+          "passed": 316,
+          "unsupported": 20,
+          "failed": 4
+        },
+        "cases": 340,
+        "controls": 80,
+        "controls_verified": 80,
+        "baseline_path": "tests/conformance/test262-regexp-match-search-current.json",
+        "baseline_sha256": "364b8180ba234cee05fede0c681816d6b1675b1af19eb450058334bf7cf6345c",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "regexp-split",
+        "published_report_sha256": "e971659226e5a1017a70233464d36f931808498de28c28ba49f2793c60d280e4",
+        "report_path": "/tmp/eris-date-ci-fix/profile-regexp-split.json",
+        "report_sha256": "610ae1600cf10331c3cf67859a08e8fa25c1f0c62b267c61946b5d15332e5a67",
+        "exit_code": 0,
+        "counts": {
+          "passed": 90,
+          "unsupported": 6
+        },
+        "cases": 96,
+        "controls": 72,
+        "controls_verified": 72,
+        "baseline_path": "tests/conformance/test262-regexp-split-current.json",
+        "baseline_sha256": "8a8aa3820823be4e9208b4e738942b676884a93d78cd6f0ea12db51d65e665ab",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "relational",
+        "published_report_sha256": "18a2adfffb7ad96e8a0ea7825800af047f8f67c1d23d6097cb0ca215f984c812",
+        "report_path": "/tmp/eris-date-ci-fix/profile-relational.json",
+        "report_sha256": "5cf3b87ad22110586ee90981716dcf2587de1145d09b4c5838f5ae2714022b11",
+        "exit_code": 0,
+        "counts": {
+          "unsupported": 64,
+          "passed": 300
+        },
+        "cases": 364,
+        "controls": 128,
+        "controls_verified": 128,
+        "baseline_path": "tests/conformance/test262-relational-current.json",
+        "baseline_sha256": "da9b25f56a36b1ff2b4997642fa26933ff534d9866ff155d0826f2599cb65fe9",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "rest-parameters",
+        "published_report_sha256": "434be10ca086663ac32091f112805407116972fe16f98d20c6449dc1c4489aed",
+        "report_path": "/tmp/eris-date-ci-fix/profile-rest-parameters.json",
+        "report_sha256": "1f3c60a7da294013371c7edf154a81f374591cbc61a12d14a5c13ae8a8a4573b",
+        "exit_code": 0,
+        "counts": {
+          "unsupported": 6,
+          "passed": 16
+        },
+        "cases": 22,
+        "controls": 64,
+        "controls_verified": 64,
+        "baseline_path": "tests/conformance/test262-rest-parameters-current.json",
+        "baseline_sha256": "d2afff0d3de3fa2cf37c68ee4d8b5e7794688dd1b514e827e4b2c22e763310f3",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "string-concat",
+        "published_report_sha256": "89c28667973b003703d232044226d2c2d5d99baabdb730b9893c69bb509a477a",
+        "report_path": "/tmp/eris-date-ci-fix/profile-string-concat.json",
+        "report_sha256": "a69a6bb29126885ec0acb81864e079c781e64a30527af10d486ecf2c7946be4c",
+        "exit_code": 0,
+        "counts": {
+          "passed": 44
+        },
+        "cases": 44,
+        "controls": 56,
+        "controls_verified": 56,
+        "baseline_path": "tests/conformance/test262-string-concat-current.json",
+        "baseline_sha256": "00367d16ec166ff6d88482b36221dc444922578482d5212fd4732fe512668364",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "string-json",
+        "published_report_sha256": "49d3387eefc8e646cc049870e47f429e2149bb7999338d1b3b9ec4ceb142ecbf",
+        "report_path": "/tmp/eris-date-ci-fix/profile-string-json.json",
+        "report_sha256": "25a9a9f784f4902c85a545b22fa43eaff4f0713d6bada91a5e56748189909017",
+        "exit_code": 0,
+        "counts": {
+          "passed": 568,
+          "unsupported": 84
+        },
+        "cases": 652,
+        "controls": 32,
+        "controls_verified": 32,
+        "baseline_path": "tests/conformance/test262-current.json",
+        "baseline_sha256": "988461016a336b25c74e36d19418b90d61193211ab9012dce0b0624e278a80ff",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "string-last-index-of",
+        "published_report_sha256": "e33f1e875179359005076d48371a93b978476d2469848c3ba47e0972386f6c63",
+        "report_path": "/tmp/eris-date-ci-fix/profile-string-last-index-of.json",
+        "report_sha256": "1e9865ab6ce0616a5f35d6953e09119a169d1979aee1a4807602c79b434a913d",
+        "exit_code": 0,
+        "counts": {
+          "passed": 50
+        },
+        "cases": 50,
+        "controls": 80,
+        "controls_verified": 80,
+        "baseline_path": "tests/conformance/test262-string-last-index-of-current.json",
+        "baseline_sha256": "4db22ae25a830831125415e7f6a29f136c77e72203b25810c1595b8ee4207cf5",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "string-search",
+        "published_report_sha256": "da33b925ca6b7c40e4d104b48fa1bc870fb13d4d475353fc811e77bddc6e1f11",
+        "report_path": "/tmp/eris-date-ci-fix/profile-string-search.json",
+        "report_sha256": "2e04083d49e8f4b59d24c6efd8526d0c46b1842c5af31aaa3f5e6989341ad8a5",
+        "exit_code": 0,
+        "counts": {
+          "passed": 470,
+          "unsupported": 12,
+          "failed": 2
+        },
+        "cases": 484,
+        "controls": 72,
+        "controls_verified": 72,
+        "baseline_path": "tests/conformance/test262-string-search-current.json",
+        "baseline_sha256": "952b4d98851498b70d5ee7a60c25e3894002d875ca98dab57869e2a0cc9e883b",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "symbols",
+        "published_report_sha256": "c5921a2fdfab5c73bb49756ca12b4909433bbd275e7365cbad4cc122075e3f66",
+        "report_path": "/tmp/eris-date-ci-fix/profile-symbols.json",
+        "report_sha256": "02ff6140e1fd206df9873bb7d277b3f808a2268ee84e29f0c41006d9b69de1df",
+        "exit_code": 0,
+        "counts": {
+          "passed": 184,
+          "unsupported": 54,
+          "failed": 4
+        },
+        "cases": 242,
+        "controls": 80,
+        "controls_verified": 80,
+        "baseline_path": "tests/conformance/test262-symbols-current.json",
+        "baseline_sha256": "7ad674a89581e055552742645de0912233df9fbb0af7d731d974e188b803baea",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "template-literal",
+        "published_report_sha256": "5304476a61087046f7aba4e8c1879f93e68a93b6c4eae29a527a3ca2d8701290",
+        "report_path": "/tmp/eris-date-ci-fix/profile-template-literal.json",
+        "report_sha256": "8fc6d386703f1f70fa480340425fb1021f060d59bf0d557238bb5ea97241d450",
+        "exit_code": 0,
+        "counts": {
+          "unsupported": 32,
+          "passed": 82
+        },
+        "cases": 114,
+        "controls": 44,
+        "controls_verified": 44,
+        "baseline_path": "tests/conformance/test262-template-literal-current.json",
+        "baseline_sha256": "e990475ba6e02361403ab3e610758cd3a91dbf8e02c15cbf649f5b425fd622a8",
+        "baseline_gate_passed": true,
+        "observation_changes": [],
+        "control_changes": []
+      },
+      {
+        "profile": "uri",
+        "published_report_sha256": "a2b5701b836072c569d7c01a590c2f716b96659e33e7e131807e2829f2b55188",
+        "report_path": "/tmp/eris-date-ci-fix/profile-uri.json",
+        "report_sha256": "972a373f1b734ea715841526cf258881f661b88c4d62adb7cdec270d2a53d83b",
+        "exit_code": 1,
+        "counts": {
+          "resource": 112,
+          "passed": 234
+        },
+        "cases": 346,
+        "controls": 128,
+        "controls_verified": 128,
+        "baseline_path": null,
+        "baseline_sha256": null,
+        "baseline_gate_passed": null,
+        "observation_changes": [],
+        "control_changes": []
+      }
+    ],
+    "baseline_snapshot_path": "/tmp/eris-date-ci-fix/baselines-before.json",
+    "baseline_snapshot_sha256": "a465147113557d8475d217ead191c1030442eeeb94e217813bdfe4db8157708d",
+    "baseline_updates": false,
+    "seven_observation_only_profiles_remain_unbaselined": true
+  },
+  "scope_limits": [
+    "Published Date evidence, baselines, source fixtures, expectations, helpers, policies and corpus selection are unchanged.",
+    "Four Date for-of prerequisite failures, 22 Date metadata exclusions and all other retained failures/resources remain visible.",
+    "This follow-up repeats the full formal/local adapter comparison and selected Rust checks; it does not repeat the earlier pixel-reference, HTML, stress or timing measurements.",
+    "The separately prepared DateHost readiness optimization is not included."
+  ]
+}
