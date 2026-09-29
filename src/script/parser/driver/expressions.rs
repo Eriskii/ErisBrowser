@@ -206,6 +206,13 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
         }
         Frame::New => {
             if p.eat("new") {
+                if p.eat(".") {
+                    p.expect("target")?;
+                    if !p.new_target_allowed {
+                        return Err(p.error("new.target outside a function"));
+                    }
+                    return done_expr(p, Expr::NewTarget);
+                }
                 child(Frame::NewHead, Frame::New)
             } else {
                 child(Frame::Pass, Frame::Primary)

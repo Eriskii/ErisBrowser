@@ -20,10 +20,12 @@ struct Context {
     allow_in: bool,
     strict: bool,
     labels: Vec<ActiveLabel>,
+    new_target_allowed: bool,
 }
 impl Context {
-    fn enter(p: &mut Parser<'_>) -> Self {
+    fn enter(p: &mut Parser<'_>, arrow: bool) -> Self {
         let saved = Self {
+            new_target_allowed: p.new_target_allowed,
             loop_depth: p.loop_depth,
             switch_depth: p.switch_depth,
             allow_in: p.allow_in,
@@ -34,6 +36,7 @@ impl Context {
         p.switch_depth = 0;
         p.allow_in = true;
         p.function_depth += 1;
+        p.new_target_allowed |= !arrow;
         saved
     }
     fn restore(self, p: &mut Parser<'_>) {
@@ -42,13 +45,14 @@ impl Context {
         p.allow_in = self.allow_in;
         p.strict = self.strict;
         p.labels = self.labels;
+        p.new_target_allowed = self.new_target_allowed;
     }
 }
 pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> Result<Transition> {
     match frame {
         Frame::Start(unique) => {
             p.expect("(")?;
-            let saved = Context::enter(p);
+            let saved = Context::enter(p, false);
             let state = State {
                 params: Vec::new(),
                 saved,
@@ -72,7 +76,7 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
         }
         Frame::Body(state) => finish(p, state, body(output)),
         Frame::Arrow(params) => {
-            let saved = Context::enter(p);
+            let saved = Context::enter(p, true);
             let state = State {
                 params,
                 saved,

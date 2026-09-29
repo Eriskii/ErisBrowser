@@ -165,6 +165,7 @@ pub(super) enum Expr {
     Literal(Value),
     RegExp(Rc<RegExp>),
     Ident(String),
+    NewTarget,
     Array(Vec<Option<ExprId>>),
     Object(Vec<(PropertyName, ObjectEntry)>),
     Unary(String, ExprId),
@@ -372,6 +373,7 @@ impl<'a> Lower<'a> {
         Ok(match value {
             E::Literal(value) => Expr::Literal(value.clone()),
             E::RegExp(value) => Expr::RegExp(value.clone()),
+            E::NewTarget => Expr::NewTarget,
             E::Ident(name) => Expr::Ident(text(name, &mut self.budget)?),
             E::Array(items) => {
                 let mut output = list(items.len(), &mut self.budget)?;
@@ -782,6 +784,7 @@ mod tests {
         match unit.expr(id) {
             Expr::Literal(v) => E::Literal(v.clone()),
             Expr::RegExp(v) => E::RegExp(v.clone()),
+            Expr::NewTarget => E::NewTarget,
             Expr::Ident(v) => E::Ident(v.clone()),
             Expr::Array(v) => E::Array(
                 v.iter()

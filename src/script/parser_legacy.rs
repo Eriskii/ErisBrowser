@@ -15,6 +15,7 @@ pub(super) struct Parser<'source> {
     pub(super) pos: usize,
     pub(super) depth: usize,
     pub(super) function_depth: usize,
+    pub(super) new_target_allowed: bool,
     pub(super) loop_depth: usize,
     pub(super) switch_depth: usize,
     pub(super) labels: Vec<ActiveLabel>,
@@ -48,6 +49,7 @@ impl<'source> Parser<'source> {
             pos: 0,
             depth: 0,
             function_depth: usize::from(function),
+            new_target_allowed: function,
             loop_depth: 0,
             switch_depth: 0,
             labels: Vec::new(),
@@ -902,6 +904,8 @@ impl<'source> Parser<'source> {
         Ok(parameter)
     }
     fn function(&mut self, unique_parameters: bool) -> Result<FunctionCode> {
+        let saved_new_target = self.new_target_allowed;
+        self.new_target_allowed = true;
         self.expect("(")?;
         let saved = (
             self.loop_depth,
@@ -964,6 +968,7 @@ impl<'source> Parser<'source> {
             self.strict,
             self.labels,
         ) = saved;
+        self.new_target_allowed = saved_new_target;
         Ok(FunctionCode {
             params,
             body: Rc::new(body),
@@ -1684,6 +1689,13 @@ impl<'source> Parser<'source> {
     fn new_expression_inner(&mut self) -> Result<Expr> {
         if !self.eat("new") {
             return self.primary();
+        }
+        if self.eat(".") {
+            self.expect("target")?;
+            if !self.new_target_allowed {
+                return Err(self.error("new.target outside a function"));
+            }
+            return Ok(Expr::NewTarget);
         }
         let mut constructor = self.new_expression()?;
         let mut count = 0;

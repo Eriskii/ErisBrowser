@@ -199,6 +199,16 @@ conversions retain earlier author effects, and resource failures unwind without
 running catch/finally recovery. This changes no script authority or quota. The
 ledger remains estimated; the checks do not establish production security.
 
+## Constructor execution state
+
+[Constructor targets](../tests/conformance/construction.md) use private environment
+slots charged to the existing heap ledger. Array-like and bound argument storage
+is checked and prepaid before reservation/copying; the argument cap and native
+stack guards remain in force. Getter callbacks and construction share runtime
+work, heap and recursion limits. Resource failures bypass script recovery and
+unwind continuation/call counters. These changes add no filesystem, network or
+GPU authority. The ledger remains an estimate, and no independent audit is claimed.
+
 ## Remaining work
 
 Stronger syscall confinement and complete opaque-response semantics; headless and cross-platform process isolation; complete origin/opaque-origin handling; Fetch/CORS/CSP and navigation policy; cookie/storage partitioning; mixed-content/private-network protection; permissions; verified dependency vulnerability monitoring; continuous coverage-guided fuzzing; sanitizers and cross-platform hardening; independent audit. The [CSP standard](https://www.w3.org/TR/CSP3/) describes substantially more behavior than the fallback above.

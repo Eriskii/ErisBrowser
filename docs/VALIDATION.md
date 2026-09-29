@@ -1,5 +1,29 @@
 # Validation record
 
+## Reflect calls and constructor targets
+
+The [constructor checkpoint](../tests/conformance/construction.md) adds private
+`new.target` state, Reflect call/construction operations, bound forwarding and
+alternate allocation prototypes. Its [evidence](../tests/conformance/construction.json)
+binds the source, binaries, complete inventories, controls and observations.
+
+The 33 newly imported Test262 sources produce 66 modes: **52 passed, four failed,
+ten unsupported**, gaining **46 passes** against the preserved prior binary.
+All **160 new assertion controls** verify. The four failed modes reach missing
+Date support; unsupported modes and unchanged sources remain in the inventory.
+All **7,165 modes and 1,800 controls** in the older 22 profiles are exactly
+unchanged, including observations and policies. All upstream HTML case objects
+are also unchanged: 3,868 matched, two mismatched, six unsupported.
+
+On Rust **1.88 / 1.95**, formatting, strict all-target Clippy and full tests pass:
+**1,003 default / 1,014 Vulkan-feature Rust tests**, none ignored. Both release
+builds preserve **57 headless CPU pixel references**; GPU presentation is outside
+these checks. **161 Python tests**, all **26 local constructor modes**, and
+**45,000 deterministic mutation cases** pass. Existing resource quotas and call guards remain in force; private slots and forwarded argument storage are charged. A targeted
+exhausted-heap test first exposed allocation before bound-arrow rejection, then
+passed after validation moved ahead of copying. No compatibility-wide, audited
+security or Chromium performance conclusion follows from these results.
+
 ## Optional Vulkan upload presenter
 
 The optional Linux presenter uploads frames produced by the custom CPU painter.

@@ -233,9 +233,16 @@ Window probe modes. Full Window interfaces and extensibility remain incomplete.
 
 [String.prototype.concat](tests/conformance/string-concat.md) now performs ordered
 string conversion and preserves UTF-16 units using one final output buffer.
-Its complete 22-source Test262 directory records 42 passed modes and two requiring
-unimplemented Reflect.construct; all 56 assertion controls verify. The existing
+Its complete 22-source Test262 directory records 42 passed modes and two excluded
+by that profile's frozen Reflect.construct feature policy; all 56 assertion controls verify. The existing
 21 profile inventories retain every previous pass and control.
+
+[Constructor targets and Reflect calls](tests/conformance/construction.md) now
+support `new.target`, `Reflect.apply` and `Reflect.construct`, including lexical
+arrow capture and bound construction. Two complete pinned Test262 selections
+gain 46 passes across 66 modes; four Date-dependent modes still fail and ten
+remain unsupported. Alternate Web IDL targets and broader constructor semantics
+remain incomplete.
 
 ## Implementation
 

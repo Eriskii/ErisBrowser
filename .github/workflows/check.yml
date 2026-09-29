@@ -34,6 +34,10 @@ jobs:
         run: python3 tools/html_conformance.py --baseline tests/conformance/html-tree-current.json
       - name: Preserve passing cases in the pinned Test262 selection
         run: python3 tools/test262_conformance.py --baseline tests/conformance/test262-current.json
+      - name: Preserve pinned Reflect call and constructor cases
+        run: python3 tools/test262_conformance.py --profile reflect-construction --baseline tests/conformance/test262-reflect-construction-current.json --output artifacts/test262-reflect-construction-gate.json
+      - name: Preserve pinned new.target cases
+        run: python3 tools/test262_conformance.py --profile new-target --baseline tests/conformance/test262-new-target-current.json --output artifacts/test262-new-target-gate.json
       - name: Preserve passing cases in the separate pinned RegExp selection
         run: python3 tools/test262_conformance.py --profile regexp --baseline tests/conformance/test262-regexp-current.json --output artifacts/test262-regexp-gate.json
       - name: Preserve passing cases in the pinned template literal selection

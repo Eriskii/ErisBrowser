@@ -1,0 +1,159 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all direct .js files in language/expressions/new.target; no implementation",
+  "directories": {
+    "expressions/new.target": [
+      "asi.js",
+      "escaped-new.js",
+      "escaped-target.js",
+      "unary-expr.js",
+      "value-via-call.js",
+      "value-via-fpapply.js",
+      "value-via-fpcall.js",
+      "value-via-member.js",
+      "value-via-new.js",
+      "value-via-reflect-apply.js",
+      "value-via-reflect-construct.js",
+      "value-via-super-call.js",
+      "value-via-super-property.js",
+      "value-via-tagged-template.js"
+    ]
+  },
+  "test_files": 14,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/asyncHelpers.js",
+      "upstream_path": "harness/asyncHelpers.js",
+      "bytes": 3570,
+      "sha256": "9afd9a18e080f30b998fa3b9c3e2303fc85fb1ebae664a532a58d56d86d3bcc9"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/doneprintHandle.js",
+      "upstream_path": "harness/doneprintHandle.js",
+      "bytes": 625,
+      "sha256": "01282de15feb05d865dfc2cdfc68f59d8e760eb7d81a14ade3bc08cbc8520add"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/language/expressions/new.target/asi.js",
+      "upstream_path": "test/language/expressions/new.target/asi.js",
+      "bytes": 1416,
+      "sha256": "772c8f341b1e2f259cc51d1049f1b1db6cc73f0767b9f57a379e0405550905c9"
+    },
+    {
+      "path": "test/language/expressions/new.target/escaped-new.js",
+      "upstream_path": "test/language/expressions/new.target/escaped-new.js",
+      "bytes": 823,
+      "sha256": "059dfe27c85373d55483ce0222828bdb2cfc4869eea8484ce0c19eb91c5fc791"
+    },
+    {
+      "path": "test/language/expressions/new.target/escaped-target.js",
+      "upstream_path": "test/language/expressions/new.target/escaped-target.js",
+      "bytes": 837,
+      "sha256": "ca9b5a47a18314d4ba7e4c218fa60fd207d22a215154dd9554c670bd35e98a40"
+    },
+    {
+      "path": "test/language/expressions/new.target/unary-expr.js",
+      "upstream_path": "test/language/expressions/new.target/unary-expr.js",
+      "bytes": 1242,
+      "sha256": "fe3e646f8626a844aefb51af2078c73f49c5a30eebcee44893d7ad6d7b9b7e9e"
+    },
+    {
+      "path": "test/language/expressions/new.target/value-via-call.js",
+      "upstream_path": "test/language/expressions/new.target/value-via-call.js",
+      "bytes": 542,
+      "sha256": "b4cc27c2f76f814b825c2bc572d6a337ec8168597120670b615eb82270ae0e2a"
+    },
+    {
+      "path": "test/language/expressions/new.target/value-via-fpapply.js",
+      "upstream_path": "test/language/expressions/new.target/value-via-fpapply.js",
+      "bytes": 469,
+      "sha256": "7da718539eaedb7e87e10450fd3b60fabaa14b44938926afd531a4bbc35df8ab"
+    },
+    {
+      "path": "test/language/expressions/new.target/value-via-fpcall.js",
+      "upstream_path": "test/language/expressions/new.target/value-via-fpcall.js",
+      "bytes": 466,
+      "sha256": "6d59bf08bad987a7c74999996a57a740ba26701e34edf81ff633c56869bd6810"
+    },
+    {
+      "path": "test/language/expressions/new.target/value-via-member.js",
+      "upstream_path": "test/language/expressions/new.target/value-via-member.js",
+      "bytes": 849,
+      "sha256": "f18e2268cc4aaee1426db88d2ceff3af72ca50925be057410f58fe3776696a3b"
+    },
+    {
+      "path": "test/language/expressions/new.target/value-via-new.js",
+      "upstream_path": "test/language/expressions/new.target/value-via-new.js",
+      "bytes": 927,
+      "sha256": "2736e29450eb3ce303b7343c97539cca26842a29e92a8f59509fbcf624113736"
+    },
+    {
+      "path": "test/language/expressions/new.target/value-via-reflect-apply.js",
+      "upstream_path": "test/language/expressions/new.target/value-via-reflect-apply.js",
+      "bytes": 471,
+      "sha256": "1c45ce50e6352677dda6ac813de9e9a9a323b27b133afba91f095388217e385f"
+    },
+    {
+      "path": "test/language/expressions/new.target/value-via-reflect-construct.js",
+      "upstream_path": "test/language/expressions/new.target/value-via-reflect-construct.js",
+      "bytes": 744,
+      "sha256": "7b45ad7277e1816ecd5efaf1fe8ebd44173ea8718c26d6a596d7d8942b40dac4"
+    },
+    {
+      "path": "test/language/expressions/new.target/value-via-super-call.js",
+      "upstream_path": "test/language/expressions/new.target/value-via-super-call.js",
+      "bytes": 877,
+      "sha256": "f63d4376131b965ab57312cf7fbea1f1a2dca58b21597225aca040897c0acd90"
+    },
+    {
+      "path": "test/language/expressions/new.target/value-via-super-property.js",
+      "upstream_path": "test/language/expressions/new.target/value-via-super-property.js",
+      "bytes": 672,
+      "sha256": "43411673ac56cbd9c76350032d5f29140f74b60d42379e8f6ed5a8e6017a8315"
+    },
+    {
+      "path": "test/language/expressions/new.target/value-via-tagged-template.js",
+      "upstream_path": "test/language/expressions/new.target/value-via-tagged-template.js",
+      "bytes": 558,
+      "sha256": "28cf9e98ceac4d5d06c9c6fc43984936e8760f4fe1cb296544c3d52be5d0cf11"
+    }
+  ]
+}

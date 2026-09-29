@@ -11,6 +11,7 @@ use std::rc::Rc;
 
 pub(in crate::script) struct Frame {
     owns_call: bool,
+    new_target: Value,
     phase: Phase,
 }
 enum Phase {
@@ -44,6 +45,7 @@ impl Frame {
     ) -> Self {
         Self {
             owns_call: !preentered,
+            new_target: Value::Undefined,
             phase: Phase::Start {
                 function,
                 arguments,
@@ -51,6 +53,10 @@ impl Frame {
                 native_guarded: preentered,
             },
         }
+    }
+    pub(super) fn with_new_target(mut self, new_target: Value) -> Self {
+        self.new_target = new_target;
+        self
     }
     pub(super) fn owns_call(&self) -> bool {
         self.owns_call
@@ -189,6 +195,7 @@ fn setup(
             runtime.coerce_object(receiver)?
         };
         runtime.environments[env].this_binding = Some(receiver);
+        runtime.environments[env].new_target_binding = Some(frame.new_target.clone());
     }
     let parameter_expressions = code.has_parameter_expressions();
     // Every formal exists before the first initializer; expression parameters

@@ -1,5 +1,12 @@
 # Compatibility status
 
+[Constructor targets and Reflect calls](../tests/conformance/construction.md) cover
+`new.target`, `Reflect.apply`, `Reflect.construct`, lexical arrows, bound forwarding
+and supported ECMAScript allocation prototypes. The two complete pinned selections
+record 52 passed, four failed and ten unsupported modes. Date, dynamic Function,
+classes/super, tagged templates, alternate Web IDL targets and broader native
+constructor conformance remain incomplete.
+
 [DOM string conversion and receivers](../tests/conformance/dom-string-conversion.md)
 cover the supported creation, query, attribute, tree and class-list operations.
 String hooks run in argument order before those operations; borrowed methods use

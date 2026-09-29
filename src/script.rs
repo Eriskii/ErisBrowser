@@ -17,6 +17,7 @@ use std::fmt;
 use std::rc::Rc;
 
 mod code;
+mod construction;
 mod dom_bindings;
 mod machine;
 mod names;
@@ -926,6 +927,7 @@ enum Expr {
     Literal(Value),
     RegExp(Rc<RegExp>),
     Ident(String),
+    NewTarget,
     Array(Vec<Option<Expr>>),
     Object(Vec<(PropertyName, ObjectEntry)>),
     Unary(String, Box<Expr>),
@@ -1239,6 +1241,7 @@ struct Environment {
     bindings: BTreeMap<String, Binding>,
     // Execution receiver, never an author-visible property or lexical name.
     this_binding: Option<Value>,
+    new_target_binding: Option<Value>,
     parent: Option<usize>,
     function_scope: bool,
     strict: bool,
@@ -1628,6 +1631,7 @@ impl Runtime {
                 Environment {
                     bindings,
                     this_binding: Some(Value::Window),
+                    new_target_binding: None,
                     parent: None,
                     function_scope: true,
                     strict: false,
@@ -1635,6 +1639,7 @@ impl Runtime {
                 Environment {
                     bindings: BTreeMap::new(),
                     this_binding: None,
+                    new_target_binding: None,
                     parent: Some(0),
                     function_scope: false,
                     strict: false,
@@ -1660,7 +1665,7 @@ impl Runtime {
             started: std::time::Instant::now(),
             steps: MAX_STEPS,
             allocated: 2048
-                + 2 * std::mem::size_of::<Option<Value>>()
+                + 4 * std::mem::size_of::<Option<Value>>()
                 + initial_binding_bytes
                 + TrackedGlobal::ALL
                     .iter()
@@ -3490,11 +3495,12 @@ impl Runtime {
         Ok(Value::Object(id))
     }
     fn environment(&mut self, parent: usize) -> Result<usize> {
-        self.charge(128 + std::mem::size_of::<Option<Value>>())?;
+        self.charge(128 + 2 * std::mem::size_of::<Option<Value>>())?;
         let id = self.environments.len();
         self.environments.push(Environment {
             bindings: BTreeMap::new(),
             this_binding: None,
+            new_target_binding: None,
             parent: Some(parent),
             function_scope: false,
             strict: self.environments[parent].strict,
@@ -4275,13 +4281,24 @@ impl Runtime {
         receiver: Value,
         doc: &mut Document,
     ) -> Result<Value> {
+        self.call_with_new_target(function, arguments, receiver, Value::Undefined, doc)
+    }
+    fn call_with_new_target(
+        &mut self,
+        function: Value,
+        arguments: Vec<Value>,
+        receiver: Value,
+        new_target: Value,
+        doc: &mut Document,
+    ) -> Result<Value> {
         self.tick()?;
         if self.calls >= MAX_CALLS {
             return Err(ScriptError::resource("script call stack limit exceeded"));
         }
         self.enter_stack(4)?;
         self.calls += 1;
-        let result = machine::invoke_preentered(self, function, arguments, receiver, doc);
+        let result =
+            machine::invoke_preentered(self, function, arguments, receiver, new_target, doc);
         self.calls -= 1;
         self.stack_units -= 4;
         result
@@ -5309,106 +5326,6 @@ impl Runtime {
         Err(ScriptError::type_error(
             "object cannot be converted to a number",
         ))
-    }
-    fn construct(
-        &mut self,
-        constructor: Value,
-        arguments: Vec<Value>,
-        doc: &mut Document,
-    ) -> Result<Value> {
-        self.enter_stack(4)?;
-        let result = self.construct_inner(constructor, arguments, doc);
-        self.stack_units -= 4;
-        result
-    }
-    fn construct_inner(
-        &mut self,
-        constructor: Value,
-        arguments: Vec<Value>,
-        doc: &mut Document,
-    ) -> Result<Value> {
-        match &constructor {
-            Value::Native(native)
-                if native.receiver == Value::Window
-                    && matches!(
-                        native.name.as_str(),
-                        "Event"
-                            | "CustomEvent"
-                            | "ToggleEvent"
-                            | "EventTarget"
-                            | "DOMException"
-                            | "AbortController"
-                            | "AbortSignal"
-                    ) =>
-            {
-                self.event_construct(&native.name, &arguments, doc)
-            }
-            Value::Native(native)
-                if native.name == "RegExp" && native.receiver == Value::Window =>
-            {
-                self.regexp_create(
-                    arguments.first().cloned().unwrap_or(Value::Undefined),
-                    arguments.get(1).cloned().unwrap_or(Value::Undefined),
-                    false,
-                    doc,
-                )
-            }
-            Value::Function(id) if self.functions[*id].bound.is_some() => {
-                let bound = self.functions[*id].bound.clone().unwrap();
-                self.charge(
-                    (bound.arguments.len() + arguments.len())
-                        .saturating_mul(std::mem::size_of::<Value>()),
-                )?;
-                let mut combined = bound.arguments;
-                combined.extend(arguments);
-                self.construct(bound.target, combined, doc)
-            }
-            Value::Function(id) if self.functions[*id].code.constructable => {
-                let prototype = self.get(constructor.clone(), "prototype", doc)?;
-                let instance = self.object_ordered([])?;
-                let Value::Object(id) = instance else {
-                    unreachable!()
-                };
-                if js_object(&prototype) {
-                    self.objects[id].prototype = Some(prototype);
-                }
-                let result = self.call(constructor, arguments, instance.clone(), doc)?;
-                Ok(if js_object(&result) { result } else { instance })
-            }
-            Value::Native(native)
-                if native.receiver == Value::Window
-                    && matches!(
-                        native.name.as_str(),
-                        "Object"
-                            | "Function"
-                            | "Array"
-                            | "String"
-                            | "Number"
-                            | "Boolean"
-                            | "Error"
-                            | "TypeError"
-                            | "SyntaxError"
-                            | "ReferenceError"
-                            | "RangeError"
-                            | "EvalError"
-                            | "URIError"
-                    ) =>
-            {
-                if native.name == "String" && matches!(arguments.first(), Some(Value::Symbol(_))) {
-                    return Err(ScriptError::type_error(
-                        "cannot convert a symbol to a string",
-                    ));
-                }
-                let boxed = matches!(native.name.as_str(), "String" | "Number" | "Boolean");
-                let result = self.call(constructor, arguments, Value::Window, doc)?;
-                if boxed {
-                    self.coerce_object(result)
-                } else {
-                    Ok(result)
-                }
-            }
-            _ => Err(ScriptError::type_error("value is not a constructor")),
-        }
     }
 
     fn get_key(&mut self, receiver: Value, key: &JsString, doc: &mut Document) -> Result<Value> {
@@ -8191,6 +8108,36 @@ impl Runtime {
                 });
                 return Ok(Value::Function(id));
             }
+            "Reflect.apply" => {
+                let target = arg(0);
+                if !json_callable(&target) {
+                    return Err(ScriptError::type_error(
+                        "Reflect.apply target is not callable",
+                    ));
+                }
+                let arguments = self.argument_list(arg(2), doc)?;
+                return self.call(target, arguments, arg(1), doc);
+            }
+            "Reflect.construct" => {
+                let target = arg(0);
+                if !self.is_constructor(target.clone())? {
+                    return Err(ScriptError::type_error(
+                        "Reflect.construct target is not a constructor",
+                    ));
+                }
+                let new_target = if args.len() < 3 {
+                    target.clone()
+                } else {
+                    arg(2)
+                };
+                if !self.is_constructor(new_target.clone())? {
+                    return Err(ScriptError::type_error(
+                        "Reflect.construct newTarget is not a constructor",
+                    ));
+                }
+                let arguments = self.argument_list(arg(1), doc)?;
+                return self.construct_with_target(target, arguments, new_target, doc);
+            }
             "Function.hasInstance" => {
                 return self
                     .instance_of(arg(0), native.receiver.clone(), true, doc)
@@ -8206,26 +8153,7 @@ impl Runtime {
                 } else if matches!(arg(1), Value::Null | Value::Undefined) {
                     Vec::new()
                 } else {
-                    let object = arg(1);
-                    if !js_object(&object) {
-                        return Err(ScriptError::type_error("apply arguments must be an object"));
-                    }
-                    let length = self.get(object.clone(), "length", doc)?;
-                    if let Value::String(text) = &length {
-                        self.work(1 + text.len() / 16)?;
-                    }
-                    let length = integer_or_infinity(self.number_value(length, doc)?).max(0.0);
-                    if length > 65536.0 {
-                        return Err(ScriptError::resource("apply argument limit exceeded"));
-                    }
-                    let length = length.max(0.0).floor() as usize;
-                    self.charge(length.saturating_mul(std::mem::size_of::<Value>()))?;
-                    let mut parameters = Vec::with_capacity(length);
-                    for index in 0..length {
-                        self.tick()?;
-                        parameters.push(self.get(object.clone(), &index.to_string(), doc)?);
-                    }
-                    parameters
+                    self.argument_list(arg(1), doc)?
                 };
                 return self.call(native.receiver.clone(), parameters, receiver, doc);
             }
@@ -15735,6 +15663,7 @@ mod tests {
             pos: 0,
             depth: 0,
             function_depth: 0,
+            new_target_allowed: false,
             loop_depth: 0,
             switch_depth: 0,
             labels: Vec::new(),

@@ -255,12 +255,15 @@ pub(super) fn invoke_preentered(
     function: Value,
     arguments: Vec<Value>,
     receiver: Value,
+    new_target: Value,
     doc: &mut Document,
 ) -> Result<Value> {
     // Runtime::call owns this entry's tick, logical count and native guard.
     match drive(
         runtime,
-        Frame::Call(calls::Frame::new(function, arguments, receiver, true)),
+        Frame::Call(
+            calls::Frame::new(function, arguments, receiver, true).with_new_target(new_target),
+        ),
         doc,
     )? {
         Output::Value(value) => Ok(value),
@@ -543,6 +546,7 @@ fn start(runtime: &mut Runtime, frame: ExprFrame, doc: &mut Document) -> Result<
     runtime.tick()?;
     match unit.expr(id) {
         code::Expr::Literal(v) => Ok(Some(Output::Value(v.clone()))),
+        code::Expr::NewTarget => runtime.new_target(env).map(|v| Some(Output::Value(v))),
         code::Expr::RegExp(v) => runtime
             .regexp_object(v.clone())
             .map(|v| Some(Output::Value(v))),

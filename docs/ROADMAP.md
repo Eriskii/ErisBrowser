@@ -4,7 +4,11 @@ The [Window global-binding checkpoint](../tests/conformance/window-global-bindin
 adds general data/accessor definitions, exact UTF-16 property keys, private
 execution receivers and global declaration validation. The
 [String concat checkpoint](../tests/conformance/string-concat.md) adds bounded,
-ordered conversion and exact UTF-16 assembly. Next work includes
+ordered conversion and exact UTF-16 assembly. The
+[constructor checkpoint](../tests/conformance/construction.md) adds Reflect calls,
+private `new.target` bindings and alternate ECMAScript allocation targets.
+Next work includes alternate Web IDL targets, remaining native constructor
+semantics, reviewed expansion of older Test262 feature policies,
 Window extensibility and interface coverage, complete DOMString storage and Web
 IDL interfaces, remaining Symbol consumers, iterator infrastructure and broader
 ECMAScript dependencies. These sit alongside the Vulkan milestones below.
