@@ -1,0 +1,83 @@
+{
+  "format": "eris-array-concat-integration-oracle-v1",
+  "authored_utc": "2026-09-29T12:02:35.846231+00:00",
+  "status": "Expected observations fixed before runtime implementation or engine execution",
+  "files": [
+    {
+      "path": "tests/fixtures/array-concat.html",
+      "sha256": "43e00a45c5d00c5d631df1fa5393f54e6b80dcbd7e864eb0e4a84e7ff723d5fa",
+      "bytes": 4628
+    },
+    {
+      "path": "tests/pipeline.rs",
+      "sha256": "86dab42b3b9c8691a0a71818d6f63b7161d57ecf4a3eafd8b9423af61104c949",
+      "bytes": 48369
+    },
+    {
+      "path": "tests/worker.rs",
+      "sha256": "28fab1f7dd91f946015e3d0d16289cfa6f88c28dc43d80b29b31bff35d81f301",
+      "bytes": 80572
+    }
+  ],
+  "viewport": [
+    320,
+    240
+  ],
+  "worker_generation": 191,
+  "phases": [
+    {
+      "action": "initial load",
+      "body_class": "ready",
+      "result_text": "ready",
+      "sample_rgb": 32768
+    },
+    {
+      "action": "click #change",
+      "body_class": "clicked",
+      "result_text": "6",
+      "sample_rgb": 255
+    }
+  ],
+  "sample_points": [
+    [
+      10,
+      10
+    ],
+    [
+      60,
+      10
+    ],
+    [
+      110,
+      10
+    ],
+    [
+      160,
+      10
+    ],
+    [
+      210,
+      10
+    ],
+    [
+      260,
+      10
+    ]
+  ],
+  "expected_checks": {
+    "sparse": "Result [2,7,hole,9], length 4; inherited source index1 stays inherited.",
+    "live": "Getter0 deletes1, creates2=99, extends later object length to2; result [10,hole,99,3,4], one getter call.",
+    "species": "Constructor argument is exactly one numeric zero; trace CSL; CreateDataProperty bypasses inherited numeric setter; final inherited length setter sees completed [4,5] and receives2.",
+    "alias": "Species returns later input [2,3]; first receiver write changes it to [1,3]; copying index0 to1 then reading index1 yields [1,1,1], same result object.",
+    "partial": "Nonconfigurable readonly result1 rejects definition after its source getter; result0=8 and getter side effect retained; final length unset.",
+    "final": "Existing result array receives index0=10, then final length1 deletes6 and5 before nonconfigurable4 fails; length restored5 and keys1..4 remain."
+  },
+  "diagnostics": "Page has none; worker has only existing Page process / Resource broker informational messages.",
+  "bounds": {
+    "checks_per_phase": 6,
+    "maximum_array_length": 7,
+    "external_resources": 0,
+    "timers": 0
+  },
+  "executed": false
+}

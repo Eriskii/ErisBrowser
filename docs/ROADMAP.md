@@ -1,5 +1,16 @@
 # Development docket
 
+[Array concat](../tests/conformance/array-concat.md) now streams live
+spreadability, same-realm species and aliased results. Its complete upstream
+profile gains 99 passes with no lost pass; four typed-array failures, eighteen
+unsupported modes and two ordinary hole-scan resource stops remain visible.
+All 40 older profiles and six selected local suites retain their complete
+observations. Resource outcomes prevent a new gate; the 33 established gates
+remain unchanged. Proxy, typed arrays, foreign realms, remaining Array methods
+and broader accounting remain ahead. The optional CPU-frame Vulkan presenter
+and standalone rectangle/image probe are unchanged; browser GPU rasterization
+and compositing remain open.
+
 [Array splice](../tests/conformance/array-splice.md) now streams live property
 operations with same-realm species, aliased results and ordered partial effects.
 The complete pinned profile has 138 passes and 24 unchanged exclusions; all 96

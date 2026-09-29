@@ -1,0 +1,93 @@
+{
+  "format": 1,
+  "scope": "Generic streaming Array.prototype.concat with live spreadability and same-realm species; full browser goal incomplete",
+  "parent": "dffca3d69c39de5c58e55838918c0b704b275d5d",
+  "production_input_sha256": "b5204aa57dbbfbadedacfca614746cb1ad3b643da7156a81769ff0063d4f32f9",
+  "candidate": 1,
+  "local": {
+    "source_cases": 45,
+    "mode_cases": 90,
+    "counts": {
+      "passed": 80,
+      "failed": 4,
+      "unsupported": 2,
+      "resource": 4
+    },
+    "fixture_expectations_verified": 84,
+    "controls": 68,
+    "controls_verified": 68,
+    "before_sha256": "5e3fcc9beaaf33a2bfc4b50ffb76648fe0c4dcbc0ff36ac5e46049fda804b831",
+    "after_sha256": "8e4ae9f1d4b836b73e21a1ce8ce44296b73e20382622bb917768327e4d4528d0",
+    "unmet_prerequisite_modes": 6,
+    "resource_modes_are_explicit_engine_policy": 4,
+    "report": "array-concat-final.json"
+  },
+  "formal": {
+    "source_files": 69,
+    "mode_cases": 137,
+    "admitted_modes": 121,
+    "fixed_metadata_exclusions": 16,
+    "counts": {
+      "passed": 113,
+      "failed": 4,
+      "unsupported": 18,
+      "resource": 2
+    },
+    "controls": 96,
+    "controls_verified": 96,
+    "raw_pass_gains": 99,
+    "raw_pass_losses": 0,
+    "before_raw_passes_were_incidental_missing_method_exceptions": 14,
+    "remaining_failed_modes": "Four Uint8Array ReferenceErrors",
+    "additional_unsupported_modes": "Two admitted class-syntax inputs stop during parsing",
+    "resource_modes": "Both unchanged spreadable-sparse-object modes stop at the runtime instruction limit; original source includes a 4000-hole concat and comparison. These remain unmet ordinary expectations.",
+    "before_sha256": "cbfae3b83620d3f6e34faeb5c0ae9a63a2bfb6ff6b7418a60f1c63ddb43df2b8",
+    "after_sha256": "f0cf9daae3fd657fed9cd2dfa6a23e71e4c34a312db2ea42312b133d0fb0f50c",
+    "runner_exit_code": 1,
+    "report": "test262-array-concat-final.json"
+  },
+  "historical": {
+    "profiles": 40,
+    "mode_cases": 17984,
+    "controls": 3996,
+    "complete_observation_changes": 0,
+    "known_state_gates_passed": 33,
+    "older_local_suites": 6,
+    "older_local_modes": 1288,
+    "older_local_controls": 248,
+    "older_local_complete_observation_changes": 0
+  },
+  "catalog": {
+    "profiles": 41,
+    "mode_cases": 18121,
+    "controls": 4092,
+    "known_state_gates": 33
+  },
+  "validation": {
+    "path": "tests/conformance/array-concat-validation.json",
+    "sha256": "232f742f7110c8f62aedd3bdb192bf7e2c123fc80921550a4b76e8db05080ba6"
+  },
+  "limits": {
+    "path": "tests/conformance/array-concat-limits.json",
+    "sha256": "7058358485d54ae5a267624be273bc4af466bc30d9ad3317a4003b97af484bbc"
+  },
+  "integration": "array-concat-integration-validation.json",
+  "preparation": "array-concat-preparation-record.json",
+  "policy": {
+    "new_baseline_written": false,
+    "new_CI_gate_added": false,
+    "existing_33_baselines_unchanged": true,
+    "reason": "The existing runner excludes resource outcomes from healthy baseline publication; both formal resources are retained without changing that rule.",
+    "feature_policy": "ARRAY_SPLICE_FEATURES.copy()",
+    "quotas_unchanged": true
+  },
+  "limitations": [
+    "No Proxy, typed-array or foreign-realm implementation is added.",
+    "The 4000-hole formal resource stops remain compatibility/work-budget gaps.",
+    "General constructor/callback/property/JSON accounting and allocator fallibility remain separate.",
+    "No browser GPU integration, GPU execution or Chromium performance comparison in this checkpoint."
+  ],
+  "full_goal_complete": false,
+  "production_security_claimed": false,
+  "remote_ci_status": "Pending publication"
+}

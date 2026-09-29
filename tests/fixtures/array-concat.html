@@ -1,0 +1,52 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Array concat through document callbacks</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#sparse{left:0}#live{left:50px}#species{left:100px}#alias{left:150px}#partial{left:200px}#final{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="sparse" class="sample"></div><div id="live" class="sample"></div>
+<div id="species" class="sample"></div><div id="alias" class="sample"></div>
+<div id="partial" class="sample"></div><div id="final" class="sample"></div>
+<button id="change" type="button">Run concat callbacks</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function own(object,key){return Object.prototype.hasOwnProperty.call(object,key);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+function apply(color){
+  check(typeof Array.prototype.concat==='function','concat availability');
+  const concat=Array.prototype.concat;
+  const sparse=Object.create({1:7});sparse[0]=2;sparse.length=3;sparse[Symbol.isConcatSpreadable]=true;
+  const copied=concat.call(sparse,[9]);
+  check(copied.length===4&&copied[0]===2&&copied[1]===7&&!own(copied,'2')&&copied[3]===9&&sparse.length===3&&!own(sparse,'1'),'inherited sparse reads and output holes');mark('sparse',color);
+  const later={0:3,length:1},live={1:20,length:3};later[Symbol.isConcatSpreadable]=true;live[Symbol.isConcatSpreadable]=true;let reads=0;
+  Object.defineProperty(live,'0',{get:function(){reads++;delete live[1];live[2]=99;later[1]=4;later.length=2;return 10;},configurable:true});
+  const seen=concat.call(live,later);
+  check(reads===1&&seen.length===5&&seen[0]===10&&!own(seen,'1')&&seen[2]===99&&seen[3]===3&&seen[4]===4,'live source reads and later length capture');mark('live',color);
+  let trace='',setters=0;const proto={},source=[4,5],constructor={};
+  Object.defineProperty(proto,'0',{set:function(){setters++;throw new Error('definition invoked inherited setter');}});
+  Object.defineProperty(proto,'length',{set:function(value){check(value===2&&this[0]===4&&this[1]===5,'final length sees completed output');trace+='L';}});
+  constructor[Symbol.species]=function(length){check(arguments.length===1&&length===0,'species length argument');trace+='C';return Object.create(proto);};source.constructor=constructor;
+  Object.defineProperty(source,Symbol.isConcatSpreadable,{get:function(){trace+='S';return true;}});
+  const output=concat.call(source);
+  check(trace==='CSL'&&setters===0&&Object.getPrototypeOf(output)===proto&&own(output,'0')&&!own(output,'length')&&source.length===2,'species precedes spreading and final strict setter');mark('species',color);
+  const first=[1],alias=[2,3],aliasConstructor={};aliasConstructor[Symbol.species]=function(){return alias;};first.constructor=aliasConstructor;
+  const reused=concat.call(first,alias);
+  check(reused===alias&&alias.length===3&&alias[0]===1&&alias[1]===1&&alias[2]===1&&first[0]===1,'result alias changes later input reads');mark('alias',color);
+  const partial={},partialSource=[8,9],partialConstructor={};let caught=false,priorReads=0;
+  Object.defineProperty(partial,'1',{value:'locked',writable:false,configurable:false});
+  Object.defineProperty(partialSource,'1',{get:function(){priorReads++;return 9;},configurable:true});
+  partialConstructor[Symbol.species]=function(){return partial;};partialSource.constructor=partialConstructor;
+  try{concat.call(partialSource);}catch(error){caught=error instanceof TypeError;}
+  check(caught&&priorReads===1&&partial[0]===8&&partial[1]==='locked'&&!own(partial,'length'),'failed definition retains getter effects and earlier output');mark('partial',color);
+  const finalArray=[0,1,2,3,4,5,6],finalSource=[10],finalConstructor={};let finalCaught=false;
+  Object.defineProperty(finalArray,'4',{configurable:false});finalConstructor[Symbol.species]=function(){return finalArray;};finalSource.constructor=finalConstructor;
+  try{concat.call(finalSource);}catch(error){finalCaught=error instanceof TypeError;}
+  check(finalCaught&&finalArray.length===5&&finalArray[0]===10&&finalArray[3]===3&&finalArray[4]===4&&!own(finalArray,'5')&&!own(finalArray,'6'),'strict final length retains partial array shrink');mark('final',color);
+}
+apply('green');document.getElementById('result').textContent='ready';document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  apply('blue');document.getElementById('result').textContent='6';document.body.className='clicked';
+};
+</script>

@@ -1,5 +1,58 @@
 # Validation record
 
+## Array concat, live spreadability and aliased results
+
+The [concat evidence](../tests/conformance/array-concat.json) compares against
+published commit `dffca3d69c39de5c58e55838918c0b704b275d5d`. Independent sources,
+expectations, modes and guarded controls were reviewed and frozen before
+implementation and engine observations. The [local report](../tests/conformance/array-concat-final.json)
+retains **80 passed, four failed, two unsupported and four expected resource
+stops**: **84 of 90 expectations and all 68 controls verify**. Proxy, typed-array
+and cross-realm cases retain their unmet ordinary-success expectations. The
+[before report](../tests/conformance/array-concat-initial.json) preserves 88
+availability failures, two host-hook exclusions and only twelve verified common
+controls; failed positive guards prevent incidental wrong assertions from
+proving feature health.
+
+The [complete pinned profile](../tests/conformance/test262-array-concat.md)
+retains **69 sources / 137 modes**: **113 passed, four failed, eighteen unsupported
+and two resource outcomes**, with **96 verified controls**. Four failures require
+`Uint8Array`; sixteen unsupported modes retain metadata exclusions and two
+admitted modes reach unsupported class syntax. Both modes of an ordinary
+4,000-hole test exhaust work. The fourteen incidental before TypeError passes
+remain recorded; the candidate gains **99 passes with none lost**. The unchanged
+runner classifies resource outcomes as bad runs, so **no concat baseline or CI
+gate is added**. The catalog has **41 profiles / 18,121 modes / 4,092 controls**
+and retains **33 established known-state gates**.
+
+All **40 older profiles / 17,984 case observations / 3,996 controls** remain
+exactly unchanged, and all 33 existing gates pass. Six selected older local
+suites preserve **1,288 fixture observations and 248 controls**. Comparisons
+retain complete records, including failures, exclusions, resource outcomes and
+error identities. Frozen sources, expectations, policies and quotas are unchanged.
+
+Formatting passes. Rust **1.88 and 1.98** each pass strict all-target Clippy and
+**1,243 default / 1,254 Vulkan-feature tests**. All **thirteen concat private
+groups** and **264 Python tests** pass. Both release configurations pass all
+**57 CPU pixel references**. The load/click fixture passes directly and through
+the real confined worker in the full test matrices. The HTML adapters and all
+68 retained HTML inputs are byte-identical to the preceding checkpoint, so its
+**3,868 matches, two mismatches and six unsupported outcomes** are reused;
+there is no fresh HTML run. One mutation-smoke run covers **15,000 cases** with
+zero caught panics or invariant failures and **seventeen bounded paint stops**.
+The [validation record](../tests/conformance/array-concat-validation.json) and
+[integration record](../tests/conformance/array-concat-integration-validation.json)
+bind the exact source, binaries, logs and reuse attribution.
+
+Concat uses live Has/Get and own data definitions, then a strict result-length
+write. Same-realm species can alias any input; prior effects remain observable
+after failure. Shared helper charges and constant-size loop state preserve the
+existing limits. Public huge hole walks are resource-policy checks; seeded
+private tests cover the later Array u32 length boundary. General accounting,
+unsupported prerequisites and broader compatibility remain open. New remote CI
+is pending publication; this checkpoint adds no GPU execution, performance
+comparison or production-security claim.
+
 ## Generic Array splice and same-realm species
 
 The [splice evidence](../tests/conformance/array-splice.json) compares against

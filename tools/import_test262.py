@@ -20,6 +20,7 @@ OBJECT_INTEGRITY_DIRECTORIES = {'Object/seal': 94, 'Object/freeze': 53,
                                 'Object/isSealed': 33, 'Object/isFrozen': 59}
 ARRAY_FIND_DIRECTORIES = {'Array/prototype/find': 23, 'Array/prototype/findIndex': 23,
                           'Array/prototype/findLast': 24, 'Array/prototype/findLastIndex': 24}
+ARRAY_CONCAT_DIRECTORIES = {'Array/prototype/concat': 69}
 ARRAY_SPLICE_DIRECTORIES = {'Array/prototype/splice': 81}
 ARRAY_FROM_DIRECTORIES = {'Array/from': 47}
 DATE_TREE = '6ad4fab73be4a87e6bfb58793b5fa9c82335ce5e'
@@ -32,6 +33,7 @@ CORE_ITERATOR_DIRECTORIES = {
     'StringIteratorPrototype': 2, 'StringIteratorPrototype/next': 5,
 }
 ITERATION_SUBTREES = {
+    'array-concat': {'Array/prototype/concat': '6a606717eec7a333a5136fc03dc7b941a28dcd3e'},
     'array-splice': {'Array/prototype/splice': '79383dccad0703220657c1592f4e5688f51f711c'},
     'array-from': {'Array/from': 'e3a97b42c65283fc23a15d65610c2461e6f02715'},
     'for-of': {'statements/for-of': '592792d58aaf7752ef1b74e0edba13157f698a38'},
@@ -45,6 +47,7 @@ ITERATION_SUBTREES = {
     },
 }
 ITERATION_HELPERS = {
+    'array-concat': {'assert.js', 'sta.js', 'compareArray.js', 'propertyHelper.js', 'isConstructor.js'},
     'array-splice': {'assert.js', 'sta.js', 'compareArray.js', 'propertyHelper.js', 'isConstructor.js', 'proxyTrapsHelper.js'},
     'array-from': {'assert.js', 'sta.js', 'compareArray.js', 'propertyHelper.js', 'isConstructor.js'},
     'for-of': {'assert.js', 'sta.js', 'asyncHelpers.js', 'compareArray.js',
@@ -53,7 +56,7 @@ ITERATION_HELPERS = {
                        'propertyHelper.js', 'resizableArrayBufferUtils.js',
                        'detachArrayBuffer.js', 'testTypedArray.js'},
 }
-TREE_PROFILES = {'array-splice', 'array-from', 'for-of', 'core-iterators', 'date', 'array-descriptors', 'array-predicates', 'object-integrity', 'array-find'}
+TREE_PROFILES = {'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators', 'date', 'array-descriptors', 'array-predicates', 'object-integrity', 'array-find'}
 DIRECTORIES = {
     'JSON/parse': 77, 'JSON/stringify': 66,
     'String/prototype/charAt': 30, 'String/prototype/charCodeAt': 25,
@@ -131,7 +134,7 @@ SYMBOL_DIRECTORIES = {
     'Symbol/toStringTag': 2,
     'Symbol/unscopables': 2,
 }
-PROFILES = {'array-splice': ARRAY_SPLICE_DIRECTORIES, 'array-from': ARRAY_FROM_DIRECTORIES, 'for-of': FOR_OF_DIRECTORIES, 'core-iterators': CORE_ITERATOR_DIRECTORIES, 'date': DATE_DIRECTORIES, 'array-find': ARRAY_FIND_DIRECTORIES, 'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates': ARRAY_PREDICATE_DIRECTORIES, 'array-descriptors': ARRAY_DESCRIPTOR_DIRECTORIES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_DIRECTORIES, 'string-last-index-of': STRING_LAST_INDEX_OF_DIRECTORIES, 'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
+PROFILES = {'array-concat': ARRAY_CONCAT_DIRECTORIES, 'array-splice': ARRAY_SPLICE_DIRECTORIES, 'array-from': ARRAY_FROM_DIRECTORIES, 'for-of': FOR_OF_DIRECTORIES, 'core-iterators': CORE_ITERATOR_DIRECTORIES, 'date': DATE_DIRECTORIES, 'array-find': ARRAY_FIND_DIRECTORIES, 'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates': ARRAY_PREDICATE_DIRECTORIES, 'array-descriptors': ARRAY_DESCRIPTOR_DIRECTORIES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_DIRECTORIES, 'string-last-index-of': STRING_LAST_INDEX_OF_DIRECTORIES, 'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'function-constructor': FUNCTION_CONSTRUCTOR_DIRECTORIES,
             'reflect-construction': REFLECT_CONSTRUCTION_DIRECTORIES, 'new-target': NEW_TARGET_DIRECTORIES,
             'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
@@ -144,7 +147,7 @@ PROFILES = {'array-splice': ARRAY_SPLICE_DIRECTORIES, 'array-from': ARRAY_FROM_D
             'numeric-parsing': NUMERIC_PARSING_DIRECTORIES,
             'compound-assignment': COMPOUND_ASSIGNMENT_DIRECTORIES,
             'addition': ADDITION_DIRECTORIES, 'logical-assignment': LOGICAL_ASSIGNMENT_DIRECTORIES, 'uri': URI_DIRECTORIES, 'relational': RELATIONAL_DIRECTORIES, 'equality': EQUALITY_DIRECTORIES, 'labels': LABELS_DIRECTORIES}
-PROFILE_ROOTS = {'array-splice': 'test/built-ins', 'array-from': 'test/built-ins', 'for-of': 'test/language', 'core-iterators': 'test/built-ins', 'date': 'test/built-ins', 'array-find': 'test/built-ins', 'object-integrity': 'test/built-ins', 'array-predicates': 'test/built-ins', 'array-descriptors': 'test/built-ins', 'array-last-index-of': 'test/built-ins', 'string-last-index-of': 'test/built-ins', 'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
+PROFILE_ROOTS = {'array-concat': 'test/built-ins', 'array-splice': 'test/built-ins', 'array-from': 'test/built-ins', 'for-of': 'test/language', 'core-iterators': 'test/built-ins', 'date': 'test/built-ins', 'array-find': 'test/built-ins', 'object-integrity': 'test/built-ins', 'array-predicates': 'test/built-ins', 'array-descriptors': 'test/built-ins', 'array-last-index-of': 'test/built-ins', 'string-last-index-of': 'test/built-ins', 'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
                  'function-constructor': 'test/built-ins', 'reflect-construction': 'test/built-ins', 'new-target': 'test/language',
                  'template-literal': 'test/language', 'functions': 'test/language',
                  'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins',
@@ -701,6 +704,7 @@ def import_corpus(output, profile='string-json'):
     if sum(map(len, sources.values())) + sum(map(len, proof.values())) > MAX_TOTAL:
         raise ValueError('Test262 selection exceeds aggregate import limit')
     scope = {
+        'array-concat': 'all .js files in the complete recursive built-ins/Array/prototype/concat subtree; original root-linked Git proofs; no implementation',
         'array-splice': 'all .js files in the complete recursive built-ins/Array/prototype/splice subtree; original root-linked Git proofs; no implementation',
         'array-from': 'all .js files in the complete recursive built-ins/Array/from subtree; original root-linked Git proofs; no implementation',
         'for-of': 'all .js files in the complete recursive language/statements/for-of subtree, including dstr; original root-linked Git proofs; no implementation',

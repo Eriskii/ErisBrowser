@@ -433,6 +433,15 @@ were checked against the completed reports. The
 [evidence](tests/conformance/array-splice.json) retains all gaps and
 unchanged limits; broader property accounting and full compatibility remain open.
 
+[Array concat](tests/conformance/array-concat.md) supports generic receivers,
+live `Symbol.isConcatSpreadable`, same-realm species and aliased results. Its
+complete 137-mode profile records 113 passes, four missing-typed-array failures,
+18 unsupported modes and two resource stops; all 96 controls verify. The local
+fixture verifies 84 of 90 expectations, including four expected resource stops.
+All 40 older profiles and six selected local suites remain exactly unchanged.
+The two ordinary upstream resource outcomes prevent a new regression gate;
+the catalog retains **33 known-state gates**, with no quota or policy changes.
+
 [Synchronous iteration](tests/conformance/for-of.md) supports identifier/member
 `for…of` heads, lexical bindings, iterator closing and native Array, String and
 arguments iterators. Destructuring, generators and async iteration remain ahead.

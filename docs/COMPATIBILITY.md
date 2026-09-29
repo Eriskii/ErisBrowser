@@ -1,5 +1,17 @@
 # Compatibility status
 
+[Array concat](../tests/conformance/array-concat.md) supports generic receivers,
+live spreadability and same-realm species results, including ordinary objects,
+Arrays, mapped arguments and input aliases. Species construction precedes
+spreadability reads; holes advance the result index without deleting existing
+keys, and the strict final length write can fail after earlier effects. The
+complete 69-source profile records **113 passed, four failed, 18 unsupported
+and two resource modes**, with all 96 controls verified. The independent local
+matrix verifies **84 of 90 expectations**, including four expected resource
+stops. Proxy, typed-array and cross-realm prerequisites remain unmet. Two ordinary
+upstream hole scans reach the work limit, so no new baseline or CI gate is added.
+Other Array methods' species behavior is unchanged.
+
 [Array splice](../tests/conformance/array-splice.md) supports generic ordinary
 receivers, captured safe-integer lengths, live inherited properties and same-realm
 species construction. Deleted results preserve holes; source moves and deletes

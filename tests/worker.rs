@@ -413,6 +413,16 @@ fn confined_array_splice_preserves_species_live_properties_and_partial_callback_
 
 #[test]
 #[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn confined_array_concat_preserves_spreadability_aliases_and_partial_callback_effects() {
+    assert_six_scripted_samples_through_worker_with_result_text(
+        include_str!("fixtures/array-concat.html"),
+        191,
+        Some(["ready", "6"]),
+    );
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
 fn confined_own_key_order_and_live_enumeration_survive_document_callbacks() {
     assert_six_scripted_samples_through_worker(include_str!("fixtures/own-keys.html"), 187);
 }

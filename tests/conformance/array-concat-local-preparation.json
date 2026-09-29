@@ -1,0 +1,732 @@
+{
+  "format": 1,
+  "scope": "Independent local concat oracle, reviewed and frozen before implementation/engine observations; exact copies published without an engine rerun.",
+  "counts": {
+    "sources": 45,
+    "fixture_modes": 90,
+    "feature_controls": 56,
+    "common_controls": 12,
+    "rows": 158
+  },
+  "freeze_binding": {
+    "path": "/tmp/eris-array-concat-local/freeze-provenance.json",
+    "bytes": 4316,
+    "sha256": "e93aff00b9b82cc9924e62093ffa9b39ea12f1da01cd36b3b68ffecc420bb949"
+  },
+  "freeze": {
+    "format": 1,
+    "phase": "Reviewed oracle and inert runner frozen before single published baseline execution",
+    "created_utc": "2026-09-29T12:07:38.234271+00:00",
+    "parent": "dffca3d69c39de5c58e55838918c0b704b275d5d",
+    "source_cases": 45,
+    "fixture_modes": 90,
+    "feature_controls": 56,
+    "common_controls": 12,
+    "rows": 158,
+    "files": {
+      "TEST262-LICENSE": {
+        "bytes": 2213,
+        "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+      },
+      "array-concat.js": {
+        "bytes": 60541,
+        "sha256": "2ffd5b3dde177d50c49868a37de676d36cc91d9e1baba37f0b4493fef969c26c"
+      },
+      "freeze.json": {
+        "bytes": 18780,
+        "sha256": "e59f0ed8be1edc72b88899e6fae785b86029fb01a52d66d8ea9ea33997f8667e"
+      },
+      "harness/assert.js": {
+        "bytes": 4881,
+        "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+      },
+      "harness/propertyHelper.js": {
+        "bytes": 18956,
+        "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+      },
+      "harness/sta.js": {
+        "bytes": 792,
+        "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+      },
+      "matrix.json": {
+        "bytes": 282184,
+        "sha256": "4342ebd14e877f404fb0a61e047abd4f5b2f0cf0412b23db62187b2a41341430"
+      },
+      "preflights.json": {
+        "bytes": 16818,
+        "sha256": "79ae27f17674c23c407befa7a79bf08ebeb1376684bf2d39fd864b2f02085e91"
+      },
+      "prepare-runner.log": {
+        "bytes": 77,
+        "sha256": "139de5c75fc465f7052df0664799a0203bebd882397932b9b06c1725ed3de9a9"
+      },
+      "prepare.py": {
+        "bytes": 33906,
+        "sha256": "3c4c1d9b065c042d771759ea191826ee19c9c9cc2f01a7dd8667f5eacf96bca9"
+      },
+      "run.py": {
+        "bytes": 8165,
+        "sha256": "a3e139984d9ae627c33e52da9d87ab71103cef806eec0dcf52febac64b9484ee"
+      },
+      "runner-preparation.json": {
+        "bytes": 1253,
+        "sha256": "feab37db517a6ecdbb8cd4157e2c9f5a93007190e0d22f59cf18c9c26e3e0644"
+      },
+      "tools/html_conformance.py": {
+        "bytes": 13920,
+        "sha256": "53e594f8ad73d0eb86cf1c656c9468a6e473c7ec3d588c7d75de3dd630bbeaac"
+      },
+      "tools/import_test262.py": {
+        "bytes": 47257,
+        "sha256": "bc5162786cd3f0f269fb231dd6e18df843ff032ef05c5af2eccdf53a091e88cf"
+      },
+      "tools/test262_conformance.py": {
+        "bytes": 178122,
+        "sha256": "7062b4027de93af223c08223000525bf2e3e3da3c5494723279d6672c7c3e3e5"
+      }
+    },
+    "review_bindings": [
+      {
+        "path": "/tmp/eris-array-concat-local-draft/draft.json",
+        "bytes": 507879,
+        "sha256": "099c8a38d09bd488b77342cb820c7851f4e6e8cfe8228432ffc8634c9a77a2a4"
+      },
+      {
+        "path": "/tmp/eris-array-concat-local-draft/notes.md",
+        "bytes": 4674,
+        "sha256": "8a938607cdfaf5f021ed1e26d05dd35d94da4711ff2306001919c07559b43016"
+      },
+      {
+        "path": "/tmp/eris-array-concat-local-draft/freeze-ledger.json",
+        "bytes": 1955,
+        "sha256": "e870365f83f2b673c299760e6fdeefe74a63a27cb89c587c2325bae96e511f15"
+      },
+      {
+        "path": "/tmp/eris-array-concat-local-oracle-review.json",
+        "bytes": 5309,
+        "sha256": "6749e1d41896885a99f7de94da8694af0eafefe97476c12b29ad7311aa9d81d4"
+      },
+      {
+        "path": "/tmp/eris-array-concat-plan.md",
+        "bytes": 16802,
+        "sha256": "047b75fc9a4da09c2151fb2f96cb4feb1ba93c44b124f2bf2ed48b7d95225ded"
+      },
+      {
+        "path": "/tmp/eris-array-concat-upstream-20260929/spec/concat.txt",
+        "bytes": 2091,
+        "sha256": "d710164b77d68e0dc23276c218792bf81e6256da0e98385850f4223d367eaa12"
+      },
+      {
+        "path": "/tmp/eris-array-concat-upstream-20260929/spec/isconcatspreadable.txt",
+        "bytes": 441,
+        "sha256": "afa9016c9c73d3286897191a8b3905e7bf89707145dfe14913c42ea114a44cb7"
+      },
+      {
+        "path": "/tmp/eris-array-concat-upstream-20260929/spec/array-species-create.txt",
+        "bytes": 1583,
+        "sha256": "7cc4264618873587495bb0d4b8c3ee1911446731809c3de5b938947a12687dda"
+      },
+      {
+        "path": "/tmp/eris-array-concat-upstream-20260929/spec/requests.json",
+        "bytes": 4053,
+        "sha256": "4e1c1852b066c6230144ea3f658b526e1d6580ec58098c023b24fa788434753c"
+      }
+    ],
+    "scoped_before_binary_sha256": "f9ffdf6172908c875308ee40fe5783d3b673bbdccf7685a61c608b331348f721",
+    "parent_CI_run": 36563820795,
+    "parent_CI_conclusion": "success"
+  },
+  "preparation_and_review_bindings": [
+    {
+      "path": "/tmp/eris-array-concat-local-before.py",
+      "bytes": 7508,
+      "sha256": "f7dbab040302b0dd3d9a253604fc391c2207bedddbd8e30da7cab763af38dfdd"
+    },
+    {
+      "path": "/tmp/eris-array-concat-local-before-preparation.json",
+      "bytes": 1454,
+      "sha256": "0c7053694af06f996e20cb739df1428806c4639fdfadd53dad46f5d37c218a41"
+    },
+    {
+      "path": "/tmp/eris-array-concat-local-candidate-replay.py",
+      "bytes": 15224,
+      "sha256": "2071f64d45e5d662b5cc00f1b86667c9ff360ef97800fd0a98f6ff970ecfabe5"
+    },
+    {
+      "path": "/tmp/eris-array-concat-local-candidate-preparation.json",
+      "bytes": 8774,
+      "sha256": "43279b2fbb8a6a4b1ebfc6f13124115e8cc3e57127eab8c447d4f001f7099916"
+    },
+    {
+      "path": "/tmp/eris-array-concat-root-oracle-review.json",
+      "bytes": 863,
+      "sha256": "a5916f5b2481d8f0dcfb7c5486db25324131213a0a15836cb85d5db37558ee32"
+    },
+    {
+      "path": "/tmp/eris-array-concat-local-oracle-review.json",
+      "bytes": 5309,
+      "sha256": "6749e1d41896885a99f7de94da8694af0eafefe97476c12b29ad7311aa9d81d4"
+    },
+    {
+      "path": "/tmp/eris-array-concat-root-drivers-review.json",
+      "bytes": 6205,
+      "sha256": "9baef2638710c4486dbecc1e94215550609a31f7ea78f2c6144deee05fecb0df"
+    },
+    {
+      "path": "/tmp/eris-array-concat-local-publication-preparation-attempt-1.json",
+      "bytes": 564,
+      "sha256": "2b66bf317681608eff2872644b7dd66c6d6c80ad9d1302e074c0e1d4ad83f11d"
+    }
+  ],
+  "runner_preparation": {
+    "scope": "Narrow text-only adaptation; no engine execution",
+    "source_runner": "/tmp/eris-array-splice-local/run.py",
+    "source_runner_sha256": "de28cb30ab3ed3bc6473044887c5997e645657fa66934fe27dad50764974ada7",
+    "runner_sha256": "a3e139984d9ae627c33e52da9d87ab71103cef806eec0dcf52febac64b9484ee",
+    "changes": [
+      "array-splice literal routes to array-concat",
+      "shared protocol prerequisite routes to existing guarded generic-not-implicit-arraylike positive pair"
+    ],
+    "tools_copied_exactly": {
+      "import_test262.py": "bc5162786cd3f0f269fb231dd6e18df843ff032ef05c5af2eccdf53a091e88cf",
+      "test262_conformance.py": "7062b4027de93af223c08223000525bf2e3e3da3c5494723279d6672c7c3e3e5",
+      "html_conformance.py": "53e594f8ad73d0eb86cf1c656c9468a6e473c7ec3d588c7d75de3dd630bbeaac"
+    },
+    "draft_freeze_sha256": "e870365f83f2b673c299760e6fdeefe74a63a27cb89c587c2325bae96e511f15",
+    "review_sha256": "6749e1d41896885a99f7de94da8694af0eafefe97476c12b29ad7311aa9d81d4",
+    "inert_prepare_exit_code": 0,
+    "log_sha256": "139de5c75fc465f7052df0664799a0203bebd882397932b9b06c1725ed3de9a9",
+    "matrix_sha256": "4342ebd14e877f404fb0a61e047abd4f5b2f0cf0412b23db62187b2a41341430",
+    "all_158_source_mode_expected_and_control_identities_exact": true
+  },
+  "before_driver_preparation": {
+    "phase": "Inert bounded supervisor preparation before one authorized local replay",
+    "created_utc": "2026-09-29T12:08:12.460690+00:00",
+    "driver": {
+      "path": "/tmp/eris-array-concat-local-before.py",
+      "sha256": "f7dbab040302b0dd3d9a253604fc391c2207bedddbd8e30da7cab763af38dfdd"
+    },
+    "source_supervisor": {
+      "path": "/tmp/eris-array-splice-local-before.py",
+      "sha256": "c02a1a296398c7d05ed91e4e535431904832b624413e763c7ee04b57318b1a3a"
+    },
+    "runner": {
+      "path": "/tmp/eris-array-concat-local/run.py",
+      "sha256": "a3e139984d9ae627c33e52da9d87ab71103cef806eec0dcf52febac64b9484ee"
+    },
+    "freeze_sha256": "e93aff00b9b82cc9924e62093ffa9b39ea12f1da01cd36b3b68ffecc420bb949",
+    "matrix_sha256": "4342ebd14e877f404fb0a61e047abd4f5b2f0cf0412b23db62187b2a41341430",
+    "oracle_freeze_sha256": "e870365f83f2b673c299760e6fdeefe74a63a27cb89c587c2325bae96e511f15",
+    "root_review": {
+      "path": "/tmp/eris-array-concat-root-oracle-review.json",
+      "sha256": "a5916f5b2481d8f0dcfb7c5486db25324131213a0a15836cb85d5db37558ee32"
+    },
+    "inert_check": "passed; 158 rows; 46 inputs; all seven published parent CI jobs verified",
+    "adaptations": [
+      "concat paths, fixed binary/parent/CI/freeze hashes, 90 cases + 68 controls",
+      "fresh separate output directory",
+      "post-input failures and cleanup exceptions retained in final ledger",
+      "full source/mode/expectation identities rechecked in report"
+    ],
+    "engine_executed": false
+  },
+  "candidate_driver_preparation": {
+    "format": "eris-array-concat-local-candidate-preparation-v1",
+    "created_utc": "2026-09-29T12:14:54.473435+00:00",
+    "scope": "Inert preparation and data-only identity/comparison checks; no engine/compiler/browser/GPU execution",
+    "driver": {
+      "path": "/tmp/eris-array-concat-local-candidate-replay.py",
+      "sha256": "2071f64d45e5d662b5cc00f1b86667c9ff360ef97800fd0a98f6ff970ecfabe5"
+    },
+    "prior_driver": {
+      "path": "/tmp/eris-array-splice-local-candidate-replay.py",
+      "sha256": "061913aa8898c66ed1e22f11b0d06a1b2cc803e9008f10114d84dd5d96337542"
+    },
+    "archive_verifier_origin": {
+      "path": "/tmp/eris-array-concat-historical-local-replay.py",
+      "sha256": "31aab29fd7a8075210b9087906c2066fe0aaeb9947ae63aa0564871108706913",
+      "verify_binary_AST_identical": true
+    },
+    "all_local_inputs": {
+      "/tmp/eris-array-concat-local/TEST262-LICENSE": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0",
+      "/tmp/eris-array-concat-local/array-concat.js": "2ffd5b3dde177d50c49868a37de676d36cc91d9e1baba37f0b4493fef969c26c",
+      "/tmp/eris-array-concat-local/freeze.json": "e59f0ed8be1edc72b88899e6fae785b86029fb01a52d66d8ea9ea33997f8667e",
+      "/tmp/eris-array-concat-local/harness/assert.js": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+      "/tmp/eris-array-concat-local/harness/propertyHelper.js": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8",
+      "/tmp/eris-array-concat-local/harness/sta.js": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+      "/tmp/eris-array-concat-local/matrix.json": "4342ebd14e877f404fb0a61e047abd4f5b2f0cf0412b23db62187b2a41341430",
+      "/tmp/eris-array-concat-local/preflights.json": "79ae27f17674c23c407befa7a79bf08ebeb1376684bf2d39fd864b2f02085e91",
+      "/tmp/eris-array-concat-local/prepare-runner.log": "139de5c75fc465f7052df0664799a0203bebd882397932b9b06c1725ed3de9a9",
+      "/tmp/eris-array-concat-local/prepare.py": "3c4c1d9b065c042d771759ea191826ee19c9c9cc2f01a7dd8667f5eacf96bca9",
+      "/tmp/eris-array-concat-local/run.py": "a3e139984d9ae627c33e52da9d87ab71103cef806eec0dcf52febac64b9484ee",
+      "/tmp/eris-array-concat-local/runner-preparation.json": "feab37db517a6ecdbb8cd4157e2c9f5a93007190e0d22f59cf18c9c26e3e0644",
+      "/tmp/eris-array-concat-local/tools/html_conformance.py": "53e594f8ad73d0eb86cf1c656c9468a6e473c7ec3d588c7d75de3dd630bbeaac",
+      "/tmp/eris-array-concat-local/tools/import_test262.py": "bc5162786cd3f0f269fb231dd6e18df843ff032ef05c5af2eccdf53a091e88cf",
+      "/tmp/eris-array-concat-local/tools/test262_conformance.py": "7062b4027de93af223c08223000525bf2e3e3da3c5494723279d6672c7c3e3e5",
+      "/tmp/eris-array-concat-local-draft/draft.json": "099c8a38d09bd488b77342cb820c7851f4e6e8cfe8228432ffc8634c9a77a2a4",
+      "/tmp/eris-array-concat-local-draft/notes.md": "8a938607cdfaf5f021ed1e26d05dd35d94da4711ff2306001919c07559b43016",
+      "/tmp/eris-array-concat-local-draft/freeze-ledger.json": "e870365f83f2b673c299760e6fdeefe74a63a27cb89c587c2325bae96e511f15",
+      "/tmp/eris-array-concat-local-oracle-review.json": "6749e1d41896885a99f7de94da8694af0eafefe97476c12b29ad7311aa9d81d4",
+      "/tmp/eris-array-concat-plan.md": "047b75fc9a4da09c2151fb2f96cb4feb1ba93c44b124f2bf2ed48b7d95225ded",
+      "/tmp/eris-array-concat-upstream-20260929/spec/concat.txt": "d710164b77d68e0dc23276c218792bf81e6256da0e98385850f4223d367eaa12",
+      "/tmp/eris-array-concat-upstream-20260929/spec/isconcatspreadable.txt": "afa9016c9c73d3286897191a8b3905e7bf89707145dfe14913c42ea114a44cb7",
+      "/tmp/eris-array-concat-upstream-20260929/spec/array-species-create.txt": "7cc4264618873587495bb0d4b8c3ee1911446731809c3de5b938947a12687dda",
+      "/tmp/eris-array-concat-upstream-20260929/spec/requests.json": "4e1c1852b066c6230144ea3f658b526e1d6580ec58098c023b24fa788434753c",
+      "/tmp/eris-array-concat-before/source.tar": "9f6134a9913dda019a95f56996b742a967d95fb1a7099bd05bc34ef3373697e3",
+      "/tmp/eris-array-concat-before/inputs.json": "5b69b9cb5098e67fad0df27e0dd58ad4b5de0eb4a84fb6bc86bf5aec56fbedd8",
+      "/tmp/eris-array-concat-before/verification-inputs.json": "871c826f4930e1ab7d0644427b985e48e1f7514d4f033adcd06f3da9e1d93dc4",
+      "/tmp/eris-array-concat-before/pixel-inputs.json": "307bf7fe0720f7c0f4c9cb2db2da256393eb529aa917ec2541fc04945a3f3013",
+      "/tmp/eris-array-concat-before/literal-includes.json": "62b152de2acd0234cca810c6242b760e5b26bbe9e0fc3037ba28f7b63376c275",
+      "/tmp/eris-array-concat-before/default-binaries.json": "442b438a63e43ad3f65cae56c1daa26d1db38fa6d1c6ca524ac7135410bb970c",
+      "/tmp/eris-array-concat-before/feature-binaries.json": "938bff258b7138291c1b0e7b53ee6991a944b5cc60c03795ac931f2603d6a8d3",
+      "/tmp/eris-array-concat-before/full-validation-summary.json": "e814f790634adda9c9df43ff930c20b24f6c76986315573d93ab933f0bdf9712",
+      "/tmp/eris-array-concat-before/eris-browser": "9feacd936a1229994080ce8b5db3ba2869ec13dce219d4a33aae7b0d11ed81fe",
+      "/tmp/eris-array-concat-before/eris-js": "f9ffdf6172908c875308ee40fe5783d3b673bbdccf7685a61c608b331348f721",
+      "/tmp/eris-array-concat-before/eris-dom": "db89ac31ae89b541da960de958c90a0dc65aa62a78dbb83ec3f0b121dc934268",
+      "/tmp/eris-array-concat-before/eris-stress": "17f3ef2de9f8c38791ff5a88e9c92518bcec566abcb372e3e79f835e733d5944",
+      "/tmp/eris-array-concat-before/eris-browser-vulkan": "b1ed3159393b7d45f52b7a51c2aee4ec6c420013067e011b0f9db67fb6cfb89f",
+      "/tmp/eris-array-concat-before/eris-js-vulkan": "9ba590df5f3a6b7fb405907081f4464f8425f9bb15a0fd57b5aea3bb6147ac1c",
+      "/tmp/eris-array-concat-before/eris-dom-vulkan": "4e58b41d7e9eb3849b6c56b01adad1d8c04c0092552c34240e122717324630dd",
+      "/tmp/eris-array-concat-before/eris-stress-vulkan": "32a67437fb6ddd94ad9767f251360b2fe61d36d9c701c6604ec2b5f0c3047583",
+      "/tmp/eris-array-concat-before/provenance.json": "fd57d87b973fa3dce6cedb959bf64afdbd67a2ab895b523953398e0edb148243",
+      "/tmp/eris-array-concat-local/freeze-provenance.json": "e93aff00b9b82cc9924e62093ffa9b39ea12f1da01cd36b3b68ffecc420bb949",
+      "/tmp/eris-array-concat-local-before.py": "f7dbab040302b0dd3d9a253604fc391c2207bedddbd8e30da7cab763af38dfdd",
+      "/tmp/eris-array-concat-before/verification.json": "057c819098e47b2860d6f9f4f0db07a9fad352f7da279ae734f16408cfac51a7",
+      "/tmp/eris-array-concat-before/parent-ci-final.json": "760be4eead6dd8e5c97df89da91be182be1dea8f2f542a83b6f4fc9d46f15dd1",
+      "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/run.py": "141dab68e638654ce26700f16fc05818b6a5650755cce07227b4cd0de9411f7f",
+      "/tmp/eris-array-concat-local-candidate-replay.py": "2071f64d45e5d662b5cc00f1b86667c9ff360ef97800fd0a98f6ff970ecfabe5",
+      "/tmp/eris-array-concat-local-before/report.json": "5e3fcc9beaaf33a2bfc4b50ffb76648fe0c4dcbc0ff36ac5e46049fda804b831",
+      "/tmp/eris-array-concat-local-before/execution.json": "679c21592eb0c8d88a6c1246f0ad7b817c066ec75c4014bc0449eb08afedd183",
+      "/tmp/eris-array-concat-local-before/summary.json": "aabe2f0561aa65208e6ba23507201e8a6eb71adf2c8db07b872c7e6fc2c6abe4"
+    },
+    "fixture_rows": 90,
+    "controls": 68,
+    "resource_policy_rows": 4,
+    "prerequisite_rows_retained": 6,
+    "inert_default": {
+      "command": [
+        "python3",
+        "/tmp/eris-array-concat-local-candidate-replay.py"
+      ],
+      "exit_code": 0,
+      "output": "INERT VERIFIED: frozen 158 rows and complete BEFORE; no engine execution."
+    },
+    "data_only_self_comparison": {
+      "unchanged_rows": 158,
+      "changes": 0,
+      "raw_pass_gains": 0,
+      "raw_pass_losses": 0
+    },
+    "data_only_corruptions_rejected": [
+      "source-drift",
+      "expectation-drift",
+      "control-false-health"
+    ],
+    "required_execution_arguments": [
+      "--candidate-directory",
+      "--production-input-sha256",
+      "--binary-sha256",
+      "--output-directory",
+      "--execute-authorized"
+    ],
+    "fresh_output_required": true,
+    "pre_post_checks": "All original source/helper/runner/expected/control and before inputs plus explicit candidate input manifest, archive source bytes, binary, build manifest and provenance. No dependence on the concurrently changing working tree.",
+    "capture": "Full raw report and unchanged identities, complete before/after row dictionaries, status transitions, pass gains/losses, counts and positive/wrong control verification. No retries, normalization, filtering or baseline.",
+    "process_bounds": {
+      "outer_wall_seconds": 120,
+      "reap_seconds": 5,
+      "outer_address_space_bytes": 805306368,
+      "outer_cpu_seconds": 45,
+      "outer_output_file_bytes": 8388608,
+      "per_adapter_wall_seconds": 3,
+      "adapter_stdout_bytes": 98304,
+      "adapter_stderr_bytes": 65536
+    },
+    "cleanup": "waitid NOWAIT observation, process-group signal before first reap, bounded reap and recorded cleanup/post-input failures",
+    "candidate_execution_authorized": false
+  },
+  "executions": {
+    "before": {
+      "execution_binding": {
+        "path": "/tmp/eris-array-concat-local-before/execution.json",
+        "bytes": 14101,
+        "sha256": "679c21592eb0c8d88a6c1246f0ad7b817c066ec75c4014bc0449eb08afedd183"
+      },
+      "execution": {
+        "started_utc": "2026-09-29T12:08:29.544942+00:00",
+        "scope": "One full local BEFORE replay using source-identical published adapter; no retries or filtering",
+        "command": [
+          "/run/current-system/sw/bin/python3",
+          "/tmp/eris-array-concat-local/run.py",
+          "--binary",
+          "/tmp/eris-array-concat-before/eris-js",
+          "--sha256",
+          "f9ffdf6172908c875308ee40fe5783d3b673bbdccf7685a61c608b331348f721",
+          "--output",
+          "/tmp/eris-array-concat-local-before/report.json"
+        ],
+        "parent": "dffca3d69c39de5c58e55838918c0b704b275d5d",
+        "binary_sha256": "f9ffdf6172908c875308ee40fe5783d3b673bbdccf7685a61c608b331348f721",
+        "inputs": {
+          "/tmp/eris-array-concat-local/TEST262-LICENSE": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0",
+          "/tmp/eris-array-concat-local/array-concat.js": "2ffd5b3dde177d50c49868a37de676d36cc91d9e1baba37f0b4493fef969c26c",
+          "/tmp/eris-array-concat-local/freeze.json": "e59f0ed8be1edc72b88899e6fae785b86029fb01a52d66d8ea9ea33997f8667e",
+          "/tmp/eris-array-concat-local/harness/assert.js": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+          "/tmp/eris-array-concat-local/harness/propertyHelper.js": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8",
+          "/tmp/eris-array-concat-local/harness/sta.js": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+          "/tmp/eris-array-concat-local/matrix.json": "4342ebd14e877f404fb0a61e047abd4f5b2f0cf0412b23db62187b2a41341430",
+          "/tmp/eris-array-concat-local/preflights.json": "79ae27f17674c23c407befa7a79bf08ebeb1376684bf2d39fd864b2f02085e91",
+          "/tmp/eris-array-concat-local/prepare-runner.log": "139de5c75fc465f7052df0664799a0203bebd882397932b9b06c1725ed3de9a9",
+          "/tmp/eris-array-concat-local/prepare.py": "3c4c1d9b065c042d771759ea191826ee19c9c9cc2f01a7dd8667f5eacf96bca9",
+          "/tmp/eris-array-concat-local/run.py": "a3e139984d9ae627c33e52da9d87ab71103cef806eec0dcf52febac64b9484ee",
+          "/tmp/eris-array-concat-local/runner-preparation.json": "feab37db517a6ecdbb8cd4157e2c9f5a93007190e0d22f59cf18c9c26e3e0644",
+          "/tmp/eris-array-concat-local/tools/html_conformance.py": "53e594f8ad73d0eb86cf1c656c9468a6e473c7ec3d588c7d75de3dd630bbeaac",
+          "/tmp/eris-array-concat-local/tools/import_test262.py": "bc5162786cd3f0f269fb231dd6e18df843ff032ef05c5af2eccdf53a091e88cf",
+          "/tmp/eris-array-concat-local/tools/test262_conformance.py": "7062b4027de93af223c08223000525bf2e3e3da3c5494723279d6672c7c3e3e5",
+          "/tmp/eris-array-concat-local-draft/draft.json": "099c8a38d09bd488b77342cb820c7851f4e6e8cfe8228432ffc8634c9a77a2a4",
+          "/tmp/eris-array-concat-local-draft/notes.md": "8a938607cdfaf5f021ed1e26d05dd35d94da4711ff2306001919c07559b43016",
+          "/tmp/eris-array-concat-local-draft/freeze-ledger.json": "e870365f83f2b673c299760e6fdeefe74a63a27cb89c587c2325bae96e511f15",
+          "/tmp/eris-array-concat-local-oracle-review.json": "6749e1d41896885a99f7de94da8694af0eafefe97476c12b29ad7311aa9d81d4",
+          "/tmp/eris-array-concat-plan.md": "047b75fc9a4da09c2151fb2f96cb4feb1ba93c44b124f2bf2ed48b7d95225ded",
+          "/tmp/eris-array-concat-upstream-20260929/spec/concat.txt": "d710164b77d68e0dc23276c218792bf81e6256da0e98385850f4223d367eaa12",
+          "/tmp/eris-array-concat-upstream-20260929/spec/isconcatspreadable.txt": "afa9016c9c73d3286897191a8b3905e7bf89707145dfe14913c42ea114a44cb7",
+          "/tmp/eris-array-concat-upstream-20260929/spec/array-species-create.txt": "7cc4264618873587495bb0d4b8c3ee1911446731809c3de5b938947a12687dda",
+          "/tmp/eris-array-concat-upstream-20260929/spec/requests.json": "4e1c1852b066c6230144ea3f658b526e1d6580ec58098c023b24fa788434753c",
+          "/tmp/eris-array-concat-before/source.tar": "9f6134a9913dda019a95f56996b742a967d95fb1a7099bd05bc34ef3373697e3",
+          "/tmp/eris-array-concat-before/inputs.json": "5b69b9cb5098e67fad0df27e0dd58ad4b5de0eb4a84fb6bc86bf5aec56fbedd8",
+          "/tmp/eris-array-concat-before/verification-inputs.json": "871c826f4930e1ab7d0644427b985e48e1f7514d4f033adcd06f3da9e1d93dc4",
+          "/tmp/eris-array-concat-before/pixel-inputs.json": "307bf7fe0720f7c0f4c9cb2db2da256393eb529aa917ec2541fc04945a3f3013",
+          "/tmp/eris-array-concat-before/literal-includes.json": "62b152de2acd0234cca810c6242b760e5b26bbe9e0fc3037ba28f7b63376c275",
+          "/tmp/eris-array-concat-before/default-binaries.json": "442b438a63e43ad3f65cae56c1daa26d1db38fa6d1c6ca524ac7135410bb970c",
+          "/tmp/eris-array-concat-before/feature-binaries.json": "938bff258b7138291c1b0e7b53ee6991a944b5cc60c03795ac931f2603d6a8d3",
+          "/tmp/eris-array-concat-before/full-validation-summary.json": "e814f790634adda9c9df43ff930c20b24f6c76986315573d93ab933f0bdf9712",
+          "/tmp/eris-array-concat-before/eris-browser": "9feacd936a1229994080ce8b5db3ba2869ec13dce219d4a33aae7b0d11ed81fe",
+          "/tmp/eris-array-concat-before/eris-js": "f9ffdf6172908c875308ee40fe5783d3b673bbdccf7685a61c608b331348f721",
+          "/tmp/eris-array-concat-before/eris-dom": "db89ac31ae89b541da960de958c90a0dc65aa62a78dbb83ec3f0b121dc934268",
+          "/tmp/eris-array-concat-before/eris-stress": "17f3ef2de9f8c38791ff5a88e9c92518bcec566abcb372e3e79f835e733d5944",
+          "/tmp/eris-array-concat-before/eris-browser-vulkan": "b1ed3159393b7d45f52b7a51c2aee4ec6c420013067e011b0f9db67fb6cfb89f",
+          "/tmp/eris-array-concat-before/eris-js-vulkan": "9ba590df5f3a6b7fb405907081f4464f8425f9bb15a0fd57b5aea3bb6147ac1c",
+          "/tmp/eris-array-concat-before/eris-dom-vulkan": "4e58b41d7e9eb3849b6c56b01adad1d8c04c0092552c34240e122717324630dd",
+          "/tmp/eris-array-concat-before/eris-stress-vulkan": "32a67437fb6ddd94ad9767f251360b2fe61d36d9c701c6604ec2b5f0c3047583",
+          "/tmp/eris-array-concat-before/provenance.json": "fd57d87b973fa3dce6cedb959bf64afdbd67a2ab895b523953398e0edb148243",
+          "/tmp/eris-array-concat-local/freeze-provenance.json": "e93aff00b9b82cc9924e62093ffa9b39ea12f1da01cd36b3b68ffecc420bb949",
+          "/tmp/eris-array-concat-local-before.py": "f7dbab040302b0dd3d9a253604fc391c2207bedddbd8e30da7cab763af38dfdd",
+          "/tmp/eris-array-concat-before/verification.json": "057c819098e47b2860d6f9f4f0db07a9fad352f7da279ae734f16408cfac51a7",
+          "/tmp/eris-array-concat-before/parent-ci-final.json": "760be4eead6dd8e5c97df89da91be182be1dea8f2f542a83b6f4fc9d46f15dd1",
+          "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/run.py": "141dab68e638654ce26700f16fc05818b6a5650755cce07227b4cd0de9411f7f"
+        },
+        "limits": {
+          "wall_seconds": 120,
+          "address_space_bytes": 805306368,
+          "cpu_seconds": 45,
+          "log_file_bytes": 8388608,
+          "case_timeout_seconds": 3,
+          "reap_seconds": 5
+        },
+        "environment": {
+          "LD_LIBRARY_PATH": "/nix/store/bn8fa50wbg41yf72aalbjcaaq4r4j6kn-wayland-1.26.0/lib:/nix/store/n2wqk78za8grzs9088ya5qy6vw280p8x-libxkbcommon-1.13.2/lib:/nix/store/7gwd2kvkx1s369cwiv5z4x2xjxbppav6-libx11-1.8.13/lib:/nix/store/i88qpfah2j0yq7nihbm626abbhzkc21g-libX11-1.8.10/lib:/nix/store/09aq563zkqcw9ikxn02p4bm13i2hz51r-libxcb-1.17.0/lib:/nix/store/ljxnc3sy590a8rzf59rvclkxg8h71qdf-libxcursor-1.2.3/lib:/nix/store/rywxisd25h7ymiydgcg0188c0ap0shgx-libXcursor-1.2.1/lib:/nix/store/0kx9jb9qcvh9kg9qi8kxwxymbvbpykdj-libxrandr-1.5.5/lib:/nix/store/40r89hwph88md7jk5vhqx57k36c8f5jh-libXrandr-1.5.4/lib:/nix/store/fxwwv4xllvcxcpf7s2xm572sc95r851c-libxi-1.8.3/lib:/nix/store/68wclazg6vj6jqq03sqhdn4x7ji082cr-libXi-1.8.1/lib"
+        },
+        "finished_utc": "2026-09-29T12:08:30.411766+00:00",
+        "elapsed_seconds": 0.8667,
+        "exit_code": 0,
+        "failures": [],
+        "observed_before_reaping": {
+          "pid": 3,
+          "code": 1,
+          "status": 0
+        },
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "inputs_after": {
+          "/tmp/eris-array-concat-local/TEST262-LICENSE": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0",
+          "/tmp/eris-array-concat-local/array-concat.js": "2ffd5b3dde177d50c49868a37de676d36cc91d9e1baba37f0b4493fef969c26c",
+          "/tmp/eris-array-concat-local/freeze.json": "e59f0ed8be1edc72b88899e6fae785b86029fb01a52d66d8ea9ea33997f8667e",
+          "/tmp/eris-array-concat-local/harness/assert.js": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+          "/tmp/eris-array-concat-local/harness/propertyHelper.js": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8",
+          "/tmp/eris-array-concat-local/harness/sta.js": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+          "/tmp/eris-array-concat-local/matrix.json": "4342ebd14e877f404fb0a61e047abd4f5b2f0cf0412b23db62187b2a41341430",
+          "/tmp/eris-array-concat-local/preflights.json": "79ae27f17674c23c407befa7a79bf08ebeb1376684bf2d39fd864b2f02085e91",
+          "/tmp/eris-array-concat-local/prepare-runner.log": "139de5c75fc465f7052df0664799a0203bebd882397932b9b06c1725ed3de9a9",
+          "/tmp/eris-array-concat-local/prepare.py": "3c4c1d9b065c042d771759ea191826ee19c9c9cc2f01a7dd8667f5eacf96bca9",
+          "/tmp/eris-array-concat-local/run.py": "a3e139984d9ae627c33e52da9d87ab71103cef806eec0dcf52febac64b9484ee",
+          "/tmp/eris-array-concat-local/runner-preparation.json": "feab37db517a6ecdbb8cd4157e2c9f5a93007190e0d22f59cf18c9c26e3e0644",
+          "/tmp/eris-array-concat-local/tools/html_conformance.py": "53e594f8ad73d0eb86cf1c656c9468a6e473c7ec3d588c7d75de3dd630bbeaac",
+          "/tmp/eris-array-concat-local/tools/import_test262.py": "bc5162786cd3f0f269fb231dd6e18df843ff032ef05c5af2eccdf53a091e88cf",
+          "/tmp/eris-array-concat-local/tools/test262_conformance.py": "7062b4027de93af223c08223000525bf2e3e3da3c5494723279d6672c7c3e3e5",
+          "/tmp/eris-array-concat-local-draft/draft.json": "099c8a38d09bd488b77342cb820c7851f4e6e8cfe8228432ffc8634c9a77a2a4",
+          "/tmp/eris-array-concat-local-draft/notes.md": "8a938607cdfaf5f021ed1e26d05dd35d94da4711ff2306001919c07559b43016",
+          "/tmp/eris-array-concat-local-draft/freeze-ledger.json": "e870365f83f2b673c299760e6fdeefe74a63a27cb89c587c2325bae96e511f15",
+          "/tmp/eris-array-concat-local-oracle-review.json": "6749e1d41896885a99f7de94da8694af0eafefe97476c12b29ad7311aa9d81d4",
+          "/tmp/eris-array-concat-plan.md": "047b75fc9a4da09c2151fb2f96cb4feb1ba93c44b124f2bf2ed48b7d95225ded",
+          "/tmp/eris-array-concat-upstream-20260929/spec/concat.txt": "d710164b77d68e0dc23276c218792bf81e6256da0e98385850f4223d367eaa12",
+          "/tmp/eris-array-concat-upstream-20260929/spec/isconcatspreadable.txt": "afa9016c9c73d3286897191a8b3905e7bf89707145dfe14913c42ea114a44cb7",
+          "/tmp/eris-array-concat-upstream-20260929/spec/array-species-create.txt": "7cc4264618873587495bb0d4b8c3ee1911446731809c3de5b938947a12687dda",
+          "/tmp/eris-array-concat-upstream-20260929/spec/requests.json": "4e1c1852b066c6230144ea3f658b526e1d6580ec58098c023b24fa788434753c",
+          "/tmp/eris-array-concat-before/source.tar": "9f6134a9913dda019a95f56996b742a967d95fb1a7099bd05bc34ef3373697e3",
+          "/tmp/eris-array-concat-before/inputs.json": "5b69b9cb5098e67fad0df27e0dd58ad4b5de0eb4a84fb6bc86bf5aec56fbedd8",
+          "/tmp/eris-array-concat-before/verification-inputs.json": "871c826f4930e1ab7d0644427b985e48e1f7514d4f033adcd06f3da9e1d93dc4",
+          "/tmp/eris-array-concat-before/pixel-inputs.json": "307bf7fe0720f7c0f4c9cb2db2da256393eb529aa917ec2541fc04945a3f3013",
+          "/tmp/eris-array-concat-before/literal-includes.json": "62b152de2acd0234cca810c6242b760e5b26bbe9e0fc3037ba28f7b63376c275",
+          "/tmp/eris-array-concat-before/default-binaries.json": "442b438a63e43ad3f65cae56c1daa26d1db38fa6d1c6ca524ac7135410bb970c",
+          "/tmp/eris-array-concat-before/feature-binaries.json": "938bff258b7138291c1b0e7b53ee6991a944b5cc60c03795ac931f2603d6a8d3",
+          "/tmp/eris-array-concat-before/full-validation-summary.json": "e814f790634adda9c9df43ff930c20b24f6c76986315573d93ab933f0bdf9712",
+          "/tmp/eris-array-concat-before/eris-browser": "9feacd936a1229994080ce8b5db3ba2869ec13dce219d4a33aae7b0d11ed81fe",
+          "/tmp/eris-array-concat-before/eris-js": "f9ffdf6172908c875308ee40fe5783d3b673bbdccf7685a61c608b331348f721",
+          "/tmp/eris-array-concat-before/eris-dom": "db89ac31ae89b541da960de958c90a0dc65aa62a78dbb83ec3f0b121dc934268",
+          "/tmp/eris-array-concat-before/eris-stress": "17f3ef2de9f8c38791ff5a88e9c92518bcec566abcb372e3e79f835e733d5944",
+          "/tmp/eris-array-concat-before/eris-browser-vulkan": "b1ed3159393b7d45f52b7a51c2aee4ec6c420013067e011b0f9db67fb6cfb89f",
+          "/tmp/eris-array-concat-before/eris-js-vulkan": "9ba590df5f3a6b7fb405907081f4464f8425f9bb15a0fd57b5aea3bb6147ac1c",
+          "/tmp/eris-array-concat-before/eris-dom-vulkan": "4e58b41d7e9eb3849b6c56b01adad1d8c04c0092552c34240e122717324630dd",
+          "/tmp/eris-array-concat-before/eris-stress-vulkan": "32a67437fb6ddd94ad9767f251360b2fe61d36d9c701c6604ec2b5f0c3047583",
+          "/tmp/eris-array-concat-before/provenance.json": "fd57d87b973fa3dce6cedb959bf64afdbd67a2ab895b523953398e0edb148243",
+          "/tmp/eris-array-concat-local/freeze-provenance.json": "e93aff00b9b82cc9924e62093ffa9b39ea12f1da01cd36b3b68ffecc420bb949",
+          "/tmp/eris-array-concat-local-before.py": "f7dbab040302b0dd3d9a253604fc391c2207bedddbd8e30da7cab763af38dfdd",
+          "/tmp/eris-array-concat-before/verification.json": "057c819098e47b2860d6f9f4f0db07a9fad352f7da279ae734f16408cfac51a7",
+          "/tmp/eris-array-concat-before/parent-ci-final.json": "760be4eead6dd8e5c97df89da91be182be1dea8f2f542a83b6f4fc9d46f15dd1",
+          "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/run.py": "141dab68e638654ce26700f16fc05818b6a5650755cce07227b4cd0de9411f7f"
+        },
+        "artifacts": {
+          "report.json": {
+            "bytes": 386115,
+            "sha256": "5e3fcc9beaaf33a2bfc4b50ffb76648fe0c4dcbc0ff36ac5e46049fda804b831"
+          },
+          "stdout.log": {
+            "bytes": 14528,
+            "sha256": "fbb984ef3dee2127c0f6db5b70cfae96b1282829ea8817aa38d973128af4efcc"
+          },
+          "stderr.log": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "start.json": {
+            "bytes": 7278,
+            "sha256": "639c27ea5822932b30cc4ef70aa254be48cf0f2cf370ea10f8c0eb3121aa5549"
+          }
+        },
+        "observations": {
+          "counts": {
+            "failed": 88,
+            "unsupported": 2
+          },
+          "controls_verified": 12,
+          "fixture_expectations_matched": 0,
+          "fixture_expectations_verified": 0,
+          "protocol_prerequisite_verified": false
+        },
+        "all_158_observation_identities_match_frozen_matrix": true
+      },
+      "stdout": {
+        "path": "/tmp/eris-array-concat-local-before/stdout.log",
+        "bytes": 14528,
+        "sha256": "fbb984ef3dee2127c0f6db5b70cfae96b1282829ea8817aa38d973128af4efcc"
+      },
+      "stderr": {
+        "path": "/tmp/eris-array-concat-local-before/stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "candidate": {
+      "execution_binding": {
+        "path": "/tmp/eris-array-concat-local-candidate-1/execution.json",
+        "bytes": 8945,
+        "sha256": "6e1853405bd3bd92c4cded016c39f07965406bd60bfe12c07df5a826f9b038f3"
+      },
+      "execution": {
+        "started_utc": "2026-09-29T12:26:35.854587+00:00",
+        "command": [
+          "/run/current-system/sw/bin/python3",
+          "/tmp/eris-array-concat-local/run.py",
+          "--binary",
+          "/tmp/eris-array-concat-candidate-1/eris-js",
+          "--sha256",
+          "64667259eff3ccec0c2ef98370a60a1dea71560def07574dc59db1bbb3fff3c0",
+          "--output",
+          "/tmp/eris-array-concat-local-candidate-1/report.json"
+        ],
+        "input_files": {
+          "/tmp/eris-array-concat-local/TEST262-LICENSE": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0",
+          "/tmp/eris-array-concat-local/array-concat.js": "2ffd5b3dde177d50c49868a37de676d36cc91d9e1baba37f0b4493fef969c26c",
+          "/tmp/eris-array-concat-local/freeze.json": "e59f0ed8be1edc72b88899e6fae785b86029fb01a52d66d8ea9ea33997f8667e",
+          "/tmp/eris-array-concat-local/harness/assert.js": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+          "/tmp/eris-array-concat-local/harness/propertyHelper.js": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8",
+          "/tmp/eris-array-concat-local/harness/sta.js": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+          "/tmp/eris-array-concat-local/matrix.json": "4342ebd14e877f404fb0a61e047abd4f5b2f0cf0412b23db62187b2a41341430",
+          "/tmp/eris-array-concat-local/preflights.json": "79ae27f17674c23c407befa7a79bf08ebeb1376684bf2d39fd864b2f02085e91",
+          "/tmp/eris-array-concat-local/prepare-runner.log": "139de5c75fc465f7052df0664799a0203bebd882397932b9b06c1725ed3de9a9",
+          "/tmp/eris-array-concat-local/prepare.py": "3c4c1d9b065c042d771759ea191826ee19c9c9cc2f01a7dd8667f5eacf96bca9",
+          "/tmp/eris-array-concat-local/run.py": "a3e139984d9ae627c33e52da9d87ab71103cef806eec0dcf52febac64b9484ee",
+          "/tmp/eris-array-concat-local/runner-preparation.json": "feab37db517a6ecdbb8cd4157e2c9f5a93007190e0d22f59cf18c9c26e3e0644",
+          "/tmp/eris-array-concat-local/tools/html_conformance.py": "53e594f8ad73d0eb86cf1c656c9468a6e473c7ec3d588c7d75de3dd630bbeaac",
+          "/tmp/eris-array-concat-local/tools/import_test262.py": "bc5162786cd3f0f269fb231dd6e18df843ff032ef05c5af2eccdf53a091e88cf",
+          "/tmp/eris-array-concat-local/tools/test262_conformance.py": "7062b4027de93af223c08223000525bf2e3e3da3c5494723279d6672c7c3e3e5",
+          "/tmp/eris-array-concat-local-draft/draft.json": "099c8a38d09bd488b77342cb820c7851f4e6e8cfe8228432ffc8634c9a77a2a4",
+          "/tmp/eris-array-concat-local-draft/notes.md": "8a938607cdfaf5f021ed1e26d05dd35d94da4711ff2306001919c07559b43016",
+          "/tmp/eris-array-concat-local-draft/freeze-ledger.json": "e870365f83f2b673c299760e6fdeefe74a63a27cb89c587c2325bae96e511f15",
+          "/tmp/eris-array-concat-local-oracle-review.json": "6749e1d41896885a99f7de94da8694af0eafefe97476c12b29ad7311aa9d81d4",
+          "/tmp/eris-array-concat-plan.md": "047b75fc9a4da09c2151fb2f96cb4feb1ba93c44b124f2bf2ed48b7d95225ded",
+          "/tmp/eris-array-concat-upstream-20260929/spec/concat.txt": "d710164b77d68e0dc23276c218792bf81e6256da0e98385850f4223d367eaa12",
+          "/tmp/eris-array-concat-upstream-20260929/spec/isconcatspreadable.txt": "afa9016c9c73d3286897191a8b3905e7bf89707145dfe14913c42ea114a44cb7",
+          "/tmp/eris-array-concat-upstream-20260929/spec/array-species-create.txt": "7cc4264618873587495bb0d4b8c3ee1911446731809c3de5b938947a12687dda",
+          "/tmp/eris-array-concat-upstream-20260929/spec/requests.json": "4e1c1852b066c6230144ea3f658b526e1d6580ec58098c023b24fa788434753c",
+          "/tmp/eris-array-concat-before/source.tar": "9f6134a9913dda019a95f56996b742a967d95fb1a7099bd05bc34ef3373697e3",
+          "/tmp/eris-array-concat-before/inputs.json": "5b69b9cb5098e67fad0df27e0dd58ad4b5de0eb4a84fb6bc86bf5aec56fbedd8",
+          "/tmp/eris-array-concat-before/verification-inputs.json": "871c826f4930e1ab7d0644427b985e48e1f7514d4f033adcd06f3da9e1d93dc4",
+          "/tmp/eris-array-concat-before/pixel-inputs.json": "307bf7fe0720f7c0f4c9cb2db2da256393eb529aa917ec2541fc04945a3f3013",
+          "/tmp/eris-array-concat-before/literal-includes.json": "62b152de2acd0234cca810c6242b760e5b26bbe9e0fc3037ba28f7b63376c275",
+          "/tmp/eris-array-concat-before/default-binaries.json": "442b438a63e43ad3f65cae56c1daa26d1db38fa6d1c6ca524ac7135410bb970c",
+          "/tmp/eris-array-concat-before/feature-binaries.json": "938bff258b7138291c1b0e7b53ee6991a944b5cc60c03795ac931f2603d6a8d3",
+          "/tmp/eris-array-concat-before/full-validation-summary.json": "e814f790634adda9c9df43ff930c20b24f6c76986315573d93ab933f0bdf9712",
+          "/tmp/eris-array-concat-before/eris-browser": "9feacd936a1229994080ce8b5db3ba2869ec13dce219d4a33aae7b0d11ed81fe",
+          "/tmp/eris-array-concat-before/eris-js": "f9ffdf6172908c875308ee40fe5783d3b673bbdccf7685a61c608b331348f721",
+          "/tmp/eris-array-concat-before/eris-dom": "db89ac31ae89b541da960de958c90a0dc65aa62a78dbb83ec3f0b121dc934268",
+          "/tmp/eris-array-concat-before/eris-stress": "17f3ef2de9f8c38791ff5a88e9c92518bcec566abcb372e3e79f835e733d5944",
+          "/tmp/eris-array-concat-before/eris-browser-vulkan": "b1ed3159393b7d45f52b7a51c2aee4ec6c420013067e011b0f9db67fb6cfb89f",
+          "/tmp/eris-array-concat-before/eris-js-vulkan": "9ba590df5f3a6b7fb405907081f4464f8425f9bb15a0fd57b5aea3bb6147ac1c",
+          "/tmp/eris-array-concat-before/eris-dom-vulkan": "4e58b41d7e9eb3849b6c56b01adad1d8c04c0092552c34240e122717324630dd",
+          "/tmp/eris-array-concat-before/eris-stress-vulkan": "32a67437fb6ddd94ad9767f251360b2fe61d36d9c701c6604ec2b5f0c3047583",
+          "/tmp/eris-array-concat-before/provenance.json": "fd57d87b973fa3dce6cedb959bf64afdbd67a2ab895b523953398e0edb148243",
+          "/tmp/eris-array-concat-local/freeze-provenance.json": "e93aff00b9b82cc9924e62093ffa9b39ea12f1da01cd36b3b68ffecc420bb949",
+          "/tmp/eris-array-concat-local-before.py": "f7dbab040302b0dd3d9a253604fc391c2207bedddbd8e30da7cab763af38dfdd",
+          "/tmp/eris-array-concat-before/verification.json": "057c819098e47b2860d6f9f4f0db07a9fad352f7da279ae734f16408cfac51a7",
+          "/tmp/eris-array-concat-before/parent-ci-final.json": "760be4eead6dd8e5c97df89da91be182be1dea8f2f542a83b6f4fc9d46f15dd1",
+          "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/run.py": "141dab68e638654ce26700f16fc05818b6a5650755cce07227b4cd0de9411f7f",
+          "/tmp/eris-array-concat-local-candidate-replay.py": "2071f64d45e5d662b5cc00f1b86667c9ff360ef97800fd0a98f6ff970ecfabe5",
+          "/tmp/eris-array-concat-local-before/report.json": "5e3fcc9beaaf33a2bfc4b50ffb76648fe0c4dcbc0ff36ac5e46049fda804b831",
+          "/tmp/eris-array-concat-local-before/execution.json": "679c21592eb0c8d88a6c1246f0ad7b817c066ec75c4014bc0449eb08afedd183",
+          "/tmp/eris-array-concat-local-before/summary.json": "aabe2f0561aa65208e6ba23507201e8a6eb71adf2c8db07b872c7e6fc2c6abe4",
+          "/tmp/eris-array-concat-candidate-1/inputs.json": "f571d93b8d704e1a8f5b8628f68f4b2373fe8953eccf5b7873b1484c1a23c831",
+          "/tmp/eris-array-concat-candidate-1/default-binaries.json": "225091ea596013bfd89885295ee6164e8ac3d56b5e09eb8751c85bce559176e0",
+          "/tmp/eris-array-concat-candidate-1/source.tar": "55bdd3dadebcc0b0c842f1a9ef9c7605122b445c1ed3e71331be56bea49128ac",
+          "/tmp/eris-array-concat-candidate-1/eris-js": "64667259eff3ccec0c2ef98370a60a1dea71560def07574dc59db1bbb3fff3c0",
+          "/tmp/eris-array-concat-candidate-1/provenance.json": "8efba07f82088fc298cfb6fac922e175310e1d083a8d8688321eef0e3a580da1",
+          "/tmp/eris-array-concat-candidate-1/verification-inputs.json": "a3e88ab9942d269de55ec4cd564fbd614d13c56b2054149fb7cc97d358f63366",
+          "/tmp/eris-array-concat-candidate-1/pixel-inputs.json": "307bf7fe0720f7c0f4c9cb2db2da256393eb529aa917ec2541fc04945a3f3013"
+        },
+        "binary_sha256": "64667259eff3ccec0c2ef98370a60a1dea71560def07574dc59db1bbb3fff3c0",
+        "production_input_sha256": "b5204aa57dbbfbadedacfca614746cb1ad3b643da7156a81769ff0063d4f32f9",
+        "retries": false,
+        "normalization": false,
+        "baseline_written": false,
+        "limits": {
+          "outer_wall_seconds": 120,
+          "address_space_bytes": 805306368,
+          "cpu_seconds": 45,
+          "output_file_bytes": 8388608,
+          "per_case_wall_seconds": 3
+        },
+        "exit_observed_unreaped": {
+          "pid": 3,
+          "code": 1,
+          "status": 0
+        },
+        "all_inputs_unchanged": true,
+        "counts": {
+          "passed": 80,
+          "failed": 4,
+          "unsupported": 2,
+          "resource": 4
+        },
+        "controls_verified": 68,
+        "fixture_expectations_matched": 84,
+        "fixture_expectations_verified": 84,
+        "post_input_checks_passed": true,
+        "returncode": 0,
+        "leader_reaped": true,
+        "ended_utc": "2026-09-29T12:26:36.844225+00:00",
+        "elapsed_seconds": 0.9895,
+        "artifacts": {
+          "report.json": {
+            "bytes": 376247,
+            "sha256": "8e4ae9f1d4b836b73e21a1ce8ce44296b73e20382622bb917768327e4d4528d0"
+          },
+          "comparison.json": {
+            "bytes": 775252,
+            "sha256": "5336f1cffb87884a4a1a021af90ef8e1039ec987be345abab7404d7a09954e64"
+          },
+          "stdout.log": {
+            "bytes": 10744,
+            "sha256": "079e382591ea89094c957c5eb55975ab2c37ce4bb1c7477d786f5330e70a074f"
+          },
+          "stderr.log": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      },
+      "stdout": {
+        "path": "/tmp/eris-array-concat-local-candidate-1/stdout.log",
+        "bytes": 10744,
+        "sha256": "079e382591ea89094c957c5eb55975ab2c37ce4bb1c7477d786f5330e70a074f"
+      },
+      "stderr": {
+        "path": "/tmp/eris-array-concat-local-candidate-1/stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  },
+  "public_copies": {
+    "array-concat.js": {
+      "path": "/tmp/eris-array-concat-local/array-concat.js",
+      "bytes": 60541,
+      "sha256": "2ffd5b3dde177d50c49868a37de676d36cc91d9e1baba37f0b4493fef969c26c"
+    },
+    "array-concat-fixture.json": {
+      "path": "/tmp/eris-array-concat-local/freeze.json",
+      "bytes": 18780,
+      "sha256": "e59f0ed8be1edc72b88899e6fae785b86029fb01a52d66d8ea9ea33997f8667e"
+    },
+    "array-concat-preflights.json": {
+      "path": "/tmp/eris-array-concat-local/preflights.json",
+      "bytes": 16818,
+      "sha256": "79ae27f17674c23c407befa7a79bf08ebeb1376684bf2d39fd864b2f02085e91"
+    },
+    "array-concat-matrix.json": {
+      "path": "/tmp/eris-array-concat-local/matrix.json",
+      "bytes": 282184,
+      "sha256": "4342ebd14e877f404fb0a61e047abd4f5b2f0cf0412b23db62187b2a41341430"
+    },
+    "array-concat-initial.json": {
+      "path": "/tmp/eris-array-concat-local-before/report.json",
+      "bytes": 386115,
+      "sha256": "5e3fcc9beaaf33a2bfc4b50ffb76648fe0c4dcbc0ff36ac5e46049fda804b831"
+    },
+    "array-concat-final.json": {
+      "path": "/tmp/eris-array-concat-local-candidate-1/report.json",
+      "bytes": 376247,
+      "sha256": "8e4ae9f1d4b836b73e21a1ce8ce44296b73e20382622bb917768327e4d4528d0"
+    },
+    "array-concat-local-comparison.json": {
+      "path": "/tmp/eris-array-concat-local-candidate-1/comparison.json",
+      "bytes": 775252,
+      "sha256": "5336f1cffb87884a4a1a021af90ef8e1039ec987be345abab7404d7a09954e64"
+    }
+  },
+  "observations": {
+    "before": {
+      "failed": 88,
+      "unsupported": 2
+    },
+    "before_verified_controls": 12,
+    "candidate": {
+      "passed": 80,
+      "failed": 4,
+      "unsupported": 2,
+      "resource": 4
+    },
+    "candidate_verified_controls": 68,
+    "verified_fixture_expectations": 84,
+    "unchanged_identities": 158,
+    "six_unmet_prerequisite_modes": "Proxy, Uint8Array, and cross-realm sources retain ordinary-success expectations. Cross-realm modes are conservatively excluded by the retained host-hook source check.",
+    "four_expected_resource_modes": "Recursive species and a >2^32 hole walk test engine terminal policy, not ECMAScript error semantics.",
+    "control_pairing": "All semantic/feature sources guard successful Array and generic concat calls; deliberately wrong controls verify only after same-mode positive success. Before raw Test262Error matches did not establish feature health."
+  },
+  "limitations": [
+    "Scratch paths retain execution provenance; public report/source copies are the portable evidence.",
+    "No expected source, mode, error identity, quota, or policy was adjusted after observations.",
+    "No baseline or CI gate is created here; formal resource statuses prevent a new known-state gate.",
+    "Aggregate validation, integration, limits and formal profile records are separately published.",
+    "No GPU execution, performance comparison, full compatibility or production-security conclusion follows from this local replay."
+  ]
+}

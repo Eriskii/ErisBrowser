@@ -147,6 +147,20 @@ whole-allocator failure recovery remain separate work. See the
 [unchanged limits](../tests/conformance/array-splice-limits.json) and
 [validation evidence](../tests/conformance/array-splice-integration-validation.json).
 
+[Concat](../tests/conformance/array-concat.md) reuses the scoped charged species,
+symbol/named-property, Has/Get, definition and strict length paths. It borrows
+arguments and keeps constant-size loop state; every reached item and index,
+including holes, consumes shared work. Its thirteen private groups check lookup
+precharges, mutation prefixes, heap cutpoints, cumulative work, host boundaries,
+cycles and terminal cleanup. The public >2^32 hole walk reaches the existing
+budget before the final Array length RangeError; private seeded-state tests
+cover that later boundary. Two ordinary upstream 4,000-hole modes also reach
+the work limit and remain reported as resources. No limit or policy was relaxed,
+and no new regression gate masks these outcomes. General constructor/callback/
+property/JSON accounting and allocator recovery remain separate work. See the
+[unchanged limits](../tests/conformance/array-concat-limits.json) and
+[validation record](../tests/conformance/array-concat-validation.json).
+
 ## Representative limits
 
 | Resource | Bound |

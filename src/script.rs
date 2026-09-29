@@ -39,6 +39,7 @@ mod parser_legacy;
 #[cfg(test)]
 use parser_legacy::{ActiveLabel, Parser};
 mod array_builtins;
+mod array_concat;
 mod array_from;
 mod array_methods;
 mod array_properties;
@@ -2028,6 +2029,7 @@ impl Runtime {
         }
         self.install_array_from()?;
         self.install_array_splice()?;
+        self.install_array_concat()?;
         self.initialize_number_statics()?;
         for name in [
             "isFinite",
@@ -7673,6 +7675,9 @@ impl Runtime {
         }
         if native.name == "Array.splice" {
             return self.array_splice(native.receiver.clone(), &args, doc);
+        }
+        if native.name == "Array.concat" {
+            return self.array_concat(native.receiver.clone(), &args, doc);
         }
         if native.name == "Date" {
             let now = self.date_now()?;

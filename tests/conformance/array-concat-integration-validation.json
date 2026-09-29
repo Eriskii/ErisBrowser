@@ -1,0 +1,91 @@
+{
+  "format": 1,
+  "oracle": {
+    "path": "tests/conformance/array-concat-integration-fixture.json",
+    "sha256": "427419287172d9646ddd6ee7a5314eb70b5e0b28623a146430940b122ec784a2"
+  },
+  "oracle_review": {
+    "path": "/tmp/eris-array-concat-integration-review.json",
+    "bytes": 2296,
+    "sha256": "f10f2a380796d825013b4afee94c1db5679396e1a147ba9ba14d65bb506dece3"
+  },
+  "fixture": {
+    "path": "tests/fixtures/array-concat.html",
+    "sha256": "43e00a45c5d00c5d631df1fa5393f54e6b80dcbd7e864eb0e4a84e7ff723d5fa"
+  },
+  "worker_generation": 191,
+  "pipeline_test": "array_concat_preserves_spreadability_aliases_and_partial_callback_effects",
+  "worker_test": "confined_array_concat_preserves_spreadability_aliases_and_partial_callback_effects",
+  "executed_in_full_matrices": {
+    "188-default": {
+      "passed": 1243,
+      "failed": 0,
+      "ignored": 0,
+      "pipeline_and_real_confined_worker_concat_checks": true,
+      "log_sha256": "2a2c3dc4d43cb30bc7ec7b3eb3b358fc745779c4c344e8c643ba924748613c37"
+    },
+    "188-feature": {
+      "passed": 1254,
+      "failed": 0,
+      "ignored": 0,
+      "pipeline_and_real_confined_worker_concat_checks": true,
+      "log_sha256": "1b7ac941c08987bd690a55ae21332da40fbcf40f607b26d2dc11d7afc2558b46"
+    },
+    "198-default": {
+      "passed": 1243,
+      "failed": 0,
+      "ignored": 0,
+      "pipeline_and_real_confined_worker_concat_checks": true,
+      "log_sha256": "1c63971c5337dc5fb91db810fee668b13b9a860179891fe57a258c5193bc1859"
+    },
+    "198-feature": {
+      "passed": 1254,
+      "failed": 0,
+      "ignored": 0,
+      "pipeline_and_real_confined_worker_concat_checks": true,
+      "log_sha256": "fa6e632dc34c83b37b5310c235dab6e2014ad90e1b710da46f3481a1f1170980"
+    }
+  },
+  "redundant_focused_execution": false,
+  "observations": {
+    "initial": {
+      "body_class": "ready",
+      "result_text": "ready",
+      "sample_rgb": 32768
+    },
+    "after_click": {
+      "body_class": "clicked",
+      "result_text": "6",
+      "sample_rgb": 255
+    },
+    "sample_points": [
+      [
+        10,
+        10
+      ],
+      [
+        60,
+        10
+      ],
+      [
+        110,
+        10
+      ],
+      [
+        160,
+        10
+      ],
+      [
+        210,
+        10
+      ],
+      [
+        260,
+        10
+      ]
+    ],
+    "worker_pixels_equal_direct_page": true,
+    "unexpected_diagnostics": 0
+  },
+  "limits": "Semantic and pixel integration checks within the current browser; no full security or compatibility claim"
+}

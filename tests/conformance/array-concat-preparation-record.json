@@ -1,0 +1,1840 @@
+{
+  "format": 1,
+  "scope": "Concat preparation provenance, before observations, and retained corrections; no oracle/budget relaxation",
+  "before": {
+    "path": "/tmp/eris-array-concat-before/provenance.json",
+    "bytes": 1829,
+    "sha256": "fd57d87b973fa3dce6cedb959bf64afdbd67a2ab895b523953398e0edb148243"
+  },
+  "parent_ci": {
+    "path": "/tmp/eris-array-concat-before/parent-ci-final.json",
+    "bytes": 19708,
+    "sha256": "760be4eead6dd8e5c97df89da91be182be1dea8f2f542a83b6f4fc9d46f15dd1"
+  },
+  "inventory": {
+    "path": "/tmp/eris-array-concat-inventory.json",
+    "bytes": 403089,
+    "sha256": "cd8b40171f7e871f7ed36c2118ea3f10546088058d543da5927a36bf8898589c"
+  },
+  "plan": {
+    "path": "/tmp/eris-array-concat-plan.md",
+    "bytes": 16802,
+    "sha256": "047b75fc9a4da09c2151fb2f96cb4feb1ba93c44b124f2bf2ed48b7d95225ded"
+  },
+  "upstream_preparation": {
+    "format": "eris-array-concat-upstream-preparation-v1",
+    "status": "Complete authenticated recursive source/helper/proof inventory; preparation only, no engine results",
+    "completed_utc": "2026-09-29T11:57:25.168082+00:00",
+    "root": "/tmp/eris-array-concat-upstream-20260929",
+    "freeze": {
+      "path": "/tmp/eris-array-concat-upstream-20260929/freeze.json",
+      "bytes": 40905,
+      "sha256": "d579b9034f7e8b132d6f830ec8d598ccc787eebcb0c9819734990c3ebc74de25"
+    },
+    "summary": {
+      "adapter_executed": false,
+      "admitted_modes": 121,
+      "canonical_case_records_sha256": "5394b18914498fb97535a329b0293814af2491f2413d851782bc2d6c606232c1",
+      "case_identity_sha256": "ce66cdd519f089b2cb0721737b6b71f1eeb922208318165d6cad0fca692d452d",
+      "cases_sha256": "ffd16373d4988dd4be29f0c4c013200800ab4cffc86b3d614d6b3f5cf84a9c35",
+      "complete_recursive_inventory": true,
+      "directory_count": 1,
+      "fixture_files": [],
+      "flags": {
+        "noStrict": 1
+      },
+      "formal_profile_registered": false,
+      "helpers": [
+        "assert.js",
+        "compareArray.js",
+        "isConstructor.js",
+        "propertyHelper.js",
+        "sta.js"
+      ],
+      "implementation_authorized": false,
+      "includes": {
+        "compareArray.js": 18,
+        "isConstructor.js": 2,
+        "propertyHelper.js": 7
+      },
+      "metadata_unsupported_modes": 16,
+      "mode_count": 137,
+      "mode_counts": {
+        "sloppy": 69,
+        "strict": 68
+      },
+      "mode_feature_counts": {
+        "Proxy": 12,
+        "Reflect.construct": 4,
+        "Symbol": 2,
+        "Symbol.isConcatSpreadable": 61,
+        "Symbol.species": 30,
+        "arrow-function": 2,
+        "cross-realm": 4
+      },
+      "negative_sources": 0,
+      "non_js_entries": [],
+      "optional_concat_tag_added": false,
+      "policy_expression": "Exact unchanged ARRAY_SPLICE_FEATURES",
+      "policy_sha256": "3bd84646ab13001fb957abb9cf6d9595657657d2708314f50ac1e89c183f7b60",
+      "proof_bytes": 67697,
+      "proof_documents": 8,
+      "proof_records_sha256": "e1ffa4375282c57697e45af69ced75f5a684e90f3c979ada803ea2ad828597db",
+      "proposed_policy_copied_before_any_execution": true,
+      "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+      "root_tree": "91b2052adad1f066ae031e2ff3a1e9bd6d732886",
+      "runner_policy_sha256": "3ffb7cd01ba9148d4ef61806a0d476c682ebbb9f9dce37190188a963006a73da",
+      "source_bytes": 77035,
+      "source_count": 69,
+      "source_feature_counts": {
+        "Proxy": 6,
+        "Reflect.construct": 2,
+        "Symbol": 1,
+        "Symbol.isConcatSpreadable": 31,
+        "Symbol.species": 15,
+        "arrow-function": 1,
+        "cross-realm": 2
+      },
+      "subtree": "test/built-ins/Array/prototype/concat",
+      "subtree_sha": "6a606717eec7a333a5136fc03dc7b941a28dcd3e",
+      "unsupported_reason_counts": {
+        "unimplemented declared features: Proxy": 12,
+        "unimplemented declared features: cross-realm": 4
+      }
+    },
+    "authentication": {
+      "root_tree_is_existing_pinned_anchor": true,
+      "commit_json_binds_pinned_revision_to_root": true,
+      "all_root_linked_nonrecursive_tree_objects_rehashed": true,
+      "all_recursive_descendant_tree_objects_reconstructed_and_rehashed": true,
+      "all_source_helper_legal_blobs_rehashed_with_git_header": true,
+      "omitted_or_extra_source_check": true,
+      "original_metadata_and_mode_helpers_reparsed": true,
+      "malformed_proof_controls_rejected": [
+        "truncated",
+        "omitted-source",
+        "same-count-replacement",
+        "blob-replacement",
+        "unsafe-path"
+      ],
+      "verification": {
+        "path": "/tmp/eris-array-concat-upstream-20260929/verification.json",
+        "bytes": 521,
+        "sha256": "bd4285c5e181e3b324eee43a4d160e0fe3af142b05140998c2b1b2dd71249c84"
+      }
+    },
+    "inventory_files": {
+      "inventory.json": {
+        "path": "/tmp/eris-array-concat-upstream-20260929/inventory.json",
+        "bytes": 15480,
+        "sha256": "a3f9b9006f3ac11e2677e3fa36f88e2456cce417b2a60a3a66d2ccdea5fda0b4"
+      },
+      "provenance.json": {
+        "path": "/tmp/eris-array-concat-upstream-20260929/provenance.json",
+        "bytes": 54736,
+        "sha256": "2d7763b92d4361d6a1b99e25018ef2c43cc9dd6fede7563fa78054be7c538d65"
+      },
+      "cases.json": {
+        "path": "/tmp/eris-array-concat-upstream-20260929/cases.json",
+        "bytes": 128843,
+        "sha256": "ffd16373d4988dd4be29f0c4c013200800ab4cffc86b3d614d6b3f5cf84a9c35"
+      },
+      "policy.json": {
+        "path": "/tmp/eris-array-concat-upstream-20260929/policy.json",
+        "bytes": 1187,
+        "sha256": "3bd84646ab13001fb957abb9cf6d9595657657d2708314f50ac1e89c183f7b60"
+      },
+      "summary.json": {
+        "path": "/tmp/eris-array-concat-upstream-20260929/summary.json",
+        "bytes": 2236,
+        "sha256": "a48321132292fa11fae00a628f5278d43586033b00c302b0ffec8585a97e9a56"
+      },
+      "dependencies.json": {
+        "path": "/tmp/eris-array-concat-upstream-20260929/dependencies.json",
+        "bytes": 10635,
+        "sha256": "3947eb0b98b9d7be8069a0382907bf90f9cd41155258c04b1f2cfedbe7dc3f40"
+      },
+      "README.md": {
+        "path": "/tmp/eris-array-concat-upstream-20260929/README.md",
+        "bytes": 2459,
+        "sha256": "d3d0507d62d7c99fccc179aa6a425948c57964abc784e3e6d5d9d1421d34498f"
+      }
+    },
+    "helpers_and_legal": [
+      {
+        "path": "harness/assert.js",
+        "bytes": 4881,
+        "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+        "git_blob_sha": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+        "origin": "retained same-pin inventory bytes, independently blob verified",
+        "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/harness/assert.js"
+      },
+      {
+        "path": "harness/compareArray.js",
+        "bytes": 243,
+        "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d",
+        "git_blob_sha": "fa5eae5f4c7c60d6178ef992fe8c2e1dd0c394f3",
+        "origin": "retained same-pin inventory bytes, independently blob verified",
+        "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/harness/compareArray.js"
+      },
+      {
+        "path": "harness/isConstructor.js",
+        "bytes": 544,
+        "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32",
+        "git_blob_sha": "387c664e14fdf7563769fb71ae4c122c7e503172",
+        "origin": "retained same-pin inventory bytes, independently blob verified",
+        "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/harness/isConstructor.js"
+      },
+      {
+        "path": "harness/propertyHelper.js",
+        "bytes": 18956,
+        "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8",
+        "git_blob_sha": "0acccfe87f0c40c94c1d43c315c2d8f1e35d7b52",
+        "origin": "retained same-pin inventory bytes, independently blob verified",
+        "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/harness/propertyHelper.js"
+      },
+      {
+        "path": "harness/sta.js",
+        "bytes": 792,
+        "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+        "git_blob_sha": "d291a94f46234908009a7ee909cf9d66034c73fe",
+        "origin": "retained same-pin inventory bytes, independently blob verified",
+        "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/harness/sta.js"
+      },
+      {
+        "path": "LICENSE",
+        "bytes": 2213,
+        "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0",
+        "git_blob_sha": "a56b038f0e01b05b004d92097d4601ba629afdf3",
+        "origin": "retained same-pin inventory bytes, independently blob verified",
+        "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/LICENSE"
+      },
+      {
+        "path": "INTERPRETING.md",
+        "bytes": 18611,
+        "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e",
+        "git_blob_sha": "ecf7ec7003a1e3ea937fb4e7d3348d22733b50b5",
+        "origin": "retained same-pin inventory bytes, independently blob verified",
+        "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/INTERPRETING.md"
+      }
+    ],
+    "helper_counts": {
+      "distinct_harness_files": 5,
+      "harness_bytes": 25416,
+      "legal_files": 2,
+      "legal_bytes": 20824
+    },
+    "policy": {
+      "basis": "Exact current ARRAY_SPLICE_FEATURES, equal to ARRAY_FROM_FEATURES; no feature additions or formal profile registration",
+      "source_snapshot": {
+        "path": "/tmp/eris-array-concat-upstream-20260929/tools/test262_conformance.py",
+        "bytes": 187993,
+        "sha256": "3c622ed4e3ddd9c804ca234994a483f58576dd79ad6fadf73116d4797381c3e8"
+      },
+      "policy": {
+        "async_completion": false,
+        "format": 2,
+        "host_hooks": false,
+        "modules": false,
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "supported_features": [
+          "Array.prototype.values",
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "const",
+          "default-parameters",
+          "for-in-order",
+          "for-of",
+          "let",
+          "new.target",
+          "object-methods",
+          "regexp-dotall",
+          "regexp-match-indices",
+          "regexp-named-groups",
+          "regexp-sticky",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "timeout_seconds": 3.0
+      },
+      "admitted_modes": 121,
+      "metadata_excluded_modes": 16,
+      "excluded_sources": [
+        {
+          "path": "test/built-ins/Array/prototype/concat/arg-length-exceeding-integer-limit.js",
+          "sha256": "1cee262f5b97af603cd5859813db476ef0e6ac2a60dae19fe998ebe2f9b9ced7",
+          "features": [
+            "Symbol.isConcatSpreadable",
+            "Proxy"
+          ],
+          "modes": [
+            "sloppy",
+            "strict"
+          ],
+          "reasons": [
+            "unimplemented declared features: Proxy"
+          ]
+        },
+        {
+          "path": "test/built-ins/Array/prototype/concat/create-proto-from-ctor-realm-array.js",
+          "sha256": "74c4bd391efe4b8dd3b79e76f13f02cbf6e200334f36e967cc15098f1ca0195c",
+          "features": [
+            "cross-realm",
+            "Symbol.species"
+          ],
+          "modes": [
+            "sloppy",
+            "strict"
+          ],
+          "reasons": [
+            "unimplemented declared features: cross-realm"
+          ]
+        },
+        {
+          "path": "test/built-ins/Array/prototype/concat/create-proto-from-ctor-realm-non-array.js",
+          "sha256": "3c4e217ee5b7a6a4d690f76eb5cb71471147627c40581423c101b7e2af3b45a0",
+          "features": [
+            "cross-realm",
+            "Symbol.species"
+          ],
+          "modes": [
+            "sloppy",
+            "strict"
+          ],
+          "reasons": [
+            "unimplemented declared features: cross-realm"
+          ]
+        },
+        {
+          "path": "test/built-ins/Array/prototype/concat/create-proxy.js",
+          "sha256": "78f51e1f84bc12f850bd11c34855cadd3473192e7df53e57fa1cfce0fcd07841",
+          "features": [
+            "Proxy",
+            "Symbol.species"
+          ],
+          "modes": [
+            "sloppy",
+            "strict"
+          ],
+          "reasons": [
+            "unimplemented declared features: Proxy"
+          ]
+        },
+        {
+          "path": "test/built-ins/Array/prototype/concat/create-revoked-proxy.js",
+          "sha256": "2a6fd69ee00635174f652d40c5d8d909208a898b5ef6b3ea31c566d7b8a8dbce",
+          "features": [
+            "Proxy"
+          ],
+          "modes": [
+            "sloppy",
+            "strict"
+          ],
+          "reasons": [
+            "unimplemented declared features: Proxy"
+          ]
+        },
+        {
+          "path": "test/built-ins/Array/prototype/concat/is-concat-spreadable-is-array-proxy-revoked.js",
+          "sha256": "ad4e8732d06c13449aa55c18d7f8013ffbac967fe69230274858176f8a4616b9",
+          "features": [
+            "Proxy",
+            "Symbol.isConcatSpreadable"
+          ],
+          "modes": [
+            "sloppy",
+            "strict"
+          ],
+          "reasons": [
+            "unimplemented declared features: Proxy"
+          ]
+        },
+        {
+          "path": "test/built-ins/Array/prototype/concat/is-concat-spreadable-proxy-revoked.js",
+          "sha256": "905ad0a658ef9e6ca518e94b13bf6887939fac838d6f38a2c5ea3f2a657b38f5",
+          "features": [
+            "Proxy"
+          ],
+          "modes": [
+            "sloppy",
+            "strict"
+          ],
+          "reasons": [
+            "unimplemented declared features: Proxy"
+          ]
+        },
+        {
+          "path": "test/built-ins/Array/prototype/concat/is-concat-spreadable-proxy.js",
+          "sha256": "964a8b6bbf0eaa7617cd0b16c2bade8cfe45f71572ba94f2caeaf1cbf1f15d0b",
+          "features": [
+            "Proxy",
+            "Symbol.isConcatSpreadable"
+          ],
+          "modes": [
+            "sloppy",
+            "strict"
+          ],
+          "reasons": [
+            "unimplemented declared features: Proxy"
+          ]
+        }
+      ],
+      "untagged_dependencies_never_remove_sources": true,
+      "no_outcome_based_selection": true
+    },
+    "prerequisite_notes": [
+      "The exact unchanged ARRAY_SPLICE_FEATURES policy admits 121 modes and excludes 16: 12 Proxy and 4 cross-realm; every excluded source is retained.",
+      "Array.prototype.concat_non-array.js contains an untagged class declaration and remains admitted.",
+      "Array.prototype.concat_small-typed-array.js and Array.prototype.concat_large-typed-array.js require untagged Uint8Array/Uint16Array/Uint32Array/Float32Array/Float64Array globals. Both remain admitted. Float16Array is optional in the small source; the large source deliberately excludes it.",
+      "The large typed-array test constructs 4000-element arrays for each of five constructors; both typed-array sources include a fake length 4000 scenario. These are intact inputs, not predicted engine outcomes.",
+      "arg-length-near-integer-limit.js uses MAX_SAFE_INTEGER but throws at its first present indexed getter; it does not require traversing the full logical range.",
+      "The single noStrict source is Array.prototype.concat_sloppy-arguments-with-dupes.js. No original negative or locale metadata is present.",
+      "isConstructor.js invokes unchanged Reflect.construct; compareArray is selected through the existing harness rules.",
+      "No ArrayBuffer, generator, bound-function, eval, rest/spread, exponentiation or Reflect.get source-body marker was found by the bounded textual scan. This is not proof of all transitive prerequisites."
+    ],
+    "normative_references": [
+      {
+        "url": "https://tc39.es/ecma262/multipage/indexed-collections.html",
+        "section_url": "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array.prototype.concat",
+        "started_utc": "2026-09-29T11:53:18.650701+00:00",
+        "status": 200,
+        "headers": {
+          "Connection": "close",
+          "Content-Length": "1036729",
+          "Server": "GitHub.com",
+          "Content-Type": "text/html; charset=utf-8",
+          "Last-Modified": "Sun, 27 Sep 2026 09:48:26 GMT",
+          "Access-Control-Allow-Origin": "*",
+          "ETag": "\"6ab8e66a-fd1b9\"",
+          "expires": "Tue, 29 Sep 2026 12:03:18 GMT",
+          "Cache-Control": "max-age=600",
+          "x-proxy-cache": "MISS",
+          "X-GitHub-Request-Id": "0ECA:23DA92:AC8FEF:D0E80B:6ABBA6AE",
+          "x-github-edge-region": "iad",
+          "Accept-Ranges": "bytes",
+          "Age": "0",
+          "Date": "Tue, 29 Sep 2026 11:53:19 GMT",
+          "Via": "1.1 varnish",
+          "X-Served-By": "cache-dtw8023-DTW",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Timer": "S1790682799.905369,VS0,VE138",
+          "Vary": "Accept-Encoding",
+          "X-Fastly-Request-ID": "9dd0ba6cfb958835fa77ba5b7062bc903b5aa02a"
+        },
+        "final_url": "https://tc39.es/ecma262/multipage/indexed-collections.html",
+        "source": "official network response",
+        "html_sha256": "750d0760f7e7d51bf83a53417c37aa3eedb3ca0e434ca3c9ce80605976f04c79",
+        "html_bytes": 1036729,
+        "extracted_text_sha256": "d710164b77d68e0dc23276c218792bf81e6256da0e98385850f4223d367eaa12",
+        "extraction": "HTML text of named emu-clause, whitespace collapsed by line; original full HTML retained",
+        "finished_utc": "2026-09-29T11:53:19.223623+00:00"
+      },
+      {
+        "url": "https://tc39.es/ecma262/multipage/indexed-collections.html",
+        "section_url": "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-isconcatspreadable",
+        "started_utc": "2026-09-29T11:53:19.223700+00:00",
+        "source": "same-attempt page reused",
+        "status": 200,
+        "html_sha256": "750d0760f7e7d51bf83a53417c37aa3eedb3ca0e434ca3c9ce80605976f04c79",
+        "html_bytes": 1036729,
+        "extracted_text_sha256": "afa9016c9c73d3286897191a8b3905e7bf89707145dfe14913c42ea114a44cb7",
+        "extraction": "HTML text of named emu-clause, whitespace collapsed by line; original full HTML retained",
+        "finished_utc": "2026-09-29T11:53:19.321994+00:00"
+      },
+      {
+        "url": "https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html",
+        "section_url": "https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-arrayspeciescreate",
+        "started_utc": "2026-09-29T11:53:19.322091+00:00",
+        "status": 200,
+        "headers": {
+          "Connection": "close",
+          "Content-Length": "1037286",
+          "Server": "GitHub.com",
+          "Content-Type": "text/html; charset=utf-8",
+          "Last-Modified": "Sun, 27 Sep 2026 09:48:27 GMT",
+          "Access-Control-Allow-Origin": "*",
+          "ETag": "\"6ab8e66b-fd3e6\"",
+          "expires": "Tue, 29 Sep 2026 12:03:19 GMT",
+          "Cache-Control": "max-age=600",
+          "x-proxy-cache": "MISS",
+          "X-GitHub-Request-Id": "44AE:2A01F:93C333:B81E4F:6ABBA6AF",
+          "x-github-edge-region": "iad",
+          "Accept-Ranges": "bytes",
+          "Age": "0",
+          "Date": "Tue, 29 Sep 2026 11:53:19 GMT",
+          "Via": "1.1 varnish",
+          "X-Served-By": "cache-dtw8025-DTW",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Timer": "S1790682799.416058,VS0,VE163",
+          "Vary": "Accept-Encoding",
+          "X-Fastly-Request-ID": "50bfe434fb42dfed46508595144e7561a2e54c1d"
+        },
+        "final_url": "https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html",
+        "source": "official network response",
+        "html_sha256": "b99f85242889e03bb342b9712e6836648c792a39fb3aa6b033be4bd5297ddfa7",
+        "html_bytes": 1037286,
+        "extracted_text_sha256": "7cc4264618873587495bb0d4b8c3ee1911446731809c3de5b938947a12687dda",
+        "extraction": "HTML text of named emu-clause, whitespace collapsed by line; original full HTML retained",
+        "finished_utc": "2026-09-29T11:53:19.737922+00:00"
+      }
+    ],
+    "normative_review_notes": [
+      "Current concat performs ToObject then ArraySpeciesCreate(original,0), and checks spreadability separately for the receiver and each argument.",
+      "IsConcatSpreadable performs no property access on a primitive. Objects use live Symbol.isConcatSpreadable Get and ToBoolean when defined, otherwise IsArray.",
+      "For a spread item, LengthOfArrayLike and the combined 2^53-1 bound precede live indexed HasProperty/Get/CreateDataProperty; holes advance the result index. Nonspread values are copied directly. Final strict length Set follows all writes.",
+      "ArraySpeciesCreate bypasses constructor on non-Arrays, includes the foreign intrinsic-Array realm exception, treats null species as default and otherwise Constructs with one length argument. Cross-realm or Proxy support is not inferred from this preparation."
+    ],
+    "network": {
+      "failed_test262_requests": 1,
+      "successful_test262_requests": 70,
+      "successful_current_primary_spec_requests": 2,
+      "official_clause_snapshots": 3,
+      "records": [
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2-f9e52de8a7d7ec29.json",
+            "bytes": 333,
+            "sha256": "165173a390a7b0582bb0b8c10d8a241ce75bea69809b7d124450d4a9ec9908ee"
+          },
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/6a606717eec7a333a5136fc03dc7b941a28dcd3e?recursive=1",
+          "started_utc": "2026-09-29T11:52:07.323993+00:00",
+          "error_type": "URLError",
+          "error": "<urlopen error [Errno -3] Temporary failure in name resolution>",
+          "finished_utc": "2026-09-29T11:52:07.332592+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-06207503bdaa1603.json",
+            "bytes": 306,
+            "sha256": "75f40943eb0f5cc03b8e81f6cd5de8d1038bab5fba2a75a623d350de4c8459bb"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/create-species-undef.js",
+          "started_utc": "2026-09-29T11:52:23.444012+00:00",
+          "status": 200,
+          "bytes": 1019,
+          "finished_utc": "2026-09-29T11:52:23.581598+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-0967c21ee8827748.json",
+            "bytes": 292,
+            "sha256": "90809d72a65c88b41874a932ff9d709ab0cc2ee469a3148defac9937d05560a7"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/length.js",
+          "started_utc": "2026-09-29T11:52:23.945673+00:00",
+          "status": 200,
+          "bytes": 1168,
+          "finished_utc": "2026-09-29T11:52:24.077629+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-0c0931fdf350b531.json",
+            "bytes": 300,
+            "sha256": "282821e4ebde33e88924106c93cb364ed221a1f74a2eca7ad3ec434665c9a36c"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/S15.4.4.4_A1_T3.js",
+          "started_utc": "2026-09-29T11:52:22.660517+00:00",
+          "status": 200,
+          "bytes": 969,
+          "finished_utc": "2026-09-29T11:52:22.818371+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-1229f84624fb067c.json",
+            "bytes": 320,
+            "sha256": "7d6ca5965ad38e3a8ca044d31697c4b188bd1bfe54710a6831d98c15f6c51c58"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/arg-length-exceeding-integer-limit.js",
+          "started_utc": "2026-09-29T11:52:22.844996+00:00",
+          "status": 200,
+          "bytes": 1237,
+          "finished_utc": "2026-09-29T11:52:22.973327+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-14415e60ff06285c.json",
+            "bytes": 301,
+            "sha256": "02a73eda500a548394042962a272b1322436c161ab0c05c5628a0bcc537fd345"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/S15.4.4.4_A1_T2.js",
+          "started_utc": "2026-09-29T11:52:22.560739+00:00",
+          "status": 200,
+          "bytes": 1355,
+          "finished_utc": "2026-09-29T11:52:22.688892+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-1746d828277b2ac8.json",
+            "bytes": 334,
+            "sha256": "870b37721c26d0f350cb352785f8e92cda2706518aecac391e5eb054570b900e"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_array-like-negative-length.js",
+          "started_utc": "2026-09-29T11:52:21.798151+00:00",
+          "status": 200,
+          "bytes": 886,
+          "finished_utc": "2026-09-29T11:52:21.941912+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-1b1b80a6601ba8b0.json",
+            "bytes": 335,
+            "sha256": "b414abc6e0ac6e8be8b823b4afb36c97a4c227232c6b1785f9cab5091f78f376"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_spreadable-boolean-wrapper.js",
+          "started_utc": "2026-09-29T11:52:22.253684+00:00",
+          "status": 200,
+          "bytes": 1671,
+          "finished_utc": "2026-09-29T11:52:22.400963+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-1c56a161d8c3e74e.json",
+            "bytes": 327,
+            "sha256": "fc8ba47e5cd60cbd9ee9ce1c3b60bdd8318213b9cca6f93e751ceea231fd2548"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_spreadable-reg-exp.js",
+          "started_utc": "2026-09-29T11:52:22.401172+00:00",
+          "status": 200,
+          "bytes": 1305,
+          "finished_utc": "2026-09-29T11:52:22.533949+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-23e4cc4198152c7f.json",
+            "bytes": 301,
+            "sha256": "a4560e9be214abeadb861e852b350e3a9c794733029a73117df5476bc3dc6e03"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/15.4.4.4-5-c-i-1.js",
+          "started_utc": "2026-09-29T11:52:21.631219+00:00",
+          "status": 200,
+          "bytes": 769,
+          "finished_utc": "2026-09-29T11:52:21.825336+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-2bfebe5c2dec956a.json",
+            "bytes": 338,
+            "sha256": "dd21cfba8c4572ae29c603aa1225b33ea610f2ea74b44b9ae63130059f29aae7"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/create-species-with-non-writable-property-spreadable.js",
+          "started_utc": "2026-09-29T11:52:23.536203+00:00",
+          "status": 200,
+          "bytes": 1081,
+          "finished_utc": "2026-09-29T11:52:23.671938+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-3487a08256d535eb.json",
+            "bytes": 308,
+            "sha256": "02fca50fbedbfec0d1124a5649ed6daa262de66a61a62cfee46c39d732392e7c"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/create-ctor-non-object.js",
+          "started_utc": "2026-09-29T11:52:22.968084+00:00",
+          "status": 200,
+          "bytes": 1064,
+          "finished_utc": "2026-09-29T11:52:23.151896+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-3598570b55d8b2c9.json",
+            "bytes": 304,
+            "sha256": "00b74b389d3597c7bef34b31415a5a6cdb294f75604348a0c5d9b46add8ce603"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/create-species-null.js",
+          "started_utc": "2026-09-29T11:52:23.390798+00:00",
+          "status": 200,
+          "bytes": 989,
+          "finished_utc": "2026-09-29T11:52:23.535974+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-39f809959d23e2a3.json",
+            "bytes": 301,
+            "sha256": "e32f7d99ac6d05a0a5b39095404ad531f29d54a5adf31cf5a66b5c03b88532e1"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/S15.4.4.4_A2_T1.js",
+          "started_utc": "2026-09-29T11:52:22.675660+00:00",
+          "status": 200,
+          "bytes": 1312,
+          "finished_utc": "2026-09-29T11:52:22.808732+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-3b9d148d4dd67122.json",
+            "bytes": 320,
+            "sha256": "ca04bf2281019897a3c94bf5726fe1d4ec131a207b0fff4fb0533a7f27deb8a7"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/is-concat-spreadable-proxy-revoked.js",
+          "started_utc": "2026-09-29T11:52:23.786620+00:00",
+          "status": 200,
+          "bytes": 1152,
+          "finished_utc": "2026-09-29T11:52:23.911156+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-3dcbe89fc3b7a103.json",
+            "bytes": 320,
+            "sha256": "457e34d299a005cd34178c449b18ab84521a0831972f68a034333c9ad853911e"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_no-prototype.js",
+          "started_utc": "2026-09-29T11:52:22.080573+00:00",
+          "status": 200,
+          "bytes": 409,
+          "finished_utc": "2026-09-29T11:52:22.229952+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-410748cee49c70fd.json",
+            "bytes": 332,
+            "sha256": "df8a988d16c6b998986532408f0298e3d9e71c58b07d1dbd83199715a9a70493"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_spreadable-getter-throws.js",
+          "started_utc": "2026-09-29T11:52:22.382744+00:00",
+          "status": 200,
+          "bytes": 868,
+          "finished_utc": "2026-09-29T11:52:22.525435+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-41fcbc4bccb02414.json",
+            "bytes": 302,
+            "sha256": "a57424206ee15473a58f934d6ccfccf9db8bb3632cfa7228ac744ad9fff69a2f"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/not-a-constructor.js",
+          "started_utc": "2026-09-29T11:52:23.980986+00:00",
+          "status": 200,
+          "bytes": 961,
+          "finished_utc": "2026-09-29T11:52:24.119023+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-45122ccc672d37f8.json",
+            "bytes": 326,
+            "sha256": "ee70887c59e87bfbe5da5dd87bbcc4508e1a0018116be062e309b77a37ad87af"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/create-species-non-extensible-spreadable.js",
+          "started_utc": "2026-09-29T11:52:23.299882+00:00",
+          "status": 200,
+          "bytes": 1095,
+          "finished_utc": "2026-09-29T11:52:23.443785+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-51be0595343ac891.json",
+            "bytes": 317,
+            "sha256": "ac71428124279ebb546b6f330842508fb39052f7e41305ebe71a509b5d5e6d8d"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/is-concat-spreadable-val-truthy.js",
+          "started_utc": "2026-09-29T11:52:23.843752+00:00",
+          "status": 200,
+          "bytes": 1998,
+          "finished_utc": "2026-09-29T11:52:23.980749+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-61d6a30b823f0e97.json",
+            "bytes": 306,
+            "sha256": "5a25d7d7dc6251b2c3fe3be2945a997329baa4ea6d2d4fc0396e1bebdc6383a0"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/create-revoked-proxy.js",
+          "started_utc": "2026-09-29T11:52:23.225784+00:00",
+          "status": 200,
+          "bytes": 1057,
+          "finished_utc": "2026-09-29T11:52:23.372111+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-63095836d2c5c3f7.json",
+            "bytes": 302,
+            "sha256": "f2cfc678d44131bfaf854cf619e6289315a9f77d1f34bee199333a6dd3f78ffd"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/call-with-boolean.js",
+          "started_utc": "2026-09-29T11:52:22.964077+00:00",
+          "status": 200,
+          "bytes": 639,
+          "finished_utc": "2026-09-29T11:52:23.099397+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-673fc65a5d89d7d5.json",
+            "bytes": 332,
+            "sha256": "bc05bd459eafff11efbbb4cc8ed18413893786dd200a0b8f7af17efa21149671"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_spreadable-sparse-object.js",
+          "started_utc": "2026-09-29T11:52:22.421334+00:00",
+          "status": 200,
+          "bytes": 756,
+          "finished_utc": "2026-09-29T11:52:22.560488+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-6a7173d7e7b9e974.json",
+            "bytes": 307,
+            "sha256": "997d4ca19b05f3377bf32214e1ea4fc252d5e5909efa2404418f94aa3ee91650"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/15.4.4.4-5-b-iii-3-b-1.js",
+          "started_utc": "2026-09-29T11:52:21.631304+00:00",
+          "status": 200,
+          "bytes": 640,
+          "finished_utc": "2026-09-29T11:52:21.817091+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-6b6550ee54f11c15.json",
+            "bytes": 327,
+            "sha256": "b9c4fd25f1c5055b1c7daa60362ff4ea879404442cee73cc228cc79ee47976bf"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/create-species-with-non-writable-property.js",
+          "started_utc": "2026-09-29T11:52:23.581831+00:00",
+          "status": 200,
+          "bytes": 1083,
+          "finished_utc": "2026-09-29T11:52:23.717506+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-6ce86986ca34348e.json",
+            "bytes": 298,
+            "sha256": "2a368d794501f23b0b3836fe4553cdaf57f563b9662eaf1a224d830c040bd4a2"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/create-proxy.js",
+          "started_utc": "2026-09-29T11:52:23.152112+00:00",
+          "status": 200,
+          "bytes": 1190,
+          "finished_utc": "2026-09-29T11:52:23.299592+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-702611bf50057f4e.json",
+            "bytes": 332,
+            "sha256": "907c733fda0721b58bc7f3a0079bcedf4702c90459f504929aedca53b09570d1"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_array-like-string-length.js",
+          "started_utc": "2026-09-29T11:52:21.818288+00:00",
+          "status": 200,
+          "bytes": 791,
+          "finished_utc": "2026-09-29T11:52:21.959640+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-703fa6d886444383.json",
+            "bytes": 317,
+            "sha256": "9fc8a78d5a892e8c7201796bc42697e0661eb258bc423451c5dc43182cd91de0"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_non-array.js",
+          "started_utc": "2026-09-29T11:52:22.095427+00:00",
+          "status": 200,
+          "bytes": 911,
+          "finished_utc": "2026-09-29T11:52:22.231951+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-726e19bf4a48620c.json",
+            "bytes": 312,
+            "sha256": "d1036908b259a73f10b256cdbd45577d1e24b026ac3222558286c90721c7539f"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/is-concat-spreadable-proxy.js",
+          "started_utc": "2026-09-29T11:52:23.808846+00:00",
+          "status": 200,
+          "bytes": 1780,
+          "finished_utc": "2026-09-29T11:52:23.970387+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-735cc7fdce114262.json",
+            "bytes": 342,
+            "sha256": "19c69a9fa6ff79632e05931fd64bda0a464abc0e3f5cfb3bcf478b9444eafbed"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/create-species-with-non-configurable-property-spreadable.js",
+          "started_utc": "2026-09-29T11:52:23.526017+00:00",
+          "status": 200,
+          "bytes": 1138,
+          "finished_utc": "2026-09-29T11:52:23.655681+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-7a560cb53974f52e.json",
+            "bytes": 301,
+            "sha256": "b16e5461a0d1ff8366d8cb567337cd68e6bb3e0a5e9b65be45cc34570bb07dc7"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/S15.4.4.4_A3_T1.js",
+          "started_utc": "2026-09-29T11:52:22.808960+00:00",
+          "status": 200,
+          "bytes": 1085,
+          "finished_utc": "2026-09-29T11:52:22.940792+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-7a855438fee61a3d.json",
+            "bytes": 329,
+            "sha256": "a777f8752dc3ce7375697243cd70bb0f62fd2743abe282904377ecd8903039fe"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/is-concat-spreadable-is-array-proxy-revoked.js",
+          "started_utc": "2026-09-29T11:52:23.717773+00:00",
+          "status": 200,
+          "bytes": 1653,
+          "finished_utc": "2026-09-29T11:52:23.843466+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-81da77911112734c.json",
+            "bytes": 324,
+            "sha256": "09c468f790cff8540751e091ca04be07d4515f9b43df1c49cea9ec993d33558a"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_strict-arguments.js",
+          "started_utc": "2026-09-29T11:52:22.525726+00:00",
+          "status": 200,
+          "bytes": 958,
+          "finished_utc": "2026-09-29T11:52:22.660251+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-84229197e1ba98eb.json",
+            "bytes": 342,
+            "sha256": "aeb628d159e80a269f145b15e05d9c4129e58de4264d3abeec8e2404f0eda643"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_array-like-length-to-string-throws.js",
+          "started_utc": "2026-09-29T11:52:21.631498+00:00",
+          "status": 200,
+          "bytes": 735,
+          "finished_utc": "2026-09-29T11:52:21.797717+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-867379af455a5e4f.json",
+            "bytes": 315,
+            "sha256": "4eb8cab1af2603607a7f478b6653dc0a5f52a8527b5b8856cdae561172cf945b"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/arg-length-near-integer-limit.js",
+          "started_utc": "2026-09-29T11:52:22.941019+00:00",
+          "status": 200,
+          "bytes": 1080,
+          "finished_utc": "2026-09-29T11:52:23.076695+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-86a07c16a0d3564f.json",
+            "bytes": 320,
+            "sha256": "b869546714e281db2110847c31a5233457b2791999aa278f7c46fb8bf3a89865"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/is-concat-spreadable-val-undefined.js",
+          "started_utc": "2026-09-29T11:52:23.911365+00:00",
+          "status": 200,
+          "bytes": 1486,
+          "finished_utc": "2026-09-29T11:52:24.039447+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-8a4ba8275deeed01.json",
+            "bytes": 334,
+            "sha256": "710fbe116794e566702d8e18dae781469f48ad5b896be11b11ab4114232c3555"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_spreadable-number-wrapper.js",
+          "started_utc": "2026-09-29T11:52:22.384932+00:00",
+          "status": 200,
+          "bytes": 1632,
+          "finished_utc": "2026-09-29T11:52:22.516704+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-8ad369b0fa0b9d22.json",
+            "bytes": 294,
+            "sha256": "7bfbb1924a78e85ca1c2dded3056d8eed3792ba94cb1d434bffc49d20f4f720f"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/prop-desc.js",
+          "started_utc": "2026-09-29T11:52:24.039672+00:00",
+          "status": 200,
+          "bytes": 760,
+          "finished_utc": "2026-09-29T11:52:24.169870+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-8b40375b2aeb1d74.json",
+            "bytes": 324,
+            "sha256": "41294a8a3d18a67304242f9ab0e6872d3a99a8aad08f7037ee0db7049bafe3a8"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/create-proto-from-ctor-realm-non-array.js",
+          "started_utc": "2026-09-29T11:52:23.104365+00:00",
+          "status": 200,
+          "bytes": 1385,
+          "finished_utc": "2026-09-29T11:52:23.230536+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-8c2e70f1d7e8db96.json",
+            "bytes": 335,
+            "sha256": "aa290feb3cc91239f2fd4b728ad0a0eb3270bc5caf1e3e2526f23f6899de7578"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_sloppy-arguments-with-dupes.js",
+          "started_utc": "2026-09-29T11:52:22.124525+00:00",
+          "status": 200,
+          "bytes": 923,
+          "finished_utc": "2026-09-29T11:52:22.274499+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-9130bd8796ff5c70.json",
+            "bytes": 331,
+            "sha256": "bc8eb80b079e61d5872ce2d6075ddb64971a325977b92d15b9e0edf8d6266473"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_sloppy-arguments-throws.js",
+          "started_utc": "2026-09-29T11:52:22.113311+00:00",
+          "status": 200,
+          "bytes": 647,
+          "finished_utc": "2026-09-29T11:52:22.253464+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-918621f9d87aa7e1.json",
+            "bytes": 334,
+            "sha256": "da06c9c8877a5430061728fff38acb2fa7afaccf9da16cd15249e9358193d59d"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_spreadable-string-wrapper.js",
+          "started_utc": "2026-09-29T11:52:22.516961+00:00",
+          "status": 200,
+          "bytes": 1460,
+          "finished_utc": "2026-09-29T11:52:22.669090+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-94cebc12498d6e84.json",
+            "bytes": 302,
+            "sha256": "85d5f02c933d916229ed8594b58d0111c933826e8b9052c38b975d18ec256836"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/create-non-array.js",
+          "started_utc": "2026-09-29T11:52:23.076978+00:00",
+          "status": 200,
+          "bytes": 1169,
+          "finished_utc": "2026-09-29T11:52:23.225545+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-95137f513c6f8cbc.json",
+            "bytes": 341,
+            "sha256": "2ceea775c4797d3807b5b2bd07f0613dc1f4f08c55cb9538a70cebb139e0806b"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_array-like-length-value-of-throws.js",
+          "started_utc": "2026-09-29T11:52:21.632033+00:00",
+          "status": 200,
+          "bytes": 729,
+          "finished_utc": "2026-09-29T11:52:21.818078+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-977bebd70323582d.json",
+            "bytes": 324,
+            "sha256": "f69ebdceb23468401d57921255a3ab288d8054072536bb2d801ed62a4a4ffcc0"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_sloppy-arguments.js",
+          "started_utc": "2026-09-29T11:52:22.230149+00:00",
+          "status": 200,
+          "bytes": 894,
+          "finished_utc": "2026-09-29T11:52:22.384718+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-99326d8b19959ce6.json",
+            "bytes": 317,
+            "sha256": "cc464ffa9a26ff7e76aeecf0a3d357a0d0214df3d9da14f02f81a118e31d7670"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/is-concat-spreadable-val-falsey.js",
+          "started_utc": "2026-09-29T11:52:23.811000+00:00",
+          "status": 200,
+          "bytes": 2312,
+          "finished_utc": "2026-09-29T11:52:23.945439+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-995dad12d9cc687a.json",
+            "bytes": 331,
+            "sha256": "beb84e31bca07b99f5c7b9f76bec9ff34bc594509c582446def76f67ca495428"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/create-species-with-non-configurable-property.js",
+          "started_utc": "2026-09-29T11:52:23.526489+00:00",
+          "status": 200,
+          "bytes": 1065,
+          "finished_utc": "2026-09-29T11:52:23.666184+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-a8d1219264f3752c.json",
+            "bytes": 321,
+            "sha256": "4b9336c5d9c007d6e52ea916a78d6870fed4db375aa4f4bdf72cf383498c7b86"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_length-throws.js",
+          "started_utc": "2026-09-29T11:52:21.971980+00:00",
+          "status": 200,
+          "bytes": 927,
+          "finished_utc": "2026-09-29T11:52:22.124308+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-aabb1a2cf6f1c93e.json",
+            "bytes": 335,
+            "sha256": "e44d840d30ef6dc6d4c762a69a65386439de32e797d7c1be93e3b77e4902ccac"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_array-like-to-length-throws.js",
+          "started_utc": "2026-09-29T11:52:21.825584+00:00",
+          "status": 200,
+          "bytes": 813,
+          "finished_utc": "2026-09-29T11:52:21.971690+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-bc614eea782fad55.json",
+            "bytes": 301,
+            "sha256": "c058ffdfefd9bb7915a842b9a20b94ab2e10537afb3be7e1e04c7b9925623461"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/S15.4.4.4_A1_T1.js",
+          "started_utc": "2026-09-29T11:52:22.534202+00:00",
+          "status": 200,
+          "bytes": 1166,
+          "finished_utc": "2026-09-29T11:52:22.675447+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-bc62dd1f29d6f71f.json",
+            "bytes": 306,
+            "sha256": "37a4f5d8ebf0ae519a8362c337685169b4a26904e675bd176f4137a42e81e064"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/create-species-abrupt.js",
+          "started_utc": "2026-09-29T11:52:23.230758+00:00",
+          "status": 200,
+          "bytes": 875,
+          "finished_utc": "2026-09-29T11:52:23.391692+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-c0527ae0e9b337e0.json",
+            "bytes": 328,
+            "sha256": "eb8b5ece85bba9d687b7cdae4d2cf0e38c835ffbbb3fd64821ffc28ccf97b0e7"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_spreadable-function.js",
+          "started_utc": "2026-09-29T11:52:22.274704+00:00",
+          "status": 200,
+          "bytes": 1427,
+          "finished_utc": "2026-09-29T11:52:22.421049+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-c52a8b047c7e1b09.json",
+            "bytes": 320,
+            "sha256": "7450b63a51efad9f0b7581e429e26861d62b56c4a38f3309a8c4c67cb275141f"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/create-proto-from-ctor-realm-array.js",
+          "started_utc": "2026-09-29T11:52:23.099715+00:00",
+          "status": 200,
+          "bytes": 1363,
+          "finished_utc": "2026-09-29T11:52:23.253737+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-c566b13ba3e10918.json",
+            "bytes": 301,
+            "sha256": "c4aadeb4a7e7677d89458dec7f18b5161ec6730fc9ae68059f474437dd4c2d65"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/S15.4.4.4_A3_T2.js",
+          "started_utc": "2026-09-29T11:52:22.817761+00:00",
+          "status": 200,
+          "bytes": 1540,
+          "finished_utc": "2026-09-29T11:52:22.967843+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-c5c6fd7b9cef3aa8.json",
+            "bytes": 318,
+            "sha256": "95eaebeded79bd34bce557cb0e45b284e26c6b762aa39505bc4acb53ab15c39d"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_array-like.js",
+          "started_utc": "2026-09-29T11:52:21.942146+00:00",
+          "status": 200,
+          "bytes": 776,
+          "finished_utc": "2026-09-29T11:52:22.080367+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-caf1c0ad9a4a4062.json",
+            "bytes": 315,
+            "sha256": "cf1af41a93130e52921db97ffc0fbb3dc55f0326d549d5ef8c4d9cac71adcfc0"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/create-species-non-extensible.js",
+          "started_utc": "2026-09-29T11:52:23.372346+00:00",
+          "status": 200,
+          "bytes": 1012,
+          "finished_utc": "2026-09-29T11:52:23.526285+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-cc356ef934915aeb.json",
+            "bytes": 301,
+            "sha256": "9b3b65eb26d1d5a8498e4392dd5b72d187e476175aa3ad649bc55471f63401f2"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/S15.4.4.4_A3_T3.js",
+          "started_utc": "2026-09-29T11:52:22.818593+00:00",
+          "status": 200,
+          "bytes": 1542,
+          "finished_utc": "2026-09-29T11:52:22.963832+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-d51da084d8eb2fae.json",
+            "bytes": 301,
+            "sha256": "b5cf4fb9461fd6efbb16da95dbfa47fedbff01032996f6409ca75862d81dc47a"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/S15.4.4.4_A1_T4.js",
+          "started_utc": "2026-09-29T11:52:22.669305+00:00",
+          "status": 200,
+          "bytes": 1000,
+          "finished_utc": "2026-09-29T11:52:22.817533+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-d7a3135428a0f6f0.json",
+            "bytes": 326,
+            "sha256": "55f36ea83b4474dfd5baf1d989ad9d93588cd251814e0b3fe1f14425bee862cf"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_small-typed-array.js",
+          "started_utc": "2026-09-29T11:52:22.232152+00:00",
+          "status": 200,
+          "bytes": 1532,
+          "finished_utc": "2026-09-29T11:52:22.382540+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-dec520472d0766c6.json",
+            "bytes": 346,
+            "sha256": "83a66a992d88758af65123c3f15afa503e4a99c8ae3e061765ebb2528edc19ad"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_array-like-primitive-non-number-length.js",
+          "started_utc": "2026-09-29T11:52:21.817400+00:00",
+          "status": 200,
+          "bytes": 813,
+          "finished_utc": "2026-09-29T11:52:21.951449+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-e045f0b1b52e3544.json",
+            "bytes": 289,
+            "sha256": "3a03d27d275b28d0d89575ad2f49c9019c4c9d636b9cdda13b7e8aa514c7ab25"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/name.js",
+          "started_utc": "2026-09-29T11:52:23.970668+00:00",
+          "status": 200,
+          "bytes": 848,
+          "finished_utc": "2026-09-29T11:52:24.098482+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-e2ab4c446562a555.json",
+            "bytes": 326,
+            "sha256": "55d1f6f94830708348081a6a53f9c42ee275120a6d8b079c8bcaa63a506472e4"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_large-typed-array.js",
+          "started_utc": "2026-09-29T11:52:21.959838+00:00",
+          "status": 200,
+          "bytes": 1531,
+          "finished_utc": "2026-09-29T11:52:22.113111+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-e626328a4e04002c.json",
+            "bytes": 300,
+            "sha256": "38f77c62b200d6d33e5f5f361421d761b67936e998deaff323d4c30f60213dc9"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/create-species.js",
+          "started_utc": "2026-09-29T11:52:23.655914+00:00",
+          "status": 200,
+          "bytes": 1378,
+          "finished_utc": "2026-09-29T11:52:23.786309+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-e8e841b35d792524.json",
+            "bytes": 308,
+            "sha256": "70c3303490231f6829c23373d07c1b0d06d09fb62d115ce5501be86f267f1644"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/create-species-poisoned.js",
+          "started_utc": "2026-09-29T11:52:23.391948+00:00",
+          "status": 200,
+          "bytes": 799,
+          "finished_utc": "2026-09-29T11:52:23.525782+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-e95dcd7c31867530.json",
+            "bytes": 316,
+            "sha256": "41ce5237a328664f49f73fedd07fabe2c12c305e2bcd1fbb74661f1e8a4c4e83"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/is-concat-spreadable-get-order.js",
+          "started_utc": "2026-09-29T11:52:23.672136+00:00",
+          "status": 200,
+          "bytes": 2024,
+          "finished_utc": "2026-09-29T11:52:23.810773+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-f1e198181b061a97.json",
+            "bytes": 330,
+            "sha256": "cc84785c0bac8a04e26cfbb55cf3043859e2cc8657d663ab44c395e689326460"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/Array.prototype.concat_holey-sloppy-arguments.js",
+          "started_utc": "2026-09-29T11:52:21.951695+00:00",
+          "status": 200,
+          "bytes": 628,
+          "finished_utc": "2026-09-29T11:52:22.095227+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-f3b970ef3a5fe807.json",
+            "bytes": 314,
+            "sha256": "b5f2b341d26d04073ef31cd4938756cc3bda0de0b163f23f5a6e6215d2fe9bf7"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/is-concat-spreadable-get-err.js",
+          "started_utc": "2026-09-29T11:52:23.666410+00:00",
+          "status": 200,
+          "bytes": 1329,
+          "finished_utc": "2026-09-29T11:52:23.808600+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-f672b21cf2e7b58f.json",
+            "bytes": 300,
+            "sha256": "c5878111fd5ac4a2bb9e340af90ec25f4e148d3edbcffaf1827083ee19b0e614"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/S15.4.4.4_A2_T2.js",
+          "started_utc": "2026-09-29T11:52:22.689134+00:00",
+          "status": 200,
+          "bytes": 760,
+          "finished_utc": "2026-09-29T11:52:22.844736+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-f9cd8d400ae2f0fd.json",
+            "bytes": 309,
+            "sha256": "ccb9be139287d10656926ce8840818f5f5f77d3d002370710574948d96786b96"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/create-species-non-ctor.js",
+          "started_utc": "2026-09-29T11:52:23.254087+00:00",
+          "status": 200,
+          "bytes": 1029,
+          "finished_utc": "2026-09-29T11:52:23.390532+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-f9e52de8a7d7ec29.json",
+            "bytes": 262,
+            "sha256": "ce3746ea96311d6d019d6bdaf833c31b6cfe1513c15b9a2c4e47872a46513af4"
+          },
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/6a606717eec7a333a5136fc03dc7b941a28dcd3e?recursive=1",
+          "started_utc": "2026-09-29T11:52:21.339653+00:00",
+          "status": 200,
+          "bytes": 16600,
+          "finished_utc": "2026-09-29T11:52:21.629647+00:00"
+        },
+        {
+          "record": {
+            "path": "/tmp/eris-array-concat-upstream-20260929/network-2296332-fa8be38ad62bd6ac.json",
+            "bytes": 305,
+            "sha256": "f2d8d1ac709974bdab66a86f56f6b535800f0ce028f632f4166d611d758b5a5d"
+          },
+          "url": "https://raw.githubusercontent.com/tc39/test262/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/concat/create-ctor-poisoned.js",
+          "started_utc": "2026-09-29T11:52:22.973550+00:00",
+          "status": 200,
+          "bytes": 657,
+          "finished_utc": "2026-09-29T11:52:23.104117+00:00"
+        }
+      ],
+      "collection_logs": [
+        {
+          "path": "/tmp/eris-array-concat-upstream-20260929/collection-attempt-1.log",
+          "bytes": 4775,
+          "sha256": "102b02d9d97a1fddccad455d00090e5c55fe671ec79b29dfbae7f87f3992e05f"
+        },
+        {
+          "path": "/tmp/eris-array-concat-upstream-20260929/collection-attempt-2.log",
+          "bytes": 145,
+          "sha256": "705b5126669245cebea8ac8922f7e8914259b8f1e322338873fd5fc80b9365a8"
+        }
+      ],
+      "spec_log": {
+        "path": "/tmp/eris-array-concat-upstream-20260929/spec-snapshot.log",
+        "bytes": 4053,
+        "sha256": "4e1c1852b066c6230144ea3f658b526e1d6580ec58098c023b24fa788434753c"
+      },
+      "bounds": {
+        "request_timeout": 25,
+        "total_seconds": 600,
+        "workers": 4,
+        "max_response": 8388608,
+        "max_file": 2097152,
+        "max_total": 16777216
+      },
+      "failures_preserved": true,
+      "proof_cache_origin": "/tmp/eris-array-splice-upstream-20260929; root-linked Git trees and all copied blobs independently rehashed"
+    },
+    "historical_scope_reviews": [
+      {
+        "path": "/tmp/eris-array-concat-affected-review.json",
+        "bytes": 168817,
+        "sha256": "6023143bc76762d4924f7f45ec910d54297f5b635ebc0ad03339b6a349af570e"
+      },
+      {
+        "path": "/tmp/eris-array-concat-affected-helper-review.json",
+        "bytes": 121402,
+        "sha256": "95c374e7f7bcd2fbb0f791d8663af93b1382fb4072a18b680ec03c2a235ea585"
+      }
+    ],
+    "historical_contract_bindings": [
+      {
+        "path": "/tmp/eris-array-concat-contracts-before.json",
+        "bytes": 18600767,
+        "sha256": "a3f9d93767e0d4f25d54671083d498a45debf1362946e1438bf7088099f09c75"
+      },
+      {
+        "path": "/tmp/eris-array-concat-baselines-before.json",
+        "bytes": 3699813,
+        "sha256": "68be92e2d87282f57c0d07c698438b8c2ec150ac091f8914587376317498a955"
+      }
+    ],
+    "activity_limits": {
+      "engine_or_adapter_executions": 0,
+      "builds": 0,
+      "repository_edits": 0,
+      "corpus_imports": 0,
+      "fixture_expectation_changes": 0,
+      "quota_changes": 0,
+      "baseline_changes": 0,
+      "completed_actions": "Public reads/downloads, authenticated cache copies, pure Python metadata/proof/hash checks and scratch-only reports."
+    }
+  },
+  "tooling_preparation": {
+    "format": 1,
+    "status": "Tooling and complete corpus imported after pure-data tests; formal inputs frozen; BEFORE still pending",
+    "source_files": 69,
+    "mode_cases": 137,
+    "preflights": 96,
+    "admitted_modes": 121,
+    "metadata_excluded_modes": 16,
+    "freeze": {
+      "path": "/tmp/eris-array-concat-formal-freeze.json",
+      "bytes": 24255,
+      "sha256": "539a2fcc0b4b64192f5c12b9d00914770c01b5c7e1a347b1790d47ff7e119460"
+    },
+    "tooling_patch": {
+      "path": "/tmp/eris-array-concat-tooling-stage/tooling.patch",
+      "bytes": 46613,
+      "sha256": "3b85fad85af4df5fe7efc96a3c970d3ae39a3d73b7f45926bb634716c0564693"
+    },
+    "offline_import": {
+      "path": "/tmp/eris-array-concat-tooling-stage/offline-import.json",
+      "bytes": 34475,
+      "sha256": "5c421d7b119acc5ad507181fba57c3672e995900d1965584602a583af98d325a"
+    },
+    "focused_tests": {
+      "path": "/tmp/eris-array-concat-tooling-stage/focused-1.log",
+      "bytes": 2033,
+      "sha256": "483ee187351b190caa95bfc28547860a9da4a1026c1bab9358619b979641cc62"
+    },
+    "all_test262_tests": {
+      "path": "/tmp/eris-array-concat-tooling-stage/test262-suite-1.log",
+      "bytes": 41269,
+      "sha256": "077dad0b7fdceb961fd0b7e5da88b25fe92e8765536615fd7d856d5081b24c6f"
+    },
+    "old_contracts_exact": {
+      "profiles": 40,
+      "cases": 17984,
+      "preflights": 3996
+    },
+    "baselines_unchanged": 33,
+    "unchanged_feature_policy": "ARRAY_SPLICE_FEATURES.copy()",
+    "preparation_history": [
+      {
+        "event": "Initial staged string substitution matched TREE_PROFILES while adding PROFILES. Caught by source inspection and corrected before import or tests. Original scratch bytes retained.",
+        "binding": {
+          "path": "/tmp/eris-array-concat-tooling-stage/importer.pre-execution-typo.py.txt",
+          "bytes": 48294,
+          "sha256": "6294be760bc7f61b61860ffbce7e13aba7561ba67511d4849a2021231a1d5388"
+        }
+      },
+      {
+        "event": "Mapped-arguments control construction simplified to numeric property key 0 before definition compilation or peer review; no JavaScript or engine execution and no expectation change."
+      }
+    ],
+    "commands": [
+      "python3 import-offline.py (offline bytes only; new stage corpus)",
+      "python3 -m unittest discover -s stage/tools -p test_test262_array_concat.py -v",
+      "python3 -m unittest discover -s stage/tools -p test_test262*.py -v",
+      "python3 integrate.py (this script; authorized listed repository paths only)"
+    ],
+    "engine_executions": 0,
+    "runtime_edits": 0,
+    "baseline_edits": 0,
+    "docs_edits": 0,
+    "tooling_failures": 0
+  },
+  "local_before": {
+    "path": "/tmp/eris-array-concat-local-before/report.json",
+    "bytes": 386115,
+    "sha256": "5e3fcc9beaaf33a2bfc4b50ffb76648fe0c4dcbc0ff36ac5e46049fda804b831"
+  },
+  "formal_before": {
+    "path": "/tmp/eris-array-concat-formal-before/array-concat.json",
+    "bytes": 179031,
+    "sha256": "cbfae3b83620d3f6e34faeb5c0ae9a63a2bfb6ff6b7418a60f1c63ddb43df2b8"
+  },
+  "old_contracts": {
+    "path": "/tmp/eris-array-concat-contracts-before.json",
+    "bytes": 18600767,
+    "sha256": "a3f9d93767e0d4f25d54671083d498a45debf1362946e1438bf7088099f09c75"
+  },
+  "old_baselines": {
+    "path": "/tmp/eris-array-concat-baselines-before.json",
+    "bytes": 3699813,
+    "sha256": "68be92e2d87282f57c0d07c698438b8c2ec150ac091f8914587376317498a955"
+  },
+  "runtime_ready": {
+    "phase": "Source ready for first frozen candidate build; no compiler, tests or candidate execution performed by source owner.",
+    "created_utc": "2026-09-29T12:21:37.280337+00:00",
+    "base_commit": "dffca3d69c39de5c58e55838918c0b704b275d5d",
+    "sources": [
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script/array_concat.rs",
+        "sha256": "fc94a725cb6dcef9e68505ffcbae941ec734d702bf693323868c7eef5ddb7cc1",
+        "bytes": 4737
+      },
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script/array_concat/tests.rs",
+        "sha256": "af05552c1d7b95e2ada8af8e9fc3ac89b63fb776a9f942e381b67d0cb0c675ee",
+        "bytes": 17785
+      },
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script/array_splice.rs",
+        "sha256": "50f9d4645755f317218c5fb932a273e9d2792d63f2a301d77f95afd25b0f9802",
+        "bytes": 23299
+      },
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script.rs",
+        "sha256": "450d5aa4d93428085b285fe61fc7fde695f30d95a534a1f2017d2cf5d3765e80",
+        "bytes": 876116
+      }
+    ],
+    "spec_and_outline": [
+      {
+        "path": "/tmp/eris-array-concat-plan.md",
+        "sha256": "047b75fc9a4da09c2151fb2f96cb4feb1ba93c44b124f2bf2ed48b7d95225ded",
+        "bytes": 16802
+      },
+      {
+        "path": "/tmp/eris-array-concat-implementation-outline.md",
+        "sha256": "9ce45e1e34be7a80d14907b40e9d87edfabda28d9ecc0bede4d648651e6e8514",
+        "bytes": 8952
+      }
+    ],
+    "frozen_before": [
+      {
+        "path": "/tmp/eris-array-concat-local-before/report.json",
+        "sha256": "5e3fcc9beaaf33a2bfc4b50ffb76648fe0c4dcbc0ff36ac5e46049fda804b831",
+        "bytes": 386115
+      },
+      {
+        "path": "/tmp/eris-array-concat-local-before/execution.json",
+        "sha256": "679c21592eb0c8d88a6c1246f0ad7b817c066ec75c4014bc0449eb08afedd183",
+        "bytes": 14101
+      },
+      {
+        "path": "/tmp/eris-array-concat-formal-before/array-concat.json",
+        "sha256": "cbfae3b83620d3f6e34faeb5c0ae9a63a2bfb6ff6b7418a60f1c63ddb43df2b8",
+        "bytes": 179031
+      },
+      {
+        "path": "/tmp/eris-array-concat-formal-before/execution.json",
+        "sha256": "dc26cd2a62d59d95fe030b255370618e2becaa1276c2ebcc40022ef1d3dda965",
+        "bytes": 5398
+      }
+    ],
+    "oracle_reviews": [
+      {
+        "path": "/tmp/eris-array-concat-local-oracle-review.json",
+        "sha256": "6749e1d41896885a99f7de94da8694af0eafefe97476c12b29ad7311aa9d81d4",
+        "bytes": 5309
+      },
+      {
+        "path": "/tmp/eris-array-concat-formal-controls-review.json",
+        "sha256": "351627ca5d9e8bb3f1ec6f9fc8faff1a638ce2f7d99bbdfa7e45710d6ac3f3f0",
+        "bytes": 2413
+      },
+      {
+        "path": "/tmp/eris-array-concat-integration-review.json",
+        "sha256": "f10f2a380796d825013b4afee94c1db5679396e1a147ba9ba14d65bb506dece3",
+        "bytes": 2296
+      }
+    ],
+    "private_groups": [
+      "concat_metadata_saved_aliases_and_separate_string_method",
+      "concat_primitive_arguments_skip_hooks_and_flags_use_boolean",
+      "concat_species_precedes_spreading_and_keeps_constructor_identity",
+      "concat_live_holes_per_item_lengths_and_result_aliases",
+      "concat_own_definitions_and_late_strict_length_preserve_partial_effects",
+      "concat_mapped_output_and_ignored_iterator_protocol",
+      "concat_overflow_is_after_conversion_and_before_first_index",
+      "concat_seeded_safe_counters_and_late_array_length_boundary",
+      "concat_symbol_search_is_prepaid_and_primitive_items_skip_it",
+      "concat_heap_cut_keeps_getter_effect_and_written_prefix_without_final_setter",
+      "concat_lazy_host_boundaries_and_prototype_cycles",
+      "concat_terminal_recursion_and_huge_holes_skip_author_cleanup",
+      "concat_repeated_calls_retain_cumulative_work_and_heap"
+    ],
+    "shared_reuse": {
+      "visibility_only_methods": [
+        "splice_property",
+        "splice_get",
+        "splice_named_get",
+        "splice_symbol_get",
+        "splice_number",
+        "splice_species",
+        "splice_define",
+        "splice_length"
+      ],
+      "helper_bodies_and_diagnostics_unchanged": true,
+      "rustfmt_signature_layout": "four widened signatures have only whitespace and optional trailing-comma formatting",
+      "script_rs": "exactly module, installation and native dispatch hooks; removal reconstructs HEAD bytes"
+    },
+    "checks": {
+      "rustfmt_owned_files": true,
+      "authored_diff_whitespace": true,
+      "visibility_and_hook_static_comparison": true,
+      "compiler_or_test_execution": false,
+      "engine_execution": false,
+      "quota_changes": false,
+      "policy_or_oracle_changes": false
+    },
+    "preparation_note": "An initial whitespace-only comparison rejected rustfmt optional trailing commas; an explicitly signature-format-aware comparison then confirmed the eight visibility-only changes. This was a scratch verifier assertion, not a compiler, test, engine or source failure.",
+    "known_scope": "Same-realm species and represented ordinary objects; no Proxy/typed-array/realm expansion; inherited splice messages retained. Existing global accounting limits remain."
+  },
+  "runtime_review": {
+    "format": 1,
+    "review": "Independent bounded concat runtime and private-test static review",
+    "completed_utc": "2026-09-29T12:23:11.555434+00:00",
+    "source_ready_receipt": {
+      "path": "/tmp/eris-array-concat-source-ready.json",
+      "bytes": 5044,
+      "sha256": "c771e8fd1e3193198cf281fe169119ca11cc79d5899660797a999ad5dfb70137"
+    },
+    "sources": [
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script/array_concat.rs",
+        "bytes": 4737,
+        "sha256": "fc94a725cb6dcef9e68505ffcbae941ec734d702bf693323868c7eef5ddb7cc1"
+      },
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script/array_concat/tests.rs",
+        "bytes": 17785,
+        "sha256": "af05552c1d7b95e2ada8af8e9fc3ac89b63fb776a9f942e381b67d0cb0c675ee"
+      },
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script/array_splice.rs",
+        "bytes": 23299,
+        "sha256": "50f9d4645755f317218c5fb932a273e9d2792d63f2a301d77f95afd25b0f9802"
+      },
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script.rs",
+        "bytes": 876116,
+        "sha256": "450d5aa4d93428085b285fe61fc7fde695f30d95a534a1f2017d2cf5d3765e80"
+      }
+    ],
+    "shared_paths_read": [
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script/array_properties.rs",
+        "bytes": 13457,
+        "sha256": "527b4d97acd7d50a8249c79a009360aad45e44ad3520c2d4d46d0325ea56b37a"
+      },
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script/property_keys.rs",
+        "bytes": 8296,
+        "sha256": "7bd4055f08eb2d05b798b16b02c0ddf6e03a5a3fce2c269633e2967f92c665a3"
+      },
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script/symbols.rs",
+        "bytes": 37924,
+        "sha256": "35c3ccb263139414afce07f3e785afafe755ecacaf5266e2fee0e0eca44200a9"
+      },
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script/own_keys.rs",
+        "bytes": 10494,
+        "sha256": "622e0f30d5d1a890517ad82a8d75e4bdc8def1f787960f98594fd4e338963f06"
+      }
+    ],
+    "base_commit": "dffca3d69c39de5c58e55838918c0b704b275d5d",
+    "reviewer_execution": {
+      "cargo": 0,
+      "compiler": 0,
+      "adapter": 0,
+      "engine": 0,
+      "source_edits": 0,
+      "read_only_git_show": true
+    },
+    "findings": [],
+    "result": "No concrete scoped semantic, accounting, visibility or private-oracle defect found in the reviewed final files. Compilation and runtime validation remain root-owned.",
+    "normative_sources": [
+      {
+        "url": "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array.prototype.concat",
+        "snapshot": {
+          "path": "/tmp/eris-array-concat-upstream-20260929/spec/concat.txt",
+          "bytes": 2091,
+          "sha256": "d710164b77d68e0dc23276c218792bf81e6256da0e98385850f4223d367eaa12"
+        }
+      },
+      {
+        "url": "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-isconcatspreadable",
+        "snapshot": {
+          "path": "/tmp/eris-array-concat-upstream-20260929/spec/isconcatspreadable.txt",
+          "bytes": 441,
+          "sha256": "afa9016c9c73d3286897191a8b3905e7bf89707145dfe14913c42ea114a44cb7"
+        }
+      },
+      {
+        "url": "https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-arrayspeciescreate",
+        "snapshot": {
+          "path": "/tmp/eris-array-concat-upstream-20260929/spec/array-species-create.txt",
+          "bytes": 1583,
+          "sha256": "7cc4264618873587495bb0d4b8c3ee1911446731809c3de5b938947a12687dda"
+        }
+      }
+    ],
+    "checked_semantics": [
+      "ToObject receiver precedes species construction with argument 0; receiver and later arguments get no spreadability read before that construction. Generic non-Arrays bypass constructor/species lookup.",
+      "Primitive arguments skip spreadability property access; objects get the well-known symbol live and use non-coercing ToBoolean when defined, otherwise represented Array identity.",
+      "Each spread item captures its own converted length once, checks the combined safe-integer bound before first indexed effects, then performs live HasProperty and fresh Get with the original receiver.",
+      "Destination-key work/definition follows reached source Get. Holes increment the output index without deleting existing output entries, preserving arbitrary species result and alias behavior.",
+      "Nonspread values copy directly with a separate MAX_SAFE boundary. All increments are bounded in u64; public entry starts at zero and does not skip logical holes.",
+      "CreateDataProperty uses all-true flags and bypasses inherited setters. Final strict length Set is after all copies, so its setter/error/ArraySetLength partial effects remain late.",
+      "Author throws propagate with identity; concat acquires no iterator and has no IteratorClose path. Native dispatch retains installed method identity, call/apply/bind receivers and intrinsic metadata."
+    ],
+    "checked_accounting": [
+      "No argument-list clone or logical-length temporary buffer: std::iter::once chains borrowed values and each reached item/index consumes work.",
+      "Fixed-name symbol/prototype/native table comparisons, actual mapped formal-name comparisons, boxed-string virtual snapshots, property search and mutation/vector work use unchanged charged splice helpers.",
+      "Decimal destination key creation is reached after source Get; checked safe-integer guards precede large logical traversal. Existing MAX_STEPS/MAX_HEAP are unchanged.",
+      "Output storage and final shrink reuse precharged ordinary/Array definition, mapped-arguments, ranked own-key and shape-bounded deletion paths. No unproved generic engine-wide accounting claim is made.",
+      "Local B=6 installation/boxing comparison arithmetic matches the existing splice model; only that bounded arithmetic is duplicated."
+    ],
+    "private_tests": {
+      "groups": 13,
+      "names": [
+        "concat_metadata_saved_aliases_and_separate_string_method",
+        "concat_primitive_arguments_skip_hooks_and_flags_use_boolean",
+        "concat_species_precedes_spreading_and_keeps_constructor_identity",
+        "concat_live_holes_per_item_lengths_and_result_aliases",
+        "concat_own_definitions_and_late_strict_length_preserve_partial_effects",
+        "concat_mapped_output_and_ignored_iterator_protocol",
+        "concat_overflow_is_after_conversion_and_before_first_index",
+        "concat_seeded_safe_counters_and_late_array_length_boundary",
+        "concat_symbol_search_is_prepaid_and_primitive_items_skip_it",
+        "concat_heap_cut_keeps_getter_effect_and_written_prefix_without_final_setter",
+        "concat_lazy_host_boundaries_and_prototype_cycles",
+        "concat_terminal_recursion_and_huge_holes_skip_author_cleanup",
+        "concat_repeated_calls_retain_cumulative_work_and_heap"
+      ],
+      "static_observations": [
+        "Metadata, saved aliases, bound nonconstructability and separate String.concat checks preserve actual native entry use.",
+        "CSNBGL ordering, native Object species zero boxing, bound new.target, live source/argument aliases, inherited holes, mapped output and UTF-16 units have coherent independent expected values.",
+        "Arbitrary output descriptor replacement, readonly definition prefix, late actual-Array shrink failure and final setter throw retain prior effects.",
+        "Seeded MAX_SAFE/u32 counters are explicitly private implementation seams; they do not claim public concat can jump across billions of logical holes.",
+        "The measured heap sweep requires a reached getter and completed earlier property with no later definition/final setter; it checks externally visible prefix effects instead of duplicating the loop.",
+        "Symbol lookup one-short work refusal precedes getter effects; primitive spreadability has no lookup cost. Lazy host boundaries, cyclic chains, cumulative work/heap, recursive species and huge holes check existing terminal cleanup."
+      ],
+      "not_executed": true
+    },
+    "scope_and_limits": [
+      "Exactly eight splice associated-method visibility/signature changes, restored mechanically to the published base bytes; helper bodies and diagnostics remain identical.",
+      "Exactly three script.rs hooks; removal restores base bytes.",
+      "No Proxy, cross-realm, typed-array, class, host-object or general constructor/property/JSON accounting expansion. Existing missing prerequisites remain in frozen local/formal contracts.",
+      "This review does not substitute for first Rust compilation or private/local/upstream execution. It makes no whole-Test262 or exact allocator/CPU bound claim.",
+      "The reviewer previously authored formal controls before runtime implementation; runtime source review occurred only after both frozen BEFORE measurements."
+    ],
+    "preexisting_evidence": [
+      {
+        "path": "/tmp/eris-array-concat-formal-freeze.json",
+        "bytes": 24255,
+        "sha256": "539a2fcc0b4b64192f5c12b9d00914770c01b5c7e1a347b1790d47ff7e119460"
+      },
+      {
+        "path": "/tmp/eris-array-concat-formal-handoff.json",
+        "bytes": 35457,
+        "sha256": "2f2f2cf97bfc14566c9e61b0cda15c40706f41dc6322b03cc4dfddb079d89615"
+      },
+      {
+        "path": "/tmp/eris-array-concat-local-before/report.json",
+        "bytes": 386115,
+        "sha256": "5e3fcc9beaaf33a2bfc4b50ffb76648fe0c4dcbc0ff36ac5e46049fda804b831"
+      }
+    ],
+    "source_remained_unchanged_during_final_binding": true
+  },
+  "root_oracle_review": {
+    "format": "eris-array-concat-root-oracle-review-v1",
+    "draft_sha256": "099c8a38d09bd488b77342cb820c7851f4e6e8cfe8228432ffc8634c9a77a2a4",
+    "source_sha256": "2ffd5b3dde177d50c49868a37de676d36cc91d9e1baba37f0b4493fef969c26c",
+    "reviewed_semantic_bodies": 45,
+    "reviewed_control_pairs": 14,
+    "findings": [],
+    "notes": [
+      "All bodies have Array and generic availability prerequisites.",
+      "Holes and partial failures assert own-property presence, not only values.",
+      "Later-input alias expectation [1,1,1] follows sequential Get/Define.",
+      "Symbol/typed-array/realm gaps remain ordinary success requirements.",
+      "Large hole-walk and recursion resource expectations are separately marked engine policy.",
+      "Final u32 Array RangeError needs seeded private state; public huge hole walks cannot cheaply reach it."
+    ],
+    "execution_count": 0
+  },
+  "historical_local_preparation_correction": {
+    "phase": "inert historical local preparation",
+    "engine_executed": false,
+    "failure": "KeyError: bounded_process is imported from html_conformance, not defined in test262_conformance",
+    "original_driver": "/tmp/eris-array-concat-prepare-historical-locals-attempt-1.py.txt",
+    "original_sha256": "e11e72e1c2fc760a31213f532c3b680d0b229181df87653ecbfa93026b28b0f1",
+    "correction": "Check run_case/case_fingerprint in test262_conformance and bounded_process in its defining html_conformance module",
+    "oracle_changed": false
+  },
+  "root_driver_review": {
+    "path": "/tmp/eris-array-concat-root-drivers-review.json",
+    "bytes": 6205,
+    "sha256": "9baef2638710c4486dbecc1e94215550609a31f7ea78f2c6144deee05fecb0df"
+  },
+  "candidate_count": 1,
+  "compiler_or_Rust_Python_check_failures": 0,
+  "oracles_changed_after_before": false,
+  "quota_changes": false,
+  "baseline_changes": false
+}

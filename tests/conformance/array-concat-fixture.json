@@ -1,0 +1,780 @@
+{
+  "phase": "Frozen independently reviewed concat local oracle",
+  "fixture_sha256": "2ffd5b3dde177d50c49868a37de676d36cc91d9e1baba37f0b4493fef969c26c",
+  "generator_sha256": "3c4c1d9b065c042d771759ea191826ee19c9c9cc2f01a7dd8667f5eacf96bca9",
+  "preflights_sha256": "79ae27f17674c23c407befa7a79bf08ebeb1376684bf2d39fd864b2f02085e91",
+  "source_cases": 45,
+  "mode_cases": 90,
+  "cases": [
+    {
+      "number": 1,
+      "name": "metadata-property-flags",
+      "area": "metadata",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 2,
+      "name": "saved-alias-call-apply-bind-nonconstructor",
+      "area": "metadata",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 3,
+      "name": "dense-items-order-and-argument-evaluation",
+      "area": "semantics",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 4,
+      "name": "fresh-shallow-copy-and-no-argument",
+      "area": "semantics",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 5,
+      "name": "nullish-receiver-rejected-without-item-hooks",
+      "area": "boxing",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 6,
+      "name": "primitive-receiver-boxes-once-and-string-codeunits",
+      "area": "boxing",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 7,
+      "name": "primitive-items-ignore-prototype-spread-hooks",
+      "area": "spreadability",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 8,
+      "name": "default-array-spread-versus-ordinary-object",
+      "area": "spreadability",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 9,
+      "name": "false-spread-flags-suppress-length-and-indices",
+      "area": "spreadability",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 10,
+      "name": "truthy-spread-flags-never-coerce",
+      "area": "spreadability",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 11,
+      "name": "inherited-spread-getter-receiver-and-single-read",
+      "area": "spreadability",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 12,
+      "name": "undefined-spread-flag-falls-back-to-array-brand",
+      "area": "spreadability",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 13,
+      "name": "tolength-truncation-nan-negative-and-symbol",
+      "area": "conversion",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 14,
+      "name": "spread-then-length-then-number-conversion-order",
+      "area": "conversion",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 15,
+      "name": "safe-integer-overflow-before-indexed-access",
+      "area": "large-range",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": "Nonspread ordinary receiver advances output index to one. The later MAX_SAFE/Infinity length then overflows before any indexed access; no logical-hole walk is required."
+    },
+    {
+      "number": 16,
+      "name": "huge-safe-length-can-throw-at-first-index",
+      "area": "large-range",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": "Output index remains zero before the huge item, so MAX_SAFE itself is allowed. The first present getter throws in bounded work; no eager u32 result-length restriction is permitted."
+    },
+    {
+      "number": 17,
+      "name": "holes-undefined-and-trailing-result-length",
+      "area": "sparse",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 18,
+      "name": "inherited-indices-use-source-receiver",
+      "area": "sparse",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 19,
+      "name": "live-getter-deletes-and-adds-future-indices",
+      "area": "liveness",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 20,
+      "name": "captured-length-survives-shrink-and-growth",
+      "area": "liveness",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 21,
+      "name": "later-item-spreadability-and-length-are-live",
+      "area": "liveness",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 22,
+      "name": "species-before-spreadability-constructor-zero-arity",
+      "area": "species",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 23,
+      "name": "default-species-keeps-intrinsic-after-global-poison",
+      "area": "species",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 24,
+      "name": "invalid-species-and-constructor-abrupt-before-spread",
+      "area": "species",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 25,
+      "name": "generic-receiver-ignores-constructor-and-species",
+      "area": "species",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 26,
+      "name": "source-holes-retain-preexisting-output-keys",
+      "area": "species",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 27,
+      "name": "species-source-alias-and-captured-length",
+      "area": "aliasing",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": "Each occurrence captures its own length before its own copy. The second copy grows the aliased Array but must still stop after its captured two indices."
+    },
+    {
+      "number": 28,
+      "name": "species-aliases-later-input-with-live-overwrite",
+      "area": "aliasing",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 29,
+      "name": "bound-species-constructor-and-alternate-array-prototype",
+      "area": "species",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 30,
+      "name": "result-definitions-bypass-setters-and-replace-accessors",
+      "area": "definitions",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 31,
+      "name": "nonconfigurable-output-refusal-retains-prefix",
+      "area": "partial-effects",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 32,
+      "name": "nonextensible-output-get-effects-before-refusal",
+      "area": "partial-effects",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 33,
+      "name": "final-length-inherited-setter-and-abrupt-prefix",
+      "area": "partial-effects",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 34,
+      "name": "readonly-or-getter-only-final-length-always-throws",
+      "area": "partial-effects",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 35,
+      "name": "final-array-shrink-refusal-keeps-descending-partial-effects",
+      "area": "partial-effects",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": "Late strict final Array length Set is observable without a >2^32 hole walk. The separate u32 RangeError path needs private seeded-counter/helper coverage."
+    },
+    {
+      "number": 36,
+      "name": "boxed-string-species-result-rejects-strict-definitions",
+      "area": "boxing",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 37,
+      "name": "mapped-unmapped-and-spread-input-arguments",
+      "area": "arguments",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 38,
+      "name": "abrupt-getter-identities-preserve-earlier-output",
+      "area": "abrupt",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 39,
+      "name": "sealed-frozen-sources-are-not-written",
+      "area": "integrity",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 40,
+      "name": "iterator-and-close-hooks-are-never-read",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": ""
+    },
+    {
+      "number": 41,
+      "name": "proxy-source-has-get-order-and-result-definition-traps",
+      "area": "prerequisite",
+      "prerequisites": [
+        "Proxy"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": "Normative ordinary completion remains expected. Missing Proxy is an unmet prerequisite, never filtered or accepted as success."
+    },
+    {
+      "number": 42,
+      "name": "typed-array-default-and-explicit-spreadability",
+      "area": "prerequisite",
+      "prerequisites": [
+        "typed-arrays"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": "Normative completion includes final typed-array length Set refusal after element definitions. No prerequisite-based metadata exclusion is applied."
+    },
+    {
+      "number": 43,
+      "name": "cross-realm-array-intrinsic-species-fallback",
+      "area": "prerequisite",
+      "prerequisites": [
+        "cross-realm",
+        "$262.createRealm"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": "The foreign intrinsic Array constructor is discarded before its species getter. This host prerequisite retains complete expectation without filtering."
+    },
+    {
+      "number": 44,
+      "name": "recursive-species-terminal-resource",
+      "area": "engine-policy-resource",
+      "prerequisites": [],
+      "expected": {
+        "status": "resource",
+        "phase": "runtime"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": "Unlimited constructor reentry must exhaust an existing shared call/work/heap limit. Terminal runtime resource is expected; exact first limit and message are deliberately not predicted."
+    },
+    {
+      "number": 45,
+      "name": "large-hole-walk-terminal-resource-before-u32-final-length",
+      "area": "engine-policy-resource",
+      "prerequisites": [],
+      "expected": {
+        "status": "resource",
+        "phase": "runtime"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "note": "Normative unbounded completion of the loop would reach final Array length RangeError; the existing 100000 work cap must terminate first because every logical hole is visited. This is engine policy, not a claim that resource is a JavaScript exception."
+    }
+  ],
+  "draft_sha256": "099c8a38d09bd488b77342cb820c7851f4e6e8cfe8228432ffc8634c9a77a2a4",
+  "draft_freeze_sha256": "e870365f83f2b673c299760e6fdeefe74a63a27cb89c587c2325bae96e511f15"
+}

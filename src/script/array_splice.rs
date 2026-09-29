@@ -203,7 +203,11 @@ impl Runtime {
         Ok(self.own_property(object, key))
     }
 
-    fn splice_property(&mut self, object: &Value, key: &JsString) -> Result<Option<Property>> {
+    pub(super) fn splice_property(
+        &mut self,
+        object: &Value,
+        key: &JsString,
+    ) -> Result<Option<Property>> {
         let mut cursor = Some(object.clone());
         for _ in 0..MAX_DEPTH {
             let Some(value) = cursor else { return Ok(None) };
@@ -216,7 +220,12 @@ impl Runtime {
         Err(ScriptError::resource("prototype chain limit exceeded"))
     }
 
-    fn splice_get(&mut self, object: &Value, key: &JsString, doc: &mut Document) -> Result<Value> {
+    pub(super) fn splice_get(
+        &mut self,
+        object: &Value,
+        key: &JsString,
+        doc: &mut Document,
+    ) -> Result<Value> {
         let Some(property) = self.splice_property(object, key)? else {
             return Ok(Value::Undefined);
         };
@@ -245,7 +254,7 @@ impl Runtime {
         Ok(name.into())
     }
 
-    fn splice_named_get(
+    pub(super) fn splice_named_get(
         &mut self,
         object: &Value,
         name: &str,
@@ -255,7 +264,7 @@ impl Runtime {
         self.splice_get(object, &key, doc)
     }
 
-    fn splice_symbol_get(
+    pub(super) fn splice_symbol_get(
         &mut self,
         object: &Value,
         name: &str,
@@ -308,7 +317,7 @@ impl Runtime {
         Ok(values)
     }
 
-    fn splice_number(&mut self, value: Value, doc: &mut Document) -> Result<f64> {
+    pub(super) fn splice_number(&mut self, value: Value, doc: &mut Document) -> Result<f64> {
         if !js_object(&value) {
             return self.primitive_number_value(value);
         }
@@ -343,7 +352,12 @@ impl Runtime {
         ))
     }
 
-    fn splice_species(&mut self, object: &Value, length: u64, doc: &mut Document) -> Result<Value> {
+    pub(super) fn splice_species(
+        &mut self,
+        object: &Value,
+        length: u64,
+        doc: &mut Document,
+    ) -> Result<Value> {
         if matches!(object, Value::Array(_)) {
             let mut constructor = self.splice_named_get(object, "constructor", doc)?;
             // All represented functions belong to this realm. Retain the
@@ -387,7 +401,7 @@ impl Runtime {
         Ok(array)
     }
 
-    fn splice_define(
+    pub(super) fn splice_define(
         &mut self,
         object: &Value,
         key: JsString,
@@ -497,7 +511,12 @@ impl Runtime {
         self.splice_define(object, key, value, create, doc)
     }
 
-    fn splice_length(&mut self, object: &Value, length: u64, doc: &mut Document) -> Result<()> {
+    pub(super) fn splice_length(
+        &mut self,
+        object: &Value,
+        length: u64,
+        doc: &mut Document,
+    ) -> Result<()> {
         let key = self.splice_key("length")?;
         self.splice_set(object, key, Value::Number(length as f64), doc)
     }

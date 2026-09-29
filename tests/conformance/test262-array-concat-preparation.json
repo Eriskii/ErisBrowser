@@ -1,0 +1,189 @@
+{
+  "format": 1,
+  "profile": "array-concat",
+  "publication": "Observation-only formal profile; no baseline or CI gate",
+  "inventory": {
+    "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+    "subtree": "test/built-ins/Array/prototype/concat",
+    "subtree_git_tree": "6a606717eec7a333a5136fc03dc7b941a28dcd3e",
+    "source_files": 69,
+    "source_bytes": 77035,
+    "modes": 137,
+    "mode_counts": {
+      "sloppy": 69,
+      "strict": 68
+    },
+    "helpers": 5,
+    "proof_documents": 8,
+    "manifest": {
+      "path": "../upstream/test262-array-concat/manifest.json",
+      "sha256": "361a24487a02b324ad324d812c9ac7172334f1fcc7fc6ea36dd4fde70a0a29b3"
+    },
+    "policy": "ARRAY_SPLICE_FEATURES.copy()",
+    "policy_sha256": "3ffb7cd01ba9148d4ef61806a0d476c682ebbb9f9dce37190188a963006a73da",
+    "admitted_modes": 121,
+    "metadata_excluded_modes": 16
+  },
+  "reports": {
+    "initial": {
+      "path": "test262-array-concat-initial.json",
+      "sha256": "cbfae3b83620d3f6e34faeb5c0ae9a63a2bfb6ff6b7418a60f1c63ddb43df2b8",
+      "counts": {
+        "failed": 105,
+        "passed": 14,
+        "unsupported": 18
+      },
+      "verified_controls": 32
+    },
+    "final": {
+      "path": "test262-array-concat-final.json",
+      "sha256": "f0cf9daae3fd657fed9cd2dfa6a23e71e4c34a312db2ea42312b133d0fb0f50c",
+      "counts": {
+        "passed": 113,
+        "failed": 4,
+        "unsupported": 18,
+        "resource": 2
+      },
+      "verified_controls": 96
+    }
+  },
+  "comparison": {
+    "raw_pass_gains": 99,
+    "raw_pass_losses": 0,
+    "failed_to_resource": 2,
+    "complete_unchanged_case_records": 36,
+    "complete_unchanged_control_records": 32,
+    "case_control_policy_identities_unchanged": true,
+    "receipt": {
+      "path": "/tmp/eris-array-concat-formal-candidate-1/comparison.json",
+      "sha256": "7ea14d2f469735dd8dce24e743b3fba23a2ef02f36d6a4be2f6a32deb7c5c364",
+      "bytes": 300392
+    }
+  },
+  "baseline_eligibility": {
+    "harness_preflight_passed": true,
+    "bad_run_statuses": [
+      "adapter-error",
+      "resource",
+      "timeout"
+    ],
+    "bad_observations": {
+      "resource": 2
+    },
+    "eligible": false,
+    "recorded": false,
+    "ci_gate_added": false,
+    "runner_and_driver_returncode": 1,
+    "no_status_reclassification": true
+  },
+  "prerequisites": {
+    "typed_arrays": {
+      "modes": 4,
+      "status": "failed",
+      "message": "'Uint8Array' is not defined"
+    },
+    "untagged_class": {
+      "modes": 2,
+      "status": "unsupported",
+      "phase": "parse",
+      "message": "'class' is not supported"
+    },
+    "metadata": {
+      "Proxy": 12,
+      "cross-realm": 4
+    },
+    "ordinary_sparse_object": {
+      "file": "test/built-ins/Array/prototype/concat/Array.prototype.concat_spreadable-sparse-object.js",
+      "modes": 2,
+      "source_sha256": "763f8a6c26e249c4800250e2686f0ec2a053e45451c6e0136f061a5c60c80614",
+      "ordinary_expected_success": true,
+      "source_lengths": [
+        5,
+        4000
+      ],
+      "status": "resource",
+      "phase": "runtime",
+      "message": "script instruction limit exceeded"
+    }
+  },
+  "before_incidental_pass_source_names": [
+    "Array.prototype.concat_array-like-to-length-throws.js",
+    "create-ctor-non-object.js",
+    "create-species-non-ctor.js",
+    "create-species-non-extensible-spreadable.js",
+    "create-species-non-extensible.js",
+    "create-species-with-non-configurable-property-spreadable.js",
+    "create-species-with-non-configurable-property.js"
+  ],
+  "binaries": {
+    "before": {
+      "published_commit": "dffca3d69c39de5c58e55838918c0b704b275d5d",
+      "sha256": "f9ffdf6172908c875308ee40fe5783d3b673bbdccf7685a61c608b331348f721"
+    },
+    "candidate": {
+      "sha256": "64667259eff3ccec0c2ef98370a60a1dea71560def07574dc59db1bbb3fff3c0",
+      "production_input_sha256": "b5204aa57dbbfbadedacfca614746cb1ad3b643da7156a81769ff0063d4f32f9"
+    }
+  },
+  "bindings": {
+    "upstream_preparation": {
+      "path": "/tmp/eris-array-concat-upstream-preparation.json",
+      "sha256": "e1c81b4c870fead7f2d9a0fcad12018eed3c56f996fb5a91e3e3e9fedd1134de",
+      "bytes": 65296
+    },
+    "formal_freeze": {
+      "path": "/tmp/eris-array-concat-formal-freeze.json",
+      "sha256": "539a2fcc0b4b64192f5c12b9d00914770c01b5c7e1a347b1790d47ff7e119460",
+      "bytes": 24255
+    },
+    "formal_handoff": {
+      "path": "/tmp/eris-array-concat-formal-handoff.json",
+      "sha256": "2f2f2cf97bfc14566c9e61b0cda15c40706f41dc6322b03cc4dfddb079d89615",
+      "bytes": 35457
+    },
+    "before_execution": {
+      "path": "/tmp/eris-array-concat-formal-before/execution.json",
+      "sha256": "dc26cd2a62d59d95fe030b255370618e2becaa1276c2ebcc40022ef1d3dda965",
+      "bytes": 5398
+    },
+    "candidate_execution": {
+      "path": "/tmp/eris-array-concat-formal-candidate-1/execution.json",
+      "sha256": "665db83ca3a670dedf328b6dc8cc93ce1f71d58901c4d90edeb441fb27cf5ec4",
+      "bytes": 5828
+    },
+    "runtime_static_review": {
+      "path": "/tmp/eris-array-concat-runtime-review.json",
+      "sha256": "d4146d498cccc16cf0a91f98ebf817495d3899334d0d164fa32b80bef596065d",
+      "bytes": 9412
+    },
+    "historical_comparison": {
+      "path": "/tmp/eris-array-concat-candidate-1/profiles-comparison.json",
+      "sha256": "9c8f0f70cc7a63b11eeab69c540e774237ccdc3df30d741ab77e26bbf9f3316c",
+      "bytes": 40736
+    }
+  },
+  "historical_preservation": {
+    "profiles": 40,
+    "case_observations": 17984,
+    "controls": 3996,
+    "all_complete_rows_exact": true,
+    "existing_gates_passed": 33,
+    "baseline_bytes_unchanged": 33,
+    "baseline_archive_sha256": "68be92e2d87282f57c0d07c698438b8c2ec150ac091f8914587376317498a955"
+  },
+  "tooling_validation": {
+    "focused_tests": 10,
+    "test262_tooling_tests": 222,
+    "failed_tests": 0,
+    "source_control_contracts_frozen_before_execution": true,
+    "fake_adapter_negative_controls_checked": true
+  },
+  "activity_limits": {
+    "new_engine_runs_during_publication": 0,
+    "baseline_edits": 0,
+    "ci_edits": 0,
+    "quota_changes": 0,
+    "runtime_edits": 0,
+    "policy_changes": 0
+  }
+}

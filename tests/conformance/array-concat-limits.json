@@ -1,0 +1,33 @@
+{
+  "base_commit": "dffca3d69c39de5c58e55838918c0b704b275d5d",
+  "production_input_sha256": "b5204aa57dbbfbadedacfca614746cb1ad3b643da7156a81769ff0063d4f32f9",
+  "source_archive": {
+    "path": "/tmp/eris-array-concat-candidate-1/source.tar",
+    "bytes": 9512960,
+    "sha256": "55bdd3dadebcc0b0c842f1a9ef9c7605122b445c1ed3e71331be56bea49128ac"
+  },
+  "targeted_script_limit_constants": {
+    "src/script/array_from.rs:MAX_LENGTH": "9_007_199_254_740_991",
+    "src/script/array_methods.rs:MAX_ARRAY_LIKE_LENGTH": "9_007_199_254_740_991",
+    "src/script/iterators.rs:MAX_LENGTH": "9_007_199_254_740_991",
+    "src/script/machine.rs:MAX_FRAMES": "MAX_HEAP / std::mem::size_of::<Frame>()",
+    "src/script/tokens.rs:LIMIT": "MAX_TOKENS + 2",
+    "src/script.rs:MAX_SOURCE": "256 * 1024",
+    "src/script.rs:MAX_TOKENS": "32_768",
+    "src/script.rs:MAX_DEPTH": "96",
+    "src/script.rs:MAX_CALLS": "32",
+    "src/script.rs:MAX_STACK_UNITS": "96",
+    "src/script.rs:MAX_STEPS": "100_000",
+    "src/script.rs:MAX_HEAP": "8 * 1024 * 1024",
+    "src/script.rs:MAX_STRING": "256 * 1024",
+    "src/script.rs:MAX_NODES": "100_000",
+    "src/script/array_splice.rs:MAX_LENGTH": "9_007_199_254_740_991"
+  },
+  "changed_existing_limits": {},
+  "new_algorithm_constant": {
+    "src/script/array_concat.rs:MAX_LENGTH": "9_007_199_254_740_991"
+  },
+  "all_existing_source_MAX_or_LIMIT_bindings_checked": 106,
+  "statement": "Every existing extracted MAX_* / LIMIT definition is byte-expression equivalent to HEAD. The sole new bound is the normative safe-integer length, equal to existing splice/from/iterator bounds, not a raised resource quota.",
+  "private_public_boundary": "The private append seed reaches safe/u32 boundaries honestly; public concat always starts at zero. The public huge hole case tests terminal engine resource policy rather than a reached Array RangeError."
+}

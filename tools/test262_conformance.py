@@ -60,12 +60,13 @@ FOR_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'for-of', 'let', 'c
 CORE_ITERATOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'Array.prototype.values'}
 ARRAY_FROM_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'for-of', 'let', 'const', 'Array.prototype.values'}
 ARRAY_SPLICE_FEATURES = ARRAY_FROM_FEATURES.copy()
+ARRAY_CONCAT_FEATURES = ARRAY_SPLICE_FEATURES.copy()
 ARRAY_FIND_FEATURES = ARRAY_PREDICATE_FEATURES | {'array-find-from-last'}
 ARRAY_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 STRING_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 REGEXP_SPLIT_FEATURES = CONSTRUCTION_FEATURES
 REGEXP_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'u180e'}
-PROFILE_FEATURES = {'array-splice': ARRAY_SPLICE_FEATURES, 'array-from': ARRAY_FROM_FEATURES, 'for-of': FOR_OF_FEATURES, 'core-iterators': CORE_ITERATOR_FEATURES, 'date': DATE_FEATURES, 'array-find': ARRAY_FIND_FEATURES, 'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+PROFILE_FEATURES = {'array-concat': ARRAY_CONCAT_FEATURES, 'array-splice': ARRAY_SPLICE_FEATURES, 'array-from': ARRAY_FROM_FEATURES, 'for-of': FOR_OF_FEATURES, 'core-iterators': CORE_ITERATOR_FEATURES, 'date': DATE_FEATURES, 'array-find': ARRAY_FIND_FEATURES, 'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'reflect-construction': CONSTRUCTION_FEATURES, 'new-target': CONSTRUCTION_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -192,13 +193,13 @@ def load_corpus(directory, profile='string-json'):
                 blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
                 if blob != entry['sha']:
                     raise ValueError('test source differs from pinned Git tree blob')
-    if profile in {'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
+    if profile in {'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
         for path, expected_blob in expected_proof['auxiliary_blobs'].items():
             data = files.get(path, b'')
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
             if blob != expected_blob:
                 raise ValueError('helper or legal bytes differ from pinned Git blob')
-        if profile in {'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
+        if profile in {'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
                 expected_tests | expected_proof['auxiliary_blobs'].keys()):
             raise ValueError('iteration auxiliary inventory differs from pinned selection')
     actual_tests = {path for path in files if path.startswith('test/')}
@@ -507,6 +508,114 @@ def core_iterator_preflight_variants():
                  "assert.throws(TypeError,function(){new m();});")
         pairs.append(('property-' + kind.lower() + '-next', setup, 'm.length', '0', '1'))
     return [('core-iterators-' + name + suffix, guard + setup + f'assert.sameValue({actual},{value});', expected, mode)
+            for mode in ('sloppy', 'strict') for name, setup, actual, good, bad in pairs
+            for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed'))]
+
+
+def array_concat_preflight_variants():
+    """Independent standard-derived pairs; two successful calls precede errors."""
+    guard = (
+        "assert.sameValue(typeof Array.prototype.concat,'function','concat availability');\n"
+        "var m=Array.prototype.concat,$acArray=[1],$acResult=m.call($acArray,[2],3);"
+        "assert.sameValue($acResult.length,3);assert.sameValue($acResult[0],1);"
+        "assert.sameValue($acResult[1],2);assert.sameValue($acResult[2],3);"
+        "assert.sameValue($acArray.length,1);\n"
+        "var $acLike={0:4,length:1},$acGeneric=m.call($acLike,5);"
+        "assert.sameValue($acGeneric.length,2);assert.sameValue($acGeneric[0],$acLike);"
+        "assert.sameValue($acGeneric[1],5);\n"
+    )
+    pairs = [
+        ('property-metadata',
+         "verifyProperty(Array.prototype,'concat',{value:m,writable:true,enumerable:false,configurable:true},{restore:true});"
+         "verifyProperty(m,'name',{value:'concat',writable:false,enumerable:false,configurable:true},{restore:true});"
+         "verifyProperty(m,'length',{value:1,writable:false,enumerable:false,configurable:true},{restore:true});"
+         "assert.sameValue(Object.getOwnPropertyDescriptor(m,'prototype'),undefined);"
+         "assert.throws(TypeError,function(){new m();});", 'm.length', '1', '2'),
+        ('alias-and-shallow',
+         "var a=[1],nested=[2],token={};delete Array.prototype.concat;var r=m.call(a,[nested],token);"
+         "assert.sameValue(r[0],1);assert.sameValue(r[1],nested);assert.sameValue(r[2],token);"
+         "assert.sameValue(a.length,1);assert.sameValue(r===a,false);nested[0]=7;", 'r[1][0]', '7', '2'),
+        ('spreadability-to-boolean',
+         "assert.sameValue(typeof Symbol.isConcatSpreadable,'symbol');var touched=0,o={0:7,length:1};"
+         "o[Symbol.isConcatSpreadable]={valueOf:function(){touched++;throw 1;},toString:function(){touched++;throw 2;}};"
+         "var a=[8];a[Symbol.isConcatSpreadable]=0;var r=m.call([],o,a);"
+         "assert.sameValue(r[0],7);assert.sameValue(r[1],a);", 'touched', '0', '1'),
+        ('nonspread-no-length-or-coercion',
+         "assert.sameValue(typeof Symbol.isConcatSpreadable,'symbol');var touched=0,o={};o[Symbol.isConcatSpreadable]=false;"
+         "Object.defineProperty(o,'length',{get:function(){touched++;throw 1;}});"
+         "o.valueOf=function(){touched++;throw 2;};o.toString=function(){touched++;throw 3;};"
+         "var token=Symbol('item'),r=m.call([],o,token,null,undefined);"
+         "assert.sameValue(r[0],o);assert.sameValue(r[1],token);assert.sameValue(r[2],null);assert.sameValue(r[3],undefined);", 'touched', '0', '1'),
+        ('spread-length-order',
+         "assert.sameValue(typeof Symbol.isConcatSpreadable,'symbol');var trace='',o={};"
+         "Object.defineProperty(o,Symbol.isConcatSpreadable,{get:function(){trace+='S';return true;}});"
+         "Object.defineProperty(o,'length',{get:function(){trace+='L';return {valueOf:function(){trace+='V';return 1;}};}});"
+         "Object.defineProperty(o,'0',{get:function(){trace+='G';return 9;}});"
+         "var r=m.call([],o);assert.sameValue(r[0],9);", 'trace', "'SLVG'", "'LSVG'"),
+        ('holes-inherited-and-live',
+         "assert.sameValue(typeof Symbol.isConcatSpreadable,'symbol');var p={1:6},o=Object.create(p);o.length=3;"
+         "o[1]=2;o[Symbol.isConcatSpreadable]=true;Object.defineProperty(o,'0',{get:function(){assert.sameValue(this,o);delete o[1];o.length=1;return 4;}});"
+         "var r=m.call([],o),d=Object.getOwnPropertyDescriptor(r,'1');"
+         "assert.sameValue(r.length,3);assert.sameValue(r[0],4);assert.sameValue(r[1],6);assert.sameValue(2 in r,false);",
+         'd.value===6&&d.writable&&d.enumerable&&d.configurable', 'true', 'false'),
+        ('live-later-argument',
+         "assert.sameValue(typeof Symbol.isConcatSpreadable,'symbol');var b=[2],a=[1];"
+         "Object.defineProperty(a,'0',{get:function(){b[0]=8;b[Symbol.isConcatSpreadable]=false;return 3;}});"
+         "var r=m.call(a,b);assert.sameValue(r[0],3);assert.sameValue(r[1],b);", 'r[1][0]', '8', '2'),
+        ('species-order',
+         "assert.sameValue(typeof Symbol.species,'symbol');assert.sameValue(typeof Symbol.isConcatSpreadable,'symbol');"
+         "var trace='',a=[4],ctor={},out={};function C(n){trace+='N';assert.sameValue(arguments.length,1);assert.sameValue(n,0);assert.sameValue(new.target,C);return out;}"
+         "Object.defineProperty(a,'constructor',{get:function(){trace+='C';return ctor;}});"
+         "Object.defineProperty(ctor,Symbol.species,{get:function(){trace+='S';return C;}});"
+         "Object.defineProperty(a,Symbol.isConcatSpreadable,{get:function(){trace+='B';return true;}});"
+         "Object.defineProperty(a,'0',{get:function(){trace+='G';return 4;}});"
+         "Object.defineProperty(out,'length',{set:function(n){trace+='L';assert.sameValue(n,1);}});"
+         "var r=m.call(a);assert.sameValue(r,out);assert.sameValue(out[0],4);", 'trace', "'CSNBGL'", "'BCSNGL'"),
+        ('species-default-and-invalid',
+         "assert.sameValue(typeof Symbol.species,'symbol');var A=Array,a=[];a.constructor=undefined;"
+         "Array=function(){throw new Test262Error('global replacement');};assert.sameValue(Object.getPrototypeOf(m.call(a)),A.prototype);"
+         "a.constructor={};a.constructor[Symbol.species]=null;assert.sameValue(Object.getPrototypeOf(m.call(a)),A.prototype);"
+         "a.constructor[Symbol.species]={};assert.throws(TypeError,function(){m.call(a);});"
+         "a.constructor=null;assert.throws(TypeError,function(){m.call(a);});"
+         "var o={};Object.defineProperty(o,'constructor',{get:function(){throw new Test262Error('generic constructor');}});",
+         'm.call(o)[0]===o', 'true', 'false'),
+        ('species-alias-later-source',
+         "assert.sameValue(typeof Symbol.species,'symbol');var a=[1,2],b=[7,8];a.constructor={};"
+         "a.constructor[Symbol.species]=function(n){assert.sameValue(n,0);return b;};"
+         "var r=m.call(a,b);assert.sameValue(r,b);", "b.join(',')", "'1,2,1,2'", "'1,2,7,8'"),
+        ('create-data-bypasses-setter',
+         "assert.sameValue(typeof Symbol.species,'symbol');var called=0,p={};Object.defineProperty(p,'0',{set:function(){called++;}});"
+         "var out=Object.create(p),a=[5];a.constructor={};a.constructor[Symbol.species]=function(){return out;};"
+         "var r=m.call(a),d=Object.getOwnPropertyDescriptor(out,'0');assert.sameValue(r,out);assert.sameValue(out.length,1);",
+         'called===0&&d.value===5&&d.writable&&d.enumerable&&d.configurable', 'true', 'false'),
+        ('partial-definition-abrupt',
+         "assert.sameValue(typeof Symbol.species,'symbol');var out={},a=[3,4,5],later=0;"
+         "Object.defineProperty(out,'1',{value:9,writable:false,configurable:false});"
+         "Object.defineProperty(a,'2',{get:function(){later++;return 5;}});"
+         "a.constructor={};a.constructor[Symbol.species]=function(){return out;};"
+         "assert.throws(TypeError,function(){m.call(a);});",
+         'out[0]===3&&out[1]===9&&later===0&&!out.hasOwnProperty("length")', 'true', 'false'),
+        ('late-length-failure',
+         "assert.sameValue(typeof Symbol.species,'symbol');var out={},a=[3];Object.defineProperty(out,'length',{value:0,writable:false});"
+         "a.constructor={};a.constructor[Symbol.species]=function(){return out;};"
+         "assert.throws(TypeError,function(){m.call(a);});", 'out[0]===3&&out.length===0', 'true', 'false'),
+        ('abrupt-identity',
+         "assert.sameValue(typeof Symbol.isConcatSpreadable,'symbol');var reason={},caught,later=0,o={};"
+         "Object.defineProperty(o,Symbol.isConcatSpreadable,{get:function(){throw reason;}});"
+         "var b={};Object.defineProperty(b,Symbol.isConcatSpreadable,{get:function(){later++;return false;}});"
+         "try{m.call([],o,b);}catch(e){caught=e;}assert.sameValue(caught,reason);"
+         "assert.throws(TypeError,function(){m.call(null);});assert.throws(TypeError,function(){m.call(undefined);});", 'later', '0', '1'),
+        ('boxed-string-and-mapped-arguments',
+         "assert.sameValue(typeof Symbol.isConcatSpreadable,'symbol');var boxed=new String('ab'),r=m.call(boxed);assert.sameValue(r[0],boxed);"
+         "boxed[Symbol.isConcatSpreadable]=true;r=m.call(boxed);assert.sameValue(r.join(','),'a,b');"
+         "var ok=Function('m','return (function(a,b){var o=arguments;o[Symbol.isConcatSpreadable]=true;Object.defineProperty(o,0,{get:function(){b=7;return 1;}});var r=m.call([],o);return r[0]===1&&r[1]===7&&b===7;})(1,2);')(m);", 'ok', 'true', 'false'),
+        ('safe-length-before-indexed-effects',
+         "assert.sameValue(typeof Symbol.isConcatSpreadable,'symbol');var touched=0,o={length:Infinity};o[Symbol.isConcatSpreadable]=true;"
+         "Object.defineProperty(o,'0',{get:function(){touched++;throw 1;}});assert.throws(TypeError,function(){m.call({},o);});"
+         "var reason={},caught,n={length:9007199254740991};n[Symbol.isConcatSpreadable]=true;"
+         "Object.defineProperty(n,'0',{get:function(){throw reason;}});try{m.call([],n);}catch(e){caught=e;}assert.sameValue(caught,reason);", 'touched', '0', '1'),
+    ]
+    return [('array-concat-' + name + suffix, guard + setup + '\n' + f'assert.sameValue({actual},{value});\n', expected, mode)
             for mode in ('sloppy', 'strict') for name, setup, actual, good, bad in pairs
             for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed'))]
 
@@ -1851,6 +1960,8 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
         variants += core_iterator_preflight_variants()
     if profile == 'array-from':
         variants += array_from_preflight_variants()
+    if profile == 'array-concat':
+        variants += array_concat_preflight_variants()
     if profile == 'array-splice':
         variants += array_splice_preflight_variants()
     outcomes = []
@@ -1871,7 +1982,7 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                 name=name, mode=mode, case_sha256=case['case_sha256'],
                 source_sha256=digest(case['source']), expected=expected,
                 verified=correct, result=result)
-    if profile in {'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
+    if profile in {'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
         # An unavailable prerequisite can throw the harness's Test262Error in both partners.
         # Preserve that raw observation, but do not verify the mismatch unless
         # its separately executed positive partner completes successfully.

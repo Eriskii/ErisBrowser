@@ -1,0 +1,100 @@
+[
+  {
+    "name": "property-metadata",
+    "setup": "assert.sameValue(typeof Array.prototype.concat,'function','concat availability');\nvar $cc=Array.prototype.concat,$ga=[1,2],$gr=$cc.call($ga,[3],4);assert.sameValue($gr.length,4);assert.sameValue($gr[0],1);assert.sameValue($gr[1],2);assert.sameValue($gr[2],3);assert.sameValue($gr[3],4);assert.sameValue($ga.length,2);\nvar $go={marker:7},$gd=$cc.call($go,8);assert.sameValue($gd.length,2);assert.sameValue($gd[0],$go);assert.sameValue($gd[1],8);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction spread(o){o[Symbol.isConcatSpreadable]=true;return o;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar d=Object.getOwnPropertyDescriptor(Array.prototype,'concat');verifyProperty($cc,'length',{value:1,writable:false,enumerable:false,configurable:true},{restore:true});\n",
+    "expression": "d.writable&&!d.enumerable&&d.configurable&&$cc.length===1",
+    "correct": "true",
+    "wrong": "false"
+  },
+  {
+    "name": "generic-not-implicit-arraylike",
+    "setup": "assert.sameValue(typeof Array.prototype.concat,'function','concat availability');\nvar $cc=Array.prototype.concat,$ga=[1,2],$gr=$cc.call($ga,[3],4);assert.sameValue($gr.length,4);assert.sameValue($gr[0],1);assert.sameValue($gr[1],2);assert.sameValue($gr[2],3);assert.sameValue($gr[3],4);assert.sameValue($ga.length,2);\nvar $go={marker:7},$gd=$cc.call($go,8);assert.sameValue($gd.length,2);assert.sameValue($gd[0],$go);assert.sameValue($gd[1],8);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction spread(o){o[Symbol.isConcatSpreadable]=true;return o;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar o={0:7,length:1},r=$cc.call(o,8);\n",
+    "expression": "r[0]===o&&r[1]===8&&r.length===2",
+    "correct": "true",
+    "wrong": "false"
+  },
+  {
+    "name": "explicit-spread-and-false-array",
+    "setup": "assert.sameValue(typeof Array.prototype.concat,'function','concat availability');\nvar $cc=Array.prototype.concat,$ga=[1,2],$gr=$cc.call($ga,[3],4);assert.sameValue($gr.length,4);assert.sameValue($gr[0],1);assert.sameValue($gr[1],2);assert.sameValue($gr[2],3);assert.sameValue($gr[3],4);assert.sameValue($ga.length,2);\nvar $go={marker:7},$gd=$cc.call($go,8);assert.sameValue($gd.length,2);assert.sameValue($gd[0],$go);assert.sameValue($gd[1],8);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction spread(o){o[Symbol.isConcatSpreadable]=true;return o;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar o=spread({0:7,length:1}),a=[8];a[Symbol.isConcatSpreadable]=false;var r=$cc.call([],o,a);\n",
+    "expression": "r.length===2&&r[0]===7&&r[1]===a",
+    "correct": "true",
+    "wrong": "false"
+  },
+  {
+    "name": "truthy-without-coercion",
+    "setup": "assert.sameValue(typeof Array.prototype.concat,'function','concat availability');\nvar $cc=Array.prototype.concat,$ga=[1,2],$gr=$cc.call($ga,[3],4);assert.sameValue($gr.length,4);assert.sameValue($gr[0],1);assert.sameValue($gr[1],2);assert.sameValue($gr[2],3);assert.sameValue($gr[3],4);assert.sameValue($ga.length,2);\nvar $go={marker:7},$gd=$cc.call($go,8);assert.sameValue($gd.length,2);assert.sameValue($gd[0],$go);assert.sameValue($gd[1],8);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction spread(o){o[Symbol.isConcatSpreadable]=true;return o;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar n=0,p={valueOf:function(){n++;return false;},toString:function(){n++;return '';}};var o={0:7,length:1};o[Symbol.isConcatSpreadable]=p;var r=$cc.call([],o);\n",
+    "expression": "n+\":\"+r.length+\":\"+r[0]",
+    "correct": "'0:1:7'",
+    "wrong": "'1:1:7'"
+  },
+  {
+    "name": "holes-versus-undefined",
+    "setup": "assert.sameValue(typeof Array.prototype.concat,'function','concat availability');\nvar $cc=Array.prototype.concat,$ga=[1,2],$gr=$cc.call($ga,[3],4);assert.sameValue($gr.length,4);assert.sameValue($gr[0],1);assert.sameValue($gr[1],2);assert.sameValue($gr[2],3);assert.sameValue($gr[3],4);assert.sameValue($ga.length,2);\nvar $go={marker:7},$gd=$cc.call($go,8);assert.sameValue($gd.length,2);assert.sameValue($gd[0],$go);assert.sameValue($gd[1],8);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction spread(o){o[Symbol.isConcatSpreadable]=true;return o;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar r=$cc.call([,undefined],[,]);\n",
+    "expression": "r.length+\":\"+own(r,\"0\")+\":\"+own(r,\"1\")+\":\"+own(r,\"2\")",
+    "correct": "'3:false:true:false'",
+    "wrong": "'3:true:true:true'"
+  },
+  {
+    "name": "live-future-index",
+    "setup": "assert.sameValue(typeof Array.prototype.concat,'function','concat availability');\nvar $cc=Array.prototype.concat,$ga=[1,2],$gr=$cc.call($ga,[3],4);assert.sameValue($gr.length,4);assert.sameValue($gr[0],1);assert.sameValue($gr[1],2);assert.sameValue($gr[2],3);assert.sameValue($gr[3],4);assert.sameValue($ga.length,2);\nvar $go={marker:7},$gd=$cc.call($go,8);assert.sameValue($gd.length,2);assert.sameValue($gd[0],$go);assert.sameValue($gd[1],8);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction spread(o){o[Symbol.isConcatSpreadable]=true;return o;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar o=spread({1:2,length:2});Object.defineProperty(o,'0',{get:function(){o[1]=9;return 7;}});var r=$cc.call([],o);\n",
+    "expression": "r[1]",
+    "correct": "9",
+    "wrong": "2"
+  },
+  {
+    "name": "species-before-spread",
+    "setup": "assert.sameValue(typeof Array.prototype.concat,'function','concat availability');\nvar $cc=Array.prototype.concat,$ga=[1,2],$gr=$cc.call($ga,[3],4);assert.sameValue($gr.length,4);assert.sameValue($gr[0],1);assert.sameValue($gr[1],2);assert.sameValue($gr[2],3);assert.sameValue($gr[3],4);assert.sameValue($ga.length,2);\nvar $go={marker:7},$gd=$cc.call($go,8);assert.sameValue($gd.length,2);assert.sameValue($gd[0],$go);assert.sameValue($gd[1],8);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction spread(o){o[Symbol.isConcatSpreadable]=true;return o;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar log='',a=[7],h={};Object.defineProperty(a,'constructor',{get:function(){log+='C';return h;}});Object.defineProperty(h,Symbol.species,{get:function(){log+='P';return function(n){log+='N'+n;return {};};}});Object.defineProperty(a,Symbol.isConcatSpreadable,{get:function(){log+='S';return true;}});$cc.call(a);\n",
+    "expression": "log",
+    "correct": "'CPN0S'",
+    "wrong": "'SCPN0'"
+  },
+  {
+    "name": "alias-later-source",
+    "setup": "assert.sameValue(typeof Array.prototype.concat,'function','concat availability');\nvar $cc=Array.prototype.concat,$ga=[1,2],$gr=$cc.call($ga,[3],4);assert.sameValue($gr.length,4);assert.sameValue($gr[0],1);assert.sameValue($gr[1],2);assert.sameValue($gr[2],3);assert.sameValue($gr[3],4);assert.sameValue($ga.length,2);\nvar $go={marker:7},$gd=$cc.call($go,8);assert.sameValue($gd.length,2);assert.sameValue($gd[0],$go);assert.sameValue($gd[1],8);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction spread(o){o[Symbol.isConcatSpreadable]=true;return o;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar a=[1],b=[2,3];species(a,function(){return b;});assert.sameValue($cc.call(a,b),b);\n",
+    "expression": "b[0]+\":\"+b[1]+\":\"+b[2]+\":\"+b.length",
+    "correct": "'1:1:1:3'",
+    "wrong": "'1:2:3:3'"
+  },
+  {
+    "name": "own-definition-bypasses-setter",
+    "setup": "assert.sameValue(typeof Array.prototype.concat,'function','concat availability');\nvar $cc=Array.prototype.concat,$ga=[1,2],$gr=$cc.call($ga,[3],4);assert.sameValue($gr.length,4);assert.sameValue($gr[0],1);assert.sameValue($gr[1],2);assert.sameValue($gr[2],3);assert.sameValue($gr[3],4);assert.sameValue($ga.length,2);\nvar $go={marker:7},$gd=$cc.call($go,8);assert.sameValue($gd.length,2);assert.sameValue($gd[0],$go);assert.sameValue($gd[1],8);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction spread(o){o[Symbol.isConcatSpreadable]=true;return o;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar p={},n=0,a=[7];Object.defineProperty(p,'0',{set:function(){n++;}});var out=Object.create(p);species(a,function(){return out;});$cc.call(a);\n",
+    "expression": "n+\":\"+own(out,\"0\")+\":\"+out[0]",
+    "correct": "'0:true:7'",
+    "wrong": "'1:false:7'"
+  },
+  {
+    "name": "holes-preserve-existing-output",
+    "setup": "assert.sameValue(typeof Array.prototype.concat,'function','concat availability');\nvar $cc=Array.prototype.concat,$ga=[1,2],$gr=$cc.call($ga,[3],4);assert.sameValue($gr.length,4);assert.sameValue($gr[0],1);assert.sameValue($gr[1],2);assert.sameValue($gr[2],3);assert.sameValue($gr[3],4);assert.sameValue($ga.length,2);\nvar $go={marker:7},$gd=$cc.call($go,8);assert.sameValue($gd.length,2);assert.sameValue($gd[0],$go);assert.sameValue($gd[1],8);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction spread(o){o[Symbol.isConcatSpreadable]=true;return o;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar a=[,],out={0:9};species(a,function(){return out;});$cc.call(a);\n",
+    "expression": "out[0]+\":\"+out.length+\":\"+own(out,\"0\")",
+    "correct": "'9:1:true'",
+    "wrong": "'undefined:1:false'"
+  },
+  {
+    "name": "late-array-shrink-prefix",
+    "setup": "assert.sameValue(typeof Array.prototype.concat,'function','concat availability');\nvar $cc=Array.prototype.concat,$ga=[1,2],$gr=$cc.call($ga,[3],4);assert.sameValue($gr.length,4);assert.sameValue($gr[0],1);assert.sameValue($gr[1],2);assert.sameValue($gr[2],3);assert.sameValue($gr[3],4);assert.sameValue($ga.length,2);\nvar $go={marker:7},$gd=$cc.call($go,8);assert.sameValue($gd.length,2);assert.sameValue($gd[0],$go);assert.sameValue($gd[1],8);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction spread(o){o[Symbol.isConcatSpreadable]=true;return o;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar a=[1],out=[9,8,7,6];Object.defineProperty(out,'2',{configurable:false});species(a,function(){return out;});assert.throws(TypeError,function(){$cc.call(a);});\n",
+    "expression": "out[0]+\":\"+out.length+\":\"+own(out,\"3\")",
+    "correct": "'1:3:false'",
+    "wrong": "'9:4:true'"
+  },
+  {
+    "name": "safe-overflow-before-index",
+    "setup": "assert.sameValue(typeof Array.prototype.concat,'function','concat availability');\nvar $cc=Array.prototype.concat,$ga=[1,2],$gr=$cc.call($ga,[3],4);assert.sameValue($gr.length,4);assert.sameValue($gr[0],1);assert.sameValue($gr[1],2);assert.sameValue($gr[2],3);assert.sameValue($gr[3],4);assert.sameValue($ga.length,2);\nvar $go={marker:7},$gd=$cc.call($go,8);assert.sameValue($gd.length,2);assert.sameValue($gd[0],$go);assert.sameValue($gd[1],8);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction spread(o){o[Symbol.isConcatSpreadable]=true;return o;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar n=0,o=spread({length:9007199254740991});Object.defineProperty(o,'0',{get:function(){n++;return 7;}});assert.throws(TypeError,function(){$cc.call({},o);});\n",
+    "expression": "n",
+    "correct": "0",
+    "wrong": "1"
+  },
+  {
+    "name": "no-iterator-access",
+    "setup": "assert.sameValue(typeof Array.prototype.concat,'function','concat availability');\nvar $cc=Array.prototype.concat,$ga=[1,2],$gr=$cc.call($ga,[3],4);assert.sameValue($gr.length,4);assert.sameValue($gr[0],1);assert.sameValue($gr[1],2);assert.sameValue($gr[2],3);assert.sameValue($gr[3],4);assert.sameValue($ga.length,2);\nvar $go={marker:7},$gd=$cc.call($go,8);assert.sameValue($gd.length,2);assert.sameValue($gd[0],$go);assert.sameValue($gd[1],8);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction spread(o){o[Symbol.isConcatSpreadable]=true;return o;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar n=0,o=spread({0:7,length:1});Object.defineProperty(o,Symbol.iterator,{get:function(){n++;return function(){};}});var r=$cc.call([],o);\n",
+    "expression": "n+\":\"+r[0]",
+    "correct": "'0:7'",
+    "wrong": "'1:7'"
+  },
+  {
+    "name": "mapped-output-arguments",
+    "setup": "assert.sameValue(typeof Array.prototype.concat,'function','concat availability');\nvar $cc=Array.prototype.concat,$ga=[1,2],$gr=$cc.call($ga,[3],4);assert.sameValue($gr.length,4);assert.sameValue($gr[0],1);assert.sameValue($gr[1],2);assert.sameValue($gr[2],3);assert.sameValue($gr[3],4);assert.sameValue($ga.length,2);\nvar $go={marker:7},$gd=$cc.call($go,8);assert.sameValue($gd.length,2);assert.sameValue($gd[0],$go);assert.sameValue($gd[1],8);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction spread(o){o[Symbol.isConcatSpreadable]=true;return o;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar f=Function(\"a\",\"b\",\"var out=arguments,src=[7,8],h={};h[Symbol.species]=function(){return out;};src.constructor=h;Array.prototype.concat.call(src);return a+':'+b+':'+out.length;\");var value=f(1,2);\n",
+    "expression": "value",
+    "correct": "'7:8:2'",
+    "wrong": "'1:2:2'"
+  }
+]

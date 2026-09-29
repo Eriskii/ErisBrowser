@@ -81,6 +81,14 @@ fn array_splice_preserves_species_live_properties_and_partial_callback_effects()
 }
 
 #[test]
+fn array_concat_preserves_spreadability_aliases_and_partial_callback_effects() {
+    assert_six_scripted_samples_with_result_text(
+        include_str!("fixtures/array-concat.html"),
+        Some(["ready", "6"]),
+    );
+}
+
+#[test]
 fn own_key_order_and_live_enumeration_survive_document_callbacks() {
     assert_six_scripted_samples(include_str!("fixtures/own-keys.html"));
 }
