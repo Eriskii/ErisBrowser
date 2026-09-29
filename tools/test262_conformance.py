@@ -49,7 +49,8 @@ SYMBOL_FEATURES = SUPPORTED_FEATURES | {
 }
 CONSTRUCTION_FEATURES = SYMBOL_FEATURES | FUNCTION_FEATURES | {'new.target', 'Reflect.apply', 'Reflect.construct', 'template'}
 FUNCTION_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REST_PARAMETER_FEATURES
-PROFILE_FEATURES = {'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+STRING_SEARCH_FEATURES = SYMBOL_FEATURES | FUNCTION_FEATURES | {'String.prototype.includes', 'String.prototype.endsWith'}
+PROFILE_FEATURES = {'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'reflect-construction': CONSTRUCTION_FEATURES, 'new-target': CONSTRUCTION_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -990,6 +991,23 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
             ('concat-utf16', r"var text='\ud800'.concat('\udfff');", 'text.charCodeAt(1)', '0xdfff', '0xfffd'),
             ('concat-null', "assert.sameValue(typeof String.prototype.concat,'function');var caught;try{String.prototype.concat.call(null);}catch(e){caught=e;}", 'caught instanceof TypeError', 'true', 'false'),
             ('concat-name', '', 'String.prototype.concat.name', "'concat'", "'wrong'"),
+        ]
+        for mode in ('sloppy', 'strict'):
+            for name, setup, actual, good, bad in pairs:
+                for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                    variants.append((name + suffix, setup + f'assert.sameValue({actual},{value});', expected, mode))
+    if profile == 'string-search':
+        pairs = [
+            ('string-function-receiver', "var f=function(){};f.toString=function(){return 'abc';};", "String.prototype.slice.call(f,1)", "'bc'", "'wrong'"),
+            ('string-array-receiver', "var a=[];a.toString=function(){return 'abc';};", "String.prototype.charCodeAt.call(a,1)", '98', '99'),
+            ('string-function-needle', "var f=function(){};f.toString=function(){return 'bc';};", "'abcd'.indexOf(f)", '1', '2'),
+            ('string-regexp-override', "var r=/x/;r[Symbol.match]=false;r.toString=function(){return 'x';};", "'x'.includes(r)", 'true', 'false'),
+            ('string-match-abrupt', "var marker={},caught,o={};Object.defineProperty(o,Symbol.match,{get:function(){throw marker;}});try{'x'.endsWith(o);}catch(e){caught=e;}", 'caught===marker', 'true', 'false'),
+            ('string-search-order', "var log='',r={toString:function(){log+='r';return 'abc';}},s={toString:function(){log+='s';return 'b';}},p={valueOf:function(){log+='p';return 1;}};Object.defineProperty(s,Symbol.match,{get:function(){log+='m';return false;}});String.prototype.includes.call(r,s,p);", 'log', "'rmsp'", "'wrong'"),
+            ('string-split-order', "var log='',s={toString:function(){log+='s';return ',';}},l={valueOf:function(){log+='l';return 0;}};'a,b'.split(s,l);", 'log', "'ls'", "'wrong'"),
+            ('string-split-hook', "var r={},l={},s={},out={};s[Symbol.split]=function(a,b){assert.sameValue(this,s);assert.sameValue(a,r);assert.sameValue(b,l);return out;};", 'String.prototype.split.call(r,s,l)===out', 'true', 'false'),
+            ('string-split-abrupt', "var marker={},caught,s={};Object.defineProperty(s,Symbol.split,{get:function(){throw marker;}});try{''.split(s);}catch(e){caught=e;}", 'caught===marker', 'true', 'false'),
+            ('string-split-utf16', r"var s=[];s.toString=function(){return '';};var parts='\ud800\udfff'.split(s);", 'parts[1].charCodeAt(0)', '0xdfff', '0xfffd'),
         ]
         for mode in ('sloppy', 'strict'):
             for name, setup, actual, good, bad in pairs:

@@ -2,6 +2,55 @@
 use super::*;
 
 impl Runtime {
+    pub(super) fn string_split_hook(
+        &mut self,
+        receiver: Value,
+        arguments: &[Value],
+        doc: &mut Document,
+    ) -> Result<Option<Value>> {
+        if matches!(receiver, Value::Null | Value::Undefined) {
+            return Err(ScriptError::type_error(
+                "String.split receiver is null or undefined",
+            ));
+        }
+        let separator = arguments.first().cloned().unwrap_or(Value::Undefined);
+        // Primitive separators are not boxed for the protocol lookup.
+        if !js_object(&separator) {
+            return Ok(None);
+        }
+        let method =
+            self.get_property_key(separator.clone(), &self.well_known_key("split"), doc)?;
+        if matches!(method, Value::Null | Value::Undefined) {
+            return Ok(None);
+        }
+        if !json_callable(&method) {
+            return Err(ScriptError::type_error("Symbol.split must be callable"));
+        }
+        self.charge(2 * std::mem::size_of::<Value>())?;
+        self.call(
+            method,
+            vec![
+                receiver,
+                arguments.get(1).cloned().unwrap_or(Value::Undefined),
+            ],
+            separator,
+            doc,
+        )
+        .map(Some)
+    }
+
+    pub(super) fn is_regexp(&mut self, value: Value, doc: &mut Document) -> Result<bool> {
+        if !js_object(&value) {
+            return Ok(false);
+        }
+        let matcher = self.get_property_key(value.clone(), &self.well_known_key("match"), doc)?;
+        Ok(if matcher == Value::Undefined {
+            self.regexp_slot(&value).is_some()
+        } else {
+            matcher.truthy()
+        })
+    }
+
     pub(super) fn string_concat(
         &mut self,
         receiver: Value,
@@ -85,6 +134,66 @@ mod tests {
             assert_eq!(runtime.eval_depth, 0);
             assert!(runtime.frames.is_empty());
         }
+    }
+
+    #[test]
+    fn string_conversion_frozen_cases_cover_receivers_arguments_and_order() {
+        for fixture in include_str!("../../tests/conformance/string-conversion.js")
+            .split("// CASE: ")
+            .skip(1)
+        {
+            let (_, source) = fixture.split_once('\n').unwrap();
+            check(source);
+        }
+    }
+
+    #[test]
+    fn string_split_custom_hooks_keep_raw_arguments_and_abrupt_order() {
+        for fixture in include_str!("../../tests/conformance/string-split-hooks.js")
+            .split("// CASE: ")
+            .skip(1)
+        {
+            let (_, source) = fixture.split_once('\n').unwrap();
+            check(source);
+        }
+    }
+
+    #[test]
+    fn string_conversion_callbacks_share_resource_guards_and_unwind() {
+        for source in [
+            "var a=function(){};a.toString=function(){return String.prototype.slice.call(a);};String.prototype.slice.call(a);",
+            "var a=[];a.toString=function(){return 'a'.includes(a);};'a'.includes(a);",
+            "var a={};Object.defineProperty(a,Symbol.match,{get:function(){return 'a'.startsWith(a);}});'a'.startsWith(a);",
+            "var a={};a[Symbol.split]=function(){return ''.split(a);};''.split(a);",
+            "var a={};Object.defineProperty(a,Symbol.split,{get:function(){return ''.split(a);}});''.split(a);",
+        ] {
+            let (mut runtime, mut doc) = harness();
+            let error = runtime.execute(source, &mut doc).unwrap_err();
+            assert!(error.is_resource_limit(), "{source}: {error}");
+            assert_eq!(runtime.calls, 0);
+            assert_eq!(runtime.stack_units, 0);
+            assert_eq!(runtime.json_depth, 0);
+            assert_eq!(runtime.eval_depth, 0);
+            assert!(runtime.frames.is_empty());
+        }
+        let (mut runtime, mut doc) = harness();
+        let function = runtime.execute("var calls=0,sep={};sep[Symbol.split]=function(){calls++;return 1;};String.prototype.split", &mut doc).unwrap();
+        let separator = runtime.execute("sep", &mut doc).unwrap();
+        runtime.allocated = MAX_HEAP;
+        let error = runtime
+            .call(
+                function,
+                vec![separator],
+                Value::String("".into()),
+                &mut doc,
+            )
+            .unwrap_err();
+        assert!(error.is_resource_limit());
+        assert_eq!(
+            runtime.environments[0].bindings["calls"].value,
+            Value::Number(0.0)
+        );
+        assert_eq!(runtime.stack_units, 0);
     }
 
     #[test]

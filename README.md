@@ -254,10 +254,18 @@ fix. All 7,231 modes preserve prior passes; all 2,008 assertion controls verify.
 compiles supported ordinary functions in global scope with separate parameter/body
 parsing and shared resource limits. Its complete 200-source pinned selection gains
 157 passes, reaching 241 passed and 50 unsupported modes; older selections gain
-35 more passes. Two string tests now reach retained failures in function string
-conversion. All 7,522 mode fingerprints and prior passes are preserved, and all
+35 more passes. All 7,522 mode fingerprints and prior passes are preserved, and all
 2,072 assertion controls verify. Function source printing and literal unpaired
 surrogates in generated source remain incomplete.
+
+[String conversion and custom splitting](tests/conformance/string-conversion.md)
+fix the two exposed slice failures and add 18 passes in a complete new 242-source
+String search/split selection, which records 470 passed, two failed and 12
+unsupported modes. Generic receivers and needles use ordinary string conversion;
+search methods consult `Symbol.match`, and custom `Symbol.split` hooks receive
+the original arguments. All 8,006 mode fingerprints and prior passes remain
+preserved, with 2,144 verified assertion controls. The built-in RegExp split
+protocol and other String symbol protocols remain incomplete.
 
 ## Implementation
 

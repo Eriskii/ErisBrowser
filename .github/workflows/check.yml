@@ -36,6 +36,8 @@ jobs:
         run: python3 tools/test262_conformance.py --baseline tests/conformance/test262-current.json
       - name: Preserve pinned Reflect call and constructor cases
         run: python3 tools/test262_conformance.py --profile reflect-construction --baseline tests/conformance/test262-reflect-construction-current.json --output artifacts/test262-reflect-construction-gate.json
+      - name: Preserve pinned String search and split cases
+        run: python3 tools/test262_conformance.py --profile string-search --baseline tests/conformance/test262-string-search-current.json --output artifacts/test262-string-search-gate.json
       - name: Preserve pinned dynamic Function constructor cases
         run: python3 tools/test262_conformance.py --profile function-constructor --baseline tests/conformance/test262-function-constructor-current.json --output artifacts/test262-function-constructor-gate.json
       - name: Preserve pinned new.target cases

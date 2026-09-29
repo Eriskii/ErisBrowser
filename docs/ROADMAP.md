@@ -16,7 +16,10 @@ ECMAScript dependencies. The
 88 older modes and corrects Symbol constructor classification. These sit alongside
 the Vulkan milestones below. [Dynamic Function construction](../tests/conformance/function-constructor.md)
 now adds 157 passes in a complete new 200-source selection and 35 older passes.
-The two newly reached string-conversion failures identify a concrete next dependency.
+The [String conversion follow-up](../tests/conformance/string-conversion.md)
+fixes its two exposed slice failures and adds 18 search/split passes. Built-in
+RegExp split/species behavior and the other String symbol protocols remain
+concrete next dependencies alongside Function source retention.
 
 The goal remains an independent, fully web-compatible Rust browser with a
 defensible security boundary and measured performance within the requested

@@ -53,6 +53,9 @@ now succeeds, exposing incorrect function-to-string behavior. The new profile's
 Proxy dependencies) and three runtime `eval` dependencies. None is removed or
 counted as a pass. The source/helper bytes are unchanged between runs.
 
+The later [String conversion checkpoint](string-conversion.md) fixes those two
+slice failures while retaining this historical before/after record.
+
 [Local cases](function-constructor.js) retain the same 30 mode fingerprints before
 and after, moving from unsupported to passed. Rust checks cover every work cutoff
 on representative dynamic parses, heap refusals, failed-parse charges, recursive

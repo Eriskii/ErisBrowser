@@ -1,10 +1,17 @@
 # Compatibility status
 
+[String conversion, search and custom splitting](../tests/conformance/string-conversion.md)
+now respect ordinary receiver/needle conversion, `Symbol.match` classification
+and object separators' `Symbol.split` hooks. The new 484-mode selection records
+470 passed, two failed and 12 unsupported modes; the two older slice failures
+also pass. Built-in RegExp split/species behavior and other String symbol
+protocols remain incomplete.
+
 [Dynamic ordinary Function construction](../tests/conformance/function-constructor.md)
 now uses global scope, separate parameter/body grammar and the caller's remaining
 resource budgets. Its new 200-source selection records 241 passed and 50 unsupported
-modes; older selections gain 35 passes while two string-slice cases now expose
-function-string conversion failures. Function source printing, literal unpaired
+modes; older selections gain 35 passes. Its two exposed string-slice failures
+are fixed by the conversion follow-up above. Function source printing, literal unpaired
 surrogates in generated source and the wider Function family remain incomplete.
 
 The [Symbol constructor/policy follow-up](../tests/conformance/constructor-policy.md)

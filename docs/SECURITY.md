@@ -231,3 +231,11 @@ callbacks and prototype getters retain existing nesting guards. The existing CSP
 fallback still disables all scripts for a policy-bearing page. Literal unpaired
 UTF-16 source surrogates are explicitly unsupported pending lossless parser input;
 no lossy replacement is used. See the [tests and limits](../tests/conformance/function-constructor.md).
+
+Generic String conversion, `Symbol.match` classification and custom `Symbol.split`
+dispatch invoke ordinary getters/callbacks under the existing shared runtime
+limits. Split-hook argument storage is charged before calling author code.
+Recursive getter/conversion/hook regressions verify resource exhaustion and
+counter/frame cleanup; a heap-exhausted split cannot invoke the hook. No quotas,
+dependencies or process authorities change. The built-in RegExp split protocol
+remains incomplete; see the [coverage and limits](../tests/conformance/string-conversion.md).

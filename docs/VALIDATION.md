@@ -1,5 +1,31 @@
 # Validation record
 
+## String conversion, search and custom splitting
+
+The [implementation record](../tests/conformance/string-conversion.md) and
+[evidence](../tests/conformance/string-conversion.json) retain a new complete
+242-source String search/split selection: **470 passed / 2 failed / 12 unsupported
+modes**, gaining 18 passes over the frozen `707ada1` binary. The two older
+string-slice failures also pass; every other old case observation is identical.
+All **8,006 modes** preserve their fingerprints and previous passes. All **2,144
+assertion controls** verify; the 2,072 older controls and all old policies remain
+unchanged. One existing baseline and one new baseline record these results.
+
+The frozen local conversion and split-hook fixtures now pass all **54 modes**.
+Rust **1.88 / 1.95** pass strict all-target Clippy and full tests: **1,011 default /
+1,022 Vulkan-feature Rust tests**, none ignored. Both release configurations
+preserve all **57 CPU pixel references**. **168 Python tests** and **45,000
+mutation cases** pass. Upstream HTML case objects remain identical. Resource
+tests cover recursive conversion, Symbol getters/calls, exhausted heap refusal
+and counter/frame cleanup. No GPU rendering or Chromium comparison was run.
+Agent quota remains unavailable; no independent-agent review is claimed.
+
+The two remaining failures require undeclared BigInt syntax in unchanged upstream
+sources. Unsupported eval and RegExp parsing cases remain visible. Built-in
+RegExp Symbol.split/species, other String symbol protocols and Function source
+printing remain incomplete; this is not full standards conformance or audited
+security.
+
 ## Dynamic ordinary Function construction
 
 The [implementation record](../tests/conformance/function-constructor.md) and

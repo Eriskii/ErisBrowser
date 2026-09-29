@@ -7960,6 +7960,11 @@ impl Runtime {
         if native.name == "String.concat" {
             return self.string_concat(native.receiver.clone(), &args, doc);
         }
+        if native.name == "String.split"
+            && let Some(result) = self.string_split_hook(native.receiver.clone(), &args, doc)?
+        {
+            return Ok(result);
+        }
         let normalized;
         let native = if let Some(method) = native.name.strip_prefix("String.")
             && !matches!(method, "toString" | "valueOf")
@@ -7972,7 +7977,7 @@ impl Runtime {
                         "String method receiver is null or undefined",
                     ));
                 }
-                Value::String(self.json_text(native.receiver.clone(), doc, &mut Vec::new())?)
+                Value::String(self.string_hint(native.receiver.clone(), doc)?)
             };
             normalized = Native {
                 name: method.into(),
@@ -8784,17 +8789,14 @@ impl Runtime {
                     return self.string_regexp(name, text.clone(), arg(0), arg(1), doc);
                 }
                 if matches!(name, "includes" | "startsWith" | "endsWith")
-                    && self.regexp_slot(&arg(0)).is_some()
+                    && self.is_regexp(arg(0), doc)?
                 {
                     return Err(ScriptError::type_error(
                         "String search argument must not be a RegExp",
                     ));
                 }
-                let needle = if matches!(
-                    name,
-                    "includes" | "indexOf" | "startsWith" | "endsWith" | "split"
-                ) {
-                    self.json_text(arg(0), doc, &mut Vec::new())?
+                let needle = if matches!(name, "includes" | "indexOf" | "startsWith" | "endsWith") {
+                    self.string_hint(arg(0), doc)?
                 } else {
                     JsString::default()
                 };
@@ -8890,6 +8892,8 @@ impl Runtime {
                         } else {
                             to_i32(self.number_value(arg(1), doc)?) as u32 as usize
                         };
+                        // ToUint32(limit) precedes separator conversion, even for zero.
+                        let needle = self.string_hint(arg(0), doc)?;
                         if limit == 0 {
                             return self.array(Vec::new());
                         }
