@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "9fac107410a7e10f895b1c9900c802626f1f3652040877d662c9892b056180d5",
   "runner_policy_sha256": "3ffb7cd01ba9148d4ef61806a0d476c682ebbb9f9dce37190188a963006a73da",
-  "binary_sha256": "6b2a21601bbc850c3a7890b99b8990f7e101b1da6f4246f4eb06711d2ff1208c",
+  "binary_sha256": "f9ffdf6172908c875308ee40fe5783d3b673bbdccf7685a61c608b331348f721",
   "cases": {
     "test/built-ins/Array/from/Array.from-descriptor.js:sloppy": {
       "status": "passed",
@@ -85,12 +85,12 @@
       "source_sha256": "e39d7381f2a24d9197298ee8d231047d4d28467d7d82886b878cde24cdd3bd9c"
     },
     "test/built-ins/Array/from/elements-deleted-after.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "c2063fa90ddf6e5658b18e4014de244ee7c1aaeef9323184e639ea119de4b71f",
       "source_sha256": "4da66f66fe87c8c2e1f5874b1d70df861749c6c299029f173465d48faa70686a"
     },
     "test/built-ins/Array/from/elements-deleted-after.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "710b4fa7e197aef3eaee8beecee4d39b34603439665a2f737caa4052bc4b8106",
       "source_sha256": "4da66f66fe87c8c2e1f5874b1d70df861749c6c299029f173465d48faa70686a"
     },

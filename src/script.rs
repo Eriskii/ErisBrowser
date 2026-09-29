@@ -42,6 +42,7 @@ mod array_builtins;
 mod array_from;
 mod array_methods;
 mod array_properties;
+mod array_splice;
 mod tokens;
 
 const MAX_SOURCE: usize = 256 * 1024;
@@ -2026,6 +2027,7 @@ impl Runtime {
             self.objects[self.native_properties[owner]].insert_hidden(key.into(), value);
         }
         self.install_array_from()?;
+        self.install_array_splice()?;
         self.initialize_number_statics()?;
         for name in [
             "isFinite",
@@ -7668,6 +7670,9 @@ impl Runtime {
     ) -> Result<Value> {
         if native.name == "Array.from" {
             return self.array_from(native.receiver.clone(), &args, doc);
+        }
+        if native.name == "Array.splice" {
+            return self.array_splice(native.receiver.clone(), &args, doc);
         }
         if native.name == "Date" {
             let now = self.date_now()?;

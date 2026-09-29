@@ -73,6 +73,14 @@ fn array_from_mapping_construction_and_closing_survive_document_callbacks() {
 }
 
 #[test]
+fn array_splice_preserves_species_live_properties_and_partial_callback_effects() {
+    assert_six_scripted_samples_with_result_text(
+        include_str!("fixtures/array-splice.html"),
+        Some(["ready", "6"]),
+    );
+}
+
+#[test]
 fn own_key_order_and_live_enumeration_survive_document_callbacks() {
     assert_six_scripted_samples(include_str!("fixtures/own-keys.html"));
 }
@@ -174,9 +182,16 @@ fn rejected_self_declaration_does_not_leave_bindings_for_later_page_scripts() {
 }
 
 fn assert_six_scripted_samples(source: &str) {
+    assert_six_scripted_samples_with_result_text(source, None);
+}
+
+fn assert_six_scripted_samples_with_result_text(source: &str, result_text: Option<[&str; 2]>) {
     let mut p = page(source);
     let fonts = Fonts::new();
-    for (state, color) in [("ready", 0x008000), ("clicked", 0x0000ff)] {
+    for (index, (state, color)) in [("ready", 0x008000), ("clicked", 0x0000ff)]
+        .into_iter()
+        .enumerate()
+    {
         if state == "clicked" {
             let button = p.document.query_selector("#change").unwrap();
             assert!(p.click(button).is_none());
@@ -184,6 +199,10 @@ fn assert_six_scripted_samples(source: &str) {
         assert!(p.diagnostics.is_empty(), "{:?}", p.diagnostics);
         let body = p.document.query_selector("body").unwrap();
         assert_eq!(p.document.attr(body, "class"), Some(state));
+        if let Some(expected) = result_text {
+            let result = p.document.query_selector("#result").unwrap();
+            assert_eq!(p.document.text_content(result), expected[index], "{state}");
+        }
         let layout = p.layout(320.0, 240.0, &fonts);
         let mut canvas = Canvas::new(320, 240).unwrap();
         canvas.clear(Color::WHITE);

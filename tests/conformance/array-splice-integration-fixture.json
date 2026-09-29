@@ -1,0 +1,256 @@
+{
+  "format": "eris-array-splice-integration-oracle-v1",
+  "status": "Proposed intended observations; no engine/browser/worker/GPU execution. Parent freeze and execution authorization pending.",
+  "authored_utc": "2026-09-29T11:03:22.696082+00:00",
+  "fixture": {
+    "path": "/tmp/eris-array-splice-integration.html",
+    "bytes": 3865,
+    "sha256": "d67f6a52db35e973dc50288289dd60ac618214bd4bc5d86e670ad014b494851a"
+  },
+  "notes": {
+    "path": "/tmp/eris-array-splice-integration-notes.md",
+    "bytes": 2332,
+    "sha256": "226c2f6d7ddfd71b48c02f359f7c559e5dab5983badf59322485b2209018409a"
+  },
+  "viewport": {
+    "width": 320,
+    "height": 240
+  },
+  "button": {
+    "selector": "#change",
+    "event": "click",
+    "text": "Run splice callbacks",
+    "action": "Page.click(query_selector) or corresponding WorkerCommand::Click using the node from the current document"
+  },
+  "samples": [
+    {
+      "id": "sparse",
+      "x": 10,
+      "y": 10,
+      "rect": {
+        "left": 0,
+        "top": 0,
+        "width": 40,
+        "height": 40
+      }
+    },
+    {
+      "id": "live",
+      "x": 60,
+      "y": 10,
+      "rect": {
+        "left": 50,
+        "top": 0,
+        "width": 40,
+        "height": 40
+      }
+    },
+    {
+      "id": "species",
+      "x": 110,
+      "y": 10,
+      "rect": {
+        "left": 100,
+        "top": 0,
+        "width": 40,
+        "height": 40
+      }
+    },
+    {
+      "id": "alias",
+      "x": 160,
+      "y": 10,
+      "rect": {
+        "left": 150,
+        "top": 0,
+        "width": 40,
+        "height": 40
+      }
+    },
+    {
+      "id": "partial",
+      "x": 210,
+      "y": 10,
+      "rect": {
+        "left": 200,
+        "top": 0,
+        "width": 40,
+        "height": 40
+      }
+    },
+    {
+      "id": "movement",
+      "x": 260,
+      "y": 10,
+      "rect": {
+        "left": 250,
+        "top": 0,
+        "width": 40,
+        "height": 40
+      }
+    }
+  ],
+  "phases": [
+    {
+      "action": "load with scripts enabled",
+      "body_class": "ready",
+      "result_text": "ready",
+      "sample_color_css": "green",
+      "sample_packed_rgb": 32768,
+      "sample_hex": "0x008000"
+    },
+    {
+      "action": "one click on #change",
+      "body_class": "clicked",
+      "result_text": "6",
+      "sample_color_css": "blue",
+      "sample_packed_rgb": 255,
+      "sample_hex": "0x0000ff"
+    }
+  ],
+  "semantic_checks_each_phase": {
+    "sparse": {
+      "deleted_length": 3,
+      "deleted_present_indices": {
+        "0": 2,
+        "1": 7
+      },
+      "deleted_absent_indices": [
+        "2"
+      ],
+      "source_length": 2,
+      "source_present_indices": {
+        "0": "x",
+        "1": 9
+      },
+      "source_absent_own_indices": [
+        "3"
+      ]
+    },
+    "live": {
+      "getter_calls": 1,
+      "deleted_length": 3,
+      "deleted_present_indices": {
+        "0": 10,
+        "2": 99
+      },
+      "deleted_absent_indices": [
+        "1"
+      ],
+      "source_length": 0,
+      "source_absent_own_indices": [
+        "0",
+        "2"
+      ]
+    },
+    "species": {
+      "constructor_calls": 1,
+      "constructor_argument_count": 1,
+      "constructor_length_argument": 2,
+      "result_prototype": "the exact proto object created by apply",
+      "inherited_result_setter_calls": 0,
+      "result_own_index_0": true,
+      "result_present_indices": {
+        "0": 5,
+        "1": 6
+      },
+      "result_length": 2,
+      "source_length": 1,
+      "source_index_0": 4
+    },
+    "alias": {
+      "result_identity": "same object as source alias",
+      "source_length": 3,
+      "source_present_indices": {
+        "0": 1,
+        "1": "x"
+      },
+      "source_absent_own_indices": [
+        "2",
+        "3"
+      ],
+      "derivation": "Copy source indices 1/2 into result/source 0/1; result length 2 removes source 2/3; original bound 4 still drives missing-from-3 movement; insert x at 1; final length 3 leaves hole 2."
+    },
+    "partial": {
+      "caught_identity": "the exact marker object",
+      "source_index_2_getter_calls": 1,
+      "source_index_2_setter_attempts": 1,
+      "source_present_indices": {
+        "0": "a",
+        "1": "b",
+        "3": "c"
+      },
+      "source_length": 3,
+      "derivation": "Get index 2 and Set index 3 first; then Get index 1 and invoke throwing setter 2. No item insertion or final length Set occurs. Assertions never reread getter 2."
+    },
+    "movement": {
+      "deleted_values": [
+        1,
+        2
+      ],
+      "source_values": [
+        8,
+        9,
+        10,
+        3
+      ],
+      "source_length": 4
+    }
+  },
+  "diagnostics": {
+    "Page": "no script diagnostics",
+    "worker": "only existing Page process / Resource broker informational lines permitted; no script error or terminal resource diagnostic"
+  },
+  "script_bounds": {
+    "maximum_arraylike_length": 4,
+    "checks_per_phase": 6,
+    "authored_loops": 0,
+    "timers": 0,
+    "external_resources": 0,
+    "fresh_local_objects_each_phase": true
+  },
+  "compatibility_with_existing_tests": {
+    "pipeline_helper": "assert_six_scripted_samples",
+    "worker_helper": "assert_six_scripted_samples_through_worker",
+    "matching_existing_pixels": true,
+    "matching_existing_body_classes": true,
+    "result_text_needs_explicit_assertion": "Current helpers check body state and samples, not #result text."
+  },
+  "provenance": [
+    {
+      "path": "/tmp/eris-array-splice-plan.md",
+      "bytes": 19697,
+      "sha256": "2fda5460433edaf71680ec6ed67c2d9f965c611c8e710e475b69549e9e9f7b23"
+    },
+    {
+      "path": "/tmp/eris-array-splice-local-draft.json",
+      "bytes": 524670,
+      "sha256": "69b4ebec7c80f6fe524118829747184f1c4cceadd4e147cc4899cc898b3d6e18"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/fixtures/array-from.html",
+      "bytes": 3192,
+      "sha256": "6f819d828eb5688f3f3f4e462aaf0918eb684da1184a10433eb931cc5c601ff7"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/fixtures/own-keys.html",
+      "bytes": 3778,
+      "sha256": "8b81778cda639fd48540f91b6180717fc60346c862409eb556a6b65e798d6025"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/pipeline.rs",
+      "bytes": 47474,
+      "sha256": "332a1cbba65f78ffed3e156088f7180b3d1dfb769b95b3175f206a8b340a071a"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/worker.rs",
+      "bytes": 79040,
+      "sha256": "05f9dd1c25d23724fde998028a6df8622c6f61aca6a5a6792087a9095feff9a3"
+    }
+  ],
+  "primary_sources": [
+    "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array.prototype.splice",
+    "https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-arrayspeciescreate"
+  ],
+  "limits": "Fixed semantic/document-callback checks only; no complete splice compatibility, measured pixels, browser execution or worker security claim."
+}

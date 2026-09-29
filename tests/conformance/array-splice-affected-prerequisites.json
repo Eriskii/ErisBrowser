@@ -1,0 +1,466 @@
+{
+  "format": 1,
+  "inventory_sha256": "c7c4ae3f12b4f5dc3b5779ccca14d9e8fb4f2ae69348e66735b5b73a8c9c5070",
+  "driver_sha256": "7fb4239a4293d6e4df07b70a3450cdf2734c73f76c77f9ff30ba0694d448b9e8",
+  "selected_rows": 12,
+  "expected_prerequisite_gain_rows": 10,
+  "unchanged_metadata_excluded_json_rows": 2,
+  "normalization": false,
+  "runtime_executions": 0,
+  "reports": {
+    "array-find": {
+      "path": "/tmp/eris-array-splice-candidate-1/profile-array-find.json",
+      "sha256": "dd905cd95ccf55948dd4a9f2c3271f0486d2580a558432c30fb50c9a349ca22a"
+    },
+    "array-from": {
+      "path": "/tmp/eris-array-splice-candidate-1/profile-array-from.json",
+      "sha256": "17c000505a74a0824f90598c97f61fc6d7ad155f277daa75760b5b3e83cfae0b"
+    },
+    "string-json": {
+      "path": "/tmp/eris-array-splice-candidate-1/profile-string-json.json",
+      "sha256": "1ec1f1225f2aef590afa96198d87d4495fe924c09491976775c9c2f1219a13ee"
+    }
+  },
+  "rows": [
+    {
+      "profile": "array-find",
+      "source_path": "tests/upstream/test262-array-find/test/built-ins/Array/prototype/find/array-altered-during-loop.js",
+      "before": {
+        "id": "test/built-ins/Array/prototype/find/array-altered-during-loop.js:sloppy",
+        "file": "test/built-ins/Array/prototype/find/array-altered-during-loop.js",
+        "mode": "sloppy",
+        "case_sha256": "3eab3cf464e9e49397f71ebf77b9261695a1e8ca9b1327ad182cda65165c6d78",
+        "source_sha256": "e03d778ac8de4da83ce1252bf6aec2f9e7e3aef6f0ef54daf74daa74cc2040a5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "value is not callable",
+          "harness": ""
+        }
+      },
+      "candidate": {
+        "id": "test/built-ins/Array/prototype/find/array-altered-during-loop.js:sloppy",
+        "file": "test/built-ins/Array/prototype/find/array-altered-during-loop.js",
+        "mode": "sloppy",
+        "case_sha256": "3eab3cf464e9e49397f71ebf77b9261695a1e8ca9b1327ad182cda65165c6d78",
+        "source_sha256": "e03d778ac8de4da83ce1252bf6aec2f9e7e3aef6f0ef54daf74daa74cc2040a5",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      },
+      "changed": true
+    },
+    {
+      "profile": "array-find",
+      "source_path": "tests/upstream/test262-array-find/test/built-ins/Array/prototype/find/array-altered-during-loop.js",
+      "before": {
+        "id": "test/built-ins/Array/prototype/find/array-altered-during-loop.js:strict",
+        "file": "test/built-ins/Array/prototype/find/array-altered-during-loop.js",
+        "mode": "strict",
+        "case_sha256": "e8bbf0f348fb2ae6e0b52b8973f7870aac3ec16e80ef9e76dac2b1bd7d81790b",
+        "source_sha256": "e03d778ac8de4da83ce1252bf6aec2f9e7e3aef6f0ef54daf74daa74cc2040a5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "value is not callable",
+          "harness": ""
+        }
+      },
+      "candidate": {
+        "id": "test/built-ins/Array/prototype/find/array-altered-during-loop.js:strict",
+        "file": "test/built-ins/Array/prototype/find/array-altered-during-loop.js",
+        "mode": "strict",
+        "case_sha256": "e8bbf0f348fb2ae6e0b52b8973f7870aac3ec16e80ef9e76dac2b1bd7d81790b",
+        "source_sha256": "e03d778ac8de4da83ce1252bf6aec2f9e7e3aef6f0ef54daf74daa74cc2040a5",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      },
+      "changed": true
+    },
+    {
+      "profile": "array-find",
+      "source_path": "tests/upstream/test262-array-find/test/built-ins/Array/prototype/findIndex/array-altered-during-loop.js",
+      "before": {
+        "id": "test/built-ins/Array/prototype/findIndex/array-altered-during-loop.js:sloppy",
+        "file": "test/built-ins/Array/prototype/findIndex/array-altered-during-loop.js",
+        "mode": "sloppy",
+        "case_sha256": "04ffc40bf3a94f14f58ebd104eddd035e3a839de7c29ba21d5cf07a53405fec5",
+        "source_sha256": "bc507d6440f5de7132659da52eca22cb93b3fe1491a83e4c8d6a42f4e32e15d9",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "value is not callable",
+          "harness": ""
+        }
+      },
+      "candidate": {
+        "id": "test/built-ins/Array/prototype/findIndex/array-altered-during-loop.js:sloppy",
+        "file": "test/built-ins/Array/prototype/findIndex/array-altered-during-loop.js",
+        "mode": "sloppy",
+        "case_sha256": "04ffc40bf3a94f14f58ebd104eddd035e3a839de7c29ba21d5cf07a53405fec5",
+        "source_sha256": "bc507d6440f5de7132659da52eca22cb93b3fe1491a83e4c8d6a42f4e32e15d9",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      },
+      "changed": true
+    },
+    {
+      "profile": "array-find",
+      "source_path": "tests/upstream/test262-array-find/test/built-ins/Array/prototype/findIndex/array-altered-during-loop.js",
+      "before": {
+        "id": "test/built-ins/Array/prototype/findIndex/array-altered-during-loop.js:strict",
+        "file": "test/built-ins/Array/prototype/findIndex/array-altered-during-loop.js",
+        "mode": "strict",
+        "case_sha256": "57d1dcbbfd6f429b3042b293ee4e4dbf9ff237bf922a55b6f86806e55e2ac1ee",
+        "source_sha256": "bc507d6440f5de7132659da52eca22cb93b3fe1491a83e4c8d6a42f4e32e15d9",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "value is not callable",
+          "harness": ""
+        }
+      },
+      "candidate": {
+        "id": "test/built-ins/Array/prototype/findIndex/array-altered-during-loop.js:strict",
+        "file": "test/built-ins/Array/prototype/findIndex/array-altered-during-loop.js",
+        "mode": "strict",
+        "case_sha256": "57d1dcbbfd6f429b3042b293ee4e4dbf9ff237bf922a55b6f86806e55e2ac1ee",
+        "source_sha256": "bc507d6440f5de7132659da52eca22cb93b3fe1491a83e4c8d6a42f4e32e15d9",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      },
+      "changed": true
+    },
+    {
+      "profile": "array-find",
+      "source_path": "tests/upstream/test262-array-find/test/built-ins/Array/prototype/findLast/array-altered-during-loop.js",
+      "before": {
+        "id": "test/built-ins/Array/prototype/findLast/array-altered-during-loop.js:sloppy",
+        "file": "test/built-ins/Array/prototype/findLast/array-altered-during-loop.js",
+        "mode": "sloppy",
+        "case_sha256": "47c79b188ef5ce03f6f4e9eef9d3943b11c3ef799241dfd1041cf6eb24479d7a",
+        "source_sha256": "97935f3d140c3e1462fdfe8e90e49bdccf77c1bc41a7ae580bbe439ae3083faa",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "value is not callable",
+          "harness": ""
+        }
+      },
+      "candidate": {
+        "id": "test/built-ins/Array/prototype/findLast/array-altered-during-loop.js:sloppy",
+        "file": "test/built-ins/Array/prototype/findLast/array-altered-during-loop.js",
+        "mode": "sloppy",
+        "case_sha256": "47c79b188ef5ce03f6f4e9eef9d3943b11c3ef799241dfd1041cf6eb24479d7a",
+        "source_sha256": "97935f3d140c3e1462fdfe8e90e49bdccf77c1bc41a7ae580bbe439ae3083faa",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      },
+      "changed": true
+    },
+    {
+      "profile": "array-find",
+      "source_path": "tests/upstream/test262-array-find/test/built-ins/Array/prototype/findLast/array-altered-during-loop.js",
+      "before": {
+        "id": "test/built-ins/Array/prototype/findLast/array-altered-during-loop.js:strict",
+        "file": "test/built-ins/Array/prototype/findLast/array-altered-during-loop.js",
+        "mode": "strict",
+        "case_sha256": "410517d27bdbfcdb0d01476b9eb6cc22f4d6c2e83b5c29278197c19d5a3f8fe7",
+        "source_sha256": "97935f3d140c3e1462fdfe8e90e49bdccf77c1bc41a7ae580bbe439ae3083faa",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "value is not callable",
+          "harness": ""
+        }
+      },
+      "candidate": {
+        "id": "test/built-ins/Array/prototype/findLast/array-altered-during-loop.js:strict",
+        "file": "test/built-ins/Array/prototype/findLast/array-altered-during-loop.js",
+        "mode": "strict",
+        "case_sha256": "410517d27bdbfcdb0d01476b9eb6cc22f4d6c2e83b5c29278197c19d5a3f8fe7",
+        "source_sha256": "97935f3d140c3e1462fdfe8e90e49bdccf77c1bc41a7ae580bbe439ae3083faa",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      },
+      "changed": true
+    },
+    {
+      "profile": "array-find",
+      "source_path": "tests/upstream/test262-array-find/test/built-ins/Array/prototype/findLastIndex/array-altered-during-loop.js",
+      "before": {
+        "id": "test/built-ins/Array/prototype/findLastIndex/array-altered-during-loop.js:sloppy",
+        "file": "test/built-ins/Array/prototype/findLastIndex/array-altered-during-loop.js",
+        "mode": "sloppy",
+        "case_sha256": "93e25bc306f3e8cc1a90b981b8f3845b388a95aefccc3a3eb0ebac9dba10834e",
+        "source_sha256": "357010e81ef9602acb8aa7142140d72301f723c4ecac3267f80d23c70a060f39",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "value is not callable",
+          "harness": ""
+        }
+      },
+      "candidate": {
+        "id": "test/built-ins/Array/prototype/findLastIndex/array-altered-during-loop.js:sloppy",
+        "file": "test/built-ins/Array/prototype/findLastIndex/array-altered-during-loop.js",
+        "mode": "sloppy",
+        "case_sha256": "93e25bc306f3e8cc1a90b981b8f3845b388a95aefccc3a3eb0ebac9dba10834e",
+        "source_sha256": "357010e81ef9602acb8aa7142140d72301f723c4ecac3267f80d23c70a060f39",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      },
+      "changed": true
+    },
+    {
+      "profile": "array-find",
+      "source_path": "tests/upstream/test262-array-find/test/built-ins/Array/prototype/findLastIndex/array-altered-during-loop.js",
+      "before": {
+        "id": "test/built-ins/Array/prototype/findLastIndex/array-altered-during-loop.js:strict",
+        "file": "test/built-ins/Array/prototype/findLastIndex/array-altered-during-loop.js",
+        "mode": "strict",
+        "case_sha256": "93e6aa3a0fd63ed337dcb466ab2368fa6b416765ed7992177b7042e6971eed41",
+        "source_sha256": "357010e81ef9602acb8aa7142140d72301f723c4ecac3267f80d23c70a060f39",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "value is not callable",
+          "harness": ""
+        }
+      },
+      "candidate": {
+        "id": "test/built-ins/Array/prototype/findLastIndex/array-altered-during-loop.js:strict",
+        "file": "test/built-ins/Array/prototype/findLastIndex/array-altered-during-loop.js",
+        "mode": "strict",
+        "case_sha256": "93e6aa3a0fd63ed337dcb466ab2368fa6b416765ed7992177b7042e6971eed41",
+        "source_sha256": "357010e81ef9602acb8aa7142140d72301f723c4ecac3267f80d23c70a060f39",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      },
+      "changed": true
+    },
+    {
+      "profile": "array-from",
+      "source_path": "tests/upstream/test262-array-from/test/built-ins/Array/from/elements-deleted-after.js",
+      "before": {
+        "id": "test/built-ins/Array/from/elements-deleted-after.js:sloppy",
+        "file": "test/built-ins/Array/from/elements-deleted-after.js",
+        "mode": "sloppy",
+        "case_sha256": "c2063fa90ddf6e5658b18e4014de244ee7c1aaeef9323184e639ea119de4b71f",
+        "source_sha256": "4da66f66fe87c8c2e1f5874b1d70df861749c6c299029f173465d48faa70686a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "value is not callable",
+          "harness": ""
+        }
+      },
+      "candidate": {
+        "id": "test/built-ins/Array/from/elements-deleted-after.js:sloppy",
+        "file": "test/built-ins/Array/from/elements-deleted-after.js",
+        "mode": "sloppy",
+        "case_sha256": "c2063fa90ddf6e5658b18e4014de244ee7c1aaeef9323184e639ea119de4b71f",
+        "source_sha256": "4da66f66fe87c8c2e1f5874b1d70df861749c6c299029f173465d48faa70686a",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      },
+      "changed": true
+    },
+    {
+      "profile": "array-from",
+      "source_path": "tests/upstream/test262-array-from/test/built-ins/Array/from/elements-deleted-after.js",
+      "before": {
+        "id": "test/built-ins/Array/from/elements-deleted-after.js:strict",
+        "file": "test/built-ins/Array/from/elements-deleted-after.js",
+        "mode": "strict",
+        "case_sha256": "710b4fa7e197aef3eaee8beecee4d39b34603439665a2f737caa4052bc4b8106",
+        "source_sha256": "4da66f66fe87c8c2e1f5874b1d70df861749c6c299029f173465d48faa70686a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "value is not callable",
+          "harness": ""
+        }
+      },
+      "candidate": {
+        "id": "test/built-ins/Array/from/elements-deleted-after.js:strict",
+        "file": "test/built-ins/Array/from/elements-deleted-after.js",
+        "mode": "strict",
+        "case_sha256": "710b4fa7e197aef3eaee8beecee4d39b34603439665a2f737caa4052bc4b8106",
+        "source_sha256": "4da66f66fe87c8c2e1f5874b1d70df861749c6c299029f173465d48faa70686a",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      },
+      "changed": true
+    },
+    {
+      "profile": "string-json",
+      "source_path": "tests/upstream/test262/test/built-ins/JSON/parse/reviver-forward-modifies-object.js",
+      "before": {
+        "id": "test/built-ins/JSON/parse/reviver-forward-modifies-object.js:sloppy",
+        "file": "test/built-ins/JSON/parse/reviver-forward-modifies-object.js",
+        "mode": "sloppy",
+        "case_sha256": "4792c0eea645b4c8c945b7abff1349954c045829ff02d152e3d0bbe3413f4db2",
+        "source_sha256": "1c96ce668352708285464eda7db0868e7b49f7cccdce4526018deb71292483d8",
+        "expected_negative": null,
+        "status": "unsupported",
+        "reason": "unimplemented declared features: json-parse-with-source"
+      },
+      "candidate": {
+        "id": "test/built-ins/JSON/parse/reviver-forward-modifies-object.js:sloppy",
+        "file": "test/built-ins/JSON/parse/reviver-forward-modifies-object.js",
+        "mode": "sloppy",
+        "case_sha256": "4792c0eea645b4c8c945b7abff1349954c045829ff02d152e3d0bbe3413f4db2",
+        "source_sha256": "1c96ce668352708285464eda7db0868e7b49f7cccdce4526018deb71292483d8",
+        "expected_negative": null,
+        "status": "unsupported",
+        "reason": "unimplemented declared features: json-parse-with-source"
+      },
+      "changed": false
+    },
+    {
+      "profile": "string-json",
+      "source_path": "tests/upstream/test262/test/built-ins/JSON/parse/reviver-forward-modifies-object.js",
+      "before": {
+        "id": "test/built-ins/JSON/parse/reviver-forward-modifies-object.js:strict",
+        "file": "test/built-ins/JSON/parse/reviver-forward-modifies-object.js",
+        "mode": "strict",
+        "case_sha256": "946db88ca28ed50595529314017a9257a60df2238125fde9813895fc5b87bc92",
+        "source_sha256": "1c96ce668352708285464eda7db0868e7b49f7cccdce4526018deb71292483d8",
+        "expected_negative": null,
+        "status": "unsupported",
+        "reason": "unimplemented declared features: json-parse-with-source"
+      },
+      "candidate": {
+        "id": "test/built-ins/JSON/parse/reviver-forward-modifies-object.js:strict",
+        "file": "test/built-ins/JSON/parse/reviver-forward-modifies-object.js",
+        "mode": "strict",
+        "case_sha256": "946db88ca28ed50595529314017a9257a60df2238125fde9813895fc5b87bc92",
+        "source_sha256": "1c96ce668352708285464eda7db0868e7b49f7cccdce4526018deb71292483d8",
+        "expected_negative": null,
+        "status": "unsupported",
+        "reason": "unimplemented declared features: json-parse-with-source"
+      },
+      "changed": false
+    }
+  ]
+}

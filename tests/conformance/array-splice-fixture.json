@@ -1,0 +1,736 @@
+{
+  "format": 1,
+  "scope": "Independent local splice oracle; draft preserved, no engine observation",
+  "draft_sha256": "69b4ebec7c80f6fe524118829747184f1c4cceadd4e147cc4899cc898b3d6e18",
+  "fixture_sha256": "2529fd5e1c9fb4437668d0b51fb6a225bf9f907d01bff105beadb2f6668691fc",
+  "generator_sha256": "85399949b801a616b7a3a48207b690b21254305af538550b5b8a51f98fc6ae13",
+  "preflights_sha256": "65ee7e257a8899289ca73df8518b74eee0c38de9628d55f213a3bea29ecd633b",
+  "source_cases": 48,
+  "mode_cases": 96,
+  "cases": [
+    {
+      "name": "metadata-property-flags",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "metadata",
+      "prerequisites": []
+    },
+    {
+      "name": "saved-alias-call-apply-bind-nonconstructor",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "metadata",
+      "prerequisites": []
+    },
+    {
+      "name": "absent-start-delete-versus-undefined",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "conversion",
+      "prerequisites": []
+    },
+    {
+      "name": "start-clamps-fractions-signed-zero-and-infinities",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "conversion",
+      "prerequisites": []
+    },
+    {
+      "name": "deletecount-clamps-and-symbol-error",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "conversion",
+      "prerequisites": []
+    },
+    {
+      "name": "length-start-delete-conversion-order",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "conversion",
+      "prerequisites": []
+    },
+    {
+      "name": "tolength-fraction-negative-and-infinity",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "conversion",
+      "prerequisites": []
+    },
+    {
+      "name": "safe-integer-overflow-before-index-effects",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "limits",
+      "prerequisites": []
+    },
+    {
+      "name": "captured-length-survives-start-mutation",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "liveness",
+      "prerequisites": []
+    },
+    {
+      "name": "fresh-deleted-result-holes-versus-undefined",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "sparse",
+      "prerequisites": []
+    },
+    {
+      "name": "inherited-index-read-original-receiver",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "sparse",
+      "prerequisites": []
+    },
+    {
+      "name": "deleted-range-getter-mutates-future-positions",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "liveness",
+      "prerequisites": []
+    },
+    {
+      "name": "result-definitions-bypass-inherited-setters",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "species",
+      "prerequisites": []
+    },
+    {
+      "name": "species-constructor-order-arity-and-newtarget",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "species",
+      "prerequisites": []
+    },
+    {
+      "name": "default-species-keeps-intrinsic-after-global-poison",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "species",
+      "prerequisites": []
+    },
+    {
+      "name": "invalid-species-constructor-and-abrupt-identity",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "species",
+      "prerequisites": []
+    },
+    {
+      "name": "generic-receiver-ignores-constructor-and-protocols",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "species",
+      "prerequisites": []
+    },
+    {
+      "name": "ordinary-species-result-keeps-preexisting-hole-key",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "species",
+      "prerequisites": []
+    },
+    {
+      "name": "species-source-alias-retains-observable-shrink",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "aliasing",
+      "prerequisites": []
+    },
+    {
+      "name": "species-returns-different-existing-array",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "aliasing",
+      "prerequisites": []
+    },
+    {
+      "name": "bound-species-and-reflect-created-array-prototype",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "species",
+      "prerequisites": []
+    },
+    {
+      "name": "left-shift-ascending-live-get-set-order",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "movement",
+      "prerequisites": []
+    },
+    {
+      "name": "right-shift-descending-live-get-set-order",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "movement",
+      "prerequisites": []
+    },
+    {
+      "name": "equal-count-skips-unrelated-index-reads",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "movement",
+      "prerequisites": []
+    },
+    {
+      "name": "holes-delete-destinations-in-both-directions",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "sparse",
+      "prerequisites": []
+    },
+    {
+      "name": "excess-tail-deletion-descends-before-failure",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "partial-effects",
+      "prerequisites": []
+    },
+    {
+      "name": "inserted-object-symbol-identity-without-coercion",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "items",
+      "prerequisites": []
+    },
+    {
+      "name": "source-inherited-setter-sees-original-receiver",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "movement",
+      "prerequisites": []
+    },
+    {
+      "name": "reentrant-index-getter-uses-captured-outer-bounds",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "reentrancy",
+      "prerequisites": []
+    },
+    {
+      "name": "readonly-destination-preserves-grown-prefix",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "partial-effects",
+      "prerequisites": []
+    },
+    {
+      "name": "nonconfigurable-hole-destination-preserves-left-prefix",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "partial-effects",
+      "prerequisites": []
+    },
+    {
+      "name": "nonextensible-receiver-rejects-new-destination",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "partial-effects",
+      "prerequisites": []
+    },
+    {
+      "name": "final-source-length-setter-throws-after-edits",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "partial-effects",
+      "prerequisites": []
+    },
+    {
+      "name": "result-definition-failure-retains-output-prefix-only",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "partial-effects",
+      "prerequisites": []
+    },
+    {
+      "name": "result-length-setter-mutates-before-source-movement",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "liveness",
+      "prerequisites": []
+    },
+    {
+      "name": "string-utf16-readonly-length-and-partial-growth",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "generic",
+      "prerequisites": []
+    },
+    {
+      "name": "number-boolean-symbol-boxing",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "generic",
+      "prerequisites": []
+    },
+    {
+      "name": "mapped-unmapped-and-species-output-arguments",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "arguments",
+      "prerequisites": []
+    },
+    {
+      "name": "sealed-frozen-noop-and-replacement",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "integrity",
+      "prerequisites": []
+    },
+    {
+      "name": "generic-ordinary-index-keys-above-u32",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "large-range",
+      "prerequisites": []
+    },
+    {
+      "name": "actual-array-late-length-rangeerror-keeps-ordinary-key",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "large-range",
+      "prerequisites": []
+    },
+    {
+      "name": "huge-constant-work-and-default-result-rangeerror",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "large-range",
+      "prerequisites": []
+    },
+    {
+      "name": "abrupt-getter-constructor-setter-identities",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "abrupt",
+      "prerequisites": []
+    },
+    {
+      "name": "recursive-species-terminal-resource",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "resource",
+        "phase": "runtime"
+      },
+      "area": "engine-policy-resource",
+      "prerequisites": []
+    },
+    {
+      "name": "proxy-live-traps-and-overflow-before-species",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "prerequisite",
+      "prerequisites": [
+        "Proxy"
+      ]
+    },
+    {
+      "name": "foreign-realm-array-intrinsic-species-exception",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "prerequisite",
+      "prerequisites": [
+        "cross-realm",
+        "$262.createRealm"
+      ]
+    },
+    {
+      "name": "typed-array-generic-splice-partial-errors",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "area": "prerequisite",
+      "prerequisites": [
+        "TypedArray",
+        "Uint8Array"
+      ]
+    },
+    {
+      "name": "million-hole-shift-terminal-resource",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "expected": {
+        "status": "resource",
+        "phase": "runtime"
+      },
+      "area": "engine-policy-resource",
+      "prerequisites": []
+    }
+  ]
+}

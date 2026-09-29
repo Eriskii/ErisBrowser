@@ -1,5 +1,13 @@
 # Development docket
 
+[Array splice](../tests/conformance/array-splice.md) now streams live property
+operations with same-realm species, aliased results and ordered partial effects.
+The complete pinned profile has 138 passes and 24 unchanged exclusions; all 96
+controls verify. The frozen local matrix verifies 90 of 96 expectations, including
+four resource stops. Ten older find/Array.from modes gain passes without other
+observation or control changes. Proxy, typed arrays, cross-realm species, other
+Array methods and general runtime accounting remain ahead; no quota was raised.
+
 [Shared own-key enumeration accounting](../tests/conformance/own-keys.md) now
 uses ranked snapshots and cached for-in tree entries, removing retained-name
 deduplication and duplicate searches while keeping live descriptor ordering.
@@ -12,7 +20,7 @@ iterators and array-like inputs with generic construction, live mapping,
 own data definitions and specified iterator closing. Its unchanged local
 matrix verifies 388 of 402 expectations, including twelve expected resource
 stops; fourteen prerequisite modes remain unmet. The complete upstream profile
-has 82 passes, four missing-dependency failures and four metadata exclusions,
+now has 84 passes, two ArrayBuffer failures and four metadata exclusions,
 with all 96 controls verified. Remaining Array methods and broader iterator
 consumers remain ahead.
 
@@ -88,15 +96,15 @@ Date follow-up leaves 42 missing-prerequisite failures and
 prerequisites remain explicit gaps.
 [Array find methods](../tests/conformance/array-find.md) now add ascending and
 descending predicate searches with live holes, captured length and saved values.
-The complete 94-source / 180-mode profile gains 116 passes, reaching
-140 passed, eight missing-`splice` failures and 32 metadata exclusions. All 504
+The complete 94-source / 180-mode profile originally gained 116 passes;
+splice adds eight more, reaching 148 passed and 32 metadata exclusions. All 504
 local variants and 288 upstream controls pass. Shared property lookup now
 precharges retained-tree comparisons and borrowed mapped binding names; no
 quota is raised. Actual-digit formatting restores two initial lastIndexOf
-resource regressions without weakening those charges. Every older observation
-is unchanged in the final comparison; the new baseline preserves its remaining
-failures and unsupported modes.
-Next dependencies include remaining Array mutation methods such as `splice`,
+resource regressions without weakening those charges. At the find checkpoint,
+every older observation was unchanged; its baseline retained the failures and
+unsupported modes subsequently measured by the splice follow-up.
+Next dependencies include remaining Array methods,
 iterators and BigInt, replacement/matchAll protocols, general matching performance,
 the remaining full-UTF-16 loop, Unicode regexp syntax and Function source retention.
 

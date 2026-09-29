@@ -123,3 +123,21 @@ Running without a baseline still returns nonzero for those retained outcomes.
 The combined inventory now has **35 profiles / 14,958 modes / 3,252 verified
 controls** and **28 healthy regression gates**. This does not establish full
 ECMAScript or host-object conformance.
+
+## 2026-09-29 splice follow-up
+
+The splice follow-up resolves both modes of `array-altered-during-loop.js`
+in each of find, findIndex, findLast and findLastIndex: **148 passed / 32
+metadata excluded**, with all **288 controls** verified. These eight gains
+are the only changed complete observations in this 180-mode profile.
+The current baseline now records those passes; the original final report and
+the historical counts/diagnostics above remain unchanged. The prior eight
+failures described above belong to the original find checkpoint.
+
+The [splice profile](test262-array-splice.md) records the new implementation
+and fixed selection. Candidate adapter: `f9ffdf6172908c875308ee40fe5783d3b673bbdccf7685a61c608b331348f721`.
+Full follow-up report SHA-256: `dd905cd95ccf55948dd4a9f2c3271f0486d2580a558432c30fb50c9a349ca22a`.
+Updated current baseline SHA-256: `9acc545529e16134d5ec1082415a679babb643bc9f587d7143ed6b0604b9c3d9`.
+Source/helper/mode/policy identities and exclusions are unchanged. The old
+gate passed before this baseline update; no engine rerun or outcome
+normalization was used to derive the projection.

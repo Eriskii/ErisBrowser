@@ -1,0 +1,700 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all .js files in the complete recursive built-ins/Array/prototype/splice subtree; original root-linked Git proofs; no implementation",
+  "directories": {
+    "Array/prototype/splice": [
+      "15.4.4.12-9-a-1.js",
+      "15.4.4.12-9-c-ii-1.js",
+      "S15.4.4.12_A1.1_T1.js",
+      "S15.4.4.12_A1.1_T2.js",
+      "S15.4.4.12_A1.1_T3.js",
+      "S15.4.4.12_A1.1_T4.js",
+      "S15.4.4.12_A1.1_T5.js",
+      "S15.4.4.12_A1.1_T6.js",
+      "S15.4.4.12_A1.2_T1.js",
+      "S15.4.4.12_A1.2_T2.js",
+      "S15.4.4.12_A1.2_T3.js",
+      "S15.4.4.12_A1.2_T4.js",
+      "S15.4.4.12_A1.2_T5.js",
+      "S15.4.4.12_A1.3_T1.js",
+      "S15.4.4.12_A1.3_T2.js",
+      "S15.4.4.12_A1.3_T3.js",
+      "S15.4.4.12_A1.3_T4.js",
+      "S15.4.4.12_A1.3_T5.js",
+      "S15.4.4.12_A1.4_T1.js",
+      "S15.4.4.12_A1.4_T2.js",
+      "S15.4.4.12_A1.4_T3.js",
+      "S15.4.4.12_A1.4_T4.js",
+      "S15.4.4.12_A1.4_T5.js",
+      "S15.4.4.12_A1.4_T6.js",
+      "S15.4.4.12_A1.5_T1.js",
+      "S15.4.4.12_A1.5_T2.js",
+      "S15.4.4.12_A2.1_T1.js",
+      "S15.4.4.12_A2.1_T2.js",
+      "S15.4.4.12_A2.1_T3.js",
+      "S15.4.4.12_A2.1_T4.js",
+      "S15.4.4.12_A2.1_T5.js",
+      "S15.4.4.12_A2.2_T1.js",
+      "S15.4.4.12_A2.2_T2.js",
+      "S15.4.4.12_A2.2_T3.js",
+      "S15.4.4.12_A2.2_T4.js",
+      "S15.4.4.12_A2.2_T5.js",
+      "S15.4.4.12_A2_T1.js",
+      "S15.4.4.12_A2_T2.js",
+      "S15.4.4.12_A2_T3.js",
+      "S15.4.4.12_A2_T4.js",
+      "S15.4.4.12_A3_T1.js",
+      "S15.4.4.12_A3_T3.js",
+      "S15.4.4.12_A4_T1.js",
+      "S15.4.4.12_A4_T2.js",
+      "S15.4.4.12_A4_T3.js",
+      "S15.4.4.12_A6.1_T1.js",
+      "S15.4.4.12_A6.1_T2.js",
+      "S15.4.4.12_A6.1_T3.js",
+      "call-with-boolean.js",
+      "called_with_one_argument.js",
+      "clamps-length-to-integer-limit.js",
+      "create-ctor-non-object.js",
+      "create-ctor-poisoned.js",
+      "create-non-array-invalid-len.js",
+      "create-non-array.js",
+      "create-proto-from-ctor-realm-array.js",
+      "create-proto-from-ctor-realm-non-array.js",
+      "create-proxy.js",
+      "create-revoked-proxy.js",
+      "create-species-abrupt.js",
+      "create-species-length-exceeding-integer-limit.js",
+      "create-species-neg-zero.js",
+      "create-species-non-ctor.js",
+      "create-species-null.js",
+      "create-species-poisoned.js",
+      "create-species-undef-invalid-len.js",
+      "create-species-undef.js",
+      "create-species.js",
+      "length-and-deleteCount-exceeding-integer-limit.js",
+      "length-exceeding-integer-limit-shrink-array.js",
+      "length-near-integer-limit-grow-array.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "property-traps-order-with-species.js",
+      "set_length_no_args.js",
+      "target-array-non-extensible.js",
+      "target-array-with-non-configurable-property.js",
+      "target-array-with-non-writable-property.js",
+      "throws-if-integer-limit-exceeded.js"
+    ]
+  },
+  "test_files": 81,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/proxyTrapsHelper.js",
+      "upstream_path": "harness/proxyTrapsHelper.js",
+      "bytes": 1851,
+      "sha256": "0fb687804ab799e320c5dc4a0d4316162e6a14c286873405d881a151cb15787a"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/15.4.4.12-9-a-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/15.4.4.12-9-a-1.js",
+      "bytes": 463,
+      "sha256": "6e6cd215339a848aef80163023c1201e9c502af76d4dcc62915bf6f868d9523a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/15.4.4.12-9-c-ii-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/15.4.4.12-9-c-ii-1.js",
+      "bytes": 1159,
+      "sha256": "589418bf3dbe65b4bfc0cb29a85d14069c823f6a932aaa77db307c92f15d91d7"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.1_T1.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.1_T1.js",
+      "bytes": 1455,
+      "sha256": "efcc2fde95e294e203bb016f59ff429b14b4569c7f095c3e3435a7de58018195"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.1_T2.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.1_T2.js",
+      "bytes": 1753,
+      "sha256": "a8389944f642f89018373fbd14bb43a52d4fa453d3ce5d94e458b7a5112f6dd2"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.1_T3.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.1_T3.js",
+      "bytes": 1446,
+      "sha256": "6b1a78ae1a6c4c5c76b735b24c2381791211623c870bb0babc4d65eb0548ab9b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.1_T4.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.1_T4.js",
+      "bytes": 1753,
+      "sha256": "1f4bdb9e92474fd9747f4efa3e67bd6e46dd7b0ca45362991ffc0ac1f0a31052"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.1_T5.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.1_T5.js",
+      "bytes": 1461,
+      "sha256": "c6dd2a710ea50e5cd18c81b866471b257dca80cd5ca36c4220acad6982cf7c2b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.1_T6.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.1_T6.js",
+      "bytes": 1753,
+      "sha256": "a773c1d33eb58110953bf837355d416f934fd49e9270aed45282efb279352dfc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.2_T1.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.2_T1.js",
+      "bytes": 1141,
+      "sha256": "aff98eec059f20522d037639466ca97c26432fabcf139dbeac4ab567733dca35"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.2_T2.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.2_T2.js",
+      "bytes": 1141,
+      "sha256": "a312dcdaba66e0389ced997fe85e8fae7a00c65c2d2339331c96c53188f14b14"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.2_T3.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.2_T3.js",
+      "bytes": 1427,
+      "sha256": "319254132d06aa779599faf2d724f2a214c37ba3108187e840331cca9d2e6662"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.2_T4.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.2_T4.js",
+      "bytes": 1427,
+      "sha256": "9471293359d3a5fa3433a5aa9d0233a351d9aeea1cc7995f92995234eaa60bc0"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.2_T5.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.2_T5.js",
+      "bytes": 1427,
+      "sha256": "e2f2197d8cdf4e0b74d4fa8198eccfae686f1dc71b5941d09df05d441c291d0a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.3_T1.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.3_T1.js",
+      "bytes": 1131,
+      "sha256": "4f58981363881604b9c6b902a0b11105a667b35ce7bef7005eaeb8c0e6368456"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.3_T2.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.3_T2.js",
+      "bytes": 1132,
+      "sha256": "163d7c73d5fd4a5141d53f02a0e2d378a50e62d8934d90398b0a6bfaf60e836d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.3_T3.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.3_T3.js",
+      "bytes": 1415,
+      "sha256": "3b09496443706d97342b0d3585c906d2188f19c0091aba0cc6ce8231c14a30fb"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.3_T4.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.3_T4.js",
+      "bytes": 1416,
+      "sha256": "1a42e3dbb6755af5b506c46e097d5f109e3cdbe3b599a5c76ae7601d09390d2b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.3_T5.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.3_T5.js",
+      "bytes": 1416,
+      "sha256": "83fe17f0a7dcfd81f69a6b5b27e042c0507cf3bf5b811c83ecda3102cf3d469a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.4_T1.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.4_T1.js",
+      "bytes": 1468,
+      "sha256": "d856c6ffc712d7c77ed44472b37044215a0eff4b36ca4b13aa8c37a045398279"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.4_T2.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.4_T2.js",
+      "bytes": 1768,
+      "sha256": "aac6694460ca129f712ad212172c80162d037ebc257a4bd419c0bd4ace53b7fc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.4_T3.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.4_T3.js",
+      "bytes": 1474,
+      "sha256": "9571813e363200df01b25fe73f33723d46cfeee1891d46b4fad03d7808c113fc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.4_T4.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.4_T4.js",
+      "bytes": 1768,
+      "sha256": "605f28566974a6ac2e08edc04135a8dd8d2d56a9d6b226b2d1010852e132165a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.4_T5.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.4_T5.js",
+      "bytes": 1474,
+      "sha256": "3681e2b2a724f5291dfb8de75a8107a22e1264b71deccf65598fe71038ae6f6c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.4_T6.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.4_T6.js",
+      "bytes": 1768,
+      "sha256": "0706f367c683a807baaac72bf577dbaeafc27569117179fbbc3df744d6088cbf"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.5_T1.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.5_T1.js",
+      "bytes": 1474,
+      "sha256": "6bb261fcdca64c80dc736f1b67b7133c1873656eda071f90154b26c4098cc2b9"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.5_T2.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A1.5_T2.js",
+      "bytes": 1382,
+      "sha256": "e5fa6bfa8f24d72e5924e8d71388d0227880daa4033d1c3193251c219df9c50d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2.1_T1.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2.1_T1.js",
+      "bytes": 1357,
+      "sha256": "94b40df7af14273b283ddc977003ec9f819840f84511666aae646d697faa6eb5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2.1_T2.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2.1_T2.js",
+      "bytes": 1348,
+      "sha256": "14a29e887bd9da93cabeb8d4c3e19085cc9e7c1252591d2b01f2897db8d34345"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2.1_T3.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2.1_T3.js",
+      "bytes": 1332,
+      "sha256": "54796461652461a39ac58fd237f17fdcada611ed5544dca41c7b97bbf1be548e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2.1_T4.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2.1_T4.js",
+      "bytes": 1522,
+      "sha256": "95db1a462c411737d5dcf9d414f57104e7c8790a8cdc1db18f9a4ca402dcf2a4"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2.1_T5.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2.1_T5.js",
+      "bytes": 1877,
+      "sha256": "a8fb86e469bcbe86b0c09e323745ddce804399ad0ba73985c5cacb4f05c14368"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2.2_T1.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2.2_T1.js",
+      "bytes": 1369,
+      "sha256": "fa529d141d9430eae14660f185dc367878a2425a59e1db73faaa36830e168523"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2.2_T2.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2.2_T2.js",
+      "bytes": 1056,
+      "sha256": "cbec8429ff80cc80108a0e2f8b763dfafd9c22bb80ae11cf3099f203b1bd5052"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2.2_T3.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2.2_T3.js",
+      "bytes": 1539,
+      "sha256": "129726e65cc535422c48d073dfb37ffa2f0bfe8ba7866beab743128f0c3a8490"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2.2_T4.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2.2_T4.js",
+      "bytes": 1188,
+      "sha256": "70370bf25cda4dea0dcf9e4864bc253d1c8169fa7d1ca019c96bb4f53034651f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2.2_T5.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2.2_T5.js",
+      "bytes": 1883,
+      "sha256": "df9f8e7837318634c457c355cb9943d2179feb795b3827dfa12f9007f181c371"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2_T1.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2_T1.js",
+      "bytes": 2729,
+      "sha256": "8c204d5c1a9071bec17aa1e33ed7176f88463e013198e6ceaeed99d33f904284"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2_T2.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2_T2.js",
+      "bytes": 2233,
+      "sha256": "e78ad0449b368da858ad7c40502680b5c2d1035514f35851fd1fa003b49a024f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2_T3.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2_T3.js",
+      "bytes": 2220,
+      "sha256": "ffa205a67c7f8af717e20435dda80164fe626d11da24669422c4072b64eef121"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2_T4.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A2_T4.js",
+      "bytes": 2744,
+      "sha256": "e11ebba0de7db604f9d0e5fa39fe552009c16db8993d4ee892cef4e42f58d704"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A3_T1.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A3_T1.js",
+      "bytes": 1703,
+      "sha256": "d2d602e314c3f1c94752fea30fa929e021dfb66509232a5b963e49de10e92165"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A3_T3.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A3_T3.js",
+      "bytes": 1329,
+      "sha256": "fb220b68fce50bfce2a38ca73dcdd306132f4f861215ea759d7bca23d54f0510"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A4_T1.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A4_T1.js",
+      "bytes": 2922,
+      "sha256": "54562fb947a9fe83f4caa3a4e921472c5b8057045c4dc1ff0fcfa4a447a3b0da"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A4_T2.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A4_T2.js",
+      "bytes": 2948,
+      "sha256": "9ae889079746eb402af398f9a69bf9c60bee6d9ca8da43b40a7dea35b6df6eef"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A4_T3.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A4_T3.js",
+      "bytes": 2619,
+      "sha256": "0e2909b07f17f82ff68dc2de909d0fc7a3bda6d829f6b450c741af7161ea7ee1"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A6.1_T1.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A6.1_T1.js",
+      "bytes": 605,
+      "sha256": "9c1bd5c44cdba0a240fbd9476c450047bcdc3c809a6bc1faf1c2ef62542beac4"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A6.1_T2.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A6.1_T2.js",
+      "bytes": 442,
+      "sha256": "13ed9eb885d1caf528d68b814bd3549757e668bdbfdce8b0b33a5e411118f327"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A6.1_T3.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/S15.4.4.12_A6.1_T3.js",
+      "bytes": 527,
+      "sha256": "623c00de511aaa70a475dd4c841ca8c506ae3b12b7cd1b7b0cf1c0084e34ea81"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/call-with-boolean.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/call-with-boolean.js",
+      "bytes": 495,
+      "sha256": "911b8a27756f196749cd5a1e66394ad5ab7bf9f29906541cf99d31e21e6c52f9"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/called_with_one_argument.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/called_with_one_argument.js",
+      "bytes": 872,
+      "sha256": "719fd6f8bf400aacefa5a0499b69495384e831668463d42960ff44d399f9f74e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/clamps-length-to-integer-limit.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/clamps-length-to-integer-limit.js",
+      "bytes": 1137,
+      "sha256": "67a63c8e1949311cadf14faf050db229da8f0976b8dbe0b853edd4b48ef9a9c4"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/create-ctor-non-object.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/create-ctor-non-object.js",
+      "bytes": 951,
+      "sha256": "b01e59a4acbcdaffc4b04bfa0a108c4bfdd5b172b1e6a1580abadfaf64d30f86"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/create-ctor-poisoned.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/create-ctor-poisoned.js",
+      "bytes": 607,
+      "sha256": "ba051be3fcf7babcc5a8ab638bf7cb810db869216b6b4847fc1e24b260fc1158"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/create-non-array-invalid-len.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/create-non-array-invalid-len.js",
+      "bytes": 957,
+      "sha256": "5e83493a02f9b542f1a599bc4a1f06eed9fb65ca0c3a0246ab1994c58989388b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/create-non-array.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/create-non-array.js",
+      "bytes": 954,
+      "sha256": "496bceb38199e2c7688e3c9f988f095fff477ba5dbe5c8a91eec445e1e55330b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/create-proto-from-ctor-realm-array.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/create-proto-from-ctor-realm-array.js",
+      "bytes": 1311,
+      "sha256": "6dc8df79d716cafb00ce295fc5c325f6b70b46d28e58afbc53c112f5132ad5ab"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/create-proto-from-ctor-realm-non-array.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/create-proto-from-ctor-realm-non-array.js",
+      "bytes": 1334,
+      "sha256": "1b343d93ffd3f7c6f7dcfdfcfb759a5400a88398ca4cb689c421afa5c7461634"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/create-proxy.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/create-proxy.js",
+      "bytes": 1115,
+      "sha256": "0ee4edb4ecbf61ba8586d4f593f3a0fed02b7bae5a1d14f69770a5ea9fe83106"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/create-revoked-proxy.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/create-revoked-proxy.js",
+      "bytes": 977,
+      "sha256": "79c9801311eafffdba0e4cee18a997a48721adae95a1184fd656a5b518753ac8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/create-species-abrupt.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/create-species-abrupt.js",
+      "bytes": 825,
+      "sha256": "fea6e6acb190661949549155f25655557658a5289d735546c5703ab95ed363de"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/create-species-length-exceeding-integer-limit.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/create-species-length-exceeding-integer-limit.js",
+      "bytes": 2657,
+      "sha256": "cffa35256e8eab822eb1a0a31d4f08bfc7e088669124840f49e3c31fb6911475"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/create-species-neg-zero.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/create-species-neg-zero.js",
+      "bytes": 1415,
+      "sha256": "86ba0629164868630ca02feb1afc52474e2475ee4eadf57e11088ff0253dc683"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/create-species-non-ctor.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/create-species-non-ctor.js",
+      "bytes": 1025,
+      "sha256": "131b7c16d838a290a93bae24cb9355b142a2df75a44788b0eccc46daa6f314d4"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/create-species-null.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/create-species-null.js",
+      "bytes": 910,
+      "sha256": "616ef74fc28142bebf9309d920be1d4442582f44c27ad2bef7a3c6d45450cb8e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/create-species-poisoned.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/create-species-poisoned.js",
+      "bytes": 749,
+      "sha256": "08cdeff1bee2d4fb003b583c203d1867f56ee6dd1be2d5c26eac3b97e0a0244a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/create-species-undef-invalid-len.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/create-species-undef-invalid-len.js",
+      "bytes": 1256,
+      "sha256": "a679d1b4f6571e5dd254ec295c34ec7aab4f241319e9ec55d05456d66a66c881"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/create-species-undef.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/create-species-undef.js",
+      "bytes": 944,
+      "sha256": "9bad4d3ceb53247bd03a5cc06909ee0acfac78ba4a9bd734a195cf372daf40ca"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/create-species.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/create-species.js",
+      "bytes": 1204,
+      "sha256": "ac099a97597b16681ba3e7e4b707e62ac86d63e8fb0d86841b623cee256c5e73"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/length-and-deleteCount-exceeding-integer-limit.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/length-and-deleteCount-exceeding-integer-limit.js",
+      "bytes": 2093,
+      "sha256": "2696b40845ddc900d76d2eea47c7f44401fc252826d8674a3c57ab756a735146"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/length-exceeding-integer-limit-shrink-array.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/length-exceeding-integer-limit-shrink-array.js",
+      "bytes": 2576,
+      "sha256": "441386470d2365d364c8ab3c7915985940985a7091b9cd42fbc12c4c89fc4a9f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/length-near-integer-limit-grow-array.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/length-near-integer-limit-grow-array.js",
+      "bytes": 2580,
+      "sha256": "5be580f92663b895b944b8c095ad706e23701209ddd1983cbd5b68317c01ef7f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/length.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/length.js",
+      "bytes": 1066,
+      "sha256": "1bf290f92d0275ad139eb27a83e389b3a0595cec3ee9f3558ec2d5999f6df499"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/name.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/name.js",
+      "bytes": 864,
+      "sha256": "c3e250b2d895740a54a2744aa858a17976133e703da127add8aaa63d0c3a6100"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/not-a-constructor.js",
+      "bytes": 896,
+      "sha256": "bacb0859cd522de91f2e8eb76c83176234e821222d2da7c92d85e2066eb31597"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/prop-desc.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/prop-desc.js",
+      "bytes": 693,
+      "sha256": "8133eb80b6dbb949023c8fcc5c1cdd476480376c533c44eced372f42fd726ae0"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/property-traps-order-with-species.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/property-traps-order-with-species.js",
+      "bytes": 932,
+      "sha256": "129afe509efe905afd50b50db479d8fa7ff03decb1ee5b4fee521b1954b16fe8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/set_length_no_args.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/set_length_no_args.js",
+      "bytes": 916,
+      "sha256": "acd277bcda22e64515fd2c207d41b92da3a1d17c6f65512dd4734fd473201785"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/target-array-non-extensible.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/target-array-non-extensible.js",
+      "bytes": 942,
+      "sha256": "c9075aac2724a35811b7dd4ce46cbb80c5db773ac8171245d1552df75f28e205"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/target-array-with-non-configurable-property.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/target-array-with-non-configurable-property.js",
+      "bytes": 983,
+      "sha256": "b2302e2211f112477791c4f8e8257b8a7f0f0b250a683d47eb0c8704edf9b99c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/target-array-with-non-writable-property.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/target-array-with-non-writable-property.js",
+      "bytes": 942,
+      "sha256": "6b2e772bce5a63080ed1550092e2f75a169ad021baac47243b0d4f250b7b8d8a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/splice/throws-if-integer-limit-exceeded.js",
+      "upstream_path": "test/built-ins/Array/prototype/splice/throws-if-integer-limit-exceeded.js",
+      "bytes": 1239,
+      "sha256": "977c92b178a6af83678dcc6d16807e51e99953e65b2423805af88701724b2114"
+    }
+  ],
+  "inventory_proof": {
+    "method": "complete-root-linked-recursive-git-subtrees",
+    "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+    "root_tree": "91b2052adad1f066ae031e2ff3a1e9bd6d732886",
+    "prefix": "test/built-ins",
+    "subtree_trees": {
+      "Array/prototype/splice": "79383dccad0703220657c1592f4e5688f51f711c"
+    },
+    "directory_trees": {
+      "Array/prototype/splice": "79383dccad0703220657c1592f4e5688f51f711c"
+    },
+    "auxiliary_blobs": {
+      "harness/assert.js": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+      "harness/compareArray.js": "fa5eae5f4c7c60d6178ef992fe8c2e1dd0c394f3",
+      "harness/isConstructor.js": "387c664e14fdf7563769fb71ae4c122c7e503172",
+      "harness/propertyHelper.js": "0acccfe87f0c40c94c1d43c315c2d8f1e35d7b52",
+      "harness/proxyTrapsHelper.js": "5fa3501dcccbad6c86a5fe750af317df2628c927",
+      "harness/sta.js": "d291a94f46234908009a7ee909cf9d66034c73fe",
+      "LICENSE": "a56b038f0e01b05b004d92097d4601ba629afdf3",
+      "INTERPRETING.md": "ecf7ec7003a1e3ea937fb4e7d3348d22733b50b5"
+    },
+    "files": [
+      {
+        "path": "inventory-proof/commit.json",
+        "bytes": 1094,
+        "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0",
+        "url": "https://api.github.com/repos/tc39/test262/git/commits/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd"
+      },
+      {
+        "path": "inventory-proof/recursive-79383dccad0703220657c1592f4e5688f51f711c.json",
+        "bytes": 18599,
+        "sha256": "c5460c84d43851ede59f522b2f8f2104f9204772e97161891db9661cb2712b19",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/79383dccad0703220657c1592f4e5688f51f711c?recursive=1"
+      },
+      {
+        "path": "inventory-proof/tree-844a3c138c225949a547f9c1af66fb0fb518112d.json",
+        "bytes": 12652,
+        "sha256": "0876172da5b1f43e2a2035398dfee285693bdfad1c0477bea1c58a1b948b1e9c",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/844a3c138c225949a547f9c1af66fb0fb518112d"
+      },
+      {
+        "path": "inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+        "bytes": 5452,
+        "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/91b2052adad1f066ae031e2ff3a1e9bd6d732886"
+      },
+      {
+        "path": "inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+        "bytes": 1374,
+        "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/a2eada339f3c7e678edfc08497985f261a9ae258"
+      },
+      {
+        "path": "inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+        "bytes": 13201,
+        "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/b42c4a8f19ad479b70ee2f64ecd683735d83cde9"
+      },
+      {
+        "path": "inventory-proof/tree-e7917cf01aee95d5ed85ba370c550d02cea533c7.json",
+        "bytes": 7655,
+        "sha256": "27941521784b5bdc7b19e5deb27a15f6af4cc69aa785aca1b5f3b8e80515a105",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/e7917cf01aee95d5ed85ba370c550d02cea533c7"
+      },
+      {
+        "path": "inventory-proof/tree-f44a2cb0cd8f9fdf2c2c46ef3ab84f92348da233.json",
+        "bytes": 9669,
+        "sha256": "d7355199ec831aed4f0cf1ceb8b62c7df726a9cbcdbec1ef8181b0f81e23e4b3",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/f44a2cb0cd8f9fdf2c2c46ef3ab84f92348da233"
+      }
+    ]
+  }
+}

@@ -132,6 +132,21 @@ has no fallible reservation API; the cumulative node charge is not whole-allocat
 OOM recovery or a proof of total process memory. Existing quotas do not establish
 complete accounting or production security.
 
+[Splice](../tests/conformance/array-splice.md) adds scoped precharges for its
+live string/symbol/native lookups, parameter maps and borrowed formal-name
+environment searches. Bounds derive from the reached tree size and the supported
+B=6 tree layouts. Dense and creation-order vector growth pays relocation work
+and full new-buffer storage before mutation. Short numeric deletion keys bound
+comparisons against retained names; Array shrink reuses the shared charged key
+snapshot and pays its remaining deletion/retention work. No logical-length
+output buffer is reserved, and no quota changes. Partial writes remain visible
+on failure; terminal limits bypass author catch/finally and restore internal
+call/frame state. These are scoped logical charges, not allocator telemetry.
+Shared constructor/callback internals, general property/JSON accounting and
+whole-allocator failure recovery remain separate work. See the
+[unchanged limits](../tests/conformance/array-splice-limits.json) and
+[validation evidence](../tests/conformance/array-splice-integration-validation.json).
+
 ## Representative limits
 
 | Resource | Bound |

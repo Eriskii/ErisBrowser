@@ -2,15 +2,15 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "09fba3be727b98e9fcdc54343abd7725f1392244ff1bdec1c0afc3e30b5c0eba",
   "runner_policy_sha256": "5952fddca098c1f05b6f7504f9582b70af2e8c8af59a0df906075a8fa543979d",
-  "binary_sha256": "68a36c3e0d2641c63c90d72a5596e503fa19ad30e2e751888113f4c28b58d977",
+  "binary_sha256": "f9ffdf6172908c875308ee40fe5783d3b673bbdccf7685a61c608b331348f721",
   "cases": {
     "test/built-ins/Array/prototype/find/array-altered-during-loop.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "3eab3cf464e9e49397f71ebf77b9261695a1e8ca9b1327ad182cda65165c6d78",
       "source_sha256": "e03d778ac8de4da83ce1252bf6aec2f9e7e3aef6f0ef54daf74daa74cc2040a5"
     },
     "test/built-ins/Array/prototype/find/array-altered-during-loop.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "e8bbf0f348fb2ae6e0b52b8973f7870aac3ec16e80ef9e76dac2b1bd7d81790b",
       "source_sha256": "e03d778ac8de4da83ce1252bf6aec2f9e7e3aef6f0ef54daf74daa74cc2040a5"
     },
@@ -225,12 +225,12 @@
       "source_sha256": "d32c2612a1fdd61ffb3ca8fbd2fbbe2f81d04f6d788078eb6afaa46207f5cb25"
     },
     "test/built-ins/Array/prototype/findIndex/array-altered-during-loop.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "04ffc40bf3a94f14f58ebd104eddd035e3a839de7c29ba21d5cf07a53405fec5",
       "source_sha256": "bc507d6440f5de7132659da52eca22cb93b3fe1491a83e4c8d6a42f4e32e15d9"
     },
     "test/built-ins/Array/prototype/findIndex/array-altered-during-loop.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "57d1dcbbfd6f429b3042b293ee4e4dbf9ff237bf922a55b6f86806e55e2ac1ee",
       "source_sha256": "bc507d6440f5de7132659da52eca22cb93b3fe1491a83e4c8d6a42f4e32e15d9"
     },
@@ -445,12 +445,12 @@
       "source_sha256": "aa7e10e604d3c889ec44f9d25427c957bf99a1eb2ca100a28a413da19bad3d8a"
     },
     "test/built-ins/Array/prototype/findLast/array-altered-during-loop.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "47c79b188ef5ce03f6f4e9eef9d3943b11c3ef799241dfd1041cf6eb24479d7a",
       "source_sha256": "97935f3d140c3e1462fdfe8e90e49bdccf77c1bc41a7ae580bbe439ae3083faa"
     },
     "test/built-ins/Array/prototype/findLast/array-altered-during-loop.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "410517d27bdbfcdb0d01476b9eb6cc22f4d6c2e83b5c29278197c19d5a3f8fe7",
       "source_sha256": "97935f3d140c3e1462fdfe8e90e49bdccf77c1bc41a7ae580bbe439ae3083faa"
     },
@@ -675,12 +675,12 @@
       "source_sha256": "d93f617482dd7356612d0f6326169a66ec4577b84c73752c3642cc6a61b07f74"
     },
     "test/built-ins/Array/prototype/findLastIndex/array-altered-during-loop.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "93e25bc306f3e8cc1a90b981b8f3845b388a95aefccc3a3eb0ebac9dba10834e",
       "source_sha256": "357010e81ef9602acb8aa7142140d72301f723c4ecac3267f80d23c70a060f39"
     },
     "test/built-ins/Array/prototype/findLastIndex/array-altered-during-loop.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "93e6aa3a0fd63ed337dcb466ab2368fa6b416765ed7992177b7042e6971eed41",
       "source_sha256": "357010e81ef9602acb8aa7142140d72301f723c4ecac3267f80d23c70a060f39"
     },

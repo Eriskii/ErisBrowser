@@ -136,7 +136,7 @@ class ObjectIntegrityCorpusTests(unittest.TestCase):
 
     def test_all_33_prior_source_policy_exclusion_and_control_contracts_unchanged(self):
         # Iteration profiles postdate this unchanged historical snapshot.
-        contract = capture_contracts(excluded={'array-from', 'for-of', 'core-iterators', PROFILE, 'array-find', 'date'})
+        contract = capture_contracts(excluded={'array-splice', 'array-from', 'for-of', 'core-iterators', PROFILE, 'array-find', 'date'})
         self.assertEqual(contract['counts'], dict(profiles=33, cases=14304, preflights=2740))
         self.assertEqual(runner.digest(canonical(contract)),
                          '36387b1286227b77786f6f55a54f0a84b0eed24a1ec97bb036f814c552b023bd')

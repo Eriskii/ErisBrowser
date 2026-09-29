@@ -1,0 +1,26 @@
+{
+  "before_source_archive_sha256": "7c0c8e7fca96afac9404e77648b5eac3c21c5cc5052e03bc5f8fc32d281fa5bd",
+  "final_source_archive_sha256": "9f6134a9913dda019a95f56996b742a967d95fb1a7099bd05bc34ef3373697e3",
+  "production_input_sha256": "835dcf31a48ea8acc2a1074a833ea812ed4517397029ad4d5f46276d110723db",
+  "script_limit_constants": {
+    "src/script/array_from.rs:MAX_LENGTH": "9_007_199_254_740_991",
+    "src/script/array_methods.rs:MAX_ARRAY_LIKE_LENGTH": "9_007_199_254_740_991",
+    "src/script/iterators.rs:MAX_LENGTH": "9_007_199_254_740_991",
+    "src/script/machine.rs:MAX_FRAMES": "MAX_HEAP / std::mem::size_of::<Frame>()",
+    "src/script/tokens.rs:LIMIT": "MAX_TOKENS + 2",
+    "src/script.rs:MAX_SOURCE": "256 * 1024",
+    "src/script.rs:MAX_TOKENS": "32_768",
+    "src/script.rs:MAX_DEPTH": "96",
+    "src/script.rs:MAX_CALLS": "32",
+    "src/script.rs:MAX_STACK_UNITS": "96",
+    "src/script.rs:MAX_STEPS": "100_000",
+    "src/script.rs:MAX_HEAP": "8 * 1024 * 1024",
+    "src/script.rs:MAX_STRING": "256 * 1024",
+    "src/script.rs:MAX_NODES": "100_000"
+  },
+  "changed_limits": {},
+  "new_algorithm_constant": {
+    "src/script/array_splice.rs:MAX_LENGTH": "9_007_199_254_740_991"
+  },
+  "statement": "All previously recorded script resource limits are unchanged. New MAX_LENGTH is the ECMAScript safe-integer length bound, not a raised VM quota."
+}

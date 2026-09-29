@@ -1,5 +1,15 @@
 # Compatibility status
 
+[Array splice](../tests/conformance/array-splice.md) supports generic ordinary
+receivers, captured safe-integer lengths, live inherited properties and same-realm
+species construction. Deleted results preserve holes; source moves and deletes
+follow the specified direction, and errors retain earlier effects. Species may
+return the source, another Array or a supported ordinary object. The complete
+81-source profile records 138 passes and 24 metadata exclusions across 162 modes,
+with all 96 controls verified. The local matrix verifies 90 of 96 expectations,
+including four expected resource stops; Proxy, typed-array and cross-realm cases
+remain unmet. This does not extend custom species handling in map/filter/slice.
+
 [Shared enumeration accounting](../tests/conformance/own-keys.md) preserves all
 17,822 historical case observations and 3,900 controls with unchanged quotas and
 baselines. String-key snapshots and for-in visited-name work are now charged;
@@ -8,7 +18,7 @@ this adds no new conformance passes or unsupported-feature coverage.
 [Array.from](../tests/conformance/array-from.md) supports synchronous iterable
 and array-like inputs, generic constructors, live mapping, own indexed data
 properties and iterator closing. Its complete 47-source upstream profile has
-82 passing modes, four failures requiring `splice` or `ArrayBuffer`, and four
+84 passing modes, two failures requiring `ArrayBuffer`, and four
 generator/cross-realm metadata exclusions; all 96 controls verify. The independent
 local matrix verifies 388 of 402 expectations, including twelve terminal-resource
 cases. Both modes of seven unsupported prerequisites remain unmet: generators,
@@ -48,13 +58,12 @@ use the existing call path. All 504 frozen local variants and twelve controls
 pass.
 
 The [complete profile](../tests/conformance/test262-array-find.md) retains
-94 sources and 180 modes. Its final release records **140 passed, eight
-failed and 32 metadata unsupported**, with all 288 controls verified. It adds
-116 passes; the other 64 complete records are identical. The eight failures
-reach missing `splice` in upstream callback bodies. Proxy, typed/resizable
-arrays, general host receivers and complete `with`/unscopables remain gaps.
-Every older profile observation is unchanged, and the new baseline gate passes
-while retaining all failures and unsupported cases. Two initial lastIndexOf
+94 sources and 180 modes. It now records **148 passed and 32 metadata
+unsupported**, with all 288 controls verified. The original find checkpoint
+added 116 passes; splice closes its eight callback-body prerequisite failures.
+Proxy, typed/resizable arrays, general host receivers and complete
+`with`/unscopables remain gaps. The regression baseline retains every exclusion.
+Two initial lastIndexOf
 work-limit regressions were corrected by charging actual decimal-key digits;
 stronger property-lookup charges and all quotas remain in force.
 
@@ -191,7 +200,7 @@ This is an implementation inventory, not a conformance certificate. A feature li
 
 The URL parser and encoding libraries are infrastructure libraries, not independent reimplementations of those specifications. There is no claim that every dependency is authored in this repository.
 
-Ordinary objects support descriptor defaults, writable/enumerable/configurable checks, getters/setters, reflective descriptor queries and deletion. Enumeration visits own keys and inherited enumerable keys while respecting shadowing. Window descriptor queries expose tracked global bindings, including the CSS namespace, with ordered property-key conversion and current flags/values. The replaceable [Window.self accessor](../tests/conformance/window-self.md) supports assignment, deletion, descriptor restoration and author accessors, with global lexical shadowing kept separate. The [global value properties](../tests/conformance/global-values.md) share this handling: globalThis is initially writable/configurable and nonenumerable; undefined, NaN and Infinity are nonwritable, nonconfigurable and nonenumerable. Replacing globalThis preserves private Window/event identity. [Window binding reflection](../tests/conformance/window-reflection.md) now supports own membership, enumerability and ordered string/symbol key enumeration over the supported bindings. [General Window definitions and global bindings](../tests/conformance/window-global-bindings.md) now share data/accessor records, preserve arbitrary UTF-16 key identity, keep execution receivers private, and validate global function declarations across scripts. Event-handler descriptor/deletion behavior, extensibility, complete interfaces and named-property behavior remain incomplete. Arrays support indexed data/accessor descriptors, writable length, sparse u32 logical lengths and nonextensibility. Length reduction deletes own indices in descending order and preserves partial effects when a nonconfigurable index blocks it. Object and Reflect property definitions share the same array rules. Eleven existing Array methods now use live property operations on supported ordinary array-like receivers. Custom species constructors, Proxy, typed arrays and general host reflection remain incomplete. See [array descriptor coverage](../tests/conformance/array-descriptors.md). The unchanged upstream property-helper harness runs directly; no native test assertion shims replace it.
+Ordinary objects support descriptor defaults, writable/enumerable/configurable checks, getters/setters, reflective descriptor queries and deletion. Enumeration visits own keys and inherited enumerable keys while respecting shadowing. Window descriptor queries expose tracked global bindings, including the CSS namespace, with ordered property-key conversion and current flags/values. The replaceable [Window.self accessor](../tests/conformance/window-self.md) supports assignment, deletion, descriptor restoration and author accessors, with global lexical shadowing kept separate. The [global value properties](../tests/conformance/global-values.md) share this handling: globalThis is initially writable/configurable and nonenumerable; undefined, NaN and Infinity are nonwritable, nonconfigurable and nonenumerable. Replacing globalThis preserves private Window/event identity. [Window binding reflection](../tests/conformance/window-reflection.md) now supports own membership, enumerability and ordered string/symbol key enumeration over the supported bindings. [General Window definitions and global bindings](../tests/conformance/window-global-bindings.md) now share data/accessor records, preserve arbitrary UTF-16 key identity, keep execution receivers private, and validate global function declarations across scripts. Event-handler descriptor/deletion behavior, extensibility, complete interfaces and named-property behavior remain incomplete. Arrays support indexed data/accessor descriptors, writable length, sparse u32 logical lengths and nonextensibility. Length reduction deletes own indices in descending order and preserves partial effects when a nonconfigurable index blocks it. Object and Reflect property definitions share the same array rules. Eleven existing Array methods now use live property operations on supported ordinary array-like receivers. Splice supports same-realm custom species; map/filter/slice custom species, Proxy, typed arrays and general host reflection remain incomplete. See [array descriptor coverage](../tests/conformance/array-descriptors.md). The unchanged upstream property-helper harness runs directly; no native test assertion shims replace it.
 
 The complete pinned [global-value inventory](../tests/conformance/test262-global-values.md)
 retains 88 variants: 70 pass and 18 require

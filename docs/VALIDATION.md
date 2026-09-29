@@ -1,5 +1,56 @@
 # Validation record
 
+## Generic Array splice and same-realm species
+
+The [splice evidence](../tests/conformance/array-splice.json) compares against
+published commit `605725f6df10be6a346de15c220fcf7e3e6f6aed`. Its source, local
+expectations, complete upstream selection, policies and paired assertion controls
+were frozen before candidate execution. The [local report](../tests/conformance/array-splice-final.json)
+retains **86 passed, four failed, two unsupported and four expected resource
+stops**: **90 of 96 expectations and all 76 controls verify**. Both modes of
+Proxy, typed-array and cross-realm prerequisites remain unmet ordinary-success
+expectations. The [before report](../tests/conformance/array-splice-initial.json)
+retains 94 availability failures, two unsupported outcomes and only twelve
+verified common controls.
+
+The [complete pinned profile](../tests/conformance/test262-array-splice.md)
+retains **81 sources / 162 modes**, recording **138 passed / 24 unchanged
+metadata exclusions** and **96 verified controls**. Its twelve incidental
+before TypeError passes remain visible; failed availability guards prevented
+them from proving method support. The original **39 profiles / 17,822 modes /
+3,900 controls** gain exactly ten passes: eight find-family callback modes and
+two Array.from iterator modes. Every other complete observation and every control
+is unchanged, with no lost pass. All **32 established baseline gates** pass.
+The new splice baseline and strengthened find/Array.from baselines give **33
+configured known-state gates**. All 33 final baseline projections check against
+the completed reports with zero regressions or improvements; this was an offline
+comparison, with no engine rerun or claim of remote CI execution.
+Five selected older local suites preserve **1,192 cases and 172 controls**.
+The combined inventory is **40 profiles / 17,984 modes / 3,996 controls**.
+
+Formatting passes. Rust **1.88 and 1.98** each pass strict all-target Clippy and
+**1,228 default / 1,239 Vulkan-feature tests**, with zero failed or ignored tests.
+All **18 new private groups** pass, covering species/aliasing, partial effects,
+mapped-name work, vector-growth storage, sparse lengths and terminal cleanup.
+Python validation comprises **212 Test262 tests** on exact staged/imported
+tooling and **42 remaining tests**. Both release configurations pass all
+**57 CPU pixel references**. The six-block page fixture checks load/click pixels,
+classes and result text, directly and through the real confined renderer.
+The HTML gate retains **3,868 matches, two mismatches and six unsupported modes**,
+with zero regressions. One mutation-smoke run exercises **15,000 generated
+cases**, with zero caught panics or invariant failures and seventeen bounded
+paint stops. The [integration record](../tests/conformance/array-splice-integration-validation.json)
+binds the archives, eight release binaries, reports, logs and independent reviews.
+
+Splice streams live Has/Get and strict mutations without reserving logical
+ranges. Same-realm species may return the source, another Array or a supported
+ordinary object. Reached tree searches, borrowed mapped names, vector growth
+and short-key deletion work receive scoped precharges; Array shrink shares the
+existing charged enumeration path. All [quotas](../tests/conformance/array-splice-limits.json)
+remain unchanged. General constructor/property/JSON accounting, allocator
+fallibility, Proxy/typed-array/cross-realm support and wider compatibility remain
+open. These CPU/browser checks make no new GPU or performance claim.
+
 ## Standalone Vulkan image rasterization
 
 The [custom raster probe](../tools/vulkan-raster-probe/README.md) adds opaque

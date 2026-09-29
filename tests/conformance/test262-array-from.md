@@ -130,3 +130,22 @@ retained failures and exclusions.
 python3 tools/import_test262.py --profile array-from
 python3 tools/test262_conformance.py --profile array-from --baseline tests/conformance/test262-array-from-current.json
 ```
+
+## 2026-09-29 splice follow-up
+
+The splice follow-up resolves both modes of `elements-deleted-after.js`:
+**84 passed / 2 failed / 4 metadata excluded**, with all **96 controls**
+verified. These two gains are the only changed complete observations in this
+90-mode profile. The two remaining failures still require missing ArrayBuffer.
+The current baseline now records the gains; the original final report and the
+historical counts/baseline hash above remain unchanged as checkpoint evidence.
+This remains a healthy known-state gate retaining two failures, not an all-pass
+standards claim.
+
+The [splice profile](test262-array-splice.md) records the new implementation
+and fixed selection. Candidate adapter: `f9ffdf6172908c875308ee40fe5783d3b673bbdccf7685a61c608b331348f721`.
+Full follow-up report SHA-256: `17c000505a74a0824f90598c97f61fc6d7ad155f277daa75760b5b3e83cfae0b`.
+Updated current baseline SHA-256: `9057d437c4f6ef9d8f758549f456377258b6c8af024cc50ae3b214c110378daf`.
+Source/helper/mode/policy identities and exclusions are unchanged. The old
+gate passed before this baseline update; no engine rerun or outcome
+normalization was used to derive the projection.

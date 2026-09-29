@@ -102,6 +102,7 @@ python3 tools/test262_conformance.py --profile labels --baseline tests/conforman
 python3 tools/test262_conformance.py --profile symbols --baseline tests/conformance/test262-symbols-current.json
 python3 tools/test262_conformance.py --profile object-integrity --baseline tests/conformance/test262-object-integrity-current.json
 python3 tools/test262_conformance.py --profile array-find --baseline tests/conformance/test262-array-find-current.json
+python3 tools/test262_conformance.py --profile array-splice --baseline tests/conformance/test262-array-splice-current.json
 python3 tools/test262_conformance.py --profile date --baseline tests/conformance/test262-date-current.json
 python3 -m unittest discover -s tools -p 'test_*.py'
 cargo run --locked --release --bin eris-stress -- 5000
@@ -390,10 +391,12 @@ They visit holes through live property reads, preserve the captured length and
 traversal direction, and return the value saved before a matching callback.
 All 504 frozen local variants and twelve controls pass. The
 [complete four-directory profile](tests/conformance/test262-array-find.md)
-retains 94 sources and 180 modes: the final release has 140 passes, eight
+retains 94 sources and 180 modes. That checkpoint recorded 140 passes, eight
 failures requiring missing `splice`, and 32 metadata exclusions, with all 288
-controls verified. It adds 116 passes and retains the other 64 complete records.
-All 34 older profile contracts and complete observations remain unchanged.
+controls verified. It added 116 passes and retained the other 64 complete records.
+The splice follow-up closes all eight failures, reaching 148 passes.
+At the find checkpoint, all 34 older profile contracts and observations remained
+unchanged.
 That checkpoint had 35 profiles, 14,958 modes, 3,252 verified controls
 and 28 healthy regression gates, including the new find baseline. Shared
 property reads precharge retained-tree comparisons and mapped binding-name
@@ -405,17 +408,30 @@ retained in the evidence. Failed and unsupported cases remain visible.
 and array-like inputs, generic construction, live mapping, own data definitions
 and iterator closing. Its independent local matrix verifies 388 of 402
 expectations, including twelve expected resource stops; fourteen prerequisite
-modes remain unmet. The complete upstream profile has 82 passes, four failures
-requiring `splice` or `ArrayBuffer`, four metadata exclusions and 96 verified
-controls. All 38 older profile observations remain unchanged. The combined
-inventory has 39 profiles, 17,822 modes, 3,900 verified controls and 32 known-state
-regression gates. These gates preserve the documented failures and exclusions.
+modes remain unmet. At that checkpoint the complete upstream profile had 82
+passes, four failures requiring `splice` or `ArrayBuffer`, four metadata exclusions
+and 96 verified controls. All 38 older profile observations remained unchanged.
+The combined inventory then had 39 profiles, 17,822 modes, 3,900 verified controls
+and 32 known-state regression gates. The splice follow-up brings Array.from to
+84 passes; its two ArrayBuffer failures and four exclusions remain visible.
 
 [Shared enumeration accounting](tests/conformance/own-keys.md) preserves that
 entire inventory while charging string-key snapshots, caller buffers and for-in
 visited-name searches. Integer ranks and cached tree entries remove repeated
 name comparisons without raising quotas. General live property-map and JSON
 accounting remain open; this change adds no conformance passes.
+
+[Array splice](tests/conformance/array-splice.md) now performs generic live
+copying, ordered strict mutation and same-realm species construction, including
+aliased results and partial errors. Its complete pinned profile records 138 passes
+and 24 unchanged metadata exclusions across 162 modes; all 96 controls verify.
+The local fixture verifies 90 of 96 expectations, including four expected resource
+stops; Proxy, typed-array and cross-realm prerequisites remain unmet. Ten older
+find/Array.from modes gain passes, with no other historical observation or control
+changes. The catalog now has 33 known-state gates; all final baseline projections
+were checked against the completed reports. The
+[evidence](tests/conformance/array-splice.json) retains all gaps and
+unchanged limits; broader property accounting and full compatibility remain open.
 
 [Synchronous iteration](tests/conformance/for-of.md) supports identifier/member
 `for…of` heads, lexical bindings, iterator closing and native Array, String and

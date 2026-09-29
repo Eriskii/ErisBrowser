@@ -309,6 +309,14 @@ fn window_self_persists_across_fragments_and_resets_in_a_fresh_worker() {
 }
 
 fn assert_six_scripted_samples_through_worker(source: &str, generation: u64) {
+    assert_six_scripted_samples_through_worker_with_result_text(source, generation, None);
+}
+
+fn assert_six_scripted_samples_through_worker_with_result_text(
+    source: &str,
+    generation: u64,
+    result_text: Option<[&str; 2]>,
+) {
     use eris::graphics::{Canvas, Color, Fonts};
     let fixture = Fixture::new(source);
     let mut client = fixture.spawn(true, generation);
@@ -319,7 +327,10 @@ fn assert_six_scripted_samples_through_worker(source: &str, generation: u64) {
         true,
     );
     let fonts = Fonts::new();
-    for (state, color) in [("ready", 0x008000), ("clicked", 0x0000ff)] {
+    for (index, (state, color)) in [("ready", 0x008000), ("clicked", 0x0000ff)]
+        .into_iter()
+        .enumerate()
+    {
         if state == "clicked" {
             let node = direct.document.query_selector("#change").unwrap();
             assert!(direct.click(node).is_none());
@@ -328,6 +339,20 @@ fn assert_six_scripted_samples_through_worker(source: &str, generation: u64) {
         let snapshot = render(&mut client);
         let body = snapshot.document.query_selector("body").unwrap();
         assert_eq!(snapshot.document.attr(body, "class"), Some(state));
+        if let Some(expected) = result_text {
+            let result = direct.document.query_selector("#result").unwrap();
+            assert_eq!(
+                direct.document.text_content(result),
+                expected[index],
+                "direct {state}"
+            );
+            let result = snapshot.document.query_selector("#result").unwrap();
+            assert_eq!(
+                snapshot.document.text_content(result),
+                expected[index],
+                "worker {state}"
+            );
+        }
         assert!(direct.diagnostics.is_empty(), "{:?}", direct.diagnostics);
         assert!(
             snapshot
@@ -374,6 +399,16 @@ fn confined_for_of_protocols_bindings_and_closing_survive_document_callbacks() {
 #[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
 fn confined_array_from_mapping_construction_and_closing_survive_document_callbacks() {
     assert_six_scripted_samples_through_worker(include_str!("fixtures/array-from.html"), 183);
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn confined_array_splice_preserves_species_live_properties_and_partial_callback_effects() {
+    assert_six_scripted_samples_through_worker_with_result_text(
+        include_str!("fixtures/array-splice.html"),
+        189,
+        Some(["ready", "6"]),
+    );
 }
 
 #[test]

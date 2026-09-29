@@ -1,0 +1,47 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Array splice through document callbacks</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#sparse{left:0}#live{left:50px}#species{left:100px}#alias{left:150px}#partial{left:200px}#movement{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="sparse" class="sample"></div><div id="live" class="sample"></div>
+<div id="species" class="sample"></div><div id="alias" class="sample"></div>
+<div id="partial" class="sample"></div><div id="movement" class="sample"></div>
+<button id="change" type="button">Run splice callbacks</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function own(object,key){return Object.prototype.hasOwnProperty.call(object,key);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+function apply(color){
+  check(typeof Array.prototype.splice==='function','splice availability');
+  const splice=Array.prototype.splice;
+  const sparse=Object.create({1:7});sparse[0]=2;sparse[3]=9;sparse.length=4;
+  const removed=splice.call(sparse,0,3,'x');
+  check(removed.length===3&&removed[0]===2&&removed[1]===7&&!own(removed,'2')&&sparse[0]==='x'&&sparse[1]===9&&sparse.length===2&&!own(sparse,'3'),'generic sparse inherited reads and holes');mark('sparse',color);
+  const live={1:20,length:3};let reads=0;
+  Object.defineProperty(live,'0',{get:function(){reads++;delete live[1];live[2]=99;return 10;},configurable:true});
+  const seen=splice.call(live,0,3);
+  check(reads===1&&seen.length===3&&seen[0]===10&&!own(seen,'1')&&seen[2]===99&&live.length===0&&!own(live,'0')&&!own(live,'2'),'deleted range reads remain live');mark('live',color);
+  let constructed=0,setters=0;const proto={},source=[4,5,6];
+  Object.defineProperty(proto,'0',{set:function(){setters++;throw new Error('result definition called inherited setter');}});
+  function Deleted(length){constructed++;check(arguments.length===1&&length===2,'species length argument');return Object.create(proto);}
+  const constructor={};constructor[Symbol.species]=Deleted;source.constructor=constructor;
+  const output=splice.call(source,1,2);
+  check(constructed===1&&setters===0&&Object.getPrototypeOf(output)===proto&&own(output,'0')&&output[0]===5&&output[1]===6&&output.length===2&&source.length===1&&source[0]===4,'ordinary species result own definitions');mark('species',color);
+  const alias=[0,1,2,3],aliasConstructor={};aliasConstructor[Symbol.species]=function(){return alias;};alias.constructor=aliasConstructor;
+  const reused=splice.call(alias,1,2,'x');
+  check(reused===alias&&alias.length===3&&alias[0]===1&&alias[1]==='x'&&!own(alias,'2')&&!own(alias,'3'),'source alias shrinks before source movement');mark('alias',color);
+  const partial={0:'a',1:'b',length:3},marker={};let caught=false,attempts=0,priorReads=0;
+  Object.defineProperty(partial,'2',{get:function(){priorReads++;return 'c';},set:function(){attempts++;throw marker;},configurable:true});
+  try{splice.call(partial,0,0,'x');}catch(error){caught=error===marker;}
+  check(caught&&attempts===1&&priorReads===1&&partial[0]==='a'&&partial[1]==='b'&&partial[3]==='c'&&partial.length===3,'throwing source setter retains earlier right shift');mark('partial',color);
+  const dense=[1,2,3],old=splice.call(dense,0,2,8,9,10);
+  check(old.length===2&&old[0]===1&&old[1]===2&&dense.length===4&&dense[0]===8&&dense[1]===9&&dense[2]===10&&dense[3]===3,'ordered items and right movement');mark('movement',color);
+}
+apply('green');document.getElementById('result').textContent='ready';document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  apply('blue');document.getElementById('result').textContent='6';document.body.className='clicked';
+};
+</script>

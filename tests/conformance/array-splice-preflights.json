@@ -1,0 +1,114 @@
+[
+  {
+    "name": "property-metadata",
+    "setup": "assert.sameValue(typeof Array.prototype.splice,'function','splice availability');\nvar $sp=Array.prototype.splice,$ga=[1,2,3],$gr=$sp.call($ga,1,1,9);assert.sameValue($gr.length,1);assert.sameValue($gr[0],2);assert.sameValue($ga.length,3);assert.sameValue($ga[1],9);\nvar $go={0:4,1:5,length:2},$gd=$sp.call($go,0,1);assert.sameValue($gd.length,1);assert.sameValue($gd[0],4);assert.sameValue($go[0],5);assert.sameValue($go.length,1);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nverifyProperty(Array.prototype,'splice',{value:$sp,writable:true,enumerable:false,configurable:true},{restore:true});\n",
+    "expression": "$sp.length",
+    "correct": "2",
+    "wrong": "1"
+  },
+  {
+    "name": "dense-remove-insert",
+    "setup": "assert.sameValue(typeof Array.prototype.splice,'function','splice availability');\nvar $sp=Array.prototype.splice,$ga=[1,2,3],$gr=$sp.call($ga,1,1,9);assert.sameValue($gr.length,1);assert.sameValue($gr[0],2);assert.sameValue($ga.length,3);assert.sameValue($ga[1],9);\nvar $go={0:4,1:5,length:2},$gd=$sp.call($go,0,1);assert.sameValue($gd.length,1);assert.sameValue($gd[0],4);assert.sameValue($go[0],5);assert.sameValue($go.length,1);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar a=[1,2,3],r=$sp.call(a,1,1,8,9);\n",
+    "expression": "r[0]+\":\"+a[1]+\":\"+a.length",
+    "correct": "'2:8:4'",
+    "wrong": "'2:8:3'"
+  },
+  {
+    "name": "sparse-deleted-result",
+    "setup": "assert.sameValue(typeof Array.prototype.splice,'function','splice availability');\nvar $sp=Array.prototype.splice,$ga=[1,2,3],$gr=$sp.call($ga,1,1,9);assert.sameValue($gr.length,1);assert.sameValue($gr[0],2);assert.sameValue($ga.length,3);assert.sameValue($ga[1],9);\nvar $go={0:4,1:5,length:2},$gd=$sp.call($go,0,1);assert.sameValue($gd.length,1);assert.sameValue($gd[0],4);assert.sameValue($go[0],5);assert.sameValue($go.length,1);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar a=[,undefined],r=$sp.call(a,0,2);\n",
+    "expression": "own(r,\"0\")+\":\"+own(r,\"1\")+\":\"+r.length",
+    "correct": "'false:true:2'",
+    "wrong": "'true:true:2'"
+  },
+  {
+    "name": "start-delete-arity",
+    "setup": "assert.sameValue(typeof Array.prototype.splice,'function','splice availability');\nvar $sp=Array.prototype.splice,$ga=[1,2,3],$gr=$sp.call($ga,1,1,9);assert.sameValue($gr.length,1);assert.sameValue($gr[0],2);assert.sameValue($ga.length,3);assert.sameValue($ga[1],9);\nvar $go={0:4,1:5,length:2},$gd=$sp.call($go,0,1);assert.sameValue($gd.length,1);assert.sameValue($gd[0],4);assert.sameValue($go[0],5);assert.sameValue($go.length,1);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar a=[1,2],b=[1,2];var x=$sp.call(a),y=$sp.call(b,undefined);\n",
+    "expression": "x.length+\":\"+y.length",
+    "correct": "'0:2'",
+    "wrong": "'2:2'"
+  },
+  {
+    "name": "conversion-order",
+    "setup": "assert.sameValue(typeof Array.prototype.splice,'function','splice availability');\nvar $sp=Array.prototype.splice,$ga=[1,2,3],$gr=$sp.call($ga,1,1,9);assert.sameValue($gr.length,1);assert.sameValue($gr[0],2);assert.sameValue($ga.length,3);assert.sameValue($ga[1],9);\nvar $go={0:4,1:5,length:2},$gd=$sp.call($go,0,1);assert.sameValue($gd.length,1);assert.sameValue($gd[0],4);assert.sameValue($go[0],5);assert.sameValue($go.length,1);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar log='',o={length:2},s={valueOf:function(){log+='S';return 2;}},d={valueOf:function(){log+='D';return 0;}};$sp.call(o,s,d);\n",
+    "expression": "log",
+    "correct": "'SD'",
+    "wrong": "'DS'"
+  },
+  {
+    "name": "live-deleted-reads",
+    "setup": "assert.sameValue(typeof Array.prototype.splice,'function','splice availability');\nvar $sp=Array.prototype.splice,$ga=[1,2,3],$gr=$sp.call($ga,1,1,9);assert.sameValue($gr.length,1);assert.sameValue($gr[0],2);assert.sameValue($ga.length,3);assert.sameValue($ga[1],9);\nvar $go={0:4,1:5,length:2},$gd=$sp.call($go,0,1);assert.sameValue($gd.length,1);assert.sameValue($gd[0],4);assert.sameValue($go[0],5);assert.sameValue($go.length,1);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar o={length:2,get 0(){o[1]=9;return 1;}},r=$sp.call(o,0,2);\n",
+    "expression": "r[1]",
+    "correct": "9",
+    "wrong": "2"
+  },
+  {
+    "name": "left-movement",
+    "setup": "assert.sameValue(typeof Array.prototype.splice,'function','splice availability');\nvar $sp=Array.prototype.splice,$ga=[1,2,3],$gr=$sp.call($ga,1,1,9);assert.sameValue($gr.length,1);assert.sameValue($gr[0],2);assert.sameValue($ga.length,3);assert.sameValue($ga[1],9);\nvar $go={0:4,1:5,length:2},$gd=$sp.call($go,0,1);assert.sameValue($gd.length,1);assert.sameValue($gd[0],4);assert.sameValue($go[0],5);assert.sameValue($go.length,1);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar a=[1,2,3,4];$sp.call(a,0,2);\n",
+    "expression": "a[0]+\":\"+a[1]+\":\"+a.length",
+    "correct": "'3:4:2'",
+    "wrong": "'3:3:2'"
+  },
+  {
+    "name": "right-movement",
+    "setup": "assert.sameValue(typeof Array.prototype.splice,'function','splice availability');\nvar $sp=Array.prototype.splice,$ga=[1,2,3],$gr=$sp.call($ga,1,1,9);assert.sameValue($gr.length,1);assert.sameValue($gr[0],2);assert.sameValue($ga.length,3);assert.sameValue($ga[1],9);\nvar $go={0:4,1:5,length:2},$gd=$sp.call($go,0,1);assert.sameValue($gd.length,1);assert.sameValue($gd[0],4);assert.sameValue($go[0],5);assert.sameValue($go.length,1);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar a=[1,2,3];$sp.call(a,1,0,8,9);\n",
+    "expression": "a[3]+\":\"+a[4]+\":\"+a.length",
+    "correct": "'2:3:5'",
+    "wrong": "'2:2:5'"
+  },
+  {
+    "name": "inherited-source-setter",
+    "setup": "assert.sameValue(typeof Array.prototype.splice,'function','splice availability');\nvar $sp=Array.prototype.splice,$ga=[1,2,3],$gr=$sp.call($ga,1,1,9);assert.sameValue($gr.length,1);assert.sameValue($gr[0],2);assert.sameValue($ga.length,3);assert.sameValue($ga[1],9);\nvar $go={0:4,1:5,length:2},$gd=$sp.call($go,0,1);assert.sameValue($gd.length,1);assert.sameValue($gd[0],4);assert.sameValue($go[0],5);assert.sameValue($go.length,1);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar p={},o=Object.create(p),n=0;Object.defineProperty(p,'0',{set:function(v){assert.sameValue(this,o);n+=v;}});o.length=0;$sp.call(o,0,0,7);\n",
+    "expression": "n",
+    "correct": "7",
+    "wrong": "0"
+  },
+  {
+    "name": "result-own-data-definition",
+    "setup": "assert.sameValue(typeof Array.prototype.splice,'function','splice availability');\nvar $sp=Array.prototype.splice,$ga=[1,2,3],$gr=$sp.call($ga,1,1,9);assert.sameValue($gr.length,1);assert.sameValue($gr[0],2);assert.sameValue($ga.length,3);assert.sameValue($ga[1],9);\nvar $go={0:4,1:5,length:2},$gd=$sp.call($go,0,1);assert.sameValue($gd.length,1);assert.sameValue($gd[0],4);assert.sameValue($go[0],5);assert.sameValue($go.length,1);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar p={},n=0,a=[7];Object.defineProperty(p,'0',{set:function(){n++;}});function C(){return Object.create(p);}species(a,C);var r=$sp.call(a,0,1);\n",
+    "expression": "n+\":\"+own(r,\"0\")+\":\"+r[0]",
+    "correct": "'0:true:7'",
+    "wrong": "'1:false:7'"
+  },
+  {
+    "name": "species-constructor",
+    "setup": "assert.sameValue(typeof Array.prototype.splice,'function','splice availability');\nvar $sp=Array.prototype.splice,$ga=[1,2,3],$gr=$sp.call($ga,1,1,9);assert.sameValue($gr.length,1);assert.sameValue($gr[0],2);assert.sameValue($ga.length,3);assert.sameValue($ga[1],9);\nvar $go={0:4,1:5,length:2},$gd=$sp.call($go,0,1);assert.sameValue($gd.length,1);assert.sameValue($gd[0],4);assert.sameValue($go[0],5);assert.sameValue($go.length,1);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar n=-1,a=[7,8];function C(v){n=v;this.marker=9;}species(a,C);var r=$sp.call(a,0,1);\n",
+    "expression": "n+\":\"+r.marker+\":\"+r[0]",
+    "correct": "'1:9:7'",
+    "wrong": "'0:9:7'"
+  },
+  {
+    "name": "source-result-alias",
+    "setup": "assert.sameValue(typeof Array.prototype.splice,'function','splice availability');\nvar $sp=Array.prototype.splice,$ga=[1,2,3],$gr=$sp.call($ga,1,1,9);assert.sameValue($gr.length,1);assert.sameValue($gr[0],2);assert.sameValue($ga.length,3);assert.sameValue($ga[1],9);\nvar $go={0:4,1:5,length:2},$gd=$sp.call($go,0,1);assert.sameValue($gd.length,1);assert.sameValue($gd[0],4);assert.sameValue($go[0],5);assert.sameValue($go.length,1);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar a=[1,2];species(a,function(){return a;});var r=$sp.call(a,0,1,8);assert.sameValue(r,a);\n",
+    "expression": "a[0]+\":\"+a.length+\":\"+own(a,\"1\")",
+    "correct": "'8:2:false'",
+    "wrong": "'8:2:true'"
+  },
+  {
+    "name": "partial-write-and-delete",
+    "setup": "assert.sameValue(typeof Array.prototype.splice,'function','splice availability');\nvar $sp=Array.prototype.splice,$ga=[1,2,3],$gr=$sp.call($ga,1,1,9);assert.sameValue($gr.length,1);assert.sameValue($gr[0],2);assert.sameValue($ga.length,3);assert.sameValue($ga[1],9);\nvar $go={0:4,1:5,length:2},$gd=$sp.call($go,0,1);assert.sameValue($gd.length,1);assert.sameValue($gd[0],4);assert.sameValue($go[0],5);assert.sameValue($go.length,1);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar a={0:1,1:2,2:3,length:3};Object.defineProperty(a,'2',{writable:false});assert.throws(TypeError,function(){$sp.call(a,0,0,9);});var b={0:1,1:2,2:3,length:3};Object.defineProperty(b,'1',{configurable:false});assert.throws(TypeError,function(){$sp.call(b,0,3);});\n",
+    "expression": "a[3]+\":\"+own(b,\"2\")+\":\"+b.length",
+    "correct": "'3:false:3'",
+    "wrong": "'3:true:3'"
+  },
+  {
+    "name": "late-array-length-error",
+    "setup": "assert.sameValue(typeof Array.prototype.splice,'function','splice availability');\nvar $sp=Array.prototype.splice,$ga=[1,2,3],$gr=$sp.call($ga,1,1,9);assert.sameValue($gr.length,1);assert.sameValue($gr[0],2);assert.sameValue($ga.length,3);assert.sameValue($ga[1],9);\nvar $go={0:4,1:5,length:2},$gd=$sp.call($go,0,1);assert.sameValue($gd.length,1);assert.sameValue($gd[0],4);assert.sameValue($go[0],5);assert.sameValue($go.length,1);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar a=[];a.length=4294967295;assert.throws(RangeError,function(){$sp.call(a,4294967295,0,7);});\n",
+    "expression": "a[4294967295]",
+    "correct": "7",
+    "wrong": "undefined"
+  },
+  {
+    "name": "mapped-arguments",
+    "setup": "assert.sameValue(typeof Array.prototype.splice,'function','splice availability');\nvar $sp=Array.prototype.splice,$ga=[1,2,3],$gr=$sp.call($ga,1,1,9);assert.sameValue($gr.length,1);assert.sameValue($gr[0],2);assert.sameValue($ga.length,3);assert.sameValue($ga[1],9);\nvar $go={0:4,1:5,length:2},$gd=$sp.call($go,0,1);assert.sameValue($gd.length,1);assert.sameValue($gd[0],4);assert.sameValue($go[0],5);assert.sameValue($go.length,1);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar f=Function(\"a\",\"b\",\"Array.prototype.splice.call(arguments,0,1);return a+':'+b+':'+arguments.length;\");var result=f(1,2);\n",
+    "expression": "result",
+    "correct": "'2:2:1'",
+    "wrong": "'1:2:1'"
+  },
+  {
+    "name": "huge-constant-work",
+    "setup": "assert.sameValue(typeof Array.prototype.splice,'function','splice availability');\nvar $sp=Array.prototype.splice,$ga=[1,2,3],$gr=$sp.call($ga,1,1,9);assert.sameValue($gr.length,1);assert.sameValue($gr[0],2);assert.sameValue($ga.length,3);assert.sameValue($ga[1],9);\nvar $go={0:4,1:5,length:2},$gd=$sp.call($go,0,1);assert.sameValue($gd.length,1);assert.sameValue($gd[0],4);assert.sameValue($go[0],5);assert.sameValue($go.length,1);\nfunction own(o,k){return Object.prototype.hasOwnProperty.call(o,k);}\nfunction sameList(a,b){assert.sameValue(a.length,b.length);for(var i=0;i<b.length;i++)assert.sameValue(a[i],b[i]);}\nfunction species(a,C){var h={};h[Symbol.species]=C;a.constructor=h;}\nfunction sameThrow(token,f){var seen=false;try{f();}catch(e){seen=true;assert.sameValue(e,token);}assert.sameValue(seen,true);}\nvar o={length:9007199254740991};var r=$sp.call(o,9007199254740991,0);\n",
+    "expression": "o.length===9007199254740991&&r.length===0",
+    "correct": "true",
+    "wrong": "false"
+  }
+]
