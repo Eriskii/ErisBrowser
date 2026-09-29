@@ -13,6 +13,30 @@ from test_test262_conformance import response
 
 
 class ConstructionCorpusTests(unittest.TestCase):
+    def test_expanded_policy_admits_exactly_the_reviewed_constructor_inventory(self):
+        additions = {'Reflect', 'Reflect.apply', 'Reflect.construct', 'new.target'}
+        self.assertEqual(runner.CONSTRUCTOR_FEATURES, additions)
+        expected = {'string-concat': 2, 'symbols': 14, 'string-json': 22,
+                    'regexp': 10, 'functions': 4, 'is-prototype-of': 4,
+                    'array-sort': 2, 'array-reduce': 4, 'number-statics': 10,
+                    'numeric-conversion': 4, 'numeric-parsing': 4, 'uri': 8}
+        selected = {}
+        for profile, features in runner.PROFILE_FEATURES.items():
+            self.assertTrue(additions <= features, profile)
+            if profile in {'reflect-construction', 'new-target'}:
+                continue  # These already admitted the operations at the prior checkpoint.
+            prior = features - additions
+            if profile == 'symbols':
+                prior.add('Reflect')
+            _, _, cases, _, _ = runner.load_corpus(
+                runner.ROOT / 'tests/upstream' / runner.corpus_name(profile), profile)
+            newly_executed = [c for c in cases if runner.unsupported_reason(c, prior)
+                              and not runner.unsupported_reason(c, features)]
+            self.assertEqual(len(newly_executed), expected.get(profile, 0), profile)
+            self.assertTrue(all(set(c['metadata']['features']) & additions for c in newly_executed))
+            selected[profile] = len(newly_executed)
+        self.assertEqual(sum(selected.values()), 88)
+
     def test_complete_selections_preserve_metadata_and_negative_source(self):
         for profile, sources, modes in [('reflect-construction', 19, 38), ('new-target', 14, 28)]:
             directory = runner.ROOT / 'tests/upstream' / ('test262-' + profile)
@@ -39,8 +63,8 @@ class ConstructionCorpusTests(unittest.TestCase):
             _, files, _, _, _ = runner.load_corpus(runner.ROOT / 'tests/upstream' / ('test262-' + profile), profile)
             with patch.object(runner, 'bounded_process', return_value=(0, response('complete'), b'')):
                 checks = runner.harness_preflight(files, Path('/fake'), 1, profile)
-            self.assertEqual(len(checks), 80)
-            self.assertEqual(sum(c['verified'] for c in checks[32:]), 24)
+            self.assertEqual(len(checks), 96)
+            self.assertEqual(sum(c['verified'] for c in checks[32:]), 32)
             self.assertTrue(all(c['name'].endswith('-mismatch') for c in checks[32:] if not c['verified']))
             with patch.object(runner, 'bounded_process', return_value=(0, response('exception', 'runtime', 'TypeError'), b'')):
                 checks = runner.harness_preflight(files, Path('/fake'), 1, profile)

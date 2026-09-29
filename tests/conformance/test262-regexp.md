@@ -1,5 +1,10 @@
 # Pinned Test262 RegExp selection
 
+The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
+and `new.target` metadata. Current results: **262 passed, 28 unsupported**.
+The inventory and source bytes are unchanged. Measurements and policy descriptions
+below retain the history of earlier checkpoints.
+
 The [general Window binding follow-up](window-global-bindings.md) raises this
 profile to **252 passed / 38 unsupported**. Both detached `toString` modes now
 pass because their throwing global accessor setup is supported. Source inventory

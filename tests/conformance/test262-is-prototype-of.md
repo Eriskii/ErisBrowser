@@ -1,5 +1,10 @@
 # Pinned Test262 isPrototypeOf selection
 
+The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
+and `new.target` metadata. Current results: **14 passed, 6 unsupported**.
+The inventory and source bytes are unchanged. Measurements and policy descriptions
+below retain the history of earlier checkpoints.
+
 This separate profile imports every direct `.js` file in
 `test/built-ins/Object/prototype/isPrototypeOf` at Test262 revision
 `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`. All **10 source tests**, six unchanged

@@ -1,8 +1,8 @@
 {
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "c1b627a7249d3ab460d5be88b54f34ead98c375c160bee9e72379aef213894a4",
-  "runner_policy_sha256": "f096c9be039b6e5a005d3997e38d8da419399e8c6e8d3a23d2162d20c1763d03",
-  "binary_sha256": "2035b3b51b264c4592ab4c7c598eea61492d1b375e10d04f0ec87dd3aff93f43",
+  "runner_policy_sha256": "bc9da7274e62951b4b886406c4b0d0f71ade2a62979a7194fd7451484009a063",
+  "binary_sha256": "e623176f34821ca5073e2e96e5a5546978e75b0ab6a69ddde059954e37b25805",
   "cases": {
     "test/built-ins/Infinity/15.1.1.2-0.js:sloppy": {
       "status": "passed",

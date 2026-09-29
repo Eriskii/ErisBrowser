@@ -14,6 +14,13 @@ import import_test262 as importer
 import test262_conformance as runner
 
 
+def features_before_constructors(profile):
+    # Keep the original hashes for historical source/helper/preflight contracts.
+    # Only the four reviewed additions are projected out; the policy inventory
+    # test below checks their exact set and all 88 newly executable modes.
+    return sorted(runner.PROFILE_FEATURES[profile] - runner.CONSTRUCTOR_FEATURES)
+
+
 def sample(source=b'/*---\ndescription: sample\n---*/\nassert(true);', mode='sloppy'):
     metadata = importer.parse_metadata(source.decode())
     case = dict(id='sample:' + mode, file='sample.js', mode=mode,
@@ -84,7 +91,7 @@ negative:
 
     def test_async_module_host_and_unimplemented_features_are_visible(self):
         for metadata in ('flags: [async]', 'flags: [module]',
-                         'features: [Reflect.construct]', 'features: [cross-realm]',
+                         'features: [Reflect.get]', 'features: [cross-realm]',
                          'features: [Symbol]', 'flags: [FutureFlag]'):
             case = sample(('/*---\n' + metadata + '\n---*/\n').encode())
             case['mode'] = runner.modes(case['metadata'])[0]
@@ -320,7 +327,7 @@ class IntegrityTests(unittest.TestCase):
             retained[name] = dict(manifest_sha256=manifest_hash,
                                  cases={c['id']: c['case_sha256'] for c in cases},
                                  preflights=captured, fixtures=fixtures,
-                                 features=sorted(runner.PROFILE_FEATURES[name]))
+                                 features=features_before_constructors(name))
         self.assertEqual(sum(len(v['cases']) for v in retained.values()), 6754)
         self.assertEqual(sum(len(v['preflights']) for v in retained.values()), 1600)
         self.assertEqual(runner.digest(json.dumps(retained, sort_keys=True, separators=(',', ':')).encode()),
@@ -452,7 +459,7 @@ class IntegrityTests(unittest.TestCase):
             retained[name] = dict(manifest_sha256=manifest_hash,
                                  cases={c['id']: c['case_sha256'] for c in cases},
                                  preflights=captured, fixtures=fixtures,
-                                 features=sorted(runner.PROFILE_FEATURES[name]))
+                                 features=features_before_constructors(name))
         self.assertEqual(sum(len(v['cases']) for v in retained.values()), 6468)
         self.assertEqual(sum(len(v['preflights']) for v in retained.values()), 1472)
         self.assertEqual(runner.digest(json.dumps(retained, sort_keys=True, separators=(',', ':')).encode()),
@@ -584,7 +591,7 @@ class IntegrityTests(unittest.TestCase):
             retained[name] = dict(manifest_sha256=manifest_hash,
                                  cases={c['id']: c['case_sha256'] for c in cases},
                                  preflights=captured, fixtures=fixtures,
-                                 features=sorted(runner.PROFILE_FEATURES[name]))
+                                 features=features_before_constructors(name))
         self.assertEqual(sum(len(v['cases']) for v in retained.values()), 6104)
         self.assertEqual(sum(len(v['preflights']) for v in retained.values()), 1344)
         self.assertEqual(runner.digest(json.dumps(retained, sort_keys=True, separators=(',', ':')).encode()),
@@ -616,8 +623,10 @@ class IntegrityTests(unittest.TestCase):
         self.assertEqual(runner.URI_FEATURES,runner.SUPPORTED_FEATURES)
         _,_,cases,_,_=runner.load_corpus(runner.ROOT/'tests/upstream/test262-uri','uri')
         excluded=[c for c in cases if runner.unsupported_reason(c,runner.URI_FEATURES)]
-        self.assertEqual((len(excluded),len({c['file'] for c in excluded})),(8,4))
-        self.assertTrue(all(c['metadata']['features']==['Reflect.construct','arrow-function'] for c in excluded))
+        self.assertEqual((len(excluded),len({c['file'] for c in excluded})),(0,0))
+        constructor_modes = [c for c in cases if 'Reflect.construct' in c['metadata']['features']]
+        self.assertEqual(len(constructor_modes), 8)
+        self.assertTrue(all(runner.unsupported_reason(c, runner.URI_FEATURES) is None for c in constructor_modes))
 
     def test_uri_pairs_guard_each_builtin_and_preserve_identical_setup(self):
         _, files, _, _, _ = runner.load_corpus(
@@ -717,7 +726,7 @@ class IntegrityTests(unittest.TestCase):
             retained[name] = dict(manifest_sha256=manifest_hash,
                                  cases={c['id']: c['case_sha256'] for c in cases},
                                  preflights=captured, fixtures=fixtures,
-                                 features=sorted(runner.PROFILE_FEATURES[name]))
+                                 features=features_before_constructors(name))
         self.assertEqual(sum(len(v['cases']) for v in retained.values()), 5758)
         self.assertEqual(sum(len(v['preflights']) for v in retained.values()), 1216)
         self.assertEqual(runner.digest(json.dumps(retained, sort_keys=True, separators=(',', ':')).encode()),
@@ -848,7 +857,7 @@ class IntegrityTests(unittest.TestCase):
             retained[name] = dict(manifest_sha256=manifest_hash,
                                  cases={c['id']: c['case_sha256'] for c in cases},
                                  preflights=captured, fixtures=fixtures,
-                                 features=sorted(runner.PROFILE_FEATURES[name]))
+                                 features=features_before_constructors(name))
         self.assertEqual(sum(len(v['cases']) for v in retained.values()), 5626)
         self.assertEqual(sum(len(v['preflights']) for v in retained.values()), 1112)
         self.assertEqual(runner.digest(json.dumps(retained, sort_keys=True, separators=(',', ':')).encode()),
@@ -979,7 +988,7 @@ class IntegrityTests(unittest.TestCase):
             retained[name] = dict(manifest_sha256=manifest_hash,
                                  cases={c['id']: c['case_sha256'] for c in cases},
                                  preflights=captured, fixtures=fixtures,
-                                 features=sorted(runner.PROFILE_FEATURES[name]))
+                                 features=features_before_constructors(name))
         self.assertEqual(sum(len(v['cases']) for v in retained.values()), 5531)
         self.assertEqual(sum(len(v['preflights']) for v in retained.values()), 1048)
         self.assertEqual(runner.digest(json.dumps(retained, sort_keys=True, separators=(',', ':')).encode()),
@@ -1116,7 +1125,7 @@ class IntegrityTests(unittest.TestCase):
             retained[name] = dict(manifest_sha256=manifest_hash,
                                  cases={c['id']: c['case_sha256'] for c in cases},
                                  preflights=captured, fixtures=fixtures,
-                                 features=sorted(runner.PROFILE_FEATURES[name]))
+                                 features=features_before_constructors(name))
         self.assertEqual(sum(len(v['cases']) for v in retained.values()), 4745)
         self.assertEqual(sum(len(v['preflights']) for v in retained.values()), 920)
         self.assertEqual(runner.digest(json.dumps(retained, sort_keys=True, separators=(',', ':')).encode()),
@@ -1145,8 +1154,8 @@ class IntegrityTests(unittest.TestCase):
         _, _, cases, _, _ = runner.load_corpus(
             runner.ROOT / 'tests/upstream/test262-numeric-parsing', 'numeric-parsing')
         excluded = [c for c in cases if runner.unsupported_reason(c, runner.NUMERIC_PARSING_FEATURES)]
-        self.assertEqual((len(excluded), len({c['file'] for c in excluded})), (38, 19))
-        self.assertTrue(all(set(c['metadata']['features']) & {'numeric-separator-literal', 'u180e', 'Reflect.construct', 'arrow-function'} for c in excluded))
+        self.assertEqual((len(excluded), len({c['file'] for c in excluded})), (34, 17))
+        self.assertTrue(all(set(c['metadata']['features']) & {'numeric-separator-literal', 'u180e'} for c in excluded))
 
     def test_numeric_parsing_pairs_guard_conversion_and_preserve_identical_setup(self):
         _, files, _, _, _ = runner.load_corpus(
@@ -1253,7 +1262,7 @@ class IntegrityTests(unittest.TestCase):
             retained[name] = dict(manifest_sha256=manifest_hash,
                                  cases={c['id']: c['case_sha256'] for c in cases},
                                  preflights=captured, fixtures=fixtures,
-                                 features=sorted(runner.PROFILE_FEATURES[name]))
+                                 features=features_before_constructors(name))
         self.assertEqual(sum(len(v['cases']) for v in retained.values()), 4527)
         self.assertEqual(sum(len(v['preflights']) for v in retained.values()), 840)
         self.assertEqual(runner.digest(json.dumps(retained, sort_keys=True, separators=(',', ':')).encode()),
@@ -1282,8 +1291,8 @@ class IntegrityTests(unittest.TestCase):
         _, _, cases, _, _ = runner.load_corpus(
             runner.ROOT / 'tests/upstream/test262-numeric-conversion', 'numeric-conversion')
         excluded = [c for c in cases if runner.unsupported_reason(c, runner.NUMERIC_CONVERSION_FEATURES)]
-        self.assertEqual((len(excluded), len({c['file'] for c in excluded})), (32, 16))
-        self.assertTrue(all(set(c['metadata']['features']) & {'Symbol.toPrimitive', 'Symbol', 'Reflect.construct', 'arrow-function'} for c in excluded))
+        self.assertEqual((len(excluded), len({c['file'] for c in excluded})), (28, 14))
+        self.assertTrue(all(set(c['metadata']['features']) & {'Symbol.toPrimitive', 'Symbol'} for c in excluded))
 
     def test_numeric_conversion_pairs_guard_conversion_and_preserve_identical_setup(self):
         _, files, _, _, _ = runner.load_corpus(
@@ -1393,7 +1402,7 @@ class IntegrityTests(unittest.TestCase):
             retained[name] = dict(manifest_sha256=manifest_hash,
                                  cases={c['id']: c['case_sha256'] for c in cases},
                                  preflights=captured, fixtures=fixtures,
-                                 features=sorted(runner.PROFILE_FEATURES[name]))
+                                 features=features_before_constructors(name))
         self.assertEqual(sum(len(v['cases']) for v in retained.values()), 4467)
         self.assertEqual(sum(len(v['preflights']) for v in retained.values()), 760)
         self.assertEqual(runner.digest(json.dumps(retained, sort_keys=True, separators=(',', ':')).encode()),
@@ -1427,7 +1436,7 @@ class IntegrityTests(unittest.TestCase):
         _, files, cases, _, _ = runner.load_corpus(
             runner.ROOT / 'tests/upstream/test262-number-statics', 'number-statics')
         excluded = [c for c in cases if runner.unsupported_reason(c, runner.NUMBER_STATIC_FEATURES)]
-        self.assertEqual((len(excluded), len({c['file'] for c in excluded})), (90, 45))
+        self.assertEqual((len(excluded), len({c['file'] for c in excluded})), (80, 40))
         for name in ('EPSILON.js', 'MAX_SAFE_INTEGER.js', 'MIN_SAFE_INTEGER.js', 'NaN.js',
                      'return-abrupt-tonumber-value.js', 'S9.1_A1_T1.js', 'S9.3_A5_T1.js'):
             self.assertIn('test/built-ins/Number/' + name, files)
@@ -1436,7 +1445,7 @@ class IntegrityTests(unittest.TestCase):
             self.assertEqual(len(symbol_cases), 2)
             self.assertTrue(all('Symbol' in runner.unsupported_reason(c, runner.NUMBER_STATIC_FEATURES)
                                 for c in symbol_cases))
-        for feature in ('u180e', 'numeric-separator-literal', 'Reflect.construct', 'Symbol', 'BigInt'):
+        for feature in ('u180e', 'numeric-separator-literal', 'Reflect.get', 'Symbol', 'BigInt'):
             case = sample(('/*---\nfeatures: [' + feature + ']\n---*/\n').encode())
             self.assertIn(feature, runner.unsupported_reason(case, runner.NUMBER_STATIC_FEATURES))
 
@@ -1550,7 +1559,7 @@ class IntegrityTests(unittest.TestCase):
             retained[name] = dict(manifest_sha256=manifest_hash,
                                  cases={c['id']: c['case_sha256'] for c in cases},
                                  preflights=captured, fixtures=fixtures,
-                                 features=sorted(runner.PROFILE_FEATURES[name]))
+                                 features=features_before_constructors(name))
         self.assertEqual(sum(len(v['cases']) for v in retained.values()), 4127)
         self.assertEqual(sum(len(v['preflights']) for v in retained.values()), 656)
         self.assertEqual(runner.digest(json.dumps(retained, sort_keys=True, separators=(',', ':')).encode()),
@@ -1592,14 +1601,14 @@ class IntegrityTests(unittest.TestCase):
         _, files, cases, _, _ = runner.load_corpus(
             runner.ROOT / 'tests/upstream/test262-array-reduce', 'array-reduce')
         unsupported = [c for c in cases if runner.unsupported_reason(c, runner.ARRAY_REDUCE_FEATURES)]
-        self.assertEqual((len(unsupported), len({c['file'] for c in unsupported})), (20, 10))
+        self.assertEqual((len(unsupported), len({c['file'] for c in unsupported})), (16, 8))
         for c in unsupported:
-            self.assertTrue(set(c['metadata']['features']) & {'Reflect.construct', 'resizable-arraybuffer'})
+            self.assertTrue(set(c['metadata']['features']) & {'resizable-arraybuffer'})
         dependencies = [c for c in cases if b'Date' in c['source'] or b'Number.MAX_SAFE_INTEGER' in c['source']]
         self.assertEqual(len(dependencies), 10)
         self.assertTrue(all(runner.unsupported_reason(c, runner.ARRAY_REDUCE_FEATURES) is None for c in dependencies))
         self.assertIn(b'Number.MAX_SAFE_INTEGER', files['test/built-ins/Array/prototype/reduceRight/length-near-integer-limit.js'])
-        for feature in ('stable-array-sort', 'rest-parameters', 'globalThis', 'u180e', 'Proxy', 'Reflect.construct', 'Symbol'):
+        for feature in ('stable-array-sort', 'rest-parameters', 'globalThis', 'u180e', 'Proxy', 'Reflect.get', 'Symbol'):
             case = sample(('/*---\nfeatures: [' + feature + ']\n---*/\n').encode())
             self.assertIn(feature, runner.unsupported_reason(case, runner.ARRAY_REDUCE_FEATURES))
 
@@ -1710,7 +1719,7 @@ class IntegrityTests(unittest.TestCase):
             retained[name] = dict(manifest_sha256=manifest_hash,
                                  cases={c['id']: c['case_sha256'] for c in cases},
                                  preflights=captured, fixtures=fixtures,
-                                 features=sorted(runner.PROFILE_FEATURES[name]))
+                                 features=features_before_constructors(name))
         self.assertEqual(sum(len(v['cases']) for v in retained.values()), 3093)
         self.assertEqual(sum(len(v['preflights']) for v in retained.values()), 528)
         self.assertEqual(runner.digest(json.dumps(retained, sort_keys=True, separators=(',', ':')).encode()),
@@ -1757,7 +1766,7 @@ class IntegrityTests(unittest.TestCase):
         self.assertTrue(all(runner.unsupported_reason(c, runner.IDENTIFIER_FEATURES) is None
                             for c in eval_cases))
         for feature in ('class', 'class-fields-private', 'numeric-separator-literal',
-                        'Proxy', 'Reflect.construct', 'Symbol', 'identifiers'):
+                        'Proxy', 'Reflect.get', 'Symbol', 'identifiers'):
             case = sample(('/*---\nfeatures: [' + feature + ']\n---*/\n').encode())
             self.assertIn(feature, runner.unsupported_reason(case, runner.IDENTIFIER_FEATURES))
         for name, policy in runner.PROFILE_FEATURES.items():
@@ -1930,17 +1939,17 @@ class IntegrityTests(unittest.TestCase):
         for name, features in runner.PROFILE_FEATURES.items():
             if name != 'array-sort':
                 self.assertIn('stable-array-sort', runner.unsupported_reason(stable, features))
-        for feature in ('Symbol', 'BigInt', 'Proxy', 'Reflect.construct',
+        for feature in ('Symbol', 'BigInt', 'Proxy', 'Reflect.get',
                         'resizable-arraybuffer', 'Array.prototype.includes'):
             case = sample(('/*---\nfeatures: [' + feature + ']\n---*/\n').encode())
             self.assertIn(feature, runner.unsupported_reason(case, runner.ARRAY_SORT_FEATURES))
         _, _, cases, _, _ = runner.load_corpus(
             runner.ROOT / 'tests/upstream/test262-array-sort', 'array-sort')
         unsupported = [c for c in cases if runner.unsupported_reason(c, runner.ARRAY_SORT_FEATURES)]
-        self.assertEqual(len(unsupported), 14)
+        self.assertEqual(len(unsupported), 12)
         self.assertEqual({Path(c['file']).name for c in unsupported}, {
             'call-with-primitive.js', 'comparefn-grow.js', 'comparefn-nonfunction-call-throws.js',
-            'comparefn-resizable-buffer.js', 'comparefn-shrink.js', 'not-a-constructor.js',
+            'comparefn-resizable-buffer.js', 'comparefn-shrink.js',
             'resizable-buffer-default-comparator.js'})
 
     def test_array_sort_preflight_preserves_core_and_requires_assertion_failures(self):
@@ -2073,7 +2082,7 @@ class IntegrityTests(unittest.TestCase):
         for name, features in runner.PROFILE_FEATURES.items():
             if name != 'global-values':
                 self.assertIn('globalThis', runner.unsupported_reason(global_this, features))
-        for feature in ('Proxy', 'Reflect.construct', 'Symbol', 'rest-parameters', 'default-parameters'):
+        for feature in ('Proxy', 'Reflect.get', 'Symbol', 'rest-parameters', 'default-parameters'):
             case = sample(('/*---\nfeatures: [' + feature + ']\n---*/\n').encode())
             self.assertIn(feature, runner.unsupported_reason(case, runner.GLOBAL_VALUE_FEATURES))
         _, _, cases, _, _ = runner.load_corpus(
@@ -2175,18 +2184,18 @@ class IntegrityTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'inventory'):
             runner.load_corpus(directory, 'string-json')
 
-    def test_is_prototype_of_policy_does_not_admit_proxy_reflect_or_symbol(self):
+    def test_is_prototype_of_policy_admits_constructors_but_rejects_proxy_and_symbol(self):
         self.assertEqual(runner.IS_PROTOTYPE_OF_FEATURES, runner.SUPPORTED_FEATURES)
-        for feature in ('Proxy', 'Reflect.construct', 'Symbol', 'rest-parameters'):
+        for feature in ('Proxy', 'Reflect.get', 'Symbol', 'rest-parameters'):
             case = sample(('/*---\nfeatures: [' + feature + ']\n---*/\n').encode())
             self.assertIn(feature, runner.unsupported_reason(case, runner.IS_PROTOTYPE_OF_FEATURES))
         _, _, cases, _, _ = runner.load_corpus(
             runner.ROOT / 'tests/upstream/test262-is-prototype-of', 'is-prototype-of')
         executed = [case for case in cases
                     if runner.unsupported_reason(case, runner.IS_PROTOTYPE_OF_FEATURES) is None]
-        self.assertEqual(len(executed), 10)
+        self.assertEqual(len(executed), 14)
         self.assertEqual({Path(case['file']).name for case in executed}, {
-            'length.js', 'name.js', 'null-this-and-object-arg-throws.js',
+            'length.js', 'name.js', 'not-a-constructor.js', 'builtin.js', 'null-this-and-object-arg-throws.js',
             'this-value-is-in-prototype-chain-of-arg.js', 'undefined-this-and-object-arg-throws.js',
         })
 
@@ -2278,7 +2287,7 @@ class IntegrityTests(unittest.TestCase):
         for profile, policy in runner.PROFILE_FEATURES.items():
             if profile != 'rest-parameters':
                 self.assertIn('rest-parameters', runner.unsupported_reason(rest, policy))
-        for feature in ('destructuring-binding', 'new.target', 'eval', 'async-functions', 'generators'):
+        for feature in ('destructuring-binding', 'import.meta', 'eval', 'async-functions', 'generators'):
             case = sample(('/*---\nfeatures: [' + feature + ']\n---*/\n').encode())
             self.assertIn(feature, runner.unsupported_reason(case, runner.REST_PARAMETER_FEATURES))
 
@@ -2350,7 +2359,7 @@ class IntegrityTests(unittest.TestCase):
         self.assertIsNone(runner.unsupported_reason(case, runner.FUNCTION_FEATURES))
         for policy in (runner.SUPPORTED_FEATURES, runner.REGEXP_FEATURES, runner.TEMPLATE_FEATURES):
             self.assertIsNotNone(runner.unsupported_reason(case, policy))
-        for feature in ('rest-parameters', 'async-functions', 'generators', 'new.target', 'Symbol'):
+        for feature in ('rest-parameters', 'async-functions', 'generators', 'import.meta', 'Symbol'):
             unavailable = sample(('/*---\nfeatures: [' + feature + ']\n---*/\n').encode())
             self.assertIn(feature, runner.unsupported_reason(unavailable, runner.FUNCTION_FEATURES))
 

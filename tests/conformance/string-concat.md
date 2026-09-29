@@ -1,5 +1,9 @@
 # String.prototype.concat
 
+The later [constructor-policy review](constructor-policy.md) enables the two
+constructor modes, bringing this profile to 44 passes. The implementation
+measurements below retain the policy used at the concat checkpoint.
+
 The custom runtime now provides the canonical `String.prototype.concat` builtin
 with name `concat`, length 1, standard property flags and no construction support.
 Primitive and boxed strings inherit the same function. Borrowed calls, `apply`

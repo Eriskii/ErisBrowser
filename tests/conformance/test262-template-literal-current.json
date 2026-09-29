@@ -1,8 +1,8 @@
 {
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "58951312763d816ca4cc139a4fcb2bf63f43a81414b91bf673f65c450b217d94",
-  "runner_policy_sha256": "17b229706fb4915c6c9d5daf4daa74129f2ac470bba8d993487356f12384517e",
-  "binary_sha256": "bd39a037d42765e3551560299b1ae458d3e231fc6c82857f7f30447e0736f11c",
+  "runner_policy_sha256": "3d1f69f1130da33216d9acb7fb1d220dbf006ee45351b930eed3b8ef175c2462",
+  "binary_sha256": "e623176f34821ca5073e2e96e5a5546978e75b0ab6a69ddde059954e37b25805",
   "cases": {
     "test/language/expressions/template-literal/evaluation-order.js:sloppy": {
       "status": "unsupported",

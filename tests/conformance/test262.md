@@ -1,13 +1,9 @@
 # Pinned Test262 String and JSON selection
 
-A separate [complete String concat directory](test262-string-concat.md) now has
-42 passing modes and two Reflect.construct exclusions, with 56 verified controls.
-The original string/JSON selection and its policy below are unchanged.
-
-Subsequent [Symbol support and key reflection](symbols.md) have a separate
-complete upstream profile. This original String/JSON profile retains its previous
-feature policy, source inventory and result counts; its historical Symbol/Reflect
-exclusions below do not describe the full current runtime.
+The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
+and `new.target` metadata. Current results: **558 passed, 94 unsupported**.
+The inventory and source bytes are unchanged. Measurements and policy descriptions
+below retain the history of earlier checkpoints.
 
 This runner measures Eris's own bounded JavaScript interpreter against unchanged
 upstream test bodies and harness code. It is a selection of Test262, not complete

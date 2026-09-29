@@ -1,7 +1,12 @@
 # Symbols and property keys
 
+The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
+and `new.target` metadata. Current results: **182 passed, 6 failed, 54 unsupported**.
+The inventory and source bytes are unchanged. Measurements and policy descriptions
+below retain the history of earlier checkpoints.
+
 The later [Window reflection checkpoint](window-reflection.md) adds the two global
-Symbol descriptor modes: the current profile records **168 passed / six failed /
+Symbol descriptor modes: that checkpoint records **168 passed / six failed /
 68 unsupported**, with all 64 controls verified. The original measurements below
 remain the evidence for the Symbol implementation itself.
 

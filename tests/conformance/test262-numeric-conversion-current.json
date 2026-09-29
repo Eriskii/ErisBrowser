@@ -1,8 +1,8 @@
 {
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "de7cf1098618ad0fdb7786d4ab4f6c648bfb6fe2543981fe21ca6e0cba50928f",
-  "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
-  "binary_sha256": "2035b3b51b264c4592ab4c7c598eea61492d1b375e10d04f0ec87dd3aff93f43",
+  "runner_policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+  "binary_sha256": "e623176f34821ca5073e2e96e5a5546978e75b0ab6a69ddde059954e37b25805",
   "cases": {
     "test/built-ins/isFinite/S15.1.2.5_A2.6.js:sloppy": {
       "status": "passed",
@@ -25,12 +25,12 @@
       "source_sha256": "f1399f3d7558de9d7c63b50f83d4e97aba88f831adb4816f40a0728762a3d6d8"
     },
     "test/built-ins/isFinite/not-a-constructor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "0573d5a3ac7eb279fa5b2f50680718c3c5b93cf1f9e10541197119a48eb02fce",
       "source_sha256": "e813860f10aae893d27875f604b38ed01e5f55e58dd0d2d813cafad448f496ad"
     },
     "test/built-ins/isFinite/not-a-constructor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "334061c223e389bdb25e8b201ca9cbb762cf6cd25039c70a17857c5fd941f096",
       "source_sha256": "e813860f10aae893d27875f604b38ed01e5f55e58dd0d2d813cafad448f496ad"
     },
@@ -175,12 +175,12 @@
       "source_sha256": "3e4e135fc421e50c85bea592f4e5c08632a7dc18a40b7bd7587314adb893ceb1"
     },
     "test/built-ins/isNaN/not-a-constructor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "fd1c4133baf5d58224aaa8c20aa6accb351bb808139a38c1f81f945cc33d1188",
       "source_sha256": "d51fb1616426d8ef18ffc284f756ef8dca6318020c1d5acd40c7c30ea7533fb4"
     },
     "test/built-ins/isNaN/not-a-constructor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "0b9f31201abda5f3aa1c51a88ad961381976439f46dca62c69801b84e96d4e2e",
       "source_sha256": "d51fb1616426d8ef18ffc284f756ef8dca6318020c1d5acd40c7c30ea7533fb4"
     },

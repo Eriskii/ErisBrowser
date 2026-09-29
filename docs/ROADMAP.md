@@ -8,10 +8,13 @@ ordered conversion and exact UTF-16 assembly. The
 [constructor checkpoint](../tests/conformance/construction.md) adds Reflect calls,
 private `new.target` bindings and alternate ECMAScript allocation targets.
 Next work includes alternate Web IDL targets, remaining native constructor
-semantics, reviewed expansion of older Test262 feature policies,
+semantics, dynamic Function construction,
 Window extensibility and interface coverage, complete DOMString storage and Web
 IDL interfaces, remaining Symbol consumers, iterator infrastructure and broader
-ECMAScript dependencies. These sit alongside the Vulkan milestones below.
+ECMAScript dependencies. The
+[constructor-policy review](../tests/conformance/constructor-policy.md) now enables
+88 older modes and corrects Symbol constructor classification. These sit alongside
+the Vulkan milestones below.
 
 The goal remains an independent, fully web-compatible Rust browser with a
 defensible security boundary and measured performance within the requested
@@ -68,8 +71,10 @@ security work continues alongside preparation for this backend.
 
 The original Test262 source with 32 nested immediately invoked functions now
 passes in both modes. Its source and the complete function inventory remain
-unchanged; [the latest comparison](../tests/conformance/parser-continuations.md)
-records 511 passes and 620 unsupported variants, with a new healthy CI baseline.
+unchanged. The [parser checkpoint](../tests/conformance/parser-continuations.md)
+recorded 511 passes; the later [constructor policy](../tests/conformance/constructor-policy.md)
+brings coverage to 515 passes and 616 unsupported variants. A healthy baseline
+runs in CI.
 
 The implemented progression is:
 

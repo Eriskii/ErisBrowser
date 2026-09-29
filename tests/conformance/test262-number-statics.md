@@ -1,5 +1,10 @@
 # Pinned Test262 Number static builtin inventory
 
+The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
+and `new.target` metadata. Current results: **260 passed, 80 unsupported**.
+The inventory and source bytes are unchanged. Measurements and policy descriptions
+below retain the history of earlier checkpoints.
+
 This profile retains every direct JavaScript file in the Number root and eight
 complete constant/predicate directories at Test262 revision
 `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`.

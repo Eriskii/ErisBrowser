@@ -1,5 +1,10 @@
 # Pinned Test262 template literal selection
 
+The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
+and `new.target` metadata. Current results: **82 passed, 32 unsupported**.
+The inventory and source bytes are unchanged. Measurements and policy descriptions
+below retain the history of earlier checkpoints.
+
 This separate inventory contains every direct JavaScript file in
 `test/language/expressions/template-literal` at `tc39/test262` commit
 `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`: **57 sources and 114 execution

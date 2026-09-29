@@ -1,8 +1,8 @@
 {
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "c234ca3a603d668cff1b769612b3574cf2e59cfa5d21cd70695300e18751f127",
-  "runner_policy_sha256": "34973c30f01597f7a0d535832c49d33b6f9b8d87746ad679a68ab2b74ebaa053",
-  "binary_sha256": "2035b3b51b264c4592ab4c7c598eea61492d1b375e10d04f0ec87dd3aff93f43",
+  "runner_policy_sha256": "e77db9454b9331d6178bc7bc1c49e1de55095e4701baaac3e27aae7efd42eec3",
+  "binary_sha256": "e623176f34821ca5073e2e96e5a5546978e75b0ab6a69ddde059954e37b25805",
   "cases": {
     "test/built-ins/Object/getOwnPropertySymbols/length.js:sloppy": {
       "status": "passed",
@@ -45,12 +45,12 @@
       "source_sha256": "c8676ef7f548d1dab6ba0ff44512c8036ddc65cedb8b5a0109f26a7d57f856dd"
     },
     "test/built-ins/Object/getOwnPropertySymbols/not-a-constructor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "c7e030445fc1985499249757acea91d127df833b6f25098474bb8e8d29083fa7",
       "source_sha256": "e3dd69e2f6f9bda71f9073b281da7c69404f288cc44b56c1403e059502da9195"
     },
     "test/built-ins/Object/getOwnPropertySymbols/not-a-constructor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "a59b93b5d27d5c90c07b9d6940f5028a65df2cddea4e406a3548b64b159c9abd",
       "source_sha256": "e3dd69e2f6f9bda71f9073b281da7c69404f288cc44b56c1403e059502da9195"
     },
@@ -145,12 +145,12 @@
       "source_sha256": "4571b80aa73312c4392287cb3cc444d87dedb09150718b27b3f1873019fb84a5"
     },
     "test/built-ins/Reflect/ownKeys/not-a-constructor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "778fd79e217a87b33b223ef4b42a82e45768b045596a41aafda97963cda7cd5a",
       "source_sha256": "6a8b1f333725c388f4327f4310637eae44f7d7f6748c85e4bb11373f71b7909a"
     },
     "test/built-ins/Reflect/ownKeys/not-a-constructor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "67ea2d6c5e0ff50064b80104a492c67ba3148b5b0e6d3ea6ee9a348c1bb02185",
       "source_sha256": "6a8b1f333725c388f4327f4310637eae44f7d7f6748c85e4bb11373f71b7909a"
     },
@@ -425,12 +425,12 @@
       "source_sha256": "8163731091c65318e536d4d9da44aa20098f4906db271a84451d1b60bbae50e8"
     },
     "test/built-ins/Symbol/for/not-a-constructor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "a6cf56cb6909cda97dd427f585454c8aa552ed0f59878948b093a1ddbfaa56a8",
       "source_sha256": "fa6541396448f0a7e849a806d0a975ce9d972aedd22deb350ed97dee96f541e1"
     },
     "test/built-ins/Symbol/for/not-a-constructor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "3a56b26659f28a2a1ff86aa2e006bc85dddc919187a54522cc06655210bea175",
       "source_sha256": "fa6541396448f0a7e849a806d0a975ce9d972aedd22deb350ed97dee96f541e1"
     },
@@ -495,12 +495,12 @@
       "source_sha256": "067027efcb7a714eabe7360dfcdd77b9b0722e696e43f780bc0599f9d8e58fc1"
     },
     "test/built-ins/Symbol/is-constructor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "1a03831ca9c4466b17adf81939a77ebb7d884b4f1e1100907c41c3e15eb706bd",
       "source_sha256": "b37a7d944d431720eb365e60b542f467c1d8379398700b82c8f85b1f629d8dde"
     },
     "test/built-ins/Symbol/is-constructor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "c8feda7a59efb3df1a305665f04dfdf9b7fcbf5ccbbd8d77435f2fb9c5f61f76",
       "source_sha256": "b37a7d944d431720eb365e60b542f467c1d8379398700b82c8f85b1f629d8dde"
     },
@@ -605,12 +605,12 @@
       "source_sha256": "2461ed8e76b11f212efc5acb76de835ba6a2505e044d0f909f0f54e444d02c2e"
     },
     "test/built-ins/Symbol/keyFor/not-a-constructor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "db7ae58d13a3ac5964ad333296d521bbbf4701eaeb6f92fee9df588598c090ab",
       "source_sha256": "6572960a15bfa8c4c43f1b1c55764f5d3b731d832c5a131fc71b178b4ac72b14"
     },
     "test/built-ins/Symbol/keyFor/not-a-constructor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "230d12463f7b9f46e4999ee13577bbb20beec91b2cbe124dc157ad3090f80039",
       "source_sha256": "6572960a15bfa8c4c43f1b1c55764f5d3b731d832c5a131fc71b178b4ac72b14"
     },
@@ -905,12 +905,12 @@
       "source_sha256": "5af5d6b06a3022204b83e16bbf0464426914b08e9eb06b1f074c46af4b36b4b4"
     },
     "test/built-ins/Symbol/prototype/toString/not-a-constructor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "17fc37da0eb6381083b871c13cfcb9718ad7124a90bf88f2ba5ed6089abee92d",
       "source_sha256": "d8d7097b846df22e20f4642ef819c0a282c6fabff2cd933f91d5eba3e5d9da50"
     },
     "test/built-ins/Symbol/prototype/toString/not-a-constructor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "746bf0429c1e7594d43dfdd6abca38e4e116465bec9f60625474792c1715005c",
       "source_sha256": "d8d7097b846df22e20f4642ef819c0a282c6fabff2cd933f91d5eba3e5d9da50"
     },
@@ -975,12 +975,12 @@
       "source_sha256": "df473b6db715aa6c2c4ecca6e79ec5ab16862f6839a6cc34a4418937b8e0fba8"
     },
     "test/built-ins/Symbol/prototype/valueOf/not-a-constructor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "5c1a1b6666e630a0a3fe790390dcab62a329c4d18dbdbb3252959ae934f980fe",
       "source_sha256": "e9e5c4ee841aaff2c77f30690482a459f609328945d67778d476caae00401fc9"
     },
     "test/built-ins/Symbol/prototype/valueOf/not-a-constructor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "42f9bdd3f0dc11aa9bf4e92654e3f5b4dcf7506c949c538033e63ac1d1392716",
       "source_sha256": "e9e5c4ee841aaff2c77f30690482a459f609328945d67778d476caae00401fc9"
     },

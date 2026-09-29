@@ -1,5 +1,10 @@
 # Pinned Test262 global-value selection
 
+The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
+and `new.target` metadata. Current results: **64 passed, 6 failed, 18 unsupported**.
+The inventory and source bytes are unchanged. Measurements and policy descriptions
+below retain the history of earlier checkpoints.
+
 This separate profile retains every direct `.js` file in four Test262 built-in
 directories at revision `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`:
 

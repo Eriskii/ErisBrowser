@@ -1,5 +1,9 @@
 # Reflect calls, constructor targets and new.target
 
+The later [constructor-policy checkpoint](constructor-policy.md) fixes Symbol as
+an alternate constructor target and expands the older feature policies. The
+measurements and policy boundaries below describe this original checkpoint.
+
 The custom interpreter now implements `Reflect.apply`, `Reflect.construct`, and
 `new.target` in supported ordinary functions, methods, accessors, defaults and
 lexically nested arrows. Constructor targets live in private execution state.

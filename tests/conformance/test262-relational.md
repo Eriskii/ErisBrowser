@@ -1,5 +1,10 @@
 # Pinned Test262 relational comparison inventory
 
+The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
+and `new.target` metadata. Current results: **300 passed, 64 unsupported**.
+The inventory and source bytes are unchanged. Measurements and policy descriptions
+below retain the history of earlier checkpoints.
+
 This profile retains every direct JavaScript file in four complete, flat
 [expression directories](https://github.com/tc39/test262/tree/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/language/expressions)
 at revision `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`:

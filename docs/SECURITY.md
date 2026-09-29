@@ -207,7 +207,11 @@ is checked and prepaid before reservation/copying; the argument cap and native
 stack guards remain in force. Getter callbacks and construction share runtime
 work, heap and recursion limits. Resource failures bypass script recovery and
 unwind continuation/call counters. These changes add no filesystem, network or
-GPU authority. The ledger remains an estimate, and no independent audit is claimed.
+GPU authority. The [Symbol target correction](../tests/conformance/constructor-policy.md)
+allows Symbol as an allocation target without installing Symbol value slots on
+an ordinary object. Argument callbacks still share the existing limits, and
+Symbol construction throws before description conversion. The ledger remains
+an estimate, and no independent audit is claimed.
 
 ## Remaining work
 

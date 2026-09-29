@@ -1,5 +1,10 @@
 # Pinned Test262 URI inventory
 
+The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
+and `new.target` metadata. Current results: **234 passed, 112 resource**.
+The inventory and source bytes are unchanged. Measurements and policy descriptions
+below retain the history of earlier checkpoints.
+
 This profile retains every direct JavaScript source in four builtin directories
 at Test262 revision `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`:
 [encodeURI](https://github.com/tc39/test262/tree/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/encodeURI)

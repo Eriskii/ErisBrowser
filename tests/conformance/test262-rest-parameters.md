@@ -1,5 +1,10 @@
 # Pinned Test262 rest-parameter selection
 
+The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
+and `new.target` metadata. Current results: **16 passed, 6 unsupported**.
+The inventory and source bytes are unchanged. Measurements and policy descriptions
+below retain the history of earlier checkpoints.
+
 This separate profile imports every direct `.js` file in
 `test/language/rest-parameters` at the existing Test262 revision
 `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`. All **11 source tests**, four unchanged

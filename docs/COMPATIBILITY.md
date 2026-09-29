@@ -1,5 +1,11 @@
 # Compatibility status
 
+The [Symbol constructor/policy follow-up](../tests/conformance/constructor-policy.md)
+accepts Symbol as an alternate constructor target while preserving its throwing
+construction behavior. The Symbol profile now records 182 passed, six failed and
+54 unsupported modes. Across the existing inventories, 88 additional modes are
+admitted and pass; two required this implementation fix, while 86 already passed.
+
 [Constructor targets and Reflect calls](../tests/conformance/construction.md) cover
 `new.target`, `Reflect.apply`, `Reflect.construct`, lexical arrows, bound forwarding
 and supported ECMAScript allocation prototypes. The two complete pinned selections
@@ -18,7 +24,7 @@ validation, live collections and DOM hierarchy semantics remain incomplete.
 identity, registry/description behavior, descriptors, computed keys, JSON omission,
 `Symbol.toPrimitive`, `Symbol.toStringTag`, `Symbol.hasInstance`,
 `Object.getOwnPropertySymbols` and `Reflect.ownKeys`. The complete new profile
-records 168 passed, six failed and 68 unsupported modes. Iteration, RegExp dispatch,
+originally recorded 168 passed, six failed and 68 unsupported modes. Iteration, RegExp dispatch,
 species, other realms and most Reflect methods remain incomplete.
 
 [String.prototype.concat](../tests/conformance/string-concat.md) supports generic
@@ -158,7 +164,7 @@ charged record pages and flat lists, preserving cover grammar, early errors and
 lexical rescans. [Grammar continuations](../tests/conformance/parser-continuations.md)
 also remove native grammar recursion: both modes of the original 32-nested-IIFE
 test now pass within the unchanged compile quotas. The complete functions profile
-has 511 passes and 620 unsupported variants and now has a healthy CI baseline.
+has 515 passes and 616 unsupported variants and now has a healthy CI baseline.
 The retained depth probes parse through 40 and run through 32 calls; declaration
 traversal, labels, logical calls and native helpers retain independent limits.
 
@@ -206,7 +212,7 @@ and [Number parsing aliases](../tests/conformance/numeric-parsing.md) share
 the same intrinsic identities. The
 [static builtin scope](../tests/conformance/number-statics.md) and
 [complete pinned inventory](../tests/conformance/test262-number-statics.md)
-record 250 passes and 90 unsupported variants, with all 104
+record 260 passes and 80 unsupported variants, with all 104
 assertion checks verified.
 
 Untagged template literals support nested substitutions, cooked escapes and multiline text. Each substitution uses string-hint conversion before the next expression executes; tagged templates remain unsupported. See [template literal coverage](../tests/conformance/template-literals.md) and the separate [57-source upstream inventory](../tests/conformance/test262-template-literal.md), which retains 82 passing and 32 unsupported variants.
@@ -215,7 +221,7 @@ The four [URI encoding/decoding functions](../tests/conformance/uri.md) preserve
 ordinary string conversion, strict percent-encoded UTF-8 and reserved-character
 behavior. Encoding rejects lone surrogates; decoding preserves raw unescaped
 UTF-16 units and throws URIError for malformed escapes. Complete upstream
-coverage retains 226 passes, eight unsupported variants and 112 instruction-limit
+coverage retains 234 passes and 112 instruction-limit
 stops, with 128 controls. Those stops prevent a healthy URI baseline.
 
 JavaScript strings retain UTF-16 code units, including unpaired surrogates. Length, indexed access, `charAt`, `charCodeAt`, `codePointAt`, `slice`, `substring`, string searches, `match`, `search`, `replace`, string/RegExp `split`, array `join`, trimming, selected case conversion and `String.fromCharCode`/`fromCodePoint` operate on this representation. String-to-number conversion recognizes ECMAScript whitespace and decimal, hexadecimal, binary and octal forms. This is a bounded subset: normalization, locale-sensitive operations, Symbol-based RegExp dispatch/species and complete generic receiver/prototype behavior are absent. Each string is limited to 262,144 code units (512 KiB of backing storage), within the cumulative estimated 8 MiB script allocation budget.
@@ -267,7 +273,7 @@ Events retain private state, snapshot propagation paths and listener inventories
 
 ## Conformance path
 
-1. A pinned [WPT HTML tree-construction corpus](../tests/conformance/README.md) now exercises 1,959 inputs in 3,876 scripting-flag modes. Current exact-tree results are 3,868 matched, two unchanged expectation-framing mismatches and six unsupported. All 412 fragment-mode cases match, including template contexts; synchronous parser scripts remain unsupported. Parse-error counts and encoding/quirks mode are not certified. Broad WPT testharness coverage remains to be added. A separate pinned [Test262 selection](../tests/conformance/test262.md) retains 326 unchanged sources and all 652 mode variants: 536 passed and 116 unsupported, with no failed or harness-error modes. Both strict and sloppy variants execute; 32 unchanged-harness/strict-semantics preflights pass. A separate [RegExp inventory](../tests/conformance/test262-regexp.md) retains all 145 sources and 290 variants: 250 passed and 40 unsupported, with 44 preflights and no failures or resource/timeout outcomes. These are selected cases, not a full Test262 pass rate; assertion preflights and previously passing cases gate the runner.
+1. A pinned [WPT HTML tree-construction corpus](../tests/conformance/README.md) now exercises 1,959 inputs in 3,876 scripting-flag modes. Current exact-tree results are 3,868 matched, two unchanged expectation-framing mismatches and six unsupported. All 412 fragment-mode cases match, including template contexts; synchronous parser scripts remain unsupported. Parse-error counts and encoding/quirks mode are not certified. Broad WPT testharness coverage remains to be added. A separate pinned [Test262 selection](../tests/conformance/test262.md) retains 326 unchanged sources and all 652 mode variants: 558 passed and 94 unsupported, with no failed or harness-error modes. Both strict and sloppy variants execute; 32 unchanged-harness/strict-semantics preflights pass. A separate [RegExp inventory](../tests/conformance/test262-regexp.md) retains all 145 sources and 290 variants: 262 passed and 28 unsupported, with 44 preflights and no failures or resource/timeout outcomes. These are selected cases, not a full Test262 pass rate; assertion preflights and previously passing cases gate the runner.
 2. Implement the required testharness bindings and WebDriver/session interfaces. This engine currently has neither a full WPT harness nor WebDriver.
 3. Track individual test outcomes and expected failures by specification; never substitute a hand-selected fixture pass rate for platform-wide conformance.
 4. Expand parsing/tree-building before judging rendering failures; then extend CSS used values, layout algorithms, text, and the script language/runtime.

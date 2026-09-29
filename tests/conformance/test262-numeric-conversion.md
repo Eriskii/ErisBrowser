@@ -1,5 +1,10 @@
 # Pinned Test262 coercing global predicate inventory
 
+The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
+and `new.target` metadata. Current results: **32 passed, 28 unsupported**.
+The inventory and source bytes are unchanged. Measurements and policy descriptions
+below retain the history of earlier checkpoints.
+
 The profile retains every JavaScript file in the complete isFinite and isNaN
 directories at Test262 revision `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`:
 [isFinite](https://github.com/tc39/test262/tree/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/isFinite),

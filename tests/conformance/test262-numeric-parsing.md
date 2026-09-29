@@ -1,5 +1,10 @@
 # Pinned Test262 numeric parsing inventory
 
+The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
+and `new.target` metadata. Current results: **176 passed, 34 unsupported, 8 resource**.
+The inventory and source bytes are unchanged. Measurements and policy descriptions
+below retain the history of earlier checkpoints.
+
 The profile retains every direct JavaScript file in the complete parseInt and
 parseFloat directories at Test262 revision
 `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`:

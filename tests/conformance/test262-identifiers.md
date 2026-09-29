@@ -1,5 +1,10 @@
 # Pinned Test262 identifier and whitespace selection
 
+The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
+and `new.target` metadata. Current results: **509 passed, 154 unsupported, 6 resource**.
+The inventory and source bytes are unchanged. Measurements and policy descriptions
+below retain the history of earlier checkpoints.
+
 This separate profile retains every direct JavaScript source in two complete
 [Test262 language directories](https://github.com/tc39/test262/tree/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/language)
 at revision `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`:

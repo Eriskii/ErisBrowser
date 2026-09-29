@@ -1,5 +1,23 @@
 # Validation record
 
+## Symbol targets and constructor policy expansion
+
+The [policy checkpoint](../tests/conformance/constructor-policy.md) admits 88
+previously excluded modes. Its [evidence](../tests/conformance/constructor-policy.json)
+separates 86 cases that already passed from two Symbol constructor failures fixed
+by the implementation. All 7,231 mode fingerprints remain unchanged and no prior
+pass is lost. Two cross-realm exclusion diagnostics change without admitting
+those tests. All other observations and all 1,960 old assertion controls are
+unchanged; 48 added controls bring the verified total to 2,008.
+
+The ten frozen local modes pass after failing before the fix. On Rust 1.88 and
+1.95, strict all-target Clippy and all tests pass: **1,005 default / 1,016 feature
+Rust tests**, none ignored. Both release builds preserve **57 CPU pixel references**.
+**162 Python tests** and **45,000 mutation cases** pass. HTML case objects remain
+exactly unchanged. Eighteen policy baselines were reviewed and updated; the four
+resource-observation profiles remain observations. These checks do not establish
+full platform compatibility, audited security or Chromium performance parity.
+
 ## Reflect calls and constructor targets
 
 The [constructor checkpoint](../tests/conformance/construction.md) adds private

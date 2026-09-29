@@ -1,5 +1,10 @@
 # Pinned Test262 reduce and reduceRight selection
 
+The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
+and `new.target` metadata. Current results: **860 passed, 8 failed, 166 unsupported**.
+The inventory and source bytes are unchanged. Measurements and policy descriptions
+below retain the history of earlier checkpoints.
+
 Current update: [Symbol properties and observable Math/JSON tags](symbols.md)
 add eight passing modes. The complete inventory now has **856 passed / 8 failed /
 170 unsupported**, with all 128 controls verified. Date accounts for the remaining

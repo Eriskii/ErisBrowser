@@ -1,8 +1,8 @@
 {
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "a3e15e061fc8c9cac736e081554f3e42b497d805ebfd7647ea49736cb2d83be5",
-  "runner_policy_sha256": "b579a37e261689714f4b2e41fe933581aa246348bafa391f2dba7c8aec4edacc",
-  "binary_sha256": "f7303916323638bd7965ffbffeee4afd27e8f630bed6c8357a8a51fc10621b56",
+  "runner_policy_sha256": "a1f03c4f9590ec957d7dac54aaf1633e9b9c95f4faf7f7bdc7593ce337168a5b",
+  "binary_sha256": "e623176f34821ca5073e2e96e5a5546978e75b0ab6a69ddde059954e37b25805",
   "cases": {
     "test/language/rest-parameters/array-pattern.js:sloppy": {
       "status": "unsupported",

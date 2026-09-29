@@ -117,16 +117,16 @@ The [validation record](docs/VALIDATION.md) lists observed results and their lim
 A separate [function inventory](tests/conformance/test262-functions.md) retains
 663 unchanged Test262 sources and 1,131 required variants. Default parameters,
 prototype membership, Window.self, array sorting, identifier parsing and bounded
-grammar continuations bring it to 511 passing variants, 161 more than the initial
+grammar continuations and constructor coverage bring it to 515 passing variants, 165 more than the initial
 measurement with no lost passes. Both original 32-nested-function tests now pass.
-The remaining 620 variants are unsupported; its healthy baseline runs in CI.
+The remaining 616 variants are unsupported; its healthy baseline runs in CI.
 
 A separate complete [rest-parameter directory](tests/conformance/test262-rest-parameters.md)
 retains 22 variants: 16 pass and six remain unsupported. Its assertion-checked
 regression baseline runs in CI.
 
 The complete [prototype-membership directory](tests/conformance/test262-is-prototype-of.md)
-adds 20 variants: ten pass and ten require unsupported features. Its separate
+adds 20 variants: 14 pass and six require unsupported features. Its separate
 CI gate requires all method assertion preflights to pass.
 
 The complete [global-value directories](tests/conformance/test262-global-values.md)
@@ -135,30 +135,30 @@ Global-property corrections and URI bindings add ten passes; Window reflection a
 preflights verify; CI preserves those passes and the unchanged inventory.
 
 The complete [array-sort directory](tests/conformance/test262-array-sort.md)
-retains 107 variants: 57 pass, 46 remain unsupported, and four exceed the shared
+retains 107 variants: 59 pass, 44 remain unsupported, and four exceed the shared
 script budget. Adding reduce enables the 5- and 11-element stability tests in
 both modes. Those resource stops prevent a healthy
 regression baseline; the full inventory remains part of local measurements.
 
 The complete paired [reduce/reduceRight directories](tests/conformance/test262-array-reduce.md)
-retain 1,034 variants: 856 pass, eight fail on missing Date behavior and 170
+retain 1,034 variants: 860 pass, eight fail on missing Date behavior and 166
 remain unsupported. Both methods and Number.MAX_SAFE_INTEGER add 764
 passes with no losses; Symbol-based Math/JSON tags add eight more. All 128 assertion checks verify; CI preserves the passing
 cases and the full unchanged inventory.
 
 The [Number static builtin inventory](tests/conformance/test262-number-statics.md)
-retains 340 variants: 250 pass and 90 remain unsupported. Constants, static
+retains 340 variants: 260 pass and 80 remain unsupported. Constants, static
 predicates, ordinary constructor conversion and parsing aliases add 90 passes
 with no losses; Window reflection adds two more. All 104 assertion checks verify, and
 the complete regression baseline runs in CI.
 
 The complete [coercing global predicate directories](tests/conformance/test262-numeric-conversion.md)
-retain 60 variants: 28 pass and 32 remain unsupported. Ordinary numeric conversion
+retain 60 variants: 32 pass and 28 remain unsupported. Ordinary numeric conversion
 adds eight passes with no losses; Window reflection adds four more. All 80 assertion controls verify, and CI
 preserves the complete inventory and passing outcomes.
 
 The complete [numeric parsing directories](tests/conformance/test262-numeric-parsing.md)
-retain 218 variants: 172 pass, 38 remain unsupported and eight exceed the
+retain 218 variants: 176 pass, 34 remain unsupported and eight exceed the
 instruction budget. Compound assignment support lets the unchanged helper load
 and its dependent loops run. All 80 assertion controls verify; resource stops
 prevent a healthy regression baseline.
@@ -193,12 +193,12 @@ Ordinary coercion and nullish dispatch add 44 passes. All 128 assertion controls
 verify; CI preserves the gains and complete inventory.
 
 The four complete [relational comparison directories](tests/conformance/test262-relational.md)
-retain 364 variants: 300 pass and 64 remain outside this profile's unchanged feature policy, including Symbol-tagged cases.
+retain 364 variants: 300 pass and 64 remain outside this profile's feature policy, including Symbol-tagged cases.
 Ordinary conversion adds eight passes; all 128 assertion controls verify.
 CI preserves the passes and unchanged inventory.
 
 The complete [URI builtin directories](tests/conformance/test262-uri.md) retain
-346 variants: 226 pass, eight remain unsupported and 112 hit the instruction limit.
+346 variants: 234 pass and 112 hit the instruction limit.
 All 128 assertion controls verify. Full loops remain unchanged; resource stops
 prevent a healthy URI regression baseline.
 
@@ -210,8 +210,8 @@ regressions that were resolved by reducing actual lookup work and token storage.
 The remaining resource stops prevent a healthy regression baseline.
 
 The complete [Symbol tree and key-reflection inventory](tests/conformance/symbols.md)
-adds 123 sources / 242 modes: 168 pass, six fail and 68 remain unsupported, with
-64 verified controls. Symbol identities, UTF-16 descriptions/registry keys,
+adds 123 sources / 242 modes: 182 pass, six fail and 54 remain unsupported, with
+80 verified controls. Symbol identities, UTF-16 descriptions/registry keys,
 symbol properties, primitive/tag/instance hooks and key reflection now work.
 Their broader protocols remain incomplete. The [full comparison](tests/conformance/symbol-properties.json)
 retains all results; CI preserves the new passing-case baseline.
@@ -233,9 +233,9 @@ Window probe modes. Full Window interfaces and extensibility remain incomplete.
 
 [String.prototype.concat](tests/conformance/string-concat.md) now performs ordered
 string conversion and preserves UTF-16 units using one final output buffer.
-Its complete 22-source Test262 directory records 42 passed modes and two excluded
-by that profile's frozen Reflect.construct feature policy; all 56 assertion controls verify. The existing
-21 profile inventories retain every previous pass and control.
+Its complete 22-source Test262 directory now records 44 passed modes after the
+[constructor-policy review](tests/conformance/constructor-policy.md); all 56
+assertion controls verify. Earlier checkpoint records preserve their original policies.
 
 [Constructor targets and Reflect calls](tests/conformance/construction.md) now
 support `new.target`, `Reflect.apply` and `Reflect.construct`, including lexical
@@ -243,6 +243,11 @@ arrow capture and bound construction. Two complete pinned Test262 selections
 gain 46 passes across 66 modes; four Date-dependent modes still fail and ten
 remain unsupported. Alternate Web IDL targets and broader constructor semantics
 remain incomplete.
+
+Symbol now works as an alternate constructor target while its own construction
+still throws. The [reviewed policy expansion](tests/conformance/constructor-policy.md)
+enables 88 older Test262 modes: 86 already passed, and two pass after the Symbol
+fix. All 7,231 modes preserve prior passes; all 2,008 assertion controls verify.
 
 ## Implementation
 

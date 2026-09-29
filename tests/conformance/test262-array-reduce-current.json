@@ -1,8 +1,8 @@
 {
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "77ee716188d99fdba64adbe151ef4efd915fbaa6345b2b0ec8fe3550efb5ec24",
-  "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
-  "binary_sha256": "4b890d92a4027dc929be92ba366b0cf670f94f18e4bfb28025e365aba6bbab57",
+  "runner_policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+  "binary_sha256": "e623176f34821ca5073e2e96e5a5546978e75b0ab6a69ddde059954e37b25805",
   "cases": {
     "test/built-ins/Array/prototype/reduce/15.4.4.21-1-1.js:sloppy": {
       "status": "passed",
@@ -2540,12 +2540,12 @@
       "source_sha256": "c9489fc06f9037dc3c567b0d5c7f36132f66f63d6ddf98c09bd40ea27f069940"
     },
     "test/built-ins/Array/prototype/reduce/not-a-constructor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "369e3ef1cadb639ebdf62696bd459e5cd2a63dafa50a82adb87924d3674c70b8",
       "source_sha256": "9539d87ca785b0836b7fc8fbccfc70af297636cd7c53f473bd4f0a0c671f584a"
     },
     "test/built-ins/Array/prototype/reduce/not-a-constructor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "64c53f8ff32d7ed4a67784de1d14986aedcb38f4447e476e64ea82ce845de526",
       "source_sha256": "9539d87ca785b0836b7fc8fbccfc70af297636cd7c53f473bd4f0a0c671f584a"
     },
@@ -5125,12 +5125,12 @@
       "source_sha256": "04b6f1fd23a7a748b6fb871097d84690c52b59031478a20a7169d40f397bcc74"
     },
     "test/built-ins/Array/prototype/reduceRight/not-a-constructor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "17590a897b59a97d892a5670889b9fcdd4a917e85c350f9c3756f30610820fd3",
       "source_sha256": "a40f5d7efcabaf7a482c0d7fc959466829e82ad588881e3189e0828fe662a279"
     },
     "test/built-ins/Array/prototype/reduceRight/not-a-constructor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "de21fab6d1efcce6a8c5684282eea1dc13f4988b0a99eacc0485973035ef8072",
       "source_sha256": "a40f5d7efcabaf7a482c0d7fc959466829e82ad588881e3189e0828fe662a279"
     },

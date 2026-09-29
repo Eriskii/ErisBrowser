@@ -1,5 +1,10 @@
 # Pinned Test262 compound-assignment inventory
 
+The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
+and `new.target` metadata. Current results: **617 passed, 169 unsupported**.
+The inventory and source bytes are unchanged. Measurements and policy descriptions
+below retain the history of earlier checkpoints.
+
 The [general Window binding follow-up](window-global-bindings.md) raises this
 profile to **617 passed / 169 unsupported**. Eleven strict captured-global writes
 now reach their expected ReferenceError after a getter deletes the property.

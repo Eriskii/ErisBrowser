@@ -19,17 +19,18 @@ class StringConcatCorpusTests(unittest.TestCase):
         cls.manifest, cls.files, cls.cases, cls.fixtures, cls.digest = runner.load_corpus(
             cls.directory, 'string-concat')
 
-    def test_complete_inventory_keeps_unsupported_constructor_modes_and_exact_helpers(self):
+    def test_complete_inventory_executes_constructor_modes_and_keeps_exact_helpers(self):
         self.assertEqual(self.manifest['test_files'], 22)
         self.assertEqual(len(self.cases), 44)
         self.assertEqual(self.fixtures, [])
         self.assertEqual(self.digest, 'e904181959ebb9592f63f75802b7a6f84a40e108379257e6cb8bb29354d5aa60')
         self.assertEqual(runner.STRING_CONCAT_FEATURES, runner.SUPPORTED_FEATURES)
         excluded = [c for c in self.cases if runner.unsupported_reason(c, runner.STRING_CONCAT_FEATURES)]
-        self.assertEqual(len(excluded), 2)
-        self.assertEqual({c['mode'] for c in excluded}, {'sloppy', 'strict'})
-        self.assertTrue(all(c['file'].endswith('/not-a-constructor.js') for c in excluded))
-        self.assertTrue(all('Reflect.construct' in runner.unsupported_reason(c, runner.STRING_CONCAT_FEATURES) for c in excluded))
+        self.assertEqual(excluded, [])
+        constructors = [c for c in self.cases if c['file'].endswith('/not-a-constructor.js')]
+        self.assertEqual(len(constructors), 2)
+        self.assertEqual({c['mode'] for c in constructors}, {'sloppy', 'strict'})
+        self.assertTrue(all('Reflect.construct' in c['metadata']['features'] for c in constructors))
         symbol_dir = runner.ROOT / 'tests/upstream/test262-symbols'
         for name in ['assert.js', 'sta.js', 'propertyHelper.js', 'compareArray.js', 'isConstructor.js']:
             self.assertEqual(self.files['harness/' + name], (symbol_dir / 'harness' / name).read_bytes())

@@ -1,5 +1,10 @@
 # Pinned Test262 Array.prototype.sort selection
 
+The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
+and `new.target` metadata. Current results: **59 passed, 44 unsupported, 4 resource**.
+The inventory and source bytes are unchanged. Measurements and policy descriptions
+below retain the history of earlier checkpoints.
+
 This isolated profile retains all **54 direct JavaScript sources** in
 [Test262's Array.prototype.sort directory](https://github.com/tc39/test262/tree/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/built-ins/Array/prototype/sort)
 at revision `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`. There are no nested

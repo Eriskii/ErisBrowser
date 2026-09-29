@@ -1,8 +1,8 @@
 {
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "15281ebe6e6c980c547f113563df7d2b5d346ac0db5c9c4aca75dbb6fc60b330",
-  "runner_policy_sha256": "952e68b04e464d1a954c5949b0b9bbd8924472b8fba70a719a20a754d4d03439",
-  "binary_sha256": "af3f3205e0a7f13ade2a9236ca22bf8bfefe20ef947a3c106e48c7f0bb711da7",
+  "runner_policy_sha256": "012c455ee75d314d1a222c23205bf5cb5c48058ecdf5a067270bb6cff73f0089",
+  "binary_sha256": "e623176f34821ca5073e2e96e5a5546978e75b0ab6a69ddde059954e37b25805",
   "cases": {
     "test/language/expressions/arrow-function/ArrowFunction_restricted-properties.js:sloppy": {
       "status": "passed",
@@ -185,22 +185,22 @@
       "source_sha256": "63061fa738408f6f907190f4aa0bea7dbdceaac24dcf54f4f1243c58ca9295d9"
     },
     "test/language/expressions/arrow-function/lexical-new.target-closure-returned.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "826f5c2ae553cc0a6c28855d2460e64f081949664654a88d29a90aafcf3300cd",
       "source_sha256": "db7cdf1946a07d5dfc3ec2379de90a9aa11ce77ae092736a303d78cea9d184fe"
     },
     "test/language/expressions/arrow-function/lexical-new.target-closure-returned.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "7dc088d72900dc0728be56b19c9952b2d267ae7f4d091b0029b3efff6668e7c9",
       "source_sha256": "db7cdf1946a07d5dfc3ec2379de90a9aa11ce77ae092736a303d78cea9d184fe"
     },
     "test/language/expressions/arrow-function/lexical-new.target.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "f308ae6bd7904fef031a0134ee8b161f9ce2f893172d7b7bb2831b82a7155b8b",
       "source_sha256": "2cf50e8c18cfca55ae0087de340dd58e43aa16e350c28a7b031b2b4577cced7c"
     },
     "test/language/expressions/arrow-function/lexical-new.target.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "ec957bb50008aeb452c13f3d208c95428539069eecb5c85a269910760688211b",
       "source_sha256": "2cf50e8c18cfca55ae0087de340dd58e43aa16e350c28a7b031b2b4577cced7c"
     },

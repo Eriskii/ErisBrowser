@@ -31,15 +31,15 @@ class SymbolCorpusTests(unittest.TestCase):
             'harness/propertyHelper.js', 'harness/isConstructor.js',
         })
         self.assertEqual(len({case['id'] for case in self.cases}), 242)
-        self.assertEqual(sum(runner.unsupported_reason(c, runner.SYMBOL_FEATURES) is not None for c in self.cases), 66)
+        self.assertEqual(sum(runner.unsupported_reason(c, runner.SYMBOL_FEATURES) is not None for c in self.cases), 52)
         with self.assertRaisesRegex(ValueError, 'inventory'):
             runner.load_corpus(self.directory, 'string-json')
 
     def test_symbol_policy_keeps_exotic_hosts_and_unimplemented_protocols_explicit(self):
-        for feature in ('Proxy', 'cross-realm', 'Reflect.construct', 'explicit-resource-management', 'class', 'generators'):
+        for feature in ('Proxy', 'cross-realm', 'Reflect.get', 'explicit-resource-management', 'class', 'generators'):
             case = sample(('/*---\nfeatures: [' + feature + ']\n---*/\n').encode())
             self.assertIn(feature, runner.unsupported_reason(case, runner.SYMBOL_FEATURES))
-        for feature in ('Symbol', 'Symbol.toPrimitive', 'Symbol.toStringTag', 'Reflect'):
+        for feature in ('Symbol', 'Symbol.toPrimitive', 'Symbol.toStringTag'):
             case = sample(('/*---\nfeatures: [' + feature + ']\n---*/\n').encode())
             self.assertIsNone(runner.unsupported_reason(case, runner.SYMBOL_FEATURES))
             self.assertIsNotNone(runner.unsupported_reason(case, runner.SUPPORTED_FEATURES))
@@ -50,8 +50,8 @@ class SymbolCorpusTests(unittest.TestCase):
             checks = runner.harness_preflight(self.files, Path('/fake'), 1, 'symbols')
         self.assertEqual(len(core), 32)
         self.assertEqual(checks[:32], core)
-        self.assertEqual(len(checks), 64)
-        self.assertEqual(sum(c['verified'] for c in checks[32:]), 16)
+        self.assertEqual(len(checks), 80)
+        self.assertEqual(sum(c['verified'] for c in checks[32:]), 24)
         self.assertTrue(all(c['name'].endswith('-mismatch') for c in checks[32:] if not c['verified']))
         self.assertEqual({c['result']['mode'] for c in checks[32:]}, {'sloppy', 'strict'})
         with patch.object(runner, 'bounded_process', return_value=(0, response('exception', 'runtime', 'TypeError'), b'')):

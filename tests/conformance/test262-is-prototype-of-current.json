@@ -1,8 +1,8 @@
 {
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "f019dcc5e150cf14a6b144577a30937ed1314c6b5de3dd331ad574585f16d461",
-  "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
-  "binary_sha256": "566886403cd490547bf5475078b60f68fdc0a5d5c5f3007d36ee1179a50f6e0c",
+  "runner_policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+  "binary_sha256": "e623176f34821ca5073e2e96e5a5546978e75b0ab6a69ddde059954e37b25805",
   "cases": {
     "test/built-ins/Object/prototype/isPrototypeOf/arg-is-proxy.js:sloppy": {
       "status": "unsupported",
@@ -15,12 +15,12 @@
       "source_sha256": "e069d3e963b1df3f5fe8bf2868441e9e4df902b210142ead475f42939d7e1db0"
     },
     "test/built-ins/Object/prototype/isPrototypeOf/builtin.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "d0203db3d7d12a913e1f2a43402c07bae48d169daae48132d1d6deb75b0b939f",
       "source_sha256": "95f6bb0450a58e6c1a24c35fdcb8f1c87c0c546d07557189ae1502f2d14a7d7a"
     },
     "test/built-ins/Object/prototype/isPrototypeOf/builtin.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "f2ad41ce1bb89a8e8994e80d2e9e500fbfcb6649ee4fae0e9588c0a4ed627fbe",
       "source_sha256": "95f6bb0450a58e6c1a24c35fdcb8f1c87c0c546d07557189ae1502f2d14a7d7a"
     },
@@ -45,12 +45,12 @@
       "source_sha256": "b1cc81e7180b3c38a74738527480b02fddc9cbd0655d823891b0b78f729d052a"
     },
     "test/built-ins/Object/prototype/isPrototypeOf/not-a-constructor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "3cc107915db8f7336b6ccbefd2254eadcf8aabb2302ab39dea989abbcb086a8c",
       "source_sha256": "68297e803cf54c40f7dcd5d5cf39d623b71c382e1629d91bb7699c335a569be7"
     },
     "test/built-ins/Object/prototype/isPrototypeOf/not-a-constructor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "4dbc584ba0067878e13693326b39d2d287f5c1478fac9f125ad097bdcae1985a",
       "source_sha256": "68297e803cf54c40f7dcd5d5cf39d623b71c382e1629d91bb7699c335a569be7"
     },

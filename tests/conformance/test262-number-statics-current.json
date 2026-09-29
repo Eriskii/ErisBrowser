@@ -1,8 +1,8 @@
 {
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "3c5c2503458843bfc64eaf546ee08b6e693714f561df42330d9001a2ec8216cd",
-  "runner_policy_sha256": "81b61b3419f5a73997b1f29d352177e4847797cf9c8d8fcc353a52c0acb6be2e",
-  "binary_sha256": "2035b3b51b264c4592ab4c7c598eea61492d1b375e10d04f0ec87dd3aff93f43",
+  "runner_policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+  "binary_sha256": "e623176f34821ca5073e2e96e5a5546978e75b0ab6a69ddde059954e37b25805",
   "cases": {
     "test/built-ins/Number/15.7.3-1.js:sloppy": {
       "status": "passed",
@@ -945,12 +945,12 @@
       "source_sha256": "61cdbbe4912c48083578a2e8e6e81921786aacb6eac6019baa1a880604ad9a62"
     },
     "test/built-ins/Number/is-a-constructor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "e06de97104799cb122b5c63c3d0d729a02bd1d16b3b6a408a5360f8a89d98aee",
       "source_sha256": "558635e4508ae24004516ceb6d89707c2ef094acab3700e155907e16f7c045b6"
     },
     "test/built-ins/Number/is-a-constructor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "4d99adcad92912493051cf7f7ad299419fe868700336709724f5cb8f72af10b0",
       "source_sha256": "558635e4508ae24004516ceb6d89707c2ef094acab3700e155907e16f7c045b6"
     },
@@ -1015,12 +1015,12 @@
       "source_sha256": "2933049ebe4e856914f7de9f472c3d6e8106cf689490da132b5d7129479d0c7c"
     },
     "test/built-ins/Number/isFinite/not-a-constructor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "d162e6b808c629bfd86bd9b308f0aef5f389930ee4a372e40dc76c0b2654b828",
       "source_sha256": "5ca71905f2f5d8bb5283b836bc0bd1136607f9e7dbcb0348dfa57e552007ebf0"
     },
     "test/built-ins/Number/isFinite/not-a-constructor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "126f9eee117009a0134fc5aafd11b8fb735cd72406528e4e277916a5f2ce7e95",
       "source_sha256": "5ca71905f2f5d8bb5283b836bc0bd1136607f9e7dbcb0348dfa57e552007ebf0"
     },
@@ -1105,12 +1105,12 @@
       "source_sha256": "e56bd2108a0812bd79c0311b3de01cb370658347eca3c1a8e2ae043cf250a2d1"
     },
     "test/built-ins/Number/isInteger/not-a-constructor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "57c44a022b49caf86cb41369701c18885db0fa11fdf5a237e9633ec8535fd2a6",
       "source_sha256": "a14a4547934ff3c6d47f15f605428f197b9753c83ccd16e3abb37755f50abe22"
     },
     "test/built-ins/Number/isInteger/not-a-constructor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "88478a2c92ac6e8844208d2351817ec88cce2a4ed8189e64594c58fb67cec5ab",
       "source_sha256": "a14a4547934ff3c6d47f15f605428f197b9753c83ccd16e3abb37755f50abe22"
     },
@@ -1165,12 +1165,12 @@
       "source_sha256": "d513a909b333f40762bc08a9e2d1435d4ca097ed8b6da76497d0201a7264589e"
     },
     "test/built-ins/Number/isNaN/not-a-constructor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "4d4aa2f9f1dfb369b3e811fd67a335007286966a0ecf64879f32b6fa590b2a7e",
       "source_sha256": "93b102b5b251a4ccf3fb26a1a2796f793f431ab31540214d204acdf83fcc663c"
     },
     "test/built-ins/Number/isNaN/not-a-constructor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "a38ac86e1103fef6d9556c4d1a2c95514ddaf3e26934a559f2542e53356e2d72",
       "source_sha256": "93b102b5b251a4ccf3fb26a1a2796f793f431ab31540214d204acdf83fcc663c"
     },
@@ -1245,12 +1245,12 @@
       "source_sha256": "05d7b0034439daabe4a8c69b446c9b4ce9ec11aba9467b39b5cd56ab5cddafb4"
     },
     "test/built-ins/Number/isSafeInteger/not-a-constructor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "9ef43fc839322f841e2978581b3dd618e561e941061fe1e2d620c88fbf81dbdf",
       "source_sha256": "e0d1bb86488724c7e40ca88eb99ce075bed652c446b1c512340afeabb48734a8"
     },
     "test/built-ins/Number/isSafeInteger/not-a-constructor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "0f4cfb18eae5a88c97127bc6dcf2fbcd13c44181a82be71ba2309099bfe54f89",
       "source_sha256": "e0d1bb86488724c7e40ca88eb99ce075bed652c446b1c512340afeabb48734a8"
     },

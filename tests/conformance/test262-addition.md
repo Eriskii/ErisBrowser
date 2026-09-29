@@ -1,5 +1,10 @@
 # Pinned Test262 addition inventory
 
+The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
+and `new.target` metadata. Current results: **65 passed, 2 failed, 28 unsupported**.
+The inventory and source bytes are unchanged. Measurements and policy descriptions
+below retain the history of earlier checkpoints.
+
 This profile retains every direct JavaScript file in
 [language/expressions/addition](https://github.com/tc39/test262/tree/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd/test/language/expressions/addition)
 at revision `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`: **48 sources, 107,338

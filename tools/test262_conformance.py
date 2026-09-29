@@ -17,7 +17,8 @@ from import_test262 import (DIRECTORIES, PROFILES, PROFILE_ROOTS, MAX_FILE, MAX_
                             REPOSITORY, REVISION, corpus_name, parse_metadata)
 
 ROOT = Path(__file__).resolve().parents[1]
-SUPPORTED_FEATURES = {'arrow-function', 'String.fromCodePoint', 'well-formed-json-stringify', 'for-in-order'}
+CONSTRUCTOR_FEATURES = {'Reflect', 'Reflect.apply', 'Reflect.construct', 'new.target'}
+SUPPORTED_FEATURES = {'arrow-function', 'String.fromCodePoint', 'well-formed-json-stringify', 'for-in-order'} | CONSTRUCTOR_FEATURES
 STRING_CONCAT_FEATURES = SUPPORTED_FEATURES.copy()
 REGEXP_FEATURES = SUPPORTED_FEATURES | {'regexp-dotall', 'regexp-match-indices', 'regexp-named-groups', 'regexp-sticky'}
 TEMPLATE_FEATURES = SUPPORTED_FEATURES | {'template', 'u180e'}
@@ -1007,6 +1008,17 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
             ('apply-receiver', 'var receiver={};function f(){return this;}var result=Reflect.apply(f,receiver,[]);', 'result', 'receiver', 'undefined'),
             ('apply-validation', "assert.sameValue(typeof Reflect.apply,'function');var count=0,caught;try{Reflect.apply({},null,{get length(){count++;}});}catch(e){caught=e;}assert.sameValue(count,0);", 'caught instanceof TypeError', 'true', 'false'),
             ('construct-validation', "assert.sameValue(typeof Reflect.construct,'function');var count=0,caught;try{Reflect.construct(function(){},{get length(){count++;}},undefined);}catch(e){caught=e;}assert.sameValue(count,0);", 'caught instanceof TypeError', 'true', 'false'),
+        ]
+        for mode in ('sloppy', 'strict'):
+            for name, setup, actual, good, bad in pairs:
+                for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                    variants.append((name + suffix, setup + f'assert.sameValue({actual},{value});', expected, mode))
+    if profile in {'symbols', 'reflect-construction', 'new-target'}:
+        pairs = [
+            ('symbol-alternate-target', 'var x=Reflect.construct(Object,[],Symbol);', 'Object.getPrototypeOf(x)===Symbol.prototype', 'true', 'false'),
+            ('symbol-construction-order', "var log='',caught;try{Reflect.construct(Symbol,{get length(){log+='l';return 1;},get 0(){log+='0';return {toString:function(){log+='s';return 'x';}};}});}catch(e){caught=e;}assert.sameValue(caught instanceof TypeError,true);", 'log', "'l0'", "''"),
+            ('symbol-bound-target', 'var B=Symbol.bind(null);var x=Reflect.construct(Object,[],B);', 'Object.getPrototypeOf(x)===Object.prototype', 'true', 'false'),
+            ('symbol-argument-abrupt', 'var marker={},caught;try{Reflect.construct(Symbol,{get length(){throw marker;}});}catch(e){caught=e;}', 'caught===marker', 'true', 'false'),
         ]
         for mode in ('sloppy', 'strict'):
             for name, setup, actual, good, bad in pairs:

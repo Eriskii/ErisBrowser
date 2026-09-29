@@ -1,5 +1,10 @@
 # Pinned Test262 logical-assignment inventory
 
+The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
+and `new.target` metadata. Current results: **78 passed, 6 failed, 48 unsupported**.
+The inventory and source bytes are unchanged. Measurements and policy descriptions
+below retain the history of earlier checkpoints.
+
 Current update: [Symbol primitive conversion](symbols.md) adds six passing
 modes. The complete inventory now has **78 passed / 6 failed / 48 unsupported**,
 with all 104 controls verified. Class syntax accounts for the remaining failures.

@@ -1,5 +1,10 @@
 # Pinned Test262 String concat profile
 
+The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
+and `new.target` metadata. Current results: **44 passed**.
+The inventory and source bytes are unchanged. Measurements and policy descriptions
+below retain the history of earlier checkpoints.
+
 This profile imports every direct `.js` file in
 `test/built-ins/String/prototype/concat` at Test262 revision
 `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`: **22 sources / 44 modes**. The complete

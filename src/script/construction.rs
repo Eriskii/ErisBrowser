@@ -35,6 +35,7 @@ impl Runtime {
                                 | "String"
                                 | "Number"
                                 | "Boolean"
+                                | "Symbol"
                                 | "RegExp"
                                 | "Error"
                                 | "TypeError"
@@ -188,6 +189,9 @@ impl Runtime {
             Value::Native(native) if native.receiver == Value::Window => {
                 let name = native.name.as_str();
                 match name {
+                    // Symbol has [[Construct]] and can serve as another constructor's
+                    // newTarget. Its own construction always throws before coercion.
+                    "Symbol" => Err(ScriptError::type_error("Symbol cannot be constructed")),
                     "String" | "Number" | "Boolean" => {
                         if name == "String" && matches!(arguments.first(), Some(Value::Symbol(_))) {
                             return Err(ScriptError::type_error(
@@ -273,6 +277,42 @@ mod tests {
                 assert_eq!(runtime.calls, 0);
                 assert_eq!(runtime.stack_units, 0);
             }
+        }
+    }
+    #[test]
+    fn symbol_constructor_targets_in_both_modes() {
+        for fixture in include_str!("../../tests/conformance/symbol-constructor-targets.js")
+            .split("// CASE: ")
+            .skip(1)
+        {
+            let (name, source) = fixture.split_once('\n').unwrap();
+            for strict in [false, true] {
+                let (mut runtime, mut doc) = harness();
+                let script = format!("{}\n{source}", if strict { "'use strict';" } else { "" });
+                runtime
+                    .execute(&script, &mut doc)
+                    .unwrap_or_else(|error| panic!("{name} strict={strict}: {error}"));
+                assert!(runtime.frames.is_empty());
+                assert_eq!(runtime.calls, 0);
+                assert_eq!(runtime.stack_units, 0);
+            }
+        }
+    }
+    #[test]
+    fn symbol_constructor_callbacks_and_argument_lists_retain_resource_limits() {
+        for source in [
+            "try{Reflect.construct(Symbol,{length:Infinity});}catch(e){console.log('caught');}",
+            "function read(){return read();}try{Reflect.construct(Symbol,{get length(){return read();}});}catch(e){console.log('caught');}",
+            "var B=Symbol.bind(null);Object.defineProperty(B,'prototype',{get:function(){return Reflect.construct(Object,[],B);}});try{Reflect.construct(Object,[],B);}catch(e){console.log('caught');}",
+        ] {
+            let mut runtime = Runtime::new();
+            let mut doc = Document::parse("<body>");
+            let error = runtime.execute(source, &mut doc).unwrap_err();
+            assert!(error.is_resource_limit(), "{source}: {error}");
+            assert!(runtime.console.is_empty());
+            assert!(runtime.frames.is_empty());
+            assert_eq!(runtime.calls, 0);
+            assert_eq!(runtime.stack_units, 0);
         }
     }
     #[test]

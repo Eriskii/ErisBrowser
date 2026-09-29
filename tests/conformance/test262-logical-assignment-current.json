@@ -1,8 +1,8 @@
 {
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "a83f71b8a6b6a1523951d73a4711f024cf77ad3bf90e6698bc6224e7bfabf1a3",
-  "runner_policy_sha256": "6f127a653c09ef49d48382570086b28407a0b1f6426fd888045621d72d3e89af",
-  "binary_sha256": "4b890d92a4027dc929be92ba366b0cf670f94f18e4bfb28025e365aba6bbab57",
+  "runner_policy_sha256": "74a2627eaabaa31cba34e9ff9612cc8b944af7bae893c4e210fc1aa96f6868af",
+  "binary_sha256": "e623176f34821ca5073e2e96e5a5546978e75b0ab6a69ddde059954e37b25805",
   "cases": {
     "test/language/expressions/logical-assignment/left-hand-side-private-reference-accessor-property-and.js:sloppy": {
       "status": "unsupported",
