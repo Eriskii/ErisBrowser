@@ -27,6 +27,28 @@ struct Outcome {
 }
 
 fn main() {
+    #[cfg(all(target_os = "linux", feature = "vulkan-presenter"))]
+    if std::env::args().nth(1).as_deref() == Some("--clean-worker-launch") {
+        let result = match (std::env::args().nth(2), std::env::args().nth(3)) {
+            (Some(role), None) if role == "--timezone-discovery" => {
+                eris::worker::launch_worker(&role)
+            }
+            _ => Err("invalid adapter helper role".into()),
+        };
+        match result {
+            Ok(never) => match never {},
+            Err(error) => {
+                eprintln!("eris-js: {error}");
+                std::process::exit(2);
+            }
+        }
+    }
+    if std::env::args().nth(1).as_deref() == Some("--timezone-discovery") {
+        if std::env::args().len() != 2 || eris::date_host::serve_timezone_discovery().is_err() {
+            std::process::exit(2);
+        }
+        return;
+    }
     if let Err(error) = run() {
         eprintln!("eris-js: {error}");
         std::process::exit(2);
@@ -62,7 +84,21 @@ fn run() -> Result<(), String> {
         return Err("request exceeds adapter input budget".into());
     }
     let request = decode(&input)?;
-    let outcome = evaluate(request);
+    let outcome = evaluate_with_host(request, || {
+        let mut discovery = eris::date_host::ZoneDiscoverySupervisor::new();
+        discovery
+            .capture(
+                &std::env::current_exe().map_err(|e| e.to_string())?,
+                eris::date_host::ZoneDiscoveryConfig::from_environment()
+                    .map_err(|e| e.to_string())?,
+                || false,
+            )
+            .map(|captured| captured.date_host())
+            .map_err(|e| e.to_string())
+    });
+    if outcome.status == "adapter-error" {
+        return Err(outcome.message);
+    }
     let mut output = b"ERJR2".to_vec();
     for value in [
         outcome.status,
@@ -169,7 +205,15 @@ fn error_outcome(error: ScriptError, phase: &'static str, harness: &str) -> Outc
     }
 }
 
+#[cfg(test)]
 fn evaluate(request: Request) -> Outcome {
+    evaluate_with_host(request, || Ok(eris::date_host::DateHost::unconfigured()))
+}
+
+fn evaluate_with_host(
+    request: Request,
+    capture: impl FnOnce() -> Result<eris::date_host::DateHost, String>,
+) -> Outcome {
     if request.mode == 3 {
         return Outcome {
             status: "unsupported",
@@ -200,7 +244,20 @@ fn evaluate(request: Request) -> Outcome {
             harness: String::new(),
         };
     }
-    let mut runtime = Runtime::new();
+    let date_host = match capture() {
+        Ok(host) => host,
+        Err(error) => {
+            return Outcome {
+                status: "adapter-error",
+                phase: "initialization",
+                error_type: String::new(),
+                error_identity: String::new(),
+                message: format!("Date host initialization: {error}"),
+                harness: String::new(),
+            };
+        }
+    };
+    let mut runtime = Runtime::with_date_host(date_host);
     let mut document = Document::parse("");
     for (name, source) in request.harness {
         if let Err(error) = runtime.execute(&source, &mut document) {
@@ -235,6 +292,29 @@ fn evaluate(request: Request) -> Outcome {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn adapter_parses_before_host_capture_and_reports_initialization_failure() {
+        let mut parse = request("Date.now()");
+        parse.parse_only = true;
+        assert_eq!(
+            evaluate_with_host(parse, || panic!("parse-only must not capture a zone")).status,
+            "complete"
+        );
+        assert_eq!(
+            evaluate_with_host(request("var ="), || panic!(
+                "early errors must precede capture"
+            ))
+            .phase,
+            "parse"
+        );
+        let outcome = evaluate_with_host(request("throw 'author code must not run'"), || {
+            Err("missing rules".into())
+        });
+        assert_eq!(outcome.status, "adapter-error");
+        assert_eq!(outcome.phase, "initialization");
+        assert!(outcome.message.contains("missing rules"));
+    }
 
     fn request(source: &str) -> Request {
         Request {

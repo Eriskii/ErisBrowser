@@ -20,7 +20,9 @@ OBJECT_INTEGRITY_DIRECTORIES = {'Object/seal': 94, 'Object/freeze': 53,
                                 'Object/isSealed': 33, 'Object/isFrozen': 59}
 ARRAY_FIND_DIRECTORIES = {'Array/prototype/find': 23, 'Array/prototype/findIndex': 23,
                           'Array/prototype/findLast': 24, 'Array/prototype/findLastIndex': 24}
-TREE_PROFILES = {'array-descriptors', 'array-predicates', 'object-integrity', 'array-find'}
+DATE_TREE = '6ad4fab73be4a87e6bfb58793b5fa9c82335ce5e'
+DATE_DIRECTORIES = {'Date': 78, 'Date/UTC': 17, 'Date/now': 6, 'Date/parse': 8, 'Date/prototype': 44, 'Date/prototype/Symbol.toPrimitive': 18, 'Date/prototype/constructor': 1, 'Date/prototype/getDate': 8, 'Date/prototype/getDay': 8, 'Date/prototype/getFullYear': 8, 'Date/prototype/getHours': 8, 'Date/prototype/getMilliseconds': 8, 'Date/prototype/getMinutes': 8, 'Date/prototype/getMonth': 8, 'Date/prototype/getSeconds': 8, 'Date/prototype/getTime': 8, 'Date/prototype/getTimezoneOffset': 8, 'Date/prototype/getUTCDate': 8, 'Date/prototype/getUTCDay': 8, 'Date/prototype/getUTCFullYear': 8, 'Date/prototype/getUTCHours': 8, 'Date/prototype/getUTCMilliseconds': 8, 'Date/prototype/getUTCMinutes': 8, 'Date/prototype/getUTCMonth': 8, 'Date/prototype/getUTCSeconds': 8, 'Date/prototype/setDate': 14, 'Date/prototype/setFullYear': 20, 'Date/prototype/setHours': 23, 'Date/prototype/setMilliseconds': 14, 'Date/prototype/setMinutes': 18, 'Date/prototype/setMonth': 17, 'Date/prototype/setSeconds': 17, 'Date/prototype/setTime': 11, 'Date/prototype/setUTCDate': 7, 'Date/prototype/setUTCFullYear': 6, 'Date/prototype/setUTCHours': 11, 'Date/prototype/setUTCMilliseconds': 8, 'Date/prototype/setUTCMinutes': 8, 'Date/prototype/setUTCMonth': 9, 'Date/prototype/setUTCSeconds': 9, 'Date/prototype/toDateString': 7, 'Date/prototype/toISOString': 17, 'Date/prototype/toJSON': 13, 'Date/prototype/toLocaleDateString': 4, 'Date/prototype/toLocaleString': 4, 'Date/prototype/toLocaleTimeString': 4, 'Date/prototype/toString': 8, 'Date/prototype/toTemporalInstant': 8, 'Date/prototype/toTimeString': 6, 'Date/prototype/toUTCString': 9, 'Date/prototype/valueOf': 6}
+TREE_PROFILES = {'date', 'array-descriptors', 'array-predicates', 'object-integrity', 'array-find'}
 DIRECTORIES = {
     'JSON/parse': 77, 'JSON/stringify': 66,
     'String/prototype/charAt': 30, 'String/prototype/charCodeAt': 25,
@@ -98,7 +100,7 @@ SYMBOL_DIRECTORIES = {
     'Symbol/toStringTag': 2,
     'Symbol/unscopables': 2,
 }
-PROFILES = {'array-find': ARRAY_FIND_DIRECTORIES, 'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates': ARRAY_PREDICATE_DIRECTORIES, 'array-descriptors': ARRAY_DESCRIPTOR_DIRECTORIES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_DIRECTORIES, 'string-last-index-of': STRING_LAST_INDEX_OF_DIRECTORIES, 'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
+PROFILES = {'date': DATE_DIRECTORIES, 'array-find': ARRAY_FIND_DIRECTORIES, 'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates': ARRAY_PREDICATE_DIRECTORIES, 'array-descriptors': ARRAY_DESCRIPTOR_DIRECTORIES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_DIRECTORIES, 'string-last-index-of': STRING_LAST_INDEX_OF_DIRECTORIES, 'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'function-constructor': FUNCTION_CONSTRUCTOR_DIRECTORIES,
             'reflect-construction': REFLECT_CONSTRUCTION_DIRECTORIES, 'new-target': NEW_TARGET_DIRECTORIES,
             'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
@@ -111,7 +113,7 @@ PROFILES = {'array-find': ARRAY_FIND_DIRECTORIES, 'object-integrity': OBJECT_INT
             'numeric-parsing': NUMERIC_PARSING_DIRECTORIES,
             'compound-assignment': COMPOUND_ASSIGNMENT_DIRECTORIES,
             'addition': ADDITION_DIRECTORIES, 'logical-assignment': LOGICAL_ASSIGNMENT_DIRECTORIES, 'uri': URI_DIRECTORIES, 'relational': RELATIONAL_DIRECTORIES, 'equality': EQUALITY_DIRECTORIES, 'labels': LABELS_DIRECTORIES}
-PROFILE_ROOTS = {'array-find': 'test/built-ins', 'object-integrity': 'test/built-ins', 'array-predicates': 'test/built-ins', 'array-descriptors': 'test/built-ins', 'array-last-index-of': 'test/built-ins', 'string-last-index-of': 'test/built-ins', 'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
+PROFILE_ROOTS = {'date': 'test/built-ins', 'array-find': 'test/built-ins', 'object-integrity': 'test/built-ins', 'array-predicates': 'test/built-ins', 'array-descriptors': 'test/built-ins', 'array-last-index-of': 'test/built-ins', 'string-last-index-of': 'test/built-ins', 'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
                  'function-constructor': 'test/built-ins', 'reflect-construction': 'test/built-ins', 'new-target': 'test/language',
                  'template-literal': 'test/language', 'functions': 'test/language',
                  'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins',
@@ -223,6 +225,8 @@ def fetch(url):
 def tree_proof_path(route):
     if route == f'commits/{REVISION}':
         return 'inventory-proof/commit.json'
+    if route == f'trees/{DATE_TREE}?recursive=1':
+        return f'inventory-proof/recursive-{DATE_TREE}.json'
     if re.fullmatch(r'trees/[0-9a-f]{40}', route):
         return 'inventory-proof/tree-' + route[6:] + '.json'
     raise ValueError('invalid pinned Git proof route')
@@ -316,13 +320,160 @@ def git_tree_inventory(directories, prefix, read=None):
     return listings, proof, description
 
 
+def date_tree_inventory(read=None):
+    """Authenticate the entire pinned Date subtree, including all 51 directories.
+
+    Ancestors and the harness use original nonrecursive responses. The original
+    recursive Date response is retained, and every descendant binary tree hash
+    is reconstructed; no projected response is presented as an API response.
+    This separate bounded path does not relax existing direct-tree limits.
+    """
+    if read is None:
+        read = lambda route: fetch(f'https://api.github.com/repos/{REPOSITORY}/git/{route}')
+    proof, used_bytes = {}, 0
+
+    def document(route):
+        nonlocal used_bytes
+        if len(proof) >= 8:
+            raise ValueError('Date proof document limit')
+        data = read(route)
+        used_bytes += len(data)
+        if len(data) > MAX_FILE or used_bytes > 4 * 1024 * 1024:
+            raise ValueError('Date proof byte limit')
+        value = json.loads(data)
+        if not isinstance(value, dict):
+            raise ValueError('invalid Date proof object')
+        proof[tree_proof_path(route)] = data
+        return value
+
+    def verify_tree(entries, expected):
+        if not isinstance(entries, list) or len(entries) > 16384:
+            raise ValueError('Date tree entry limit')
+        names, encoded = {}, []
+        modes = {'040000': 'tree', '100644': 'blob', '100755': 'blob',
+                 '120000': 'blob', '160000': 'commit'}
+        for entry in entries:
+            if not isinstance(entry, dict):
+                raise ValueError('invalid Date tree entry')
+            name, mode, kind, child = (entry.get(k) for k in ('path', 'mode', 'type', 'sha'))
+            if (not isinstance(name, str) or not name or name in {'.', '..'}
+                    or any(c in name for c in '/\\\0') or len(name.encode()) > 512
+                    or name in names or mode not in modes or modes[mode] != kind
+                    or not isinstance(child, str) or not re.fullmatch(r'[0-9a-f]{40}', child)):
+                raise ValueError('invalid Date tree name, mode or hash')
+            names[name] = entry
+            raw = name.encode()
+            encoded.append((raw + (b'/' if kind == 'tree' else b''),
+                            mode.lstrip('0').encode() + b' ' + raw + b'\0' + bytes.fromhex(child)))
+        body = b''.join(part for _, part in sorted(encoded))
+        if hashlib.sha1(b'tree ' + str(len(body)).encode() + b'\0' + body).hexdigest() != expected:
+            raise ValueError('Date Git tree hash mismatch; incomplete inventory')
+        return names
+
+    def tree(sha):
+        value = document('trees/' + sha)
+        if value.get('sha') != sha or value.get('truncated') is not False:
+            raise ValueError('incomplete or mismatched Date ancestor tree')
+        return verify_tree(value.get('tree'), sha)
+
+    commit = document(f'commits/{REVISION}')
+    if (commit.get('sha') != REVISION or not isinstance(commit.get('tree'), dict)
+            or commit['tree'].get('sha') != REVISION_TREE):
+        raise ValueError('Date commit differs from pinned root')
+    root = tree(REVISION_TREE)
+    entries = root
+    for part in ('test', 'built-ins'):
+        selected = entries.get(part)
+        if not selected or selected['type'] != 'tree':
+            raise ValueError('missing Date ancestor')
+        entries = tree(selected['sha'])
+    selected = entries.get('Date')
+    if not selected or selected['type'] != 'tree' or selected['sha'] != DATE_TREE:
+        raise ValueError('Date subtree differs from pinned root')
+    value = document(f'trees/{DATE_TREE}?recursive=1')
+    rows = value.get('tree')
+    if (value.get('sha') != DATE_TREE or value.get('truncated') is not False
+            or not isinstance(rows, list) or len(rows) > 4096):
+        raise ValueError('incomplete or oversized recursive Date proof')
+    by_path, directories, children = {}, {'': DATE_TREE}, {'': []}
+    for entry in rows:
+        if not isinstance(entry, dict) or not isinstance(entry.get('path'), str):
+            raise ValueError('invalid recursive Date entry')
+        path = entry['path']
+        parts = path.split('/')
+        if (len(parts) > 8 or len(path.encode()) > 1024 or path in by_path
+                or any(not re.fullmatch(r'[A-Za-z0-9_.-]+', p) or p in {'.', '..'} for p in parts)):
+            raise ValueError('unsafe, duplicate or overdeep Date path')
+        by_path[path] = entry
+        if entry.get('type') == 'tree':
+            directories[path] = entry.get('sha')
+            children[path] = []
+    if len(directories) > 64:
+        raise ValueError('Date directory limit')
+    for path, entry in by_path.items():
+        parent, _, name = path.rpartition('/')
+        if parent not in children:
+            raise ValueError('missing recursive Date parent')
+        children[parent].append(dict(entry, path=name))
+    for path, sha in directories.items():
+        verify_tree(children[path], sha)
+    mapped = {'Date' + ('/' + name if name else ''): sha for name, sha in directories.items()}
+    if mapped.keys() != DATE_DIRECTORIES.keys():
+        raise ValueError('recursive Date directory set differs from complete selection')
+    listings = {name: [] for name in mapped}
+    total = 0
+    for path, entry in by_path.items():
+        if entry['type'] == 'tree':
+            continue
+        size = entry.get('size')
+        if (entry['type'] != 'blob' or entry['mode'] not in {'100644', '100755'}
+                or not path.endswith('.js') or type(size) is not int or not 0 <= size <= MAX_FILE):
+            raise ValueError('Date subtree contains nonregular, non-JavaScript or oversized source')
+        total += size
+        if total > 2 * 1024 * 1024:
+            raise ValueError('Date source aggregate limit')
+        parent, _, name = path.rpartition('/')
+        directory = 'Date' + ('/' + parent if parent else '')
+        listings[directory].append(dict(name=name, type='file', sha=entry['sha']))
+    if any(len(listings[name]) != count for name, count in DATE_DIRECTORIES.items()):
+        raise ValueError('Date source directory counts differ')
+    if sum(map(len, listings.values())) != 594:
+        raise ValueError('Date source count differs')
+    harness_entry = root.get('harness')
+    if not harness_entry or harness_entry['type'] != 'tree':
+        raise ValueError('missing root-linked Date harness')
+    harness = tree(harness_entry['sha'])
+    auxiliary = {}
+    for name in ('assert.js', 'sta.js', 'propertyHelper.js', 'compareArray.js',
+                 'isConstructor.js', 'assertRelativeDateMs.js', 'dateConstants.js'):
+        entry = harness.get(name)
+        if not entry or entry['type'] != 'blob' or entry['mode'] not in {'100644', '100755'}:
+            raise ValueError('missing pinned Date helper')
+        auxiliary['harness/' + name] = entry['sha']
+    for name in ('LICENSE', 'INTERPRETING.md'):
+        entry = root.get(name)
+        if not entry or entry['type'] != 'blob' or entry['mode'] not in {'100644', '100755'}:
+            raise ValueError('missing pinned Date legal file')
+        auxiliary[name] = entry['sha']
+    description = dict(method='complete-root-linked-recursive-git-subtree', revision=REVISION,
+                       root_tree=REVISION_TREE, subtree='test/built-ins/Date', subtree_tree=DATE_TREE,
+                       directory_trees=mapped, auxiliary_blobs=auxiliary)
+    return listings, proof, description
+
+
+def profile_tree_inventory(profile, read=None):
+    if profile == 'date':
+        return date_tree_inventory(read)
+    return git_tree_inventory(PROFILES[profile], PROFILE_ROOTS[profile], read)
+
+
 def import_corpus(output, profile='string-json'):
     raw = f'https://raw.githubusercontent.com/{REPOSITORY}/{REVISION}/'
     inventory = {}
     entries = {}
     tree_listings, proof, proof_description = {}, {}, None
     if profile in TREE_PROFILES:
-        tree_listings, proof, proof_description = git_tree_inventory(PROFILES[profile], PROFILE_ROOTS[profile])
+        tree_listings, proof, proof_description = profile_tree_inventory(profile)
     for directory, expected in PROFILES[profile].items():
         remote = f'{PROFILE_ROOTS[profile]}/{directory}'
         listing = (tree_listings[directory] if profile in TREE_PROFILES else
@@ -361,9 +512,16 @@ def import_corpus(output, profile='string-json'):
     additional = ['LICENSE', 'INTERPRETING.md'] + [f'harness/{name}' for name in sorted(harness)]
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
         sources.update(zip(additional, pool.map(lambda path: fetch(raw + path), additional)))
+    if profile == 'date':
+        for path, expected_blob in proof_description['auxiliary_blobs'].items():
+            data = sources.get(path, b'')
+            blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
+            if blob != expected_blob:
+                raise ValueError('Date helper or legal file differs from pinned Git blob: ' + path)
     if sum(map(len, sources.values())) + sum(map(len, proof.values())) > MAX_TOTAL:
         raise ValueError('Test262 selection exceeds aggregate import limit')
     scope = {
+        'date': 'all .js files in the complete recursive built-ins/Date subtree; all 51 directories and blobs authenticated to the pinned Git root; no implementation',
         'array-find': 'all direct .js files in Array/prototype/find, findIndex, findLast and findLastIndex; complete pinned Git trees; no implementation',
         'object-integrity': 'all direct .js files in Object/seal, Object/freeze, Object/isSealed and Object/isFrozen; complete pinned Git trees; no implementation',
         'array-predicates': 'all direct .js files in Array/prototype/every and Array/prototype/some; complete pinned Git trees; no implementation',
@@ -407,7 +565,8 @@ def import_corpus(output, profile='string-json'):
         manifest['inventory_proof'] = dict(proof_description, files=[])
         for path, data in sorted(proof.items()):
             route = (f'commits/{REVISION}' if path.endswith('/commit.json') else
-                     'trees/' + Path(path).name.removeprefix('tree-').removesuffix('.json'))
+                     (f'trees/{DATE_TREE}?recursive=1' if Path(path).name.startswith('recursive-') else
+                      'trees/' + Path(path).name.removeprefix('tree-').removesuffix('.json')))
             target = output / path
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(data)

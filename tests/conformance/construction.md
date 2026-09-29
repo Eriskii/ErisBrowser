@@ -1,5 +1,9 @@
 # Reflect calls, constructor targets and new.target
 
+The [Date checkpoint](test262-date.md) records **38 passed** on this
+unchanged profile. Earlier measurements and prerequisite descriptions below
+are retained as historical evidence; the final Date comparison is at the end.
+
 The later [dynamic Function checkpoint](function-constructor.md) updates current
 counts and records remaining string-conversion failures. The measurements below
 retain this earlier checkpoint's source and policy boundaries.
@@ -46,7 +50,8 @@ The two manifests validate the complete inventories and Git blob hashes.
 The **46 additional passes** use the same source, modes, helpers and execution
 policy on preserved before/after binaries. Pre-existing parse-negative passes
 and tests that already accepted a TypeError are not counted as gains.
-The four retained failures reach `Date.now`, which is not implemented.
+At that checkpoint, the four retained failures reached the then-unimplemented
+`Date.now` binding. They pass in the final Date comparison below.
 Unsupported modes require dynamic Function construction, classes/super,
 asynchronous completion, or tagged templates. No failed/unsupported source is
 removed. Each profile also runs 80 assertion controls, including paired
@@ -83,3 +88,15 @@ Algorithm references: [Reflect](https://tc39.es/ecma262/multipage/reflection.htm
 [meta properties](https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html#sec-meta-properties),
 [bound construction](https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-bound-function-exotic-objects-construct-argumentslist-newtarget),
 and [Object construction](https://tc39.es/ecma262/multipage/fundamental-objects.html#sec-object-constructor).
+
+### Final Date comparison
+
+Final frozen adapter `ab40a96f2cc1908359186e7c0648cecddc5ad8f8b2adf8a60de0e0d2c9a8f220`
+records **38 passed**: **4 new passes and zero lost passes**
+against the published before release. Complete observations and controls match
+the first frozen candidate; all original source/helper/mode/policy identities
+remain unchanged. The existing known-state baseline was strengthened to protect these new passes.
+The [complete comparison](test262-date-profiles-comparison.json) and
+[baseline receipt](test262-date-baseline-recording.json) retain exact hashes.
+Original before and first-candidate reports remain preserved in the
+[Date evidence](date.json). No script quota was increased.

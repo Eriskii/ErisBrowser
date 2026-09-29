@@ -349,7 +349,7 @@ class IntegrityTests(unittest.TestCase):
     def test_array_descriptors_preserves_all_prior_profile_identities_and_policies(self):
         retained = {}
         for name in runner.PROFILES:
-            if name in {'array-descriptors', 'array-predicates', 'object-integrity', 'array-find'}:
+            if name in {'array-descriptors', 'array-predicates', 'object-integrity', 'array-find', 'date'}:
                 continue
             _, files, cases, fixtures, manifest_hash = runner.load_corpus(
                 runner.ROOT / 'tests/upstream' / runner.corpus_name(name), name)

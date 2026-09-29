@@ -24,6 +24,12 @@ fn main() {
             }
         }
     }
+    if std::env::args().nth(1).as_deref() == Some("--timezone-discovery") {
+        if std::env::args().len() != 2 || eris::date_host::serve_timezone_discovery().is_err() {
+            std::process::exit(1);
+        }
+        return;
+    }
     if std::env::args().nth(1).as_deref() == Some("--image-decoder") {
         if eris::worker::serve_image_decoder().is_err() {
             std::process::exit(1);
@@ -172,7 +178,22 @@ fn run() -> Result<(), String> {
     let mut canvas = Canvas::new(width, height)?;
     let fonts = Fonts::new();
     let start = Instant::now();
-    let mut page = Page::load(&address, scripts)?;
+    let mut discovery = scripts.then(eris::date_host::ZoneDiscoverySupervisor::new);
+    let mut capture_date_host = || -> Result<eris::date_host::DateHost, String> {
+        let Some(discovery) = &mut discovery else {
+            return Ok(eris::date_host::DateHost::unconfigured());
+        };
+        discovery
+            .capture(
+                &std::env::current_exe().map_err(|e| e.to_string())?,
+                eris::date_host::ZoneDiscoveryConfig::from_environment()
+                    .map_err(|e| e.to_string())?,
+                || false,
+            )
+            .map(|zone| zone.date_host())
+            .map_err(|e| e.to_string())
+    };
+    let mut page = Page::load_with_date_host(&address, scripts, capture_date_host()?)?;
     let mut fragment = page.url.fragment().map(str::to_owned);
     for selector in clicks {
         let node = page
@@ -188,7 +209,7 @@ fn run() -> Result<(), String> {
                 fragment = url.fragment().map(str::to_owned);
                 continue;
             }
-            page = Page::load_navigation(&target, scripts)?;
+            page = Page::load_navigation_with_date_host(&target, scripts, capture_date_host()?)?;
             fragment = page.url.fragment().map(str::to_owned);
         }
     }

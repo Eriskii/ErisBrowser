@@ -1,6 +1,65 @@
 use std::{fs, process::Command};
 
 #[test]
+#[cfg(target_os = "linux")]
+fn headless_date_uses_explicit_host_rules_and_refuses_missing_configuration() {
+    let directory = std::env::temp_dir().join(format!("eris-cli-date-{}", std::process::id()));
+    fs::create_dir_all(&directory).unwrap();
+    let document = directory.join("index.html");
+    fs::write(&document, "<title>before</title><script>document.title=new Date(0).getTimezoneOffset()+','+new Date(Date.UTC(2020,6,1)).getTimezoneOffset()+','+new Date(1970,0,1).getTime()+','+new Date(0).toISOString();</script>").unwrap();
+    let output = Command::new(env!("CARGO_BIN_EXE_eris-browser"))
+        .arg(&document)
+        .args([
+            "--render",
+            "--dump-dom",
+            "--width",
+            "32",
+            "--height",
+            "32",
+            "--output",
+        ])
+        .arg(directory.join("out.png"))
+        .env("TZ", "EST5EDT,M3.2.0,M11.1.0")
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(
+        String::from_utf8_lossy(&output.stdout)
+            .contains("300,240,18000000,1970-01-01T00:00:00.000Z"),
+        "{}",
+        String::from_utf8_lossy(&output.stdout)
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_eris-browser"))
+        .arg(&document)
+        .args(["--render", "--output"])
+        .arg(directory.join("missing.png"))
+        .env("TZ", ":/nonexistent-eris-date-zone")
+        .output()
+        .unwrap();
+    assert!(!output.status.success());
+    assert!(String::from_utf8_lossy(&output.stderr).contains("host timezone"));
+    assert!(!directory.join("missing.png").exists());
+    let output = Command::new(env!("CARGO_BIN_EXE_eris-browser"))
+        .arg(&document)
+        .args(["--render", "--no-scripts", "--output"])
+        .arg(directory.join("static.png"))
+        .env("TZ", ":/nonexistent-eris-date-zone")
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(directory.join("static.png").is_file());
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
 fn worker_benchmark_rejects_ambiguous_modes_and_invalid_counts_before_loading() {
     let cases: &[(&[&str], &str)] = &[
         (&["--benchmark-worker"], "needs an iteration count"),

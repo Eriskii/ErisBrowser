@@ -1,7 +1,11 @@
 # Symbols and property keys
 
+The [Date checkpoint](test262-date.md) records **184 passed, 4 failed, 54 unsupported** on this
+unchanged profile. Earlier measurements and prerequisite descriptions below
+are retained as historical evidence; the final Date comparison is at the end.
+
 The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
-and `new.target` metadata. Current results: **182 passed, 6 failed, 54 unsupported**.
+and `new.target` metadata. That checkpoint recorded: **182 passed, 6 failed, 54 unsupported**.
 The inventory and source bytes are unchanged. Measurements and policy descriptions
 below retain the history of earlier checkpoints.
 
@@ -11,7 +15,7 @@ Symbol descriptor modes: that checkpoint records **168 passed / six failed /
 remain the evidence for the Symbol implementation itself.
 
 The [String concat follow-up](string-concat.md) preserves those counts and all
-controls. The two removed-wrapper conversion failures now reach missing Date;
+controls. The two removed-wrapper conversion failures at that checkpoint reached missing Date;
 they remain failures and are not promoted to passing cases.
 
 Eris implements Symbol primitives in its own Rust interpreter. Unique symbols
@@ -103,3 +107,15 @@ Primary algorithms: [Symbol objects](https://tc39.es/ecma262/multipage/fundament
 [GetValue](https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-getvalue),
 [InstanceofOperator](https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html#sec-instanceofoperator),
 and [Reflect.ownKeys](https://tc39.es/ecma262/multipage/reflection.html#sec-reflect.ownkeys).
+
+### Final Date comparison
+
+Final frozen adapter `ab40a96f2cc1908359186e7c0648cecddc5ad8f8b2adf8a60de0e0d2c9a8f220`
+records **184 passed, 4 failed, 54 unsupported**: **2 new passes and zero lost passes**
+against the published before release. Complete observations and controls match
+the first frozen candidate; all original source/helper/mode/policy identities
+remain unchanged. The existing known-state baseline was strengthened to protect these new passes.
+The [complete comparison](test262-date-profiles-comparison.json) and
+[baseline receipt](test262-date-baseline-recording.json) retain exact hashes.
+Original before and first-candidate reports remain preserved in the
+[Date evidence](date.json). No script quota was increased.

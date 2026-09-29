@@ -1,5 +1,9 @@
 # Pinned Test262 Object integrity inventory
 
+The [Date checkpoint](test262-date.md) records **394 passed, 42 failed, 38 unsupported** on this
+unchanged profile. Earlier measurements and prerequisite descriptions below
+are retained as historical evidence; the final Date comparison is at the end.
+
 This profile retains the four complete direct directories below at Test262
 revision `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`. The
 [manifest](../upstream/test262-object-integrity/manifest.json) records every
@@ -119,3 +123,15 @@ requires valid controls and bounded execution, not every corpus case passing:
 all 58 failures and 38 unsupported observations remain in the baseline and full
 report. Neither this profile nor the local fixtures establish complete
 ECMAScript or host-object conformance.
+
+### Final Date comparison
+
+Final frozen adapter `ab40a96f2cc1908359186e7c0648cecddc5ad8f8b2adf8a60de0e0d2c9a8f220`
+records **394 passed, 42 failed, 38 unsupported**: **16 new passes and zero lost passes**
+against the published before release. Complete observations and controls match
+the first frozen candidate; all original source/helper/mode/policy identities
+remain unchanged. The existing known-state baseline was strengthened to protect these new passes.
+The [complete comparison](test262-date-profiles-comparison.json) and
+[baseline receipt](test262-date-baseline-recording.json) retain exact hashes.
+Original before and first-candidate reports remain preserved in the
+[Date evidence](date.json). No script quota was increased.

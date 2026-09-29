@@ -9,6 +9,7 @@ pub use launcher::launch_worker;
 mod image_decoder;
 mod sandbox;
 use crate::{
+    date_host::{DateHost, ZoneDiscoveryConfig, ZoneDiscoverySupervisor, ZonePayload},
     dom::{Document, NodeId},
     graphics::{Fonts, ImageStore},
     layout::LayoutResult,
@@ -88,6 +89,44 @@ impl Reply {
 struct Init {
     scripts: bool,
     generation: u64,
+    timezone: Option<ZonePayload>,
+}
+
+// Retain a single supervisor across navigations. An OS helper stuck in spawn or
+// cleanup must prevent another discovery, even after its caller times out.
+static ZONE_DISCOVERY: std::sync::OnceLock<std::sync::Mutex<ZoneDiscoverySupervisor>> =
+    std::sync::OnceLock::new();
+
+fn capture_worker_timezone(
+    executable: &Path,
+    cancelled: &impl Fn() -> bool,
+) -> Result<ZonePayload, String> {
+    let config = ZoneDiscoveryConfig::from_environment().map_err(|e| e.to_string())?;
+    let supervisor =
+        ZONE_DISCOVERY.get_or_init(|| std::sync::Mutex::new(ZoneDiscoverySupervisor::new()));
+    let deadline = Instant::now() + Duration::from_secs(1);
+    loop {
+        if cancelled() {
+            return Err("timezone discovery cancelled".into());
+        }
+        match supervisor.try_lock() {
+            Ok(mut supervisor) => {
+                return supervisor
+                    .capture(executable, config, cancelled)
+                    .map(|captured| captured.payload)
+                    .map_err(|e| e.to_string());
+            }
+            Err(std::sync::TryLockError::Poisoned(_)) => {
+                return Err("timezone discovery is unavailable".into());
+            }
+            Err(std::sync::TryLockError::WouldBlock) => {
+                if Instant::now() >= deadline {
+                    return Err("timezone discovery queue deadline exceeded".into());
+                }
+                std::thread::sleep(Duration::from_millis(5));
+            }
+        }
+    }
 }
 
 pub struct WorkerClient {
@@ -108,11 +147,20 @@ pub struct WorkerClient {
 }
 impl WorkerClient {
     pub fn spawn(scripts: bool, navigation: &Navigation, generation: u64) -> Result<Self, String> {
-        Self::spawn_at(
+        Self::spawn_cancellable(scripts, navigation, generation, || false)
+    }
+    pub fn spawn_cancellable(
+        scripts: bool,
+        navigation: &Navigation,
+        generation: u64,
+        cancelled: impl Fn() -> bool,
+    ) -> Result<Self, String> {
+        Self::spawn_at_cancellable(
             &std::env::current_exe().map_err(|e| e.to_string())?,
             scripts,
             navigation,
             generation,
+            cancelled,
         )
     }
     pub fn spawn_at(
@@ -121,6 +169,18 @@ impl WorkerClient {
         navigation: &Navigation,
         generation: u64,
     ) -> Result<Self, String> {
+        Self::spawn_at_cancellable(executable, scripts, navigation, generation, || false)
+    }
+    pub fn spawn_at_cancellable(
+        executable: &Path,
+        scripts: bool,
+        navigation: &Navigation,
+        generation: u64,
+        cancelled: impl Fn() -> bool,
+    ) -> Result<Self, String> {
+        if cancelled() {
+            return Err("worker startup cancelled".into());
+        }
         let initial = net::parse_address(&navigation.address)?;
         validate_address(&initial)?;
         let root = if initial.scheme() == "file" {
@@ -140,14 +200,23 @@ impl WorkerClient {
         } else {
             None
         };
+        let timezone = if scripts {
+            Some(capture_worker_timezone(executable, &cancelled)?)
+        } else {
+            None
+        };
+        if cancelled() {
+            return Err("worker startup cancelled".into());
+        }
         let mut channel = channel::Channel::spawn(executable, "--page-worker")?;
         let bytes = channel.exchange(
             codec::encode_init(&Init {
                 scripts,
                 generation,
+                timezone,
             })?,
             Duration::from_secs(5),
-            || false,
+            cancelled,
             |_| Ok(None),
         )?;
         let reply = codec::decode_reply(&bytes)?;
@@ -433,6 +502,13 @@ pub fn serve() -> Result<(), String> {
         return Err(error);
     }
     net::use_page_fetch_bridge(broker::fetch_via_parent);
+    let date_host = init
+        .timezone
+        .as_ref()
+        .map(DateHost::from_payload)
+        .transpose()
+        .map_err(|e| e.to_string())?
+        .unwrap_or_default();
     codec::write_frame(
         &mut io::stdout().lock(),
         &codec::encode_reply(&Reply::empty())?,
@@ -450,8 +526,14 @@ pub fn serve() -> Result<(), String> {
                     return Err("duplicate worker load".into());
                 }
                 page = Some(
-                    Page::load_navigation(&navigation, init.scripts)
-                        .unwrap_or_else(|error| Page::error(&navigation.address, &error)),
+                    Page::load_navigation_with_date_host(
+                        &navigation,
+                        init.scripts,
+                        date_host.clone(),
+                    )
+                    .unwrap_or_else(|error| {
+                        Page::error_with_date_host(&navigation.address, &error, date_host.clone())
+                    }),
                 );
             }
             Command::Click { node } => {

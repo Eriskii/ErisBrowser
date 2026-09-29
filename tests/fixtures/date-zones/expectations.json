@@ -1,0 +1,205 @@
+{
+  "provenance": "Expected transitions derived from unchanged pinned Zone/Rule records and integer Gregorian epoch arithmetic; neither Eris nor host /etc/localtime used. Query t-1ms, t, t+1ms. Local folds choose earliest valid UTC; local gaps use the pre-transition offset.",
+  "transitions": [
+    {
+      "zone": "America/New_York",
+      "utc_civil": [
+        1883,
+        11,
+        18,
+        17,
+        0,
+        0
+      ],
+      "utc_second": -2717650800,
+      "before_offset_seconds": -17762,
+      "after_offset_seconds": -18000,
+      "source_member": "northamerica",
+      "source_lines": [
+        346,
+        351
+      ],
+      "derivation": "LMT seconds to standard time at explicit 17:00u"
+    },
+    {
+      "zone": "America/New_York",
+      "utc_civil": [
+        2024,
+        3,
+        10,
+        7,
+        0,
+        0
+      ],
+      "utc_second": 1710054000,
+      "before_offset_seconds": -18000,
+      "after_offset_seconds": -14400,
+      "source_member": "northamerica",
+      "source_lines": [
+        193,
+        194
+      ],
+      "derivation": "Second Sunday March 02:00 standard wall time"
+    },
+    {
+      "zone": "America/New_York",
+      "utc_civil": [
+        2024,
+        11,
+        3,
+        6,
+        0,
+        0
+      ],
+      "utc_second": 1730613600,
+      "before_offset_seconds": -14400,
+      "after_offset_seconds": -18000,
+      "source_member": "northamerica",
+      "source_lines": [
+        193,
+        194
+      ],
+      "derivation": "First Sunday November 02:00 daylight wall time"
+    },
+    {
+      "zone": "Australia/Lord_Howe",
+      "utc_civil": [
+        2024,
+        4,
+        6,
+        15,
+        0,
+        0
+      ],
+      "utc_second": 1712415600,
+      "before_offset_seconds": 39600,
+      "after_offset_seconds": 37800,
+      "source_member": "australasia",
+      "source_lines": [
+        208,
+        213
+      ],
+      "derivation": "First Sunday April 02:00 daylight wall time; 30-minute fold"
+    },
+    {
+      "zone": "Australia/Lord_Howe",
+      "utc_civil": [
+        2024,
+        10,
+        5,
+        15,
+        30,
+        0
+      ],
+      "utc_second": 1728142200,
+      "before_offset_seconds": 37800,
+      "after_offset_seconds": 39600,
+      "source_member": "australasia",
+      "source_lines": [
+        208,
+        213
+      ],
+      "derivation": "First Sunday October 02:00 standard wall time; 30-minute gap"
+    },
+    {
+      "zone": "Pacific/Apia",
+      "utc_civil": [
+        2011,
+        12,
+        30,
+        10,
+        0,
+        0
+      ],
+      "utc_second": 1325239200,
+      "before_offset_seconds": -36000,
+      "after_offset_seconds": 50400,
+      "source_member": "australasia",
+      "source_lines": [
+        780,
+        800
+      ],
+      "derivation": "2011 Dec 29 24:00 wall time, daylight save 1h on both sides; 24-hour skip"
+    },
+    {
+      "zone": "Europe/Dublin",
+      "utc_civil": [
+        2024,
+        3,
+        31,
+        1,
+        0,
+        0
+      ],
+      "utc_second": 1711846800,
+      "before_offset_seconds": 0,
+      "after_offset_seconds": 3600,
+      "source_member": "europe",
+      "source_lines": [
+        530,
+        547
+      ],
+      "derivation": "Last Sunday March at 01:00u, negative DST ends"
+    },
+    {
+      "zone": "Europe/Dublin",
+      "utc_civil": [
+        2024,
+        10,
+        27,
+        1,
+        0,
+        0
+      ],
+      "utc_second": 1729990800,
+      "before_offset_seconds": 3600,
+      "after_offset_seconds": 0,
+      "source_member": "europe",
+      "source_lines": [
+        530,
+        547
+      ],
+      "derivation": "Last Sunday October at 01:00u, negative DST begins"
+    },
+    {
+      "zone": "Asia/Kathmandu",
+      "utc_civil": [
+        1919,
+        12,
+        31,
+        18,
+        18,
+        44
+      ],
+      "utc_second": -1577943676,
+      "before_offset_seconds": 20476,
+      "after_offset_seconds": 19800,
+      "source_member": "asia",
+      "source_lines": [
+        3007,
+        3009
+      ],
+      "derivation": "1920 Jan 1 00:00 local LMT minus 05:41:16"
+    },
+    {
+      "zone": "Asia/Kathmandu",
+      "utc_civil": [
+        1985,
+        12,
+        31,
+        18,
+        30,
+        0
+      ],
+      "utc_second": 504901800,
+      "before_offset_seconds": 19800,
+      "after_offset_seconds": 20700,
+      "source_member": "asia",
+      "source_lines": [
+        3007,
+        3009
+      ],
+      "derivation": "1986 Jan 1 00:00 local minus 05:30; 15-minute gap"
+    }
+  ]
+}

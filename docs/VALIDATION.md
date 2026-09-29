@@ -1,5 +1,46 @@
 # Validation record
 
+## Date, explicit host rules and complete recursive inventory
+
+The [Date evidence](../tests/conformance/date.json) retains the published-before,
+first-candidate and final-release observations. The unchanged recursive Test262
+tree contains 594 sources in 51 directories, producing 1,188 modes under a
+policy frozen before candidate execution. The final release records 1,162
+passes, four existing `for…of` parser failures and 22 metadata exclusions, with
+all 340 controls verified. Negative Date controls require their same-mode
+positive partner to succeed. Eight focused tooling groups and independent
+ancestor/helper/source mutation checks validate the recursive proof path.
+
+All 406 independently frozen local modes and twelve controls pass. Across the
+35 older profiles, 130 modes gain passes; no previous pass is lost and all
+3,252 control observations remain identical. The combined inventory is 36
+profiles, 16,146 modes and 3,592 controls. Twenty-eight existing healthy gates
+pass; the new Date gate makes twenty-nine. Seven profiles with resource or
+unverified-control outcomes remain observation inventories. No quota or
+metadata policy was widened to obtain these results.
+
+Both Rust 1.88 and 1.95 pass strict Clippy and the complete test suite: 1,138
+tests in the default configuration and 1,149 with the Vulkan presenter, with
+zero ignored tests in these runs. The 223 Python tests pass. Both release
+variants pass all 57 rendering references; the HTML inventory stays at 3,868
+matching, two mismatched and six unsupported modes. The mutation smoke run
+accepts or rejects 45,000 inputs across HTML, scripting and SVG without a
+caught panic or invariant failure.
+
+Independent review corrected permanent-DST recurrence equivalence, uncharged
+repeated timezone-designation scans, unspecified `-00` rules and Date-slot
+storage accounting. Pinned IANA 2026d archives reproduce five timezone fixtures
+with the release's own source-built zic. Arithmetic tests and a separate exact
+integer/Fraction review cover extreme Date rounding; the renderer receives only
+validated zone bytes after confinement. Real-worker tests verify non-UTC Date
+execution, while CLI tests verify that missing rules fail clearly and do not
+prevent scripts-disabled rendering.
+
+The [worker timing report](benchmark-worker-date.json) records the added roughly
+10 ms discovery-polling startup cost and similar warm-frame medians on nine
+fixtures. These checks neither certify production security nor establish full
+web compatibility or the requested Chromium performance bound.
+
 ## Array find methods
 
 The [implementation and frozen fixture](../tests/conformance/array-find.md)

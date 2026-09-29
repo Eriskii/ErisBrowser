@@ -1,0 +1,4434 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all .js files in the complete recursive built-ins/Date subtree; all 51 directories and blobs authenticated to the pinned Git root; no implementation",
+  "directories": {
+    "Date": [
+      "15.9.1.15-1.js",
+      "S15.9.2.1_A1.js",
+      "S15.9.2.1_A2.js",
+      "S15.9.3.1_A1_T1.js",
+      "S15.9.3.1_A1_T2.js",
+      "S15.9.3.1_A1_T3.js",
+      "S15.9.3.1_A1_T4.js",
+      "S15.9.3.1_A1_T5.js",
+      "S15.9.3.1_A1_T6.js",
+      "S15.9.3.1_A2_T1.js",
+      "S15.9.3.1_A2_T2.js",
+      "S15.9.3.1_A2_T3.js",
+      "S15.9.3.1_A2_T4.js",
+      "S15.9.3.1_A2_T5.js",
+      "S15.9.3.1_A2_T6.js",
+      "S15.9.3.1_A3_T1.1.js",
+      "S15.9.3.1_A3_T1.2.js",
+      "S15.9.3.1_A3_T2.1.js",
+      "S15.9.3.1_A3_T2.2.js",
+      "S15.9.3.1_A3_T3.1.js",
+      "S15.9.3.1_A3_T3.2.js",
+      "S15.9.3.1_A3_T4.1.js",
+      "S15.9.3.1_A3_T4.2.js",
+      "S15.9.3.1_A3_T5.1.js",
+      "S15.9.3.1_A3_T5.2.js",
+      "S15.9.3.1_A3_T6.1.js",
+      "S15.9.3.1_A3_T6.2.js",
+      "S15.9.3.1_A4_T0.js",
+      "S15.9.3.1_A4_T1.js",
+      "S15.9.3.1_A4_T2.js",
+      "S15.9.3.1_A4_T3.js",
+      "S15.9.3.1_A4_T4.js",
+      "S15.9.3.1_A4_T5.js",
+      "S15.9.3.1_A4_T6.js",
+      "S15.9.3.1_A5_T1.js",
+      "S15.9.3.1_A5_T2.js",
+      "S15.9.3.1_A5_T3.js",
+      "S15.9.3.1_A5_T4.js",
+      "S15.9.3.1_A5_T5.js",
+      "S15.9.3.1_A5_T6.js",
+      "S15.9.3.1_A6_T1.js",
+      "S15.9.3.1_A6_T2.js",
+      "S15.9.3.1_A6_T3.js",
+      "S15.9.3.1_A6_T4.js",
+      "S15.9.3.1_A6_T5.js",
+      "S15.9.3.2_A1_T1.js",
+      "S15.9.3.2_A2_T1.js",
+      "S15.9.3.2_A3_T1.1.js",
+      "S15.9.3.2_A3_T1.2.js",
+      "S15.9.4_A1.js",
+      "S15.9.4_A2.js",
+      "S15.9.4_A3.js",
+      "S15.9.4_A4.js",
+      "S15.9.4_A5.js",
+      "TimeClip_negative_zero.js",
+      "coercion-errors.js",
+      "coercion-order.js",
+      "construct_with_date.js",
+      "is-a-constructor.js",
+      "length.js",
+      "name.js",
+      "prop-desc.js",
+      "proto-from-ctor-realm-one.js",
+      "proto-from-ctor-realm-two.js",
+      "proto-from-ctor-realm-zero.js",
+      "subclassing.js",
+      "value-get-symbol-to-prim-err.js",
+      "value-symbol-to-prim-err.js",
+      "value-symbol-to-prim-invocation.js",
+      "value-symbol-to-prim-return-obj.js",
+      "value-symbol-to-prim-return-prim.js",
+      "value-to-primitive-call-err.js",
+      "value-to-primitive-call.js",
+      "value-to-primitive-get-meth-err.js",
+      "value-to-primitive-result-faulty.js",
+      "value-to-primitive-result-non-string-prim.js",
+      "value-to-primitive-result-string.js",
+      "year-zero.js"
+    ],
+    "Date/UTC": [
+      "coercion-errors.js",
+      "coercion-order.js",
+      "fp-evaluation-order.js",
+      "infinity-make-day.js",
+      "infinity-make-time.js",
+      "length.js",
+      "name.js",
+      "nans.js",
+      "no-arg.js",
+      "non-integer-values.js",
+      "not-a-constructor.js",
+      "overflow-make-day.js",
+      "overflow-make-time.js",
+      "prop-desc.js",
+      "return-value.js",
+      "time-clip.js",
+      "year-offset.js"
+    ],
+    "Date/now": [
+      "15.9.4.4-0-1.js",
+      "15.9.4.4-0-2.js",
+      "15.9.4.4-0-3.js",
+      "15.9.4.4-0-4.js",
+      "name.js",
+      "not-a-constructor.js"
+    ],
+    "Date/parse": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "time-value-maximum-range.js",
+      "without-utc-offset.js",
+      "year-zero.js",
+      "zero.js"
+    ],
+    "Date/prototype": [
+      "S15.9.5_A01_T1.js",
+      "S15.9.5_A02_T1.js",
+      "S15.9.5_A03_T1.js",
+      "S15.9.5_A04_T1.js",
+      "S15.9.5_A05_T1.js",
+      "S15.9.5_A06_T1.js",
+      "S15.9.5_A07_T1.js",
+      "S15.9.5_A08_T1.js",
+      "S15.9.5_A09_T1.js",
+      "S15.9.5_A10_T1.js",
+      "S15.9.5_A11_T1.js",
+      "S15.9.5_A12_T1.js",
+      "S15.9.5_A13_T1.js",
+      "S15.9.5_A14_T1.js",
+      "S15.9.5_A15_T1.js",
+      "S15.9.5_A16_T1.js",
+      "S15.9.5_A17_T1.js",
+      "S15.9.5_A18_T1.js",
+      "S15.9.5_A19_T1.js",
+      "S15.9.5_A20_T1.js",
+      "S15.9.5_A21_T1.js",
+      "S15.9.5_A22_T1.js",
+      "S15.9.5_A23_T1.js",
+      "S15.9.5_A24_T1.js",
+      "S15.9.5_A25_T1.js",
+      "S15.9.5_A26_T1.js",
+      "S15.9.5_A27_T1.js",
+      "S15.9.5_A28_T1.js",
+      "S15.9.5_A29_T1.js",
+      "S15.9.5_A30_T1.js",
+      "S15.9.5_A31_T1.js",
+      "S15.9.5_A32_T1.js",
+      "S15.9.5_A33_T1.js",
+      "S15.9.5_A34_T1.js",
+      "S15.9.5_A35_T1.js",
+      "S15.9.5_A36_T1.js",
+      "S15.9.5_A37_T1.js",
+      "S15.9.5_A38_T1.js",
+      "S15.9.5_A39_T1.js",
+      "S15.9.5_A40_T1.js",
+      "S15.9.5_A41_T1.js",
+      "S15.9.5_A42_T1.js",
+      "no-date-value.js",
+      "prop-desc.js"
+    ],
+    "Date/prototype/Symbol.toPrimitive": [
+      "called-as-function.js",
+      "hint-default-first-invalid.js",
+      "hint-default-first-non-callable.js",
+      "hint-default-first-valid.js",
+      "hint-default-no-callables.js",
+      "hint-invalid.js",
+      "hint-number-first-invalid.js",
+      "hint-number-first-non-callable.js",
+      "hint-number-first-valid.js",
+      "hint-number-no-callables.js",
+      "hint-string-first-invalid.js",
+      "hint-string-first-non-callable.js",
+      "hint-string-first-valid.js",
+      "hint-string-no-callables.js",
+      "length.js",
+      "name.js",
+      "prop-desc.js",
+      "this-val-non-obj.js"
+    ],
+    "Date/prototype/constructor": [
+      "prop-desc.js"
+    ],
+    "Date/prototype/getDate": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/getDay": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/getFullYear": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/getHours": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/getMilliseconds": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/getMinutes": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/getMonth": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/getSeconds": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/getTime": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/getTimezoneOffset": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/getUTCDate": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/getUTCDay": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/getUTCFullYear": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/getUTCHours": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/getUTCMilliseconds": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/getUTCMinutes": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/getUTCMonth": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/getUTCSeconds": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/setDate": [
+      "arg-coercion-order.js",
+      "arg-to-number-err.js",
+      "arg-to-number.js",
+      "date-value-read-before-tonumber-when-date-is-invalid.js",
+      "date-value-read-before-tonumber-when-date-is-valid.js",
+      "length.js",
+      "name.js",
+      "new-value-time-clip.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/setFullYear": [
+      "15.9.5.40_1.js",
+      "arg-date-to-number-err.js",
+      "arg-date-to-number.js",
+      "arg-month-to-number-err.js",
+      "arg-month-to-number.js",
+      "arg-year-to-number-err.js",
+      "arg-year-to-number.js",
+      "date-value-read-before-tonumber-when-date-is-invalid.js",
+      "date-value-read-before-tonumber-when-date-is-valid.js",
+      "length.js",
+      "name.js",
+      "new-value-time-clip.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date-date.js",
+      "this-value-valid-date-month.js",
+      "this-value-valid-date-year.js"
+    ],
+    "Date/prototype/setHours": [
+      "arg-coercion-order.js",
+      "arg-hour-to-number-err.js",
+      "arg-hour-to-number.js",
+      "arg-min-to-number-err.js",
+      "arg-min-to-number.js",
+      "arg-ms-to-number-err.js",
+      "arg-ms-to-number.js",
+      "arg-sec-to-number-err.js",
+      "arg-sec-to-number.js",
+      "date-value-read-before-tonumber-when-date-is-invalid.js",
+      "date-value-read-before-tonumber-when-date-is-valid.js",
+      "length.js",
+      "name.js",
+      "new-value-time-clip.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date-hour.js",
+      "this-value-valid-date-min.js",
+      "this-value-valid-date-ms.js",
+      "this-value-valid-date-sec.js"
+    ],
+    "Date/prototype/setMilliseconds": [
+      "arg-coercion-order.js",
+      "arg-to-number-err.js",
+      "arg-to-number.js",
+      "date-value-read-before-tonumber-when-date-is-invalid.js",
+      "date-value-read-before-tonumber-when-date-is-valid.js",
+      "length.js",
+      "name.js",
+      "new-value-time-clip.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/setMinutes": [
+      "arg-coercion-order.js",
+      "arg-min-to-number-err.js",
+      "arg-min-to-number.js",
+      "arg-ms-to-number-err.js",
+      "arg-ms-to-number.js",
+      "arg-sec-to-number-err.js",
+      "arg-sec-to-number.js",
+      "date-value-read-before-tonumber-when-date-is-invalid.js",
+      "date-value-read-before-tonumber-when-date-is-valid.js",
+      "length.js",
+      "name.js",
+      "new-value-time-clip.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/setMonth": [
+      "arg-coercion-order.js",
+      "arg-date-to-number-err.js",
+      "arg-date-to-number.js",
+      "arg-month-to-number-err.js",
+      "arg-month-to-number.js",
+      "date-value-read-before-tonumber-when-date-is-invalid.js",
+      "date-value-read-before-tonumber-when-date-is-valid.js",
+      "length.js",
+      "name.js",
+      "new-value-time-clip.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date-date.js",
+      "this-value-valid-date-month.js"
+    ],
+    "Date/prototype/setSeconds": [
+      "arg-coercion-order.js",
+      "arg-ms-to-number-err.js",
+      "arg-ms-to-number.js",
+      "arg-sec-to-number-err.js",
+      "arg-sec-to-number.js",
+      "date-value-read-before-tonumber-when-date-is-invalid.js",
+      "date-value-read-before-tonumber-when-date-is-valid.js",
+      "length.js",
+      "name.js",
+      "new-value-time-clip.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date-ms.js",
+      "this-value-valid-date-sec.js"
+    ],
+    "Date/prototype/setTime": [
+      "arg-to-number-err.js",
+      "arg-to-number.js",
+      "length.js",
+      "name.js",
+      "new-value-time-clip.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/setUTCDate": [
+      "arg-coercion-order.js",
+      "date-value-read-before-tonumber-when-date-is-invalid.js",
+      "date-value-read-before-tonumber-when-date-is-valid.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js"
+    ],
+    "Date/prototype/setUTCFullYear": [
+      "date-value-read-before-tonumber-when-date-is-invalid.js",
+      "date-value-read-before-tonumber-when-date-is-valid.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js"
+    ],
+    "Date/prototype/setUTCHours": [
+      "arg-coercion-order.js",
+      "date-value-read-before-tonumber-when-date-is-invalid.js",
+      "date-value-read-before-tonumber-when-date-is-valid.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-valid-date-hour.js",
+      "this-value-valid-date-min.js",
+      "this-value-valid-date-ms.js",
+      "this-value-valid-date-sec.js"
+    ],
+    "Date/prototype/setUTCMilliseconds": [
+      "arg-coercion-order.js",
+      "date-value-read-before-tonumber-when-date-is-invalid.js",
+      "date-value-read-before-tonumber-when-date-is-valid.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/setUTCMinutes": [
+      "arg-coercion-order.js",
+      "date-value-read-before-tonumber-when-date-is-invalid.js",
+      "date-value-read-before-tonumber-when-date-is-valid.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/setUTCMonth": [
+      "arg-coercion-order.js",
+      "date-value-read-before-tonumber-when-date-is-invalid.js",
+      "date-value-read-before-tonumber-when-date-is-valid.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-valid-date-date.js",
+      "this-value-valid-date-month.js"
+    ],
+    "Date/prototype/setUTCSeconds": [
+      "arg-coercion-order.js",
+      "date-value-read-before-tonumber-when-date-is-invalid.js",
+      "date-value-read-before-tonumber-when-date-is-valid.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-valid-date-ms.js",
+      "this-value-valid-date-sec.js"
+    ],
+    "Date/prototype/toDateString": [
+      "format.js",
+      "invalid-date.js",
+      "length.js",
+      "name.js",
+      "negative-year.js",
+      "not-a-constructor.js",
+      "prop-desc.js"
+    ],
+    "Date/prototype/toISOString": [
+      "15.9.5.43-0-10.js",
+      "15.9.5.43-0-11.js",
+      "15.9.5.43-0-12.js",
+      "15.9.5.43-0-13.js",
+      "15.9.5.43-0-14.js",
+      "15.9.5.43-0-15.js",
+      "15.9.5.43-0-16.js",
+      "15.9.5.43-0-2.js",
+      "15.9.5.43-0-3.js",
+      "15.9.5.43-0-4.js",
+      "15.9.5.43-0-5.js",
+      "15.9.5.43-0-6.js",
+      "15.9.5.43-0-7.js",
+      "15.9.5.43-0-8.js",
+      "15.9.5.43-0-9.js",
+      "name.js",
+      "not-a-constructor.js"
+    ],
+    "Date/prototype/toJSON": [
+      "builtin.js",
+      "called-as-function.js",
+      "invoke-abrupt.js",
+      "invoke-arguments.js",
+      "invoke-result.js",
+      "length.js",
+      "name.js",
+      "non-finite.js",
+      "not-a-constructor.js",
+      "to-object.js",
+      "to-primitive-abrupt.js",
+      "to-primitive-symbol.js",
+      "to-primitive-value-of.js"
+    ],
+    "Date/prototype/toLocaleDateString": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js"
+    ],
+    "Date/prototype/toLocaleString": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js"
+    ],
+    "Date/prototype/toLocaleTimeString": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js"
+    ],
+    "Date/prototype/toString": [
+      "format.js",
+      "invalid-date.js",
+      "length.js",
+      "name.js",
+      "negative-year.js",
+      "non-date-receiver.js",
+      "not-a-constructor.js",
+      "prop-desc.js"
+    ],
+    "Date/prototype/toTemporalInstant": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "this-value-invalid-date.js",
+      "this-value-non-date.js",
+      "this-value-non-object.js",
+      "this-value-valid-date.js"
+    ],
+    "Date/prototype/toTimeString": [
+      "format.js",
+      "invalid-date.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js"
+    ],
+    "Date/prototype/toUTCString": [
+      "day-names.js",
+      "format.js",
+      "invalid-date.js",
+      "length.js",
+      "month-names.js",
+      "name.js",
+      "negative-year.js",
+      "not-a-constructor.js",
+      "prop-desc.js"
+    ],
+    "Date/prototype/valueOf": [
+      "S9.4_A3_T1.js",
+      "S9.4_A3_T2.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js"
+    ]
+  },
+  "test_files": 594,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/assertRelativeDateMs.js",
+      "upstream_path": "harness/assertRelativeDateMs.js",
+      "bytes": 786,
+      "sha256": "5113bc0c6d87018bb372da7eb589ca5912b0b7664563262169e3336ad96ad3cc"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/dateConstants.js",
+      "upstream_path": "harness/dateConstants.js",
+      "bytes": 720,
+      "sha256": "f7cafff2ac96601232c801568bb357eff1a515b849211b230e1b16a41bc786ce"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/built-ins/Date/15.9.1.15-1.js",
+      "upstream_path": "test/built-ins/Date/15.9.1.15-1.js",
+      "bytes": 569,
+      "sha256": "76e7bdb5a57f8a63e1aacf541be7f3245868dfe0137f5371dcf60661594bf7f8"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.2.1_A1.js",
+      "upstream_path": "test/built-ins/Date/S15.9.2.1_A1.js",
+      "bytes": 2257,
+      "sha256": "52b16ff03f86ba655f2e70fb1e35ef79bea126797a26a60a081fa1b61fdd5413"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.2.1_A2.js",
+      "upstream_path": "test/built-ins/Date/S15.9.2.1_A2.js",
+      "bytes": 2666,
+      "sha256": "62022039623945eb0238f9f7791bc1202ebfbf89cc7955658a535d4a33c37592"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A1_T1.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A1_T1.js",
+      "bytes": 6396,
+      "sha256": "c5d4e890547b1ab020bba639c7b4d9f2661b20563c3f0c837a1e50c34e074c12"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A1_T2.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A1_T2.js",
+      "bytes": 6642,
+      "sha256": "1c3f7160433764c48d720a8b0392f7d13b3e4964264d4afdb10a2e417e851f5c"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A1_T3.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A1_T3.js",
+      "bytes": 6952,
+      "sha256": "10f4e11ff951d7530fc69eacb9a207051b00ab815c44b3fa315bd867a7eb2ffa"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A1_T4.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A1_T4.js",
+      "bytes": 7233,
+      "sha256": "c67985a0ec75cc73c0acae15d42af4d89d3ddf2a4903e008e67dac9b752358a1"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A1_T5.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A1_T5.js",
+      "bytes": 7482,
+      "sha256": "89fbb17c14ba8685942348c7a69dda349b89b7b5e1f9305de9923d58e825632e"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A1_T6.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A1_T6.js",
+      "bytes": 7750,
+      "sha256": "59322098314d843fdaeceef70c26d47079ec665c3255b54b89a3e34a27107cc0"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A2_T1.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A2_T1.js",
+      "bytes": 6433,
+      "sha256": "9fb3fa705534ccfc3618ef52f6d7bd679c122eac66fc0ff6089f4735c4aa2e5f"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A2_T2.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A2_T2.js",
+      "bytes": 6559,
+      "sha256": "81ff7e60e3fed0443f8b1559fd6ebe80d8dbf0303d55c8c74a79b5f2809f2574"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A2_T3.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A2_T3.js",
+      "bytes": 6686,
+      "sha256": "aa4a98c6abad087d5bde9fb7ba6b6217535262c162c01e7d8503dd395a227310"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A2_T4.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A2_T4.js",
+      "bytes": 6815,
+      "sha256": "24e7cbfc7378e2e1a4c67e37668f0131665731e7c7efa71fffdb78d7cec57a71"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A2_T5.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A2_T5.js",
+      "bytes": 6944,
+      "sha256": "ba4aafb4d7b1da5b83e5ad6857bfa8da647beadeb0cbdfc1e167c6acb25a6851"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A2_T6.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A2_T6.js",
+      "bytes": 7080,
+      "sha256": "da60c852376580963b6a7a78056374881d0a399fa67af331135315d558d6cae6"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A3_T1.1.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A3_T1.1.js",
+      "bytes": 2683,
+      "sha256": "baa3e81d2b2720434fa8b2794c1f2e12d3ce9cda559733e1fca402e95ccee595"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A3_T1.2.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A3_T1.2.js",
+      "bytes": 1945,
+      "sha256": "ae741444396dc7ee3dca85e8515483001199d05d5dfecb0fc84e92ae515c4cfb"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A3_T2.1.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A3_T2.1.js",
+      "bytes": 2769,
+      "sha256": "3add4413155e1428a6190d962dbb4e2742f1a6b5c13e7167913de211db5c0d14"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A3_T2.2.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A3_T2.2.js",
+      "bytes": 1991,
+      "sha256": "e509deaf0ed50f6515ed1f952c31071e37a3dabca33b037e9d6662fd9ecf29e2"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A3_T3.1.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A3_T3.1.js",
+      "bytes": 2856,
+      "sha256": "9c3dbe411260203cbd127f8670800d3f61de3f96b735215cc66bdc78cde10825"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A3_T3.2.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A3_T3.2.js",
+      "bytes": 2038,
+      "sha256": "1908904bf737ffdd9c9a51f87059c93ffb58431cbd87ce2ef521b428de0e424e"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A3_T4.1.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A3_T4.1.js",
+      "bytes": 2945,
+      "sha256": "fce0bcf3d9b345c9c73e39490c95c74829e2fb25f7bfa04594eb61001876b028"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A3_T4.2.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A3_T4.2.js",
+      "bytes": 2087,
+      "sha256": "bf6a0930f8ad242306a70cd1b6a6e4f8880c94227b4b5c1cb2d4a53c28bc5ac0"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A3_T5.1.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A3_T5.1.js",
+      "bytes": 2982,
+      "sha256": "64f3c17a06f686137650676b0a3a281a132310e8bf1dfa8a1832dd29d1a34f39"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A3_T5.2.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A3_T5.2.js",
+      "bytes": 2136,
+      "sha256": "dd1cff7ababb5e4438daac84740790df35a05eda193d4eb2fb951fd44aa5630a"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A3_T6.1.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A3_T6.1.js",
+      "bytes": 3074,
+      "sha256": "91b024b2bd985c73e0a48d7a31e9e86491dafc65d323d6721fbbf8d77aee1403"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A3_T6.2.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A3_T6.2.js",
+      "bytes": 2184,
+      "sha256": "3a646a6c8c8a226c088ebcdb051bb2869c9704b105d23be468c2b9b4bfa70945"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A4_T0.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A4_T0.js",
+      "bytes": 925,
+      "sha256": "72c9717d5e769158c3235c058be79afddbe847986f276db7da28b44602f08d0e"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A4_T1.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A4_T1.js",
+      "bytes": 1135,
+      "sha256": "69115256da12d590fb34ef02936d66f504ddb6c909025438def6041fb39be2a8"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A4_T2.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A4_T2.js",
+      "bytes": 1396,
+      "sha256": "313fbbb2658b6736e55bc7b1e2499afc7eb3ffccf4a13b827587982a5b770cfe"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A4_T3.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A4_T3.js",
+      "bytes": 1712,
+      "sha256": "5a0213b57bbc292d50fc34f627995267061a298e27fcc38d31d0f1c83603956f"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A4_T4.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A4_T4.js",
+      "bytes": 2084,
+      "sha256": "032d35e1eb629eac27384638498235626320a0f190c08ee594e673b1b3441187"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A4_T5.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A4_T5.js",
+      "bytes": 2510,
+      "sha256": "b317014f3faba575009022851cfda7876c219514d3055c63966885c869e061f1"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A4_T6.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A4_T6.js",
+      "bytes": 2985,
+      "sha256": "c62f7858b263ea476a42eca68c85dbf36a9843635c4d69809597ee9f4d340bfb"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A5_T1.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A5_T1.js",
+      "bytes": 1459,
+      "sha256": "b1e45cd23824b43c1d5aaa37ca2ec09bcb4b5e4b40d1a83311772be9a3f36879"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A5_T2.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A5_T2.js",
+      "bytes": 1503,
+      "sha256": "a6943c7d1b5f0c3ecb3337d6fbfed868ae110f5d712f683a9deaf8a6c76e337a"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A5_T3.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A5_T3.js",
+      "bytes": 1549,
+      "sha256": "9f8519f51b9eb9e7a2c787d2a8a0ba843b70fa5e2798af7f3b174b7042b2388c"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A5_T4.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A5_T4.js",
+      "bytes": 1596,
+      "sha256": "ab47972c01e111594eff918a28de89fcd491ce307f6d720eba38f2fd6969110a"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A5_T5.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A5_T5.js",
+      "bytes": 1644,
+      "sha256": "820af807505cacaed55c72b184646991070bc18a2ce7c7627fd454bde5936592"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A5_T6.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A5_T6.js",
+      "bytes": 1689,
+      "sha256": "88b132cff1bb87db8f7b7146dfea249f86ea46a8d93322a267b9d5a5541c107e"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A6_T1.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A6_T1.js",
+      "bytes": 1653,
+      "sha256": "787f78de61a2a5b7c5724038d0a26e15f986366103aa5be71e7addb2745ac779"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A6_T2.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A6_T2.js",
+      "bytes": 1699,
+      "sha256": "6df5dc9b89a0992f6ae6bc2f7acde6906176e09f9169fcd9f48d3920fbb6aa44"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A6_T3.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A6_T3.js",
+      "bytes": 1746,
+      "sha256": "cbf59615ba2dc1da4bddb15917932cd372cbe7f5622f992b1aa7f4e2694a142b"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A6_T4.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A6_T4.js",
+      "bytes": 1795,
+      "sha256": "70e6959bdc71cc3cfe8d1462ca7ce442772eab4cdfb19acf9c9d539501604072"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.1_A6_T5.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.1_A6_T5.js",
+      "bytes": 1844,
+      "sha256": "16323f69eb85ed94f46fd0fe830d282f496f10b22b4c1380b68277929f006158"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.2_A1_T1.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.2_A1_T1.js",
+      "bytes": 4730,
+      "sha256": "8c6e5def8316d98432330547085a89a486717d1b3392f296701b203ef8e720ef"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.2_A2_T1.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.2_A2_T1.js",
+      "bytes": 4591,
+      "sha256": "8d555f1f9cb8b66cd896e95f90c47d447fe81e7d92a9a15aa3212d116b37970c"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.2_A3_T1.1.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.2_A3_T1.1.js",
+      "bytes": 1968,
+      "sha256": "04ef4e9b19d11ebc455418c27404fc4e7b27e556b862d04fe5abb58073bca121"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.3.2_A3_T1.2.js",
+      "upstream_path": "test/built-ins/Date/S15.9.3.2_A3_T1.2.js",
+      "bytes": 1443,
+      "sha256": "4d151fb6e36f8e281695d44e08864207d41884469194a874421418a861f70794"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.4_A1.js",
+      "upstream_path": "test/built-ins/Date/S15.9.4_A1.js",
+      "bytes": 383,
+      "sha256": "ea8119a56d6ed769a10901f68ffeba4006e059b3910734f444ad93a57f7233b8"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.4_A2.js",
+      "upstream_path": "test/built-ins/Date/S15.9.4_A2.js",
+      "bytes": 367,
+      "sha256": "315e534712cf6f7a97a2f10181ac9ca0b3823b178395da134d47d64734765c0e"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.4_A3.js",
+      "upstream_path": "test/built-ins/Date/S15.9.4_A3.js",
+      "bytes": 359,
+      "sha256": "7bd879d4cb3ddea32a0922858632f63665131094304c77dc0d51ebcffb706123"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.4_A4.js",
+      "upstream_path": "test/built-ins/Date/S15.9.4_A4.js",
+      "bytes": 462,
+      "sha256": "7913973952caff7c09395b35355b85ab7a39ebe3620025780e5de888e4ed4c2a"
+    },
+    {
+      "path": "test/built-ins/Date/S15.9.4_A5.js",
+      "upstream_path": "test/built-ins/Date/S15.9.4_A5.js",
+      "bytes": 446,
+      "sha256": "9643e25d0c9d12da53527b7f1dffaa4ccc218734a7a7e7f4c34f9fcabf6017b1"
+    },
+    {
+      "path": "test/built-ins/Date/TimeClip_negative_zero.js",
+      "upstream_path": "test/built-ins/Date/TimeClip_negative_zero.js",
+      "bytes": 471,
+      "sha256": "e39de955686fbba17f1090052c349af336380c966f9a47b4c9fc5ff758dc9d35"
+    },
+    {
+      "path": "test/built-ins/Date/UTC/coercion-errors.js",
+      "upstream_path": "test/built-ins/Date/UTC/coercion-errors.js",
+      "bytes": 2148,
+      "sha256": "d39f2b4586f93a3e3606ff2e41127db7287a54654eb554c361a5cd372241abaa"
+    },
+    {
+      "path": "test/built-ins/Date/UTC/coercion-order.js",
+      "upstream_path": "test/built-ins/Date/UTC/coercion-order.js",
+      "bytes": 1453,
+      "sha256": "b932549d0c7aa87bd5bc86f1968d0e07d454b0f02124ae5ef89d29318e5de016"
+    },
+    {
+      "path": "test/built-ins/Date/UTC/fp-evaluation-order.js",
+      "upstream_path": "test/built-ins/Date/UTC/fp-evaluation-order.js",
+      "bytes": 858,
+      "sha256": "aed1e6ce51bb7b3c6ae503989be3d8654432b064ece38677d03aeb3eb9876c09"
+    },
+    {
+      "path": "test/built-ins/Date/UTC/infinity-make-day.js",
+      "upstream_path": "test/built-ins/Date/UTC/infinity-make-day.js",
+      "bytes": 1002,
+      "sha256": "14dcb4527da98be273e869f770c46f7a67f2fb58901c6982aea3976d91f964c9"
+    },
+    {
+      "path": "test/built-ins/Date/UTC/infinity-make-time.js",
+      "upstream_path": "test/built-ins/Date/UTC/infinity-make-time.js",
+      "bytes": 1082,
+      "sha256": "1d3d21408c5387eebaae765c5b4023b54c91a488b22c6fc5fe6e53b3b6a09fc4"
+    },
+    {
+      "path": "test/built-ins/Date/UTC/length.js",
+      "upstream_path": "test/built-ins/Date/UTC/length.js",
+      "bytes": 726,
+      "sha256": "10aa957234ee98f6f7cdfe8cc5ae75749c23f784fb4b93e17ccbcfab7032035d"
+    },
+    {
+      "path": "test/built-ins/Date/UTC/name.js",
+      "upstream_path": "test/built-ins/Date/UTC/name.js",
+      "bytes": 845,
+      "sha256": "b03a41cc44b9e5da854625ca8ec52551d2937399025ff4e507eeb8a783523f8e"
+    },
+    {
+      "path": "test/built-ins/Date/UTC/nans.js",
+      "upstream_path": "test/built-ins/Date/UTC/nans.js",
+      "bytes": 1297,
+      "sha256": "e573a723c2a37d3e912bbf05da8407c1e0a8e2543175b80168d3f95f38eb0a84"
+    },
+    {
+      "path": "test/built-ins/Date/UTC/no-arg.js",
+      "upstream_path": "test/built-ins/Date/UTC/no-arg.js",
+      "bytes": 926,
+      "sha256": "4f3fc9a76c6f288afd7adb0ff31717d8436a4322e5cc014b5f6a5f19504b7e52"
+    },
+    {
+      "path": "test/built-ins/Date/UTC/non-integer-values.js",
+      "upstream_path": "test/built-ins/Date/UTC/non-integer-values.js",
+      "bytes": 860,
+      "sha256": "22ace93f5d2a77e873cd38ca9ef2462fee8cecc8f287b8a36957af78153bcf30"
+    },
+    {
+      "path": "test/built-ins/Date/UTC/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/UTC/not-a-constructor.js",
+      "bytes": 832,
+      "sha256": "2e506345918b3b631df1132ad16c3cd205664cb1fec27ea439cd82107557b990"
+    },
+    {
+      "path": "test/built-ins/Date/UTC/overflow-make-day.js",
+      "upstream_path": "test/built-ins/Date/UTC/overflow-make-day.js",
+      "bytes": 1010,
+      "sha256": "b295b24a9dee5ef7c34d5cdf35d0edbb2e8686be84dae2c5b130ae9f499dac63"
+    },
+    {
+      "path": "test/built-ins/Date/UTC/overflow-make-time.js",
+      "upstream_path": "test/built-ins/Date/UTC/overflow-make-time.js",
+      "bytes": 1455,
+      "sha256": "5921abe0f3683a25ab697a7fe0b149d311a2959c303083bbcb053129ad0f3ff2"
+    },
+    {
+      "path": "test/built-ins/Date/UTC/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/UTC/prop-desc.js",
+      "bytes": 690,
+      "sha256": "eb096c0283847f3807b957a5969590d1dc716a45a8aeba34ed430f05575096e8"
+    },
+    {
+      "path": "test/built-ins/Date/UTC/return-value.js",
+      "upstream_path": "test/built-ins/Date/UTC/return-value.js",
+      "bytes": 1950,
+      "sha256": "2a5bbe12e05746cb53b3f287d5a554dd4f3643b1311e05e7963c37037d87775e"
+    },
+    {
+      "path": "test/built-ins/Date/UTC/time-clip.js",
+      "upstream_path": "test/built-ins/Date/UTC/time-clip.js",
+      "bytes": 523,
+      "sha256": "e70f0c10622968b71fc4fb0dd223d56a071a71b9af7bdcf6b3df6ebf0e1dd1c5"
+    },
+    {
+      "path": "test/built-ins/Date/UTC/year-offset.js",
+      "upstream_path": "test/built-ins/Date/UTC/year-offset.js",
+      "bytes": 1015,
+      "sha256": "10702599c49de1ac3eaa0748b236d60df48e068b1c9b95163c93ac068db22171"
+    },
+    {
+      "path": "test/built-ins/Date/coercion-errors.js",
+      "upstream_path": "test/built-ins/Date/coercion-errors.js",
+      "bytes": 2418,
+      "sha256": "ab0394301176e6994b4164f492c57c6c9d7d37394a97709022f4df553824848a"
+    },
+    {
+      "path": "test/built-ins/Date/coercion-order.js",
+      "upstream_path": "test/built-ins/Date/coercion-order.js",
+      "bytes": 1723,
+      "sha256": "036f5638a142e91837e032e160aeecdbc0c1533cf05cc3cf37d9e76109c05c0d"
+    },
+    {
+      "path": "test/built-ins/Date/construct_with_date.js",
+      "upstream_path": "test/built-ins/Date/construct_with_date.js",
+      "bytes": 785,
+      "sha256": "dfa81293f65a61ec830a4fb32451181655e06ca68af044926a845230c1283173"
+    },
+    {
+      "path": "test/built-ins/Date/is-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/is-a-constructor.js",
+      "bytes": 809,
+      "sha256": "613b488d2b97b8549b43a2553c1ec9dba81d7f524a2caee55632bf06abf28d1a"
+    },
+    {
+      "path": "test/built-ins/Date/length.js",
+      "upstream_path": "test/built-ins/Date/length.js",
+      "bytes": 707,
+      "sha256": "a25af1ff1d3344ed65df85af518427fb677c2dca37a7350937ecb05f7f7ef94e"
+    },
+    {
+      "path": "test/built-ins/Date/name.js",
+      "upstream_path": "test/built-ins/Date/name.js",
+      "bytes": 769,
+      "sha256": "96e2309df8f406c7971fa50eedf35ddd76c9d26c079c65c988130507085b003d"
+    },
+    {
+      "path": "test/built-ins/Date/now/15.9.4.4-0-1.js",
+      "upstream_path": "test/built-ins/Date/now/15.9.4.4-0-1.js",
+      "bytes": 281,
+      "sha256": "db9e74b02e4236f38682a2a3fb7086bb9eae9b56a6966d49d71c42bfe074f11c"
+    },
+    {
+      "path": "test/built-ins/Date/now/15.9.4.4-0-2.js",
+      "upstream_path": "test/built-ins/Date/now/15.9.4.4-0-2.js",
+      "bytes": 292,
+      "sha256": "28f9df300ef6d3b75918d5c5ca92c33dfb3b0cecae21cc73b017f1728a871523"
+    },
+    {
+      "path": "test/built-ins/Date/now/15.9.4.4-0-3.js",
+      "upstream_path": "test/built-ins/Date/now/15.9.4.4-0-3.js",
+      "bytes": 295,
+      "sha256": "21990bef9626cc645324b448902013dc84cba1783e3397312144020da2d349b9"
+    },
+    {
+      "path": "test/built-ins/Date/now/15.9.4.4-0-4.js",
+      "upstream_path": "test/built-ins/Date/now/15.9.4.4-0-4.js",
+      "bytes": 275,
+      "sha256": "73809c64720d0c1664673a46308a84450fe68c5b53716937ce1b2297cced46b6"
+    },
+    {
+      "path": "test/built-ins/Date/now/name.js",
+      "upstream_path": "test/built-ins/Date/now/name.js",
+      "bytes": 773,
+      "sha256": "12c4c05dce099885d695f5d63784766c7e18d6f57e54aa1bc9e855e13b8f29bb"
+    },
+    {
+      "path": "test/built-ins/Date/now/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/now/not-a-constructor.js",
+      "bytes": 832,
+      "sha256": "1725ef83b3dc885c8984f1cb0eeca21558d629322f9063741a7ab97eebb8eafa"
+    },
+    {
+      "path": "test/built-ins/Date/parse/length.js",
+      "upstream_path": "test/built-ins/Date/parse/length.js",
+      "bytes": 978,
+      "sha256": "3a2d984476ac808b95b09e9472525cb3dda9dcfb9179cc8f0b9c4aa813e9c308"
+    },
+    {
+      "path": "test/built-ins/Date/parse/name.js",
+      "upstream_path": "test/built-ins/Date/parse/name.js",
+      "bytes": 792,
+      "sha256": "6b8b17e5b74367481dab45c6252ef4645fd3a82e40b70fde49a751cc6df48585"
+    },
+    {
+      "path": "test/built-ins/Date/parse/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/parse/not-a-constructor.js",
+      "bytes": 840,
+      "sha256": "ae1d7433c33d7c75011bf3df6660760feff4ca0741ff4256d7172e6c416a984e"
+    },
+    {
+      "path": "test/built-ins/Date/parse/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/parse/prop-desc.js",
+      "bytes": 628,
+      "sha256": "b7cdc12f8c8cc2f212691734054387da0ca6fa90de53678099733004cd2dea29"
+    },
+    {
+      "path": "test/built-ins/Date/parse/time-value-maximum-range.js",
+      "upstream_path": "test/built-ins/Date/parse/time-value-maximum-range.js",
+      "bytes": 1627,
+      "sha256": "cf83fc4c692dff690b2779fc45a36bb7ad288fc12613e2f9d60acd6e7a3e65a5"
+    },
+    {
+      "path": "test/built-ins/Date/parse/without-utc-offset.js",
+      "upstream_path": "test/built-ins/Date/parse/without-utc-offset.js",
+      "bytes": 655,
+      "sha256": "903aaf9fd5a8eb1f983ac0096b52ce3b61b12c1de5b0cc0ce21564c74d03bebc"
+    },
+    {
+      "path": "test/built-ins/Date/parse/year-zero.js",
+      "upstream_path": "test/built-ins/Date/parse/year-zero.js",
+      "bytes": 596,
+      "sha256": "faa3eede215022f3e0254b8c5a4bb999a6c340e67448b7e351dc0bdb5f23bac1"
+    },
+    {
+      "path": "test/built-ins/Date/parse/zero.js",
+      "upstream_path": "test/built-ins/Date/parse/zero.js",
+      "bytes": 1049,
+      "sha256": "f2eecf55f0c861e290bcc99f116345b6a02060de86e4e15f8f02e32e445696bb"
+    },
+    {
+      "path": "test/built-ins/Date/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prop-desc.js",
+      "bytes": 572,
+      "sha256": "a964ca94e1275b36355dec176c6e0a1846eac1790972b66fc4b0368cb05ff26f"
+    },
+    {
+      "path": "test/built-ins/Date/proto-from-ctor-realm-one.js",
+      "upstream_path": "test/built-ins/Date/proto-from-ctor-realm-one.js",
+      "bytes": 966,
+      "sha256": "1bca68fbe0a1eb3f3d588f1e97ce9f02b7170393c177c658bf7edb0180be8985"
+    },
+    {
+      "path": "test/built-ins/Date/proto-from-ctor-realm-two.js",
+      "upstream_path": "test/built-ins/Date/proto-from-ctor-realm-two.js",
+      "bytes": 1007,
+      "sha256": "78ff6a547292807be61ab0c99466708dd1b376b24b33aace1e91f5496418daa1"
+    },
+    {
+      "path": "test/built-ins/Date/proto-from-ctor-realm-zero.js",
+      "upstream_path": "test/built-ins/Date/proto-from-ctor-realm-zero.js",
+      "bytes": 964,
+      "sha256": "508c839f8dc1a6fb7a9898bd652fd417c4fba00e03568772f1531176bb3b7dd8"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A01_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A01_T1.js",
+      "bytes": 457,
+      "sha256": "9523928eeaa43a54cf20e4ae223caf6e3db5a4e67b4742a83a546cd3f4b9519f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A02_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A02_T1.js",
+      "bytes": 445,
+      "sha256": "6a521d8c2270b4012289f2a580ff8e3f2faf4153bd5a935bc01176bf89c5befe"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A03_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A03_T1.js",
+      "bytes": 461,
+      "sha256": "a4b5016002f6061fe125dfb36367ffedfc59ddfb041389975ba14c47ecc8ea17"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A04_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A04_T1.js",
+      "bytes": 461,
+      "sha256": "7549e3ed7310388521a0fb310302ff30b8c8df8e21c4e4d7170badcd8c4b49b6"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A05_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A05_T1.js",
+      "bytes": 469,
+      "sha256": "34b36a3f93ad6ffbe4b112788c23669993df2204c2fdf1ba5032f930e0b0cd76"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A06_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A06_T1.js",
+      "bytes": 485,
+      "sha256": "d0c7d10d4f1576532ada8d3f15a235ab2386656346d67f8caeed15fa87f7eae4"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A07_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A07_T1.js",
+      "bytes": 485,
+      "sha256": "1ec9e65dd1ca48afd9358a67f8d20c088429fb46431d29b105f1424a13cdb3cb"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A08_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A08_T1.js",
+      "bytes": 441,
+      "sha256": "9e0b7fff1e4dbdfe48070068424b6701cd47cb311791a8e48b5c81a16c89d88f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A09_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A09_T1.js",
+      "bytes": 441,
+      "sha256": "ab1d5301d27cd34774cbd7ca61c7de042deaea5cedc1a9636053a62c4294a6f2"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A10_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A10_T1.js",
+      "bytes": 457,
+      "sha256": "931b89659eaf07fb5001e221c2faeac51244c8015072691c8bf80e8c075468e8"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A11_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A11_T1.js",
+      "bytes": 469,
+      "sha256": "eb8569ce0f2f98333a46c7090c277a522a6286bb00fb2f0b2ba530ed1c9ca63d"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A12_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A12_T1.js",
+      "bytes": 445,
+      "sha256": "ae81da1e8540c4669845e554395f33f0af2fe3da4ce3f3c512d42c3311fd44bd"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A13_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A13_T1.js",
+      "bytes": 457,
+      "sha256": "ace6b4f8ce63607c4f819b5f4f448b1ffae9dca698f54801b2a30df2a07ad61c"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A14_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A14_T1.js",
+      "bytes": 441,
+      "sha256": "e9950fa278c82181d8abbd398dda4de27789a0a8107a7641e62d47d98d0292cb"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A15_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A15_T1.js",
+      "bytes": 453,
+      "sha256": "75cd21ffb9d896bd092b1dadac7ec1c9364b6af918614e44fe364bb13ea1a3a3"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A16_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A16_T1.js",
+      "bytes": 437,
+      "sha256": "1507282fdd7d88c0297c66e08c486573b32c2fa3c12eb0f9ef8a40449b6f6738"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A17_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A17_T1.js",
+      "bytes": 449,
+      "sha256": "f065733d7bb319c26383dee22bcf8e56fd12c3d8d81d855f5b632230967749a5"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A18_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A18_T1.js",
+      "bytes": 445,
+      "sha256": "980c5e35d1382e5d2885c984a32b33a0dbcb92de41b97ef452951aa39f78f7fb"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A19_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A19_T1.js",
+      "bytes": 457,
+      "sha256": "29a74aadc32a01ec8872eb6a2ad2c5e3c2cb4fb6fc5d6f5093f7ed524b03bfd5"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A20_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A20_T1.js",
+      "bytes": 453,
+      "sha256": "8eacf835c5d8982635237e7fc463958f5b9f064de4431af16844e4c776902620"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A21_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A21_T1.js",
+      "bytes": 465,
+      "sha256": "9e15256e57353aaae5ad9363ca4b159a9ac48d79667841b9fb5c410168faaea1"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A22_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A22_T1.js",
+      "bytes": 453,
+      "sha256": "47f8a1670cae94f6d3abb7caf0ac8cbb2ebe46c2974e105633233279d2153bb7"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A23_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A23_T1.js",
+      "bytes": 465,
+      "sha256": "884cf83621295c789016760636019a7ed3913bc766f8cca7e8e9c94fe339ca43"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A24_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A24_T1.js",
+      "bytes": 473,
+      "sha256": "5e426727f8fb1ee6119c9228af5e2e595c2f7a3b6cec0b6e99c936b2366dcd1d"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A25_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A25_T1.js",
+      "bytes": 485,
+      "sha256": "ab72372e34dce8d35e33e3eb1d7049192d0f002bf200b59bdbc7b77476556570"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A26_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A26_T1.js",
+      "bytes": 481,
+      "sha256": "465de61424cce0fb7ed614ef8308fa9634af08b5032047ee867a28282ed7bddd"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A27_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A27_T1.js",
+      "bytes": 441,
+      "sha256": "73d54be937f506183789470a5214267bc33516326e3972afad2c09ae7655c53d"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A28_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A28_T1.js",
+      "bytes": 473,
+      "sha256": "ffb17c72b3df8dc46662a9bc53da5ea8ccfeac38f2ac2553a8941471852956b0"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A29_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A29_T1.js",
+      "bytes": 485,
+      "sha256": "773cd16b74466ab4fc65d4ddba6939e9c63dd8a375ee71f97cb2a2fd7e2aa715"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A30_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A30_T1.js",
+      "bytes": 453,
+      "sha256": "1aec90551f5cbfb81d58ef190298948d2b397feddbd0f36d66eef6a9c587a414"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A31_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A31_T1.js",
+      "bytes": 465,
+      "sha256": "d86aabce3e824b71383e0e29b4e44ef65abb7ab490fbb8935183743473ca2700"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A32_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A32_T1.js",
+      "bytes": 453,
+      "sha256": "d2f3684ca52b1ef63df855480037b65a94df91a76d480c37f435e48b23f8698c"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A33_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A33_T1.js",
+      "bytes": 465,
+      "sha256": "ba6798eed754d4f783a3452199fd8e412bdec1f568d5dbf2a983079697c5dc59"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A34_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A34_T1.js",
+      "bytes": 445,
+      "sha256": "481ca952b49a1ac804a77487f63da11df6b5e4c6dcfc9fa510e086a3cded1e21"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A35_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A35_T1.js",
+      "bytes": 457,
+      "sha256": "0caceb130b1f7c7322a39ba567db01fe36e44ecfe84c669e451b9a4ff7432f9d"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A36_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A36_T1.js",
+      "bytes": 441,
+      "sha256": "4ef22bfd0b448115679cab32d085d75e4ede02b0a71dcaf28cc8fa41a25c5159"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A37_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A37_T1.js",
+      "bytes": 453,
+      "sha256": "c3c6afe6c495d479b778c910534e25245d1c2a5328d99ed2c3600d096c76be7e"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A38_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A38_T1.js",
+      "bytes": 445,
+      "sha256": "5468e53a843b41760d6a626e8a964a90d858dbe1c60b2e3c3a17cb1c08be0409"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A39_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A39_T1.js",
+      "bytes": 457,
+      "sha256": "06f9c85640cc6f71b4b1f1526ab4a49eb87230ac81dc03b56417e1e2ebe764ca"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A40_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A40_T1.js",
+      "bytes": 457,
+      "sha256": "eab48fe6bf3cc4b131b7c4fde0f80791291f918a895765eddb63e484ad456904"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A41_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A41_T1.js",
+      "bytes": 469,
+      "sha256": "fffd334af349cb4a431445aa2838178149313f7700b5e69e9eabe819d09c50ca"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/S15.9.5_A42_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/S15.9.5_A42_T1.js",
+      "bytes": 457,
+      "sha256": "4dc5cefb90dfbc812bccf700f23992f3cdb4657a7cbf33c98d91796dc334ba64"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/Symbol.toPrimitive/called-as-function.js",
+      "upstream_path": "test/built-ins/Date/prototype/Symbol.toPrimitive/called-as-function.js",
+      "bytes": 942,
+      "sha256": "137aaff8ffca8d29f70270c5f67709d19a50df36233be5cb1f46be5ee0e9e793"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-default-first-invalid.js",
+      "upstream_path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-default-first-invalid.js",
+      "bytes": 1247,
+      "sha256": "8d617bc968776359acfcbb460d7ecc2bb52d432629cbd13f0d9beb6af67253c6"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-default-first-non-callable.js",
+      "upstream_path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-default-first-non-callable.js",
+      "bytes": 1086,
+      "sha256": "d1480db444e32baccc68a8cd8c65cc8f03f95c047b0909765c47ae2557e9b303"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-default-first-valid.js",
+      "upstream_path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-default-first-valid.js",
+      "bytes": 1155,
+      "sha256": "f88c4a89d576e76e47d4dc153b4ca09dd25ab0728c73cb2b7bfb811f09a23495"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-default-no-callables.js",
+      "upstream_path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-default-no-callables.js",
+      "bytes": 871,
+      "sha256": "50f55bb65cc121ccb1e58a024f95ef9d336289b5c9d53bc88840f01c86f7ca1e"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-invalid.js",
+      "upstream_path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-invalid.js",
+      "bytes": 1393,
+      "sha256": "726a3a7bf944b661a689a3182830c2fbd7f7e139a7d227968b37e29aca25eff1"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-number-first-invalid.js",
+      "upstream_path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-number-first-invalid.js",
+      "bytes": 1247,
+      "sha256": "266c77711343f2dedafd3590dfa08d784467bb3965997a587bb5d9ae12e9f114"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-number-first-non-callable.js",
+      "upstream_path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-number-first-non-callable.js",
+      "bytes": 1087,
+      "sha256": "462d9e0f196370f680a4369030b151ca858048e89b6fe2a07927f0a29585c4f9"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-number-first-valid.js",
+      "upstream_path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-number-first-valid.js",
+      "bytes": 1150,
+      "sha256": "a9a81fec08eeedcc8f2d16f932491e30e1ba10ed7b09c8d215045f0f5e3633b8"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-number-no-callables.js",
+      "upstream_path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-number-no-callables.js",
+      "bytes": 869,
+      "sha256": "7a2582d5d562da2aa2a43bc6e2b3d8b22fa06fbe0bc1f1563319b36b0e3a4830"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-string-first-invalid.js",
+      "upstream_path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-string-first-invalid.js",
+      "bytes": 1245,
+      "sha256": "dbfb37561399a04e9f7280072c8114ebb7b1ec02b916c3ac5cfe65449d516f37"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-string-first-non-callable.js",
+      "upstream_path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-string-first-non-callable.js",
+      "bytes": 1084,
+      "sha256": "354a53749b6d64068ce21674b2b75db6f1cf5f1ffd89622cfe4dbfbd8b7ee648"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-string-first-valid.js",
+      "upstream_path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-string-first-valid.js",
+      "bytes": 1152,
+      "sha256": "3e21e1ead1283b2052e8c9c8315e0b3e9900b56917f7f755116758aa1d76840e"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-string-no-callables.js",
+      "upstream_path": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-string-no-callables.js",
+      "bytes": 869,
+      "sha256": "2eea1447dd98d82430379412a500387ff615cb639fe3635bc03120b6c6811c69"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/Symbol.toPrimitive/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/Symbol.toPrimitive/length.js",
+      "bytes": 982,
+      "sha256": "3896a0c4960e4b02d79e393a55b7b3f186434b8728265c890b83db5e1c44897f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/Symbol.toPrimitive/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/Symbol.toPrimitive/name.js",
+      "bytes": 788,
+      "sha256": "89404f77e940e2267c612b9bb1f1429b0adac1d2a591d9b8b563da014f126679"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/Symbol.toPrimitive/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/Symbol.toPrimitive/prop-desc.js",
+      "bytes": 560,
+      "sha256": "210b48d816560fd118a7804fa42dd275cd02d0a1fd4f7a1cadda761169e1bb3f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/Symbol.toPrimitive/this-val-non-obj.js",
+      "upstream_path": "test/built-ins/Date/prototype/Symbol.toPrimitive/this-val-non-obj.js",
+      "bytes": 964,
+      "sha256": "35fcb2d620b1077b475610695ee3b5095deb9f5c0871fad09921917420bf9d7a"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/constructor/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/constructor/prop-desc.js",
+      "bytes": 758,
+      "sha256": "1f4b97892f9bd9d9eaa78aa8d1089c843c04b19345959454d702c60e2bffea29"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getDate/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/getDate/length.js",
+      "bytes": 1019,
+      "sha256": "e8d26d5d26d98584bbc116b7bd6dc5709231ff0e21ff7d06e301f3860f03614f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getDate/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/getDate/name.js",
+      "bytes": 837,
+      "sha256": "7b92efd25a15ea200af7b393c9260cc1093cdcfc5ef047305543cf88fcc6d3b9"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getDate/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/getDate/not-a-constructor.js",
+      "bytes": 919,
+      "sha256": "c536716daef5c9902b29dbff0411b2bea37749a9c635ab69a2dff0db991739a1"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getDate/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/getDate/prop-desc.js",
+      "bytes": 669,
+      "sha256": "6e818e63891a59f194b26d1521d960789544feeea4392aab8e65eb02942cc9bc"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getDate/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getDate/this-value-invalid-date.js",
+      "bytes": 356,
+      "sha256": "9c742562b683320f5902e112e9c5b67be28f2e41893e483c68907467c93fd242"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getDate/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getDate/this-value-non-date.js",
+      "bytes": 954,
+      "sha256": "7989ef3c1bd0f473c19549fb836711ef372b1bef204f96526f3c153b0a46ab1b"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getDate/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/getDate/this-value-non-object.js",
+      "bytes": 1101,
+      "sha256": "04be87dcbccc6387a10790cb4585d9f14dc0fd25b187919504e1cf024720c393"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getDate/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getDate/this-value-valid-date.js",
+      "bytes": 1167,
+      "sha256": "3b25cc73b55e83bae3e576e32590fcc8e35a47427a452d37e3481a27fe498025"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getDay/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/getDay/length.js",
+      "bytes": 1015,
+      "sha256": "dd9119fb0f5c78406389885163aa9d9966a1c31a348a3f72c3817100101309cd"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getDay/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/getDay/name.js",
+      "bytes": 831,
+      "sha256": "4d2c7e3ee9c537a2be78b86d721357f165b7818199a4d62a569acbde3a1ca163"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getDay/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/getDay/not-a-constructor.js",
+      "bytes": 915,
+      "sha256": "c07dbeca139f5351ec055dd1fa186055e74b3b6e7bb26c9c14917dacb3754506"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getDay/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/getDay/prop-desc.js",
+      "bytes": 665,
+      "sha256": "d86c264d9aacbf17fdf03efd5c61f84889c76a3a243cbc77b3fe39952b76aa6a"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getDay/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getDay/this-value-invalid-date.js",
+      "bytes": 354,
+      "sha256": "b14ebdddf473662687a501a26f3d26fa19badce141e4f70ec44e5952ca5723ff"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getDay/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getDay/this-value-non-date.js",
+      "bytes": 947,
+      "sha256": "625a1bee81c3d051ac0cfe43c099ac8998b3c9083cb8db594aed7cbd80aa7288"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getDay/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/getDay/this-value-non-object.js",
+      "bytes": 1091,
+      "sha256": "42174834d1126f30da91f94278049e7155b24b660af6c7d1487bedf882cb14d9"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getDay/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getDay/this-value-valid-date.js",
+      "bytes": 1142,
+      "sha256": "a8d6daea20e7fccbae3e00bcd238a487eb591759ed4b5099da95375861354236"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getFullYear/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/getFullYear/length.js",
+      "bytes": 1035,
+      "sha256": "d14232462578fd923ef12c5c483cda9b727e77290c25d2e55924c1b09ca91bcb"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getFullYear/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/getFullYear/name.js",
+      "bytes": 861,
+      "sha256": "1cadbd8e30bdff7795209937935f801ca09c49943a285ee878c894a8be6fd4f9"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getFullYear/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/getFullYear/not-a-constructor.js",
+      "bytes": 935,
+      "sha256": "14a6caf57da051b509a00e668df8ca7a2043fa058fdd16a58a11df40c6315838"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getFullYear/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/getFullYear/prop-desc.js",
+      "bytes": 685,
+      "sha256": "0dd156517ca76fc147b21d24aeeac2ef098563881a417cb9371923f8698338d4"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getFullYear/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getFullYear/this-value-invalid-date.js",
+      "bytes": 364,
+      "sha256": "a6d9b3e4a61f48362c18f6068bf8af5e3eedf03219974683329333bb683677e6"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getFullYear/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getFullYear/this-value-non-date.js",
+      "bytes": 982,
+      "sha256": "c39c3d66f0b7e52f755a5d50fdc4f38bd587ba8683d6ed43a6e44f1f1f5ceca9"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getFullYear/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/getFullYear/this-value-non-object.js",
+      "bytes": 1141,
+      "sha256": "e0eb3fd3fcdc013c637833296e91ba8495fd2948e59746c141a4f877b6578df5"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getFullYear/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getFullYear/this-value-valid-date.js",
+      "bytes": 752,
+      "sha256": "e6d71d07de0a9eb603cd260018f5c5d7189cfe063ad15fed776fc7abcee232f3"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getHours/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/getHours/length.js",
+      "bytes": 1023,
+      "sha256": "b309748e444e340d4272ca5c5db9a164768d80c42b318fb00943781e98d1a991"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getHours/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/getHours/name.js",
+      "bytes": 843,
+      "sha256": "1279c34ea9aa5ce5d05a6000082b7f2d960669010dde3a688e25a767dc52ffb1"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getHours/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/getHours/not-a-constructor.js",
+      "bytes": 923,
+      "sha256": "ddadc49aaf138e6d755763e484017cfa81f2d7675f2afedb5da30f2a5ad90ac9"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getHours/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/getHours/prop-desc.js",
+      "bytes": 673,
+      "sha256": "8d27e5777cb1307a146401216f51b68d11bfa4416aeb55699dea6713d8db3427"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getHours/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getHours/this-value-invalid-date.js",
+      "bytes": 358,
+      "sha256": "3b00a4da18daf5b26b1cebeab2e76c514a5f3d2937ccda5ee2fbfa072c7c6694"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getHours/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getHours/this-value-non-date.js",
+      "bytes": 961,
+      "sha256": "1454af6c151475a10768ea716a543b0f5a21fb7eceabd7de52c9ed9d6d0a1018"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getHours/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/getHours/this-value-non-object.js",
+      "bytes": 1111,
+      "sha256": "4ef15a5a2099ec69217cb2a08e6c1f272fb29f5a55c9aacae38993b3633d5515"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getHours/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getHours/this-value-valid-date.js",
+      "bytes": 1190,
+      "sha256": "e09651dfb4e227628a85b1cfb7e20f2b9e2b581744c5874a82924b2f80cccc32"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMilliseconds/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMilliseconds/length.js",
+      "bytes": 1051,
+      "sha256": "e064b4093fa36839b226a9e1f753b0c0f02f0c7a966c166ffd5523a105d5812e"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMilliseconds/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMilliseconds/name.js",
+      "bytes": 885,
+      "sha256": "522fc752833d1dafac3e920d01f53af9412239517f0ecfc2740aaf82d565c58e"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMilliseconds/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMilliseconds/not-a-constructor.js",
+      "bytes": 951,
+      "sha256": "7926c3ff8d29a0a40a6cad95b5832a1dac1fe848b52c97de846d0b7d455bfef4"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMilliseconds/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMilliseconds/prop-desc.js",
+      "bytes": 701,
+      "sha256": "e0f29213c6b354e53abbf3b9cc65fcd50de8527f0de9e670ec34c1a0481a7c6d"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMilliseconds/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMilliseconds/this-value-invalid-date.js",
+      "bytes": 372,
+      "sha256": "156bd36c5778b8ad28934f513048392b18baf8873eb5abecafa84f5bf6294c7d"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMilliseconds/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMilliseconds/this-value-non-date.js",
+      "bytes": 1010,
+      "sha256": "8410d14d41ceab99dbeec8d0da0960e4d90e63bb974989f28f7fe7efdde39ed6"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMilliseconds/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMilliseconds/this-value-non-object.js",
+      "bytes": 1181,
+      "sha256": "1c9a14707ca355662a61e7709321a0001d8824c354024b0cc581ec2dfe55b733"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMilliseconds/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMilliseconds/this-value-valid-date.js",
+      "bytes": 769,
+      "sha256": "128feb6392896ad624e4fd3d7b2c41eaea48f8e013e54ff74b5255ec963c5fec"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMinutes/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMinutes/length.js",
+      "bytes": 1031,
+      "sha256": "5d2c16e6cba437108ff8ec2785ec604e9445ca410a7e61f442e34e10d7284912"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMinutes/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMinutes/name.js",
+      "bytes": 855,
+      "sha256": "3ca1a19d0b6a338e3eb455cada8d3602248a9142fc7866721f21c616c137510f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMinutes/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMinutes/not-a-constructor.js",
+      "bytes": 931,
+      "sha256": "5070dac216f6c67ebac1a71280b5c0a0aeb28c4ea59d2d8852e65f774bb22bdd"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMinutes/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMinutes/prop-desc.js",
+      "bytes": 681,
+      "sha256": "5ba3785ee530e18503217bdfbe786b970681dd4d62164d0bf8391d2447cc3cdf"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMinutes/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMinutes/this-value-invalid-date.js",
+      "bytes": 362,
+      "sha256": "17fcd42eee8541ec7687c93c6351b70fb6035f38e92cf2f24f2b0cf5275901b7"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMinutes/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMinutes/this-value-non-date.js",
+      "bytes": 975,
+      "sha256": "159f34ff940a6d23d89691bc29c2e3ed53b3b0af18c1f1ebdb9f1ba03737f247"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMinutes/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMinutes/this-value-non-object.js",
+      "bytes": 1131,
+      "sha256": "c3c855a8f2ec1c19b1b8f26e41a5799e7a16bad5d7bddab6e663f743b8ec516d"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMinutes/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMinutes/this-value-valid-date.js",
+      "bytes": 1201,
+      "sha256": "b53f77e26438347d16885e6d6fce5fbd3a1681799ea12f27e09a59fc41c519db"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMonth/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMonth/length.js",
+      "bytes": 1023,
+      "sha256": "cee4712e1c160ad3bf476290eb1f073e1fe16d719cc5958c81711ad3344bcd8d"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMonth/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMonth/name.js",
+      "bytes": 843,
+      "sha256": "d5f6cfaab7e4d40e6a14583c8da650b4381e201871f0d8b05c5e8cdb33413b49"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMonth/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMonth/not-a-constructor.js",
+      "bytes": 923,
+      "sha256": "66d10db5e1234857e76d247aa54cde2b906bf67ec548c3c85b6a25792909ff7f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMonth/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMonth/prop-desc.js",
+      "bytes": 673,
+      "sha256": "325e0324fd4161a3b689b84f35a848233b5b275736c861267bd7d5ffe885232a"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMonth/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMonth/this-value-invalid-date.js",
+      "bytes": 358,
+      "sha256": "15fbcbd78c720eb8f1041eb16a798ab8062844237fb64e10feda1b34b20b0286"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMonth/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMonth/this-value-non-date.js",
+      "bytes": 961,
+      "sha256": "9c4f63fc54ad434089ac3e141eebd6c7c25aada430fca7dac31362e483934851"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMonth/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMonth/this-value-non-object.js",
+      "bytes": 1111,
+      "sha256": "882efd25c94748a0a59516b502a5958bb2fa9fcb069531865b6d2738e1c77900"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getMonth/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getMonth/this-value-valid-date.js",
+      "bytes": 1175,
+      "sha256": "db7a3a80634ff98a03b505005af2bb3425c625424c3e2799b14b19f425ad948c"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getSeconds/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/getSeconds/length.js",
+      "bytes": 1031,
+      "sha256": "7469db95b2f4278a8f7c4105c0e7325310bbda89cff7764adc4a3ec0885c325f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getSeconds/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/getSeconds/name.js",
+      "bytes": 855,
+      "sha256": "b572de2b47078431ad7a43aca238d714a13d860cb9e99255339bd22a2f3b7aed"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getSeconds/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/getSeconds/not-a-constructor.js",
+      "bytes": 931,
+      "sha256": "bde83b326b43bd0c171774f5cb67c29c7226e582fb37b6c750692a0f81e38c6f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getSeconds/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/getSeconds/prop-desc.js",
+      "bytes": 681,
+      "sha256": "28b37dc23ed7789690f2a0c5c293af09bbaa3bfd2a6bc40565bac84d23babefd"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getSeconds/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getSeconds/this-value-invalid-date.js",
+      "bytes": 362,
+      "sha256": "8bf8d69f2ea4e21c5c9b019cc428a10a131a2e117b74689beeeff30a0f085796"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getSeconds/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getSeconds/this-value-non-date.js",
+      "bytes": 975,
+      "sha256": "607ec9d9da6b6b1fb89786c5d4c0a759f5b7bcea33e72f3757a6fe37872c5dba"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getSeconds/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/getSeconds/this-value-non-object.js",
+      "bytes": 1131,
+      "sha256": "d97366374244c145aaa833ea21da60bb304e4a7f3fcfeb80dd47aab55079e6c3"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getSeconds/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getSeconds/this-value-valid-date.js",
+      "bytes": 1243,
+      "sha256": "e3c5293f0dbba5e519776fa9b5fa6c1d3fabe6f17b483b84c2aa9cdeaf37bc5a"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getTime/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/getTime/length.js",
+      "bytes": 1019,
+      "sha256": "bed32542c8478866bfde9bee3ef7065508867d99e16f6a6c09be67a511ba18a5"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getTime/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/getTime/name.js",
+      "bytes": 840,
+      "sha256": "0dacc0aab32ab4f09f2669463a6c3799ff613114115190c2bbb9cab82b0410c7"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getTime/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/getTime/not-a-constructor.js",
+      "bytes": 919,
+      "sha256": "63590542dd18b31a90c70fd77955a6e6a7ede5045fe9e3478f63fa20b871393f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getTime/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/getTime/prop-desc.js",
+      "bytes": 669,
+      "sha256": "cf82c41da21aaee4919cc734523dda47e196d5baee9cf7f181447824f7166eae"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getTime/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getTime/this-value-invalid-date.js",
+      "bytes": 325,
+      "sha256": "85d2c24859111d00047b5e0923d9ca1d89c73cd14394b4b5c442bd8d7a9c7302"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getTime/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getTime/this-value-non-date.js",
+      "bytes": 953,
+      "sha256": "53383321eb263fb4aaf807101c05e508d1158bc3d1286df16f5e71725e6f5803"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getTime/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/getTime/this-value-non-object.js",
+      "bytes": 1100,
+      "sha256": "6ec4718b6e87ae7599c370e8cd2ea9678566401046057fe3b9d79fa07e9556b2"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getTime/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getTime/this-value-valid-date.js",
+      "bytes": 617,
+      "sha256": "172af4469e9b8efd0a45e7e075f831774eba809dfb2cd57abb0ebd4fef2de4ab"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getTimezoneOffset/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/getTimezoneOffset/length.js",
+      "bytes": 1059,
+      "sha256": "169f7928c2ebc17effa7ccdcbd7fa6274baebcb0697eed88343ad851040e83e0"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getTimezoneOffset/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/getTimezoneOffset/name.js",
+      "bytes": 897,
+      "sha256": "c7f98c3e3450f9ff4c8bd9d6a72b9dc46e3f39110ce64487dd6afe218c64e38d"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getTimezoneOffset/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/getTimezoneOffset/not-a-constructor.js",
+      "bytes": 959,
+      "sha256": "e8e21af2f69d14e9667c70ba2bbdeb231971416003e8c57bb145e1db06cd430c"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getTimezoneOffset/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/getTimezoneOffset/prop-desc.js",
+      "bytes": 709,
+      "sha256": "fef4be4dfbb12ed43cd16670eee50f8428615ab3ba0b9a9bdafd97b5fded5da3"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getTimezoneOffset/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getTimezoneOffset/this-value-invalid-date.js",
+      "bytes": 376,
+      "sha256": "6518991b432dab55dde7b97987e6ab8cc5b2091e7f04d589ae34d26c70afb545"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getTimezoneOffset/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getTimezoneOffset/this-value-non-date.js",
+      "bytes": 1024,
+      "sha256": "f4cfc19f4a5885e288296590ede474a3a14cea4fc2429f3981a39f5d51caa67e"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getTimezoneOffset/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/getTimezoneOffset/this-value-non-object.js",
+      "bytes": 1201,
+      "sha256": "c13ead303548f85df32660feef7dd97bdda40dc71b65df7dacb32d05d90a86ff"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getTimezoneOffset/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getTimezoneOffset/this-value-valid-date.js",
+      "bytes": 782,
+      "sha256": "d25c4e5385ecf4dec0bb3e73e6abe59d77a29f49c0eacb952c12f8793a3517a8"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCDate/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCDate/length.js",
+      "bytes": 1031,
+      "sha256": "5581db63c43515162e2a41fed884418632cc975601b99e844d7d714ff16456fe"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCDate/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCDate/name.js",
+      "bytes": 855,
+      "sha256": "d9b4b4eb238a9f51a3a4cd274f891b1c573731de0f4492a31c80271bb6a1805b"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCDate/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCDate/not-a-constructor.js",
+      "bytes": 931,
+      "sha256": "25fcc1eed7a8832164dbb5eaae91a8f38a732a36f59493262842d9ca89c3f7f8"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCDate/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCDate/prop-desc.js",
+      "bytes": 681,
+      "sha256": "3c4b0f03e02d14209a2733217dee146c6b25691f45c1b91c13d24b56603c22e7"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCDate/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCDate/this-value-invalid-date.js",
+      "bytes": 362,
+      "sha256": "cbeffa14357b585ed37a0a1769ae00a06b16c55b27a1a544fec14bafda61da0f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCDate/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCDate/this-value-non-date.js",
+      "bytes": 975,
+      "sha256": "3cf991db0d0314f05d041e0e2585cc88a6c94d9610a3843c166275fcd8971dd9"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCDate/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCDate/this-value-non-object.js",
+      "bytes": 1131,
+      "sha256": "59d31469328a52132fbf606b21170e781a6fb72b09e245f9506114784a19d6a7"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCDate/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCDate/this-value-valid-date.js",
+      "bytes": 1175,
+      "sha256": "c14eb5f9638ccf49f330490e5a485bee7bb297ca629412b3930c874a60e9b7c4"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCDay/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCDay/length.js",
+      "bytes": 1027,
+      "sha256": "209cf2d67c0bd02dff37eb64253ff8d15724b64aa4923f96157944196fc90e84"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCDay/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCDay/name.js",
+      "bytes": 850,
+      "sha256": "574da35a4cb7abcf7f74fd524164e47ae9ced89bd24c858df4b1305e245283ba"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCDay/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCDay/not-a-constructor.js",
+      "bytes": 927,
+      "sha256": "bfeef98a834c3f7b7d4c21d7c13d658c1f1899fd5fe1457ddfd0542c90154962"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCDay/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCDay/prop-desc.js",
+      "bytes": 677,
+      "sha256": "668599ab3ada3df499878c9d2a1aaf4471cb2215826b196dc2956ee36810a194"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCDay/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCDay/this-value-invalid-date.js",
+      "bytes": 360,
+      "sha256": "ce3afcec56fe790fbb53b70107dac52d463de3b8ee251cd7681f1ea35d3acca4"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCDay/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCDay/this-value-non-date.js",
+      "bytes": 968,
+      "sha256": "f21b9ef55fe488357227acb3722597dd9fd171d9f3b8cf37bb401164e4e85a89"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCDay/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCDay/this-value-non-object.js",
+      "bytes": 1122,
+      "sha256": "0accc76508096dde6bccff114ae7438067ee6b2ab8d2271502c3712370997b20"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCDay/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCDay/this-value-valid-date.js",
+      "bytes": 1154,
+      "sha256": "9eea3714523aa0039f11a23bf378356e16a79f96a8a477ffd4833f0c5f98f0e8"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCFullYear/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCFullYear/length.js",
+      "bytes": 1047,
+      "sha256": "1a45ec57e7b6184efd9d78c0fc2c4a51f7a77eed7e7ef496c0283fd8fff9602e"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCFullYear/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCFullYear/name.js",
+      "bytes": 879,
+      "sha256": "eca71d2526177055d7f82d92ca12a5cd2c3248058e801c4af15aed2582d678e7"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCFullYear/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCFullYear/not-a-constructor.js",
+      "bytes": 947,
+      "sha256": "b278de3018f3b1b3a83ababc2d558bbdf25dd581ffcd4a60f3867c972e988e7c"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCFullYear/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCFullYear/prop-desc.js",
+      "bytes": 697,
+      "sha256": "6bc881cb25b544244d6e4933cedf6586b1d313f284faeccfc76f921a4dc42e71"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCFullYear/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCFullYear/this-value-invalid-date.js",
+      "bytes": 370,
+      "sha256": "2a82c0465914d0cbe087d80d22c622c9655db8f89fa5553509f843a55797eee6"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCFullYear/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCFullYear/this-value-non-date.js",
+      "bytes": 1003,
+      "sha256": "26c2c3a319e85ee42b48e895751f8fe049db8bdd6c26a7a953606362138d0c29"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCFullYear/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCFullYear/this-value-non-object.js",
+      "bytes": 1171,
+      "sha256": "6e638cbf7bec173865a99a324dff0901ef7cae5406df600653af750ec1b32fdf"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCFullYear/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCFullYear/this-value-valid-date.js",
+      "bytes": 764,
+      "sha256": "49cb9a6da13db51ce439f5d5fc7489c904caa5aa317d0356ce2e0a9d81688078"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCHours/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCHours/length.js",
+      "bytes": 1035,
+      "sha256": "cb9e3e7abb5fc48dd55af735e5184c9a8a8de23e26c0423af08a1e31e834087d"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCHours/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCHours/name.js",
+      "bytes": 861,
+      "sha256": "22e8675fc3d2953b4a56f9a729f42c3cdcca91be24908563cf6476628d1c7869"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCHours/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCHours/not-a-constructor.js",
+      "bytes": 935,
+      "sha256": "2c2d27f34d168ed9dfc68ed01b2960218ced5cbacdba213ec82c5f84c06e022f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCHours/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCHours/prop-desc.js",
+      "bytes": 685,
+      "sha256": "11e31e99c6edcb35ae6543992a6b7f933283efb2b9956e2cb8b9d2e429ce9206"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCHours/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCHours/this-value-invalid-date.js",
+      "bytes": 364,
+      "sha256": "e9338bf1c9604395fb2b81c5479392be37515a797f6a8fd9ad31f23c0a65b59e"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCHours/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCHours/this-value-non-date.js",
+      "bytes": 982,
+      "sha256": "e62994c9d1cb5abfba5ce97b2df1cc8e4f99d1bc3fe861711cac3c29e29d5bba"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCHours/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCHours/this-value-non-object.js",
+      "bytes": 1141,
+      "sha256": "3c36968409eb6e399b65671b843dffe4624e3e8d412afec257f5c40c3d127361"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCHours/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCHours/this-value-valid-date.js",
+      "bytes": 1190,
+      "sha256": "c05d96db501994ca11ad9468a872c90d8550cdc82e12c9f9d6f7a3065d5a64f4"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMilliseconds/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMilliseconds/length.js",
+      "bytes": 1063,
+      "sha256": "af1d8fa4ddf51a413d223e270bfa8780777ce98717179e9b2a14e67dd1509252"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMilliseconds/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMilliseconds/name.js",
+      "bytes": 903,
+      "sha256": "b01e589592a4af55eb4eb8024d1da5126abd0ef5d01f0522deda602f80abf437"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMilliseconds/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMilliseconds/not-a-constructor.js",
+      "bytes": 963,
+      "sha256": "51957c3473014eb42bc7df0a7e80702d6ef0173eace77f7b4846a98cf2106f66"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMilliseconds/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMilliseconds/prop-desc.js",
+      "bytes": 713,
+      "sha256": "6e232ab9c9fac8a63a04fcdfc4461a026ea8b87b52b10bb19bc19dd540591fdd"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMilliseconds/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMilliseconds/this-value-invalid-date.js",
+      "bytes": 378,
+      "sha256": "486c2c63e6a852fcbf0595cfd7881c1674e09080a41e378a4020ab30aca7e9b5"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMilliseconds/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMilliseconds/this-value-non-date.js",
+      "bytes": 1031,
+      "sha256": "471f4fc56fb77a71e9d79266dcee980fbb0c13405d12605f7d0f183f0c06e41f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMilliseconds/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMilliseconds/this-value-non-object.js",
+      "bytes": 1211,
+      "sha256": "6dc288c38b8bcbfd81955fd0224a5d6d3a420b2a70e8f7cc001691a1b11e7055"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMilliseconds/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMilliseconds/this-value-valid-date.js",
+      "bytes": 735,
+      "sha256": "d2718a4cae14e97457cd712a4eb5fe81a1407ee9f040dbfafe0ff3f497e3bf12"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMinutes/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMinutes/length.js",
+      "bytes": 1043,
+      "sha256": "1633d33fcf166c6aaed8a281b01f6a5491bd432cf90b2d29097992cd4e5e6258"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMinutes/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMinutes/name.js",
+      "bytes": 873,
+      "sha256": "00abd0182d465a7a859db30122ce6540da6f4359e32e73830ed53264fab988a4"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMinutes/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMinutes/not-a-constructor.js",
+      "bytes": 943,
+      "sha256": "61d07dc8bbf8af8001798b2157ba6084cf042778bc54fdc05e8ef423f595b824"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMinutes/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMinutes/prop-desc.js",
+      "bytes": 693,
+      "sha256": "2a3bd541138e59b386d2967e8cd4316e209fda290ffb11ed83d7eb8308e9c553"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMinutes/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMinutes/this-value-invalid-date.js",
+      "bytes": 368,
+      "sha256": "19d678de6d9429436caac24ed004a06053cf706b8ca0ec412c52aa9e13ae1d65"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMinutes/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMinutes/this-value-non-date.js",
+      "bytes": 996,
+      "sha256": "b38cdc86449ae4f0077e9c69d592c42ad61e1ce927a073a6e9b4e0c931253424"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMinutes/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMinutes/this-value-non-object.js",
+      "bytes": 1161,
+      "sha256": "1fbfb36182df44ee32b8b94e146a31374d2bca8ff411b3cc7f29c74098fce02b"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMinutes/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMinutes/this-value-valid-date.js",
+      "bytes": 1293,
+      "sha256": "09b334bd17661ec80e4b6d7b20039d1b63bd1b50290900707622dd904a1383cc"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMonth/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMonth/length.js",
+      "bytes": 1035,
+      "sha256": "3fb7c11449ff559b6d61d9a1760efbf06c654b598c6af90bea8b6582127bc511"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMonth/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMonth/name.js",
+      "bytes": 861,
+      "sha256": "a7bdd3b24d66249bbfce50c643ef973ff8f11a9b90b058b925cca530782d5bf9"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMonth/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMonth/not-a-constructor.js",
+      "bytes": 935,
+      "sha256": "45d82b977bdfebd3b8ebb614dbf0c14e6d241dcf9ea0a470facd80e20258d8f9"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMonth/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMonth/prop-desc.js",
+      "bytes": 685,
+      "sha256": "cab6481fceec60566d702291f92d1a8762927555545428ff53af473e2346f4e1"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMonth/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMonth/this-value-invalid-date.js",
+      "bytes": 364,
+      "sha256": "195aec91d172cd01d705b72e68a8365b9642727ee8ab0e2fc14baf5f6bdc4497"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMonth/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMonth/this-value-non-date.js",
+      "bytes": 982,
+      "sha256": "30e71bec13bc9d675c248dc9d22da2166b3b8798b5977289946c1e367e6f1ca1"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMonth/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMonth/this-value-non-object.js",
+      "bytes": 1141,
+      "sha256": "6297d0be7df3ec819af74396bbc0ff6b4d08e7858a30d3dfa8b1db819545f0ed"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCMonth/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCMonth/this-value-valid-date.js",
+      "bytes": 1186,
+      "sha256": "fdd0a942b3cd018c04947379d5f335885f3ee956d7182071bfc7cb764e66a704"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCSeconds/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCSeconds/length.js",
+      "bytes": 1043,
+      "sha256": "ffdb3fb01002c9984c82df8a506f30e7d323a03b2f23fea859897f557b80b5a2"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCSeconds/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCSeconds/name.js",
+      "bytes": 873,
+      "sha256": "4f598e321e2ab48ac7f26a51d8dff3c771fb2057ba33ce016d806b184a9d724c"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCSeconds/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCSeconds/not-a-constructor.js",
+      "bytes": 943,
+      "sha256": "fadd89210aee5109835fcd053271d57f762215824111cf6bd3872fc52d5d6b4a"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCSeconds/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCSeconds/prop-desc.js",
+      "bytes": 693,
+      "sha256": "bd8179cdb45a0bac8af586baf683d2ed225cfd34c8a3c60840a86e5266fd550b"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCSeconds/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCSeconds/this-value-invalid-date.js",
+      "bytes": 368,
+      "sha256": "f79abed48b1768f164a9159869f9cdba10e7e05a44c9f4d9d2c06c0eff5f3143"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCSeconds/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCSeconds/this-value-non-date.js",
+      "bytes": 996,
+      "sha256": "a5cb7710b6769b1c031f0dbb079cd071e4d4bd604cd6c457027ba53677c1772f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCSeconds/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCSeconds/this-value-non-object.js",
+      "bytes": 1161,
+      "sha256": "d1bfa0ea670c7046a3251f158c75f7782bc7a9b251fcc8c013fcbbc704b3808b"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/getUTCSeconds/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/getUTCSeconds/this-value-valid-date.js",
+      "bytes": 1165,
+      "sha256": "236ae512fd55c40b008173ff184f66a3e16af63558288e4c76642b59cffa627b"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/no-date-value.js",
+      "upstream_path": "test/built-ins/Date/prototype/no-date-value.js",
+      "bytes": 774,
+      "sha256": "4bc06659155aa868e0a6d549fd64096a6261b4316ce357a54f6595d04cae2250"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/prop-desc.js",
+      "bytes": 546,
+      "sha256": "0863aaea4d0a2943559af39890b41fe1708788ccca515843e17ae29f54757d44"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setDate/arg-coercion-order.js",
+      "upstream_path": "test/built-ins/Date/prototype/setDate/arg-coercion-order.js",
+      "bytes": 1007,
+      "sha256": "4ec886117524ce27c9d4e744928f6664772d67a1c0b8718f502576d23f3d68ee"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setDate/arg-to-number-err.js",
+      "upstream_path": "test/built-ins/Date/prototype/setDate/arg-to-number-err.js",
+      "bytes": 602,
+      "sha256": "8b19331d7df9d2aee42af05b7100065bed90105211f62003c2e74a450e0b6861"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setDate/arg-to-number.js",
+      "upstream_path": "test/built-ins/Date/prototype/setDate/arg-to-number.js",
+      "bytes": 1590,
+      "sha256": "2c9f023415c2a496855f7abae61e150a54feede7135b0be52c94d83f9de0fd72"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setDate/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setDate/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "bytes": 780,
+      "sha256": "4587cf678f6c3020c77b72fcb5c88fd3f7c98c0d1f31e66097522a72c6911d35"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setDate/date-value-read-before-tonumber-when-date-is-valid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setDate/date-value-read-before-tonumber-when-date-is-valid.js",
+      "bytes": 889,
+      "sha256": "110fc269b64135fe775817b2793e9f841d9be80374a709d100877597c22f6ddd"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setDate/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/setDate/length.js",
+      "bytes": 1024,
+      "sha256": "03f7d4c14547409384ddeb0652cebf320f13bfdb2c1d426fefd5858af17a9dbb"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setDate/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/setDate/name.js",
+      "bytes": 842,
+      "sha256": "a85f022bba3897cb2d3d138d4a1d37fd0f80fd4c4dccb6a8df43b4ea846bba5b"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setDate/new-value-time-clip.js",
+      "upstream_path": "test/built-ins/Date/prototype/setDate/new-value-time-clip.js",
+      "bytes": 832,
+      "sha256": "ee44e79bc9c0458b939dac092414fe1db9f2130b81bf0a14d4b1c3cb2dcbed02"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setDate/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/setDate/not-a-constructor.js",
+      "bytes": 919,
+      "sha256": "a40d4d32c1529626fe7f834d3c4b60ed7fb0f47a89eb386ef34f26bc3a90eae7"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setDate/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/setDate/prop-desc.js",
+      "bytes": 674,
+      "sha256": "19a47dbe8670dad645029b822b0ed810fa41b0ccbf6ec7ef29253c9ff4b0a6af"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setDate/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setDate/this-value-invalid-date.js",
+      "bytes": 774,
+      "sha256": "f8ec6c01f3a15d9a2bca41c22cc7d970ddf91f566bc926c73590c4792343c536"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setDate/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setDate/this-value-non-date.js",
+      "bytes": 1147,
+      "sha256": "d7f21aee301bfe45138eadd7c727553dfb1aa9f3bde967ee77a291f1433bcaab"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setDate/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/setDate/this-value-non-object.js",
+      "bytes": 1309,
+      "sha256": "85d6fbe0c89103ad1772acba89c70b4c9cce019825313979874ca31a03b78824"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setDate/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setDate/this-value-valid-date.js",
+      "bytes": 1378,
+      "sha256": "99ab5decd55c998f3778cccbc40f2e16c448ecd00528b3aa225ee064363d7b2a"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setFullYear/15.9.5.40_1.js",
+      "upstream_path": "test/built-ins/Date/prototype/setFullYear/15.9.5.40_1.js",
+      "bytes": 366,
+      "sha256": "94abc134d9cf1578b6ff7deca60312d71f87cd2554b45f963d4fadc58939bf19"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setFullYear/arg-date-to-number-err.js",
+      "upstream_path": "test/built-ins/Date/prototype/setFullYear/arg-date-to-number-err.js",
+      "bytes": 883,
+      "sha256": "661fa602ed21136d1a908d51d444cd9351231916d5c400481acbe6131d833133"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setFullYear/arg-date-to-number.js",
+      "upstream_path": "test/built-ins/Date/prototype/setFullYear/arg-date-to-number.js",
+      "bytes": 2030,
+      "sha256": "372a40a2a72d57d8633ca047a859f16b236f184453720e9faaa9c3e91cd99c86"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setFullYear/arg-month-to-number-err.js",
+      "upstream_path": "test/built-ins/Date/prototype/setFullYear/arg-month-to-number-err.js",
+      "bytes": 906,
+      "sha256": "f840814a9d1c6173c12ea61d77950c8a4566bbca97d29a783347f3b75c3b0b44"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setFullYear/arg-month-to-number.js",
+      "upstream_path": "test/built-ins/Date/prototype/setFullYear/arg-month-to-number.js",
+      "bytes": 2013,
+      "sha256": "85a2994f45db8b8a255a457ecd1a259da521ec42e25396f525f012b94776a9ca"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setFullYear/arg-year-to-number-err.js",
+      "upstream_path": "test/built-ins/Date/prototype/setFullYear/arg-year-to-number-err.js",
+      "bytes": 808,
+      "sha256": "6ea59c3294e79db06fd39dc6ba345e97fea926da657576f4265e62c7ec72f9de"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setFullYear/arg-year-to-number.js",
+      "upstream_path": "test/built-ins/Date/prototype/setFullYear/arg-year-to-number.js",
+      "bytes": 1962,
+      "sha256": "a3f8ea8487bbfeb1d0d3cdf1dbfc80bfe48e56e82d2b0082a2a2ba24d6a840fd"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setFullYear/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setFullYear/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "bytes": 940,
+      "sha256": "45b436da763337bbeb5880daa1aeba774def7ab824e34fc4fafb6104105274e6"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setFullYear/date-value-read-before-tonumber-when-date-is-valid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setFullYear/date-value-read-before-tonumber-when-date-is-valid.js",
+      "bytes": 938,
+      "sha256": "db633ff25c0e877e9d27537b8b9a2995b42aea5c2f74a19c42abc40308452bc3"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setFullYear/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/setFullYear/length.js",
+      "bytes": 747,
+      "sha256": "8b9efa0d71e34b68d4278cd7a60b210d339d0492e31ccb0f9a83e41a7644c639"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setFullYear/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/setFullYear/name.js",
+      "bytes": 889,
+      "sha256": "d7b76709388d6790aaa16d9a2c7073a80de873691a151c4b9d4f256fb1d217ea"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setFullYear/new-value-time-clip.js",
+      "upstream_path": "test/built-ins/Date/prototype/setFullYear/new-value-time-clip.js",
+      "bytes": 1468,
+      "sha256": "f0eba7120045ab413347c244224c260d68633adc9596d80536ea274d68f887f1"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setFullYear/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/setFullYear/not-a-constructor.js",
+      "bytes": 935,
+      "sha256": "7809129cd2854e99f6eecf540ecaa560fd24e2898c1c2b4bfa384e8f667b9eb5"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setFullYear/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/setFullYear/prop-desc.js",
+      "bytes": 713,
+      "sha256": "7ce0abaa1e889585bf98446d29ce7bb3f8fc38bcbaa5fd6a5d2d82b1d3b8c2ff"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setFullYear/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setFullYear/this-value-invalid-date.js",
+      "bytes": 1588,
+      "sha256": "e48447ce7632a7f90f5c53d15aa411ae34c98f6ed177a8d1de97e4da37543d5d"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setFullYear/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setFullYear/this-value-non-date.js",
+      "bytes": 1164,
+      "sha256": "c38f378244aebb328c68d1e718b9df8b7882bffc26baf51288fd41cdbeaae0c1"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setFullYear/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/setFullYear/this-value-non-object.js",
+      "bytes": 1338,
+      "sha256": "38fdf135faaa99828aa38523e7b36a0248b4b9228d846856d1289659da844537"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setFullYear/this-value-valid-date-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setFullYear/this-value-valid-date-date.js",
+      "bytes": 1698,
+      "sha256": "91a994b1f9b51ce50b00be7b750a94a2a8786eb7d2df26afd9bf94e204c03ac6"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setFullYear/this-value-valid-date-month.js",
+      "upstream_path": "test/built-ins/Date/prototype/setFullYear/this-value-valid-date-month.js",
+      "bytes": 1688,
+      "sha256": "35dcaf89df45f9b11e26059d20a86ad1d2f1c56f63421f1fdd112d03524c0892"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setFullYear/this-value-valid-date-year.js",
+      "upstream_path": "test/built-ins/Date/prototype/setFullYear/this-value-valid-date-year.js",
+      "bytes": 1059,
+      "sha256": "9a00f223327c4bc43a2f2e21fe1b32cae4ad2ea381146c2019d83c3b872fc711"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/arg-coercion-order.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/arg-coercion-order.js",
+      "bytes": 1705,
+      "sha256": "d59164a3af0f984da60529f8e3faebd00d162d2bdd400d2a23de4ac6446bd831"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/arg-hour-to-number-err.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/arg-hour-to-number-err.js",
+      "bytes": 747,
+      "sha256": "516e7f5d658ec3a3ff829514820f5205f51450e9cc8b1c39c6ca7397d808a045"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/arg-hour-to-number.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/arg-hour-to-number.js",
+      "bytes": 1864,
+      "sha256": "691dbc84eba30acfaa97d165de5e88d5a9164f4d19dcb175fb93be64a0248020"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/arg-min-to-number-err.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/arg-min-to-number-err.js",
+      "bytes": 837,
+      "sha256": "1897522b949968b2eb104acdc52b6289742851c61a1bc17ee67e2e14a3a927bd"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/arg-min-to-number.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/arg-min-to-number.js",
+      "bytes": 1881,
+      "sha256": "8f68611edd943bdf52f3ff9a4f01123ce511e8181b8086a329d5f5da4ea07088"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/arg-ms-to-number-err.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/arg-ms-to-number-err.js",
+      "bytes": 905,
+      "sha256": "d3712e6c1d7055732bd8b596ebc993b878ff843679ac0bed208bcfea4644c4b8"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/arg-ms-to-number.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/arg-ms-to-number.js",
+      "bytes": 1936,
+      "sha256": "8c8dbcb1a8d4d7b7a3ca7fe7d4acb241f56a3afb7d3742f50e960e04547be276"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/arg-sec-to-number-err.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/arg-sec-to-number-err.js",
+      "bytes": 928,
+      "sha256": "7b401e8d25753245d9802b23898cd5ee7f32c3a68bbd53a2251b130276ed0281"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/arg-sec-to-number.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/arg-sec-to-number.js",
+      "bytes": 1909,
+      "sha256": "99d102998cd8a38ca5b083b39d9a7a07fc4ce9b5f023b11d875633ea8c83cd5d"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "bytes": 963,
+      "sha256": "da4137dec92bd5197f86b4c06b500e6d81fd1fa8ddef93f51e9bd51202d31a8e"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/date-value-read-before-tonumber-when-date-is-valid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/date-value-read-before-tonumber-when-date-is-valid.js",
+      "bytes": 1073,
+      "sha256": "08388ae6c388acf1a6a53a193f235369fbd985ec6f6870cde3d17ceb400f3774"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/length.js",
+      "bytes": 741,
+      "sha256": "95af0d971aae66fc9166d0589c7fa9690300291512fa2d582ec4a965570357e3"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/name.js",
+      "bytes": 877,
+      "sha256": "e04c19df8712e30bd62f984e904bde6bbd9a684129926b34b4f6da938a2bb4dd"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/new-value-time-clip.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/new-value-time-clip.js",
+      "bytes": 1554,
+      "sha256": "8ec93d6b01c4de18519809b970d664aa25a76bb26bc4c24017bc1e6037495e60"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/not-a-constructor.js",
+      "bytes": 923,
+      "sha256": "94510ff0506420dc61b3210ffd985ca8570b8191c4e56f50196b65a5e0d1bcae"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/prop-desc.js",
+      "bytes": 707,
+      "sha256": "e3e9189104ee2ab59e31c6b16f2b1205627c3b02ebfce61a9b5e8b491e8de970"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/this-value-invalid-date.js",
+      "bytes": 1544,
+      "sha256": "8e9d1ad1024303de2c6019b1a4515aeebb28edffbe606e4616f9c7201bc454de"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/this-value-non-date.js",
+      "bytes": 1154,
+      "sha256": "003033bc18bda36c5344723de1cce4bd52f569d6d1d3f8853687da90ed0e4021"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/this-value-non-object.js",
+      "bytes": 1319,
+      "sha256": "c7f28410f310975a3620663887808fa637316e38b209613a56d8e9468a56589d"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/this-value-valid-date-hour.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/this-value-valid-date-hour.js",
+      "bytes": 1695,
+      "sha256": "db936649006a03a422842d94047cff81352d07da17941c2689c65c7fd1691acb"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/this-value-valid-date-min.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/this-value-valid-date-min.js",
+      "bytes": 1728,
+      "sha256": "becd9d1f2572c8ae095d724345cdda86facbaa528b9f058bef59c1e87cbc7f55"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/this-value-valid-date-ms.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/this-value-valid-date-ms.js",
+      "bytes": 1804,
+      "sha256": "b7283ad4ff2701e071b4e17dca2fb8422af87e2b2304e1b10ad90faa0925a6e6"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setHours/this-value-valid-date-sec.js",
+      "upstream_path": "test/built-ins/Date/prototype/setHours/this-value-valid-date-sec.js",
+      "bytes": 1747,
+      "sha256": "99440626395aab94c823ab292e62dc0277344df254fc85a1287b774799d6c33b"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMilliseconds/arg-coercion-order.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMilliseconds/arg-coercion-order.js",
+      "bytes": 1020,
+      "sha256": "8b60dad55dd37857d2ac79dae6fb946e9b9c0b2afbe5220d15c896f113117ad2"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMilliseconds/arg-to-number-err.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMilliseconds/arg-to-number-err.js",
+      "bytes": 618,
+      "sha256": "0ff9ad91d16933bb1e4f99fe49cfde38284c524b1c8da054dcd9fca70589037f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMilliseconds/arg-to-number.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMilliseconds/arg-to-number.js",
+      "bytes": 1692,
+      "sha256": "b06dd117946f0423d1d56e30fe9474498504a35b94844533ae260b060e8f0eea"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMilliseconds/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMilliseconds/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "bytes": 800,
+      "sha256": "0a7fdd025bec239cb1afca9e7a8d983b48101757f197c133f0f7032cd9f0847a"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMilliseconds/date-value-read-before-tonumber-when-date-is-valid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMilliseconds/date-value-read-before-tonumber-when-date-is-valid.js",
+      "bytes": 917,
+      "sha256": "178162c191c1baef20589a152edb7a9b216a34fc5512d389ab4fff1053f20c9e"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMilliseconds/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMilliseconds/length.js",
+      "bytes": 1054,
+      "sha256": "ab047dac5fb6eba69afd9cee8a42e1995d15786c60da479b58711d4487862977"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMilliseconds/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMilliseconds/name.js",
+      "bytes": 888,
+      "sha256": "958d166b18d18f86585fa51a84e0d2ca33cdc2fdd0fa13514f518f61db76b87c"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMilliseconds/new-value-time-clip.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMilliseconds/new-value-time-clip.js",
+      "bytes": 847,
+      "sha256": "8c41c55ee94a69b3e3ebb8a50f37ab03e67651b66394d0698437003e62dd195e"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMilliseconds/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMilliseconds/not-a-constructor.js",
+      "bytes": 951,
+      "sha256": "2cfc7afffffa15a67297adf328c84bb4aa3dcb80ab5c094746b8220c222ed179"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMilliseconds/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMilliseconds/prop-desc.js",
+      "bytes": 704,
+      "sha256": "255ecde34cb55dbe3487491f4429b5ebba50c720bd4358b4f0e6c5762bb36305"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMilliseconds/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMilliseconds/this-value-invalid-date.js",
+      "bytes": 790,
+      "sha256": "9afbff6616f114c39cd594c68a103243588ebb741bf3c2f6750ca373196b16f0"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMilliseconds/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMilliseconds/this-value-non-date.js",
+      "bytes": 1203,
+      "sha256": "61f510ecddb8b6639e3e479a67f6740b3f4d1b3b94bc871a6c8e06614863cf9b"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMilliseconds/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMilliseconds/this-value-non-object.js",
+      "bytes": 1389,
+      "sha256": "6413b4dcfc97c0725d603c54243e7aacf3e027f766f1746230b67285ae0bf92f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMilliseconds/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMilliseconds/this-value-valid-date.js",
+      "bytes": 1446,
+      "sha256": "db8ef0af334c8d567ab23ef8a16b35c6406ee8483e05cf6808719085cea9d314"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMinutes/arg-coercion-order.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMinutes/arg-coercion-order.js",
+      "bytes": 1496,
+      "sha256": "4dbbd860337d2d43b116c673b8d3140277484875f6d123f300d7f64ad5acaa4e"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMinutes/arg-min-to-number-err.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMinutes/arg-min-to-number-err.js",
+      "bytes": 739,
+      "sha256": "ddff3d58fd1c0c427d9e718ddf9c418ef2f5950dfba63f8be025300c8d4b425f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMinutes/arg-min-to-number.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMinutes/arg-min-to-number.js",
+      "bytes": 1796,
+      "sha256": "5c5cdbfba72791396890178a836fff16bb1563e8261ada7b7705600fee41e4ef"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMinutes/arg-ms-to-number-err.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMinutes/arg-ms-to-number-err.js",
+      "bytes": 807,
+      "sha256": "38a12509abf13deb8ce2bc44d46dd183b8b21a612df0a205d4e60d0dc07b9e32"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMinutes/arg-ms-to-number.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMinutes/arg-ms-to-number.js",
+      "bytes": 1866,
+      "sha256": "3926df88d1664818c76e50873c85faade1bf1c47a738f5551301300cd75570a8"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMinutes/arg-sec-to-number-err.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMinutes/arg-sec-to-number-err.js",
+      "bytes": 833,
+      "sha256": "57f1feca60fdeb3648c16e873adaf97e42f91e2b48a94ee8d6d679d7c323e5c1"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMinutes/arg-sec-to-number.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMinutes/arg-sec-to-number.js",
+      "bytes": 1836,
+      "sha256": "d5defd40a68d5bd069504ec297671a894d1d622705e6f54f3869b869d03a77e4"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMinutes/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMinutes/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "bytes": 907,
+      "sha256": "5fe1a1311820875d0a17563e5e5a94b98bc60d0830430d29d1f5d9f34a35b07f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMinutes/date-value-read-before-tonumber-when-date-is-valid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMinutes/date-value-read-before-tonumber-when-date-is-valid.js",
+      "bytes": 1019,
+      "sha256": "316e25b64c20814b98cc899474df802d77c62542717fdf9632cb894cb958c1b5"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMinutes/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMinutes/length.js",
+      "bytes": 738,
+      "sha256": "390c476a93480b641cccf90f83152eb837198195ffa19f39e60f8169cce5a35e"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMinutes/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMinutes/name.js",
+      "bytes": 878,
+      "sha256": "30cdc9b78ae0f2cc2824916c4b894a4e591dd4002c2ea8bb4637ef79e346319e"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMinutes/new-value-time-clip.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMinutes/new-value-time-clip.js",
+      "bytes": 1348,
+      "sha256": "48eda98fc9516805c899be75434e175062d5e959c6745c9805dc8eeafc580af2"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMinutes/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMinutes/not-a-constructor.js",
+      "bytes": 931,
+      "sha256": "1bf18a2e0285da1d3763ad79daed8817efd8a2d185fc0b0cab96643a94b82ec4"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMinutes/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMinutes/prop-desc.js",
+      "bytes": 704,
+      "sha256": "fff9169c846d6b905e30a963d049623962cb227df4cebcb357048554a9a81d82"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMinutes/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMinutes/this-value-invalid-date.js",
+      "bytes": 1554,
+      "sha256": "24da9c12cc570c7b1d13144b4bf80296db2e52d7369c18990fd208faf58562ac"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMinutes/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMinutes/this-value-non-date.js",
+      "bytes": 1168,
+      "sha256": "6c574a14175a0b399a1d4ab6dd52eae3fa2d762b8e42e1e14a5e11b7dbbfd1aa"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMinutes/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMinutes/this-value-non-object.js",
+      "bytes": 1339,
+      "sha256": "494aa4dc6a48381db2186e6963ebef3ee47e6412a5a292f478bb21ddf602c5e1"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMinutes/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMinutes/this-value-valid-date.js",
+      "bytes": 3560,
+      "sha256": "ddbcdec73e21668a3e0ef6aed6a5c7397c032295bcde767194345526e5505f49"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMonth/arg-coercion-order.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMonth/arg-coercion-order.js",
+      "bytes": 1300,
+      "sha256": "598e1d043dde8fdb005d157d41dd8f9fafcad1f76dc81fa1a27cd9f3fd0a9858"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMonth/arg-date-to-number-err.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMonth/arg-date-to-number-err.js",
+      "bytes": 707,
+      "sha256": "c3ed027a6d702746626bcbf2c4876504456a7ec14d40b33c5389c291a348689b"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMonth/arg-date-to-number.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMonth/arg-date-to-number.js",
+      "bytes": 1836,
+      "sha256": "f547de5323c7226f80edcaf418d9e54ebaaabb9d8eac82b1e9eb2f8f7d744563"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMonth/arg-month-to-number-err.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMonth/arg-month-to-number-err.js",
+      "bytes": 897,
+      "sha256": "368776f10390e52fcc22c209d86aee9dc193e9c426a428c8af89f88b2ea662f2"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMonth/arg-month-to-number.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMonth/arg-month-to-number.js",
+      "bytes": 1956,
+      "sha256": "ef75819c3a5c62c05201e2d5dc2f4262ccf70b772ff8df607e0569d7dbd58c0b"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMonth/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMonth/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "bytes": 848,
+      "sha256": "fcafff0913f308621e6e84772eeb96a271b1603c99337ad48136d141d93935ea"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMonth/date-value-read-before-tonumber-when-date-is-valid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMonth/date-value-read-before-tonumber-when-date-is-valid.js",
+      "bytes": 1072,
+      "sha256": "0213b9d21931f992d5f868630a3b450feed7fa27fa03fdb9ab380f65de57a889"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMonth/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMonth/length.js",
+      "bytes": 724,
+      "sha256": "90530ba5b6e0a2c86cf175b981f20e0ed312ebcb07c17ef8804341799ac6ff6c"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMonth/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMonth/name.js",
+      "bytes": 860,
+      "sha256": "e846f88dfb90f90f6762d9d6df5a196ba239465e7036fe27b2959c7f3ff56f32"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMonth/new-value-time-clip.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMonth/new-value-time-clip.js",
+      "bytes": 1287,
+      "sha256": "7cb96a7fb36635df4b3e24e3cc7e0a622ec062a61df0723dce65234a243d0256"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMonth/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMonth/not-a-constructor.js",
+      "bytes": 923,
+      "sha256": "73825b815826830888d7219a3adbfc6321f8ecfcce0cc41b3ce386f979c50751"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMonth/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMonth/prop-desc.js",
+      "bytes": 690,
+      "sha256": "aaa1ffb58513d12d235db81e0a3336ca78f1cd26a40185c20b14d5d6b20f6397"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMonth/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMonth/this-value-invalid-date.js",
+      "bytes": 1066,
+      "sha256": "d4b50ae02de0a9068f7d609e18edb497e3777388bc76ee5f3923e52476afb3aa"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMonth/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMonth/this-value-non-date.js",
+      "bytes": 1143,
+      "sha256": "b1be55dcf8ef148ceb3389df035193329b56e98071e4b47024704ae07d7012d9"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMonth/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMonth/this-value-non-object.js",
+      "bytes": 1308,
+      "sha256": "329e209990e166ef787cc8112efa3726bd48f97b3fb615c90fdbbf08426259c2"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMonth/this-value-valid-date-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMonth/this-value-valid-date-date.js",
+      "bytes": 1531,
+      "sha256": "c66320bc72ec3d88eba7b58a8bdf37070a853cc3a7271ade7e52862e021647d2"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setMonth/this-value-valid-date-month.js",
+      "upstream_path": "test/built-ins/Date/prototype/setMonth/this-value-valid-date-month.js",
+      "bytes": 1521,
+      "sha256": "48d94ddd37ef4aaf29c49204ee13af66c2f6cb4fdba5457ef983a32f13bd1ff2"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setSeconds/arg-coercion-order.js",
+      "upstream_path": "test/built-ins/Date/prototype/setSeconds/arg-coercion-order.js",
+      "bytes": 1289,
+      "sha256": "318195e972c086cf81fe6d37032c585df4cd5f52a26b30dbbebc25740971a2bd"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setSeconds/arg-ms-to-number-err.js",
+      "upstream_path": "test/built-ins/Date/prototype/setSeconds/arg-ms-to-number-err.js",
+      "bytes": 707,
+      "sha256": "051af5b9827514e4178c3c7a936e22c91fe8eacbdfd598f0523d1da93ab454c1"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setSeconds/arg-ms-to-number.js",
+      "upstream_path": "test/built-ins/Date/prototype/setSeconds/arg-ms-to-number.js",
+      "bytes": 1769,
+      "sha256": "3d00093ffc3043dce0e9df340b05ba70fce637316593d1fa44b8a9ee81586c5c"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setSeconds/arg-sec-to-number-err.js",
+      "upstream_path": "test/built-ins/Date/prototype/setSeconds/arg-sec-to-number-err.js",
+      "bytes": 730,
+      "sha256": "1c69d841b2997954bc42a34442827be54c583d5595212ebb55beb8c355de6e28"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setSeconds/arg-sec-to-number.js",
+      "upstream_path": "test/built-ins/Date/prototype/setSeconds/arg-sec-to-number.js",
+      "bytes": 1730,
+      "sha256": "8948b9ac5debc173c01c1aeac14607058d90dca2c655d2dbb8eb5c99fea836ce"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setSeconds/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setSeconds/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "bytes": 847,
+      "sha256": "9a78676d747c5a38b3dc7f12912805c030351d68fa86428a0f73dc6357445c3c"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setSeconds/date-value-read-before-tonumber-when-date-is-valid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setSeconds/date-value-read-before-tonumber-when-date-is-valid.js",
+      "bytes": 959,
+      "sha256": "87ffe0f1cbb194ee3888e3be97c1b6a7ac8e891d3686e76f8854a0a38a9754cd"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setSeconds/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/setSeconds/length.js",
+      "bytes": 728,
+      "sha256": "9a281339b82d3e859dbdc4dd165a50467e43b4cb51446fb31495840f5a927671"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setSeconds/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/setSeconds/name.js",
+      "bytes": 868,
+      "sha256": "31bca908a7e9f2cebece941f6d54fffb44c81cd89e6e78ba1c39fff990dda002"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setSeconds/new-value-time-clip.js",
+      "upstream_path": "test/built-ins/Date/prototype/setSeconds/new-value-time-clip.js",
+      "bytes": 1133,
+      "sha256": "b90a81c86f57880ba0b51ab9f459bd8697ab515884f0e2e49e5548fc34f89eb8"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setSeconds/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/setSeconds/not-a-constructor.js",
+      "bytes": 931,
+      "sha256": "001d48f771cbaac3d6fbd9ab29f18d14589bf07a9837d2c46f64333514ae0ead"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setSeconds/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/setSeconds/prop-desc.js",
+      "bytes": 694,
+      "sha256": "ff0561543ea76cd2e6462cc082a45fa77b4407147f61c1daa4cc66b9a322b5cb"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setSeconds/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setSeconds/this-value-invalid-date.js",
+      "bytes": 1048,
+      "sha256": "1ba7a410e6a4336945493072d36c1305eb4fcbdf2fa4d3fc9db1c230a8494bad"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setSeconds/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setSeconds/this-value-non-date.js",
+      "bytes": 1168,
+      "sha256": "724576942b4b0f0166c5053260db370200eadcb6bf7c98dda9b130d9efff6b01"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setSeconds/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/setSeconds/this-value-non-object.js",
+      "bytes": 1339,
+      "sha256": "3d7b8635c20b9d100ed5dc4570a56eea28fc6caa594aba2b08e309d72294a928"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setSeconds/this-value-valid-date-ms.js",
+      "upstream_path": "test/built-ins/Date/prototype/setSeconds/this-value-valid-date-ms.js",
+      "bytes": 1633,
+      "sha256": "92324b1fa1339a4cf92bd6555694a5dc9616549788b4690525605c7648ba7def"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setSeconds/this-value-valid-date-sec.js",
+      "upstream_path": "test/built-ins/Date/prototype/setSeconds/this-value-valid-date-sec.js",
+      "bytes": 1564,
+      "sha256": "4130bfeb5aea65c05e015dbe8395579d5a41e2689b8499a8f867fedb48ea7494"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setTime/arg-to-number-err.js",
+      "upstream_path": "test/built-ins/Date/prototype/setTime/arg-to-number-err.js",
+      "bytes": 589,
+      "sha256": "d7cbbf007b90e17420d8614b0e9b37e276e3a957acf0a4280efa33d2c7bf4797"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setTime/arg-to-number.js",
+      "upstream_path": "test/built-ins/Date/prototype/setTime/arg-to-number.js",
+      "bytes": 1314,
+      "sha256": "feb4190f52376a275ab9541e03837db4e6c67f5cf7b054b7ad2bc874b8f407f2"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setTime/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/setTime/length.js",
+      "bytes": 1024,
+      "sha256": "477617570918eb389c4b761971474754f921dbee2ba99644794ccc5999fe27cb"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setTime/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/setTime/name.js",
+      "bytes": 842,
+      "sha256": "a4bd3373d28cdd646a56954abd204e3e2c20553980be1a75fcf7a8964e94edff"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setTime/new-value-time-clip.js",
+      "upstream_path": "test/built-ins/Date/prototype/setTime/new-value-time-clip.js",
+      "bytes": 729,
+      "sha256": "2f8e6e3709fc15a5305782b1c43cb8be0dac796e8a6609ea00a3d993b667712f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setTime/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/setTime/not-a-constructor.js",
+      "bytes": 919,
+      "sha256": "db004303971301343b4036e09e39e1ce1ca847f5004c83f4c5ed7bf5b96ede00"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setTime/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/setTime/prop-desc.js",
+      "bytes": 674,
+      "sha256": "7c2dd79f485185528418d205f520a8fd945141932c77a98027e9da5b901954cb"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setTime/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setTime/this-value-invalid-date.js",
+      "bytes": 645,
+      "sha256": "842c9a86e4af39e05974b94593b7a1e2b114c76a5476ec41854130c296a45099"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setTime/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setTime/this-value-non-date.js",
+      "bytes": 1147,
+      "sha256": "a1c087a32f5e046da91aa8e68c2d8b25adb7f0e51092ef624a9a8b515064e1bb"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setTime/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/setTime/this-value-non-object.js",
+      "bytes": 1309,
+      "sha256": "3e56eb37e087fde750d72bd4b0270bd3174a4a7edddc37567d5be7e5d7cfa49f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setTime/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setTime/this-value-valid-date.js",
+      "bytes": 785,
+      "sha256": "d48650c7af9c1e0d5ce09edce7c7600ed68bb4d4a91e9f052a16d37e2569e5bc"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCDate/arg-coercion-order.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCDate/arg-coercion-order.js",
+      "bytes": 980,
+      "sha256": "9b81b83f4aba7fc8ee2908befaa828a39e6cf60e515406701ff9ad14e32428fd"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCDate/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCDate/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "bytes": 789,
+      "sha256": "dbf270688bb0232b80302da9d6b06c411506dafc51d7349bd935c65f8147f7ae"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCDate/date-value-read-before-tonumber-when-date-is-valid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCDate/date-value-read-before-tonumber-when-date-is-valid.js",
+      "bytes": 969,
+      "sha256": "062f763fbcf55ce625aada0d5658cf58f2386fd62dad60105eb637319fdadd94"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCDate/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCDate/length.js",
+      "bytes": 1036,
+      "sha256": "ece2702a181524e7cce24f9c97d711a3b0d97db000cf3d1fffae85e32a709513"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCDate/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCDate/name.js",
+      "bytes": 860,
+      "sha256": "7bd013be8d25a7861fec71a441982ee701c49b9e6ee12894c2b2a10a8980a978"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCDate/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCDate/not-a-constructor.js",
+      "bytes": 931,
+      "sha256": "bda358bb3d2c99bb48900ad517e338f22f74595fa9cd47695e1ee567b1560bbc"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCDate/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCDate/prop-desc.js",
+      "bytes": 686,
+      "sha256": "9c9d1cd6e83c370fa4a190d5b62af1bcb9fd6c4349cd30807335685cfa0d3516"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCFullYear/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCFullYear/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "bytes": 918,
+      "sha256": "47731025395e123fc037d7dae38dc3351fcf95c2b46fc3fd67b171693399f6a7"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCFullYear/date-value-read-before-tonumber-when-date-is-valid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCFullYear/date-value-read-before-tonumber-when-date-is-valid.js",
+      "bytes": 916,
+      "sha256": "810756fe2d2581059b6f0f5f0eb4dea4bc4baa0c3fe9c5fa7ed035a5a6299408"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCFullYear/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCFullYear/length.js",
+      "bytes": 759,
+      "sha256": "b87e0872d8065253c9f46ab3d056f8ea8c436202fd631f4773bb933b9c4e034a"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCFullYear/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCFullYear/name.js",
+      "bytes": 907,
+      "sha256": "c42a55f096e2ee39bedb6b46f1a4e34d78847a5ffd09610d5d000128cdf63fbc"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCFullYear/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCFullYear/not-a-constructor.js",
+      "bytes": 947,
+      "sha256": "8ff056345602ffd64f9c2a82a2c7e29158ec809c47d102bab78f1695f8746652"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCFullYear/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCFullYear/prop-desc.js",
+      "bytes": 725,
+      "sha256": "e1804833d4a8baa6d6e9e63c5b4d0fcbae01fc75344baad9c5782a9f84a811f2"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCHours/arg-coercion-order.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCHours/arg-coercion-order.js",
+      "bytes": 1677,
+      "sha256": "e4aca96d8d4774f806faea834b153a0ee55e9b0941da8f1f8285eaa76f284546"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCHours/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCHours/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "bytes": 972,
+      "sha256": "3336f02d9598526f9f1da10bf9ba71d74bc557b42fbbc585df5290d2a15a7cf8"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCHours/date-value-read-before-tonumber-when-date-is-valid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCHours/date-value-read-before-tonumber-when-date-is-valid.js",
+      "bytes": 1110,
+      "sha256": "ca84253a2913f011f7b49a10eef729a222a2bdab559215cfe106f2efead28a66"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCHours/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCHours/length.js",
+      "bytes": 753,
+      "sha256": "69196efc3490df80e281732b040a6d5d12e237f820e0a68fd85b71d6af5434bf"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCHours/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCHours/name.js",
+      "bytes": 895,
+      "sha256": "45ec02e830c331de575b4ca153ba2d239eb0e9dd1107eac87b12165a914220f5"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCHours/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCHours/not-a-constructor.js",
+      "bytes": 935,
+      "sha256": "3fc5e1d1445706f10bba5e4d417142409d6d13352b54ab44833603ee85a3f559"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCHours/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCHours/prop-desc.js",
+      "bytes": 719,
+      "sha256": "4df5233c24864079bd0e28d3cce2831a951113176f096f0332639fb5b6f4904a"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCHours/this-value-valid-date-hour.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCHours/this-value-valid-date-hour.js",
+      "bytes": 1806,
+      "sha256": "2ec31d43e2102db3a16efc9a36e3bb6394c2a54beec8d1d02c072a3f72513086"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCHours/this-value-valid-date-min.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCHours/this-value-valid-date-min.js",
+      "bytes": 1832,
+      "sha256": "66b9170fc5eefa12dad8c2841fadbb404cfab6ebb631780fffe2a39ec6594507"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCHours/this-value-valid-date-ms.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCHours/this-value-valid-date-ms.js",
+      "bytes": 1908,
+      "sha256": "6c2131b9fdd5c278de07979505773338b09120a365def6f61f8155fb5d96055a"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCHours/this-value-valid-date-sec.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCHours/this-value-valid-date-sec.js",
+      "bytes": 1851,
+      "sha256": "b36501fe75d6023c7007bcd43ceef71b07953c325ce373a73d94d1686a6efd79"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMilliseconds/arg-coercion-order.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMilliseconds/arg-coercion-order.js",
+      "bytes": 1029,
+      "sha256": "a9d3b175bad5213ad78172da5c60a49f5c9ed4779bfcd745a985b668462586af"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMilliseconds/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMilliseconds/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "bytes": 809,
+      "sha256": "e5b25cf86c6e506f29831e8761da45b05d484ae51a49c72910edf3157db8191b"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMilliseconds/date-value-read-before-tonumber-when-date-is-valid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMilliseconds/date-value-read-before-tonumber-when-date-is-valid.js",
+      "bytes": 981,
+      "sha256": "04e9ca9db90f792a1650df9b420d5b3cd98fd647c89273cbc92429854849281a"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMilliseconds/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMilliseconds/length.js",
+      "bytes": 1066,
+      "sha256": "2ed62fc78ea7d0ed02ef91d682d08fcbc842d93462a644446d701103c53740f2"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMilliseconds/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMilliseconds/name.js",
+      "bytes": 906,
+      "sha256": "e5055fa739ce61d287b266c332b32a289505a38d7fa1b86b43985dde5d85873f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMilliseconds/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMilliseconds/not-a-constructor.js",
+      "bytes": 963,
+      "sha256": "9723a3bd76e15f0f8dd69a10f8012c0048c1c41fac7031141e5c502cae09618e"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMilliseconds/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMilliseconds/prop-desc.js",
+      "bytes": 716,
+      "sha256": "6b94f112b9390bf524a8a563a052c06be434a881f86f2cf14ee527915f32d143"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMilliseconds/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMilliseconds/this-value-valid-date.js",
+      "bytes": 1516,
+      "sha256": "bdd778f16f0fb4da99e27ed1c9b5573f36a4ae8dddda0c0e2bb8ce455bc4c16d"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMinutes/arg-coercion-order.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMinutes/arg-coercion-order.js",
+      "bytes": 1468,
+      "sha256": "85ba3f82035afc4b14eb27c388e356afe66dd37211a76bb6a00bb7777edc3a4a"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMinutes/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMinutes/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "bytes": 916,
+      "sha256": "78cf695bc58ec8a8b2a6ccad4176e83119908f05327a2248e42df418308e0312"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMinutes/date-value-read-before-tonumber-when-date-is-valid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMinutes/date-value-read-before-tonumber-when-date-is-valid.js",
+      "bytes": 1056,
+      "sha256": "6b01edaa1a126d0b58b3a18d022c15f73e5dee5799ada5e42bad56edd620e448"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMinutes/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMinutes/length.js",
+      "bytes": 750,
+      "sha256": "f3c7a9c52c99b7dea01559a57a0b20f322d38c3a57f9120dda3a6ffb2c72b263"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMinutes/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMinutes/name.js",
+      "bytes": 895,
+      "sha256": "48ed2a2d13d5303c697e10bc242065a6639e3188239e0f53f1bad347e5ff1e6d"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMinutes/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMinutes/not-a-constructor.js",
+      "bytes": 943,
+      "sha256": "75be449abb51a278a3db849ad3c1ec491614151653bc76f65270546bb90f3543"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMinutes/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMinutes/prop-desc.js",
+      "bytes": 716,
+      "sha256": "c2c2af5117b3e949a974ab11bc4a8cec7e5df624924ab95d20d8eb9cbd625666"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMinutes/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMinutes/this-value-valid-date.js",
+      "bytes": 3575,
+      "sha256": "f26f34d8a58511bdb5f98d472429d0714804469973cbb11691e8c8364ed71f2e"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMonth/arg-coercion-order.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMonth/arg-coercion-order.js",
+      "bytes": 1272,
+      "sha256": "25b6657e8680316cc48c8c62c2675af249c5e61320c3a0c6f3b47aa22dc123a9"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMonth/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMonth/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "bytes": 857,
+      "sha256": "4215c8afe0b93c30344881f570c3d449b2945c47f165504d32672db149deae85"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMonth/date-value-read-before-tonumber-when-date-is-valid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMonth/date-value-read-before-tonumber-when-date-is-valid.js",
+      "bytes": 998,
+      "sha256": "f166240e856741f966adc6a4ce1238c8747a5e18cad3216ff648d3ec6d03fe4e"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMonth/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMonth/length.js",
+      "bytes": 736,
+      "sha256": "a1948087ba6d85ab5d5993a5e0b376198f05a286b40aad77c03c5bc381ba77de"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMonth/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMonth/name.js",
+      "bytes": 878,
+      "sha256": "33e3100bf583f38a4e266d7569faa63f24e16d11a576d65a7dcfa3b933dc12d4"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMonth/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMonth/not-a-constructor.js",
+      "bytes": 935,
+      "sha256": "faf99f863fc4d89141050641c004b6588b9cc1e72401b6ed4b82666f35885e9c"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMonth/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMonth/prop-desc.js",
+      "bytes": 702,
+      "sha256": "c0b65b1053f8b5cd8a0391339edb297212b59d93f61d35024056a36afdbd86ed"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMonth/this-value-valid-date-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMonth/this-value-valid-date-date.js",
+      "bytes": 1613,
+      "sha256": "66073f565a400a8c0cbdd766b89507bc073ab51f4fb09e6b03de03c4d5bc63aa"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCMonth/this-value-valid-date-month.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCMonth/this-value-valid-date-month.js",
+      "bytes": 1603,
+      "sha256": "6e1f855d851f04a36836b1417640dc82634cc07f03e017daeba1dcd7e0224cf8"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCSeconds/arg-coercion-order.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCSeconds/arg-coercion-order.js",
+      "bytes": 1261,
+      "sha256": "d5f2f7718ba33a48cbf8550b9f70042e53780991e2d33bd0d24a728f6068dee9"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCSeconds/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCSeconds/date-value-read-before-tonumber-when-date-is-invalid.js",
+      "bytes": 856,
+      "sha256": "e1592c2a40636339248e9cd62b5242d2c93fae6010f6395f2a0401e3b4cf92af"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCSeconds/date-value-read-before-tonumber-when-date-is-valid.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCSeconds/date-value-read-before-tonumber-when-date-is-valid.js",
+      "bytes": 998,
+      "sha256": "0cb572a97f8d63c00f200fc4477dcd2cbc0cfb6c5b0cf1d17eb004f6a94ae893"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCSeconds/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCSeconds/length.js",
+      "bytes": 740,
+      "sha256": "2fedfb7d350a6b7c2700b908addeb0f283e10b49fcc70881c83a097890d89942"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCSeconds/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCSeconds/name.js",
+      "bytes": 886,
+      "sha256": "a648304ea66b080b608156b841c0e45bd04533515ce62a759673810f854283b2"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCSeconds/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCSeconds/not-a-constructor.js",
+      "bytes": 943,
+      "sha256": "b1cb692b3ba140c1f31b6c56648c8bf9db8ea34486a57f9953780497282187a2"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCSeconds/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCSeconds/prop-desc.js",
+      "bytes": 706,
+      "sha256": "061d80acc7ee5c78ec04122ba11d39bd69644016574f308e5e0ff40f43f994db"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCSeconds/this-value-valid-date-ms.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCSeconds/this-value-valid-date-ms.js",
+      "bytes": 1716,
+      "sha256": "7137a03627342b2adec72a17d802725b30893954f991f1e2206ad33b107c0e26"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/setUTCSeconds/this-value-valid-date-sec.js",
+      "upstream_path": "test/built-ins/Date/prototype/setUTCSeconds/this-value-valid-date-sec.js",
+      "bytes": 1644,
+      "sha256": "5748faebd10e375c147e7a40cb47ef686bd0cd016b648d761c632e9f24ef7b34"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toDateString/format.js",
+      "upstream_path": "test/built-ins/Date/prototype/toDateString/format.js",
+      "bytes": 684,
+      "sha256": "940520324ebc9e64cac5dd284db5e0198971287da54f6cb8d03ff08f2524e6e5"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toDateString/invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/toDateString/invalid-date.js",
+      "bytes": 409,
+      "sha256": "b2f869e14c3d8a2ce30f1f0ea966ab71baa773dabd8f4fd4f37a305c0746c330"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toDateString/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/toDateString/length.js",
+      "bytes": 1039,
+      "sha256": "e72defe95e537f81e9505a8653ccc4a8dbbad29b2dc86c8b7dbefa5f85949524"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toDateString/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/toDateString/name.js",
+      "bytes": 867,
+      "sha256": "befca3be4de2bcfb2dcdba176ae502b295728c3d4ab331f8715f60a27e7cdb84"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toDateString/negative-year.js",
+      "upstream_path": "test/built-ins/Date/prototype/toDateString/negative-year.js",
+      "bytes": 1795,
+      "sha256": "bf25f6bbd39b5c3964b8160acd222afff43c918994be8d4612afe0126785d194"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toDateString/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/toDateString/not-a-constructor.js",
+      "bytes": 939,
+      "sha256": "fc213674d977c9c556d2a915066026dbd78129b83079f7c68e6ba45486bc28c5"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toDateString/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/toDateString/prop-desc.js",
+      "bytes": 689,
+      "sha256": "a5fd11860e49c484fb1503852a4f61279d28fc1c675c3b5b168f5479418423e9"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-10.js",
+      "upstream_path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-10.js",
+      "bytes": 756,
+      "sha256": "cee228308843a76a1bb74c1c41624b5f666b35c68fdabfbbd0210a1403a7211b"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-11.js",
+      "upstream_path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-11.js",
+      "bytes": 621,
+      "sha256": "f032b81cd5e9c2a1caac801866e0a9fb2e70b1845603a2ca0b68e422b6c7132d"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-12.js",
+      "upstream_path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-12.js",
+      "bytes": 619,
+      "sha256": "2aee8a0958a882e1dc1c4bae91b052ec1a3060d1c12f99a89f57514d6360d3de"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-13.js",
+      "upstream_path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-13.js",
+      "bytes": 489,
+      "sha256": "c1628b1eb64c67f74988a99649833f142f30887415fde0a8b5e92cbc4be37658"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-14.js",
+      "upstream_path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-14.js",
+      "bytes": 431,
+      "sha256": "9c01fd09b4e8f0420e8bc9f526814ccb10b404d7700c388ad29452d88fa01c43"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-15.js",
+      "upstream_path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-15.js",
+      "bytes": 424,
+      "sha256": "cf5fe305850feaad95b0053881148e044468230ca844e622ee125030272ddb13"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-16.js",
+      "upstream_path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-16.js",
+      "bytes": 500,
+      "sha256": "9491867f07ff3c374a97ea6eda6c76a5d291809503d33ccb9f080242ec79e5ba"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-2.js",
+      "upstream_path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-2.js",
+      "bytes": 374,
+      "sha256": "3023e18404ed7ea95f290d0356a9c13091038dd26b7e474c71f91a33623c6593"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-3.js",
+      "upstream_path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-3.js",
+      "bytes": 356,
+      "sha256": "8582afe47b5aa3ed307e2b9f84086ca77d6c22d0bfde50daa1ac71584644e9d0"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-4.js",
+      "upstream_path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-4.js",
+      "bytes": 545,
+      "sha256": "1568c9428c0aa6067db20d91453c6a189b19e4d5cdc71dbac000c2daddf229d2"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-5.js",
+      "upstream_path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-5.js",
+      "bytes": 409,
+      "sha256": "fafc7d29f4647e356477e1de357ebde0e76e22ac21b66e9c30aadd66c3f7191f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-6.js",
+      "upstream_path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-6.js",
+      "bytes": 394,
+      "sha256": "ad1a4c4ac339c3a195ae9bb02f13f181d32461461ee677e9f8b7282b2ebd52f8"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-7.js",
+      "upstream_path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-7.js",
+      "bytes": 374,
+      "sha256": "d49740ce4d47e384b72b9ad711e4263c23f03a9b5d0482fa62a654630482dac3"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-8.js",
+      "upstream_path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-8.js",
+      "bytes": 680,
+      "sha256": "20d519d15c5772b043bd216dbfba618b42878ea29a9bdd2fc0e31066d30ca9a9"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-9.js",
+      "upstream_path": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-9.js",
+      "bytes": 756,
+      "sha256": "805be701510e40e52b16bc4f37ab5d97782a2019dbcf4a764849cec49f046f31"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toISOString/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/toISOString/name.js",
+      "bytes": 861,
+      "sha256": "45ff30db7a05582e46700b5eb58e3db7dc9d8f82fb935ad2ffa280cfbad462f4"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toISOString/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/toISOString/not-a-constructor.js",
+      "bytes": 935,
+      "sha256": "039766f87e40f64b7b6c0509c0456af01e7e3ba809e8866f616b10db53b2a54f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toJSON/builtin.js",
+      "upstream_path": "test/built-ins/Date/prototype/toJSON/builtin.js",
+      "bytes": 1146,
+      "sha256": "d3531208f7e1b13edda1d9480de5739fc4ecad6c1aaa13add8517fcfc29c682d"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toJSON/called-as-function.js",
+      "upstream_path": "test/built-ins/Date/prototype/toJSON/called-as-function.js",
+      "bytes": 880,
+      "sha256": "b1132cd564a00cf81e56fbcfd63ee8a1104d639556bc14ce198afd0abcce9b0a"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toJSON/invoke-abrupt.js",
+      "upstream_path": "test/built-ins/Date/prototype/toJSON/invoke-abrupt.js",
+      "bytes": 771,
+      "sha256": "89ac52960f998b02c8b1d3eeb5815a94d96d2e8b75738aa8e8a9b4f8e4f96f85"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toJSON/invoke-arguments.js",
+      "upstream_path": "test/built-ins/Date/prototype/toJSON/invoke-arguments.js",
+      "bytes": 958,
+      "sha256": "efa57909068026467e1ca5600c383e960bd3d5e64b129e7fed90855ac8b7fdac"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toJSON/invoke-result.js",
+      "upstream_path": "test/built-ins/Date/prototype/toJSON/invoke-result.js",
+      "bytes": 657,
+      "sha256": "b1f6295266cb1559477e752c4245d5bc0bb427fd0627253350f15ceecf35d3c8"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toJSON/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/toJSON/length.js",
+      "bytes": 646,
+      "sha256": "cdfe7f096ecb7608dd9df7d091fc413f3b6786324700b089bdf7b8a73756cab9"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toJSON/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/toJSON/name.js",
+      "bytes": 836,
+      "sha256": "c8bc316585fd9d54af740ac84cb49197cf1bcae89fb35d67e2eb7f43d47c230a"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toJSON/non-finite.js",
+      "upstream_path": "test/built-ins/Date/prototype/toJSON/non-finite.js",
+      "bytes": 730,
+      "sha256": "8d9583e88ba444ddc2dc181ca0a724cb1fdd0b9d83b297763454543e0473c5dd"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toJSON/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/toJSON/not-a-constructor.js",
+      "bytes": 915,
+      "sha256": "10e52f0629f1f5dd066369069d82705ea537fb0488677cf3012f11de204bc8f2"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toJSON/to-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/toJSON/to-object.js",
+      "bytes": 756,
+      "sha256": "ba444a368e60b021ef4398f142bfefc5a0eaf1d4fe7bd9537dbbfd06b77cf9de"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toJSON/to-primitive-abrupt.js",
+      "upstream_path": "test/built-ins/Date/prototype/toJSON/to-primitive-abrupt.js",
+      "bytes": 1277,
+      "sha256": "35f1abdcbc56787ef985920499af8b87808a6773ab11b1a9c56a90b83aee5315"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toJSON/to-primitive-symbol.js",
+      "upstream_path": "test/built-ins/Date/prototype/toJSON/to-primitive-symbol.js",
+      "bytes": 1382,
+      "sha256": "6c76248cfea61e1a043d8eaef3f41b6ee8faa18f2c1b9e1caa4466505a0e0303"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toJSON/to-primitive-value-of.js",
+      "upstream_path": "test/built-ins/Date/prototype/toJSON/to-primitive-value-of.js",
+      "bytes": 1298,
+      "sha256": "18a16b39277db6d6823a5d958ab0c6f9b1231383f37f5a3857f8b9bdbfe03a71"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toLocaleDateString/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/toLocaleDateString/length.js",
+      "bytes": 1093,
+      "sha256": "194b0df6587925d8107459a795675cea33f7f80cd96abc72647f37a8022ef38c"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toLocaleDateString/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/toLocaleDateString/name.js",
+      "bytes": 933,
+      "sha256": "5e390e3a149e2581867eec515a9290129e07e387553b8113ef13b4dfddeb2b85"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toLocaleDateString/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/toLocaleDateString/not-a-constructor.js",
+      "bytes": 963,
+      "sha256": "9989e0bd8c1b20e3011ecb12bb07fca65b0ac1d3d719de16c8537de88c66f6b1"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toLocaleDateString/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/toLocaleDateString/prop-desc.js",
+      "bytes": 743,
+      "sha256": "7722a6d2adcd9b53416a87a2eaab96e8f0fe52939e78b7e082bea0d9ba235db8"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toLocaleString/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/toLocaleString/length.js",
+      "bytes": 1077,
+      "sha256": "7cdff2d2d4e6503fe382bc541fe4e2c6b9a835252bb1e8199aff232f0084b8f2"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toLocaleString/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/toLocaleString/name.js",
+      "bytes": 909,
+      "sha256": "5f12cd7e61331e6adf7c612228bc437c7df094a6b07de7a99e0ed638bf832939"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toLocaleString/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/toLocaleString/not-a-constructor.js",
+      "bytes": 947,
+      "sha256": "c4e135c3965feed7d7ba184aec941f96b2a1339e564933c8974774529e4deda0"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toLocaleString/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/toLocaleString/prop-desc.js",
+      "bytes": 727,
+      "sha256": "640dadc6c50466523025d8adcd1fb075e06acddf094b3a2f2146f53d9c28908f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toLocaleTimeString/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/toLocaleTimeString/length.js",
+      "bytes": 1093,
+      "sha256": "6dc353e6eb9744a4ea1bbbb001e4b1d64385a39129d1cfa482a145813355c737"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toLocaleTimeString/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/toLocaleTimeString/name.js",
+      "bytes": 933,
+      "sha256": "d27fad16beab40f5228796d36a6926867a16bd4f0a096819962b898fdd804999"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toLocaleTimeString/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/toLocaleTimeString/not-a-constructor.js",
+      "bytes": 963,
+      "sha256": "9efeb23cb97f955c1d1a889a2a5425199e874390bf2468c557d2fe66dc505d62"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toLocaleTimeString/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/toLocaleTimeString/prop-desc.js",
+      "bytes": 743,
+      "sha256": "360b51465b4e71902199f85e2f92cb0af3a7872720fcf417f620ee3cacd11c60"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toString/format.js",
+      "upstream_path": "test/built-ins/Date/prototype/toString/format.js",
+      "bytes": 827,
+      "sha256": "10f70dcab93d0d714f01f7678e45c7859ad81a29c9aed90c1e909922af796771"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toString/invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/toString/invalid-date.js",
+      "bytes": 378,
+      "sha256": "f99679e656edb4e2a23e00ad4847a12b0e243911980db093b46affec639b61cc"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toString/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/toString/length.js",
+      "bytes": 1023,
+      "sha256": "a373afeae4a59f14e19bbc23a81c2958cf2250f3e6e282c766cd2fef35a3b989"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toString/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/toString/name.js",
+      "bytes": 843,
+      "sha256": "cd2e2e88424e7ce37370e8bc9855c5e6d01b4e2c185e3193a8f7d87880e15519"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toString/negative-year.js",
+      "upstream_path": "test/built-ins/Date/prototype/toString/negative-year.js",
+      "bytes": 1759,
+      "sha256": "7b880d4fcd8b91115106db29afdc089c41c8cdfcf23d1ccf8befe2bdef9d170c"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toString/non-date-receiver.js",
+      "upstream_path": "test/built-ins/Date/prototype/toString/non-date-receiver.js",
+      "bytes": 796,
+      "sha256": "24439b0d1dad3b29b273d626360d52eb982feacbdc4945a7cb70086549605275"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toString/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/toString/not-a-constructor.js",
+      "bytes": 923,
+      "sha256": "957a0a29114f2ed36920401cffeb72746a949d46726b8691758cdc68b01f618e"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toString/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/toString/prop-desc.js",
+      "bytes": 673,
+      "sha256": "ea4413a5effbf9d57442e0f7f2c0a9dda091e96ea595245508588ea81886fd94"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toTemporalInstant/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/toTemporalInstant/length.js",
+      "bytes": 1080,
+      "sha256": "3d82a54bbd80e4b9a4dd6ced9183a05c309ed4032a6cf00adc6646a86f14b117"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toTemporalInstant/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/toTemporalInstant/name.js",
+      "bytes": 918,
+      "sha256": "d3a6a4e3949aa2948ca0176ade275172cbe73ef952618b77cc50cc690742c628"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toTemporalInstant/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/toTemporalInstant/not-a-constructor.js",
+      "bytes": 825,
+      "sha256": "a296cc79724642101c2fd3d6b99022eb576b11668b7bdf42431b1520e59db860"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toTemporalInstant/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/toTemporalInstant/prop-desc.js",
+      "bytes": 730,
+      "sha256": "3ce2cdd4f9c637855ac5a8137d91f8078f4e72f60e09c92608494de0f0ffbbb3"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toTemporalInstant/this-value-invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/toTemporalInstant/this-value-invalid-date.js",
+      "bytes": 510,
+      "sha256": "a0d0fc1fb3fc15ddf2090ecf8ce410eaf5dd0a3305774fc52421216d59a8e791"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toTemporalInstant/this-value-non-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/toTemporalInstant/this-value-non-date.js",
+      "bytes": 1122,
+      "sha256": "84db93ce07e30fe285dabdd763319c42ece8c86c1ba8bb24b46646473f3a7cf1"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toTemporalInstant/this-value-non-object.js",
+      "upstream_path": "test/built-ins/Date/prototype/toTemporalInstant/this-value-non-object.js",
+      "bytes": 1177,
+      "sha256": "19a7d90b699f2fc421d647a557e23e40827cf1f4e182dc540205e4101e66e463"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toTemporalInstant/this-value-valid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/toTemporalInstant/this-value-valid-date.js",
+      "bytes": 1093,
+      "sha256": "33be791d8821b1c7a819e5db9d6ddc2f9524cbe7679efc4c7ad0cbbb20e62c7c"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toTimeString/format.js",
+      "upstream_path": "test/built-ins/Date/prototype/toTimeString/format.js",
+      "bytes": 552,
+      "sha256": "d4416bff4a74624ca4cbf549a5178f9d5d9acbb804ab58bbde02035d49ee007a"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toTimeString/invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/toTimeString/invalid-date.js",
+      "bytes": 409,
+      "sha256": "0bbf5147817133ead77853bf36a8b1642f00f1b133b3abb5f6b5cc62f8bb1345"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toTimeString/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/toTimeString/length.js",
+      "bytes": 1039,
+      "sha256": "3f40b7314cd8f70211bc0f0f5e1230f9ac46864856bb5aa1a50ac5a452de0230"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toTimeString/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/toTimeString/name.js",
+      "bytes": 867,
+      "sha256": "d50600c892e5af748c6912b820c982b1f5e49f14deb0858dffd05f2a2e4eda8c"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toTimeString/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/toTimeString/not-a-constructor.js",
+      "bytes": 939,
+      "sha256": "28f1972dec7dadc06a11634a9e2cd44436f3e7739f7fea18b8157dc494feaa78"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toTimeString/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/toTimeString/prop-desc.js",
+      "bytes": 689,
+      "sha256": "a0828ae9c0ff3e8db77ed2ccfe79f5ab95b260c7670d69eda09bfc0379a3f55f"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toUTCString/day-names.js",
+      "upstream_path": "test/built-ins/Date/prototype/toUTCString/day-names.js",
+      "bytes": 1047,
+      "sha256": "4d96088605f9c5f594ff1de7b909ecd67df7d9b77c3777862e5b8f59d6df8e45"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toUTCString/format.js",
+      "upstream_path": "test/built-ins/Date/prototype/toUTCString/format.js",
+      "bytes": 780,
+      "sha256": "0c44cec20f53fe85d5ccecdd6379a7cf545d3f92ea9550450de8a42db4940193"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toUTCString/invalid-date.js",
+      "upstream_path": "test/built-ins/Date/prototype/toUTCString/invalid-date.js",
+      "bytes": 406,
+      "sha256": "840eea4fe76262b856535e428adf174eb73572e719f7581fb9a1cc4061de4a68"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toUTCString/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/toUTCString/length.js",
+      "bytes": 1035,
+      "sha256": "25ba4ad5f53ba14f2c2550a67ea7cb713c2ca0e36aaca305ba46e9e229b79da6"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toUTCString/month-names.js",
+      "upstream_path": "test/built-ins/Date/prototype/toUTCString/month-names.js",
+      "bytes": 1641,
+      "sha256": "93d2f612fbc22b3a27f69b567fea42636284e6577102115e6bf53693752e6e10"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toUTCString/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/toUTCString/name.js",
+      "bytes": 861,
+      "sha256": "557eef76007b99fc0ed73e6fe2a9f6bf0907fe1befb0f1e4389be1722b3d7169"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toUTCString/negative-year.js",
+      "upstream_path": "test/built-ins/Date/prototype/toUTCString/negative-year.js",
+      "bytes": 2014,
+      "sha256": "8b34779251c42c9a48a30adff1c7dd826fc5c8f61af86f056c8653b2d632387d"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toUTCString/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/toUTCString/not-a-constructor.js",
+      "bytes": 935,
+      "sha256": "2084ef0f2a37a40ccfc4dfc0622826c03b758d0cb78c1d442017ad81202fc202"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/toUTCString/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/toUTCString/prop-desc.js",
+      "bytes": 685,
+      "sha256": "42595dc152e503bfd5f2115df86d03b7ac86cfa9dc67e285dd50c345f7489f2a"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/valueOf/S9.4_A3_T1.js",
+      "upstream_path": "test/built-ins/Date/prototype/valueOf/S9.4_A3_T1.js",
+      "bytes": 1710,
+      "sha256": "0c109d62ef245765564092c07ee89681de9a5634d632888f05e8f6a6af715b22"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/valueOf/S9.4_A3_T2.js",
+      "upstream_path": "test/built-ins/Date/prototype/valueOf/S9.4_A3_T2.js",
+      "bytes": 944,
+      "sha256": "160b7a13160b6f2938895815c73a229b9c632501948e4d25a7781d4434131fdb"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/valueOf/length.js",
+      "upstream_path": "test/built-ins/Date/prototype/valueOf/length.js",
+      "bytes": 1019,
+      "sha256": "a23ff65e7722baa5e558c7ddb78ce2d4d4d0f02fadde43a82725acacc6c29d95"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/valueOf/name.js",
+      "upstream_path": "test/built-ins/Date/prototype/valueOf/name.js",
+      "bytes": 837,
+      "sha256": "d4a1b93b3d380461b4ea531e0896006fa35aa70f74706ef148ef41a3e0b2c6c6"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/valueOf/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Date/prototype/valueOf/not-a-constructor.js",
+      "bytes": 919,
+      "sha256": "a41e9b2a0d956a4498cfef46b83b76a609cb2c08f15d9f1803ae5c45ceafd78c"
+    },
+    {
+      "path": "test/built-ins/Date/prototype/valueOf/prop-desc.js",
+      "upstream_path": "test/built-ins/Date/prototype/valueOf/prop-desc.js",
+      "bytes": 669,
+      "sha256": "0d09a5eb796a8b717ee75e7516489aca2526cb93e5eb5437f7ed2c4129a266d4"
+    },
+    {
+      "path": "test/built-ins/Date/subclassing.js",
+      "upstream_path": "test/built-ins/Date/subclassing.js",
+      "bytes": 1486,
+      "sha256": "66ab53f8295e3337c05b252e48b5c7a141c0b9859272757099505aa10ce6eb63"
+    },
+    {
+      "path": "test/built-ins/Date/value-get-symbol-to-prim-err.js",
+      "upstream_path": "test/built-ins/Date/value-get-symbol-to-prim-err.js",
+      "bytes": 859,
+      "sha256": "c7e5789decfc70256fe45f95ab8c01ad47b7a373cdf7d14f2a69bd1ea50e571d"
+    },
+    {
+      "path": "test/built-ins/Date/value-symbol-to-prim-err.js",
+      "upstream_path": "test/built-ins/Date/value-symbol-to-prim-err.js",
+      "bytes": 981,
+      "sha256": "143c5467bc4df122e5909ce688355c823c1a2e6cb09fdc30c1dc959dbd10f111"
+    },
+    {
+      "path": "test/built-ins/Date/value-symbol-to-prim-invocation.js",
+      "upstream_path": "test/built-ins/Date/value-symbol-to-prim-invocation.js",
+      "bytes": 1334,
+      "sha256": "7ad2cf119504bc568a01c54f35ac4bfeba5449f0011543cae71581a35f5ebf4a"
+    },
+    {
+      "path": "test/built-ins/Date/value-symbol-to-prim-return-obj.js",
+      "upstream_path": "test/built-ins/Date/value-symbol-to-prim-return-obj.js",
+      "bytes": 1218,
+      "sha256": "a2129bb25a04e0947a42c9ce083768d55e659e60d0463181cdb12f5c7408e7a3"
+    },
+    {
+      "path": "test/built-ins/Date/value-symbol-to-prim-return-prim.js",
+      "upstream_path": "test/built-ins/Date/value-symbol-to-prim-return-prim.js",
+      "bytes": 1207,
+      "sha256": "5f1639937c4788a54940e23d17b8fdde62dda7d71ef2705ec69e84e1c3a1e205"
+    },
+    {
+      "path": "test/built-ins/Date/value-to-primitive-call-err.js",
+      "upstream_path": "test/built-ins/Date/value-to-primitive-call-err.js",
+      "bytes": 800,
+      "sha256": "79b864ffb901e2e81722e8e0deaaf27ba45378058898a79ab0bf963c81a0fc04"
+    },
+    {
+      "path": "test/built-ins/Date/value-to-primitive-call.js",
+      "upstream_path": "test/built-ins/Date/value-to-primitive-call.js",
+      "bytes": 1407,
+      "sha256": "5ad1c26bda3e8420831c25750a3213a0a93b7b610952430706bbb02aeb9e5631"
+    },
+    {
+      "path": "test/built-ins/Date/value-to-primitive-get-meth-err.js",
+      "upstream_path": "test/built-ins/Date/value-to-primitive-get-meth-err.js",
+      "bytes": 936,
+      "sha256": "9e8bc4d166f0ba62642647ee2228d649938ff7cd6a029e9e5aa822405db626e7"
+    },
+    {
+      "path": "test/built-ins/Date/value-to-primitive-result-faulty.js",
+      "upstream_path": "test/built-ins/Date/value-to-primitive-result-faulty.js",
+      "bytes": 1502,
+      "sha256": "33c24cf3c2f47c92e2b42fc22abba62b99bf3affb0d2119f7aa7300a6a15ed16"
+    },
+    {
+      "path": "test/built-ins/Date/value-to-primitive-result-non-string-prim.js",
+      "upstream_path": "test/built-ins/Date/value-to-primitive-result-non-string-prim.js",
+      "bytes": 1928,
+      "sha256": "de3916132cc9e0b8bec85fbc65d39a7b29c731a563f9975c535579b52f7603b8"
+    },
+    {
+      "path": "test/built-ins/Date/value-to-primitive-result-string.js",
+      "upstream_path": "test/built-ins/Date/value-to-primitive-result-string.js",
+      "bytes": 1422,
+      "sha256": "fa2ce643abbab5fcd8dfe63b5306fb1ff14e618234b15997a4da63c70feec62f"
+    },
+    {
+      "path": "test/built-ins/Date/year-zero.js",
+      "upstream_path": "test/built-ins/Date/year-zero.js",
+      "bytes": 595,
+      "sha256": "328e21fc0065927b98bfffb6e769e3330dba5d6993170f27d8fd1d6d4be67ac2"
+    }
+  ],
+  "inventory_proof": {
+    "method": "complete-root-linked-recursive-git-subtree",
+    "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+    "root_tree": "91b2052adad1f066ae031e2ff3a1e9bd6d732886",
+    "subtree": "test/built-ins/Date",
+    "subtree_tree": "6ad4fab73be4a87e6bfb58793b5fa9c82335ce5e",
+    "directory_trees": {
+      "Date": "6ad4fab73be4a87e6bfb58793b5fa9c82335ce5e",
+      "Date/UTC": "fb0b082c5491f1b75f420c23f5acce5df8b91a35",
+      "Date/now": "26cbdef6040dd0d22ce965933724a498f177f0e5",
+      "Date/parse": "6e387843bf71b926f50b4ca2af9871d29d702bf0",
+      "Date/prototype": "02c490d8d644032beab5a0c8ced9566a090ab550",
+      "Date/prototype/Symbol.toPrimitive": "b585775f509a54b811669819f50e80c9a9f95f0c",
+      "Date/prototype/constructor": "c5d07d0d3aa1fa13d4098ab4cf06eeaa29414a01",
+      "Date/prototype/getDate": "eb83e1dc5573434004ce8adcee1f08cc88bac2fc",
+      "Date/prototype/getDay": "3edbf07d12aff0144c520bbdd650d3b33cbab184",
+      "Date/prototype/getFullYear": "07e458aa56b7e60b6bd5a749630ecb8515becfb0",
+      "Date/prototype/getHours": "36eb26846f111beceb9ac412069e10bb39a64763",
+      "Date/prototype/getMilliseconds": "6e55c3b10a4d0b4b1bf62e52c41fa44052154da2",
+      "Date/prototype/getMinutes": "17e8e634f462d988658448717e044365d52ad21b",
+      "Date/prototype/getMonth": "534570d63da1d2d57ee8f07dcb39982009dac616",
+      "Date/prototype/getSeconds": "6ecd249a8a1ec4aba40a1bc796b73ea89990d542",
+      "Date/prototype/getTime": "f5fed2016b4839f87019b0aa7701014ecdb9c1e9",
+      "Date/prototype/getTimezoneOffset": "60e304171bcb8097264dd6d371d951b2ffde458f",
+      "Date/prototype/getUTCDate": "65cda64e3890c58ab66a22bb8f08aedd3bbc8c79",
+      "Date/prototype/getUTCDay": "a988452ae84615f5af038987a903a36a353eeaa1",
+      "Date/prototype/getUTCFullYear": "12d663b6fbf43640ad3e7756f2c8d61c263e5345",
+      "Date/prototype/getUTCHours": "eb1c9ad0ac15bf3453c80891de0f0b470c66f904",
+      "Date/prototype/getUTCMilliseconds": "3ea01742e733b96a0430c38c8f91238fef0f7861",
+      "Date/prototype/getUTCMinutes": "1049d237deaf1570ed2ca9651d34d1b5bba1ab3e",
+      "Date/prototype/getUTCMonth": "0503af1a110d2bc7429c4e6e3c413326f00188c3",
+      "Date/prototype/getUTCSeconds": "17d40fc09fea48f4070e9afa493e15c57f2e6778",
+      "Date/prototype/setDate": "62e03f0c57078e48702b168c4134dae24bc883ec",
+      "Date/prototype/setFullYear": "d522ba202f4040d0ae6852ada81e0cdcf71eb216",
+      "Date/prototype/setHours": "cfea3611ab5658026fe47584f177aaddded310d1",
+      "Date/prototype/setMilliseconds": "e2757d5c6a69acdee2510bb3b2d41f1fb9a6c954",
+      "Date/prototype/setMinutes": "ed87fe390ce94082958bda46d4e5ddaed15a9786",
+      "Date/prototype/setMonth": "bbeca292ec43e67bb472fa5c92124aba83984154",
+      "Date/prototype/setSeconds": "b06c5fadb3ea95b5919b53f9f5642312203e6a3b",
+      "Date/prototype/setTime": "e317bd062011dde20065fddb20d60bd6c94e1b89",
+      "Date/prototype/setUTCDate": "47cb6b0b33489e98e53ab72088687ea0a9100b8c",
+      "Date/prototype/setUTCFullYear": "b6d8797bb065a098ac674f5e6376ce771e37ae76",
+      "Date/prototype/setUTCHours": "55ba555b313d628cc795d8fdc605dab99b60646d",
+      "Date/prototype/setUTCMilliseconds": "01ae69b4a41994c3dc2b74073c1919ddf05e39b4",
+      "Date/prototype/setUTCMinutes": "96bd75f954fd8e07d11d59e228b8a23db15a3581",
+      "Date/prototype/setUTCMonth": "2d48e5e9da72e3f73b725361f81906875c79b82b",
+      "Date/prototype/setUTCSeconds": "70cf1113e11ea53cef4ceb87048891b7fff37410",
+      "Date/prototype/toDateString": "f79eade35457f385cfef6855f2bfd1babd09e417",
+      "Date/prototype/toISOString": "4be717a5b18542f3701513391da903851a7dd253",
+      "Date/prototype/toJSON": "57c19227f62e128474e714417f2bfbd83059698d",
+      "Date/prototype/toLocaleDateString": "8d7af7a5aef4df8cfb3c842778caa9e858b9ffa7",
+      "Date/prototype/toLocaleString": "5fee92fe586a7d49cdbe3441ff6b091b261a151c",
+      "Date/prototype/toLocaleTimeString": "da8b8e2e625d76928fa01f2c7519a04681ae509e",
+      "Date/prototype/toString": "f30c125d59b02a4cfffcc33792a4c0fd1b4fe1a3",
+      "Date/prototype/toTemporalInstant": "0cdae17d45b4d6bd514e95d1448a31a64772bac4",
+      "Date/prototype/toTimeString": "91d6418b262ccac33f08a54af39cd85dffdccf0b",
+      "Date/prototype/toUTCString": "4f738ad4ae5658dba07d3e3d8fb43f1c2c5cd686",
+      "Date/prototype/valueOf": "fd36f30f867c9f001d49de9093c4fbc1139f3753"
+    },
+    "auxiliary_blobs": {
+      "harness/assert.js": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+      "harness/sta.js": "d291a94f46234908009a7ee909cf9d66034c73fe",
+      "harness/propertyHelper.js": "0acccfe87f0c40c94c1d43c315c2d8f1e35d7b52",
+      "harness/compareArray.js": "fa5eae5f4c7c60d6178ef992fe8c2e1dd0c394f3",
+      "harness/isConstructor.js": "387c664e14fdf7563769fb71ae4c122c7e503172",
+      "harness/assertRelativeDateMs.js": "7535973f082d8df48ff7855b5df113cd0a3a3a20",
+      "harness/dateConstants.js": "1e728d328587c35b7eae3fec9f267e3fd24a8815",
+      "LICENSE": "a56b038f0e01b05b004d92097d4601ba629afdf3",
+      "INTERPRETING.md": "ecf7ec7003a1e3ea937fb4e7d3348d22733b50b5"
+    },
+    "files": [
+      {
+        "path": "inventory-proof/commit.json",
+        "bytes": 1094,
+        "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0",
+        "url": "https://api.github.com/repos/tc39/test262/git/commits/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd"
+      },
+      {
+        "path": "inventory-proof/recursive-6ad4fab73be4a87e6bfb58793b5fa9c82335ce5e.json",
+        "bytes": 153643,
+        "sha256": "befbc077e21bc9f61bf80f6f80c4c4db254a25c23db563cf9f696f17253c5627",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/6ad4fab73be4a87e6bfb58793b5fa9c82335ce5e?recursive=1"
+      },
+      {
+        "path": "inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+        "bytes": 5452,
+        "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/91b2052adad1f066ae031e2ff3a1e9bd6d732886"
+      },
+      {
+        "path": "inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+        "bytes": 1374,
+        "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/a2eada339f3c7e678edfc08497985f261a9ae258"
+      },
+      {
+        "path": "inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+        "bytes": 13201,
+        "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/b42c4a8f19ad479b70ee2f64ecd683735d83cde9"
+      },
+      {
+        "path": "inventory-proof/tree-e7917cf01aee95d5ed85ba370c550d02cea533c7.json",
+        "bytes": 7655,
+        "sha256": "27941521784b5bdc7b19e5deb27a15f6af4cc69aa785aca1b5f3b8e80515a105",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/e7917cf01aee95d5ed85ba370c550d02cea533c7"
+      }
+    ]
+  }
+}

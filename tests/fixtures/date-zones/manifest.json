@@ -1,0 +1,185 @@
+{
+  "format": 1,
+  "version": "2026d",
+  "released": "2026-09-11",
+  "retrieved_at_utc": "2026-09-29T06:26:28.999664+00:00",
+  "release_url": "https://www.iana.org/time-zones/releases/2026d",
+  "release_evidence": "Official version-specific IANA release page identifies release 2026d on 2026-09-11; both unchanged archive version members contain 2026d\\n.",
+  "authentication": "Downloaded via HTTPS from data.iana.org; recorded SHA-256 pins, no PGP signature verification claimed.",
+  "archives": [
+    {
+      "url": "https://data.iana.org/time-zones/releases/tzdata2026d.tar.gz",
+      "final_url": "https://data.iana.org/time-zones/releases/tzdata2026d.tar.gz",
+      "bytes": 479409,
+      "sha256": "0cb2aa8e333c3dc049badc42a0c61f21987b8cd44e107fa900bad764aacc7767",
+      "last_modified": "Fri, 11 Sep 2026 22:36:31 GMT",
+      "path": "upstream/tzdata2026d.tar.gz"
+    },
+    {
+      "url": "https://data.iana.org/time-zones/releases/tzcode2026d.tar.gz",
+      "final_url": "https://data.iana.org/time-zones/releases/tzcode2026d.tar.gz",
+      "bytes": 328712,
+      "sha256": "2f5c9f7fe29e6b8cb863583667884b8ce17b0a485355a054b591c6bdfcd81791",
+      "last_modified": "Fri, 11 Sep 2026 22:36:31 GMT",
+      "path": "upstream/tzcode2026d.tar.gz"
+    }
+  ],
+  "members": [
+    {
+      "archive": "tzdata2026d.tar.gz",
+      "member": "version",
+      "bytes": 6,
+      "sha256": "e5991d2ec7b3c5fbd147d25d2ac1344d70da4bdaaf88e9df51525b9f72fb53f0"
+    },
+    {
+      "archive": "tzdata2026d.tar.gz",
+      "member": "LICENSE",
+      "bytes": 252,
+      "sha256": "0613408568889f5739e5ae252b722a2659c02002839ad970a63dc5e9174b27cf"
+    },
+    {
+      "archive": "tzdata2026d.tar.gz",
+      "member": "northamerica",
+      "bytes": 178952,
+      "sha256": "f9a008b98624f5ccd630341c0c5968809f046854d8319cf3c360ce3277dc4d13"
+    },
+    {
+      "archive": "tzdata2026d.tar.gz",
+      "member": "australasia",
+      "bytes": 98595,
+      "sha256": "846ba455578e3e0f9eb850f05be3cc06d02ff51bbe4b726f755be9dc765f16c9"
+    },
+    {
+      "archive": "tzdata2026d.tar.gz",
+      "member": "europe",
+      "bytes": 187231,
+      "sha256": "0fef17177d871af93188f2985e6034029bfd83e43d2a1c3838e4320712dba7c1"
+    },
+    {
+      "archive": "tzdata2026d.tar.gz",
+      "member": "asia",
+      "bytes": 193525,
+      "sha256": "02b69728085f6b0c999da70de2f1f9a2d8952b533a450d53bb41e03eb7d0e92e"
+    },
+    {
+      "archive": "tzcode2026d.tar.gz",
+      "member": "version",
+      "bytes": 6,
+      "sha256": "e5991d2ec7b3c5fbd147d25d2ac1344d70da4bdaaf88e9df51525b9f72fb53f0"
+    },
+    {
+      "archive": "tzcode2026d.tar.gz",
+      "member": "LICENSE",
+      "bytes": 252,
+      "sha256": "0613408568889f5739e5ae252b722a2659c02002839ad970a63dc5e9174b27cf"
+    },
+    {
+      "archive": "tzcode2026d.tar.gz",
+      "member": "zic.c",
+      "bytes": 115791,
+      "sha256": "1e6c712d271b8da7c62c358fdc5c2d978b176cb258951b6da599e6b1a503e0ed"
+    },
+    {
+      "archive": "tzcode2026d.tar.gz",
+      "member": "private.h",
+      "bytes": 32245,
+      "sha256": "dcf3a0041cebf13bebdf4c8e4d1163b7fb4751a16b9f9ebde2cbf79e63b3b4ff"
+    },
+    {
+      "archive": "tzcode2026d.tar.gz",
+      "member": "tzfile.h",
+      "bytes": 4194,
+      "sha256": "449eceb0318327d7e885c9ab537a88084c98f03735758e4cf3e9ad1ebae79a1c"
+    }
+  ],
+  "license": {
+    "path": "LICENSE",
+    "bytes": 252,
+    "sha256": "0613408568889f5739e5ae252b722a2659c02002839ad970a63dc5e9174b27cf",
+    "scope": "Unchanged tzdata/tzcode LICENSE. zic and selected data are public domain; upstream archive retains licenses for other members."
+  },
+  "build": {
+    "zic_version": "zic (tzcode) 2026d",
+    "zic_sha256": "e1cf3c54bf206cd077fc56da5003d8113edfceb7cac2c37ec530e7269cec9103",
+    "compiler_command": [
+      "cc",
+      "-std=c17",
+      "-O2",
+      "-o",
+      "zic",
+      "zic.c"
+    ],
+    "compiler_resolved_path": "/nix/store/z4c6k0mrlkwl3s4w9ysxc8vq1wylm3ms-gcc-wrapper-15.3.0/bin/gcc",
+    "compiler_sha256": "450fa1e55d5a9b78873f14eb6c4c3823d3226eb1399a4554704d644364707811",
+    "compiler_version": "gcc (GCC) 15.3.0",
+    "generated_headers": {
+      "version.h": "static char const PKGVERSION[]=\"(tzcode) \";\nstatic char const TZVERSION[]=\"2026d\";\nstatic char const REPORT_BUGS_TO[]=\"tz@iana.org\";\n",
+      "tzdir.h": "#define TZDEFAULT \"/nonexistent\"\n#define TZDIR \"/nonexistent\"\n"
+    },
+    "zic_command": [
+      "./zic",
+      "-b",
+      "fat",
+      "-d",
+      "out",
+      "northamerica",
+      "australasia",
+      "europe",
+      "asia"
+    ],
+    "source_mode": "Unchanged vanguard data; no ziguard rearguard transformation, -r truncation, -L leap input or host timezone lookup.",
+    "rebuild_command": [
+      "python3",
+      "tools/generate_date_zones.py",
+      "--rebuild"
+    ],
+    "binary_portability": "Compiler binary hash documents this acquisition. Rebuilds may use another C17 compiler; required reproducibility is exact TZif output bytes, not identical zic executable bytes."
+  },
+  "fixtures": [
+    {
+      "path": "America/New_York",
+      "bytes": 3552,
+      "sha256": "e9ed07d7bee0c76a9d442d091ef1f01668fee7c4f26014c0a868b19fe6c18a95",
+      "format": "TZif2 fat",
+      "leap_records": 0,
+      "footer": "EST5EDT,M3.2.0,M11.1.0"
+    },
+    {
+      "path": "Australia/Lord_Howe",
+      "bytes": 1846,
+      "sha256": "a323c5433991a963eb497b7da4d1d09848bf3ef5f5d64d9c9649f388e4bab9df",
+      "format": "TZif2 fat",
+      "leap_records": 0,
+      "footer": "<+1030>-10:30<+11>-11,M10.1.0,M4.1.0"
+    },
+    {
+      "path": "Pacific/Apia",
+      "bytes": 598,
+      "sha256": "33740ab29ef943b1f55f769e13ff59a90962f5a12434209072d650e6c10abb4d",
+      "format": "TZif2 fat",
+      "leap_records": 0,
+      "footer": "<+13>-13"
+    },
+    {
+      "path": "Europe/Dublin",
+      "bytes": 3492,
+      "sha256": "40e8d2a1c3b572284da39f6f4245b1bc814f452c44f5aa73d0a011571d5ccc43",
+      "format": "TZif2 fat",
+      "leap_records": 0,
+      "footer": "IST-1GMT0,M10.5.0,M3.5.0/1"
+    },
+    {
+      "path": "Asia/Kathmandu",
+      "bytes": 198,
+      "sha256": "fd1b1f79259b0abf24338611262ed7bfa8401221d6d7820586c5ec7e16cf8e83",
+      "format": "TZif2 fat",
+      "leap_records": 0,
+      "footer": "<+0545>-5:45"
+    }
+  ],
+  "expectations": {
+    "path": "expectations.json",
+    "bytes": 4523,
+    "sha256": "8d0f11db7fc60ac982666b92f078982f387b421d4d179ee126ffaa55d0729e9b"
+  }
+}

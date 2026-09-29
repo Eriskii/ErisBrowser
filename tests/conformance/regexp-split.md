@@ -1,5 +1,9 @@
 # RegExp splitting and species construction
 
+The [Date checkpoint](test262-date.md) records **90 passed, 6 unsupported** on this
+unchanged profile. Earlier measurements and prerequisite descriptions below
+are retained as historical evidence; the final Date comparison is at the end.
+
 `RegExp.prototype[Symbol.split]` now constructs a separate splitter through the
 observable constructor and `Symbol.species` properties. Its intrinsic method has
 the standard name, length and property attributes. `RegExp[Symbol.species]` is a
@@ -83,3 +87,15 @@ establish full RegExp, ECMAScript or web compatibility.
 Algorithm references: [RegExp.prototype[Symbol.split]](https://tc39.es/ecma262/multipage/text-processing.html#sec-regexp.prototype-%symbol.split%),
 [SpeciesConstructor](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-speciesconstructor),
 [RegExp species getter](https://tc39.es/ecma262/multipage/text-processing.html#sec-get-regexp-%symbol.species%).
+
+### Final Date comparison
+
+Final frozen adapter `ab40a96f2cc1908359186e7c0648cecddc5ad8f8b2adf8a60de0e0d2c9a8f220`
+records **90 passed, 6 unsupported**: **2 new passes and zero lost passes**
+against the published before release. Complete observations and controls match
+the first frozen candidate; all original source/helper/mode/policy identities
+remain unchanged. The existing known-state baseline was strengthened to protect these new passes.
+The [complete comparison](test262-date-profiles-comparison.json) and
+[baseline receipt](test262-date-baseline-recording.json) retain exact hashes.
+Original before and first-candidate reports remain preserved in the
+[Date evidence](date.json). No script quota was increased.

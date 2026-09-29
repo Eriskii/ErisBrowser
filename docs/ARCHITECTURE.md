@@ -15,6 +15,8 @@ flowchart LR
     B --> F[Explicit local document directory]
     UI -->|One cross-origin encoded image| I[Fresh confined image decoder]
     I -->|Validated pixels only, then exit| UI
+    UI -->|Host timezone configuration| Z[Bounded timezone discovery helper]
+    Z -->|Timezone bytes| UI
     R --> D[HTML and DOM]
     D --> J[Script and DOM events]
     D --> C[CSS and layout]
@@ -31,6 +33,17 @@ renderer cannot directly open resource files or create sockets. The `--render`
 and `--benchmark` CLI modes and library entry points use the page pipeline in
 their calling process. The separate `--benchmark-worker` mode uses the confined
 worker/broker boundary without opening a desktop window.
+
+Script-enabled realms receive an explicit Date host context. A separate helper
+reads the parent's timezone configuration before page execution; the parent and
+renderer validate its bounded TZif or POSIX payload. ERW9 carries these bytes in
+worker initialization, without granting the renderer a file path or descriptor.
+Each cross-document navigation captures a fresh snapshot. Fragment navigation,
+encoding reparses and error pages retain the existing context. Script-disabled
+pages need no timezone discovery. `Runtime::new` and the existing `Page` library
+constructors remain free of implicit host discovery; embedders use their
+`with_date_host` variants for local Date operations. UTC operations and the real
+wall clock remain available in an unconfigured context.
 
 The parent authorizes the initial URL and optional form body. The broker allows
 that document fetch once, validates redirects, and uses the final document URL
@@ -58,7 +71,7 @@ results from replacing newer input.
 Snapshots contain the DOM, display list, hit regions, shared raster images and
 page metadata. The parent checks their graph structure, namespace bindings,
 storage limits, geometry and raster dimensions before publishing them to the
-UI. The ERW8 format also validates reciprocal template/fragment ownership,
+UI. The ERW9 format also validates reciprocal template/fragment ownership,
 host-inclusive cycles/depth, canonical encoding metadata, frozen base URLs, fixed hit coordinates, generated-summary action hints and typed clip/fixed/opacity display scopes. Generated-summary hints require an active, visible HTML details element without an authored direct summary. Resource traffic has separate request/response messages. All pipe channels
 use bounded framing, nonblocking I/O and deadlines; cancellation remains latched
 across nested broker and decoder exchanges. Failure or replacement kills and reaps the

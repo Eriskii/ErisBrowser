@@ -7,7 +7,7 @@ use std::{convert::Infallible, os::unix::process::CommandExt, process::Command};
 pub fn launch_worker(role: &str) -> Result<Infallible, String> {
     if !matches!(
         role,
-        "--page-worker" | "--resource-broker" | "--image-decoder"
+        "--page-worker" | "--resource-broker" | "--image-decoder" | "--timezone-discovery"
     ) {
         return Err("invalid clean worker role".into());
     }

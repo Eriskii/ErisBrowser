@@ -92,6 +92,48 @@ fn exchange_empty(client: &mut WorkerClient, command: WorkerCommand) {
 
 #[test]
 #[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn confined_date_receives_host_rules_before_any_author_script() {
+    const HELPER: &str = "ERIS_WORKER_DATE_CONTEXT_HELPER";
+    if std::env::var_os(HELPER).is_none() {
+        let output = Command::new(std::env::current_exe().unwrap())
+            .args([
+                "--exact",
+                "confined_date_receives_host_rules_before_any_author_script",
+                "--ignored",
+                "--nocapture",
+            ])
+            .env(HELPER, "1")
+            .env("TZ", "EST5EDT,M3.2.0,M11.1.0")
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "{}\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+        return;
+    }
+    let fixture = Fixture::new(
+        "<title>before</title><script>document.title=new Date(0).getTimezoneOffset()+','+new Date(Date.UTC(2020,6,1)).getTimezoneOffset()+','+new Date(1970,0,1).getTime()+','+new Date(0).toISOString();</script>",
+    );
+    let mut client = fixture.spawn(true, 123);
+    load(&mut client, &fixture.navigation);
+    let snapshot = render(&mut client);
+    assert_eq!(snapshot.title, "300,240,18000000,1970-01-01T00:00:00.000Z");
+    assert!(
+        snapshot
+            .diagnostics
+            .iter()
+            .all(|message| message.starts_with("Page process ")
+                || message.starts_with("Resource broker ")),
+        "{:?}",
+        snapshot.diagnostics
+    );
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
 fn inline_style_mutations_preserve_the_same_pixels_through_the_confined_worker() {
     assert_six_scripted_samples_through_worker(include_str!("fixtures/inline-style.html"), 117);
 }
@@ -1720,8 +1762,9 @@ fn unexpected_inherited_descriptor_is_rejected() {
             .stderr(Stdio::null())
             .spawn()
             .unwrap();
-        let mut init = b"ERW8\x00\x00".to_vec();
+        let mut init = b"ERW9\x00\x00".to_vec();
         init.extend_from_slice(&103u64.to_le_bytes());
+        init.push(0); // Scripts disabled: no timezone capability is needed.
         let mut input = direct.stdin.take().unwrap();
         input.write_all(&(init.len() as u32).to_le_bytes()).unwrap();
         input.write_all(&init).unwrap();
@@ -1913,12 +1956,12 @@ fn image_decoder_confines_decodes_once_and_exits_without_response_body_leaks() {
         let mut output = child.0.stdout.take().unwrap();
         let flags = rustix::fs::fcntl_getfl(&output).unwrap();
         rustix::fs::fcntl_setfl(&output, flags | rustix::fs::OFlags::NONBLOCK).unwrap();
-        send(&mut input, b"ERW8\x06");
-        assert_eq!(receive(&mut output), b"ERW8\x02\x01\x00\x00");
+        send(&mut input, b"ERW9\x06");
+        assert_eq!(receive(&mut output), b"ERW9\x02\x01\x00\x00");
         let status = fs::read_to_string(format!("/proc/{pid}/status")).unwrap();
         assert!(status.contains("NoNewPrivs:\t1"));
         assert!(status.contains("Seccomp:\t2"));
-        let mut request = b"ERW8\x07".to_vec();
+        let mut request = b"ERW9\x07".to_vec();
         request.extend_from_slice(&(mime.len() as u32).to_le_bytes());
         request.extend_from_slice(mime.as_bytes());
         request.extend_from_slice(&budget.to_le_bytes());
@@ -1926,7 +1969,7 @@ fn image_decoder_confines_decodes_once_and_exits_without_response_body_leaks() {
         request.extend_from_slice(body);
         send(&mut input, &request);
         let response = receive(&mut output);
-        assert_eq!(&response[..5], b"ERW8\x08");
+        assert_eq!(&response[..5], b"ERW9\x08");
         assert_eq!(response[5], u8::from(success));
         if success {
             assert_eq!(u32::from_le_bytes(response[6..10].try_into().unwrap()), 2);

@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "7e380ee0ee12fed435b33bebb97ce784c024e21faee72809e8cda2d97f1e5028",
   "runner_policy_sha256": "0e8c2b54d69e660d939a6c02946e920f459695f6be4405163f7e94bf0547f245",
-  "binary_sha256": "db9a1405ad2df3b03311e2257d5f752e0f83e6e13dc83f0e7311d2e92afcbf5c",
+  "binary_sha256": "ab40a96f2cc1908359186e7c0648cecddc5ad8f8b2adf8a60de0e0d2c9a8f220",
   "cases": {
     "test/built-ins/RegExp/Symbol.species/length.js:sloppy": {
       "status": "passed",
@@ -225,12 +225,12 @@
       "source_sha256": "4187a459fbae8e81940ccb05e09f77554c9af6bbf2b98b4482b441314c5f8232"
     },
     "test/built-ins/RegExp/prototype/Symbol.split/species-ctor-species-non-ctor.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "faeb027c66a0e88eeb51ca6becd9926c80c2de8103dfef88b1d48d504dbbaca4",
       "source_sha256": "ca9b6ad4a779a941dfa45993acaed0eeca434f0ff98490ce7c13230105648209"
     },
     "test/built-ins/RegExp/prototype/Symbol.split/species-ctor-species-non-ctor.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "d98f295b5f9d756b7726ce0d643aa1970a7b5040393a74f0ba7318fc87fb72f9",
       "source_sha256": "ca9b6ad4a779a941dfa45993acaed0eeca434f0ff98490ce7c13230105648209"
     },

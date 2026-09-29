@@ -1,0 +1,33 @@
+{
+  "before_source_archive_sha256": "d26cee736da0d5e0a1ca6ebaf82734fc007bc42cbfc3f90a0652ecc494ef0c9a",
+  "final_source_archive_sha256": "a0c67097cb09e6966ef6b1286fe2d136e0a88299ab971bdf9c4bce63942b7145",
+  "production_input_sha256": "7bb6ff9b49fa7a66f88cf803a9fec4aee3eb0c4b76d3e14bd5472900c2218a02",
+  "existing_script_limit_constants": {
+    "src/script/array_methods.rs:MAX_ARRAY_LIKE_LENGTH": "9_007_199_254_740_991",
+    "src/script/machine.rs:MAX_FRAMES": "MAX_HEAP / std::mem::size_of::<Frame>()",
+    "src/script/tokens.rs:LIMIT": "MAX_TOKENS + 2",
+    "src/script.rs:MAX_SOURCE": "256 * 1024",
+    "src/script.rs:MAX_TOKENS": "32_768",
+    "src/script.rs:MAX_DEPTH": "96",
+    "src/script.rs:MAX_CALLS": "32",
+    "src/script.rs:MAX_STACK_UNITS": "96",
+    "src/script.rs:MAX_STEPS": "100_000",
+    "src/script.rs:MAX_HEAP": "8 * 1024 * 1024",
+    "src/script.rs:MAX_STRING": "256 * 1024",
+    "src/script.rs:MAX_NODES": "100_000"
+  },
+  "changed_existing_limits": {},
+  "new_constants": {},
+  "statement": "Existing script parser/runtime limit definitions are identical in the exact source archives; no limit increase is inferred from successful Date results. New host-specific bounds are a separate scope.",
+  "local_modes": 406,
+  "local_controls": 12,
+  "local_before_counts": {
+    "failed": 406
+  },
+  "local_final_counts": {
+    "passed": 406
+  },
+  "local_observation_changes_from_first_candidate": 0,
+  "local_source_and_expectations_unchanged": true,
+  "local_final_sha256": "0a5f9ebbf0c92dc92b6fd59515af470692571b5fcb3fe9bf457becc351f2e960"
+}

@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "56088f55075e4d44da6915ca41383604182a8a72aaef8230af61369513cbdc0c",
   "runner_policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
-  "binary_sha256": "e623176f34821ca5073e2e96e5a5546978e75b0ab6a69ddde059954e37b25805",
+  "binary_sha256": "ab40a96f2cc1908359186e7c0648cecddc5ad8f8b2adf8a60de0e0d2c9a8f220",
   "cases": {
     "test/language/expressions/addition/S11.6.1_A1.js:sloppy": {
       "status": "unsupported",
@@ -55,12 +55,12 @@
       "source_sha256": "025e33f770e268d64f2cffabb000afd7b081b5728b17db2dc94298961a44174c"
     },
     "test/language/expressions/addition/S11.6.1_A2.2_T2.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "94787e828dd7fe7f076b6b3add90bf9aa94f32326c352c306d806148248f5870",
       "source_sha256": "25bec63788238d8f06c6eb47a046dd24281bc82eacface22f577aea287b69fc7"
     },
     "test/language/expressions/addition/S11.6.1_A2.2_T2.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "98fec05855045b2e02eb714473ce0fb7e3bc374a2a9026d77da5f1a6a268e6d2",
       "source_sha256": "25bec63788238d8f06c6eb47a046dd24281bc82eacface22f577aea287b69fc7"
     },

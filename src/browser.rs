@@ -321,7 +321,9 @@ fn worker(
                 task_deadline = None;
                 generation = id;
                 edit_sequence = 0;
-                match WorkerClient::spawn(scripts, &navigation, generation) {
+                match WorkerClient::spawn_cancellable(scripts, &navigation, generation, || {
+                    requests.cancelled(generation, &current)
+                }) {
                     Ok(worker) => client = Some(worker),
                     Err(error) => {
                         if !requests.cancelled(generation, &current) {

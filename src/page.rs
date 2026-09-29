@@ -72,23 +72,43 @@ impl Page {
         Self::load_navigation(&Navigation::get(address), scripts_enabled)
     }
     pub fn load_navigation(navigation: &Navigation, scripts_enabled: bool) -> Result<Self, String> {
+        Self::load_navigation_with_date_host(
+            navigation,
+            scripts_enabled,
+            crate::date_host::DateHost::unconfigured(),
+        )
+    }
+    pub fn load_with_date_host(
+        address: &str,
+        scripts_enabled: bool,
+        date_host: crate::date_host::DateHost,
+    ) -> Result<Self, String> {
+        Self::load_navigation_with_date_host(&Navigation::get(address), scripts_enabled, date_host)
+    }
+    pub fn load_navigation_with_date_host(
+        navigation: &Navigation,
+        scripts_enabled: bool,
+        date_host: crate::date_host::DateHost,
+    ) -> Result<Self, String> {
         let start = Instant::now();
         let url = net::parse_address(&navigation.address)?;
         if navigation.form_body.is_some() && !matches!(url.scheme(), "http" | "https") {
             return Err("POST form submissions require HTTP or HTTPS".into());
         }
         if url.scheme() == "eris" && url.path() == "home" {
-            return Ok(Self::from_html(
+            return Ok(Self::from_html_with_date_host(
                 url,
                 include_str!("../assets/home.html"),
                 scripts_enabled,
+                date_host,
             ));
         }
         if url.scheme() == "about" && url.path() == "blank" {
-            return Ok(Self::from_html(
+            return Ok(Self::from_html_with_date_host(
                 url,
                 "<!doctype html><title>Blank</title>",
                 scripts_enabled,
+                date_host,
             ));
         }
         let mut fetcher = Fetcher::for_document(&url);
@@ -116,7 +136,7 @@ impl Page {
                 escape_html(&response.text())
             )
         };
-        let mut page = Self::unexecuted(response.url, &html, scripts_enabled);
+        let mut page = Self::unexecuted(response.url, &html, scripts_enabled, date_host.clone());
         if let Some(selected) = html_encoding {
             let mut encoding = selected.encoding;
             if !selected.certain
@@ -128,7 +148,7 @@ impl Page {
                 // Reparse cached bytes before any author code or resource loads.
                 // The original navigation (including POST) is never repeated.
                 let decoded = crate::text_encoding::decode(&response.bytes, declared);
-                page = Self::unexecuted(page.url, &decoded, scripts_enabled);
+                page = Self::unexecuted(page.url, &decoded, scripts_enabled, date_host);
                 encoding = declared;
             }
             page.document.set_encoding(encoding);
@@ -344,13 +364,18 @@ impl Page {
         page.load_ms = start.elapsed().as_secs_f64() * 1000.0;
         Ok(page)
     }
-    fn unexecuted(url: Url, html: &str, scripts_enabled: bool) -> Self {
+    fn unexecuted(
+        url: Url,
+        html: &str,
+        scripts_enabled: bool,
+        date_host: crate::date_host::DateHost,
+    ) -> Self {
         let mut document = Document::parse_with_scripting(html, scripts_enabled);
         document.initialize_url(url.clone());
         Self {
             url,
             document,
-            runtime: Runtime::new(),
+            runtime: Runtime::with_date_host(date_host),
             images: HashMap::new(),
             diagnostics: Vec::new(),
             load_ms: 0.0,
@@ -363,8 +388,21 @@ impl Page {
         }
     }
     pub fn from_html(url: Url, html: &str, scripts_enabled: bool) -> Self {
+        Self::from_html_with_date_host(
+            url,
+            html,
+            scripts_enabled,
+            crate::date_host::DateHost::unconfigured(),
+        )
+    }
+    pub fn from_html_with_date_host(
+        url: Url,
+        html: &str,
+        scripts_enabled: bool,
+        date_host: crate::date_host::DateHost,
+    ) -> Self {
         let started = Instant::now();
-        let mut page = Self::unexecuted(url, html, scripts_enabled);
+        let mut page = Self::unexecuted(url, html, scripts_enabled, date_host);
         page.apply_author_policy(false);
         page.run_scripts(&HashMap::new());
         page.refresh_inline_svg();
@@ -488,15 +526,23 @@ impl Page {
         }
     }
     pub fn error(address: &str, message: &str) -> Self {
+        Self::error_with_date_host(address, message, crate::date_host::DateHost::unconfigured())
+    }
+    pub fn error_with_date_host(
+        address: &str,
+        message: &str,
+        date_host: crate::date_host::DateHost,
+    ) -> Self {
         let html = format!(
             "<!doctype html><title>Unable to open page</title><style>body{{font-family:sans-serif;background:#131620;color:#edf0fa;margin:60px;max-width:850px}}h1{{font-size:36px}}p{{line-height:1.6;color:#bec7dc}}pre{{background:#202638;padding:24px;white-space:pre-wrap}}</style><h1>Unable to open page</h1><p>{}</p><pre>{}</pre><p>Use the address bar to try another address.</p>",
             escape_html(address),
             escape_html(message)
         );
-        Self::from_html(
+        Self::from_html_with_date_host(
             Url::parse("eris:error").expect("constant URL"),
             &html,
             false,
+            date_host,
         )
     }
     fn run_scripts(&mut self, external: &HashMap<NodeId, Arc<str>>) {

@@ -1,5 +1,9 @@
 # Array lastIndexOf
 
+The [Date checkpoint](test262-date.md) records **385 passed, 8 unsupported, 2 resource** on this
+unchanged profile. Earlier measurements and prerequisite descriptions below
+are retained as historical evidence; the final Date comparison is at the end.
+
 `Array.prototype.lastIndexOf` now boxes primitive receivers, reads and converts
 length once, and searches live properties in descending order. Missing
 `fromIndex` starts at the end; explicit undefined starts at zero. Empty inputs
@@ -67,3 +71,15 @@ BigInt and broader language/web compatibility remain incomplete. This is not a
 security audit or proof of complete allocation accounting.
 
 Algorithm: [ECMAScript Array.prototype.lastIndexOf](https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array.prototype.lastindexof).
+
+### Final Date comparison
+
+Final frozen adapter `ab40a96f2cc1908359186e7c0648cecddc5ad8f8b2adf8a60de0e0d2c9a8f220`
+records **385 passed, 8 unsupported, 2 resource**: **2 new passes and zero lost passes**
+against the published before release. Complete observations and controls match
+the first frozen candidate; all original source/helper/mode/policy identities
+remain unchanged. This remains an observation-only selection because resource stops persist; no baseline was added.
+The [complete comparison](test262-date-profiles-comparison.json) and
+[baseline receipt](test262-date-baseline-recording.json) retain exact hashes.
+Original before and first-candidate reports remain preserved in the
+[Date evidence](date.json). No script quota was increased.

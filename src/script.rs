@@ -6,6 +6,7 @@
 //! Strings and ordinary property keys preserve UTF-16 code units. Conversion to
 //! UTF-8 is lossy only at the display/DOM boundary; JSON retains lone surrogates.
 
+use crate::date_host::DateHost;
 use crate::dom::{Document, Namespace, NodeId, NodeKind};
 use crate::js_identifier::{IDENTIFIER_LOOKUP_WORK, is_identifier_part, is_identifier_start};
 use crate::js_string::{JsString, is_js_whitespace, radix_number};
@@ -18,6 +19,7 @@ use std::rc::Rc;
 
 mod code;
 mod construction;
+mod date_builtins;
 mod dom_bindings;
 mod machine;
 mod names;
@@ -1374,6 +1376,7 @@ struct ScriptObject {
     parameter_map: BTreeMap<JsString, (usize, String)>,
     arguments: bool,
     regexp: Option<Rc<RegExp>>,
+    date_value: Option<f64>,
     event: Option<usize>,
     event_target: bool,
     abort: Option<AbortSlot>,
@@ -1505,6 +1508,7 @@ struct EventHandler {
 }
 
 pub struct Runtime {
+    date_host: DateHost,
     environments: Vec<Environment>,
     functions: Vec<Function>,
     arrays: Vec<Vec<Value>>,
@@ -1585,6 +1589,7 @@ impl Runtime {
             "String",
             "Number",
             "Boolean",
+            "Date",
             "Symbol",
             "parseInt",
             "parseFloat",
@@ -1634,6 +1639,7 @@ impl Runtime {
             * (std::mem::size_of::<Option<Rc<BindingAccessor>>>() + std::mem::size_of::<u64>());
         let next_global_order = bindings.len() as u64;
         let mut runtime = Self {
+            date_host: DateHost::unconfigured(),
             environments: vec![
                 Environment {
                     bindings,
@@ -1674,6 +1680,7 @@ impl Runtime {
             started: std::time::Instant::now(),
             steps: MAX_STEPS,
             allocated: 2048
+                + std::mem::size_of::<DateHost>()
                 + 4 * std::mem::size_of::<Option<Value>>()
                 + initial_binding_bytes
                 + TrackedGlobal::ALL
@@ -1699,6 +1706,15 @@ impl Runtime {
         runtime
     }
 
+    /// Construct a realm with an explicitly supplied clock and local timezone.
+    /// `new` stays free of filesystem access; local Date operations there require
+    /// configuration. Browser and adapter entry points inject their host snapshot.
+    pub fn with_date_host(date_host: DateHost) -> Self {
+        let mut runtime = Self::new();
+        runtime.date_host = date_host;
+        runtime
+    }
+
     pub fn parse_only(source: &str) -> Result<()> {
         parser::Parser::program(source).map(|_| ())
     }
@@ -1716,6 +1732,7 @@ impl Runtime {
             "String",
             "Number",
             "Boolean",
+            "Date",
             "Symbol",
             "RegExp",
             "Error",
@@ -1797,6 +1814,7 @@ impl Runtime {
             "String",
             "Number",
             "Boolean",
+            "Date",
             "Symbol",
             "RegExp",
             "Error",
@@ -1821,6 +1839,7 @@ impl Runtime {
                     "length".into(),
                     Value::Number(match name {
                         "RegExp" => 2.0,
+                        "Date" => 7.0,
                         "EventTarget" | "DOMException" | "AbortController" | "AbortSignal" => 0.0,
                         _ => 1.0,
                     }),
@@ -2064,6 +2083,7 @@ impl Runtime {
             );
         }
         self.initialize_events()?;
+        self.initialize_date()?;
         for (name, length) in [
             ("getPropertyValue", 1),
             ("getPropertyPriority", 1),
@@ -3506,7 +3526,9 @@ impl Runtime {
         &mut self,
         values: impl IntoIterator<Item = (JsString, Value)>,
     ) -> Result<Value> {
-        self.charge(72 + std::mem::size_of::<Option<AbortSlot>>())?;
+        self.charge(
+            72 + std::mem::size_of::<Option<AbortSlot>>() + std::mem::size_of::<Option<f64>>(),
+        )?;
         let mut object = ScriptObject {
             prototype: self.prototypes.get("Object").copied().map(Value::Object),
             ..ScriptObject::default()
@@ -7686,6 +7708,13 @@ impl Runtime {
         args: Vec<Value>,
         doc: &mut Document,
     ) -> Result<Value> {
+        if native.name == "Date" {
+            let now = self.date_now()?;
+            return self.date_format(now, "toString");
+        }
+        if let Some(method) = native.name.strip_prefix("Date.") {
+            return self.date_native(method, native.receiver.clone(), &args, doc);
+        }
         if let Some(operation) = object_integrity::IntegrityOperation::from_name(&native.name) {
             return self.object_integrity(
                 args.first().cloned().unwrap_or(Value::Undefined),
@@ -8136,6 +8165,7 @@ impl Runtime {
                     Value::Bool(_) => "Boolean",
                     Value::Object(id) if self.objects[*id].arguments => "Arguments",
                     Value::Object(id) if self.objects[*id].regexp.is_some() => "RegExp",
+                    Value::Object(id) if self.objects[*id].date_value.is_some() => "Date",
                     Value::Object(id) if self.objects[*id].event.is_some() => {
                         let state = &self.events[self.objects[*id].event.unwrap()];
                         if state.toggle.is_some() {

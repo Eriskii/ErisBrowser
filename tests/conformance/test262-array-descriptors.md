@@ -1,5 +1,9 @@
 # Complete pinned property-definition and array-length inventory
 
+The [Date checkpoint](test262-date.md) records **3,554 passed, 20 unsupported** on this
+unchanged profile. Earlier measurements and prerequisite descriptions below
+are retained as historical evidence; the final Date comparison is at the end.
+
 This profile retains all **1,793 direct sources / 3,574 strict/sloppy modes**
 from Test262 revision `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`:
 
@@ -45,3 +49,15 @@ This preserves passes without treating the remaining failures as conformance.
 ```sh
 python3 tools/test262_conformance.py --profile array-descriptors --baseline tests/conformance/test262-array-descriptors-current.json
 ```
+
+### Final Date comparison
+
+Final frozen adapter `ab40a96f2cc1908359186e7c0648cecddc5ad8f8b2adf8a60de0e0d2c9a8f220`
+records **3,554 passed, 20 unsupported**: **76 new passes and zero lost passes**
+against the published before release. Complete observations and controls match
+the first frozen candidate; all original source/helper/mode/policy identities
+remain unchanged. The existing known-state baseline was strengthened to protect these new passes.
+The [complete comparison](test262-date-profiles-comparison.json) and
+[baseline receipt](test262-date-baseline-recording.json) retain exact hashes.
+Original before and first-candidate reports remain preserved in the
+[Date evidence](date.json). No script quota was increased.

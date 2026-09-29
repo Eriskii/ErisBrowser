@@ -1,0 +1,242 @@
+{
+  "kind": "Baselines recorded from immutable final reports after live prior-baseline gates",
+  "binary_sha256": "ab40a96f2cc1908359186e7c0648cecddc5ad8f8b2adf8a60de0e0d2c9a8f220",
+  "production_input_sha256": "7bb6ff9b49fa7a66f88cf803a9fec4aee3eb0c4b76d3e14bd5472900c2218a02",
+  "live_prior_baseline_gates_passed": 28,
+  "strengthened_existing_baselines": 8,
+  "new_date_baseline": 1,
+  "updated": [
+    {
+      "profile": "addition",
+      "path": "tests/conformance/test262-addition-current.json",
+      "before_sha256": "48ffed4e816f10036a936290e893459402072764596aa1e4a66b14dd521fbf84",
+      "after_sha256": "69610fc6ff4ab4f2d72eae1aa5ccc6cc127af758f998448f6c9e15b76628fe4d",
+      "gained_passes": 2,
+      "counts": {
+        "unsupported": 28,
+        "passed": 67
+      },
+      "known_state_gate_not_all_pass": false,
+      "report_sha256": "7971f410f7e8226de7712734e49f8b6cdef098a9445a7f72b1fb13f0d8dec37f"
+    },
+    {
+      "profile": "array-descriptors",
+      "path": "tests/conformance/test262-array-descriptors-current.json",
+      "before_sha256": "9d8067308481e09734e3c92a15314869d2c43e9024bf73388dceefa86c3fddea",
+      "after_sha256": "16b9d7428696157b55284b8a7884b5f290e86756afcdf505ed99a3d49ae3501a",
+      "gained_passes": 76,
+      "counts": {
+        "passed": 3554,
+        "unsupported": 20
+      },
+      "known_state_gate_not_all_pass": false,
+      "report_sha256": "f7ad3b42bd4462c7ed32012f10bc90478de042fd7236dd3707e2dd35ab0307d1"
+    },
+    {
+      "profile": "array-reduce",
+      "path": "tests/conformance/test262-array-reduce-current.json",
+      "before_sha256": "11cc0ab5cb896137297dd805d296a31be41abd9ae0f141e697c3844ffbfaff9c",
+      "after_sha256": "aaced8d7d1c9b079067e2abff639657adf89bc5c349ec19188c28314c82aebce",
+      "gained_passes": 8,
+      "counts": {
+        "passed": 1018,
+        "unsupported": 16
+      },
+      "known_state_gate_not_all_pass": false,
+      "report_sha256": "446a09ae8243d40ed0ab69386a9308a2aeba11ade55ee0bcb92a726bd4f3da81"
+    },
+    {
+      "profile": "date",
+      "path": "tests/conformance/test262-date-current.json",
+      "before_sha256": null,
+      "after_sha256": "7922df2df34ca527566fb88cc65d801bf4ce392f2b7ef9e02d4def5ed75d2ab7",
+      "gained_passes": 1162,
+      "counts": {
+        "passed": 1162,
+        "failed": 4,
+        "unsupported": 22
+      },
+      "known_state_gate_not_all_pass": true,
+      "report_sha256": "707bca7f9c434be49e4b11c42e9c7256256201656cfeabc5cc782a4505319826"
+    },
+    {
+      "profile": "global-values",
+      "path": "tests/conformance/test262-global-values-current.json",
+      "before_sha256": "6ffaf0f77066385d75a545c687e226738c597a3e11f883973db5009710a09e59",
+      "after_sha256": "05a82b4c2f40643fa91df9905e4be566332f4106592c3f99e9397819cec18803",
+      "gained_passes": 6,
+      "counts": {
+        "passed": 70,
+        "unsupported": 18
+      },
+      "known_state_gate_not_all_pass": false,
+      "report_sha256": "232b48f7557024af4f20786ab1f1044850022257b8c5eefc79fb5f5df594e315"
+    },
+    {
+      "profile": "object-integrity",
+      "path": "tests/conformance/test262-object-integrity-current.json",
+      "before_sha256": "21dbb252ae91a2adc56b3b48fd0ff3a94022cc80d05d8676dbd73eca9f7ceb9c",
+      "after_sha256": "59b2fff7ba920b4486cff5168cde5d4471ed7cefed080d6478399530da8d7736",
+      "gained_passes": 16,
+      "counts": {
+        "passed": 394,
+        "unsupported": 38,
+        "failed": 42
+      },
+      "known_state_gate_not_all_pass": true,
+      "report_sha256": "a4b189e7b81fb75569e620043cb10cf4e932f856943ca920d4bfd2fb1d3e7ad9"
+    },
+    {
+      "profile": "reflect-construction",
+      "path": "tests/conformance/test262-reflect-construction-current.json",
+      "before_sha256": "d89a674fde116b0909f3dab03491a8d6ebb10ad7f1953d22cba6ebce41d5feeb",
+      "after_sha256": "160ece084c889dd5693207aa59dcf0a732f04548eb15dbdacbcae3203680a22a",
+      "gained_passes": 4,
+      "counts": {
+        "passed": 38
+      },
+      "known_state_gate_not_all_pass": false,
+      "report_sha256": "0037eca0a769bffcbb89b0183e725af1a8290d8399ac041fa1c34d8ebdc0931e"
+    },
+    {
+      "profile": "regexp-split",
+      "path": "tests/conformance/test262-regexp-split-current.json",
+      "before_sha256": "b91319d5d76aca314633b7eb41ecfa26f7382df47416bac7d316dd08c4b39d4e",
+      "after_sha256": "8a8aa3820823be4e9208b4e738942b676884a93d78cd6f0ea12db51d65e665ab",
+      "gained_passes": 2,
+      "counts": {
+        "passed": 90,
+        "unsupported": 6
+      },
+      "known_state_gate_not_all_pass": false,
+      "report_sha256": "e971659226e5a1017a70233464d36f931808498de28c28ba49f2793c60d280e4"
+    },
+    {
+      "profile": "symbols",
+      "path": "tests/conformance/test262-symbols-current.json",
+      "before_sha256": "2a6996fe989868e65dfc7f4e5963486e42dc4007bab1f0df14de3cd30d82a957",
+      "after_sha256": "7ad674a89581e055552742645de0912233df9fbb0af7d731d974e188b803baea",
+      "gained_passes": 2,
+      "counts": {
+        "passed": 184,
+        "unsupported": 54,
+        "failed": 4
+      },
+      "known_state_gate_not_all_pass": true,
+      "report_sha256": "c5921a2fdfab5c73bb49756ca12b4909433bbd275e7365cbad4cc122075e3f66"
+    }
+  ],
+  "unchanged_healthy_baselines": [
+    {
+      "profile": "array-find",
+      "path": "tests/conformance/test262-array-find-current.json",
+      "sha256": "34b7a6debc04d9e96e6ee53d624c0335c53013df788150eccd68a1c4c2dc5bc0"
+    },
+    {
+      "profile": "compound-assignment",
+      "path": "tests/conformance/test262-compound-assignment-current.json",
+      "sha256": "1ed2ffaad47349010ad532ba43e0cbaf59750c23d0d76c4e5174bc0090ea2dfd"
+    },
+    {
+      "profile": "equality",
+      "path": "tests/conformance/test262-equality-current.json",
+      "sha256": "c1418e959a4936d94cb24960c379dccee01af48d932fe4ff7622964129b227df"
+    },
+    {
+      "profile": "function-constructor",
+      "path": "tests/conformance/test262-function-constructor-current.json",
+      "sha256": "f17ce66f9c4f5395ade2e9d607e806dce678c84558674d30e1a53e378e3136c0"
+    },
+    {
+      "profile": "functions",
+      "path": "tests/conformance/test262-functions-current.json",
+      "sha256": "53627cfffdb3b01c7453aed80e750909ba0198a888747b2f3cb22674c3966040"
+    },
+    {
+      "profile": "is-prototype-of",
+      "path": "tests/conformance/test262-is-prototype-of-current.json",
+      "sha256": "0c6a95e3eca5d1d8949f0770ff7dc2557dedfff8c96cd62ce5173ca5a1745efe"
+    },
+    {
+      "profile": "labels",
+      "path": "tests/conformance/test262-labels-current.json",
+      "sha256": "035145ff2b1d5df31077936c86d4ca54dc58185f7fb32ca812fd2ea96c1f07f3"
+    },
+    {
+      "profile": "logical-assignment",
+      "path": "tests/conformance/test262-logical-assignment-current.json",
+      "sha256": "08550c1b03893e8b5e75ef8caa234b1ac7bb1c4f5f5e2dfaa37e69a0b38ac705"
+    },
+    {
+      "profile": "new-target",
+      "path": "tests/conformance/test262-new-target-current.json",
+      "sha256": "187696b419974db062b8eb5ddac457f7cc1fb849d3de6c495b91c7bb8026a2d7"
+    },
+    {
+      "profile": "number-statics",
+      "path": "tests/conformance/test262-number-statics-current.json",
+      "sha256": "2fbead399f2cf89c49a3d14a0a9b1202ef3021203f4bc393c93f05e66fcb7070"
+    },
+    {
+      "profile": "numeric-conversion",
+      "path": "tests/conformance/test262-numeric-conversion-current.json",
+      "sha256": "2a14928428ef7fa112d0f4434eb7764a73b1685de2e494eaac9d3991a4cf187c"
+    },
+    {
+      "profile": "regexp",
+      "path": "tests/conformance/test262-regexp-current.json",
+      "sha256": "07b65132730d23644e5405ba5990c7243870b2f3cef846864ad1d8dc3d5a43a5"
+    },
+    {
+      "profile": "regexp-match-search",
+      "path": "tests/conformance/test262-regexp-match-search-current.json",
+      "sha256": "364b8180ba234cee05fede0c681816d6b1675b1af19eb450058334bf7cf6345c"
+    },
+    {
+      "profile": "relational",
+      "path": "tests/conformance/test262-relational-current.json",
+      "sha256": "da9b25f56a36b1ff2b4997642fa26933ff534d9866ff155d0826f2599cb65fe9"
+    },
+    {
+      "profile": "rest-parameters",
+      "path": "tests/conformance/test262-rest-parameters-current.json",
+      "sha256": "d2afff0d3de3fa2cf37c68ee4d8b5e7794688dd1b514e827e4b2c22e763310f3"
+    },
+    {
+      "profile": "string-concat",
+      "path": "tests/conformance/test262-string-concat-current.json",
+      "sha256": "00367d16ec166ff6d88482b36221dc444922578482d5212fd4732fe512668364"
+    },
+    {
+      "profile": "string-json",
+      "path": "tests/conformance/test262-current.json",
+      "sha256": "988461016a336b25c74e36d19418b90d61193211ab9012dce0b0624e278a80ff"
+    },
+    {
+      "profile": "string-last-index-of",
+      "path": "tests/conformance/test262-string-last-index-of-current.json",
+      "sha256": "4db22ae25a830831125415e7f6a29f136c77e72203b25810c1595b8ee4207cf5"
+    },
+    {
+      "profile": "string-search",
+      "path": "tests/conformance/test262-string-search-current.json",
+      "sha256": "952b4d98851498b70d5ee7a60c25e3894002d875ca98dab57869e2a0cc9e883b"
+    },
+    {
+      "profile": "template-literal",
+      "path": "tests/conformance/test262-template-literal-current.json",
+      "sha256": "e990475ba6e02361403ab3e610758cd3a91dbf8e02c15cbf649f5b425fd622a8"
+    }
+  ],
+  "observation_only_profiles_not_baselined": [
+    "array-last-index-of",
+    "array-predicates",
+    "array-sort",
+    "identifiers",
+    "numeric-parsing",
+    "regexp-constructor",
+    "uri"
+  ],
+  "policy_or_case_changes": false,
+  "recording_method": "Same current-record schema and health predicates as tools/test262_conformance.py; reports reused without repeating their engine executions. The new Date CLI gate is run separately."
+}

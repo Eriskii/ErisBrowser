@@ -108,6 +108,7 @@ impl Runtime {
                                 | "Boolean"
                                 | "Symbol"
                                 | "RegExp"
+                                | "Date"
                                 | "Error"
                                 | "TypeError"
                                 | "SyntaxError"
@@ -296,6 +297,7 @@ impl Runtime {
                         Some(new_target),
                         doc,
                     ),
+                    "Date" => self.date_constructor(&arguments, new_target, doc),
                     "Function" => self.dynamic_function(arguments, new_target, doc),
                     "Object" => self.call(constructor, arguments, Value::Window, doc),
                     "Event" | "CustomEvent" | "ToggleEvent" | "EventTarget" | "DOMException"

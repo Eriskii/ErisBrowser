@@ -272,3 +272,16 @@ Token-aware declaration parsing and computed-variable resolution are inside the
 warm loop; descriptor calls and other script execution are outside it. There
 was no repeated confined-worker measurement or Chromium comparison. The
 browser still paints and presents through its software path.
+
+## Date host discovery checkpoint
+
+The [Date worker comparison](benchmark-worker-date.json) runs the published
+before binary and the new release on the same nine fixtures, with three fresh
+workers and twenty warm frames per run. Median startup rises by about
+10.1–10.4 ms per fixture; the helper currently waits in 10 ms nonblocking-I/O
+polling slices. Warm-frame medians change little on these examples. The next
+optimization is readiness polling with the same deadline, cancellation and
+child-ownership rules. The report preserves complete raw timings, exact binary
+hashes and the distinct before/after source identities. A [separate output replay](benchmark-worker-date-pixels.json)
+confirms byte-identical PNGs on all nine fixtures. These local observations
+do not compare against Chromium or establish the requested performance target.

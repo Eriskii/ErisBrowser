@@ -21,7 +21,7 @@ pub(super) const MAX_REQUEST: usize = 18 * 1024 * 1024;
 const MAX_STRING: usize = 16 * 1024 * 1024;
 const MAX_IMAGES: usize = 64 * 1024 * 1024;
 const MAX_COMMANDS: usize = 200_000;
-const MAGIC: &[u8] = b"ERW8";
+const MAGIC: &[u8] = b"ERW9";
 type Result<T> = std::result::Result<T, String>;
 
 pub(super) fn read_frame(input: &mut impl Read, limit: usize) -> Result<Vec<u8>> {
@@ -242,13 +242,47 @@ pub(super) fn encode_init(init: &Init) -> Result<Vec<u8>> {
     let mut e = Encoder::new(0);
     e.boolean(init.scripts);
     e.u64(init.generation);
+    e.boolean(init.timezone.is_some());
+    use crate::date_host::ZonePayloadKind;
+    if let Some(timezone) = &init.timezone {
+        e.byte(match timezone.kind {
+            ZonePayloadKind::Tzif => 0,
+            ZonePayloadKind::Posix2024 => 1,
+            ZonePayloadKind::ExplicitUtc => 2,
+        });
+        if timezone.bytes.len() > crate::date_host::MAX_ZONE_SOURCE_BYTES {
+            return Err("timezone payload exceeds IPC limit".into());
+        }
+        e.u32(timezone.bytes.len());
+        e.raw(&timezone.bytes);
+    }
     e.finish()
 }
 pub(super) fn decode_init(bytes: &[u8]) -> Result<Init> {
+    use crate::date_host::{MAX_ZONE_SOURCE_BYTES, ZonePayload, ZonePayloadKind};
     let mut d = Decoder::new(bytes, 0)?;
+    let scripts = d.boolean()?;
+    let generation = d.u64()?;
+    let configured = d.boolean()?;
+    if configured != scripts {
+        return Err("worker script policy and timezone configuration disagree".into());
+    }
+    let timezone = if configured {
+        let kind = match d.byte()? {
+            0 => ZonePayloadKind::Tzif,
+            1 => ZonePayloadKind::Posix2024,
+            2 => ZonePayloadKind::ExplicitUtc,
+            _ => return Err("invalid timezone payload kind".into()),
+        };
+        let length = d.count(MAX_ZONE_SOURCE_BYTES)?;
+        Some(ZonePayload::new(kind, d.raw(length)?).map_err(|e| e.to_string())?)
+    } else {
+        None
+    };
     let init = Init {
-        scripts: d.boolean()?,
-        generation: d.u64()?,
+        scripts,
+        generation,
+        timezone,
     };
     d.end()?;
     Ok(init)
@@ -2009,5 +2043,53 @@ mod tests {
             mutated[index] ^= ((i % 255) + 1) as u8;
             let _ = decode_reply(&mutated);
         }
+    }
+
+    #[test]
+    fn timezone_init_roundtrip_rejects_unknown_kind_truncation_and_oversized_claims() {
+        use crate::date_host::{ZonePayload, ZonePayloadKind};
+        let init = Init {
+            scripts: true,
+            generation: 123,
+            timezone: Some(
+                ZonePayload::new(ZonePayloadKind::Posix2024, b"EST5EDT,M3.2.0,M11.1.0").unwrap(),
+            ),
+        };
+        let bytes = encode_init(&init).unwrap();
+        let decoded = decode_init(&bytes).unwrap();
+        assert_eq!(decoded.generation, 123);
+        assert!(decoded.scripts);
+        assert_eq!(
+            decoded.timezone.as_ref().unwrap().kind,
+            init.timezone.as_ref().unwrap().kind
+        );
+        assert_eq!(
+            decoded.timezone.as_ref().unwrap().bytes,
+            init.timezone.as_ref().unwrap().bytes
+        );
+        for end in 0..bytes.len() {
+            assert!(decode_init(&bytes[..end]).is_err());
+        }
+        let mut mutated = bytes.clone();
+        mutated[15] = 255;
+        assert!(decode_init(&mutated).is_err());
+        mutated = bytes.clone();
+        mutated[16..20].copy_from_slice(&u32::MAX.to_le_bytes());
+        assert!(decode_init(&mutated).is_err());
+        let static_init = Init {
+            scripts: false,
+            generation: 123,
+            timezone: None,
+        };
+        let mut static_bytes = encode_init(&static_init).unwrap();
+        assert!(decode_init(&static_bytes).unwrap().timezone.is_none());
+        static_bytes[5] = 1;
+        assert!(decode_init(&static_bytes).is_err());
+        mutated = bytes.clone();
+        mutated.push(0);
+        assert!(decode_init(&mutated).is_err());
+        mutated = bytes;
+        mutated[..4].copy_from_slice(b"ERW8");
+        assert!(decode_init(&mutated).is_err());
     }
 }

@@ -1,5 +1,24 @@
 # Compatibility status
 
+[Date](../tests/conformance/date.md) now has internal time values, ordered
+construction and setter conversions, UTC/local fields, ISO parsing/formatting,
+required string round trips, JSON and primitive-conversion hooks, and the
+legacy year/GMT aliases. Local operations use an explicit host timezone
+snapshot with historical transitions, recurring rules and gap/overlap handling.
+The complete core Date profile retains 594 sources and 1,188 modes: 1,162 pass,
+four reach unsupported `for…of` syntax, and 22 retain their metadata exclusions.
+All 340 controls and 406 independently frozen local modes pass. Broader legacy
+date parsing, Intl locale formatting, Temporal, cross-realm behavior and complete
+iterator support remain incomplete. Locale methods currently use the documented
+English local-date forms permitted by the core specification without Intl.
+
+Script-enabled browser/CLI/adapter startup captures host rules explicitly.
+Missing or unsupported rules produce an initialization error; scripts-disabled
+pages remain usable. On systems whose named-zone database is outside
+`/usr/share/zoneinfo`, set `TZDIR` to its real location. Library embedders provide
+a validated Date host context for local operations; UTC operations do not require
+local-zone configuration.
+
 [Array find methods](../tests/conformance/array-find.md) now support `find`,
 `findIndex`, `findLast` and `findLastIndex` on ordinary generic receivers.
 Their captured range includes holes and deleted indices, with live inherited
@@ -28,11 +47,11 @@ earlier effects if a later property or resource operation fails. Window/DOM
 hosts, Proxy and typed-array behavior remain unsupported.
 
 The [complete new profile](../tests/conformance/test262-object-integrity.md)
-retains 239 sources and 474 modes. The final release records **378 passed,
-58 missing-prerequisite failures and 38 unsupported**, with all 224 controls
+retains 239 sources and 474 modes. The final release records **394 passed,
+42 missing-prerequisite failures and 38 unsupported**, with all 224 controls
 verified. All 228 local variants and 12 controls pass. Eight older descriptor
 modes gain passes, with no previous pass lost. The new profile has a healthy
-regression gate; its 58 failures and 38 unsupported observations remain part of
+regression gate; its 42 failures and 38 unsupported observations remain part of
 the baseline. This does not establish complete object or host conformance.
 
 [Array every and some](../tests/conformance/array-predicates.md) now support
@@ -40,15 +59,15 @@ generic ordinary receivers, captured length, holes, inherited/indexed accessors
 and live callback mutations. They short-circuit using callback truthiness and
 preserve callback receiver and abrupt-completion behavior. All 164 frozen local
 variants pass. The [complete paired upstream inventory](../tests/conformance/test262-array-predicates.md)
-records **835 passed, 12 Date-dependent failures, four work-limit stops and 16
+records **847 passed, four work-limit stops and 16
 metadata exclusions** across 867 modes. Huge sparse scans remain budgeted;
 Proxy, typed arrays and general host receivers remain unsupported. Resource
 stops prevent a healthy baseline for this profile.
 
 [Array.lastIndexOf](../tests/conformance/array-last-index-of.md) now supports
 ordinary generic receivers, holes, inherited entries, saved length and live
-getters. Its complete 395-mode inventory records 338 passed, two Date failures,
-eight array-setup resource stops and 47 unsupported modes. Array descriptor and
+getters. Its complete 395-mode inventory records 385 passed,
+two array-setup resource stops and eight unsupported modes. Array descriptor and
 sparse-storage gaps remain; this is an observation inventory, not a healthy gate.
 
 [String.lastIndexOf](../tests/conformance/string-last-index-of.md) now handles
@@ -74,7 +93,7 @@ protocols need work.
 
 [RegExp split and species](../tests/conformance/regexp-split.md) now use a separately
 constructed splitter and observable execution, index and capture hooks. The new
-96-mode selection records 88 passed, two failed on missing Date and six unsupported
+96-mode selection records 90 passed and six unsupported
 modes. Unicode regexp parsing, realms and other symbol methods remain incomplete;
 the constructor follow-up above addresses classification and conversion order.
 
@@ -94,14 +113,14 @@ surrogates in generated source and the wider Function family remain incomplete.
 
 The [Symbol constructor/policy follow-up](../tests/conformance/constructor-policy.md)
 accepts Symbol as an alternate constructor target while preserving its throwing
-construction behavior. The Symbol profile now records 182 passed, six failed and
+construction behavior. The Symbol profile now records 184 passed, four failed and
 54 unsupported modes. Across the existing inventories, 88 additional modes are
 admitted and pass; two required this implementation fix, while 86 already passed.
 
 [Constructor targets and Reflect calls](../tests/conformance/construction.md) cover
 `new.target`, `Reflect.apply`, `Reflect.construct`, lexical arrows, bound forwarding
 and supported ECMAScript allocation prototypes. The two complete pinned selections
-now record 54 passed, four failed and eight unsupported modes. Date,
+now record 58 passed and eight unsupported modes.
 classes/super, tagged templates, alternate Web IDL targets and broader native
 constructor conformance remain incomplete.
 
@@ -155,7 +174,7 @@ The URL parser and encoding libraries are infrastructure libraries, not independ
 Ordinary objects support descriptor defaults, writable/enumerable/configurable checks, getters/setters, reflective descriptor queries and deletion. Enumeration visits own keys and inherited enumerable keys while respecting shadowing. Window descriptor queries expose tracked global bindings, including the CSS namespace, with ordered property-key conversion and current flags/values. The replaceable [Window.self accessor](../tests/conformance/window-self.md) supports assignment, deletion, descriptor restoration and author accessors, with global lexical shadowing kept separate. The [global value properties](../tests/conformance/global-values.md) share this handling: globalThis is initially writable/configurable and nonenumerable; undefined, NaN and Infinity are nonwritable, nonconfigurable and nonenumerable. Replacing globalThis preserves private Window/event identity. [Window binding reflection](../tests/conformance/window-reflection.md) now supports own membership, enumerability and ordered string/symbol key enumeration over the supported bindings. [General Window definitions and global bindings](../tests/conformance/window-global-bindings.md) now share data/accessor records, preserve arbitrary UTF-16 key identity, keep execution receivers private, and validate global function declarations across scripts. Event-handler descriptor/deletion behavior, extensibility, complete interfaces and named-property behavior remain incomplete. Arrays support indexed data/accessor descriptors, writable length, sparse u32 logical lengths and nonextensibility. Length reduction deletes own indices in descending order and preserves partial effects when a nonconfigurable index blocks it. Object and Reflect property definitions share the same array rules. Eleven existing Array methods now use live property operations on supported ordinary array-like receivers. Custom species constructors, Proxy, typed arrays and general host reflection remain incomplete. See [array descriptor coverage](../tests/conformance/array-descriptors.md). The unchanged upstream property-helper harness runs directly; no native test assertion shims replace it.
 
 The complete pinned [global-value inventory](../tests/conformance/test262-global-values.md)
-retains 88 variants: 64 pass, six fail on missing Date, and 18 require
+retains 88 variants: 70 pass and 18 require
 unsupported eval. All 64 preflights verify, but
 the regression gate does not imply complete global-object support.
 
@@ -286,8 +305,8 @@ controls. BigInt and broader exotic conversions remain incomplete. Symbol conver
 [Ordinary addition](../tests/conformance/addition.md) converts both saved operands
 left-to-right before selecting numeric addition or UTF-16 concatenation. Live
 valueOf/toString hooks, boxed values, exact exceptions and += reference order are
-preserved. The complete addition profile has 65 passes, two missing-Date failures
-and 28 unsupported modes, with 64 verified controls. Symbol.toPrimitive now participates in conversion and primitive Symbol addition throws TypeError. Date and BigInt addition remain incomplete; the existing profile policy is unchanged.
+preserved. The complete addition profile has 67 passes
+and 28 unsupported modes, with 64 verified controls. Symbol.toPrimitive now participates in conversion and primitive Symbol addition throws TypeError. BigInt addition remains incomplete; the existing profile policy is unchanged.
 
 Object initializers preserve computed-key evaluation/coercion order, UTF-16 names, method/accessor descriptors and the special static `__proto__` form. Symbol keys and inferred method/accessor names now work. Spread, async/generator methods and `super` remain unsupported; see [object literal coverage](../tests/conformance/object-literals.md).
 

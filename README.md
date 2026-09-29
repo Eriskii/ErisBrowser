@@ -102,6 +102,7 @@ python3 tools/test262_conformance.py --profile labels --baseline tests/conforman
 python3 tools/test262_conformance.py --profile symbols --baseline tests/conformance/test262-symbols-current.json
 python3 tools/test262_conformance.py --profile object-integrity --baseline tests/conformance/test262-object-integrity-current.json
 python3 tools/test262_conformance.py --profile array-find --baseline tests/conformance/test262-array-find-current.json
+python3 tools/test262_conformance.py --profile date --baseline tests/conformance/test262-date-current.json
 python3 -m unittest discover -s tools -p 'test_*.py'
 cargo run --locked --release --bin eris-stress -- 5000
 ```
@@ -132,7 +133,7 @@ adds 20 variants: 14 pass and six require unsupported features. Its separate
 CI gate requires all method assertion preflights to pass.
 
 The complete [global-value directories](tests/conformance/test262-global-values.md)
-retain 88 variants: 64 pass, six fail on missing Date, and 18 remain unsupported.
+retain 88 variants: 70 pass and 18 remain unsupported.
 Global-property corrections and URI bindings add ten passes; Window reflection adds 22 more. All 64 assertion
 preflights verify; CI preserves those passes and the unchanged inventory.
 
@@ -143,8 +144,7 @@ both modes. Those resource stops prevent a healthy
 regression baseline; the full inventory remains part of local measurements.
 
 The complete paired [reduce/reduceRight directories](tests/conformance/test262-array-reduce.md)
-retain 1,034 variants: 860 pass, eight fail on missing Date behavior and 166
-remain unsupported. Both methods and Number.MAX_SAFE_INTEGER add 764
+retain 1,034 variants: 1,018 pass and 16 remain unsupported. Both methods and Number.MAX_SAFE_INTEGER add 764
 passes with no losses; Symbol-based Math/JSON tags add eight more. All 128 assertion checks verify; CI preserves the passing
 cases and the full unchanged inventory.
 
@@ -171,7 +171,7 @@ and ordinary addition conversion add 316 passes without losses. All 128 assertio
 controls verify; CI preserves the complete baseline.
 
 The complete [addition directory](tests/conformance/test262-addition.md) retains
-95 variants: 65 pass, two fail on missing Date and 28 remain unsupported. Ordinary
+95 variants: 67 pass and 28 remain unsupported. Ordinary
 conversion adds 14 passes with no losses. All 64 assertion controls verify; CI
 preserves the full baseline and its remaining nonpassing cases.
 
@@ -242,8 +242,7 @@ assertion controls verify. Earlier checkpoint records preserve their original po
 [Constructor targets and Reflect calls](tests/conformance/construction.md) now
 support `new.target`, `Reflect.apply` and `Reflect.construct`, including lexical
 arrow capture and bound construction. Two complete pinned Test262 selections
-gain 46 passes across 66 modes; four Date-dependent modes still fail and ten
-remain unsupported. Alternate Web IDL targets and broader constructor semantics
+now record 58 passes across 66 modes; eight remain unsupported. Alternate Web IDL targets and broader constructor semantics
 remain incomplete.
 
 Symbol now works as an alternate constructor target while its own construction
@@ -270,10 +269,10 @@ preserved, with 2,144 verified assertion controls.
 
 [RegExp splitting and species construction](tests/conformance/regexp-split.md)
 now honor constructor, flags, execution and capture hooks, adding 86 passes in a
-complete new 48-source selection. It records 88 passed, two failed and six
+complete new 48-source selection. It now records 90 passed and six
 unsupported modes. All 8,006 older case observations remain identical; the full
 inventory reaches 8,102 modes and 2,216 verified assertion controls. Unicode
-regexp parsing, realms, Date and the other String symbol protocols remain incomplete.
+regexp parsing, realms and the other String symbol protocols remain incomplete.
 
 [RegExp constructor conversion](tests/conformance/regexp-constructor.md) now
 classifies through `Symbol.match` and preserves source/flags/prototype/conversion
@@ -348,8 +347,9 @@ remaining new failures call the missing Array.lastIndexOf method. All other
 
 [Array.lastIndexOf](tests/conformance/array-last-index-of.md) now supports generic
 receivers, holes, inheritance and live reads. Its complete 395-mode inventory
-gains 328 passes, and both older String.lastIndexOf failures pass. Eight resource
-stops, 47 unsupported modes and two Date failures remain visible; this inventory
+originally gained 328 passes, and both older String.lastIndexOf failures pass.
+Later follow-ups reach 385 passes; two resource stops and eight unsupported
+modes remain visible. This inventory
 does not qualify as a healthy baseline gate.
 
 
@@ -365,7 +365,7 @@ compatibility remain unfinished.
 receivers, live sparse/inherited entries, captured length and callback
 short-circuiting. All 164 frozen local variants pass, with eight verified
 assertion controls. The [complete paired Test262 inventory](tests/conformance/test262-array-predicates.md)
-adds 801 passes, reaching 835 passed, 12 Date-dependent failures, four sparse-scan
+adds 801 passes; the Date follow-up reaches 847 passed, four sparse-scan
 work limits and 16 metadata exclusions across 867 modes. Four older descriptor
 metadata modes also pass. All 14,304 mode fingerprints and prior passes are
 preserved across 33 profiles; all 2,740 assertion controls verify. The existing
@@ -376,8 +376,8 @@ freezing and integrity queries for supported ECMAScript objects, including
 arrays, functions, boxed strings and arguments objects. Own descriptor flags
 are processed without invoking getters; children and prototypes remain shallow.
 The [complete upstream profile](tests/conformance/test262-object-integrity.md)
-retains 239 sources and 474 modes. The final release records 378 passed,
-58 missing-prerequisite failures and 38 unsupported modes, with all 224 controls
+retains 239 sources and 474 modes. With Date support it records 394 passed,
+42 missing-prerequisite failures and 38 unsupported modes, with all 224 controls
 verified. All 228 frozen local variants and their 12 controls also pass.
 Eight older descriptor modes gain passes, and all 14,296 other older
 observations are unchanged. That checkpoint has 34 profiles, 14,778
@@ -394,9 +394,24 @@ retains 94 sources and 180 modes: the final release has 140 passes, eight
 failures requiring missing `splice`, and 32 metadata exclusions, with all 288
 controls verified. It adds 116 passes and retains the other 64 complete records.
 All 34 older profile contracts and complete observations remain unchanged.
-The combined inventory has 35 profiles, 14,958 modes, 3,252 verified controls
+That checkpoint had 35 profiles, 14,958 modes, 3,252 verified controls
 and 28 healthy regression gates, including the new find baseline. Shared
 property reads precharge retained-tree comparisons and mapped binding-name
 work. Actual-digit index formatting restores two initial lastIndexOf work-limit
 regressions while preserving these charges and every quota; both attempts are
 retained in the evidence. Failed and unsupported cases remain visible.
+
+[Date](tests/conformance/date.md) now supports core construction, getters/setters,
+UTC and local arithmetic, ISO and required own-string round trips, JSON and
+primitive-conversion hooks, and legacy year/GMT aliases. Host timezone snapshots
+carry historical transitions and recurring rules into the confined renderer
+without filesystem grants. The complete 594-source Date tree records 1,162
+passed modes, four retained `for…of` parser failures and 22 metadata exclusions;
+all 340 controls and 406 independently frozen local modes pass. Existing
+profiles gain another 130 passes with no lost passes. The combined inventory
+now has 36 profiles, 16,146 modes, 3,592 verified controls and 29 healthy gates.
+Intl, Temporal, cross-realm behavior and broader legacy parsing remain ahead.
+The [timing comparison](docs/benchmark-worker-date.json) records about 10 ms
+of added worker startup from helper polling; reducing that delay is the next
+performance step. Full compatibility, security certification and the Chromium
+performance target remain unfulfilled.

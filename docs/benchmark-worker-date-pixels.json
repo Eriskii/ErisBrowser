@@ -1,0 +1,52 @@
+{
+  "kind": "Separate output-equivalence replay; original timing reports unchanged",
+  "before_binary_sha256": "956ea2db4d6cdf16065e78d1969869aef8f61e4c9176e92ddba052813c790dec",
+  "after_binary_sha256": "4bc10f6b6b615aa8d50ddfa3ed29c27dcdf7ae68dda64061e5a394517d097612",
+  "cases": [
+    {
+      "name": "home",
+      "png_sha256": "d50ff8128d00a969734ba321ae821a40381d8d54a2bad26624a9a754e7ed52c0",
+      "equal": true
+    },
+    {
+      "name": "gallery",
+      "png_sha256": "0443d68d38d6a6a248e66a203699d86d398f985df7731dbbbf4d5510de63a6c1",
+      "equal": true
+    },
+    {
+      "name": "forms",
+      "png_sha256": "e7cc477b0c919e403f82e562efbacc08f8e80bf22eb497cfddd981c249523aac",
+      "equal": true
+    },
+    {
+      "name": "templates",
+      "png_sha256": "4b075bd60bc8243937c30cfb8d4b789b8dcd5ee5f2b610ec4e2f43f87c5fee14",
+      "equal": true
+    },
+    {
+      "name": "positioning",
+      "png_sha256": "4f78e0a10aab6f107650bc4b979d9e817afb48fdb253287fd5e7eca98a216658",
+      "equal": true
+    },
+    {
+      "name": "events",
+      "png_sha256": "5b0404e46ae3e6f4b9038c9b9250ce4dac49c6b1f0fc2fbc1ba9028e95a43209",
+      "equal": true
+    },
+    {
+      "name": "events-visible",
+      "png_sha256": "79b68171bb388fd5513cd418344e2848610a7341afd4100de8847326d75cc11d",
+      "equal": true
+    },
+    {
+      "name": "responsive",
+      "png_sha256": "1b3d62738f5f9d44721b14b3f52b5a43a7b61bd32dc272527d7d33bee8fcf9c0",
+      "equal": true
+    },
+    {
+      "name": "disclosures",
+      "png_sha256": "946c5641287b432ca865ea8169dd4077ede0c340722c7e943e13661596af571f",
+      "equal": true
+    }
+  ]
+}

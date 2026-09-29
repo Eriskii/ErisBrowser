@@ -1,5 +1,16 @@
 # Development docket
 
+[Date support](../tests/conformance/date.md) now covers the core constructor,
+methods, host timezone conversion and bounded discovery. Its complete pinned
+Date tree has 1,162 passing modes; four remaining modes need `for…of` parsing
+and iteration, and 22 retain metadata exclusions. Iterator infrastructure,
+Intl/Temporal, broader legacy parsing and cross-realm behavior remain ahead.
+The custom Vulkan rasterizer and compositing milestones below remain on the
+docket alongside standards work.
+The immediate Date performance follow-up is replacing helper I/O polling sleeps
+with deadline-bounded readiness waits: the current measured startup cost is
+about 10 ms, documented in [the worker comparison](benchmark-worker-date.json).
+
 The [Window global-binding checkpoint](../tests/conformance/window-global-bindings.md)
 adds general data/accessor definitions, exact UTF-16 property keys, private
 execution receivers and global declaration validation. The
@@ -37,16 +48,15 @@ nonextensibility. Live array methods consume these properties.
 [Array every and some](../tests/conformance/array-predicates.md) now add generic
 short-circuiting predicates, with all 164 frozen local variants passing. Their
 [complete paired inventory](../tests/conformance/test262-array-predicates.md)
-gains 801 passes and four older descriptor metadata modes also pass. Twelve
-Date failures, four long-sparse-scan work stops and 16 resizable-buffer metadata
-exclusions remain visible; no healthy predicate gate is recorded.
+gains 801 passes and four older descriptor metadata modes also pass. The Date follow-up closes all twelve Date prerequisites. Four long-sparse-scan
+work stops and 16 resizable-buffer metadata exclusions remain visible; no healthy predicate gate is recorded.
 [Object integrity](../tests/conformance/object-integrity.md) now adds shallow
 seal/freeze and descriptor-based queries for supported ECMAScript objects,
 including sparse arrays, boxed strings and mapped arguments. The
 [complete four-directory inventory](../tests/conformance/test262-object-integrity.md)
 retains 239 sources and 474 modes, gains 378 passes and verifies all 224 controls.
 Eight older descriptor modes also pass, with no previous pass lost. The new
-regression gate preserves the remaining 58 missing-prerequisite failures and
+Date follow-up leaves 42 missing-prerequisite failures and
 38 unsupported modes. Host integrity, Proxy/typed-array semantics and untagged
 prerequisites remain explicit gaps.
 [Array find methods](../tests/conformance/array-find.md) now add ascending and
@@ -60,7 +70,7 @@ resource regressions without weakening those charges. Every older observation
 is unchanged in the final comparison; the new baseline preserves its remaining
 failures and unsupported modes.
 Next dependencies include remaining Array mutation methods such as `splice`,
-Date and BigInt, replacement/matchAll protocols, general matching performance,
+iterators and BigInt, replacement/matchAll protocols, general matching performance,
 the remaining full-UTF-16 loop, Unicode regexp syntax and Function source retention.
 
 The goal remains an independent, fully web-compatible Rust browser with a

@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "c234ca3a603d668cff1b769612b3574cf2e59cfa5d21cd70695300e18751f127",
   "runner_policy_sha256": "e77db9454b9331d6178bc7bc1c49e1de55095e4701baaac3e27aae7efd42eec3",
-  "binary_sha256": "e623176f34821ca5073e2e96e5a5546978e75b0ab6a69ddde059954e37b25805",
+  "binary_sha256": "ab40a96f2cc1908359186e7c0648cecddc5ad8f8b2adf8a60de0e0d2c9a8f220",
   "cases": {
     "test/built-ins/Object/getOwnPropertySymbols/length.js:sloppy": {
       "status": "passed",
@@ -735,12 +735,12 @@
       "source_sha256": "4f03ae2286fad92879c99e64266e563510e941b2cb6692cc387950330605b6af"
     },
     "test/built-ins/Symbol/prototype/Symbol.toPrimitive/removed-symbol-wrapper-ordinary-toprimitive.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "f632cc4ca849842daa733f69eec894cda78167b10e93ff450bdd4bc097945b7c",
       "source_sha256": "b292ade8c4c90a9aff0c7d2f6a49abc93b8fe61b26dcc3b49e81f023775a8333"
     },
     "test/built-ins/Symbol/prototype/Symbol.toPrimitive/removed-symbol-wrapper-ordinary-toprimitive.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "52e89c806546067669b4a9194013be3837d86b2ce35e44ef6c179428ac4d08c2",
       "source_sha256": "b292ade8c4c90a9aff0c7d2f6a49abc93b8fe61b26dcc3b49e81f023775a8333"
     },

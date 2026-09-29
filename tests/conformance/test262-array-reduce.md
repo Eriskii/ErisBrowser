@@ -1,11 +1,15 @@
 # Pinned Test262 reduce and reduceRight selection
 
+The [Date checkpoint](test262-date.md) records **1,018 passed, 16 unsupported** on this
+unchanged profile. Earlier measurements and prerequisite descriptions below
+are retained as historical evidence; the final Date comparison is at the end.
+
 The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
-and `new.target` metadata. Current results: **860 passed, 8 failed, 166 unsupported**.
+and `new.target` metadata. That checkpoint recorded: **860 passed, 8 failed, 166 unsupported**.
 The inventory and source bytes are unchanged. Measurements and policy descriptions
 below retain the history of earlier checkpoints.
 
-Current update: [Symbol properties and observable Math/JSON tags](symbols.md)
+Earlier update: [Symbol properties and observable Math/JSON tags](symbols.md)
 add eight passing modes. The complete inventory now has **856 passed / 8 failed /
 170 unsupported**, with all 128 controls verified. Date accounts for the remaining
 failures. The passing-case baseline is updated; the original measurements below
@@ -261,3 +265,15 @@ Sanitized full candidate-report SHA-256:
 `108cb3b7315e7199e7db678687157bbd7d569740bd5961f63f297519c4d751c7`.
 Original reduction baseline SHA-256:
 `6d57a0d72dc750c9ec90d6e6392111df96af3612ec3765a2be1b9406a7876108`.
+
+### Final Date comparison
+
+Final frozen adapter `ab40a96f2cc1908359186e7c0648cecddc5ad8f8b2adf8a60de0e0d2c9a8f220`
+records **1,018 passed, 16 unsupported**: **8 new passes and zero lost passes**
+against the published before release. Complete observations and controls match
+the first frozen candidate; all original source/helper/mode/policy identities
+remain unchanged. The existing known-state baseline was strengthened to protect these new passes.
+The [complete comparison](test262-date-profiles-comparison.json) and
+[baseline receipt](test262-date-baseline-recording.json) retain exact hashes.
+Original before and first-candidate reports remain preserved in the
+[Date evidence](date.json). No script quota was increased.

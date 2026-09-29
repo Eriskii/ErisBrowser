@@ -15,7 +15,7 @@ import time
 from html_conformance import bounded_process, paths_alias
 from import_test262 import (DIRECTORIES, PROFILES, PROFILE_ROOTS, MAX_FILE, MAX_TOTAL,
                             REPOSITORY, REVISION, TREE_PROFILES, corpus_name, parse_metadata,
-                            git_tree_inventory, tree_proof_path)
+                            git_tree_inventory, profile_tree_inventory, tree_proof_path)
 
 ROOT = Path(__file__).resolve().parents[1]
 CONSTRUCTOR_FEATURES = {'Reflect', 'Reflect.apply', 'Reflect.construct', 'new.target'}
@@ -55,12 +55,13 @@ REGEXP_MATCH_SEARCH_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 ARRAY_DESCRIPTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 ARRAY_PREDICATE_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 OBJECT_INTEGRITY_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
+DATE_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 ARRAY_FIND_FEATURES = ARRAY_PREDICATE_FEATURES | {'array-find-from-last'}
 ARRAY_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 STRING_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 REGEXP_SPLIT_FEATURES = CONSTRUCTION_FEATURES
 REGEXP_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'u180e'}
-PROFILE_FEATURES = {'array-find': ARRAY_FIND_FEATURES, 'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+PROFILE_FEATURES = {'date': DATE_FEATURES, 'array-find': ARRAY_FIND_FEATURES, 'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'reflect-construction': CONSTRUCTION_FEATURES, 'new-target': CONSTRUCTION_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -174,7 +175,7 @@ def load_corpus(directory, profile='string-json'):
                 raise ValueError('Git inventory proof integrity mismatch')
             return data
 
-        listings, proof, expected_proof = git_tree_inventory(directories, PROFILE_ROOTS[profile], read_proof)
+        listings, proof, expected_proof = profile_tree_inventory(profile, read_proof)
         if ({key: value for key, value in description.items() if key != 'files'} != expected_proof
                 or set(proof) != set(proof_by_path)):
             raise ValueError('Git inventory proof description differs from pinned trees')
@@ -187,6 +188,12 @@ def load_corpus(directory, profile='string-json'):
                 blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
                 if blob != entry['sha']:
                     raise ValueError('test source differs from pinned Git tree blob')
+    if profile == 'date':
+        for path, expected_blob in expected_proof['auxiliary_blobs'].items():
+            data = files.get(path, b'')
+            blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
+            if blob != expected_blob:
+                raise ValueError('Date helper or legal bytes differ from pinned Git blob')
     actual_tests = {path for path in files if path.startswith('test/')}
     if actual_tests != expected_tests:
         raise ValueError('Test262 manifest test inventory is incomplete or contains extras')
@@ -330,6 +337,91 @@ def run_case(case, binary, timeout, supported_features=SUPPORTED_FEATURES):
         return dict(result, status='timeout', reason=f'adapter exceeded {timeout:g} seconds')
     except (OSError, ValueError) as error:
         return dict(result, status='adapter-error', reason=str(error))
+
+
+def date_preflight_variants():
+    """Independent guarded pairs; only the final expected value differs."""
+    guard = ("assert.sameValue(typeof Date,'function');assert.sameValue(typeof Date.UTC,'function');"
+             "assert.sameValue(Date.UTC(1970,0,1),0);assert.sameValue(new Date(0).getTime(),0);"
+             "assert.sameValue(new Date(0).toISOString(),'1970-01-01T00:00:00.000Z');")
+    pairs = [
+        ('epoch', 'var actual=new Date(123).valueOf();', 'actual', '123', '124'),
+        ('clip', 'assert.sameValue(new Date(8640000000000000).getTime(),8640000000000000);var actual=new Date(8640000000000001).getTime();', 'actual', 'NaN', '0'),
+        ('negative-fraction', 'var actual=new Date(-1.9).getTime();', 'actual', '-1', '-2'),
+        ('UTC-defaults', 'assert.sameValue(Date.UTC(),NaN);assert.sameValue(Date.UTC(1970),0);var actual=Date.UTC(99,0,1);', 'actual', '915148800000', '0'),
+        ('leap-arithmetic', 'assert.sameValue(Date.UTC(2000,1,29),951782400000);var actual=Date.UTC(2001,1,29);', 'actual', '983404800000', '0'),
+        ('constructor-coercion', "var count=0,actual=new Date({valueOf:function(){count++;return 7;}}).getTime();assert.sameValue(count,1);", 'actual', '7', '8'),
+        ('date-copy-no-coercion', "var d=new Date(42),reads=0;d.valueOf=function(){reads++;throw 'valueOf';};d.toString=function(){reads++;throw 'string';};var actual=new Date(d).getTime();assert.sameValue(reads,0);", 'actual', '42', '0'),
+        ('constructor-default-hint', "var hints='',o={};o[Symbol.toPrimitive]=function(h){hints+=h;return 9;};assert.sameValue(new Date(o).getTime(),9);", 'hints', "'default'", "'number'"),
+        ('parse-string-hint', "var hints='',o={};o[Symbol.toPrimitive]=function(h){hints+=h;return '1970-01-01';};assert.sameValue(Date.parse(o),0);", 'hints', "'string'", "'number'"),
+        ('parse-offset', "var actual=Date.parse('2000-01-01T05:30:00+05:30');", 'actual', '946684800000', '946704600000'),
+        ('expanded-ISO', "var actual=new Date(253402300800000).toISOString();", 'actual', "'+010000-01-01T00:00:00.000Z'", "'10000-01-01T00:00:00.000Z'"),
+        ('invalid-ISO', "assert.throws(RangeError,function(){new Date(NaN).toISOString();});var actual=new Date(NaN).toString();", 'actual', "'Invalid Date'", "''"),
+        ('brand-before-conversion', "var reads=0,p={valueOf:function(){reads++;throw 'coercion';}};assert.throws(TypeError,function(){Date.prototype.setTime.call({},p);});", 'reads', '0', '1'),
+        ('setter-abrupt', "var d=new Date(42),reason={},caught;try{d.setTime({valueOf:function(){d.setTime(7);throw reason;}});}catch(e){caught=e;}assert.sameValue(caught,reason);var actual=d.getTime();", 'actual', '7', '42'),
+        ('setter-initial-time', "var d=new Date(1577934245006);var actual=d.setUTCSeconds({valueOf:function(){d.setTime(0);return 9;}});", 'actual', '1577934249006', '9000'),
+        ('setter-invalid-year-recovery', 'var d=new Date(NaN),actual=d.setUTCFullYear(2000);', 'actual', '946684800000', 'NaN'),
+        ('setter-undefined', 'var d=new Date(0),actual=d.setUTCFullYear(2000,undefined);', 'actual', 'NaN', '946684800000'),
+        ('local-roundtrip', 'var d=new Date(2020,0,15,12,34,56,789);assert.sameValue(d.getFullYear(),2020);assert.sameValue(d.getMonth(),0);assert.sameValue(d.getDate(),15);assert.sameValue(d.getHours(),12);var actual=d.getMilliseconds();', 'actual', '789', '0'),
+        ('local-relative', 'var d=new Date(1970,0,1);var actual=d.valueOf()-d.getTimezoneOffset()*60000;', 'actual', '0', '1'),
+        ('JSON-hooks', "var trace='',o={valueOf:function(){trace+='V';return 0;},get toISOString(){trace+='G';return function(){trace+='I';assert.sameValue(this,o);assert.sameValue(arguments.length,0);return 9;};}};assert.sameValue(Date.prototype.toJSON.call(o),9);", 'trace', "'VGI'", "'GVI'"),
+        ('JSON-nonfinite', "var reads=0,o={valueOf:function(){return Infinity;},get toISOString(){reads++;throw 'late';}};assert.sameValue(Date.prototype.toJSON.call(o),null);", 'reads', '0', '1'),
+        ('symbol-ordinary', "var trace='',o={toString:function(){trace+='S';return 's';},valueOf:function(){trace+='V';return 7;}};var m=Date.prototype[Symbol.toPrimitive];assert.sameValue(m.call(o,'default'),'s');assert.sameValue(m.call(o,'number'),7);", 'trace', "'SV'", "'VS'"),
+        ('annex-alias', "assert.sameValue(Date.prototype.toGMTString,Date.prototype.toUTCString);var actual=Date.prototype.toGMTString.name;", 'actual', "'toUTCString'", "'toGMTString'"),
+        ('prototype-slot-absent', "assert.throws(TypeError,function(){Date.prototype.getTime.call(Date.prototype);});var actual=Object.prototype.toString.call(Date.prototype);", 'actual', "'[object Object]'", "'[object Date]'"),
+        ('construction-order', "var trace='',target=(function(){}).bind(null),p={};Object.defineProperty(target,'prototype',{get:function(){trace+='P';return p;}});var d=Reflect.construct(Date,[{valueOf:function(){trace+='V';return 7;}}],target);assert.sameValue(Date.prototype.getTime.call(d),7);assert.sameValue(Object.getPrototypeOf(d),p);", 'trace', "'VP'", "'PV'"),
+        ('UTC-order', "var trace='';function n(c,v){return {valueOf:function(){trace+=c;return v;}};}assert.sameValue(Date.UTC(n('Y',1970),n('M',0),n('D',1)),0);", 'trace', "'YMD'", "'DMY'"),
+    ]
+    lengths = {
+        'getDate': 0, 'getDay': 0, 'getFullYear': 0, 'getHours': 0,
+        'getMilliseconds': 0, 'getMinutes': 0, 'getMonth': 0, 'getSeconds': 0,
+        'getUTCDate': 0, 'getUTCDay': 0, 'getUTCFullYear': 0, 'getUTCHours': 0,
+        'getUTCMilliseconds': 0, 'getUTCMinutes': 0, 'getUTCMonth': 0, 'getUTCSeconds': 0,
+        'getTime': 0, 'getTimezoneOffset': 0, 'valueOf': 0,
+        'toDateString': 0, 'toISOString': 0, 'toLocaleDateString': 0,
+        'toLocaleString': 0, 'toLocaleTimeString': 0, 'toString': 0,
+        'toTimeString': 0, 'toUTCString': 0, 'setDate': 1, 'setFullYear': 3,
+        'setHours': 4, 'setMilliseconds': 1, 'setMinutes': 3, 'setMonth': 2,
+        'setSeconds': 2, 'setTime': 1, 'setUTCDate': 1, 'setUTCFullYear': 3,
+        'setUTCHours': 4, 'setUTCMilliseconds': 1, 'setUTCMinutes': 3,
+        'setUTCMonth': 2, 'setUTCSeconds': 2, 'toJSON': 1,
+        'getYear': 0, 'setYear': 1, 'toGMTString': 0,
+    }
+    for name, length in lengths.items():
+        intrinsic_name = 'toUTCString' if name == 'toGMTString' else name
+        result_type = 'string' if name.startswith('to') else 'number'
+        argument = ',0' if name.startswith('set') else ''
+        setup = (f"var m=Date.prototype.{name};assert.sameValue(typeof m,'function');"
+                 f"assert.sameValue(typeof m.call(new Date(0){argument}),'{result_type}');"
+                 f"verifyProperty(Date.prototype,'{name}',{{value:m,writable:true,enumerable:false,configurable:true}},{{restore:true}});"
+                 f"verifyProperty(m,'name',{{value:'{intrinsic_name}',writable:false,enumerable:false,configurable:true}},{{restore:true}});"
+                 f"verifyProperty(m,'length',{{value:{length},writable:false,enumerable:false,configurable:true}},{{restore:true}});"
+                 "assert.sameValue(Object.getOwnPropertyDescriptor(m,'prototype'),undefined);"
+                 "assert.throws(TypeError,function(){new m();});")
+        pairs.append(('property-' + name, setup, 'm.length', str(length), str(length + 1)))
+    for name, length, argument in [('now', 0, ''), ('parse', 1, "'1970-01-01'"), ('UTC', 7, '1970')]:
+        setup = (f"var m=Date.{name};assert.sameValue(typeof m({argument}),'number');"
+                 f"verifyProperty(Date,'{name}',{{value:m,writable:true,enumerable:false,configurable:true}},{{restore:true}});"
+                 f"verifyProperty(m,'name',{{value:'{name}',writable:false,enumerable:false,configurable:true}},{{restore:true}});"
+                 f"verifyProperty(m,'length',{{value:{length},writable:false,enumerable:false,configurable:true}},{{restore:true}});"
+                 "assert.sameValue(Object.getOwnPropertyDescriptor(m,'prototype'),undefined);"
+                 "assert.throws(TypeError,function(){new m();});")
+        pairs.append(('property-static-' + name, setup, 'm.length', str(length), str(length + 1)))
+    pairs.append(('property-symbol-toPrimitive',
+                  "var m=Date.prototype[Symbol.toPrimitive];assert.sameValue(m.call(new Date(0),'number'),0);"
+                  "verifyProperty(Date.prototype,Symbol.toPrimitive,{value:m,writable:false,enumerable:false,configurable:true},{restore:true});"
+                  "verifyProperty(m,'name',{value:'[Symbol.toPrimitive]',writable:false,enumerable:false,configurable:true},{restore:true});"
+                  "verifyProperty(m,'length',{value:1,writable:false,enumerable:false,configurable:true},{restore:true});"
+                  "assert.throws(TypeError,function(){new m();});", 'm.length', '1', '2'))
+    pairs.append(('property-constructor',
+                  "verifyProperty(globalThis,'Date',{value:Date,writable:true,enumerable:false,configurable:true},{restore:true});"
+                  "verifyProperty(Date,'name',{value:'Date',writable:false,enumerable:false,configurable:true},{restore:true});"
+                  "verifyProperty(Date,'length',{value:7,writable:false,enumerable:false,configurable:true},{restore:true});"
+                  "verifyProperty(Date,'prototype',{value:Date.prototype,writable:false,enumerable:false,configurable:false},{restore:true});",
+                  'Date.length', '7', '8'))
+    return [('date-' + name + suffix, guard + setup + f'assert.sameValue({actual},{value});', expected, mode)
+            for mode in ('sloppy', 'strict') for name, setup, actual, good, bad in pairs
+            for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed'))]
 
 
 def harness_preflight(files, binary, timeout, profile='string-json'):
@@ -1532,6 +1624,8 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                     for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
                         variants.append(('array-find-' + method + '-' + name + suffix,
                                          guard + setup + f'assert.sameValue({actual},{value});', expected, mode))
+    if profile == 'date':
+        variants += date_preflight_variants()
     outcomes = []
     identifier_controls = {}
     for name, source, expected, mode in variants:
@@ -1550,6 +1644,20 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                 name=name, mode=mode, case_sha256=case['case_sha256'],
                 source_sha256=digest(case['source']), expected=expected,
                 verified=correct, result=result)
+    if profile == 'date':
+        # A missing Date can throw the harness's Test262Error in both partners.
+        # Preserve that raw observation, but do not verify the mismatch unless
+        # its separately executed positive partner completes successfully.
+        positives = {(item['name'], item['result']['mode']): item for item in outcomes
+                     if item['name'].startswith('date-') and item['expected'] == 'passed'}
+        for item in outcomes:
+            if item['name'].startswith('date-') and item['name'].endswith('-mismatch'):
+                partner = positives[(item['name'].removesuffix('-mismatch'), item['result']['mode'])]
+                result = partner['result']
+                item['prerequisite'] = dict(name=partner['name'], mode=result['mode'],
+                    case_sha256=result['case_sha256'], source_sha256=result['source_sha256'],
+                    expected=partner['expected'], verified=partner['verified'])
+                item['verified'] = item['verified'] and partner['verified']
     if profile == 'identifiers':
         # Parse-negative observations alone can pass on an old lexer that
         # rejects every escape. Require a separately executed valid control,

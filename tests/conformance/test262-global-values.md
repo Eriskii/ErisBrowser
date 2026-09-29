@@ -1,7 +1,11 @@
 # Pinned Test262 global-value selection
 
+The [Date checkpoint](test262-date.md) records **70 passed, 18 unsupported** on this
+unchanged profile. Earlier measurements and prerequisite descriptions below
+are retained as historical evidence; the final Date comparison is at the end.
+
 The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
-and `new.target` metadata. Current results: **64 passed, 6 failed, 18 unsupported**.
+and `new.target` metadata. That checkpoint recorded: **64 passed, 6 failed, 18 unsupported**.
 The inventory and source bytes are unchanged. Measurements and policy descriptions
 below retain the history of earlier checkpoints.
 
@@ -199,3 +203,15 @@ checkpoint link above retains earlier evidence.
 ## Window reflection follow-up
 
 The later [Window reflection checkpoint](window-reflection.md) adds 22 passes: **64 passed / six failed / 18 unsupported**, with all 64 controls verified. The remaining unsupported cases require eval; the failures still require Date. The complete healthy baseline is updated.
+
+### Final Date comparison
+
+Final frozen adapter `ab40a96f2cc1908359186e7c0648cecddc5ad8f8b2adf8a60de0e0d2c9a8f220`
+records **70 passed, 18 unsupported**: **6 new passes and zero lost passes**
+against the published before release. Complete observations and controls match
+the first frozen candidate; all original source/helper/mode/policy identities
+remain unchanged. The existing known-state baseline was strengthened to protect these new passes.
+The [complete comparison](test262-date-profiles-comparison.json) and
+[baseline receipt](test262-date-baseline-recording.json) retain exact hashes.
+Original before and first-candidate reports remain preserved in the
+[Date evidence](date.json). No script quota was increased.

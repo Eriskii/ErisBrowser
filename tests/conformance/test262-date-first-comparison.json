@@ -1,0 +1,5933 @@
+{
+  "binary_sha256": "c53a11ff6ec17205c4eafff1dfa0dd82e59c5d70067ec8b61cd560e7829ed2b9",
+  "before_report_sha256": "754413e6084d6a1757e85bde6546448e2e0ef3384b30b3b6c578e12e3eb0cf3d",
+  "candidate_report_sha256": "5fee54e40f84813f456feb2dacf8f46488eccffbb0943c6b206a370d2b3ea3c0",
+  "source_cases": 594,
+  "modes": 1188,
+  "controls": 340,
+  "controls_verified": 340,
+  "before_counts": {
+    "failed": 1166,
+    "unsupported": 22
+  },
+  "candidate_counts": {
+    "passed": 1162,
+    "failed": 4,
+    "unsupported": 22
+  },
+  "new_passes": 1162,
+  "lost_passes": 0,
+  "changes": [
+    {
+      "id": "test/built-ins/Date/15.9.1.15-1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/15.9.1.15-1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.2.1_A1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.2.1_A1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.2.1_A2.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.2.1_A2.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A1_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A1_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A1_T2.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A1_T2.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A1_T3.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A1_T3.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A1_T4.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A1_T4.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A1_T5.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A1_T5.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A1_T6.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A1_T6.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A2_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A2_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A2_T2.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A2_T2.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A2_T3.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A2_T3.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A2_T4.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A2_T4.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A2_T5.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A2_T5.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A2_T6.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A2_T6.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T1.1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T1.1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T1.2.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T1.2.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T2.1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T2.1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T2.2.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T2.2.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T3.1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T3.1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T3.2.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T3.2.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T4.1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T4.1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T4.2.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T4.2.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T5.1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T5.1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T5.2.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T5.2.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T6.1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T6.1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T6.2.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A3_T6.2.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A4_T0.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A4_T0.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A4_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A4_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A4_T2.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A4_T2.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A4_T3.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A4_T3.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A4_T4.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A4_T4.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A4_T5.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A4_T5.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A4_T6.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A4_T6.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A5_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A5_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A5_T2.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A5_T2.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A5_T3.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A5_T3.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A5_T4.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A5_T4.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A5_T5.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A5_T5.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A5_T6.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A5_T6.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A6_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A6_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A6_T2.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A6_T2.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A6_T3.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A6_T3.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A6_T4.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A6_T4.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A6_T5.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.1_A6_T5.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.2_A1_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.2_A1_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.2_A2_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.2_A2_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.2_A3_T1.1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.2_A3_T1.1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.2_A3_T1.2.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.3.2_A3_T1.2.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.4_A1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.4_A1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.4_A2.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.4_A2.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.4_A3.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.4_A3.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.4_A4.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.4_A4.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.4_A5.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/S15.9.4_A5.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/TimeClip_negative_zero.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/TimeClip_negative_zero.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/coercion-errors.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/coercion-errors.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/coercion-order.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/coercion-order.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/fp-evaluation-order.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/fp-evaluation-order.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/infinity-make-day.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/infinity-make-day.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/infinity-make-time.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/infinity-make-time.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/nans.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/nans.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/no-arg.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/no-arg.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/non-integer-values.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/non-integer-values.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/overflow-make-day.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/overflow-make-day.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/overflow-make-time.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/overflow-make-time.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/return-value.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/return-value.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/time-clip.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/time-clip.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/year-offset.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/UTC/year-offset.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/coercion-errors.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/coercion-errors.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/coercion-order.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/coercion-order.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/construct_with_date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/construct_with_date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/is-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/is-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/now/15.9.4.4-0-1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/now/15.9.4.4-0-1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/now/15.9.4.4-0-2.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/now/15.9.4.4-0-2.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/now/15.9.4.4-0-3.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/now/15.9.4.4-0-3.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/now/15.9.4.4-0-4.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/now/15.9.4.4-0-4.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/now/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/now/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/now/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/now/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/parse/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/parse/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/parse/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/parse/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/parse/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/parse/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/parse/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/parse/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/parse/time-value-maximum-range.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/parse/time-value-maximum-range.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/parse/without-utc-offset.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/parse/without-utc-offset.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/parse/zero.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/parse/zero.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A01_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A01_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A02_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A02_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A03_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A03_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A04_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A04_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A05_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A05_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A06_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A06_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A07_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A07_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A08_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A08_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A09_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A09_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A10_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A10_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A11_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A11_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A12_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A12_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A13_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A13_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A14_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A14_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A15_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A15_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A16_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A16_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A17_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A17_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A18_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A18_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A19_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A19_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A20_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A20_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A21_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A21_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A22_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A22_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A23_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A23_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A24_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A24_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A25_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A25_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A26_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A26_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A27_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A27_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A28_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A28_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A29_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A29_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A30_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A30_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A31_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A31_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A32_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A32_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A33_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A33_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A34_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A34_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A35_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A35_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A36_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A36_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A37_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A37_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A38_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A38_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A39_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A39_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A40_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A40_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A41_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A41_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A42_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/S15.9.5_A42_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/called-as-function.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/called-as-function.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-default-first-invalid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-default-first-invalid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-default-first-non-callable.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-default-first-non-callable.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-default-first-valid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-default-first-valid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-default-no-callables.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-default-no-callables.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-invalid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-invalid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-number-first-invalid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-number-first-invalid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-number-first-non-callable.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-number-first-non-callable.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-number-first-valid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-number-first-valid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-number-no-callables.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-number-no-callables.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-string-first-invalid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-string-first-invalid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-string-first-non-callable.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-string-first-non-callable.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-string-first-valid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-string-first-valid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-string-no-callables.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/hint-string-no-callables.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/this-val-non-obj.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/Symbol.toPrimitive/this-val-non-obj.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/constructor/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/constructor/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDate/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDate/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDate/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDate/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDate/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDate/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDate/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDate/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDate/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDate/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDate/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDate/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDate/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDate/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDate/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDate/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDay/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDay/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDay/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDay/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDay/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDay/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDay/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDay/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDay/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDay/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDay/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDay/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDay/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDay/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDay/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getDay/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getFullYear/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getFullYear/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getFullYear/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getFullYear/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getFullYear/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getFullYear/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getFullYear/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getFullYear/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getFullYear/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getFullYear/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getFullYear/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getFullYear/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getFullYear/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getFullYear/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getFullYear/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getFullYear/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getHours/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getHours/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getHours/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getHours/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getHours/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getHours/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getHours/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getHours/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getHours/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getHours/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getHours/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getHours/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getHours/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getHours/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getHours/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getHours/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMilliseconds/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMilliseconds/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMilliseconds/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMilliseconds/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMilliseconds/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMilliseconds/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMilliseconds/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMilliseconds/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMilliseconds/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMilliseconds/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMilliseconds/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMilliseconds/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMilliseconds/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMilliseconds/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMilliseconds/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMilliseconds/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMinutes/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMinutes/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMinutes/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMinutes/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMinutes/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMinutes/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMinutes/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMinutes/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMinutes/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMinutes/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMinutes/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMinutes/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMinutes/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMinutes/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMinutes/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMinutes/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMonth/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMonth/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMonth/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMonth/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMonth/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMonth/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMonth/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMonth/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMonth/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMonth/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMonth/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMonth/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMonth/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMonth/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMonth/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getMonth/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getSeconds/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getSeconds/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getSeconds/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getSeconds/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getSeconds/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getSeconds/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getSeconds/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getSeconds/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getSeconds/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getSeconds/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getSeconds/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getSeconds/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getSeconds/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getSeconds/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getSeconds/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getSeconds/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTime/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTime/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTime/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTime/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTime/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTime/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTime/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTime/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTime/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTime/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTime/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTime/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTime/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTime/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTime/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTime/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTimezoneOffset/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTimezoneOffset/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTimezoneOffset/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTimezoneOffset/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTimezoneOffset/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTimezoneOffset/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTimezoneOffset/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTimezoneOffset/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTimezoneOffset/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTimezoneOffset/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTimezoneOffset/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTimezoneOffset/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTimezoneOffset/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTimezoneOffset/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTimezoneOffset/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getTimezoneOffset/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDate/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDate/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDate/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDate/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDate/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDate/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDate/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDate/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDate/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDate/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDate/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDate/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDate/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDate/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDate/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDate/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDay/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDay/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDay/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDay/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDay/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDay/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDay/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDay/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDay/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDay/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDay/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDay/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDay/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDay/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDay/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCDay/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCFullYear/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCFullYear/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCFullYear/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCFullYear/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCFullYear/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCFullYear/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCFullYear/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCFullYear/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCFullYear/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCFullYear/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCFullYear/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCFullYear/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCFullYear/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCFullYear/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCFullYear/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCFullYear/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCHours/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCHours/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCHours/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCHours/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCHours/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCHours/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCHours/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCHours/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCHours/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCHours/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCHours/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCHours/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCHours/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCHours/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCHours/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCHours/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMilliseconds/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMilliseconds/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMilliseconds/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMilliseconds/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMilliseconds/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMilliseconds/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMilliseconds/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMilliseconds/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMilliseconds/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMilliseconds/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMilliseconds/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMilliseconds/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMilliseconds/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMilliseconds/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMilliseconds/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMilliseconds/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMinutes/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMinutes/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMinutes/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMinutes/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMinutes/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMinutes/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMinutes/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMinutes/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMinutes/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMinutes/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMinutes/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMinutes/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMinutes/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMinutes/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMinutes/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMinutes/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMonth/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMonth/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMonth/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMonth/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMonth/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMonth/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMonth/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMonth/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMonth/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMonth/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMonth/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMonth/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMonth/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMonth/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMonth/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCMonth/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCSeconds/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCSeconds/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCSeconds/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCSeconds/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCSeconds/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCSeconds/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCSeconds/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCSeconds/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCSeconds/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCSeconds/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCSeconds/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCSeconds/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCSeconds/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCSeconds/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCSeconds/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/getUTCSeconds/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/no-date-value.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/no-date-value.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/arg-coercion-order.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/arg-coercion-order.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/arg-to-number-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/arg-to-number-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/arg-to-number.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/arg-to-number.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/date-value-read-before-tonumber-when-date-is-invalid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/date-value-read-before-tonumber-when-date-is-invalid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/date-value-read-before-tonumber-when-date-is-valid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/date-value-read-before-tonumber-when-date-is-valid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/new-value-time-clip.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/new-value-time-clip.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setDate/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/15.9.5.40_1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/15.9.5.40_1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/arg-date-to-number-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/arg-date-to-number-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/arg-date-to-number.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/arg-date-to-number.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/arg-month-to-number-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/arg-month-to-number-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/arg-month-to-number.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/arg-month-to-number.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/arg-year-to-number-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/arg-year-to-number-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/arg-year-to-number.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/arg-year-to-number.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/date-value-read-before-tonumber-when-date-is-invalid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/date-value-read-before-tonumber-when-date-is-invalid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/date-value-read-before-tonumber-when-date-is-valid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/date-value-read-before-tonumber-when-date-is-valid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/new-value-time-clip.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/new-value-time-clip.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/this-value-valid-date-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/this-value-valid-date-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/this-value-valid-date-month.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/this-value-valid-date-month.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/this-value-valid-date-year.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setFullYear/this-value-valid-date-year.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/arg-coercion-order.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/arg-coercion-order.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/arg-hour-to-number-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/arg-hour-to-number-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/arg-hour-to-number.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/arg-hour-to-number.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/arg-min-to-number-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/arg-min-to-number-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/arg-min-to-number.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/arg-min-to-number.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/arg-ms-to-number-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/arg-ms-to-number-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/arg-ms-to-number.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/arg-ms-to-number.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/arg-sec-to-number-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/arg-sec-to-number-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/arg-sec-to-number.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/arg-sec-to-number.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/date-value-read-before-tonumber-when-date-is-invalid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/date-value-read-before-tonumber-when-date-is-invalid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/date-value-read-before-tonumber-when-date-is-valid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/date-value-read-before-tonumber-when-date-is-valid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/new-value-time-clip.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/new-value-time-clip.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/this-value-valid-date-hour.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/this-value-valid-date-hour.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/this-value-valid-date-min.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/this-value-valid-date-min.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/this-value-valid-date-ms.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/this-value-valid-date-ms.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/this-value-valid-date-sec.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setHours/this-value-valid-date-sec.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/arg-coercion-order.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/arg-coercion-order.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/arg-to-number-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/arg-to-number-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/arg-to-number.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/arg-to-number.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/date-value-read-before-tonumber-when-date-is-invalid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/date-value-read-before-tonumber-when-date-is-invalid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/date-value-read-before-tonumber-when-date-is-valid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/date-value-read-before-tonumber-when-date-is-valid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/new-value-time-clip.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/new-value-time-clip.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMilliseconds/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/arg-coercion-order.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/arg-coercion-order.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/arg-min-to-number-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/arg-min-to-number-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/arg-min-to-number.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/arg-min-to-number.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/arg-ms-to-number-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/arg-ms-to-number-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/arg-ms-to-number.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/arg-ms-to-number.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/arg-sec-to-number-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/arg-sec-to-number-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/arg-sec-to-number.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/arg-sec-to-number.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/date-value-read-before-tonumber-when-date-is-invalid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/date-value-read-before-tonumber-when-date-is-invalid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/date-value-read-before-tonumber-when-date-is-valid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/date-value-read-before-tonumber-when-date-is-valid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/new-value-time-clip.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/new-value-time-clip.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMinutes/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/arg-coercion-order.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/arg-coercion-order.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/arg-date-to-number-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/arg-date-to-number-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/arg-date-to-number.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/arg-date-to-number.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/arg-month-to-number-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/arg-month-to-number-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/arg-month-to-number.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/arg-month-to-number.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/date-value-read-before-tonumber-when-date-is-invalid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/date-value-read-before-tonumber-when-date-is-invalid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/date-value-read-before-tonumber-when-date-is-valid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/date-value-read-before-tonumber-when-date-is-valid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/new-value-time-clip.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/new-value-time-clip.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/this-value-valid-date-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/this-value-valid-date-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/this-value-valid-date-month.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setMonth/this-value-valid-date-month.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/arg-coercion-order.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/arg-coercion-order.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/arg-ms-to-number-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/arg-ms-to-number-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/arg-ms-to-number.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/arg-ms-to-number.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/arg-sec-to-number-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/arg-sec-to-number-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/arg-sec-to-number.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/arg-sec-to-number.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/date-value-read-before-tonumber-when-date-is-invalid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/date-value-read-before-tonumber-when-date-is-invalid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/date-value-read-before-tonumber-when-date-is-valid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/date-value-read-before-tonumber-when-date-is-valid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/new-value-time-clip.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/new-value-time-clip.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/this-value-valid-date-ms.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/this-value-valid-date-ms.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/this-value-valid-date-sec.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setSeconds/this-value-valid-date-sec.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/arg-to-number-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/arg-to-number-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/arg-to-number.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/arg-to-number.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/new-value-time-clip.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/new-value-time-clip.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/this-value-invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/this-value-invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/this-value-non-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/this-value-non-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/this-value-non-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/this-value-non-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setTime/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCDate/arg-coercion-order.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCDate/arg-coercion-order.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCDate/date-value-read-before-tonumber-when-date-is-invalid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCDate/date-value-read-before-tonumber-when-date-is-invalid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCDate/date-value-read-before-tonumber-when-date-is-valid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCDate/date-value-read-before-tonumber-when-date-is-valid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCDate/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCDate/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCDate/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCDate/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCDate/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCDate/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCDate/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCDate/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCFullYear/date-value-read-before-tonumber-when-date-is-invalid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCFullYear/date-value-read-before-tonumber-when-date-is-invalid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCFullYear/date-value-read-before-tonumber-when-date-is-valid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCFullYear/date-value-read-before-tonumber-when-date-is-valid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCFullYear/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCFullYear/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCFullYear/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCFullYear/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCFullYear/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCFullYear/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCFullYear/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCFullYear/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/arg-coercion-order.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/arg-coercion-order.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/date-value-read-before-tonumber-when-date-is-invalid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/date-value-read-before-tonumber-when-date-is-invalid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/date-value-read-before-tonumber-when-date-is-valid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/date-value-read-before-tonumber-when-date-is-valid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/this-value-valid-date-hour.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/this-value-valid-date-hour.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/this-value-valid-date-min.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/this-value-valid-date-min.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/this-value-valid-date-ms.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/this-value-valid-date-ms.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/this-value-valid-date-sec.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCHours/this-value-valid-date-sec.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMilliseconds/arg-coercion-order.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMilliseconds/arg-coercion-order.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMilliseconds/date-value-read-before-tonumber-when-date-is-invalid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMilliseconds/date-value-read-before-tonumber-when-date-is-invalid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMilliseconds/date-value-read-before-tonumber-when-date-is-valid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMilliseconds/date-value-read-before-tonumber-when-date-is-valid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMilliseconds/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMilliseconds/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMilliseconds/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMilliseconds/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMilliseconds/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMilliseconds/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMilliseconds/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMilliseconds/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMilliseconds/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMilliseconds/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMinutes/arg-coercion-order.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMinutes/arg-coercion-order.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMinutes/date-value-read-before-tonumber-when-date-is-invalid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMinutes/date-value-read-before-tonumber-when-date-is-invalid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMinutes/date-value-read-before-tonumber-when-date-is-valid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMinutes/date-value-read-before-tonumber-when-date-is-valid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMinutes/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMinutes/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMinutes/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMinutes/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMinutes/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMinutes/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMinutes/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMinutes/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMinutes/this-value-valid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMinutes/this-value-valid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMonth/arg-coercion-order.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMonth/arg-coercion-order.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMonth/date-value-read-before-tonumber-when-date-is-invalid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMonth/date-value-read-before-tonumber-when-date-is-invalid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMonth/date-value-read-before-tonumber-when-date-is-valid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMonth/date-value-read-before-tonumber-when-date-is-valid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMonth/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMonth/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMonth/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMonth/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMonth/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMonth/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMonth/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMonth/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMonth/this-value-valid-date-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMonth/this-value-valid-date-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMonth/this-value-valid-date-month.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCMonth/this-value-valid-date-month.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCSeconds/arg-coercion-order.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCSeconds/arg-coercion-order.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCSeconds/date-value-read-before-tonumber-when-date-is-invalid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCSeconds/date-value-read-before-tonumber-when-date-is-invalid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCSeconds/date-value-read-before-tonumber-when-date-is-valid.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCSeconds/date-value-read-before-tonumber-when-date-is-valid.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCSeconds/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCSeconds/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCSeconds/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCSeconds/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCSeconds/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCSeconds/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCSeconds/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCSeconds/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCSeconds/this-value-valid-date-ms.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCSeconds/this-value-valid-date-ms.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCSeconds/this-value-valid-date-sec.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/setUTCSeconds/this-value-valid-date-sec.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toDateString/format.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toDateString/format.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toDateString/invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toDateString/invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toDateString/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toDateString/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toDateString/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toDateString/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toDateString/negative-year.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toDateString/negative-year.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toDateString/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toDateString/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toDateString/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toDateString/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-10.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-10.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-11.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-11.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-12.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-12.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-13.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-13.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-14.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-14.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-15.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-15.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-16.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-16.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-2.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-2.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-3.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-3.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-4.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-4.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-5.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-5.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-6.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-6.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-7.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-7.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-8.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-8.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-9.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/15.9.5.43-0-9.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toISOString/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/builtin.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/builtin.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/called-as-function.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/called-as-function.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/invoke-abrupt.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/invoke-abrupt.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/invoke-arguments.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/invoke-arguments.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/invoke-result.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/invoke-result.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/non-finite.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/non-finite.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/to-object.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/to-object.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/to-primitive-abrupt.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/to-primitive-abrupt.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/to-primitive-symbol.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/to-primitive-symbol.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/to-primitive-value-of.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toJSON/to-primitive-value-of.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleDateString/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleDateString/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleDateString/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleDateString/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleDateString/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleDateString/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleDateString/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleDateString/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleString/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleString/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleString/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleString/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleString/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleString/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleString/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleString/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleTimeString/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleTimeString/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleTimeString/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleTimeString/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleTimeString/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleTimeString/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleTimeString/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toLocaleTimeString/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toString/format.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toString/format.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toString/invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toString/invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toString/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toString/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toString/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toString/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toString/negative-year.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toString/negative-year.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toString/non-date-receiver.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toString/non-date-receiver.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toString/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toString/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toString/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toString/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toTimeString/format.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toTimeString/format.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toTimeString/invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toTimeString/invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toTimeString/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toTimeString/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toTimeString/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toTimeString/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toTimeString/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toTimeString/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toTimeString/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toTimeString/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toUTCString/day-names.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toUTCString/day-names.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toUTCString/format.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toUTCString/format.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toUTCString/invalid-date.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toUTCString/invalid-date.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toUTCString/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toUTCString/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toUTCString/month-names.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toUTCString/month-names.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toUTCString/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toUTCString/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toUTCString/negative-year.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toUTCString/negative-year.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toUTCString/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toUTCString/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toUTCString/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/toUTCString/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/valueOf/S9.4_A3_T1.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/valueOf/S9.4_A3_T1.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/valueOf/S9.4_A3_T2.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/valueOf/S9.4_A3_T2.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/valueOf/length.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/valueOf/length.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/valueOf/name.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/valueOf/name.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/valueOf/not-a-constructor.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/valueOf/not-a-constructor.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/valueOf/prop-desc.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/prototype/valueOf/prop-desc.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/subclassing.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/subclassing.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-get-symbol-to-prim-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-get-symbol-to-prim-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-symbol-to-prim-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-symbol-to-prim-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-symbol-to-prim-invocation.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-symbol-to-prim-invocation.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-symbol-to-prim-return-obj.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-symbol-to-prim-return-obj.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-symbol-to-prim-return-prim.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-symbol-to-prim-return-prim.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-to-primitive-call-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-to-primitive-call-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-to-primitive-call.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-to-primitive-call.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-to-primitive-get-meth-err.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-to-primitive-get-meth-err.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-to-primitive-result-faulty.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-to-primitive-result-faulty.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-to-primitive-result-non-string-prim.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-to-primitive-result-non-string-prim.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-to-primitive-result-string.js:sloppy",
+      "before_status": "failed",
+      "after_status": "passed"
+    },
+    {
+      "id": "test/built-ins/Date/value-to-primitive-result-string.js:strict",
+      "before_status": "failed",
+      "after_status": "passed"
+    }
+  ],
+  "unchanged_observations": [
+    "test/built-ins/Date/parse/year-zero.js:sloppy",
+    "test/built-ins/Date/parse/year-zero.js:strict",
+    "test/built-ins/Date/proto-from-ctor-realm-one.js:sloppy",
+    "test/built-ins/Date/proto-from-ctor-realm-one.js:strict",
+    "test/built-ins/Date/proto-from-ctor-realm-two.js:sloppy",
+    "test/built-ins/Date/proto-from-ctor-realm-two.js:strict",
+    "test/built-ins/Date/proto-from-ctor-realm-zero.js:sloppy",
+    "test/built-ins/Date/proto-from-ctor-realm-zero.js:strict",
+    "test/built-ins/Date/prototype/toTemporalInstant/length.js:sloppy",
+    "test/built-ins/Date/prototype/toTemporalInstant/length.js:strict",
+    "test/built-ins/Date/prototype/toTemporalInstant/name.js:sloppy",
+    "test/built-ins/Date/prototype/toTemporalInstant/name.js:strict",
+    "test/built-ins/Date/prototype/toTemporalInstant/not-a-constructor.js:sloppy",
+    "test/built-ins/Date/prototype/toTemporalInstant/not-a-constructor.js:strict",
+    "test/built-ins/Date/prototype/toTemporalInstant/prop-desc.js:sloppy",
+    "test/built-ins/Date/prototype/toTemporalInstant/prop-desc.js:strict",
+    "test/built-ins/Date/prototype/toTemporalInstant/this-value-invalid-date.js:sloppy",
+    "test/built-ins/Date/prototype/toTemporalInstant/this-value-invalid-date.js:strict",
+    "test/built-ins/Date/prototype/toTemporalInstant/this-value-non-date.js:sloppy",
+    "test/built-ins/Date/prototype/toTemporalInstant/this-value-non-date.js:strict",
+    "test/built-ins/Date/prototype/toTemporalInstant/this-value-non-object.js:sloppy",
+    "test/built-ins/Date/prototype/toTemporalInstant/this-value-non-object.js:strict",
+    "test/built-ins/Date/prototype/toTemporalInstant/this-value-valid-date.js:sloppy",
+    "test/built-ins/Date/prototype/toTemporalInstant/this-value-valid-date.js:strict",
+    "test/built-ins/Date/year-zero.js:sloppy",
+    "test/built-ins/Date/year-zero.js:strict"
+  ],
+  "remaining_failures": [
+    {
+      "id": "test/built-ins/Date/parse/year-zero.js:sloppy",
+      "file": "test/built-ins/Date/parse/year-zero.js",
+      "mode": "sloppy",
+      "case_sha256": "11fa99ec3db0921cf00ccd9cbda5a8b95374c283c132644364aec75e215d21df",
+      "source_sha256": "faa3eede215022f3e0254b8c5a4bb999a6c340e67448b7e351dc0bdb5f23bac1",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "const declaration needs a value",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Date/parse/year-zero.js:strict",
+      "file": "test/built-ins/Date/parse/year-zero.js",
+      "mode": "strict",
+      "case_sha256": "4816f05d615575987b7b1c851f2830fd53a45fa293215a258196345fd44fbc70",
+      "source_sha256": "faa3eede215022f3e0254b8c5a4bb999a6c340e67448b7e351dc0bdb5f23bac1",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "const declaration needs a value",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Date/year-zero.js:sloppy",
+      "file": "test/built-ins/Date/year-zero.js",
+      "mode": "sloppy",
+      "case_sha256": "c661c328321e29a2d17385023320b351993f8c470a3aaac29ab8977709a603a5",
+      "source_sha256": "328e21fc0065927b98bfffb6e769e3330dba5d6993170f27d8fd1d6d4be67ac2",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "const declaration needs a value",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Date/year-zero.js:strict",
+      "file": "test/built-ins/Date/year-zero.js",
+      "mode": "strict",
+      "case_sha256": "2dac44fa48f01ea14430c5f91b442666c01043fcad95ad3111497f94292927ee",
+      "source_sha256": "328e21fc0065927b98bfffb6e769e3330dba5d6993170f27d8fd1d6d4be67ac2",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "parse",
+        "error_type": "SyntaxError",
+        "error_identity": "SyntaxError",
+        "message": "const declaration needs a value",
+        "harness": ""
+      }
+    }
+  ],
+  "baseline_recorded": false,
+  "final_candidate_validation_pending": true,
+  "build_input_provenance_limitation": "First candidate source.tar is a post-build snapshot including a semantically equivalent hint comparison refactor and cfg(test) module declaration; binary observations remain bound to c53a11ff."
+}

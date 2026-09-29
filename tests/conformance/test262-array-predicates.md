@@ -1,5 +1,9 @@
 # Pinned Test262 every and some inventory
 
+The [Date checkpoint](test262-date.md) records **847 passed, 16 unsupported, 4 resource** on this
+unchanged profile. Earlier measurements and prerequisite descriptions below
+are retained as historical evidence; the final Date comparison is at the end.
+
 This profile retains both complete direct directories at Test262 revision
 `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`. Selection does not depend on whether a
 test passes. The [manifest](../upstream/test262-array-predicates/manifest.json)
@@ -85,3 +89,15 @@ also gain passes; the other **13,433 older observations** and all **2,612 older
 controls** are identical. All **2,740 combined controls** verify and the
 **26 existing healthy gates** are retained. No prior pass is lost. This evidence
 does not establish complete ECMAScript or web compatibility.
+
+### Final Date comparison
+
+Final frozen adapter `ab40a96f2cc1908359186e7c0648cecddc5ad8f8b2adf8a60de0e0d2c9a8f220`
+records **847 passed, 16 unsupported, 4 resource**: **12 new passes and zero lost passes**
+against the published before release. Complete observations and controls match
+the first frozen candidate; all original source/helper/mode/policy identities
+remain unchanged. This remains an observation-only selection because resource stops persist; no baseline was added.
+The [complete comparison](test262-date-profiles-comparison.json) and
+[baseline receipt](test262-date-baseline-recording.json) retain exact hashes.
+Original before and first-candidate reports remain preserved in the
+[Date evidence](date.json). No script quota was increased.

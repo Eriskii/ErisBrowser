@@ -1,0 +1,75 @@
+{
+  "input_sha256": "7bb6ff9b49fa7a66f88cf803a9fec4aee3eb0c4b76d3e14bd5472900c2218a02",
+  "source_unchanged_after_all_builds": true,
+  "rust_matrix": [
+    {
+      "rust": "188",
+      "variant": "default",
+      "tests_passed": 1138,
+      "failed": 0,
+      "ignored": 0,
+      "tests_sha256": "8b7c57a5b95a39335d00a77ab0b28aa729768bf111c5198981ba274c9881cb3f",
+      "clippy_sha256": "a6d0ba71cb822650e514cddfb0267719251f53de920f926d7942c8ae5909df7f"
+    },
+    {
+      "rust": "188",
+      "variant": "feature",
+      "tests_passed": 1149,
+      "failed": 0,
+      "ignored": 0,
+      "tests_sha256": "5d28096fe07e882bae84380d92457257761cd4ac24b17ff536ad2d6d52c88bd6",
+      "clippy_sha256": "e4103d925e3d8075a5fb2b0490fe0e8b41e2b366160b23dc079486026bc40da4"
+    },
+    {
+      "rust": "195",
+      "variant": "default",
+      "tests_passed": 1138,
+      "failed": 0,
+      "ignored": 0,
+      "tests_sha256": "a9a7e5560e01031ac7d0b8015ffa02afa470ce8a898c4ce19e9364bf400b6d9d",
+      "clippy_sha256": "4132c5131569938233aff17c13b354a1e1252fe575d94ae2b745190c81f11bc6"
+    },
+    {
+      "rust": "195",
+      "variant": "feature",
+      "tests_passed": 1149,
+      "failed": 0,
+      "ignored": 0,
+      "tests_sha256": "09d462ffa546730a06498654f0b0ad10ffbea6fda193ca22caba7054b02466ba",
+      "clippy_sha256": "e18330d3cbe57274ff45ab2a86942210a4558c3cf4c60910db17b1e5c330f1f7"
+    }
+  ],
+  "python_tests": 223,
+  "reftests": {
+    "default": {
+      "passed": 57,
+      "failed": 0,
+      "sha256": "341eeea407f3714e5d3643b063fe38789880701af438f4b5fe2ef1bfb385a064"
+    },
+    "feature": {
+      "passed": 57,
+      "failed": 0,
+      "sha256": "685f32f951be6f63109bfe2181ea6efc3284e72ed80ef2f21a37e5377b170335"
+    }
+  },
+  "html_counts": {
+    "matched": 3868,
+    "mismatched": 2,
+    "unsupported": 6
+  },
+  "html_regressions": 0,
+  "stress": {
+    "generated_cases": 45000,
+    "per_pipeline": 15000,
+    "panics_or_invariant_failures": 0
+  },
+  "logs": {
+    "python-tests.log": "0621d4638bf807876e8ce1a7260ecf572eecae1ab79a9d5ff42b73edc38596ad",
+    "html.json": "55ea4b5dc829822b35bd25d30f1df5fd5eea84b742b5bef1fe6b2d27ea9438b6",
+    "stress.log": "776efbc6acce579f61b6b5029ee1687ac0a51ffe689bf340d15da5759c8a336c",
+    "default-build.log": "fa3c1ed924c34e166833a2ede5ebfa1df6884d8f9e174dc509c760a157e8de34",
+    "feature-build.log": "86d0f6a2011f751f1efbe692e3f33f830d3dd969204563029be0d9407c107bef",
+    "worker-timing-comparison.json": "c6c8b0cdeeeb72771e8e5bd7039427f2897158b8a1bbf759577cc84c71cf1f76"
+  },
+  "full_goal_complete": false
+}
