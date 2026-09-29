@@ -1,0 +1,190 @@
+{
+  "format": "eris-vulkan-raster-image-api-contract-v1",
+  "status": "Interface and ownership preparation only. Implementation and all execution await root final oracle freeze and authorization.",
+  "authored_utc": "2026-09-29T10:22:32.990445+00:00",
+  "input_hashes": {
+    "/tmp/eris-vulkan-raster-image-fixtures.json": "3201c74759821e98f5716ff4749a612e0f9395e5326c1cc48f42f9fb7b3c2e76",
+    "/tmp/eris-vulkan-raster-image-fixtures-notes.md": "d967012636124a272fd5d829121732547dae8d991bb01378e484762a67e63809",
+    "/tmp/eris-vulkan-image-protocol-draft.json": "908d18934cfeb66a60e6889bf17b1351a669846d7945213d6e76079d81faa345",
+    "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/lib.rs": "c78349deae41d00b10f20a02d49b16a9fe35998ae76a7bd1eeede671f81493f2",
+    "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/main.rs": "f7cb5cafd8d0dc397caf483ad89ce5a48cba6f3e656068aa9aaf4cd3c8860961",
+    "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/fixtures.rs": "7779ecab36a587f2792acf258b28709b9b4606ece0976c48c0c04aa8e1a45ab8",
+    "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/rect.wgsl": "e290ce60bef71560fdf7ab536410fbae0aa5d2b54f648d0706a457dae5c2c9af"
+  },
+  "ownership": {
+    "layout": [
+      "tools/vulkan-raster-probe/src/lib.rs",
+      "tools/vulkan-raster-probe/src/main.rs",
+      "tools/vulkan-raster-probe/src/image.wgsl (new)",
+      "tools/vulkan-raster-probe/src/tests.rs"
+    ],
+    "html_css": [
+      "tools/vulkan-raster-probe/src/image_fixtures.rs (new; only after oracle freeze)"
+    ],
+    "root": [
+      "tools/vulkan-raster-probe/run_host.py protocol additions",
+      "tools/vulkan-raster-probe/test_protocol.py",
+      "documentation",
+      "new evidence and authorized host runs"
+    ],
+    "leave_byte_identical": [
+      "tools/vulkan-raster-probe/src/fixtures.rs",
+      "tools/vulkan-raster-probe/src/rect.wgsl",
+      "all seven original expected protocol tuples",
+      "all prior host evidence/logs",
+      "Cargo.toml",
+      "Cargo.lock",
+      "browser source"
+    ]
+  },
+  "public_input_api": {
+    "SourceImage": "pub struct SourceImage<'a> { pub width:u32, pub height:u32, pub rgba:&'a [u8] } (Copy/Clone/Debug)",
+    "Command": "Add Image { rect: Rect, source: u32 } to existing Command. Existing rectangle/scope variants and Copy semantics remain.",
+    "plan": "pub fn plan(frame:Frame,commands:&[Command])->Result<Plan> { plan_with_images(frame,commands,&[]) }",
+    "plan_with_images": "pub fn plan_with_images(frame:Frame,commands:&[Command],sources:&[SourceImage<'_>])->Result<Plan>",
+    "ownership": "Source and command slices are borrowed only during planning. Returned Plan owns all packed source, LUT and parameter bytes; no input lifetime or mutable reference is retained."
+  },
+  "validated_output_api": {
+    "Plan": "All storage fields private; no public constructor or mutating accessors. Only the planner can produce a Plan.",
+    "accessors": [
+      "frame(&self)->Frame (Copy)",
+      "draws(&self)->&[Draw]",
+      "invocations(&self)->u64",
+      "gpu_buffer_bytes(&self)->u64",
+      "parameters(&self)->&[u8]",
+      "input_bytes(&self)->&[u8]",
+      "has_images(&self)->bool"
+    ],
+    "Draw": "Private fields. DrawKind::{Rectangle,Image} is a Copy public discriminator returned by kind(); groups()->(u32,u32) remains public. bounds()->(u32,u32,u32,u32) may expose immutable integer bounds for diagnostics/tests. Image/source offsets remain planner-private and serialized in parameters.",
+    "parameters_change": "parameters() returns the immutable prebuilt byte slice instead of allocating a fresh Vec per call. Existing fixtures.rs only returns Plan and needs no edit; owned main/tests callers adapt.",
+    "no_images": "If no image dispatch survives coverage, input_bytes() is empty and has_images() is false. All supplied sources still undergo exact dimension/length/alpha/count/aggregate-byte validation, including unused and hidden sources. No input GPU buffer or dummy binding is created."
+  },
+  "word_layout": {
+    "byte_order": "Every u32 explicitly little-endian; no unsafe cast or new dependency. Plan stores the single arena as Vec<u8> in word layout, avoiding a second u32-to-byte serialization buffer.",
+    "stride_bytes": 256,
+    "rectangle_window_bytes": 32,
+    "image_window_bytes": 64,
+    "shared_first_32_bytes": [
+      {
+        "word": 0,
+        "name": "destination origin x"
+      },
+      {
+        "word": 1,
+        "name": "destination origin y"
+      },
+      {
+        "word": 2,
+        "name": "visible width"
+      },
+      {
+        "word": 3,
+        "name": "visible height"
+      },
+      {
+        "word": 4,
+        "name": "canvas width"
+      },
+      {
+        "word": 5,
+        "name": "canvas height"
+      },
+      {
+        "word": 6,
+        "name": "packed rectangle color; zero for image"
+      },
+      {
+        "word": 7,
+        "name": "reserved zero"
+      }
+    ],
+    "image_next_32_bytes": [
+      {
+        "word": 8,
+        "name": "source base word offset"
+      },
+      {
+        "word": 9,
+        "name": "source width"
+      },
+      {
+        "word": 10,
+        "name": "source height"
+      },
+      {
+        "word": 11,
+        "name": "source pixel word count"
+      },
+      {
+        "word": 12,
+        "name": "x LUT base word offset"
+      },
+      {
+        "word": 13,
+        "name": "y LUT base word offset"
+      },
+      {
+        "word": 14,
+        "name": "x LUT word count (= visible width)"
+      },
+      {
+        "word": 15,
+        "name": "y LUT word count (= visible height)"
+      }
+    ],
+    "padding": "Rectangle bytes 32..256 remain zero exactly as before. Image bytes 64..256 are zero. Slots never change after planning.",
+    "suggested_image_WGSL_struct": "origin:vec2<u32>, extent:vec2<u32>, canvas:vec2<u32>, color:u32, reserved:u32, source:vec4<u32>, tables:vec4<u32>; offsets 0,8,16,24,28,32,48; size/alignment 64/16.",
+    "input_arena_order": "If any image draw exists: concatenate packed source pixels for EVERY supplied source in source-table order, row-major within each image, then append each visible image draw x table followed by its y table in display-list order. All offsets/counts are words. Rectangle draws append no input words. Duplicate source IDs reuse the original packed region; identical separate source entries are not content-deduplicated."
+  },
+  "planning_phases": [
+    "Validate frame, source count <=256, nonzero source dimensions, checked exact RGBA lengths and total declared source bytes <=1048576 before source scans or source-size allocations. Validate all alpha bytes once per supplied source. No source-area scan per command.",
+    "Walk <=256 typed commands with <=32 combined scopes. Validate all image source references and unsupported content before skipping empty/clipped geometry. Retain existing rectangle coverage unchanged; image coverage applies both integer-origin clip edges. Build at most257 bounded draw drafts including clear; image draft temporarily retains original translated rect/source ID and integer output bounds.",
+    "Accumulate rounded8x8 invocation count <=4000000 and total LUT entries <=143360 with checked arithmetic. Determine whether any image dispatch exists. Compute exact GPU byte sum:8*W*H+256*draws+(has_images?4*(all_source_pixels+all_lut_entries):0), require <=1048576 before arena/parameter allocation.",
+    "Reserve exact bounded byte capacities with fallible allocation. If images exist, pack each already validated source once in source order; append x/y tables in draw order using the exact original translated-rect f32 expression and final index bounds. This performs one alpha-validation pass and one packing pass, both bounded by source bytes; table work is bounded by visible width+height.",
+    "Serialize immutable per-draw parameter slots; finalize private Draw/Plan storage. Neither Plan nor source-byte accessors allow mutation. Caller changes to original RGBA after return cannot alter plan bytes."
+  ],
+  "GPU_integration": {
+    "old_rectangle_path": "Original rect.wgsl and its two-binding pipeline/layout remain unchanged. No additional buffer is allocated for any of the seven old rectangle-only fixtures.",
+    "image_bindings": [
+      {
+        "binding": 0,
+        "type": "storage read_write",
+        "buffer": "shared GPU-written output",
+        "usage": "STORAGE|COPY_SRC"
+      },
+      {
+        "binding": 1,
+        "type": "uniform dynamic offset",
+        "buffer": "shared immutable parameter buffer",
+        "window": 64,
+        "usage": "UNIFORM|COPY_DST"
+      },
+      {
+        "binding": 2,
+        "type": "storage read",
+        "buffer": "one immutable source/LUT input arena",
+        "usage": "STORAGE|COPY_DST"
+      }
+    ],
+    "dispatch": "One ordered compute pass per Draw, select rectangle or image pipeline and corresponding bind group. Use slot_index*256 dynamic offset. Image shader reads two LUT indices and one packed source word and writes one output word after explicit guards. Clear remains first rectangle dispatch.",
+    "guards": "Validate tail lanes, canvas/output range, LUT base/count ranges before loads, source base/count range before loads, sx/sy/source dimensions and safe row product. Use subtraction-based range guards where needed to avoid unchecked offset wrap. No error/sentinel/counter GPU buffer is added.",
+    "lifetime": "Upload immutable metadata and conditional input arena once per fixture, submit ordered passes and output-to-readback copy together, wait/map/compare/unmap, then release before next fixture. Existing timeouts/error scopes/supervisor caveats remain.",
+    "memory": "Exactly output+readback+parameters+[optional one input arena] explicit buffers. Native upload staging remains excluded from1MiB allocation accounting and documented; no target-pixel upload or additional direct dependency."
+  },
+  "fixture_module_contract": {
+    "module": "pub mod image_fixtures is added by layout once the new file exists.",
+    "type": "pub struct ImageFixture { pub name:&'static str, pub frame:Frame, pub commands:Vec<Command>, pub sources:Vec<FixtureSource>, pub expected:Vec<u32> }",
+    "source_type": "pub struct FixtureSource { pub width:u32, pub height:u32, pub rgba:Vec<u8> }",
+    "method": "impl ImageFixture { pub fn plan(&self)->Result<Plan> { create bounded Vec<SourceImage<'_>> borrowing self.sources, then call plan_with_images(self.frame,&self.commands,&sources) } }",
+    "factory": "pub fn fixtures()->Vec<ImageFixture>; exact14 oracle pixel fixtures in frozen order; expected output from literal rows/direct integer bands only, never plan or LUT helper. f32 bits use f32::from_bits.",
+    "private_limits_tests": "layout owns tests.rs implementations for9 scalar LUT oracles,25 negative definitions+15 hidden variants and5 positive limit plans. Generator only needs the14 pixel fixtures; no duplication or rewriting of expected resource outcomes.",
+    "main_order": "Keep seven existing fixtures first and byte-identical. Append14 image fixtures. Collect bounded immutable (name, expected_slice, Plan) entries before any Instance/device operation. Total21 fixtures,921272 compared bytes per adapter."
+  },
+  "protocol_consistency": {
+    "draft_sha256": "908d18934cfeb66a60e6889bf17b1351a669846d7945213d6e76079d81faa345",
+    "total_fixtures": 21,
+    "compared_bytes_per_adapter": 921272,
+    "result": "All draft counters use exactly the proposed one-arena storage formula. Original7 counters are unaffected; no-image image-valid-empty-and-hidden has352 bytes with no source arena. Subnormal fixture includes all3 supplied source pixels because one image draw survives, even though its second image is empty."
+  },
+  "hold": "Do not edit Rust/WGSL/fixtures or execute until root announces final oracle freeze and implementation authorization. Root owns ownkeys publication priority."
+}

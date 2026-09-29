@@ -1,0 +1,573 @@
+{
+  "status": "Frozen independent protocol arithmetic for the approved image arena/layout, before implementation or execution.",
+  "oracle_sha256": "ccd79c6ac60221ccaf463ce1ada56230c35e12039d3d8ca534e15019121c2ecf",
+  "original_runner_sha256": "0360d30d34e31e407539c6804044dd05c4f62798316574eb090fc68f6d8369c4",
+  "original_tuples": [
+    [
+      "overlapping-order",
+      8,
+      6,
+      5,
+      320,
+      1664,
+      192
+    ],
+    [
+      "fractional-clips",
+      8,
+      6,
+      4,
+      256,
+      1408,
+      192
+    ],
+    [
+      "fixed-resets-and-restores",
+      10,
+      7,
+      6,
+      448,
+      2096,
+      280
+    ],
+    [
+      "out-of-bounds-and-empty",
+      7,
+      5,
+      3,
+      192,
+      1048,
+      140
+    ],
+    [
+      "319x239-dispatch-edges",
+      319,
+      239,
+      4,
+      156160,
+      610952,
+      304964
+    ],
+    [
+      "forty-ordered-full-writes",
+      320,
+      240,
+      41,
+      3148800,
+      624896,
+      307200
+    ],
+    [
+      "gpu-clear-only",
+      7,
+      3,
+      1,
+      64,
+      424,
+      84
+    ]
+  ],
+  "new_tuples": [
+    [
+      "image-upscale-2x2",
+      6,
+      6,
+      2,
+      128,
+      848,
+      144
+    ],
+    [
+      "image-three-columns-to-five",
+      7,
+      3,
+      2,
+      128,
+      716,
+      84
+    ],
+    [
+      "image-downscale-distinct-4x4",
+      4,
+      4,
+      2,
+      128,
+      720,
+      64
+    ],
+    [
+      "image-clip-preserves-original-origin",
+      8,
+      3,
+      2,
+      128,
+      736,
+      96
+    ],
+    [
+      "image-negative-document-offset",
+      5,
+      3,
+      2,
+      128,
+      680,
+      60
+    ],
+    [
+      "image-negative-fractional-origin",
+      4,
+      4,
+      2,
+      128,
+      680,
+      64
+    ],
+    [
+      "image-tiny-and-fractional-clip",
+      6,
+      4,
+      3,
+      192,
+      1044,
+      96
+    ],
+    [
+      "image-exact-and-one-ulp-translated-edges",
+      5,
+      3,
+      3,
+      192,
+      928,
+      60
+    ],
+    [
+      "image-f32-endpoint-addition-rounds-back",
+      4,
+      2,
+      2,
+      128,
+      592,
+      32
+    ],
+    [
+      "image-rectangle-order-and-source-reuse",
+      6,
+      4,
+      5,
+      320,
+      1568,
+      96
+    ],
+    [
+      "image-fixed-escape-and-nested-restoration",
+      8,
+      5,
+      6,
+      384,
+      1956,
+      160
+    ],
+    [
+      "image-dispatch-tail-and-clear-border",
+      320,
+      240,
+      2,
+      153600,
+      617160,
+      307200
+    ],
+    [
+      "image-valid-empty-and-hidden",
+      4,
+      3,
+      1,
+      64,
+      352,
+      48
+    ],
+    [
+      "image-subnormal-origin-and-lost-extent",
+      2,
+      2,
+      2,
+      128,
+      564,
+      16
+    ]
+  ],
+  "derivations": [
+    {
+      "name": "image-upscale-2x2",
+      "visible_image_extents": [
+        [
+          4,
+          4
+        ]
+      ],
+      "independently_checked_rectangle_extents": [],
+      "source_words": 4,
+      "lut_words": 8,
+      "output_and_readback": 288,
+      "parameters": 512,
+      "input_arena": 48,
+      "tuple": [
+        "image-upscale-2x2",
+        6,
+        6,
+        2,
+        128,
+        848,
+        144
+      ]
+    },
+    {
+      "name": "image-three-columns-to-five",
+      "visible_image_extents": [
+        [
+          5,
+          1
+        ]
+      ],
+      "independently_checked_rectangle_extents": [],
+      "source_words": 3,
+      "lut_words": 6,
+      "output_and_readback": 168,
+      "parameters": 512,
+      "input_arena": 36,
+      "tuple": [
+        "image-three-columns-to-five",
+        7,
+        3,
+        2,
+        128,
+        716,
+        84
+      ]
+    },
+    {
+      "name": "image-downscale-distinct-4x4",
+      "visible_image_extents": [
+        [
+          2,
+          2
+        ]
+      ],
+      "independently_checked_rectangle_extents": [],
+      "source_words": 16,
+      "lut_words": 4,
+      "output_and_readback": 128,
+      "parameters": 512,
+      "input_arena": 80,
+      "tuple": [
+        "image-downscale-distinct-4x4",
+        4,
+        4,
+        2,
+        128,
+        720,
+        64
+      ]
+    },
+    {
+      "name": "image-clip-preserves-original-origin",
+      "visible_image_extents": [
+        [
+          4,
+          1
+        ]
+      ],
+      "independently_checked_rectangle_extents": [],
+      "source_words": 3,
+      "lut_words": 5,
+      "output_and_readback": 192,
+      "parameters": 512,
+      "input_arena": 32,
+      "tuple": [
+        "image-clip-preserves-original-origin",
+        8,
+        3,
+        2,
+        128,
+        736,
+        96
+      ]
+    },
+    {
+      "name": "image-negative-document-offset",
+      "visible_image_extents": [
+        [
+          4,
+          2
+        ]
+      ],
+      "independently_checked_rectangle_extents": [],
+      "source_words": 6,
+      "lut_words": 6,
+      "output_and_readback": 120,
+      "parameters": 512,
+      "input_arena": 48,
+      "tuple": [
+        "image-negative-document-offset",
+        5,
+        3,
+        2,
+        128,
+        680,
+        60
+      ]
+    },
+    {
+      "name": "image-negative-fractional-origin",
+      "visible_image_extents": [
+        [
+          3,
+          3
+        ]
+      ],
+      "independently_checked_rectangle_extents": [],
+      "source_words": 4,
+      "lut_words": 6,
+      "output_and_readback": 128,
+      "parameters": 512,
+      "input_arena": 40,
+      "tuple": [
+        "image-negative-fractional-origin",
+        4,
+        4,
+        2,
+        128,
+        680,
+        64
+      ]
+    },
+    {
+      "name": "image-tiny-and-fractional-clip",
+      "visible_image_extents": [
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "independently_checked_rectangle_extents": [],
+      "source_words": 17,
+      "lut_words": 4,
+      "output_and_readback": 192,
+      "parameters": 768,
+      "input_arena": 84,
+      "tuple": [
+        "image-tiny-and-fractional-clip",
+        6,
+        4,
+        3,
+        192,
+        1044,
+        96
+      ]
+    },
+    {
+      "name": "image-exact-and-one-ulp-translated-edges",
+      "visible_image_extents": [
+        [
+          1,
+          1
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "independently_checked_rectangle_extents": [],
+      "source_words": 4,
+      "lut_words": 6,
+      "output_and_readback": 120,
+      "parameters": 768,
+      "input_arena": 40,
+      "tuple": [
+        "image-exact-and-one-ulp-translated-edges",
+        5,
+        3,
+        3,
+        192,
+        928,
+        60
+      ]
+    },
+    {
+      "name": "image-f32-endpoint-addition-rounds-back",
+      "visible_image_extents": [
+        [
+          1,
+          1
+        ]
+      ],
+      "independently_checked_rectangle_extents": [],
+      "source_words": 2,
+      "lut_words": 2,
+      "output_and_readback": 64,
+      "parameters": 512,
+      "input_arena": 16,
+      "tuple": [
+        "image-f32-endpoint-addition-rounds-back",
+        4,
+        2,
+        2,
+        128,
+        592,
+        32
+      ]
+    },
+    {
+      "name": "image-rectangle-order-and-source-reuse",
+      "visible_image_extents": [
+        [
+          6,
+          4
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          4,
+          1
+        ]
+      ],
+      "independently_checked_rectangle_extents": [
+        [
+          4,
+          2
+        ]
+      ],
+      "source_words": 4,
+      "lut_words": 20,
+      "output_and_readback": 192,
+      "parameters": 1280,
+      "input_arena": 96,
+      "tuple": [
+        "image-rectangle-order-and-source-reuse",
+        6,
+        4,
+        5,
+        320,
+        1568,
+        96
+      ]
+    },
+    {
+      "name": "image-fixed-escape-and-nested-restoration",
+      "visible_image_extents": [
+        [
+          4,
+          2
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "independently_checked_rectangle_extents": [],
+      "source_words": 10,
+      "lut_words": 15,
+      "output_and_readback": 320,
+      "parameters": 1536,
+      "input_arena": 100,
+      "tuple": [
+        "image-fixed-escape-and-nested-restoration",
+        8,
+        5,
+        6,
+        384,
+        1956,
+        160
+      ]
+    },
+    {
+      "name": "image-dispatch-tail-and-clear-border",
+      "visible_image_extents": [
+        [
+          319,
+          239
+        ]
+      ],
+      "independently_checked_rectangle_extents": [],
+      "source_words": 4,
+      "lut_words": 558,
+      "output_and_readback": 614400,
+      "parameters": 512,
+      "input_arena": 2248,
+      "tuple": [
+        "image-dispatch-tail-and-clear-border",
+        320,
+        240,
+        2,
+        153600,
+        617160,
+        307200
+      ]
+    },
+    {
+      "name": "image-valid-empty-and-hidden",
+      "visible_image_extents": [],
+      "independently_checked_rectangle_extents": [],
+      "source_words": 0,
+      "lut_words": 0,
+      "output_and_readback": 96,
+      "parameters": 256,
+      "input_arena": 0,
+      "tuple": [
+        "image-valid-empty-and-hidden",
+        4,
+        3,
+        1,
+        64,
+        352,
+        48
+      ]
+    },
+    {
+      "name": "image-subnormal-origin-and-lost-extent",
+      "visible_image_extents": [
+        [
+          1,
+          1
+        ]
+      ],
+      "independently_checked_rectangle_extents": [],
+      "source_words": 3,
+      "lut_words": 2,
+      "output_and_readback": 32,
+      "parameters": 512,
+      "input_arena": 20,
+      "tuple": [
+        "image-subnormal-origin-and-lost-extent",
+        2,
+        2,
+        2,
+        128,
+        564,
+        16
+      ]
+    }
+  ],
+  "total_fixtures": 21,
+  "compared_bytes_per_adapter": 921272,
+  "storage_model": "One input word arena contains all supplied source colors once in order followed by per-visible-image x/y LUTs; no image buffer if no image dispatch.",
+  "generation_script_sha256": "5b56cf128ae524e4421addbd8f59d2691a57d3a0b15b44b4589a0ae639309784",
+  "approved_api_sha256": "cdfa72e93cfbe1dcb961cd873ea6c6aca5771d18ee6b022ec4e5b7ed5f158d0e"
+}

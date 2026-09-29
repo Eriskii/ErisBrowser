@@ -36,6 +36,20 @@ EXPECTED_PASSES = [
     ("319x239-dispatch-edges",319,239,4,156160,610952,304964),
     ("forty-ordered-full-writes",320,240,41,3148800,624896,307200),
     ("gpu-clear-only",7,3,1,64,424,84),
+    ("image-upscale-2x2",6,6,2,128,848,144),
+    ("image-three-columns-to-five",7,3,2,128,716,84),
+    ("image-downscale-distinct-4x4",4,4,2,128,720,64),
+    ("image-clip-preserves-original-origin",8,3,2,128,736,96),
+    ("image-negative-document-offset",5,3,2,128,680,60),
+    ("image-negative-fractional-origin",4,4,2,128,680,64),
+    ("image-tiny-and-fractional-clip",6,4,3,192,1044,96),
+    ("image-exact-and-one-ulp-translated-edges",5,3,3,192,928,60),
+    ("image-f32-endpoint-addition-rounds-back",4,2,2,128,592,32),
+    ("image-rectangle-order-and-source-reuse",6,4,5,320,1568,96),
+    ("image-fixed-escape-and-nested-restoration",8,5,6,384,1956,160),
+    ("image-dispatch-tail-and-clear-border",320,240,2,153600,617160,307200),
+    ("image-valid-empty-and-hidden",4,3,1,64,352,48),
+    ("image-subnormal-origin-and-lost-extent",2,2,2,128,564,16),
 ]
 def expected_lines():
     return [f"PASS {name} {w}x{h} draws={draws} invocations={work} gpu_buffers={buffers} compared_bytes={size} exact=true"
@@ -240,7 +254,7 @@ def validate_adapter(result: RunResult, expected: list[str], index: int) -> None
         raise ValueError("adapter inventory changed between processes")
     if lines[:len(expected)] != expected:
         raise ValueError("inventory records must precede result records")
-    wanted = expected_lines() + [f"COMPLETE adapter={index} fixtures=7 exact=true custom_wgsl=true"]
+    wanted = expected_lines() + [f"COMPLETE adapter={index} fixtures={len(EXPECTED_PASSES)} exact=true custom_wgsl=true"]
     if lines[len(expected):] != wanted:
         raise ValueError("missing, duplicate, reordered or mismatched exact raster results")
 
@@ -263,7 +277,7 @@ def run_host(binary: Path, output_dir: Path, loader_directory: Path | None = Non
     summary = {
         "schema": 1,
         "binary_sha256": binary_hash,
-        "scope": "offscreen custom WGSL opaque rectangle prototype; no native surface or performance claim",
+        "scope": "offscreen custom WGSL opaque rectangle and nearest-neighbor image prototype; no native surface or performance claim",
         "binary": os.path.relpath(binary.resolve(), ROOT),
         "loader_override": loader_directory is not None,
         "timeout_seconds": timeout,

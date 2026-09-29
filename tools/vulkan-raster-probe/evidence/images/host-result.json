@@ -1,0 +1,27 @@
+{
+  "created_utc": "2026-09-29T10:40:59.080939+00:00",
+  "command": [
+    "python3",
+    "/tmp/eris-vulkan-image-candidate-2/source/run_host.py",
+    "--allow-experimental-gpu",
+    "--binary",
+    "/tmp/eris-vulkan-image-candidate-2/eris-vulkan-raster-prototype-1.98.0",
+    "--output-dir",
+    "/tmp/eris-vulkan-image-candidate-2/host-run-1",
+    "--loader-directory",
+    "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib"
+  ],
+  "binary_before_sha256": "20e34cfb03510d5ed02027ebf792fe9988ba069e837a94f7a6988f96a70d46b4",
+  "loader": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib/libvulkan.so.1",
+  "loader_resolved": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib/libvulkan.so.1.4.357",
+  "loader_sha256": "c75ff661f583ea7308bc5526321f6d6c0527a12ec9cd708dfb21323ddbb297ba",
+  "candidate_freeze_sha256": "f16684b0aa664f87209f1b52706f284ee187d5b65d6a98dcc1fcb4f0d9d320b6",
+  "offline_checks_sha256": "49db404e0c0b3355b952bc8310154a7a56d52ce8dcd8c2eaf27fd35239acee2c",
+  "source_before_exact": true,
+  "scope": "Actual opt-in offscreen Vulkan execution under existing finite child/output/reaping bounds; no native surface or browser run",
+  "exit_code": 0,
+  "elapsed_seconds": 0.8079802289139479,
+  "binary_after_sha256": "20e34cfb03510d5ed02027ebf792fe9988ba069e837a94f7a6988f96a70d46b4",
+  "source_after_exact": true,
+  "supervisor_log_sha256": "c05da76e7116a4f96ac98090a5653a031ead05a28fa96203993f680884a75d4e"
+}

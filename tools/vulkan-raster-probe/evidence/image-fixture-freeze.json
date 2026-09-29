@@ -1,0 +1,69 @@
+{
+  "format": 1,
+  "frozen_utc": "2026-09-29T10:24:22.442660+00:00",
+  "parent_commit": "8133250e86ea616c3d7644b8965acb25145a6b3c",
+  "parent_ci_sha256": "2aa407f86c43c3ef030a3140d0da525dbc892233bcc74d58fc47c0e459bd46be",
+  "original_source_provenance_sha256": "a880e494bb6799e81e74ed790ba3ac549fb40c71aa1b6849b01085032bc13e7b",
+  "files": [
+    {
+      "path": "/tmp/eris-vulkan-raster-image-fixtures.json",
+      "sha256": "3201c74759821e98f5716ff4749a612e0f9395e5326c1cc48f42f9fb7b3c2e76"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-oracle-review.json",
+      "sha256": "21740c951bc24b8a2edb2911fe110a448132593006d8cb6d9c825a878d9df0bb"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-api-contract.json",
+      "sha256": "cdfa72e93cfbe1dcb961cd873ea6c6aca5771d18ee6b022ec4e5b7ed5f158d0e"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-fixtures-frozen.json",
+      "sha256": "ccd79c6ac60221ccaf463ce1ada56230c35e12039d3d8ca534e15019121c2ecf"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-protocol-frozen.json",
+      "sha256": "be99483f8430c2f208916008bffd4f4354f8ec66c555732c1f122f8957d468b0"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-protocol-draft.json",
+      "sha256": "908d18934cfeb66a60e6889bf17b1351a669846d7945213d6e76079d81faa345"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-review.json",
+      "sha256": "7ecea95031f31115c91c121b09afb400abcd24fc16611894f1fcecbe07ca0671"
+    }
+  ],
+  "root_approved": [
+    "Single packed source/LUT arena and 64-byte image record in existing256-byte slots",
+    "Exactly1MiB and4M invocation boundary acceptance arithmetic",
+    "Added CPU source256entry/1MiB and143360LUT bounds without raising existing limits"
+  ],
+  "prefreeze_delta": {
+    "case": "combined-scope-over-cap",
+    "old_commands_pattern": {
+      "repeat": 33,
+      "command": {
+        "op": "push_fixed"
+      }
+    },
+    "new_commands_pattern": {
+      "sequence": [
+        {
+          "repeat": 33,
+          "command": {
+            "op": "push_fixed"
+          }
+        },
+        {
+          "repeat": 33,
+          "command": {
+            "op": "pop_fixed"
+          }
+        }
+      ]
+    },
+    "reason": "Peer review found a nonblocking coverage weakness; matching33pops now isolate the intended depth branch before any implementation/execution. Outcome remains rejection. All14 pixel fixtures,9scalar cases and protocol tuple values unchanged."
+  },
+  "execution": "No candidate/Canvas/engine/build/GPU execution; preparation and independent mathematical review only."
+}

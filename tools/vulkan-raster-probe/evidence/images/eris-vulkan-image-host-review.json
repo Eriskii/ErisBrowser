@@ -1,0 +1,415 @@
+{
+  "schema": 1,
+  "reviewer": "layout",
+  "reviewed_utc": "2026-09-29T10:44:23.368637+00:00",
+  "scope": "Independent read-only artifact/source review. No engine/GPU execution, reruns, Cargo, Rust tests/builds or repository edits by this review. Root performed retained host/offline runs.",
+  "findings": [],
+  "passed": true,
+  "review_driver": {
+    "path": "/tmp/eris-vulkan-image-host-review.py",
+    "bytes": 11884,
+    "sha256": "cb471518582cae53b4faf684454077b327aaef571eed0e5e3a2a17192134971d"
+  },
+  "bound_records": [
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/freeze.json",
+      "bytes": 3766,
+      "sha256": "f16684b0aa664f87209f1b52706f284ee187d5b65d6a98dcc1fcb4f0d9d320b6"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/source.tar",
+      "bytes": 266240,
+      "sha256": "660029686c7a4f0e255dd33f4ee6ee4da8b69692a036b82be48b994062e00fa6"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/host-start.json",
+      "bytes": 1217,
+      "sha256": "7d59f6330d490f34e175d0d1d11aba4fdfa787846f4d1a11a057392e5738205e"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/host-result.json",
+      "bytes": 1494,
+      "sha256": "a8dd9c8cded8d09318fb8a45494a0972a6006bdaf7a70aabf73aacd99bf0af07"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/offline-checks.json",
+      "bytes": 5987,
+      "sha256": "49db404e0c0b3355b952bc8310154a7a56d52ce8dcd8c2eaf27fd35239acee2c"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/correction.json",
+      "bytes": 2773,
+      "sha256": "8727bb34a84cdb3ce2a280494b372e593eb209ac5a9224e9f9c5e5121e502dec"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/host-supervisor.log",
+      "bytes": 111,
+      "sha256": "c05da76e7116a4f96ac98090a5653a031ead05a28fa96203993f680884a75d4e"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/host-run-1/host-results.json",
+      "bytes": 11400,
+      "sha256": "abf2cb4b37b924f6b5dbcfd9f9f4d42285c145ffca92fe88e6a8e9c5295f67ca"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-protocol-frozen.json",
+      "bytes": 10217,
+      "sha256": "be99483f8430c2f208916008bffd4f4354f8ec66c555732c1f122f8957d468b0"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-wgsl-check.json",
+      "bytes": 7316,
+      "sha256": "47dea27894daeffab65a0951250b7573e970c478a24b17b36bc9b4e805a3a69f"
+    },
+    {
+      "path": "/tmp/eris-own-keys-candidate-2/inputs.json",
+      "bytes": 13733,
+      "sha256": "bbd79f894c6f3a56d2e145ebd20d0b09c89fc11fe1ed4f9badce2ff2c08760be"
+    }
+  ],
+  "source_files_rehashed": [
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/source/Cargo.toml",
+      "bytes": 323,
+      "sha256": "3150058ef3ee321212873e93aea1d745b7a5923faa39808e631ccbef28e4df23"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/source/Cargo.lock",
+      "bytes": 23795,
+      "sha256": "b619519af5f81d79d976a0569ae1278565b3bbdd3e4a7243438f1d1ced81a182"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/source/run_host.py",
+      "bytes": 14669,
+      "sha256": "456a1a4f00ef35009b74221ac1d6710ae30ee53c0e0858953576314c701cff73"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/source/test_protocol.py",
+      "bytes": 2879,
+      "sha256": "3b50594d36a69c0dcc8b46bd8864453ef365c602be9bd3bfd5ebae1457abd5a7"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/source/test_supervisor.py",
+      "bytes": 2488,
+      "sha256": "85d3d91272710f006da8b340dae6030102183939b6e5325e82674d81318ac806"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/source/src/fixtures.rs",
+      "bytes": 4785,
+      "sha256": "7779ecab36a587f2792acf258b28709b9b4606ece0976c48c0c04aa8e1a45ab8"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/source/src/image.wgsl",
+      "bytes": 2204,
+      "sha256": "0e33cf1869e8a69143a4f446917ef43e5ad3439f2b57197174a177a095d32d1b"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/source/src/image_fixtures.rs",
+      "bytes": 19757,
+      "sha256": "d7fd6c1970f1bfad52021b0ae48401596d3124c5a7e29a1171a310d6d6f096ee"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/source/src/lib.rs",
+      "bytes": 17720,
+      "sha256": "4675b65d27682018f9a16164e307324c19a812c9c58a8e4964942df42fedc0d8"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/source/src/main.rs",
+      "bytes": 17242,
+      "sha256": "59a5ba34156453d92185d4aedc18d50807ab5d04a9c31beb03c2f665931da475"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/source/src/rect.wgsl",
+      "bytes": 790,
+      "sha256": "e290ce60bef71560fdf7ab536410fbae0aa5d2b54f648d0706a457dae5c2c9af"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/source/src/tests.rs",
+      "bytes": 26834,
+      "sha256": "ae330c85f55b2aa8131c4a0a537d1fbe7f982ba7b7331e33a1f1ee6c2b1b8e72"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/source/evidence/image-fixture-oracle.json",
+      "bytes": 90280,
+      "sha256": "ccd79c6ac60221ccaf463ce1ada56230c35e12039d3d8ca534e15019121c2ecf"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/source/evidence/image-protocol.json",
+      "bytes": 10217,
+      "sha256": "be99483f8430c2f208916008bffd4f4354f8ec66c555732c1f122f8957d468b0"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/source/evidence/image-fixture-freeze.json",
+      "bytes": 2568,
+      "sha256": "29a68e2af2b6215942b9a24056b1a1146884831d7f9e47ce27245c8c6e25cbc9"
+    }
+  ],
+  "candidate_delta": {
+    "changed_files": [
+      "src/tests.rs"
+    ],
+    "meaning": "Six single-element scalar loops became equivalent direct assertions for strict Clippy. Production, shaders, fixture data, limits and expected results unchanged. First candidate Clippy exit 101 retained."
+  },
+  "binary": {
+    "path": "/tmp/eris-vulkan-image-candidate-2/eris-vulkan-raster-prototype-1.98.0",
+    "bytes": 22231288,
+    "sha256": "20e34cfb03510d5ed02027ebf792fe9988ba069e837a94f7a6988f96a70d46b4"
+  },
+  "source_binary_before_after": "Root recorded exact source before/after and identical binary before/after. Independent current hash verification matches those records, source archive, every frozen file and build output identity. The review did not observe past process execution directly.",
+  "adapters": [
+    {
+      "index": 0,
+      "vendor": "0x10de",
+      "device": "0x2783",
+      "type": "DiscreteGpu",
+      "backend": "Vulkan",
+      "name": "NVIDIA GeForce RTX 4070 SUPER",
+      "driver": "NVIDIA",
+      "driver_info": "595.99.02"
+    },
+    {
+      "index": 1,
+      "vendor": "0x1002",
+      "device": "0x164e",
+      "type": "IntegratedGpu",
+      "backend": "Vulkan",
+      "name": "AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)",
+      "driver": "radv",
+      "driver_info": "Mesa 26.2.3"
+    },
+    {
+      "index": 2,
+      "vendor": "0x10005",
+      "device": "0x0",
+      "type": "Cpu",
+      "backend": "Vulkan",
+      "name": "llvmpipe (LLVM 21.1.8, 256 bits)",
+      "driver": "llvmpipe",
+      "driver_info": "Mesa 26.2.3 (LLVM 21.1.8)"
+    }
+  ],
+  "raw_runs": [
+    {
+      "name": "enumeration",
+      "stdout": {
+        "path": "/tmp/eris-vulkan-image-candidate-2/host-run-1/enumeration.stdout.log",
+        "bytes": 465,
+        "sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+      },
+      "stderr": {
+        "path": "/tmp/eris-vulkan-image-candidate-2/host-run-1/enumeration.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "status": "exited",
+      "returncode": 0,
+      "captured_bytes": 465,
+      "deadline_seconds": 25.0,
+      "exact_rows": 0,
+      "original_seven_rows_identical": null
+    },
+    {
+      "name": "adapter-0",
+      "stdout": {
+        "path": "/tmp/eris-vulkan-image-candidate-2/host-run-1/adapter-0.stdout.log",
+        "bytes": 2841,
+        "sha256": "8a8228575967dacdc7fa8a3060e11164440a23af4e0e24c1fcfa1deb2990768a"
+      },
+      "stderr": {
+        "path": "/tmp/eris-vulkan-image-candidate-2/host-run-1/adapter-0.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "status": "exited",
+      "returncode": 0,
+      "captured_bytes": 2841,
+      "deadline_seconds": 25.0,
+      "exact_rows": 21,
+      "original_seven_rows_identical": true
+    },
+    {
+      "name": "adapter-1",
+      "stdout": {
+        "path": "/tmp/eris-vulkan-image-candidate-2/host-run-1/adapter-1.stdout.log",
+        "bytes": 2841,
+        "sha256": "cd9d5c6a9d3ff8fd4ee3a9597821dfb51c1fa02a4b3f30c5307828ab00df3208"
+      },
+      "stderr": {
+        "path": "/tmp/eris-vulkan-image-candidate-2/host-run-1/adapter-1.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "status": "exited",
+      "returncode": 0,
+      "captured_bytes": 2841,
+      "deadline_seconds": 25.0,
+      "exact_rows": 21,
+      "original_seven_rows_identical": true
+    },
+    {
+      "name": "adapter-2",
+      "stdout": {
+        "path": "/tmp/eris-vulkan-image-candidate-2/host-run-1/adapter-2.stdout.log",
+        "bytes": 2841,
+        "sha256": "6b5276ab2fc42ac0df0d7d936b5bc559e639a5374554143b4360be019d599a31"
+      },
+      "stderr": {
+        "path": "/tmp/eris-vulkan-image-candidate-2/host-run-1/adapter-2.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "status": "exited",
+      "returncode": 0,
+      "captured_bytes": 2841,
+      "deadline_seconds": 25.0,
+      "exact_rows": 21,
+      "original_seven_rows_identical": true
+    }
+  ],
+  "pixel_results": {
+    "fixtures_per_adapter": 21,
+    "original_fixture_rows": 7,
+    "new_image_rows": 14,
+    "adapter_runs": 3,
+    "pass_rows": 63,
+    "compared_bytes_per_adapter": 921272,
+    "compared_bytes_total": 2763816,
+    "original_bytes_per_adapter": 613052,
+    "new_bytes_per_adapter": 308220,
+    "full_raw_line_order_and_all_counters_exact": true,
+    "unchanged_original_seven_rows_each_adapter": true,
+    "adapter_records_identical_in_every_run": true
+  },
+  "cleanup_review": {
+    "all_records_exited_zero": true,
+    "stderr_empty": true,
+    "no_timeout_output_limit_or_cleanup_error": true,
+    "normal_reaping_evidence": "Frozen run_process observes waitid(WNOWAIT), then its finally calls killpg before proc.wait(timeout=2). The retained exited/returncode=0 records can be emitted only after this path without cleanup_error. This is source-and-record evidence, not an independent live PID observation.",
+    "limitations": "No driver-hang recovery experiment or universal teardown bound is established. Normal cleanup only is evidenced by these runs."
+  },
+  "offline_outcomes": [
+    {
+      "toolchain": "1.88.0",
+      "action": "fmt",
+      "log": {
+        "path": "/tmp/eris-vulkan-image-candidate-2/offline-1.88.0-fmt.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "exit_code": 0
+    },
+    {
+      "toolchain": "1.88.0",
+      "action": "test",
+      "log": {
+        "path": "/tmp/eris-vulkan-image-candidate-2/offline-1.88.0-test.log",
+        "bytes": 2187,
+        "sha256": "45086aa22e1c97371b9bb5b42316dd343ae1d4d7e260a68472ba5106eb061998"
+      },
+      "exit_code": 0,
+      "passed_tests": 17
+    },
+    {
+      "toolchain": "1.88.0",
+      "action": "clippy",
+      "log": {
+        "path": "/tmp/eris-vulkan-image-candidate-2/offline-1.88.0-clippy.log",
+        "bytes": 153,
+        "sha256": "16ca9509f170d4674ecae3311e7926d1e6741a402a916927fd3619bf7645f177"
+      },
+      "exit_code": 0
+    },
+    {
+      "toolchain": "1.88.0",
+      "action": "build",
+      "log": {
+        "path": "/tmp/eris-vulkan-image-candidate-2/offline-1.88.0-build.log",
+        "bytes": 153,
+        "sha256": "e88c20bfdf1989e3e3ce8a0ca5e77cfa8970c0ef8f3373bb9e21c607c79b09c9"
+      },
+      "exit_code": 0,
+      "binary": {
+        "path": "/tmp/eris-vulkan-image-candidate-2/eris-vulkan-raster-prototype-1.88.0",
+        "bytes": 18438536,
+        "sha256": "985c0c391e063ca2441a5b446f0163a4ff41ab478278809917bdbeb02c18017e"
+      }
+    },
+    {
+      "toolchain": "1.98.0",
+      "action": "fmt",
+      "log": {
+        "path": "/tmp/eris-vulkan-image-candidate-2/offline-1.98.0-fmt.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "exit_code": 0
+    },
+    {
+      "toolchain": "1.98.0",
+      "action": "test",
+      "log": {
+        "path": "/tmp/eris-vulkan-image-candidate-2/offline-1.98.0-test.log",
+        "bytes": 2185,
+        "sha256": "b9e7876e47f49fcdf3bed49da7c1f56e9658f75ac67c2bc8fa61a99dca3b0a01"
+      },
+      "exit_code": 0,
+      "passed_tests": 17
+    },
+    {
+      "toolchain": "1.98.0",
+      "action": "clippy",
+      "log": {
+        "path": "/tmp/eris-vulkan-image-candidate-2/offline-1.98.0-clippy.log",
+        "bytes": 153,
+        "sha256": "33de07513f6ae4dcf6d64a8fd2ada47f5836ab2f883b7b7b52e05824ded1293c"
+      },
+      "exit_code": 0
+    },
+    {
+      "toolchain": "1.98.0",
+      "action": "build",
+      "log": {
+        "path": "/tmp/eris-vulkan-image-candidate-2/offline-1.98.0-build.log",
+        "bytes": 153,
+        "sha256": "5de72131814eeec952dc9f10d43baeb4aed63c03519263bda6b7edb7806341d9"
+      },
+      "exit_code": 0,
+      "binary": {
+        "path": "/tmp/eris-vulkan-image-candidate-2/eris-vulkan-raster-prototype-1.98.0",
+        "bytes": 22231288,
+        "sha256": "20e34cfb03510d5ed02027ebf792fe9988ba069e837a94f7a6988f96a70d46b4"
+      }
+    }
+  ],
+  "test_names_per_toolchain": [
+    "tests::commands_overdraw_invocations_and_explicit_buffers_stay_bounded",
+    "tests::exact_edges_touching_clips_and_fixed_escape_empty_ancestors",
+    "tests::fractional_rectangle_and_clip_left_edges_are_deliberately_different",
+    "tests::image_all_642_frozen_lookup_entries_and_origins_are_preserved",
+    "tests::image_exact_gpu_byte_and_invocation_caps_accept_and_next_unit_rejects",
+    "tests::image_frozen_pixels_and_independently_counted_protocol_are_exact",
+    "tests::image_geometry_scopes_and_unsupported_commands_refuse_whole_plan",
+    "tests::image_plan_owns_sources_reuses_ids_and_validates_even_unused_entries",
+    "tests::image_scalar_sampling_matches_nine_frozen_float_edge_oracles",
+    "tests::image_source_command_and_scope_caps_accept_exact_boundaries",
+    "tests::image_strict_sources_reject_malformed_and_hidden_input",
+    "tests::independent_pixel_fixtures_agree_with_integer_plan",
+    "tests::invalid_nonfinite_coordinates_offsets_and_dimensions_are_rejected",
+    "tests::metadata_records_are_immutable_aligned_and_never_pixels",
+    "tests::pending_future_uses_finite_deadline_without_gpu",
+    "tests::typed_scope_balance_and_combined_depth_are_checked_atomically",
+    "tests::unsupported_content_is_rejected_even_after_hidden_or_empty_content"
+  ],
+  "offline_test_counts": "16 library + 1 binary deadline test = 17 per toolchain; zero doctests. All eight fmt/test/strict-Clippy/build outcomes are zero.",
+  "wgsl_reuse": "Both candidate2 shader hashes match independently validated candidate1 shader bytes. Naga30.0.1 all-flags/empty-capabilities validation reuse is valid; retained initial linker-thread failure remains separate.",
+  "browser_inputs": {
+    "present_hash_check_count": 100,
+    "input_digest": "2d4ea163d28898b44eae1933639960b8f7fc1cfb6986133a36b16965a4abd325",
+    "unchanged": true
+  },
+  "limits": [
+    "Offscreen opaque unrounded rectangles and opaque nearest-neighbor images only; no browser GPU raster backend or native presentation result.",
+    "This review establishes fixed-fixture byte agreement, not full Canvas/browser compatibility, security certification or performance.",
+    "The 1 MiB total bounds explicit buffers; driver/staging/process memory and blocked-driver teardown remain outside that claim."
+  ]
+}

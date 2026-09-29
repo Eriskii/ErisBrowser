@@ -2,7 +2,8 @@
 
 Status: an **optional Linux Vulkan upload presenter** is implemented. Software
 remains the default and the only headless path. Both paths use Eris's custom CPU
-rasterizer; custom GPU rasterization and compositing remain future milestones.
+rasterizer. A standalone custom GPU probe passes rectangle/image fixtures;
+browser integration of those shaders and compositing remain future work.
 No GPU speedup or Chromium performance result is established. Earlier isolated
 experiments and their failed compositor comparisons remain recorded below.
 
@@ -266,14 +267,22 @@ do not establish recovery from a real driver hang.
 
 ## Milestone B: custom GPU rasterization
 
-The isolated [rectangle raster probe](../tools/vulkan-raster-probe/README.md)
-now executes a custom WGSL compute shader for bounded, ordered opaque rectangles.
-Its [host evidence](../tools/vulkan-raster-probe/evidence/host-raster.json)
-records seven exact offscreen fixtures per NVIDIA, AMD and software Vulkan
-adapter, totaling 1,839,156 compared bytes. Independent literal pixel maps and
-band/constant expectations cover overlap, fractional clips, fixed scopes and
-dispatch edges. Only geometry/color metadata is uploaded; the shader also
-performs the background clear. This is a standalone prototype with its own
+The isolated [raster probe](../tools/vulkan-raster-probe/README.md) executes custom
+WGSL compute shaders for bounded, ordered opaque rectangles and nearest-neighbor
+images. Its [image host evidence](../tools/vulkan-raster-probe/evidence/host-images.json)
+records 21 exact offscreen fixtures per NVIDIA, AMD and software Vulkan adapter,
+totaling 2,763,816 compared bytes. The original seven rectangle fixtures and
+[earlier evidence](../tools/vulkan-raster-probe/evidence/host-raster.json) are
+preserved. Fourteen independently specified image fixtures cover scaling,
+original-origin sampling after clipping, fractional/ULP/subnormal geometry,
+fixed scopes, source reuse, draw order and dispatch tails.
+
+The GPU receives original source colors, metadata and separable sampling tables
+that preserve Canvas's scalar f32 operation order. Custom shaders perform the
+clear and all target writes; the target is never uploaded. Plans own immutable
+data, validate every supplied source, and retain the existing 1 MiB explicit
+GPU-buffer and four-million-invocation limits. Those bounds exclude driver and
+upload staging allocations. This remains a standalone prototype with its own
 manifest and lockfile. Browser integration and performance measurement remain
 open, and the normal browser still uses the CPU rasterizer.
 

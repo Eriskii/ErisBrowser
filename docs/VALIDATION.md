@@ -1,5 +1,45 @@
 # Validation record
 
+## Standalone Vulkan image rasterization
+
+The [custom raster probe](../tools/vulkan-raster-probe/README.md) adds opaque
+nearest-neighbor image commands to the earlier rectangle shader. Its separate
+[host record](../tools/vulkan-raster-probe/evidence/host-images.json) binds the
+tested source, binary, installed loader, all raw output and independent reviews.
+All **21 fixtures on each of three adapters** pass exactly: **921,272 compared
+bytes per adapter, 2,763,816 total**. NVIDIA RTX 4070 SUPER (595.99.02), AMD RADV
+(Mesa 26.2.3) and llvmpipe (LLVM 21.1.8/Mesa 26.2.3) all exited normally with
+empty stderr, as did enumeration. The original seven fixture definitions,
+rectangle shader, dependencies and earlier evidence remain byte-identical.
+
+Fourteen image cases use independently frozen literal pixels or direct integer
+band predicates, covering scaling, clipping with the original sampling origin,
+negative/fractional geometry, exact/ULP/subnormal edges, source reuse, ordered
+overlap, fixed-scope restoration, dispatch tails and empty draws. Data-only
+review checks fixture transcription, all **642 axis-table entries**, nine scalar
+sampling cases and the independently counted protocol. Negative tests retain
+25 definitions, 15 hidden-input variants and five exact boundaries; matching
+pops isolate the over-depth rejection from unclosed-scope rejection.
+
+Both **Rust 1.88.0 and 1.98.0** pass all **17 tests**, formatting, strict all-target
+Clippy and builds. All **ten Python protocol/supervisor tests** pass, including
+missing/altered image records and rejection of the earlier seven-only footer.
+Both WGSL shaders pass independent offline Naga 30.0.1 validation. The first
+Clippy failure in six single-element scalar-test loops is retained; equivalent
+direct assertions resolved it. The shader checker's initial linker failure to
+create a thread is also retained; the same checker and shaders passed after
+single-threaded linking. Neither correction changed expected results or limits.
+
+The actual GPU binary is SHA-256
+`20e34cfb03510d5ed02027ebf792fe9988ba069e837a94f7a6988f96a70d46b4`.
+Its source and binary hashes were checked before and after execution. All 100
+browser production input files remain identical to commit `8133250`; that
+checkpoint's full browser matrices, conformance rows and CPU references are
+reused, not reported as newly executed here. This isolated crate changes no
+browser dependency graph or native-window behavior. Browser GPU integration,
+text, blending, opacity groups, total driver memory accounting, production
+security and a Chromium performance comparison remain open.
+
 ## Shared own-key enumeration accounting
 
 The [enumeration evidence](../tests/conformance/own-keys.json) compares against

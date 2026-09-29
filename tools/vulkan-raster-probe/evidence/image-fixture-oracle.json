@@ -1,0 +1,4110 @@
+{
+  "format": "eris-vulkan-raster-image-fixtures-v1",
+  "status": "Frozen after independent mathematical review and root approval, before implementation, candidate tests or GPU execution.",
+  "authored_utc": "2026-09-29T10:07:25.287911+00:00",
+  "scope": {
+    "repository_edits": false,
+    "engine_execution": false,
+    "Canvas_execution": false,
+    "candidate_planner_execution": false,
+    "GPU_execution": false,
+    "builds": false,
+    "allowed_generation": "Only expansion of manually authored literal color grids/direct integer band predicates to expected packed-byte hashes and original source RGBA byte hashes."
+  },
+  "schema": {
+    "color_palette": "Each color is explicit RGB plus alpha 255; clear is 0x00RRGGBB. Source rows and output rows use the same literal palette, but output expansion never samples sources.",
+    "float_encoding": "JSON ordinary geometry numbers denote exactly representable dyadic/integer f32 values. f32_bits objects denote the exact 32-bit binary payload, with no decimal round trip. Arithmetic oracle is the current Rust f32 operation order; no f64/reciprocal/FMA substitution.",
+    "command_index": "Zero-based index in that fixture command list, excluding the implicit initial clear.",
+    "scalar_lut_cases": "May deliberately supply destination coordinates outside visible coverage to unit-check the scalar clamp formula; these are not extra image dispatch pixels.",
+    "repeat_patterns": "Bounded declarative repetition/fill for planner tests; no expansion or renderer execution was performed for malformed/budget input descriptions.",
+    "new_protocol": "New PASS buffer/invocation records are not generated from a candidate; final protocol tuples require separate reviewed calculation once storage layout is accepted. Original seven tuples are copied exactly below.",
+    "negative_case_assembly": "Start with default_frame, one default_valid_source, and one default_image. source replaces source 0; sources_pattern replaces the entire source table. frame/default_frame and document_offset set frame fields. rect/image_source_id replace fields in the default image. commands or commands_pattern replace the command list; suffix is appended after the default image. Hidden expansions inherit the base source/limits and replace commands, with invalid IDs explicitly retained.",
+    "positive_boundary_case_assembly": "Use the explicit frame/source or sources_pattern and commands/commands_pattern. repeat/sequence descriptions are finite exact lists, expanded only later by an authorized fixture implementation. Source rgba_repeat is an exact four-byte fill, not a renderer-produced image."
+  },
+  "palette": {
+    ".": {
+      "rgb_u32": 16777215,
+      "rgb_hex": "0xffffff",
+      "rgba_hex": "ffffffff"
+    },
+    "Z": {
+      "rgb_u32": 1193046,
+      "rgb_hex": "0x123456",
+      "rgba_hex": "123456ff"
+    },
+    "A": {
+      "rgb_u32": 66051,
+      "rgb_hex": "0x010203",
+      "rgba_hex": "010203ff"
+    },
+    "B": {
+      "rgb_u32": 16711164,
+      "rgb_hex": "0xfefdfc",
+      "rgba_hex": "fefdfcff"
+    },
+    "C": {
+      "rgb_u32": 14684192,
+      "rgb_hex": "0xe01020",
+      "rgba_hex": "e01020ff"
+    },
+    "D": {
+      "rgb_u32": 2113728,
+      "rgb_hex": "0x2040c0",
+      "rgba_hex": "2040c0ff"
+    },
+    "E": {
+      "rgb_u32": 8433696,
+      "rgb_hex": "0x80b020",
+      "rgba_hex": "80b020ff"
+    },
+    "F": {
+      "rgb_u32": 10502352,
+      "rgb_hex": "0xa040d0",
+      "rgba_hex": "a040d0ff"
+    },
+    "G": {
+      "rgb_u32": 1533353,
+      "rgb_hex": "0x1765a9",
+      "rgba_hex": "1765a9ff"
+    },
+    "H": {
+      "rgb_u32": 11785479,
+      "rgb_hex": "0xb3d507",
+      "rgba_hex": "b3d507ff"
+    },
+    "I": {
+      "rgb_u32": 14121763,
+      "rgb_hex": "0xd77b23",
+      "rgba_hex": "d77b23ff"
+    },
+    "J": {
+      "rgb_u32": 2873245,
+      "rgb_hex": "0x2bd79d",
+      "rgba_hex": "2bd79dff"
+    },
+    "K": {
+      "rgb_u32": 10434015,
+      "rgb_hex": "0x9f35df",
+      "rgba_hex": "9f35dfff"
+    },
+    "L": {
+      "rgb_u32": 5069083,
+      "rgb_hex": "0x4d591b",
+      "rgba_hex": "4d591bff"
+    },
+    "M": {
+      "rgb_u32": 12690735,
+      "rgb_hex": "0xc1a52f",
+      "rgba_hex": "c1a52fff"
+    },
+    "N": {
+      "rgb_u32": 7048675,
+      "rgb_hex": "0x6b8de3",
+      "rgba_hex": "6b8de3ff"
+    },
+    "O": {
+      "rgb_u32": 5498825,
+      "rgb_hex": "0x53e7c9",
+      "rgba_hex": "53e7c9ff"
+    },
+    "P": {
+      "rgb_u32": 15303495,
+      "rgb_hex": "0xe98347",
+      "rgba_hex": "e98347ff"
+    }
+  },
+  "strict_source_format": {
+    "nonzero_source_dimensions": true,
+    "exact_rgba_byte_length": true,
+    "all_alpha_255": true,
+    "source_limit_entries": 256,
+    "total_declared_rgba_bytes": 1048576,
+    "source_pixels_at_most": 262144,
+    "source_ids": "u32 index into one prevalidated bounded source table; repeats reference identical bytes",
+    "stricter_than_Canvas": [
+      "Canvas skips zero-sized or undersized sources; this probe rejects them.",
+      "Canvas permits unused trailing RGBA bytes; this probe requires exact length.",
+      "Canvas supports transparent/translucent image blending; this probe rejects alpha other than 255 even when hidden.",
+      "Probe rejects unsupported whole streams instead of preserving partial Canvas painting after a limit."
+    ]
+  },
+  "limits": {
+    "viewport_max": [
+      320,
+      240
+    ],
+    "nonzero_viewport": true,
+    "commands": 256,
+    "combined_scopes": 32,
+    "rounded_invocations_including_clear": 4000000,
+    "explicit_gpu_buffer_bytes": 1048576,
+    "uniform_stride": 256,
+    "coordinate_absolute": 1000000,
+    "cpu_source_validation": "Check source count and checked aggregate exact lengths before scans/allocations; validate and pack each declared source once; do not rescan a shared source per draw.",
+    "cpu_lut_upper_bound_entries": 143360,
+    "cpu_lut_work": "At most visible width+height once per image draw, with cumulative count/byte preflight. The 143360 bound is derived from 256*(320+240), not an independently reachable success input under tighter limits.",
+    "exclusions": "No claim about driver/staging allocations, process peak memory, hard driver teardown bound, browser integration or performance."
+  },
+  "pixel_fixtures": [
+    {
+      "id": "image-upscale-2x2",
+      "frame": {
+        "width": 6,
+        "height": 6,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          6,
+          6
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "sources": [
+        {
+          "width": 2,
+          "height": 2,
+          "color_rows": [
+            "AB",
+            "CD"
+          ],
+          "rgba_hex": "010203fffefdfcffe01020ff2040c0ff",
+          "rgba_sha256": "0fed72bb6a92e4eedaccc39f287c997b25be9d859509018c56e773814bec1b0d",
+          "rgba_bytes": 16
+        }
+      ],
+      "commands": [
+        {
+          "op": "image",
+          "rect": [
+            1,
+            1,
+            4,
+            4
+          ],
+          "source": 0
+        }
+      ],
+      "expected": {
+        "kind": "literal_color_rows",
+        "rows": [
+          "......",
+          ".AABB.",
+          ".AABB.",
+          ".CCDD.",
+          ".CCDD.",
+          "......"
+        ],
+        "pixel_count": 36,
+        "packed_u32_le_bytes": 144,
+        "packed_u32_le_sha256": "7e614b137b61d61dab02001ac83bfb21b24ff3e6e322780f7688ea73caf5bd58",
+        "row_order": "top-to-bottom; x increasing within each row"
+      },
+      "expected_luts": [
+        {
+          "command_index": 0,
+          "destination_integer_origin": [
+            1,
+            1
+          ],
+          "translated_rect": [
+            1,
+            1,
+            4,
+            4
+          ],
+          "x_source_indices": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "y_source_indices": [
+            0,
+            0,
+            1,
+            1
+          ]
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "image-three-columns-to-five",
+      "frame": {
+        "width": 7,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          7,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "sources": [
+        {
+          "width": 3,
+          "height": 1,
+          "color_rows": [
+            "ABC"
+          ],
+          "rgba_hex": "010203fffefdfcffe01020ff",
+          "rgba_sha256": "c56d987c737286fdbe33900e350159a0705989f0b51b619f2b47e82909b5fb9e",
+          "rgba_bytes": 12
+        }
+      ],
+      "commands": [
+        {
+          "op": "image",
+          "rect": [
+            1,
+            1,
+            5,
+            1
+          ],
+          "source": 0
+        }
+      ],
+      "expected": {
+        "kind": "literal_color_rows",
+        "rows": [
+          ".......",
+          ".AABBC.",
+          "......."
+        ],
+        "pixel_count": 21,
+        "packed_u32_le_bytes": 84,
+        "packed_u32_le_sha256": "486012fc3fa8e579560cd2eebd36f5ab7a9dc962574fbe62f9a8b9a6cd9a396c",
+        "row_order": "top-to-bottom; x increasing within each row"
+      },
+      "expected_luts": [
+        {
+          "command_index": 0,
+          "destination_integer_origin": [
+            1,
+            1
+          ],
+          "translated_rect": [
+            1,
+            1,
+            5,
+            1
+          ],
+          "x_source_indices": [
+            0,
+            0,
+            1,
+            1,
+            2
+          ],
+          "y_source_indices": [
+            0
+          ]
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "image-downscale-distinct-4x4",
+      "frame": {
+        "width": 4,
+        "height": 4,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          4
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "sources": [
+        {
+          "width": 4,
+          "height": 4,
+          "color_rows": [
+            "ABCD",
+            "EFGH",
+            "IJKL",
+            "MNOP"
+          ],
+          "rgba_hex": "010203fffefdfcffe01020ff2040c0ff80b020ffa040d0ff1765a9ffb3d507ffd77b23ff2bd79dff9f35dfff4d591bffc1a52fff6b8de3ff53e7c9ffe98347ff",
+          "rgba_sha256": "d9933ac24fc44cd0620d89f171a0c0f0ae4dc8035cefe41def7fc51c86100016",
+          "rgba_bytes": 64
+        }
+      ],
+      "commands": [
+        {
+          "op": "image",
+          "rect": [
+            1,
+            1,
+            2,
+            2
+          ],
+          "source": 0
+        }
+      ],
+      "expected": {
+        "kind": "literal_color_rows",
+        "rows": [
+          "....",
+          ".AC.",
+          ".IK.",
+          "...."
+        ],
+        "pixel_count": 16,
+        "packed_u32_le_bytes": 64,
+        "packed_u32_le_sha256": "d09052dcffe34f29718fec99e2e9f5fa0b870725536acc67ed08b93bec39a89d",
+        "row_order": "top-to-bottom; x increasing within each row"
+      },
+      "expected_luts": [
+        {
+          "command_index": 0,
+          "destination_integer_origin": [
+            1,
+            1
+          ],
+          "translated_rect": [
+            1,
+            1,
+            2,
+            2
+          ],
+          "x_source_indices": [
+            0,
+            2
+          ],
+          "y_source_indices": [
+            0,
+            2
+          ]
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "image-clip-preserves-original-origin",
+      "frame": {
+        "width": 8,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          8,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "sources": [
+        {
+          "width": 3,
+          "height": 1,
+          "color_rows": [
+            "ABC"
+          ],
+          "rgba_hex": "010203fffefdfcffe01020ff",
+          "rgba_sha256": "c56d987c737286fdbe33900e350159a0705989f0b51b619f2b47e82909b5fb9e",
+          "rgba_bytes": 12
+        }
+      ],
+      "commands": [
+        {
+          "op": "push_clip",
+          "rect": [
+            3,
+            1,
+            4,
+            1
+          ]
+        },
+        {
+          "op": "image",
+          "rect": [
+            1,
+            1,
+            6,
+            1
+          ],
+          "source": 0
+        },
+        {
+          "op": "pop_clip"
+        }
+      ],
+      "expected": {
+        "kind": "literal_color_rows",
+        "rows": [
+          "........",
+          "...BBCC.",
+          "........"
+        ],
+        "pixel_count": 24,
+        "packed_u32_le_bytes": 96,
+        "packed_u32_le_sha256": "6b1fd3bb99c7b8061629fc2e99ad79b01295a8f2ef0d419bebf01442dcdb793a",
+        "row_order": "top-to-bottom; x increasing within each row"
+      },
+      "expected_luts": [
+        {
+          "command_index": 1,
+          "destination_integer_origin": [
+            3,
+            1
+          ],
+          "translated_rect": [
+            1,
+            1,
+            6,
+            1
+          ],
+          "x_source_indices": [
+            1,
+            1,
+            2,
+            2
+          ],
+          "y_source_indices": [
+            0
+          ]
+        }
+      ],
+      "notes": "Visible clip starts two destination pixels into the image; it must not restart at source A."
+    },
+    {
+      "id": "image-negative-document-offset",
+      "frame": {
+        "width": 5,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          5,
+          3
+        ],
+        "document_offset": [
+          -2,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "sources": [
+        {
+          "width": 3,
+          "height": 2,
+          "color_rows": [
+            "ABC",
+            "DEF"
+          ],
+          "rgba_hex": "010203fffefdfcffe01020ff2040c0ff80b020ffa040d0ff",
+          "rgba_sha256": "df634781448e4f63671b60df2525fce4c779a8e6bf551cc5a2224c100cdb366b",
+          "rgba_bytes": 24
+        }
+      ],
+      "commands": [
+        {
+          "op": "image",
+          "rect": [
+            0,
+            0,
+            6,
+            2
+          ],
+          "source": 0
+        }
+      ],
+      "expected": {
+        "kind": "literal_color_rows",
+        "rows": [
+          "BBCC.",
+          "EEFF.",
+          "....."
+        ],
+        "pixel_count": 15,
+        "packed_u32_le_bytes": 60,
+        "packed_u32_le_sha256": "5af2169a8beda798da0f5e50f3b6544c2ea0b41b5f8b80cc440155a2849e68a3",
+        "row_order": "top-to-bottom; x increasing within each row"
+      },
+      "expected_luts": [
+        {
+          "command_index": 0,
+          "destination_integer_origin": [
+            0,
+            0
+          ],
+          "translated_rect": [
+            -2,
+            0,
+            6,
+            2
+          ],
+          "x_source_indices": [
+            1,
+            1,
+            2,
+            2
+          ],
+          "y_source_indices": [
+            0,
+            1
+          ]
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "image-negative-fractional-origin",
+      "frame": {
+        "width": 4,
+        "height": 4,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          4
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "sources": [
+        {
+          "width": 2,
+          "height": 2,
+          "color_rows": [
+            "AB",
+            "CD"
+          ],
+          "rgba_hex": "010203fffefdfcffe01020ff2040c0ff",
+          "rgba_sha256": "0fed72bb6a92e4eedaccc39f287c997b25be9d859509018c56e773814bec1b0d",
+          "rgba_bytes": 16
+        }
+      ],
+      "commands": [
+        {
+          "op": "image",
+          "rect": [
+            -0.5,
+            -0.5,
+            3,
+            3
+          ],
+          "source": 0
+        }
+      ],
+      "expected": {
+        "kind": "literal_color_rows",
+        "rows": [
+          "ABB.",
+          "CDD.",
+          "CDD.",
+          "...."
+        ],
+        "pixel_count": 16,
+        "packed_u32_le_bytes": 64,
+        "packed_u32_le_sha256": "a72ae7a987d953652ad0b33eb1b1f5292444f9a24e5d98fa3d93f303e42773a1",
+        "row_order": "top-to-bottom; x increasing within each row"
+      },
+      "expected_luts": [
+        {
+          "command_index": 0,
+          "destination_integer_origin": [
+            0,
+            0
+          ],
+          "translated_rect": [
+            -0.5,
+            -0.5,
+            3,
+            3
+          ],
+          "x_source_indices": [
+            0,
+            1,
+            1
+          ],
+          "y_source_indices": [
+            0,
+            1,
+            1
+          ]
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "image-tiny-and-fractional-clip",
+      "frame": {
+        "width": 6,
+        "height": 4,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          6,
+          4
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "sources": [
+        {
+          "width": 1,
+          "height": 1,
+          "color_rows": [
+            "A"
+          ],
+          "rgba_hex": "010203ff",
+          "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+          "rgba_bytes": 4
+        },
+        {
+          "width": 4,
+          "height": 4,
+          "color_rows": [
+            "ABCD",
+            "EFGH",
+            "IJKL",
+            "MNOP"
+          ],
+          "rgba_hex": "010203fffefdfcffe01020ff2040c0ff80b020ffa040d0ff1765a9ffb3d507ffd77b23ff2bd79dff9f35dfff4d591bffc1a52fff6b8de3ff53e7c9ffe98347ff",
+          "rgba_sha256": "d9933ac24fc44cd0620d89f171a0c0f0ae4dc8035cefe41def7fc51c86100016",
+          "rgba_bytes": 64
+        }
+      ],
+      "commands": [
+        {
+          "op": "image",
+          "rect": [
+            0.25,
+            0.25,
+            0.125,
+            0.125
+          ],
+          "source": 0
+        },
+        {
+          "op": "push_clip",
+          "rect": [
+            0.25,
+            0.25,
+            1.5,
+            1.5
+          ]
+        },
+        {
+          "op": "image",
+          "rect": [
+            0.25,
+            0.25,
+            0.125,
+            0.125
+          ],
+          "source": 0
+        },
+        {
+          "op": "image",
+          "rect": [
+            0.25,
+            0.25,
+            1.5,
+            1.5
+          ],
+          "source": 1
+        },
+        {
+          "op": "pop_clip"
+        }
+      ],
+      "expected": {
+        "kind": "literal_color_rows",
+        "rows": [
+          "A.....",
+          ".K....",
+          "......",
+          "......"
+        ],
+        "pixel_count": 24,
+        "packed_u32_le_bytes": 96,
+        "packed_u32_le_sha256": "8c51c725c4d6a3fec6cf437acd72cc4db13ee89e9f3685a58fcfb8685f89f5af",
+        "row_order": "top-to-bottom; x increasing within each row"
+      },
+      "expected_luts": [
+        {
+          "command_index": 0,
+          "destination_integer_origin": [
+            0,
+            0
+          ],
+          "translated_rect": [
+            0.25,
+            0.25,
+            0.125,
+            0.125
+          ],
+          "x_source_indices": [
+            0
+          ],
+          "y_source_indices": [
+            0
+          ]
+        },
+        {
+          "command_index": 3,
+          "destination_integer_origin": [
+            1,
+            1
+          ],
+          "translated_rect": [
+            0.25,
+            0.25,
+            1.5,
+            1.5
+          ],
+          "x_source_indices": [
+            2
+          ],
+          "y_source_indices": [
+            2
+          ]
+        }
+      ],
+      "notes": "The first tiny rectangle paints integer origin (0,0). Identical geometry under the fractional clip paints nothing. Both integer-origin clip lower bounds exclude coordinate 0, while upper bounds include coordinate 1 only."
+    },
+    {
+      "id": "image-exact-and-one-ulp-translated-edges",
+      "frame": {
+        "width": 5,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          5,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "sources": [
+        {
+          "width": 2,
+          "height": 2,
+          "color_rows": [
+            "AB",
+            "CD"
+          ],
+          "rgba_hex": "010203fffefdfcffe01020ff2040c0ff",
+          "rgba_sha256": "0fed72bb6a92e4eedaccc39f287c997b25be9d859509018c56e773814bec1b0d",
+          "rgba_bytes": 16
+        }
+      ],
+      "commands": [
+        {
+          "op": "image",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "source": 0
+        },
+        {
+          "op": "image",
+          "rect": [
+            2,
+            0,
+            {
+              "f32_bits": "0x3f800002"
+            },
+            {
+              "f32_bits": "0x3f800001"
+            }
+          ],
+          "source": 0
+        }
+      ],
+      "expected": {
+        "kind": "literal_color_rows",
+        "rows": [
+          "A.AB.",
+          "..CD.",
+          "....."
+        ],
+        "pixel_count": 15,
+        "packed_u32_le_bytes": 60,
+        "packed_u32_le_sha256": "e7e4b1999cfa2d609d85474dd20926d3473bd4b6db3d3de083f341eac75562ca",
+        "row_order": "top-to-bottom; x increasing within each row"
+      },
+      "expected_luts": [
+        {
+          "command_index": 0,
+          "destination_integer_origin": [
+            0,
+            0
+          ],
+          "translated_rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "x_source_indices": [
+            0
+          ],
+          "y_source_indices": [
+            0
+          ]
+        },
+        {
+          "command_index": 1,
+          "destination_integer_origin": [
+            2,
+            0
+          ],
+          "translated_rect": [
+            2,
+            0,
+            {
+              "f32_bits": "0x3f800002"
+            },
+            {
+              "f32_bits": "0x3f800001"
+            }
+          ],
+          "x_source_indices": [
+            0,
+            1
+          ],
+          "y_source_indices": [
+            0,
+            1
+          ]
+        }
+      ],
+      "notes": "At translated x=2 the width must be 1+2^-22 (two ULPs at 1) so its sum is one ULP above 3. Height at y=0 uses 1+2^-23. A width of only 1+2^-23 at x=2 rounds the endpoint back to 3, tested separately."
+    },
+    {
+      "id": "image-f32-endpoint-addition-rounds-back",
+      "frame": {
+        "width": 4,
+        "height": 2,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          2
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "sources": [
+        {
+          "width": 2,
+          "height": 1,
+          "color_rows": [
+            "AB"
+          ],
+          "rgba_hex": "010203fffefdfcff",
+          "rgba_sha256": "be3b3b271d99642d06e69bd73927a7f3309089952d3077233cbf8122f7a8464a",
+          "rgba_bytes": 8
+        }
+      ],
+      "commands": [
+        {
+          "op": "image",
+          "rect": [
+            2,
+            0,
+            {
+              "f32_bits": "0x3f800001"
+            },
+            1
+          ],
+          "source": 0
+        }
+      ],
+      "expected": {
+        "kind": "literal_color_rows",
+        "rows": [
+          "..A.",
+          "...."
+        ],
+        "pixel_count": 8,
+        "packed_u32_le_bytes": 32,
+        "packed_u32_le_sha256": "b69871bca4c84d5aa47cc3b49037b9f489a8fc37f5af2d0332842a9e6858ae6c",
+        "row_order": "top-to-bottom; x increasing within each row"
+      },
+      "expected_luts": [
+        {
+          "command_index": 0,
+          "destination_integer_origin": [
+            2,
+            0
+          ],
+          "translated_rect": [
+            2,
+            0,
+            {
+              "f32_bits": "0x3f800001"
+            },
+            1
+          ],
+          "x_source_indices": [
+            0
+          ],
+          "y_source_indices": [
+            0
+          ]
+        }
+      ],
+      "notes": "2 + (1+2^-23) is halfway between adjacent f32 values at 3 and rounds to 3.0 in the CPU operation sequence. Do not compute this end in f64 or ceil before the f32 addition."
+    },
+    {
+      "id": "image-rectangle-order-and-source-reuse",
+      "frame": {
+        "width": 6,
+        "height": 4,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          6,
+          4
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "sources": [
+        {
+          "width": 2,
+          "height": 1,
+          "color_rows": [
+            "AB"
+          ],
+          "rgba_hex": "010203fffefdfcff",
+          "rgba_sha256": "be3b3b271d99642d06e69bd73927a7f3309089952d3077233cbf8122f7a8464a",
+          "rgba_bytes": 8
+        },
+        {
+          "width": 2,
+          "height": 1,
+          "color_rows": [
+            "CD"
+          ],
+          "rgba_hex": "e01020ff2040c0ff",
+          "rgba_sha256": "bd17d23428cfe7595bef6aeea979178201d4a7b3d881b576e1031b914be2e194",
+          "rgba_bytes": 8
+        }
+      ],
+      "commands": [
+        {
+          "op": "image",
+          "rect": [
+            0,
+            0,
+            6,
+            4
+          ],
+          "source": 0
+        },
+        {
+          "op": "rect",
+          "rect": [
+            1,
+            1,
+            4,
+            2
+          ],
+          "color": "E",
+          "alpha": 255,
+          "radius": 0
+        },
+        {
+          "op": "image",
+          "rect": [
+            2,
+            0,
+            2,
+            3
+          ],
+          "source": 1
+        },
+        {
+          "op": "image",
+          "rect": [
+            0,
+            3,
+            4,
+            1
+          ],
+          "source": 0
+        }
+      ],
+      "expected": {
+        "kind": "literal_color_rows",
+        "rows": [
+          "AACDBB",
+          "AECDEB",
+          "AECDEB",
+          "AABBBB"
+        ],
+        "pixel_count": 24,
+        "packed_u32_le_bytes": 96,
+        "packed_u32_le_sha256": "d562a700e88a8abc0c23a25c21cd12ee48228d56e12fd8344adc1f1b36343c01",
+        "row_order": "top-to-bottom; x increasing within each row"
+      },
+      "expected_luts": [
+        {
+          "command_index": 0,
+          "destination_integer_origin": [
+            0,
+            0
+          ],
+          "translated_rect": [
+            0,
+            0,
+            6,
+            4
+          ],
+          "x_source_indices": [
+            0,
+            0,
+            0,
+            1,
+            1,
+            1
+          ],
+          "y_source_indices": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "command_index": 2,
+          "destination_integer_origin": [
+            2,
+            0
+          ],
+          "translated_rect": [
+            2,
+            0,
+            2,
+            3
+          ],
+          "x_source_indices": [
+            0,
+            1
+          ],
+          "y_source_indices": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "command_index": 3,
+          "destination_integer_origin": [
+            0,
+            3
+          ],
+          "translated_rect": [
+            0,
+            3,
+            4,
+            1
+          ],
+          "x_source_indices": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "y_source_indices": [
+            0
+          ]
+        }
+      ],
+      "notes": "Source 0 is reused with a different scale; its source bytes remain identical while LUTs and immutable uniform records differ. The middle rectangle and final image require display-list ordering."
+    },
+    {
+      "id": "image-fixed-escape-and-nested-restoration",
+      "frame": {
+        "width": 8,
+        "height": 5,
+        "clear": ".",
+        "caller_clip": [
+          1,
+          1,
+          6,
+          3
+        ],
+        "document_offset": [
+          -2,
+          -1
+        ],
+        "viewport_offset": [
+          1,
+          1
+        ]
+      },
+      "sources": [
+        {
+          "width": 2,
+          "height": 1,
+          "color_rows": [
+            "AB"
+          ],
+          "rgba_hex": "010203fffefdfcff",
+          "rgba_sha256": "be3b3b271d99642d06e69bd73927a7f3309089952d3077233cbf8122f7a8464a",
+          "rgba_bytes": 8
+        },
+        {
+          "width": 2,
+          "height": 1,
+          "color_rows": [
+            "GH"
+          ],
+          "rgba_hex": "1765a9ffb3d507ff",
+          "rgba_sha256": "24158aac41ef82081b60b3af3d6299adfcb1022b388e2160e1add6f9b66ffc7d",
+          "rgba_bytes": 8
+        },
+        {
+          "width": 1,
+          "height": 1,
+          "color_rows": [
+            "E"
+          ],
+          "rgba_hex": "80b020ff",
+          "rgba_sha256": "034941f825a6c612b0750944d81a3cc3bf3d9ec0cf6dda913afe2b85565581ab",
+          "rgba_bytes": 4
+        },
+        {
+          "width": 2,
+          "height": 1,
+          "color_rows": [
+            "IJ"
+          ],
+          "rgba_hex": "d77b23ff2bd79dff",
+          "rgba_sha256": "2fe2f3d6bb840a20b794693a824d28454ed2e6b2d9340ee7da145c713f5785c8",
+          "rgba_bytes": 8
+        },
+        {
+          "width": 1,
+          "height": 1,
+          "color_rows": [
+            "K"
+          ],
+          "rgba_hex": "9f35dfff",
+          "rgba_sha256": "5ee22232077dfeb14e4bfc4ed81dcec2c71e28fef9a5e2ec25bdd373ea1cacee",
+          "rgba_bytes": 4
+        },
+        {
+          "width": 2,
+          "height": 1,
+          "color_rows": [
+            "CD"
+          ],
+          "rgba_hex": "e01020ff2040c0ff",
+          "rgba_sha256": "bd17d23428cfe7595bef6aeea979178201d4a7b3d881b576e1031b914be2e194",
+          "rgba_bytes": 8
+        }
+      ],
+      "commands": [
+        {
+          "op": "push_clip",
+          "rect": [
+            20,
+            20,
+            1,
+            1
+          ]
+        },
+        {
+          "op": "image",
+          "rect": [
+            2,
+            1,
+            8,
+            5
+          ],
+          "source": 4
+        },
+        {
+          "op": "push_fixed"
+        },
+        {
+          "op": "image",
+          "rect": [
+            0,
+            0,
+            4,
+            2
+          ],
+          "source": 0
+        },
+        {
+          "op": "push_clip",
+          "rect": [
+            3,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "op": "image",
+          "rect": [
+            -1,
+            -1,
+            8,
+            6
+          ],
+          "source": 1
+        },
+        {
+          "op": "push_fixed"
+        },
+        {
+          "op": "image",
+          "rect": [
+            5,
+            2,
+            1,
+            1
+          ],
+          "source": 2
+        },
+        {
+          "op": "pop_fixed"
+        },
+        {
+          "op": "image",
+          "rect": [
+            -1,
+            -1,
+            8,
+            6
+          ],
+          "source": 3
+        },
+        {
+          "op": "pop_clip"
+        },
+        {
+          "op": "pop_fixed"
+        },
+        {
+          "op": "image",
+          "rect": [
+            2,
+            1,
+            8,
+            5
+          ],
+          "source": 4
+        },
+        {
+          "op": "pop_clip"
+        },
+        {
+          "op": "image",
+          "rect": [
+            3,
+            4,
+            2,
+            1
+          ],
+          "source": 5
+        }
+      ],
+      "expected": {
+        "kind": "literal_color_rows",
+        "rows": [
+          "........",
+          ".AABB...",
+          ".AABJ...",
+          ".CD...E.",
+          "........"
+        ],
+        "pixel_count": 40,
+        "packed_u32_le_bytes": 160,
+        "packed_u32_le_sha256": "3eb0f60a1348f9cd0afeb630c4546162b5bc7206f08601f12ac6d9c286f2bfb9",
+        "row_order": "top-to-bottom; x increasing within each row"
+      },
+      "expected_luts": [
+        {
+          "command_index": 3,
+          "destination_integer_origin": [
+            1,
+            1
+          ],
+          "translated_rect": [
+            1,
+            1,
+            4,
+            2
+          ],
+          "x_source_indices": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "y_source_indices": [
+            0,
+            0
+          ]
+        },
+        {
+          "command_index": 5,
+          "destination_integer_origin": [
+            4,
+            2
+          ],
+          "translated_rect": [
+            0,
+            0,
+            8,
+            6
+          ],
+          "x_source_indices": [
+            1
+          ],
+          "y_source_indices": [
+            0
+          ]
+        },
+        {
+          "command_index": 7,
+          "destination_integer_origin": [
+            6,
+            3
+          ],
+          "translated_rect": [
+            6,
+            3,
+            1,
+            1
+          ],
+          "x_source_indices": [
+            0
+          ],
+          "y_source_indices": [
+            0
+          ]
+        },
+        {
+          "command_index": 9,
+          "destination_integer_origin": [
+            4,
+            2
+          ],
+          "translated_rect": [
+            0,
+            0,
+            8,
+            6
+          ],
+          "x_source_indices": [
+            1
+          ],
+          "y_source_indices": [
+            0
+          ]
+        },
+        {
+          "command_index": 14,
+          "destination_integer_origin": [
+            1,
+            3
+          ],
+          "translated_rect": [
+            1,
+            3,
+            2,
+            1
+          ],
+          "x_source_indices": [
+            0,
+            1
+          ],
+          "y_source_indices": [
+            0
+          ]
+        }
+      ],
+      "notes": "The empty document clip suppresses both K images, but does not suppress fixed content. Nested fixed resets to caller clip/viewport offset; PopFixed restores the one-pixel fixed clip, and the final PopFixed/PopClip restore document translation and caller clip."
+    },
+    {
+      "id": "image-dispatch-tail-and-clear-border",
+      "frame": {
+        "width": 320,
+        "height": 240,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          320,
+          240
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "sources": [
+        {
+          "width": 2,
+          "height": 2,
+          "color_rows": [
+            "AB",
+            "CD"
+          ],
+          "rgba_hex": "010203fffefdfcffe01020ff2040c0ff",
+          "rgba_sha256": "0fed72bb6a92e4eedaccc39f287c997b25be9d859509018c56e773814bec1b0d",
+          "rgba_bytes": 16
+        }
+      ],
+      "commands": [
+        {
+          "op": "image",
+          "rect": [
+            0,
+            0,
+            319,
+            239
+          ],
+          "source": 0
+        }
+      ],
+      "expected": {
+        "kind": "direct_integer_color_bands",
+        "rules_in_order": [
+          {
+            "if": "x == 319 or y == 239",
+            "color": "."
+          },
+          {
+            "if": "y < 120 and x < 160",
+            "color": "A"
+          },
+          {
+            "if": "y < 120 and x >= 160",
+            "color": "B"
+          },
+          {
+            "if": "y >= 120 and x < 160",
+            "color": "C"
+          },
+          {
+            "if": "otherwise",
+            "color": "D"
+          }
+        ],
+        "pixel_count": 76800,
+        "packed_u32_le_bytes": 307200,
+        "packed_u32_le_sha256": "c294974e3ce63e54ab21b7623889c2c170806e4bff25b0998506b1b0f765e48e",
+        "row_order": "top-to-bottom; x increasing within each row"
+      },
+      "expected_luts": [
+        {
+          "command_index": 0,
+          "destination_integer_origin": [
+            0,
+            0
+          ],
+          "translated_rect": [
+            0,
+            0,
+            319,
+            239
+          ],
+          "x_source_index_runs": [
+            {
+              "value": 0,
+              "count": 160
+            },
+            {
+              "value": 1,
+              "count": 159
+            }
+          ],
+          "y_source_index_runs": [
+            {
+              "value": 0,
+              "count": 120
+            },
+            {
+              "value": 1,
+              "count": 119
+            }
+          ]
+        }
+      ],
+      "notes": "The final column x=319 and final row y=239 retain clear white. The image dispatch rounds to 320x240 invocations, so invalid tail lanes must not write those pixels. Interior thresholds are integer x=160/y=120, away from ambiguous sampling boundaries."
+    },
+    {
+      "id": "image-valid-empty-and-hidden",
+      "frame": {
+        "width": 4,
+        "height": 3,
+        "clear": "Z",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "sources": [
+        {
+          "width": 1,
+          "height": 1,
+          "color_rows": [
+            "A"
+          ],
+          "rgba_hex": "010203ff",
+          "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+          "rgba_bytes": 4
+        }
+      ],
+      "commands": [
+        {
+          "op": "image",
+          "rect": [
+            0,
+            0,
+            0,
+            2
+          ],
+          "source": 0
+        },
+        {
+          "op": "image",
+          "rect": [
+            0,
+            0,
+            -1,
+            2
+          ],
+          "source": 0
+        },
+        {
+          "op": "image",
+          "rect": [
+            8,
+            8,
+            1,
+            1
+          ],
+          "source": 0
+        },
+        {
+          "op": "push_clip",
+          "rect": [
+            8,
+            8,
+            1,
+            1
+          ]
+        },
+        {
+          "op": "image",
+          "rect": [
+            0,
+            0,
+            4,
+            3
+          ],
+          "source": 0
+        },
+        {
+          "op": "pop_clip"
+        }
+      ],
+      "expected": {
+        "kind": "literal_color_rows",
+        "rows": [
+          "ZZZZ",
+          "ZZZZ",
+          "ZZZZ"
+        ],
+        "pixel_count": 12,
+        "packed_u32_le_bytes": 48,
+        "packed_u32_le_sha256": "8191e99f9ff3c5704b497681d99a55a089625429acc1571c0c7cfb2421c6da89",
+        "row_order": "top-to-bottom; x increasing within each row"
+      },
+      "expected_luts": [],
+      "notes": "All source data is well-formed and opaque even though no image writes survive. No image LUT or dispatch is required; source validation still occurs."
+    },
+    {
+      "id": "image-subnormal-origin-and-lost-extent",
+      "frame": {
+        "width": 2,
+        "height": 2,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          2,
+          2
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "sources": [
+        {
+          "width": 2,
+          "height": 1,
+          "color_rows": [
+            "AB"
+          ],
+          "rgba_hex": "010203fffefdfcff",
+          "rgba_sha256": "be3b3b271d99642d06e69bd73927a7f3309089952d3077233cbf8122f7a8464a",
+          "rgba_bytes": 8
+        },
+        {
+          "width": 1,
+          "height": 1,
+          "color_rows": [
+            "C"
+          ],
+          "rgba_hex": "e01020ff",
+          "rgba_sha256": "74108b0a0d6d3909a980c1074e990427868d95a715f16393f68994ec70e05e9d",
+          "rgba_bytes": 4
+        }
+      ],
+      "commands": [
+        {
+          "op": "image",
+          "rect": [
+            {
+              "f32_bits": "0x80000001"
+            },
+            0,
+            {
+              "f32_bits": "0x00000002"
+            },
+            1
+          ],
+          "source": 0
+        },
+        {
+          "op": "image",
+          "rect": [
+            1,
+            1,
+            {
+              "f32_bits": "0x00000001"
+            },
+            1
+          ],
+          "source": 1
+        }
+      ],
+      "expected": {
+        "kind": "literal_color_rows",
+        "rows": [
+          "B.",
+          ".."
+        ],
+        "pixel_count": 4,
+        "packed_u32_le_bytes": 16,
+        "packed_u32_le_sha256": "4be09fc256bd698429ae60b5644cd71b6b929fadbd3e849c459432d8bd0b93c4",
+        "row_order": "top-to-bottom; x increasing within each row"
+      },
+      "expected_luts": [
+        {
+          "command_index": 0,
+          "destination_integer_origin": [
+            0,
+            0
+          ],
+          "translated_rect": [
+            {
+              "f32_bits": "0x80000001"
+            },
+            0,
+            {
+              "f32_bits": "0x00000002"
+            },
+            1
+          ],
+          "x_source_indices": [
+            1
+          ],
+          "y_source_indices": [
+            0
+          ]
+        }
+      ],
+      "notes": "With m=2^-149, source coordinate at x=0 is ((0-(-m))/(2m))*2 = 1 exactly. The translated rectangle reaches +m and paints one pixel. The second rectangle has positive width m but 1+m rounds to 1 in f32, so the intersection width is zero and it emits nothing. No shader float arithmetic participates."
+    }
+  ],
+  "scalar_lut_oracles": [
+    {
+      "id": "lower-clamp",
+      "origin": 0.25,
+      "extent": 1.5,
+      "source_extent": 4,
+      "destination_integers": [
+        -1,
+        0,
+        1
+      ],
+      "expected_indices": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "upper-clamp-independent-of-coverage",
+      "origin": 0,
+      "extent": 2,
+      "source_extent": 3,
+      "destination_integers": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "expected_indices": [
+        0,
+        1,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "one-texel-source",
+      "origin": -0.5,
+      "extent": 3,
+      "source_extent": 1,
+      "destination_integers": [
+        -2,
+        0,
+        1,
+        2,
+        4
+      ],
+      "expected_indices": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "threshold-one-ulp-smaller-denominator",
+      "origin": 0,
+      "extent": {
+        "f32_bits": "0x3fffffff"
+      },
+      "source_extent": 4,
+      "destination_integers": [
+        1
+      ],
+      "expected_indices": [
+        2
+      ]
+    },
+    {
+      "id": "threshold-exact-denominator",
+      "origin": 0,
+      "extent": 2,
+      "source_extent": 4,
+      "destination_integers": [
+        1
+      ],
+      "expected_indices": [
+        2
+      ]
+    },
+    {
+      "id": "threshold-one-ulp-larger-denominator",
+      "origin": 0,
+      "extent": {
+        "f32_bits": "0x40000001"
+      },
+      "source_extent": 4,
+      "destination_integers": [
+        1
+      ],
+      "expected_indices": [
+        1
+      ]
+    },
+    {
+      "id": "subnormal-finite-ratio",
+      "origin": {
+        "f32_bits": "0x80000001"
+      },
+      "extent": {
+        "f32_bits": "0x00000002"
+      },
+      "source_extent": 2,
+      "destination_integers": [
+        0
+      ],
+      "expected_indices": [
+        1
+      ]
+    },
+    {
+      "id": "positive-intermediate-infinity-clamps",
+      "origin": 0,
+      "extent": {
+        "f32_bits": "0x00000001"
+      },
+      "source_extent": 2,
+      "destination_integers": [
+        1
+      ],
+      "expected_indices": [
+        1
+      ]
+    },
+    {
+      "id": "negative-intermediate-infinity-clamps",
+      "origin": 0,
+      "extent": {
+        "f32_bits": "0x00000001"
+      },
+      "source_extent": 2,
+      "destination_integers": [
+        -1
+      ],
+      "expected_indices": [
+        0
+      ]
+    }
+  ],
+  "negative_planner_cases": [
+    {
+      "id": "zero-source-width",
+      "source": {
+        "width": 0,
+        "height": 1,
+        "rgba_hex": ""
+      },
+      "reason": "source dimensions",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "zero-source-height",
+      "source": {
+        "width": 1,
+        "height": 0,
+        "rgba_hex": ""
+      },
+      "reason": "source dimensions",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "source-product-overflow",
+      "source": {
+        "width": 4294967295,
+        "height": 4294967295,
+        "rgba_hex": "010203ff"
+      },
+      "reason": "checked byte product before access/allocation",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "truncated-rgba",
+      "source": {
+        "width": 2,
+        "height": 2,
+        "rgba_hex": "010203ff010203ff010203ff010203"
+      },
+      "reason": "exact RGBA length",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "trailing-rgba",
+      "source": {
+        "width": 1,
+        "height": 1,
+        "rgba_hex": "010203ff00"
+      },
+      "reason": "exact RGBA length; stricter than Canvas",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "first-alpha-zero",
+      "source": {
+        "width": 2,
+        "height": 1,
+        "rgba_hex": "01020300fefdfcff"
+      },
+      "reason": "all pixels must be opaque",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "last-alpha-254",
+      "source": {
+        "width": 2,
+        "height": 1,
+        "rgba_hex": "010203fffefdfcfe"
+      },
+      "reason": "all pixels must be opaque",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "invalid-source-id",
+      "source": {
+        "width": 1,
+        "height": 1,
+        "rgba_hex": "010203ff"
+      },
+      "image_source_id": 1,
+      "reason": "source ID bounds",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "nonfinite-x",
+      "rect": [
+        {
+          "f32_bits": "0x7fc00000"
+        },
+        0,
+        1,
+        1
+      ],
+      "reason": "nonfinite geometry",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "infinite-height",
+      "rect": [
+        0,
+        0,
+        1,
+        {
+          "f32_bits": "0x7f800000"
+        }
+      ],
+      "reason": "nonfinite geometry",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "negative-infinite-offset",
+      "document_offset": [
+        {
+          "f32_bits": "0xff800000"
+        },
+        0
+      ],
+      "reason": "nonfinite offset",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "coordinate-over-cap",
+      "rect": [
+        1000001,
+        0,
+        1,
+        1
+      ],
+      "reason": "coordinate cap",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "rounded-rectangle-after-image",
+      "suffix": [
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "color": "A",
+          "alpha": 255,
+          "radius": 1
+        }
+      ],
+      "reason": "unsupported rounding rejects whole stream",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "opacity-after-image",
+      "suffix": [
+        {
+          "op": "unsupported",
+          "kind": "opacity"
+        }
+      ],
+      "reason": "unsupported opacity rejects whole stream",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "text-after-image",
+      "suffix": [
+        {
+          "op": "unsupported",
+          "kind": "text"
+        }
+      ],
+      "reason": "unsupported text rejects whole stream",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "mismatched-clip-fixed",
+      "commands": [
+        {
+          "op": "push_fixed"
+        },
+        {
+          "op": "pop_clip"
+        }
+      ],
+      "reason": "typed scope mismatch",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "scope-underflow",
+      "commands": [
+        {
+          "op": "pop_fixed"
+        }
+      ],
+      "reason": "typed scope underflow",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "unclosed-fixed",
+      "commands": [
+        {
+          "op": "push_fixed"
+        }
+      ],
+      "reason": "typed scope not closed",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "combined-scope-over-cap",
+      "commands_pattern": {
+        "sequence": [
+          {
+            "repeat": 33,
+            "command": {
+              "op": "push_fixed"
+            }
+          },
+          {
+            "repeat": 33,
+            "command": {
+              "op": "pop_fixed"
+            }
+          }
+        ]
+      },
+      "reason": "32 combined scopes; matching pops isolate depth rejection from end-of-stream unclosed-scope rejection",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "input-command-over-cap",
+      "commands_pattern": {
+        "repeat": 257,
+        "command": {
+          "op": "image",
+          "rect": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "source": 0
+        }
+      },
+      "reason": "256 command cap even with no visible pixels",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "source-count-over-cap",
+      "sources_pattern": {
+        "repeat": 257,
+        "source": {
+          "width": 1,
+          "height": 1,
+          "rgba_repeat": "010203ff",
+          "repeat_pixels": 1
+        }
+      },
+      "reason": "256 source entries, preflight before scans",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "source-byte-sum-over-cap",
+      "source": {
+        "width": 262145,
+        "height": 1,
+        "rgba_repeat": "010203ff",
+        "repeat_pixels": 262145
+      },
+      "reason": "1048580 declared RGBA bytes exceed 1048576 CPU source cap",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "distinct-source-byte-sum-over-cap",
+      "sources_pattern": {
+        "repeat": 2,
+        "source": {
+          "width": 131073,
+          "height": 1,
+          "rgba_repeat": "010203ff",
+          "repeat_pixels": 131073
+        }
+      },
+      "reason": "aggregate 1048584 source bytes exceed cap; per-source size alone insufficient",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 4,
+        "height": 3,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "explicit-gpu-bytes-one-word-over",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "source": {
+        "width": 262013,
+        "height": 1,
+        "rgba_repeat": "010203ff",
+        "repeat_pixels": 262013
+      },
+      "reason": "1048580 explicit buffer bytes with two 256-byte records, output/readback, source and 2 LUT words",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 1,
+        "height": 1,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    },
+    {
+      "id": "rounded-invocations-one-dispatch-over",
+      "frame": {
+        "width": 320,
+        "height": 240,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          320,
+          240
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "commands_pattern": {
+        "sequence": [
+          {
+            "repeat": 51,
+            "command": {
+              "op": "image",
+              "rect": [
+                0,
+                0,
+                320,
+                240
+              ],
+              "source": 0
+            }
+          },
+          {
+            "command": {
+              "op": "image",
+              "rect": [
+                0,
+                0,
+                80,
+                80
+              ],
+              "source": 0
+            }
+          },
+          {
+            "command": {
+              "op": "image",
+              "rect": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "source": 0
+            }
+          }
+        ]
+      },
+      "reason": "4000064 rounded invocations including clear exceed 4000000",
+      "expected": "reject whole plan before any instance/device operation",
+      "default_frame": {
+        "width": 320,
+        "height": 240,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          320,
+          240
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "default_valid_source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "default_image": {
+        "op": "image",
+        "rect": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "source": 0
+      }
+    }
+  ],
+  "hidden_negative_expansions": [
+    {
+      "id": "hidden-first-alpha-zero",
+      "base_negative_id": "first-alpha-zero",
+      "contexts": [
+        {
+          "name": "zero-size-image",
+          "commands": [
+            {
+              "op": "image",
+              "rect": [
+                0,
+                0,
+                0,
+                1
+              ],
+              "source": 0
+            }
+          ]
+        },
+        {
+          "name": "offscreen-image",
+          "commands": [
+            {
+              "op": "image",
+              "rect": [
+                20,
+                20,
+                1,
+                1
+              ],
+              "source": 0
+            }
+          ]
+        },
+        {
+          "name": "empty-active-clip",
+          "commands": [
+            {
+              "op": "push_clip",
+              "rect": [
+                20,
+                20,
+                1,
+                1
+              ]
+            },
+            {
+              "op": "image",
+              "rect": [
+                0,
+                0,
+                4,
+                3
+              ],
+              "source": 0
+            },
+            {
+              "op": "pop_clip"
+            }
+          ]
+        }
+      ],
+      "expected": "reject whole plan; hiding does not bypass malformed/source/alpha/limit preflight"
+    },
+    {
+      "id": "hidden-last-alpha-254",
+      "base_negative_id": "last-alpha-254",
+      "contexts": [
+        {
+          "name": "zero-size-image",
+          "commands": [
+            {
+              "op": "image",
+              "rect": [
+                0,
+                0,
+                0,
+                1
+              ],
+              "source": 0
+            }
+          ]
+        },
+        {
+          "name": "offscreen-image",
+          "commands": [
+            {
+              "op": "image",
+              "rect": [
+                20,
+                20,
+                1,
+                1
+              ],
+              "source": 0
+            }
+          ]
+        },
+        {
+          "name": "empty-active-clip",
+          "commands": [
+            {
+              "op": "push_clip",
+              "rect": [
+                20,
+                20,
+                1,
+                1
+              ]
+            },
+            {
+              "op": "image",
+              "rect": [
+                0,
+                0,
+                4,
+                3
+              ],
+              "source": 0
+            },
+            {
+              "op": "pop_clip"
+            }
+          ]
+        }
+      ],
+      "expected": "reject whole plan; hiding does not bypass malformed/source/alpha/limit preflight"
+    },
+    {
+      "id": "hidden-truncated-rgba",
+      "base_negative_id": "truncated-rgba",
+      "contexts": [
+        {
+          "name": "zero-size-image",
+          "commands": [
+            {
+              "op": "image",
+              "rect": [
+                0,
+                0,
+                0,
+                1
+              ],
+              "source": 0
+            }
+          ]
+        },
+        {
+          "name": "offscreen-image",
+          "commands": [
+            {
+              "op": "image",
+              "rect": [
+                20,
+                20,
+                1,
+                1
+              ],
+              "source": 0
+            }
+          ]
+        },
+        {
+          "name": "empty-active-clip",
+          "commands": [
+            {
+              "op": "push_clip",
+              "rect": [
+                20,
+                20,
+                1,
+                1
+              ]
+            },
+            {
+              "op": "image",
+              "rect": [
+                0,
+                0,
+                4,
+                3
+              ],
+              "source": 0
+            },
+            {
+              "op": "pop_clip"
+            }
+          ]
+        }
+      ],
+      "expected": "reject whole plan; hiding does not bypass malformed/source/alpha/limit preflight"
+    },
+    {
+      "id": "hidden-invalid-source-id",
+      "base_negative_id": "invalid-source-id",
+      "contexts": [
+        {
+          "name": "zero-size-image",
+          "commands": [
+            {
+              "op": "image",
+              "rect": [
+                0,
+                0,
+                0,
+                1
+              ],
+              "source": 1
+            }
+          ]
+        },
+        {
+          "name": "offscreen-image",
+          "commands": [
+            {
+              "op": "image",
+              "rect": [
+                20,
+                20,
+                1,
+                1
+              ],
+              "source": 1
+            }
+          ]
+        },
+        {
+          "name": "empty-active-clip",
+          "commands": [
+            {
+              "op": "push_clip",
+              "rect": [
+                20,
+                20,
+                1,
+                1
+              ]
+            },
+            {
+              "op": "image",
+              "rect": [
+                0,
+                0,
+                4,
+                3
+              ],
+              "source": 1
+            },
+            {
+              "op": "pop_clip"
+            }
+          ]
+        }
+      ],
+      "expected": "reject whole plan; hiding does not bypass malformed/source/alpha/limit preflight"
+    },
+    {
+      "id": "hidden-source-byte-sum-over-cap",
+      "base_negative_id": "source-byte-sum-over-cap",
+      "contexts": [
+        {
+          "name": "zero-size-image",
+          "commands": [
+            {
+              "op": "image",
+              "rect": [
+                0,
+                0,
+                0,
+                1
+              ],
+              "source": 0
+            }
+          ]
+        },
+        {
+          "name": "offscreen-image",
+          "commands": [
+            {
+              "op": "image",
+              "rect": [
+                20,
+                20,
+                1,
+                1
+              ],
+              "source": 0
+            }
+          ]
+        },
+        {
+          "name": "empty-active-clip",
+          "commands": [
+            {
+              "op": "push_clip",
+              "rect": [
+                20,
+                20,
+                1,
+                1
+              ]
+            },
+            {
+              "op": "image",
+              "rect": [
+                0,
+                0,
+                4,
+                3
+              ],
+              "source": 0
+            },
+            {
+              "op": "pop_clip"
+            }
+          ]
+        }
+      ],
+      "expected": "reject whole plan; hiding does not bypass malformed/source/alpha/limit preflight"
+    }
+  ],
+  "positive_boundary_planner_cases": [
+    {
+      "id": "exact-1MiB-explicit-buffers",
+      "expected": "accept plan",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "source": {
+        "width": 262012,
+        "height": 1,
+        "rgba_repeat": "010203ff",
+        "repeat_pixels": 262012
+      },
+      "commands": [
+        {
+          "op": "image",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "source": 0
+        }
+      ],
+      "expected_pixels": [
+        "A"
+      ],
+      "expected_luts": {
+        "x": [
+          0
+        ],
+        "y": [
+          0
+        ]
+      },
+      "accounting": {
+        "output_readback": 8,
+        "uniform_records": 512,
+        "source_words_as_bytes": 1048048,
+        "lut_bytes": 8,
+        "total": 1048576
+      },
+      "note": "Requires the proposed source-word/LUT arena with no additional GPU buffer; freeze only after that layout is accepted."
+    },
+    {
+      "id": "exact-four-million-invocations",
+      "expected": "accept plan",
+      "frame": {
+        "width": 320,
+        "height": 240,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          320,
+          240
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "commands_pattern": {
+        "sequence": [
+          {
+            "repeat": 51,
+            "command": {
+              "op": "image",
+              "rect": [
+                0,
+                0,
+                320,
+                240
+              ],
+              "source": 0
+            }
+          },
+          {
+            "command": {
+              "op": "image",
+              "rect": [
+                0,
+                0,
+                80,
+                80
+              ],
+              "source": 0
+            }
+          }
+        ]
+      },
+      "expected_output": {
+        "kind": "constant",
+        "color": "A",
+        "pixels": 76800
+      },
+      "accounting": {
+        "clear": 76800,
+        "full_image_dispatches": 51,
+        "full_image_invocations_each": 76800,
+        "last_80x80": 6400,
+        "total": 4000000,
+        "input_commands": 52,
+        "draws_including_clear": 53,
+        "lut_entries": 28720,
+        "source_pixels": 1,
+        "explicit_gpu_bytes": 742852
+      }
+    },
+    {
+      "id": "source-count-at-cap",
+      "expected": "accept plan",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": ".",
+        "caller_clip": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "sources_pattern": {
+        "repeat": 256,
+        "source": {
+          "width": 1,
+          "height": 1,
+          "color_rows": [
+            "A"
+          ],
+          "rgba_hex": "010203ff",
+          "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+          "rgba_bytes": 4
+        }
+      },
+      "commands": [
+        {
+          "op": "image",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "source": 255
+        }
+      ],
+      "expected_pixels": [
+        "A"
+      ],
+      "note": "Source entry IDs are explicit; no content-based deduplication oracle."
+    },
+    {
+      "id": "command-count-at-cap-noop",
+      "expected": "accept plan",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": "Z",
+        "caller_clip": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "commands_pattern": {
+        "repeat": 256,
+        "command": {
+          "op": "image",
+          "rect": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "source": 0
+        }
+      },
+      "expected_pixels": [
+        "Z"
+      ]
+    },
+    {
+      "id": "combined-scope-depth-at-cap",
+      "expected": "accept plan",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": "Z",
+        "caller_clip": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "source": {
+        "width": 1,
+        "height": 1,
+        "color_rows": [
+          "A"
+        ],
+        "rgba_hex": "010203ff",
+        "rgba_sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a",
+        "rgba_bytes": 4
+      },
+      "commands_pattern": {
+        "sequence": [
+          {
+            "repeat": 32,
+            "command": {
+              "op": "push_fixed"
+            }
+          },
+          {
+            "repeat": 32,
+            "command": {
+              "op": "pop_fixed"
+            }
+          }
+        ]
+      },
+      "expected_pixels": [
+        "Z"
+      ]
+    }
+  ],
+  "original_seven_unchanged": {
+    "protocol_tuple_columns": [
+      "name",
+      "width",
+      "height",
+      "draws",
+      "invocations",
+      "gpu_buffers",
+      "compared_bytes"
+    ],
+    "protocol_tuples": [
+      [
+        "overlapping-order",
+        8,
+        6,
+        5,
+        320,
+        1664,
+        192
+      ],
+      [
+        "fractional-clips",
+        8,
+        6,
+        4,
+        256,
+        1408,
+        192
+      ],
+      [
+        "fixed-resets-and-restores",
+        10,
+        7,
+        6,
+        448,
+        2096,
+        280
+      ],
+      [
+        "out-of-bounds-and-empty",
+        7,
+        5,
+        3,
+        192,
+        1048,
+        140
+      ],
+      [
+        "319x239-dispatch-edges",
+        319,
+        239,
+        4,
+        156160,
+        610952,
+        304964
+      ],
+      [
+        "forty-ordered-full-writes",
+        320,
+        240,
+        41,
+        3148800,
+        624896,
+        307200
+      ],
+      [
+        "gpu-clear-only",
+        7,
+        3,
+        1,
+        64,
+        424,
+        84
+      ]
+    ],
+    "compared_bytes_per_adapter": 613052,
+    "files": [
+      {
+        "path": "tools/vulkan-raster-probe/src/fixtures.rs",
+        "bytes": 4785,
+        "sha256": "7779ecab36a587f2792acf258b28709b9b4606ece0976c48c0c04aa8e1a45ab8"
+      },
+      {
+        "path": "tools/vulkan-raster-probe/src/rect.wgsl",
+        "bytes": 790,
+        "sha256": "e290ce60bef71560fdf7ab536410fbae0aa5d2b54f648d0706a457dae5c2c9af"
+      },
+      {
+        "path": "tools/vulkan-raster-probe/src/tests.rs",
+        "bytes": 7319,
+        "sha256": "b8483bed33a116fa1ee305806638821edec36b9bbdf1a99d80dbb97f0729aa39"
+      },
+      {
+        "path": "tools/vulkan-raster-probe/run_host.py",
+        "bytes": 13765,
+        "sha256": "0360d30d34e31e407539c6804044dd05c4f62798316574eb090fc68f6d8369c4"
+      },
+      {
+        "path": "tools/vulkan-raster-probe/test_protocol.py",
+        "bytes": 1515,
+        "sha256": "da26d70d111d8a8f1ba04b1d277be60481a7b6e7ccda5cc87b14cb99f492b3ba"
+      },
+      {
+        "path": "tools/vulkan-raster-probe/Cargo.toml",
+        "bytes": 323,
+        "sha256": "3150058ef3ee321212873e93aea1d745b7a5923faa39808e631ccbef28e4df23"
+      },
+      {
+        "path": "tools/vulkan-raster-probe/Cargo.lock",
+        "bytes": 23795,
+        "sha256": "b619519af5f81d79d976a0569ae1278565b3bbdd3e4a7243438f1d1ced81a182"
+      },
+      {
+        "path": "tools/vulkan-raster-probe/evidence/host-raster.json",
+        "bytes": 13753,
+        "sha256": "59901d26bf3831d9763becc8ee3c15e34d8e043c48e02e4809e80972026f2824"
+      },
+      {
+        "path": "tools/vulkan-raster-probe/evidence/enumeration.stdout.log",
+        "bytes": 465,
+        "sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+      },
+      {
+        "path": "tools/vulkan-raster-probe/evidence/enumeration.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "tools/vulkan-raster-probe/evidence/adapter-0.stdout.log",
+        "bytes": 1256,
+        "sha256": "4f2b1782b255963f38998d9531fb21fb1b640370b3fb58004543efce9b376dcd"
+      },
+      {
+        "path": "tools/vulkan-raster-probe/evidence/adapter-0.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "tools/vulkan-raster-probe/evidence/adapter-1.stdout.log",
+        "bytes": 1256,
+        "sha256": "7712fe0a28cf2da65c2445c0c534b5a50de12b087ea868345d1d28b853009ea0"
+      },
+      {
+        "path": "tools/vulkan-raster-probe/evidence/adapter-1.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "tools/vulkan-raster-probe/evidence/adapter-2.stdout.log",
+        "bytes": 1256,
+        "sha256": "87681cc2c50eb9703f78d2237dca52151b26a68198055616ca5bce0d91c776e5"
+      },
+      {
+        "path": "tools/vulkan-raster-probe/evidence/adapter-2.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "basis": {
+    "cpu_reference_file": {
+      "path": "src/graphics.rs",
+      "sha256": "1b51c4af2c8ae4eea66476397868022da35e566d3593f3fcddf29a156bae62a2"
+    },
+    "plan_review_sha256": "7ecea95031f31115c91c121b09afb400abcd24fc16611894f1fcecbe07ca0671",
+    "primary_urls": [
+      "https://www.w3.org/TR/2026/CRD-WGSL-20260921/#floating-point-evaluation"
+    ],
+    "not_a_claim": "These are proposed fixed inputs and independent expected results, not observed CPU or GPU outputs."
+  }
+}

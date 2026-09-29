@@ -1,0 +1,285 @@
+{
+  "scope": "Rust text/data extraction only; no Rust, planner, Canvas, engine, build, adapter or GPU execution",
+  "source_sha256": "d7fd6c1970f1bfad52021b0ae48401596d3124c5a7e29a1171a310d6d6f096ee",
+  "oracle_sha256": "ccd79c6ac60221ccaf463ce1ada56230c35e12039d3d8ca534e15019121c2ecf",
+  "fixture_count": 14,
+  "source_entries": 22,
+  "source_rgba_bytes": 324,
+  "expected_pixels": 77055,
+  "expected_bytes": 308220,
+  "exact_frames_commands_sources_and_expectations": true,
+  "fixtures": [
+    {
+      "id": "image-upscale-2x2",
+      "commands": 1,
+      "sources": [
+        {
+          "width": 2,
+          "height": 2,
+          "bytes": 16,
+          "sha256": "0fed72bb6a92e4eedaccc39f287c997b25be9d859509018c56e773814bec1b0d"
+        }
+      ],
+      "pixels": 36,
+      "expected_sha256": "7e614b137b61d61dab02001ac83bfb21b24ff3e6e322780f7688ea73caf5bd58",
+      "frame_and_geometry_bits_exact": true,
+      "command_order_exact": true
+    },
+    {
+      "id": "image-three-columns-to-five",
+      "commands": 1,
+      "sources": [
+        {
+          "width": 3,
+          "height": 1,
+          "bytes": 12,
+          "sha256": "c56d987c737286fdbe33900e350159a0705989f0b51b619f2b47e82909b5fb9e"
+        }
+      ],
+      "pixels": 21,
+      "expected_sha256": "486012fc3fa8e579560cd2eebd36f5ab7a9dc962574fbe62f9a8b9a6cd9a396c",
+      "frame_and_geometry_bits_exact": true,
+      "command_order_exact": true
+    },
+    {
+      "id": "image-downscale-distinct-4x4",
+      "commands": 1,
+      "sources": [
+        {
+          "width": 4,
+          "height": 4,
+          "bytes": 64,
+          "sha256": "d9933ac24fc44cd0620d89f171a0c0f0ae4dc8035cefe41def7fc51c86100016"
+        }
+      ],
+      "pixels": 16,
+      "expected_sha256": "d09052dcffe34f29718fec99e2e9f5fa0b870725536acc67ed08b93bec39a89d",
+      "frame_and_geometry_bits_exact": true,
+      "command_order_exact": true
+    },
+    {
+      "id": "image-clip-preserves-original-origin",
+      "commands": 3,
+      "sources": [
+        {
+          "width": 3,
+          "height": 1,
+          "bytes": 12,
+          "sha256": "c56d987c737286fdbe33900e350159a0705989f0b51b619f2b47e82909b5fb9e"
+        }
+      ],
+      "pixels": 24,
+      "expected_sha256": "6b1fd3bb99c7b8061629fc2e99ad79b01295a8f2ef0d419bebf01442dcdb793a",
+      "frame_and_geometry_bits_exact": true,
+      "command_order_exact": true
+    },
+    {
+      "id": "image-negative-document-offset",
+      "commands": 1,
+      "sources": [
+        {
+          "width": 3,
+          "height": 2,
+          "bytes": 24,
+          "sha256": "df634781448e4f63671b60df2525fce4c779a8e6bf551cc5a2224c100cdb366b"
+        }
+      ],
+      "pixels": 15,
+      "expected_sha256": "5af2169a8beda798da0f5e50f3b6544c2ea0b41b5f8b80cc440155a2849e68a3",
+      "frame_and_geometry_bits_exact": true,
+      "command_order_exact": true
+    },
+    {
+      "id": "image-negative-fractional-origin",
+      "commands": 1,
+      "sources": [
+        {
+          "width": 2,
+          "height": 2,
+          "bytes": 16,
+          "sha256": "0fed72bb6a92e4eedaccc39f287c997b25be9d859509018c56e773814bec1b0d"
+        }
+      ],
+      "pixels": 16,
+      "expected_sha256": "a72ae7a987d953652ad0b33eb1b1f5292444f9a24e5d98fa3d93f303e42773a1",
+      "frame_and_geometry_bits_exact": true,
+      "command_order_exact": true
+    },
+    {
+      "id": "image-tiny-and-fractional-clip",
+      "commands": 5,
+      "sources": [
+        {
+          "width": 1,
+          "height": 1,
+          "bytes": 4,
+          "sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a"
+        },
+        {
+          "width": 4,
+          "height": 4,
+          "bytes": 64,
+          "sha256": "d9933ac24fc44cd0620d89f171a0c0f0ae4dc8035cefe41def7fc51c86100016"
+        }
+      ],
+      "pixels": 24,
+      "expected_sha256": "8c51c725c4d6a3fec6cf437acd72cc4db13ee89e9f3685a58fcfb8685f89f5af",
+      "frame_and_geometry_bits_exact": true,
+      "command_order_exact": true
+    },
+    {
+      "id": "image-exact-and-one-ulp-translated-edges",
+      "commands": 2,
+      "sources": [
+        {
+          "width": 2,
+          "height": 2,
+          "bytes": 16,
+          "sha256": "0fed72bb6a92e4eedaccc39f287c997b25be9d859509018c56e773814bec1b0d"
+        }
+      ],
+      "pixels": 15,
+      "expected_sha256": "e7e4b1999cfa2d609d85474dd20926d3473bd4b6db3d3de083f341eac75562ca",
+      "frame_and_geometry_bits_exact": true,
+      "command_order_exact": true
+    },
+    {
+      "id": "image-f32-endpoint-addition-rounds-back",
+      "commands": 1,
+      "sources": [
+        {
+          "width": 2,
+          "height": 1,
+          "bytes": 8,
+          "sha256": "be3b3b271d99642d06e69bd73927a7f3309089952d3077233cbf8122f7a8464a"
+        }
+      ],
+      "pixels": 8,
+      "expected_sha256": "b69871bca4c84d5aa47cc3b49037b9f489a8fc37f5af2d0332842a9e6858ae6c",
+      "frame_and_geometry_bits_exact": true,
+      "command_order_exact": true
+    },
+    {
+      "id": "image-rectangle-order-and-source-reuse",
+      "commands": 4,
+      "sources": [
+        {
+          "width": 2,
+          "height": 1,
+          "bytes": 8,
+          "sha256": "be3b3b271d99642d06e69bd73927a7f3309089952d3077233cbf8122f7a8464a"
+        },
+        {
+          "width": 2,
+          "height": 1,
+          "bytes": 8,
+          "sha256": "bd17d23428cfe7595bef6aeea979178201d4a7b3d881b576e1031b914be2e194"
+        }
+      ],
+      "pixels": 24,
+      "expected_sha256": "d562a700e88a8abc0c23a25c21cd12ee48228d56e12fd8344adc1f1b36343c01",
+      "frame_and_geometry_bits_exact": true,
+      "command_order_exact": true
+    },
+    {
+      "id": "image-fixed-escape-and-nested-restoration",
+      "commands": 15,
+      "sources": [
+        {
+          "width": 2,
+          "height": 1,
+          "bytes": 8,
+          "sha256": "be3b3b271d99642d06e69bd73927a7f3309089952d3077233cbf8122f7a8464a"
+        },
+        {
+          "width": 2,
+          "height": 1,
+          "bytes": 8,
+          "sha256": "24158aac41ef82081b60b3af3d6299adfcb1022b388e2160e1add6f9b66ffc7d"
+        },
+        {
+          "width": 1,
+          "height": 1,
+          "bytes": 4,
+          "sha256": "034941f825a6c612b0750944d81a3cc3bf3d9ec0cf6dda913afe2b85565581ab"
+        },
+        {
+          "width": 2,
+          "height": 1,
+          "bytes": 8,
+          "sha256": "2fe2f3d6bb840a20b794693a824d28454ed2e6b2d9340ee7da145c713f5785c8"
+        },
+        {
+          "width": 1,
+          "height": 1,
+          "bytes": 4,
+          "sha256": "5ee22232077dfeb14e4bfc4ed81dcec2c71e28fef9a5e2ec25bdd373ea1cacee"
+        },
+        {
+          "width": 2,
+          "height": 1,
+          "bytes": 8,
+          "sha256": "bd17d23428cfe7595bef6aeea979178201d4a7b3d881b576e1031b914be2e194"
+        }
+      ],
+      "pixels": 40,
+      "expected_sha256": "3eb0f60a1348f9cd0afeb630c4546162b5bc7206f08601f12ac6d9c286f2bfb9",
+      "frame_and_geometry_bits_exact": true,
+      "command_order_exact": true
+    },
+    {
+      "id": "image-dispatch-tail-and-clear-border",
+      "commands": 1,
+      "sources": [
+        {
+          "width": 2,
+          "height": 2,
+          "bytes": 16,
+          "sha256": "0fed72bb6a92e4eedaccc39f287c997b25be9d859509018c56e773814bec1b0d"
+        }
+      ],
+      "pixels": 76800,
+      "expected_sha256": "c294974e3ce63e54ab21b7623889c2c170806e4bff25b0998506b1b0f765e48e",
+      "frame_and_geometry_bits_exact": true,
+      "command_order_exact": true
+    },
+    {
+      "id": "image-valid-empty-and-hidden",
+      "commands": 6,
+      "sources": [
+        {
+          "width": 1,
+          "height": 1,
+          "bytes": 4,
+          "sha256": "3e6f9aae16382bf563d8991b6da1b92213911f0dd5deea3ecaccf2f35a56794a"
+        }
+      ],
+      "pixels": 12,
+      "expected_sha256": "8191e99f9ff3c5704b497681d99a55a089625429acc1571c0c7cfb2421c6da89",
+      "frame_and_geometry_bits_exact": true,
+      "command_order_exact": true
+    },
+    {
+      "id": "image-subnormal-origin-and-lost-extent",
+      "commands": 2,
+      "sources": [
+        {
+          "width": 2,
+          "height": 1,
+          "bytes": 8,
+          "sha256": "be3b3b271d99642d06e69bd73927a7f3309089952d3077233cbf8122f7a8464a"
+        },
+        {
+          "width": 1,
+          "height": 1,
+          "bytes": 4,
+          "sha256": "74108b0a0d6d3909a980c1074e990427868d95a715f16393f68994ec70e05e9d"
+        }
+      ],
+      "pixels": 4,
+      "expected_sha256": "4be09fc256bd698429ae60b5644cd71b6b929fadbd3e849c459432d8bd0b93c4",
+      "frame_and_geometry_bits_exact": true,
+      "command_order_exact": true
+    }
+  ]
+}

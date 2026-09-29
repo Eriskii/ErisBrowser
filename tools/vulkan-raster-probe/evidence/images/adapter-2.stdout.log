@@ -1,0 +1,25 @@
+ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name="NVIDIA GeForce RTX 4070 SUPER" driver="NVIDIA" info="595.99.02"
+ADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name="AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)" driver="radv" info="Mesa 26.2.3"
+ADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name="llvmpipe (LLVM 21.1.8, 256 bits)" driver="llvmpipe" info="Mesa 26.2.3 (LLVM 21.1.8)"
+PASS overlapping-order 8x6 draws=5 invocations=320 gpu_buffers=1664 compared_bytes=192 exact=true
+PASS fractional-clips 8x6 draws=4 invocations=256 gpu_buffers=1408 compared_bytes=192 exact=true
+PASS fixed-resets-and-restores 10x7 draws=6 invocations=448 gpu_buffers=2096 compared_bytes=280 exact=true
+PASS out-of-bounds-and-empty 7x5 draws=3 invocations=192 gpu_buffers=1048 compared_bytes=140 exact=true
+PASS 319x239-dispatch-edges 319x239 draws=4 invocations=156160 gpu_buffers=610952 compared_bytes=304964 exact=true
+PASS forty-ordered-full-writes 320x240 draws=41 invocations=3148800 gpu_buffers=624896 compared_bytes=307200 exact=true
+PASS gpu-clear-only 7x3 draws=1 invocations=64 gpu_buffers=424 compared_bytes=84 exact=true
+PASS image-upscale-2x2 6x6 draws=2 invocations=128 gpu_buffers=848 compared_bytes=144 exact=true
+PASS image-three-columns-to-five 7x3 draws=2 invocations=128 gpu_buffers=716 compared_bytes=84 exact=true
+PASS image-downscale-distinct-4x4 4x4 draws=2 invocations=128 gpu_buffers=720 compared_bytes=64 exact=true
+PASS image-clip-preserves-original-origin 8x3 draws=2 invocations=128 gpu_buffers=736 compared_bytes=96 exact=true
+PASS image-negative-document-offset 5x3 draws=2 invocations=128 gpu_buffers=680 compared_bytes=60 exact=true
+PASS image-negative-fractional-origin 4x4 draws=2 invocations=128 gpu_buffers=680 compared_bytes=64 exact=true
+PASS image-tiny-and-fractional-clip 6x4 draws=3 invocations=192 gpu_buffers=1044 compared_bytes=96 exact=true
+PASS image-exact-and-one-ulp-translated-edges 5x3 draws=3 invocations=192 gpu_buffers=928 compared_bytes=60 exact=true
+PASS image-f32-endpoint-addition-rounds-back 4x2 draws=2 invocations=128 gpu_buffers=592 compared_bytes=32 exact=true
+PASS image-rectangle-order-and-source-reuse 6x4 draws=5 invocations=320 gpu_buffers=1568 compared_bytes=96 exact=true
+PASS image-fixed-escape-and-nested-restoration 8x5 draws=6 invocations=384 gpu_buffers=1956 compared_bytes=160 exact=true
+PASS image-dispatch-tail-and-clear-border 320x240 draws=2 invocations=153600 gpu_buffers=617160 compared_bytes=307200 exact=true
+PASS image-valid-empty-and-hidden 4x3 draws=1 invocations=64 gpu_buffers=352 compared_bytes=48 exact=true
+PASS image-subnormal-origin-and-lost-extent 2x2 draws=2 invocations=128 gpu_buffers=564 compared_bytes=16 exact=true
+COMPLETE adapter=2 fixtures=21 exact=true custom_wgsl=true

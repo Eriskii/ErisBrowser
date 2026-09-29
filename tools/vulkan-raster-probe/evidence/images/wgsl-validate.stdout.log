@@ -1,0 +1,3 @@
+PASS rect.wgsl Naga=30.0.1 parse=true validation=true flags=all capabilities=empty entry=rectangle workgroup=8x8x1
+PASS image.wgsl Naga=30.0.1 parse=true validation=true flags=all capabilities=empty entry=image workgroup=8x8x1
+COMPLETE shaders=2 offline=true gpu_execution=false

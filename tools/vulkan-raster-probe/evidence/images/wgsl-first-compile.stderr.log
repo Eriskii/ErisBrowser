@@ -1,0 +1,31 @@
+error: linking with `cc` failed: exit status: 1
+  |
+  = note:  "cc" "-m64" "/tmp/eris-vulkan-image-wgsl-check/rustcpp1wUC/symbols.o" "<2 object files omitted>" "-Wl,--as-needed" "-Wl,-Bstatic" "/tmp/eris-vulkan-raster-prototype/target-198/debug/deps/{libnaga-214fba6b21bff5ad,libunicode_ident-ea8eda35e914410e,liblog-4dc59ee6c3a0000f,libbit_set-873c19eb9ae221b1,libbit_vec-2c2c3e6c8b8c26ec,libonce_cell-5cd9e51912420328,libhalf-5e443de7c09a41e8,libcfg_if-607da48159542821,libzerocopy-62d3509adf4dfeb0,libcodespan_reporting-cb3a59444be54515,libunicode_width-0f1aaeb143fbef24,libnum_traits-d99b7fee2b77a9b3,liblibm-0802fce66221918c,libthiserror-c7ccfe95874d5a25,libspirv-4f5d51ac3af9f467,libbitflags-846fcfde27c979b3,libarrayvec-c7adea222563721c,libnaga_types-03d1a01460713dd3,libindexmap-d861d81f1b89882b,libequivalent-8b18df4cbba0b958,librustc_hash-b68a744db6ad76b6,libhashbrown-7ad89e53cde3a291,libfoldhash-b5a3d1dadf9a1302}.rlib" "<sysroot>/lib/rustlib/x86_64-unknown-linux-gnu/lib/{libstd-*,libpanic_unwind-*,libobject-*,libmemchr-*,libaddr2line-*,libgimli-*,libcfg_if-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libminiz_oxide-*,libadler2-*,libunwind-*,liblibc-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "-Wl,-Bdynamic" "-lgcc_s" "-lutil" "-lrt" "-lpthread" "-lm" "-ldl" "-lc" "-L" "/tmp/eris-vulkan-image-wgsl-check/rustcpp1wUC/raw-dylibs" "-B<sysroot>/lib/rustlib/x86_64-unknown-linux-gnu/bin/gcc-ld" "-fuse-ld=lld" "-Wl,--eh-frame-hdr" "-Wl,-z,noexecstack" "-L" "<sysroot>/lib/rustlib/x86_64-unknown-linux-gnu/lib" "-o" "/tmp/eris-vulkan-image-wgsl-check/validate_wgsl" "-Wl,--gc-sections" "-pie" "-Wl,-z,relro,-z,now" "-nodefaultlibs"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: terminate called after throwing an instance of 'std::system_error'
+            what():  Resource temporarily unavailable
+          PLEASE submit a bug report to https://github.com/llvm/llvm-project/issues/ and include the crash backtrace and instructions to reproduce the bug.
+          Stack dump without symbol names (ensure you have llvm-symbolizer in your PATH or set the environment var `LLVM_SYMBOLIZER_PATH` to point to it):
+          0  libLLVM.so.22.1-rust-1.98.0-stable 0x00007bb64c74d487 llvm::sys::PrintStackTrace(llvm::raw_ostream&, int) + 39
+          1  libLLVM.so.22.1-rust-1.98.0-stable 0x00007bb64c74dd7d
+          2  libc.so.6                          0x00007bb6464421a0
+          3  libc.so.6                          0x00007bb64649eeec
+          4  libc.so.6                          0x00007bb64644206e gsignal + 30
+          5  libc.so.6                          0x00007bb646429350 abort + 38
+          6  libLLVM.so.22.1-rust-1.98.0-stable 0x00007bb64c5dbda5 __gnu_cxx::__verbose_terminate_handler() + 245
+          7  libLLVM.so.22.1-rust-1.98.0-stable 0x00007bb64c5db506 __cxxabiv1::__terminate(void (*)()) + 6
+          8  libLLVM.so.22.1-rust-1.98.0-stable 0x00007bb64c5db571
+          9  libLLVM.so.22.1-rust-1.98.0-stable 0x00007bb64c5db6c5
+          10 libLLVM.so.22.1-rust-1.98.0-stable 0x00007bb64c3b1515 std::__throw_system_error(int) + 129
+          11 libLLVM.so.22.1-rust-1.98.0-stable 0x00007bb64c65a949
+          12 libLLVM.so.22.1-rust-1.98.0-stable 0x00007bb64c6f53bc
+          13 libLLVM.so.22.1-rust-1.98.0-stable 0x00007bb64c6f4e2f
+          14 libLLVM.so.22.1-rust-1.98.0-stable 0x00007bb64c65a6b0
+          15 libc.so.6                          0x00007bb64649ce73
+          16 libc.so.6                          0x00007bb6465242bc
+          /nix/store/yfb4m0ppkap16a2isbfaxqn4kgy0xz4r-rustup-1.29.0/nix-support/ld-wrapper.sh: line 292:    33 Aborted                    (core dumped) $PROG ${extraBefore+"${extraBefore[@]}"} ${params+"${params[@]}"} ${extraAfter+"${extraAfter[@]}"}
+          collect2: error: ld returned 134 exit status
+          
+
+error: aborting due to 1 previous error
+

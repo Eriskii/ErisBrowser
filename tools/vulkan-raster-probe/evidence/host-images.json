@@ -1,0 +1,626 @@
+{
+  "schema": 1,
+  "scope": "Standalone custom offscreen Vulkan opaque rectangle and nearest-neighbor image compute probe; no browser integration or performance result",
+  "parent": "8133250e86ea616c3d7644b8965acb25145a6b3c",
+  "tested_source_files": {
+    "Cargo.toml": {
+      "bytes": 323,
+      "sha256": "3150058ef3ee321212873e93aea1d745b7a5923faa39808e631ccbef28e4df23"
+    },
+    "Cargo.lock": {
+      "bytes": 23795,
+      "sha256": "b619519af5f81d79d976a0569ae1278565b3bbdd3e4a7243438f1d1ced81a182"
+    },
+    "run_host.py": {
+      "bytes": 14669,
+      "sha256": "456a1a4f00ef35009b74221ac1d6710ae30ee53c0e0858953576314c701cff73"
+    },
+    "test_protocol.py": {
+      "bytes": 2879,
+      "sha256": "3b50594d36a69c0dcc8b46bd8864453ef365c602be9bd3bfd5ebae1457abd5a7"
+    },
+    "test_supervisor.py": {
+      "bytes": 2488,
+      "sha256": "85d3d91272710f006da8b340dae6030102183939b6e5325e82674d81318ac806"
+    },
+    "src/fixtures.rs": {
+      "bytes": 4785,
+      "sha256": "7779ecab36a587f2792acf258b28709b9b4606ece0976c48c0c04aa8e1a45ab8"
+    },
+    "src/image.wgsl": {
+      "bytes": 2204,
+      "sha256": "0e33cf1869e8a69143a4f446917ef43e5ad3439f2b57197174a177a095d32d1b"
+    },
+    "src/image_fixtures.rs": {
+      "bytes": 19757,
+      "sha256": "d7fd6c1970f1bfad52021b0ae48401596d3124c5a7e29a1171a310d6d6f096ee"
+    },
+    "src/lib.rs": {
+      "bytes": 17720,
+      "sha256": "4675b65d27682018f9a16164e307324c19a812c9c58a8e4964942df42fedc0d8"
+    },
+    "src/main.rs": {
+      "bytes": 17242,
+      "sha256": "59a5ba34156453d92185d4aedc18d50807ab5d04a9c31beb03c2f665931da475"
+    },
+    "src/rect.wgsl": {
+      "bytes": 790,
+      "sha256": "e290ce60bef71560fdf7ab536410fbae0aa5d2b54f648d0706a457dae5c2c9af"
+    },
+    "src/tests.rs": {
+      "bytes": 26834,
+      "sha256": "ae330c85f55b2aa8131c4a0a537d1fbe7f982ba7b7331e33a1f1ee6c2b1b8e72"
+    },
+    "evidence/image-fixture-oracle.json": {
+      "bytes": 90280,
+      "sha256": "ccd79c6ac60221ccaf463ce1ada56230c35e12039d3d8ca534e15019121c2ecf"
+    },
+    "evidence/image-protocol.json": {
+      "bytes": 10217,
+      "sha256": "be99483f8430c2f208916008bffd4f4354f8ec66c555732c1f122f8957d468b0"
+    },
+    "evidence/image-fixture-freeze.json": {
+      "bytes": 2568,
+      "sha256": "29a68e2af2b6215942b9a24056b1a1146884831d7f9e47ce27245c8c6e25cbc9"
+    }
+  },
+  "tested_source_location": "/tmp/eris-vulkan-image-candidate-2/source",
+  "candidate_freeze": {
+    "path": "images/freeze.json",
+    "bytes": 3766,
+    "sha256": "f16684b0aa664f87209f1b52706f284ee187d5b65d6a98dcc1fcb4f0d9d320b6"
+  },
+  "host": {
+    "schema": 1,
+    "binary_sha256": "20e34cfb03510d5ed02027ebf792fe9988ba069e837a94f7a6988f96a70d46b4",
+    "scope": "offscreen custom WGSL opaque rectangle and nearest-neighbor image prototype; no native surface or performance claim",
+    "binary": "../eris-vulkan-raster-prototype-1.98.0",
+    "loader_override": true,
+    "timeout_seconds": 25.0,
+    "success": true,
+    "adapter_count": 3,
+    "runs": [
+      {
+        "name": "enumeration",
+        "args": [
+          "--list"
+        ],
+        "status": "exited",
+        "returncode": 0,
+        "timeout_seconds": 25.0,
+        "elapsed_seconds": 0.143415,
+        "captured_bytes": 465,
+        "observed_bytes": 465,
+        "output_limit_bytes": 262144,
+        "stdout_log": "enumeration.stdout.log",
+        "stderr_log": "enumeration.stderr.log",
+        "stdout_tail": "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"\nADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"\nADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\"\n",
+        "stderr_tail": ""
+      },
+      {
+        "name": "adapter-0",
+        "args": [
+          "--adapter",
+          "0"
+        ],
+        "status": "exited",
+        "returncode": 0,
+        "timeout_seconds": 25.0,
+        "elapsed_seconds": 0.313775,
+        "captured_bytes": 2841,
+        "observed_bytes": 2841,
+        "output_limit_bytes": 262144,
+        "stdout_log": "adapter-0.stdout.log",
+        "stderr_log": "adapter-0.stderr.log",
+        "stdout_tail": "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"\nADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"\nADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\"\nPASS overlapping-order 8x6 draws=5 invocations=320 gpu_buffers=1664 compared_bytes=192 exact=true\nPASS fractional-clips 8x6 draws=4 invocations=256 gpu_buffers=1408 compared_bytes=192 exact=true\nPASS fixed-resets-and-restores 10x7 draws=6 invocations=448 gpu_buffers=2096 compared_bytes=280 exact=true\nPASS out-of-bounds-and-empty 7x5 draws=3 invocations=192 gpu_buffers=1048 compared_bytes=140 exact=true\nPASS 319x239-dispatch-edges 319x239 draws=4 invocations=156160 gpu_buffers=610952 compared_bytes=304964 exact=true\nPASS forty-ordered-full-writes 320x240 draws=41 invocations=3148800 gpu_buffers=624896 compared_bytes=307200 exact=true\nPASS gpu-clear-only 7x3 draws=1 invocations=64 gpu_buffers=424 compared_bytes=84 exact=true\nPASS image-upscale-2x2 6x6 draws=2 invocations=128 gpu_buffers=848 compared_bytes=144 exact=true\nPASS image-three-columns-to-five 7x3 draws=2 invocations=128 gpu_buffers=716 compared_bytes=84 exact=true\nPASS image-downscale-distinct-4x4 4x4 draws=2 invocations=128 gpu_buffers=720 compared_bytes=64 exact=true\nPASS image-clip-preserves-original-origin 8x3 draws=2 invocations=128 gpu_buffers=736 compared_bytes=96 exact=true\nPASS image-negative-document-offset 5x3 draws=2 invocations=128 gpu_buffers=680 compared_bytes=60 exact=true\nPASS image-negative-fractional-origin 4x4 draws=2 invocations=128 gpu_buffers=680 compared_bytes=64 exact=true\nPASS image-tiny-and-fractional-clip 6x4 draws=3 invocations=192 gpu_buffers=1044 compared_bytes=96 exact=true\nPASS image-exact-and-one-ulp-translated-edges 5x3 draws=3 invocations=192 gpu_buffers=928 compared_bytes=60 exact=true\nPASS image-f32-endpoint-addition-rounds-back 4x2 draws=2 invocations=128 gpu_buffers=592 compared_bytes=32 exact=true\nPASS image-rectangle-order-and-source-reuse 6x4 draws=5 invocations=320 gpu_buffers=1568 compared_bytes=96 exact=true\nPASS image-fixed-escape-and-nested-restoration 8x5 draws=6 invocations=384 gpu_buffers=1956 compared_bytes=160 exact=true\nPASS image-dispatch-tail-and-clear-border 320x240 draws=2 invocations=153600 gpu_buffers=617160 compared_bytes=307200 exact=true\nPASS image-valid-empty-and-hidden 4x3 draws=1 invocations=64 gpu_buffers=352 compared_bytes=48 exact=true\nPASS image-subnormal-origin-and-lost-extent 2x2 draws=2 invocations=128 gpu_buffers=564 compared_bytes=16 exact=true\nCOMPLETE adapter=0 fixtures=21 exact=true custom_wgsl=true\n",
+        "stderr_tail": "",
+        "validation": "passed"
+      },
+      {
+        "name": "adapter-1",
+        "args": [
+          "--adapter",
+          "1"
+        ],
+        "status": "exited",
+        "returncode": 0,
+        "timeout_seconds": 25.0,
+        "elapsed_seconds": 0.125438,
+        "captured_bytes": 2841,
+        "observed_bytes": 2841,
+        "output_limit_bytes": 262144,
+        "stdout_log": "adapter-1.stdout.log",
+        "stderr_log": "adapter-1.stderr.log",
+        "stdout_tail": "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"\nADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"\nADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\"\nPASS overlapping-order 8x6 draws=5 invocations=320 gpu_buffers=1664 compared_bytes=192 exact=true\nPASS fractional-clips 8x6 draws=4 invocations=256 gpu_buffers=1408 compared_bytes=192 exact=true\nPASS fixed-resets-and-restores 10x7 draws=6 invocations=448 gpu_buffers=2096 compared_bytes=280 exact=true\nPASS out-of-bounds-and-empty 7x5 draws=3 invocations=192 gpu_buffers=1048 compared_bytes=140 exact=true\nPASS 319x239-dispatch-edges 319x239 draws=4 invocations=156160 gpu_buffers=610952 compared_bytes=304964 exact=true\nPASS forty-ordered-full-writes 320x240 draws=41 invocations=3148800 gpu_buffers=624896 compared_bytes=307200 exact=true\nPASS gpu-clear-only 7x3 draws=1 invocations=64 gpu_buffers=424 compared_bytes=84 exact=true\nPASS image-upscale-2x2 6x6 draws=2 invocations=128 gpu_buffers=848 compared_bytes=144 exact=true\nPASS image-three-columns-to-five 7x3 draws=2 invocations=128 gpu_buffers=716 compared_bytes=84 exact=true\nPASS image-downscale-distinct-4x4 4x4 draws=2 invocations=128 gpu_buffers=720 compared_bytes=64 exact=true\nPASS image-clip-preserves-original-origin 8x3 draws=2 invocations=128 gpu_buffers=736 compared_bytes=96 exact=true\nPASS image-negative-document-offset 5x3 draws=2 invocations=128 gpu_buffers=680 compared_bytes=60 exact=true\nPASS image-negative-fractional-origin 4x4 draws=2 invocations=128 gpu_buffers=680 compared_bytes=64 exact=true\nPASS image-tiny-and-fractional-clip 6x4 draws=3 invocations=192 gpu_buffers=1044 compared_bytes=96 exact=true\nPASS image-exact-and-one-ulp-translated-edges 5x3 draws=3 invocations=192 gpu_buffers=928 compared_bytes=60 exact=true\nPASS image-f32-endpoint-addition-rounds-back 4x2 draws=2 invocations=128 gpu_buffers=592 compared_bytes=32 exact=true\nPASS image-rectangle-order-and-source-reuse 6x4 draws=5 invocations=320 gpu_buffers=1568 compared_bytes=96 exact=true\nPASS image-fixed-escape-and-nested-restoration 8x5 draws=6 invocations=384 gpu_buffers=1956 compared_bytes=160 exact=true\nPASS image-dispatch-tail-and-clear-border 320x240 draws=2 invocations=153600 gpu_buffers=617160 compared_bytes=307200 exact=true\nPASS image-valid-empty-and-hidden 4x3 draws=1 invocations=64 gpu_buffers=352 compared_bytes=48 exact=true\nPASS image-subnormal-origin-and-lost-extent 2x2 draws=2 invocations=128 gpu_buffers=564 compared_bytes=16 exact=true\nCOMPLETE adapter=1 fixtures=21 exact=true custom_wgsl=true\n",
+        "stderr_tail": "",
+        "validation": "passed"
+      },
+      {
+        "name": "adapter-2",
+        "args": [
+          "--adapter",
+          "2"
+        ],
+        "status": "exited",
+        "returncode": 0,
+        "timeout_seconds": 25.0,
+        "elapsed_seconds": 0.171868,
+        "captured_bytes": 2841,
+        "observed_bytes": 2841,
+        "output_limit_bytes": 262144,
+        "stdout_log": "adapter-2.stdout.log",
+        "stderr_log": "adapter-2.stderr.log",
+        "stdout_tail": "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"\nADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"\nADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\"\nPASS overlapping-order 8x6 draws=5 invocations=320 gpu_buffers=1664 compared_bytes=192 exact=true\nPASS fractional-clips 8x6 draws=4 invocations=256 gpu_buffers=1408 compared_bytes=192 exact=true\nPASS fixed-resets-and-restores 10x7 draws=6 invocations=448 gpu_buffers=2096 compared_bytes=280 exact=true\nPASS out-of-bounds-and-empty 7x5 draws=3 invocations=192 gpu_buffers=1048 compared_bytes=140 exact=true\nPASS 319x239-dispatch-edges 319x239 draws=4 invocations=156160 gpu_buffers=610952 compared_bytes=304964 exact=true\nPASS forty-ordered-full-writes 320x240 draws=41 invocations=3148800 gpu_buffers=624896 compared_bytes=307200 exact=true\nPASS gpu-clear-only 7x3 draws=1 invocations=64 gpu_buffers=424 compared_bytes=84 exact=true\nPASS image-upscale-2x2 6x6 draws=2 invocations=128 gpu_buffers=848 compared_bytes=144 exact=true\nPASS image-three-columns-to-five 7x3 draws=2 invocations=128 gpu_buffers=716 compared_bytes=84 exact=true\nPASS image-downscale-distinct-4x4 4x4 draws=2 invocations=128 gpu_buffers=720 compared_bytes=64 exact=true\nPASS image-clip-preserves-original-origin 8x3 draws=2 invocations=128 gpu_buffers=736 compared_bytes=96 exact=true\nPASS image-negative-document-offset 5x3 draws=2 invocations=128 gpu_buffers=680 compared_bytes=60 exact=true\nPASS image-negative-fractional-origin 4x4 draws=2 invocations=128 gpu_buffers=680 compared_bytes=64 exact=true\nPASS image-tiny-and-fractional-clip 6x4 draws=3 invocations=192 gpu_buffers=1044 compared_bytes=96 exact=true\nPASS image-exact-and-one-ulp-translated-edges 5x3 draws=3 invocations=192 gpu_buffers=928 compared_bytes=60 exact=true\nPASS image-f32-endpoint-addition-rounds-back 4x2 draws=2 invocations=128 gpu_buffers=592 compared_bytes=32 exact=true\nPASS image-rectangle-order-and-source-reuse 6x4 draws=5 invocations=320 gpu_buffers=1568 compared_bytes=96 exact=true\nPASS image-fixed-escape-and-nested-restoration 8x5 draws=6 invocations=384 gpu_buffers=1956 compared_bytes=160 exact=true\nPASS image-dispatch-tail-and-clear-border 320x240 draws=2 invocations=153600 gpu_buffers=617160 compared_bytes=307200 exact=true\nPASS image-valid-empty-and-hidden 4x3 draws=1 invocations=64 gpu_buffers=352 compared_bytes=48 exact=true\nPASS image-subnormal-origin-and-lost-extent 2x2 draws=2 invocations=128 gpu_buffers=564 compared_bytes=16 exact=true\nCOMPLETE adapter=2 fixtures=21 exact=true custom_wgsl=true\n",
+        "stderr_tail": "",
+        "validation": "passed"
+      }
+    ]
+  },
+  "host_execution": {
+    "created_utc": "2026-09-29T10:40:59.080939+00:00",
+    "command": [
+      "python3",
+      "/tmp/eris-vulkan-image-candidate-2/source/run_host.py",
+      "--allow-experimental-gpu",
+      "--binary",
+      "/tmp/eris-vulkan-image-candidate-2/eris-vulkan-raster-prototype-1.98.0",
+      "--output-dir",
+      "/tmp/eris-vulkan-image-candidate-2/host-run-1",
+      "--loader-directory",
+      "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib"
+    ],
+    "binary_before_sha256": "20e34cfb03510d5ed02027ebf792fe9988ba069e837a94f7a6988f96a70d46b4",
+    "loader": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib/libvulkan.so.1",
+    "loader_resolved": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib/libvulkan.so.1.4.357",
+    "loader_sha256": "c75ff661f583ea7308bc5526321f6d6c0527a12ec9cd708dfb21323ddbb297ba",
+    "candidate_freeze_sha256": "f16684b0aa664f87209f1b52706f284ee187d5b65d6a98dcc1fcb4f0d9d320b6",
+    "offline_checks_sha256": "49db404e0c0b3355b952bc8310154a7a56d52ce8dcd8c2eaf27fd35239acee2c",
+    "source_before_exact": true,
+    "scope": "Actual opt-in offscreen Vulkan execution under existing finite child/output/reaping bounds; no native surface or browser run",
+    "exit_code": 0,
+    "elapsed_seconds": 0.8079802289139479,
+    "binary_after_sha256": "20e34cfb03510d5ed02027ebf792fe9988ba069e837a94f7a6988f96a70d46b4",
+    "source_after_exact": true,
+    "supervisor_log_sha256": "c05da76e7116a4f96ac98090a5653a031ead05a28fa96203993f680884a75d4e"
+  },
+  "raw_host_record": {
+    "path": "images/host-results.json",
+    "bytes": 11400,
+    "sha256": "abf2cb4b37b924f6b5dbcfd9f9f4d42285c145ffca92fe88e6a8e9c5295f67ca"
+  },
+  "offline_checks": [
+    {
+      "toolchain": "1.88.0",
+      "action": "fmt",
+      "argv": [
+        "cargo",
+        "fmt",
+        "--manifest-path",
+        "/tmp/eris-vulkan-image-candidate-2/source/Cargo.toml",
+        "--",
+        "--check"
+      ],
+      "env_overrides": {
+        "RUSTUP_HOME": "/tmp/eris-vulkan-rustup",
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_HOME": "/tmp/eris-vulkan-spike/cargo-home",
+        "CARGO_TARGET_DIR": "/tmp/eris-vulkan-raster-prototype/target-msrv"
+      },
+      "exit_code": 0,
+      "seconds": 0.113,
+      "log": "offline-1.88.0-fmt.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozen_inputs_unchanged": true,
+      "published_log": "images/offline-1.88.0-fmt.log"
+    },
+    {
+      "toolchain": "1.88.0",
+      "action": "test",
+      "argv": [
+        "cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/tmp/eris-vulkan-image-candidate-2/source/Cargo.toml"
+      ],
+      "env_overrides": {
+        "RUSTUP_HOME": "/tmp/eris-vulkan-rustup",
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_HOME": "/tmp/eris-vulkan-spike/cargo-home",
+        "CARGO_TARGET_DIR": "/tmp/eris-vulkan-raster-prototype/target-msrv"
+      },
+      "exit_code": 0,
+      "seconds": 1.664,
+      "log": "offline-1.88.0-test.log",
+      "sha256": "45086aa22e1c97371b9bb5b42316dd343ae1d4d7e260a68472ba5106eb061998",
+      "frozen_inputs_unchanged": true,
+      "published_log": "images/offline-1.88.0-test.log"
+    },
+    {
+      "toolchain": "1.88.0",
+      "action": "clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/tmp/eris-vulkan-image-candidate-2/source/Cargo.toml",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "env_overrides": {
+        "RUSTUP_HOME": "/tmp/eris-vulkan-rustup",
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_HOME": "/tmp/eris-vulkan-spike/cargo-home",
+        "CARGO_TARGET_DIR": "/tmp/eris-vulkan-raster-prototype/target-msrv"
+      },
+      "exit_code": 0,
+      "seconds": 0.314,
+      "log": "offline-1.88.0-clippy.log",
+      "sha256": "16ca9509f170d4674ecae3311e7926d1e6741a402a916927fd3619bf7645f177",
+      "frozen_inputs_unchanged": true,
+      "published_log": "images/offline-1.88.0-clippy.log"
+    },
+    {
+      "toolchain": "1.88.0",
+      "action": "build",
+      "argv": [
+        "cargo",
+        "build",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/tmp/eris-vulkan-image-candidate-2/source/Cargo.toml",
+        "--bins"
+      ],
+      "env_overrides": {
+        "RUSTUP_HOME": "/tmp/eris-vulkan-rustup",
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_HOME": "/tmp/eris-vulkan-spike/cargo-home",
+        "CARGO_TARGET_DIR": "/tmp/eris-vulkan-raster-prototype/target-msrv"
+      },
+      "exit_code": 0,
+      "seconds": 1.364,
+      "log": "offline-1.88.0-build.log",
+      "sha256": "e88c20bfdf1989e3e3ce8a0ca5e77cfa8970c0ef8f3373bb9e21c607c79b09c9",
+      "binary": {
+        "path": "/tmp/eris-vulkan-image-candidate-2/eris-vulkan-raster-prototype-1.88.0",
+        "bytes": 18438536,
+        "sha256": "985c0c391e063ca2441a5b446f0163a4ff41ab478278809917bdbeb02c18017e"
+      },
+      "frozen_inputs_unchanged": true,
+      "published_log": "images/offline-1.88.0-build.log"
+    },
+    {
+      "toolchain": "1.98.0",
+      "action": "fmt",
+      "argv": [
+        "cargo",
+        "fmt",
+        "--manifest-path",
+        "/tmp/eris-vulkan-image-candidate-2/source/Cargo.toml",
+        "--",
+        "--check"
+      ],
+      "env_overrides": {
+        "RUSTUP_HOME": "/tmp/eris-vulkan-rustup",
+        "RUSTUP_TOOLCHAIN": "1.98.0",
+        "CARGO_HOME": "/tmp/eris-vulkan-spike/cargo-home",
+        "CARGO_TARGET_DIR": "/tmp/eris-vulkan-raster-prototype/target-198"
+      },
+      "exit_code": 0,
+      "seconds": 0.063,
+      "log": "offline-1.98.0-fmt.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozen_inputs_unchanged": true,
+      "published_log": "images/offline-1.98.0-fmt.log"
+    },
+    {
+      "toolchain": "1.98.0",
+      "action": "test",
+      "argv": [
+        "cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/tmp/eris-vulkan-image-candidate-2/source/Cargo.toml"
+      ],
+      "env_overrides": {
+        "RUSTUP_HOME": "/tmp/eris-vulkan-rustup",
+        "RUSTUP_TOOLCHAIN": "1.98.0",
+        "CARGO_HOME": "/tmp/eris-vulkan-spike/cargo-home",
+        "CARGO_TARGET_DIR": "/tmp/eris-vulkan-raster-prototype/target-198"
+      },
+      "exit_code": 0,
+      "seconds": 1.514,
+      "log": "offline-1.98.0-test.log",
+      "sha256": "b9e7876e47f49fcdf3bed49da7c1f56e9658f75ac67c2bc8fa61a99dca3b0a01",
+      "frozen_inputs_unchanged": true,
+      "published_log": "images/offline-1.98.0-test.log"
+    },
+    {
+      "toolchain": "1.98.0",
+      "action": "clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/tmp/eris-vulkan-image-candidate-2/source/Cargo.toml",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "env_overrides": {
+        "RUSTUP_HOME": "/tmp/eris-vulkan-rustup",
+        "RUSTUP_TOOLCHAIN": "1.98.0",
+        "CARGO_HOME": "/tmp/eris-vulkan-spike/cargo-home",
+        "CARGO_TARGET_DIR": "/tmp/eris-vulkan-raster-prototype/target-198"
+      },
+      "exit_code": 0,
+      "seconds": 0.314,
+      "log": "offline-1.98.0-clippy.log",
+      "sha256": "33de07513f6ae4dcf6d64a8fd2ada47f5836ab2f883b7b7b52e05824ded1293c",
+      "frozen_inputs_unchanged": true,
+      "published_log": "images/offline-1.98.0-clippy.log"
+    },
+    {
+      "toolchain": "1.98.0",
+      "action": "build",
+      "argv": [
+        "cargo",
+        "build",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/tmp/eris-vulkan-image-candidate-2/source/Cargo.toml",
+        "--bins"
+      ],
+      "env_overrides": {
+        "RUSTUP_HOME": "/tmp/eris-vulkan-rustup",
+        "RUSTUP_TOOLCHAIN": "1.98.0",
+        "CARGO_HOME": "/tmp/eris-vulkan-spike/cargo-home",
+        "CARGO_TARGET_DIR": "/tmp/eris-vulkan-raster-prototype/target-198"
+      },
+      "exit_code": 0,
+      "seconds": 0.414,
+      "log": "offline-1.98.0-build.log",
+      "sha256": "5de72131814eeec952dc9f10d43baeb4aed63c03519263bda6b7edb7806341d9",
+      "binary": {
+        "path": "/tmp/eris-vulkan-image-candidate-2/eris-vulkan-raster-prototype-1.98.0",
+        "bytes": 22231288,
+        "sha256": "20e34cfb03510d5ed02027ebf792fe9988ba069e837a94f7a6988f96a70d46b4"
+      },
+      "frozen_inputs_unchanged": true,
+      "published_log": "images/offline-1.98.0-build.log"
+    }
+  ],
+  "rust_tests_per_toolchain": 17,
+  "python": {
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tools/vulkan-raster-probe",
+      "-p",
+      "test_*.py",
+      "-q"
+    ],
+    "inputs": {
+      "tools/vulkan-raster-probe/run_host.py": "456a1a4f00ef35009b74221ac1d6710ae30ee53c0e0858953576314c701cff73",
+      "tools/vulkan-raster-probe/test_protocol.py": "3b50594d36a69c0dcc8b46bd8864453ef365c602be9bd3bfd5ebae1457abd5a7",
+      "tools/vulkan-raster-probe/test_supervisor.py": "85d3d91272710f006da8b340dae6030102183939b6e5325e82674d81318ac806",
+      "tools/vulkan-raster-probe/evidence/image-protocol.json": "be99483f8430c2f208916008bffd4f4354f8ec66c555732c1f122f8957d468b0"
+    },
+    "exit_code": 0,
+    "elapsed_seconds": 0.41361137107014656,
+    "log": "/tmp/eris-vulkan-image-python-check.log",
+    "log_sha256": "3c1e839f587d8c4b425ebd15a765224be99238a6fbad0c19e4252fa15814d19e",
+    "scope": "Protocol validation and bounded fake Python processes only; no browser/planner/Rust/GPU execution.",
+    "published_log": "images/eris-vulkan-image-python-check.log"
+  },
+  "python_tests": 10,
+  "offline_wgsl_passed": true,
+  "offline_wgsl_scope": "Both exact shaders, Naga30.0.1 all validation flags, empty capabilities, one compute entry and8x8x1 workgroup; no GPU",
+  "receipts": {
+    "eris-vulkan-raster-image-api-contract.json": {
+      "path": "images/eris-vulkan-raster-image-api-contract.json",
+      "bytes": 12022,
+      "sha256": "cdfa72e93cfbe1dcb961cd873ea6c6aca5771d18ee6b022ec4e5b7ed5f158d0e"
+    },
+    "eris-vulkan-raster-image-oracle-review.json": {
+      "path": "images/eris-vulkan-raster-image-oracle-review.json",
+      "bytes": 17139,
+      "sha256": "21740c951bc24b8a2edb2911fe110a448132593006d8cb6d9c825a878d9df0bb"
+    },
+    "eris-vulkan-raster-image-oracle-final-delta.json": {
+      "path": "images/eris-vulkan-raster-image-oracle-final-delta.json",
+      "bytes": 663,
+      "sha256": "636cdde12553b7768c3683a1aa402e00b7728f104e1ed2d0ebc52535bf4c407e"
+    },
+    "eris-vulkan-raster-image-fixture-source-freeze.json": {
+      "path": "images/eris-vulkan-raster-image-fixture-source-freeze.json",
+      "bytes": 3123,
+      "sha256": "5ff97c358c1d3f79bc9a09bd2871a7d6cb717d37340abe5b0eb06d10c160b231"
+    },
+    "eris-vulkan-raster-image-fixture-formatted-data-check.json": {
+      "path": "images/eris-vulkan-raster-image-fixture-formatted-data-check.json",
+      "bytes": 8585,
+      "sha256": "cd14e297827bf84da70773b826e2f2ce213c4e1893d4e54de079dddbeff303b8"
+    },
+    "eris-vulkan-image-protocol-review.json": {
+      "path": "images/eris-vulkan-image-protocol-review.json",
+      "bytes": 10869,
+      "sha256": "d5ea23f6677b4dadc1894312847b341291c5752bcb775341de3fc623684da231"
+    },
+    "eris-vulkan-image-planner-review.json": {
+      "path": "images/eris-vulkan-image-planner-review.json",
+      "bytes": 13334,
+      "sha256": "8fb041c08407f2a3c2ea199879be015a4318366d31a56d201158a784202c837d"
+    },
+    "eris-vulkan-image-gpu-code-review.json": {
+      "path": "images/eris-vulkan-image-gpu-code-review.json",
+      "bytes": 18019,
+      "sha256": "aec9cda1ecd75b02de8d3335bab90570ceb8f3d76941116ac8b3712ce8db5289"
+    },
+    "eris-vulkan-image-host-review.json": {
+      "path": "images/eris-vulkan-image-host-review.json",
+      "bytes": 16084,
+      "sha256": "a2aa7baffae00aa424b452b7bb2894a5d3534c2ffc7e2ab26d844d1e2d7eb721"
+    },
+    "eris-vulkan-raster-image-source-ready.json": {
+      "path": "images/eris-vulkan-raster-image-source-ready.json",
+      "bytes": 6852,
+      "sha256": "efb326f4cf7fb09651474a45067800fe391b4042ced2934dc452ba39e6bc3070"
+    },
+    "eris-vulkan-image-wgsl-check.json": {
+      "path": "images/eris-vulkan-image-wgsl-check.json",
+      "bytes": 7316,
+      "sha256": "47dea27894daeffab65a0951250b7573e970c478a24b17b36bc9b4e805a3a69f"
+    },
+    "eris-vulkan-image-wgsl-check-first.json": {
+      "path": "images/eris-vulkan-image-wgsl-check-first.json",
+      "bytes": 4336,
+      "sha256": "8c125f97c847727bbb209a17b5fa76663c0d62b1bea41cffd248174634703558"
+    },
+    "eris-vulkan-image-python-check.json": {
+      "path": "images/eris-vulkan-image-python-check.json",
+      "bytes": 967,
+      "sha256": "e2e40eaab8a9613ddf34d686380ab8ec7b6f5ec2316fe3773d8a5c2747a0f31c"
+    },
+    "freeze.json": {
+      "path": "images/freeze.json",
+      "bytes": 3766,
+      "sha256": "f16684b0aa664f87209f1b52706f284ee187d5b65d6a98dcc1fcb4f0d9d320b6"
+    },
+    "correction.json": {
+      "path": "images/correction.json",
+      "bytes": 2773,
+      "sha256": "8727bb34a84cdb3ce2a280494b372e593eb209ac5a9224e9f9c5e5121e502dec"
+    },
+    "host-start.json": {
+      "path": "images/host-start.json",
+      "bytes": 1217,
+      "sha256": "7d59f6330d490f34e175d0d1d11aba4fdfa787846f4d1a11a057392e5738205e"
+    },
+    "host-result.json": {
+      "path": "images/host-result.json",
+      "bytes": 1494,
+      "sha256": "a8dd9c8cded8d09318fb8a45494a0972a6006bdaf7a70aabf73aacd99bf0af07"
+    },
+    "first-freeze": {
+      "path": "images/first-freeze.json",
+      "bytes": 3766,
+      "sha256": "7eb151d3cd7e7c2b7613dd732e6cbf12ceecb70db3cc738315cd3813c234842a"
+    },
+    "first-offline-checks": {
+      "path": "images/first-offline-checks.json",
+      "bytes": 2087,
+      "sha256": "0243ee2540ba78b2130653c25fec694a0af5cac755ab3ff2511c268646c6688f"
+    }
+  },
+  "host_logs": {
+    "adapter-0.stderr.log": {
+      "path": "images/adapter-0.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "adapter-0.stdout.log": {
+      "path": "images/adapter-0.stdout.log",
+      "bytes": 2841,
+      "sha256": "8a8228575967dacdc7fa8a3060e11164440a23af4e0e24c1fcfa1deb2990768a"
+    },
+    "adapter-1.stderr.log": {
+      "path": "images/adapter-1.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "adapter-1.stdout.log": {
+      "path": "images/adapter-1.stdout.log",
+      "bytes": 2841,
+      "sha256": "cd9d5c6a9d3ff8fd4ee3a9597821dfb51c1fa02a4b3f30c5307828ab00df3208"
+    },
+    "adapter-2.stderr.log": {
+      "path": "images/adapter-2.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "adapter-2.stdout.log": {
+      "path": "images/adapter-2.stdout.log",
+      "bytes": 2841,
+      "sha256": "6b5276ab2fc42ac0df0d7d936b5bc559e639a5374554143b4360be019d599a31"
+    },
+    "enumeration.stderr.log": {
+      "path": "images/enumeration.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "enumeration.stdout.log": {
+      "path": "images/enumeration.stdout.log",
+      "bytes": 465,
+      "sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    }
+  },
+  "fixtures_per_adapter": 21,
+  "image_fixtures_per_adapter": 14,
+  "compared_bytes_per_adapter": 921272,
+  "total_compared_bytes": 2763816,
+  "all_bytes_exact": true,
+  "all_stderr_empty": true,
+  "first_failures": {
+    "candidate1": "All17Rust1.88 tests passed. StrictClippy refused six single-element loops in scalar oracle tests; direct equivalent assertions preserve inputs/expected values. Only tests.rs changed.",
+    "wgsl_checker": "Initial lld could not create a worker thread under checker resource limits. Same checker/shaders linked with --threads=1 and passed; original failure retained."
+  },
+  "bounds": {
+    "viewport": [
+      320,
+      240
+    ],
+    "input_commands": 256,
+    "combined_scopes": 32,
+    "draws_including_clear": 257,
+    "rounded_invocations_per_plan": 4000000,
+    "explicit_gpu_buffer_bytes": 1048576,
+    "source_entries": 256,
+    "aggregate_source_rgba_bytes": 1048576,
+    "structural_axis_table_entries": 143360,
+    "uniform_stride_bytes": 256,
+    "rectangle_uniform_window_bytes": 32,
+    "image_uniform_window_bytes": 64,
+    "API_wait_seconds": 5,
+    "application_deadline_seconds": 20,
+    "supervisor_default_seconds": 25,
+    "supervisor_output_bytes": 262144,
+    "supervisor_reap_wait_seconds": 2,
+    "maximum_adapters": 16
+  },
+  "browser_regression_reuse": {
+    "production_input_sha256": "2d4ea163d28898b44eae1933639960b8f7fc1cfb6986133a36b16965a4abd325",
+    "all_files_rechecked": 100,
+    "source_unchanged": true,
+    "previous_validation": "../../../tests/conformance/own-keys-integration-validation.json",
+    "previous_commit": "8133250e86ea616c3d7644b8965acb25145a6b3c",
+    "previous_CI": "https://github.com/Eriskii/ErisBrowser/actions/runs/36554311654",
+    "scope": "Reuse source-identical browser evidence; no new browser execution assigned to this probe-only change."
+  },
+  "limitations": [
+    "Opaque nearest-neighbor image subset only; no text, blending, rounded coverage, opacity groups or full image/CSS/color-space conformance.",
+    "Explicit GPU-buffer sum excludes CPU inputs/plans/expected outputs, native upload staging and driver/device/pipeline allocations; no total allocator proof.",
+    "No process isolation for driver calls; synchronous driver/poll/drop/spawn internals and uninterruptible cleanup are not proven finitely complete.",
+    "Separate ordered compute passes preserve overlap but establish no optimization or Chromium performance claim.",
+    "Normal browser rendering remains CPU; no native surface or compositor validation in this checkpoint."
+  ],
+  "native_surface": false,
+  "browser_integration": false,
+  "chromium_comparison": false,
+  "full_goal_complete": false
+}

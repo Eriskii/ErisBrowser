@@ -1,0 +1,157 @@
+{
+  "format": "eris-vulkan-raster-image-source-ready-v1",
+  "authored_utc": "2026-09-29T10:36:06.438000+00:00",
+  "scope": "Source ready for root snapshot/static review. No Cargo, Rust build, test executable, engine, Canvas or GPU execution by layout. rustfmt and source/data/hash checks only.",
+  "files": [
+    {
+      "path": "tools/vulkan-raster-probe/src/lib.rs",
+      "bytes": 17720,
+      "sha256": "4675b65d27682018f9a16164e307324c19a812c9c58a8e4964942df42fedc0d8"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/main.rs",
+      "bytes": 17242,
+      "sha256": "59a5ba34156453d92185d4aedc18d50807ab5d04a9c31beb03c2f665931da475"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/image.wgsl",
+      "bytes": 2204,
+      "sha256": "0e33cf1869e8a69143a4f446917ef43e5ad3439f2b57197174a177a095d32d1b"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/tests.rs",
+      "bytes": 27498,
+      "sha256": "7ddc05d10a4919d236dd4a959f32eb3e24da457bc2973c90d1bdc8a79c6b845a"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/image_fixtures.rs",
+      "bytes": 21632,
+      "sha256": "feba81dbd1ed6258aa53b59ae622867a2748fa63fc27d4722487f610f98b6b15"
+    }
+  ],
+  "frozen_inputs": [
+    {
+      "path": "/tmp/eris-vulkan-raster-image-fixtures-frozen.json",
+      "bytes": 90280,
+      "sha256": "ccd79c6ac60221ccaf463ce1ada56230c35e12039d3d8ca534e15019121c2ecf"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-protocol-frozen.json",
+      "bytes": 10217,
+      "sha256": "be99483f8430c2f208916008bffd4f4354f8ec66c555732c1f122f8957d468b0"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-api-contract.json",
+      "bytes": 12022,
+      "sha256": "cdfa72e93cfbe1dcb961cd873ea6c6aca5771d18ee6b022ec4e5b7ed5f158d0e"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-freeze.json",
+      "bytes": 2568,
+      "sha256": "29a68e2af2b6215942b9a24056b1a1146884831d7f9e47ce27245c8c6e25cbc9"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-fixture-source-freeze.json",
+      "bytes": 3123,
+      "sha256": "5ff97c358c1d3f79bc9a09bd2871a7d6cb717d37340abe5b0eb06d10c160b231"
+    }
+  ],
+  "preserved_original_inputs": [
+    {
+      "path": "tools/vulkan-raster-probe/src/fixtures.rs",
+      "bytes": 4785,
+      "sha256": "7779ecab36a587f2792acf258b28709b9b4606ece0976c48c0c04aa8e1a45ab8"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/rect.wgsl",
+      "bytes": 790,
+      "sha256": "e290ce60bef71560fdf7ab536410fbae0aa5d2b54f648d0706a457dae5c2c9af"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/Cargo.toml",
+      "bytes": 323,
+      "sha256": "3150058ef3ee321212873e93aea1d745b7a5923faa39808e631ccbef28e4df23"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/Cargo.lock",
+      "bytes": 23795,
+      "sha256": "b619519af5f81d79d976a0569ae1278565b3bbdd3e4a7243438f1d1ced81a182"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/evidence/host-raster.json",
+      "bytes": 13753,
+      "sha256": "59901d26bf3831d9763becc8ee3c15e34d8e043c48e02e4809e80972026f2824"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/evidence/enumeration.stdout.log",
+      "bytes": 465,
+      "sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/evidence/enumeration.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/evidence/adapter-0.stdout.log",
+      "bytes": 1256,
+      "sha256": "4f2b1782b255963f38998d9531fb21fb1b640370b3fb58004543efce9b376dcd"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/evidence/adapter-0.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/evidence/adapter-1.stdout.log",
+      "bytes": 1256,
+      "sha256": "7712fe0a28cf2da65c2445c0c534b5a50de12b087ea868345d1d28b853009ea0"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/evidence/adapter-1.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/evidence/adapter-2.stdout.log",
+      "bytes": 1256,
+      "sha256": "87681cc2c50eb9703f78d2237dca52151b26a68198055616ca5bce0d91c776e5"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/evidence/adapter-2.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/graphics.rs",
+      "bytes": 60970,
+      "sha256": "1b51c4af2c8ae4eea66476397868022da35e566d3593f3fcddf29a156bae62a2"
+    }
+  ],
+  "prepared_tests": [
+    "independent_pixel_fixtures_agree_with_integer_plan",
+    "fractional_rectangle_and_clip_left_edges_are_deliberately_different",
+    "unsupported_content_is_rejected_even_after_hidden_or_empty_content",
+    "invalid_nonfinite_coordinates_offsets_and_dimensions_are_rejected",
+    "typed_scope_balance_and_combined_depth_are_checked_atomically",
+    "commands_overdraw_invocations_and_explicit_buffers_stay_bounded",
+    "metadata_records_are_immutable_aligned_and_never_pixels",
+    "exact_edges_touching_clips_and_fixed_escape_empty_ancestors",
+    "image_frozen_pixels_and_independently_counted_protocol_are_exact",
+    "image_plan_owns_sources_reuses_ids_and_validates_even_unused_entries",
+    "image_strict_sources_reject_malformed_and_hidden_input",
+    "image_geometry_scopes_and_unsupported_commands_refuse_whole_plan",
+    "image_exact_gpu_byte_and_invocation_caps_accept_and_next_unit_rejects",
+    "image_source_command_and_scope_caps_accept_exact_boundaries",
+    "image_scalar_sampling_matches_nine_frozen_float_edge_oracles",
+    "image_all_642_frozen_lookup_entries_and_origins_are_preserved"
+  ],
+  "test_claims": "Prepared only, not executed. Original 8 library groups preserved; 8 image groups cover 14 independent pixel fixtures/protocol counts, 642 LUT entries, 9 float scalar cases, 25 base negative definitions, 15 hidden variants, 5 exact boundaries, arena ownership/source reuse and metadata interpretation. One existing binary deadline test remains.",
+  "known_limitations": [
+    "Opaque exact-length nonzero RGBA source format deliberately stricter than Canvas.",
+    "Single source/LUT input arena; no GPU source/LUT buffer for plans without visible images.",
+    "No custom browser GPU backend integration, no native presentation or performance claim.",
+    "Explicit 1 MiB buffer total excludes driver/native staging/process allocations; finite API waits do not guarantee blocked driver cleanup."
+  ],
+  "formatting": "rustfmt --edition 2024 --config skip_children=true for owned lib.rs/main.rs/tests.rs succeeded; peer image_fixtures.rs left byte-identical. git diff --check is clean."
+}

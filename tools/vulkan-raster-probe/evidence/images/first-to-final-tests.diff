@@ -1,0 +1,61 @@
+--- first/src/tests.rs
++++ final/src/tests.rs
+@@ -674,49 +674,20 @@
+         assert_eq!(sample_index(destination, -0.5, 3.0, 1), expected);
+     }
+     // threshold-one-ulp-smaller-denominator
+-    for (destination, expected) in [(1, 2)] {
+-        assert_eq!(
+-            sample_index(destination, 0.0, f32::from_bits(0x3fffffff), 4),
+-            expected
+-        );
+-    }
++    assert_eq!(sample_index(1, 0.0, f32::from_bits(0x3fffffff), 4), 2);
+     // threshold-exact-denominator
+-    for (destination, expected) in [(1, 2)] {
+-        assert_eq!(sample_index(destination, 0.0, 2.0, 4), expected);
+-    }
++    assert_eq!(sample_index(1, 0.0, 2.0, 4), 2);
+     // threshold-one-ulp-larger-denominator
+-    for (destination, expected) in [(1, 1)] {
+-        assert_eq!(
+-            sample_index(destination, 0.0, f32::from_bits(0x40000001), 4),
+-            expected
+-        );
+-    }
++    assert_eq!(sample_index(1, 0.0, f32::from_bits(0x40000001), 4), 1);
+     // subnormal-finite-ratio
+-    for (destination, expected) in [(0, 1)] {
+-        assert_eq!(
+-            sample_index(
+-                destination,
+-                f32::from_bits(0x80000001),
+-                f32::from_bits(0x00000002),
+-                2
+-            ),
+-            expected
+-        );
+-    }
++    assert_eq!(
++        sample_index(0, f32::from_bits(0x80000001), f32::from_bits(0x00000002), 2),
++        1
++    );
+     // positive-intermediate-infinity-clamps
+-    for (destination, expected) in [(1, 1)] {
+-        assert_eq!(
+-            sample_index(destination, 0.0, f32::from_bits(0x00000001), 2),
+-            expected
+-        );
+-    }
++    assert_eq!(sample_index(1, 0.0, f32::from_bits(0x00000001), 2), 1);
+     // negative-intermediate-infinity-clamps
+-    for (destination, expected) in [(-1, 0)] {
+-        assert_eq!(
+-            sample_index(destination, 0.0, f32::from_bits(0x00000001), 2),
+-            expected
+-        );
+-    }
++    assert_eq!(sample_index(-1, 0.0, f32::from_bits(0x00000001), 2), 0);
+ }
+ 
+ #[test]

@@ -1,0 +1,429 @@
+{
+  "format": "eris-independent-image-oracle-review-v1",
+  "reviewed_utc": "2026-09-29T10:22:48.025456+00:00",
+  "reviewer": "/root/html_css",
+  "verdict": "No concrete oracle, source-byte, scalar, protocol-arithmetic or declared rejection expectation defect found within the bounded review.",
+  "findings": [],
+  "scope": {
+    "pixel_fixtures": 14,
+    "source_entries": 22,
+    "lookup_entries": 642,
+    "scalar_cases": 9,
+    "negative_definitions": 25,
+    "hidden_negative_variants": 15,
+    "positive_boundary_plans": 5,
+    "protocol_fixtures": 21,
+    "compared_bytes_per_adapter": 921272
+  },
+  "method": [
+    "Read CPU Rect contains/translated/intersect, Canvas image/blend and typed PushFixed/PopFixed paths; never executed them.",
+    "Manually derived each surviving half-open integer coverage rectangle and the fixed-scope restoration trace independently of the fixture expected LUTs.",
+    "Used an independent Python Fraction implementation of round-to-nearest-even binary32 after each subtract/divide/multiply; no native float arithmetic in finite rounding, no candidate imports or sampling helpers.",
+    "Compared all 642 independently calculated LUT entries and nine scalar cases, including signed intermediate infinities, to the proposed expectations.",
+    "Expanded hand-derived coverage/source-index arithmetic and the independently specified opaque 4x2 rectangle into mathematical color grids, then compared literal/direct-band grids and packed little-endian hashes. This is an oracle arithmetic check, not a renderer run.",
+    "Checked exact source RGBA bytes/palette dimensions/alpha/hash values, all 16 old evidence/source file bindings, and old protocol tuples via ast.literal_eval without importing the runner.",
+    "Read all negative/hidden/cap assembly definitions and checked integer budget arithmetic without constructing unbounded malformed data or submitting any plans.",
+    "Independently recomputed new protocol arithmetic from reviewer-derived coverage bounds, including one separately checked 4x2 opaque rectangle."
+  ],
+  "specific_derivations": {
+    "translated_endpoint_tie": "2 + (1 + 2^-23) lies halfway between f32 3 and 3+2^-22. Even significand selects 3, so only x=2 survives. Width 1+2^-22 reaches 3+2^-22 and also covers integer x=3.",
+    "subnormal": "For m=2^-149, -m+2m=m, and ((0-(-m))/(2m))*2=1 exactly. The clipped positive width m covers integer 0, selecting B. Separately 1+m rounds to 1, yielding zero intersection width for the second image.",
+    "fractional_clip": "The tiny (.25,.25,.125,.125) draw includes integer (0,0) under frame clip, but the same draw under clip origin (.25,.25) loses that point. The larger clipped 1.5 square retains only (1,1), whose source index is (2,2), K.",
+    "fixed_scope": "Commands 3,5,7,9,14 have derived bounds [1,1,5,3], [4,2,5,3], [6,3,7,4], [4,2,5,3], [1,3,3,4]. Nested fixed escapes to caller clip; PopFixed restores the one-pixel fixed clip; final PopFixed/PopClip restore document offset and caller clip. Both K images remain hidden; H is later replaced by J.",
+    "tail": "319x239 image writes only x<319,y<239. Source thresholds are integer x=160,y=120. Rounded 320x240 dispatch must preserve clear last row/column.",
+    "clamp": "Source width 1 clamps every scalar input to 0; finite tiny extent may produce +/-infinity during division, then clamps to final/first index. No visible-dispatch claim is inferred from scalar coordinates outside coverage."
+  },
+  "negative_static_review": [
+    {
+      "id": "zero-source-width",
+      "reason_checked": "Width zero violates the frozen nonzero source contract."
+    },
+    {
+      "id": "zero-source-height",
+      "reason_checked": "Height zero violates the frozen nonzero source contract."
+    },
+    {
+      "id": "source-product-overflow",
+      "reason_checked": "4*(2^32-1)^2 exceeds u64::MAX before any pixel access or allocation."
+    },
+    {
+      "id": "truncated-rgba",
+      "reason_checked": "2x2 requires 16 bytes; 15 are supplied."
+    },
+    {
+      "id": "trailing-rgba",
+      "reason_checked": "1x1 requires exactly 4 bytes; 5 are supplied under the intentionally stricter probe contract."
+    },
+    {
+      "id": "first-alpha-zero",
+      "reason_checked": "The first alpha byte is 0 rather than 255."
+    },
+    {
+      "id": "last-alpha-254",
+      "reason_checked": "The second/final alpha byte is 254 rather than 255."
+    },
+    {
+      "id": "invalid-source-id",
+      "reason_checked": "ID 1 is outside the single-entry source table."
+    },
+    {
+      "id": "nonfinite-x",
+      "reason_checked": "0x7fc00000 is NaN."
+    },
+    {
+      "id": "infinite-height",
+      "reason_checked": "0x7f800000 is positive infinity."
+    },
+    {
+      "id": "negative-infinite-offset",
+      "reason_checked": "0xff800000 is negative infinity."
+    },
+    {
+      "id": "coordinate-over-cap",
+      "reason_checked": "1,000,001 is exactly representable in f32 and exceeds 1,000,000."
+    },
+    {
+      "id": "rounded-rectangle-after-image",
+      "reason_checked": "Radius 1 is outside the opaque unrounded subset, despite earlier valid image."
+    },
+    {
+      "id": "opacity-after-image",
+      "reason_checked": "Unsupported command rejects the whole stream, despite earlier valid image."
+    },
+    {
+      "id": "text-after-image",
+      "reason_checked": "Unsupported command rejects the whole stream, despite earlier valid image."
+    },
+    {
+      "id": "mismatched-clip-fixed",
+      "reason_checked": "PopClip cannot pop a Fixed scope."
+    },
+    {
+      "id": "scope-underflow",
+      "reason_checked": "The first PopFixed has no matching scope."
+    },
+    {
+      "id": "unclosed-fixed",
+      "reason_checked": "A single PushFixed leaves a nonempty scope stack."
+    },
+    {
+      "id": "combined-scope-over-cap",
+      "reason_checked": "The 33rd push exceeds depth 32; this input also remains unclosed, so generic rejection alone does not uniquely prove the depth branch."
+    },
+    {
+      "id": "input-command-over-cap",
+      "reason_checked": "257 commands exceed 256 even though every image has empty width."
+    },
+    {
+      "id": "source-count-over-cap",
+      "reason_checked": "257 source entries exceed 256 even though each is tiny and valid."
+    },
+    {
+      "id": "source-byte-sum-over-cap",
+      "reason_checked": "262145*4 = 1,048,580 exceeds the 1,048,576-byte CPU source cap."
+    },
+    {
+      "id": "distinct-source-byte-sum-over-cap",
+      "reason_checked": "2*131073*4 = 1,048,584 exceeds the aggregate cap; each 524,292-byte source alone fits."
+    },
+    {
+      "id": "explicit-gpu-bytes-one-word-over",
+      "reason_checked": "8 output/readback + 512 uniforms + 1,048,052 source + 8 LUT = 1,048,580; source bytes alone still fit."
+    },
+    {
+      "id": "rounded-invocations-one-dispatch-over",
+      "reason_checked": "76,800 clear + 51*76,800 + 6,400 + 64 = 4,000,064; other declared caps fit."
+    }
+  ],
+  "hidden_variants": "All five invalid-source/data/limit families retain the original defect in zero-width, offscreen and empty-clip contexts. Invalid source IDs remain 1 in all three contexts; visibility cannot exempt the frozen whole-plan preflight.",
+  "positive_boundary_review": [
+    {
+      "id": "exact-1MiB-explicit-buffers",
+      "derivation": "8 + 512 + 262012*4 + 8 = 1,048,576; a one-pixel larger source gives 1,048,580. Both source indices are 0 and expected pixel A."
+    },
+    {
+      "id": "exact-four-million-invocations",
+      "derivation": "76,800 + 51*76,800 + 6,400 = 4,000,000. 52 input commands, 53 draws, 28,720 LUT entries; 614,400 + 13,568 + 4 + 114,880 = 742,852 explicit bytes. Shared one-pixel A source makes all outputs A."
+    },
+    {
+      "id": "source-count-at-cap",
+      "derivation": "256 source entries fit; ID 255 is last valid entry. Every source is A; no content deduplication assumption."
+    },
+    {
+      "id": "command-count-at-cap-noop",
+      "derivation": "256 zero-width valid images fit the input-command cap and produce no image dispatch; clear remains Z."
+    },
+    {
+      "id": "combined-scope-depth-at-cap",
+      "derivation": "32 pushes then 32 pops use 64 commands with maximum depth 32, finish balanced and retain clear Z."
+    }
+  ],
+  "protocol_review": {
+    "new_tuples": [
+      [
+        "image-upscale-2x2",
+        6,
+        6,
+        2,
+        128,
+        848,
+        144
+      ],
+      [
+        "image-three-columns-to-five",
+        7,
+        3,
+        2,
+        128,
+        716,
+        84
+      ],
+      [
+        "image-downscale-distinct-4x4",
+        4,
+        4,
+        2,
+        128,
+        720,
+        64
+      ],
+      [
+        "image-clip-preserves-original-origin",
+        8,
+        3,
+        2,
+        128,
+        736,
+        96
+      ],
+      [
+        "image-negative-document-offset",
+        5,
+        3,
+        2,
+        128,
+        680,
+        60
+      ],
+      [
+        "image-negative-fractional-origin",
+        4,
+        4,
+        2,
+        128,
+        680,
+        64
+      ],
+      [
+        "image-tiny-and-fractional-clip",
+        6,
+        4,
+        3,
+        192,
+        1044,
+        96
+      ],
+      [
+        "image-exact-and-one-ulp-translated-edges",
+        5,
+        3,
+        3,
+        192,
+        928,
+        60
+      ],
+      [
+        "image-f32-endpoint-addition-rounds-back",
+        4,
+        2,
+        2,
+        128,
+        592,
+        32
+      ],
+      [
+        "image-rectangle-order-and-source-reuse",
+        6,
+        4,
+        5,
+        320,
+        1568,
+        96
+      ],
+      [
+        "image-fixed-escape-and-nested-restoration",
+        8,
+        5,
+        6,
+        384,
+        1956,
+        160
+      ],
+      [
+        "image-dispatch-tail-and-clear-border",
+        320,
+        240,
+        2,
+        153600,
+        617160,
+        307200
+      ],
+      [
+        "image-valid-empty-and-hidden",
+        4,
+        3,
+        1,
+        64,
+        352,
+        48
+      ],
+      [
+        "image-subnormal-origin-and-lost-extent",
+        2,
+        2,
+        2,
+        128,
+        564,
+        16
+      ]
+    ],
+    "new_compared_bytes": 308220,
+    "old_compared_bytes": 613052,
+    "total_compared_bytes": 921272,
+    "new_draws_including_clear": 36,
+    "new_rounded_invocations": 155776,
+    "all_fourteen_derivations_match": true,
+    "original_seven_tuples_and_sixteen_bound_files_unchanged": true,
+    "storage_assumptions": "Root-approved single packed source/LUT arena, 256-byte per-draw uniforms, output+readback eight bytes/pixel, no extra or dummy GPU buffer. If at least one image dispatch survives, all supplied source colors are packed once; with no surviving images, no image input buffer is created. CPU validation still covers all declared sources."
+  },
+  "limitations": [
+    "No engine, Canvas, candidate planner, compiler, build, adapter, Vulkan or GPU execution occurred. These are reviewed expectations, not observed GPU outputs or implementation conformance.",
+    "Binary32 arithmetic assumes round-to-nearest-even with gradual underflow as used by the specified CPU formula; integer-only GPU lookup avoids depending on shader float/subnormal semantics.",
+    "Negative cases were reviewed statically; no candidate rejection path or pre-device ordering was exercised. The 33-push negative also has an unclosed scope and is not an isolated depth diagnostic.",
+    "Positive buffer accounting relies on the explicitly approved storage layout and excludes CPU copies, transfer staging and native driver/device allocations.",
+    "143,360 LUT entries is a structural upper bound, not asserted independently reachable under all tighter limits. No full browser integration or performance claim is made."
+  ],
+  "bindings": [
+    {
+      "path": "/tmp/eris-vulkan-raster-image-fixtures.json",
+      "bytes": 90016,
+      "sha256": "3201c74759821e98f5716ff4749a612e0f9395e5326c1cc48f42f9fb7b3c2e76"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-fixtures-notes.md",
+      "bytes": 6735,
+      "sha256": "d967012636124a272fd5d829121732547dae8d991bb01378e484762a67e63809"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-review.json",
+      "bytes": 27530,
+      "sha256": "7ecea95031f31115c91c121b09afb400abcd24fc16611894f1fcecbe07ca0671"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/graphics.rs",
+      "bytes": 60970,
+      "sha256": "1b51c4af2c8ae4eea66476397868022da35e566d3593f3fcddf29a156bae62a2"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-oracle-math.py",
+      "bytes": 10586,
+      "sha256": "b5aaee0df2b94b3ff20899309e4f261f8a72d933e20229f3ff8d9eb0cd6e9ee8"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-oracle-math.json",
+      "bytes": 8458,
+      "sha256": "1876f1c3d61034e30058284019b50ace1d52bf9180eabb9921007a03eeeebf0f"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-protocol-draft.json",
+      "bytes": 10102,
+      "sha256": "908d18934cfeb66a60e6889bf17b1351a669846d7945213d6e76079d81faa345"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-protocol-prepare.py",
+      "bytes": 2728,
+      "sha256": "5b56cf128ae524e4421addbd8f59d2691a57d3a0b15b44b4589a0ae639309784"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/fixtures.rs",
+      "bytes": 4785,
+      "sha256": "7779ecab36a587f2792acf258b28709b9b4606ece0976c48c0c04aa8e1a45ab8"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/rect.wgsl",
+      "bytes": 790,
+      "sha256": "e290ce60bef71560fdf7ab536410fbae0aa5d2b54f648d0706a457dae5c2c9af"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/tests.rs",
+      "bytes": 7319,
+      "sha256": "b8483bed33a116fa1ee305806638821edec36b9bbdf1a99d80dbb97f0729aa39"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/run_host.py",
+      "bytes": 13765,
+      "sha256": "0360d30d34e31e407539c6804044dd05c4f62798316574eb090fc68f6d8369c4"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/test_protocol.py",
+      "bytes": 1515,
+      "sha256": "da26d70d111d8a8f1ba04b1d277be60481a7b6e7ccda5cc87b14cb99f492b3ba"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/Cargo.toml",
+      "bytes": 323,
+      "sha256": "3150058ef3ee321212873e93aea1d745b7a5923faa39808e631ccbef28e4df23"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/Cargo.lock",
+      "bytes": 23795,
+      "sha256": "b619519af5f81d79d976a0569ae1278565b3bbdd3e4a7243438f1d1ced81a182"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/host-raster.json",
+      "bytes": 13753,
+      "sha256": "59901d26bf3831d9763becc8ee3c15e34d8e043c48e02e4809e80972026f2824"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/enumeration.stdout.log",
+      "bytes": 465,
+      "sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/enumeration.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/adapter-0.stdout.log",
+      "bytes": 1256,
+      "sha256": "4f2b1782b255963f38998d9531fb21fb1b640370b3fb58004543efce9b376dcd"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/adapter-0.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/adapter-1.stdout.log",
+      "bytes": 1256,
+      "sha256": "7712fe0a28cf2da65c2445c0c534b5a50de12b087ea868345d1d28b853009ea0"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/adapter-1.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/adapter-2.stdout.log",
+      "bytes": 1256,
+      "sha256": "87681cc2c50eb9703f78d2237dca52151b26a68198055616ca5bce0d91c776e5"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/adapter-2.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "fixture_notes_and_cpu_inputs_unchanged": true
+}

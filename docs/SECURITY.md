@@ -68,6 +68,18 @@ hard limit on driver allocations. Native driver calls and teardown can outlast
 application waits. The optional browser presenter has the additional ownership
 and launch controls described above; neither path is a GPU sandbox.
 
+The separate [custom raster probe](../tools/vulkan-raster-probe/README.md)
+accepts only its fixed synthetic rectangle/image fixtures. It validates the
+whole input before Vulkan initialization, owns immutable planned data, and
+checks every source's dimensions, exact RGBA length and opaque alpha even when
+unused or hidden. Source count/aggregate bytes are checked before pixel scans;
+packing occurs once per source and bounded axis tables preserve CPU sampling.
+The output, readback, metadata and optional image arena share a 1 MiB explicit
+GPU-buffer limit. Ordered passes and shader range checks protect this bounded
+subset; driver/device/pipeline allocations and upload staging are outside that
+sum. Its offscreen pixel checks establish neither GPU process isolation nor
+production browser security, and it changes no browser renderer authority.
+
 - The application forbids unsafe Rust. Parser, layout, interpreter, and software-paint code are custom Rust. Platform/codec/crypto dependencies have their own security surface and may use unsafe code.
 - Script code cannot call host filesystem, networking, process, clipboard, native eval, or FFI APIs. Native clipboard access is initiated only by explicit user keyboard shortcuts. Unsupported features produce errors. Scripts have DOM access within the current page.
 - The script interpreter bounds source, tokens, grammar continuation storage/work, logical calls, native recursion, instructions and allocation accounting. Per-page script count/source are also capped. Template text scanning, parser-directed rescans, substitution coercion and output copying consume compile/runtime budgets; template expressions use the shared execution driver and coercion callbacks retain native guards. Owned executable names and parser lists are charged during direct flat construction; functions share immutable code and retain conservative activation metadata allowances. Generic array reversal and radix conversion retain shared work/heap/coercion limits. Long-lived pages can exhaust its arena; there is no garbage collector. Quota termination is a distinct, uncatchable error and cannot be bypassed by finally blocks. Native callbacks, constructors, events and JSON traversal share a weighted nesting budget. Iterative JavaScript uses precharged continuation storage, with all invocations sharing the logical-call ceiling.

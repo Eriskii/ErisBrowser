@@ -1,0 +1,24 @@
+{
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tools/vulkan-raster-probe",
+    "-p",
+    "test_*.py",
+    "-q"
+  ],
+  "inputs": {
+    "tools/vulkan-raster-probe/run_host.py": "456a1a4f00ef35009b74221ac1d6710ae30ee53c0e0858953576314c701cff73",
+    "tools/vulkan-raster-probe/test_protocol.py": "3b50594d36a69c0dcc8b46bd8864453ef365c602be9bd3bfd5ebae1457abd5a7",
+    "tools/vulkan-raster-probe/test_supervisor.py": "85d3d91272710f006da8b340dae6030102183939b6e5325e82674d81318ac806",
+    "tools/vulkan-raster-probe/evidence/image-protocol.json": "be99483f8430c2f208916008bffd4f4354f8ec66c555732c1f122f8957d468b0"
+  },
+  "exit_code": 0,
+  "elapsed_seconds": 0.41361137107014656,
+  "log": "/tmp/eris-vulkan-image-python-check.log",
+  "log_sha256": "3c1e839f587d8c4b425ebd15a765224be99238a6fbad0c19e4252fa15814d19e",
+  "scope": "Protocol validation and bounded fake Python processes only; no browser/planner/Rust/GPU execution."
+}

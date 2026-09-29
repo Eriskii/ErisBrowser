@@ -1,0 +1,95 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.26
+   Compiling cfg_aliases v0.2.2
+   Compiling foldhash v0.2.0
+   Compiling cfg-if v1.0.5
+   Compiling autocfg v1.5.1
+   Compiling thiserror v2.0.21
+   Compiling equivalent v1.0.2
+   Compiling libm v0.2.16
+   Compiling zerocopy v0.8.59
+   Compiling rustc-hash v1.1.0
+   Compiling log v0.4.34
+   Compiling libc v0.2.189
+   Compiling bitflags v2.13.2
+   Compiling parking_lot_core v0.9.12
+   Compiling naga v30.0.1
+   Compiling bit-vec v0.9.1
+   Compiling unicode-width v0.2.2
+   Compiling ash v0.38.0+1.3.281
+   Compiling libloading v0.8.9
+   Compiling hashbrown v0.17.1
+   Compiling spirv v0.4.0+sdk-1.4.341.0
+   Compiling raw-window-handle v0.6.2
+   Compiling bit-set v0.10.0
+   Compiling codespan-reporting v0.13.1
+   Compiling arrayvec v0.7.8
+   Compiling scopeguard v1.2.0
+   Compiling smallvec v1.16.2
+   Compiling allocator-api2 v0.2.21
+   Compiling static_assertions v1.1.0
+   Compiling once_cell v1.21.4
+   Compiling lock_api v0.4.14
+   Compiling num-traits v0.2.19
+   Compiling wgpu-hal v30.0.1
+   Compiling presser v0.3.1
+   Compiling profiling v1.0.18
+   Compiling renderdoc-sys v1.1.0
+   Compiling wgpu-core v30.0.1
+   Compiling litrs v1.0.0
+   Compiling wgpu v30.0.1
+   Compiling hashbrown v0.16.1
+   Compiling indexmap v2.14.2
+   Compiling document-features v0.2.12
+   Compiling syn v3.0.6
+   Compiling syn v2.0.119
+   Compiling parking_lot v0.12.5
+   Compiling ordered-float v5.3.0
+   Compiling thiserror-impl v2.0.21
+   Compiling bytemuck_derive v1.12.1
+   Compiling zerocopy-derive v0.8.59
+   Compiling bytemuck v1.25.2
+   Compiling naga-types v30.0.1
+   Compiling wgpu-types v30.0.1
+   Compiling half v2.7.1
+   Compiling gpu-allocator v0.28.0
+   Compiling wgpu-naga-bridge v30.0.1
+   Compiling wgpu-core-deps-windows-linux-android v30.0.1
+   Compiling eris-vulkan-raster-prototype v0.0.0 (/tmp/eris-vulkan-image-candidate-1/source)
+    Finished `test` profile [unoptimized] target(s) in 10.93s
+     Running unittests src/lib.rs (/tmp/eris-vulkan-raster-prototype/target-msrv/debug/deps/eris_vulkan_raster_prototype-24557aefa97ca703)
+
+running 16 tests
+test tests::exact_edges_touching_clips_and_fixed_escape_empty_ancestors ... ok
+test tests::fractional_rectangle_and_clip_left_edges_are_deliberately_different ... ok
+test tests::image_geometry_scopes_and_unsupported_commands_refuse_whole_plan ... ok
+test tests::image_plan_owns_sources_reuses_ids_and_validates_even_unused_entries ... ok
+test tests::image_scalar_sampling_matches_nine_frozen_float_edge_oracles ... ok
+test tests::invalid_nonfinite_coordinates_offsets_and_dimensions_are_rejected ... ok
+test tests::image_source_command_and_scope_caps_accept_exact_boundaries ... ok
+test tests::metadata_records_are_immutable_aligned_and_never_pixels ... ok
+test tests::typed_scope_balance_and_combined_depth_are_checked_atomically ... ok
+test tests::unsupported_content_is_rejected_even_after_hidden_or_empty_content ... ok
+test tests::commands_overdraw_invocations_and_explicit_buffers_stay_bounded ... ok
+test tests::image_strict_sources_reject_malformed_and_hidden_input ... ok
+test tests::image_all_642_frozen_lookup_entries_and_origins_are_preserved ... ok
+test tests::image_frozen_pixels_and_independently_counted_protocol_are_exact ... ok
+test tests::independent_pixel_fixtures_agree_with_integer_plan ... ok
+test tests::image_exact_gpu_byte_and_invocation_caps_accept_and_next_unit_rejects ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.09s
+
+     Running unittests src/main.rs (/tmp/eris-vulkan-raster-prototype/target-msrv/debug/deps/eris_vulkan_raster_prototype-c9dabddb1d089510)
+
+running 1 test
+test tests::pending_future_uses_finite_deadline_without_gpu ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests eris_vulkan_raster_prototype
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

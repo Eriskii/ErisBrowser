@@ -1,0 +1,75 @@
+[
+  {
+    "toolchain": "1.88.0",
+    "action": "fmt",
+    "argv": [
+      "cargo",
+      "fmt",
+      "--manifest-path",
+      "/tmp/eris-vulkan-image-candidate-1/source/Cargo.toml",
+      "--",
+      "--check"
+    ],
+    "env_overrides": {
+      "RUSTUP_HOME": "/tmp/eris-vulkan-rustup",
+      "RUSTUP_TOOLCHAIN": "1.88.0",
+      "CARGO_HOME": "/tmp/eris-vulkan-spike/cargo-home",
+      "CARGO_TARGET_DIR": "/tmp/eris-vulkan-raster-prototype/target-msrv"
+    },
+    "exit_code": 0,
+    "seconds": 0.113,
+    "log": "offline-1.88.0-fmt.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "frozen_inputs_unchanged": true
+  },
+  {
+    "toolchain": "1.88.0",
+    "action": "test",
+    "argv": [
+      "cargo",
+      "test",
+      "--offline",
+      "--locked",
+      "--manifest-path",
+      "/tmp/eris-vulkan-image-candidate-1/source/Cargo.toml"
+    ],
+    "env_overrides": {
+      "RUSTUP_HOME": "/tmp/eris-vulkan-rustup",
+      "RUSTUP_TOOLCHAIN": "1.88.0",
+      "CARGO_HOME": "/tmp/eris-vulkan-spike/cargo-home",
+      "CARGO_TARGET_DIR": "/tmp/eris-vulkan-raster-prototype/target-msrv"
+    },
+    "exit_code": 0,
+    "seconds": 12.07,
+    "log": "offline-1.88.0-test.log",
+    "sha256": "039fb6a1c5567ccd4fa168559c68ed32b8085f51bec0c06093227540cfa166ae",
+    "frozen_inputs_unchanged": true
+  },
+  {
+    "toolchain": "1.88.0",
+    "action": "clippy",
+    "argv": [
+      "cargo",
+      "clippy",
+      "--offline",
+      "--locked",
+      "--manifest-path",
+      "/tmp/eris-vulkan-image-candidate-1/source/Cargo.toml",
+      "--all-targets",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "env_overrides": {
+      "RUSTUP_HOME": "/tmp/eris-vulkan-rustup",
+      "RUSTUP_TOOLCHAIN": "1.88.0",
+      "CARGO_HOME": "/tmp/eris-vulkan-spike/cargo-home",
+      "CARGO_TARGET_DIR": "/tmp/eris-vulkan-raster-prototype/target-msrv"
+    },
+    "exit_code": 101,
+    "seconds": 7.568,
+    "log": "offline-1.88.0-clippy.log",
+    "sha256": "196174217a9f0b6b2247c6a2c83f5fb95d3993eb0c2df494c0a5c21d35f2634c",
+    "frozen_inputs_unchanged": true
+  }
+]

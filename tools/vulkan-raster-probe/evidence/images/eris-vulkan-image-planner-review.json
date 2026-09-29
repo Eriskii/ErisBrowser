@@ -1,0 +1,203 @@
+{
+  "format": "eris-vulkan-image-planner-static-review-v1",
+  "reviewed_utc": "2026-09-29T10:41:41.600681+00:00",
+  "reviewer": "/root/html_css",
+  "verdict": "No concrete planner, allocation-order, scalar/clip semantics or fixture/test expectation defect found within the bounded read-only review.",
+  "findings": [],
+  "execution": "No candidate Rust, compiler, Cargo, engine, Canvas, GPU or test execution by reviewer. Only source/AST/data extraction, hashes and independent mathematical comparison.",
+  "final_source": {
+    "candidate_freeze_sha256": "f16684b0aa664f87209f1b52706f284ee187d5b65d6a98dcc1fcb4f0d9d320b6",
+    "lib_sha256": "4675b65d27682018f9a16164e307324c19a812c9c58a8e4964942df42fedc0d8",
+    "tests_sha256": "ae330c85f55b2aa8131c4a0a537d1fbe7f982ba7b7331e33a1f1ee6c2b1b8e72",
+    "image_fixtures_sha256": "d7fd6c1970f1bfad52021b0ae48401596d3124c5a7e29a1171a310d6d6f096ee",
+    "all_fifteen_candidate_file_hashes_equal_current_repository": true
+  },
+  "reviewed_semantics": [
+    {
+      "source": "src/lib.rs:249 coverage",
+      "conclusion": "Image coverage intersects using f32 Rect arithmetic, applies floor(image-visible-origin), ceil(lower clip), frame zero lower bound, and ceil(reconstructed visible end) limited by BOTH ceil clip upper edges and frame size. This matches the CPU image loop plus blend half-open integer-origin containment. Rectangle-only coverage retains its earlier formula."
+    },
+    {
+      "source": "src/lib.rs:271 sample_index; src/graphics.rs:663 image",
+      "conclusion": "Exact original translated origin/extent retained in ImageDraft. The expression performs f32 integer conversion, subtraction, division, multiplication, clamp and truncation in the CPU order. No center shift, reciprocal multiplication, f64 widening, FMA or finite-intermediate rejection. A tiny positive extent may yield +/-infinity, then clamp. Positive extents cannot yield 0/0."
+    },
+    {
+      "source": "src/lib.rs Rect/Scope paths; src/graphics.rs:338 set_clip and :771/:783 fixed scopes",
+      "conclusion": "Frame/command authored geometry and offsets are finite and capped. Translated values remain finite under those caps. Normalized viewport clip matches Canvas set_clip. PushFixed resets caller clip and viewport offset; PopFixed restores both. Image source IDs and geometry are checked before hidden/empty coverage suppression."
+    },
+    {
+      "source": "src/lib.rs:298 parameter_bytes",
+      "conclusion": "Private immutable metadata preserves original first 32 rectangle bytes and zero padding; image records add source base/width/height/pixels and x/y bases/counts at words 8..15. Every slot remains 256 bytes, little-endian. Arena/source offsets refer to owned packed bytes."
+    }
+  ],
+  "resource_and_ownership_review": [
+    {
+      "source": "src/lib.rs:213 source_pixels",
+      "conclusion": "Source count <=256 precedes metadata iteration. Nonzero dimensions, checked u64 product*4, exact actual length and aggregate <=1MiB are completed for all sources before alpha scans. Alpha is checked once per supplied source, including unused sources; repeated draw references do not repeat source-area validation."
+    },
+    {
+      "source": "src/lib.rs:341 plan_with_images through :484",
+      "conclusion": "Frame <=320x240 and input commands <=256 precede planner reserves. Scope capacity 32 is reserved before pushes and checked before each push. Pending capacity commands+1 is enough because each command emits at most one draw plus the clear. Each visible draw updates checked rounded8x8 invocations <=4M and each image updates checked LUT count <=143360 before insertion."
+    },
+    {
+      "source": "src/lib.rs:484-505 arena/parameter/GPU sum",
+      "conclusion": "Checked all-source words plus LUT words and 256-byte metadata slots are summed with output+readback eight bytes/pixel. The <=1MiB GPU byte gate occurs before source packing, table creation, final draw storage and parameter allocation. No-image plans use zero input arena, while their declared source validation still runs."
+    },
+    {
+      "source": "src/lib.rs:505 packing and :518 final draws",
+      "conclusion": "Fallible exact reserve covers the entire input byte count. Each supplied source is packed once; each visible image appends exactly its width+height pre-counted words. The final arena length is checked. Draws reserve pending count; parameters reserve checked exact size before resize. Bounds keep all u32/i32/usize offset conversions safe on supported 32/64-bit hosts."
+    },
+    {
+      "source": "src/lib.rs Plan/Draw and public accessors",
+      "conclusion": "Plan, Draw and ImageParameters fields are private, constructors are private and accessors return copies or immutable slices. Source inputs are borrowed only while planning, then copied into owned bytes; caller mutations cannot change the returned plan. has_images iff nonempty input is consistent because a visible image requires a nonzero source and nonempty x/y tables."
+    },
+    {
+      "source": "src/image_fixtures.rs ImageFixture::plan",
+      "conclusion": "The wrapper rejects >MAX_SOURCE_ENTRIES before reserving borrowed views and uses try_reserve_exact. Its fixture inputs and independent expected arrays remain bounded constants."
+    }
+  ],
+  "test_review": {
+    "new_library_groups": 8,
+    "original_library_groups_retained": 8,
+    "protocol_rows_checked_from_Rust_text": 14,
+    "lookup_entries_checked_from_Rust_text": 642,
+    "scalar_cases_read_against_frozen_oracle": 9,
+    "base_negative_families_reviewed": 25,
+    "hidden_negative_variants_reviewed": 15,
+    "positive_boundaries_reviewed": 5,
+    "transcription": "All 14 per-fixture counter rows and 642 table entries/origins were extracted as data from final Rust tests and match frozen values. Nine scalar cases preserve exact f32 bit operands and expected indices. Negative/hidden tests retain dimensions, lengths, alpha, invalid-ID, geometry, scope and budget conditions; no expected rejection was removed or converted into success.",
+    "depth": "The corrected 33-push/33-pop case checks specifically scope budget, eliminating the old unclosed-scope alternative.",
+    "exact_boundaries": "1,048,576 GPU bytes accept; +one source pixel rejects as GPU buffer budget. 4,000,000 invocations accept; +one 1x1 rounded dispatch rejects as GPU invocation budget. Source-count 256, command-count 256 and depth 32 acceptance remain.",
+    "shared_helper_inputs": "Some private malformed-source metadata checks omit a drawable command to verify rejection even for unused inputs; source-count acceptance shares a different clear color which is completely overwritten. These do not alter the frozen condition, expected result, 14 exact pixel inputs or any protocol tuple.",
+    "independence": "The private metadata interpreter reads planned bytes only as the actual side; expected pixels remain independent literal rows/direct integer bands. Tests of plan ownership mutate an original unused source after planning and assert retained arena bytes; reused source IDs point at the same packed base."
+  },
+  "formatting_and_clippy_delta": {
+    "fixture_preformat_sha256": "feba81dbd1ed6258aa53b59ae622867a2748fa63fc27d4722487f610f98b6b15",
+    "fixture_postformat_sha256": "d7fd6c1970f1bfad52021b0ae48401596d3124c5a7e29a1171a310d6d6f096ee",
+    "data_equivalence": {
+      "fixtures": 14,
+      "rgba_sources": 22,
+      "rgba_bytes": 324,
+      "expected_pixels": 77055,
+      "expected_bytes": 308220,
+      "all_frame_command_order_geometry_bits_and_byte_hashes_exact": true
+    },
+    "verifier_adaptation": "Retained original checker/receipt. New checker tolerates balanced arrays, optional trailing commas and formatting only; its first draft did not tolerate a trailing Rect argument comma, then was corrected without altering any candidate or oracle data.",
+    "candidate1_to_candidate2": "Only tests.rs differs in the 15-file candidate inventory. Replacing six single-element for loops by direct assertions preserves literal scalar arguments and outputs. Text outside that scalar function is identical; normalized assertion bodies match exactly. Candidate1 source/logs remain retained.",
+    "tests_original_sha256": "7ddc05d10a4919d236dd4a959f32eb3e24da457bc2973c90d1bdc8a79c6b845a",
+    "tests_final_sha256": "ae330c85f55b2aa8131c4a0a537d1fbe7f982ba7b7331e33a1f1ee6c2b1b8e72"
+  },
+  "limitations": [
+    "This is a static planner/test review, not observed CPU/GPU correctness or a proof over arbitrary float inputs. The frozen mathematical oracle supplies independent edge expectations.",
+    "WGSL shader/device integration and native runtime cleanup are separate review scopes; this receipt does not assert they executed or passed.",
+    "Explicit GPU bytes exclude CPU input/expected arrays, concurrent bounded planning structures, staging and driver allocations; fallible planner reserves do not claim general process-wide allocator recovery.",
+    "The deliberately strict opaque/exact-length source contract differs from broader Canvas malformed-input and alpha behavior. No browser integration, native presentation or performance claim follows."
+  ],
+  "bindings": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/lib.rs",
+      "bytes": 17720,
+      "sha256": "4675b65d27682018f9a16164e307324c19a812c9c58a8e4964942df42fedc0d8"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/tests.rs",
+      "bytes": 26834,
+      "sha256": "ae330c85f55b2aa8131c4a0a537d1fbe7f982ba7b7331e33a1f1ee6c2b1b8e72"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/image_fixtures.rs",
+      "bytes": 19757,
+      "sha256": "d7fd6c1970f1bfad52021b0ae48401596d3124c5a7e29a1171a310d6d6f096ee"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/fixtures.rs",
+      "bytes": 4785,
+      "sha256": "7779ecab36a587f2792acf258b28709b9b4606ece0976c48c0c04aa8e1a45ab8"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/graphics.rs",
+      "bytes": 60970,
+      "sha256": "1b51c4af2c8ae4eea66476397868022da35e566d3593f3fcddf29a156bae62a2"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-2/freeze.json",
+      "bytes": 3766,
+      "sha256": "f16684b0aa664f87209f1b52706f284ee187d5b65d6a98dcc1fcb4f0d9d320b6"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-1/freeze.json",
+      "bytes": 3766,
+      "sha256": "7eb151d3cd7e7c2b7613dd732e6cbf12ceecb70db3cc738315cd3813c234842a"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-1/source/src/tests.rs",
+      "bytes": 27498,
+      "sha256": "7ddc05d10a4919d236dd4a959f32eb3e24da457bc2973c90d1bdc8a79c6b845a"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-1/image_fixtures.before-format.rs",
+      "bytes": 21632,
+      "sha256": "feba81dbd1ed6258aa53b59ae622867a2748fa63fc27d4722487f610f98b6b15"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-source-ready.json",
+      "bytes": 6852,
+      "sha256": "efb326f4cf7fb09651474a45067800fe391b4042ced2934dc452ba39e6bc3070"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-api-contract.json",
+      "bytes": 12022,
+      "sha256": "cdfa72e93cfbe1dcb961cd873ea6c6aca5771d18ee6b022ec4e5b7ed5f158d0e"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-fixtures-frozen.json",
+      "bytes": 90280,
+      "sha256": "ccd79c6ac60221ccaf463ce1ada56230c35e12039d3d8ca534e15019121c2ecf"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-protocol-frozen.json",
+      "bytes": 10217,
+      "sha256": "be99483f8430c2f208916008bffd4f4354f8ec66c555732c1f122f8957d468b0"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-fixture-source-freeze.json",
+      "bytes": 3123,
+      "sha256": "5ff97c358c1d3f79bc9a09bd2871a7d6cb717d37340abe5b0eb06d10c160b231"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-fixture-data-check.json",
+      "bytes": 8585,
+      "sha256": "6eafde255ba2448c86e424b9837422d12ee8bcda6b07d9d7bcb99566a92b9125"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-fixture-formatted-data-check.json",
+      "bytes": 8585,
+      "sha256": "cd14e297827bf84da70773b826e2f2ce213c4e1893d4e54de079dddbeff303b8"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-fixture-verify-formatted.py",
+      "bytes": 8994,
+      "sha256": "4dacecf7152094adeb6b904d844713a4f217009681709915a8c33eac2c3dfcf4"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-fixture-verify-formatted-initial.py",
+      "bytes": 8979,
+      "sha256": "b70034213f04736f6c53e1e6e98254209f5201b420d26446cf3fb60345d54ead"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-oracle-review.json",
+      "bytes": 17139,
+      "sha256": "21740c951bc24b8a2edb2911fe110a448132593006d8cb6d9c825a878d9df0bb"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-oracle-final-delta.json",
+      "bytes": 663,
+      "sha256": "636cdde12553b7768c3683a1aa402e00b7728f104e1ed2d0ebc52535bf4c407e"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-tests-transcription-data.json",
+      "bytes": 1437,
+      "sha256": "f8919288067d301aaadc63c19d75b3cf5c4da419f4c1bcb791ff48b098bfa193"
+    }
+  ]
+}

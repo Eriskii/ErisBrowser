@@ -1,0 +1,13 @@
+{
+  "scope": "Read-only final-oracle delta review; no execution",
+  "old_sha256": "3201c74759821e98f5716ff4749a612e0f9395e5326c1cc48f42f9fb7b3c2e76",
+  "final_sha256": "ccd79c6ac60221ccaf463ce1ada56230c35e12039d3d8ca534e15019121c2ecf",
+  "pixel_and_scalar_values_unchanged": true,
+  "only_semantic_delta": {
+    "id": "combined-scope-over-cap",
+    "before": "33 PushFixed commands, no closing pops",
+    "after": "33 PushFixed then 33 PopFixed commands",
+    "reason": "66 input commands fit the 256 cap, are correctly typed and balanced; maximum depth 33 now isolates the 32-depth rejection from end-of-stream unclosed-scope rejection."
+  },
+  "findings": []
+}

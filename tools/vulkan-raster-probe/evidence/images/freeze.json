@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "phase": "frozen before first candidate compilation, tests or GPU execution",
+  "created_utc": "2026-09-29T10:39:10.492420+00:00",
+  "parent": "8133250e86ea616c3d7644b8965acb25145a6b3c",
+  "files": {
+    "Cargo.toml": {
+      "bytes": 323,
+      "sha256": "3150058ef3ee321212873e93aea1d745b7a5923faa39808e631ccbef28e4df23"
+    },
+    "Cargo.lock": {
+      "bytes": 23795,
+      "sha256": "b619519af5f81d79d976a0569ae1278565b3bbdd3e4a7243438f1d1ced81a182"
+    },
+    "run_host.py": {
+      "bytes": 14669,
+      "sha256": "456a1a4f00ef35009b74221ac1d6710ae30ee53c0e0858953576314c701cff73"
+    },
+    "test_protocol.py": {
+      "bytes": 2879,
+      "sha256": "3b50594d36a69c0dcc8b46bd8864453ef365c602be9bd3bfd5ebae1457abd5a7"
+    },
+    "test_supervisor.py": {
+      "bytes": 2488,
+      "sha256": "85d3d91272710f006da8b340dae6030102183939b6e5325e82674d81318ac806"
+    },
+    "src/fixtures.rs": {
+      "bytes": 4785,
+      "sha256": "7779ecab36a587f2792acf258b28709b9b4606ece0976c48c0c04aa8e1a45ab8"
+    },
+    "src/image.wgsl": {
+      "bytes": 2204,
+      "sha256": "0e33cf1869e8a69143a4f446917ef43e5ad3439f2b57197174a177a095d32d1b"
+    },
+    "src/image_fixtures.rs": {
+      "bytes": 19757,
+      "sha256": "d7fd6c1970f1bfad52021b0ae48401596d3124c5a7e29a1171a310d6d6f096ee"
+    },
+    "src/lib.rs": {
+      "bytes": 17720,
+      "sha256": "4675b65d27682018f9a16164e307324c19a812c9c58a8e4964942df42fedc0d8"
+    },
+    "src/main.rs": {
+      "bytes": 17242,
+      "sha256": "59a5ba34156453d92185d4aedc18d50807ab5d04a9c31beb03c2f665931da475"
+    },
+    "src/rect.wgsl": {
+      "bytes": 790,
+      "sha256": "e290ce60bef71560fdf7ab536410fbae0aa5d2b54f648d0706a457dae5c2c9af"
+    },
+    "src/tests.rs": {
+      "bytes": 26834,
+      "sha256": "ae330c85f55b2aa8131c4a0a537d1fbe7f982ba7b7331e33a1f1ee6c2b1b8e72"
+    },
+    "evidence/image-fixture-oracle.json": {
+      "bytes": 90280,
+      "sha256": "ccd79c6ac60221ccaf463ce1ada56230c35e12039d3d8ca534e15019121c2ecf"
+    },
+    "evidence/image-protocol.json": {
+      "bytes": 10217,
+      "sha256": "be99483f8430c2f208916008bffd4f4354f8ec66c555732c1f122f8957d468b0"
+    },
+    "evidence/image-fixture-freeze.json": {
+      "bytes": 2568,
+      "sha256": "29a68e2af2b6215942b9a24056b1a1146884831d7f9e47ce27245c8c6e25cbc9"
+    }
+  },
+  "source_tar_sha256": "660029686c7a4f0e255dd33f4ee6ee4da8b69692a036b82be48b994062e00fa6",
+  "bindings": {
+    "/tmp/eris-vulkan-raster-image-source-ready.json": {
+      "bytes": 6852,
+      "sha256": "efb326f4cf7fb09651474a45067800fe391b4042ced2934dc452ba39e6bc3070"
+    },
+    "/tmp/eris-vulkan-raster-image-api-contract.json": {
+      "bytes": 12022,
+      "sha256": "cdfa72e93cfbe1dcb961cd873ea6c6aca5771d18ee6b022ec4e5b7ed5f158d0e"
+    },
+    "/tmp/eris-vulkan-raster-image-fixture-source-freeze.json": {
+      "bytes": 3123,
+      "sha256": "5ff97c358c1d3f79bc9a09bd2871a7d6cb717d37340abe5b0eb06d10c160b231"
+    },
+    "/tmp/eris-vulkan-raster-image-oracle-review.json": {
+      "bytes": 17139,
+      "sha256": "21740c951bc24b8a2edb2911fe110a448132593006d8cb6d9c825a878d9df0bb"
+    },
+    "/tmp/eris-vulkan-raster-image-oracle-final-delta.json": {
+      "bytes": 663,
+      "sha256": "636cdde12553b7768c3683a1aa402e00b7728f104e1ed2d0ebc52535bf4c407e"
+    },
+    "/tmp/eris-vulkan-image-protocol-review.json": {
+      "bytes": 10869,
+      "sha256": "d5ea23f6677b4dadc1894312847b341291c5752bcb775341de3fc623684da231"
+    },
+    "/tmp/eris-vulkan-image-python-check.json": {
+      "bytes": 967,
+      "sha256": "e2e40eaab8a9613ddf34d686380ab8ec7b6f5ec2316fe3773d8a5c2747a0f31c"
+    }
+  },
+  "browser_input_sha256": "2d4ea163d28898b44eae1933639960b8f7fc1cfb6986133a36b16965a4abd325",
+  "browser_files_rechecked": 100,
+  "original_probe_inputs_unchanged": true
+}

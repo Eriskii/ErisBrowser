@@ -1,0 +1,195 @@
+{
+  "prior_failed_attempt": {
+    "path": "/tmp/eris-vulkan-image-wgsl-check-first.json",
+    "bytes": 4336,
+    "sha256": "8c125f97c847727bbb209a17b5fa76663c0d62b1bea41cffd248174634703558"
+  },
+  "retry_reason": "First lld link failed creating a worker thread; same checker/shaders, single-threaded lld, fresh output directory, retained original failure.",
+  "schema": 1,
+  "scope": "Independent offline Naga 30.0.1 parsing/validation only; no Vulkan instance, adapter, device, engine or GPU execution. No repository edits or Cargo.",
+  "freeze": {
+    "path": "/tmp/eris-vulkan-image-candidate-1/freeze.json",
+    "bytes": 3766,
+    "sha256": "7eb151d3cd7e7c2b7613dd732e6cbf12ceecb70db3cc738315cd3813c234842a"
+  },
+  "shader_inputs": [
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-1/source/src/rect.wgsl",
+      "bytes": 790,
+      "sha256": "e290ce60bef71560fdf7ab536410fbae0aa5d2b54f648d0706a457dae5c2c9af"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-1/source/src/image.wgsl",
+      "bytes": 2204,
+      "sha256": "0e33cf1869e8a69143a4f446917ef43e5ad3439f2b57197174a177a095d32d1b"
+    }
+  ],
+  "checker_source": {
+    "path": "/tmp/eris-vulkan-image-wgsl-check-single-thread/validate_wgsl.rs",
+    "bytes": 1170,
+    "sha256": "046b0579342da64d89eb62f9c8709e6b18810c135e4d82f8d1fbba8c46588e7d"
+  },
+  "driver": {
+    "path": "/tmp/eris-vulkan-image-wgsl-check-single-thread-driver.py",
+    "bytes": 5951,
+    "sha256": "a8d9cf726a1bb3725e3e8c7491e70d3ed539e5c846af8b8f3631e8bcf30078e8"
+  },
+  "compiler": {
+    "path": "/tmp/eris-vulkan-rustup/toolchains/1.98.0-x86_64-unknown-linux-gnu/bin/rustc",
+    "bytes": 649136,
+    "sha256": "3167c4f49785f5048591fb3eb4745ccee0732ff4e01602d43b4e86af7ea7bca3"
+  },
+  "naga_rlib": {
+    "path": "/tmp/eris-vulkan-raster-prototype/target-198/debug/deps/libnaga-214fba6b21bff5ad.rlib",
+    "bytes": 28886944,
+    "sha256": "b97d114d2553a42bc38e6a9dd7ca28e49f0391b94929403300f3cc9dc3da1de6"
+  },
+  "naga_build_fingerprint": {
+    "path": "/tmp/eris-vulkan-raster-prototype/target-198/debug/.fingerprint/naga-214fba6b21bff5ad/lib-naga.json",
+    "bytes": 1740,
+    "sha256": "8a56f6aa6d9309de52a457609b47d7de906ea9b010907a12fc5cd1adaf252430"
+  },
+  "environment_overrides": {
+    "RUSTUP_HOME": "/tmp/eris-vulkan-rustup",
+    "RUSTUP_TOOLCHAIN": "1.98.0"
+  },
+  "limits": {
+    "address_space_bytes": 2147483648,
+    "cpu_seconds": 30,
+    "file_bytes": 67108864
+  },
+  "runs": [
+    {
+      "name": "compiler-version",
+      "argv": [
+        "/tmp/eris-vulkan-rustup/toolchains/1.98.0-x86_64-unknown-linux-gnu/bin/rustc",
+        "-Vv"
+      ],
+      "cwd": "/tmp/eris-vulkan-image-wgsl-check-single-thread",
+      "started_utc": "2026-09-29T10:40:18.850335+00:00",
+      "finished_utc": "2026-09-29T10:40:18.861543+00:00",
+      "seconds": 0.011210942990146577,
+      "deadline_seconds": 10,
+      "timed_out": false,
+      "returncode": 0,
+      "stdout": {
+        "path": "/tmp/eris-vulkan-image-wgsl-check-single-thread/compiler-version.stdout",
+        "bytes": 196,
+        "sha256": "3975d062e234a9f3921955bf6ae5b90f5819df94fa825d057f76b34a35ed0f4d"
+      },
+      "stderr": {
+        "path": "/tmp/eris-vulkan-image-wgsl-check-single-thread/compiler-version.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "reaped": true,
+      "group_cleanup_before_reap": true
+    },
+    {
+      "name": "compile",
+      "argv": [
+        "/tmp/eris-vulkan-rustup/toolchains/1.98.0-x86_64-unknown-linux-gnu/bin/rustc",
+        "--edition=2024",
+        "/tmp/eris-vulkan-image-wgsl-check-single-thread/validate_wgsl.rs",
+        "--extern",
+        "naga=/tmp/eris-vulkan-raster-prototype/target-198/debug/deps/libnaga-214fba6b21bff5ad.rlib",
+        "-L",
+        "dependency=/tmp/eris-vulkan-raster-prototype/target-198/debug/deps",
+        "-C",
+        "link-arg=-Wl,--threads=1",
+        "-o",
+        "/tmp/eris-vulkan-image-wgsl-check-single-thread/validate_wgsl"
+      ],
+      "cwd": "/tmp/eris-vulkan-image-wgsl-check-single-thread",
+      "started_utc": "2026-09-29T10:40:18.861713+00:00",
+      "finished_utc": "2026-09-29T10:40:18.983053+00:00",
+      "seconds": 0.12135027698241174,
+      "deadline_seconds": 60,
+      "timed_out": false,
+      "returncode": 0,
+      "stdout": {
+        "path": "/tmp/eris-vulkan-image-wgsl-check-single-thread/compile.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/tmp/eris-vulkan-image-wgsl-check-single-thread/compile.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "reaped": true,
+      "group_cleanup_before_reap": true
+    },
+    {
+      "name": "validate",
+      "argv": [
+        "/tmp/eris-vulkan-image-wgsl-check-single-thread/validate_wgsl"
+      ],
+      "cwd": "/tmp/eris-vulkan-image-wgsl-check-single-thread",
+      "started_utc": "2026-09-29T10:40:18.991477+00:00",
+      "finished_utc": "2026-09-29T10:40:19.002977+00:00",
+      "seconds": 0.011502645909786224,
+      "deadline_seconds": 10,
+      "timed_out": false,
+      "returncode": 0,
+      "stdout": {
+        "path": "/tmp/eris-vulkan-image-wgsl-check-single-thread/validate.stdout",
+        "bytes": 279,
+        "sha256": "d486a5902fb7c95570bea06037055abc224ed465bf36f284b4f4e961295f4db4"
+      },
+      "stderr": {
+        "path": "/tmp/eris-vulkan-image-wgsl-check-single-thread/validate.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "reaped": true,
+      "group_cleanup_before_reap": true
+    }
+  ],
+  "passed": true,
+  "checker_binary": {
+    "path": "/tmp/eris-vulkan-image-wgsl-check-single-thread/validate_wgsl",
+    "bytes": 11049480,
+    "sha256": "1d2d4525a0a6bac45c24078e37bdddee526cf2e5fad243707cdf51c288bf7b0a"
+  },
+  "input_hashes_rechecked_after": true,
+  "naga_package_provenance": {
+    "pinned_lockfile": {
+      "path": "/tmp/eris-vulkan-image-candidate-1/source/Cargo.lock",
+      "bytes": 23795,
+      "sha256": "b619519af5f81d79d976a0569ae1278565b3bbdd3e4a7243438f1d1ced81a182"
+    },
+    "entry": {
+      "name": "naga",
+      "version": "30.0.1",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "checksum": "a616d2fb8c89516ac2723a581f69d6c18576046bed761bd6b305e5618e6ae130",
+      "dependencies": [
+        "arrayvec",
+        "bit-set",
+        "bitflags",
+        "cfg-if",
+        "cfg_aliases",
+        "codespan-reporting",
+        "half",
+        "hashbrown 0.17.1",
+        "indexmap",
+        "libm",
+        "log",
+        "naga-types",
+        "num-traits",
+        "once_cell",
+        "rustc-hash",
+        "spirv",
+        "thiserror",
+        "unicode-ident"
+      ]
+    },
+    "cached_manifest": {
+      "path": "/tmp/eris-vulkan-browser-cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/naga-30.0.1/Cargo.toml",
+      "bytes": 4383,
+      "sha256": "00f66d135eba8611772149f2d2eb2714c7df275d97eeded495db1793d7ebe1a4"
+    },
+    "note": "The explicitly root-selected cached rlib and build fingerprint are hash-bound separately; the checked package manifest and frozen lock pin are 30.0.1."
+  }
+}

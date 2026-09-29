@@ -1,0 +1,80 @@
+{
+  "format": "eris-image-fixture-source-freeze-v1",
+  "created_utc": "2026-09-29T10:29:26.685151+00:00",
+  "owner": "/root/html_css",
+  "owned_source": "tools/vulkan-raster-probe/src/image_fixtures.rs",
+  "source_sha256": "feba81dbd1ed6258aa53b59ae622867a2748fa63fc27d4722487f610f98b6b15",
+  "source_bytes": 21632,
+  "contract": "ImageFixture, FixtureSource, bounded fallible borrowed-source-view plan(), fixtures() with exact frozen order",
+  "data_only_verification": {
+    "fixtures": 14,
+    "source_entries": 22,
+    "source_rgba_bytes": 324,
+    "expected_pixels": 77055,
+    "expected_bytes": 308220,
+    "frames_commands_float_bits_sources_output_hashes_exact": true,
+    "expected_generation": "Literal color rows except one direct integer-band predicate; no planner, source sampling, Canvas or candidate calls."
+  },
+  "checks_not_run": [
+    "Rust formatter",
+    "Rust compiler",
+    "Cargo",
+    "engine",
+    "Canvas",
+    "GPU",
+    "adapter"
+  ],
+  "source_formatting": "Generated readable Rust; no formatter was invoked. Root may format before its final integrated source freeze, retaining this transcription receipt.",
+  "original_fixture_shader_cargo_evidence_bytes_unchanged": true,
+  "oracle_depth_delta_review": {
+    "path": "/tmp/eris-vulkan-raster-image-oracle-final-delta.json",
+    "sha256": "636cdde12553b7768c3683a1aa402e00b7728f104e1ed2d0ebc52535bf4c407e"
+  },
+  "bindings": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/image_fixtures.rs",
+      "bytes": 21632,
+      "sha256": "feba81dbd1ed6258aa53b59ae622867a2748fa63fc27d4722487f610f98b6b15"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-fixtures-frozen.json",
+      "bytes": 90280,
+      "sha256": "ccd79c6ac60221ccaf463ce1ada56230c35e12039d3d8ca534e15019121c2ecf"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-freeze.json",
+      "bytes": 2568,
+      "sha256": "29a68e2af2b6215942b9a24056b1a1146884831d7f9e47ce27245c8c6e25cbc9"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-api-contract.json",
+      "bytes": 12022,
+      "sha256": "cdfa72e93cfbe1dcb961cd873ea6c6aca5771d18ee6b022ec4e5b7ed5f158d0e"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-fixture-generate.py",
+      "bytes": 6701,
+      "sha256": "21db64af385842f6311f7dfe135b44d0a5dd428e0e443694efed0997ddd39ada"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-fixture-verify.py",
+      "bytes": 8614,
+      "sha256": "9e64a87a3e04444ed9c1f4663ddea25942042aca8343e0a86e76d8d0e99cc3d0"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-fixture-data-check.json",
+      "bytes": 8585,
+      "sha256": "6eafde255ba2448c86e424b9837422d12ee8bcda6b07d9d7bcb99566a92b9125"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-oracle-review.json",
+      "bytes": 17139,
+      "sha256": "21740c951bc24b8a2edb2911fe110a448132593006d8cb6d9c825a878d9df0bb"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-oracle-final-delta.json",
+      "bytes": 663,
+      "sha256": "636cdde12553b7768c3683a1aa402e00b7728f104e1ed2d0ebc52535bf4c407e"
+    }
+  ]
+}

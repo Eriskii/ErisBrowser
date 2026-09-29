@@ -301,7 +301,7 @@ older observations remain identical; the full inventory reaches 9,418 modes and
 ## Implementation
 
 The [architecture notes](docs/ARCHITECTURE.md) describe the page pipeline and native process boundaries.
-The browser has an optional [Linux Vulkan presenter](docs/vulkan-rendering.md): build with `--features vulkan-presenter`, then launch the binary with `--presenter=vulkan`. It uploads custom CPU-painted frames; software remains the default and headless path. Custom Vulkan rasterization and compositing remain on the [development docket](docs/ROADMAP.md).
+The browser has an optional [Linux Vulkan presenter](docs/vulkan-rendering.md): build with `--features vulkan-presenter`, then launch the binary with `--presenter=vulkan`. It uploads custom CPU-painted frames; software remains the default and headless path. A separate [custom Vulkan raster probe](tools/vulkan-raster-probe/README.md) renders opaque rectangles and nearest-neighbor images, with 21 exact pixel fixtures on each of three adapters. Browser integration and compositing remain on the [development docket](docs/ROADMAP.md).
 
 JavaScript [parses directly into flat code records](tests/conformance/flat-parser.md)
 and uses [shared execution continuations](tests/conformance/activation-frames.md),

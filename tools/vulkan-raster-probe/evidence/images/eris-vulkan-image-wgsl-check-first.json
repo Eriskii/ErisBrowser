@@ -1,0 +1,118 @@
+{
+  "schema": 1,
+  "scope": "Independent offline Naga 30.0.1 parsing/validation only; no Vulkan instance, adapter, device, engine or GPU execution. No repository edits or Cargo.",
+  "freeze": {
+    "path": "/tmp/eris-vulkan-image-candidate-1/freeze.json",
+    "bytes": 3766,
+    "sha256": "7eb151d3cd7e7c2b7613dd732e6cbf12ceecb70db3cc738315cd3813c234842a"
+  },
+  "shader_inputs": [
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-1/source/src/rect.wgsl",
+      "bytes": 790,
+      "sha256": "e290ce60bef71560fdf7ab536410fbae0aa5d2b54f648d0706a457dae5c2c9af"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-candidate-1/source/src/image.wgsl",
+      "bytes": 2204,
+      "sha256": "0e33cf1869e8a69143a4f446917ef43e5ad3439f2b57197174a177a095d32d1b"
+    }
+  ],
+  "checker_source": {
+    "path": "/tmp/eris-vulkan-image-wgsl-check/validate_wgsl.rs",
+    "bytes": 1170,
+    "sha256": "046b0579342da64d89eb62f9c8709e6b18810c135e4d82f8d1fbba8c46588e7d"
+  },
+  "driver": {
+    "path": "/tmp/eris-vulkan-image-wgsl-check-driver.py",
+    "bytes": 5622,
+    "sha256": "214124c28f7ec43ebcfd520434ffa018a172531212fe568f89a9b3b6865215db"
+  },
+  "compiler": {
+    "path": "/tmp/eris-vulkan-rustup/toolchains/1.98.0-x86_64-unknown-linux-gnu/bin/rustc",
+    "bytes": 649136,
+    "sha256": "3167c4f49785f5048591fb3eb4745ccee0732ff4e01602d43b4e86af7ea7bca3"
+  },
+  "naga_rlib": {
+    "path": "/tmp/eris-vulkan-raster-prototype/target-198/debug/deps/libnaga-214fba6b21bff5ad.rlib",
+    "bytes": 28886944,
+    "sha256": "b97d114d2553a42bc38e6a9dd7ca28e49f0391b94929403300f3cc9dc3da1de6"
+  },
+  "naga_build_fingerprint": {
+    "path": "/tmp/eris-vulkan-raster-prototype/target-198/debug/.fingerprint/naga-214fba6b21bff5ad/lib-naga.json",
+    "bytes": 1740,
+    "sha256": "8a56f6aa6d9309de52a457609b47d7de906ea9b010907a12fc5cd1adaf252430"
+  },
+  "environment_overrides": {
+    "RUSTUP_HOME": "/tmp/eris-vulkan-rustup",
+    "RUSTUP_TOOLCHAIN": "1.98.0"
+  },
+  "limits": {
+    "address_space_bytes": 2147483648,
+    "cpu_seconds": 30,
+    "file_bytes": 67108864
+  },
+  "runs": [
+    {
+      "name": "compiler-version",
+      "argv": [
+        "/tmp/eris-vulkan-rustup/toolchains/1.98.0-x86_64-unknown-linux-gnu/bin/rustc",
+        "-Vv"
+      ],
+      "cwd": "/tmp/eris-vulkan-image-wgsl-check",
+      "started_utc": "2026-09-29T10:39:41.718438+00:00",
+      "finished_utc": "2026-09-29T10:39:41.729622+00:00",
+      "seconds": 0.011187308002263308,
+      "deadline_seconds": 10,
+      "timed_out": false,
+      "returncode": 0,
+      "stdout": {
+        "path": "/tmp/eris-vulkan-image-wgsl-check/compiler-version.stdout",
+        "bytes": 196,
+        "sha256": "3975d062e234a9f3921955bf6ae5b90f5819df94fa825d057f76b34a35ed0f4d"
+      },
+      "stderr": {
+        "path": "/tmp/eris-vulkan-image-wgsl-check/compiler-version.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "reaped": true,
+      "group_cleanup_before_reap": true
+    },
+    {
+      "name": "compile",
+      "argv": [
+        "/tmp/eris-vulkan-rustup/toolchains/1.98.0-x86_64-unknown-linux-gnu/bin/rustc",
+        "--edition=2024",
+        "/tmp/eris-vulkan-image-wgsl-check/validate_wgsl.rs",
+        "--extern",
+        "naga=/tmp/eris-vulkan-raster-prototype/target-198/debug/deps/libnaga-214fba6b21bff5ad.rlib",
+        "-L",
+        "dependency=/tmp/eris-vulkan-raster-prototype/target-198/debug/deps",
+        "-o",
+        "/tmp/eris-vulkan-image-wgsl-check/validate_wgsl"
+      ],
+      "cwd": "/tmp/eris-vulkan-image-wgsl-check",
+      "started_utc": "2026-09-29T10:39:41.729790+00:00",
+      "finished_utc": "2026-09-29T10:39:42.752742+00:00",
+      "seconds": 1.0229608910158277,
+      "deadline_seconds": 60,
+      "timed_out": false,
+      "returncode": 1,
+      "stdout": {
+        "path": "/tmp/eris-vulkan-image-wgsl-check/compile.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/tmp/eris-vulkan-image-wgsl-check/compile.stderr",
+        "bytes": 3951,
+        "sha256": "4da0fe9d76a3781f88cc85fd775fbf958896fb33c5bfe5d7ad6f5f2b3829dce9"
+      },
+      "reaped": true,
+      "group_cleanup_before_reap": true
+    }
+  ],
+  "passed": false,
+  "input_hashes_rechecked_after": true
+}

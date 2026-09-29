@@ -1,0 +1,233 @@
+{
+  "format": "eris-vulkan-image-protocol-review-v1",
+  "reviewed_utc": "2026-09-29T10:33:01.324625+00:00",
+  "reviewer": "/root/html_css",
+  "parent_commit": "8133250e86ea616c3d7644b8965acb25145a6b3c",
+  "verdict": "No concrete protocol, added test, preservation or observed-evidence claim defect found within this bounded review.",
+  "findings": [],
+  "scope": "Read-only source/AST/data/hash review; no test, fake child, engine, Rust, planner, Canvas, adapter or GPU execution by reviewer.",
+  "runner_delta": {
+    "only_three_textual_changes": true,
+    "changes": [
+      "Append fourteen exact frozen EXPECTED_PASSES tuples after the seven original tuples.",
+      "Use len(EXPECTED_PASSES) in the final COMPLETE footer (currently 21).",
+      "Extend the output record scope description to nearest-neighbor images."
+    ],
+    "original_runner_sha256": "0360d30d34e31e407539c6804044dd05c4f62798316574eb090fc68f6d8369c4",
+    "current_runner_sha256": "456a1a4f00ef35009b74221ac1d6710ae30ee53c0e0858953576314c701cff73",
+    "unchanged_definitions": [
+      "expected_lines",
+      "RunResult",
+      "child_environment",
+      "_stop_group",
+      "run_process",
+      "protocol_lines",
+      "inventory",
+      "validate_listing",
+      "_write_summary",
+      "main"
+    ],
+    "all_remaining_bytes_unchanged_after_reverting_three_deltas": true
+  },
+  "supervisor_preservation": {
+    "linux_waitid_wnowait_leader_ownership": true,
+    "group_sigkill_before_first_reaping_wait": true,
+    "default_process_deadline_seconds": 25,
+    "default_aggregate_stdout_stderr_bytes": 262144,
+    "cleanup_reap_seconds": 2,
+    "max_adapters": 16,
+    "unresolved_cleanup_or_interrupt_stops_adapter_loop": true,
+    "fresh_output_directory_and_gpu_opt_in_unchanged": true,
+    "test_supervisor_bytes_equal_parent": true,
+    "caveat": "Existing creation, synchronous driver/polling, and kernel-uninterruptible teardown limitations remain explicit; no new hard-bound claim."
+  },
+  "protocol": {
+    "original_tuples": 7,
+    "appended_image_tuples": 14,
+    "total_fixtures": 21,
+    "compared_bytes_per_adapter": 921272,
+    "all_tuples_equal_final_frozen_protocol": true,
+    "exact_footer": "COMPLETE adapter=<selected-index> fixtures=21 exact=true custom_wgsl=true",
+    "validation": "Exact adapter inventory must precede the complete ordered PASS list and exact COMPLETE footer. Missing, altered, duplicate, reordered or extra nonempty records cannot pass merely by exit zero."
+  },
+  "test_static_review": {
+    "protocol_groups": [
+      "test_protocol_matches_independently_frozen_counts",
+      "test_complete_exact_protocol",
+      "test_exit_zero_cannot_hide_missing_changed_or_reordered_case",
+      "test_every_image_record_is_required_and_exact",
+      "test_timeout_and_failed_exit_are_not_passes"
+    ],
+    "new_omission_variants": 14,
+    "new_counter_change_variants": 56,
+    "counter_fields": [
+      "draws",
+      "invocations",
+      "gpu_buffers",
+      "compared_bytes"
+    ],
+    "index_derivation": "One ADAPTER at index 0, seven old PASS records at indices 1..7, fourteen new PASS records at 8..21; range(8,22) selects every image exactly.",
+    "footer_guard": "Old seven-record/seven-fixture complete output is explicitly rejected; complete valid output uses footer21.",
+    "mismatch_construction": "Each numeric mutation changes exactly one selected field by +1; split boundaries and final assertions use ordinary pure protocol checks, no process invocation.",
+    "inherited_checks_preserved": "The prior missing-footer, no-results, duplicate-footer, reorder, changed-byte-count, wrong-backend, inventory-order and failed-process checks remain."
+  },
+  "root_reported_python_run": {
+    "receipt": "/tmp/eris-vulkan-image-python-check.json",
+    "receipt_inputs_and_log_hashes_verified": true,
+    "tests": 10,
+    "exit_code": 0,
+    "execution_scope": "Root ran protocol checks and bounded fake Python child processes. The reviewer read the exact retained log and did not rerun them."
+  },
+  "evidence_and_docs": {
+    "exact_copies": [
+      [
+        "evidence/image-fixture-oracle.json",
+        "/tmp/eris-vulkan-raster-image-fixtures-frozen.json"
+      ],
+      [
+        "evidence/image-protocol.json",
+        "/tmp/eris-vulkan-image-protocol-frozen.json"
+      ],
+      [
+        "evidence/image-fixture-freeze.json",
+        "/tmp/eris-vulkan-raster-image-freeze.json"
+      ]
+    ],
+    "all_seven_freeze_references_hash_verified": true,
+    "prior_rectangle_host_record_and_raw_logs_unchanged": true,
+    "readme_review": "README explicitly says image implementation/GPU validation are in progress; 921,272 bytes and 21 fixtures are expected inventory, not observed image successes. It preserves earlier rectangle-only results without relabeling, strict source/opaque subset, immutable plan intent, CPU/staging/driver allocation exclusions and absence of browser/native-surface/performance claims.",
+    "remaining_implementation_review": "This review does not establish that evolving Rust/WGSL fulfills the described API or semantics; that requires its separate frozen-source review and authorized checks."
+  },
+  "bindings": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/run_host.py",
+      "bytes": 14669,
+      "sha256": "456a1a4f00ef35009b74221ac1d6710ae30ee53c0e0858953576314c701cff73"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/test_protocol.py",
+      "bytes": 2879,
+      "sha256": "3b50594d36a69c0dcc8b46bd8864453ef365c602be9bd3bfd5ebae1457abd5a7"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/test_supervisor.py",
+      "bytes": 2488,
+      "sha256": "85d3d91272710f006da8b340dae6030102183939b6e5325e82674d81318ac806"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/README.md",
+      "bytes": 10051,
+      "sha256": "52c6e6f72eff3ab2c7502a6e5904af0fb01d6fc873e0a48aed7c0b577620e7b8"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/image-fixture-oracle.json",
+      "bytes": 90280,
+      "sha256": "ccd79c6ac60221ccaf463ce1ada56230c35e12039d3d8ca534e15019121c2ecf"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/image-protocol.json",
+      "bytes": 10217,
+      "sha256": "be99483f8430c2f208916008bffd4f4354f8ec66c555732c1f122f8957d468b0"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/image-fixture-freeze.json",
+      "bytes": 2568,
+      "sha256": "29a68e2af2b6215942b9a24056b1a1146884831d7f9e47ce27245c8c6e25cbc9"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-python-check.json",
+      "bytes": 967,
+      "sha256": "e2e40eaab8a9613ddf34d686380ab8ec7b6f5ec2316fe3773d8a5c2747a0f31c"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-python-check.log",
+      "bytes": 98,
+      "sha256": "3c1e839f587d8c4b425ebd15a765224be99238a6fbad0c19e4252fa15814d19e"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-oracle-review.json",
+      "bytes": 17139,
+      "sha256": "21740c951bc24b8a2edb2911fe110a448132593006d8cb6d9c825a878d9df0bb"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-oracle-final-delta.json",
+      "bytes": 663,
+      "sha256": "636cdde12553b7768c3683a1aa402e00b7728f104e1ed2d0ebc52535bf4c407e"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-fixtures.json",
+      "bytes": 90016,
+      "sha256": "3201c74759821e98f5716ff4749a612e0f9395e5326c1cc48f42f9fb7b3c2e76"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-api-contract.json",
+      "bytes": 12022,
+      "sha256": "cdfa72e93cfbe1dcb961cd873ea6c6aca5771d18ee6b022ec4e5b7ed5f158d0e"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-fixtures-frozen.json",
+      "bytes": 90280,
+      "sha256": "ccd79c6ac60221ccaf463ce1ada56230c35e12039d3d8ca534e15019121c2ecf"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-protocol-frozen.json",
+      "bytes": 10217,
+      "sha256": "be99483f8430c2f208916008bffd4f4354f8ec66c555732c1f122f8957d468b0"
+    },
+    {
+      "path": "/tmp/eris-vulkan-image-protocol-draft.json",
+      "bytes": 10102,
+      "sha256": "908d18934cfeb66a60e6889bf17b1351a669846d7945213d6e76079d81faa345"
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-image-review.json",
+      "bytes": 27530,
+      "sha256": "7ecea95031f31115c91c121b09afb400abcd24fc16611894f1fcecbe07ca0671"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/host-raster.json",
+      "bytes": 13753,
+      "sha256": "59901d26bf3831d9763becc8ee3c15e34d8e043c48e02e4809e80972026f2824"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/enumeration.stdout.log",
+      "bytes": 465,
+      "sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/enumeration.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/adapter-0.stdout.log",
+      "bytes": 1256,
+      "sha256": "4f2b1782b255963f38998d9531fb21fb1b640370b3fb58004543efce9b376dcd"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/adapter-0.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/adapter-1.stdout.log",
+      "bytes": 1256,
+      "sha256": "7712fe0a28cf2da65c2445c0c534b5a50de12b087ea868345d1d28b853009ea0"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/adapter-1.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/adapter-2.stdout.log",
+      "bytes": 1256,
+      "sha256": "87681cc2c50eb9703f78d2237dca52151b26a68198055616ca5bce0d91c776e5"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/evidence/adapter-2.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

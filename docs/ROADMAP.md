@@ -127,8 +127,8 @@ CPU-painted frames through a Vulkan-only wgpu binding. It uses one owner thread,
 one active upload and one replaceable pending frame, fixed operation deadlines,
 and confirmed resource release before software fallback. Verification reads
 back actual acquired surface textures; it does not certify compositor output.
-Software remains the default/headless path. Custom GPU rasterization remains
-unimplemented, and driver isolation/performance work remains open.
+Software remains the default/headless path. Browser integration of custom GPU
+rasterization and driver isolation/performance work remain open.
 
 Acceptance work:
 
@@ -146,11 +146,13 @@ Acceptance work:
   costs, memory and frame latency. Vulkan alone does not establish a Chromium
   performance result.
 
-The standalone [custom rectangle raster probe](../tools/vulkan-raster-probe/README.md)
-now executes an Eris WGSL shader through Vulkan, with seven exact offscreen
-fixtures on each of three host adapters. It uploads geometry metadata and
-rasterizes ordered opaque rectangles, including clip/fixed coordinate scopes.
-Browser integration, text, images, blending and compositing remain planned.
+The standalone [custom raster probe](../tools/vulkan-raster-probe/README.md)
+executes Eris WGSL shaders through Vulkan, with 21 exact offscreen fixtures on
+each of three host adapters (2,763,816 compared bytes). It rasterizes ordered
+opaque rectangles and nearest-neighbor images, including clip/fixed scopes,
+with original source colors and bounded scalar sampling tables. Source,
+metadata and target buffers share the unchanged 1 MiB explicit GPU limit.
+Browser integration, text, blending and compositing remain planned.
 The optional upload presenter continues to use CPU-painted frames. Production
 driver requirements and broader platform coverage remain undecided.
 
