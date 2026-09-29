@@ -1,5 +1,46 @@
 # Validation record
 
+## Array.from and unchanged historical observations
+
+The [Array.from evidence](../tests/conformance/array-from.json) compares against
+published commit `cbb970d`. Its independently frozen local fixture verifies
+**388 of 402 expectations**: 376 ordinary passes and twelve expected resource
+stops. Ten failures and four unsupported modes retain seven missing language or
+platform prerequisites. All **76 controls** verify. The original expectations,
+source bytes and denominators remain unchanged.
+
+The [complete pinned upstream profile](../tests/conformance/test262-array-from.md)
+has **82 passed, four failed and four metadata exclusions** across 90 modes,
+with **96 verified controls**. It gains 74 passes and loses none. Missing
+`splice` and `ArrayBuffer` account for the retained failures; generators and
+cross-realm features remain excluded. Eight incidental TypeError passes from
+the before release remain recorded. The new known-state gate preserves every
+remaining gap.
+
+All **38 historical profiles / 17,732 complete case observations / 3,804
+controls** remain identical, and all 31 earlier regression gates pass without
+baseline changes. Including Array.from, the inventory now contains 39 profiles,
+17,822 modes, 3,900 verified controls and 32 known-state gates. Seven profiles
+remain observation-only.
+
+Rust **1.88 and 1.98** each pass strict all-target Clippy and **1,187 default /
+1,198 Vulkan-feature tests**, with zero failures or ignored tests. All **244
+Python tests** pass. Both release variants preserve **57 CPU pixel references**.
+A page fixture verifies six visible outcomes before and after a click, directly
+and through the real confined renderer. The two HTML adapter binaries are
+byte-identical to their published-before versions; the HTML inventory was not
+rerun for this checkpoint. One deterministic mutation-smoke run exercises
+**15,000 cases**, with no caught panic or invariant failure and seventeen bounded
+paint stops. This is not coverage-guided fuzzing.
+
+Independent review verified the frozen inputs, release binaries, logs and
+observations. It also identified long-name work undercharging during Array
+length shrink; the new Array.from path now prepays those costs. The related
+[shared enumeration accounting gap](../tests/conformance/array-from-enumeration-followup.json)
+remains open for other callers. Existing runtime limits are unchanged.
+This checkpoint does not establish GPU execution, full web compatibility,
+production security or the requested Chromium performance bound.
+
 ## Date, explicit host rules and complete recursive inventory
 
 The [Date evidence](../tests/conformance/date.json) retains the published-before,

@@ -1,5 +1,15 @@
 # Development docket
 
+[Array.from](../tests/conformance/array-from.md) now consumes synchronous
+iterators and array-like inputs with generic construction, live mapping,
+own data definitions and specified iterator closing. Its unchanged local
+matrix verifies 388 of 402 expectations, including twelve expected resource
+stops; fourteen prerequisite modes remain unmet. The complete upstream profile
+has 82 passes, four missing-dependency failures and four metadata exclusions,
+with all 96 controls verified. Shared property-enumeration accounting is the
+next security follow-up; remaining Array methods and broader iterator consumers
+remain ahead.
+
 [Synchronous iteration](../tests/conformance/for-of.md) now adds custom
 `for…of` protocols and native Array, String and arguments iterators, including
 lexical bindings, live properties and iterator closing. The unchanged local

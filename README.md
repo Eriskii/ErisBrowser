@@ -401,17 +401,29 @@ work. Actual-digit index formatting restores two initial lastIndexOf work-limit
 regressions while preserving these charges and every quota; both attempts are
 retained in the evidence. Failed and unsupported cases remain visible.
 
+[Array.from](tests/conformance/array-from.md) now supports synchronous iterables
+and array-like inputs, generic construction, live mapping, own data definitions
+and iterator closing. Its independent local matrix verifies 388 of 402
+expectations, including twelve expected resource stops; fourteen prerequisite
+modes remain unmet. The complete upstream profile has 82 passes, four failures
+requiring `splice` or `ArrayBuffer`, four metadata exclusions and 96 verified
+controls. All 38 older profile observations remain unchanged. The combined
+inventory has 39 profiles, 17,822 modes, 3,900 verified controls and 32 known-state
+regression gates. These gates preserve the documented failures and exclusions.
+
+[Synchronous iteration](tests/conformance/for-of.md) supports identifier/member
+`for…of` heads, lexical bindings, iterator closing and native Array, String and
+arguments iterators. Destructuring, generators and async iteration remain ahead.
+
 [Date](tests/conformance/date.md) now supports core construction, getters/setters,
 UTC and local arithmetic, ISO and required own-string round trips, JSON and
 primitive-conversion hooks, and legacy year/GMT aliases. Host timezone snapshots
 carry historical transitions and recurring rules into the confined renderer
-without filesystem grants. The complete 594-source Date tree records 1,162
-passed modes, four retained `for…of` parser failures and 22 metadata exclusions;
-all 340 controls and 406 independently frozen local modes pass. Existing
-profiles gain another 130 passes with no lost passes. The combined inventory
-now has 36 profiles, 16,146 modes, 3,592 verified controls and 29 healthy gates.
+without filesystem grants. The complete 594-source Date tree records 1,166
+passed modes and 22 metadata exclusions; all 340 controls and 406 independently
+frozen local modes pass. Synchronous iteration closed its four year-zero parser gaps.
 Intl, Temporal, cross-realm behavior and broader legacy parsing remain ahead.
-The [timing comparison](docs/benchmark-worker-date.json) records about 10 ms
-of added worker startup from helper polling; reducing that delay is the next
-performance step. Full compatibility, security certification and the Chromium
+The [readiness follow-up](tests/conformance/date-readiness.md) reduced helper
+polling delay while preserving the earlier timing observations.
+Full compatibility, security certification and the Chromium
 performance target remain unfulfilled.

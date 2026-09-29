@@ -68,6 +68,11 @@ fn for_of_protocols_bindings_and_closing_survive_document_callbacks() {
 }
 
 #[test]
+fn array_from_mapping_construction_and_closing_survive_document_callbacks() {
+    assert_six_scripted_samples(include_str!("fixtures/array-from.html"));
+}
+
+#[test]
 fn equality_conversions_preserve_nullish_rules_and_callback_pixels() {
     assert_six_scripted_samples(include_str!("fixtures/equality.html"));
 }

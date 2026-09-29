@@ -20,6 +20,7 @@ OBJECT_INTEGRITY_DIRECTORIES = {'Object/seal': 94, 'Object/freeze': 53,
                                 'Object/isSealed': 33, 'Object/isFrozen': 59}
 ARRAY_FIND_DIRECTORIES = {'Array/prototype/find': 23, 'Array/prototype/findIndex': 23,
                           'Array/prototype/findLast': 24, 'Array/prototype/findLastIndex': 24}
+ARRAY_FROM_DIRECTORIES = {'Array/from': 47}
 DATE_TREE = '6ad4fab73be4a87e6bfb58793b5fa9c82335ce5e'
 DATE_DIRECTORIES = {'Date': 78, 'Date/UTC': 17, 'Date/now': 6, 'Date/parse': 8, 'Date/prototype': 44, 'Date/prototype/Symbol.toPrimitive': 18, 'Date/prototype/constructor': 1, 'Date/prototype/getDate': 8, 'Date/prototype/getDay': 8, 'Date/prototype/getFullYear': 8, 'Date/prototype/getHours': 8, 'Date/prototype/getMilliseconds': 8, 'Date/prototype/getMinutes': 8, 'Date/prototype/getMonth': 8, 'Date/prototype/getSeconds': 8, 'Date/prototype/getTime': 8, 'Date/prototype/getTimezoneOffset': 8, 'Date/prototype/getUTCDate': 8, 'Date/prototype/getUTCDay': 8, 'Date/prototype/getUTCFullYear': 8, 'Date/prototype/getUTCHours': 8, 'Date/prototype/getUTCMilliseconds': 8, 'Date/prototype/getUTCMinutes': 8, 'Date/prototype/getUTCMonth': 8, 'Date/prototype/getUTCSeconds': 8, 'Date/prototype/setDate': 14, 'Date/prototype/setFullYear': 20, 'Date/prototype/setHours': 23, 'Date/prototype/setMilliseconds': 14, 'Date/prototype/setMinutes': 18, 'Date/prototype/setMonth': 17, 'Date/prototype/setSeconds': 17, 'Date/prototype/setTime': 11, 'Date/prototype/setUTCDate': 7, 'Date/prototype/setUTCFullYear': 6, 'Date/prototype/setUTCHours': 11, 'Date/prototype/setUTCMilliseconds': 8, 'Date/prototype/setUTCMinutes': 8, 'Date/prototype/setUTCMonth': 9, 'Date/prototype/setUTCSeconds': 9, 'Date/prototype/toDateString': 7, 'Date/prototype/toISOString': 17, 'Date/prototype/toJSON': 13, 'Date/prototype/toLocaleDateString': 4, 'Date/prototype/toLocaleString': 4, 'Date/prototype/toLocaleTimeString': 4, 'Date/prototype/toString': 8, 'Date/prototype/toTemporalInstant': 8, 'Date/prototype/toTimeString': 6, 'Date/prototype/toUTCString': 9, 'Date/prototype/valueOf': 6}
 FOR_OF_DIRECTORIES = {'statements/for-of': 182, 'statements/for-of/dstr': 569}
@@ -30,6 +31,7 @@ CORE_ITERATOR_DIRECTORIES = {
     'StringIteratorPrototype': 2, 'StringIteratorPrototype/next': 5,
 }
 ITERATION_SUBTREES = {
+    'array-from': {'Array/from': 'e3a97b42c65283fc23a15d65610c2461e6f02715'},
     'for-of': {'statements/for-of': '592792d58aaf7752ef1b74e0edba13157f698a38'},
     'core-iterators': {
         'Array/prototype/values': 'd29084de7fdb7555ea16f25ba77f7a763acf67b9',
@@ -41,13 +43,14 @@ ITERATION_SUBTREES = {
     },
 }
 ITERATION_HELPERS = {
+    'array-from': {'assert.js', 'sta.js', 'compareArray.js', 'propertyHelper.js', 'isConstructor.js'},
     'for-of': {'assert.js', 'sta.js', 'asyncHelpers.js', 'compareArray.js',
                'doneprintHandle.js', 'propertyHelper.js', 'resizableArrayBufferUtils.js'},
     'core-iterators': {'assert.js', 'sta.js', 'compareArray.js', 'isConstructor.js',
                        'propertyHelper.js', 'resizableArrayBufferUtils.js',
                        'detachArrayBuffer.js', 'testTypedArray.js'},
 }
-TREE_PROFILES = {'for-of', 'core-iterators', 'date', 'array-descriptors', 'array-predicates', 'object-integrity', 'array-find'}
+TREE_PROFILES = {'array-from', 'for-of', 'core-iterators', 'date', 'array-descriptors', 'array-predicates', 'object-integrity', 'array-find'}
 DIRECTORIES = {
     'JSON/parse': 77, 'JSON/stringify': 66,
     'String/prototype/charAt': 30, 'String/prototype/charCodeAt': 25,
@@ -125,7 +128,7 @@ SYMBOL_DIRECTORIES = {
     'Symbol/toStringTag': 2,
     'Symbol/unscopables': 2,
 }
-PROFILES = {'for-of': FOR_OF_DIRECTORIES, 'core-iterators': CORE_ITERATOR_DIRECTORIES, 'date': DATE_DIRECTORIES, 'array-find': ARRAY_FIND_DIRECTORIES, 'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates': ARRAY_PREDICATE_DIRECTORIES, 'array-descriptors': ARRAY_DESCRIPTOR_DIRECTORIES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_DIRECTORIES, 'string-last-index-of': STRING_LAST_INDEX_OF_DIRECTORIES, 'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
+PROFILES = {'array-from': ARRAY_FROM_DIRECTORIES, 'for-of': FOR_OF_DIRECTORIES, 'core-iterators': CORE_ITERATOR_DIRECTORIES, 'date': DATE_DIRECTORIES, 'array-find': ARRAY_FIND_DIRECTORIES, 'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates': ARRAY_PREDICATE_DIRECTORIES, 'array-descriptors': ARRAY_DESCRIPTOR_DIRECTORIES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_DIRECTORIES, 'string-last-index-of': STRING_LAST_INDEX_OF_DIRECTORIES, 'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'function-constructor': FUNCTION_CONSTRUCTOR_DIRECTORIES,
             'reflect-construction': REFLECT_CONSTRUCTION_DIRECTORIES, 'new-target': NEW_TARGET_DIRECTORIES,
             'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
@@ -138,7 +141,7 @@ PROFILES = {'for-of': FOR_OF_DIRECTORIES, 'core-iterators': CORE_ITERATOR_DIRECT
             'numeric-parsing': NUMERIC_PARSING_DIRECTORIES,
             'compound-assignment': COMPOUND_ASSIGNMENT_DIRECTORIES,
             'addition': ADDITION_DIRECTORIES, 'logical-assignment': LOGICAL_ASSIGNMENT_DIRECTORIES, 'uri': URI_DIRECTORIES, 'relational': RELATIONAL_DIRECTORIES, 'equality': EQUALITY_DIRECTORIES, 'labels': LABELS_DIRECTORIES}
-PROFILE_ROOTS = {'for-of': 'test/language', 'core-iterators': 'test/built-ins', 'date': 'test/built-ins', 'array-find': 'test/built-ins', 'object-integrity': 'test/built-ins', 'array-predicates': 'test/built-ins', 'array-descriptors': 'test/built-ins', 'array-last-index-of': 'test/built-ins', 'string-last-index-of': 'test/built-ins', 'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
+PROFILE_ROOTS = {'array-from': 'test/built-ins', 'for-of': 'test/language', 'core-iterators': 'test/built-ins', 'date': 'test/built-ins', 'array-find': 'test/built-ins', 'object-integrity': 'test/built-ins', 'array-predicates': 'test/built-ins', 'array-descriptors': 'test/built-ins', 'array-last-index-of': 'test/built-ins', 'string-last-index-of': 'test/built-ins', 'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
                  'function-constructor': 'test/built-ins', 'reflect-construction': 'test/built-ins', 'new-target': 'test/language',
                  'template-literal': 'test/language', 'functions': 'test/language',
                  'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins',
@@ -695,6 +698,7 @@ def import_corpus(output, profile='string-json'):
     if sum(map(len, sources.values())) + sum(map(len, proof.values())) > MAX_TOTAL:
         raise ValueError('Test262 selection exceeds aggregate import limit')
     scope = {
+        'array-from': 'all .js files in the complete recursive built-ins/Array/from subtree; original root-linked Git proofs; no implementation',
         'for-of': 'all .js files in the complete recursive language/statements/for-of subtree, including dstr; original root-linked Git proofs; no implementation',
         'core-iterators': 'all .js files recursively in Array/prototype/{values,keys,entries}, String/prototype/Symbol.iterator, ArrayIteratorPrototype and StringIteratorPrototype; original root-linked Git proofs; no implementation',
         'date': 'all .js files in the complete recursive built-ins/Date subtree; all 51 directories and blobs authenticated to the pinned Git root; no implementation',

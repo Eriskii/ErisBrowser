@@ -1,0 +1,25 @@
+{
+  "before_source_archive_sha256": "42fd8b712a9f9628cf1d66d24f4948ba5242510cb1b790fba654b0ad91a44388",
+  "final_source_archive_sha256": "0c03fcb2851188ba018ed5d13f764514af91bea0cd4c37785bc9f18f0eef379b",
+  "production_input_sha256": "a9e209d3902f80f62e941328d53b7abc94862b06613bd40797d624f1a63ea7de",
+  "existing_script_limit_constants": {
+    "src/script/array_methods.rs:MAX_ARRAY_LIKE_LENGTH": "9_007_199_254_740_991",
+    "src/script/iterators.rs:MAX_LENGTH": "9_007_199_254_740_991",
+    "src/script/machine.rs:MAX_FRAMES": "MAX_HEAP / std::mem::size_of::<Frame>()",
+    "src/script/tokens.rs:LIMIT": "MAX_TOKENS + 2",
+    "src/script.rs:MAX_SOURCE": "256 * 1024",
+    "src/script.rs:MAX_TOKENS": "32_768",
+    "src/script.rs:MAX_DEPTH": "96",
+    "src/script.rs:MAX_CALLS": "32",
+    "src/script.rs:MAX_STACK_UNITS": "96",
+    "src/script.rs:MAX_STEPS": "100_000",
+    "src/script.rs:MAX_HEAP": "8 * 1024 * 1024",
+    "src/script.rs:MAX_STRING": "256 * 1024",
+    "src/script.rs:MAX_NODES": "100_000"
+  },
+  "changed_existing_limits": {},
+  "new_constants": {
+    "src/script/array_from.rs:MAX_LENGTH": "9_007_199_254_740_991"
+  },
+  "statement": "Existing script limits are unchanged. Array.from MAX_LENGTH is the normative safe-integer count/ToLength bound, not an allocation or work quota."
+}

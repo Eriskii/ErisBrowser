@@ -38,6 +38,7 @@ mod parser_legacy;
 #[cfg(test)]
 use parser_legacy::{ActiveLabel, Parser};
 mod array_builtins;
+mod array_from;
 mod array_methods;
 mod array_properties;
 mod tokens;
@@ -2023,6 +2024,7 @@ impl Runtime {
             let value = self.intrinsic_function(&full, key, length)?;
             self.objects[self.native_properties[owner]].insert_hidden(key.into(), value);
         }
+        self.install_array_from()?;
         self.initialize_number_statics()?;
         for name in [
             "isFinite",
@@ -7720,6 +7722,9 @@ impl Runtime {
         args: Vec<Value>,
         doc: &mut Document,
     ) -> Result<Value> {
+        if native.name == "Array.from" {
+            return self.array_from(native.receiver.clone(), &args, doc);
+        }
         if native.name == "Date" {
             let now = self.date_now()?;
             return self.date_format(now, "toString");

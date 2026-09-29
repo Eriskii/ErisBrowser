@@ -372,6 +372,12 @@ fn confined_for_of_protocols_bindings_and_closing_survive_document_callbacks() {
 
 #[test]
 #[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn confined_array_from_mapping_construction_and_closing_survive_document_callbacks() {
+    assert_six_scripted_samples_through_worker(include_str!("fixtures/array-from.html"), 183);
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
 fn mixed_calculations_resize_and_mutate_through_the_confined_worker() {
     use eris::graphics::{Canvas, Color, Fonts};
     let source = include_str!("fixtures/calc-resize.html");

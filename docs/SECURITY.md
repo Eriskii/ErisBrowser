@@ -102,6 +102,16 @@ and launch controls described above; neither path is a GPU sandbox.
 - Decoded raster images have dimension limits and a retained pixel budget. PNG metadata limits are installed before decoder construction. WebP preflight checks container/frame dimensions before the codec can allocate inner VP8 planes. Codec scratch storage is not fully described by the retained pixel budget; native process memory caps remain part of the boundary. SVG has separate source, element, geometry, work and image bounds; SVG scripts/external resource references are not executed.
 - Page-worker requests and pending snapshots are bounded. Navigation generations prevent stale page results from receiving new user input. Edit acknowledgements keep old results from overwriting newer typing. Password fields are masked and native copy/cut shortcuts do not expose their values.
 
+Open script accounting work is recorded in the
+[enumeration follow-up](../tests/conformance/array-from-enumeration-followup.json).
+Shared own-key enumeration charges full-name deduplication by key count, without
+the retained UTF-16 names' full comparison cost. Object/Reflect enumeration,
+descriptor collection, ordinary Array length shrink and `for…in` snapshots can
+reach this path. The separate `for…in` visited-name tree also needs tree-depth
+accounting. `Array.from` precharges its own Array-shrink path; the shared callers
+remain open work. This is a work-accounting finding, with no demonstrated panic
+or unbounded allocation. Existing quotas do not establish complete accounting.
+
 ## Representative limits
 
 | Resource | Bound |

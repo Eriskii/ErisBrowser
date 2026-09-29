@@ -1,0 +1,500 @@
+{
+  "format": 1,
+  "scope": "Generic synchronous Array.from over iterable and array-like inputs; bounded selected support, not full ECMAScript or web conformance.",
+  "published_before_commit": "cbb970d0e0b117dd50a3861336afd59ac19f9aaa",
+  "before_ci": {
+    "run": 36541684472,
+    "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/36541684472",
+    "conclusion": "success",
+    "record_sha256": "ca5a611d9a26e2c44427f9cd71e48c2ab2e07020a52aaf1ca810c13f1b606c08"
+  },
+  "production_input_sha256": "a9e209d3902f80f62e941328d53b7abc94862b06613bd40797d624f1a63ea7de",
+  "before_binary_sha256": "66bf753b598273161e6cc88f5004d83b4d5d1f88e2919e96db2414ccc2cc1316",
+  "final_binary_sha256": "6b2a21601bbc850c3a7890b99b8990f7e101b1da6f4246f4eb06711d2ff1208c",
+  "fixture": {
+    "path": "tests/conformance/array-from.js",
+    "sha256": "288ebbda38a4971eadacae61ca7b51f65648d4dc191b08f1d38508067bd90b5f"
+  },
+  "fixture_freeze": {
+    "path": "tests/conformance/array-from-fixture.json",
+    "sha256": "2834b32f8b5f03e6f605c6bcf28e6387146950917d7d1affe03ec5ddc242d569"
+  },
+  "initial_report": {
+    "path": "tests/conformance/array-from-initial.json",
+    "sha256": "0814a6638607bd051b8335d8dec4ea1014ff090a9388537cbc3692fc6a014027"
+  },
+  "final_report": {
+    "path": "tests/conformance/array-from-final.json",
+    "sha256": "f5590ebde29972c468acbd9bc2fca6af87a15bc93038076f44421617daeb4eec"
+  },
+  "matrix_sha256": "65f47860fcee2c51410783f4eb5eec3a98aa5cf73dc94d1924e675e2e59aaa48",
+  "local": {
+    "source_cases": 201,
+    "mode_cases": 402,
+    "before_counts": {
+      "failed": 398,
+      "unsupported": 4
+    },
+    "final_counts": {
+      "passed": 376,
+      "unsupported": 4,
+      "failed": 10,
+      "resource": 12
+    },
+    "ordinary_expected_complete_modes": 390,
+    "ordinary_passed_modes": 376,
+    "expectations_verified": 388,
+    "feature_controls_verified": 64,
+    "harness_controls_verified": 12,
+    "terminal_resource_expectations": 12,
+    "unmet": [
+      {
+        "id": "prerequisite-generator#sloppy",
+        "status": "unsupported",
+        "prerequisites": [
+          "generators"
+        ],
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "generator functions are not implemented",
+          "harness": ""
+        }
+      },
+      {
+        "id": "prerequisite-generator#strict",
+        "status": "unsupported",
+        "prerequisites": [
+          "generators"
+        ],
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "generator functions are not implemented",
+          "harness": ""
+        }
+      },
+      {
+        "id": "prerequisite-class-subclass#sloppy",
+        "status": "unsupported",
+        "prerequisites": [
+          "class"
+        ],
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "'class' is not supported",
+          "harness": ""
+        }
+      },
+      {
+        "id": "prerequisite-class-subclass#strict",
+        "status": "unsupported",
+        "prerequisites": [
+          "class"
+        ],
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "'class' is not supported",
+          "harness": ""
+        }
+      },
+      {
+        "id": "prerequisite-Set#sloppy",
+        "status": "failed",
+        "prerequisites": [
+          "Set"
+        ],
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "ReferenceError",
+          "error_identity": "ReferenceError",
+          "message": "'Set' is not defined",
+          "harness": ""
+        }
+      },
+      {
+        "id": "prerequisite-Set#strict",
+        "status": "failed",
+        "prerequisites": [
+          "Set"
+        ],
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "ReferenceError",
+          "error_identity": "ReferenceError",
+          "message": "'Set' is not defined",
+          "harness": ""
+        }
+      },
+      {
+        "id": "prerequisite-Map#sloppy",
+        "status": "failed",
+        "prerequisites": [
+          "Map"
+        ],
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "ReferenceError",
+          "error_identity": "ReferenceError",
+          "message": "'Map' is not defined",
+          "harness": ""
+        }
+      },
+      {
+        "id": "prerequisite-Map#strict",
+        "status": "failed",
+        "prerequisites": [
+          "Map"
+        ],
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "ReferenceError",
+          "error_identity": "ReferenceError",
+          "message": "'Map' is not defined",
+          "harness": ""
+        }
+      },
+      {
+        "id": "prerequisite-TypedArray#sloppy",
+        "status": "failed",
+        "prerequisites": [
+          "TypedArray"
+        ],
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "ReferenceError",
+          "error_identity": "ReferenceError",
+          "message": "'Uint8Array' is not defined",
+          "harness": ""
+        }
+      },
+      {
+        "id": "prerequisite-TypedArray#strict",
+        "status": "failed",
+        "prerequisites": [
+          "TypedArray"
+        ],
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "ReferenceError",
+          "error_identity": "ReferenceError",
+          "message": "'Uint8Array' is not defined",
+          "harness": ""
+        }
+      },
+      {
+        "id": "prerequisite-Proxy-definition-order#sloppy",
+        "status": "failed",
+        "prerequisites": [
+          "Proxy"
+        ],
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "ReferenceError",
+          "error_identity": "ReferenceError",
+          "message": "'Proxy' is not defined",
+          "harness": ""
+        }
+      },
+      {
+        "id": "prerequisite-Proxy-definition-order#strict",
+        "status": "failed",
+        "prerequisites": [
+          "Proxy"
+        ],
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "ReferenceError",
+          "error_identity": "ReferenceError",
+          "message": "'Proxy' is not defined",
+          "harness": ""
+        }
+      },
+      {
+        "id": "prerequisite-BigInt-length-rejected#sloppy",
+        "status": "failed",
+        "prerequisites": [
+          "BigInt"
+        ],
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      {
+        "id": "prerequisite-BigInt-length-rejected#strict",
+        "status": "failed",
+        "prerequisites": [
+          "BigInt"
+        ],
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    ]
+  },
+  "formal": {
+    "observation_phase": "Frozen candidate replay before the separate baseline publication step. The observation summary is retained verbatim as JSON data; its baseline_written and known_state_baseline fields describe that earlier phase.",
+    "observation_summary_sha256": "f527f4eefc0b62901d6845f4b945cd733f8305c5f296e46c31793f070d9582c9",
+    "observation_summary": {
+      "baseline_written": false,
+      "binary_sha256": "6b2a21601bbc850c3a7890b99b8990f7e101b1da6f4246f4eb06711d2ff1208c",
+      "case_count": 90,
+      "changed_complete_case_records": 74,
+      "changed_complete_control_records": 64,
+      "control_count": 96,
+      "controls_before_verified": 32,
+      "controls_verified": 96,
+      "counts": {
+        "failed": 4,
+        "passed": 82,
+        "unsupported": 4
+      },
+      "execution": {
+        "leader_reaped": true,
+        "process_group_cleanup_before_reap": true,
+        "returncode": 1,
+        "returncode_interpretation": "Runner exit 1 reflects retained failed and unsupported cases, not supervisor failure.",
+        "stderr_bytes": 0
+      },
+      "format": 1,
+      "incidental_before_passes": "All eight previously incidental unguarded TypeError passes remain passed. The independently guarded Array.from preflights now all verify, including successful array-like and ordinary custom iterator prerequisites. Historical before observations remain unchanged.",
+      "input_checks": "All 72 formal frozen files, 98 production inputs, candidate manifests, binary and before identities checked before and after; every case/control identity preserved.",
+      "known_state_baseline": "Not created; any healthy known-state baseline requires a separate reviewed publication step and must retain all four failures and four exclusions.",
+      "metadata_exclusions": [
+        {
+          "case_sha256": "90bda275d5dc0981341558931a77d4d895c8f3bb7981b6cdccb48d892cd8ad75",
+          "expected_negative": null,
+          "file": "test/built-ins/Array/from/iter-set-elem-prop-non-writable.js",
+          "id": "test/built-ins/Array/from/iter-set-elem-prop-non-writable.js:sloppy",
+          "mode": "sloppy",
+          "reason": "unimplemented declared features: generators",
+          "source_sha256": "6508627965ca911c7d97cb586257b4a588ec7c92048acda9cb5a2cc1a55b8cc3",
+          "status": "unsupported"
+        },
+        {
+          "case_sha256": "1b82d86ab0ff9c8472364a6e00503e4984dd451caf6796f910890ce7517ae71a",
+          "expected_negative": null,
+          "file": "test/built-ins/Array/from/iter-set-elem-prop-non-writable.js",
+          "id": "test/built-ins/Array/from/iter-set-elem-prop-non-writable.js:strict",
+          "mode": "strict",
+          "reason": "unimplemented declared features: generators",
+          "source_sha256": "6508627965ca911c7d97cb586257b4a588ec7c92048acda9cb5a2cc1a55b8cc3",
+          "status": "unsupported"
+        },
+        {
+          "case_sha256": "a14b2475550e326d4f44a9fad4f92cb403e0a1e38129b10b3e7ac4fb9e806d8a",
+          "expected_negative": null,
+          "file": "test/built-ins/Array/from/proto-from-ctor-realm.js",
+          "id": "test/built-ins/Array/from/proto-from-ctor-realm.js:sloppy",
+          "mode": "sloppy",
+          "reason": "unimplemented declared features: cross-realm",
+          "source_sha256": "b1054cef4a0960a59c9c662eefa407950757478953b96c058106190f460bb275",
+          "status": "unsupported"
+        },
+        {
+          "case_sha256": "554a1621b623dab91387b82ca5887af2f257543ce70f08db09f7e7a16f8f1ff7",
+          "expected_negative": null,
+          "file": "test/built-ins/Array/from/proto-from-ctor-realm.js",
+          "id": "test/built-ins/Array/from/proto-from-ctor-realm.js:strict",
+          "mode": "strict",
+          "reason": "unimplemented declared features: cross-realm",
+          "source_sha256": "b1054cef4a0960a59c9c662eefa407950757478953b96c058106190f460bb275",
+          "status": "unsupported"
+        }
+      ],
+      "normalization": false,
+      "production_input_sha256": "a9e209d3902f80f62e941328d53b7abc94862b06613bd40797d624f1a63ea7de",
+      "provenance": {
+        "array-from.json": "dde935f55627d0ec35c8dfe0b2505b6aa3306e740228f06433d6093fdc8f4478",
+        "comparison.json": "2cec6c517c7c2f1faa44b1ad00b0b7f6ce8020866bb52c9949f259de4cb01b0f",
+        "execution.json": "527c9496b70c4fe19d9ca285b93b459d629fbbab20dce19d7c6c4577624e1065",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout.log": "0b116a31f97917eb061ec6579ff60ffbf55c8ed25e59cc1d042b746774019f05"
+      },
+      "raw_pass_gains": 74,
+      "raw_pass_losses": 0,
+      "remaining_failures": [
+        {
+          "case_sha256": "c2063fa90ddf6e5658b18e4014de244ee7c1aaeef9323184e639ea119de4b71f",
+          "expected_negative": null,
+          "file": "test/built-ins/Array/from/elements-deleted-after.js",
+          "id": "test/built-ins/Array/from/elements-deleted-after.js:sloppy",
+          "mode": "sloppy",
+          "observation": {
+            "error_identity": "TypeError",
+            "error_type": "TypeError",
+            "harness": "",
+            "message": "value is not callable",
+            "phase": "runtime",
+            "status": "exception"
+          },
+          "source_sha256": "4da66f66fe87c8c2e1f5874b1d70df861749c6c299029f173465d48faa70686a",
+          "status": "failed"
+        },
+        {
+          "case_sha256": "710b4fa7e197aef3eaee8beecee4d39b34603439665a2f737caa4052bc4b8106",
+          "expected_negative": null,
+          "file": "test/built-ins/Array/from/elements-deleted-after.js",
+          "id": "test/built-ins/Array/from/elements-deleted-after.js:strict",
+          "mode": "strict",
+          "observation": {
+            "error_identity": "TypeError",
+            "error_type": "TypeError",
+            "harness": "",
+            "message": "value is not callable",
+            "phase": "runtime",
+            "status": "exception"
+          },
+          "source_sha256": "4da66f66fe87c8c2e1f5874b1d70df861749c6c299029f173465d48faa70686a",
+          "status": "failed"
+        },
+        {
+          "case_sha256": "927a2d77b0bcffb948817b0c1f587a6b00b252401e7f6c2f6866d95d611db530",
+          "expected_negative": null,
+          "file": "test/built-ins/Array/from/items-is-arraybuffer.js",
+          "id": "test/built-ins/Array/from/items-is-arraybuffer.js:sloppy",
+          "mode": "sloppy",
+          "observation": {
+            "error_identity": "ReferenceError",
+            "error_type": "ReferenceError",
+            "harness": "",
+            "message": "'ArrayBuffer' is not defined",
+            "phase": "runtime",
+            "status": "exception"
+          },
+          "source_sha256": "74a5ca51435c100cf32f22d30bb3511aa64c668f8a97504ea01a929623ab2e13",
+          "status": "failed"
+        },
+        {
+          "case_sha256": "3050a3801dec552bea17ff249c140ea4641adc491182decd3120e63a0b86e9d9",
+          "expected_negative": null,
+          "file": "test/built-ins/Array/from/items-is-arraybuffer.js",
+          "id": "test/built-ins/Array/from/items-is-arraybuffer.js:strict",
+          "mode": "strict",
+          "observation": {
+            "error_identity": "ReferenceError",
+            "error_type": "ReferenceError",
+            "harness": "",
+            "message": "'ArrayBuffer' is not defined",
+            "phase": "runtime",
+            "status": "exception"
+          },
+          "source_sha256": "74a5ca51435c100cf32f22d30bb3511aa64c668f8a97504ea01a929623ab2e13",
+          "status": "failed"
+        }
+      ],
+      "resources_timeouts_adapter_errors": 0,
+      "retries": false,
+      "scope": "Post-run interpretation of the single authorized replay; no further engine execution",
+      "static_gap_attribution": [
+        {
+          "basis": "Unchanged source invokes array.splice from its mapper; no splice registration or implementation occurs in frozen src/script.rs or src/script/array_methods.rs. Observed TypeError value is not callable is consistent with this missing dependency. No reduced execution performed.",
+          "dependency": "Array.prototype.splice",
+          "file": "elements-deleted-after.js",
+          "modes": [
+            "sloppy",
+            "strict"
+          ]
+        },
+        {
+          "basis": "Unchanged source constructs new ArrayBuffer(7) before Array.from. Observed ReferenceError explicitly reports the missing ArrayBuffer global.",
+          "dependency": "ArrayBuffer",
+          "file": "items-is-arraybuffer.js",
+          "modes": [
+            "sloppy",
+            "strict"
+          ]
+        }
+      ],
+      "static_source_hashes": {
+        "src/script.rs": "9874ddb47e01dce2de06cea58d961f1d227a3a7eb910d2e3e7136449adb3110e",
+        "src/script/array_methods.rs": "be70e15ebf1f494f0e72206060018e9b3416781cc7f26416787613d155b41fb9"
+      },
+      "status_transitions": {
+        "failed -> passed": 74
+      },
+      "unchanged_complete_case_records": 16,
+      "unchanged_complete_control_records": 32
+    },
+    "publication_state": {
+      "baseline_written": true,
+      "known_state_baseline": {
+        "path": "tests/conformance/test262-array-from-current.json",
+        "sha256": "7fc83d01ec50f3784b64a9f2b6123df999ad303e6d0067cf16a55914603fdf5c"
+      },
+      "healthy_known_state_gate": true,
+      "preserved_counts": {
+        "passed": 82,
+        "failed": 4,
+        "unsupported": 4
+      },
+      "verified_controls": 96,
+      "publication_receipt_sha256": "45cd77ae36d5d549a7e0842b31ace2fa72e9e9003e8072f0e05b3e5369b54fb0",
+      "publication_receipt_location": "tests/conformance/array-from-integration-validation.json:formal_publication"
+    }
+  },
+  "historical": {
+    "counts": {
+      "profiles": 38,
+      "cases": 17732,
+      "controls": 3804,
+      "control_changes": 0,
+      "improvements": 0,
+      "regressions": 0,
+      "other_changes": 0,
+      "existing_baseline_gates_passed": 31
+    },
+    "comparison_sha256": "996a4c9686031d9c8d5add833d0b869d75cb4455980090328c90b06d928905b7",
+    "all_observations_unchanged": true,
+    "all_31_existing_baselines_unchanged": true
+  },
+  "combined": {
+    "profiles": 39,
+    "modes": 17822,
+    "controls_verified": 3900,
+    "known_state_gates": 32
+  },
+  "integration_record_sha256": "9a9458884eb0f3e27959a5e63b18e9ee00c61c75af2923f54e1be997a5b2e71b",
+  "limits_record_sha256": "645bc496c045feaae1277b3cd9bd9ffea33176976cf178caf6190635e4be7894",
+  "shared_enumeration_followup": {
+    "path": "tests/conformance/array-from-enumeration-followup.json",
+    "sha256": "57213db43e695c24efb0188eb213f08552c941af4a7861a52b13f32ddc395b3a"
+  },
+  "remaining": [
+    "splice and ArrayBuffer prerequisites in the complete upstream profile",
+    "generators, classes, Set, Map, typed arrays, Proxy, BigInt and cross-realm coverage",
+    "Array.fromAsync and wider iterator consumers",
+    "host-only prototype/output paths explicitly unsupported when reached",
+    "shared own-key enumeration and for-in visited-name accounting follow-up"
+  ],
+  "unchanged_oracles": true,
+  "current_source_archive_sha256": "0c03fcb2851188ba018ed5d13f764514af91bea0cd4c37785bc9f18f0eef379b"
+}

@@ -1,0 +1,80 @@
+{
+  "id": "SHARED-OWN-KEYS-WORK-1",
+  "status": "open follow-up for next security checkpoint; Array.from local path separately precharged",
+  "reviewed_utc": "2026-09-29T08:50:14.720396+00:00",
+  "inputs": {
+    "src/script.rs": "9874ddb47e01dce2de06cea58d961f1d227a3a7eb910d2e3e7136449adb3110e",
+    "src/script/array_properties.rs": "527b4d97acd7d50a8249c79a009360aad45e44ad3520c2d4d46d0325ea56b37a",
+    "src/script/property_keys.rs": "7bd4055f08eb2d05b798b16b02c0ddf6e03a5a3fce2c269633e2967f92c665a3",
+    "src/script/machine/statements.rs": "a6387ed2d4bb4a06832f52b5ec27bf03036467bdec7644045078f4756a9b839c",
+    "src/script/object_integrity.rs": "91e1c99ec7eb5c31cd132b8adea72a7533a55566cbe4676d555227d432b66731",
+    "src/script/window.rs": "c11348fbf8ce1dd4cec72b3245ee7dfb5d897e482acc987c0f2e64d27abd1544",
+    "src/js_string.rs": "511a2325e6b1e2f99ced2a4e9c3b26c7b2ef4d31ecd3c522445cb38f5f1f62ee",
+    "src/script/array_from.rs": "8ebcc4a711e1607417f45d906119e468b0e230b67bc5abe7ad5fd6e3c77678c2"
+  },
+  "finding": "Shared Runtime::own_keys charges sorting/dedup work by key count/log count, but inserts complete retained UTF-16 JsString names into a BTreeSet. Derived string ordering can inspect arbitrarily long common prefixes, whose length-dependent comparison work is not precharged.",
+  "core_evidence": [
+    {
+      "path": "src/script.rs",
+      "lines": "4557-4614",
+      "function": "own_keys",
+      "detail": "Key-byte totals contribute to allocation allowance only. Work is count/log based before keys.retain(|key| seen.insert(key.clone()))."
+    },
+    {
+      "path": "src/js_string.rs",
+      "lines": "8-9",
+      "function": "JsString derived Ord",
+      "detail": "Ordering is lexicographic on Rc<[u16]>, rather than constant-time interned key identity."
+    }
+  ],
+  "public_entries": [
+    {
+      "entry": "Object.keys / Object.values / Object.getOwnPropertyNames",
+      "path": "src/script.rs",
+      "lines": "8393-8395",
+      "route": "native_call -> coerce_object -> own_keys",
+      "coverage": "Generic native precharge counts string arguments or dense array contents, not stored ordinary-object names; later key ticks cannot precharge already completed dedup."
+    },
+    {
+      "entry": "Reflect.ownKeys",
+      "path": "src/script.rs",
+      "lines": "8371-8380",
+      "route": "native_call -> own_property_keys -> own_keys",
+      "coverage": "Wrapper adds count work/vector allocation after the shared enumeration."
+    },
+    {
+      "entry": "Object.defineProperties / Object.create descriptors",
+      "path": "src/script.rs",
+      "lines": "4874-4882,8266-8273,8338-8343",
+      "route": "define_properties -> own_property_keys -> own_keys",
+      "coverage": "No full-name comparison precharge before descriptor-key enumeration."
+    },
+    {
+      "entry": "Array length assignment or Object.defineProperty length shrink",
+      "path": "src/script/array_properties.rs",
+      "lines": "80-113",
+      "route": "array_set_length -> own_keys",
+      "coverage": "Shared non-Array.from paths lack the new Array.from-specific preflight."
+    },
+    {
+      "entry": "for-in own/prototype snapshots",
+      "path": "src/script/machine/statements.rs",
+      "lines": "832-837,901-908",
+      "route": "for_in_start / for_in_next -> own_keys",
+      "coverage": "Snapshot happens before the per-key traversal work."
+    }
+  ],
+  "separate_paths_not_affected_by_this_finding": [
+    "Object seal/freeze/isSealed/isFrozen use integrity_keys with precharged numeric/index/ordinal sort, avoiding full-name dedup.",
+    "Window enumeration diverts to window_own_keys and precharges key bytes plus numeric/global-order sorting without full-name dedup.",
+    "Object.getOwnPropertySymbols uses own_symbol_keys directly, not own_keys."
+  ],
+  "minimal_public_setup_not_executed": "var p=\"x\";for(var i=0;i<9;i++)p+=p;var o={};for(var j=0;j<24;j++)o[p+j]=j;Object.getOwnPropertyNames(o);",
+  "independent_future_budget_case": "Prepare equal-size ordinary objects with short versus 512-unit common-prefix names before the measured call; retain identical key count and semantic ordering. With a narrowly sufficient remaining instruction budget, verify that full-name comparison work is prepaid before key snapshot/sort/dedup and that shortage cannot mutate the receiver. Freeze expected accounting invariants before implementation; include each public entry and cumulative calls.",
+  "risk_scope": "An instruction-ledger coverage gap, not a proven panic or unbounded allocation. Existing overall heap/work caps still apply; no candidate engine measurements were performed for this finding.",
+  "current_slice_resolution": "Array.from array_from_shrink_budget precharges actual retained string lengths, dedup depth, dense enumeration, deletion scans and scratch before its final Set; no shared helper rewrite in this feature slice.",
+  "root_disposition": "Retain for next security checkpoint and disclose open accounting gap in docs/SECURITY.md; do not broaden current frozen feature comparison.",
+  "engine_execution": false,
+  "builds": false,
+  "repository_edits": false
+}

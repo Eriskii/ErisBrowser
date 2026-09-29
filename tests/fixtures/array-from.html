@@ -1,0 +1,46 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Array.from through document callbacks</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#mapping{left:0}#closing{left:50px}#construction{left:100px}#unicode{left:150px}#aliasing{left:200px}#arguments{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="mapping" class="sample"></div><div id="closing" class="sample"></div>
+<div id="construction" class="sample"></div><div id="unicode" class="sample"></div>
+<div id="aliasing" class="sample"></div><div id="arguments" class="sample"></div>
+<button id="change" type="button">Run array factory callbacks</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+function apply(color){
+  const source=Object.create({1:3});source[0]=2;source.length=3;
+  let order='';const mapped=Array.from(source,function(value,index){order+=index;return value===undefined?10:value*2;});
+  check(order==='012'&&mapped.length===3&&mapped[0]===4&&mapped[1]===6&&mapped[2]===10,'captured length and inherited/hole mapping');mark('mapping',color);
+  const marker={},iterable={};let closed=0,caught=false;
+  iterable[Symbol.iterator]=function(){return {
+    next:function(){return {value:1,done:false};},
+    return:function(){closed++;throw new Error('close must not replace mapping throw');}
+  };};
+  try{Array.from(iterable,function(){throw marker;});}catch(error){caught=error===marker;}
+  check(caught&&closed===1,'mapping throw identity survives closing failure');mark('closing',color);
+  let setterCalls=0;
+  function Box(){this.constructorArguments=arguments.length;}
+  Object.defineProperty(Box.prototype,'0',{set:function(){setterCalls++;},configurable:true});
+  const boxed=Array.from.call(Box,[2,4]);
+  check(boxed instanceof Box&&boxed.constructorArguments===0&&boxed.length===2&&boxed[0]===2&&boxed[1]===4&&setterCalls===0,'iterable construction and own data definitions');mark('construction',color);
+  const parts=Array.from('A\uD83D\uDE00\uD800B');
+  check(parts.length===4&&parts[0]==='A'&&parts[1].length===2&&parts[1].charCodeAt(0)===55357&&parts[2].charCodeAt(0)===55296&&parts[3]==='B','UTF-16 iterator factory');mark('unicode',color);
+  const alias={0:2,1:3,length:2};
+  function Reuse(){return alias;}
+  const reused=Array.from.call(Reuse,alias,function(value,index){if(index===0)alias[1]=9;return value*2;});
+  check(reused===alias&&alias[0]===4&&alias[1]===18&&alias.length===2,'live aliased source and output');mark('aliasing',color);
+  function mappedArguments(a,b){a=7;return Array.from(arguments,function(value){return value+1;});}
+  const args=mappedArguments(2,4);
+  check(args.length===2&&args[0]===8&&args[1]===5,'live mapped arguments values');mark('arguments',color);
+}
+apply('green');document.getElementById('result').textContent='ready';document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  apply('blue');document.getElementById('result').textContent='6';document.body.className='clicked';
+};
+</script>

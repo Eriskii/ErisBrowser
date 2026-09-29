@@ -44,6 +44,8 @@ jobs:
         run: python3 tools/test262_conformance.py --profile for-of --baseline tests/conformance/test262-for-of-current.json --output artifacts/test262-for-of-gate.json
       - name: Preserve pinned core iterator behavior
         run: python3 tools/test262_conformance.py --profile core-iterators --baseline tests/conformance/test262-core-iterators-current.json --output artifacts/test262-core-iterators-gate.json
+      - name: Preserve pinned Array.from behavior
+        run: python3 tools/test262_conformance.py --profile array-from --baseline tests/conformance/test262-array-from-current.json --output artifacts/test262-array-from-gate.json
       - name: Preserve pinned array descriptors and property definitions
         run: python3 tools/test262_conformance.py --profile array-descriptors --baseline tests/conformance/test262-array-descriptors-current.json --output artifacts/test262-array-descriptors-gate.json
       - name: Preserve passing cases in the pinned Test262 selection

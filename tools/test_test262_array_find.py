@@ -143,7 +143,7 @@ class ArrayFindCorpusTests(unittest.TestCase):
 
     def test_all_34_prior_source_policy_exclusion_and_control_contracts_unchanged(self):
         # Iteration profiles postdate this unchanged historical snapshot.
-        contract = capture_contracts(excluded={'for-of', 'core-iterators', PROFILE, 'date'})
+        contract = capture_contracts(excluded={'array-from', 'for-of', 'core-iterators', PROFILE, 'date'})
         self.assertEqual(contract['counts'], dict(profiles=34, cases=14778, preflights=2964))
         self.assertEqual(runner.digest(canonical(contract)),
                          '5ecae3add38adb9f66b21557c8bfef771f6e510390ed1d537c1dac964a58444a')

@@ -1,15 +1,30 @@
 # Compatibility status
 
+[Array.from](../tests/conformance/array-from.md) supports synchronous iterable
+and array-like inputs, generic constructors, live mapping, own indexed data
+properties and iterator closing. Its complete 47-source upstream profile has
+82 passing modes, four failures requiring `splice` or `ArrayBuffer`, and four
+generator/cross-realm metadata exclusions; all 96 controls verify. The independent
+local matrix verifies 388 of 402 expectations, including twelve terminal-resource
+cases. Both modes of seven unsupported prerequisites remain unmet: generators,
+classes, Set, Map, typed arrays, Proxy and BigInt. These are retained failures or
+unsupported observations, not a claim of complete ECMAScript support.
+
+[Synchronous iteration](../tests/conformance/for-of.md) covers identifier/member
+`for…of` heads, lexical bindings and custom, Array, String and arguments iterators.
+Destructuring, generators and async iteration remain incomplete.
+
 [Date](../tests/conformance/date.md) now has internal time values, ordered
 construction and setter conversions, UTC/local fields, ISO parsing/formatting,
 required string round trips, JSON and primitive-conversion hooks, and the
 legacy year/GMT aliases. Local operations use an explicit host timezone
 snapshot with historical transitions, recurring rules and gap/overlap handling.
-The complete core Date profile retains 594 sources and 1,188 modes: 1,162 pass,
-four reach unsupported `for…of` syntax, and 22 retain their metadata exclusions.
+The complete core Date profile retains 594 sources and 1,188 modes: 1,166 pass,
+and 22 retain their metadata exclusions. Synchronous iteration closed the four
+previous year-zero parser gaps.
 All 340 controls and 406 independently frozen local modes pass. Broader legacy
-date parsing, Intl locale formatting, Temporal, cross-realm behavior and complete
-iterator support remain incomplete. Locale methods currently use the documented
+date parsing, Intl locale formatting, Temporal and cross-realm behavior remain
+incomplete. Locale methods currently use the documented
 English local-date forms permitted by the core specification without Intl.
 
 Script-enabled browser/CLI/adapter startup captures host rules explicitly.
@@ -287,7 +302,7 @@ retains 100 passes and 25 unsupported modes, with 80 controls. Legacy labeled
 functions remain incomplete. [Statement completion values](../tests/conformance/statement-completion.md)
 now distinguish empty results from JavaScript `undefined` through the supported
 blocks, branches, loops, switches, labels and try/catch/finally. Dynamic eval,
-with, for-of and other unsupported statement forms remain gaps.
+with, destructuring `for…of` heads and other unsupported statement forms remain gaps.
 
 [Loose equality](../tests/conformance/equality.md) follows ordinary primitive
 conversion and Boolean/Number/String dispatch. Null and undefined remain unequal
