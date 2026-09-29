@@ -1,0 +1,24 @@
+{
+  "before_source_archive_sha256": "8c9e175a7852c0cfc7e5da0b70e7a863dab3efee574e3badb66ebb846654bd84",
+  "final_source_archive_sha256": "42fd8b712a9f9628cf1d66d24f4948ba5242510cb1b790fba654b0ad91a44388",
+  "production_input_sha256": "cd50007f53a7b9431c104be33996295c2e4da96440963637f3eef20a02aedfa8",
+  "existing_script_limit_constants": {
+    "src/script/array_methods.rs:MAX_ARRAY_LIKE_LENGTH": "9_007_199_254_740_991",
+    "src/script/machine.rs:MAX_FRAMES": "MAX_HEAP / std::mem::size_of::<Frame>()",
+    "src/script/tokens.rs:LIMIT": "MAX_TOKENS + 2",
+    "src/script.rs:MAX_SOURCE": "256 * 1024",
+    "src/script.rs:MAX_TOKENS": "32_768",
+    "src/script.rs:MAX_DEPTH": "96",
+    "src/script.rs:MAX_CALLS": "32",
+    "src/script.rs:MAX_STACK_UNITS": "96",
+    "src/script.rs:MAX_STEPS": "100_000",
+    "src/script.rs:MAX_HEAP": "8 * 1024 * 1024",
+    "src/script.rs:MAX_STRING": "256 * 1024",
+    "src/script.rs:MAX_NODES": "100_000"
+  },
+  "changed_existing_limits": {},
+  "new_constants": {
+    "src/script/iterators.rs:MAX_LENGTH": "9_007_199_254_740_991"
+  },
+  "statement": "All existing script limit definitions remain unchanged. Native iterator MAX_LENGTH is ECMAScript ToLength, not an increased allocation/work limit."
+}

@@ -204,6 +204,7 @@ pub(super) enum Stmt {
     DoWhile(ExprId, StmtId),
     For(Option<StmtId>, Option<ExprId>, Option<ExprId>, StmtId),
     ForIn(ForBinding, ExprId, StmtId),
+    ForOf(ForBinding, ExprId, StmtId),
     Switch(ExprId, Vec<(Option<ExprId>, Vec<StmtId>)>),
     Function(String, FunctionId),
     Return(Option<ExprId>),
@@ -479,6 +480,15 @@ impl<'a> Lower<'a> {
                 };
                 Stmt::ForIn(binding, self.expr(value)?, self.stmt(body)?)
             }
+            S::ForOf(binding, value, body) => {
+                let binding = match binding {
+                    super::ForBinding::Declaration(name, kind) => {
+                        ForBinding::Declaration(text(name, &mut self.budget)?, *kind)
+                    }
+                    super::ForBinding::Target(value) => ForBinding::Target(self.expr(value)?),
+                };
+                Stmt::ForOf(binding, self.expr(value)?, self.stmt(body)?)
+            }
             S::Switch(value, cases) => {
                 let value = self.expr(value)?;
                 let mut output = list(cases.len(), &mut self.budget)?;
@@ -600,7 +610,7 @@ impl<'a> StatementChildren<'a> {
                 (Some(body), &[][..], None)
             }
             Stmt::For(init, _, _, body) => (init.as_ref(), &[][..], Some(body)),
-            Stmt::ForIn(_, _, body) => (Some(body), &[][..], None),
+            Stmt::ForIn(_, _, body) | Stmt::ForOf(_, _, body) => (Some(body), &[][..], None),
             Stmt::Try(body, handler, finalizer) => (
                 Some(body),
                 handler.as_ref().map_or(&[][..], |handler| &handler.body),
@@ -864,6 +874,16 @@ mod tests {
             Stmt::DoWhile(a, b) => S::DoWhile(expr(*a), child(*b)),
             Stmt::For(a, b, c, d) => S::For(a.map(child), b.map(expr), c.map(expr), child(*d)),
             Stmt::ForIn(binding, a, b) => S::ForIn(
+                match binding {
+                    ForBinding::Declaration(s, k) => {
+                        super::super::ForBinding::Declaration(s.clone(), *k)
+                    }
+                    ForBinding::Target(id) => super::super::ForBinding::Target(expr(*id)),
+                },
+                expr(*a),
+                child(*b),
+            ),
+            Stmt::ForOf(binding, a, b) => S::ForOf(
                 match binding {
                     ForBinding::Declaration(s, k) => {
                         super::super::ForBinding::Declaration(s.clone(), *k)

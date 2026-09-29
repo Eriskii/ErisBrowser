@@ -126,7 +126,8 @@ class ArrayPredicateCorpusTests(unittest.TestCase):
     def test_all_32_prior_contracts_and_policies_are_unchanged(self):
         retained = {}
         for name in runner.PROFILES:
-            if name in {PROFILE, 'object-integrity', 'array-find', 'date'}:
+            # Iteration profiles postdate this unchanged historical snapshot.
+            if name in {'for-of', 'core-iterators', PROFILE, 'object-integrity', 'array-find', 'date'}:
                 continue
             _, files, cases, fixtures, manifest_hash = runner.load_corpus(
                 runner.ROOT / 'tests/upstream' / runner.corpus_name(name), name)

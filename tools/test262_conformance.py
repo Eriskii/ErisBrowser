@@ -56,12 +56,14 @@ ARRAY_DESCRIPTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 ARRAY_PREDICATE_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 OBJECT_INTEGRITY_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 DATE_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
+FOR_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'for-of', 'let', 'const'}
+CORE_ITERATOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'Array.prototype.values'}
 ARRAY_FIND_FEATURES = ARRAY_PREDICATE_FEATURES | {'array-find-from-last'}
 ARRAY_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 STRING_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 REGEXP_SPLIT_FEATURES = CONSTRUCTION_FEATURES
 REGEXP_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'u180e'}
-PROFILE_FEATURES = {'date': DATE_FEATURES, 'array-find': ARRAY_FIND_FEATURES, 'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+PROFILE_FEATURES = {'for-of': FOR_OF_FEATURES, 'core-iterators': CORE_ITERATOR_FEATURES, 'date': DATE_FEATURES, 'array-find': ARRAY_FIND_FEATURES, 'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'reflect-construction': CONSTRUCTION_FEATURES, 'new-target': CONSTRUCTION_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -188,12 +190,15 @@ def load_corpus(directory, profile='string-json'):
                 blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
                 if blob != entry['sha']:
                     raise ValueError('test source differs from pinned Git tree blob')
-    if profile == 'date':
+    if profile in {'date', 'for-of', 'core-iterators'}:
         for path, expected_blob in expected_proof['auxiliary_blobs'].items():
             data = files.get(path, b'')
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
             if blob != expected_blob:
-                raise ValueError('Date helper or legal bytes differ from pinned Git blob')
+                raise ValueError('helper or legal bytes differ from pinned Git blob')
+        if profile in {'for-of', 'core-iterators'} and files.keys() != (
+                expected_tests | expected_proof['auxiliary_blobs'].keys()):
+            raise ValueError('iteration auxiliary inventory differs from pinned selection')
     actual_tests = {path for path in files if path.startswith('test/')}
     if actual_tests != expected_tests:
         raise ValueError('Test262 manifest test inventory is incomplete or contains extras')
@@ -420,6 +425,86 @@ def date_preflight_variants():
                   "verifyProperty(Date,'prototype',{value:Date.prototype,writable:false,enumerable:false,configurable:false},{restore:true});",
                   'Date.length', '7', '8'))
     return [('date-' + name + suffix, guard + setup + f'assert.sameValue({actual},{value});', expected, mode)
+            for mode in ('sloppy', 'strict') for name, setup, actual, good, bad in pairs
+            for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed'))]
+
+
+def for_of_preflight_variants():
+    """Byte-exact controls frozen independently before implementation or runs."""
+    guard = "assert.sameValue(typeof Symbol,'function','Symbol prerequisite');\nassert.sameValue(typeof Symbol.iterator,'symbol','well-known iterator key prerequisite');\nvar $foGuardSource={},$foGuardCount=0,$foGuardSum=0,$foGuardSteps=0;\n$foGuardSource[Symbol.iterator]=function(){return {next:function(){var n=$foGuardSteps++;return n<2?{done:false,value:n+2}:{done:true};}};};\nfor(var $foGuardValue of $foGuardSource){$foGuardCount++;$foGuardSum+=$foGuardValue;}\nassert.sameValue($foGuardCount,2,'successful protocol prerequisite');assert.sameValue($foGuardSum,5);assert.sameValue($foGuardSteps,3);\nfunction sequence(values,trace){var index=0,source={},it={next:function(){if(trace)trace.push('next'+index);return index<values.length?{value:values[index++],done:false}:{done:true};}};source[Symbol.iterator]=function(){return it;};return {source:source,it:it};}\nfunction text(a){var s='';for(var i=0;i<a.length;i++){if(i)s+=',';s+=a[i];}return s;}\n"
+    pairs = [
+        ('protocol-values', 'var out=[];for(var x of sequence([2,3]).source)out.push(x);', 'text(out)', '"2,3"', '"3,2"'),
+        ('next-cache', 'var n=0,reads=0,o={},it={};Object.defineProperty(it,"next",{get:function(){reads++;return function(){return n++?{done:true}:{value:4};};}});o[Symbol.iterator]=function(){return it;};for(var x of o){}', 'reads', '1', '2'),
+        ('close-break', 'var count=0,s=sequence([1]);s.it.return=function(){count++;return {};};for(var x of s.source)break;', 'count', '1', '0'),
+        ('no-close-step-error', 'var count=0,reason={},caught,s=sequence([]);s.it.next=function(){throw reason;};s.it.return=function(){count++;return {};};try{for(var x of s.source){}}catch(e){caught=e;}assert.sameValue(caught,reason);', 'count', '0', '1'),
+        ('throw-precedence', 'var original={},closing={},caught,s=sequence([1]);s.it.return=function(){throw closing;};try{for(var x of s.source)throw original;}catch(e){caught=e;}', 'caught', 'original', 'closing'),
+        ('lexical-closures', 'var f=[];for(let x of sequence([1,2]).source)f.push(function(){return x;});', 'f[0]()', '1', '2'),
+        ('tdz', 'var caught=false;try{for(let x of x){}}catch(e){assert.sameValue(e.constructor,ReferenceError);caught=true;}', 'caught', 'true', 'false'),
+        ('assignment-order', 'var n=0,target={},s=sequence([1]);function base(){n++;return target;}for(base().x of s.source){}', 'n', '1', '2'),
+        ('unicode', 'var out=[];for(var x of "A\\uD83D\\uDE00B")out.push(x);', 'out.length', '3', '4'),
+        ('array-live-growth', 'var a=[1],out=[];for(var x of a){out.push(x);if(x===1)a.push(2);}', 'text(out)', '"1,2"', '"1"'),
+        ('same-loop-continue', 'var closes=0,s=sequence([1,2]);s.it.return=function(){closes++;return {};};for(var x of s.source)continue;', 'closes', '0', '2'),
+        ('outward-label-close', 'var count=0,a=sequence([1]),b=sequence([2]);b.it.return=function(){count++;return {};};outer:for(var x of a.source){for(var y of b.source)continue outer;}', 'count', '1', '0'),
+    ]
+    return [('for-of-' + name + suffix, guard + setup + f'\nassert.sameValue({actual},{value});\n', expected, mode)
+            for mode in ('sloppy', 'strict') for name, setup, actual, good, bad in pairs
+            for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed'))]
+
+
+def core_iterator_preflight_variants():
+    """Native iterator controls avoid for-of syntax and prove successful calls first."""
+    guard = ("assert.sameValue(typeof Symbol.iterator,'symbol');"
+             "assert.sameValue(typeof Array.prototype.values,'function');"
+             "assert.sameValue(typeof Array.prototype.keys,'function');"
+             "assert.sameValue(typeof Array.prototype.entries,'function');"
+             "assert.sameValue(typeof String.prototype[Symbol.iterator],'function');"
+             "assert.sameValue(Array.prototype.values.call([7]).next().value,7);"
+             "assert.sameValue(Array.prototype.keys.call([7]).next().value,0);"
+             "assert.sameValue(Array.prototype.entries.call([7]).next().value[1],7);"
+             "assert.sameValue(String.prototype[Symbol.iterator].call('a').next().value,'a');")
+    pairs = [
+        ('values-holes', "var it=Array.prototype.values.call(new Array(1)),a=it.next();assert.sameValue(a.value,undefined);assert.sameValue(a.done,false);", 'it.next().done', 'true', 'false'),
+        ('keys-no-element-get', "var reads=0,o={length:1};Object.defineProperty(o,'0',{get:function(){reads++;throw 'element';}});var it=Array.prototype.keys.call(o);assert.sameValue(it.next().value,0);", 'reads', '0', '1'),
+        ('entries-fresh', "var it=[4,5].entries(),a=it.next().value,b=it.next().value;assert.sameValue(a[0],0);assert.sameValue(a[1],4);assert.sameValue(b[0],1);assert.sameValue(b[1],5);assert.sameValue(Object.getPrototypeOf(a),Array.prototype);", 'a===b', 'false', 'true'),
+        ('live-growth-and-shrink', "var a=[1],it=a.values();assert.sameValue(it.next().value,1);a.push(2);assert.sameValue(it.next().value,2);a.length=0;assert.sameValue(it.next().done,true);a.push(3);", 'it.next().done', 'true', 'false'),
+        ('length-read-order', "var reads=0,o={0:9,get length(){reads++;return 1;}},it=Array.prototype.values.call(o);assert.sameValue(reads,0);assert.sameValue(it.next().value,9);assert.sameValue(it.next().done,true);assert.sameValue(it.next().done,true);", 'reads', '2', '3'),
+        ('element-get-reentrancy', "var nested,a=[0,2,3],it=a.values();Object.defineProperty(a,'0',{get:function(){nested=it.next();return 1;}});assert.sameValue(it.next().value,1);assert.sameValue(nested.value,2);", 'it.next().value', '3', '2'),
+        ('element-abrupt-advances', "var reason={},caught,a=[0,2],it=a.values();Object.defineProperty(a,'0',{get:function(){throw reason;}});try{it.next();}catch(e){caught=e;}assert.sameValue(caught,reason);", 'it.next().value', '2', 'undefined'),
+        ('length-abrupt-retries', "var reason={},caught,n=0,o={0:8,get length(){if(n++===0)throw reason;return 1;}},it=Array.prototype.values.call(o);try{it.next();}catch(e){caught=e;}assert.sameValue(caught,reason);", 'it.next().value', '8', 'undefined'),
+        ('completed-fresh-result', "var it=[].values(),a=it.next(),b=it.next();assert.sameValue(a.done,true);assert.sameValue(b.done,true);assert.sameValue(a.value,undefined);", 'a===b', 'false', 'true'),
+        ('generic-full-length', "var o={length:Infinity,0:9},it=Array.prototype.values.call(o);", 'it.next().value', '9', 'undefined'),
+        ('arguments-alias', "function f(){assert.sameValue(arguments[Symbol.iterator],Array.prototype.values);return arguments[Symbol.iterator]().next().value;}", 'f(8)', '8', 'undefined'),
+        ('string-utf16', r"var it='\uD800\uD801\uDC00e\u0301'[Symbol.iterator]();assert.sameValue(it.next().value,'\uD800');assert.sameValue(it.next().value,'\uD801\uDC00');assert.sameValue(it.next().value,'e');assert.sameValue(it.next().value,'\u0301');", 'it.next().done', 'true', 'false'),
+        ('string-converts-once', "var reads=0,o={toString:function(){reads++;return 'ab';}},it=String.prototype[Symbol.iterator].call(o);assert.sameValue(reads,1);o.toString=function(){throw 'late';};assert.sameValue(it.next().value,'a');assert.sameValue(it.next().value,'b');", 'reads', '1', '2'),
+        ('string-completed-fresh-result', "var it=''[Symbol.iterator](),a=it.next(),b=it.next();assert.sameValue(a.value,undefined);assert.sameValue(a.done,true);assert.sameValue(b.done,true);", 'a===b', 'false', 'true'),
+        ('private-brands', "var a=[1].values(),s='x'[Symbol.iterator]();assert.throws(TypeError,function(){a.next.call(Object.create(Object.getPrototypeOf(a)));});assert.throws(TypeError,function(){s.next.call(a);});assert.throws(TypeError,function(){a.next.call(s);});assert.sameValue(a.next().value,1);", 's.next().value', "'x'", 'undefined'),
+        ('shared-prototype', "var a=[1].values(),s='a'[Symbol.iterator](),p=Object.getPrototypeOf(Object.getPrototypeOf(a));assert.sameValue(p,Object.getPrototypeOf(Object.getPrototypeOf(s)));var method=p[Symbol.iterator];assert.sameValue(method.call(null),null);assert.sameValue(method.call(3),3);", 'method.call(a)===a', 'true', 'false'),
+        ('frozen-private-progress', "var a=[1,2].values(),s='ab'[Symbol.iterator]();Object.freeze(a);Object.freeze(s);assert.sameValue(a.next().value,1);assert.sameValue(a.next().value,2);assert.sameValue(s.next().value,'a');", 's.next().value', "'b'", 'undefined'),
+        ('nullish-receivers', "assert.throws(TypeError,function(){Array.prototype.values.call(null);});assert.throws(TypeError,function(){String.prototype[Symbol.iterator].call(undefined);});assert.throws(TypeError,function(){String.prototype[Symbol.iterator].call(Symbol('x'));});", "Array.prototype.values.call('a').next().value", "'a'", 'undefined'),
+        ('property-result', "var a=[7].values().next();verifyProperty(a,'value',{value:7,writable:true,enumerable:true,configurable:true},{restore:true});verifyProperty(a,'done',{value:false,writable:true,enumerable:true,configurable:true},{restore:true});", 'Object.getPrototypeOf(a)===Object.prototype', 'true', 'false'),
+    ]
+    for method in ('values', 'keys', 'entries', 'string'):
+        owner, key = ('String.prototype', 'Symbol.iterator') if method == 'string' else ('Array.prototype', repr(method))
+        name = '[Symbol.iterator]' if method == 'string' else method
+        setup = (f"var m={owner}[{key}];"
+                 f"verifyProperty({owner},{key},{{value:m,writable:true,enumerable:false,configurable:true}},{{restore:true}});"
+                 f"verifyProperty(m,'name',{{value:'{name}',writable:false,enumerable:false,configurable:true}},{{restore:true}});"
+                 "verifyProperty(m,'length',{value:0,writable:false,enumerable:false,configurable:true},{restore:true});"
+                 "assert.sameValue(Object.getOwnPropertyDescriptor(m,'prototype'),undefined);"
+                 "assert.throws(TypeError,function(){new m();});")
+        if method == 'values':
+            setup += 'assert.sameValue(Array.prototype[Symbol.iterator],m);'
+        pairs.append(('property-' + method, setup, 'm.length', '0', '1'))
+    for kind, factory in [('Array', '[1].values()'), ('String', "'a'[Symbol.iterator]()")]:
+        setup = (f"var it={factory},p=Object.getPrototypeOf(it),m=it.next;assert.sameValue(m.call(it).done,false);"
+                 "verifyProperty(p,'next',{value:m,writable:true,enumerable:false,configurable:true},{restore:true});"
+                 "verifyProperty(m,'name',{value:'next',writable:false,enumerable:false,configurable:true},{restore:true});"
+                 "verifyProperty(m,'length',{value:0,writable:false,enumerable:false,configurable:true},{restore:true});"
+                 f"verifyProperty(p,Symbol.toStringTag,{{value:'{kind} Iterator',writable:false,enumerable:false,configurable:true}},{{restore:true}});"
+                 "assert.sameValue(Object.getOwnPropertyDescriptor(m,'prototype'),undefined);"
+                 "assert.throws(TypeError,function(){new m();});")
+        pairs.append(('property-' + kind.lower() + '-next', setup, 'm.length', '0', '1'))
+    return [('core-iterators-' + name + suffix, guard + setup + f'assert.sameValue({actual},{value});', expected, mode)
             for mode in ('sloppy', 'strict') for name, setup, actual, good, bad in pairs
             for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed'))]
 
@@ -1626,6 +1711,10 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                                          guard + setup + f'assert.sameValue({actual},{value});', expected, mode))
     if profile == 'date':
         variants += date_preflight_variants()
+    if profile == 'for-of':
+        variants += for_of_preflight_variants()
+    if profile == 'core-iterators':
+        variants += core_iterator_preflight_variants()
     outcomes = []
     identifier_controls = {}
     for name, source, expected, mode in variants:
@@ -1644,14 +1733,14 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                 name=name, mode=mode, case_sha256=case['case_sha256'],
                 source_sha256=digest(case['source']), expected=expected,
                 verified=correct, result=result)
-    if profile == 'date':
-        # A missing Date can throw the harness's Test262Error in both partners.
+    if profile in {'date', 'for-of', 'core-iterators'}:
+        # An unavailable prerequisite can throw the harness's Test262Error in both partners.
         # Preserve that raw observation, but do not verify the mismatch unless
         # its separately executed positive partner completes successfully.
         positives = {(item['name'], item['result']['mode']): item for item in outcomes
-                     if item['name'].startswith('date-') and item['expected'] == 'passed'}
+                     if item['name'].startswith(profile + '-') and item['expected'] == 'passed'}
         for item in outcomes:
-            if item['name'].startswith('date-') and item['name'].endswith('-mismatch'):
+            if item['name'].startswith(profile + '-') and item['name'].endswith('-mismatch'):
                 partner = positives[(item['name'].removesuffix('-mismatch'), item['result']['mode'])]
                 result = partner['result']
                 item['prerequisite'] = dict(name=partner['name'], mode=result['mode'],

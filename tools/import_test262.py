@@ -22,7 +22,32 @@ ARRAY_FIND_DIRECTORIES = {'Array/prototype/find': 23, 'Array/prototype/findIndex
                           'Array/prototype/findLast': 24, 'Array/prototype/findLastIndex': 24}
 DATE_TREE = '6ad4fab73be4a87e6bfb58793b5fa9c82335ce5e'
 DATE_DIRECTORIES = {'Date': 78, 'Date/UTC': 17, 'Date/now': 6, 'Date/parse': 8, 'Date/prototype': 44, 'Date/prototype/Symbol.toPrimitive': 18, 'Date/prototype/constructor': 1, 'Date/prototype/getDate': 8, 'Date/prototype/getDay': 8, 'Date/prototype/getFullYear': 8, 'Date/prototype/getHours': 8, 'Date/prototype/getMilliseconds': 8, 'Date/prototype/getMinutes': 8, 'Date/prototype/getMonth': 8, 'Date/prototype/getSeconds': 8, 'Date/prototype/getTime': 8, 'Date/prototype/getTimezoneOffset': 8, 'Date/prototype/getUTCDate': 8, 'Date/prototype/getUTCDay': 8, 'Date/prototype/getUTCFullYear': 8, 'Date/prototype/getUTCHours': 8, 'Date/prototype/getUTCMilliseconds': 8, 'Date/prototype/getUTCMinutes': 8, 'Date/prototype/getUTCMonth': 8, 'Date/prototype/getUTCSeconds': 8, 'Date/prototype/setDate': 14, 'Date/prototype/setFullYear': 20, 'Date/prototype/setHours': 23, 'Date/prototype/setMilliseconds': 14, 'Date/prototype/setMinutes': 18, 'Date/prototype/setMonth': 17, 'Date/prototype/setSeconds': 17, 'Date/prototype/setTime': 11, 'Date/prototype/setUTCDate': 7, 'Date/prototype/setUTCFullYear': 6, 'Date/prototype/setUTCHours': 11, 'Date/prototype/setUTCMilliseconds': 8, 'Date/prototype/setUTCMinutes': 8, 'Date/prototype/setUTCMonth': 9, 'Date/prototype/setUTCSeconds': 9, 'Date/prototype/toDateString': 7, 'Date/prototype/toISOString': 17, 'Date/prototype/toJSON': 13, 'Date/prototype/toLocaleDateString': 4, 'Date/prototype/toLocaleString': 4, 'Date/prototype/toLocaleTimeString': 4, 'Date/prototype/toString': 8, 'Date/prototype/toTemporalInstant': 8, 'Date/prototype/toTimeString': 6, 'Date/prototype/toUTCString': 9, 'Date/prototype/valueOf': 6}
-TREE_PROFILES = {'date', 'array-descriptors', 'array-predicates', 'object-integrity', 'array-find'}
+FOR_OF_DIRECTORIES = {'statements/for-of': 182, 'statements/for-of/dstr': 569}
+CORE_ITERATOR_DIRECTORIES = {
+    'Array/prototype/values': 12, 'Array/prototype/keys': 12, 'Array/prototype/entries': 12,
+    'String/prototype/Symbol.iterator': 6, 'ArrayIteratorPrototype': 0,
+    'ArrayIteratorPrototype/Symbol.toStringTag': 3, 'ArrayIteratorPrototype/next': 24,
+    'StringIteratorPrototype': 2, 'StringIteratorPrototype/next': 5,
+}
+ITERATION_SUBTREES = {
+    'for-of': {'statements/for-of': '592792d58aaf7752ef1b74e0edba13157f698a38'},
+    'core-iterators': {
+        'Array/prototype/values': 'd29084de7fdb7555ea16f25ba77f7a763acf67b9',
+        'Array/prototype/keys': '6aa30e99a0abd72649ac41d7b7ac35ac71fbe781',
+        'Array/prototype/entries': 'd5bad750535fe75bb48ce3433e14daaf427e7ecf',
+        'String/prototype/Symbol.iterator': '2581ea6296933ab9a73383941619e0ef397ee8fb',
+        'ArrayIteratorPrototype': 'aa50fb6e097adf8d3c71a210bd71578758f58e9d',
+        'StringIteratorPrototype': 'c539b1d32923aa79d63fe6eb99c0660e31c0fa17',
+    },
+}
+ITERATION_HELPERS = {
+    'for-of': {'assert.js', 'sta.js', 'asyncHelpers.js', 'compareArray.js',
+               'doneprintHandle.js', 'propertyHelper.js', 'resizableArrayBufferUtils.js'},
+    'core-iterators': {'assert.js', 'sta.js', 'compareArray.js', 'isConstructor.js',
+                       'propertyHelper.js', 'resizableArrayBufferUtils.js',
+                       'detachArrayBuffer.js', 'testTypedArray.js'},
+}
+TREE_PROFILES = {'for-of', 'core-iterators', 'date', 'array-descriptors', 'array-predicates', 'object-integrity', 'array-find'}
 DIRECTORIES = {
     'JSON/parse': 77, 'JSON/stringify': 66,
     'String/prototype/charAt': 30, 'String/prototype/charCodeAt': 25,
@@ -100,7 +125,7 @@ SYMBOL_DIRECTORIES = {
     'Symbol/toStringTag': 2,
     'Symbol/unscopables': 2,
 }
-PROFILES = {'date': DATE_DIRECTORIES, 'array-find': ARRAY_FIND_DIRECTORIES, 'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates': ARRAY_PREDICATE_DIRECTORIES, 'array-descriptors': ARRAY_DESCRIPTOR_DIRECTORIES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_DIRECTORIES, 'string-last-index-of': STRING_LAST_INDEX_OF_DIRECTORIES, 'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
+PROFILES = {'for-of': FOR_OF_DIRECTORIES, 'core-iterators': CORE_ITERATOR_DIRECTORIES, 'date': DATE_DIRECTORIES, 'array-find': ARRAY_FIND_DIRECTORIES, 'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates': ARRAY_PREDICATE_DIRECTORIES, 'array-descriptors': ARRAY_DESCRIPTOR_DIRECTORIES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_DIRECTORIES, 'string-last-index-of': STRING_LAST_INDEX_OF_DIRECTORIES, 'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'function-constructor': FUNCTION_CONSTRUCTOR_DIRECTORIES,
             'reflect-construction': REFLECT_CONSTRUCTION_DIRECTORIES, 'new-target': NEW_TARGET_DIRECTORIES,
             'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
@@ -113,7 +138,7 @@ PROFILES = {'date': DATE_DIRECTORIES, 'array-find': ARRAY_FIND_DIRECTORIES, 'obj
             'numeric-parsing': NUMERIC_PARSING_DIRECTORIES,
             'compound-assignment': COMPOUND_ASSIGNMENT_DIRECTORIES,
             'addition': ADDITION_DIRECTORIES, 'logical-assignment': LOGICAL_ASSIGNMENT_DIRECTORIES, 'uri': URI_DIRECTORIES, 'relational': RELATIONAL_DIRECTORIES, 'equality': EQUALITY_DIRECTORIES, 'labels': LABELS_DIRECTORIES}
-PROFILE_ROOTS = {'date': 'test/built-ins', 'array-find': 'test/built-ins', 'object-integrity': 'test/built-ins', 'array-predicates': 'test/built-ins', 'array-descriptors': 'test/built-ins', 'array-last-index-of': 'test/built-ins', 'string-last-index-of': 'test/built-ins', 'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
+PROFILE_ROOTS = {'for-of': 'test/language', 'core-iterators': 'test/built-ins', 'date': 'test/built-ins', 'array-find': 'test/built-ins', 'object-integrity': 'test/built-ins', 'array-predicates': 'test/built-ins', 'array-descriptors': 'test/built-ins', 'array-last-index-of': 'test/built-ins', 'string-last-index-of': 'test/built-ins', 'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
                  'function-constructor': 'test/built-ins', 'reflect-construction': 'test/built-ins', 'new-target': 'test/language',
                  'template-literal': 'test/language', 'functions': 'test/language',
                  'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins',
@@ -225,8 +250,9 @@ def fetch(url):
 def tree_proof_path(route):
     if route == f'commits/{REVISION}':
         return 'inventory-proof/commit.json'
-    if route == f'trees/{DATE_TREE}?recursive=1':
-        return f'inventory-proof/recursive-{DATE_TREE}.json'
+    recursive_trees = {DATE_TREE} | {sha for roots in ITERATION_SUBTREES.values() for sha in roots.values()}
+    if route in {f'trees/{sha}?recursive=1' for sha in recursive_trees}:
+        return 'inventory-proof/recursive-' + route[6:].removesuffix('?recursive=1') + '.json'
     if re.fullmatch(r'trees/[0-9a-f]{40}', route):
         return 'inventory-proof/tree-' + route[6:] + '.json'
     raise ValueError('invalid pinned Git proof route')
@@ -461,9 +487,157 @@ def date_tree_inventory(read=None):
     return listings, proof, description
 
 
+def iteration_tree_inventory(profile, read=None):
+    """Verify complete selected recursive subtrees and unchanged auxiliary blobs.
+
+    Retain original API responses, reconstruct every descendant Git tree, and
+    authenticate each selected root through the pinned commit's ancestor chain.
+    The fixed profile roots and direct-directory counts reject added/omitted
+    directories as well as source substitutions; no execution informs selection.
+    """
+    if profile not in ITERATION_SUBTREES:
+        raise ValueError('unknown iteration inventory profile')
+    if read is None:
+        read = lambda route: fetch(f'https://api.github.com/repos/{REPOSITORY}/git/{route}')
+    proof, trees, used_bytes = {}, {}, 0
+
+    def document(route):
+        nonlocal used_bytes
+        if len(proof) >= 24:
+            raise ValueError('iteration proof document limit')
+        data = read(route)
+        used_bytes += len(data)
+        if len(data) > MAX_FILE or used_bytes > 4 * 1024 * 1024:
+            raise ValueError('iteration proof byte limit')
+        value = json.loads(data)
+        if not isinstance(value, dict):
+            raise ValueError('invalid iteration proof object')
+        proof[tree_proof_path(route)] = data
+        return value
+
+    def verify_tree(entries, expected):
+        if not isinstance(entries, list) or len(entries) > 16384:
+            raise ValueError('iteration tree entry limit')
+        names, encoded = {}, []
+        modes = {'040000': 'tree', '100644': 'blob', '100755': 'blob',
+                 '120000': 'blob', '160000': 'commit'}
+        for entry in entries:
+            if not isinstance(entry, dict):
+                raise ValueError('invalid iteration tree entry')
+            name, mode, kind, child = (entry.get(k) for k in ('path', 'mode', 'type', 'sha'))
+            if (not isinstance(name, str) or not name or name in {'.', '..'}
+                    or any(c in name for c in '/\\\0') or len(name.encode()) > 512
+                    or name in names or not isinstance(mode, str) or mode not in modes
+                    or modes[mode] != kind or not isinstance(child, str)
+                    or not re.fullmatch(r'[0-9a-f]{40}', child)):
+                raise ValueError('invalid iteration tree name, mode or hash')
+            names[name] = entry
+            raw = name.encode()
+            encoded.append((raw + (b'/' if kind == 'tree' else b''),
+                            mode.lstrip('0').encode() + b' ' + raw + b'\0' + bytes.fromhex(child)))
+        body = b''.join(part for _, part in sorted(encoded))
+        if hashlib.sha1(b'tree ' + str(len(body)).encode() + b'\0' + body).hexdigest() != expected:
+            raise ValueError('iteration Git tree hash mismatch; incomplete inventory')
+        return names
+
+    def tree(sha):
+        if sha not in trees:
+            value = document('trees/' + sha)
+            if value.get('sha') != sha or value.get('truncated') is not False:
+                raise ValueError('incomplete or mismatched iteration ancestor tree')
+            trees[sha] = verify_tree(value.get('tree'), sha)
+        return trees[sha]
+
+    commit = document(f'commits/{REVISION}')
+    if (commit.get('sha') != REVISION or not isinstance(commit.get('tree'), dict)
+            or commit['tree'].get('sha') != REVISION_TREE):
+        raise ValueError('iteration commit differs from pinned root')
+    root = tree(REVISION_TREE)
+    listings, mapped, total = {}, {}, 0
+    for selected_root, pinned_tree in ITERATION_SUBTREES[profile].items():
+        sha = REVISION_TREE
+        for part in (PROFILE_ROOTS[profile] + '/' + selected_root).split('/'):
+            entry = tree(sha).get(part)
+            if not entry or entry['type'] != 'tree':
+                raise ValueError('missing iteration ancestor')
+            sha = entry['sha']
+        if sha != pinned_tree:
+            raise ValueError('iteration subtree differs from pinned root')
+        value = document(f'trees/{sha}?recursive=1')
+        rows = value.get('tree')
+        if (value.get('sha') != sha or value.get('truncated') is not False
+                or not isinstance(rows, list) or len(rows) > 4096):
+            raise ValueError('incomplete or oversized recursive iteration proof')
+        by_path, directories, children = {}, {'': sha}, {'': []}
+        for entry in rows:
+            if not isinstance(entry, dict) or not isinstance(entry.get('path'), str):
+                raise ValueError('invalid recursive iteration entry')
+            path = entry['path']
+            parts = path.split('/')
+            if (len(parts) > 8 or len(path.encode()) > 1024 or path in by_path
+                    or any(not re.fullmatch(r'[A-Za-z0-9_.-]+', p) or p in {'.', '..'} for p in parts)):
+                raise ValueError('unsafe, duplicate or overdeep iteration path')
+            by_path[path] = entry
+            if entry.get('type') == 'tree':
+                directories[path] = entry.get('sha')
+                children[path] = []
+        if len(directories) > 64:
+            raise ValueError('iteration directory limit')
+        for path, entry in by_path.items():
+            parent, _, name = path.rpartition('/')
+            if parent not in children:
+                raise ValueError('missing recursive iteration parent')
+            children[parent].append(dict(entry, path=name))
+        for path, child_sha in directories.items():
+            verify_tree(children[path], child_sha)
+            name = selected_root + ('/' + path if path else '')
+            if name in mapped:
+                raise ValueError('overlapping iteration subtree selection')
+            mapped[name] = child_sha
+            listings[name] = []
+        for path, entry in by_path.items():
+            if entry['type'] == 'tree':
+                continue
+            size = entry.get('size')
+            if (entry['type'] != 'blob' or entry['mode'] not in {'100644', '100755'}
+                    or not path.endswith('.js') or type(size) is not int or not 0 <= size <= MAX_FILE):
+                raise ValueError('iteration source is nonregular, non-JavaScript or oversized')
+            total += size
+            if total > 2 * 1024 * 1024:
+                raise ValueError('iteration source aggregate limit')
+            parent, _, name = path.rpartition('/')
+            directory = selected_root + ('/' + parent if parent else '')
+            listings[directory].append(dict(name=name, type='file', sha=entry['sha']))
+    if (mapped.keys() != PROFILES[profile].keys()
+            or any(len(listings[name]) != count for name, count in PROFILES[profile].items())):
+        raise ValueError('iteration directory/source inventory differs from complete selection')
+    harness_entry = root.get('harness')
+    if not harness_entry or harness_entry['type'] != 'tree':
+        raise ValueError('missing root-linked iteration harness')
+    harness = tree(harness_entry['sha'])
+    auxiliary = {}
+    for name in sorted(ITERATION_HELPERS[profile]):
+        entry = harness.get(name)
+        if not entry or entry['type'] != 'blob' or entry['mode'] not in {'100644', '100755'}:
+            raise ValueError('missing pinned iteration helper')
+        auxiliary['harness/' + name] = entry['sha']
+    for name in ('LICENSE', 'INTERPRETING.md'):
+        entry = root.get(name)
+        if not entry or entry['type'] != 'blob' or entry['mode'] not in {'100644', '100755'}:
+            raise ValueError('missing pinned iteration legal file')
+        auxiliary[name] = entry['sha']
+    description = dict(method='complete-root-linked-recursive-git-subtrees', revision=REVISION,
+                       root_tree=REVISION_TREE, prefix=PROFILE_ROOTS[profile],
+                       subtree_trees=ITERATION_SUBTREES[profile], directory_trees=mapped,
+                       auxiliary_blobs=auxiliary)
+    return listings, proof, description
+
+
 def profile_tree_inventory(profile, read=None):
     if profile == 'date':
         return date_tree_inventory(read)
+    if profile in ITERATION_SUBTREES:
+        return iteration_tree_inventory(profile, read)
     return git_tree_inventory(PROFILES[profile], PROFILE_ROOTS[profile], read)
 
 
@@ -512,15 +686,17 @@ def import_corpus(output, profile='string-json'):
     additional = ['LICENSE', 'INTERPRETING.md'] + [f'harness/{name}' for name in sorted(harness)]
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
         sources.update(zip(additional, pool.map(lambda path: fetch(raw + path), additional)))
-    if profile == 'date':
+    if profile == 'date' or profile in ITERATION_SUBTREES:
         for path, expected_blob in proof_description['auxiliary_blobs'].items():
             data = sources.get(path, b'')
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
             if blob != expected_blob:
-                raise ValueError('Date helper or legal file differs from pinned Git blob: ' + path)
+                raise ValueError('helper or legal file differs from pinned Git blob: ' + path)
     if sum(map(len, sources.values())) + sum(map(len, proof.values())) > MAX_TOTAL:
         raise ValueError('Test262 selection exceeds aggregate import limit')
     scope = {
+        'for-of': 'all .js files in the complete recursive language/statements/for-of subtree, including dstr; original root-linked Git proofs; no implementation',
+        'core-iterators': 'all .js files recursively in Array/prototype/{values,keys,entries}, String/prototype/Symbol.iterator, ArrayIteratorPrototype and StringIteratorPrototype; original root-linked Git proofs; no implementation',
         'date': 'all .js files in the complete recursive built-ins/Date subtree; all 51 directories and blobs authenticated to the pinned Git root; no implementation',
         'array-find': 'all direct .js files in Array/prototype/find, findIndex, findLast and findLastIndex; complete pinned Git trees; no implementation',
         'object-integrity': 'all direct .js files in Object/seal, Object/freeze, Object/isSealed and Object/isFrozen; complete pinned Git trees; no implementation',
@@ -565,7 +741,7 @@ def import_corpus(output, profile='string-json'):
         manifest['inventory_proof'] = dict(proof_description, files=[])
         for path, data in sorted(proof.items()):
             route = (f'commits/{REVISION}' if path.endswith('/commit.json') else
-                     (f'trees/{DATE_TREE}?recursive=1' if Path(path).name.startswith('recursive-') else
+                     ('trees/' + Path(path).name.removeprefix('recursive-').removesuffix('.json') + '?recursive=1' if Path(path).name.startswith('recursive-') else
                       'trees/' + Path(path).name.removeprefix('tree-').removesuffix('.json')))
             target = output / path
             target.parent.mkdir(parents=True, exist_ok=True)

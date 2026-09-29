@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "41195dabf14aba17fadbe6e1a9412f6ac70b660f6cd73508621874e2f94c19c2",
   "runner_policy_sha256": "c93ebc27df493f0d52da1728fb7221c1066702178f037d6dde01f76d46b9b391",
-  "binary_sha256": "ab40a96f2cc1908359186e7c0648cecddc5ad8f8b2adf8a60de0e0d2c9a8f220",
+  "binary_sha256": "66bf753b598273161e6cc88f5004d83b4d5d1f88e2919e96db2414ccc2cc1316",
   "cases": {
     "test/built-ins/Date/15.9.1.15-1.js:sloppy": {
       "status": "passed",
@@ -905,12 +905,12 @@
       "source_sha256": "903aaf9fd5a8eb1f983ac0096b52ce3b61b12c1de5b0cc0ce21564c74d03bebc"
     },
     "test/built-ins/Date/parse/year-zero.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "11fa99ec3db0921cf00ccd9cbda5a8b95374c283c132644364aec75e215d21df",
       "source_sha256": "faa3eede215022f3e0254b8c5a4bb999a6c340e67448b7e351dc0bdb5f23bac1"
     },
     "test/built-ins/Date/parse/year-zero.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "4816f05d615575987b7b1c851f2830fd53a45fa293215a258196345fd44fbc70",
       "source_sha256": "faa3eede215022f3e0254b8c5a4bb999a6c340e67448b7e351dc0bdb5f23bac1"
     },
@@ -5935,12 +5935,12 @@
       "source_sha256": "fa2ce643abbab5fcd8dfe63b5306fb1ff14e618234b15997a4da63c70feec62f"
     },
     "test/built-ins/Date/year-zero.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "c661c328321e29a2d17385023320b351993f8c470a3aaac29ab8977709a603a5",
       "source_sha256": "328e21fc0065927b98bfffb6e769e3330dba5d6993170f27d8fd1d6d4be67ac2"
     },
     "test/built-ins/Date/year-zero.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "2dac44fa48f01ea14430c5f91b442666c01043fcad95ad3111497f94292927ee",
       "source_sha256": "328e21fc0065927b98bfffb6e769e3330dba5d6993170f27d8fd1d6d4be67ac2"
     }

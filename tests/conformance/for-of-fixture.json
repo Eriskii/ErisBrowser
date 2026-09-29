@@ -1,0 +1,3154 @@
+{
+  "fixture_sha256": "f1eb702002d007466b705941201ac7f2e91fbb66a2bab94a08b1efa413a71e5c",
+  "generator_sha256": "a4c38dcbf093a541e699aa3878f781f1583d53f2a2f5e053d682aa3956aee05d",
+  "source_cases": 202,
+  "mode_cases": 404,
+  "cases": [
+    {
+      "name": "basic-var",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "basic-let",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "basic-const",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "assignment-existing-binding",
+      "area": "assignment",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "empty-preserves-assignment-target",
+      "area": "assignment",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "rhs-evaluated-once",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "rhs-throw-identity",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "iterable-method-zero-args-and-receiver",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "inherited-iterator-accessor-receiver",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "primitive-iterator-method-receives-unboxed-value",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "only-symbol-iterator-is-consulted",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "async-iterator-is-not-a-sync-fallback",
+      "area": "protocol",
+      "prerequisites": [
+        "Symbol.asyncIterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "noniterable-undefined",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "noniterable-null",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "noniterable-number",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "noniterable-boolean",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "noniterable-symbol",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "noniterable-ordinary",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "iterator-method-missing",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "iterator-method-null",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "iterator-method-number",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "iterator-method-object",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "iterator-getter-throw-before-next",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "iterator-call-throw",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "iterator-result-must-be-object-undefined",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "iterator-result-must-be-object-null",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "iterator-result-must-be-object-number",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "iterator-result-must-be-object-string",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "iterator-result-must-be-object-boolean",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "iterator-result-must-be-object-symbol",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "callable-iterator-object-is-accepted",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "next-getter-once-cached-call",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "next-getter-abrupt-does-not-close",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "noncallable-next-no-close-undefined",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "noncallable-next-no-close-null",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "noncallable-next-no-close-number",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "noncallable-next-no-close-object",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "next-call-abrupt-does-not-close",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "nonobject-step-does-not-close-undefined",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "nonobject-step-does-not-close-null",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "nonobject-step-does-not-close-number",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "nonobject-step-does-not-close-boolean",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "nonobject-step-does-not-close-string",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "nonobject-step-does-not-close-symbol",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "done-getter-abrupt-does-not-close",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "value-getter-abrupt-does-not-close",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "done-true-skips-value-lhs-and-close",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "done-toboolean-does-not-coerce",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "missing-done-and-value-mean-false-and-undefined",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "result-inherited-accessors-use-result-receiver",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "done-getter-can-replace-value-before-read",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "reused-result-object-read-live",
+      "area": "protocol",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "normal-exhaustion-never-reads-return",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "break-close-receiver-zero-args-once",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-result-object-fields-ignored",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-break-absent",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-return-absent",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-throw-absent",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-break-undefined",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-return-undefined",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-throw-undefined",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-break-null",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-return-null",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-throw-null",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-break-noncallable",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-return-noncallable",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-throw-noncallable",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-break-getter-throw",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-return-getter-throw",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-throw-getter-throw",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-break-call-throw",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-return-call-throw",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-throw-call-throw",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-break-primitive",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-return-primitive",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-throw-primitive",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-break-object",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-return-object",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "close-throw-object",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "live-return-lookup-after-body-mutation",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "live-inherited-return-after-own-delete",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "return-value-is-saved-before-close",
+      "area": "close",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "body-finally-runs-before-iterator-close",
+      "area": "control-flow",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "outer-finally-runs-after-iterator-close",
+      "area": "control-flow",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "finally-overrides-body-throw-with-break-before-close",
+      "area": "control-flow",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "same-loop-continue-does-not-close",
+      "area": "control-flow",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "labeled-same-loop-continue-does-not-close",
+      "area": "control-flow",
+      "prerequisites": [
+        "labels"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "outward-continue-closes-inner-only",
+      "area": "control-flow",
+      "prerequisites": [
+        "labels"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "outward-break-closes-inner-before-outer",
+      "area": "control-flow",
+      "prerequisites": [
+        "labels"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "nested-close-error-replaces-break-then-outer-throw-precedence",
+      "area": "control-flow",
+      "prerequisites": [
+        "labels"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "break-enclosing-block-closes-loop",
+      "area": "control-flow",
+      "prerequisites": [
+        "labels"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "switch-break-does-not-close-loop",
+      "area": "control-flow",
+      "prerequisites": [
+        "switch"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "fresh-closure-let",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "head-tdz-let",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "head-typeof-tdz-let",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "head-captured-tdz-survives-loop-let",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "fresh-closure-const",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "head-tdz-const",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "head-typeof-tdz-const",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "head-captured-tdz-survives-loop-const",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "var-closures-share-final-binding",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "let-body-mutation-does-not-seed-next-binding",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "const-write-closes-and-restores-outer-binding",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "body-shadow-does-not-alter-loop-binding",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "var-is-hoisted-before-rhs",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "outer-environment-observed-by-next-and-close",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "lexical-binding-restored-after-thrown-body",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "lexical-binding-restored-before-close-throw",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "const-of-binding-name",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "let-of-binding-name",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "for-of-function-callback-retains-iteration-binding",
+      "area": "binding",
+      "prerequisites": [
+        "default-parameters"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "member-lhs-after-value-and-before-body",
+      "area": "assignment",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "member-base-reevaluated-per-iteration",
+      "area": "assignment",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "computed-symbol-target-key",
+      "area": "assignment",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "computed-key-string-hint",
+      "area": "assignment",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "lhs-base-throw-closes",
+      "area": "assignment",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "lhs-key-evaluation-throw-closes",
+      "area": "assignment",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "lhs-key-coercion-throw-closes",
+      "area": "assignment",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "null-base-evaluates-key-expression-but-not-key-coercion",
+      "area": "assignment",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "setter-throw-original-outweighs-close-throw",
+      "area": "assignment",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "setter-sees-original-receiver-and-value",
+      "area": "assignment",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "strict-readonly-target-closes",
+      "area": "assignment",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "sloppy-readonly-target-ignores-write-and-exhausts",
+      "area": "assignment",
+      "prerequisites": [
+        "Function"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "value-captured-before-lhs-author-mutation",
+      "area": "assignment",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-values-and-iterator-alias",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-iterator-override-wins-over-dense-storage",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-holes-are-visited-as-undefined",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-inherited-hole-getter-live",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-growth-after-first-value",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-shrink-stops-next-step",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-deleted-later-index-becomes-hole",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-later-descriptor-mutation-is-live",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-iterator-length-not-cached",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-iterator-next-error-does-not-close",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-max-u32-first-value-with-break",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-values-huge-generic-range-first-value",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "arguments-iterator-alias-and-mapped-live-value",
+      "area": "array",
+      "prerequisites": [
+        "arguments-iterator",
+        "Function"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-iterator-stays-completed-after-growth",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-iterator-self-iterable",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "string-empty",
+      "area": "string",
+      "prerequisites": [
+        "string-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "string-ascii",
+      "area": "string",
+      "prerequisites": [
+        "string-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "string-supplementary",
+      "area": "string",
+      "prerequisites": [
+        "string-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "string-isolated-high",
+      "area": "string",
+      "prerequisites": [
+        "string-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "string-isolated-low",
+      "area": "string",
+      "prerequisites": [
+        "string-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "string-high-high-low",
+      "area": "string",
+      "prerequisites": [
+        "string-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "string-no-normalization",
+      "area": "string",
+      "prerequisites": [
+        "string-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "string-nul",
+      "area": "string",
+      "prerequisites": [
+        "string-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "boxed-string-iteration",
+      "area": "string",
+      "prerequisites": [
+        "string-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "string-iterator-converts-once-at-acquisition",
+      "area": "string",
+      "prerequisites": [
+        "string-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "string-iterator-nullish-brand-and-symbol-conversion",
+      "area": "string",
+      "prerequisites": [
+        "string-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "string-iterator-override-on-prototype",
+      "area": "string",
+      "prerequisites": [
+        "string-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "string-iterator-next-brand",
+      "area": "string",
+      "prerequisites": [
+        "string-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "var-loop-resolves-current-catch-binding",
+      "area": "binding",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "regex-and-template-rhs-rescan",
+      "area": "grammar",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "labeled-loop-double-label-current-continue",
+      "area": "control-flow",
+      "prerequisites": [
+        "labels"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-element-getter-reenters-next-after-index-advance",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-element-getter-throw-still-advances-index",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-length-getter-throw-does-not-advance-index",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-values-creation-does-not-read-length",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-result-descriptors-and-fresh-identity",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-next-rejects-fake-prototype-object",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "freezing-native-iterator-does-not-freeze-progress",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator",
+        "string-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-values-alias-remains-after-property-replacement",
+      "area": "array",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "arguments-own-iterator-descriptor",
+      "area": "array",
+      "prerequisites": [
+        "arguments-iterator",
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "strict-arguments-iteration",
+      "area": "array",
+      "prerequisites": [
+        "arguments-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "mapped-parameter-mutation-is-observed-by-iterator",
+      "area": "array",
+      "prerequisites": [
+        "arguments-iterator",
+        "Function"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-iterator-native-metadata",
+      "area": "metadata",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "string-iterator-native-metadata",
+      "area": "metadata",
+      "prerequisites": [
+        "string-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "common-iterator-prototype-self-method-is-generic",
+      "area": "metadata",
+      "prerequisites": [
+        "array-iterator",
+        "string-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "array-destructuring-binding",
+      "area": "prerequisite",
+      "prerequisites": [
+        "destructuring"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "object-destructuring-binding",
+      "area": "prerequisite",
+      "prerequisites": [
+        "destructuring"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "destructuring-assignment",
+      "area": "prerequisite",
+      "prerequisites": [
+        "destructuring"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "destructuring-default-tdz-closes",
+      "area": "prerequisite",
+      "prerequisites": [
+        "destructuring",
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "generator-return-finally-on-break",
+      "area": "prerequisite",
+      "prerequisites": [
+        "generators"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "async-for-of-parser-prerequisite",
+      "area": "prerequisite",
+      "prerequisites": [
+        "async-functions",
+        "for-await-of"
+      ],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "syntax-raw-async-target",
+      "area": "early-errors",
+      "prerequisites": [],
+      "expected": {
+        "status": "exception",
+        "phase": "parse",
+        "error_identity": "SyntaxError",
+        "error_type": "SyntaxError"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "syntax-lexical-let-binding",
+      "area": "early-errors",
+      "prerequisites": [],
+      "expected": {
+        "status": "exception",
+        "phase": "parse",
+        "error_identity": "SyntaxError",
+        "error_type": "SyntaxError"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "syntax-ordinary-const-needs-value",
+      "area": "early-errors",
+      "prerequisites": [],
+      "expected": {
+        "status": "exception",
+        "phase": "parse",
+        "error_identity": "SyntaxError",
+        "error_type": "SyntaxError"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "syntax-classic-for-const-needs-value",
+      "area": "early-errors",
+      "prerequisites": [],
+      "expected": {
+        "status": "exception",
+        "phase": "parse",
+        "error_identity": "SyntaxError",
+        "error_type": "SyntaxError"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "syntax-const-initializer",
+      "area": "early-errors",
+      "prerequisites": [],
+      "expected": {
+        "status": "exception",
+        "phase": "parse",
+        "error_identity": "SyntaxError",
+        "error_type": "SyntaxError"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "syntax-let-initializer",
+      "area": "early-errors",
+      "prerequisites": [],
+      "expected": {
+        "status": "exception",
+        "phase": "parse",
+        "error_identity": "SyntaxError",
+        "error_type": "SyntaxError"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "syntax-var-initializer",
+      "area": "early-errors",
+      "prerequisites": [],
+      "expected": {
+        "status": "exception",
+        "phase": "parse",
+        "error_identity": "SyntaxError",
+        "error_type": "SyntaxError"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "syntax-multiple-var-bindings",
+      "area": "early-errors",
+      "prerequisites": [],
+      "expected": {
+        "status": "exception",
+        "phase": "parse",
+        "error_identity": "SyntaxError",
+        "error_type": "SyntaxError"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "syntax-multiple-let-bindings",
+      "area": "early-errors",
+      "prerequisites": [],
+      "expected": {
+        "status": "exception",
+        "phase": "parse",
+        "error_identity": "SyntaxError",
+        "error_type": "SyntaxError"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "syntax-multiple-const-bindings",
+      "area": "early-errors",
+      "prerequisites": [],
+      "expected": {
+        "status": "exception",
+        "phase": "parse",
+        "error_identity": "SyntaxError",
+        "error_type": "SyntaxError"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "syntax-escaped-of-separator",
+      "area": "early-errors",
+      "prerequisites": [],
+      "expected": {
+        "status": "exception",
+        "phase": "parse",
+        "error_identity": "SyntaxError",
+        "error_type": "SyntaxError"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "syntax-comma-rhs",
+      "area": "early-errors",
+      "prerequisites": [],
+      "expected": {
+        "status": "exception",
+        "phase": "parse",
+        "error_identity": "SyntaxError",
+        "error_type": "SyntaxError"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "syntax-invalid-assignment-binary",
+      "area": "early-errors",
+      "prerequisites": [],
+      "expected": {
+        "status": "exception",
+        "phase": "parse",
+        "error_identity": "SyntaxError",
+        "error_type": "SyntaxError"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "syntax-duplicate-lexical-in-body",
+      "area": "early-errors",
+      "prerequisites": [],
+      "expected": {
+        "status": "exception",
+        "phase": "parse",
+        "error_identity": "SyntaxError",
+        "error_type": "SyntaxError"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "syntax-continue-undefined-label",
+      "area": "early-errors",
+      "prerequisites": [],
+      "expected": {
+        "status": "exception",
+        "phase": "parse",
+        "error_identity": "SyntaxError",
+        "error_type": "SyntaxError"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "syntax-break-undefined-label",
+      "area": "early-errors",
+      "prerequisites": [],
+      "expected": {
+        "status": "exception",
+        "phase": "parse",
+        "error_identity": "SyntaxError",
+        "error_type": "SyntaxError"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "syntax-duplicate-label",
+      "area": "early-errors",
+      "prerequisites": [],
+      "expected": {
+        "status": "exception",
+        "phase": "parse",
+        "error_identity": "SyntaxError",
+        "error_type": "SyntaxError"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "syntax-continue-noniteration-label",
+      "area": "early-errors",
+      "prerequisites": [],
+      "expected": {
+        "status": "exception",
+        "phase": "parse",
+        "error_identity": "SyntaxError",
+        "error_type": "SyntaxError"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "parenthesized-async-target-is-valid",
+      "area": "grammar",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "declared-async-binding-is-valid",
+      "area": "grammar",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "parenthesized-comma-rhs-is-valid",
+      "area": "grammar",
+      "prerequisites": [],
+      "expected": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_identity": "",
+        "error_type": ""
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "budget-infinite-iterator-is-terminal",
+      "area": "budget",
+      "prerequisites": [],
+      "expected": {
+        "status": "resource",
+        "phase": "runtime"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "budget-next-callback-infinite-is-terminal",
+      "area": "budget",
+      "prerequisites": [],
+      "expected": {
+        "status": "resource",
+        "phase": "runtime"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "budget-close-callback-infinite-is-terminal",
+      "area": "budget",
+      "prerequisites": [],
+      "expected": {
+        "status": "resource",
+        "phase": "runtime"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "budget-recursive-next-is-terminal",
+      "area": "budget",
+      "prerequisites": [],
+      "expected": {
+        "status": "resource",
+        "phase": "runtime"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "budget-retained-lexical-closures-is-terminal",
+      "area": "budget",
+      "prerequisites": [],
+      "expected": {
+        "status": "resource",
+        "phase": "runtime"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    },
+    {
+      "name": "budget-large-array-hole-range-is-terminal",
+      "area": "budget",
+      "prerequisites": [
+        "array-iterator"
+      ],
+      "expected": {
+        "status": "resource",
+        "phase": "runtime"
+      },
+      "modes": [
+        "sloppy",
+        "strict"
+      ]
+    }
+  ],
+  "preflight_pairs": 12,
+  "preflights_sha256": "a2d8f963689bb9d14f80abaaddf5066f0cdfc67aa3d4c9b2bffa8dc5041ed69b",
+  "preparation_never_executed_an_engine": true
+}

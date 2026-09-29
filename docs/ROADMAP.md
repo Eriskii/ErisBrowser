@@ -1,10 +1,18 @@
 # Development docket
 
+[Synchronous iteration](../tests/conformance/for-of.md) now adds custom
+`for…of` protocols and native Array, String and arguments iterators, including
+lexical bindings, live properties and iterator closing. The unchanged local
+matrix verifies 392 of 404 expectations; twelve prerequisite modes remain
+unsupported. Complete new pinned inventories retain 137 for-of passes and
+106 core-iterator passes, with two missing-Proxy failures and all exclusions
+visible. Destructuring, generators, async iteration and broader consumers remain
+ahead. The four Date year-zero modes now pass.
+
 [Date support](../tests/conformance/date.md) now covers the core constructor,
 methods, host timezone conversion and bounded discovery. Its complete pinned
-Date tree has 1,162 passing modes; four remaining modes need `for…of` parsing
-and iteration, and 22 retain metadata exclusions. Iterator infrastructure,
-Intl/Temporal, broader legacy parsing and cross-realm behavior remain ahead.
+Date tree now has 1,166 passing modes and 22 metadata exclusions. Intl/Temporal,
+broader legacy parsing and cross-realm behavior remain ahead.
 The custom Vulkan rasterizer and compositing milestones below remain on the
 docket alongside standards work.
 The [Date helper performance follow-up](../tests/conformance/date-readiness.md)
@@ -24,7 +32,7 @@ private `new.target` bindings and alternate ECMAScript allocation targets.
 Next work includes alternate Web IDL targets, remaining native constructor
 semantics, Function source retention/toString and lossless UTF-16 source parsing,
 Window extensibility and interface coverage, complete DOMString storage and Web
-IDL interfaces, remaining Symbol consumers, iterator infrastructure and broader
+IDL interfaces, remaining Symbol and iterator consumers, and broader
 ECMAScript dependencies. The
 [constructor-policy review](../tests/conformance/constructor-policy.md) now enables
 88 older modes and corrects Symbol constructor classification. These sit alongside

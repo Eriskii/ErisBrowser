@@ -375,14 +375,32 @@ fn host_poll_services_output_while_request_writes_are_blocked_and_drains_hup() {
         std::io::ErrorKind::WouldBlock
     );
     producer.write_all(b"Z1\x01\x02UTC0").unwrap();
+    let retained_producer = producer.try_clone().unwrap();
     drop(producer);
-    {
+    loop {
         let mut fds = [
             PollFd::new(&output, PollFlags::IN),
             PollFd::new(&input, PollFlags::OUT),
         ];
         poll_zone_fds(&request, &mut fds, poll).unwrap();
-        assert!(fds[0].revents().contains(PollFlags::HUP));
+        assert!(!fds[0].revents().contains(PollFlags::HUP));
+        if fds[0].revents().contains(PollFlags::IN) {
+            break;
+        }
+    }
+    drop(retained_producer);
+    loop {
+        // Concurrent test processes can briefly inherit a pipe end before
+        // exec closes it. Wait for actual hangup under the original deadline;
+        // ignoring IN here keeps the buffered final bytes from causing a spin.
+        let mut fds = [
+            PollFd::new(&output, PollFlags::empty()),
+            PollFd::new(&input, PollFlags::OUT),
+        ];
+        poll_zone_fds(&request, &mut fds, poll).unwrap();
+        if fds[0].revents().contains(PollFlags::HUP) {
+            break;
+        }
     }
     let mut response = b"ET".to_vec();
     output.read_to_end(&mut response).unwrap();
@@ -391,14 +409,19 @@ fn host_poll_services_output_while_request_writes_are_blocked_and_drains_hup() {
         b"UTC0"
     );
     drop(consumer);
-    let mut fds = [
-        PollFd::new(&output, PollFlags::IN),
-        PollFd::new(&input, PollFlags::OUT),
-    ];
-    assert_eq!(
-        poll_zone_fds(&request, &mut fds, poll),
-        Err(HostZoneError::Unavailable)
-    );
+    // Keep the unrelated output quiet while waiting for the final input reader
+    // to close; the completed output above would continuously report HUP.
+    let (quiet_output, _quiet_producer) = std::io::pipe().unwrap();
+    loop {
+        let mut fds = [
+            PollFd::new(&quiet_output, PollFlags::IN),
+            PollFd::new(&input, PollFlags::OUT),
+        ];
+        if let Err(error) = poll_zone_fds(&request, &mut fds, poll) {
+            assert_eq!(error, HostZoneError::Unavailable);
+            break;
+        }
+    }
 }
 
 #[test]

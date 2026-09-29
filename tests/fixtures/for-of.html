@@ -1,0 +1,49 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Iterator protocols through document callbacks</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#protocol{left:0}#array{left:50px}#bindings{left:100px}#closing{left:150px}#unicode{left:200px}#arguments{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="protocol" class="sample"></div><div id="array" class="sample"></div>
+<div id="bindings" class="sample"></div><div id="closing" class="sample"></div>
+<div id="unicode" class="sample"></div><div id="arguments" class="sample"></div>
+<button id="change" type="button">Run iterator callbacks</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+function apply(color){
+  let trace='',i=0;
+  const iterable={};
+  iterable[Symbol.iterator]=function(){return {
+    next:function(){trace+='n'+i;return {value:++i*2,done:false};},
+    return:function(){trace+='r';return {};}
+  };};
+  for(const value of iterable){trace+='b'+value;if(value===4)break;}
+  check(trace==='n0b2n1b4r','ordered next, body and close');mark('protocol',color);
+  const values=[2];let sum=0;
+  for(const value of values){sum+=value;if(value===2)values.push(4);}
+  check(sum===6,'array iterator reads live length');mark('array',color);
+  const callbacks=[];
+  for(const value of [2,4]){callbacks.push(function(){return value;});}
+  check(callbacks[0]()===2&&callbacks[1]()===4,'fresh lexical bindings');mark('bindings',color);
+  const marker={};let closed=0,caught=false;
+  const abrupt={};
+  abrupt[Symbol.iterator]=function(){return {
+    next:function(){return {value:1,done:false};},
+    return:function(){closed++;throw new Error('close must not replace body throw');}
+  };};
+  try{for(const value of abrupt){throw marker;}}catch(error){caught=error===marker;}
+  check(caught&&closed===1,'throw identity survives closing failure');mark('closing',color);
+  let units='';
+  for(const part of 'A\uD83D\uDE00\uD800B'){units+=part.length+':'+part.charCodeAt(0)+',';}
+  check(units==='1:65,2:55357,1:55296,1:66,','UTF-16 code point iteration');mark('unicode',color);
+  function mapped(a,b){const iterator=arguments[Symbol.iterator]();a=7;return iterator.next().value+iterator.next().value;}
+  check(mapped(2,4)===11,'live mapped arguments values');mark('arguments',color);
+}
+apply('green');document.getElementById('result').textContent='ready';document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  apply('blue');document.getElementById('result').textContent='6';document.body.className='clicked';
+};
+</script>

@@ -1,0 +1,19 @@
+{
+  "before_sha256": "7922df2df34ca527566fb88cc65d801bf4ce392f2b7ef9e02d4def5ed75d2ab7",
+  "after_sha256": "8e282442518943971a743f512be6a5de368718f2f8029fb358355fb5d7f48bac",
+  "candidate_report_sha256": "2742c4a78f3c8dc60d9737221d8c55d115cd838a3ec79c5793f2faa0e3c0931d",
+  "improvements": [
+    "test/built-ins/Date/parse/year-zero.js:sloppy",
+    "test/built-ins/Date/parse/year-zero.js:strict",
+    "test/built-ins/Date/year-zero.js:sloppy",
+    "test/built-ins/Date/year-zero.js:strict"
+  ],
+  "regressions": [],
+  "counts": {
+    "passed": 1166,
+    "unsupported": 22
+  },
+  "controls_verified": 340,
+  "other_28_baselines_unchanged": true,
+  "seven_observation_only_profiles_remain_unbaselined": true
+}

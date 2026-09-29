@@ -598,7 +598,8 @@ fn var_names<'a>(
                     names.push(name, false, budget)?;
                 }
             }
-            Stmt::ForIn(ForBinding::Declaration(name, DeclarationKind::Var), _, _) => {
+            Stmt::ForIn(ForBinding::Declaration(name, DeclarationKind::Var), _, _)
+            | Stmt::ForOf(ForBinding::Declaration(name, DeclarationKind::Var), _, _) => {
                 names.push(name, false, budget)?;
             }
             _ => {}

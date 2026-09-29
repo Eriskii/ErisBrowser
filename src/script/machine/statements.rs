@@ -2,7 +2,7 @@
 use super::{Document, ExprFrame, Frame as Job, Output, Phase as ExprPhase, Result, Runtime, code};
 use super::{enter_frame, push, reference, value};
 use crate::script::{
-    BINDING_BYTES, DeclarationKind, Flow, JsString, MAX_DEPTH, ScriptError, Value,
+    BINDING_BYTES, DeclarationKind, Flow, JsString, MAX_DEPTH, ScriptError, Value, js_object,
 };
 use std::collections::BTreeSet;
 use std::rc::Rc;
@@ -93,12 +93,26 @@ enum Phase {
         key: Value,
     },
     ForInBody(ForInState),
+    ForOfValue,
+    ForOfIterator,
+    ForOfNext(ForOfState),
+    ForOfTarget {
+        state: ForOfState,
+        value: Value,
+    },
+    ForOfBody(ForOfState),
+    ForOfClose(Result<Flow>),
 }
 struct ForInState {
     object: Value,
     keys: std::vec::IntoIter<JsString>,
     visited: BTreeSet<JsString>,
     depth: usize,
+    last: Value,
+}
+struct ForOfState {
+    iterator: Value,
+    next: Value,
     last: Value,
 }
 impl Frame {
@@ -204,8 +218,8 @@ pub(super) fn step(
     doc: &mut Document,
 ) -> Result<Option<Output>> {
     let phase = std::mem::replace(&mut frame.phase, Phase::Start);
-    // Only these two boundaries can intercept an ordinary exception. Host stops
-    // never reach them: the driver terminates and restores its frame base.
+    // Try and iterator-close boundaries intercept ordinary exceptions. Host
+    // stops never reach them: the driver restores its frame base immediately.
     let output = match phase {
         Phase::TryBody => {
             return try_body(
@@ -220,6 +234,36 @@ pub(super) fn step(
                 runtime,
                 frame,
                 output.expect("catch result").map(|v| flow(Some(v))),
+            );
+        }
+        Phase::ForOfTarget { state, value } => {
+            let result = output
+                .expect("for-of target result")
+                .and_then(|output| runtime.write_reference(reference(Some(output)), value, doc));
+            return match result {
+                Ok(()) => {
+                    let env = frame.env;
+                    for_of_body(runtime, frame, state, env)
+                }
+                Err(error) => for_of_close(runtime, frame, state, Err(error), doc),
+            };
+        }
+        Phase::ForOfBody(mut state) => {
+            let completion = match output.expect("for-of body result") {
+                Ok(output) => match flow(Some(output)).loop_step(frame.label(), &mut state.last) {
+                    Ok(()) => return for_of_next(runtime, frame, state),
+                    Err(abrupt) => Ok(abrupt),
+                },
+                Err(error) => Err(error),
+            };
+            return for_of_close(runtime, frame, state, completion, doc);
+        }
+        Phase::ForOfClose(pending) => {
+            return for_of_closed(
+                pending,
+                output
+                    .expect("iterator return result")
+                    .map(|out| value(Some(out))),
             );
         }
         _ => output.transpose()?,
@@ -363,6 +407,38 @@ pub(super) fn step(
             }
             abrupt => done(abrupt.update_empty(Some(&Value::Undefined))),
         },
+        Phase::ForOfValue => for_of_start(runtime, frame, value(output), doc),
+        Phase::ForOfIterator => {
+            let iterator = value(output);
+            if !js_object(&iterator) {
+                return Err(ScriptError::type_error(
+                    "iterator method must return an object",
+                ));
+            }
+            let next = for_of_get(runtime, &iterator, "next", doc)?;
+            for_of_next(
+                runtime,
+                frame,
+                ForOfState {
+                    iterator,
+                    next,
+                    last: Value::Undefined,
+                },
+            )
+        }
+        Phase::ForOfNext(state) => {
+            let result = value(output);
+            if !js_object(&result) {
+                return Err(ScriptError::type_error(
+                    "iterator next must return an object",
+                ));
+            }
+            if for_of_get(runtime, &result, "done", doc)?.truthy() {
+                return normal(state.last);
+            }
+            let next_value = for_of_get(runtime, &result, "value", doc)?;
+            for_of_assign(runtime, frame, state, next_value, doc)
+        }
         Phase::ForInValue => for_in_start(runtime, frame, value(output)),
         Phase::ForInTarget { state, key } => {
             runtime.write_reference(reference(output), key, doc)?;
@@ -374,7 +450,11 @@ pub(super) fn step(
             }
             for_in_next(runtime, frame, state)
         }
-        Phase::TryBody | Phase::TryCatch => unreachable!(),
+        Phase::TryBody
+        | Phase::TryCatch
+        | Phase::ForOfTarget { .. }
+        | Phase::ForOfBody(_)
+        | Phase::ForOfClose(_) => unreachable!(),
     }
 }
 fn start(runtime: &mut Runtime, frame: Frame, doc: &mut Document) -> Result<Option<Output>> {
@@ -427,7 +507,7 @@ fn start(runtime: &mut Runtime, frame: Frame, doc: &mut Document) -> Result<Opti
                 for_test(runtime, frame, child, Value::Undefined)
             }
         }
-        code::Stmt::ForIn(binding, expr, _) => {
+        code::Stmt::ForIn(binding, expr, _) | code::Stmt::ForOf(binding, expr, _) => {
             let expression_env = if let code::ForBinding::Declaration(name, kind) = binding
                 && *kind != DeclarationKind::Var
             {
@@ -447,7 +527,12 @@ fn start(runtime: &mut Runtime, frame: Frame, doc: &mut Document) -> Result<Opti
             } else {
                 env
             };
-            expression(runtime, frame, Phase::ForInValue, *expr, expression_env)
+            let phase = if matches!(unit.stmt(id), code::Stmt::ForOf(..)) {
+                Phase::ForOfValue
+            } else {
+                Phase::ForInValue
+            };
+            expression(runtime, frame, phase, *expr, expression_env)
         }
         code::Stmt::Switch(expr, _) => expression(runtime, frame, Phase::SwitchValue, *expr, env),
         code::Stmt::Return(Some(expr)) => expression(runtime, frame, Phase::Return, *expr, env),
@@ -837,6 +922,164 @@ fn for_in_body(
     statement(runtime, frame, Phase::ForInBody(state), *body, scope, None)
 }
 
+// These protocol calls suspend in the shared driver. Only property getter
+// bridges use the runtime's existing bounded callback bridge.
+fn for_of_get(
+    runtime: &mut Runtime,
+    object: &Value,
+    name: &str,
+    doc: &mut Document,
+) -> Result<Value> {
+    // These fixed protocol keys are at most six ASCII units. The charged
+    // ordinary walker preserves the original accessor receiver and declines
+    // host-only prototype edges when reached, without speculative traversal.
+    runtime.work(1 + name.len())?;
+    runtime.charge(64)?;
+    let key = JsString::from(name);
+    runtime.reduce_get(object, &key, doc)
+}
+fn for_of_call(
+    runtime: &mut Runtime,
+    frame: Frame,
+    phase: Phase,
+    method: Value,
+    receiver: Value,
+) -> Result<Option<Output>> {
+    schedule(
+        runtime,
+        frame,
+        phase,
+        Job::Call(super::calls::Frame::new(
+            method,
+            Vec::new(),
+            receiver,
+            false,
+        )),
+    )
+}
+fn for_of_start(
+    runtime: &mut Runtime,
+    frame: Frame,
+    source: Value,
+    doc: &mut Document,
+) -> Result<Option<Output>> {
+    let method =
+        runtime.get_property_key(source.clone(), &runtime.well_known_key("iterator"), doc)?;
+    if !matches!(method, Value::Function(_) | Value::Native(_)) {
+        return Err(ScriptError::type_error("value is not iterable"));
+    }
+    for_of_call(runtime, frame, Phase::ForOfIterator, method, source)
+}
+fn for_of_next(runtime: &mut Runtime, frame: Frame, state: ForOfState) -> Result<Option<Output>> {
+    runtime.tick()?;
+    let method = state.next.clone();
+    let receiver = state.iterator.clone();
+    for_of_call(runtime, frame, Phase::ForOfNext(state), method, receiver)
+}
+fn for_of_assign(
+    runtime: &mut Runtime,
+    frame: Frame,
+    state: ForOfState,
+    value: Value,
+    doc: &mut Document,
+) -> Result<Option<Output>> {
+    let unit = frame.unit.clone();
+    let code::Stmt::ForOf(binding, _, _) = unit.stmt(frame.id()) else {
+        unreachable!()
+    };
+    let env = frame.env;
+    let scope = match binding {
+        code::ForBinding::Declaration(name, DeclarationKind::Var) => {
+            // Resolve in the current lexical environment, including a catch
+            // parameter; hoisting does not dictate the assignment reference.
+            let result = runtime.resolve_binding(env, name).and_then(|owner| {
+                runtime.write_name(owner, name, runtime.environments[env].strict, value, doc)
+            });
+            if let Err(error) = result {
+                return for_of_close(runtime, frame, state, Err(error), doc);
+            }
+            env
+        }
+        code::ForBinding::Declaration(name, kind) => {
+            let child = runtime.environment(env)?;
+            runtime.define(child, name, value, *kind != DeclarationKind::Const)?;
+            child
+        }
+        code::ForBinding::Target(target) => {
+            let next = Job::Expression(ExprFrame {
+                unit: unit.clone(),
+                expression: *target,
+                env,
+                reference: true,
+                phase: ExprPhase::Start,
+            });
+            return schedule(runtime, frame, Phase::ForOfTarget { state, value }, next);
+        }
+    };
+    for_of_body(runtime, frame, state, scope)
+}
+fn for_of_body(
+    runtime: &mut Runtime,
+    frame: Frame,
+    state: ForOfState,
+    scope: usize,
+) -> Result<Option<Output>> {
+    let unit = frame.unit.clone();
+    let code::Stmt::ForOf(_, _, body) = unit.stmt(frame.id()) else {
+        unreachable!()
+    };
+    statement(runtime, frame, Phase::ForOfBody(state), *body, scope, None)
+}
+fn for_of_close(
+    runtime: &mut Runtime,
+    frame: Frame,
+    state: ForOfState,
+    pending: Result<Flow>,
+    doc: &mut Document,
+) -> Result<Option<Output>> {
+    if let Err(error) = &pending
+        && (error.is_resource_limit() || error.is_unsupported())
+    {
+        return pending.and_then(done);
+    }
+    let method = match for_of_get(runtime, &state.iterator, "return", doc) {
+        Ok(Value::Undefined | Value::Null) => {
+            return pending.and_then(|flow| done(flow.consume_break()));
+        }
+        Ok(method) => method,
+        Err(error) => return for_of_closed(pending, Err(error)),
+    };
+    if !matches!(method, Value::Function(_) | Value::Native(_)) {
+        return for_of_closed(
+            pending,
+            Err(ScriptError::type_error("iterator return is not callable")),
+        );
+    }
+    for_of_call(
+        runtime,
+        frame,
+        Phase::ForOfClose(pending),
+        method,
+        state.iterator,
+    )
+}
+fn for_of_closed(pending: Result<Flow>, close: Result<Value>) -> Result<Option<Output>> {
+    // The host's terminal limits remain uncatchable even while an ordinary
+    // author exception is pending. Ordinary close errors lose to that throw.
+    if let Err(error) = &close
+        && (error.is_resource_limit() || error.is_unsupported())
+    {
+        return close.map(|_| None);
+    }
+    let flow = pending?;
+    if !js_object(&close?) {
+        return Err(ScriptError::type_error(
+            "iterator return must return an object",
+        ));
+    }
+    done(flow.consume_break())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1085,3 +1328,6 @@ mod tests {
             .unwrap();
     }
 }
+
+#[cfg(test)]
+mod for_of_tests;

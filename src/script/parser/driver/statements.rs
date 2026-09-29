@@ -6,9 +6,9 @@ pub(super) enum Frame {
     Controlled,
     ControlledDone,
     Expression,
-    Declaration,
+    Declaration(bool),
     DeclarationDone,
-    DeclarationDefault(Vec<(String, Option<ExprId>)>, DeclarationKind, String),
+    DeclarationDefault(Vec<(String, Option<ExprId>)>, DeclarationKind, String, bool),
     Function(String),
     Block,
     Label(usize, usize),
@@ -24,12 +24,14 @@ pub(super) enum Frame {
     DoBody,
     DoCondition(StmtId),
     ForDeclaration(bool),
-    ForExpression(bool),
+    ForExpression(bool, bool),
     ForTest(Option<Stmt>),
     ForUpdate(Option<Stmt>, Option<ExprId>),
     ForBody(Option<Stmt>, Option<ExprId>, Option<ExprId>),
     ForInObject(ForBinding),
     ForInBody(ForBinding, ExprId),
+    ForOfObject(ForBinding),
+    ForOfBody(ForBinding, ExprId),
     Return,
     Throw,
     TryBody,
@@ -190,7 +192,7 @@ fn list_leaf(p: &mut Parser<'_>) -> Result<Option<StmtId>> {
         }
         let kind = declaration_kind(p)?;
         let name = p.binding_identifier()?;
-        validate_declaration(p, &name, kind, false)?;
+        validate_declaration(p, &name, kind, false, false)?;
         let mut bindings = Vec::new();
         push(&mut bindings, (name, None), &mut p.compile_budget)?;
         p.semicolon()?;
@@ -231,20 +233,20 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
             p.semicolon()?;
             done_stmt(p, Stmt::Expr(id))
         }
-        Frame::Declaration => {
+        Frame::Declaration(for_head) => {
             let kind = declaration_kind(p)?;
-            declaration_next(p, Vec::new(), kind)
+            declaration_next(p, Vec::new(), kind, for_head)
         }
         Frame::DeclarationDone => {
             let record = declaration(output);
             p.semicolon()?;
             done_stmt(p, record)
         }
-        Frame::DeclarationDefault(mut bindings, kind, name) => {
+        Frame::DeclarationDefault(mut bindings, kind, name, for_head) => {
             let id = expression(output);
             push(&mut bindings, (name, Some(id)), &mut p.compile_budget)?;
             if p.eat(",") {
-                declaration_next(p, bindings, kind)
+                declaration_next(p, bindings, kind, for_head)
             } else {
                 Ok(Transition::Done(Output::Declaration(Stmt::Var(
                     bindings, kind,
@@ -334,8 +336,10 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
             p.eat(";");
             done_stmt(p, Stmt::DoWhile(condition, body))
         }
-        Frame::ForDeclaration(saved) => for_head(p, Some(declaration(output)), saved),
-        Frame::ForExpression(saved) => for_head(p, Some(Stmt::Expr(expression(output))), saved),
+        Frame::ForDeclaration(saved) => for_head(p, Some(declaration(output)), saved, false),
+        Frame::ForExpression(saved, forbidden) => {
+            for_head(p, Some(Stmt::Expr(expression(output))), saved, forbidden)
+        }
         Frame::ForTest(init) => {
             let test = expression(output);
             p.expect(";")?;
@@ -384,6 +388,26 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
                 }
             }
             done_stmt(p, Stmt::ForIn(binding, object, body))
+        }
+        Frame::ForOfObject(binding) => {
+            let object = expression(output);
+            p.expect(")")?;
+            p.loop_depth += 1;
+            child(Frame::ForOfBody(binding, object), Frame::Controlled)
+        }
+        Frame::ForOfBody(binding, object) => {
+            let body = statement(output);
+            p.loop_depth -= 1;
+            if let ForBinding::Declaration(name, kind) = &binding
+                && *kind != DeclarationKind::Var
+            {
+                let vars = var_names(&p.unit, &mut p.compile_budget, std::iter::once(&body))?
+                    .finish(&mut p.compile_budget)?;
+                if vars.contains(name, &mut p.compile_budget)? {
+                    return Err(p.error("for-of lexical binding conflicts with var"));
+                }
+            }
+            done_stmt(p, Stmt::ForOf(binding, object, body))
         }
         Frame::Return => {
             let id = expression(output);
@@ -450,7 +474,7 @@ fn start(p: &mut Parser<'_>, declarations: bool) -> Result<Transition> {
         return Err(p.error("declaration is not allowed in statement position"));
     }
     if p.declaration_start() && (declarations || !p.is("let")) {
-        return child(Frame::DeclarationDone, Frame::Declaration);
+        return child(Frame::DeclarationDone, Frame::Declaration(false));
     }
     if p.eat("function") {
         if p.is("*") {
@@ -478,16 +502,20 @@ fn start(p: &mut Parser<'_>, declarations: bool) -> Result<Transition> {
         return child(Frame::DoBody, Frame::Controlled);
     }
     if p.eat("for") {
+        if p.is("await") {
+            return Err(ScriptError::unsupported("for-await is not supported"));
+        }
         p.expect("(")?;
         let saved = p.allow_in;
         p.allow_in = false;
         if p.is(";") {
-            return for_head(p, None, saved);
+            return for_head(p, None, saved, false);
         }
         if p.declaration_start() {
-            return child(Frame::ForDeclaration(saved), Frame::Declaration);
+            return child(Frame::ForDeclaration(saved), Frame::Declaration(true));
         }
-        return child(Frame::ForExpression(saved), Expression::Sequence);
+        let forbidden = p.is("let") || (p.is("async") && p.token_is(p.pos + 1, "of"));
+        return child(Frame::ForExpression(saved, forbidden), Expression::Sequence);
     }
     if p.eat("return") {
         if p.function_depth == 0 {
@@ -581,11 +609,12 @@ fn validate_declaration(
     name: &str,
     kind: DeclarationKind,
     initializer: bool,
+    for_head: bool,
 ) -> Result<()> {
     if kind != DeclarationKind::Var && name == "let" {
         return Err(p.error("lexical declaration cannot bind let"));
     }
-    if kind == DeclarationKind::Const && !initializer && !p.is("in") {
+    if kind == DeclarationKind::Const && !initializer && !(for_head && (p.is("in") || p.is("of"))) {
         return Err(p.error("const declaration needs a value"));
     }
     Ok(())
@@ -594,6 +623,7 @@ fn declaration_next(
     p: &mut Parser<'_>,
     mut bindings: Vec<(String, Option<ExprId>)>,
     kind: DeclarationKind,
+    for_head: bool,
 ) -> Result<Transition> {
     loop {
         let name = p.binding_identifier()?;
@@ -602,11 +632,11 @@ fn declaration_next(
         }
         if p.eat("=") {
             return child(
-                Frame::DeclarationDefault(bindings, kind, name),
+                Frame::DeclarationDefault(bindings, kind, name, for_head),
                 Expression::Assignment,
             );
         }
-        validate_declaration(p, &name, kind, false)?;
+        validate_declaration(p, &name, kind, false, for_head)?;
         push(&mut bindings, (name, None), &mut p.compile_budget)?;
         if !p.eat(",") {
             return Ok(Transition::Done(Output::Declaration(Stmt::Var(
@@ -671,9 +701,18 @@ fn switch_body(
     )?;
     Ok(Transition::Again(Frame::SwitchNext(state).into()))
 }
-fn for_head(p: &mut Parser<'_>, init: Option<Stmt>, saved: bool) -> Result<Transition> {
+fn for_head(
+    p: &mut Parser<'_>,
+    init: Option<Stmt>,
+    saved: bool,
+    forbidden: bool,
+) -> Result<Transition> {
     p.allow_in = saved;
-    if p.eat("in") {
+    let for_of = p.is("of");
+    if p.eat("in") || p.eat("of") {
+        if for_of && forbidden {
+            return Err(p.error("invalid for-of assignment head"));
+        }
         let binding = match init {
             Some(Stmt::Var(mut bindings, kind))
                 if bindings.len() == 1 && bindings[0].1.is_none() =>
@@ -686,9 +725,20 @@ fn for_head(p: &mut Parser<'_>, init: Option<Stmt>, saved: bool) -> Result<Trans
                 p.assignment_target(target)?;
                 ForBinding::Target(target)
             }
+            Some(Stmt::Expr(target))
+                if for_of && matches!(p.unit.expr(target), Expr::Array(_) | Expr::Object(_)) =>
+            {
+                return Err(ScriptError::unsupported(
+                    "destructuring for-of targets are not supported",
+                ));
+            }
             _ => return Err(p.error("invalid for-in binding")),
         };
-        return child(Frame::ForInObject(binding), Expression::Sequence);
+        return if for_of {
+            child(Frame::ForOfObject(binding), Expression::Assignment)
+        } else {
+            child(Frame::ForInObject(binding), Expression::Sequence)
+        };
     }
     p.expect(";")?;
     if p.eat(";") {

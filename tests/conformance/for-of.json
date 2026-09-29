@@ -1,0 +1,591 @@
+{
+  "format": 1,
+  "scope": "Synchronous for-of with identifier/member heads and custom, Array, String and arguments iterators; selected evidence, not full ECMAScript or web conformance.",
+  "published_before_commit": "b8a2a988c3da50bd40be34c0cf34cf6c13c00f6e",
+  "latest_parent_commit": "42d09db29c777d638f8c87914eddeb6561c06d78",
+  "parent_change": "Standalone Vulkan probe/docs/CI only; browser inputs identical to frozen published before.",
+  "production_input_sha256": "cd50007f53a7b9431c104be33996295c2e4da96440963637f3eef20a02aedfa8",
+  "before_binary_sha256": "aae61052e935bebf797f05a412d78b1d677b80ff66cd9369d0fbafe332cb8d22",
+  "final_binary_sha256": "66bf753b598273161e6cc88f5004d83b4d5d1f88e2919e96db2414ccc2cc1316",
+  "fixture": {
+    "path": "tests/conformance/for-of.js",
+    "sha256": "f1eb702002d007466b705941201ac7f2e91fbb66a2bab94a08b1efa413a71e5c"
+  },
+  "fixture_freeze": {
+    "path": "tests/conformance/for-of-fixture.json",
+    "sha256": "47f53851c7433f4ac2b3912829a2ea44aca003caaea73ad05c4d9938fb2017ac"
+  },
+  "initial_report": {
+    "path": "tests/conformance/for-of-initial.json",
+    "sha256": "fee1625db70f215065ff8e07413822f8d9afee0d5f3468dbd3fa8fca0e670777"
+  },
+  "final_report": {
+    "path": "tests/conformance/for-of-final.json",
+    "sha256": "9dfa9ae3712334b857e8e29c6faccf9e45b10429f861ef9f5d0fa68de2077307"
+  },
+  "matrix_sha256": "ded7cdd482e3e84f2d15c50614159557464045f3a171cc15ee0644542b7c84ab",
+  "local": {
+    "source_cases": 202,
+    "mode_cases": 404,
+    "before_counts": {
+      "failed": 368,
+      "passed": 36
+    },
+    "final_counts": {
+      "passed": 380,
+      "unsupported": 12,
+      "resource": 12
+    },
+    "expectations_verified": 392,
+    "feature_controls_verified": 48,
+    "harness_controls_verified": 12,
+    "terminal_resource_expectations": 12,
+    "unmet": [
+      {
+        "id": "array-destructuring-binding#sloppy",
+        "status": "unsupported",
+        "prerequisites": [
+          "destructuring"
+        ],
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "destructuring and rest bindings are not implemented",
+          "harness": ""
+        }
+      },
+      {
+        "id": "array-destructuring-binding#strict",
+        "status": "unsupported",
+        "prerequisites": [
+          "destructuring"
+        ],
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "destructuring and rest bindings are not implemented",
+          "harness": ""
+        }
+      },
+      {
+        "id": "object-destructuring-binding#sloppy",
+        "status": "unsupported",
+        "prerequisites": [
+          "destructuring"
+        ],
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "destructuring and rest bindings are not implemented",
+          "harness": ""
+        }
+      },
+      {
+        "id": "object-destructuring-binding#strict",
+        "status": "unsupported",
+        "prerequisites": [
+          "destructuring"
+        ],
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "destructuring and rest bindings are not implemented",
+          "harness": ""
+        }
+      },
+      {
+        "id": "destructuring-assignment#sloppy",
+        "status": "unsupported",
+        "prerequisites": [
+          "destructuring"
+        ],
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "destructuring for-of targets are not supported",
+          "harness": ""
+        }
+      },
+      {
+        "id": "destructuring-assignment#strict",
+        "status": "unsupported",
+        "prerequisites": [
+          "destructuring"
+        ],
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "destructuring for-of targets are not supported",
+          "harness": ""
+        }
+      },
+      {
+        "id": "destructuring-default-tdz-closes#sloppy",
+        "status": "unsupported",
+        "prerequisites": [
+          "destructuring",
+          "array-iterator"
+        ],
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "destructuring and rest bindings are not implemented",
+          "harness": ""
+        }
+      },
+      {
+        "id": "destructuring-default-tdz-closes#strict",
+        "status": "unsupported",
+        "prerequisites": [
+          "destructuring",
+          "array-iterator"
+        ],
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "destructuring and rest bindings are not implemented",
+          "harness": ""
+        }
+      },
+      {
+        "id": "generator-return-finally-on-break#sloppy",
+        "status": "unsupported",
+        "prerequisites": [
+          "generators"
+        ],
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "generator functions are not implemented",
+          "harness": ""
+        }
+      },
+      {
+        "id": "generator-return-finally-on-break#strict",
+        "status": "unsupported",
+        "prerequisites": [
+          "generators"
+        ],
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "generator functions are not implemented",
+          "harness": ""
+        }
+      },
+      {
+        "id": "async-for-of-parser-prerequisite#sloppy",
+        "status": "unsupported",
+        "prerequisites": [
+          "async-functions",
+          "for-await-of"
+        ],
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "async functions are not implemented",
+          "harness": ""
+        }
+      },
+      {
+        "id": "async-for-of-parser-prerequisite#strict",
+        "status": "unsupported",
+        "prerequisites": [
+          "async-functions",
+          "for-await-of"
+        ],
+        "observation": {
+          "status": "unsupported",
+          "phase": "parse",
+          "error_type": "UnsupportedFeature",
+          "error_identity": "",
+          "message": "async functions are not implemented",
+          "harness": ""
+        }
+      }
+    ]
+  },
+  "formal": {
+    "all_inputs_unchanged_after_execution": true,
+    "before_execution_sha256": "088582ca325450fcbf11685592f9e012d7c1e1cb702f947814906e14332b2fcc",
+    "binary_sha256": "66bf753b598273161e6cc88f5004d83b4d5d1f88e2919e96db2414ccc2cc1316",
+    "candidate_input_sha256": "cd50007f53a7b9431c104be33996295c2e4da96440963637f3eef20a02aedfa8",
+    "exact_frozen_contracts": true,
+    "execution_sha256": "7b250408602435d390317776ce36cf1a406e5db3382f40d7361989e962a183b1",
+    "formal_ledger_sha256": "fa3f377113cbae8c01ca5a34db69dc27c9bf9dde2b27afd1be7d865d7cfcb5e0",
+    "format": 1,
+    "interpretation": [
+      "All 212 controls verify; both positive feature prerequisites and deliberately bad paired assertions are retained.",
+      "Both retained failures are modes of iterator-next-result-type.js with an untagged Proxy dependency; the missing global produces ReferenceError. No metadata exclusions were added.",
+      "Nine raw before parse-negative passes become unsupported: five sloppy legacy/labelled function-declaration modes and four malformed destructuring-target modes. These are real retained classification differences, not erased or promoted to passes; complete early-error validation of unavailable syntax is outside the implementation scope.",
+      "The other 41 previous runtime unsupported for-of records retain status. All 1,291 metadata exclusions remain exact (1,253 for-of plus 38 core iterators).",
+      "The before profiles lacked successful new-feature controls, so prior negative coincidences did not establish implementation health. No baseline was created or modified by this replay."
+    ],
+    "no_baseline_changes": true,
+    "no_claim_full_conformance": true,
+    "no_repository_changes": true,
+    "no_reruns": true,
+    "phase": "independent formal candidate-2 replay summary",
+    "profiles": {
+      "core-iterators": {
+        "comparison_sha256": "d2c0f27eb3a0a8f2ea15d65fe365e9283f5d9fbc4d95a9ed3d3d9d6626dce5c2",
+        "controls_total": 132,
+        "controls_verified": 132,
+        "counts": {
+          "passed": 106,
+          "unsupported": 38
+        },
+        "failures": [],
+        "mode_cases": 144,
+        "raw_pass_gains": 98,
+        "raw_pass_losses": [],
+        "report_sha256": "a7f0c805c28e9650cac52d1193ed5fa1484d97491cfd5696dac415f979966723",
+        "runtime_unsupported_reasons": {},
+        "source_tests": 76,
+        "status_transitions": {
+          "failed -> passed": 98
+        }
+      },
+      "for-of": {
+        "comparison_sha256": "942216f72a864873dea7ee3914ba98b017cc7c2710aa20ce9202940d7e43312f",
+        "controls_total": 80,
+        "controls_verified": 80,
+        "counts": {
+          "failed": 2,
+          "passed": 137,
+          "unsupported": 1303
+        },
+        "failures": [
+          {
+            "case_sha256": "1bde755254c5e3b599329462f8e6b46a357cf5d2dfb9dd1f553f6b59d8ad7752",
+            "expected_negative": null,
+            "file": "test/language/statements/for-of/iterator-next-result-type.js",
+            "id": "test/language/statements/for-of/iterator-next-result-type.js:sloppy",
+            "mode": "sloppy",
+            "observation": {
+              "error_identity": "ReferenceError",
+              "error_type": "ReferenceError",
+              "harness": "",
+              "message": "'Proxy' is not defined",
+              "phase": "runtime",
+              "status": "exception"
+            },
+            "source_sha256": "ec16ac5f88189bfbfcc8878fc4379c8104751f0f07e74358be940921b6b2efe0",
+            "status": "failed"
+          },
+          {
+            "case_sha256": "bb95d1dbb01ad6dd360cd40666b39f1987c4d748886ec7a883d748377d1547f8",
+            "expected_negative": null,
+            "file": "test/language/statements/for-of/iterator-next-result-type.js",
+            "id": "test/language/statements/for-of/iterator-next-result-type.js:strict",
+            "mode": "strict",
+            "observation": {
+              "error_identity": "ReferenceError",
+              "error_type": "ReferenceError",
+              "harness": "",
+              "message": "'Proxy' is not defined",
+              "phase": "runtime",
+              "status": "exception"
+            },
+            "source_sha256": "ec16ac5f88189bfbfcc8878fc4379c8104751f0f07e74358be940921b6b2efe0",
+            "status": "failed"
+          }
+        ],
+        "mode_cases": 1442,
+        "raw_pass_gains": 97,
+        "raw_pass_losses": [
+          {
+            "case_sha256": "007b3d3a15faf485c19b2a1e352f3cfe65dd479f726ba2eb2dacacc627bc2433",
+            "expected_negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            },
+            "file": "test/language/statements/for-of/decl-fun.js",
+            "id": "test/language/statements/for-of/decl-fun.js:sloppy",
+            "mode": "sloppy",
+            "observation": {
+              "error_identity": "",
+              "error_type": "UnsupportedFeature",
+              "harness": "",
+              "message": "legacy conditional function declarations are not implemented",
+              "phase": "parse",
+              "status": "unsupported"
+            },
+            "source_sha256": "2503be54d527898576cd9b8eb317494a9f6af4915e07ba9669f81665f85394e7",
+            "status": "unsupported"
+          },
+          {
+            "case_sha256": "12901f02c3bff5f382e99f8743e9892a572910e0a1f01623567f23bbe1b4d981",
+            "expected_negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            },
+            "file": "test/language/statements/for-of/head-lhs-invalid-asnmt-ptrn-ary.js",
+            "id": "test/language/statements/for-of/head-lhs-invalid-asnmt-ptrn-ary.js:sloppy",
+            "mode": "sloppy",
+            "observation": {
+              "error_identity": "",
+              "error_type": "UnsupportedFeature",
+              "harness": "",
+              "message": "destructuring for-of targets are not supported",
+              "phase": "parse",
+              "status": "unsupported"
+            },
+            "source_sha256": "25387bed57bbcc05dd507b5980fcaca74854d9be006a7abdc465eb696b183825",
+            "status": "unsupported"
+          },
+          {
+            "case_sha256": "efb2093be52da5b7b09abb743ed1890d60b2a9a6ef58879396c52f7b96afaaa0",
+            "expected_negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            },
+            "file": "test/language/statements/for-of/head-lhs-invalid-asnmt-ptrn-ary.js",
+            "id": "test/language/statements/for-of/head-lhs-invalid-asnmt-ptrn-ary.js:strict",
+            "mode": "strict",
+            "observation": {
+              "error_identity": "",
+              "error_type": "UnsupportedFeature",
+              "harness": "",
+              "message": "destructuring for-of targets are not supported",
+              "phase": "parse",
+              "status": "unsupported"
+            },
+            "source_sha256": "25387bed57bbcc05dd507b5980fcaca74854d9be006a7abdc465eb696b183825",
+            "status": "unsupported"
+          },
+          {
+            "case_sha256": "24e506a8f9c3b3d2df6e8164a4a85f8df90e8d60989bb5dfd28f574c2d773737",
+            "expected_negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            },
+            "file": "test/language/statements/for-of/head-lhs-invalid-asnmt-ptrn-obj.js",
+            "id": "test/language/statements/for-of/head-lhs-invalid-asnmt-ptrn-obj.js:sloppy",
+            "mode": "sloppy",
+            "observation": {
+              "error_identity": "",
+              "error_type": "UnsupportedFeature",
+              "harness": "",
+              "message": "destructuring for-of targets are not supported",
+              "phase": "parse",
+              "status": "unsupported"
+            },
+            "source_sha256": "f3abb89dfa53b050d5786dd6a33da998610456913e83cb39b0417471f9e7a943",
+            "status": "unsupported"
+          },
+          {
+            "case_sha256": "d31a32f7a317b5cf067b307f1ddaf8fa2cf4d85aad572a5b4183b7a54c330326",
+            "expected_negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            },
+            "file": "test/language/statements/for-of/head-lhs-invalid-asnmt-ptrn-obj.js",
+            "id": "test/language/statements/for-of/head-lhs-invalid-asnmt-ptrn-obj.js:strict",
+            "mode": "strict",
+            "observation": {
+              "error_identity": "",
+              "error_type": "UnsupportedFeature",
+              "harness": "",
+              "message": "destructuring for-of targets are not supported",
+              "phase": "parse",
+              "status": "unsupported"
+            },
+            "source_sha256": "f3abb89dfa53b050d5786dd6a33da998610456913e83cb39b0417471f9e7a943",
+            "status": "unsupported"
+          },
+          {
+            "case_sha256": "df797488d2c31f765eb9b86fb21725db4b4cb9cf984d51104c875413ee65891c",
+            "expected_negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            },
+            "file": "test/language/statements/for-of/labelled-fn-stmt-const.js",
+            "id": "test/language/statements/for-of/labelled-fn-stmt-const.js:sloppy",
+            "mode": "sloppy",
+            "observation": {
+              "error_identity": "",
+              "error_type": "UnsupportedFeature",
+              "harness": "",
+              "message": "legacy conditional function declarations are not implemented",
+              "phase": "parse",
+              "status": "unsupported"
+            },
+            "source_sha256": "5bd80ec04107052b0d8e239a386b7d78268767673fb7a0645cdf803fc719be6f",
+            "status": "unsupported"
+          },
+          {
+            "case_sha256": "21f171ac14d710275ecf7364f38c92ce918f6fdac2daaf1253d5f13c50ddeb0e",
+            "expected_negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            },
+            "file": "test/language/statements/for-of/labelled-fn-stmt-let.js",
+            "id": "test/language/statements/for-of/labelled-fn-stmt-let.js:sloppy",
+            "mode": "sloppy",
+            "observation": {
+              "error_identity": "",
+              "error_type": "UnsupportedFeature",
+              "harness": "",
+              "message": "legacy conditional function declarations are not implemented",
+              "phase": "parse",
+              "status": "unsupported"
+            },
+            "source_sha256": "152a3131e59a7c77e2a186a885adc4c638eb395f2f2344887c5721bd2198f8cc",
+            "status": "unsupported"
+          },
+          {
+            "case_sha256": "da71803dfd29a36f5238bc1081cd082b41d5bc6bbca14f29fe397ed939a15969",
+            "expected_negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            },
+            "file": "test/language/statements/for-of/labelled-fn-stmt-lhs.js",
+            "id": "test/language/statements/for-of/labelled-fn-stmt-lhs.js:sloppy",
+            "mode": "sloppy",
+            "observation": {
+              "error_identity": "",
+              "error_type": "UnsupportedFeature",
+              "harness": "",
+              "message": "legacy conditional function declarations are not implemented",
+              "phase": "parse",
+              "status": "unsupported"
+            },
+            "source_sha256": "3e249e18a17238780dfee1b0fb07b3ae70b3b893ba501e71758b9718a50e040b",
+            "status": "unsupported"
+          },
+          {
+            "case_sha256": "539eb8c7708fd05e61f2f3dce39567adeb1d6936b5458de91104ee13ab1869f6",
+            "expected_negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            },
+            "file": "test/language/statements/for-of/labelled-fn-stmt-var.js",
+            "id": "test/language/statements/for-of/labelled-fn-stmt-var.js:sloppy",
+            "mode": "sloppy",
+            "observation": {
+              "error_identity": "",
+              "error_type": "UnsupportedFeature",
+              "harness": "",
+              "message": "legacy conditional function declarations are not implemented",
+              "phase": "parse",
+              "status": "unsupported"
+            },
+            "source_sha256": "822425bc9a6e1279d261d9e4e159a9394f2cfe446577ec06d51402adc9f6d666",
+            "status": "unsupported"
+          }
+        ],
+        "report_sha256": "9f425f02cde9f56975c0e70809fc4c7318cdfe31e2d7ef882040ef3d76326ea7",
+        "runtime_unsupported_reasons": {
+          "destructuring and rest bindings are not implemented": 29,
+          "destructuring for-of targets are not supported": 4,
+          "dynamic eval is not implemented": 12,
+          "legacy conditional function declarations are not implemented": 5
+        },
+        "source_tests": 751,
+        "status_transitions": {
+          "failed -> passed": 97,
+          "passed -> unsupported": 9
+        }
+      }
+    },
+    "totals": {
+      "adapter_errors": 0,
+      "controls": 212,
+      "controls_verified": 212,
+      "failed": 2,
+      "mode_cases": 1586,
+      "passed": 243,
+      "raw_pass_gains": 195,
+      "raw_pass_losses": 9,
+      "resources": 0,
+      "source_tests": 827,
+      "timeouts": 0,
+      "unsupported": 1341
+    }
+  },
+  "historical": {
+    "complete": true,
+    "counts": {
+      "profiles": 36,
+      "cases": 16146,
+      "controls": 3592,
+      "control_changes": 0,
+      "improvements": 4,
+      "regressions": 0,
+      "other_changes": 0,
+      "existing_baseline_gates_passed": 29
+    },
+    "verified_controls": 3592,
+    "adapter_sha256": "66bf753b598273161e6cc88f5004d83b4d5d1f88e2919e96db2414ccc2cc1316",
+    "production_input_sha256": "cd50007f53a7b9431c104be33996295c2e4da96440963637f3eef20a02aedfa8",
+    "comparison_sha256": "4690ab3464b02107a9199d2c63a884052142a3f12c913c4dae9f5b7dce92f060",
+    "comparison_path": "/tmp/eris-for-of-candidate-2/profiles-comparison.json",
+    "launch_sha256": "c951c3989eb9973613c8cf7d402a25fc8927ad1a1f1210343fec06d0f1c8f5d1",
+    "start_sha256": "e7adb9a4cda90f8149588b9988be2e3a2236b0ce988c39efb668c344f99345a4",
+    "stdout_log_sha256": "80bca6eb60ebe0f35eaaed1c04a2b4443eac857616a3bbbe710bbe97585f9aa5",
+    "frozen_baseline_manifest_sha256": "aba3c8d2f135c992ae5a97c74040c92650820cf01b027254f3431436694b05cc",
+    "all_report_and_log_hashes_verified": true,
+    "baseline_hashes_unchanged": true,
+    "retries": 0,
+    "changes": [
+      [
+        "date",
+        "test/built-ins/Date/parse/year-zero.js:sloppy",
+        "failed",
+        "passed"
+      ],
+      [
+        "date",
+        "test/built-ins/Date/parse/year-zero.js:strict",
+        "failed",
+        "passed"
+      ],
+      [
+        "date",
+        "test/built-ins/Date/year-zero.js:sloppy",
+        "failed",
+        "passed"
+      ],
+      [
+        "date",
+        "test/built-ins/Date/year-zero.js:strict",
+        "failed",
+        "passed"
+      ]
+    ]
+  },
+  "integration_record_sha256": "b032f859077439205d683b687cab557928a251c76c282b7017179483dc4a6bc2",
+  "limits_record_sha256": "b9a6ea23a9a439374ee5a023ca44c1cb3c5c1b762894f0567e2504ba44c6364b",
+  "remaining": [
+    "destructuring bindings and assignment",
+    "generator and async functions, async iteration",
+    "Proxy, typed arrays and broader iterator consumers/helpers",
+    "full unavailable-syntax early errors: nine former incidental negative passes now UnsupportedFeature",
+    "host-only prototype paths explicitly unsupported when reached"
+  ],
+  "unchanged_oracles": true,
+  "current_source_archive_sha256": "42fd8b712a9f9628cf1d66d24f4948ba5242510cb1b790fba654b0ad91a44388"
+}

@@ -577,31 +577,35 @@ impl<'source> Parser<'source> {
         Ok(Stmt::DoWhile(condition, Box::new(body)))
     }
     fn parse_for_statement(&mut self) -> Result<Stmt> {
+        if self.is("await") {
+            return Err(ScriptError::unsupported("for-await is not supported"));
+        }
         self.expect("(")?;
         let saved_in = self.allow_in;
         self.allow_in = false;
+        let forbidden = self.is("let") || (self.is("async") && self.token_is(self.pos + 1, "of"));
         let init = if self.is(";") {
             None
         } else if self.declaration_start() {
-            Some(Box::new(self.declaration()?))
+            Some(Box::new(self.declaration_context(true)?))
         } else {
             Some(Box::new(Stmt::Expr(self.sequence()?)))
         };
         self.allow_in = saved_in;
-        if self.eat("in") {
-            let binding = match init.map(|init| *init) {
-                Some(Stmt::Var(mut bindings, kind))
-                    if bindings.len() == 1 && bindings[0].1.is_none() =>
-                {
-                    ForBinding::Declaration(bindings.remove(0).0, kind)
-                }
-                Some(Stmt::Expr(target @ (Expr::Ident(_) | Expr::Member(..)))) => {
-                    self.assignment_target(&target)?;
-                    ForBinding::Target(target)
-                }
-                _ => return Err(self.error("invalid for-in binding")),
+        let for_of = self.is("of");
+        if self.eat("in") || self.eat("of") {
+            if for_of
+                && forbidden
+                && !matches!(&init, Some(init) if matches!(&**init, Stmt::Var(..)))
+            {
+                return Err(self.error("invalid for-of assignment target"));
+            }
+            let binding = self.for_binding(init, for_of)?;
+            let object = if for_of {
+                self.expression()?
+            } else {
+                self.sequence()?
             };
-            let object = self.sequence()?;
             self.expect(")")?;
             self.loop_depth += 1;
             let body = self.controlled_statement()?;
@@ -616,7 +620,8 @@ impl<'source> Parser<'source> {
                     return Err(self.error("for-in lexical binding conflicts with var"));
                 }
             }
-            return Ok(Stmt::ForIn(binding, object, Box::new(body)));
+            let construct = if for_of { Stmt::ForOf } else { Stmt::ForIn };
+            return Ok(construct(binding, object, Box::new(body)));
         }
         self.expect(";")?;
         let test = if self.is(";") {
@@ -649,6 +654,25 @@ impl<'source> Parser<'source> {
             self.check_scope(std::iter::once(&**init), false)?;
         }
         Ok(Stmt::For(init, test, update, Box::new(body)))
+    }
+    // Finish head temporaries before descending into the body. This oracle is
+    // recursive and must retain its existing native-stack bound in debug builds.
+    fn for_binding(&mut self, init: Option<Box<Stmt>>, for_of: bool) -> Result<ForBinding> {
+        match init.map(|init| *init) {
+            Some(Stmt::Var(mut bindings, kind))
+                if bindings.len() == 1 && bindings[0].1.is_none() =>
+            {
+                Ok(ForBinding::Declaration(bindings.remove(0).0, kind))
+            }
+            Some(Stmt::Expr(target @ (Expr::Ident(_) | Expr::Member(..)))) => {
+                self.assignment_target(&target)?;
+                Ok(ForBinding::Target(target))
+            }
+            Some(Stmt::Expr(Expr::Array(_) | Expr::Object(_))) if for_of => Err(
+                ScriptError::unsupported("destructuring for-of targets are not supported"),
+            ),
+            _ => Err(self.error("invalid for-in binding")),
+        }
     }
     fn parse_return_statement(&mut self) -> Result<Stmt> {
         if self.function_depth == 0 {
@@ -706,6 +730,9 @@ impl<'source> Parser<'source> {
         Ok(Stmt::Try(body, handler, finalizer))
     }
     fn declaration(&mut self) -> Result<Stmt> {
+        self.declaration_context(false)
+    }
+    fn declaration_context(&mut self, for_head: bool) -> Result<Stmt> {
         let kind = if self.eat("const") {
             DeclarationKind::Const
         } else if self.eat("var") {
@@ -725,7 +752,10 @@ impl<'source> Parser<'source> {
             } else {
                 None
             };
-            if kind == DeclarationKind::Const && value.is_none() && !self.is("in") {
+            if kind == DeclarationKind::Const
+                && value.is_none()
+                && !(for_head && (self.is("in") || self.is("of")))
+            {
                 return Err(self.error("const declaration needs a value"));
             }
             bindings.push((name, value));
@@ -818,7 +848,8 @@ impl<'source> Parser<'source> {
                         names.push(name, false, &mut self.compile_budget)?;
                     }
                 }
-                Stmt::ForIn(ForBinding::Declaration(name, DeclarationKind::Var), _, _) => {
+                Stmt::ForIn(ForBinding::Declaration(name, DeclarationKind::Var), _, _)
+                | Stmt::ForOf(ForBinding::Declaration(name, DeclarationKind::Var), _, _) => {
                     names.push(name, false, &mut self.compile_budget)?;
                 }
                 _ => {}

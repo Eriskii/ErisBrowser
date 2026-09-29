@@ -40,6 +40,10 @@ jobs:
         run: python3 tools/test262_conformance.py --profile array-find --baseline tests/conformance/test262-array-find-current.json --output artifacts/test262-array-find-gate.json
       - name: Preserve pinned core Date behavior
         run: python3 tools/test262_conformance.py --profile date --baseline tests/conformance/test262-date-current.json --output artifacts/test262-date-gate.json
+      - name: Preserve pinned synchronous for-of behavior
+        run: python3 tools/test262_conformance.py --profile for-of --baseline tests/conformance/test262-for-of-current.json --output artifacts/test262-for-of-gate.json
+      - name: Preserve pinned core iterator behavior
+        run: python3 tools/test262_conformance.py --profile core-iterators --baseline tests/conformance/test262-core-iterators-current.json --output artifacts/test262-core-iterators-gate.json
       - name: Preserve pinned array descriptors and property definitions
         run: python3 tools/test262_conformance.py --profile array-descriptors --baseline tests/conformance/test262-array-descriptors-current.json --output artifacts/test262-array-descriptors-gate.json
       - name: Preserve passing cases in the pinned Test262 selection

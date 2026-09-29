@@ -21,6 +21,7 @@ mod code;
 mod construction;
 mod date_builtins;
 mod dom_bindings;
+mod iterators;
 mod machine;
 mod names;
 mod object_integrity;
@@ -976,6 +977,7 @@ enum Stmt {
     DoWhile(Expr, Box<Stmt>),
     For(Option<Box<Stmt>>, Option<Expr>, Option<Expr>, Box<Stmt>),
     ForIn(ForBinding, Expr, Box<Stmt>),
+    ForOf(ForBinding, Expr, Box<Stmt>),
     Switch(Expr, Vec<(Option<Expr>, Vec<Stmt>)>),
     Function(String, FunctionCode),
     Return(Option<Expr>),
@@ -1041,7 +1043,7 @@ impl<'a> StatementChildren<'a> {
                 (Some(&**body), &[][..], None)
             }
             Stmt::For(init, _, _, body) => (init.as_deref(), &[][..], Some(&**body)),
-            Stmt::ForIn(_, _, body) => (Some(&**body), &[][..], None),
+            Stmt::ForIn(_, _, body) | Stmt::ForOf(_, _, body) => (Some(&**body), &[][..], None),
             Stmt::Try(body, handler, finalizer) => (
                 Some(&**body),
                 handler.as_ref().map_or(&[][..], |handler| &handler.body),
@@ -1521,6 +1523,7 @@ pub struct Runtime {
     prototypes: BTreeMap<&'static str, usize>,
     native_properties: BTreeMap<String, usize>,
     symbols: symbols::State,
+    iterators: iterators::State,
     host_symbol_objects: BTreeMap<property_keys::HostKey, usize>,
     function_prototype: usize,
     events: Vec<EventState>,
@@ -1669,6 +1672,7 @@ impl Runtime {
             prototypes: BTreeMap::new(),
             native_properties: BTreeMap::new(),
             symbols: symbols::State::default(),
+            iterators: iterators::State::default(),
             host_symbol_objects: BTreeMap::new(),
             function_prototype: 0,
             events: Vec::new(),
@@ -1681,6 +1685,7 @@ impl Runtime {
             steps: MAX_STEPS,
             allocated: 2048
                 + std::mem::size_of::<DateHost>()
+                + std::mem::size_of::<iterators::State>()
                 + 4 * std::mem::size_of::<Option<Value>>()
                 + initial_binding_bytes
                 + TrackedGlobal::ALL
@@ -2357,6 +2362,7 @@ impl Runtime {
             );
         }
         self.initialize_symbols()?;
+        self.install_iterator_intrinsics()?;
         self.initialize_dom_bindings()
     }
     fn abort_signal_index(&self, value: &Value) -> Result<usize> {
@@ -3517,6 +3523,7 @@ impl Runtime {
         } else {
             self.objects[id].insert_hidden("callee".into(), callee);
         }
+        self.install_arguments_iterator(&object)?;
         Ok(object)
     }
     fn object(&mut self, values: BTreeMap<String, Value>) -> Result<Value> {
@@ -3738,6 +3745,11 @@ impl Runtime {
                     }
                 }
                 code::Stmt::ForIn(
+                    code::ForBinding::Declaration(name, DeclarationKind::Var),
+                    _,
+                    _,
+                )
+                | code::Stmt::ForOf(
                     code::ForBinding::Declaration(name, DeclarationKind::Var),
                     _,
                     _,
@@ -7711,6 +7723,9 @@ impl Runtime {
         if native.name == "Date" {
             let now = self.date_now()?;
             return self.date_format(now, "toString");
+        }
+        if let Some(method) = native.name.strip_prefix("Iterator.") {
+            return self.iterator_native(method, native.receiver.clone(), &args, doc);
         }
         if let Some(method) = native.name.strip_prefix("Date.") {
             return self.date_native(method, native.receiver.clone(), &args, doc);
@@ -15115,7 +15130,8 @@ mod tests {
                 Stmt::Var(bindings, DeclarationKind::Var) => {
                     names.extend(bindings.iter().map(|(name, _)| name.as_str()))
                 }
-                Stmt::ForIn(ForBinding::Declaration(name, DeclarationKind::Var), _, _) => {
+                Stmt::ForIn(ForBinding::Declaration(name, DeclarationKind::Var), _, _)
+                | Stmt::ForOf(ForBinding::Declaration(name, DeclarationKind::Var), _, _) => {
                     names.push(name)
                 }
                 _ => {}
