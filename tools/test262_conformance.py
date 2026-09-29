@@ -51,9 +51,10 @@ CONSTRUCTION_FEATURES = SYMBOL_FEATURES | FUNCTION_FEATURES | {'new.target', 'Re
 FUNCTION_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REST_PARAMETER_FEATURES
 STRING_SEARCH_FEATURES = SYMBOL_FEATURES | FUNCTION_FEATURES | {'String.prototype.includes', 'String.prototype.endsWith'}
 REGEXP_MATCH_SEARCH_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
+STRING_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 REGEXP_SPLIT_FEATURES = CONSTRUCTION_FEATURES
 REGEXP_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'u180e'}
-PROFILE_FEATURES = {'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+PROFILE_FEATURES = {'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'reflect-construction': CONSTRUCTION_FEATURES, 'new-target': CONSTRUCTION_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -1022,6 +1023,27 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
             for name, setup, actual, good, bad in pairs:
                 for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
                     variants.append(('regexp-match-search-' + name + suffix,
+                                     guard + setup + f'assert.sameValue({actual},{value});', expected, mode))
+    if profile == 'string-last-index-of':
+        guard = "assert.sameValue(typeof String.prototype.lastIndexOf,'function');assert.sameValue('aba'.lastIndexOf('a'),2);"
+        pairs = [
+            ('overlap', '', "'ababa'.lastIndexOf('aba')", '2', '0'),
+            ('position', '', "'ababa'.lastIndexOf('aba',1.9)", '0', '2'),
+            ('nan', '', "'aba'.lastIndexOf('a',NaN)", '2', '0'),
+            ('empty', '', "'abc'.lastIndexOf('',Infinity)", '3', '0'),
+            ('negative', '', "'aba'.lastIndexOf('a',-Infinity)", '0', '2'),
+            ('utf16', '', r"'\ud800\udc00\ud800\udc00'.lastIndexOf('\udc00')", '3', '1'),
+            ('order', "var log='',r={toString:function(){log+='r';return 'abcabc';}},s={toString:function(){log+='s';return 'bc';}},p={valueOf:function(){log+='p';return 3;}};String.prototype.lastIndexOf.call(r,s,p);", 'log', "'rsp'", "'wrong'"),
+            ('position-abrupt', "var marker={},caught,p={valueOf:function(){throw marker;}};try{''.lastIndexOf('longer',p);}catch(e){caught=e;}", 'caught===marker', 'true', 'false'),
+            ('nullish', "var caught;try{String.prototype.lastIndexOf.call(null,'x');}catch(e){caught=e;}", 'caught instanceof TypeError', 'true', 'false'),
+            ('symbol', "var caught;try{''.lastIndexOf(Symbol());}catch(e){caught=e;}", 'caught instanceof TypeError', 'true', 'false'),
+            ('regexp', "var r=/x/;Object.defineProperty(r,Symbol.match,{get:function(){throw 1;}});", "'/x/-/x/'.lastIndexOf(r)", '4', '0'),
+            ('descriptor', "var d=Object.getOwnPropertyDescriptor(String.prototype.lastIndexOf,'length');", 'd.value===1&&!d.writable&&!d.enumerable&&d.configurable', 'true', 'false'),
+        ]
+        for mode in ('sloppy', 'strict'):
+            for name, setup, actual, good, bad in pairs:
+                for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                    variants.append(('string-last-index-of-' + name + suffix,
                                      guard + setup + f'assert.sameValue({actual},{value});', expected, mode))
     if profile == 'regexp-constructor':
         pairs = [

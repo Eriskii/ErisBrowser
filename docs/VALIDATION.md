@@ -1,5 +1,25 @@
 # Validation record
 
+## String lastIndexOf
+
+The [implementation record](../tests/conformance/string-last-index-of.md) and
+[evidence](../tests/conformance/string-last-index-of.json) compare against `569991c`.
+The complete new **25-source / 50-mode** inventory gains **46 passes**, reaching
+**48 passed / two failed**, with no exclusions. The remaining modes invoke missing
+Array.lastIndexOf. Match/search gains **12 older passes**; all other **9,406 older
+observations / 2,368 older controls** are identical. The **30-profile / 9,468-mode**
+inventory has **2,448 verified controls** and 25 regression gates.
+
+All **28 corrected local modes** pass. The original descriptor fixture accidentally
+deleted its method through `verifyProperty`; its original before/after observations
+remain in the evidence. A one-line restoration fix changes exactly two fingerprints,
+and both binaries were rerun. No pinned source changed. Rust **1.88 / 1.95** pass
+strict all-target Clippy and **1,030 default / 1,041 Vulkan-feature tests**, none
+ignored. A deterministic search differential checks **12,288** UTF-16 inputs and
+positions. **180 Python tests**, **15,000 mutation cases**, unchanged HTML observations
+and both release builds' **57 CPU pixel references** pass. No independent review,
+GPU exercise, security audit or Chromium performance comparison was performed.
+
 ## String and RegExp match/search protocols
 
 The [implementation record](../tests/conformance/regexp-match-search.md) and
@@ -17,7 +37,7 @@ original diagnostic fingerprints are retained. A separate inherited Object
 prototype setter test passes. All 80 new-profile controls verify, versus 56 before.
 Rust **1.88 / 1.95** pass strict all-target Clippy and **1,026 default / 1,037
 Vulkan-feature tests**, none ignored. Both releases preserve **57 CPU pixel
-references**. **177 Python tests**, **45,000 mutation cases** and unchanged HTML
+references**. **177 Python tests**, **15,000 mutation cases** and unchanged HTML
 observations pass. Callback recursion, infinite match results, heap refusal and
 cleanup are tested. No independent agent review, GPU exercise or Chromium
 performance comparison was performed.
@@ -35,7 +55,7 @@ local modes** pass, including eight former resource stops.
 The direct comparison preserves **3,888 parse outcomes / 106,040 complete capture
 or error outcomes**. Rust **1.88 / 1.95** pass strict all-target Clippy and **1,023
 default / 1,034 Vulkan-feature tests**, none ignored. Both releases preserve
-**57 CPU pixel references**. **174 Python tests**, **45,000 mutation cases** and
+**57 CPU pixel references**. **174 Python tests**, **15,000 mutation cases** and
 unchanged HTML observations pass. Seven alternating timing samples retain the
 measured compilation overhead and matching results; they are synthetic direct
 Rust calls, not browser workloads or Chromium measurements. No independent agent
@@ -57,7 +77,7 @@ capture or error outcomes**. Small-stack regressions compile and match 2,000
 nested groups; syntax, resource and lookahead execution guards remain tested.
 Rust **1.88 / 1.95** pass strict all-target Clippy and **1,020 default / 1,031
 Vulkan-feature tests**, none ignored. Both releases preserve **57 CPU pixel
-references**. **174 Python tests**, **45,000 mutation cases** and unchanged HTML
+references**. **174 Python tests**, **15,000 mutation cases** and unchanged HTML
 observations pass. No independent agent review, GPU exercise or Chromium
 performance comparison was performed.
 
@@ -77,7 +97,7 @@ assumption was corrected and remeasured on both binaries; its initial source and
 observations are retained, as are all 20 original diagnostic fingerprints. Rust
 **1.88 / 1.95** pass strict all-target Clippy and full tests: **1,017 default /
 1,028 Vulkan-feature tests**, none ignored. Both release builds preserve all
-**57 CPU pixel references**. **174 Python tests**, **45,000 mutation cases** and
+**57 CPU pixel references**. **174 Python tests**, **15,000 mutation cases** and
 unchanged upstream HTML observations pass. Resource tests cover parser charges
 on success/failure, every representative work cutoff, recursion and heap refusal.
 Agent quota remains unavailable; no independent agent review, GPU rendering or
@@ -97,7 +117,7 @@ All **32 supported local modes** pass; the two original array-descriptor
 prerequisite modes remain unsupported. Rust **1.88 / 1.95**, strict all-target
 Clippy and full tests pass: **1,014 default / 1,025 Vulkan-feature tests**, none
 ignored. Both release builds preserve all **57 CPU pixel references**. **171
-Python tests**, **45,000 mutation cases** and the unchanged upstream HTML baseline
+Python tests**, **15,000 mutation cases** and the unchanged upstream HTML baseline
 pass. Resource tests cover recursive callbacks, hostile capture lengths and
 indices, heap refusal and cleanup. Agent quota remains unavailable; no independent
 agent review, GPU rendering or Chromium comparison is claimed.
@@ -143,7 +163,7 @@ All **30 frozen local semantic modes** move from unsupported to passed. On Rust
 **1.88 / 1.95**, strict all-target Clippy and full tests pass: **1,008 default /
 1,019 Vulkan-feature Rust tests**, none ignored. Both release builds preserve
 **57 CPU pixel references**; GPU rendering was not exercised. **165 Python tests**
-and **45,000 mutation cases** pass. All upstream HTML case objects remain identical.
+and **15,000 mutation cases** pass. All upstream HTML case objects remain identical.
 Resource tests exercise successful and failed compilation charges, every work
 cutoff for representative parses, heap refusals, recursion and counter cleanup.
 
@@ -168,7 +188,7 @@ unchanged; 48 added controls bring the verified total to 2,008.
 The ten frozen local modes pass after failing before the fix. On Rust 1.88 and
 1.95, strict all-target Clippy and all tests pass: **1,005 default / 1,016 feature
 Rust tests**, none ignored. Both release builds preserve **57 CPU pixel references**.
-**162 Python tests** and **45,000 mutation cases** pass. HTML case objects remain
+**162 Python tests** and **15,000 mutation cases** pass. HTML case objects remain
 exactly unchanged. Eighteen policy baselines were reviewed and updated; the four
 resource-observation profiles remain observations. These checks do not establish
 full platform compatibility, audited security or Chromium performance parity.

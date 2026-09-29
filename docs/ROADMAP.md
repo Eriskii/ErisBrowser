@@ -26,7 +26,9 @@ adds classification and ordered conversion with 16 more passes.
 now adds four deep-pattern passes. [Required-literal rejection](../tests/conformance/regexp-required-literals.md)
 adds two XML-pattern passes without raising budgets.
 [Match/search symbol protocols](../tests/conformance/regexp-match-search.md) now add
-138 passes in a complete new inventory. String lastIndexOf and BigInt dependencies,
+138 passes in a complete new inventory.
+[String lastIndexOf](../tests/conformance/string-last-index-of.md) adds 46 passes
+in its complete directory and 12 older passes. Array lastIndexOf and BigInt dependencies,
 replacement/matchAll protocols, general matching performance, the remaining
 full-UTF-16 loop, Unicode regexp syntax and Function source retention remain
 concrete next dependencies.

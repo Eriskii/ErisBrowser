@@ -1916,6 +1916,7 @@ impl Runtime {
             ("String", "startsWith", 1),
             ("String", "endsWith", 1),
             ("String", "indexOf", 1),
+            ("String", "lastIndexOf", 1),
             ("String", "split", 2),
             ("String", "match", 1),
             ("String", "search", 1),
@@ -8667,7 +8668,10 @@ impl Runtime {
                         "String search argument must not be a RegExp",
                     ));
                 }
-                let needle = if matches!(name, "includes" | "indexOf" | "startsWith" | "endsWith") {
+                let needle = if matches!(
+                    name,
+                    "includes" | "indexOf" | "lastIndexOf" | "startsWith" | "endsWith"
+                ) {
                     self.string_hint(arg(0), doc)?
                 } else {
                     JsString::default()
@@ -8689,6 +8693,18 @@ impl Runtime {
                         } else {
                             Value::Number(found.map(|i| i as f64).unwrap_or(-1.0))
                         });
+                    }
+                    "lastIndexOf" => {
+                        // ToNumber is observable even for an empty search or
+                        // one longer than the receiver. NaN starts at the end.
+                        let position = self.number_value(arg(1), doc)?;
+                        let start = if position.is_nan() {
+                            len
+                        } else {
+                            integer_or_infinity(position).clamp(0.0, len as f64) as usize
+                        };
+                        let found = self.string_rfind(units, needle.units(), start)?;
+                        return Ok(Value::Number(found.map(|i| i as f64).unwrap_or(-1.0)));
                     }
                     "startsWith" => {
                         let start = integer_or_infinity(self.number_value(arg(1), doc)?)

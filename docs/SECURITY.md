@@ -281,3 +281,11 @@ Tests cover recursive callbacks, unbounded custom exec results, allocation
 refusal before the first global exec, and clean frame unwinding. The separate
 Array.prototype indexed-descriptor gap remains explicitly unsupported. These
 checks do not establish complete allocation accounting or audited security.
+
+[String lastIndexOf](../tests/conformance/string-last-index-of.md) searches borrowed
+UTF-16 slices without allocating a search buffer. Every candidate comparison is
+charged before matching. Receiver/search/position callbacks retain the shared
+work, allocation and recursion guards. Tests verify comparison refusal, adversarial
+work exhaustion and cleanup after recursive conversion. The naive scan can stop
+at the existing work limit; no quota is raised and no new process authority is
+granted. This does not establish linear-time search or complete allocation accounting.

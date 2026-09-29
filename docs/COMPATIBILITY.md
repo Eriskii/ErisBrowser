@@ -1,10 +1,15 @@
 # Compatibility status
 
+[String.lastIndexOf](../tests/conformance/string-last-index-of.md) now handles
+ordered conversion, NaN/default positions and reverse UTF-16 search. Its complete
+50-mode selection records 48 passed and two failures that call the separate
+missing Array.lastIndexOf method. The match/search selection gains 12 passes.
+
 [String and RegExp match/search protocols](../tests/conformance/regexp-match-search.md)
 now support custom symbol hooks, raw receivers, observable fallback dispatch,
 global match collection and exact search index restoration. The complete new
-340-mode selection records 304 passed, 16 failed and 20 unsupported. String
-lastIndexOf, BigInt, Unicode pattern syntax and replacement/matchAll protocols
+340-mode selection now records 316 passed, four failed and 20 unsupported.
+BigInt, Unicode pattern syntax and replacement/matchAll protocols
 remain incomplete.
 
 [RegExp constructor classification and conversion](../tests/conformance/regexp-constructor.md)

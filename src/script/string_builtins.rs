@@ -2,6 +2,28 @@
 use super::*;
 
 impl Runtime {
+    pub(super) fn string_rfind(
+        &mut self,
+        text: &[u16],
+        needle: &[u16],
+        start: usize,
+    ) -> Result<Option<usize>> {
+        if needle.is_empty() {
+            return Ok(Some(start.min(text.len())));
+        }
+        let Some(last) = text.len().checked_sub(needle.len()) else {
+            return Ok(None);
+        };
+        for index in (0..=start.min(last)).rev() {
+            // Charge each comparison's worst-case code-unit work before it.
+            self.work(1 + needle.len() / 8)?;
+            if text[index..index + needle.len()] == *needle {
+                return Ok(Some(index));
+            }
+        }
+        Ok(None)
+    }
+
     pub(super) fn string_match_search(
         &mut self,
         name: &str,
@@ -167,6 +189,97 @@ mod tests {
             assert_eq!(runtime.calls, 0);
             assert_eq!(runtime.stack_units, 0);
             assert_eq!(runtime.eval_depth, 0);
+            assert!(runtime.frames.is_empty());
+        }
+    }
+
+    #[test]
+    fn last_index_of_frozen_cases_cover_conversion_order_and_utf16() {
+        for fixture in include_str!("../../tests/conformance/string-last-index-of.js")
+            .split("// CASE: ")
+            .skip(1)
+        {
+            let (_, source) = fixture.split_once('\n').unwrap();
+            check(source);
+        }
+    }
+
+    #[test]
+    fn reverse_search_matches_forward_enumeration_for_code_units() {
+        let mut runtime = Runtime::new();
+        let allocated = runtime.allocated;
+        let alphabet = [0, b'a' as u16, 0xd800, 0xdfff];
+        let mut seed = 0xe2152026u32;
+        let mut next = || {
+            seed = seed.wrapping_mul(1664525).wrapping_add(1013904223);
+            (seed >> 16) as usize
+        };
+        for _ in 0..4096 {
+            let text: Vec<_> = (0..next() % 24).map(|_| alphabet[next() % 4]).collect();
+            let needle: Vec<_> = (0..next() % 9).map(|_| alphabet[next() % 4]).collect();
+            for start in [0, next() % 26, usize::MAX] {
+                let expected = if needle.is_empty() {
+                    Some(start.min(text.len()))
+                } else {
+                    text.windows(needle.len())
+                        .enumerate()
+                        .take_while(|(index, _)| *index <= start)
+                        .filter_map(|(index, window)| (window == needle).then_some(index))
+                        .last()
+                };
+                runtime.steps = MAX_STEPS;
+                assert_eq!(
+                    runtime.string_rfind(&text, &needle, start).unwrap(),
+                    expected,
+                    "{text:?}, {needle:?}, {start}"
+                );
+            }
+        }
+        assert_eq!(runtime.allocated, allocated);
+    }
+
+    #[test]
+    fn reverse_search_charges_comparisons_before_matching() {
+        let mut runtime = Runtime::new();
+        let text = vec![b'a' as u16; 4096];
+        let mut needle = vec![b'a' as u16; 2048];
+        runtime.steps = 1;
+        assert!(
+            runtime
+                .string_rfind(&text, &needle, usize::MAX)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        needle[2047] = b'b' as u16;
+        runtime.steps = MAX_STEPS;
+        assert!(
+            runtime
+                .string_rfind(&text, &needle, usize::MAX)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+    }
+
+    #[test]
+    fn last_index_of_recursive_conversions_share_limits_and_unwind() {
+        for source in [
+            "var r={toString:function(){return String.prototype.lastIndexOf.call(r,'a');}};String.prototype.lastIndexOf.call(r,'a');",
+            "var s={toString:function(){return 'a'.lastIndexOf(s);}};'a'.lastIndexOf(s);",
+            "var p={valueOf:function(){return 'a'.lastIndexOf('a',p);}};'a'.lastIndexOf('a',p);",
+        ] {
+            let (mut runtime, mut doc) = harness();
+            let wrapped = format!("var caught=false;try{{{source}}}catch(e){{caught=true;}}");
+            assert!(
+                runtime
+                    .execute(&wrapped, &mut doc)
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(runtime.lookup(1, "caught").unwrap().1, Value::Bool(false));
+            assert_eq!(runtime.calls, 0);
+            assert_eq!(runtime.stack_units, 0);
+            assert_eq!(runtime.eval_depth, 0);
+            assert_eq!(runtime.json_depth, 0);
             assert!(runtime.frames.is_empty());
         }
     }

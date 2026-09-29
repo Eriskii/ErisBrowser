@@ -1,0 +1,230 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all direct .js files in built-ins/String/prototype/lastIndexOf; no implementation",
+  "directories": {
+    "String/prototype/lastIndexOf": [
+      "S15.5.4.8_A10.js",
+      "S15.5.4.8_A11.js",
+      "S15.5.4.8_A1_T1.js",
+      "S15.5.4.8_A1_T10.js",
+      "S15.5.4.8_A1_T12.js",
+      "S15.5.4.8_A1_T2.js",
+      "S15.5.4.8_A1_T4.js",
+      "S15.5.4.8_A1_T5.js",
+      "S15.5.4.8_A1_T6.js",
+      "S15.5.4.8_A1_T7.js",
+      "S15.5.4.8_A1_T8.js",
+      "S15.5.4.8_A1_T9.js",
+      "S15.5.4.8_A4_T1.js",
+      "S15.5.4.8_A4_T2.js",
+      "S15.5.4.8_A4_T3.js",
+      "S15.5.4.8_A4_T4.js",
+      "S15.5.4.8_A4_T5.js",
+      "S15.5.4.8_A6.js",
+      "S15.5.4.8_A7.js",
+      "S15.5.4.8_A8.js",
+      "S15.5.4.8_A9.js",
+      "name.js",
+      "not-a-constructor.js",
+      "not-a-substring.js",
+      "this-value-not-obj-coercible.js"
+    ]
+  },
+  "test_files": 25,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A10.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A10.js",
+      "bytes": 1410,
+      "sha256": "74aceed432e1950c998dde7594cf7d719883fdc8abbd422509aea7f171b06bd5"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A11.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A11.js",
+      "bytes": 1029,
+      "sha256": "4c3a1d964d3a0498c21aed56e7d295eedb5c57e30bf15c3cfba52510c5af4bc3"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T1.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T1.js",
+      "bytes": 817,
+      "sha256": "6bf0b4ed72ea311238bceb18c453460415d763caee1cda5a279c33254ea660e1"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T10.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T10.js",
+      "bytes": 958,
+      "sha256": "fc3bf8e6b24d4cbac433b30984b4f785f059b5e3ac2445cf76f30f8419d76e2e"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T12.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T12.js",
+      "bytes": 1107,
+      "sha256": "92b3466b5e7f9bb5f0d64c57a17cd9c5786bf76eb589eedefac4ff27fda225e1"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T2.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T2.js",
+      "bytes": 970,
+      "sha256": "f3f65fb80eff8668c188211a1986298f2961c835019db00795475b5f7fa9dc03"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T4.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T4.js",
+      "bytes": 700,
+      "sha256": "db9a202295d7f2f48cb023cf6774e3e23084e05dbb9f1071f4aa7e3bd93710b3"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T5.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T5.js",
+      "bytes": 858,
+      "sha256": "fc3de1c70005ef91a3ab573220e0660255a33cf1bcf8d169d7845622747f02fe"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T6.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T6.js",
+      "bytes": 835,
+      "sha256": "200f80e0ab05c92e6189d82c95ac65c8579c01f9ec27984aea89ce502b3498f3"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T7.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T7.js",
+      "bytes": 823,
+      "sha256": "d9392644874a8a2ffb6549f52aa2447d6d03c3e43762008fc6a32c18d35dea6a"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T8.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T8.js",
+      "bytes": 864,
+      "sha256": "310339667b29f033c1a2325e19b204dd827abeba9499c3c2241e9c5c37029e76"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T9.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T9.js",
+      "bytes": 941,
+      "sha256": "339900b5041782d569cc4834f81bf368ff39d826ab5c6de897326ceac9223f46"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A4_T1.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A4_T1.js",
+      "bytes": 1072,
+      "sha256": "308db2e6230122f596c707740e63502c5c1e93c36d3e85118c4dee5d71aec88f"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A4_T2.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A4_T2.js",
+      "bytes": 1147,
+      "sha256": "108a21525161fd2f3ee038b02f46de8f389480f7e973cbaed0eb23d3b6476255"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A4_T3.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A4_T3.js",
+      "bytes": 1077,
+      "sha256": "a4f01f01f3999b32071e6fe4e6a876e624193bc88bb9f47e5088c7dcef2542bf"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A4_T4.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A4_T4.js",
+      "bytes": 1146,
+      "sha256": "fbe884c54172a99c2bb57570eb93258285ef6bc8b5fb532bd181cf5554f2e91f"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A4_T5.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A4_T5.js",
+      "bytes": 1397,
+      "sha256": "a6e35218d75c511c31efc0ad212255b9ef62177ca6644dfd576c52384a7d51c9"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A6.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A6.js",
+      "bytes": 658,
+      "sha256": "033558c11f5d3248296189d45076ea2068257f41fda0d99ebf8b99ddac4d0f6c"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A7.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A7.js",
+      "bytes": 411,
+      "sha256": "7256d5be100cd03191b5c4647f707bb8100880a8d172714bd1e01a92ae6c3c9d"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A8.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A8.js",
+      "bytes": 1617,
+      "sha256": "c94bd9627cd4f9aa4934fa15c22d3ffb4ed4daf72c93b022f13d33d453aeab13"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A9.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A9.js",
+      "bytes": 1532,
+      "sha256": "b36f1c6f96e54e3676df81395301ae4bcdfaf969ccbe7d70c23ebb917c034aa8"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/name.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/name.js",
+      "bytes": 874,
+      "sha256": "b8dc40bc0b7ecf59dedbff478bba2b0e0e1846fdb8afec5b599943c6c8a95776"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/not-a-constructor.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/not-a-constructor.js",
+      "bytes": 920,
+      "sha256": "bfa060912924c48d079a3cfcca84ad94084e1efc5f87e0ad68af6d591cff0a38"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/not-a-substring.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/not-a-substring.js",
+      "bytes": 917,
+      "sha256": "1fa0e88ffe6a342e6204c925918ae6fc29b003d47007210fc377c24bc56bd41d"
+    },
+    {
+      "path": "test/built-ins/String/prototype/lastIndexOf/this-value-not-obj-coercible.js",
+      "upstream_path": "test/built-ins/String/prototype/lastIndexOf/this-value-not-obj-coercible.js",
+      "bytes": 576,
+      "sha256": "5767c71e79ccfb856cb1e9854d7f4c7f9e3dfeb07c697631db78072c9233ce64"
+    }
+  ]
+}

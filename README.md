@@ -337,3 +337,9 @@ remain unchanged.
 Infrastructure dependencies provide TLS/HTTP (`ureq`/`rustls`), URLs (`url`), character encodings, font outline rasterization (`ab_glyph`), image codecs (`image`), native clipboard access (`arboard`), window events (`winit`), a pixel surface (`softbuffer`), optional Vulkan presentation (`wgpu`) and exec descriptor hygiene (`close_fds`), and OS confinement wrappers (`landlock`, `rustix`, `seccompiler`). These are not web layout or script engines. Their transitive dependencies remain part of the security surface. The source forbids application-level `unsafe` Rust; dependencies can contain unsafe code.
 
 Fonts are DejaVu; redistribution notices are in [assets/FONTS-LICENSE.txt](assets/FONTS-LICENSE.txt). Project code is MIT licensed. Vendored WPT test data retains its [upstream BSD license](tests/upstream/wpt-html/LICENSE.md); Test262 data retains its [upstream license](tests/upstream/test262/LICENSE). Identifier tables and their pinned source data retain [Unicode License V3](tests/upstream/unicode/18.0.0/LICENSE.txt).
+
+[String.lastIndexOf](tests/conformance/string-last-index-of.md) now performs
+ordered conversion and bounded reverse UTF-16 search. Its complete 50-mode
+inventory gains 46 passes; 12 existing match/search modes also pass. The two
+remaining new failures call the missing Array.lastIndexOf method. All other
+9,406 older observations are unchanged; 2,448 assertion controls verify.
