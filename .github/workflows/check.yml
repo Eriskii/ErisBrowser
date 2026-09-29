@@ -36,6 +36,8 @@ jobs:
         run: python3 tools/test262_conformance.py --baseline tests/conformance/test262-current.json
       - name: Preserve pinned Reflect call and constructor cases
         run: python3 tools/test262_conformance.py --profile reflect-construction --baseline tests/conformance/test262-reflect-construction-current.json --output artifacts/test262-reflect-construction-gate.json
+      - name: Preserve pinned dynamic Function constructor cases
+        run: python3 tools/test262_conformance.py --profile function-constructor --baseline tests/conformance/test262-function-constructor-current.json --output artifacts/test262-function-constructor-gate.json
       - name: Preserve pinned new.target cases
         run: python3 tools/test262_conformance.py --profile new-target --baseline tests/conformance/test262-new-target-current.json --output artifacts/test262-new-target-gate.json
       - name: Preserve passing cases in the separate pinned RegExp selection

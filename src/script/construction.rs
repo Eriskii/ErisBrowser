@@ -2,6 +2,77 @@
 use super::*;
 
 impl Runtime {
+    pub(super) fn dynamic_function(
+        &mut self,
+        arguments: Vec<Value>,
+        new_target: Value,
+        doc: &mut Document,
+    ) -> Result<Value> {
+        if arguments.len() > 65536 {
+            return Err(ScriptError::resource("Function argument limit exceeded"));
+        }
+        self.work(1 + arguments.len())?;
+        self.charge(
+            arguments
+                .len()
+                .saturating_mul(std::mem::size_of::<JsString>()),
+        )?;
+        let mut strings = Vec::new();
+        strings
+            .try_reserve_exact(arguments.len())
+            .map_err(|_| ScriptError::resource("Function string list allocation failed"))?;
+        // All conversions precede syntax validation and the observable prototype get.
+        for argument in arguments {
+            strings.push(self.string_hint(argument, doc)?);
+        }
+        let body = strings.pop().unwrap_or_default();
+        let param_length = strings
+            .iter()
+            .fold(strings.len().saturating_sub(1), |n, s| {
+                n.saturating_add(s.len())
+            });
+        let length = param_length.saturating_add(body.len()).saturating_add(32);
+        if length > MAX_SOURCE {
+            return Err(ScriptError::resource("Function source limit exceeded"));
+        }
+        self.work(1 + length)?;
+        self.charge(length.saturating_mul(3).saturating_add(64))?;
+        let mut params = String::new();
+        params
+            .try_reserve_exact(param_length.saturating_mul(3))
+            .map_err(|_| ScriptError::resource("Function parameters allocation failed"))?;
+        for (index, text) in strings.iter().enumerate() {
+            if index != 0 {
+                params.push(',');
+            }
+            source_text(&mut params, text)?;
+        }
+        let mut body_source = String::new();
+        body_source
+            .try_reserve_exact(body.len().saturating_mul(3).saturating_add(2))
+            .map_err(|_| ScriptError::resource("Function body allocation failed"))?;
+        body_source.push('\n');
+        source_text(&mut body_source, &body)?;
+        body_source.push('\n');
+        if params
+            .len()
+            .saturating_add(body_source.len())
+            .saturating_add(30)
+            > MAX_SOURCE
+        {
+            return Err(ScriptError::resource("Function source limit exceeded"));
+        }
+        let mut budget = self.regexp_budget();
+        let compiled = parser::Parser::dynamic_function(&params, &body_source, &mut budget);
+        self.steps = budget.steps;
+        self.allocated = self.allocated.saturating_add(budget.allocated);
+        let code = compiled?;
+        let prototype = self.constructor_prototype(new_target, "Function", doc)?;
+        // Environment 1 contains global lexical bindings over the global object.
+        let function = self.function_value(&code, 1)?;
+        Ok(self.constructed_prototype(function, prototype))
+    }
+
     pub(super) fn new_target(&mut self, mut env: usize) -> Result<Value> {
         loop {
             self.tick()?;
@@ -97,6 +168,8 @@ impl Runtime {
         let prototype = self.get(target, "prototype", doc)?;
         Ok(if js_object(&prototype) {
             prototype
+        } else if intrinsic == "Function" {
+            Value::Function(self.function_prototype)
         } else if intrinsic == "Array" {
             Value::Array(self.array_prototype.expect("Array intrinsic initialized"))
         } else {
@@ -227,7 +300,8 @@ impl Runtime {
                         )?;
                         Ok(self.constructed_prototype(instance, prototype))
                     }
-                    "Object" | "Function" => self.call(constructor, arguments, Value::Window, doc),
+                    "Function" => self.dynamic_function(arguments, new_target, doc),
+                    "Object" => self.call(constructor, arguments, Value::Window, doc),
                     "Event" | "CustomEvent" | "ToggleEvent" | "EventTarget" | "DOMException"
                     | "AbortController" | "AbortSignal" => {
                         if constructor != new_target {
@@ -245,6 +319,19 @@ impl Runtime {
     }
 }
 
+// The current parser uses scalar UTF-8 source. Never replace an unpaired
+// UTF-16 surrogate or reinterpret it as an escape outside its lexical context.
+fn source_text(output: &mut String, text: &JsString) -> Result<()> {
+    for value in char::decode_utf16(text.units().iter().copied()) {
+        output.push(value.map_err(|_| {
+            ScriptError::unsupported(
+                "unpaired surrogate in dynamic Function source is not implemented",
+            )
+        })?);
+    }
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -260,6 +347,106 @@ mod tests {
         }
         (runtime, doc)
     }
+    #[test]
+    fn dynamic_function_semantics_in_both_modes() {
+        for fixture in include_str!("../../tests/conformance/function-constructor.js")
+            .split("// CASE: ")
+            .skip(1)
+        {
+            let (name, source) = fixture.split_once('\n').unwrap();
+            for strict in [false, true] {
+                let (mut runtime, mut doc) = harness();
+                let script = format!("{}\n{source}", if strict { "'use strict';" } else { "" });
+                runtime
+                    .execute(&script, &mut doc)
+                    .unwrap_or_else(|error| panic!("{name} strict={strict}: {error}"));
+                assert!(runtime.frames.is_empty());
+                assert_eq!(runtime.calls, 0);
+                assert_eq!(runtime.stack_units, 0);
+            }
+        }
+    }
+    #[test]
+    fn dynamic_compilation_charges_success_and_failure_without_resetting_the_caller() {
+        for (params, body) in [
+            ("a=()=>new.target,...rest", "\nreturn a;\n"),
+            ("a/*comment*/", "\nreturn /[)]/.test(a);\n"),
+        ] {
+            let fresh = |steps, heap_limit| regexp::Budget {
+                steps,
+                allocated: 0,
+                heap_limit,
+                stack_limit: 16,
+            };
+            let mut budget = fresh(MAX_STEPS, MAX_HEAP);
+            parser::Parser::dynamic_function(params, body, &mut budget).unwrap();
+            let work = MAX_STEPS - budget.steps;
+            let allocation = budget.allocated;
+            assert!(work > 0 && allocation > 0);
+            for limit in 0..work {
+                let mut budget = fresh(limit, MAX_HEAP);
+                let error =
+                    parser::Parser::dynamic_function(params, body, &mut budget).unwrap_err();
+                assert!(error.is_resource_limit(), "{params}: {limit}: {error}");
+                assert_eq!(budget.steps, 0);
+            }
+            for limit in [0, 1, allocation / 2, allocation - 1] {
+                let mut budget = fresh(MAX_STEPS, limit);
+                let error =
+                    parser::Parser::dynamic_function(params, body, &mut budget).unwrap_err();
+                assert!(error.is_resource_limit(), "{params}: heap {limit}: {error}");
+                assert!(budget.allocated > limit);
+            }
+        }
+        let (mut runtime, mut doc) = harness();
+        for body in ["return 1", "return ("] {
+            runtime.steps = 1000;
+            let before = runtime.allocated;
+            let result = runtime.dynamic_function(
+                vec![Value::String(body.into())],
+                Runtime::native("Function", Value::Window),
+                &mut doc,
+            );
+            assert_eq!(result.is_ok(), body == "return 1");
+            assert!(runtime.steps < 1000);
+            assert!(runtime.allocated > before);
+        }
+        for source in [
+            "while(true){try{Function('return (');}catch(e){}}",
+            "var text='return Function(text)()';Function(text)();",
+            "function recur(){Function('recur()')();}recur();",
+            "var a={toString:function(){return Function(a);}};Function(a);",
+        ] {
+            let (mut runtime, mut doc) = harness();
+            let error = runtime.execute(source, &mut doc).unwrap_err();
+            assert!(error.is_resource_limit(), "{source}: {error}");
+            assert_eq!(runtime.calls, 0);
+            assert_eq!(runtime.stack_units, 0);
+            assert!(runtime.frames.is_empty());
+        }
+        let (mut runtime, mut doc) = harness();
+        runtime.allocated = MAX_HEAP;
+        let error = runtime
+            .dynamic_function(vec![], Runtime::native("Function", Value::Window), &mut doc)
+            .unwrap_err();
+        assert!(error.is_resource_limit());
+    }
+
+    #[test]
+    fn dynamic_source_preserves_scalars_and_refuses_unpaired_surrogates_explicitly() {
+        let (mut runtime, mut doc) = harness();
+        let body = JsString::from(vec![b'/' as u16, b'/' as u16, 0xd800]);
+        let error = runtime
+            .dynamic_function(
+                vec![Value::String(body)],
+                Runtime::native("Function", Value::Window),
+                &mut doc,
+            )
+            .unwrap_err();
+        assert!(error.is_unsupported());
+        assert!(error.message.contains("unpaired surrogate"));
+    }
+
     #[test]
     fn construction_semantics_in_both_modes() {
         for fixture in include_str!("../../tests/conformance/construction.js")

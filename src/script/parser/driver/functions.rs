@@ -3,6 +3,7 @@ use expressions::Frame as Expression;
 
 pub(super) enum Frame {
     Start(bool),
+    Dynamic,
     Default(State, String),
     Body(State),
     Arrow(Vec<Parameter>),
@@ -13,6 +14,7 @@ pub(super) struct State {
     saved: Context,
     unique: bool,
     arrow: bool,
+    dynamic: bool,
 }
 struct Context {
     loop_depth: usize,
@@ -58,8 +60,24 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
                 saved,
                 unique,
                 arrow: false,
+                dynamic: false,
             };
             if p.eat(")") {
+                function_body(p, state)
+            } else {
+                parameters(p, state)
+            }
+        }
+        Frame::Dynamic => {
+            let saved = Context::enter(p, false);
+            let state = State {
+                params: Vec::new(),
+                saved,
+                unique: false,
+                arrow: false,
+                dynamic: true,
+            };
+            if p.done() {
                 function_body(p, state)
             } else {
                 parameters(p, state)
@@ -68,7 +86,7 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
         Frame::Default(mut state, name) => {
             let parameter = p.parameter(name, Some(expression(output)))?;
             push(&mut state.params, parameter, &mut p.compile_budget)?;
-            if parameter_end(p)? {
+            if parameter_end(p, state.dynamic)? {
                 function_body(p, state)
             } else {
                 parameters(p, state)
@@ -82,6 +100,7 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
                 saved,
                 unique: true,
                 arrow: true,
+                dynamic: false,
             };
             if p.eat("{") {
                 child(Frame::Body(state), statements::BodyFrame::start(true, true))
@@ -105,19 +124,25 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
         }
     }
 }
-fn parameter_end(p: &mut Parser<'_>) -> Result<bool> {
-    if p.eat(")") {
+fn parameter_end(p: &mut Parser<'_>, dynamic: bool) -> Result<bool> {
+    if if dynamic { p.done() } else { p.eat(")") } {
         return Ok(true);
     }
     p.expect(",")?;
-    Ok(p.eat(")"))
+    Ok(if dynamic { p.done() } else { p.eat(")") })
 }
 fn parameters(p: &mut Parser<'_>, mut state: State) -> Result<Transition> {
     loop {
         if p.is(".") {
-            let parameter = p.rest_parameter()?;
+            let parameter = p.rest_parameter(state.dynamic)?;
             push(&mut state.params, parameter, &mut p.compile_budget)?;
-            p.expect(")")?;
+            if state.dynamic {
+                if !p.done() {
+                    return Err(p.error("unexpected token after rest parameter"));
+                }
+            } else {
+                p.expect(")")?;
+            }
             return function_body(p, state);
         }
         let name = p.binding_identifier()?;
@@ -126,16 +151,19 @@ fn parameters(p: &mut Parser<'_>, mut state: State) -> Result<Transition> {
         }
         let parameter = p.parameter(name, None)?;
         push(&mut state.params, parameter, &mut p.compile_budget)?;
-        if parameter_end(p)? {
+        if parameter_end(p, state.dynamic)? {
             return function_body(p, state);
         }
     }
 }
 fn function_body(p: &mut Parser<'_>, state: State) -> Result<Transition> {
+    if state.dynamic {
+        return Ok(Transition::Done(Output::Parameters(state)));
+    }
     p.expect("{")?;
     child(Frame::Body(state), statements::BodyFrame::start(true, true))
 }
-fn finish(p: &mut Parser<'_>, state: State, body: Body) -> Result<Transition> {
+pub(super) fn finish(p: &mut Parser<'_>, state: State, body: Body) -> Result<Transition> {
     let strict = p.strict;
     let non_simple = state.params.iter().any(|p| !p.is_simple());
     if state.arrow {

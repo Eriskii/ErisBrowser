@@ -22,6 +22,8 @@ DIRECTORIES = {
 STRING_CONCAT_DIRECTORIES = {'String/prototype/concat': 22}
 REFLECT_CONSTRUCTION_DIRECTORIES = {'Reflect/apply': 9, 'Reflect/construct': 10}
 NEW_TARGET_DIRECTORIES = {'expressions/new.target': 14}
+FUNCTION_CONSTRUCTOR_DIRECTORIES = {'Function': 179, 'Function/length': 13,
+                                    'Function/internals/Construct': 6, 'Function/internals/Call': 2}
 REGEXP_DIRECTORIES = {
     'RegExp/prototype/exec': 79, 'RegExp/prototype/test': 45,
     'RegExp/prototype/toString': 9, 'RegExp/prototype/source': 12,
@@ -79,6 +81,7 @@ SYMBOL_DIRECTORIES = {
     'Symbol/unscopables': 2,
 }
 PROFILES = {'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
+            'function-constructor': FUNCTION_CONSTRUCTOR_DIRECTORIES,
             'reflect-construction': REFLECT_CONSTRUCTION_DIRECTORIES, 'new-target': NEW_TARGET_DIRECTORIES,
             'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
             'rest-parameters': REST_PARAMETER_DIRECTORIES,
@@ -91,7 +94,7 @@ PROFILES = {'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECT
             'compound-assignment': COMPOUND_ASSIGNMENT_DIRECTORIES,
             'addition': ADDITION_DIRECTORIES, 'logical-assignment': LOGICAL_ASSIGNMENT_DIRECTORIES, 'uri': URI_DIRECTORIES, 'relational': RELATIONAL_DIRECTORIES, 'equality': EQUALITY_DIRECTORIES, 'labels': LABELS_DIRECTORIES}
 PROFILE_ROOTS = {'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
-                 'reflect-construction': 'test/built-ins', 'new-target': 'test/language',
+                 'function-constructor': 'test/built-ins', 'reflect-construction': 'test/built-ins', 'new-target': 'test/language',
                  'template-literal': 'test/language', 'functions': 'test/language',
                  'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins',
                  'global-values': 'test/built-ins', 'array-sort': 'test/built-ins',
@@ -221,7 +224,7 @@ def import_corpus(output, profile='string-json'):
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
         sources = dict(zip(paths, pool.map(lambda path: fetch(raw + path), paths)))
     harness = {'assert.js', 'sta.js'}
-    if profile in {'reflect-construction', 'new-target', 'string-concat', 'symbols', 'template-literal', 'functions', 'rest-parameters', 'is-prototype-of', 'identifiers', 'compound-assignment', 'addition', 'logical-assignment', 'uri', 'relational', 'equality', 'labels'}:
+    if profile in {'function-constructor', 'reflect-construction', 'new-target', 'string-concat', 'symbols', 'template-literal', 'functions', 'rest-parameters', 'is-prototype-of', 'identifiers', 'compound-assignment', 'addition', 'logical-assignment', 'uri', 'relational', 'equality', 'labels'}:
         # These unchanged helpers support the assertion-integrity preflight,
         # even when no selected test requests them directly.
         harness.update({'propertyHelper.js', 'compareArray.js'})
@@ -243,6 +246,7 @@ def import_corpus(output, profile='string-json'):
     if sum(map(len, sources.values())) > MAX_TOTAL:
         raise ValueError('Test262 selection exceeds aggregate import limit')
     scope = {
+        'function-constructor': 'all direct .js files in built-ins/Function, Function/length, Function/internals/Construct and Function/internals/Call; no implementation',
         'reflect-construction': 'all direct .js files in built-ins/Reflect/apply and Reflect/construct; no implementation',
         'new-target': 'all direct .js files in language/expressions/new.target; no implementation',
         'string-concat': 'all direct .js files in built-ins/String/prototype/concat; no implementation',

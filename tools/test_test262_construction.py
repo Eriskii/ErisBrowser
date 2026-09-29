@@ -23,8 +23,8 @@ class ConstructionCorpusTests(unittest.TestCase):
         selected = {}
         for profile, features in runner.PROFILE_FEATURES.items():
             self.assertTrue(additions <= features, profile)
-            if profile in {'reflect-construction', 'new-target'}:
-                continue  # These already admitted the operations at the prior checkpoint.
+            if profile in {'function-constructor', 'reflect-construction', 'new-target'}:
+                continue  # Later selections are outside the historical policy delta.
             prior = features - additions
             if profile == 'symbols':
                 prior.add('Reflect')

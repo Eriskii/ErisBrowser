@@ -48,7 +48,8 @@ SYMBOL_FEATURES = SUPPORTED_FEATURES | {
     'computed-property-names', 'object-methods',
 }
 CONSTRUCTION_FEATURES = SYMBOL_FEATURES | FUNCTION_FEATURES | {'new.target', 'Reflect.apply', 'Reflect.construct', 'template'}
-PROFILE_FEATURES = {'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+FUNCTION_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REST_PARAMETER_FEATURES
+PROFILE_FEATURES = {'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'reflect-construction': CONSTRUCTION_FEATURES, 'new-target': CONSTRUCTION_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -989,6 +990,21 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
             ('concat-utf16', r"var text='\ud800'.concat('\udfff');", 'text.charCodeAt(1)', '0xdfff', '0xfffd'),
             ('concat-null', "assert.sameValue(typeof String.prototype.concat,'function');var caught;try{String.prototype.concat.call(null);}catch(e){caught=e;}", 'caught instanceof TypeError', 'true', 'false'),
             ('concat-name', '', 'String.prototype.concat.name', "'concat'", "'wrong'"),
+        ]
+        for mode in ('sloppy', 'strict'):
+            for name, setup, actual, good, bad in pairs:
+                for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                    variants.append((name + suffix, setup + f'assert.sameValue({actual},{value});', expected, mode))
+    if profile == 'function-constructor':
+        pairs = [
+            ('dynamic-call', "var f=Function('a','return a+1');", 'f(3)', '4', '5'),
+            ('dynamic-global', "var x=1;function outer(){var x=2;return Function('return x');}", 'outer()()', '1', '2'),
+            ('dynamic-strict', "var f=Function('return this');", 'f()===globalThis', 'true', 'false'),
+            ('dynamic-target', "var F=Function('return new.target');", '(new F())===F', 'true', 'false'),
+            ('dynamic-prototype', "var B=(function(){}).bind(null);Object.defineProperty(B,'prototype',{value:1});var f=Reflect.construct(Function,[''],B);", 'Object.getPrototypeOf(f)===Function.prototype', 'true', 'false'),
+            ('dynamic-name', "var anonymous=7;", "Function('return anonymous')()", '7', '8'),
+            ('dynamic-boundary', "var caught;try{Function('/*','*/ ) {');}catch(e){caught=e;}", 'caught instanceof SyntaxError', 'true', 'false'),
+            ('dynamic-order', "var log='',a={toString:function(){log+='a';return ')';}},b={toString:function(){log+='b';return '';}};try{Function(a,b);}catch(e){assert.sameValue(e instanceof SyntaxError,true);}", 'log', "'ab'", "'a'"),
         ]
         for mode in ('sloppy', 'strict'):
             for name, setup, actual, good, bad in pairs:

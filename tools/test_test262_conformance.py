@@ -2285,7 +2285,7 @@ class IntegrityTests(unittest.TestCase):
         rest = sample(b'/*---\nfeatures: [rest-parameters]\n---*/\nfunction f(...args){}')
         self.assertIsNone(runner.unsupported_reason(rest, runner.REST_PARAMETER_FEATURES))
         for profile, policy in runner.PROFILE_FEATURES.items():
-            if profile != 'rest-parameters':
+            if profile not in {'rest-parameters', 'function-constructor'}:
                 self.assertIn('rest-parameters', runner.unsupported_reason(rest, policy))
         for feature in ('destructuring-binding', 'import.meta', 'eval', 'async-functions', 'generators'):
             case = sample(('/*---\nfeatures: [' + feature + ']\n---*/\n').encode())

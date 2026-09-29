@@ -1,5 +1,9 @@
 # Reflect calls, constructor targets and new.target
 
+The later [dynamic Function checkpoint](function-constructor.md) updates current
+counts and records remaining string-conversion failures. The measurements below
+retain this earlier checkpoint's source and policy boundaries.
+
 The later [constructor-policy checkpoint](constructor-policy.md) fixes Symbol as
 an alternate constructor target and expands the older feature policies. The
 measurements and policy boundaries below describe this original checkpoint.

@@ -1,5 +1,12 @@
 # Compatibility status
 
+[Dynamic ordinary Function construction](../tests/conformance/function-constructor.md)
+now uses global scope, separate parameter/body grammar and the caller's remaining
+resource budgets. Its new 200-source selection records 241 passed and 50 unsupported
+modes; older selections gain 35 passes while two string-slice cases now expose
+function-string conversion failures. Function source printing, literal unpaired
+surrogates in generated source and the wider Function family remain incomplete.
+
 The [Symbol constructor/policy follow-up](../tests/conformance/constructor-policy.md)
 accepts Symbol as an alternate constructor target while preserving its throwing
 construction behavior. The Symbol profile now records 182 passed, six failed and
@@ -9,7 +16,7 @@ admitted and pass; two required this implementation fix, while 86 already passed
 [Constructor targets and Reflect calls](../tests/conformance/construction.md) cover
 `new.target`, `Reflect.apply`, `Reflect.construct`, lexical arrows, bound forwarding
 and supported ECMAScript allocation prototypes. The two complete pinned selections
-record 52 passed, four failed and ten unsupported modes. Date, dynamic Function,
+now record 54 passed, four failed and eight unsupported modes. Date,
 classes/super, tagged templates, alternate Web IDL targets and broader native
 constructor conformance remain incomplete.
 
@@ -48,7 +55,7 @@ This is an implementation inventory, not a conformance certificate. A feature li
 | Paint | CPU display lists, nested rectangular overflow clips, rounded backgrounds/borders, alpha blending, cached glyphs, raster images, separate viewport-fixed paint/hit coordinates, group opacity with deferred bounded premultiplied RGBA16 surfaces, scrolling and zoom | Full compositor, rounded clipping masks/separate overflow axes, filters, masks, shadows, gradients, animations, hardware acceleration, color management |
 | Images | PNG, JPEG, first-frame GIF/WebP, BMP via image codecs; bounded SVG subset | Animated image playback, AVIF, complete SVG, image orientation/media fidelity and full responsive image selection |
 | SVG | Basic shapes, paths, fill/stroke, viewBox, transforms, simple text | Full SVG/CSS integration, filters, patterns, gradients, masks, markers, foreignObject, animation, external resource references |
-| JavaScript | Primitive values, UTF-16 strings, untagged interpolated templates, computed object keys/methods/accessors and static prototype setters, arrays/objects, lexical initialization and loop scopes, operators including comma expressions, strict directives and reference/receiver rules, control flow including switch and do/while, closures/functions/arrows with identifier default/rest parameters, constructors/this/instanceof and basic prototypes, ordinary data/accessor descriptors, for-in enumeration, deletion and bound functions, mapped/unmapped arguments, throw/try/catch/finally, selected builtins, DOM bindings and events | Full ECMAScript, classes/modules, destructured parameters, dynamic eval/Function, complete Annex B behavior, complete prototypes/exotic descriptors/coercion, async/promises, complete Error constructors/prototypes/stacks, tagged templates, complete String methods/generic receivers/property behavior, fractional/large nondecimal Number.toString, JIT and GC |
+| JavaScript | Primitive values, UTF-16 strings, untagged interpolated templates, computed object keys/methods/accessors and static prototype setters, arrays/objects, lexical initialization and loop scopes, operators including comma expressions, strict directives and reference/receiver rules, control flow including switch and do/while, closures/functions/arrows with identifier default/rest parameters, bounded dynamic ordinary Function construction, constructors/this/instanceof and basic prototypes, ordinary data/accessor descriptors, for-in enumeration, deletion and bound functions, mapped/unmapped arguments, throw/try/catch/finally, selected builtins, DOM bindings and events | Full ECMAScript, classes/modules, destructured parameters, dynamic eval, complete Function source/UTF-16 handling, complete Annex B behavior, complete prototypes/exotic descriptors/coercion, async/promises, complete Error constructors/prototypes/stacks, tagged templates, complete String methods/generic receivers/property behavior, fractional/large nondecimal Number.toString, JIT and GC |
 | RegExp | Custom UTF-16 non-Unicode literals/constructor, d/g/i/m/s/y flags, captures/named groups, alternatives/classes/quantifiers, anchors/boundaries, lookahead/backreferences, exec/test/lastIndex, String match/search/replace/split | Unicode u/v modes and properties/sets, lookbehind, modifier groups, duplicate/non-ASCII group names, several legacy escape forms, Symbol hooks/species and complete RegExp compatibility |
 | JSON | Strict JSON grammar, ordered object properties, numeric formatting, UTF-16 strings including lone-surrogate round trips, toJSON, primitive unboxing, replacer callbacks/allowlists, code-unit indentation, cycle errors, postorder reviver with primitive source context | DOM/window serialization, complete source-context semantics, BigInt-related behavior and rawJSON APIs remain unsupported |
 | Events | Event/CustomEvent/EventTarget constructors, dispatchEvent, capture/target/bubble phases, fixed paths, listener identity/mutation, once/passive/handleEvent, cancellation and propagation, inline handlers, trusted native and synthetic author events, AbortController/AbortSignal reasons and listener removal, readiness/click/input hooks, ToggleEvent, exact reentrant disclosure tracking and bounded native idle continuation | Shadow DOM retargeting, AbortSignal.any/timeout and broader cancellation, specialized UI/pointer/touch/keyboard events, complete activation/default actions, asynchronous tasks/microtasks, full Window/body handler forwarding and event lifecycle |

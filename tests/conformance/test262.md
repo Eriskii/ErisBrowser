@@ -1,5 +1,9 @@
 # Pinned Test262 String and JSON selection
 
+The later [dynamic Function checkpoint](function-constructor.md) updates current
+counts and records remaining string-conversion failures. The measurements below
+retain this earlier checkpoint's source and policy boundaries.
+
 The [constructor-policy follow-up](constructor-policy.md) admits Reflect call/construct
 and `new.target` metadata. Current results: **558 passed, 94 unsupported**.
 The inventory and source bytes are unchanged. Measurements and policy descriptions

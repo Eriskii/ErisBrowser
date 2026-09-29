@@ -1808,7 +1808,6 @@ impl Runtime {
             let constructor = Self::native(name, Value::Window);
             let prototype = self.prototypes[name];
             let Value::Object(properties) = self.object_ordered([
-                ("name".into(), Value::String(name.into())),
                 (
                     "length".into(),
                     Value::Number(match name {
@@ -1817,6 +1816,7 @@ impl Runtime {
                         _ => 1.0,
                     }),
                 ),
+                ("name".into(), Value::String(name.into())),
                 (
                     "prototype".into(),
                     if name == "Function" {
@@ -3717,11 +3717,11 @@ impl Runtime {
         self.charge_function_code_copy(code)?;
         let id = self.functions.len();
         let Value::Object(properties) = self.object_ordered([
+            ("length".into(), Value::Number(code.length() as f64)),
             (
                 "name".into(),
                 Value::String(code.name.clone().unwrap_or_default().into()),
             ),
-            ("length".into(), Value::Number(code.length() as f64)),
         ])?
         else {
             unreachable!()
@@ -8479,9 +8479,7 @@ impl Runtime {
         }
         if native.receiver == Value::Window {
             if name == "Function" {
-                return Err(ScriptError::unsupported(
-                    "dynamic Function construction is not implemented",
-                ));
+                return self.dynamic_function(args, Self::native("Function", Value::Window), doc);
             }
             if name.ends_with("Error") && self.native_properties.contains_key(name) {
                 let message = if matches!(arg(0), Value::Undefined) {
@@ -14554,11 +14552,11 @@ mod tests {
     fn intrinsic_properties_are_hidden_and_function_prototype_is_callable() {
         let (mut runtime, mut document) = upstream_harness();
         runtime.execute("function F(){}F.extra=1;assert.compareArray(Object.keys(F),['extra']);assert.compareArray(Object.keys(F.prototype),[]);assert.compareArray(Object.keys(Object.prototype),[]);assert.compareArray(Object.keys(new Error('bad')),[]);assert.sameValue(JSON.stringify(new Error('bad')),'{}');assert.sameValue(new Error().hasOwnProperty('message'),false);assert.sameValue(new Error('').hasOwnProperty('message'),true);assert.sameValue(typeof Function.prototype,'function');assert.sameValue(Function.prototype(),undefined);assert.sameValue(Object.getPrototypeOf(F),Function.prototype);assert.sameValue(F instanceof Function,true);assert.sameValue(Function.prototype instanceof Function,false);assert.throws(TypeError,function(){String.prototype.toString.call(1);});", &mut document).unwrap();
-        assert!(
+        assert_eq!(
             runtime
-                .execute("new Function('return 1')", &mut document)
-                .unwrap_err()
-                .is_unsupported()
+                .execute("(new Function('return 1'))()", &mut document)
+                .unwrap(),
+            Value::Number(1.0)
         );
     }
 

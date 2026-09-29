@@ -117,7 +117,7 @@ The [validation record](docs/VALIDATION.md) lists observed results and their lim
 A separate [function inventory](tests/conformance/test262-functions.md) retains
 663 unchanged Test262 sources and 1,131 required variants. Default parameters,
 prototype membership, Window.self, array sorting, identifier parsing and bounded
-grammar continuations and constructor coverage bring it to 515 passing variants, 165 more than the initial
+grammar continuations and dynamic constructor coverage bring it to 546 passing variants, 196 more than the initial
 measurement with no lost passes. Both original 32-nested-function tests now pass.
 The remaining 616 variants are unsupported; its healthy baseline runs in CI.
 
@@ -248,6 +248,16 @@ Symbol now works as an alternate constructor target while its own construction
 still throws. The [reviewed policy expansion](tests/conformance/constructor-policy.md)
 enables 88 older Test262 modes: 86 already passed, and two pass after the Symbol
 fix. All 7,231 modes preserve prior passes; all 2,008 assertion controls verify.
+
+
+[Dynamic Function construction](tests/conformance/function-constructor.md) now
+compiles supported ordinary functions in global scope with separate parameter/body
+parsing and shared resource limits. Its complete 200-source pinned selection gains
+157 passes, reaching 241 passed and 50 unsupported modes; older selections gain
+35 more passes. Two string tests now reach retained failures in function string
+conversion. All 7,522 mode fingerprints and prior passes are preserved, and all
+2,072 assertion controls verify. Function source printing and literal unpaired
+surrogates in generated source remain incomplete.
 
 ## Implementation
 

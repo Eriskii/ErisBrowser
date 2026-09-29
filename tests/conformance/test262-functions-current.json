@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "15281ebe6e6c980c547f113563df7d2b5d346ac0db5c9c4aca75dbb6fc60b330",
   "runner_policy_sha256": "012c455ee75d314d1a222c23205bf5cb5c48058ecdf5a067270bb6cff73f0089",
-  "binary_sha256": "e623176f34821ca5073e2e96e5a5546978e75b0ab6a69ddde059954e37b25805",
+  "binary_sha256": "b0bc94a4e1ef2c134e1412ef9b873967d38f9ba2cb7548f0c91af2634780b158",
   "cases": {
     "test/language/expressions/arrow-function/ArrowFunction_restricted-properties.js:sloppy": {
       "status": "passed",
@@ -3670,7 +3670,7 @@
       "source_sha256": "c62d9acc7be2793e2a8f65dc76072358d06c4b70fd4b6d9923b5c83b172762a5"
     },
     "test/language/statements/function/13.0-12-s.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "09fb780ddc2814c0b50db8457ed4bd8fc58a8b77d48b4d12ecf00edad72afd05",
       "source_sha256": "78dc248a3bc06895d0b17022d1c0e25d5e5e13106280862761b4e59dd17ff4ca"
     },
@@ -3680,7 +3680,7 @@
       "source_sha256": "fcba1b5681d484392dc6a0034bd70ca893de4e752d10ab7e1a4596ed258cc691"
     },
     "test/language/statements/function/13.0-14-s.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "f5d56404f3f8b55b6c16ec1446076fa19dbd337cd82049cfcb093c35038937fa",
       "source_sha256": "bbcf0d397d47e6d5cb44bbb7a2120df03d4ff02d13c576b93d539613bb085831"
     },
@@ -3710,7 +3710,7 @@
       "source_sha256": "9b0353ac114da451af1020c8dc2215192b1b6c7ae5125aa0a4e18eefe0cdf78d"
     },
     "test/language/statements/function/13.0_4-17gs.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "d266b018eb79351df582f93f06d182b977211c4070016a01e0ed4e41396c6cd2",
       "source_sha256": "947eddddc0bdcd38d137d6f3157e849925dcbb012872ba796fb06ebf5f730d0d"
     },
@@ -3820,52 +3820,52 @@
       "source_sha256": "7b0f65633ebaff859ade90375e4c84caa63d7f3fdef88b89f1d98b8333872951"
     },
     "test/language/statements/function/13.2-10-s.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "495aa67011048812644c095b715157e5e71767bc1275360fb8a6bb23a521ed81",
       "source_sha256": "95af5565cae50f04d9e210f34a2ab6b6ac43910eafbdb74e5fde6f101a3f9879"
     },
     "test/language/statements/function/13.2-10-s.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "eb5662bf1cefc869e4a8e43ef19ec946f5fe7e09ae808c33d5df27fd2accc5c2",
       "source_sha256": "95af5565cae50f04d9e210f34a2ab6b6ac43910eafbdb74e5fde6f101a3f9879"
     },
     "test/language/statements/function/13.2-11-s.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "7ba321f49cb12baf4f789817612f8ff20afd5c7f8c614bb62fc6bb9f3799006d",
       "source_sha256": "de698aefb220557ed979d6e828e8b48553c3a4b5fb34e3d59b49886ddd4aa881"
     },
     "test/language/statements/function/13.2-11-s.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "12664c4d3b9eb996ac89bd63f8fdbde4ec80537d85f223dc18fbb4704230cf70",
       "source_sha256": "de698aefb220557ed979d6e828e8b48553c3a4b5fb34e3d59b49886ddd4aa881"
     },
     "test/language/statements/function/13.2-12-s.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "f964dc46d6299dd5f423d8b2a851768b247f6733ae297f3dc996ec20ee42d213",
       "source_sha256": "5fed50a5f38137bd060b2b770c26270dc173e627733f59a454170983973b5f26"
     },
     "test/language/statements/function/13.2-12-s.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "22a407d483bb485c32c31634155a0d323fa2fea15d2fcd45b934a253926871d8",
       "source_sha256": "5fed50a5f38137bd060b2b770c26270dc173e627733f59a454170983973b5f26"
     },
     "test/language/statements/function/13.2-13-s.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "b34c7fe83ae9154f4dce8f107cafd537088b704d8b3efcc1cd51bc40e58b5025",
       "source_sha256": "a59ecd66b6b32421b711b049dcc5212c9fafedf7a04deb35364add114ac1fde1"
     },
     "test/language/statements/function/13.2-13-s.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "b405c2f2b120834840fe70d5258337cbb124efe1607fa823325cad498b0bead9",
       "source_sha256": "a59ecd66b6b32421b711b049dcc5212c9fafedf7a04deb35364add114ac1fde1"
     },
     "test/language/statements/function/13.2-14-s.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "c0b712645f4f6b10e7ca0dfadac10c0afbef54936b8c8fde91528ebcc81e91fd",
       "source_sha256": "39af7d08f248e3c289025161e95f1648dd86be95f771371f8b1cf0fe3d714133"
     },
     "test/language/statements/function/13.2-14-s.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "d565ca441bd41fe9eab71a726f1aee997bb0cae49a9df2a45e020fb6c238184d",
       "source_sha256": "39af7d08f248e3c289025161e95f1648dd86be95f771371f8b1cf0fe3d714133"
     },
@@ -3880,22 +3880,22 @@
       "source_sha256": "d091d9866555694ad0fa3065719d89b509b4f5cc1ec9cafe92d9a2ac6b70a9c1"
     },
     "test/language/statements/function/13.2-15-s.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "b05959e7120aee2f3f1dd8953a06bb6813ef7b95e3775e07a80279c50202974e",
       "source_sha256": "d6f0781c7bb5feab822a535ca448df5715c6f3f1acde202b2052dadb13f51789"
     },
     "test/language/statements/function/13.2-15-s.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "ae5725bb25d1bdb37547ec2cd653e4fd10c14a1dc2c92440bf6d6d2f74d5e65c",
       "source_sha256": "d6f0781c7bb5feab822a535ca448df5715c6f3f1acde202b2052dadb13f51789"
     },
     "test/language/statements/function/13.2-16-s.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "4ad3552e49ca003faae1799f5a2fffefaf2192b53696198ec7ef337b51e92679",
       "source_sha256": "6ae0940fad5ba55dabf52a17b521ba00590134b37b4b2dfdfbab0540e76ec285"
     },
     "test/language/statements/function/13.2-16-s.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "75c3f80445c096d94649d608a4d03c279406a9ce3e6fdfbd327e4ccb4978c0fd",
       "source_sha256": "6ae0940fad5ba55dabf52a17b521ba00590134b37b4b2dfdfbab0540e76ec285"
     },
@@ -3910,12 +3910,12 @@
       "source_sha256": "b73e1ba7200ebb761777257645d7b135f7a38aadb7c63b63305aef0371296eab"
     },
     "test/language/statements/function/13.2-17-s.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "4b9ee4b26a21a17cb6e7492e3e74e6f39a5e741d10d53dc0987189f30bac46f3",
       "source_sha256": "ac03412add9cd51d40814cc3e9ff05700abe594d01c1998eddabe051fe844f95"
     },
     "test/language/statements/function/13.2-17-s.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "ec29884d184f93098cde67dd6c956636abd4cf5cf1d976a73ace0a8fe163e6f1",
       "source_sha256": "ac03412add9cd51d40814cc3e9ff05700abe594d01c1998eddabe051fe844f95"
     },
@@ -3930,12 +3930,12 @@
       "source_sha256": "e6bafd2044995671a5a73820980a62b2c5973f55338cf28b53980dd5419c1d12"
     },
     "test/language/statements/function/13.2-18-s.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "f612d89748f699bd0f0acbb584382a62361d4584d20d5f584fd06b459f337954",
       "source_sha256": "b4374236412ac14b2b54230af43e3dda6d300b98dc9779ed7d690d4e205f565c"
     },
     "test/language/statements/function/13.2-18-s.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "29a89c64dbc2243b0ccf8e4ec9c9224df4be2561f0b8b5d507f98b8dfdf0da9a",
       "source_sha256": "b4374236412ac14b2b54230af43e3dda6d300b98dc9779ed7d690d4e205f565c"
     },
@@ -3945,12 +3945,12 @@
       "source_sha256": "ae11dab93af21ba595e8670c6f329e5b43cf706a7cd7c22680a7a92131cce2f7"
     },
     "test/language/statements/function/13.2-19-s.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "d51de7bdb8e15172f992cbad0fbb710d084b551a141ab6cfc6cb31496bff3176",
       "source_sha256": "5a999d246e5ddb140ed86963ec72c36a328acb391f291400bd83e65bb9c2ae38"
     },
     "test/language/statements/function/13.2-19-s.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "edca9579d5476635fec2cc24c433799aad0c79fbb7bfaa8254f6e73b93d23aca",
       "source_sha256": "5a999d246e5ddb140ed86963ec72c36a328acb391f291400bd83e65bb9c2ae38"
     },
@@ -3960,7 +3960,7 @@
       "source_sha256": "143b14ebdd350e320611d7d65bdc3d2a3eec39c4d313d5e7ff4d65079c187cbc"
     },
     "test/language/statements/function/13.2-20-s.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "086c6cadcaa16ca2039a147ea240a4af43d339c8ff27684b3c1a7d1ce469f03a",
       "source_sha256": "f88e43a8c136b8943075ddd3495140632ea4f014411fe5711dc9cf2f5f497a5f"
     },
@@ -4030,27 +4030,27 @@
       "source_sha256": "d50e73042728160bc6a2ad131b4971ff60387efae2ad7da99a0e996cb05cddb3"
     },
     "test/language/statements/function/13.2-5-s.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "eb63adbcd463f8afbb9dfb2d1a6aaf356e97923eff67a39c25456c8dee72b69d",
       "source_sha256": "83cd1bb7d3570e9d5ce52beda0a82e20b6cdf0b73cb4cc8157105c524db6bdc2"
     },
     "test/language/statements/function/13.2-6-s.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "89ca63e05c94ae704f8da6758043d8f9fcea7aa5942f75498d6901d73582382e",
       "source_sha256": "e84a311507fec654c8cb879e584331641993ede3cfdf9c287f8cb564e4a3813d"
     },
     "test/language/statements/function/13.2-7-s.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "6ddbbbd895f31baafbf7d674ad422271d21470d70a95f2f50a5ff5c41e11146a",
       "source_sha256": "1550bfc8b9ef54b1e7b2e9a7a4b99f80ac7edea1bab06cc53b9f2688ffbdae36"
     },
     "test/language/statements/function/13.2-8-s.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "be19777f047876b28f9cd388de179612766698aea282d289c0394a48bd41e68b",
       "source_sha256": "cd80afcd1aa9103d942406b0b9b2b0d65b26a10c9e04f5a35b7cf52a04fbf076"
     },
     "test/language/statements/function/13.2-9-s.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "6a9c6efb0ded73be67ccd9bc411b048aba221be1ad6861c10b5cd1553ff19c06",
       "source_sha256": "6c1a90499013305791025b1dec200407881553832fd14b0d708de5bacf85fb39"
     },
@@ -4585,12 +4585,12 @@
       "source_sha256": "6a6ce45ec7562c11794fa023567024959b588bf7d8c08c4f4caa8d7c27a11ab7"
     },
     "test/language/statements/function/S13.2.2_A8_T3.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "8e975540b8ea1357aeefea2b2b076a64192e34f74880c4eb3aa7db949b8bc39d",
       "source_sha256": "b03c69a8cf22f03f4e3f7a92c6b17716f71f026ad7a67e31c2a34a9551bc4656"
     },
     "test/language/statements/function/S13.2.2_A8_T3.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "ad1db14973db160badf4514717ac68fca6287a4416cb8958b69bfab0dc67ce17",
       "source_sha256": "b03c69a8cf22f03f4e3f7a92c6b17716f71f026ad7a67e31c2a34a9551bc4656"
     },

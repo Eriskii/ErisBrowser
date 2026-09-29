@@ -62,13 +62,13 @@ impl<'source> Parser<'source> {
         parser.unit.finish(&mut parser.compile_budget)
     }
     fn parse_context(source: &'source str, function: bool, strict: bool) -> Result<Self> {
-        let budget = regexp::Budget {
+        let mut budget = regexp::Budget {
             steps: MAX_STEPS,
             allocated: 0,
             heap_limit: MAX_HEAP,
             stack_limit: 16,
         };
-        let mut parser = Self::start(source, function, strict, budget)?;
+        let mut parser = Self::start(source, function, strict, &mut budget)?;
         parser.parse_body()?;
         Ok(parser)
     }
@@ -76,16 +76,21 @@ impl<'source> Parser<'source> {
         source: &'source str,
         function: bool,
         strict: bool,
-        mut budget: regexp::Budget,
+        budget: &mut regexp::Budget,
     ) -> Result<Self> {
         if source.len() > MAX_SOURCE {
             return Err(ScriptError::resource("script source limit exceeded"));
         }
         Ok(Self {
-            tokens: lex(source, &mut budget)?,
+            tokens: lex(source, budget)?,
             source,
             lex_work: source.len(),
-            compile_budget: budget,
+            compile_budget: regexp::Budget {
+                steps: budget.steps,
+                allocated: budget.allocated,
+                heap_limit: budget.heap_limit,
+                stack_limit: budget.stack_limit,
+            },
             unit: code::Unit::empty(strict),
             pos: 0,
             function_depth: usize::from(function),
@@ -127,6 +132,24 @@ impl<'source> Parser<'source> {
         let id = parser.emit_function(function)?;
         let unit = parser.unit.finish(&mut parser.compile_budget)?;
         Ok(code::FunctionRef::new(&unit, id))
+    }
+    pub(super) fn dynamic_function(
+        params: &'source str,
+        body: &'source str,
+        budget: &mut regexp::Budget,
+    ) -> Result<code::FunctionRef> {
+        let mut parser = Self::start(params, false, false, budget)?;
+        let result = (|| {
+            let mut function = driver::dynamic_function(&mut parser, body)?;
+            function.name = Some(parser.copy_identifier("anonymous")?);
+            let id = parser.emit_function(function)?;
+            let unit = std::mem::replace(&mut parser.unit, code::Unit::empty(false))
+                .finish(&mut parser.compile_budget)?;
+            Ok(code::FunctionRef::new(&unit, id))
+        })();
+        // Failed parses consume the same work and cumulative allocation budget.
+        *budget = parser.compile_budget;
+        result
     }
     fn emit_expr(&mut self, value: Expr) -> Result<ExprId> {
         self.unit.add_expr(value, &mut self.compile_budget)
@@ -389,7 +412,7 @@ impl<'source> Parser<'source> {
             rest: false,
         })
     }
-    fn rest_parameter(&mut self) -> Result<Parameter> {
+    fn rest_parameter(&mut self, dynamic: bool) -> Result<Parameter> {
         // Identifier rest must be last and cannot have an initializer. Keep
         // malformed ellipses distinct from unsupported binding patterns.
         let start = self.tokens[self.pos].offset;
@@ -408,7 +431,7 @@ impl<'source> Parser<'source> {
             return Err(error);
         }
         let name = self.binding_identifier()?;
-        if !self.is(")") {
+        if !(self.is(")") || dynamic && self.done()) {
             return Err(self.error("rest parameter must be last and cannot have an initializer"));
         }
         let mut parameter = self.parameter(name, None)?;
@@ -877,7 +900,7 @@ mod tests {
         let mut ledger = budget();
         ledger.steps = steps;
         ledger.heap_limit = heap_limit;
-        let mut parser = Parser::start(source, false, false, ledger)?;
+        let mut parser = Parser::start(source, false, false, &mut ledger)?;
         parser.parse_body()?;
         parser.unit.finish(&mut parser.compile_budget)
     }
@@ -927,7 +950,7 @@ mod tests {
             ("({get x(a){}})", false),
             ("var a=1;", true),
         ] {
-            let mut parser = Parser::start(source, false, false, budget()).unwrap();
+            let mut parser = Parser::start(source, false, false, &mut budget()).unwrap();
             let marker = Rc::new(
                 RegExp::compile("marker".into(), &"".into(), &mut parser.compile_budget).unwrap(),
             );
@@ -983,7 +1006,7 @@ mod tests {
             .stack_size(64 * 1024)
             .spawn(|| {
                 for refuse in [false, true] {
-                    let mut parser = Parser::start("", false, false, budget()).unwrap();
+                    let mut parser = Parser::start("", false, false, &mut budget()).unwrap();
                     let mut expression = parser.emit_expr(Expr::Literal(Value::Undefined)).unwrap();
                     for _ in 0..16_000 {
                         let operator = parser.copy_identifier("!").unwrap();

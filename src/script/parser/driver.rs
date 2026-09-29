@@ -10,6 +10,7 @@ enum Output {
     Statement(StmtId),
     Body(Body),
     Function(FunctionCode),
+    Parameters(functions::State),
     Key(PropertyName),
     Declaration(Stmt),
 }
@@ -122,12 +123,50 @@ fn enter(parser: &mut Parser<'_>, frames: &mut Vec<Kind>, kind: Kind) -> Result<
     Ok(())
 }
 pub(super) fn parse(parser: &mut Parser<'_>) -> Result<()> {
-    let mut frames = Vec::new();
-    enter(
+    let body = body(Some(run(
         parser,
-        &mut frames,
         statements::BodyFrame::start(false, true).into(),
-    )?;
+    )?));
+    if body.has_lexical {
+        check_scope(
+            &parser.unit,
+            &mut parser.compile_budget,
+            body.statements.iter(),
+            false,
+        )?;
+    }
+    parser.unit.body = body.statements;
+    parser.unit.strict = parser.strict;
+    Ok(())
+}
+
+pub(super) fn dynamic_function<'s>(
+    parser: &mut Parser<'s>,
+    source: &'s str,
+) -> Result<FunctionCode> {
+    let Output::Parameters(state) = run(parser, functions::Frame::Dynamic.into())? else {
+        unreachable!("dynamic parameters output")
+    };
+    // Separate token streams prevent comments or delimiters in one fragment
+    // from changing the grammar or lexical goal of the other fragment.
+    parser.tokens = lex(source, &mut parser.compile_budget)?;
+    parser.source = source;
+    parser.pos = 0;
+    parser.lex_work = source.len();
+    let body = body(Some(run(
+        parser,
+        statements::BodyFrame::start(false, true).into(),
+    )?));
+    let Transition::Done(Output::Function(function)) = functions::finish(parser, state, body)?
+    else {
+        unreachable!("dynamic function output")
+    };
+    Ok(function)
+}
+
+fn run(parser: &mut Parser<'_>, root: Kind) -> Result<Output> {
+    let mut frames = Vec::new();
+    enter(parser, &mut frames, root)?;
     let mut output = None;
     while let Some(frame) = frames.pop() {
         parser.compile_budget.work(1).map_err(regexp_error)?;
@@ -148,18 +187,7 @@ pub(super) fn parse(parser: &mut Parser<'_>) -> Result<()> {
             }
         }
     }
-    let body = body(output);
-    if body.has_lexical {
-        check_scope(
-            &parser.unit,
-            &mut parser.compile_budget,
-            body.statements.iter(),
-            false,
-        )?;
-    }
-    parser.unit.body = body.statements;
-    parser.unit.strict = parser.strict;
-    Ok(())
+    Ok(output.expect("root grammar output"))
 }
 
 #[cfg(test)]
@@ -326,7 +354,7 @@ mod tests {
                             &source,
                             false,
                             strict,
-                            regexp::Budget {
+                            &mut regexp::Budget {
                                 steps: MAX_STEPS,
                                 allocated: 0,
                                 heap_limit: MAX_HEAP,
@@ -364,7 +392,7 @@ mod tests {
             "",
             false,
             false,
-            regexp::Budget {
+            &mut regexp::Budget {
                 steps: MAX_STEPS,
                 allocated: 0,
                 heap_limit: MAX_HEAP,

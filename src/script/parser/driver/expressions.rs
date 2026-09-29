@@ -688,7 +688,7 @@ fn primary(p: &mut Parser<'_>) -> Result<Transition> {
 }
 fn cover_next(p: &mut Parser<'_>, state: Cover) -> Result<Transition> {
     if p.is(".") {
-        let rest = p.rest_parameter()?;
+        let rest = p.rest_parameter(false)?;
         p.expect(")")?;
         return cover_done(p, state, Some(rest), false);
     }

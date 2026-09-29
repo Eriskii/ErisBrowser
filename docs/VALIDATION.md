@@ -1,5 +1,32 @@
 # Validation record
 
+## Dynamic ordinary Function construction
+
+The [implementation record](../tests/conformance/function-constructor.md) and
+[evidence](../tests/conformance/function-constructor.json) cover the 200-source
+Function constructor selection: **241 passed / 50 unsupported modes**, gaining
+157 passes over the frozen old binary. Older selections gain another 35 passes;
+two previously unsupported string-slice modes now reach retained failures. All
+**7,522 mode fingerprints** and prior passes remain preserved, with **2,072
+verified assertion controls**. Existing policies and all 2,008 old controls are
+unchanged. Three old baselines and one new baseline record the reviewed results.
+
+All **30 frozen local semantic modes** move from unsupported to passed. On Rust
+**1.88 / 1.95**, strict all-target Clippy and full tests pass: **1,008 default /
+1,019 Vulkan-feature Rust tests**, none ignored. Both release builds preserve
+**57 CPU pixel references**; GPU rendering was not exercised. **165 Python tests**
+and **45,000 mutation cases** pass. All upstream HTML case objects remain identical.
+Resource tests exercise successful and failed compilation charges, every work
+cutoff for representative parses, heap refusals, recursion and counter cleanup.
+
+The initial full Rust run exposed an obsolete assertion that Function was
+unsupported; it now asserts the constructed function's result. A Python policy
+test was updated to recognize the new profile's explicitly selected rest support.
+The original malformed resource-test draft and rest-parser failure are described
+in the implementation record. Function string conversion/source printing and
+literal unpaired surrogate source remain incomplete. Full web compatibility,
+independently audited security and Chromium performance parity remain unfulfilled.
+
 ## Symbol targets and constructor policy expansion
 
 The [policy checkpoint](../tests/conformance/constructor-policy.md) admits 88

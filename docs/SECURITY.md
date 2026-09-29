@@ -222,3 +222,12 @@ The current syscall filter targets little-endian x86-64, AArch64 and RISC-V64 Li
 The [Linux Landlock documentation](https://docs.kernel.org/userspace-api/landlock.html) describes both enforcement and remaining syscall/metadata limitations. These controls must be evaluated together with the implementation and its actual regression tests; an enabled sandbox is not a security audit.
 
 Report reproducible issues with a minimized local fixture and command. Avoid including real cookies, passwords, private URLs, or other secrets in reports.
+
+Dynamic ordinary Function compilation parses parameter and body inputs separately
+and charges the active runtime's remaining work and cumulative allocation budget
+on success and failure. No dynamic compile calls the top-level entry point that
+resets instructions. Generated closures use the global environment; conversion
+callbacks and prototype getters retain existing nesting guards. The existing CSP
+fallback still disables all scripts for a policy-bearing page. Literal unpaired
+UTF-16 source surrogates are explicitly unsupported pending lossless parser input;
+no lossy replacement is used. See the [tests and limits](../tests/conformance/function-constructor.md).
