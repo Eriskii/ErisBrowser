@@ -358,3 +358,13 @@ operations, and Reflect.defineProperty shares the definition path. The complete
 1,793-source upstream inventory gains 664 passes; older inventories gain another
 233, with no prior pass lost. Custom species construction and broader web
 compatibility remain unfinished.
+
+[Array every and some](tests/conformance/array-predicates.md) now support generic
+receivers, live sparse/inherited entries, captured length and callback
+short-circuiting. All 164 frozen local variants pass, with eight verified
+assertion controls. The [complete paired Test262 inventory](tests/conformance/test262-array-predicates.md)
+adds 801 passes, reaching 835 passed, 12 Date-dependent failures, four sparse-scan
+work limits and 16 metadata exclusions across 867 modes. Four older descriptor
+metadata modes also pass. All 14,304 mode fingerprints and prior passes are
+preserved across 33 profiles; all 2,740 assertion controls verify. The existing
+26 healthy gates remain, while the new resource stops prevent a predicate gate.

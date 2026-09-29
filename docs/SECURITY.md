@@ -310,3 +310,15 @@ JSON key snapshots still preflight storage proportional to logical length;
 sort/reverse retain their 65,536-element limits. No quota or process authority
 was increased. Bounded independent code inspection found no concrete defect;
 it does not constitute a security audit or complete allocation accounting.
+
+[Array every and some](../tests/conformance/array-predicates.md) reuse the live
+array-method property path. Each visited index and prototype edge consumes
+shared work and scratch allowance; callback arguments are precharged before
+invocation. They create no result array or collection proportional to logical
+length. Length conversion, indexed getters and callbacks retain the existing
+recursion and cumulative allocation guards. Focused tests check refusal after
+getter effects but before callback execution, recursive paths, terminal sparse
+scan exhaustion and frame cleanup. Four retained upstream sparse-scan modes
+reach the work limit. No quota, exception policy or process authority is
+broadened, and earlier author effects are retained on failure. These checks
+do not establish complete allocation accounting or production security.

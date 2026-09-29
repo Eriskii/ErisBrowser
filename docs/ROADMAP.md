@@ -33,7 +33,14 @@ in its complete directory and 12 older passes.
 and closes the two remaining String.lastIndexOf failures.
 [Array descriptors and sparse storage](../tests/conformance/array-descriptors.md)
 now support indexed accessors, writable length, partial shrink failure and
-nonextensibility. Live array methods consume these properties. Date and BigInt dependencies,
+nonextensibility. Live array methods consume these properties.
+[Array every and some](../tests/conformance/array-predicates.md) now add generic
+short-circuiting predicates, with all 164 frozen local variants passing. Their
+[complete paired inventory](../tests/conformance/test262-array-predicates.md)
+gains 801 passes and four older descriptor metadata modes also pass. Twelve
+Date failures, four long-sparse-scan work stops and 16 resizable-buffer metadata
+exclusions remain visible; no healthy predicate gate is recorded.
+Date and BigInt dependencies,
 replacement/matchAll protocols, general matching performance, the remaining
 full-UTF-16 loop, Unicode regexp syntax and Function source retention remain
 concrete next dependencies.

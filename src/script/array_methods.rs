@@ -194,7 +194,7 @@ impl Runtime {
                 )?;
                 Ok(result)
             }
-            "forEach" | "map" | "filter" => {
+            "forEach" | "map" | "filter" | "every" | "some" => {
                 let callback = args.first().cloned().unwrap_or(Value::Undefined);
                 if !json_callable(&callback) {
                     return Err(ScriptError::type_error("array callback must be callable"));
@@ -222,6 +222,8 @@ impl Runtime {
                     let returned =
                         self.call(callback.clone(), parameters, this_arg.clone(), doc)?;
                     match (&result, name) {
+                        (None, "every") if !returned.truthy() => return Ok(Value::Bool(false)),
+                        (None, "some") if returned.truthy() => return Ok(Value::Bool(true)),
                         (Some(result), "map") => {
                             self.array_method_create(result, index, returned, doc)?
                         }
@@ -243,7 +245,11 @@ impl Runtime {
                     )?;
                     Ok(result)
                 } else {
-                    Ok(Value::Undefined)
+                    Ok(match name {
+                        "every" => Value::Bool(true),
+                        "some" => Value::Bool(false),
+                        _ => Value::Undefined,
+                    })
                 }
             }
             _ => Err(ScriptError::unsupported("array method is not implemented")),
@@ -659,19 +665,21 @@ mod tests {
         let prefix = measure.allocated - before;
         let vector = 32 + 3 * std::mem::size_of::<Value>();
 
-        let (mut runtime, mut document, object, callback) = prepared();
-        runtime.allocated = MAX_HEAP - prefix - vector + 1;
-        let error = runtime
-            .array_method(object, "forEach", vec![callback], &mut document)
-            .unwrap_err();
-        assert!(error.is_resource_limit(), "{error:?}");
-        assert_eq!(runtime.allocated, MAX_HEAP + 1);
-        assert_eq!(runtime.lookup(1, "reads").unwrap().1, Value::Number(1.0));
-        assert_eq!(runtime.lookup(1, "calls").unwrap().1, Value::Number(0.0));
-        assert_eq!(runtime.calls, 0);
-        assert_eq!(runtime.stack_units, 0);
-        assert!(runtime.frames.is_empty());
-        assert!(runtime.active_array_joins.is_empty());
+        for method in ["forEach", "every", "some"] {
+            let (mut runtime, mut document, object, callback) = prepared();
+            runtime.allocated = MAX_HEAP - prefix - vector + 1;
+            let error = runtime
+                .array_method(object, method, vec![callback], &mut document)
+                .unwrap_err();
+            assert!(error.is_resource_limit(), "{method}: {error:?}");
+            assert_eq!(runtime.allocated, MAX_HEAP + 1);
+            assert_eq!(runtime.lookup(1, "reads").unwrap().1, Value::Number(1.0));
+            assert_eq!(runtime.lookup(1, "calls").unwrap().1, Value::Number(0.0));
+            assert_eq!(runtime.calls, 0);
+            assert_eq!(runtime.stack_units, 0);
+            assert!(runtime.frames.is_empty());
+            assert!(runtime.active_array_joins.is_empty());
+        }
     }
 
     #[test]
@@ -696,5 +704,117 @@ mod tests {
             .unwrap_err();
         assert!(error.is_resource_limit());
         assert_eq!(runtime.lookup(1, "reads").unwrap().1, Value::Number(0.0));
+    }
+
+    #[test]
+    fn frozen_array_predicate_cases_preserve_all_original_sources() {
+        for fixture in include_str!("../../tests/conformance/array-predicates.js")
+            .split("// CASE: ")
+            .skip(1)
+        {
+            let (name, source) = fixture.split_once('\n').unwrap();
+            for strict in [false, true] {
+                let (mut runtime, mut document) = harness();
+                runtime
+                    .execute(
+                        include_str!("../../tests/upstream/test262/harness/propertyHelper.js"),
+                        &mut document,
+                    )
+                    .unwrap();
+                let result = if strict {
+                    runtime.execute_strict(source, &mut document)
+                } else {
+                    runtime.execute(source, &mut document)
+                };
+                assert!(result.is_ok(), "{name}, strict={strict}: {result:?}");
+                assert_eq!(runtime.calls, 0);
+                assert_eq!(runtime.stack_units, 0);
+                assert_eq!(runtime.eval_depth, 0);
+                assert!(runtime.frames.is_empty());
+            }
+        }
+    }
+
+    #[test]
+    fn array_predicate_recursion_and_sparse_scans_share_terminal_limits() {
+        for method in ["every", "some"] {
+            for body in [
+                format!(
+                    "var o={{get length(){{return Array.prototype.{method}.call(o,function(){{}});}}}};Array.prototype.{method}.call(o,function(){{}});"
+                ),
+                format!(
+                    "var o={{length:{{valueOf:function(){{return Array.prototype.{method}.call(o,function(){{}});}}}}}};Array.prototype.{method}.call(o,function(){{}});"
+                ),
+                format!(
+                    "var o={{length:1,get 0(){{return Array.prototype.{method}.call(o,function(){{}});}}}};Array.prototype.{method}.call(o,function(){{}});"
+                ),
+                format!("function cb(){{return [1].{method}(cb);}}[1].{method}(cb);"),
+                format!("[1].{method}(function(){{while(true){{}}}});"),
+                format!(
+                    "Array.prototype.{method}.call({{length:Infinity}},function(){{throw 'unreachable';}});"
+                ),
+            ] {
+                let (mut runtime, mut document) = harness();
+                let source = format!(
+                    "var caught=false,finalized=false;try{{{body}}}catch(e){{caught=true;}}finally{{finalized=true;}}"
+                );
+                assert!(
+                    runtime
+                        .execute(&source, &mut document)
+                        .unwrap_err()
+                        .is_resource_limit(),
+                    "{body}"
+                );
+                assert_eq!(runtime.lookup(1, "caught").unwrap().1, Value::Bool(false));
+                assert_eq!(
+                    runtime.lookup(1, "finalized").unwrap().1,
+                    Value::Bool(false)
+                );
+                assert_eq!(runtime.calls, 0);
+                assert_eq!(runtime.stack_units, 0);
+                assert_eq!(runtime.eval_depth, 0);
+                assert!(runtime.frames.is_empty());
+            }
+        }
+    }
+
+    #[test]
+    fn array_predicate_early_return_does_not_allocate_from_logical_length() {
+        for method in ["every", "some"] {
+            let mut allocations = Vec::new();
+            for length in [1.0, 4_294_967_295.0, 9_007_199_254_740_991.0] {
+                let (mut runtime, mut document) = harness();
+                let object = runtime
+                    .object_ordered([
+                        ("length".into(), Value::Number(length)),
+                        ("0".into(), Value::Number(1.0)),
+                    ])
+                    .unwrap();
+                let callback = runtime
+                    .execute(
+                        if method == "some" {
+                            "function cb(){return true;}cb"
+                        } else {
+                            "function cb(){return false;}cb"
+                        },
+                        &mut document,
+                    )
+                    .unwrap();
+                let before = runtime.allocated;
+                let arrays = runtime.arrays.len();
+                assert_eq!(
+                    runtime
+                        .array_method(object, method, vec![callback], &mut document)
+                        .unwrap(),
+                    Value::Bool(method == "some")
+                );
+                allocations.push(runtime.allocated - before);
+                assert_eq!(runtime.arrays.len(), arrays);
+                assert_eq!(runtime.calls, 0);
+                assert_eq!(runtime.stack_units, 0);
+                assert!(runtime.frames.is_empty());
+            }
+            assert!(allocations.iter().all(|amount| *amount == allocations[0]));
+        }
     }
 }

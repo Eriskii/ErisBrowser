@@ -1938,6 +1938,8 @@ impl Runtime {
             ("Array", "shift", 0),
             ("Array", "unshift", 1),
             ("Array", "forEach", 1),
+            ("Array", "every", 1),
+            ("Array", "some", 1),
             ("Array", "filter", 1),
             ("Array", "includes", 1),
             ("Array", "indexOf", 1),
@@ -7700,6 +7702,8 @@ impl Runtime {
                     | "indexOf"
                     | "slice"
                     | "forEach"
+                    | "every"
+                    | "some"
                     | "map"
                     | "filter"
             )

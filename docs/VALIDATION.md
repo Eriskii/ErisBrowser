@@ -1,5 +1,39 @@
 # Validation record
 
+## Array every and some
+
+The [implementation and local fixtures](../tests/conformance/array-predicates.md)
+and [complete evidence](../tests/conformance/array-predicates.json) compare
+against `f5a5a855`. All **164 unchanged local variants** pass and all **eight
+assertion controls** verify. Method-presence and successful-result guards
+precede error assertions. Focused runtime tests cover callback allocation
+preflight, prior getter effects, recursive paths, sparse scan exhaustion,
+early-return allocation and frame cleanup.
+
+The [complete pinned paired inventory](../tests/conformance/test262-array-predicates.md)
+retains **437 sources / 867 modes** and gains **801 passes**, reaching **835
+passed / 12 failed / four resource stops / 16 metadata exclusions**. Before
+implementation it recorded 34 raw passes, 817 failures and 16 exclusions, with
+the method preflights unsatisfied. Twelve final failures require missing Date;
+four sparse scans exhaust the existing instruction budget. These remain
+separate outcomes and prevent a healthy predicate baseline. All **128 new
+profile preflights** now verify. Source, mode, expectation and policy
+fingerprints are unchanged.
+
+Four older descriptor metadata modes also pass. All **13,433 other older case
+records** and **2,612 older controls** are identical. In the new profile, the
+other changes are four failures reaching resource limits and four failures
+reaching missing Date; the remaining **58 observations** are identical. No
+previous pass is lost. The combined **33-profile / 14,304-mode** inventory has
+**2,740 verified controls** and retains **26 healthy gates**.
+
+Rust **1.88 / 1.95** pass strict Clippy and **1,056 default / 1,067 Vulkan-feature
+tests**. **195 Python tests**, **15,000 mutation cases**, unchanged HTML
+observations and both release configurations' **57 CPU pixel references** pass.
+Final binary and source provenance are retained in the linked evidence.
+No GPU exercise, security certification or Chromium performance comparison
+was performed.
+
 ## Array descriptors and sparse storage
 
 The [implementation record](../tests/conformance/array-descriptors.md) and

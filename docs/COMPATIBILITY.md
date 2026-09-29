@@ -1,5 +1,15 @@
 # Compatibility status
 
+[Array every and some](../tests/conformance/array-predicates.md) now support
+generic ordinary receivers, captured length, holes, inherited/indexed accessors
+and live callback mutations. They short-circuit using callback truthiness and
+preserve callback receiver and abrupt-completion behavior. All 164 frozen local
+variants pass. The [complete paired upstream inventory](../tests/conformance/test262-array-predicates.md)
+records **835 passed, 12 Date-dependent failures, four work-limit stops and 16
+metadata exclusions** across 867 modes. Huge sparse scans remain budgeted;
+Proxy, typed arrays and general host receivers remain unsupported. Resource
+stops prevent a healthy baseline for this profile.
+
 [Array.lastIndexOf](../tests/conformance/array-last-index-of.md) now supports
 ordinary generic receivers, holes, inherited entries, saved length and live
 getters. Its complete 395-mode inventory records 338 passed, two Date failures,
