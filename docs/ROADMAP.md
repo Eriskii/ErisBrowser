@@ -40,6 +40,15 @@ short-circuiting predicates, with all 164 frozen local variants passing. Their
 gains 801 passes and four older descriptor metadata modes also pass. Twelve
 Date failures, four long-sparse-scan work stops and 16 resizable-buffer metadata
 exclusions remain visible; no healthy predicate gate is recorded.
+[Object integrity](../tests/conformance/object-integrity.md) now adds shallow
+seal/freeze and descriptor-based queries for supported ECMAScript objects,
+including sparse arrays, boxed strings and mapped arguments. The
+[complete four-directory inventory](../tests/conformance/test262-object-integrity.md)
+retains 239 sources and 474 modes, gains 378 passes and verifies all 224 controls.
+Eight older descriptor modes also pass, with no previous pass lost. The new
+regression gate preserves the remaining 58 missing-prerequisite failures and
+38 unsupported modes. Host integrity, Proxy/typed-array semantics and untagged
+prerequisites remain explicit gaps.
 Date and BigInt dependencies,
 replacement/matchAll protocols, general matching performance, the remaining
 full-UTF-16 loop, Unicode regexp syntax and Function source retention remain

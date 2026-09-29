@@ -54,11 +54,12 @@ STRING_SEARCH_FEATURES = SYMBOL_FEATURES | FUNCTION_FEATURES | {'String.prototyp
 REGEXP_MATCH_SEARCH_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 ARRAY_DESCRIPTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 ARRAY_PREDICATE_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
+OBJECT_INTEGRITY_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 ARRAY_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 STRING_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 REGEXP_SPLIT_FEATURES = CONSTRUCTION_FEATURES
 REGEXP_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'u180e'}
-PROFILE_FEATURES = {'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+PROFILE_FEATURES = {'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'reflect-construction': CONSTRUCTION_FEATURES, 'new-target': CONSTRUCTION_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -1334,6 +1335,118 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                 for name, setup, actual, good, bad in pairs:
                     for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
                         variants.append(('array-predicates-' + method + '-' + name + suffix,
+                                         guard + setup + f'assert.sameValue({actual},{value});', expected, mode))
+    if profile == 'object-integrity':
+        for method in ('seal', 'freeze', 'isSealed', 'isFrozen'):
+            mutating = method in {'seal', 'freeze'}
+            frozen = method in {'freeze', 'isFrozen'}
+            writable = 'false' if frozen else 'true'
+            guard = f"var integrity=Object.{method};assert.sameValue(typeof integrity,'function');var smoke={{x:1}};"
+            if mutating:
+                guard += ("assert.sameValue(integrity(smoke),smoke);assert.sameValue(Object.isExtensible(smoke),false);"
+                          "assert.sameValue(Object.getOwnPropertyDescriptor(smoke,'x').configurable,false);"
+                          "assert.sameValue(Object.getOwnPropertyDescriptor(smoke,'x').writable," + writable + ");")
+            else:
+                guard += ("assert.sameValue(integrity(smoke),false);var emptySmoke={};Object.preventExtensions(emptySmoke);"
+                          "assert.sameValue(integrity(emptySmoke),true);")
+            primitive = ("var symbol=Symbol('integrity');" + ''.join(
+                f"assert.sameValue(integrity({value}),{value if mutating else 'true'});"
+                for value in ('undefined', 'null', 'true', '1', '-0', 'NaN', "'text'")))
+            metadata = (f"verifyProperty(Object,'{method}',{{value:integrity,writable:true,enumerable:false,configurable:true}},{{restore:true}});"
+                        "verifyProperty(integrity,'length',{value:1,writable:false,enumerable:false,configurable:true},{restore:true});"
+                        f"verifyProperty(integrity,'name',{{value:'{method}',writable:false,enumerable:false,configurable:true}},{{restore:true}});"
+                        "assert.sameValue(Object.getOwnPropertyDescriptor(integrity,'prototype'),undefined);"
+                        "assert.throws(TypeError,function(){new integrity({});});")
+            pairs = [('primitives', primitive, 'integrity(symbol)', 'symbol' if mutating else 'true', 'false')]
+            if mutating:
+                pairs += [
+                    ('data-flags', "var o={};Object.defineProperty(o,'x',{value:3,writable:true,enumerable:false,configurable:true});"
+                     "integrity(o);var d=Object.getOwnPropertyDescriptor(o,'x');assert.sameValue(d.value,3);assert.sameValue(d.enumerable,false);"
+                     "assert.sameValue(d.configurable,false);assert.sameValue(Object.isExtensible(o),false);",
+                     'd.writable', writable, 'true' if frozen else 'false'),
+                    ('accessor-preserved', "var o={},reads=0,stored=1;var get=function(){reads++;return stored;};var set=function(v){stored=v;};"
+                     "Object.defineProperty(o,'x',{get:get,set:set,enumerable:true,configurable:true});integrity(o);"
+                     "var d=Object.getOwnPropertyDescriptor(o,'x');assert.sameValue(d.get,get);assert.sameValue(d.set,set);"
+                     "assert.sameValue(d.configurable,false);assert.sameValue(d.enumerable,true);assert.sameValue('writable' in d,false);"
+                     "assert.sameValue(reads,0);o.x=7;",
+                     'stored', '7', '1'),
+                    ('array-holes-length', "var a=[1,,3];integrity(a);assert.sameValue(a.length,3);assert.sameValue(1 in a,false);"
+                     "assert.sameValue(Object.getOwnPropertyDescriptor(a,'0').configurable,false);"
+                     "assert.sameValue(Object.getOwnPropertyDescriptor(a,'0').writable," + writable + ");"
+                     "assert.sameValue(Reflect.defineProperty(a,'1',{value:2}),false);",
+                     "Object.getOwnPropertyDescriptor(a,'length').writable", writable, 'true' if frozen else 'false'),
+                    ('symbol-nonenumerable', "var o={},key=Symbol('own');Object.defineProperty(o,key,{value:4,writable:true,configurable:true});"
+                     "integrity(o);var d=Object.getOwnPropertyDescriptor(o,key);assert.sameValue(d.value,4);"
+                     "assert.sameValue(d.enumerable,false);assert.sameValue(d.configurable,false);",
+                     'd.writable', writable, 'true' if frozen else 'false'),
+                    ('own-only-shallow', "var proto={inherited:1},o=Object.create(proto);o.child={n:2};integrity(o);o.child.n=9;"
+                     "assert.sameValue(Object.getOwnPropertyDescriptor(proto,'inherited').configurable,true);"
+                     "assert.sameValue(Object.isExtensible(proto),true);assert.sameValue(Object.getOwnPropertyDescriptor(o,'inherited'),undefined);",
+                     'o.child.n', '9', '2'),
+                    ('mapped-arguments', "var probe=Function('integrity','a','integrity(arguments);a=9;return arguments[1];');",
+                     'probe(integrity,3)', '3' if frozen else '9', '9' if frozen else '3'),
+                    ('unmapped-arguments', "function probe(a){'use strict';integrity(arguments);a=9;assert.sameValue(arguments[0],3);"
+                     + ("var args=arguments;assert.throws(TypeError,function(){args[0]=7;});" if frozen else "arguments[0]=7;")
+                     + "assert.sameValue(a,9);return arguments[0];}",
+                     'probe(3)', '3' if frozen else '7', '7' if frozen else '3'),
+                    ('write-delete-rules', "var o={x:1};integrity(o);assert.throws(TypeError,function(){'use strict';delete o.x;});"
+                     "assert.throws(TypeError,function(){'use strict';o.newValue=3;});"
+                     + ("assert.throws(TypeError,function(){'use strict';o.x=8;});assert.throws(TypeError,function(){Object.defineProperty(o,'x',{value:8});});"
+                        if frozen else "o.x=7;Object.defineProperty(o,'x',{value:8});"),
+                     'o.x', '1' if frozen else '8', '8' if frozen else '1'),
+                    ('idempotent-nonextensible', "var o={x:1};Object.preventExtensions(o);assert.sameValue(integrity(o),o);"
+                     "assert.sameValue(integrity(o),o);assert.sameValue(Object.getOwnPropertyDescriptor(o,'x').configurable,false);",
+                     'Object.isExtensible(o)', 'false', 'true'),
+                    ('boxed-string', "var o=new String('ab');assert.sameValue(integrity(o),o);"
+                     "var d=Object.getOwnPropertyDescriptor(o,'0');assert.sameValue(d.value,'a');assert.sameValue(d.writable,false);"
+                     "assert.sameValue(d.configurable,false);assert.sameValue(Object.isExtensible(o),false);",
+                     "o[1]", "'b'", "'a'"),
+                ]
+            else:
+                pairs += [
+                    ('empty-transition', "var o={};assert.sameValue(integrity(o),false);Object.preventExtensions(o);",
+                     'integrity(o)', 'true', 'false'),
+                    ('data-flags', "var o={x:1};Object.preventExtensions(o);assert.sameValue(integrity(o),false);"
+                     "Object.defineProperty(o,'x',{configurable:false});var intermediate=integrity(o);"
+                     "Object.defineProperty(o,'x',{writable:false});assert.sameValue(integrity(o),true);",
+                     'intermediate', 'false' if frozen else 'true', 'true' if frozen else 'false'),
+                    ('accessor-no-invocation', "var o={},reads=0,stored=1,get=function(){reads++;return stored;},set=function(v){stored=v;};"
+                     "Object.defineProperty(o,'x',{get:get,set:set,configurable:false});Object.preventExtensions(o);"
+                     "assert.sameValue(integrity(o),true);o.x=7;assert.sameValue(stored,7);"
+                     "assert.sameValue(Object.getOwnPropertyDescriptor(o,'x').get,get);",
+                     'reads', '0', '1'),
+                    ('configurable-accessor', "var o={};Object.defineProperty(o,'x',{get:undefined,set:undefined,configurable:true});"
+                     "Object.preventExtensions(o);var initial=integrity(o);Object.defineProperty(o,'x',{configurable:false});"
+                     "assert.sameValue(integrity(o),true);",
+                     'initial', 'false', 'true'),
+                    ('array-length', "var a=[];Object.preventExtensions(a);var initial=integrity(a);"
+                     "Object.defineProperty(a,'length',{writable:false});assert.sameValue(integrity(a),true);",
+                     'initial', 'false' if frozen else 'true', 'true' if frozen else 'false'),
+                    ('array-index-hole', "var a=[1,,3];Object.defineProperty(a,'length',{writable:false});"
+                     "Object.defineProperty(a,'0',{configurable:false});Object.defineProperty(a,'2',{configurable:false});"
+                     "Object.preventExtensions(a);assert.sameValue(integrity(a)," + ('false' if frozen else 'true') + ");"
+                     "Object.defineProperty(a,'0',{writable:false});Object.defineProperty(a,'2',{writable:false});assert.sameValue(1 in a,false);",
+                     'integrity(a)', 'true', 'false'),
+                    ('symbol-nonenumerable', "var o={},key=Symbol('own');Object.defineProperty(o,key,{value:3,writable:false,configurable:true});"
+                     "Object.preventExtensions(o);var initial=integrity(o);Object.defineProperty(o,key,{configurable:false});"
+                     "assert.sameValue(integrity(o),true);",
+                     'initial', 'false', 'true'),
+                    ('own-only', "var proto={inherited:1},o=Object.create(proto);Object.preventExtensions(o);"
+                     "assert.sameValue(Object.getOwnPropertyDescriptor(proto,'inherited').configurable,true);"
+                     "assert.sameValue(Object.isExtensible(proto),true);",
+                     'integrity(o)', 'true', 'false'),
+                    ('mapped-arguments', "var probe=Function('query','a','Object.seal(arguments);var result=query(arguments);a=9;"
+                     "if(arguments[1]!==9)throw new Error(\"lost mapping\");return result;');",
+                     'probe(integrity,3)', 'false' if frozen else 'true', 'true' if frozen else 'false'),
+                    ('unmapped-arguments', "function probe(a){'use strict';Object.freeze(arguments);a=9;"
+                     "assert.sameValue(arguments[0],3);return integrity(arguments);}",
+                     'probe(3)', 'true', 'false'),
+                ]
+            pairs.append(('property-metadata', metadata, 'integrity.length', '1', '2'))
+            for mode in ('sloppy', 'strict'):
+                for name, setup, actual, good, bad in pairs:
+                    for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                        variants.append(('object-integrity-' + method + '-' + name + suffix,
                                          guard + setup + f'assert.sameValue({actual},{value});', expected, mode))
     outcomes = []
     identifier_controls = {}

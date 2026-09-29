@@ -1,0 +1,1807 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all direct .js files in Object/seal, Object/freeze, Object/isSealed and Object/isFrozen; complete pinned Git trees; no implementation",
+  "directories": {
+    "Object/seal": [
+      "abrupt-completion.js",
+      "configurable-attribute-all-own-properties-set-from-true-to-false-property-are-unaltered.js",
+      "configurable-attribute-own-accessor-property-set-from-true-to-false-property-are-unaltered.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "object-seal-all-own-properties-of-o-are-already-non-configurable.js",
+      "object-seal-configurable-attribute-of-own-data-property-of-o-is-set-from-true-to-false-and-other-attributes-of-the-property-are-unaltered.js",
+      "object-seal-extensible-of-o-is-set-as-false-even-if-o-has-no-own-property.js",
+      "object-seal-inherited-accessor-properties-are-ignored.js",
+      "object-seal-inherited-data-properties-are-ignored.js",
+      "object-seal-is-a-function.js",
+      "object-seal-non-enumerable-own-property-of-o-is-sealed.js",
+      "object-seal-o-is-a-boolean-object.js",
+      "object-seal-o-is-a-date-object.js",
+      "object-seal-o-is-a-function-object.js",
+      "object-seal-o-is-a-number-object.js",
+      "object-seal-o-is-a-reg-exp-object.js",
+      "object-seal-o-is-a-string-object.js",
+      "object-seal-o-is-an-arguments-object.js",
+      "object-seal-o-is-an-array-object.js",
+      "object-seal-o-is-an-error-object.js",
+      "object-seal-o-is-frozen-already.js",
+      "object-seal-o-is-sealed-already.js",
+      "object-seal-p-is-own-accessor-property-that-overrides-an-inherited-accessor-property.js",
+      "object-seal-p-is-own-accessor-property-that-overrides-an-inherited-data-property.js",
+      "object-seal-p-is-own-accessor-property.js",
+      "object-seal-p-is-own-data-property-that-overrides-an-inherited-accessor-property.js",
+      "object-seal-p-is-own-data-property-that-overrides-an-inherited-data-property.js",
+      "object-seal-p-is-own-data-property.js",
+      "object-seal-p-is-own-property-of-a-boolean-object-that-uses-object-s-get-own-property.js",
+      "object-seal-p-is-own-property-of-a-date-object-that-uses-object-s-get-own-property.js",
+      "object-seal-p-is-own-property-of-a-function-object-that-uses-object-s-get-own-property.js",
+      "object-seal-p-is-own-property-of-a-number-object-that-uses-object-s-get-own-property.js",
+      "object-seal-p-is-own-property-of-a-reg-exp-object-that-uses-object-s-get-own-property.js",
+      "object-seal-p-is-own-property-of-a-string-object-which-implements-its-own-get-own-property.js",
+      "object-seal-p-is-own-property-of-an-arguments-object-which-implements-its-own-get-own-property.js",
+      "object-seal-p-is-own-property-of-an-array-object-that-uses-object-s-get-own-property.js",
+      "object-seal-p-is-own-property-of-an-error-object-that-uses-object-s-get-own-property.js",
+      "object-seal-returned-object-is-not-extensible.js",
+      "object-seal-the-extension-of-o-is-prevented-already.js",
+      "proxy-no-ownkeys-returned-keys-order.js",
+      "proxy-with-defineProperty-handler.js",
+      "seal-aggregateerror.js",
+      "seal-arraybuffer.js",
+      "seal-arrowfunction.js",
+      "seal-asyncarrowfunction.js",
+      "seal-asyncfunction.js",
+      "seal-asyncgeneratorfunction.js",
+      "seal-bigint64array.js",
+      "seal-biguint64array.js",
+      "seal-boolean-literal.js",
+      "seal-boolean.js",
+      "seal-dataview.js",
+      "seal-date.js",
+      "seal-error.js",
+      "seal-evalerror.js",
+      "seal-finalizationregistry.js",
+      "seal-float32array.js",
+      "seal-float64array.js",
+      "seal-function.js",
+      "seal-generatorfunction.js",
+      "seal-infinity.js",
+      "seal-int16array.js",
+      "seal-int32array.js",
+      "seal-int8array.js",
+      "seal-map.js",
+      "seal-nan.js",
+      "seal-null.js",
+      "seal-number.js",
+      "seal-object.js",
+      "seal-promise.js",
+      "seal-proxy.js",
+      "seal-rangeerror.js",
+      "seal-referenceerror.js",
+      "seal-regexp.js",
+      "seal-set.js",
+      "seal-sharedarraybuffer.js",
+      "seal-string.js",
+      "seal-symbol.js",
+      "seal-syntaxerror.js",
+      "seal-typeerror.js",
+      "seal-uint16array.js",
+      "seal-uint32array.js",
+      "seal-uint8array.js",
+      "seal-uint8clampedarray.js",
+      "seal-undefined.js",
+      "seal-urierror.js",
+      "seal-weakmap.js",
+      "seal-weakref.js",
+      "seal-weakset.js",
+      "symbol-object-contains-symbol-properties-non-strict.js",
+      "symbol-object-contains-symbol-properties-strict.js",
+      "throws-when-false.js"
+    ],
+    "Object/freeze": [
+      "15.2.3.9-0-1.js",
+      "15.2.3.9-0-2.js",
+      "15.2.3.9-1-1.js",
+      "15.2.3.9-1-2.js",
+      "15.2.3.9-1-3.js",
+      "15.2.3.9-1-4.js",
+      "15.2.3.9-1.js",
+      "15.2.3.9-2-1.js",
+      "15.2.3.9-2-2.js",
+      "15.2.3.9-2-3.js",
+      "15.2.3.9-2-4.js",
+      "15.2.3.9-2-a-1.js",
+      "15.2.3.9-2-a-10.js",
+      "15.2.3.9-2-a-11.js",
+      "15.2.3.9-2-a-12.js",
+      "15.2.3.9-2-a-13.js",
+      "15.2.3.9-2-a-14.js",
+      "15.2.3.9-2-a-2.js",
+      "15.2.3.9-2-a-3.js",
+      "15.2.3.9-2-a-4.js",
+      "15.2.3.9-2-a-5.js",
+      "15.2.3.9-2-a-6.js",
+      "15.2.3.9-2-a-7.js",
+      "15.2.3.9-2-a-8.js",
+      "15.2.3.9-2-a-9.js",
+      "15.2.3.9-2-b-i-1.js",
+      "15.2.3.9-2-b-i-2.js",
+      "15.2.3.9-2-c-1.js",
+      "15.2.3.9-2-c-2.js",
+      "15.2.3.9-2-c-3.js",
+      "15.2.3.9-2-c-4.js",
+      "15.2.3.9-2-d-1.js",
+      "15.2.3.9-2-d-2.js",
+      "15.2.3.9-2-d-3.js",
+      "15.2.3.9-2-d-4.js",
+      "15.2.3.9-2-d-5.js",
+      "15.2.3.9-2-d-6.js",
+      "15.2.3.9-2-d-7.js",
+      "15.2.3.9-2-d-8.js",
+      "15.2.3.9-2-d-9.js",
+      "15.2.3.9-3-1.js",
+      "15.2.3.9-4-1.js",
+      "15.2.3.9-4-2.js",
+      "15.2.3.9-4-3.js",
+      "abrupt-completion.js",
+      "frozen-object-contains-symbol-properties-non-strict.js",
+      "frozen-object-contains-symbol-properties-strict.js",
+      "name.js",
+      "not-a-constructor.js",
+      "proxy-no-ownkeys-returned-keys-order.js",
+      "proxy-with-defineProperty-handler.js",
+      "throws-when-false.js",
+      "typedarray-backed-by-resizable-buffer.js"
+    ],
+    "Object/isSealed": [
+      "15.2.3.11-0-1.js",
+      "15.2.3.11-0-2.js",
+      "15.2.3.11-1.js",
+      "15.2.3.11-4-1.js",
+      "15.2.3.11-4-10.js",
+      "15.2.3.11-4-11.js",
+      "15.2.3.11-4-12.js",
+      "15.2.3.11-4-13.js",
+      "15.2.3.11-4-14.js",
+      "15.2.3.11-4-15.js",
+      "15.2.3.11-4-16.js",
+      "15.2.3.11-4-17.js",
+      "15.2.3.11-4-18.js",
+      "15.2.3.11-4-19.js",
+      "15.2.3.11-4-2.js",
+      "15.2.3.11-4-20.js",
+      "15.2.3.11-4-21.js",
+      "15.2.3.11-4-22.js",
+      "15.2.3.11-4-23.js",
+      "15.2.3.11-4-24.js",
+      "15.2.3.11-4-25.js",
+      "15.2.3.11-4-26.js",
+      "15.2.3.11-4-27.js",
+      "15.2.3.11-4-3.js",
+      "15.2.3.11-4-4.js",
+      "15.2.3.11-4-5.js",
+      "15.2.3.11-4-6.js",
+      "15.2.3.11-4-7.js",
+      "15.2.3.11-4-8.js",
+      "15.2.3.11-4-9.js",
+      "name.js",
+      "not-a-constructor.js",
+      "proxy-no-ownkeys-returned-keys-order.js"
+    ],
+    "Object/isFrozen": [
+      "15.2.3.12-0-1.js",
+      "15.2.3.12-0-2.js",
+      "15.2.3.12-1-1.js",
+      "15.2.3.12-1-2.js",
+      "15.2.3.12-1-3.js",
+      "15.2.3.12-1-4.js",
+      "15.2.3.12-1-5.js",
+      "15.2.3.12-1-6.js",
+      "15.2.3.12-1-7.js",
+      "15.2.3.12-1.js",
+      "15.2.3.12-2-1.js",
+      "15.2.3.12-2-2.js",
+      "15.2.3.12-2-a-1.js",
+      "15.2.3.12-2-a-11.js",
+      "15.2.3.12-2-a-12.js",
+      "15.2.3.12-2-a-13.js",
+      "15.2.3.12-2-a-14.js",
+      "15.2.3.12-2-a-2.js",
+      "15.2.3.12-2-a-3.js",
+      "15.2.3.12-2-a-4.js",
+      "15.2.3.12-2-a-5.js",
+      "15.2.3.12-2-a-6.js",
+      "15.2.3.12-2-a-7.js",
+      "15.2.3.12-2-a-8.js",
+      "15.2.3.12-2-b-i-1.js",
+      "15.2.3.12-2-c-1.js",
+      "15.2.3.12-2-c-2.js",
+      "15.2.3.12-3-1.js",
+      "15.2.3.12-3-10.js",
+      "15.2.3.12-3-11.js",
+      "15.2.3.12-3-12.js",
+      "15.2.3.12-3-13.js",
+      "15.2.3.12-3-14.js",
+      "15.2.3.12-3-15.js",
+      "15.2.3.12-3-16.js",
+      "15.2.3.12-3-17.js",
+      "15.2.3.12-3-18.js",
+      "15.2.3.12-3-19.js",
+      "15.2.3.12-3-2.js",
+      "15.2.3.12-3-20.js",
+      "15.2.3.12-3-21.js",
+      "15.2.3.12-3-22.js",
+      "15.2.3.12-3-23.js",
+      "15.2.3.12-3-24.js",
+      "15.2.3.12-3-25.js",
+      "15.2.3.12-3-26.js",
+      "15.2.3.12-3-27.js",
+      "15.2.3.12-3-28.js",
+      "15.2.3.12-3-3.js",
+      "15.2.3.12-3-4.js",
+      "15.2.3.12-3-5.js",
+      "15.2.3.12-3-6.js",
+      "15.2.3.12-3-7.js",
+      "15.2.3.12-3-8.js",
+      "15.2.3.12-3-9.js",
+      "15.2.3.12-4-1.js",
+      "name.js",
+      "not-a-constructor.js",
+      "proxy-no-ownkeys-returned-keys-order.js"
+    ]
+  },
+  "test_files": 239,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/resizableArrayBufferUtils.js",
+      "upstream_path": "harness/resizableArrayBufferUtils.js",
+      "bytes": 3829,
+      "sha256": "029aa552050861eb85fe9d848a52716dfd24747dcaf06f2a8937cb510ab31f50"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-0-1.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-0-1.js",
+      "bytes": 299,
+      "sha256": "9125fbd8ff0506596827e3434ed7a40291f106d0b4c2c17a87ff35f3900a0d30"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-0-2.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-0-2.js",
+      "bytes": 307,
+      "sha256": "1fb9cd31e6bf2e1757f7d60890557a5b39d8ebcdd0f374590236b54f43d0104a"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-1-1.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-1-1.js",
+      "bytes": 322,
+      "sha256": "ea1dde8825850f81c017d0c7b4252e3fc2343a40c73f0405f778e31db79ca7ea"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-1-2.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-1-2.js",
+      "bytes": 307,
+      "sha256": "19c6a687ace9e6b55ad201f1a69468f4e21c566f3c59cfd0a360d483f3529423"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-1-3.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-1-3.js",
+      "bytes": 367,
+      "sha256": "403c6d7dbb1b9f1acb722a3d2ebe1b11b914661be2f66bf863aeafeae7623a41"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-1-4.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-1-4.js",
+      "bytes": 321,
+      "sha256": "c47433ed6f65295ed89d29d7fd2d17f40e45906e6314d36dea07668779ae260a"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-1.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-1.js",
+      "bytes": 305,
+      "sha256": "2fd2338a62c06b021378165958784ef6987dc2723a312a5dc3d89fa39806fa45"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-1.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-1.js",
+      "bytes": 389,
+      "sha256": "efc99aa19af616b71abae8f6cbcf163ed48dc9eae99122a690e5a28b6fd659f1"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-2.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-2.js",
+      "bytes": 660,
+      "sha256": "87c5f6c92689d152f990c1540634332fa0140c700d58b545a225424c10968aa4"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-3.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-3.js",
+      "bytes": 691,
+      "sha256": "7311cddc76063b858f9f048b4daa16396a139ad038486d216bb0f63a4558f509"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-4.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-4.js",
+      "bytes": 483,
+      "sha256": "1f5d36b5d263d40661baac700a61edc61b7510e4af4888b088e158491e03bfcb"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-a-1.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-a-1.js",
+      "bytes": 451,
+      "sha256": "9526de6a0efec86ce4a39e444a207ee25970e4d8b7d5b56ef8e03b82e7080fcd"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-a-10.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-a-10.js",
+      "bytes": 532,
+      "sha256": "46240185ee41dc4e63bab431eebfa17d7b7a70211865b1e67a45a8213199c936"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-a-11.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-a-11.js",
+      "bytes": 565,
+      "sha256": "b0259c4da648536f2108de9bd0dee6a7074ab028c8a38425e4313d5969f30353"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-a-12.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-a-12.js",
+      "bytes": 534,
+      "sha256": "3dc5f80777bba6368797a4e8d4d125d8711a6387adbbab4435b8a7fc596c72a5"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-a-13.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-a-13.js",
+      "bytes": 479,
+      "sha256": "5bedebd651d4c70bbdc64bbae94283c71ed40e339fed446a006733ffef24bb20"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-a-14.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-a-14.js",
+      "bytes": 518,
+      "sha256": "c5e67512d21ccb9ac8932e6c5e411472cb04c6b20acfe7a6899edc5b2183502c"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-a-2.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-a-2.js",
+      "bytes": 652,
+      "sha256": "696783e9cfce15bdacc669daed26953215bd20568ec6dccc8e58816094168cb6"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-a-3.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-a-3.js",
+      "bytes": 693,
+      "sha256": "0e67bab47a39736bb63971a9a667ad144946f7ce3f2dfcd9807f3440a6c2784d"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-a-4.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-a-4.js",
+      "bytes": 485,
+      "sha256": "c97184a4611994cc6f626558237055d3a45455c39ccb12664c9e06c417323387"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-a-5.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-a-5.js",
+      "bytes": 694,
+      "sha256": "e5f7e7e4240706c76c10a45332bc7256774b0a4d918ff246339b7f1a7c30b537"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-a-6.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-a-6.js",
+      "bytes": 727,
+      "sha256": "0faa6896e6b1dd12dae42f6c82b32def51d6b43f9a90cdb2a96612ebcb850a1d"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-a-7.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-a-7.js",
+      "bytes": 576,
+      "sha256": "77e95d36954597878c6022493ff65287ec826f0d19253ae411784fed23312aa4"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-a-8.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-a-8.js",
+      "bytes": 553,
+      "sha256": "4f9982d9d106f360cc1e1126673e7a4a8019609182127612c9620d5ca89e9a63"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-a-9.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-a-9.js",
+      "bytes": 540,
+      "sha256": "e55312ca6bf4acba76acf58d6c0c28f466019bc39171e1e5610747e68a6fe4bb"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-b-i-1.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-b-i-1.js",
+      "bytes": 608,
+      "sha256": "3c5e5ccba00695602ed0f9a0b195b0b994a5d85d39be66c0fba8ae4d77f87a57"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-b-i-2.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-b-i-2.js",
+      "bytes": 846,
+      "sha256": "2f51d101f5c7f0a45457eb2229a306a91bb4b3ce12e01ee3b451b43c5c92c4dd"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-c-1.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-c-1.js",
+      "bytes": 614,
+      "sha256": "f75a218bdfb06667c78f2c5e66ededea3f0128fdbd301bf6514b04231f3148ad"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-c-2.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-c-2.js",
+      "bytes": 833,
+      "sha256": "a8ab9bb2da7014f7d81309fa8da0ca2e321d4211487e6caedbf8345e7d87d459"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-c-3.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-c-3.js",
+      "bytes": 1345,
+      "sha256": "30a630b2886916101405a03394efa774f0f6514c25d4b7eb212cf3a826184472"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-c-4.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-c-4.js",
+      "bytes": 1290,
+      "sha256": "48a0dbce586840289d22a962f8ceb403cb499b42f71d46e6f55ab1f74a1ff2dc"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-d-1.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-d-1.js",
+      "bytes": 347,
+      "sha256": "676169dc55c970b5e80e178581e95a7fe0fdf1ec92d6a1e1501fd1d55a02b599"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-d-2.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-d-2.js",
+      "bytes": 338,
+      "sha256": "75ee0906f13475d1da53205b3195ee21b858b00b400a19511c47dcf5eaa561e3"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-d-3.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-d-3.js",
+      "bytes": 347,
+      "sha256": "f3c1699fbb86725e4f93c8d462a9db8c91cffceaf2fe0dde273f1b65a05bbecf"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-d-4.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-d-4.js",
+      "bytes": 355,
+      "sha256": "29c436d16ebd3cb09d98cbb012c8b0a1a63c8da0fe24c4ddb4eeff6fa3da5b18"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-d-5.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-d-5.js",
+      "bytes": 345,
+      "sha256": "b8005613ec318cfaedded173d4130a979ced51cf9880fee62830ebd7a5dd3684"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-d-6.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-d-6.js",
+      "bytes": 345,
+      "sha256": "30456e8f50d17f1281569ce6eaaca2daf20783ce7066777949424dd1392b28de"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-d-7.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-d-7.js",
+      "bytes": 344,
+      "sha256": "0f5941db17a580257b54e2050d0a54d043c82fa5eaea28b8121677597cb4a2db"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-d-8.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-d-8.js",
+      "bytes": 349,
+      "sha256": "8465ab99da2aa2e0562ab2faba67f5b30fa746d65d0477762dffb9c5d15383f8"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-2-d-9.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-2-d-9.js",
+      "bytes": 375,
+      "sha256": "fa9f469113c38d34c8189a76357f9a23dcc1aa7e76e63d7c13263a85495c0416"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-3-1.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-3-1.js",
+      "bytes": 346,
+      "sha256": "deb685310e87e42175938ac19a1c7195d705ea943f1653151eb632dc666067b0"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-4-1.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-4-1.js",
+      "bytes": 418,
+      "sha256": "22519cbed036bd1bfb2c652ffcd47d32c4517f1e8f74eb724b23cecab1eeedde"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-4-2.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-4-2.js",
+      "bytes": 420,
+      "sha256": "d63175b9ad61bc236fa4cd54ee2fae2e8d31642a24ad44492a562c546bdfd045"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/15.2.3.9-4-3.js",
+      "upstream_path": "test/built-ins/Object/freeze/15.2.3.9-4-3.js",
+      "bytes": 452,
+      "sha256": "9bcdc4ca08dc141537876e0cca8c923106a6382d8c322175818a781ec4c6fc19"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/abrupt-completion.js",
+      "upstream_path": "test/built-ins/Object/freeze/abrupt-completion.js",
+      "bytes": 596,
+      "sha256": "813c741da774875e76dac3203ae2147aa6a70ab2c4e4859e8bc7a356b1e64e74"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/frozen-object-contains-symbol-properties-non-strict.js",
+      "upstream_path": "test/built-ins/Object/freeze/frozen-object-contains-symbol-properties-non-strict.js",
+      "bytes": 485,
+      "sha256": "090d46ddc2d3d1daae8b8a4500a7079b725338dfddca59aad28224cb9df80f62"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/frozen-object-contains-symbol-properties-strict.js",
+      "upstream_path": "test/built-ins/Object/freeze/frozen-object-contains-symbol-properties-strict.js",
+      "bytes": 397,
+      "sha256": "e30611af69c51b59dad8d8fdebb9f1071689c59f8c2f3367280b20ecc3306a7b"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/name.js",
+      "upstream_path": "test/built-ins/Object/freeze/name.js",
+      "bytes": 794,
+      "sha256": "59fd3a22bc42a799e6aaa107f5387760a66e35d43edae6e863fb9c4affdf679c"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Object/freeze/not-a-constructor.js",
+      "bytes": 854,
+      "sha256": "fadc11200249db117b261741598e329be830293f974774e1d9171e44e4bc2e89"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/proxy-no-ownkeys-returned-keys-order.js",
+      "upstream_path": "test/built-ins/Object/freeze/proxy-no-ownkeys-returned-keys-order.js",
+      "bytes": 1512,
+      "sha256": "54d352705c8a7c811b56fb22c9a75bfe41bd8c7d618cf046b87904d10ebe691d"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/proxy-with-defineProperty-handler.js",
+      "upstream_path": "test/built-ins/Object/freeze/proxy-with-defineProperty-handler.js",
+      "bytes": 1826,
+      "sha256": "7424611b49a50e68c4d7026fc64ff4e0fedd0b7462d8984724c70c176846f6cb"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/throws-when-false.js",
+      "upstream_path": "test/built-ins/Object/freeze/throws-when-false.js",
+      "bytes": 660,
+      "sha256": "4953385e5433f1aa073097fc63935ec1c51c4e54a96934e236a909f0776dbecf"
+    },
+    {
+      "path": "test/built-ins/Object/freeze/typedarray-backed-by-resizable-buffer.js",
+      "upstream_path": "test/built-ins/Object/freeze/typedarray-backed-by-resizable-buffer.js",
+      "bytes": 2241,
+      "sha256": "f14dd66d0ce75e72910f9c8b0539bea247bac283ed7c78f0109222c593fbf3e9"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-0-1.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-0-1.js",
+      "bytes": 304,
+      "sha256": "08d335f68c3eff2dc3b04739b6396acd9e8f9826f249daff0fd2612a23347e8e"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-0-2.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-0-2.js",
+      "bytes": 314,
+      "sha256": "fad040b21c36caa1541cf9ab4eb88d3aa667b1cd0663c22ebcb5b745b5e34b45"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-1-1.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-1-1.js",
+      "bytes": 325,
+      "sha256": "9d6017cc51cb4130d1f32d2aadd85eb5c5134e775fa1b5cd87eaed03fd7dff7f"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-1-2.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-1-2.js",
+      "bytes": 315,
+      "sha256": "cd436b84412e099e10d34587d4a1dcd0d3b425700789dcdb7ad816e881913848"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-1-3.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-1-3.js",
+      "bytes": 320,
+      "sha256": "4ec5ef8953adf9b22b6a036bfc7ce095aa94a42a9a408540fedca170eedc5296"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-1-4.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-1-4.js",
+      "bytes": 320,
+      "sha256": "964817fecb6a04fd0c7f19347e57e7ddeec59823aed317fd06307bb46531c1af"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-1-5.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-1-5.js",
+      "bytes": 322,
+      "sha256": "7a2861927ef045de0884213288735788676092e02930530e0b66971917393279"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-1-6.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-1-6.js",
+      "bytes": 388,
+      "sha256": "1a7bc225683e8b6b0d274258561819e56a78a4389a75344fb7ffaa25638c0ca4"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-1-7.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-1-7.js",
+      "bytes": 398,
+      "sha256": "b395bbace3572680cf4441298057b0a2fce065c56fed397fe828c6f2bb7b5006"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-1.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-1.js",
+      "bytes": 313,
+      "sha256": "d660372420d8a57b629e99bdcc2e6cc6e9cc91745ca7991512bb913ebfb84635"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-2-1.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-2-1.js",
+      "bytes": 565,
+      "sha256": "3d6e39a3a2a189463794c832e24247829d3354b9267e4635cf4a6495fdfde6d9"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-2-2.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-2-2.js",
+      "bytes": 634,
+      "sha256": "c6294b4d9544cd1ffe7f2f53175f9cf8330168ea57ec2e7bd7786776c7ebba32"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-1.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-1.js",
+      "bytes": 440,
+      "sha256": "f9521d4280106b3f5a9a439d66105e3c9ebbeec4c52f050a5f7d2b7406d4fedf"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-11.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-11.js",
+      "bytes": 396,
+      "sha256": "daf5d4fc62c3c508d57a72cad0f9c61439552177d2d5ce159bfb1ee34c13acd8"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-12.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-12.js",
+      "bytes": 376,
+      "sha256": "295bbbc241c16a6a8a69cca66e9c71b6ba586892da3b5cfaf95a0741ba3e7bce"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-13.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-13.js",
+      "bytes": 457,
+      "sha256": "33d6e13836a3df696d7035bd6640832e4343db3c1f6887362d3d25aa0d66b2a3"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-14.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-14.js",
+      "bytes": 361,
+      "sha256": "cdea35336369c1763a243ef8d5059fd806f85ca7d909216ddc67efcf50465733"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-2.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-2.js",
+      "bytes": 670,
+      "sha256": "7bda5da6822039b144f7ab73425b4e694f6027605fa4c82c1122d106d7462270"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-3.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-3.js",
+      "bytes": 664,
+      "sha256": "8a65b8e248027d24524a0be649a2bcb6dc484a7b600fe1874171d035d07d8271"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-4.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-4.js",
+      "bytes": 450,
+      "sha256": "9f049ad05a19761f7fbcf35e51361b1510bab309cf7c0c0b4c7a02a926a31f53"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-5.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-5.js",
+      "bytes": 663,
+      "sha256": "9f0c45631832fa5cbbc499497f7e92b06758624b1bbbf9a0a95ff9128bf02595"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-6.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-6.js",
+      "bytes": 695,
+      "sha256": "039642e978244fa95b603bd2dbc3a6e3d2974af418da630b0d004420c0635720"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-7.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-7.js",
+      "bytes": 466,
+      "sha256": "149a8d1d189e93b51e450144827364fcd8fdecc377e7478a2aff86fd7c85539c"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-8.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-2-a-8.js",
+      "bytes": 699,
+      "sha256": "9d033251ced568ba005c10c21e13c3ed87ca2d4d7ddfc83f44837953d3f45d0f"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-2-b-i-1.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-2-b-i-1.js",
+      "bytes": 480,
+      "sha256": "fe959da1cb06768a4917d004f7e32a3a0721306e34d5e8866d5694b5ebda8308"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-2-c-1.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-2-c-1.js",
+      "bytes": 483,
+      "sha256": "0c5b5e20c169c4c20ca45b73e786fcb517901fed1ab0f8c86d30c789a95462da"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-2-c-2.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-2-c-2.js",
+      "bytes": 552,
+      "sha256": "3610be4c41e15c1fcef944b350e3d63d7f86d88b34e0f72bfbb75cd8de467a2c"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-1.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-1.js",
+      "bytes": 279,
+      "sha256": "19c282b5463d0d425440cdb417af8fb68061bf03898fb1f1b0ea99904dec53b7"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-10.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-10.js",
+      "bytes": 317,
+      "sha256": "1691276bceeb2c8a01c624aaff75309ff8c42774d305f9a4d67f33ed30ce711f"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-11.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-11.js",
+      "bytes": 347,
+      "sha256": "7ca655f16d1fd2caf42c99fab66ef1a569983d5e76eb33de987dd70c16bd4f03"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-12.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-12.js",
+      "bytes": 315,
+      "sha256": "40a6516c82da52ee17556e2fd19ca195db6c1d27466c87309634bbcf9a526166"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-13.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-13.js",
+      "bytes": 345,
+      "sha256": "774a6597347802f0c183c104182d08f70083eced6afe1e93a3fb98df0a2e0acc"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-14.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-14.js",
+      "bytes": 311,
+      "sha256": "3bad5fe38d6a55f0f86515d169fe6ffff348b295a23af8fc78e0321f15ba4eef"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-15.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-15.js",
+      "bytes": 311,
+      "sha256": "896738f7179037bd79d71725dc1685290d6eceb6efc780c3a0acd12ac38a5bb9"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-16.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-16.js",
+      "bytes": 341,
+      "sha256": "bfa3ee33a91d8acaec1b95eec4dc29b6968af8883ef480cae0447b56bd197cf7"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-17.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-17.js",
+      "bytes": 315,
+      "sha256": "c6ad0026873a2addf250acb4ba0681851a436d423c639760f1a266f1af01727d"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-18.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-18.js",
+      "bytes": 345,
+      "sha256": "3750ff4fe2c4ffbb81ce36b7660aef22b6d8a9fe9fd66b430b13e703d1b402f7"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-19.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-19.js",
+      "bytes": 313,
+      "sha256": "9e22bf7bfdfbdcf643aec18af53812c978253856efa5fb9556638a00678df3c0"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-2.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-2.js",
+      "bytes": 314,
+      "sha256": "6b1063a81a29edcd49ac1af1523f2ef479785ee0f29d2562560289bc3cceacc4"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-20.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-20.js",
+      "bytes": 343,
+      "sha256": "194068814ab274a96bf568330c02bc7cfe7381e696ee33b08f4f0b1f80dbeac3"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-21.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-21.js",
+      "bytes": 321,
+      "sha256": "41a0a5f5420d639f440ca9615c0a28a2b40458191d6625819882501da7c80f69"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-22.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-22.js",
+      "bytes": 323,
+      "sha256": "02d77d4331491940c9d4e2dba40ba35b6713b761841ffb6298faba0e08af46fb"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-23.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-23.js",
+      "bytes": 341,
+      "sha256": "83dcce178e9524159a08baffbea7a41609ca6f43be0331ab2b6402032b89c8b1"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-24.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-24.js",
+      "bytes": 335,
+      "sha256": "3e75e9285d0b5df30c399a4c6a2d484590814dbb0740b8e7c16504ba5a16b12a"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-25.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-25.js",
+      "bytes": 321,
+      "sha256": "06e7e5ccdc46e71cbb5d47f9d8afcfae653ad79637547f61beeab3c0937b035b"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-26.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-26.js",
+      "bytes": 319,
+      "sha256": "abfff521377cf90fbdce112608f67e8e1404c5daf82d107058e2d8bfad9d916c"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-27.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-27.js",
+      "bytes": 311,
+      "sha256": "ec2f868fbb225922b96512c948e6d8dbfc9918bcf3b307f40dc583e8f194c71d"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-28.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-28.js",
+      "bytes": 707,
+      "sha256": "5e0b76b096ddeac9e270569a3faf2bc5ee7d492268d944bdc990d95f564d97f7"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-3.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-3.js",
+      "bytes": 344,
+      "sha256": "c7824c5e6ae07481222a1f6211f416a939902eccd7bf0bd0f91a70f9241b76ac"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-4.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-4.js",
+      "bytes": 318,
+      "sha256": "c6de28d267a416155d0f5d48374e4edca35d9266937ee86c5642b95e99b21780"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-5.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-5.js",
+      "bytes": 348,
+      "sha256": "a2fdb6aea1c1a8ac4289c5d1037f472324aab6e3ac9ba9a237b918d99280a317"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-6.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-6.js",
+      "bytes": 312,
+      "sha256": "48b3481d90f9597d12b99a9648c689b6d7352fb7f69813f316adfc3b3dba8ac1"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-7.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-7.js",
+      "bytes": 342,
+      "sha256": "f2f6ec9299441879813a4a36a3d40a508d044e7bc3b70903f60d73a562e673bb"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-8.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-8.js",
+      "bytes": 314,
+      "sha256": "b1885863680e7df703a1edbb631af0d689970d5fd4d4484bad4a283c986ccc52"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-3-9.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-3-9.js",
+      "bytes": 344,
+      "sha256": "4ccf3f91b2b0db004a3ce94b2536d1d44c2eb4b7c153c74f3901a6ff983792d3"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/15.2.3.12-4-1.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/15.2.3.12-4-1.js",
+      "bytes": 304,
+      "sha256": "e266872d771c978452cd26f6db7c5529cd2939423aaf120831df98a92a39cc75"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/name.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/name.js",
+      "bytes": 805,
+      "sha256": "7e9f071a57fae54f5ba62bda22497044da9c0f3ff622731d422947bdaa5a022e"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/not-a-constructor.js",
+      "bytes": 862,
+      "sha256": "83de9185b55299c5969ef9ac00c22fb5300bdef228abbf2774d331fbb7479284"
+    },
+    {
+      "path": "test/built-ins/Object/isFrozen/proxy-no-ownkeys-returned-keys-order.js",
+      "upstream_path": "test/built-ins/Object/isFrozen/proxy-no-ownkeys-returned-keys-order.js",
+      "bytes": 1453,
+      "sha256": "7e1197c1eb3654f75eaaff9d15367aafc39c34b1c574ab8f2be968b09fdd82ba"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-0-1.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-0-1.js",
+      "bytes": 304,
+      "sha256": "dd7ebd1f42c5436c6ce9e2085457bb52728dd419467a3a80ac0a19ba7892ba8f"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-0-2.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-0-2.js",
+      "bytes": 314,
+      "sha256": "0f8b7d725e19c1463d5dc952bb14a6b259d2f090950fca04164bd35a3d23fcc0"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-1.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-1.js",
+      "bytes": 313,
+      "sha256": "1f8818468bf21ec6e031f5621da209b85b5725ac66278772fba92a962434fe04"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-1.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-1.js",
+      "bytes": 279,
+      "sha256": "5d5861d1ff36d42428d423141288030f5b226d5b3ac9488c9a2ff23c43ee0b9b"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-10.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-10.js",
+      "bytes": 317,
+      "sha256": "949dcb0b4ccc4691a4b6509b5ac5fd8696da9dcb4e5fb4523262c4b102fd0992"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-11.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-11.js",
+      "bytes": 347,
+      "sha256": "9111fa2f87e39d240306bf857f05967be734ffddca5d875c07643f99d3e1319a"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-12.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-12.js",
+      "bytes": 315,
+      "sha256": "16572d5db99f935d0379333a321be9aada132407cb5118ca2e589ecf43903500"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-13.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-13.js",
+      "bytes": 345,
+      "sha256": "3e6517b6ffe50523bccb01fa157ccefebb7d73b02075a881096b77776f3a7f84"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-14.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-14.js",
+      "bytes": 311,
+      "sha256": "0481b92cf675fd526966908acd51436fd30aa435890f9eb0004540ce3b67b7c4"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-15.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-15.js",
+      "bytes": 311,
+      "sha256": "e928bd758e428c5c6db6519145668178303c87df8f2faebdc5a5af77989a6d8a"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-16.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-16.js",
+      "bytes": 341,
+      "sha256": "7cc5d612b7b15304a1a7578011b99f50399d2ae1efd8b3f31ae9da002a2b60d6"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-17.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-17.js",
+      "bytes": 315,
+      "sha256": "041274f1341304bd6baa987c75a0904e7446b393728e8da0f6163f5d4dad38ab"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-18.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-18.js",
+      "bytes": 345,
+      "sha256": "f92bea90357d82cf764616247e6ef4ba98acefc036319460a18889ef4bfa1da2"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-19.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-19.js",
+      "bytes": 313,
+      "sha256": "ed026619d4e7fb19f14d11236a2d052c65191b8002e59e07b9075146db1fe602"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-2.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-2.js",
+      "bytes": 314,
+      "sha256": "d98302934b097ffe2e60683c8a7eb75b914112ca2d6f497eb0fe85c9646af693"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-20.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-20.js",
+      "bytes": 343,
+      "sha256": "50b9235bf0a76f65fdf924e815b116da438c0cd976d818d173cd81824f497212"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-21.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-21.js",
+      "bytes": 321,
+      "sha256": "d0c63d644e2d21b3df6a57508de2091f2e1b75185171c67f8e00fdb62da9bcf4"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-22.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-22.js",
+      "bytes": 323,
+      "sha256": "cff63b8b4bc32a294c449a4f691347621f4863ae9cc1103023a532b479da288a"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-23.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-23.js",
+      "bytes": 341,
+      "sha256": "089ce19d050509e31ec938b439ba9959b19ef38a9a9e3ec019d2155b7c44b961"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-24.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-24.js",
+      "bytes": 335,
+      "sha256": "30d3a07194a9fb8aa7a73b597d2b5e2f79525f77a66dc08782cfdd711d39bd03"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-25.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-25.js",
+      "bytes": 321,
+      "sha256": "fdc9d5a1087b1d87a2ab4fa1d73d14cb2ea128232c52114e5bb2fac3e689900c"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-26.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-26.js",
+      "bytes": 319,
+      "sha256": "40f5633ea35f3aae47ac797dcabbbe425740b0f24c8ce9d1635bea8935761027"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-27.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-27.js",
+      "bytes": 311,
+      "sha256": "ffe638f1ab46977924618311226602f31d65cfaaddb1ce2806bca2431626c6b9"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-3.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-3.js",
+      "bytes": 344,
+      "sha256": "da04123a49a2db645d7e5248c9bbb1502cd818dfc1d44eaf409e32c04d8c31fa"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-4.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-4.js",
+      "bytes": 318,
+      "sha256": "986c6e7830fa46bcab1cfc3dc9b8497ab7e285cc9e4fec82ebcd23dd173a91d5"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-5.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-5.js",
+      "bytes": 348,
+      "sha256": "73151fea2d70921abf06e7f3506e2d3f160adea928f20bc3d475f07aace6c7d9"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-6.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-6.js",
+      "bytes": 312,
+      "sha256": "cb48cfbc0c21223c15dc4fe1b9600e3d79475199d0e4ae400217966d88efa004"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-7.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-7.js",
+      "bytes": 342,
+      "sha256": "c3fb9c2cf8caafdbf313addde6ff22f1a450b2e102e3749cff64eb46ef8e2d51"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-8.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-8.js",
+      "bytes": 314,
+      "sha256": "d029ecd86cc637f399e18a0b68ac0f50dba9d8101a9938845f939b36451cb377"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/15.2.3.11-4-9.js",
+      "upstream_path": "test/built-ins/Object/isSealed/15.2.3.11-4-9.js",
+      "bytes": 344,
+      "sha256": "2517b1600cbb0ffc854ce9cf6ec4f3d232be91ebde8b87019af50f11f8f0c06a"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/name.js",
+      "upstream_path": "test/built-ins/Object/isSealed/name.js",
+      "bytes": 805,
+      "sha256": "51df43ce48579af43aa4c47515ee5557434b8a571117979e1c55707565da8863"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Object/isSealed/not-a-constructor.js",
+      "bytes": 862,
+      "sha256": "f823d3f831f33f173880a8163332fd40bcc4f23595bc7ee1b68ded38c2dabd27"
+    },
+    {
+      "path": "test/built-ins/Object/isSealed/proxy-no-ownkeys-returned-keys-order.js",
+      "upstream_path": "test/built-ins/Object/isSealed/proxy-no-ownkeys-returned-keys-order.js",
+      "bytes": 1451,
+      "sha256": "0c4f69144cdfe8fcfd3fe4a8bdb07a11295e0ed5599942b1fd3aee0fa3da94e0"
+    },
+    {
+      "path": "test/built-ins/Object/seal/abrupt-completion.js",
+      "upstream_path": "test/built-ins/Object/seal/abrupt-completion.js",
+      "bytes": 590,
+      "sha256": "6dd9415e22885192a8372af7e6cf2a7f535446064bda6c0c5b54d2ec61da448e"
+    },
+    {
+      "path": "test/built-ins/Object/seal/configurable-attribute-all-own-properties-set-from-true-to-false-property-are-unaltered.js",
+      "upstream_path": "test/built-ins/Object/seal/configurable-attribute-all-own-properties-set-from-true-to-false-property-are-unaltered.js",
+      "bytes": 1213,
+      "sha256": "c81e941b10ff25f0e8f5c517c7dbd029f8c3065a84c8df6a99a278fcd3ec2129"
+    },
+    {
+      "path": "test/built-ins/Object/seal/configurable-attribute-own-accessor-property-set-from-true-to-false-property-are-unaltered.js",
+      "upstream_path": "test/built-ins/Object/seal/configurable-attribute-own-accessor-property-set-from-true-to-false-property-are-unaltered.js",
+      "bytes": 983,
+      "sha256": "c175256637a578ed67f79384fff4bc2356ff0f9c6ffef5148fe5f63d7e78efe1"
+    },
+    {
+      "path": "test/built-ins/Object/seal/length.js",
+      "upstream_path": "test/built-ins/Object/seal/length.js",
+      "bytes": 943,
+      "sha256": "fd361778d681d1c106f8afebff446e76102dafe9950e0bc407a7a943863d7a45"
+    },
+    {
+      "path": "test/built-ins/Object/seal/name.js",
+      "upstream_path": "test/built-ins/Object/seal/name.js",
+      "bytes": 790,
+      "sha256": "c32a7117373c392afe8157ccb4822ec3443787ef5fb32128a8176acfb97b043c"
+    },
+    {
+      "path": "test/built-ins/Object/seal/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Object/seal/not-a-constructor.js",
+      "bytes": 844,
+      "sha256": "7308c6ba77386986961410fbb8138e2b136e97674358f468d7c617005da0d7d2"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-all-own-properties-of-o-are-already-non-configurable.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-all-own-properties-of-o-are-already-non-configurable.js",
+      "bytes": 1257,
+      "sha256": "b6804cd571179e4035e03ffb9ed8c52e87e4b80eac47018ba18a9d47d04f4746"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-configurable-attribute-of-own-data-property-of-o-is-set-from-true-to-false-and-other-attributes-of-the-property-are-unaltered.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-configurable-attribute-of-own-data-property-of-o-is-set-from-true-to-false-and-other-attributes-of-the-property-are-unaltered.js",
+      "bytes": 778,
+      "sha256": "b675431827fa71c8f50a5f5cb25948a729f5ad97c799053ec057132d8c45b4fc"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-extensible-of-o-is-set-as-false-even-if-o-has-no-own-property.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-extensible-of-o-is-set-as-false-even-if-o-has-no-own-property.js",
+      "bytes": 468,
+      "sha256": "6c83dac14209bf768470b4c4261da233de0cca1e24c48be9a0733a9c4ffca638"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-inherited-accessor-properties-are-ignored.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-inherited-accessor-properties-are-ignored.js",
+      "bytes": 801,
+      "sha256": "5a2b25a2bdfdf5f6e2731f5a7035d493270f4f1360a236355c329b3357e5a7fa"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-inherited-data-properties-are-ignored.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-inherited-data-properties-are-ignored.js",
+      "bytes": 770,
+      "sha256": "142f2b5a52032f90ba2d97ae2a8335e8dbf05a526b9ba9657d8da8bdb4792447"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-is-a-function.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-is-a-function.js",
+      "bytes": 273,
+      "sha256": "218ace07282f3d48a33570096c29176d0654de87a85531041991544941a76744"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-non-enumerable-own-property-of-o-is-sealed.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-non-enumerable-own-property-of-o-is-sealed.js",
+      "bytes": 499,
+      "sha256": "d7ed65cb56ab828ef6da0d81adf5c46aca662a380169b8c19c1789e9815325ad"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-o-is-a-boolean-object.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-o-is-a-boolean-object.js",
+      "bytes": 440,
+      "sha256": "0ae1b909323ce76cd219da3cff0bbc0d3f64e2d028be60fb4363fcdec2c098a3"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-o-is-a-date-object.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-o-is-a-date-object.js",
+      "bytes": 430,
+      "sha256": "9d70edc7e3e595312552d8eb8dfd1157ff023cbb88864f97b949762dc8de6994"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-o-is-a-function-object.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-o-is-a-function-object.js",
+      "bytes": 416,
+      "sha256": "b6146e5b98618f351813e6a11fb5369b9c90f6aaefc1a4fb3323b0d5668d4209"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-o-is-a-number-object.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-o-is-a-number-object.js",
+      "bytes": 429,
+      "sha256": "bd3ac245a0a072f04bd84fc80b6fd0172506d16a0b1ec2ec3b863ec23dee312d"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-o-is-a-reg-exp-object.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-o-is-a-reg-exp-object.js",
+      "bytes": 428,
+      "sha256": "7367a8cadef4673f9cd15c5674dcbf162bf3f7dc896fca619f8123a5b397161a"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-o-is-a-string-object.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-o-is-a-string-object.js",
+      "bytes": 431,
+      "sha256": "284343f39a486f8167e95790b6827433cb592175108553c201bd2b0e2f523e98"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-o-is-an-arguments-object.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-o-is-an-arguments-object.js",
+      "bytes": 459,
+      "sha256": "ae623ca8437d6ff505dc98be17961b42dad3f8e3117ff7a52b8d9538ae70e0ae"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-o-is-an-array-object.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-o-is-an-array-object.js",
+      "bytes": 407,
+      "sha256": "95346133bf59448e0eeaf9f9c2e266383ac3a9142bdb32943f6eae4d80f6b4a2"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-o-is-an-error-object.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-o-is-an-error-object.js",
+      "bytes": 427,
+      "sha256": "b75a422bac1eafe4cd906f99e684ecfb129bfc80a6b6c6fe9548b670866e0a82"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-o-is-frozen-already.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-o-is-frozen-already.js",
+      "bytes": 523,
+      "sha256": "824d0ab03124f0e498730d51119e023cc7f9cf206c13f92733618a61f48edde5"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-o-is-sealed-already.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-o-is-sealed-already.js",
+      "bytes": 521,
+      "sha256": "5aa060a999c6838900f2ba638ec60ced4ac7f8312f8c8972e727d1c4533eec35"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-p-is-own-accessor-property-that-overrides-an-inherited-accessor-property.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-p-is-own-accessor-property-that-overrides-an-inherited-accessor-property.js",
+      "bytes": 780,
+      "sha256": "e4608ab0193eb9bc0c1743068bf8830bca362c9706e7e23d39c0910a864841c4"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-p-is-own-accessor-property-that-overrides-an-inherited-data-property.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-p-is-own-accessor-property-that-overrides-an-inherited-data-property.js",
+      "bytes": 749,
+      "sha256": "8202fe589af46b426a5f39524081c605c4f05e9c38deadfdcc9368045da499a6"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-p-is-own-accessor-property.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-p-is-own-accessor-property.js",
+      "bytes": 521,
+      "sha256": "bd351b136654238b251ca6146dbab99da46e701a690c92d88e1a95e2b31206e7"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-p-is-own-data-property-that-overrides-an-inherited-accessor-property.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-p-is-own-data-property-that-overrides-an-inherited-accessor-property.js",
+      "bytes": 729,
+      "sha256": "fc208c3ea3716a93ed04112e331ff9da987faa7d6d895fa4e6e03e64668cbf21"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-p-is-own-data-property-that-overrides-an-inherited-data-property.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-p-is-own-data-property-that-overrides-an-inherited-data-property.js",
+      "bytes": 632,
+      "sha256": "0567c8e3758f4b2fd9252b17d85c4228001dacc454f335069986a354268e51c3"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-p-is-own-data-property.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-p-is-own-data-property.js",
+      "bytes": 468,
+      "sha256": "6d840de6c00745ff5409707cfb770d8c8401804badacd54f9ae756f562d058da"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-p-is-own-property-of-a-boolean-object-that-uses-object-s-get-own-property.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-p-is-own-property-of-a-boolean-object-that-uses-object-s-get-own-property.js",
+      "bytes": 490,
+      "sha256": "f81d9788c6eb9b580d8004eecc062d941082d4b47b3835a4ef01b1c70b22c6b4"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-p-is-own-property-of-a-date-object-that-uses-object-s-get-own-property.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-p-is-own-property-of-a-date-object-that-uses-object-s-get-own-property.js",
+      "bytes": 480,
+      "sha256": "302134851e86cf5f161b68ee782b1bc2947325e7a0bb03d94048e43b69c6e556"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-p-is-own-property-of-a-function-object-that-uses-object-s-get-own-property.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-p-is-own-property-of-a-function-object-that-uses-object-s-get-own-property.js",
+      "bytes": 486,
+      "sha256": "9e89065828ff6ef7230011f6c30e73c390031adde6685976016cafd7e5389fb2"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-p-is-own-property-of-a-number-object-that-uses-object-s-get-own-property.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-p-is-own-property-of-a-number-object-that-uses-object-s-get-own-property.js",
+      "bytes": 485,
+      "sha256": "13fe7c17c32aa60c35035caad00e99926ab0503635432b7a938b72789f5cb910"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-p-is-own-property-of-a-reg-exp-object-that-uses-object-s-get-own-property.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-p-is-own-property-of-a-reg-exp-object-that-uses-object-s-get-own-property.js",
+      "bytes": 483,
+      "sha256": "9d76910017294879873cb7d4b426fcfdf9891f941a241fa162bde5235f0f9931"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-p-is-own-property-of-a-string-object-which-implements-its-own-get-own-property.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-p-is-own-property-of-a-string-object-which-implements-its-own-get-own-property.js",
+      "bytes": 494,
+      "sha256": "0d7c2b789313e8495afd69ff90f626a3ed1f385c0e7331b4897045680b0397fe"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-p-is-own-property-of-an-arguments-object-which-implements-its-own-get-own-property.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-p-is-own-property-of-an-arguments-object-which-implements-its-own-get-own-property.js",
+      "bytes": 519,
+      "sha256": "156e927195bf82888c4793dfbfbfe948bd8a88a6f0091fb986dbef2d811db0fb"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-p-is-own-property-of-an-array-object-that-uses-object-s-get-own-property.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-p-is-own-property-of-an-array-object-that-uses-object-s-get-own-property.js",
+      "bytes": 473,
+      "sha256": "3141579de838af0428b2cad13d4ee6f9d7c2c9b8b6f8aae6f70a4be49ba0c6ec"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-p-is-own-property-of-an-error-object-that-uses-object-s-get-own-property.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-p-is-own-property-of-an-error-object-that-uses-object-s-get-own-property.js",
+      "bytes": 482,
+      "sha256": "260921bb65c3a76bb50bf0342df64de00d447eb001a7bc23a51273ce0d36e6f5"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-returned-object-is-not-extensible.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-returned-object-is-not-extensible.js",
+      "bytes": 430,
+      "sha256": "e4365799a3aa11dcf012e68022192b75ddc583e3429b82bd45606eac6262b630"
+    },
+    {
+      "path": "test/built-ins/Object/seal/object-seal-the-extension-of-o-is-prevented-already.js",
+      "upstream_path": "test/built-ins/Object/seal/object-seal-the-extension-of-o-is-prevented-already.js",
+      "bytes": 553,
+      "sha256": "3cfe96dbb61551ed81fd59c02d392420949cf9984f3fdbbca9a7ec4c05ab37bf"
+    },
+    {
+      "path": "test/built-ins/Object/seal/proxy-no-ownkeys-returned-keys-order.js",
+      "upstream_path": "test/built-ins/Object/seal/proxy-no-ownkeys-returned-keys-order.js",
+      "bytes": 1524,
+      "sha256": "59e15cc933a7234451912c84b77808c2075120823a315bae646d59b1a8a4529d"
+    },
+    {
+      "path": "test/built-ins/Object/seal/proxy-with-defineProperty-handler.js",
+      "upstream_path": "test/built-ins/Object/seal/proxy-with-defineProperty-handler.js",
+      "bytes": 1441,
+      "sha256": "13c10eea4a4db122d252342b467c488afd1f5a82aadc051d1d8c555f8c50c719"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-aggregateerror.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-aggregateerror.js",
+      "bytes": 1232,
+      "sha256": "994060e08de1f32843aa3168128350670ab60f4f81e85c39631876327fc51aa3"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-arraybuffer.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-arraybuffer.js",
+      "bytes": 1197,
+      "sha256": "b3a0d779dbfe9492c807baf2bad4e254a65f403547400ecd0516653041c5312f"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-arrowfunction.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-arrowfunction.js",
+      "bytes": 1233,
+      "sha256": "4dd7bb817c696b6d66d9e2d6dcebcb978867ccc0fddbf48c0b628563d95d041b"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-asyncarrowfunction.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-asyncarrowfunction.js",
+      "bytes": 1244,
+      "sha256": "48f7230da8535634b556e62f6572c8815ece7fd64451f9de3385ddd4c776f7d6"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-asyncfunction.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-asyncfunction.js",
+      "bytes": 1244,
+      "sha256": "a95f0c51d33b4e89ca6e7e7b3defa42ecbee2804ca547707230935a36782351d"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-asyncgeneratorfunction.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-asyncgeneratorfunction.js",
+      "bytes": 1256,
+      "sha256": "1cc1943dbab77f7620b62253343b46d26f7464094d200b6cb9a1abcca791a9c2"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-bigint64array.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-bigint64array.js",
+      "bytes": 1201,
+      "sha256": "7369f2a650a2b06b3a45ea384c5ccf78542145a61ce775b99aa4d60c14412115"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-biguint64array.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-biguint64array.js",
+      "bytes": 1203,
+      "sha256": "a4850602bb3e9198916ace75eea082be4a81615aafb166d56321360b7daf9d83"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-boolean-literal.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-boolean-literal.js",
+      "bytes": 1212,
+      "sha256": "6992d8993d91ac78e75b266a039e3d925624e053f51d9e3237387e7bbf07bb96"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-boolean.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-boolean.js",
+      "bytes": 1189,
+      "sha256": "bc5e966a0a75e4b63051792fb72aeb55fe81b6d03fed1455e34aafaadd223f77"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-dataview.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-dataview.js",
+      "bytes": 1209,
+      "sha256": "e29a9fe13e41a5b660d6b5143fe4e78c1350bad42ca04051bc0a691ef428b6db"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-date.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-date.js",
+      "bytes": 1184,
+      "sha256": "518765ac442a3a050e760e9032099e5846630063f4ab7d8b152cc841067664d5"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-error.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-error.js",
+      "bytes": 1185,
+      "sha256": "4a4c2bfd6c6c77da8b2d60df09184cca363a7c60bbe8a6fad887654768677f40"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-evalerror.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-evalerror.js",
+      "bytes": 1193,
+      "sha256": "9c4eac2eca7ceecc941fd30b4ac380209ba7f21598ad446e1009774be37401f3"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-finalizationregistry.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-finalizationregistry.js",
+      "bytes": 1255,
+      "sha256": "1abf7ea2a718f4f91e7280d0d4877384beb0f86359875496bec913ea8450ef40"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-float32array.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-float32array.js",
+      "bytes": 1199,
+      "sha256": "e8dea5007212acebd82f310236fdb4b176bb107f982e0f64147db21570a10bc4"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-float64array.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-float64array.js",
+      "bytes": 1199,
+      "sha256": "eeb79cf1aea3a9a4c80bcd63a6e72378ac86f1865ed8e1d424e50a78f22eb940"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-function.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-function.js",
+      "bytes": 1191,
+      "sha256": "ed3208f9066908c64f2966f3da996965499e4915c4d21790555c596de67933b1"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-generatorfunction.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-generatorfunction.js",
+      "bytes": 1245,
+      "sha256": "90a89f92c865fb8b50ce1d8ca7b81806324ca7302d02452ed07b346dea577cec"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-infinity.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-infinity.js",
+      "bytes": 1213,
+      "sha256": "8f98265b2ff9afb34a9504fdd704d666876a6e8b621d460f3fd5d56a8ba672a8"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-int16array.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-int16array.js",
+      "bytes": 1195,
+      "sha256": "b993a3bfe28c433f205b8b2fe79e4481d98b101603d5da5f9cdd1f3a0316384c"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-int32array.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-int32array.js",
+      "bytes": 1195,
+      "sha256": "9176f21b65c78d42575b9c8cf2437601498e89b3f176e1c86e015e5734408f88"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-int8array.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-int8array.js",
+      "bytes": 1193,
+      "sha256": "526f5e244194221e8dc1b7f69a2be39193aa3c6ae38b201b3dc7cd171edfba48"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-map.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-map.js",
+      "bytes": 1181,
+      "sha256": "857bea4d8124f58d17fead09c2d36abb57505f4a364fed928b4d17d9ff8617ed"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-nan.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-nan.js",
+      "bytes": 1198,
+      "sha256": "c95f04548862c5d567f2a1c9cf55fcbf7f51e734b0d2f8c5dbb81a5d01863b3f"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-null.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-null.js",
+      "bytes": 1201,
+      "sha256": "e9aef496bc8dbc7fc93b5948b65ec8af11d1d543f8dddc1f862d6c3213758816"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-number.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-number.js",
+      "bytes": 1188,
+      "sha256": "72141c5ea6e8e37ec8c0e4e96280205ab05638baff8880d89912798023ee073c"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-object.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-object.js",
+      "bytes": 1187,
+      "sha256": "c54b079964c5c88cb3b9fce9ea4f6dfa42a07af123e030d920977b7176fe883b"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-promise.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-promise.js",
+      "bytes": 1197,
+      "sha256": "a39d785c09114734ea81503770799ae118d3d07c5809791ebaea80c154f8a848"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-proxy.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-proxy.js",
+      "bytes": 1191,
+      "sha256": "e2630ca6cfb96aa37b8583f1c9679bb9a56be7a3c57770c3900bae00a2341679"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-rangeerror.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-rangeerror.js",
+      "bytes": 1195,
+      "sha256": "b1e448ac8dc2bae3d611b911912e922c8406f8578535f934eff3d131fb09b4d9"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-referenceerror.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-referenceerror.js",
+      "bytes": 1203,
+      "sha256": "471c3e3bbcf7670335cd5f01a0dfe1a1530b673caf6e84953f099fc33d538680"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-regexp.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-regexp.js",
+      "bytes": 1189,
+      "sha256": "8ec9e89e8b79dc710ec41ba72b030be002fe37d61421f8b66fda2ccd52bb6a1e"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-set.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-set.js",
+      "bytes": 1181,
+      "sha256": "9733f8d409c91d83865a26affdbf2aab9510c65b2c08931c53c49437904c2456"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-sharedarraybuffer.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-sharedarraybuffer.js",
+      "bytes": 1239,
+      "sha256": "87d07592327e35279be0e764159d4eb004d0aa711f16d1793f25c4efab2c1163"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-string.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-string.js",
+      "bytes": 1189,
+      "sha256": "b1710f7cdab6955437a8c6aa6363512c517dd632c222b355cda692ce81b7272d"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-symbol.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-symbol.js",
+      "bytes": 1215,
+      "sha256": "e316bf16a28b4fae0daeec65222d26cc9d2493a7ed920e7fcee7aab508879e2e"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-syntaxerror.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-syntaxerror.js",
+      "bytes": 1197,
+      "sha256": "5e0b0a501ea90877d6cefbe3172fe702623052ddd7db21a8c78f4e2d07078ea4"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-typeerror.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-typeerror.js",
+      "bytes": 1193,
+      "sha256": "d66c2302571792da6e998f2e33fd44c5a85bfa37d0f1450983bf34a1f2d75937"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-uint16array.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-uint16array.js",
+      "bytes": 1197,
+      "sha256": "0f704025fa66eb9a2e5b6ec1bfff7d283b320e6d436e917333e0c4e652d3aea2"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-uint32array.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-uint32array.js",
+      "bytes": 1197,
+      "sha256": "7ea53044c85597d5f31d60fabba09c22b6e3787b208340b35fd78cc64fddebf1"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-uint8array.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-uint8array.js",
+      "bytes": 1195,
+      "sha256": "51f567bb4e3db23dcbc0f0c0cd75e47756349502ab19333de6dd7ae70c493c3c"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-uint8clampedarray.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-uint8clampedarray.js",
+      "bytes": 1209,
+      "sha256": "12c6296257196a871cdc1d5846dc072ad1410fca38e8a0bec56daeef10ae8954"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-undefined.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-undefined.js",
+      "bytes": 1216,
+      "sha256": "eca6a22a7b2467bdb3e9e9ff1f4500ffd573a9d9bca60dd381abf80a50a0ff1a"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-urierror.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-urierror.js",
+      "bytes": 1191,
+      "sha256": "37a4c4e74e1289e7f1b7c0efae4907fd49923ee232d193257d9b141f941cfa36"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-weakmap.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-weakmap.js",
+      "bytes": 1189,
+      "sha256": "52ff5a06088fd46e73adcbdd922db491c611d598b80183c898790094ffb5e850"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-weakref.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-weakref.js",
+      "bytes": 1210,
+      "sha256": "5b1f217605796462744a0a761bac989039546196f6854d193b5880629ed63ccd"
+    },
+    {
+      "path": "test/built-ins/Object/seal/seal-weakset.js",
+      "upstream_path": "test/built-ins/Object/seal/seal-weakset.js",
+      "bytes": 1189,
+      "sha256": "f1b21cd0f0c5f9b75d4953536e04801b211e6ab5fd0021088c9561c9fd98252b"
+    },
+    {
+      "path": "test/built-ins/Object/seal/symbol-object-contains-symbol-properties-non-strict.js",
+      "upstream_path": "test/built-ins/Object/seal/symbol-object-contains-symbol-properties-non-strict.js",
+      "bytes": 635,
+      "sha256": "adfb08be4dd6189432fe1b1780cbc32050eb7c60965d9c6ceb42b242287ef247"
+    },
+    {
+      "path": "test/built-ins/Object/seal/symbol-object-contains-symbol-properties-strict.js",
+      "upstream_path": "test/built-ins/Object/seal/symbol-object-contains-symbol-properties-strict.js",
+      "bytes": 586,
+      "sha256": "febdf8fdc11d41d20b03c4a7a7929dc48432b12ad5ed56ed0033e4c251fa0dad"
+    },
+    {
+      "path": "test/built-ins/Object/seal/throws-when-false.js",
+      "upstream_path": "test/built-ins/Object/seal/throws-when-false.js",
+      "bytes": 652,
+      "sha256": "b9578c5cd354a98779c16dfbb8c9062dee91fef7e66fd08d7a6c25a4e88330e2"
+    }
+  ],
+  "inventory_proof": {
+    "method": "complete-nonrecursive-git-trees",
+    "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+    "root_tree": "91b2052adad1f066ae031e2ff3a1e9bd6d732886",
+    "directory_trees": {
+      "Object/seal": "4991a9ea85928324d60d3612695a17cabbd7ad7d",
+      "Object/freeze": "2b9db074bcd16410e833856d077a4956b483945a",
+      "Object/isSealed": "ffc15b48c00c7eaf5ad3b30c90f35344a0d713d6",
+      "Object/isFrozen": "a64bab0f19d31f48840aa7a2289e2b3a452ea081"
+    },
+    "files": [
+      {
+        "path": "inventory-proof/commit.json",
+        "bytes": 1094,
+        "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0",
+        "url": "https://api.github.com/repos/tc39/test262/git/commits/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd"
+      },
+      {
+        "path": "inventory-proof/tree-0d01cdef5daae0a168799f8e263ba72ed0dd475f.json",
+        "bytes": 18712,
+        "sha256": "971407f49f2ae7670feaf0c0ba20e77a7a5d5c69b2187e1d6563766e91769ba9",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/0d01cdef5daae0a168799f8e263ba72ed0dd475f"
+      },
+      {
+        "path": "inventory-proof/tree-2b9db074bcd16410e833856d077a4956b483945a.json",
+        "bytes": 11953,
+        "sha256": "2d91795f0027dc3851d889d838bb58090273b7ee6f4d16d44bbe2735c00529c8",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/2b9db074bcd16410e833856d077a4956b483945a"
+      },
+      {
+        "path": "inventory-proof/tree-4991a9ea85928324d60d3612695a17cabbd7ad7d.json",
+        "bytes": 22787,
+        "sha256": "9aa91f12f03295572367ee80a715ded4a6a293f84869356557d9a204c3c2192d",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/4991a9ea85928324d60d3612695a17cabbd7ad7d"
+      },
+      {
+        "path": "inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+        "bytes": 5452,
+        "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/91b2052adad1f066ae031e2ff3a1e9bd6d732886"
+      },
+      {
+        "path": "inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+        "bytes": 1374,
+        "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/a2eada339f3c7e678edfc08497985f261a9ae258"
+      },
+      {
+        "path": "inventory-proof/tree-a64bab0f19d31f48840aa7a2289e2b3a452ea081.json",
+        "bytes": 13171,
+        "sha256": "8673777fed73dbc180de37ec330a554097969f5b08f4e4f6007644531af34236",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/a64bab0f19d31f48840aa7a2289e2b3a452ea081"
+      },
+      {
+        "path": "inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+        "bytes": 13201,
+        "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/b42c4a8f19ad479b70ee2f64ecd683735d83cde9"
+      },
+      {
+        "path": "inventory-proof/tree-ffc15b48c00c7eaf5ad3b30c90f35344a0d713d6.json",
+        "bytes": 7440,
+        "sha256": "e37ad6d5bf48c7fed4c4297000d13fb2be766ab9b1fe9e7f23508de7c57ec122",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/ffc15b48c00c7eaf5ad3b30c90f35344a0d713d6"
+      }
+    ]
+  }
+}

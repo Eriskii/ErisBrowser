@@ -21,6 +21,7 @@ mod construction;
 mod dom_bindings;
 mod machine;
 mod names;
+mod object_integrity;
 mod parser;
 mod property_keys;
 mod regexp_builtins;
@@ -1985,6 +1986,10 @@ impl Runtime {
             ("String", "fromCharCode", 1),
             ("String", "fromCodePoint", 1),
             ("Array", "isArray", 1),
+            ("Object", "seal", 1),
+            ("Object", "freeze", 1),
+            ("Object", "isSealed", 1),
+            ("Object", "isFrozen", 1),
         ] {
             let full = format!("{owner}.{key}");
             let value = self.intrinsic_function(&full, key, length)?;
@@ -4719,10 +4724,6 @@ impl Runtime {
         } else if object_id.is_some_and(|id| self.objects[id].non_extensible) {
             return Ok(false);
         }
-        let mapping = object_id.and_then(|id| {
-            key.as_string()
-                .and_then(|key| self.objects[id].parameter_map.get(key).cloned())
-        });
         let mapped_value = desc.value.clone();
         let sever_mapping = desc.accessor() || desc.writable == Some(false);
         let mut property =
@@ -4777,15 +4778,19 @@ impl Runtime {
             self.charge(256 + key.byte_len().saturating_mul(2))?;
         }
         self.objects[id].insert_property(key.clone(), property);
-        if let Some((env, name)) = mapping {
+        // Updating the property table does not change parameter_map. Borrow
+        // its binding name after the update instead of allocating a copy.
+        if let Some(key) = key.as_string()
+            && let Some((env, name)) = self.objects[id].parameter_map.get(key)
+        {
             if let Some(value) = mapped_value {
-                self.environments[env]
+                self.environments[*env]
                     .bindings
-                    .get_mut(&name)
+                    .get_mut(name)
                     .unwrap()
                     .value = value;
             }
-            if sever_mapping && let Some(key) = key.as_string() {
+            if sever_mapping {
                 self.objects[id].parameter_map.remove(key);
             }
         }
@@ -7638,6 +7643,13 @@ impl Runtime {
         args: Vec<Value>,
         doc: &mut Document,
     ) -> Result<Value> {
+        if let Some(operation) = object_integrity::IntegrityOperation::from_name(&native.name) {
+            return self.object_integrity(
+                args.first().cloned().unwrap_or(Value::Undefined),
+                operation,
+                doc,
+            );
+        }
         if let Some(method) = native.name.strip_prefix("DOM.") {
             return self.dom_native(method, native.receiver.clone(), &args, doc);
         }

@@ -322,3 +322,23 @@ scan exhaustion and frame cleanup. Four retained upstream sparse-scan modes
 reach the work limit. No quota, exception policy or process authority is
 broadened, and earlier author effects are retained on failure. These checks
 do not establish complete allocation accounting or production security.
+
+[Object integrity operations](../tests/conformance/object-integrity.md) use a
+dedicated own-key snapshot with work and heap charges before key materialization,
+vector allocation and in-place sorting. Sparse logical gaps do not create keys.
+Flag inspection avoids accessor calls, mapped-value reads and allocation of
+virtual boxed-string character values. Already-compatible flags need no new
+descriptor record. Changed properties use the shared definition path; mapped
+argument binding names are borrowed and their actual scan lengths are charged.
+The initial nonextensibility change precedes key collection, and successful
+property changes remain visible if a later definition or quota check fails.
+There is no rollback promise for the whole operation. Queries and repeated
+calls share the caller's existing cumulative limits, and unsupported host
+receivers are rejected explicitly. Quotas, exception policy and process
+authority are unchanged. Fifteen private test groups cover exact refusal before
+allocation, partial array and argument updates, actual binding-name work,
+sparse logical lengths, virtual-string flags, host sidecars and terminal
+shared-budget cleanup. Both supported Rust toolchains and release configurations
+pass the integrated checks; 15,000 mutation cases report no caught panic or
+invariant failure. These checks do not establish complete allocation accounting
+or a security audit.

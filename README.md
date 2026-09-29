@@ -100,6 +100,7 @@ python3 tools/test262_conformance.py --profile relational --baseline tests/confo
 python3 tools/test262_conformance.py --profile equality --baseline tests/conformance/test262-equality-current.json
 python3 tools/test262_conformance.py --profile labels --baseline tests/conformance/test262-labels-current.json
 python3 tools/test262_conformance.py --profile symbols --baseline tests/conformance/test262-symbols-current.json
+python3 tools/test262_conformance.py --profile object-integrity --baseline tests/conformance/test262-object-integrity-current.json
 python3 -m unittest discover -s tools -p 'test_*.py'
 cargo run --locked --release --bin eris-stress -- 5000
 ```
@@ -368,3 +369,16 @@ work limits and 16 metadata exclusions across 867 modes. Four older descriptor
 metadata modes also pass. All 14,304 mode fingerprints and prior passes are
 preserved across 33 profiles; all 2,740 assertion controls verify. The existing
 26 healthy gates remain, while the new resource stops prevent a predicate gate.
+
+[Object integrity](tests/conformance/object-integrity.md) now supports sealing,
+freezing and integrity queries for supported ECMAScript objects, including
+arrays, functions, boxed strings and arguments objects. Own descriptor flags
+are processed without invoking getters; children and prototypes remain shallow.
+The [complete upstream profile](tests/conformance/test262-object-integrity.md)
+retains 239 sources and 474 modes. The final release records 378 passed,
+58 missing-prerequisite failures and 38 unsupported modes, with all 224 controls
+verified. All 228 frozen local variants and their 12 controls also pass.
+Eight older descriptor modes gain passes, and all 14,296 other older
+observations are unchanged. The combined inventory has 34 profiles, 14,778
+modes, 2,964 verified controls and 27 healthy regression gates. Work and
+allocation quotas are unchanged; failed and unsupported cases remain visible.

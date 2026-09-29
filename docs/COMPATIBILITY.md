@@ -1,5 +1,21 @@
 # Compatibility status
 
+[Object integrity](../tests/conformance/object-integrity.md) now supports
+`Object.seal`, `Object.freeze`, `Object.isSealed` and `Object.isFrozen` on
+supported ECMAScript objects. Arrays retain holes and length flags; accessors
+are preserved without getter calls; sealing mapped arguments retains aliases,
+while freezing snapshots and detaches them. Operations are shallow and preserve
+earlier effects if a later property or resource operation fails. Window/DOM
+hosts, Proxy and typed-array behavior remain unsupported.
+
+The [complete new profile](../tests/conformance/test262-object-integrity.md)
+retains 239 sources and 474 modes. The final release records **378 passed,
+58 missing-prerequisite failures and 38 unsupported**, with all 224 controls
+verified. All 228 local variants and 12 controls pass. Eight older descriptor
+modes gain passes, with no previous pass lost. The new profile has a healthy
+regression gate; its 58 failures and 38 unsupported observations remain part of
+the baseline. This does not establish complete object or host conformance.
+
 [Array every and some](../tests/conformance/array-predicates.md) now support
 generic ordinary receivers, captured length, holes, inherited/indexed accessors
 and live callback mutations. They short-circuit using callback truthiness and

@@ -1,5 +1,47 @@
 # Validation record
 
+## Object integrity
+
+The [implementation and frozen local fixtures](../tests/conformance/object-integrity.md)
+compare against published commit `ff48c939`. The final release passes all
+**228 unchanged local variants** and verifies all **12 assertion controls**.
+Successful method guards precede error assertions; the before release failed
+all semantic variants at those guards. The
+[complete evidence](../tests/conformance/object-integrity.json) preserves
+their original sources, modes, expectations, before/after observations and
+publication provenance. Fifteen private runtime test groups check snapshot
+refusal, partial descriptor and argument progress, virtual-string flags,
+binding-name work, host refusal and terminal resource cleanup.
+
+The [complete pinned profile](../tests/conformance/test262-object-integrity.md)
+retains **239 sources / 474 modes**. The final release records **378 passed,
+58 failed and 38 unsupported**, compared with **440 failed / 34 unsupported**
+before implementation. All **224 controls** verify. There are 378 gains, four
+failures now reaching explicit global-host refusal and **92 other identical
+observations**. No resource, timeout, adapter or harness errors occur in the
+new-profile run. All remaining failures are missing-prerequisite
+ReferenceErrors; metadata, parser and host refusals remain separate categories.
+
+All **33 prior profiles / 14,304 cases / 2,740 controls** retain their captured
+source, mode, helper, policy, exclusion and generated-control contracts.
+Eight older descriptor modes gain passes; the other **14,296 complete older
+observations** and all older controls are identical. No previous pass is lost.
+The combined **34-profile / 14,778-mode** inventory has **2,964 verified
+controls** and **27 healthy regression gates**, including the new integrity
+gate and refreshed descriptor baseline. Retained failures and unsupported
+cases remain visible in those baselines.
+
+Rust **1.88 / 1.95** pass strict all-target Clippy and **1,071 default / 1,082
+Vulkan-feature tests**, none ignored. The full **201-test Python suite** passes,
+including proof-tampering and assertion-integrity tests. Both release
+configurations preserve all **57 CPU pixel references**, and HTML observations
+are unchanged. Deterministic mutation smoke completes **15,000 cases** with
+zero caught panics or invariant failures in **3.20 seconds**; 17 paint-limit
+stops remain within the checked invariants. This is smoke testing, not
+coverage-guided fuzzing. Final binary and source hashes are retained in the
+linked evidence. No GPU exercise, security certification or Chromium
+performance comparison was performed.
+
 ## Array every and some
 
 The [implementation and local fixtures](../tests/conformance/array-predicates.md)
