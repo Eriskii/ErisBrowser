@@ -30,8 +30,10 @@ adds two XML-pattern passes without raising budgets.
 [String lastIndexOf](../tests/conformance/string-last-index-of.md) adds 46 passes
 in its complete directory and 12 older passes.
 [Array lastIndexOf](../tests/conformance/array-last-index-of.md) adds 328 passes
-and closes the two remaining String.lastIndexOf failures. Sparse array storage,
-indexed/length descriptors, Date and BigInt dependencies,
+and closes the two remaining String.lastIndexOf failures.
+[Array descriptors and sparse storage](../tests/conformance/array-descriptors.md)
+now support indexed accessors, writable length, partial shrink failure and
+nonextensibility. Live array methods consume these properties. Date and BigInt dependencies,
 replacement/matchAll protocols, general matching performance, the remaining
 full-UTF-16 loop, Unicode regexp syntax and Function source retention remain
 concrete next dependencies.

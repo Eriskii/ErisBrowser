@@ -278,8 +278,7 @@ custom hooks, flags/input conversion, execution and index access within the
 existing callback guards. Invocation arguments and private result-array growth
 are charged; inherited setters cannot intercept own match-result elements.
 Tests cover recursive callbacks, unbounded custom exec results, allocation
-refusal before the first global exec, and clean frame unwinding. The separate
-Array.prototype indexed-descriptor gap remains explicitly unsupported. These
+refusal before the first global exec, and clean frame unwinding. Array.prototype indexed descriptors now use the shared property implementation. These
 checks do not establish complete allocation accounting or audited security.
 
 [String lastIndexOf](../tests/conformance/string-last-index-of.md) searches borrowed
@@ -295,5 +294,19 @@ property lookup and safe-integer key creation. It allocates no collection from
 logical length, charges each visited index/prototype edge and uses strict
 equality with charged string comparisons. Author getters and conversion hooks
 share the existing guards. Recursive callbacks, huge sparse scans, refusal before
-index getters and cleanup are tested. Existing array storage limits remain;
+index getters and cleanup are tested. Sparse array storage now separates logical length from occupied elements;
 no quota or process authority changes.
+
+
+[Array descriptors and methods](../tests/conformance/array-descriptors.md) store
+logical u32 lengths independently of dense cached elements and sparse property
+records. A length increase allocates no absent elements; shrinking visits actual
+own indices and preserves valid length/storage after an uncatchable resource
+stop. Indexed getters, length conversion and method callbacks use the existing
+work, cumulative allocation and recursion budgets. Tests cover refusal before
+storage changes, interrupted shrink invariants, recursive conversion, method
+callback allocation, cyclic-join cleanup and persistent document suspension.
+JSON key snapshots still preflight storage proportional to logical length;
+sort/reverse retain their 65,536-element limits. No quota or process authority
+was increased. Bounded independent code inspection found no concrete defect;
+it does not constitute a security audit or complete allocation accounting.

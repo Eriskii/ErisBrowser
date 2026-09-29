@@ -107,7 +107,7 @@ This is an implementation inventory, not a conformance certificate. A feature li
 
 The URL parser and encoding libraries are infrastructure libraries, not independent reimplementations of those specifications. There is no claim that every dependency is authored in this repository.
 
-Ordinary objects support descriptor defaults, writable/enumerable/configurable checks, getters/setters, reflective descriptor queries and deletion. Enumeration visits own keys and inherited enumerable keys while respecting shadowing. Window descriptor queries expose tracked global bindings, including the CSS namespace, with ordered property-key conversion and current flags/values. The replaceable [Window.self accessor](../tests/conformance/window-self.md) supports assignment, deletion, descriptor restoration and author accessors, with global lexical shadowing kept separate. The [global value properties](../tests/conformance/global-values.md) share this handling: globalThis is initially writable/configurable and nonenumerable; undefined, NaN and Infinity are nonwritable, nonconfigurable and nonenumerable. Replacing globalThis preserves private Window/event identity. [Window binding reflection](../tests/conformance/window-reflection.md) now supports own membership, enumerability and ordered string/symbol key enumeration over the supported bindings. [General Window definitions and global bindings](../tests/conformance/window-global-bindings.md) now share data/accessor records, preserve arbitrary UTF-16 key identity, keep execution receivers private, and validate global function declarations across scripts. Event-handler descriptor/deletion behavior, extensibility, complete interfaces and named-property behavior remain incomplete. Array holes and virtual array/string properties have targeted reflection support; indexed/length descriptor mutation, array extensibility restrictions, other host reflection and generic Array receivers remain incomplete. The unchanged upstream property-helper harness runs directly; no native test assertion shims replace it.
+Ordinary objects support descriptor defaults, writable/enumerable/configurable checks, getters/setters, reflective descriptor queries and deletion. Enumeration visits own keys and inherited enumerable keys while respecting shadowing. Window descriptor queries expose tracked global bindings, including the CSS namespace, with ordered property-key conversion and current flags/values. The replaceable [Window.self accessor](../tests/conformance/window-self.md) supports assignment, deletion, descriptor restoration and author accessors, with global lexical shadowing kept separate. The [global value properties](../tests/conformance/global-values.md) share this handling: globalThis is initially writable/configurable and nonenumerable; undefined, NaN and Infinity are nonwritable, nonconfigurable and nonenumerable. Replacing globalThis preserves private Window/event identity. [Window binding reflection](../tests/conformance/window-reflection.md) now supports own membership, enumerability and ordered string/symbol key enumeration over the supported bindings. [General Window definitions and global bindings](../tests/conformance/window-global-bindings.md) now share data/accessor records, preserve arbitrary UTF-16 key identity, keep execution receivers private, and validate global function declarations across scripts. Event-handler descriptor/deletion behavior, extensibility, complete interfaces and named-property behavior remain incomplete. Arrays support indexed data/accessor descriptors, writable length, sparse u32 logical lengths and nonextensibility. Length reduction deletes own indices in descending order and preserves partial effects when a nonconfigurable index blocks it. Object and Reflect property definitions share the same array rules. Eleven existing Array methods now use live property operations on supported ordinary array-like receivers. Custom species constructors, Proxy, typed arrays and general host reflection remain incomplete. See [array descriptor coverage](../tests/conformance/array-descriptors.md). The unchanged upstream property-helper harness runs directly; no native test assertion shims replace it.
 
 The complete pinned [global-value inventory](../tests/conformance/test262-global-values.md)
 retains 88 variants: 64 pass, six fail on missing Date, and 18 require
@@ -128,10 +128,11 @@ includes inherited values, compares default strings as UTF-16 code units, and
 uses live author comparators and conversion hooks. Collection and comparison
 precede ordered strict writes/deletes; exceptions preserve earlier author and
 write-back effects. The [bounded sort implementation](../tests/conformance/array-sort.md)
-does not add indexed-array descriptor mutation, Proxy, typed-array or
-general host receiver support. Its work/heap limits can stop large inputs.
+uses the shared array descriptor rules; Proxy, typed-array and
+general host receiver support remain incomplete. Its work/heap limits can stop large inputs.
 The [complete pinned sort directory](../tests/conformance/test262-array-sort.md)
-now records 57 passed, 46 unsupported and four resource stops across 107 modes.
+now records 91 passed, 12 unsupported and four resource stops across 107 modes.
+Array descriptor support enables 32 additional modes.
 Adding reduce enables the 5- and 11-element stability tests in both modes;
 the unchanged 513- and 2,048-element tests reach the shared work/allocation
 limits. No healthy sort baseline is recorded.
@@ -142,8 +143,8 @@ values from explicit undefined, and read sparse/inherited entries live in the
 requested direction. Four callback arguments, actual-callee this behavior and
 prior author effects survive through page and event execution. Full safe-integer
 logical lengths share existing work/allocation limits without allocating from
-length. Host receivers, Proxy and typed arrays remain unsupported; actual Array
-indexed/length descriptor definitions are still incomplete. See the
+length. Actual Array indexed/length descriptors use the same live property paths.
+Host receivers, Proxy and typed arrays remain unsupported. See the
 [implementation scope](../tests/conformance/array-reduce.md) and
 [complete paired upstream inventory](../tests/conformance/test262-array-reduce.md).
 

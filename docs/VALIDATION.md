@@ -1,5 +1,36 @@
 # Validation record
 
+## Array descriptors and sparse storage
+
+The [implementation record](../tests/conformance/array-descriptors.md) and
+[evidence](../tests/conformance/array-descriptors.json) compare against `48fce52d`.
+The complete **1,793-source / 3,574-mode** property-definition/array-length
+inventory gains **664 passes**, reaching **3,466 passed / 88 failed / 20
+unsupported**. Its source inventory is verified through complete pinned Git
+trees, including all 1,131 defineProperty entries. Older profiles gain **233
+passes**: 150 reduction modes, 45 lastIndexOf modes, 32 sort modes and six JSON
+modes. Two lastIndexOf modes still stop at the shared work budget while scanning
+huge sparse ranges; their earlier resource stop occurred during dense setup.
+All other **9,628 older observations / 2,528 older controls** are unchanged.
+The **32-profile / 13,437-mode** inventory has **2,612 verified controls** and
+**26 healthy regression gates**, including the new descriptor gate. No
+previous pass, source, feature policy or case fingerprint is lost.
+
+All **72 frozen local modes** pass. One new preflight pair initially left its
+readonly element configurable and therefore expected an invalid TypeError;
+the corrected setup makes the element nonconfigurable. Original before/after
+observations and all four changed control fingerprints are retained. Independent
+bounded code and tooling reviews found no concrete defect; eight additional
+proof-tampering probes were rejected.
+
+Rust **1.88 / 1.95** pass strict all-target Clippy and **1,053 default / 1,064
+Vulkan-feature tests**, none ignored. **189 Python tests**, **15,000 mutation
+cases**, unchanged HTML observations and both releases' **57 CPU pixel references**
+pass. Sparse storage changes required replacing old allocation-pressure fixtures
+with actual dense values; persistent page suspension remains checked. JSON key
+snapshots and sort/reverse retain documented resource bounds. No GPU exercise,
+security certification or Chromium performance comparison was performed.
+
 ## Array lastIndexOf
 
 The [implementation record](../tests/conformance/array-last-index-of.md) and

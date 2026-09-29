@@ -203,7 +203,7 @@ impl Runtime {
         };
         let own_keys = self.intrinsic_function("Reflect.ownKeys", "ownKeys", 1)?;
         self.objects[id].insert_hidden("ownKeys".into(), own_keys);
-        for (name, length) in [("apply", 3), ("construct", 2)] {
+        for (name, length) in [("apply", 3), ("construct", 2), ("defineProperty", 3)] {
             self.charge(256)?;
             let method = self.intrinsic_function(&format!("Reflect.{name}"), name, length)?;
             self.objects[id].insert_hidden(name.into(), method);

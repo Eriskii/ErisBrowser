@@ -14,7 +14,8 @@ import time
 
 from html_conformance import bounded_process, paths_alias
 from import_test262 import (DIRECTORIES, PROFILES, PROFILE_ROOTS, MAX_FILE, MAX_TOTAL,
-                            REPOSITORY, REVISION, corpus_name, parse_metadata)
+                            REPOSITORY, REVISION, TREE_PROFILES, corpus_name, parse_metadata,
+                            git_tree_inventory, tree_proof_path)
 
 ROOT = Path(__file__).resolve().parents[1]
 CONSTRUCTOR_FEATURES = {'Reflect', 'Reflect.apply', 'Reflect.construct', 'new.target'}
@@ -51,11 +52,12 @@ CONSTRUCTION_FEATURES = SYMBOL_FEATURES | FUNCTION_FEATURES | {'new.target', 'Re
 FUNCTION_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REST_PARAMETER_FEATURES
 STRING_SEARCH_FEATURES = SYMBOL_FEATURES | FUNCTION_FEATURES | {'String.prototype.includes', 'String.prototype.endsWith'}
 REGEXP_MATCH_SEARCH_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
+ARRAY_DESCRIPTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 ARRAY_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 STRING_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 REGEXP_SPLIT_FEATURES = CONSTRUCTION_FEATURES
 REGEXP_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'u180e'}
-PROFILE_FEATURES = {'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+PROFILE_FEATURES = {'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'reflect-construction': CONSTRUCTION_FEATURES, 'new-target': CONSTRUCTION_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -139,6 +141,49 @@ def load_corpus(directory, profile='string-json'):
         if total > MAX_TOTAL or len(data) != entry['bytes'] or digest(data) != entry['sha256']:
             raise ValueError(f'Test262 corpus integrity mismatch: {path}')
         files[str(path)] = data
+    if profile in TREE_PROFILES:
+        description = manifest.get('inventory_proof', {})
+        if not isinstance(description, dict):
+            raise ValueError('invalid Git inventory proof description')
+        proof_entries = description.get('files', [])
+        if (not isinstance(proof_entries, list) or len(proof_entries) > 32
+                or any(not isinstance(entry, dict) or not isinstance(entry.get('path'), str)
+                       for entry in proof_entries)):
+            raise ValueError('invalid Git inventory proof file list')
+        proof_by_path = {entry['path']: entry for entry in proof_entries}
+        if len(proof_by_path) != len(proof_entries):
+            raise ValueError('duplicate Git inventory proof file')
+
+        def read_proof(route):
+            nonlocal total
+            path = tree_proof_path(route)
+            entry = proof_by_path.get(path, {})
+            target = directory / path
+            if (target.is_symlink() or directory.resolve() not in target.resolve().parents
+                    or entry.get('url') != f'https://api.github.com/repos/{REPOSITORY}/git/{route}'
+                    or not isinstance(entry.get('bytes'), int) or not 0 <= entry['bytes'] <= MAX_FILE):
+                raise ValueError('invalid, missing or aliased Git inventory proof')
+            with target.open('rb') as handle:
+                data = handle.read(MAX_FILE + 1)
+            total += len(data)
+            if (total > MAX_TOTAL or len(data) != entry['bytes']
+                    or digest(data) != entry.get('sha256')):
+                raise ValueError('Git inventory proof integrity mismatch')
+            return data
+
+        listings, proof, expected_proof = git_tree_inventory(directories, PROFILE_ROOTS[profile], read_proof)
+        if ({key: value for key, value in description.items() if key != 'files'} != expected_proof
+                or set(proof) != set(proof_by_path)):
+            raise ValueError('Git inventory proof description differs from pinned trees')
+        for name, listing in listings.items():
+            if sorted(entry['name'] for entry in listing) != sorted(inventory[name]):
+                raise ValueError('test inventory differs from complete pinned Git tree')
+            for entry in listing:
+                path = f'{PROFILE_ROOTS[profile]}/{name}/{entry["name"]}'
+                data = files.get(path, b'')
+                blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
+                if blob != entry['sha']:
+                    raise ValueError('test source differs from pinned Git tree blob')
     actual_tests = {path for path in files if path.startswith('test/')}
     if actual_tests != expected_tests:
         raise ValueError('Test262 manifest test inventory is incomplete or contains extras')
@@ -1163,6 +1208,71 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
             for name, setup, actual, good, bad in pairs:
                 for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
                     variants.append((name + suffix, setup + f'assert.sameValue({actual},{value});', expected, mode))
+    if profile == 'array-descriptors':
+        guard = ("assert.sameValue(typeof Object.defineProperty,'function');assert.sameValue(typeof Object.defineProperties,'function');"
+                 "var smoke=[];assert.sameValue(Object.defineProperty(smoke,'0',{value:7,writable:true,enumerable:true,configurable:true}),smoke);"
+                 "assert.sameValue(smoke[0],7);assert.sameValue(Object.defineProperties(smoke,{'0':{value:8}}),smoke);assert.sameValue(smoke[0],8);")
+        pairs = [
+            ('index-defaults', "var a=[];Object.defineProperty(a,'0',{value:5});var d=Object.getOwnPropertyDescriptor(a,'0');"
+             "assert.sameValue(d.value,5);assert.sameValue(d.writable,false);assert.sameValue(d.enumerable,false);assert.sameValue(d.configurable,false);",
+             'a.length', '1', '0'),
+            ('accessor-receiver', "var a=[],stored=3;var get=function(){assert.sameValue(this,a);return stored;};var set=function(v){assert.sameValue(this,a);stored=v;};"
+             "Object.defineProperty(a,'1',{get:get,set:set,enumerable:true,configurable:true});a[1]=11;var d=Object.getOwnPropertyDescriptor(a,'1');"
+             "assert.sameValue(d.get,get);assert.sameValue(d.set,set);assert.sameValue(a.length,2);",
+             'a[1]', '11', '3'),
+            ('index-growth', "var a=[];Object.defineProperty(a,'3',{value:9,writable:true,enumerable:true,configurable:true});"
+             "assert.sameValue(0 in a,false);assert.sameValue(2 in a,false);assert.sameValue(a[3],9);",
+             'a.length', '4', '3'),
+            ('length-shrink', "var a=[1,2,3];assert.sameValue(Object.defineProperty(a,'length',{value:1}),a);"
+             "assert.sameValue(a[0],1);assert.sameValue(1 in a,false);assert.sameValue(2 in a,false);",
+             'a.length', '1', '3'),
+            ('shrink-rollback', "var a=[0,1,2,3];Object.defineProperty(a,'2',{configurable:false});"
+             "assert.throws(TypeError,function(){Object.defineProperty(a,'length',{value:1,writable:false});});"
+             "assert.sameValue(a.length,3);assert.sameValue(3 in a,false);assert.sameValue(a[2],2);",
+             "Object.getOwnPropertyDescriptor(a,'length').writable", 'false', 'true'),
+            ('nonwritable-length', "var a=[1];Object.defineProperty(a,'length',{writable:false});"
+             "assert.throws(TypeError,function(){Object.defineProperty(a,'1',{value:2});});Object.defineProperty(a,'0',{value:8});"
+             "assert.sameValue(a.length,1);assert.sameValue(1 in a,false);",
+             'a[0]', '8', '1'),
+            ('length-coercion-order', "var a=[1,2,3],trace='',value={valueOf:function(){trace+='N';return 2;}},d={};"
+             "Object.defineProperty(d,'value',{get:function(){trace+='V';return value;}});Object.defineProperty(d,'writable',{get:function(){trace+='W';return true;}});"
+             "Object.defineProperty(a,'length',d);assert.sameValue(a.length,2);",
+             'trace', "'VWNN'", "'VWN'"),
+            ('invalid-length', "var a=[1,2];assert.throws(RangeError,function(){Object.defineProperty(a,'length',{value:1.5,writable:false});});"
+             "assert.sameValue(a.length,2);assert.sameValue(a[1],2);",
+             "Object.getOwnPropertyDescriptor(a,'length').writable", 'true', 'false'),
+            ('define-properties-staging', "var a=[1],map={},reason={},trace='',caught=false;"
+             "Object.defineProperty(map,'0',{enumerable:true,get:function(){trace+='A';return {value:9};}});"
+             "Object.defineProperty(map,'1',{enumerable:true,get:function(){trace+='B';throw reason;}});"
+             "try{Object.defineProperties(a,map);}catch(e){assert.sameValue(e,reason);caught=true;}assert(caught);assert.sameValue(trace,'AB');assert.sameValue(a.length,1);",
+             'a[0]', '1', '9'),
+            ('define-properties-partial', "var a=[0,1];Object.defineProperty(a,'1',{writable:false,configurable:false});"
+             "assert.throws(TypeError,function(){Object.defineProperties(a,{'0':{value:7},'1':{value:8}});});assert.sameValue(a[1],1);",
+             'a[0]', '7', '0'),
+            ('property-keys', "var a=[],calls=0,key={toString:function(){calls++;return '0';}},s=Symbol('x');"
+             "Object.defineProperty(a,key,{value:4});Object.defineProperty(a,s,{value:5});Object.defineProperty(a,'01',{value:6});"
+             "Object.defineProperty(a,'4294967295',{value:7});assert.sameValue(calls,1);assert.sameValue(a[s],5);assert.sameValue(a[Symbol('x')],undefined);assert.sameValue(a['01'],6);",
+             'a.length', '1', '2'),
+            ('reflect-false-order', "var reflect=Reflect.defineProperty;assert.sameValue(typeof reflect,'function');assert.sameValue(reflect(smoke,'0',{value:9}),true);"
+             "var a=[1],trace='',key={toString:function(){trace+='K';return '1';}},d={};Object.defineProperty(a,'length',{writable:false});"
+             "Object.defineProperty(d,'value',{get:function(){trace+='V';return 2;}});Object.defineProperty(d,'writable',{get:function(){trace+='W';return true;}});"
+             "var result=reflect(a,key,d);assert.sameValue(trace,'KVW');assert.sameValue(a.length,1);assert.sameValue(1 in a,false);",
+             'result', 'false', 'true'),
+            ('property-metadata', "var one=Object.defineProperty,many=Object.defineProperties;"
+             "verifyProperty(Object,'defineProperty',{value:one,writable:true,enumerable:false,configurable:true},{restore:true});"
+             "verifyProperty(Object,'defineProperties',{value:many,writable:true,enumerable:false,configurable:true},{restore:true});"
+             "verifyProperty(one,'length',{value:3,writable:false,enumerable:false,configurable:true},{restore:true});"
+             "verifyProperty(many,'length',{value:2,writable:false,enumerable:false,configurable:true},{restore:true});"
+             "verifyProperty(one,'name',{value:'defineProperty',writable:false,enumerable:false,configurable:true},{restore:true});"
+             "verifyProperty(many,'name',{value:'defineProperties',writable:false,enumerable:false,configurable:true},{restore:true});"
+             "assert.throws(TypeError,function(){new one();});assert.throws(TypeError,function(){new many();});",
+             'many.length', '2', '3'),
+        ]
+        for mode in ('sloppy', 'strict'):
+            for name, setup, actual, good, bad in pairs:
+                for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                    variants.append(('array-descriptors-' + name + suffix,
+                                     guard + setup + f'assert.sameValue({actual},{value});', expected, mode))
     outcomes = []
     identifier_controls = {}
     for name, source, expected, mode in variants:

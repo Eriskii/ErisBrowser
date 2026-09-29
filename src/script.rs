@@ -34,6 +34,8 @@ mod parser_legacy;
 #[cfg(test)]
 use parser_legacy::{ActiveLabel, Parser};
 mod array_builtins;
+mod array_methods;
+mod array_properties;
 mod tokens;
 
 const MAX_SOURCE: usize = 256 * 1024;
@@ -1507,6 +1509,8 @@ pub struct Runtime {
     arrays: Vec<Vec<Value>>,
     array_properties: Vec<usize>,
     array_holes: Vec<BTreeSet<usize>>,
+    array_lengths: Vec<array_properties::ArrayLength>,
+    active_array_joins: Vec<Value>,
     array_prototype: Option<usize>,
     objects: Vec<ScriptObject>,
     prototypes: BTreeMap<&'static str, usize>,
@@ -1651,6 +1655,8 @@ impl Runtime {
             arrays: Vec::new(),
             array_properties: Vec::new(),
             array_holes: Vec::new(),
+            array_lengths: Vec::new(),
+            active_array_joins: Vec::new(),
             array_prototype: None,
             objects: Vec::new(),
             prototypes: BTreeMap::new(),
@@ -3417,6 +3423,10 @@ impl Runtime {
             .array_prototype
             .map(Value::Array)
             .or_else(|| self.prototypes.get("Array").copied().map(Value::Object));
+        self.array_lengths.push(array_properties::ArrayLength {
+            value: values.len() as u32,
+            writable: true,
+        });
         self.arrays.push(values);
         self.array_properties.push(properties);
         self.array_holes.push(BTreeSet::new());
@@ -4417,8 +4427,8 @@ impl Runtime {
         if let Value::Array(id) = receiver {
             if key.units() == [108, 101, 110, 103, 116, 104] {
                 return Some(Property::data(
-                    Value::Number(self.arrays[*id].len() as f64),
-                    true,
+                    Value::Number(self.array_lengths[*id].value as f64),
+                    self.array_lengths[*id].writable,
                     false,
                     false,
                 ));
@@ -4619,6 +4629,33 @@ impl Runtime {
         key: &PropertyKey,
         desc: PropertyDescriptor,
     ) -> Result<bool> {
+        if let Value::Array(id) = receiver
+            && let Some(key) = key.as_string()
+        {
+            if key == &JsString::from("length") {
+                return Err(ScriptError::unsupported(
+                    "array length definition requires observable conversion",
+                ));
+            }
+            if let Some(index) = json_array_index(key) {
+                if index >= self.array_lengths[*id].value && !self.array_lengths[*id].writable {
+                    return Ok(false);
+                }
+                if !self.ordinary_define_own_key(receiver, &key.into(), desc)? {
+                    return Ok(false);
+                }
+                self.array_lengths[*id].value = self.array_lengths[*id].value.max(index + 1);
+                return Ok(true);
+            }
+        }
+        self.ordinary_define_own_key(receiver, key, desc)
+    }
+    fn ordinary_define_own_key(
+        &mut self,
+        receiver: &Value,
+        key: &PropertyKey,
+        desc: PropertyDescriptor,
+    ) -> Result<bool> {
         self.work(1 + key.byte_len() / 2 / 8)?;
         let window_key = if receiver == &Value::Window {
             key.as_string()
@@ -4633,15 +4670,6 @@ impl Runtime {
         if object_id.is_none() && window_key.is_none() {
             return Err(ScriptError::unsupported(
                 "host property definition is not implemented",
-            ));
-        }
-        if matches!(receiver, Value::Array(_))
-            && key.as_string().is_some_and(|key| {
-                key == &JsString::from("length") || json_array_index(key).is_some()
-            })
-        {
-            return Err(ScriptError::unsupported(
-                "array indexed/length descriptor mutation is not implemented",
             ));
         }
         if let Some(key) = window_key {
@@ -4737,6 +4765,12 @@ impl Runtime {
             return Ok(true);
         }
         let id = object_id.unwrap();
+        if let Value::Array(array_id) = receiver
+            && let Some(string) = key.as_string()
+            && self.store_array_property(*array_id, string, &property)?
+        {
+            return Ok(true);
+        }
         if !self.objects[id].contains_key(key) {
             self.charge(256 + key.byte_len().saturating_mul(2))?;
         }
@@ -4811,7 +4845,7 @@ impl Runtime {
             descriptors.push((key, desc));
         }
         for (key, desc) in descriptors {
-            if !self.define_own_key(&object, &key, desc)? {
+            if !self.define_property_key(&object, &key, desc, doc)? {
                 return Err(ScriptError::type_error("incompatible property definition"));
             }
         }
@@ -4858,11 +4892,11 @@ impl Runtime {
         }
         if let Value::Array(id) = receiver
             && let Some(index) = json_array_index(key)
+            && (index as usize) < self.arrays[id].len()
         {
             self.charge(32)?;
             self.array_holes[id].insert(index as usize);
             self.arrays[id][index as usize] = Value::Undefined;
-            return Ok(true);
         }
         if let Some(id) = self.property_object(&receiver) {
             self.work(1 + self.objects[id].order.len() / 8)?;
@@ -5355,15 +5389,6 @@ impl Runtime {
             Err(_) => Ok(Value::Undefined),
         }
     }
-    fn set_key(
-        &mut self,
-        receiver: Value,
-        key: &JsString,
-        value: Value,
-        doc: &mut Document,
-    ) -> Result<()> {
-        self.set_key_strict(receiver, key, value, false, doc)
-    }
     fn set_key_strict(
         &mut self,
         receiver: Value,
@@ -5424,9 +5449,19 @@ impl Runtime {
             let indexed = matches!(receiver, Value::Array(_))
                 && (key == &JsString::from("length") || json_array_index(key).is_some());
             if indexed {
-                if self.own_property(&receiver, key).is_none() && self.objects[id].non_extensible {
-                    return Self::failed_write(strict);
-                }
+                let desc = if self.own_property(&receiver, key).is_some() {
+                    PropertyDescriptor {
+                        value: Some(value),
+                        ..PropertyDescriptor::default()
+                    }
+                } else {
+                    PropertyDescriptor::data_property(value, true, true, true)
+                };
+                return if self.define_property_key(&receiver, &key.into(), desc, doc)? {
+                    Ok(())
+                } else {
+                    Self::failed_write(strict)
+                };
             } else {
                 if let Some(property) = self.objects[id].values.get_mut(&key.into()) {
                     if let PropertyValue::Data { value: old, .. } = &mut property.value {
@@ -5513,25 +5548,6 @@ impl Runtime {
             Value::Object(id) => {
                 if let Some(value) = self.objects[*id].get(key) {
                     return Ok(value.clone());
-                }
-            }
-            Value::Array(id) => {
-                if key == "length" {
-                    return Ok(Value::Number(self.arrays[*id].len() as f64));
-                }
-                if let Ok(index) = key.parse::<usize>() {
-                    return Ok(self.arrays[*id]
-                        .get(index)
-                        .cloned()
-                        .unwrap_or(Value::Undefined));
-                }
-                if [
-                    "push", "pop", "shift", "unshift", "join", "forEach", "map", "filter",
-                    "includes", "indexOf", "slice",
-                ]
-                .contains(&key)
-                {
-                    return Ok(Self::native(key, receiver));
                 }
             }
             Value::String(text) => {
@@ -5794,45 +5810,8 @@ impl Runtime {
                 }
                 self.objects[id].insert(key.into(), value);
             }
-            Value::Array(id) => {
-                if key == "length" {
-                    let n = self.number_value(value, doc)?;
-                    if !n.is_finite() || n < 0.0 || n.fract() != 0.0 {
-                        return Err(ScriptError::range_error("invalid array length"));
-                    }
-                    if n > 65536.0 {
-                        return Err(ScriptError::resource("array length limit exceeded"));
-                    }
-                    let new = n as usize;
-                    if new > self.arrays[id].len() {
-                        self.charge((new - self.arrays[id].len()) * std::mem::size_of::<Value>())?;
-                    }
-                    let old = self.arrays[id].len();
-                    if new > old {
-                        self.charge((new - old).saturating_mul(32))?;
-                        self.array_holes[id].extend(old..new);
-                    }
-                    self.array_holes[id].retain(|index| *index < new);
-                    self.arrays[id].resize(new, Value::Undefined);
-                } else {
-                    let index = key.parse::<usize>().map_err(|_| {
-                        ScriptError::new("only indexed array properties are supported")
-                    })?;
-                    if index >= 65536 {
-                        return Err(ScriptError::resource("array index limit exceeded"));
-                    }
-                    if index >= self.arrays[id].len() {
-                        self.charge(
-                            (index + 1 - self.arrays[id].len()) * std::mem::size_of::<Value>(),
-                        )?;
-                        let old = self.arrays[id].len();
-                        self.charge((index - old).saturating_mul(32))?;
-                        self.array_holes[id].extend(old..index);
-                        self.arrays[id].resize(index + 1, Value::Undefined);
-                    }
-                    self.array_holes[id].remove(&index);
-                    self.arrays[id][index] = value;
-                }
+            Value::Array(_) => {
+                self.set_key_strict(receiver, &key.into(), value, false, doc)?;
             }
             Value::Window => {
                 let key = self.global_name_key(key)?;
@@ -6404,13 +6383,11 @@ impl Runtime {
                     }
                     arrays.push(id);
                     let mut text = Vec::<u16>::new();
-                    let length = self.arrays[id].len();
+                    let length = self.array_lengths[id].value as usize;
                     for index in 0..length {
                         self.tick()?;
-                        let value = self.arrays[id]
-                            .get(index)
-                            .cloned()
-                            .unwrap_or(Value::Undefined);
+                        let key = self.reduce_index_key(index as u64)?;
+                        let value = self.get_key(Value::Array(id), &key, doc)?;
                         let part = if matches!(value, Value::Null | Value::Undefined) {
                             JsString::default()
                         } else {
@@ -6462,7 +6439,7 @@ impl Runtime {
             let keys = match value {
                 Value::Object(id) => self.json_keys(id)?,
                 Value::Array(id) => {
-                    let len = self.arrays[id].len();
+                    let len = self.array_lengths[id].value as usize;
                     self.charge(len.saturating_mul(32))?;
                     (0..len).map(|i| JsString::from(i.to_string())).collect()
                 }
@@ -6473,10 +6450,10 @@ impl Runtime {
                 let child = self.json_revive(value.clone(), &key, reviver, child_record, doc)?;
                 if child == Value::Undefined {
                     self.delete_property(value.clone(), &key)?;
-                } else if matches!(value, Value::Object(_)) {
-                    self.define_own(
+                } else {
+                    self.define_property_key(
                         &value,
-                        &key,
+                        &PropertyKey::String(key),
                         PropertyDescriptor {
                             value: Some(child),
                             writable: Some(true),
@@ -6484,9 +6461,8 @@ impl Runtime {
                             configurable: Some(true),
                             ..PropertyDescriptor::default()
                         },
+                        doc,
                     )?;
-                } else {
-                    self.set_key(value.clone(), &key, child, doc)?;
                 }
             }
             let key = self.string(key)?;
@@ -6505,7 +6481,7 @@ impl Runtime {
         doc: &mut Document,
     ) -> Result<Value> {
         let properties = if let Value::Array(id) = replacer {
-            let len = self.arrays[id].len();
+            let len = self.array_lengths[id].value as usize;
             let mut seen = std::collections::BTreeSet::new();
             let mut keys = Vec::new();
             for index in 0..len {
@@ -6702,7 +6678,7 @@ impl Runtime {
                 let array = matches!(value, Value::Array(_));
                 self.json_append(writer, if array { "[" } else { "{" })?;
                 let keys = if let Value::Array(id) = value {
-                    let len = self.arrays[id].len();
+                    let len = self.array_lengths[id].value as usize;
                     self.charge(len.saturating_mul(32))?;
                     (0..len)
                         .map(|i| JsString::from(i.to_string()))
@@ -7712,6 +7688,24 @@ impl Runtime {
                 parse_float(&text)
             }));
         }
+        if let Some(method) = native.name.strip_prefix("Array.")
+            && matches!(
+                method,
+                "push"
+                    | "unshift"
+                    | "pop"
+                    | "shift"
+                    | "join"
+                    | "includes"
+                    | "indexOf"
+                    | "slice"
+                    | "forEach"
+                    | "map"
+                    | "filter"
+            )
+        {
+            return self.array_method(native.receiver.clone(), method, args, doc);
+        }
         if native.name == "Array.lastIndexOf" {
             return self.array_last_index_of(
                 native.receiver.clone(),
@@ -8138,7 +8132,7 @@ impl Runtime {
                     property.is_some()
                 }));
             }
-            "Object.defineProperty" => {
+            "Object.defineProperty" | "Reflect.defineProperty" => {
                 let object = arg(0);
                 if !js_object(&object) {
                     return Err(ScriptError::type_error(
@@ -8147,7 +8141,11 @@ impl Runtime {
                 }
                 let key = self.property_key(arg(1), doc)?;
                 let desc = self.property_descriptor(arg(2), doc)?;
-                if !self.define_own_key(&object, &key, desc)? {
+                let defined = self.define_property_key(&object, &key, desc, doc)?;
+                if name == "Reflect.defineProperty" {
+                    return Ok(Value::Bool(defined));
+                }
+                if !defined {
                     return Err(ScriptError::type_error("incompatible property definition"));
                 }
                 return Ok(object);
@@ -8210,11 +8208,6 @@ impl Runtime {
                 })?;
                 if name.ends_with("isExtensible") {
                     return Ok(Value::Bool(!self.objects[id].non_extensible));
-                }
-                if matches!(object, Value::Array(_)) {
-                    return Err(ScriptError::unsupported(
-                        "array extensibility restrictions are not implemented",
-                    ));
                 }
                 self.objects[id].non_extensible = true;
                 return Ok(object);
@@ -8397,15 +8390,11 @@ impl Runtime {
                     {
                         return Err(ScriptError::range_error("invalid array length"));
                     }
-                    if length > 65536.0 {
-                        return Err(ScriptError::resource("array length limit exceeded"));
-                    }
-                    let array = self.array(vec![Value::Undefined; length as usize])?;
+                    let array = self.array(Vec::new())?;
                     let Value::Array(id) = array else {
                         unreachable!()
                     };
-                    self.charge((length as usize).saturating_mul(32))?;
-                    self.array_holes[id].extend(0..length as usize);
+                    self.array_lengths[id].value = length as u32;
                     return Ok(array);
                 }
                 return self.array(args);
@@ -8511,161 +8500,6 @@ impl Runtime {
                     _ => return Err(ScriptError::new("unsupported Math method")),
                 };
                 return Ok(Value::Number(value));
-            }
-            Value::Array(id) => {
-                let id = *id;
-                match name {
-                    "push" | "unshift" => {
-                        if self.arrays[id].len().saturating_add(args.len()) > 65536 {
-                            return Err(ScriptError::resource("array length limit exceeded"));
-                        }
-                        self.charge(args.len() * std::mem::size_of::<Value>())?;
-                        if name == "push" {
-                            self.arrays[id].extend(args);
-                        } else {
-                            let count = args.len();
-                            self.array_holes[id] = self.array_holes[id]
-                                .iter()
-                                .map(|index| index + count)
-                                .collect();
-                            self.arrays[id].splice(0..0, args);
-                        }
-                        return Ok(Value::Number(self.arrays[id].len() as f64));
-                    }
-                    "pop" => {
-                        let value = self.arrays[id].pop().unwrap_or(Value::Undefined);
-                        self.array_holes[id].remove(&self.arrays[id].len());
-                        return Ok(value);
-                    }
-                    "shift" => {
-                        return Ok(if self.arrays[id].is_empty() {
-                            Value::Undefined
-                        } else {
-                            self.array_holes[id] = self.array_holes[id]
-                                .iter()
-                                .filter_map(|index| index.checked_sub(1))
-                                .collect();
-                            self.arrays[id].remove(0)
-                        });
-                    }
-                    "join" => {
-                        let length = self.arrays[id].len();
-                        let separator = if matches!(arg(0), Value::Undefined) {
-                            JsString::from(",")
-                        } else {
-                            self.string_hint(arg(0), doc)?
-                        };
-                        let mut result = Vec::new();
-                        for index in 0..length {
-                            let value = self.arrays[id]
-                                .get(index)
-                                .cloned()
-                                .unwrap_or(Value::Undefined);
-                            let text = if matches!(value, Value::Null | Value::Undefined) {
-                                JsString::default()
-                            } else {
-                                self.json_text(value, doc, &mut vec![id])?
-                            };
-                            let separator_len = if index > 0 { separator.len() } else { 0 };
-                            if result
-                                .len()
-                                .saturating_add(text.len())
-                                .saturating_add(separator_len)
-                                > MAX_STRING
-                            {
-                                return Err(ScriptError::resource("script string limit exceeded"));
-                            }
-                            self.charge((text.len() + separator_len) * 2)?;
-                            if index > 0 {
-                                result.extend_from_slice(separator.units());
-                            }
-                            result.extend_from_slice(text.units());
-                        }
-                        return self.string(result);
-                    }
-                    "includes" => {
-                        return Ok(Value::Bool(self.arrays[id].iter().any(|value| {
-                            *value == arg(0)
-                                || matches!(value, Value::Number(n) if n.is_nan())
-                                    && matches!(arg(0), Value::Number(n) if n.is_nan())
-                        })));
-                    }
-                    "indexOf" => {
-                        return Ok(Value::Number(
-                            self.arrays[id]
-                                .iter()
-                                .position(|value| *value == arg(0))
-                                .map(|i| i as f64)
-                                .unwrap_or(-1.0),
-                        ));
-                    }
-                    "slice" => {
-                        let len = self.arrays[id].len();
-                        let start = relative_index(self.number_value(arg(0), doc)?, len);
-                        let end = if matches!(arg(1), Value::Undefined) {
-                            len
-                        } else {
-                            relative_index(self.number_value(arg(1), doc)?, len)
-                        }
-                        .max(start);
-                        self.charge(
-                            (end - start).saturating_mul(std::mem::size_of::<Value>() + 32),
-                        )?;
-                        let mut values = Vec::new();
-                        values
-                            .try_reserve_exact(end - start)
-                            .map_err(|_| ScriptError::resource("slice allocation failed"))?;
-                        let mut holes = BTreeSet::new();
-                        for index in start..end {
-                            self.tick()?;
-                            let key = index.to_string();
-                            if self
-                                .find_property(&Value::Array(id), &key.as_str().into())?
-                                .is_some()
-                            {
-                                values.push(self.get(Value::Array(id), &key, doc)?);
-                            } else {
-                                holes.insert(index - start);
-                                values.push(Value::Undefined);
-                            }
-                        }
-                        let result = self.array(values)?;
-                        let Value::Array(result_id) = result else {
-                            unreachable!()
-                        };
-                        self.array_holes[result_id] = holes;
-                        return Ok(result);
-                    }
-                    "forEach" | "map" | "filter" => {
-                        let callback = arg(0);
-                        let len = self.arrays[id].len();
-                        let mut result = Vec::new();
-                        for index in 0..len {
-                            self.tick()?;
-                            let value = self.arrays[id]
-                                .get(index)
-                                .cloned()
-                                .unwrap_or(Value::Undefined);
-                            let returned = self.call(
-                                callback.clone(),
-                                vec![value.clone(), Value::Number(index as f64), Value::Array(id)],
-                                Value::Window,
-                                doc,
-                            )?;
-                            if name == "map" {
-                                result.push(returned);
-                            } else if name == "filter" && returned.truthy() {
-                                result.push(value);
-                            }
-                        }
-                        return if name == "forEach" {
-                            Ok(Value::Undefined)
-                        } else {
-                            self.array(result)
-                        };
-                    }
-                    _ => {}
-                }
             }
             Value::String(text) => {
                 if name == "replace" {
@@ -12665,11 +12499,14 @@ mod tests {
                 .message
                 .contains("limit")
         );
+        assert_eq!(
+            run("const a = []; a[4294967294] = 1;").unwrap(),
+            Value::Number(1.0)
+        );
         assert!(
-            run("const a = []; a[4294967294] = 1;")
+            run("const a = []; while (true) { a.push(1); }")
                 .unwrap_err()
-                .message
-                .contains("limit")
+                .is_resource_limit()
         );
     }
 
@@ -13713,7 +13550,7 @@ mod tests {
     fn resource_failures_cannot_be_caught_or_overridden_by_finally() {
         for body in [
             "while (true) {}",
-            "const values = []; values.length = 1000000;",
+            "const values = []; values.length = 1000000; while (true) { values.push(1); }",
             "function recur() { recur(); } recur();",
             "let text = 'x'; while (true) { text += text; }",
         ] {
@@ -18037,13 +17874,11 @@ mod tests {
                 format!(
                     "var o=Object.create(window);o.length=1;Array.prototype.{name}.call(o,function(){{}},0);"
                 ),
-                format!(
-                    "var o={{length:1,0:1}};Array.prototype.{name}.call(o,function(){{}});Object.defineProperty([], '0', {{get:function(){{return 1;}}}});"
-                ),
             ] {
                 assert!(run(&source).unwrap_err().is_unsupported(), "{source}");
             }
             assert_eq!(run(&format!("var o=Object.create(window);o.length=1;o[0]=7;Array.prototype.{name}.call(o,function(){{throw 'unexpected';}});" )).unwrap(),Value::Number(7.0));
+            assert!(run(&format!("var o={{length:1,0:1}};Array.prototype.{name}.call(o,function(){{}});Object.defineProperty([], '0', {{get:function(){{return 1;}}}});")).is_ok());
         }
     }
 
@@ -18437,7 +18272,6 @@ mod tests {
         for source in [
             "Array.prototype.sort.call(window)",
             "Array.prototype.sort.call(document)",
-            "Object.defineProperty([],'0',{value:1})",
         ] {
             assert!(run(source).unwrap_err().is_unsupported(), "{source}");
         }
@@ -19216,10 +19050,10 @@ mod tests {
             assert_eq!(runtime.stack_units, 0);
             assert_eq!(runtime.calls, 0);
         }
-        assert!(
-            run("Object.defineProperty([],'0',{get:function(){return 1;}})")
-                .unwrap_err()
-                .is_unsupported()
+        assert!(run("Object.defineProperty([],'0',{get:function(){return 1;}})").is_ok());
+        assert_eq!(
+            run("Object.defineProperty([],'0',{value:1})[0]").unwrap(),
+            Value::Number(1.0)
         );
     }
 

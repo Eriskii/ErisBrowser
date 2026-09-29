@@ -198,6 +198,177 @@ class ExecutionTests(unittest.TestCase):
 
 
 class IntegrityTests(unittest.TestCase):
+    def test_array_descriptors_complete_tree_inventory_and_policy(self):
+        corpus = runner.ROOT / 'tests/upstream/test262-array-descriptors'
+        with patch.object(importer, 'fetch', side_effect=AssertionError('offline proof replay must not fetch')):
+            manifest, files, cases, fixtures, manifest_hash = runner.load_corpus(corpus, 'array-descriptors')
+        self.assertEqual({key: len(value) for key, value in manifest['directories'].items()},
+                         {'Object/defineProperty': 1131, 'Object/defineProperties': 632, 'Array/length': 30})
+        self.assertEqual((manifest['test_files'], len(cases), fixtures), (1793, 3574, []))
+        self.assertEqual(manifest_hash, '4e13515967a23f6de30cd4a91c6da712c30e48fa02cbe97d6ad8de24a4892e96')
+        self.assertEqual(runner.digest(json.dumps(manifest['directories'], sort_keys=True, separators=(',', ':')).encode()),
+                         'f8a09cd676745db1e316f874a13f833121ea5ab14f4f73d09b1f0f630107dd8b')
+        self.assertEqual(sum(c['mode'] == 'sloppy' for c in cases), 1789)
+        self.assertEqual(sum(c['mode'] == 'strict' for c in cases), 1785)
+        self.assertTrue(all(c['metadata']['negative'] is None for c in cases))
+        self.assertEqual(sum(len(data) for path, data in files.items() if path.startswith('test/')), 1355844)
+        self.assertEqual(sum(map(len, files.values())), 1405913)
+        self.assertEqual(len(manifest['inventory_proof']['files']), 9)
+        self.assertEqual(sum(entry['bytes'] for entry in manifest['inventory_proof']['files']), 449640)
+        self.assertEqual({p for p in files if p.startswith('harness/')}, {
+            'harness/assert.js', 'harness/sta.js', 'harness/compareArray.js', 'harness/isConstructor.js',
+            'harness/propertyHelper.js', 'harness/resizableArrayBufferUtils.js'})
+        self.assertEqual(runner.ARRAY_DESCRIPTOR_FEATURES, runner.CONSTRUCTION_FEATURES | runner.REGEXP_FEATURES)
+        self.assertEqual(sum(runner.unsupported_reason(c, runner.ARRAY_DESCRIPTOR_FEATURES) is not None for c in cases), 18)
+        prior = runner.ARRAY_DESCRIPTOR_FEATURES - runner.CONSTRUCTOR_FEATURES
+        self.assertEqual(sum(runner.unsupported_reason(c, prior) is not None
+                             and runner.unsupported_reason(c, runner.ARRAY_DESCRIPTOR_FEATURES) is None
+                             for c in cases), 8)
+        for feature in ('Proxy', 'BigInt', 'Reflect.set', 'resizable-arraybuffer', 'cross-realm'):
+            self.assertIn(feature, runner.unsupported_reason(
+                sample(('/*---\nfeatures: [' + feature + ']\n---*/\n').encode()), runner.ARRAY_DESCRIPTOR_FEATURES))
+
+    def test_array_descriptors_git_proof_rejects_truncation_omission_and_repinning(self):
+        corpus = runner.ROOT / 'tests/upstream/test262-array-descriptors'
+        def original(route):
+            return (corpus / importer.tree_proof_path(route)).read_bytes()
+        selected = 'trees/c46e08d8141f7739aa821e8a97b9f3253247f815'
+        mutations = [
+            (selected, lambda d: d.update(truncated=True), 'incomplete'),
+            (selected, lambda d: d['tree'].__delitem__(slice(1000, None)), 'hash mismatch'),
+            (selected, lambda d: d['tree'][0].update(sha='0' * 40), 'hash mismatch'),
+            (selected, lambda d: d['tree'].append(d['tree'][0]), 'duplicate'),
+            (selected, lambda d: d['tree'][0].update(path='../escape.js'), 'unsafe'),
+            ('trees/' + importer.REVISION_TREE, lambda d: d['tree'].pop(), 'hash mismatch'),
+            ('commits/' + importer.REVISION, lambda d: d['tree'].update(sha='0' * 40), 'pinned revision'),
+        ]
+        for route, mutate, error in mutations:
+            def read(actual):
+                raw = original(actual)
+                if actual == route:
+                    data = json.loads(raw)
+                    mutate(data)
+                    return json.dumps(data).encode()
+                return raw
+            with self.subTest(error=error, route=route), self.assertRaisesRegex(ValueError, error):
+                importer.git_tree_inventory(importer.ARRAY_DESCRIPTOR_DIRECTORIES, 'test/built-ins', read)
+        with self.assertRaisesRegex(ValueError, 'byte limit'):
+            importer.git_tree_inventory(importer.ARRAY_DESCRIPTOR_DIRECTORIES, 'test/built-ins',
+                                        lambda route: b' ' * (importer.MAX_FILE + 1))
+
+    def test_array_descriptors_import_roundtrip_uses_only_complete_git_trees(self):
+        corpus = runner.ROOT / 'tests/upstream/test262-array-descriptors'
+        manifest, files, cases, _, _ = runner.load_corpus(corpus, 'array-descriptors')
+        raw = f'https://raw.githubusercontent.com/{importer.REPOSITORY}/{importer.REVISION}/'
+        api = f'https://api.github.com/repos/{importer.REPOSITORY}/git/'
+        def fetch(url):
+            self.assertNotIn('/contents/', url)
+            if url.startswith(api):
+                return (corpus / importer.tree_proof_path(url[len(api):])).read_bytes()
+            self.assertTrue(url.startswith(raw))
+            return files[url[len(raw):]]
+        with tempfile.TemporaryDirectory() as temporary, patch.object(importer, 'fetch', side_effect=fetch), contextlib.redirect_stdout(io.StringIO()):
+            importer.import_corpus(Path(temporary), 'array-descriptors')
+            result, retained, imported, _, _ = runner.load_corpus(Path(temporary), 'array-descriptors')
+            self.assertEqual(result, manifest)
+            self.assertEqual(retained, files)
+            self.assertEqual([c['case_sha256'] for c in imported], [c['case_sha256'] for c in cases])
+
+    def test_array_descriptors_offline_loader_rejects_self_consistent_source_repin(self):
+        import shutil
+        corpus = runner.ROOT / 'tests/upstream/test262-array-descriptors'
+        with tempfile.TemporaryDirectory() as temporary:
+            target = Path(temporary) / 'corpus'
+            shutil.copytree(corpus, target)
+            manifest_path = target / 'manifest.json'
+            manifest = json.loads(manifest_path.read_text())
+            entry = next(e for e in manifest['files'] if e['path'].startswith('test/'))
+            changed = (target / entry['path']).read_bytes() + b'\n// changed source\n'
+            (target / entry['path']).write_bytes(changed)
+            entry.update(bytes=len(changed), sha256=runner.digest(changed))
+            manifest_path.write_text(json.dumps(manifest))
+            with self.assertRaisesRegex(ValueError, 'pinned Git tree blob'):
+                runner.load_corpus(target, 'array-descriptors')
+        with tempfile.TemporaryDirectory() as temporary:
+            target = Path(temporary) / 'corpus'
+            shutil.copytree(corpus, target)
+            manifest_path = target / 'manifest.json'
+            manifest = json.loads(manifest_path.read_text())
+            entry = next(e for e in manifest['inventory_proof']['files'] if 'c46e08d8' in e['path'])
+            proof = json.loads((target / entry['path']).read_text())
+            proof['tree'] = proof['tree'][:1000]
+            changed = json.dumps(proof).encode()
+            (target / entry['path']).write_bytes(changed)
+            entry.update(bytes=len(changed), sha256=runner.digest(changed))
+            manifest_path.write_text(json.dumps(manifest))
+            with self.assertRaisesRegex(ValueError, 'Git tree hash mismatch'):
+                runner.load_corpus(target, 'array-descriptors')
+
+    def test_array_descriptors_preflight_is_guarded_and_fail_closed(self):
+        _, files, _, _, _ = runner.load_corpus(
+            runner.ROOT / 'tests/upstream/test262-array-descriptors', 'array-descriptors')
+        captured = []
+        def capture(case, *args):
+            captured.append(case)
+            return dict(status='passed')
+        with patch.object(runner, 'run_case', side_effect=capture):
+            runner.harness_preflight(files, Path('/fake'), 1, 'array-descriptors')
+        self.assertEqual(len(captured), 84)
+        added = captured[32:]
+        for case in added:
+            source = case['source']
+            self.assertTrue(source.startswith(b"assert.sameValue(typeof Object.defineProperty,'function');"))
+            self.assertIn(b'assert.sameValue(smoke[0],8);', source)
+            if b'assert.throws' in source:
+                self.assertLess(source.index(b'assert.sameValue(smoke[0],8);'), source.index(b'assert.throws'))
+            if 'property-metadata' in case['id']:
+                self.assertEqual(source.count(b'{restore:true}'), 6)
+            if 'define-properties-partial' in case['id']:
+                self.assertIn(b"Object.defineProperty(a,'1',{writable:false,configurable:false});", source)
+            if 'reflect-false-order' in case['id']:
+                self.assertIn(b"assert.sameValue(reflect(smoke,'0',{value:9}),true);", source)
+                self.assertIn(b"assert.sameValue(trace,'KVW');", source)
+        for good, bad in zip(added[::2], added[1::2]):
+            self.assertEqual(good['source'].rsplit(b'assert.sameValue(', 1)[0],
+                             bad['source'].rsplit(b'assert.sameValue(', 1)[0])
+            self.assertNotEqual(good['source'], bad['source'])
+        with patch.object(runner, 'bounded_process', return_value=(0, response('complete'), b'')):
+            old = runner.harness_preflight(files, Path('/fake'), 1)
+            current = runner.harness_preflight(files, Path('/fake'), 1, 'array-descriptors')
+        self.assertEqual(current[:32], old)
+        self.assertEqual(sum(c['verified'] for c in current[32:]), 26)
+        for kind in ('TypeError', 'RangeError', 'ReferenceError', 'SyntaxError'):
+            with patch.object(runner, 'bounded_process', return_value=(0, response('exception', 'runtime', kind), b'')):
+                current = runner.harness_preflight(files, Path('/fake'), 1, 'array-descriptors')
+            self.assertFalse(any(c['verified'] for c in current[32:]))
+        with patch.object(runner, 'bounded_process', return_value=(0, response('exception', 'runtime', 'Test262Error'), b'')):
+            current = runner.harness_preflight(files, Path('/fake'), 1, 'array-descriptors')
+        self.assertTrue(all(c['verified'] == (c['expected'] == 'failed') for c in current[32:]))
+        self.assertFalse(all(c['verified'] for c in current))
+
+    def test_array_descriptors_preserves_all_prior_profile_identities_and_policies(self):
+        retained = {}
+        for name in runner.PROFILES:
+            if name == 'array-descriptors':
+                continue
+            _, files, cases, fixtures, manifest_hash = runner.load_corpus(
+                runner.ROOT / 'tests/upstream' / runner.corpus_name(name), name)
+            captured = []
+            def capture(case, *args):
+                captured.append(dict(name=case['id'], mode=case['mode'], case_sha256=case['case_sha256'],
+                                     source_sha256=runner.digest(case['source'])))
+                return dict(status='passed', mode=case['mode'], case_sha256=case['case_sha256'],
+                            source_sha256=runner.digest(case['source']))
+            with patch.object(runner, 'run_case', side_effect=capture):
+                runner.harness_preflight(files, Path('/fake'), 3, name)
+            retained[name] = dict(manifest_sha256=manifest_hash, cases={c['id']: c['case_sha256'] for c in cases},
+                                 preflights=captured, fixtures=fixtures, features=sorted(runner.PROFILE_FEATURES[name]))
+        self.assertEqual(len(retained), 31)
+        self.assertEqual(sum(len(v['cases']) for v in retained.values()), 9863)
+        self.assertEqual(sum(len(v['preflights']) for v in retained.values()), 2528)
+        self.assertEqual(runner.digest(json.dumps(retained, sort_keys=True, separators=(',', ':')).encode()),
+                         'e4be58e2ae89391af1ff76c19a830c908de1a90cca5347a469230eb93d7f5451')
+
     def test_labels_retains_three_complete_directories_and_helpers(self):
         manifest,files,cases,fixtures,manifest_hash=runner.load_corpus(runner.ROOT/'tests/upstream/test262-labels','labels')
         self.assertEqual({k:len(v) for k,v in manifest['directories'].items()},

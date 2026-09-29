@@ -345,6 +345,7 @@ impl Runtime {
             .try_reserve(1)
             .map_err(|_| ScriptError::resource("RegExp result array allocation failed"))?;
         self.arrays[id].push(value);
+        self.array_lengths[id].value += 1;
         Ok(())
     }
 }
@@ -401,18 +402,7 @@ mod tests {
                 } else {
                     runtime.execute(source, &mut doc)
                 };
-                if name == "match-result-ignores-array-prototype-setter" {
-                    // Preserve this fixture's independent Array descriptor gap.
-                    let error = result.unwrap_err();
-                    assert_eq!(error.name(), "UnsupportedFeature");
-                    assert!(
-                        error
-                            .to_string()
-                            .contains("array indexed/length descriptor")
-                    );
-                } else {
-                    assert!(result.is_ok(), "{name}, strict={strict}: {result:?}");
-                }
+                assert!(result.is_ok(), "{name}, strict={strict}: {result:?}");
                 clean(&runtime);
             }
         }
@@ -611,18 +601,7 @@ mod tests {
                 } else {
                     runtime.execute(source, &mut doc)
                 };
-                if name == "captures-ignore-array-prototype-setter" {
-                    // Preserve the original fixture's unrelated prerequisite.
-                    let error = result.unwrap_err();
-                    assert_eq!(error.name(), "UnsupportedFeature");
-                    assert!(
-                        error
-                            .to_string()
-                            .contains("array indexed/length descriptor")
-                    );
-                } else {
-                    assert!(result.is_ok(), "{name}, strict={strict}: {result:?}");
-                }
+                assert!(result.is_ok(), "{name}, strict={strict}: {result:?}");
                 clean(&runtime);
             }
         }

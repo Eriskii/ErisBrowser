@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "f073410553ed7cac9c6ddb0d5d10da1e52616d067a0310578e84cbf000df4191",
   "runner_policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
-  "binary_sha256": "8a3f337121cef694a6d38984aebe297aa568a8f6a5dcdbb35dcd460adfa47634",
+  "binary_sha256": "44ec604be831b65d08caaa7a94aae65437339967cda2948eb5c5feac57cdd0ee",
   "cases": {
     "test/built-ins/JSON/parse/15.12.1.1-0-1.js:sloppy": {
       "status": "passed",
@@ -565,22 +565,22 @@
       "source_sha256": "a352e809fd42e1bb8b240bdf7a082607d456143299c1ffb168b4112895b66806"
     },
     "test/built-ins/JSON/parse/reviver-array-non-configurable-prop-create.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "d1c9bb37ac218a042e99cf558d703d6a48fbd33f7885ce4acf5446087b95ba3d",
       "source_sha256": "2d6c1dd2030e0856e259d175799299784fdc140e637999ff7c0f5c91e86c2ace"
     },
     "test/built-ins/JSON/parse/reviver-array-non-configurable-prop-create.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "b639f5b1c2bc066929bb41781287d1cd0f14eee98d78bc9eb15a80119099d212",
       "source_sha256": "2d6c1dd2030e0856e259d175799299784fdc140e637999ff7c0f5c91e86c2ace"
     },
     "test/built-ins/JSON/parse/reviver-array-non-configurable-prop-delete.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "0fcde112daf857c1b432be24055ee55c551a0687eb57a68f7beae7fdb5a00ff0",
       "source_sha256": "85e1ad418781c995809f606c314180e522274a3988f0a1d8a985c469c4defae0"
     },
     "test/built-ins/JSON/parse/reviver-array-non-configurable-prop-delete.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "854dfd78c3ea0776f0b82ea874e479f8207434383cbe8d0a20d7c4d88e6d9c66",
       "source_sha256": "85e1ad418781c995809f606c314180e522274a3988f0a1d8a985c469c4defae0"
     },
@@ -655,12 +655,12 @@
       "source_sha256": "1c96ce668352708285464eda7db0868e7b49f7cccdce4526018deb71292483d8"
     },
     "test/built-ins/JSON/parse/reviver-get-name-err.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "19f03f2c25a54233101d2af8c6342c5a931957f4f2b8147367f7d240c0363f82",
       "source_sha256": "0982623e337203f59b178ad88eb77970838461b0b6c76321372f222687629c0f"
     },
     "test/built-ins/JSON/parse/reviver-get-name-err.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "d05f0548d7717f6f2630e80863fd8918840baf1f9ec527c6dd939116b4a1c3bf",
       "source_sha256": "0982623e337203f59b178ad88eb77970838461b0b6c76321372f222687629c0f"
     },

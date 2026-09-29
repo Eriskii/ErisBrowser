@@ -1197,6 +1197,7 @@ mod tests {
             runtime.arrays.len(),
             runtime.array_properties.len(),
             runtime.array_holes.len(),
+            runtime.array_lengths.len(),
         );
         runtime.allocated = MAX_HEAP - 32;
         assert!(
@@ -1209,7 +1210,8 @@ mod tests {
             (
                 runtime.arrays.len(),
                 runtime.array_properties.len(),
-                runtime.array_holes.len()
+                runtime.array_holes.len(),
+                runtime.array_lengths.len()
             ),
             before
         );

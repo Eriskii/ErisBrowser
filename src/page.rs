@@ -1262,9 +1262,12 @@ mod tests {
         // Each execution gets a fresh instruction budget, but retained runtime
         // allocations share one document budget. Reach that budget through the
         // public interpreter instead of directly changing its private counters.
+        // Sparse Array(length) no longer allocates missing elements. Use actual
+        // dense values so this continues testing retained allocation pressure.
+        let allocation_source = format!("[{}]", "0,".repeat(1000));
         let mut exhausted = false;
         for _ in 0..100 {
-            if let Err(error) = page.runtime.execute("new Array(10000)", &mut page.document) {
+            if let Err(error) = page.runtime.execute(&allocation_source, &mut page.document) {
                 assert!(error.is_resource_limit(), "{error}");
                 assert!(error.message.contains("allocation"), "{error}");
                 exhausted = true;

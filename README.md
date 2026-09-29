@@ -349,3 +349,12 @@ receivers, holes, inheritance and live reads. Its complete 395-mode inventory
 gains 328 passes, and both older String.lastIndexOf failures pass. Eight resource
 stops, 47 unsupported modes and two Date failures remain visible; this inventory
 does not qualify as a healthy baseline gate.
+
+
+[Array descriptors and sparse storage](tests/conformance/array-descriptors.md)
+now support indexed getters/setters, readonly length, nonextensibility and partial
+length-reduction failures. Eleven existing Array methods use live property
+operations, and Reflect.defineProperty shares the definition path. The complete
+1,793-source upstream inventory gains 664 passes; older inventories gain another
+233, with no prior pass lost. Custom species construction and broader web
+compatibility remain unfinished.
