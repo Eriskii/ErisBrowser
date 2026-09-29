@@ -1,5 +1,36 @@
 # Validation record
 
+## Shared own-key enumeration accounting
+
+The [enumeration evidence](../tests/conformance/own-keys.json) compares against
+published commit `aa22523`. The final release preserves all **17,822 historical
+case observations and 3,900 controls** across 39 profiles; all **32 existing gates**
+pass with unchanged baselines. The independently frozen local fixture preserves
+86 cases and 24 controls. Four selected older local suites preserve another 1,106
+case observations and 148 controls. Complete observation records are compared,
+including existing failures, exclusions and resource outcomes.
+
+The first candidate preserved every ordinary upstream case but exhausted the
+unchanged instruction budget in four Number-statics controls. Those results remain
+recorded. Reusing a cached visited-tree entry removes an actual duplicate search;
+the original control sources now complete or throw their intended Test262Error.
+No quota, oracle, metadata exclusion or baseline was widened.
+
+Rust **1.88 and 1.98** each pass strict all-target Clippy and **1,208 default /
+1,219 Vulkan-feature tests**, with zero failed or ignored tests. Both release
+variants preserve all **57 CPU pixel references**. The new document/click fixture
+passes directly and through the confined renderer. Both HTML adapter binaries
+are unchanged, so no new HTML replay is assigned. One deterministic mutation-smoke
+run covers **15,000 generated inputs**, with zero caught panics or invariant
+failures and seventeen bounded paint stops. Root Python tooling is unchanged
+from its preceding 244-test validation.
+
+The [validation record](../tests/conformance/own-keys-integration-validation.json)
+retains source, binary, log, fixture and independent-review identities. This
+checkpoint covers shared string-key snapshots and reached visited-name operations;
+general live property/JSON accounting, allocator fallibility, broader standards,
+production security and the requested Chromium comparison remain open.
+
 ## Array.from and unchanged historical observations
 
 The [Array.from evidence](../tests/conformance/array-from.json) compares against
@@ -37,7 +68,8 @@ Independent review verified the frozen inputs, release binaries, logs and
 observations. It also identified long-name work undercharging during Array
 length shrink; the new Array.from path now prepays those costs. The related
 [shared enumeration accounting gap](../tests/conformance/array-from-enumeration-followup.json)
-remains open for other callers. Existing runtime limits are unchanged.
+remained open for other callers at that checkpoint and is addressed by the later
+own-key follow-up above. Existing runtime limits are unchanged.
 This checkpoint does not establish GPU execution, full web compatibility,
 production security or the requested Chromium performance bound.
 

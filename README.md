@@ -411,6 +411,12 @@ controls. All 38 older profile observations remain unchanged. The combined
 inventory has 39 profiles, 17,822 modes, 3,900 verified controls and 32 known-state
 regression gates. These gates preserve the documented failures and exclusions.
 
+[Shared enumeration accounting](tests/conformance/own-keys.md) preserves that
+entire inventory while charging string-key snapshots, caller buffers and for-in
+visited-name searches. Integer ranks and cached tree entries remove repeated
+name comparisons without raising quotas. General live property-map and JSON
+accounting remain open; this change adds no conformance passes.
+
 [Synchronous iteration](tests/conformance/for-of.md) supports identifier/member
 `for…of` heads, lexical bindings, iterator closing and native Array, String and
 arguments iterators. Destructuring, generators and async iteration remain ahead.

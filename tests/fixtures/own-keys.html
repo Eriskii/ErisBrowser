@@ -1,0 +1,49 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Property enumeration through document callbacks</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#ordering{left:0}#unicode{left:50px}#values{left:100px}#descriptors{left:150px}#shrink{left:200px}#inherited{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="ordering" class="sample"></div><div id="unicode" class="sample"></div>
+<div id="values" class="sample"></div><div id="descriptors" class="sample"></div>
+<div id="shrink" class="sample"></div><div id="inherited" class="sample"></div>
+<button id="change" type="button">Run enumeration callbacks</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+function apply(color){
+  const a=[10,20,30];delete a[1];
+  Object.defineProperty(a,'0',{get:function(){throw new Error('enumeration read value');},configurable:true});
+  a[4294967294]=9;a.tail=1;
+  const names=Object.getOwnPropertyNames(a);
+  check(names.join(',')==='0,2,4294967294,length,tail'&&a.length===4294967295,'dense sidecar and sparse order');mark('ordering',color);
+  const text=Object('\uD800x');text['01']=1;text['\uDC00']=2;
+  const textKeys=Reflect.ownKeys(text);
+  check(textKeys.length===5&&textKeys[0]==='0'&&textKeys[1]==='1'&&textKeys[2]==='length'&&textKeys[3]==='01'&&textKeys[4].charCodeAt(0)===56320,'UTF-16 names and virtual indices');mark('unicode',color);
+  let reads=0;const source={};
+  Object.defineProperty(source,'first',{enumerable:true,get:function(){reads++;delete source.second;Object.defineProperty(source,'third',{enumerable:false});source.fourth=4;return 1;}});
+  source.second=2;source.third=3;
+  check(Object.keys(source).join(',')==='first,second,third'&&reads===0,'snapshot must not invoke getters');
+  const values=Object.values(source);
+  check(reads===1&&values.length===1&&values[0]===1&&source.fourth===4,'values descriptors remain live');mark('values',color);
+  const target={},properties={},marker={};let events='',caught=false;
+  Object.defineProperty(properties,'a',{enumerable:true,get:function(){events+='a';return {value:7};}});
+  Object.defineProperty(properties,'b',{enumerable:true,get:function(){events+='b';throw marker;}});
+  try{Object.defineProperties(target,properties);}catch(error){caught=error===marker;}
+  check(caught&&events==='ab'&&Object.getOwnPropertyNames(target).length===0,'descriptor collection before definitions');mark('descriptors',color);
+  const shrinking=[0,1,2,3,4];Object.defineProperty(shrinking,'3',{configurable:false});
+  let calls=0,failed=false;const length={valueOf:function(){calls++;return 1;}};
+  try{Object.defineProperty(shrinking,'length',{value:length,writable:false});}catch(error){failed=error instanceof TypeError;}
+  check(failed&&calls===2&&shrinking.length===4&&!(4 in shrinking)&&shrinking[3]===3&&!Object.getOwnPropertyDescriptor(shrinking,'length').writable,'conversion and descending partial deletion');mark('shrink',color);
+  const proto={shadow:1,old:2},object=Object.create(proto);object.first=1;
+  Object.defineProperty(object,'shadow',{value:3,enumerable:false});
+  let seen='';for(const key in object){seen+=key+',';if(key==='first'){delete proto.old;proto.late=4;object.extra=5;}}
+  check(seen==='first,late,','lazy prototype snapshot and nonenumerable shadow');mark('inherited',color);
+}
+apply('green');document.getElementById('result').textContent='ready';document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  apply('blue');document.getElementById('result').textContent='6';document.body.className='clicked';
+};
+</script>

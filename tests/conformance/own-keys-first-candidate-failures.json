@@ -1,0 +1,246 @@
+{
+  "phase": "first frozen own-key candidate; retained publication-blocking observations",
+  "production_input_sha256": "6fe980c0a846a97bfede208a79214f08bfb0bac9459fbb7fc6445710ae57b13f",
+  "binary_sha256": "12a6f29a439718808c4526e773ec07bc55c9ea6ba3ab8901260ff735d1e4da10",
+  "historical_counts": {
+    "profiles": 39,
+    "cases": 17822,
+    "controls": 3900,
+    "control_changes": 4,
+    "improvements": 0,
+    "regressions": 0,
+    "other_changes": 0,
+    "existing_baseline_gates_passed": 31
+  },
+  "complete": true,
+  "changed_profiles": [
+    {
+      "profile": "number-statics",
+      "before_report_sha256": "e2016786ddb3994dabca50b6ae1d4dc1f63b653131ac23089128c41e9aa5422a",
+      "report_path": "/tmp/eris-own-keys-candidate-1/profile-number-statics.json",
+      "report_sha256": "a7b4e201296409f378018007e52b2f3fc9507f1c29bec9e9d6e1eeb64ddeea1c",
+      "log_path": "/tmp/eris-own-keys-candidate-1/profile-number-statics.log",
+      "log_sha256": "647043e96dd72a0637aed67b569ab5c0d23d2373e57b64b39aa085285132c8f9",
+      "exit_code": 1,
+      "counts": {
+        "passed": 260,
+        "unsupported": 80
+      },
+      "cases": 340,
+      "controls": 104,
+      "controls_verified": 100,
+      "baseline": {
+        "path": "tests/conformance/test262-number-statics-current.json",
+        "sha256": "2fbead399f2cf89c49a3d14a0a9b1202ef3021203f4bc393c93f05e66fcb7070"
+      },
+      "baseline_gate_passed": false,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": [
+        {
+          "name": "number-statics-property-constants",
+          "mode": "sloppy",
+          "before": {
+            "name": "number-statics-property-constants",
+            "expected": "passed",
+            "verified": true,
+            "result": {
+              "id": "harness-preflight:number-statics-property-constants",
+              "file": "<preflight>",
+              "mode": "sloppy",
+              "case_sha256": "76c1d0fcfe735ec78c5f3a2600af603174533eee6b2b93203cfdba6a42b9fde1",
+              "source_sha256": "0c4fbcc2706a6449567cce1a27748eeefdbb7672b77572255637f77cde74ddcf",
+              "expected_negative": null,
+              "status": "passed",
+              "observation": {
+                "status": "complete",
+                "phase": "runtime",
+                "error_type": "",
+                "error_identity": "",
+                "message": "",
+                "harness": ""
+              }
+            }
+          },
+          "candidate": {
+            "name": "number-statics-property-constants",
+            "expected": "passed",
+            "verified": false,
+            "result": {
+              "id": "harness-preflight:number-statics-property-constants",
+              "file": "<preflight>",
+              "mode": "sloppy",
+              "case_sha256": "76c1d0fcfe735ec78c5f3a2600af603174533eee6b2b93203cfdba6a42b9fde1",
+              "source_sha256": "0c4fbcc2706a6449567cce1a27748eeefdbb7672b77572255637f77cde74ddcf",
+              "expected_negative": null,
+              "status": "resource",
+              "observation": {
+                "status": "resource",
+                "phase": "runtime",
+                "error_type": "ResourceLimit",
+                "error_identity": "",
+                "message": "script instruction limit exceeded",
+                "harness": ""
+              }
+            }
+          }
+        },
+        {
+          "name": "number-statics-property-constants-mismatch",
+          "mode": "sloppy",
+          "before": {
+            "name": "number-statics-property-constants-mismatch",
+            "expected": "failed",
+            "verified": true,
+            "result": {
+              "id": "harness-preflight:number-statics-property-constants-mismatch",
+              "file": "<preflight>",
+              "mode": "sloppy",
+              "case_sha256": "3d56ac6cdbc24be2d8784fed0fb2d18112b7b2974aab51cc53aa7424a84b409f",
+              "source_sha256": "bb0d3a6c3d3c6130352517c025a7f1e54cb5364fd17296c396922723073ba685",
+              "expected_negative": null,
+              "status": "failed",
+              "observation": {
+                "status": "exception",
+                "phase": "runtime",
+                "error_type": "Test262Error",
+                "error_identity": "",
+                "message": "uncaught exception: [object Object]",
+                "harness": ""
+              }
+            }
+          },
+          "candidate": {
+            "name": "number-statics-property-constants-mismatch",
+            "expected": "failed",
+            "verified": false,
+            "result": {
+              "id": "harness-preflight:number-statics-property-constants-mismatch",
+              "file": "<preflight>",
+              "mode": "sloppy",
+              "case_sha256": "3d56ac6cdbc24be2d8784fed0fb2d18112b7b2974aab51cc53aa7424a84b409f",
+              "source_sha256": "bb0d3a6c3d3c6130352517c025a7f1e54cb5364fd17296c396922723073ba685",
+              "expected_negative": null,
+              "status": "resource",
+              "observation": {
+                "status": "resource",
+                "phase": "runtime",
+                "error_type": "ResourceLimit",
+                "error_identity": "",
+                "message": "script instruction limit exceeded",
+                "harness": ""
+              }
+            }
+          }
+        },
+        {
+          "name": "number-statics-property-constants",
+          "mode": "strict",
+          "before": {
+            "name": "number-statics-property-constants",
+            "expected": "passed",
+            "verified": true,
+            "result": {
+              "id": "harness-preflight:number-statics-property-constants",
+              "file": "<preflight>",
+              "mode": "strict",
+              "case_sha256": "e7bebdfb9c373a840b952d75a156c785c148a11bd68ca315da2ab06485f0fab1",
+              "source_sha256": "0c4fbcc2706a6449567cce1a27748eeefdbb7672b77572255637f77cde74ddcf",
+              "expected_negative": null,
+              "status": "passed",
+              "observation": {
+                "status": "complete",
+                "phase": "runtime",
+                "error_type": "",
+                "error_identity": "",
+                "message": "",
+                "harness": ""
+              }
+            }
+          },
+          "candidate": {
+            "name": "number-statics-property-constants",
+            "expected": "passed",
+            "verified": false,
+            "result": {
+              "id": "harness-preflight:number-statics-property-constants",
+              "file": "<preflight>",
+              "mode": "strict",
+              "case_sha256": "e7bebdfb9c373a840b952d75a156c785c148a11bd68ca315da2ab06485f0fab1",
+              "source_sha256": "0c4fbcc2706a6449567cce1a27748eeefdbb7672b77572255637f77cde74ddcf",
+              "expected_negative": null,
+              "status": "resource",
+              "observation": {
+                "status": "resource",
+                "phase": "runtime",
+                "error_type": "ResourceLimit",
+                "error_identity": "",
+                "message": "script instruction limit exceeded",
+                "harness": ""
+              }
+            }
+          }
+        },
+        {
+          "name": "number-statics-property-constants-mismatch",
+          "mode": "strict",
+          "before": {
+            "name": "number-statics-property-constants-mismatch",
+            "expected": "failed",
+            "verified": true,
+            "result": {
+              "id": "harness-preflight:number-statics-property-constants-mismatch",
+              "file": "<preflight>",
+              "mode": "strict",
+              "case_sha256": "5d76b5807609530dbe670af416821f39fffe4381397e8a332aaa2d74bbd0de13",
+              "source_sha256": "bb0d3a6c3d3c6130352517c025a7f1e54cb5364fd17296c396922723073ba685",
+              "expected_negative": null,
+              "status": "failed",
+              "observation": {
+                "status": "exception",
+                "phase": "runtime",
+                "error_type": "Test262Error",
+                "error_identity": "",
+                "message": "uncaught exception: [object Object]",
+                "harness": ""
+              }
+            }
+          },
+          "candidate": {
+            "name": "number-statics-property-constants-mismatch",
+            "expected": "failed",
+            "verified": false,
+            "result": {
+              "id": "harness-preflight:number-statics-property-constants-mismatch",
+              "file": "<preflight>",
+              "mode": "strict",
+              "case_sha256": "5d76b5807609530dbe670af416821f39fffe4381397e8a332aaa2d74bbd0de13",
+              "source_sha256": "bb0d3a6c3d3c6130352517c025a7f1e54cb5364fd17296c396922723073ba685",
+              "expected_negative": null,
+              "status": "resource",
+              "observation": {
+                "status": "resource",
+                "phase": "runtime",
+                "error_type": "ResourceLimit",
+                "error_identity": "",
+                "message": "script instruction limit exceeded",
+                "harness": ""
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "comparison_sha256": "acab3ab54520cfbf501b66ef8bf0c3e2653f5d3abe172554ca54b1b0fca318bc",
+  "preserved_files": {
+    "inputs.json": "510b087136b67b877e76e3c9e92cc4f259e6c28b86c657dd99dccea22c6815c6",
+    "source.tar": "8881e0e09fd7585ed2b3bf44e73cce470679db308d7a05f850d92fb9a8743ed0",
+    "profile-number-statics.json": "a7b4e201296409f378018007e52b2f3fc9507f1c29bec9e9d6e1eeb64ddeea1c",
+    "profile-number-statics.log": "647043e96dd72a0637aed67b569ab5c0d23d2373e57b64b39aa085285132c8f9",
+    "profiles-comparison.json": "acab3ab54520cfbf501b66ef8bf0c3e2653f5d3abe172554ca54b1b0fca318bc"
+  },
+  "publication_authorized": false,
+  "reason": "Four unchanged Number-statics control sources reached the script instruction limit. All 17,822 ordinary observations unchanged; no oracle, exclusion, baseline or quota changed."
+}

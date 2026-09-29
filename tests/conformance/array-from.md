@@ -67,7 +67,9 @@ before the shared length operation. Existing [script limits](array-from-limits.j
 are unchanged; logical input length never reserves a proportional output buffer.
 
 The related [shared enumeration accounting gap](array-from-enumeration-followup.json)
-remains open for other public callers and is recorded in the security docket.
+was recorded for other public callers at this checkpoint. The subsequent
+[own-key follow-up](own-keys.md) addresses shared string-key snapshots and the
+for-in visited tree; general live property-map and JSON accounting remain open.
 Host-only prototype/output paths remain explicitly unsupported when reached.
 Array.fromAsync and wider language/platform prerequisites remain incomplete.
 No GPU execution, Chromium comparison, full web compatibility or security proof

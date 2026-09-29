@@ -361,43 +361,23 @@ impl Runtime {
         let order = &self.objects[properties].order;
         // Pay before scanning metadata or testing canonical numeric keys.
         self.work(1 + order.len().saturating_mul(12))?;
-        let mut count = dense.saturating_add(1);
-        let digits = dense
-            .saturating_sub(1)
-            .checked_ilog10()
-            .map_or(1, |n| n as usize + 1);
-        let mut units = dense.saturating_mul(digits + 1).saturating_add(7);
         let mut deletions = dense.saturating_sub(length.min(dense as u64) as usize);
         for key in &self.objects[properties].order {
-            if let Some(key) = key.as_string() {
-                count = count.saturating_add(1);
-                units = units.saturating_add(key.len().saturating_add(1));
-                if json_array_index(key).is_some_and(|index| u64::from(index) >= length) {
-                    deletions = deletions.saturating_add(1);
-                }
+            if key.as_string().is_some_and(|key| {
+                json_array_index(key).is_some_and(|index| u64::from(index) >= length)
+            }) {
+                deletions = deletions.saturating_add(1);
             }
         }
-        let levels = count.checked_ilog2().map_or(0, |n| n as usize + 1);
-        // own_keys formats dense indices, checks holes, sorts, and deduplicates
-        // all string names, including arbitrarily long common prefixes.
-        let enumeration =
-            dense.saturating_mul(digits + 1 + lookup_work(self.array_holes[*id].len(), 1));
-        let comparisons = units
-            .saturating_mul(4 * levels)
-            .saturating_add(count.saturating_mul(12 * levels));
-        // Each later numeric deletion retains the actual order vector. The
-        // compared deletion key is at most ten units, regardless of other names.
-        let removals = deletions
-            .saturating_mul(self.objects[properties].order.len())
-            .saturating_mul(2);
+        // The shared own_keys path now owns its enumeration/sort/storage
+        // charges and performs no full-name deduplication. Keep this distinct
+        // allowance for numeric deletion's subsequent order-vector retention.
+        // A numeric deletion key compares at most ten units of another name.
         self.work(
-            enumeration
-                .saturating_add(comparisons)
-                .saturating_add(removals),
-        )?;
-        // Additional sort/dedup temporary storage. Existing own_keys and
-        // deletion charges still cover their retained/copy allocations.
-        self.charge(count.saturating_mul(128))
+            deletions
+                .saturating_mul(self.objects[properties].order.len())
+                .saturating_mul(2),
+        )
     }
 
     fn array_from_count(&mut self, iterator: &Value, index: u64, doc: &mut Document) -> Result<()> {

@@ -460,36 +460,64 @@ fn array_from_repeated_native_calls_share_allocation_and_work() {
 }
 
 #[test]
-fn array_from_shrink_preflight_charges_retained_key_bytes_before_mutation() {
+fn array_from_shrink_preserves_names_without_full_name_dedup_work() {
+    // The former long-name exhaustion oracle is retained in the before
+    // evidence. Ranked snapshot dedup removes those actual comparisons.
     let mut costs = Vec::new();
     for prefix in ["x".to_owned(), "x".repeat(512)] {
-        let (mut runtime, mut doc) = fresh();
-        let array = runtime.array(vec![Value::Number(7.0)]).unwrap();
-        let object = runtime.property_object(&array).unwrap();
-        for i in 0..24 {
-            runtime.objects[object].insert(format!("{prefix}{i}").into(), Value::Bool(true));
-        }
+        let prepare = || {
+            let (mut runtime, doc) = fresh();
+            let array = runtime.array(vec![Value::Number(7.0)]).unwrap();
+            let object = runtime.property_object(&array).unwrap();
+            for i in 0..24 {
+                runtime.objects[object].insert(format!("{prefix}{i}").into(), Value::Bool(true));
+            }
+            (runtime, doc, array, object)
+        };
+        let (mut runtime, mut doc, array, object) = prepare();
         let before = runtime.steps;
-        let outcome = runtime.array_from_shrink_budget(&array, 0);
-        costs.push(before - runtime.steps);
-        if prefix.len() == 1 {
-            outcome.unwrap();
-            runtime.array_from_set_length(&array, 0, &mut doc).unwrap();
-        } else {
-            assert!(outcome.unwrap_err().is_resource_limit());
-            let Value::Array(id) = array else {
-                panic!("array")
-            };
-            assert_eq!(runtime.array_lengths[id].value, 1);
-            assert_eq!(runtime.arrays[id], vec![Value::Number(7.0)]);
-            runtime.steps = 1;
-            runtime.array_from_shrink_budget(&array, 1).unwrap();
-            runtime.array_lengths[id].writable = false;
-            runtime.array_from_shrink_budget(&array, 0).unwrap();
-            assert_eq!(runtime.steps, 1);
+        runtime.array_from_shrink_budget(&array, 0).unwrap();
+        let preflight = before - runtime.steps;
+        let before = (runtime.steps, runtime.allocated);
+        runtime.array_from_set_length(&array, 0, &mut doc).unwrap();
+        costs.push((
+            preflight,
+            before.0 - runtime.steps,
+            runtime.allocated - before.1,
+        ));
+        let Value::Array(id) = array else {
+            panic!("array")
+        };
+        assert_eq!(runtime.array_lengths[id].value, 0);
+        assert!(runtime.arrays[id].is_empty());
+        assert_eq!(runtime.objects[object].order.len(), 24);
+        for i in 0..24 {
+            assert_eq!(
+                writable_data(&runtime, &array, &format!("{prefix}{i}")),
+                Value::Bool(true)
+            );
         }
+        let (mut runtime, _, array, _) = prepare();
+        runtime.steps = preflight - 1;
+        assert!(
+            runtime
+                .array_from_shrink_budget(&array, 0)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        let Value::Array(id) = array else {
+            panic!("array")
+        };
+        assert_eq!(runtime.array_lengths[id].value, 1);
+        assert_eq!(runtime.arrays[id], vec![Value::Number(7.0)]);
+        runtime.steps = 1;
+        runtime.array_from_shrink_budget(&array, 1).unwrap();
+        runtime.array_lengths[id].writable = false;
+        runtime.array_from_shrink_budget(&array, 0).unwrap();
+        assert_eq!(runtime.steps, 1);
+        clean(&runtime);
     }
-    assert!(costs[1] > costs[0]);
+    assert_eq!(costs[0], costs[1]);
 }
 
 #[test]

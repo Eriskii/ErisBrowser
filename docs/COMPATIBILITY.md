@@ -1,5 +1,10 @@
 # Compatibility status
 
+[Shared enumeration accounting](../tests/conformance/own-keys.md) preserves all
+17,822 historical case observations and 3,900 controls with unchanged quotas and
+baselines. String-key snapshots and for-in visited-name work are now charged;
+this adds no new conformance passes or unsupported-feature coverage.
+
 [Array.from](../tests/conformance/array-from.md) supports synchronous iterable
 and array-like inputs, generic constructors, live mapping, own indexed data
 properties and iterator closing. Its complete 47-source upstream profile has

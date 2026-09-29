@@ -1,0 +1,177 @@
+{
+  "case_file_label": "own-keys.js",
+  "common_controls": 8,
+  "complete_matrix_variants": 110,
+  "engine_execution": false,
+  "exact_draft_to_final_matrix": true,
+  "exact_draft_to_final_sources": true,
+  "feature_controls": 16,
+  "files": [
+    {
+      "bytes": 5404,
+      "path": "README.md",
+      "sha256": "7c2185d192ab6fa754d5dd60869eec93a9bea9ddb36baf78da9a0aca80256edb"
+    },
+    {
+      "bytes": 2213,
+      "path": "TEST262-LICENSE",
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "bytes": 21327,
+      "path": "design.json",
+      "sha256": "c256ad6c8710fdab3785c20354b04652ebf4774f2eff9d629f8eb5a5d9043db6"
+    },
+    {
+      "bytes": 15950,
+      "path": "expectations.draft.json",
+      "sha256": "30e90ec95886f7c229d412e57b0fa5d8fc3f8800ff67112dfd4cd78eb4323df8"
+    },
+    {
+      "bytes": 15950,
+      "path": "expectations.json",
+      "sha256": "30e90ec95886f7c229d412e57b0fa5d8fc3f8800ff67112dfd4cd78eb4323df8"
+    },
+    {
+      "bytes": 2883,
+      "path": "finalize.py",
+      "sha256": "6da83e3d20ba62119e87a2a98143c6300b7ec98e3962703c933887de6f98952e"
+    },
+    {
+      "bytes": 4881,
+      "path": "harness/assert.js",
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "bytes": 792,
+      "path": "harness/sta.js",
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "bytes": 159333,
+      "path": "matrix.draft.json",
+      "sha256": "20c6b192908db5a318164c231a95f8fb15a53552fa121b87eb46de8824682bc6"
+    },
+    {
+      "bytes": 159333,
+      "path": "matrix.json",
+      "sha256": "20c6b192908db5a318164c231a95f8fb15a53552fa121b87eb46de8824682bc6"
+    },
+    {
+      "bytes": 37412,
+      "path": "own-keys.draft.js",
+      "sha256": "1cf4cc23989831f50a06f135581bae6e2f5e6bbc3b79c2950a97063ef67a03c1"
+    },
+    {
+      "bytes": 37412,
+      "path": "own-keys.js",
+      "sha256": "1cf4cc23989831f50a06f135581bae6e2f5e6bbc3b79c2950a97063ef67a03c1"
+    },
+    {
+      "bytes": 3229,
+      "path": "preflights.draft.json",
+      "sha256": "5542ace6b56c46be674a67506df47690b728d281a9c64be9b96d09c4f42db3e8"
+    },
+    {
+      "bytes": 3229,
+      "path": "preflights.json",
+      "sha256": "5542ace6b56c46be674a67506df47690b728d281a9c64be9b96d09c4f42db3e8"
+    },
+    {
+      "bytes": 3562,
+      "path": "prefreeze.json",
+      "sha256": "59c4f491fb528ee0c0e7716844e88a16609eaa58047411b21302f8b0cdb9a982"
+    },
+    {
+      "bytes": 17298,
+      "path": "prepare.py",
+      "sha256": "e0171262775dd1a50dda1bb382ef38584fa71c4ddabc5052c06bfcd449a58dda"
+    },
+    {
+      "bytes": 15950,
+      "path": "review-v1/expectations.draft.json",
+      "sha256": "3c433d29cffe1dcebc8d34051365751bd5ff309c94d9123b4bfd0d658298aa1b"
+    },
+    {
+      "bytes": 37412,
+      "path": "review-v1/own-keys.draft.js",
+      "sha256": "1cf4cc23989831f50a06f135581bae6e2f5e6bbc3b79c2950a97063ef67a03c1"
+    },
+    {
+      "bytes": 3214,
+      "path": "review-v1/preflights.draft.json",
+      "sha256": "c864ab1d3b0d8f89d0f298b1ac726d7533257a49aabbe3e11f0ff45b95782c17"
+    },
+    {
+      "bytes": 17283,
+      "path": "review-v1/prepare.py",
+      "sha256": "bddfccfa7ab21c7ca79320200e13b293fbf2532492cfcf8b19972217af5c083e"
+    },
+    {
+      "bytes": 5320,
+      "path": "reviews/README-prefreeze.md",
+      "sha256": "9fb4868e8b8bc4e244ec2c9f5f0d3e2eaa23664cebf022226a226fc600237cc5"
+    },
+    {
+      "bytes": 17884,
+      "path": "reviews/eris-own-keys-implementation-outline.json",
+      "sha256": "0d9246e3d8cc1dbc3a15f99d90e13f105a74d8aa917f8e47f03eb1b60ba2ab5d"
+    },
+    {
+      "bytes": 924,
+      "path": "reviews/eris-own-keys-local-control-review-delta.json",
+      "sha256": "1fdf64c42bdc022d988ef52a75d7af5c236f4698f98b10231e4f560d5da3cc78"
+    },
+    {
+      "bytes": 6380,
+      "path": "reviews/eris-own-keys-local-prefreeze-review.json",
+      "sha256": "f24b793098543ab89705417fe68cb3ca4384e998557c96d173bd65eea0bd5a5d"
+    },
+    {
+      "bytes": 11034,
+      "path": "run.py",
+      "sha256": "c82eaad11e0c227c5369bea1b33246b44dee92adce5efc130de7ca8352c16b74"
+    },
+    {
+      "bytes": 10944,
+      "path": "scope.md",
+      "sha256": "4d81af2867fa39f413fe47026615c3319c4a4fb1c27fb1973a81e7d5dc6f92a4"
+    },
+    {
+      "bytes": 13920,
+      "path": "tools/html_conformance.py",
+      "sha256": "53e594f8ad73d0eb86cf1c656c9468a6e473c7ec3d588c7d75de3dd630bbeaac"
+    },
+    {
+      "bytes": 47257,
+      "path": "tools/import_test262.py",
+      "sha256": "bc5162786cd3f0f269fb231dd6e18df843ff032ef05c5af2eccdf53a091e88cf"
+    },
+    {
+      "bytes": 1387,
+      "path": "tools/run.py",
+      "sha256": "141dab68e638654ce26700f16fc05818b6a5650755cce07227b4cd0de9411f7f"
+    },
+    {
+      "bytes": 178122,
+      "path": "tools/test262_conformance.py",
+      "sha256": "7062b4027de93af223c08223000525bf2e3e3da3c5494723279d6672c7c3e3e5"
+    }
+  ],
+  "fixture_modes": 86,
+  "format": 1,
+  "implementation_preservation_modes": 6,
+  "metadata_exclusions": 0,
+  "phase": "Final semantic/control/runner freeze before any engine execution",
+  "primary_sources": [
+    "https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-ordinaryownpropertykeys",
+    "https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-string-exotic-objects-ownpropertykeys",
+    "https://tc39.es/ecma262/multipage/abstract-operations.html#sec-enumerableownproperties",
+    "https://tc39.es/ecma262/multipage/fundamental-objects.html#sec-objectdefineproperties",
+    "https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-arraysetlength",
+    "https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-enumerate-object-properties"
+  ],
+  "resource_expectations": 0,
+  "resource_tests": "Private runtime counters are required for exact resource boundaries; this public semantic fixture makes no guessed resource expectation.",
+  "source_cases": 43
+}

@@ -1,0 +1,71 @@
+{
+  "format": 1,
+  "scope": "Bounded shared own-key snapshots and reached for-in visited-name operations; not complete runtime accounting.",
+  "published_before_commit": "aa225239b0ec0c5fb6ad9dcef4403ba2027ef086",
+  "before_ci": {
+    "run": 36548019480,
+    "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/36548019480",
+    "conclusion": "success",
+    "record_sha256": "169dbca0e505f6c18c451a7280c7549bcde7c1c2fb97cfb9e44184634394cd17"
+  },
+  "production_input_sha256": "2d4ea163d28898b44eae1933639960b8f7fc1cfb6986133a36b16965a4abd325",
+  "before_binary_sha256": "6b2a21601bbc850c3a7890b99b8990f7e101b1da6f4246f4eb06711d2ff1208c",
+  "final_binary_sha256": "908f215d69c86911d7629892ff6f65ed275dc3236075840e55076bcce42c270d",
+  "fixture": {
+    "path": "tests/conformance/own-keys.js",
+    "sha256": "1cf4cc23989831f50a06f135581bae6e2f5e6bbc3b79c2950a97063ef67a03c1"
+  },
+  "fixture_freeze": {
+    "path": "tests/conformance/own-keys-fixture.json",
+    "sha256": "cc38e4ccfc17634688ddaf5031af6e5c5a47d7cf8a9239b3e9514f123b062c50"
+  },
+  "initial_report": {
+    "path": "tests/conformance/own-keys-initial.json",
+    "sha256": "15588b1f8b064b777fa0720c684d3e6feb9dda95eb87a0d14c80618ccbe61145"
+  },
+  "final_report": {
+    "path": "tests/conformance/own-keys-final.json",
+    "sha256": "019384dd871c148cc51916bb4d0884318d11c84b349e580efb39ac80a60a8520"
+  },
+  "first_candidate_failures": {
+    "path": "tests/conformance/own-keys-first-candidate-failures.json",
+    "sha256": "1c39856c39e477da89d5e3ee87010124292e33106c0e4ea769a6df126e9ef833"
+  },
+  "local": {
+    "source_cases": 43,
+    "mode_cases": 86,
+    "controls": 24,
+    "all_complete_case_and_control_records_unchanged": true,
+    "implementation_preservation_for_in_mutation_modes": 6
+  },
+  "historical": {
+    "counts": {
+      "profiles": 39,
+      "cases": 17822,
+      "controls": 3900,
+      "control_changes": 0,
+      "improvements": 0,
+      "regressions": 0,
+      "other_changes": 0,
+      "existing_baseline_gates_passed": 32
+    },
+    "all_observations_unchanged": true,
+    "all_32_existing_baselines_unchanged": true
+  },
+  "selected_older_local": {
+    "mode_cases": 1106,
+    "controls": 148,
+    "all_complete_records_unchanged": true
+  },
+  "integration_record_sha256": "884fed8fd0bca4404deddd3b07d67557a55492df78a0542987f08b5924b5b81a",
+  "limits_record_sha256": "f3ff1cae45c28db7fa2075d3b1b90960c82603be701d231f69a9c3c2658ad677",
+  "remaining": [
+    "General live own_property/map/Get/prototype and mapped-binding accounting",
+    "JSON enumeration accounting",
+    "General allocator fallibility and complete process-memory bounds",
+    "Full web standards coverage and production security",
+    "Custom Vulkan browser rasterization and measured Chromium performance comparison"
+  ],
+  "unchanged_oracles": true,
+  "current_source_archive_sha256": "2beddd8d1de4618f7d3e9bbdec19c906a2e18b22b4adb7361089f031ee7cd845"
+}

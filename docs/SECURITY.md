@@ -102,15 +102,23 @@ and launch controls described above; neither path is a GPU sandbox.
 - Decoded raster images have dimension limits and a retained pixel budget. PNG metadata limits are installed before decoder construction. WebP preflight checks container/frame dimensions before the codec can allocate inner VP8 planes. Codec scratch storage is not fully described by the retained pixel budget; native process memory caps remain part of the boundary. SVG has separate source, element, geometry, work and image bounds; SVG scripts/external resource references are not executed.
 - Page-worker requests and pending snapshots are bounded. Navigation generations prevent stale page results from receiving new user input. Edit acknowledgements keep old results from overwriting newer typing. Password fields are masked and native copy/cut shortcuts do not expose their values.
 
-Open script accounting work is recorded in the
-[enumeration follow-up](../tests/conformance/array-from-enumeration-followup.json).
-Shared own-key enumeration charges full-name deduplication by key count, without
-the retained UTF-16 names' full comparison cost. Object/Reflect enumeration,
-descriptor collection, ordinary Array length shrink and `for…in` snapshots can
-reach this path. The separate `for…in` visited-name tree also needs tree-depth
-accounting. `Array.from` precharges its own Array-shrink path; the shared callers
-remain open work. This is a work-accounting finding, with no demonstrated panic
-or unbounded allocation. Existing quotas do not establish complete accounting.
+The [shared enumeration follow-up](../tests/conformance/own-keys.md) replaces
+full-name snapshot deduplication with integer ranks and the object's existing
+unique-name creation order. Virtual keys, dense-hole searches, sorting and caller
+buffers now consume shared work/storage allowances. For-in visited-name searches
+charge retained UTF-16 comparison work using the reached tree size; cached entries
+avoid a second search while preserving live descriptor checks and hidden-property
+shadowing. Node movement and cumulative storage are prepaid. No quota is raised.
+The [original finding](../tests/conformance/array-from-enumeration-followup.json)
+and four first-candidate control regressions remain recorded.
+
+This closes the identified shared string-key snapshot/visited-tree accounting
+work, not every property path. General live own-descriptor/map/Get/prototype,
+mapped-binding and JSON accounting remain open. Window, symbol-key and integrity
+snapshots use separate unchanged paths. Standard-library tree insertion still
+has no fallible reservation API; the cumulative node charge is not whole-allocator
+OOM recovery or a proof of total process memory. Existing quotas do not establish
+complete accounting or production security.
 
 ## Representative limits
 

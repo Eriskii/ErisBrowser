@@ -4,7 +4,7 @@ use super::{enter_frame, push, reference, value};
 use crate::script::{
     BINDING_BYTES, DeclarationKind, Flow, JsString, MAX_DEPTH, ScriptError, Value, js_object,
 };
-use std::collections::BTreeSet;
+use std::collections::BTreeMap;
 use std::rc::Rc;
 
 #[derive(Clone, Copy)]
@@ -106,7 +106,7 @@ enum Phase {
 struct ForInState {
     object: Value,
     keys: std::vec::IntoIter<JsString>,
-    visited: BTreeSet<JsString>,
+    visited: BTreeMap<JsString, ()>,
     depth: usize,
     last: Value,
 }
@@ -838,7 +838,7 @@ fn for_in_start(runtime: &mut Runtime, frame: Frame, value: Value) -> Result<Opt
     let state = ForInState {
         object,
         keys,
-        visited: BTreeSet::new(),
+        visited: BTreeMap::new(),
         depth: 1,
         last: Value::Undefined,
     };
@@ -856,15 +856,10 @@ fn for_in_next(
     let env = frame.env;
     loop {
         for key in state.keys.by_ref() {
-            runtime.work(1 + key.len() / 8)?;
-            if state.visited.contains(&key) {
-                continue;
-            }
-            let Some(property) = runtime.own_property(&state.object, &key) else {
+            let Some(property) = runtime.for_in_visit(&mut state.visited, &state.object, &key)?
+            else {
                 continue;
             };
-            runtime.charge(32 + key.byte_len())?;
-            state.visited.insert(key.clone());
             if !property.enumerable {
                 continue;
             }

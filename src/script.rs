@@ -25,6 +25,7 @@ mod iterators;
 mod machine;
 mod names;
 mod object_integrity;
+mod own_keys;
 mod parser;
 mod property_keys;
 mod regexp_builtins;
@@ -4554,64 +4555,6 @@ impl Runtime {
             }
         }))
     }
-    fn own_keys(&mut self, receiver: &Value) -> Result<Vec<JsString>> {
-        if receiver == &Value::Window {
-            return self.window_own_keys();
-        }
-        let mut keys = Vec::new();
-        if let Value::Array(id) = receiver {
-            self.charge(self.arrays[*id].len().saturating_mul(64))?;
-            keys.extend(
-                (0..self.arrays[*id].len())
-                    .filter(|i| !self.array_holes[*id].contains(i))
-                    .map(|i| JsString::from(i.to_string())),
-            );
-            keys.push("length".into());
-        }
-        let text_len = match receiver {
-            Value::String(text) => Some(text.len()),
-            Value::Object(id) => match &self.objects[*id].boxed {
-                Some(Value::String(text)) => Some(text.len()),
-                _ => None,
-            },
-            _ => None,
-        };
-        if let Some(length) = text_len {
-            self.charge(length.saturating_mul(64))?;
-            keys.extend((0..length).map(|i| JsString::from(i.to_string())));
-            keys.push("length".into());
-        }
-        if let Some(id) = self.property_object(receiver) {
-            self.charge(
-                self.objects[id]
-                    .order
-                    .iter()
-                    .map(|key| key.byte_len() + 32)
-                    .sum(),
-            )?;
-            keys.extend(
-                self.objects[id]
-                    .order
-                    .iter()
-                    .filter_map(PropertyKey::as_string)
-                    .cloned(),
-            );
-        } else if js_object(receiver) {
-            return Err(ScriptError::unsupported(
-                "host own-property enumeration is not implemented",
-            ));
-        }
-        let count = keys.len();
-        self.work(1 + count.saturating_mul(1 + count.checked_ilog2().unwrap_or(0) as usize) / 8)?;
-        keys.sort_by_key(|key| {
-            json_array_index(key)
-                .map(|index| (false, index))
-                .unwrap_or((true, 0))
-        });
-        let mut seen = BTreeSet::new();
-        keys.retain(|key| seen.insert(key.clone()));
-        Ok(keys)
-    }
     fn property_descriptor(
         &mut self,
         object: Value,
@@ -4878,8 +4821,9 @@ impl Runtime {
         doc: &mut Document,
     ) -> Result<()> {
         let properties = self.coerce_object(properties)?;
-        let mut descriptors = Vec::new();
-        for key in self.own_property_keys(&properties)? {
+        let keys = self.own_property_keys(&properties)?;
+        let mut descriptors = self.own_key_descriptors(keys.len())?;
+        for key in keys {
             if !self
                 .own_property_key(&properties, &key)
                 .is_some_and(|p| p.enumerable)
@@ -8393,7 +8337,7 @@ impl Runtime {
             "Object.keys" | "Object.values" | "Object.getOwnPropertyNames" => {
                 let object = self.coerce_object(arg(0))?;
                 let keys = self.own_keys(&object)?;
-                let mut result = Vec::new();
+                let mut result = self.own_key_values(keys.len())?;
                 for key in keys {
                     self.tick()?;
                     if name != "Object.getOwnPropertyNames"

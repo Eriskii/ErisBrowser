@@ -1,14 +1,20 @@
 # Development docket
 
+[Shared own-key enumeration accounting](../tests/conformance/own-keys.md) now
+uses ranked snapshots and cached for-in tree entries, removing retained-name
+deduplication and duplicate searches while keeping live descriptor ordering.
+The corrected release preserves all 17,822 historical case observations and
+3,900 controls under unchanged limits. Four initial control regressions remain
+recorded. General live property-map and JSON accounting remain separate work.
+
 [Array.from](../tests/conformance/array-from.md) now consumes synchronous
 iterators and array-like inputs with generic construction, live mapping,
 own data definitions and specified iterator closing. Its unchanged local
 matrix verifies 388 of 402 expectations, including twelve expected resource
 stops; fourteen prerequisite modes remain unmet. The complete upstream profile
 has 82 passes, four missing-dependency failures and four metadata exclusions,
-with all 96 controls verified. Shared property-enumeration accounting is the
-next security follow-up; remaining Array methods and broader iterator consumers
-remain ahead.
+with all 96 controls verified. Remaining Array methods and broader iterator
+consumers remain ahead.
 
 [Synchronous iteration](../tests/conformance/for-of.md) now adds custom
 `for…of` protocols and native Array, String and arguments iterators, including
