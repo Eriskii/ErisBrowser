@@ -1,0 +1,1573 @@
+{
+  "kind": "Explicitly budgeted flat regexp group parser and prefix analysis",
+  "full_web_compatibility": false,
+  "full_ecmascript_conformance": false,
+  "production_security_certified": false,
+  "chromium_comparison": false,
+  "independent_review": false,
+  "prior_commit": "1c660e87875b4d6699c5c8ec0b6dc1c5208741d4",
+  "prior_ci": {
+    "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/36509794535",
+    "head": "1c660e87875b4d6699c5c8ec0b6dc1c5208741d4",
+    "conclusion": "success",
+    "jobs": 6
+  },
+  "prior_input_sha256": "5eb4ee7a8ba99f881acac0982946b4099ed4b7d40e1efbb80a9bc8c50ee71126",
+  "input_sha256": "600dc3f85471068122ce32c20e38e8598a3e74ecd177453ff6f74783c1511d63",
+  "source_files": {
+    "Cargo.toml": "015958175457d712165b649803198aa8aa5bba2f35e19dd49814def7308b03ec",
+    "Cargo.lock": "fc2d595602095e8a4333975b5f2e8ba748a1b82fbdc84505e64abcbd2b92a0de",
+    "src/lib.rs": "d96945bd6e61e3f7e5e2210b4df69e51f61d82a9c1fd945313666709e2de9d92",
+    "src/main.rs": "21fe1be4c60887579fdb3ef49ac2d4d09e4784938ebc3a87b813947e01ac4da1",
+    "src/graphics.rs": "1b51c4af2c8ae4eea66476397868022da35e566d3593f3fcddf29a156bae62a2",
+    "src/net.rs": "6746e871dc0468575edc5e669566a2550d32786636ebada8a51fa58a77122f45",
+    "src/dom.rs": "f4e3d256e7b0f0704ad6f610e96c20035a8f26e57e2696bf8b8894ea8a0913a7",
+    "src/page.rs": "f3cefdb218cf285559cd9a5f70147b9eaf9d8f39a0f22a885672c62c20b82a42",
+    "src/layout.rs": "bfbec78e9c7ca3b5ec45dfb6a2b948b5192de40f93d86b19e6425437579e83e4",
+    "src/script.rs": "7ab15ac7bad572a79d5fa761d73d55816ef0882def420d3b50bce7d3abaf07b5",
+    "src/browser.rs": "826ef6c2a8e1b812db7d7a90b8654e847546c7bee13b4ca641fd8922d6511571",
+    "src/css.rs": "0e354f1e5118ea52b329a053a11f96f45030730fa20ab60488ab7761c84a691d",
+    "src/svg.rs": "4a9b9664d4f2d3cb63188e4de0f53f95f40477a7d315c49c988875a5d5ca7170",
+    "src/edit.rs": "caffc2137b31622ddc2bad7ae9472472e80462c9024273a8f7cf72369ef43e99",
+    "src/js_string.rs": "511a2325e6b1e2f99ced2a4e9c3b26c7b2ef4d31ecd3c522445cb38f5f1f62ee",
+    "src/worker.rs": "60d4b4b40a818705fded997324b2ee36bdb1ad5132f8d8a9d84689ef4740ee59",
+    "src/image_limits.rs": "16b91652b9e29b37feddff97b25cf6ae5f6d3c7177a2b40fc1217bc30a92de4c",
+    "src/text_encoding.rs": "8dd6ec34ee5373d5f0955e9ba86c183dc64a1a7ced8e8c8226a7b7933e551a09",
+    "src/regexp.rs": "19d3035116585b1f045340f3fd8a8420ebe2b01e946f3973d931763777ce603b",
+    "src/document_url.rs": "b18d9d98f338209bbb5ef8f0ae265969d42f2172b8fd49bd85cfd973a87ac96c",
+    "src/stylesheet_loading.rs": "d0a92e739ea44fd306fb9ba01649c44622b0dd65058636fd5dce909677ebb310",
+    "src/worker_benchmark.rs": "460d37f1df4ec99b61358479cb3b67a63a527dc67bae1f66de86905eec99e609",
+    "src/selectors.rs": "0f5984c941a45dec2faca6310d17c1b53aa2f19908ca0d9dd12ca56d5075097c",
+    "src/presenter.rs": "f9bd2a4d817fe0ded8abd695296abf5b4151dbe13a5a00313a1f981fcb0d3094",
+    "src/cssom.rs": "69144f437fa1d0060e80c7ab56450dfe4432dfd30444b8cae90ec489fbb477a3",
+    "src/js_identifier.rs": "49187f73fcbae9d685e7848c6a412315c247a7fbfd4f3919bd5c08f8a6a7b552",
+    "src/js_uri.rs": "4759c1634201f4f6720871e240201c35a08e81addc30417376a45f69fc4830e6",
+    "src/bin/eris-stress.rs": "c4768e4028c34c9e891e24d39d3ec8573c8411fc72c4f93d000923d86e7e4743",
+    "src/bin/eris-dom.rs": "5d41cb4fc67ab675be7564053f11cf696c6f1e6d59ae1b8dd26e16f0b1d6e2b8",
+    "src/bin/eris-js.rs": "a214c63a90abf482783ce8acd80259a8e48fc04f31767b993aaf5cd697ff5448",
+    "src/worker/sandbox.rs": "2d29da2a4375c0064f4646ae378243912c1f2eb5889cd94d6016ea9d6ec202d6",
+    "src/worker/codec.rs": "f5468378310a14e701b310db80ad9b8b9ca462f9fda553335cb13fa97d1de705",
+    "src/worker/channel.rs": "fa5e11334ea0cace8ac7e5b43c770f77dcaa7ccbf245a71365ff3540d9226d44",
+    "src/worker/broker.rs": "895d42125e6a654f7795e48b426d4eae7464d4be1e255b1350289ac58f5dd1dd",
+    "src/worker/image_decoder.rs": "af55b24c4469ce88441b9039c8f0c5f64afc37ddd249f2412a052c5c740ca661",
+    "src/worker/launcher.rs": "22257be63985052060a613c5eaab02b7c59f79f07a808537e0e063e1e7944ab3",
+    "src/script/names.rs": "6ccbc235c97507315f65c827169270e30c0bb4bb2533ed435fa9b5cddc138332",
+    "src/script/code.rs": "668501f9b7996c8becd1e06393fea0b47a246f294bb1ce4c39e78543f2f9558e",
+    "src/script/tokens.rs": "b044323426c54e4c8eef93312eae0d0b45ab5b6019a796321c7d73085c373342",
+    "src/script/machine.rs": "bd9c12f99f576f9d64b1f847afedc7421086f735268ced1b3d2c85120a226963",
+    "src/script/parser_legacy.rs": "43b507b3761fc865aef670ee64e3d08e5cef697d5f8afa47ff79addd5cb47c1b",
+    "src/script/parser.rs": "83c0c6e074f8ac3358b07edf4647c21c064cf95bdbf49954c8f7908ff9fee96e",
+    "src/script/symbols.rs": "de5b3bcee0160678c28b80343f9d16b6c52d13567d3f685dcab297f3bf3dd6cc",
+    "src/script/property_keys.rs": "7bd4055f08eb2d05b798b16b02c0ddf6e03a5a3fce2c269633e2967f92c665a3",
+    "src/script/dom_bindings.rs": "93413bbdd5b96dc8dc95e577d3d12f3f5ffe3cc6c134a0161b20f725e8a97c21",
+    "src/script/window.rs": "c11348fbf8ce1dd4cec72b3245ee7dfb5d897e482acc987c0f2e64d27abd1544",
+    "src/script/string_builtins.rs": "5f98fff7d2403786aa0d03397b96451e51cc45701f29ffa46cafce1c39b343df",
+    "src/script/construction.rs": "331fdd773cc5a1e57c880bbddd1c7768993b7998c353eda8facb48a8a0346193",
+    "src/script/regexp_builtins.rs": "7181d25f6993ea9c6d9bc0e17fcb1bd26082165ef2b60f5d6887cceee05886f0",
+    "src/presenter/vulkan.rs": "d3de9ac6382a8776448c48ebe571debe70e4eab85878429070f95fbaa40df68b",
+    "src/presenter/vulkan/control.rs": "24233c70d6ab550ee44303c098f944fc33551052fa00feebf660ef5302a89abd",
+    "src/presenter/vulkan/transfer.rs": "b1ec4bd22469eccfd7caae685eb580733628c461148078470c9dfdc4869c4937",
+    "src/script/machine/statements.rs": "6fda5a222f32aebd07828f9eccdbec82ab5caea63bc487593fded4c9b1f1cbcd",
+    "src/script/machine/calls.rs": "6e445ed9ae9aa46bae54002e0517887dcf98fc8f19a8469002c6d1327b7b0e3d",
+    "src/script/code/records.rs": "85581141e1ebb437d9b23ff884dcbee6e7b1f6bc8a19933f21de39097e398860",
+    "src/script/parser/driver.rs": "d26dfc353e1eb4d951d3efc5a642f2fbfa206b7f9703bbd1f7da69aa87cd0c55",
+    "src/script/parser/driver/expressions.rs": "8565b8fb1b950578916e6bc2da4b560efe0f1d04b1387eca14e70e47e902e369",
+    "src/script/parser/driver/functions.rs": "6368872f99233786e16b7db4f6b70ddf93fb48e68189154c4a7f6a97e3ce7aa6",
+    "src/script/parser/driver/statements.rs": "757092fcedb2618036371d14da8d33a0ed80eabfb8c3a71c4e0da01259d02c81"
+  },
+  "before_binary_sha256": "ba1eef820701f3dc24c8fe2656a7bbb0a13d8d266eef98e2f7223acaf9ae3ccd",
+  "binaries": {
+    "default": {
+      "eris-browser": "bd0a2eb805429aec7f70e479135c46a74a2d9c080b6299ae85c6a22d0b0b15ab",
+      "eris-js": "811149c74f7a2b1d2bf1ebf6258879d1a2dd430a811e1c072b30e49b95530f30",
+      "eris-dom": "e6d8f63edb88bd11f5987c8be0e1898c385155a1e017125497316c0f36627bce",
+      "eris-stress": "3bc50fd9a1869e76cc69f4f75b3a03fa9955a72d75f52a6046e7e5e13bddfa9d"
+    },
+    "feature": "76b0f7a06376a6a210c6669303bbae1ba469073b1f1aca6787415817b7ba6d92"
+  },
+  "comparison": {
+    "profiles": {
+      "regexp-constructor": {
+        "before_counts": {
+          "passed": 768,
+          "unsupported": 200,
+          "resource": 8
+        },
+        "after_counts": {
+          "passed": 772,
+          "unsupported": 200,
+          "resource": 4
+        },
+        "manifest_sha256": "1a015d223e88fcd113ee1ec1c1272692291e4466c82d8024b50fb6a56cf675da",
+        "policy_sha256": "74e43872e59c6ffc5e55a68ad3887f9ced2f69d5c9690a25136f9f9d1e6127d1",
+        "mode_cases": 976,
+        "controls": 72,
+        "before_report_sha256": "63a6d122029b183b6de3bc33055c821fcfb1d2f095ca87edade5748f0a2ff428",
+        "after_report_sha256": "8b0eb3e58d9f820f776c1a66b902e5614e65b2fda56d80520cb4b65c2701d4e6"
+      },
+      "regexp-split": {
+        "before_counts": {
+          "passed": 88,
+          "failed": 2,
+          "unsupported": 6
+        },
+        "after_counts": {
+          "passed": 88,
+          "failed": 2,
+          "unsupported": 6
+        },
+        "manifest_sha256": "7e380ee0ee12fed435b33bebb97ce784c024e21faee72809e8cda2d97f1e5028",
+        "policy_sha256": "0e8c2b54d69e660d939a6c02946e920f459695f6be4405163f7e94bf0547f245",
+        "mode_cases": 96,
+        "controls": 72,
+        "before_report_sha256": "8be3cf228a16232be9f364459f35c5b2531368fca70d38347359b33c4ae0031a",
+        "after_report_sha256": "1833fae85f815deaaea5538af8d90b312822a3b9f28a32f237498b9a1e2ef873"
+      },
+      "string-search": {
+        "before_counts": {
+          "passed": 470,
+          "unsupported": 12,
+          "failed": 2
+        },
+        "after_counts": {
+          "passed": 470,
+          "unsupported": 12,
+          "failed": 2
+        },
+        "manifest_sha256": "51f7812dbdccfac8179261013188f15a8ba1b965bf0bfb9ebb61e8aff742338b",
+        "policy_sha256": "a9ea3c01e1d4fea35619985a2e3c464b4be23d29c1581e69c493d9f8d73e26e3",
+        "mode_cases": 484,
+        "controls": 72,
+        "before_report_sha256": "ad5dad3e2ef14b667ce5f5f1f76d4b77b7d0c1e3ee7f89bac2bedad56527c0e9",
+        "after_report_sha256": "4af61ca9648737ab5089cf5d6546190808a567352d5b28f1273137d74069dca8"
+      },
+      "string-concat": {
+        "before_counts": {
+          "passed": 44
+        },
+        "after_counts": {
+          "passed": 44
+        },
+        "manifest_sha256": "e904181959ebb9592f63f75802b7a6f84a40e108379257e6cb8bb29354d5aa60",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 44,
+        "controls": 56,
+        "before_report_sha256": "c151e36368d494981ebe83ad5033f20474fb6866dee2d8fc4a1658e1a53cb91e",
+        "after_report_sha256": "a829ecf22f44086eaed26fffed08c66b53e3c375ece78226505a27f89cd22219"
+      },
+      "symbols": {
+        "before_counts": {
+          "passed": 182,
+          "unsupported": 54,
+          "failed": 6
+        },
+        "after_counts": {
+          "passed": 182,
+          "unsupported": 54,
+          "failed": 6
+        },
+        "manifest_sha256": "c234ca3a603d668cff1b769612b3574cf2e59cfa5d21cd70695300e18751f127",
+        "policy_sha256": "e77db9454b9331d6178bc7bc1c49e1de55095e4701baaac3e27aae7efd42eec3",
+        "mode_cases": 242,
+        "controls": 80,
+        "before_report_sha256": "1a625a3603b0eb2a0ae0433cab326a57e37a3ba3a176cea0a597a1843c9dc150",
+        "after_report_sha256": "9b25a42262d18a83f1439a08401323ffcfddc380e2ed07c67efaa232c40105e4"
+      },
+      "string-json": {
+        "before_counts": {
+          "passed": 562,
+          "unsupported": 90
+        },
+        "after_counts": {
+          "passed": 562,
+          "unsupported": 90
+        },
+        "manifest_sha256": "f073410553ed7cac9c6ddb0d5d10da1e52616d067a0310578e84cbf000df4191",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 652,
+        "controls": 32,
+        "before_report_sha256": "bfb3a501b83aab9d8579d0e1076ceca376351b32f1238363f89df7a0a69ae262",
+        "after_report_sha256": "d162f743b65b2067afdad04cc89db22a8153e6006995d2fb9aa6cabb68c52b0c"
+      },
+      "regexp": {
+        "before_counts": {
+          "passed": 262,
+          "unsupported": 28
+        },
+        "after_counts": {
+          "passed": 262,
+          "unsupported": 28
+        },
+        "manifest_sha256": "33c8319c02da5367a5ac2596cbb48fc3176839740935966754ea0370f4408fa0",
+        "policy_sha256": "639d025e85b6e45a09d82252ece92d6f5ee95c0619b16ce3e2d61987a03b4cdd",
+        "mode_cases": 290,
+        "controls": 44,
+        "before_report_sha256": "d3a21d7dfc91e6ca03dcb8319ff74cabfdb51a82cf615bfb89927f8b4771d06e",
+        "after_report_sha256": "a24a44a4f9945addb092e1bd53735dc0c7c8e26c700e3f9b45caf422c75f6ab2"
+      },
+      "function-constructor": {
+        "before_counts": {
+          "passed": 241,
+          "unsupported": 50
+        },
+        "after_counts": {
+          "passed": 241,
+          "unsupported": 50
+        },
+        "manifest_sha256": "9630ad1dc81216d3717a0df435e53b15cf2f2334210984a1965c7d40277aa2a7",
+        "policy_sha256": "b764ad3478933d38f28aa720721553a3798d8f262fc42658470ca01791499c0f",
+        "mode_cases": 291,
+        "controls": 64,
+        "before_report_sha256": "0edd9d992181bf547ab7430aa94801643ee6bb3c8aba44511ab249b6a4a31f7f",
+        "after_report_sha256": "4c7c6398b3fd9ec105659169279c389b7938630f488af8362c1964d4c0b4e4fe"
+      },
+      "reflect-construction": {
+        "before_counts": {
+          "passed": 34,
+          "failed": 4
+        },
+        "after_counts": {
+          "passed": 34,
+          "failed": 4
+        },
+        "manifest_sha256": "a0efcbf267933681e09b4f9a75d4e43f75c0911ae1a93770571bc54f67a665b6",
+        "policy_sha256": "0e8c2b54d69e660d939a6c02946e920f459695f6be4405163f7e94bf0547f245",
+        "mode_cases": 38,
+        "controls": 96,
+        "before_report_sha256": "f9e4b2b861865b35bd536694dc0616f71dba376e0f1b7194c4c6d9c9d8abd540",
+        "after_report_sha256": "8f5f96d8547ace3fc12426b2412c6ac1dbc9b81c1a0e5f6779f8732490c6190c"
+      },
+      "new-target": {
+        "before_counts": {
+          "passed": 20,
+          "unsupported": 8
+        },
+        "after_counts": {
+          "passed": 20,
+          "unsupported": 8
+        },
+        "manifest_sha256": "73a1e0d8478b0dfbb7d98d0ca00d19a634033f708cca6e6c93ddcfbf16d826f7",
+        "policy_sha256": "0e8c2b54d69e660d939a6c02946e920f459695f6be4405163f7e94bf0547f245",
+        "mode_cases": 28,
+        "controls": 96,
+        "before_report_sha256": "6b51fed364ee80de8534cd32862bf83c9f4c5be749481a47e270d69d4d76621a",
+        "after_report_sha256": "2390f056aa6df93774ebfaf6aa6bac6819e3765f7301c4c505cf7498539fdec0"
+      },
+      "template-literal": {
+        "before_counts": {
+          "unsupported": 32,
+          "passed": 82
+        },
+        "after_counts": {
+          "unsupported": 32,
+          "passed": 82
+        },
+        "manifest_sha256": "58951312763d816ca4cc139a4fcb2bf63f43a81414b91bf673f65c450b217d94",
+        "policy_sha256": "3d1f69f1130da33216d9acb7fb1d220dbf006ee45351b930eed3b8ef175c2462",
+        "mode_cases": 114,
+        "controls": 44,
+        "before_report_sha256": "d4d1d416205b4a6c6b2795dd5db05b39fcb1884ffec61738ac7613076e92e9bb",
+        "after_report_sha256": "a2cfdc38ee7c5022b27e5f12da4f4719d179531fd96dd50836caea15b38a31cd"
+      },
+      "functions": {
+        "before_counts": {
+          "passed": 546,
+          "unsupported": 585
+        },
+        "after_counts": {
+          "passed": 546,
+          "unsupported": 585
+        },
+        "manifest_sha256": "15281ebe6e6c980c547f113563df7d2b5d346ac0db5c9c4aca75dbb6fc60b330",
+        "policy_sha256": "012c455ee75d314d1a222c23205bf5cb5c48058ecdf5a067270bb6cff73f0089",
+        "mode_cases": 1131,
+        "controls": 48,
+        "before_report_sha256": "8d43b4e1192f71653c1ce79cf5575f298a5bedf2139e46c4ef201de4990d5c75",
+        "after_report_sha256": "45259ed82b77d9e44e7d87a48bd3c9c9fd5560645fb03e25130e90844261ca39"
+      },
+      "rest-parameters": {
+        "before_counts": {
+          "unsupported": 6,
+          "passed": 16
+        },
+        "after_counts": {
+          "unsupported": 6,
+          "passed": 16
+        },
+        "manifest_sha256": "a3e15e061fc8c9cac736e081554f3e42b497d805ebfd7647ea49736cb2d83be5",
+        "policy_sha256": "a1f03c4f9590ec957d7dac54aaf1633e9b9c95f4faf7f7bdc7593ce337168a5b",
+        "mode_cases": 22,
+        "controls": 64,
+        "before_report_sha256": "833a119c56de8119e95be505754ef8ba2056f189578ddc43a1be4a66a3f04492",
+        "after_report_sha256": "d1773052f177304fe4c29d773863657d4f121788ad841f31ae363f82b3c774ad"
+      },
+      "is-prototype-of": {
+        "before_counts": {
+          "unsupported": 6,
+          "passed": 14
+        },
+        "after_counts": {
+          "unsupported": 6,
+          "passed": 14
+        },
+        "manifest_sha256": "f019dcc5e150cf14a6b144577a30937ed1314c6b5de3dd331ad574585f16d461",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 20,
+        "controls": 64,
+        "before_report_sha256": "c3b9fad558cb19dc4fca4145d784cda8ebf2aba33f747f7d609ae6726c62e2e8",
+        "after_report_sha256": "bca435fcb64dba88b238e4a47a0ba7cf7b5312b4270af36fdb8e21de145e032b"
+      },
+      "global-values": {
+        "before_counts": {
+          "passed": 64,
+          "failed": 6,
+          "unsupported": 18
+        },
+        "after_counts": {
+          "passed": 64,
+          "failed": 6,
+          "unsupported": 18
+        },
+        "manifest_sha256": "c1b627a7249d3ab460d5be88b54f34ead98c375c160bee9e72379aef213894a4",
+        "policy_sha256": "bc9da7274e62951b4b886406c4b0d0f71ade2a62979a7194fd7451484009a063",
+        "mode_cases": 88,
+        "controls": 64,
+        "before_report_sha256": "daaca565781761955fb6957572ce4a52004a5f289fff46e1732f1e6ffd515631",
+        "after_report_sha256": "a166e8b2b3ee4502ed36364b098a29c6bc500254b944efe6553ff156995ed523"
+      },
+      "array-sort": {
+        "before_counts": {
+          "passed": 59,
+          "unsupported": 44,
+          "resource": 4
+        },
+        "after_counts": {
+          "passed": 59,
+          "unsupported": 44,
+          "resource": 4
+        },
+        "manifest_sha256": "d6f43dd379ae49ae08f959596852e28e6bd33a0420eb699d763ff696b0e961d2",
+        "policy_sha256": "8861817329776f3a0e78232610878c0086cd0daac7ccc896683dccfa3ef0b4aa",
+        "mode_cases": 107,
+        "controls": 80,
+        "before_report_sha256": "bac5a8d8e5e75443a0681cc1e937be89483806ee5241e65c82e785027f3087af",
+        "after_report_sha256": "d72113c004442560fa8c1b313c0bd2d952fba40b8560ae4e1e668653bb195f71"
+      },
+      "identifiers": {
+        "before_counts": {
+          "passed": 509,
+          "unsupported": 154,
+          "resource": 6
+        },
+        "after_counts": {
+          "passed": 509,
+          "unsupported": 154,
+          "resource": 6
+        },
+        "manifest_sha256": "b93b9e76f5231a3d342d95fe0a8cf47ca79c2a3101f2a78e4d5bb564c4d06ea8",
+        "policy_sha256": "666c0fd88cdb1f836c1e9706e43415e1ac5ae6b4b3ac244ae7eb4dd8701f6f7e",
+        "mode_cases": 669,
+        "controls": 88,
+        "before_report_sha256": "1da5f1218bc7566a84cc0880a374c277538dbcc6a26d62b16d30c2ac7b225457",
+        "after_report_sha256": "8781bb79c7c1f1b5f8a98663fd7d13549c1113b9e7466d9d91c1e6a5073c4527"
+      },
+      "array-reduce": {
+        "before_counts": {
+          "passed": 860,
+          "failed": 8,
+          "unsupported": 166
+        },
+        "after_counts": {
+          "passed": 860,
+          "failed": 8,
+          "unsupported": 166
+        },
+        "manifest_sha256": "77ee716188d99fdba64adbe151ef4efd915fbaa6345b2b0ec8fe3550efb5ec24",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 1034,
+        "controls": 128,
+        "before_report_sha256": "f971bae769cceb7b5ed3d159509b43df999e4d75ccae7ca09386fa2d289166e8",
+        "after_report_sha256": "240626875ff50adf19ee87b8c648c0e921b6c0c9f2fb78659740545a67d694c5"
+      },
+      "number-statics": {
+        "before_counts": {
+          "passed": 260,
+          "unsupported": 80
+        },
+        "after_counts": {
+          "passed": 260,
+          "unsupported": 80
+        },
+        "manifest_sha256": "3c5c2503458843bfc64eaf546ee08b6e693714f561df42330d9001a2ec8216cd",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 340,
+        "controls": 104,
+        "before_report_sha256": "d332e9ef1a544d57a7d4103403b4436c44d15013c0b4884684797d6982f6f6ad",
+        "after_report_sha256": "f0d2d18f2ce3910895b8e385951d00a4fce178644d9fcef8309acb504e30314d"
+      },
+      "numeric-conversion": {
+        "before_counts": {
+          "passed": 32,
+          "unsupported": 28
+        },
+        "after_counts": {
+          "passed": 32,
+          "unsupported": 28
+        },
+        "manifest_sha256": "de7cf1098618ad0fdb7786d4ab4f6c648bfb6fe2543981fe21ca6e0cba50928f",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 60,
+        "controls": 80,
+        "before_report_sha256": "de9a9469893980b14969b2894d726aec957663788b0a9cbb4ed375b1080db795",
+        "after_report_sha256": "bc9b11b831444f7262885ace4b9415ee0bd363bc538c4b3816509ab7c98301e9"
+      },
+      "numeric-parsing": {
+        "before_counts": {
+          "passed": 176,
+          "unsupported": 34,
+          "resource": 8
+        },
+        "after_counts": {
+          "passed": 176,
+          "unsupported": 34,
+          "resource": 8
+        },
+        "manifest_sha256": "f8959cc2e43d94b5b0c671105f87d3fc831fa6359065566791707a6f9b400c6a",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 218,
+        "controls": 80,
+        "before_report_sha256": "1d9ff7b4570dfdbf62da3c69170251547825993aa87c5a951af5b88840404a8d",
+        "after_report_sha256": "c815a4cc76f922f54725f273f9c2dddd292ae650f7f853d713e1d343da316d16"
+      },
+      "compound-assignment": {
+        "before_counts": {
+          "unsupported": 169,
+          "passed": 617
+        },
+        "after_counts": {
+          "unsupported": 169,
+          "passed": 617
+        },
+        "manifest_sha256": "edc2b04b5e9f810e1757a327f5d2a32c240f41d61e8a6d2a89cb35c3ec14f1d0",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 786,
+        "controls": 128,
+        "before_report_sha256": "57bede36b0183027cbbf727051324197e43c5cc1544aac4e3e81452e2b5fb967",
+        "after_report_sha256": "7c958965dfad647a1e3342e33de94f3e22774132456b5ef5a67fc3499c37831e"
+      },
+      "addition": {
+        "before_counts": {
+          "unsupported": 28,
+          "passed": 65,
+          "failed": 2
+        },
+        "after_counts": {
+          "unsupported": 28,
+          "passed": 65,
+          "failed": 2
+        },
+        "manifest_sha256": "56088f55075e4d44da6915ca41383604182a8a72aaef8230af61369513cbdc0c",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 95,
+        "controls": 64,
+        "before_report_sha256": "4345ce7fe9695d43da9523881e87d7cc68cc4ce9f0d145d0e59ca98f6114163c",
+        "after_report_sha256": "0a2405e643a7a6de69962b85e7d7634f230424121e27923e5776d0e7bd838f17"
+      },
+      "logical-assignment": {
+        "before_counts": {
+          "unsupported": 48,
+          "passed": 78,
+          "failed": 6
+        },
+        "after_counts": {
+          "unsupported": 48,
+          "passed": 78,
+          "failed": 6
+        },
+        "manifest_sha256": "a83f71b8a6b6a1523951d73a4711f024cf77ad3bf90e6698bc6224e7bfabf1a3",
+        "policy_sha256": "74a2627eaabaa31cba34e9ff9612cc8b944af7bae893c4e210fc1aa96f6868af",
+        "mode_cases": 132,
+        "controls": 104,
+        "before_report_sha256": "947004c433907b28fdd4fa8972ca66acee23fc9aec72e8f7f4509ba4ed90f486",
+        "after_report_sha256": "21d7ea7f742e05d3a1bc51e58ee0a42b9b1ac71aac50a02e5059e6b2ad10df16"
+      },
+      "uri": {
+        "before_counts": {
+          "resource": 112,
+          "passed": 234
+        },
+        "after_counts": {
+          "resource": 112,
+          "passed": 234
+        },
+        "manifest_sha256": "bf48d1dddac882a9609fe78aea7521e7477c1cef2ba6036a74c48513ad28ab8f",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 346,
+        "controls": 128,
+        "before_report_sha256": "12f2b9b50e30030727e95fe0351ed12bce11be7a8f7101b2866d55d5663d5d49",
+        "after_report_sha256": "dedc6b6a55434046f68d07bfcdf4a36cf4781f541346f6788da1320342c5c8fd"
+      },
+      "relational": {
+        "before_counts": {
+          "unsupported": 64,
+          "passed": 300
+        },
+        "after_counts": {
+          "unsupported": 64,
+          "passed": 300
+        },
+        "manifest_sha256": "34497c818a4de422d2628afe1270525fe6c5467bbb43126c1796324a5bc8f138",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 364,
+        "controls": 128,
+        "before_report_sha256": "c1df0580a927c0befe3a1e3853b21ca2de049c971059d6d711a69c76ef289482",
+        "after_report_sha256": "c30d85f79ad39d77cf7f9ae40458b452f1196143dc6e23566c25b27f86b2a0da"
+      },
+      "equality": {
+        "before_counts": {
+          "unsupported": 96,
+          "passed": 190
+        },
+        "after_counts": {
+          "unsupported": 96,
+          "passed": 190
+        },
+        "manifest_sha256": "b1d07bdfaee72e164608d7ed3351ab70d05931ffda34f174f6c3f99bf12a0046",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 286,
+        "controls": 128,
+        "before_report_sha256": "f49da544095620b732e161d2e345f65a08d9243f64a0d983937c9da43eb082cc",
+        "after_report_sha256": "c4254d6276364661d4e30aa5a3f6bf325f4c7db0992f44501ec683b7fc1b9a49"
+      },
+      "labels": {
+        "before_counts": {
+          "passed": 100,
+          "unsupported": 25
+        },
+        "after_counts": {
+          "passed": 100,
+          "unsupported": 25
+        },
+        "manifest_sha256": "32889cc4ab3de15132243dae4981418ba559cd10294df9222329070b8f74649b",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 125,
+        "controls": 80,
+        "before_report_sha256": "ed01e449509ba69795e98690304e21d06588a40a357952d13a60fcd57c845a4d",
+        "after_report_sha256": "03d661e9ca1a0587044b842bbb7cf55fc4629a5d566fffc48ef59067088b49a4"
+      }
+    },
+    "changes": [
+      {
+        "profile": "regexp-constructor",
+        "id": "test/built-ins/RegExp/S15.10.2.8_A3_T15.js:sloppy",
+        "before": {
+          "id": "test/built-ins/RegExp/S15.10.2.8_A3_T15.js:sloppy",
+          "file": "test/built-ins/RegExp/S15.10.2.8_A3_T15.js",
+          "mode": "sloppy",
+          "case_sha256": "481868a057924f75ff95dae73cd45a3cb48f8e92db5c039cfa1d7db1a310c560",
+          "source_sha256": "fa2d28b262e96f06723e840575dc1bf7d5d0f510466462e5dd037e8d5f9d2b93",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "test/built-ins/RegExp/S15.10.2.8_A3_T15.js:sloppy",
+          "file": "test/built-ins/RegExp/S15.10.2.8_A3_T15.js",
+          "mode": "sloppy",
+          "case_sha256": "481868a057924f75ff95dae73cd45a3cb48f8e92db5c039cfa1d7db1a310c560",
+          "source_sha256": "fa2d28b262e96f06723e840575dc1bf7d5d0f510466462e5dd037e8d5f9d2b93",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "profile": "regexp-constructor",
+        "id": "test/built-ins/RegExp/S15.10.2.8_A3_T15.js:strict",
+        "before": {
+          "id": "test/built-ins/RegExp/S15.10.2.8_A3_T15.js:strict",
+          "file": "test/built-ins/RegExp/S15.10.2.8_A3_T15.js",
+          "mode": "strict",
+          "case_sha256": "9e5a73da39a92ed1f31572cd733adca8435a16e8caf5e9e452b18d2598504019",
+          "source_sha256": "fa2d28b262e96f06723e840575dc1bf7d5d0f510466462e5dd037e8d5f9d2b93",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "test/built-ins/RegExp/S15.10.2.8_A3_T15.js:strict",
+          "file": "test/built-ins/RegExp/S15.10.2.8_A3_T15.js",
+          "mode": "strict",
+          "case_sha256": "9e5a73da39a92ed1f31572cd733adca8435a16e8caf5e9e452b18d2598504019",
+          "source_sha256": "fa2d28b262e96f06723e840575dc1bf7d5d0f510466462e5dd037e8d5f9d2b93",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "profile": "regexp-constructor",
+        "id": "test/built-ins/RegExp/S15.10.2.8_A3_T16.js:sloppy",
+        "before": {
+          "id": "test/built-ins/RegExp/S15.10.2.8_A3_T16.js:sloppy",
+          "file": "test/built-ins/RegExp/S15.10.2.8_A3_T16.js",
+          "mode": "sloppy",
+          "case_sha256": "b22bcf5c446eefb2a1adce6c3ad524698e1db403f78f0ab37021d1200bfd404c",
+          "source_sha256": "35dd8fed43b5a81848fd079a99458e61837c62d4e5ca968c69b3c1c06946e26a",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "test/built-ins/RegExp/S15.10.2.8_A3_T16.js:sloppy",
+          "file": "test/built-ins/RegExp/S15.10.2.8_A3_T16.js",
+          "mode": "sloppy",
+          "case_sha256": "b22bcf5c446eefb2a1adce6c3ad524698e1db403f78f0ab37021d1200bfd404c",
+          "source_sha256": "35dd8fed43b5a81848fd079a99458e61837c62d4e5ca968c69b3c1c06946e26a",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "profile": "regexp-constructor",
+        "id": "test/built-ins/RegExp/S15.10.2.8_A3_T16.js:strict",
+        "before": {
+          "id": "test/built-ins/RegExp/S15.10.2.8_A3_T16.js:strict",
+          "file": "test/built-ins/RegExp/S15.10.2.8_A3_T16.js",
+          "mode": "strict",
+          "case_sha256": "5dd5fbe342ed772fd0d29409aae6dddd9dff27e482b1da639898b057fb7b3c91",
+          "source_sha256": "35dd8fed43b5a81848fd079a99458e61837c62d4e5ca968c69b3c1c06946e26a",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "test/built-ins/RegExp/S15.10.2.8_A3_T16.js:strict",
+          "file": "test/built-ins/RegExp/S15.10.2.8_A3_T16.js",
+          "mode": "strict",
+          "case_sha256": "5dd5fbe342ed772fd0d29409aae6dddd9dff27e482b1da639898b057fb7b3c91",
+          "source_sha256": "35dd8fed43b5a81848fd079a99458e61837c62d4e5ca968c69b3c1c06946e26a",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      }
+    ],
+    "total_modes": 9078,
+    "total_controls": 2288,
+    "unchanged_observations": 9074,
+    "updated_baselines": [],
+    "no_prior_pass_lost": true,
+    "policies_unchanged": true
+  },
+  "remaining_constructor_resource_cases": [
+    {
+      "id": "test/built-ins/RegExp/S15.10.2_A1_T1.js:sloppy",
+      "file": "test/built-ins/RegExp/S15.10.2_A1_T1.js",
+      "mode": "sloppy",
+      "case_sha256": "245e8ab676df1f76a42294a81a34fdeb601e9f7bd9b194a5d270589eb957acb8",
+      "source_sha256": "d140b0134c328c9c452f3b359a8991f918fca6a473d4f5a2564836796cae8c7f",
+      "expected_negative": null,
+      "status": "resource",
+      "observation": {
+        "status": "resource",
+        "phase": "runtime",
+        "error_type": "ResourceLimit",
+        "error_identity": "",
+        "message": "regular expression work limit exceeded",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/RegExp/S15.10.2_A1_T1.js:strict",
+      "file": "test/built-ins/RegExp/S15.10.2_A1_T1.js",
+      "mode": "strict",
+      "case_sha256": "6f4ae06d2140790c15cff52cc5d087584869b553da8db88eb8b2cd2630aec4e5",
+      "source_sha256": "d140b0134c328c9c452f3b359a8991f918fca6a473d4f5a2564836796cae8c7f",
+      "expected_negative": null,
+      "status": "resource",
+      "observation": {
+        "status": "resource",
+        "phase": "runtime",
+        "error_type": "ResourceLimit",
+        "error_identity": "",
+        "message": "regular expression work limit exceeded",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/RegExp/character-class-escape-non-whitespace.js:sloppy",
+      "file": "test/built-ins/RegExp/character-class-escape-non-whitespace.js",
+      "mode": "sloppy",
+      "case_sha256": "231cdcb985fa03cf139f80c240be0ad78c5d147479a8e3a2e3cbf50161b17d4e",
+      "source_sha256": "1afceaefc8088925591df29d45730694af5de6d145bc6b1a555485999c9f6bb5",
+      "expected_negative": null,
+      "status": "resource",
+      "observation": {
+        "status": "resource",
+        "phase": "runtime",
+        "error_type": "ResourceLimit",
+        "error_identity": "",
+        "message": "script instruction limit exceeded",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/RegExp/character-class-escape-non-whitespace.js:strict",
+      "file": "test/built-ins/RegExp/character-class-escape-non-whitespace.js",
+      "mode": "strict",
+      "case_sha256": "02d654cea3147743d64aafbeb8882dd0167a77b29f32b523e2f55176a4134b69",
+      "source_sha256": "1afceaefc8088925591df29d45730694af5de6d145bc6b1a555485999c9f6bb5",
+      "expected_negative": null,
+      "status": "resource",
+      "observation": {
+        "status": "resource",
+        "phase": "runtime",
+        "error_type": "ResourceLimit",
+        "error_identity": "",
+        "message": "script instruction limit exceeded",
+        "harness": ""
+      }
+    }
+  ],
+  "healthy_baselines_preserved": 23,
+  "local_fixture": {
+    "path": "tests/conformance/regexp-deep-groups.js",
+    "before": {
+      "binary_sha256": "ba1eef820701f3dc24c8fe2656a7bbb0a13d8d266eef98e2f7223acaf9ae3ccd",
+      "fixture_sha256": "37f857af74044acacb57bb40e0b1bc4ba735250c14ce885757c8d45acd7bd3d3",
+      "counts": {
+        "resource": 20
+      },
+      "cases": [
+        {
+          "id": "two-hundred-nested-captures#sloppy",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "sloppy",
+          "case_sha256": "4e257d2e445ed0bf6486223f70bfc2420bfa4873850ca88b0101313cfe95b5c5",
+          "source_sha256": "b352de19fa10a8828867826e1fc89aeecdd1c9368d6554efe7b1559eca445244",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "two-hundred-nested-captures#strict",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "strict",
+          "case_sha256": "84881ea1536c1f5e30b30ab0a8bd214cd751c885113afc1be3054a29b90bc817",
+          "source_sha256": "b352de19fa10a8828867826e1fc89aeecdd1c9368d6554efe7b1559eca445244",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "two-hundred-noncapturing-groups#sloppy",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "sloppy",
+          "case_sha256": "7d773d2d543b8275069407ff3649400231dc0fd677505634189090ad8f64bcc9",
+          "source_sha256": "0963690b7b2fac3ed0ad2bca24024cf46614806606bbbfe922f5586bd71be68b",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "two-hundred-noncapturing-groups#strict",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "strict",
+          "case_sha256": "6450846f6a4ecdc1bc5061971f9a49812ddf5a401022aa77a8bc8252f1cb7dca",
+          "source_sha256": "0963690b7b2fac3ed0ad2bca24024cf46614806606bbbfe922f5586bd71be68b",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "two-hundred-empty-captures#sloppy",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "sloppy",
+          "case_sha256": "50fb4b709d307fd6960167a6e5cf33aeb0d1c5aeae03eb9f72c21beec639db43",
+          "source_sha256": "38f076666684af46fc98bee8540786c5e74699a4ec58086cab259caa4bab1c28",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression capture limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "two-hundred-empty-captures#strict",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "strict",
+          "case_sha256": "5d2edf564f16701f8cd45272e585006cd973b9872e39dca5e64cb911935e2ee0",
+          "source_sha256": "38f076666684af46fc98bee8540786c5e74699a4ec58086cab259caa4bab1c28",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression capture limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-named-capture#sloppy",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "sloppy",
+          "case_sha256": "9a9fb9021d76a39434f27b6f66e13f3d1726101357e2808923c5172f184ec750",
+          "source_sha256": "596a863e63b12864b578a70a506fe25bf24b2a43848f3a9cf5c0db3ee765d833",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-named-capture#strict",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "strict",
+          "case_sha256": "891e25304a24aa20f8123b9ee74e427f4ab361e330b7f3758eee5e5a0524a834",
+          "source_sha256": "596a863e63b12864b578a70a506fe25bf24b2a43848f3a9cf5c0db3ee765d833",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "two-hundredth-backreference#sloppy",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "sloppy",
+          "case_sha256": "e7d93adafb8884aea461cbb1f4132e7bcc0df0c66e3c77fc97e57f45a02f4e6f",
+          "source_sha256": "18666590ef3b641fc2532d6b6c4f296cb131cd51294ec258b7054fbc43bb0007",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "two-hundredth-backreference#strict",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "strict",
+          "case_sha256": "12432b861adedcbfef4776509e7a866e007a2383eec785dcafae533f469d8f58",
+          "source_sha256": "18666590ef3b641fc2532d6b6c4f296cb131cd51294ec258b7054fbc43bb0007",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-repeat-clears-inner-capture#sloppy",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "sloppy",
+          "case_sha256": "d653e4a0b820a937d64117de3e0be46c8aa980b5c3380edbe74cf4af384e3830",
+          "source_sha256": "d010a14f173d7294693a6d38f8b6ef981b5cdc00aaa7a97d98cbc67d1c3cb759",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-repeat-clears-inner-capture#strict",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "strict",
+          "case_sha256": "09d980eb4b3939f60b5aebcc524eb51aa95d8780761d2e7598082be3b51fe405",
+          "source_sha256": "d010a14f173d7294693a6d38f8b6ef981b5cdc00aaa7a97d98cbc67d1c3cb759",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-lazy-alternation#sloppy",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "sloppy",
+          "case_sha256": "1847e46e9faa884bd97ba42c677650aaf9e93eb926c1a7fb0dc2dc9ba578b59f",
+          "source_sha256": "12003f214e255c3a0940c28944046f3f5f0408073e1ecfc149e64befc5510fac",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-lazy-alternation#strict",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "strict",
+          "case_sha256": "d273596abc0b633a1aae8979d06ed6bfcda731dd0a52181c2f1e6d60096096d5",
+          "source_sha256": "12003f214e255c3a0940c28944046f3f5f0408073e1ecfc149e64befc5510fac",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-group-single-lookahead#sloppy",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "sloppy",
+          "case_sha256": "09aa3f2b6f75f31a45fe09d63d91eeef4ed2e25d05828cb7160886debf130d43",
+          "source_sha256": "71f66b70e9bedca34f68ce34c3f8eecb68001eb0d0b50f733e0046106ab203e6",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-group-single-lookahead#strict",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "strict",
+          "case_sha256": "10767eb4c409fb19443e35544e0d2d3cbaea29b7608486b0b83d8d703f405be9",
+          "source_sha256": "71f66b70e9bedca34f68ce34c3f8eecb68001eb0d0b50f733e0046106ab203e6",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-unclosed-group-is-syntax-error#sloppy",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "sloppy",
+          "case_sha256": "1b6c36a605764e13f05ecd72329064eb3edada443343435f0e6028f00097cdc5",
+          "source_sha256": "ef95962fbf3452182a14311115a9926624279afed872c7b6d48dd8f7cf2dcd91",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-unclosed-group-is-syntax-error#strict",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "strict",
+          "case_sha256": "1cf13bfa870b0666ca7707c00095f06cbe4382d9e690163c4ed1b360d0888add",
+          "source_sha256": "ef95962fbf3452182a14311115a9926624279afed872c7b6d48dd8f7cf2dcd91",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-empty-alternative#sloppy",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "sloppy",
+          "case_sha256": "480e9d6ea2a1e3a4c99e84b3769c69603c66ab5415505cc7bd3623422d1aedbf",
+          "source_sha256": "befb77649cd73268fdafd76189aa878e9ddfb4c53c595ac91f78592003650b8b",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-empty-alternative#strict",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "strict",
+          "case_sha256": "dcabacc356c55ccf3b5b71666f17802fb08bcb5387993e7c16640f30c114aaa0",
+          "source_sha256": "befb77649cd73268fdafd76189aa878e9ddfb4c53c595ac91f78592003650b8b",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression nesting limit exceeded",
+            "harness": ""
+          }
+        }
+      ]
+    },
+    "after": {
+      "binary_sha256": "811149c74f7a2b1d2bf1ebf6258879d1a2dd430a811e1c072b30e49b95530f30",
+      "fixture_sha256": "37f857af74044acacb57bb40e0b1bc4ba735250c14ce885757c8d45acd7bd3d3",
+      "counts": {
+        "passed": 20
+      },
+      "cases": [
+        {
+          "id": "two-hundred-nested-captures#sloppy",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "sloppy",
+          "case_sha256": "4e257d2e445ed0bf6486223f70bfc2420bfa4873850ca88b0101313cfe95b5c5",
+          "source_sha256": "b352de19fa10a8828867826e1fc89aeecdd1c9368d6554efe7b1559eca445244",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "two-hundred-nested-captures#strict",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "strict",
+          "case_sha256": "84881ea1536c1f5e30b30ab0a8bd214cd751c885113afc1be3054a29b90bc817",
+          "source_sha256": "b352de19fa10a8828867826e1fc89aeecdd1c9368d6554efe7b1559eca445244",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "two-hundred-noncapturing-groups#sloppy",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "sloppy",
+          "case_sha256": "7d773d2d543b8275069407ff3649400231dc0fd677505634189090ad8f64bcc9",
+          "source_sha256": "0963690b7b2fac3ed0ad2bca24024cf46614806606bbbfe922f5586bd71be68b",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "two-hundred-noncapturing-groups#strict",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "strict",
+          "case_sha256": "6450846f6a4ecdc1bc5061971f9a49812ddf5a401022aa77a8bc8252f1cb7dca",
+          "source_sha256": "0963690b7b2fac3ed0ad2bca24024cf46614806606bbbfe922f5586bd71be68b",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "two-hundred-empty-captures#sloppy",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "sloppy",
+          "case_sha256": "50fb4b709d307fd6960167a6e5cf33aeb0d1c5aeae03eb9f72c21beec639db43",
+          "source_sha256": "38f076666684af46fc98bee8540786c5e74699a4ec58086cab259caa4bab1c28",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "two-hundred-empty-captures#strict",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "strict",
+          "case_sha256": "5d2edf564f16701f8cd45272e585006cd973b9872e39dca5e64cb911935e2ee0",
+          "source_sha256": "38f076666684af46fc98bee8540786c5e74699a4ec58086cab259caa4bab1c28",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-named-capture#sloppy",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "sloppy",
+          "case_sha256": "9a9fb9021d76a39434f27b6f66e13f3d1726101357e2808923c5172f184ec750",
+          "source_sha256": "596a863e63b12864b578a70a506fe25bf24b2a43848f3a9cf5c0db3ee765d833",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-named-capture#strict",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "strict",
+          "case_sha256": "891e25304a24aa20f8123b9ee74e427f4ab361e330b7f3758eee5e5a0524a834",
+          "source_sha256": "596a863e63b12864b578a70a506fe25bf24b2a43848f3a9cf5c0db3ee765d833",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "two-hundredth-backreference#sloppy",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "sloppy",
+          "case_sha256": "e7d93adafb8884aea461cbb1f4132e7bcc0df0c66e3c77fc97e57f45a02f4e6f",
+          "source_sha256": "18666590ef3b641fc2532d6b6c4f296cb131cd51294ec258b7054fbc43bb0007",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "two-hundredth-backreference#strict",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "strict",
+          "case_sha256": "12432b861adedcbfef4776509e7a866e007a2383eec785dcafae533f469d8f58",
+          "source_sha256": "18666590ef3b641fc2532d6b6c4f296cb131cd51294ec258b7054fbc43bb0007",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-repeat-clears-inner-capture#sloppy",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "sloppy",
+          "case_sha256": "d653e4a0b820a937d64117de3e0be46c8aa980b5c3380edbe74cf4af384e3830",
+          "source_sha256": "d010a14f173d7294693a6d38f8b6ef981b5cdc00aaa7a97d98cbc67d1c3cb759",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-repeat-clears-inner-capture#strict",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "strict",
+          "case_sha256": "09d980eb4b3939f60b5aebcc524eb51aa95d8780761d2e7598082be3b51fe405",
+          "source_sha256": "d010a14f173d7294693a6d38f8b6ef981b5cdc00aaa7a97d98cbc67d1c3cb759",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-lazy-alternation#sloppy",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "sloppy",
+          "case_sha256": "1847e46e9faa884bd97ba42c677650aaf9e93eb926c1a7fb0dc2dc9ba578b59f",
+          "source_sha256": "12003f214e255c3a0940c28944046f3f5f0408073e1ecfc149e64befc5510fac",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-lazy-alternation#strict",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "strict",
+          "case_sha256": "d273596abc0b633a1aae8979d06ed6bfcda731dd0a52181c2f1e6d60096096d5",
+          "source_sha256": "12003f214e255c3a0940c28944046f3f5f0408073e1ecfc149e64befc5510fac",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-group-single-lookahead#sloppy",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "sloppy",
+          "case_sha256": "09aa3f2b6f75f31a45fe09d63d91eeef4ed2e25d05828cb7160886debf130d43",
+          "source_sha256": "71f66b70e9bedca34f68ce34c3f8eecb68001eb0d0b50f733e0046106ab203e6",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-group-single-lookahead#strict",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "strict",
+          "case_sha256": "10767eb4c409fb19443e35544e0d2d3cbaea29b7608486b0b83d8d703f405be9",
+          "source_sha256": "71f66b70e9bedca34f68ce34c3f8eecb68001eb0d0b50f733e0046106ab203e6",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-unclosed-group-is-syntax-error#sloppy",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "sloppy",
+          "case_sha256": "1b6c36a605764e13f05ecd72329064eb3edada443343435f0e6028f00097cdc5",
+          "source_sha256": "ef95962fbf3452182a14311115a9926624279afed872c7b6d48dd8f7cf2dcd91",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-unclosed-group-is-syntax-error#strict",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "strict",
+          "case_sha256": "1cf13bfa870b0666ca7707c00095f06cbe4382d9e690163c4ed1b360d0888add",
+          "source_sha256": "ef95962fbf3452182a14311115a9926624279afed872c7b6d48dd8f7cf2dcd91",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-empty-alternative#sloppy",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "sloppy",
+          "case_sha256": "480e9d6ea2a1e3a4c99e84b3769c69603c66ab5415505cc7bd3623422d1aedbf",
+          "source_sha256": "befb77649cd73268fdafd76189aa878e9ddfb4c53c595ac91f78592003650b8b",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "deep-empty-alternative#strict",
+          "file": "tests/conformance/regexp-deep-groups.js",
+          "mode": "strict",
+          "case_sha256": "dcabacc356c55ccf3b5b71666f17802fb08bcb5387993e7c16640f30c114aaa0",
+          "source_sha256": "befb77649cd73268fdafd76189aa878e9ddfb4c53c595ac91f78592003650b8b",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      ]
+    }
+  },
+  "differential": {
+    "identical_parses": 3888,
+    "identical_matches": 106040,
+    "source": "#![allow(dead_code)]\n#[path=\"/tmp/eris-before-js_string.rs\"] mod js_string;\n#[path=\"/tmp/eris-before-regexp.rs\"] mod old;\n#[path=\"/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/regexp.rs\"] mod new;\nuse js_string::JsString;\nfn ob()->old::Budget{old::Budget{steps:100_000,allocated:0,heap_limit:8*1024*1024,stack_limit:22}}\nfn nb()->new::Budget{new::Budget{steps:100_000,allocated:0,heap_limit:8*1024*1024,stack_limit:22}}\nfn main(){\n let atoms=[\"a\",\"b\",\".\",\"[ab]\",\"[^a]\",\"[\\\\d]\",\"[\\\\s]\",\"[^]\",\"[]\",\"()\",\"(a)\",\"(?:a|)\",\"(a|ab)\",\"(a(b)?)\",\"(?=a)\",\"(?!b)\",\"(?<x>a)\",\"(a)\\\\1\",\"(a)?\\\\1\",\"\\\\b\",\"^\",\"$\",\"\\\\uD800\",\"{x}\"];\n let suffixes=[\"\",\"?\",\"*\",\"+\",\"??\",\"*?\",\"{0}\",\"{2,3}\",\"{2,1}\"];\n let tails=[\"\",\"b\",\"|a\",\"|\",\"(a)?\",\"$\",\"(?!b)\",\"\\\\k<x>\",\")\"];\n let inputs=[\"\",\"a\",\"b\",\"ab\",\"aa\",\"aba\",\"aab\",\"abba\",\"\\na\",\"A\",\"\ud83d\ude00\"];\n let mut parses=0;let mut matches=0;\n for atom in atoms{for suffix in suffixes{for tail in tails{for flags in [\"\",\"im\"]{\n  let source=format!(\"{atom}{suffix}{tail}\");\n  let a=old::RegExp::compile(source.clone().into(),&flags.into(),&mut ob());\n  let b=new::RegExp::compile(source.clone().into(),&flags.into(),&mut nb());parses+=1;\n  match(a,b){\n   (Ok(a),Ok(b))=>for input in inputs{let text=JsString::from(input);for sticky in [false,true]{for start in [0,1]{\n    let x=a.find(text.units(),start,sticky,&mut ob()).map(|x|x.map(|m|m.captures));\n    let y=b.find(text.units(),start,sticky,&mut nb()).map(|x|x.map(|m|m.captures));\n    assert_eq!(format!(\"{x:?}\"),format!(\"{y:?}\"),\"/{source}/{flags} input={input:?} start={start} sticky={sticky}\");matches+=1;\n   }}},\n   (Err(a),Err(b))=>assert_eq!(format!(\"{a:?}\"),format!(\"{b:?}\"),\"/{source}/{flags}\"),\n   (a,b)=>panic!(\"compile difference /{source}/{flags}: {a:?} {b:?}\")\n  }\n }}}}\n println!(\"PASS: {parses} identical parse outcomes; {matches} identical full capture/error outcomes (two flags, two start indices, sticky and scanning)\");\n}\n",
+    "source_sha256": "ed395e7d8b52b83f2ab9bd2f8385318f1d7624a3b5c9cabdf4c8a573493dbeaf",
+    "old_parser_sha256": "ddcf0a6e847dcfa43c6052f7ed848ad9da8c222ff5fe01d152ee49be61db2370",
+    "new_parser_sha256": "19d3035116585b1f045340f3fd8a8420ebe2b01e946f3973d931763777ce603b",
+    "independent_conformance_oracle": false
+  },
+  "rust_checks": [
+    {
+      "rust": "1.88.0",
+      "configuration": "default",
+      "passed": 1020,
+      "failed": 0,
+      "ignored": 0,
+      "strict_all_target_clippy": true,
+      "log_sha256": "4569b2cb5b2d28692e5dc0f72b1f6ea40a3aa1ad4ef436c5453cf3f309ae7fd5"
+    },
+    {
+      "rust": "1.88.0",
+      "configuration": "feature",
+      "passed": 1031,
+      "failed": 0,
+      "ignored": 0,
+      "strict_all_target_clippy": true,
+      "log_sha256": "ea13701c280cdfb268242ff3287b696647934c6b6541d14c79850fd9e69b5ee2"
+    },
+    {
+      "rust": "1.95.0",
+      "configuration": "default",
+      "passed": 1020,
+      "failed": 0,
+      "ignored": 0,
+      "strict_all_target_clippy": true,
+      "log_sha256": "990eb35b241e2b536cb98bf679452bae41566dab21b21846abfc7f03b58982d7"
+    },
+    {
+      "rust": "1.95.0",
+      "configuration": "feature",
+      "passed": 1031,
+      "failed": 0,
+      "ignored": 0,
+      "strict_all_target_clippy": true,
+      "log_sha256": "34561d680624ae1780b8751683f262b851cc4041f6e02ea6d1d1314b9fee18e5"
+    }
+  ],
+  "pixel_references": {
+    "default": 57,
+    "vulkan_feature_headless": 57,
+    "gpu_exercised": false
+  },
+  "python_checks": 174,
+  "mutation_cases": 45000,
+  "mutation_seed": "0xe2152026",
+  "html": {
+    "counts": {
+      "matched": 3868,
+      "mismatched": 2,
+      "unsupported": 6
+    },
+    "exact_cases_preserved": true,
+    "report_sha256": "72cb4d20905114d984327adda0d133ea91aed15dfeeaab4c005d4506af7962de"
+  },
+  "logs": {
+    "artifacts/regexp-deep-groups-validation.log": "e6e0efc9db20deb96f0f5b4af0df50da12c2e2d963b4755ff41b17b9647bf37a",
+    "artifacts/regexp-deep-groups-python-final.log": "5d8f02f38c8f0cb98033c35839c6c714ff45faefc5c9f8ddb358faf5350a0689",
+    "artifacts/regexp-deep-groups-stress.log": "370a8f44ac5fb583bd9a74e027c86ef29ffd16d5c8b86faa9bb88fc3301c3b17",
+    "artifacts/regexp-deep-groups-upstream.log": "99940ae513be7db1625874ff454f0a5cbccf0a0ee7969d55e939de2d08db846a",
+    "artifacts/regexp-deep-groups-differential.log": "9ce4bcf758eab7b0b822ede6111805f93db01c31db9692448444fd1fc867c6de",
+    "artifacts/regexp-deep-groups-feature-pixels.log": "39e5f6612ae1b0eabe2926b20e6878760326b19f649bd1f91854ceb16b4751a0",
+    "artifacts/regexp-deep-groups-default-pixels.log": "c22051e926b9cd9ca3cd9ed16cf75661c80d0cca8e26e49a127ae76c67ff2c17"
+  },
+  "limits": [
+    "The complete direct RegExp directory still includes four work-budget resource stops and remains an observation profile.",
+    "All 9074 other observations and 2288 assertion controls are identical, with unchanged fingerprints, policies and 23 healthy baseline gates.",
+    "Grammar depth and the independent capture-count ceiling are replaced by the existing pattern, node, work and heap bounds; native lookahead execution remains guarded.",
+    "No global work, heap, stack, pattern, node or repetition quota is increased. New explicit frame/list allocations are precharged; complete allocation accounting is not established.",
+    "Unicode regexp syntax, broader legacy grammar, other String symbol protocols and efficient matching of larger patterns remain incomplete.",
+    "No independent review, security audit or Chromium performance comparison was performed."
+  ]
+}

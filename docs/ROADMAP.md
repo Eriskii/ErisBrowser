@@ -21,9 +21,11 @@ fixes its two exposed slice failures and adds 18 search/split passes.
 [RegExp split/species](../tests/conformance/regexp-split.md) adds 86 passes with
 observable construction, execution and captures.
 [RegExp constructor conversion](../tests/conformance/regexp-constructor.md)
-adds classification and ordered conversion with 16 more passes. Flat bounded
-regexp group parsing, efficient matching of larger patterns, the other String
-symbol protocols and Function source retention remain concrete next dependencies.
+adds classification and ordered conversion with 16 more passes.
+[Flat bounded regexp group parsing](../tests/conformance/regexp-deep-groups.md)
+now adds four deep-pattern passes. Efficient matching of larger patterns, Unicode
+regexp syntax, the other String symbol protocols and Function source retention
+remain concrete next dependencies.
 
 The goal remains an independent, fully web-compatible Rust browser with a
 defensible security boundary and measured performance within the requested

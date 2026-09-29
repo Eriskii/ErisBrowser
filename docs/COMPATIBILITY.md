@@ -2,9 +2,11 @@
 
 [RegExp constructor classification and conversion](../tests/conformance/regexp-constructor.md)
 now handle Symbol.match-based identity, regexp-like source/flags and observable
-allocation/conversion order. Its complete 976-mode directory records 768 passed,
-200 unsupported and eight resource stops. Deep pattern parsing, Unicode regexp
-syntax, broader legacy grammar, realms and remaining symbol protocols need work.
+allocation/conversion order. The [flat group parser](../tests/conformance/regexp-deep-groups.md)
+adds four passes for deeply nested patterns. The complete 976-mode directory now
+records 772 passed, 200 unsupported and four resource stops. Unicode regexp
+syntax, broader legacy grammar, matching performance, realms and remaining symbol
+protocols need work.
 
 [RegExp split and species](../tests/conformance/regexp-split.md) now use a separately
 constructed splitter and observable execution, index and capture hooks. The new

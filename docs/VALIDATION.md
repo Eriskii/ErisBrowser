@@ -1,5 +1,25 @@
 # Validation record
 
+## Flat regexp group parsing and prefix analysis
+
+The [implementation record](../tests/conformance/regexp-deep-groups.md) and
+[evidence](../tests/conformance/regexp-deep-groups.json) compare against `1c660e8`.
+Four unchanged Test262 modes for 200 nested groups now pass, bringing the complete
+constructor directory to **772 passed / 200 unsupported / four resource stops**.
+All **9,074 other observations / 2,288 controls** are identical. No source,
+policy, mode fingerprint or healthy baseline changes. The remaining work-budget
+stops keep this profile an observation inventory.
+
+All **20 frozen local modes** pass after previously stopping on depth/capture
+limits. A direct comparison preserves **3,888 parse outcomes / 106,040 complete
+capture or error outcomes**. Small-stack regressions compile and match 2,000
+nested groups; syntax, resource and lookahead execution guards remain tested.
+Rust **1.88 / 1.95** pass strict all-target Clippy and **1,020 default / 1,031
+Vulkan-feature tests**, none ignored. Both releases preserve **57 CPU pixel
+references**. **174 Python tests**, **45,000 mutation cases** and unchanged HTML
+observations pass. No independent agent review, GPU exercise or Chromium
+performance comparison was performed.
+
 ## RegExp constructor classification and conversion
 
 The [implementation record](../tests/conformance/regexp-constructor.md) and

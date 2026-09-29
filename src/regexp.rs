@@ -9,8 +9,6 @@ use std::sync::OnceLock;
 
 const MAX_PATTERN: usize = 8192;
 const MAX_NODES: usize = 4096;
-const MAX_DEPTH: usize = 32;
-const MAX_CAPTURES: usize = 128;
 const MAX_REPEAT: usize = 1_000_000;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -43,6 +41,20 @@ impl Budget {
                 "regular expression allocation limit exceeded",
             ));
         }
+        Ok(())
+    }
+
+    // Precharge each backing allocation, including replacement capacity. The
+    // cumulative budget is never refunded when frames or their lists are freed.
+    fn push<T>(&mut self, values: &mut Vec<T>, value: T) -> Result<()> {
+        if values.len() == values.capacity() {
+            let capacity = values.capacity().saturating_mul(2).max(4);
+            self.allocate(capacity.saturating_mul(std::mem::size_of::<T>()))?;
+            values
+                .try_reserve_exact(capacity - values.len())
+                .map_err(|_| Error::Resource("regular expression allocation failed"))?;
+        }
+        values.push(value);
         Ok(())
     }
 }
@@ -176,9 +188,44 @@ struct Parser<'a> {
     nodes: Vec<Node>,
     names: BTreeMap<JsString, usize>,
     captures: usize,
-    depth: usize,
     identity_k: bool,
     budget: &'a mut Budget,
+}
+
+enum GroupKind {
+    Root,
+    NonCapturing,
+    Capture(usize),
+    Lookahead(bool),
+}
+
+struct GroupFrame {
+    kind: GroupKind,
+    first: usize,
+    terms: Vec<usize>,
+    alternatives: Vec<usize>,
+}
+impl GroupFrame {
+    fn new(kind: GroupKind, first: usize) -> Self {
+        Self {
+            kind,
+            first,
+            terms: Vec::new(),
+            alternatives: Vec::new(),
+        }
+    }
+}
+
+enum PrefixFrame {
+    Repeat {
+        min: usize,
+        max: usize,
+    },
+    Compound {
+        node: usize,
+        next: usize,
+        all: Vec<Vec<usize>>,
+    },
 }
 
 impl RegExp {
@@ -195,7 +242,6 @@ impl RegExp {
             nodes: Vec::new(),
             names: BTreeMap::new(),
             captures: 0,
-            depth: 0,
             identity_k: false,
             budget,
         };
@@ -238,7 +284,7 @@ impl RegExp {
             captures: parser.captures,
             start_nodes: None,
         };
-        result.start_nodes = result.first_nodes(root, parser.budget, 0)?;
+        result.start_nodes = result.first_nodes(root, parser.budget)?;
         if result
             .start_nodes
             .as_ref()
@@ -505,83 +551,127 @@ impl RegExp {
     // Conservative two-unit prefixes avoid constructing VM states at positions
     // that cannot start a match. Unknown or combinatorial prefixes disable this
     // optimization; it never changes the pattern's matching semantics.
-    fn first_nodes(
-        &self,
-        id: usize,
-        budget: &mut Budget,
-        depth: usize,
-    ) -> Result<Option<Vec<Vec<usize>>>> {
-        budget.work(1)?;
-        if depth >= budget.stack_limit.saturating_mul(4).min(MAX_DEPTH * 4) {
-            return Err(Error::Resource(
-                "regular expression prefix nesting limit exceeded",
-            ));
-        }
-        match &self.nodes[id] {
-            Node::Unit(_) | Node::Dot | Node::Class(..) => {
-                budget.allocate(40)?;
-                Ok(Some(vec![vec![id]]))
-            }
-            Node::Start | Node::End | Node::Boundary(_) | Node::Lookahead(..) => {
-                Ok(Some(vec![Vec::new()]))
-            }
-            Node::Backref(_) | Node::NamedBackref(_) => Ok(None),
-            Node::Capture(_, child) => self.first_nodes(*child, budget, depth + 1),
-            Node::Repeat { node, min, max, .. } => {
-                if *max == 0 {
-                    return Ok(Some(vec![Vec::new()]));
+    fn first_nodes(&self, mut id: usize, budget: &mut Budget) -> Result<Option<Vec<Vec<usize>>>> {
+        let mut frames = Vec::new();
+        'visit: loop {
+            budget.work(1)?;
+            let mut first = match &self.nodes[id] {
+                Node::Unit(_) | Node::Dot | Node::Class(..) => {
+                    budget.allocate(40)?;
+                    vec![vec![id]]
                 }
-                let Some(first) = self.first_nodes(*node, budget, depth + 1)? else {
-                    return Ok(None);
-                };
-                let mut all = if *min == 0 {
+                Node::Start | Node::End | Node::Boundary(_) | Node::Lookahead(..) => {
+                    budget.allocate(24)?;
                     vec![Vec::new()]
-                } else {
-                    Vec::new()
-                };
-                if *min <= 1 {
-                    all.extend(first.clone());
                 }
-                if *max >= 2 {
-                    let Some(twice) = prefix_product(&first, &first, budget)? else {
-                        return Ok(None);
-                    };
-                    all.extend(twice);
+                Node::Backref(_) | Node::NamedBackref(_) => return Ok(None),
+                Node::Capture(_, child) => {
+                    id = *child;
+                    continue;
                 }
-                if all.len() > 64 {
-                    return Ok(None);
-                }
-                budget.allocate(all.len() * 48)?;
-                Ok(Some(all))
-            }
-            Node::Sequence(children) | Node::Alternative(children) => {
-                let sequence = matches!(self.nodes[id], Node::Sequence(_));
-                let mut all = if sequence {
-                    vec![Vec::new()]
-                } else {
-                    Vec::new()
-                };
-                for child in children {
-                    if sequence && all.iter().all(|prefix| prefix.len() == 2) {
-                        break;
-                    }
-                    let Some(first) = self.first_nodes(*child, budget, depth + 1)? else {
-                        return Ok(None);
-                    };
-                    if sequence {
-                        let Some(combined) = prefix_product(&all, &first, budget)? else {
-                            return Ok(None);
-                        };
-                        all = combined;
+                Node::Repeat { node, min, max, .. } => {
+                    if *max == 0 {
+                        budget.allocate(24)?;
+                        vec![Vec::new()]
                     } else {
-                        if all.len() + first.len() > 64 {
+                        budget.push(
+                            &mut frames,
+                            PrefixFrame::Repeat {
+                                min: *min,
+                                max: *max,
+                            },
+                        )?;
+                        id = *node;
+                        continue;
+                    }
+                }
+                Node::Sequence(children) | Node::Alternative(children) => {
+                    let all = if matches!(self.nodes[id], Node::Sequence(_)) {
+                        budget.allocate(24)?;
+                        vec![Vec::new()]
+                    } else {
+                        Vec::new()
+                    };
+                    if let Some(child) = children.first() {
+                        budget.push(
+                            &mut frames,
+                            PrefixFrame::Compound {
+                                node: id,
+                                next: 1,
+                                all,
+                            },
+                        )?;
+                        id = *child;
+                        continue;
+                    }
+                    all
+                }
+            };
+            loop {
+                match frames.pop() {
+                    None => return Ok(Some(first)),
+                    Some(PrefixFrame::Repeat { min, max }) => {
+                        let mut all = Vec::new();
+                        if min == 0 {
+                            budget.push(&mut all, Vec::new())?;
+                        }
+                        if min <= 1 {
+                            for prefix in &first {
+                                budget.allocate(prefix.len() * std::mem::size_of::<usize>())?;
+                                budget.push(&mut all, prefix.clone())?;
+                            }
+                        }
+                        if max >= 2 {
+                            let Some(twice) = prefix_product(&first, &first, budget)? else {
+                                return Ok(None);
+                            };
+                            if all.len() + twice.len() > 64 {
+                                return Ok(None);
+                            }
+                            for prefix in twice {
+                                budget.push(&mut all, prefix)?;
+                            }
+                        }
+                        if all.len() > 64 {
                             return Ok(None);
                         }
-                        budget.allocate(first.len() * 48)?;
-                        all.extend(first);
+                        first = all;
+                    }
+                    Some(PrefixFrame::Compound {
+                        node,
+                        mut next,
+                        mut all,
+                    }) => {
+                        let (children, sequence) = match &self.nodes[node] {
+                            Node::Sequence(children) => (children, true),
+                            Node::Alternative(children) => (children, false),
+                            _ => unreachable!(),
+                        };
+                        if sequence {
+                            let Some(combined) = prefix_product(&all, &first, budget)? else {
+                                return Ok(None);
+                            };
+                            all = combined;
+                        } else {
+                            if all.len() + first.len() > 64 {
+                                return Ok(None);
+                            }
+                            for prefix in first {
+                                budget.push(&mut all, prefix)?;
+                            }
+                        }
+                        if next == children.len()
+                            || sequence && all.iter().all(|prefix| prefix.len() == 2)
+                        {
+                            first = all;
+                        } else {
+                            id = children[next];
+                            next += 1;
+                            budget.push(&mut frames, PrefixFrame::Compound { node, next, all })?;
+                            continue 'visit;
+                        }
                     }
                 }
-                Ok(Some(all))
             }
         }
     }
@@ -692,27 +782,102 @@ impl Parser<'_> {
         Ok(id)
     }
     fn disjunction(&mut self) -> Result<usize> {
-        if self.depth >= MAX_DEPTH.min(self.budget.stack_limit) {
-            return Err(Error::Resource("regular expression nesting limit exceeded"));
-        }
-        self.depth += 1;
-        let mut alternatives = Vec::new();
+        let mut parents = Vec::new();
+        let mut frame = GroupFrame::new(GroupKind::Root, 1);
         loop {
-            let mut terms = Vec::new();
-            while self.peek().is_some_and(|unit| !matches!(unit, 41 | 124)) {
-                terms.push(self.term()?);
-            }
-            alternatives.push(self.node(Node::Sequence(terms))?);
-            if !self.eat(124) {
-                break;
+            match self.peek() {
+                Some(40) => {
+                    let child = self.group()?;
+                    self.budget.push(&mut parents, frame)?;
+                    frame = child;
+                }
+                Some(41 | 124) | None => {
+                    let branch = self.node(Node::Sequence(std::mem::take(&mut frame.terms)))?;
+                    self.budget.push(&mut frame.alternatives, branch)?;
+                    if self.eat(124) {
+                        continue;
+                    }
+                    let body = if frame.alternatives.len() == 1 {
+                        frame.alternatives[0]
+                    } else {
+                        self.node(Node::Alternative(frame.alternatives))?
+                    };
+                    if matches!(frame.kind, GroupKind::Root) {
+                        return Ok(body);
+                    }
+                    if !self.eat(41) {
+                        return Err(self.syntax("unterminated capture group"));
+                    }
+                    let atom = match frame.kind {
+                        GroupKind::Capture(index) => self.node(Node::Capture(index, body))?,
+                        GroupKind::Lookahead(negative) => {
+                            self.node(Node::Lookahead(body, negative))?
+                        }
+                        GroupKind::NonCapturing => body,
+                        GroupKind::Root => unreachable!(),
+                    };
+                    let term = self.quantify(atom, frame.first)?;
+                    frame = parents.pop().expect("nested group has a parent");
+                    self.budget.push(&mut frame.terms, term)?;
+                }
+                Some(_) => {
+                    let term = self.term()?;
+                    self.budget.push(&mut frame.terms, term)?;
+                }
             }
         }
-        self.depth -= 1;
-        if alternatives.len() == 1 {
-            Ok(alternatives[0])
+    }
+
+    fn group(&mut self) -> Result<GroupFrame> {
+        self.budget.work(1)?;
+        self.at += 1;
+        let first = self.captures + 1;
+        let mut capture = true;
+        let mut look = None;
+        let mut name = None;
+        if self.eat(63) {
+            if self.eat(58) {
+                capture = false;
+            } else if self.eat(61) {
+                capture = false;
+                look = Some(false);
+            } else if self.eat(33) {
+                capture = false;
+                look = Some(true);
+            } else if self.eat(60) {
+                if matches!(self.peek(), Some(61 | 33)) {
+                    return Err(Error::Unsupported(
+                        "RegExp lookbehind assertions are not implemented",
+                    ));
+                }
+                name = Some(self.name()?);
+            } else if matches!(self.peek(), Some(105 | 109 | 115 | 45)) {
+                return Err(Error::Unsupported(
+                    "RegExp modifier groups are not implemented",
+                ));
+            } else {
+                return Err(self.syntax("invalid group prefix"));
+            }
+        }
+        let kind = if capture {
+            // Each capture needs an opener in the bounded pattern and a node
+            // in the bounded arena. Its VM storage is charged before matching.
+            self.captures += 1;
+            if let Some(name) = name {
+                self.budget.allocate(128)?;
+                if self.names.insert(name, self.captures).is_some() {
+                    return Err(Error::Unsupported(
+                        "duplicate named capture groups are not implemented",
+                    ));
+                }
+            }
+            GroupKind::Capture(self.captures)
+        } else if let Some(negative) = look {
+            GroupKind::Lookahead(negative)
         } else {
-            self.node(Node::Alternative(alternatives))
-        }
+            GroupKind::NonCapturing
+        };
+        Ok(GroupFrame::new(kind, first))
     }
     fn term(&mut self) -> Result<usize> {
         self.budget.work(1)?;
@@ -732,63 +897,6 @@ impl Parser<'_> {
         }
         let atom = match self.peek().unwrap() {
             42 | 43 | 63 => return Err(self.syntax("nothing to repeat")),
-            40 => {
-                self.at += 1;
-                let mut capture = true;
-                let mut look = None;
-                let mut name = None;
-                if self.eat(63) {
-                    if self.eat(58) {
-                        capture = false;
-                    } else if self.eat(61) {
-                        capture = false;
-                        look = Some(false);
-                    } else if self.eat(33) {
-                        capture = false;
-                        look = Some(true);
-                    } else if self.eat(60) {
-                        if matches!(self.peek(), Some(61 | 33)) {
-                            return Err(Error::Unsupported(
-                                "RegExp lookbehind assertions are not implemented",
-                            ));
-                        }
-                        name = Some(self.name()?);
-                    } else if matches!(self.peek(), Some(105 | 109 | 115 | 45)) {
-                        return Err(Error::Unsupported(
-                            "RegExp modifier groups are not implemented",
-                        ));
-                    } else {
-                        return Err(self.syntax("invalid group prefix"));
-                    }
-                }
-                let index = if capture {
-                    self.captures += 1;
-                    if self.captures > MAX_CAPTURES {
-                        return Err(Error::Resource("regular expression capture limit exceeded"));
-                    }
-                    if let Some(name) = name
-                        && self.names.insert(name, self.captures).is_some()
-                    {
-                        return Err(Error::Unsupported(
-                            "duplicate named capture groups are not implemented",
-                        ));
-                    }
-                    Some(self.captures)
-                } else {
-                    None
-                };
-                let body = self.disjunction()?;
-                if !self.eat(41) {
-                    return Err(self.syntax("unterminated capture group"));
-                }
-                if let Some(negative) = look {
-                    self.node(Node::Lookahead(body, negative))?
-                } else if let Some(index) = index {
-                    self.node(Node::Capture(index, body))?
-                } else {
-                    body
-                }
-            }
             91 => self.class()?,
             46 => {
                 self.at += 1;
@@ -811,6 +919,10 @@ impl Parser<'_> {
                 self.node(Node::Unit(unit))?
             }
         };
+        self.quantify(atom, first)
+    }
+
+    fn quantify(&mut self, atom: usize, first: usize) -> Result<usize> {
         let quantifier_start = self.at;
         let quantifier = if self.eat(42) {
             Some((0, usize::MAX))
@@ -1252,6 +1364,107 @@ mod tests {
             Some("aa".into())
         );
     }
+    #[test]
+    fn deep_groups_preserve_capture_numbering_and_repeat_scope() {
+        let nested = format!("{}hello{}", "(".repeat(200), ")".repeat(200));
+        assert_eq!(
+            matches(&nested, "", "hello").unwrap(),
+            vec![Some("hello".into()); 201]
+        );
+        let flat = "()".repeat(200);
+        assert_eq!(matches(&flat, "", "").unwrap(), vec![Some("".into()); 201]);
+        let named = format!(
+            "{}(?<deep>a){}\\k<deep>\\200",
+            "(".repeat(199),
+            ")".repeat(199)
+        );
+        let found = matches(&named, "", "aaa").unwrap();
+        assert_eq!(found.len(), 201);
+        assert_eq!(found[0], Some("aaa".into()));
+        assert!(
+            found[1..]
+                .iter()
+                .all(|capture| *capture == Some("a".into()))
+        );
+        let repeated = format!("^{}(a(b)?)*{}$", "(".repeat(197), ")".repeat(197));
+        let found = matches(&repeated, "", "aba").unwrap();
+        assert_eq!(found.len(), 200);
+        assert!(
+            found[..198]
+                .iter()
+                .all(|capture| *capture == Some("aba".into()))
+        );
+        assert_eq!(found[198], Some("a".into()));
+        assert_eq!(found[199], None);
+    }
+
+    #[test]
+    fn group_and_prefix_depth_do_not_consume_native_stack() {
+        std::thread::Builder::new()
+            .stack_size(128 * 1024)
+            .spawn(|| {
+                for opener in ["(", "(?:"] {
+                    let source = format!("{}ab{}", opener.repeat(2000), ")".repeat(2000));
+                    let mut budget = budget();
+                    budget.stack_limit = 0;
+                    let regexp = RegExp::compile(source.into(), &"".into(), &mut budget).unwrap();
+                    assert!(regexp.start_nodes.is_some());
+                    assert!(
+                        regexp
+                            .find(&[97, 98], 0, false, &mut budget)
+                            .unwrap()
+                            .is_some()
+                    );
+                }
+            })
+            .unwrap()
+            .join()
+            .unwrap();
+    }
+
+    #[test]
+    fn flat_parser_retains_syntax_and_resource_failures() {
+        for inner in ["(", "a{3,2}", "*", "(?x)", "[z-a]"] {
+            let source = format!("{}{}{}", "(?:".repeat(200), inner, ")".repeat(200));
+            assert!(matches!(
+                RegExp::compile(source.into(), &"".into(), &mut budget()),
+                Err(Error::Syntax(_))
+            ));
+        }
+        for source in [
+            "a".repeat(MAX_PATTERN + 1),
+            "a".repeat(MAX_NODES),
+            format!("{}x{}", "(".repeat(2048), ")".repeat(2048)),
+        ] {
+            assert!(matches!(
+                RegExp::compile(source.into(), &"".into(), &mut budget()),
+                Err(Error::Resource(_))
+            ));
+        }
+        let mut limited = budget();
+        limited.heap_limit = 4096;
+        assert!(matches!(
+            RegExp::compile("(".repeat(100).into(), &"".into(), &mut limited),
+            Err(Error::Resource(_))
+        ));
+        assert!(limited.allocated > limited.heap_limit);
+        let mut limited = budget();
+        limited.steps = 300;
+        assert!(matches!(
+            RegExp::compile("()".repeat(100).into(), &"".into(), &mut limited),
+            Err(Error::Resource(_))
+        ));
+        assert_eq!(limited.steps, 0);
+        // Only assertion execution still recurses and must honor its guard.
+        let mut limited = budget();
+        limited.stack_limit = 0;
+        let regexp = RegExp::compile("(?=a)a".into(), &"".into(), &mut limited).unwrap();
+        assert!(matches!(
+            regexp.find(&[97], 0, false, &mut limited),
+            Err(Error::Resource(_))
+        ));
+    }
+
     #[test]
     fn prefix_optimization_preserves_unoptimized_capture_results() {
         let atoms = [

@@ -280,6 +280,11 @@ order. The complete new 488-source directory gains 16 passes, reaching 768 passe
 identical; the combined inventory reaches 9,078 modes and 2,288 verified controls.
 The resource stops keep this profile an observation report, with its limits visible.
 
+[Flat regexp group parsing](tests/conformance/regexp-deep-groups.md) subsequently
+adds four passes for 200 nested groups, bringing that directory to 772 passed,
+200 unsupported and four resource stops. Both parsing and prefix analysis use
+budgeted heap frames; all other 9,074 observations and 2,288 controls stay identical.
+
 ## Implementation
 
 The [architecture notes](docs/ARCHITECTURE.md) describe the page pipeline and native process boundaries.

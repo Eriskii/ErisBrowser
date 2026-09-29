@@ -252,5 +252,13 @@ keeps classification, prototype lookup and ordinary conversion callbacks within
 the current runtime guards. Object/index-property allocation is charged before
 conversion; successful and failed parses retain their compiler charges. Tests
 cover work cutoffs, exact charge transfer, recursive getters and construction,
-caught syntax-error loops, heap refusal and cleanup. Existing nesting and work
-limits remain enforced; the new corpus's eight resource stops stay visible.
+caught syntax-error loops, heap refusal and cleanup.
+
+The [flat regexp parser](../tests/conformance/regexp-deep-groups.md) replaces native
+group/prefix recursion with budgeted heap frames. Pattern, node, repetition,
+shared work and cumulative heap limits remain; capture storage is bounded by
+these limits instead of a separate 128-capture ceiling. Frame and list backing
+allocations are charged before reservation, including replacement allocations.
+The separate native lookahead execution guard remains enforced. Tests cover
+2,000 nested groups on a 128 KiB thread stack and failure/cleanup paths. Four
+deep-group resource modes now pass; four work-budget stops remain visible.
