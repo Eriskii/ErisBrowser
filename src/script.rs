@@ -33,6 +33,7 @@ pub use symbols::Symbol;
 mod parser_legacy;
 #[cfg(test)]
 use parser_legacy::{ActiveLabel, Parser};
+mod array_builtins;
 mod tokens;
 
 const MAX_SOURCE: usize = 256 * 1024;
@@ -1934,6 +1935,7 @@ impl Runtime {
             ("Array", "filter", 1),
             ("Array", "includes", 1),
             ("Array", "indexOf", 1),
+            ("Array", "lastIndexOf", 1),
             ("Array", "slice", 2),
             ("Array", "reverse", 0),
             ("Array", "sort", 1),
@@ -7709,6 +7711,14 @@ impl Runtime {
             } else {
                 parse_float(&text)
             }));
+        }
+        if native.name == "Array.lastIndexOf" {
+            return self.array_last_index_of(
+                native.receiver.clone(),
+                args.first().cloned().unwrap_or(Value::Undefined),
+                args.get(1).cloned(),
+                doc,
+            );
         }
         if matches!(native.name.as_str(), "Array.reduce" | "Array.reduceRight") {
             return self.array_reduce(

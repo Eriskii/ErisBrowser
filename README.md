@@ -343,3 +343,9 @@ ordered conversion and bounded reverse UTF-16 search. Its complete 50-mode
 inventory gains 46 passes; 12 existing match/search modes also pass. The two
 remaining new failures call the missing Array.lastIndexOf method. All other
 9,406 older observations are unchanged; 2,448 assertion controls verify.
+
+[Array.lastIndexOf](tests/conformance/array-last-index-of.md) now supports generic
+receivers, holes, inheritance and live reads. Its complete 395-mode inventory
+gains 328 passes, and both older String.lastIndexOf failures pass. Eight resource
+stops, 47 unsupported modes and two Date failures remain visible; this inventory
+does not qualify as a healthy baseline gate.

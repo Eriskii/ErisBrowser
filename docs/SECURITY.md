@@ -289,3 +289,11 @@ work, allocation and recursion guards. Tests verify comparison refusal, adversar
 work exhaustion and cleanup after recursive conversion. The naive scan can stop
 at the existing work limit; no quota is raised and no new process authority is
 granted. This does not establish linear-time search or complete allocation accounting.
+
+[Array lastIndexOf](../tests/conformance/array-last-index-of.md) reuses bounded
+property lookup and safe-integer key creation. It allocates no collection from
+logical length, charges each visited index/prototype edge and uses strict
+equality with charged string comparisons. Author getters and conversion hooks
+share the existing guards. Recursive callbacks, huge sparse scans, refusal before
+index getters and cleanup are tested. Existing array storage limits remain;
+no quota or process authority changes.

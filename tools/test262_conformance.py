@@ -51,10 +51,11 @@ CONSTRUCTION_FEATURES = SYMBOL_FEATURES | FUNCTION_FEATURES | {'new.target', 'Re
 FUNCTION_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REST_PARAMETER_FEATURES
 STRING_SEARCH_FEATURES = SYMBOL_FEATURES | FUNCTION_FEATURES | {'String.prototype.includes', 'String.prototype.endsWith'}
 REGEXP_MATCH_SEARCH_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
+ARRAY_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 STRING_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 REGEXP_SPLIT_FEATURES = CONSTRUCTION_FEATURES
 REGEXP_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'u180e'}
-PROFILE_FEATURES = {'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+PROFILE_FEATURES = {'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'reflect-construction': CONSTRUCTION_FEATURES, 'new-target': CONSTRUCTION_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -1023,6 +1024,27 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
             for name, setup, actual, good, bad in pairs:
                 for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
                     variants.append(('regexp-match-search-' + name + suffix,
+                                     guard + setup + f'assert.sameValue({actual},{value});', expected, mode))
+    if profile == 'array-last-index-of':
+        guard = "assert.sameValue(typeof Array.prototype.lastIndexOf,'function');assert.sameValue([1,2,1].lastIndexOf(1),2);"
+        pairs = [
+            ('presence', '', "[1,2,1].lastIndexOf(1,undefined)", '0', '2'),
+            ('negative', '', "[1,2,1].lastIndexOf(1,-2)", '0', '2'),
+            ('holes', '', "[,,].lastIndexOf(undefined)", '-1', '1'),
+            ('nan', '', "[NaN].lastIndexOf(NaN)", '-1', '0'),
+            ('identity', "var a={},b={};", "[a,b,a].lastIndexOf(b)", '1', '2'),
+            ('inherited', "var o=Object.create({1:'x'});o.length=3;", "Array.prototype.lastIndexOf.call(o,'x')", '1', '-1'),
+            ('boxed-string', '', r"Array.prototype.lastIndexOf.call('a\ud800\udfffa','\udfff')", '2', '1'),
+            ('empty', "var n=0,p={valueOf:function(){n++;return 0;}};Array.prototype.lastIndexOf.call({length:0},0,p);", 'n', '0', '1'),
+            ('length-order', "var log='',o={0:1};Object.defineProperty(o,'length',{get:function(){log+='l';return {valueOf:function(){log+='n';return 1;}};}});Array.prototype.lastIndexOf.call(o,1,{valueOf:function(){log+='p';return 0;}});", 'log', "'lnp'", "'wrong'"),
+            ('live', "var o={length:3,1:'x'};Object.defineProperty(o,'2',{get:function(){delete o[1];o[0]='x';o.length=0;return 'y';}});", "Array.prototype.lastIndexOf.call(o,'x')", '0', '1'),
+            ('abrupt', "var marker={},caught,o={length:1};Object.defineProperty(o,'0',{get:function(){throw marker;}});try{Array.prototype.lastIndexOf.call(o,1);}catch(e){caught=e;}", 'caught===marker', 'true', 'false'),
+            ('safe-integer', "var o={length:Infinity};o['9007199254740990']='x';", "Array.prototype.lastIndexOf.call(o,'x')", '9007199254740990', '-1'),
+        ]
+        for mode in ('sloppy', 'strict'):
+            for name, setup, actual, good, bad in pairs:
+                for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed')):
+                    variants.append(('array-last-index-of-' + name + suffix,
                                      guard + setup + f'assert.sameValue({actual},{value});', expected, mode))
     if profile == 'string-last-index-of':
         guard = "assert.sameValue(typeof String.prototype.lastIndexOf,'function');assert.sameValue('aba'.lastIndexOf('a'),2);"

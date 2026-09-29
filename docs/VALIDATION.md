@@ -1,5 +1,24 @@
 # Validation record
 
+## Array lastIndexOf
+
+The [implementation record](../tests/conformance/array-last-index-of.md) and
+[evidence](../tests/conformance/array-last-index-of.json) compare against `e52d3fa`.
+The complete new **198-source / 395-mode** inventory gains **328 passes**, reaching
+**338 passed / two failed / eight resource stops / 47 unsupported**. All other
+new observations are identical. Date, dense array storage and indexed descriptors
+remain dependencies; declared Proxy/resizable-buffer modes remain excluded.
+The profile remains an observation inventory because resource stops persist.
+
+Both older String.lastIndexOf failures now pass. All other **9,466 older
+observations / 2,448 older controls** are identical. The **31-profile / 9,863-mode**
+inventory has **2,528 verified controls** and retains 25 healthy gates. No prior
+pass, policy, case fingerprint or source byte is lost. All **24 unchanged local
+modes** pass. Rust **1.88 / 1.95** pass strict all-target Clippy and **1,033 default /
+1,044 Vulkan-feature tests**, none ignored. **183 Python tests**, **15,000 mutation
+cases**, unchanged HTML observations and both releases' **57 CPU pixel references**
+pass. No independent review, GPU exercise or Chromium comparison was performed.
+
 ## String lastIndexOf
 
 The [implementation record](../tests/conformance/string-last-index-of.md) and

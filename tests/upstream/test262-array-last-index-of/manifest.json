@@ -1,0 +1,1453 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all direct .js files in built-ins/Array/prototype/lastIndexOf; no implementation",
+  "directories": {
+    "Array/prototype/lastIndexOf": [
+      "15.4.4.15-1-1.js",
+      "15.4.4.15-1-10.js",
+      "15.4.4.15-1-11.js",
+      "15.4.4.15-1-12.js",
+      "15.4.4.15-1-13.js",
+      "15.4.4.15-1-14.js",
+      "15.4.4.15-1-15.js",
+      "15.4.4.15-1-2.js",
+      "15.4.4.15-1-3.js",
+      "15.4.4.15-1-4.js",
+      "15.4.4.15-1-5.js",
+      "15.4.4.15-1-6.js",
+      "15.4.4.15-1-7.js",
+      "15.4.4.15-1-8.js",
+      "15.4.4.15-1-9.js",
+      "15.4.4.15-2-1.js",
+      "15.4.4.15-2-10.js",
+      "15.4.4.15-2-11.js",
+      "15.4.4.15-2-12.js",
+      "15.4.4.15-2-13.js",
+      "15.4.4.15-2-14.js",
+      "15.4.4.15-2-17.js",
+      "15.4.4.15-2-18.js",
+      "15.4.4.15-2-19.js",
+      "15.4.4.15-2-2.js",
+      "15.4.4.15-2-3.js",
+      "15.4.4.15-2-4.js",
+      "15.4.4.15-2-5.js",
+      "15.4.4.15-2-6.js",
+      "15.4.4.15-2-7.js",
+      "15.4.4.15-2-8.js",
+      "15.4.4.15-2-9.js",
+      "15.4.4.15-3-1.js",
+      "15.4.4.15-3-10.js",
+      "15.4.4.15-3-11.js",
+      "15.4.4.15-3-12.js",
+      "15.4.4.15-3-13.js",
+      "15.4.4.15-3-14.js",
+      "15.4.4.15-3-15.js",
+      "15.4.4.15-3-16.js",
+      "15.4.4.15-3-17.js",
+      "15.4.4.15-3-18.js",
+      "15.4.4.15-3-19.js",
+      "15.4.4.15-3-2.js",
+      "15.4.4.15-3-20.js",
+      "15.4.4.15-3-21.js",
+      "15.4.4.15-3-22.js",
+      "15.4.4.15-3-23.js",
+      "15.4.4.15-3-24.js",
+      "15.4.4.15-3-25.js",
+      "15.4.4.15-3-28.js",
+      "15.4.4.15-3-3.js",
+      "15.4.4.15-3-4.js",
+      "15.4.4.15-3-5.js",
+      "15.4.4.15-3-6.js",
+      "15.4.4.15-3-7.js",
+      "15.4.4.15-3-9.js",
+      "15.4.4.15-4-1.js",
+      "15.4.4.15-4-10.js",
+      "15.4.4.15-4-11.js",
+      "15.4.4.15-4-2.js",
+      "15.4.4.15-4-3.js",
+      "15.4.4.15-4-4.js",
+      "15.4.4.15-4-5.js",
+      "15.4.4.15-4-6.js",
+      "15.4.4.15-4-7.js",
+      "15.4.4.15-4-8.js",
+      "15.4.4.15-4-9.js",
+      "15.4.4.15-5-1.js",
+      "15.4.4.15-5-10.js",
+      "15.4.4.15-5-11.js",
+      "15.4.4.15-5-12.js",
+      "15.4.4.15-5-13.js",
+      "15.4.4.15-5-14.js",
+      "15.4.4.15-5-15.js",
+      "15.4.4.15-5-16.js",
+      "15.4.4.15-5-17.js",
+      "15.4.4.15-5-18.js",
+      "15.4.4.15-5-19.js",
+      "15.4.4.15-5-2.js",
+      "15.4.4.15-5-20.js",
+      "15.4.4.15-5-21.js",
+      "15.4.4.15-5-22.js",
+      "15.4.4.15-5-23.js",
+      "15.4.4.15-5-24.js",
+      "15.4.4.15-5-25.js",
+      "15.4.4.15-5-26.js",
+      "15.4.4.15-5-27.js",
+      "15.4.4.15-5-28.js",
+      "15.4.4.15-5-29.js",
+      "15.4.4.15-5-3.js",
+      "15.4.4.15-5-30.js",
+      "15.4.4.15-5-31.js",
+      "15.4.4.15-5-32.js",
+      "15.4.4.15-5-33.js",
+      "15.4.4.15-5-4.js",
+      "15.4.4.15-5-5.js",
+      "15.4.4.15-5-6.js",
+      "15.4.4.15-5-7.js",
+      "15.4.4.15-5-8.js",
+      "15.4.4.15-5-9.js",
+      "15.4.4.15-6-1.js",
+      "15.4.4.15-6-2.js",
+      "15.4.4.15-6-3.js",
+      "15.4.4.15-6-4.js",
+      "15.4.4.15-6-5.js",
+      "15.4.4.15-6-6.js",
+      "15.4.4.15-7-1.js",
+      "15.4.4.15-7-2.js",
+      "15.4.4.15-7-3.js",
+      "15.4.4.15-7-4.js",
+      "15.4.4.15-8-1.js",
+      "15.4.4.15-8-10.js",
+      "15.4.4.15-8-11.js",
+      "15.4.4.15-8-2.js",
+      "15.4.4.15-8-3.js",
+      "15.4.4.15-8-4.js",
+      "15.4.4.15-8-5.js",
+      "15.4.4.15-8-6.js",
+      "15.4.4.15-8-7.js",
+      "15.4.4.15-8-8.js",
+      "15.4.4.15-8-9.js",
+      "15.4.4.15-8-a-1.js",
+      "15.4.4.15-8-a-10.js",
+      "15.4.4.15-8-a-11.js",
+      "15.4.4.15-8-a-12.js",
+      "15.4.4.15-8-a-13.js",
+      "15.4.4.15-8-a-14.js",
+      "15.4.4.15-8-a-15.js",
+      "15.4.4.15-8-a-16.js",
+      "15.4.4.15-8-a-17.js",
+      "15.4.4.15-8-a-18.js",
+      "15.4.4.15-8-a-19.js",
+      "15.4.4.15-8-a-2.js",
+      "15.4.4.15-8-a-3.js",
+      "15.4.4.15-8-a-4.js",
+      "15.4.4.15-8-a-5.js",
+      "15.4.4.15-8-a-6.js",
+      "15.4.4.15-8-a-7.js",
+      "15.4.4.15-8-a-8.js",
+      "15.4.4.15-8-a-9.js",
+      "15.4.4.15-8-b-1.js",
+      "15.4.4.15-8-b-i-1.js",
+      "15.4.4.15-8-b-i-10.js",
+      "15.4.4.15-8-b-i-11.js",
+      "15.4.4.15-8-b-i-12.js",
+      "15.4.4.15-8-b-i-13.js",
+      "15.4.4.15-8-b-i-14.js",
+      "15.4.4.15-8-b-i-15.js",
+      "15.4.4.15-8-b-i-16.js",
+      "15.4.4.15-8-b-i-17.js",
+      "15.4.4.15-8-b-i-18.js",
+      "15.4.4.15-8-b-i-19.js",
+      "15.4.4.15-8-b-i-2.js",
+      "15.4.4.15-8-b-i-20.js",
+      "15.4.4.15-8-b-i-21.js",
+      "15.4.4.15-8-b-i-22.js",
+      "15.4.4.15-8-b-i-25.js",
+      "15.4.4.15-8-b-i-26.js",
+      "15.4.4.15-8-b-i-27.js",
+      "15.4.4.15-8-b-i-28.js",
+      "15.4.4.15-8-b-i-29.js",
+      "15.4.4.15-8-b-i-3.js",
+      "15.4.4.15-8-b-i-30.js",
+      "15.4.4.15-8-b-i-31.js",
+      "15.4.4.15-8-b-i-4.js",
+      "15.4.4.15-8-b-i-5.js",
+      "15.4.4.15-8-b-i-6.js",
+      "15.4.4.15-8-b-i-7.js",
+      "15.4.4.15-8-b-i-8.js",
+      "15.4.4.15-8-b-i-9.js",
+      "15.4.4.15-8-b-ii-1.js",
+      "15.4.4.15-8-b-ii-10.js",
+      "15.4.4.15-8-b-ii-11.js",
+      "15.4.4.15-8-b-ii-2.js",
+      "15.4.4.15-8-b-ii-3.js",
+      "15.4.4.15-8-b-ii-4.js",
+      "15.4.4.15-8-b-ii-5.js",
+      "15.4.4.15-8-b-ii-6.js",
+      "15.4.4.15-8-b-ii-7.js",
+      "15.4.4.15-8-b-ii-8.js",
+      "15.4.4.15-8-b-ii-9.js",
+      "15.4.4.15-8-b-iii-1.js",
+      "15.4.4.15-8-b-iii-2.js",
+      "15.4.4.15-9-1.js",
+      "15.4.4.15-9-2.js",
+      "call-with-boolean.js",
+      "calls-only-has-on-prototype-after-length-zeroed.js",
+      "coerced-position-grow.js",
+      "coerced-position-shrink.js",
+      "fromindex-zero-conversion.js",
+      "length-near-integer-limit.js",
+      "length-zero-returns-minus-one.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "resizable-buffer.js"
+    ]
+  },
+  "test_files": 198,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/proxyTrapsHelper.js",
+      "upstream_path": "harness/proxyTrapsHelper.js",
+      "bytes": 1851,
+      "sha256": "0fb687804ab799e320c5dc4a0d4316162e6a14c286873405d881a151cb15787a"
+    },
+    {
+      "path": "harness/resizableArrayBufferUtils.js",
+      "upstream_path": "harness/resizableArrayBufferUtils.js",
+      "bytes": 3829,
+      "sha256": "029aa552050861eb85fe9d848a52716dfd24747dcaf06f2a8937cb510ab31f50"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-1.js",
+      "bytes": 358,
+      "sha256": "5b03036d72fb5635eb4cff7ace6b5fbaf84b481db1661a6ec3fb70d688a02f26"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-10.js",
+      "bytes": 401,
+      "sha256": "34f18872eea9cfd60b7c6a179a70ef1b079d114a4a97abc59bfb12927ad0bb70"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-11.js",
+      "bytes": 419,
+      "sha256": "6ff7d223f9675177c566a25036d192533f7345d9cecedc2e0fc8e0109bdbdff9"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-12.js",
+      "bytes": 444,
+      "sha256": "67d37e459626a454d17e3ebc5b3b3423c845745ea3cb2d295a806f0ffdc67936"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-13.js",
+      "bytes": 440,
+      "sha256": "0c37fe2334b490276c24e514394623ed488e96422c4c3baf2a2ec87f4c0ecc0b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-14.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-14.js",
+      "bytes": 438,
+      "sha256": "7084c22cb2ffbbcf7b6435a8bbe3a1e3ac90409bf04534251a370c4dd2b80a74"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-15.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-15.js",
+      "bytes": 429,
+      "sha256": "21fe543bfad1f8cfbb7958cf9568b027efc979d64fb20d2b4dca513331d1f504"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-2.js",
+      "bytes": 348,
+      "sha256": "a84c1caa1e2a838929a9710c1b2c3081a455944077fa110356aba26ebc51085b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-3.js",
+      "bytes": 432,
+      "sha256": "e4cf4b05a5a85902937ec2a05324d1d760f9da032f3345fccdf5f828a5136113"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-4.js",
+      "bytes": 429,
+      "sha256": "811d1398c95ff1a06faa5c933f28277d33f9d02a555775d9b9bc2f28c9b57e65"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-5.js",
+      "bytes": 426,
+      "sha256": "b25f14f205d509be532114a336ce86e2291cb1f1cc3feb68cf39f57d4af960e4"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-6.js",
+      "bytes": 424,
+      "sha256": "0f5f9a832466fc0c51ee8743228748ca75c1a0b47786ab5330a4a03be446ce50"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-7.js",
+      "bytes": 371,
+      "sha256": "ea60a983b4e87c1ccc3a104edc59d16f5e9a1bd6de7d9522054e4713962c9e64"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-8.js",
+      "bytes": 400,
+      "sha256": "bfb1dc8a6307e3cab4f7a6950437395c8ae3e44f3b9ca746186209f05ffc271d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-1-9.js",
+      "bytes": 430,
+      "sha256": "a80546d3fe17b9067953e8a197b925bd5254a07aad38186e34a140e4468e0803"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-1.js",
+      "bytes": 586,
+      "sha256": "037f0fcbb46cf73eaa542484d91a41bbc27b4b97d9d20dfa55ceb5b055bd044c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-10.js",
+      "bytes": 750,
+      "sha256": "f26b3f3b9a16a2fdf741a0886f2255effb34c8e8cce293b06d8d3786f1403db1"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-11.js",
+      "bytes": 538,
+      "sha256": "04eb94de0f83e0d3fa09441c96a55afa0d697f78d74de693b2f326de6a334bd7"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-12.js",
+      "bytes": 706,
+      "sha256": "dde1680bc98f9a2a5e4b558ffe869751a6222f0674c860a297d06357e103ac21"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-13.js",
+      "bytes": 640,
+      "sha256": "86e9fcc424aa95146ba497a8a95193f09849c7863af545f918d5d8cc4d6e4a34"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-14.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-14.js",
+      "bytes": 451,
+      "sha256": "a282fcb6e503f0b80779a0d22bb0ba8fb5063655387f5b43aed743fd2ee7044b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-17.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-17.js",
+      "bytes": 608,
+      "sha256": "c436b872386cac129144ddb99f5be65008d1122fbd4f85fb2b5dd355f1224068"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-18.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-18.js",
+      "bytes": 589,
+      "sha256": "f130d0efdc72fe190d7c84dde68c31fb6de71e352abbb98b9c1ce4fff10c5e39"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-19.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-19.js",
+      "bytes": 618,
+      "sha256": "ee3d676f36df3f9e9f49e0fbd64cadbcce05173f17b5aa754611b0ea57254ff3"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-2.js",
+      "bytes": 523,
+      "sha256": "65dc513c305e61368f04eabdfdd838c5128486df00d6b7503ed8fd13666bcde1"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-3.js",
+      "bytes": 594,
+      "sha256": "07674e6e998158d8abfb9232692d7a9360aa5a2476a1f06f8b2c70e1e928b2a4"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-4.js",
+      "bytes": 539,
+      "sha256": "5ba7409546b7b1a427592adecd05d48328557588d53c704f5d4660970f98769f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-5.js",
+      "bytes": 748,
+      "sha256": "eba78d343a11cdb07e01235afe74bae445ba63d079fcd817d6f3d7f792f16e3a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-6.js",
+      "bytes": 669,
+      "sha256": "d3f87168f6bda4dc6602005ca64fff4e714aebf9bba90f31dc2945e46efcb97d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-7.js",
+      "bytes": 669,
+      "sha256": "03886632ee29ce2b3d64478e09a922bc0d4d8fd277160837f4e824b504701c52"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-8.js",
+      "bytes": 683,
+      "sha256": "dd272d998849bc141bcd6bd3dea6c8fcafa6f9cb3d9c6bdbd6b88e64b7efff76"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-2-9.js",
+      "bytes": 783,
+      "sha256": "d53d053d022680977ce09f3492dce3e2aaa753a0eedb52db0280963602d40823"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-1.js",
+      "bytes": 421,
+      "sha256": "2aa0390bf5aa04003c535a34177f807bc5e7a35d99c89551a564f2342a140dc7"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-10.js",
+      "bytes": 431,
+      "sha256": "f806f480b214ecb14bbef23d7c25617d800c0db607e8974eb105c6deec85da4a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-11.js",
+      "bytes": 579,
+      "sha256": "b9116f9df752b6a0e13c117a4a2f58ec6200920903b408aaaf9df18147e52067"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-12.js",
+      "bytes": 602,
+      "sha256": "5b9730839e92a7c0f191849055f775fdf4452452c97bf41e2f458902f1689aed"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-13.js",
+      "bytes": 566,
+      "sha256": "7e89fe816f8b6c6cc7983818f9ae327bc7af4327f34b1eb7a6e2707226f46877"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-14.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-14.js",
+      "bytes": 480,
+      "sha256": "9be5cb54ad8a111d516dcc47fcdc511805a775b77bce5a08c3ce3c7ff54a406e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-15.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-15.js",
+      "bytes": 592,
+      "sha256": "39e81fbdb64ba616f1dd92b39e2d528439ac8b9e3bda2971d2031e4d1798e348"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-16.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-16.js",
+      "bytes": 623,
+      "sha256": "88d0596be33130e1475c1a2872e6c1b9cd4a4e640d970fb857199d4eecb725a4"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-17.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-17.js",
+      "bytes": 575,
+      "sha256": "b05d916a12bd8fd8c001501f7f21a713eefd922899257f4e23e61dd9c65f9135"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-18.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-18.js",
+      "bytes": 520,
+      "sha256": "f0794757de0bb6f4beaa3097dcf16d2066a5d0d994f5a83318f218427a7fb646"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-19.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-19.js",
+      "bytes": 966,
+      "sha256": "5f8322407e8d6fa031f6b76568ab507891dcf4f00a461ad0da358bb787dae1c8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-2.js",
+      "bytes": 562,
+      "sha256": "42a909f0366eb139ae21c231941b7d102673a4babe9dac830c686461aa9cb274"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-20.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-20.js",
+      "bytes": 685,
+      "sha256": "e68589a5ae28ed143cd69671526d3b8d6b52331bc98101cf79172f7fbe1603d0"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-21.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-21.js",
+      "bytes": 886,
+      "sha256": "e5653773b3864265b37a7298ccd9c8cce8177ec4b7562b4f3e74eb22ff94d097"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-22.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-22.js",
+      "bytes": 812,
+      "sha256": "d24c7a147527682024de7d2ff28a3866fe4cb09f42cfe537805d150bebc2c5c5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-23.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-23.js",
+      "bytes": 921,
+      "sha256": "fc927a127f2df94940b8aed5e70cdd1bb023ebbbbcad2d594a9f72548cab623a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-24.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-24.js",
+      "bytes": 624,
+      "sha256": "82b0c128b1ab70da66b82ba8e08fcca5a054e032cda7ab9c8346e7b546fdb626"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-25.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-25.js",
+      "bytes": 577,
+      "sha256": "130292f1914d64abbe815afecb8dd082db0d1f136341e685904a30b5d177b3de"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-28.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-28.js",
+      "bytes": 525,
+      "sha256": "5b8e22bc62f5812451b68bda5be1ccfc1d22e2234fc7ee639f6b73b0f2d8d310"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-3.js",
+      "bytes": 457,
+      "sha256": "326115b5c9564236fa5000ab6cbf7442979191a5aa334c56b25b17b58068ff03"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-4.js",
+      "bytes": 438,
+      "sha256": "631a788421b91ae43cf1872c8aa5489672328c4dd067d72c50eff98e358184ff"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-5.js",
+      "bytes": 432,
+      "sha256": "aa3709ef1fa045c72c85f58c2710df93362b82f8c31c5c59c867821285b45bfb"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-6.js",
+      "bytes": 579,
+      "sha256": "e503879b6f695b5e38473dd8ef14a7630e4f51dc96b6fd42731fbe274bf039be"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-7.js",
+      "bytes": 622,
+      "sha256": "8552dbc140cf652e090055ef9e6be95cbb246dc17208fb9d0eec01582d5bd1d2"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-3-9.js",
+      "bytes": 443,
+      "sha256": "5013a789d6e52c3d44dd4c2094c9c19c9984cc16667692e681af7122289964ec"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-1.js",
+      "bytes": 339,
+      "sha256": "137f78516f5855b22cf080e3e04a8fb4743ab41e2ffa65bdf203548d3161517d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-10.js",
+      "bytes": 476,
+      "sha256": "1214b07adbe7bc9edbb3f4317967784a03533f07e4297b4585f8bead556316e7"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-11.js",
+      "bytes": 465,
+      "sha256": "66ce03259d676b3de6e9aaa726da1c915b7ffb20e0c0b7e932034778eeda3653"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-2.js",
+      "bytes": 410,
+      "sha256": "9d2bea9fbaa20985b2fee8ff3e8b6ac55c510d0c0cbc2b50c65fc6ca99280240"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-3.js",
+      "bytes": 411,
+      "sha256": "9a4b9d37cbcfedf4efc1e107fc9a8544ed8f59e2fb8d0a8fb8f2072a68c7fc28"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-4.js",
+      "bytes": 482,
+      "sha256": "657703cb763c2a43381586182212845265a56a62d913085de8d9ec99426dcd1d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-5.js",
+      "bytes": 408,
+      "sha256": "6ed17c11f08539de1006d1b305508b16ff8308c1262196f51ec0e7e32a875597"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-6.js",
+      "bytes": 472,
+      "sha256": "32bf159320636e1cd91dedb73a0b5b7387fa80bbbaeb27421e026b42aa80d2fd"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-7.js",
+      "bytes": 938,
+      "sha256": "15432aafe15104835f7f150a01aa71e2f42a60c8938651924fc873e4832612f1"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-8.js",
+      "bytes": 1221,
+      "sha256": "5ac3f9f08822a083a15c74561adb998d1a0a72f6a4b1b2ad37ddfe6e833399de"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-4-9.js",
+      "bytes": 472,
+      "sha256": "91dc4682c91a8392450d1e9c1398eefec19c8f1090ab963482081130dcc26165"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-1.js",
+      "bytes": 423,
+      "sha256": "58e752c5eda47f23bdc281f13ac7f3d3df37a0051b0ccd194198987796c8a841"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-10.js",
+      "bytes": 568,
+      "sha256": "95e1fc99d4f24e3801f7dc0b724b1e95c8d764b6c52d606384789c5fe5726f15"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-11.js",
+      "bytes": 572,
+      "sha256": "04a4eef6d885bd2b980ae714e1206c89dd7a1c3c040a5cfcf8df5649ba123a3c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-12.js",
+      "bytes": 488,
+      "sha256": "e4cf8fa2d7be9977d2f9bad5cb40b4acec910a6f8a2a380908a0afc2ba2f508f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-13.js",
+      "bytes": 392,
+      "sha256": "61be2468f86f4f1948d72dbddba439e801ea651b9f5e200cc6e70dc0ded4713f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-14.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-14.js",
+      "bytes": 694,
+      "sha256": "885b6eb32352a575b645715d81eb577fda13933ecb5d5a2af2a2f3c2c404d1e6"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-15.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-15.js",
+      "bytes": 501,
+      "sha256": "fbbbc2ec98dc5902e0ee28527805b180db39bb40b8233eaa7610642bd8ffc918"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-16.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-16.js",
+      "bytes": 492,
+      "sha256": "04b4a07eb7fb663f9c2c9e747edd5afb2fab0eac2769490c21cc8e39eac381d0"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-17.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-17.js",
+      "bytes": 396,
+      "sha256": "0209a666f45dda255b0ab6183a7bf25dfe9ca9b19a3fa0b1df557038949efd07"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-18.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-18.js",
+      "bytes": 618,
+      "sha256": "005fbe418fa389583a1d72701ec133cedbbb27961804555269be8a67c7be367d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-19.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-19.js",
+      "bytes": 625,
+      "sha256": "f69554b1a653ffeee9b7e05e8a3e88f89892470cf9e828468e065f7795d28e9e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-2.js",
+      "bytes": 499,
+      "sha256": "70cf040ba435efad144dcdbab8dc29547174ea3af9a7a5750eb0b0939110f497"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-20.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-20.js",
+      "bytes": 650,
+      "sha256": "11a3217188d5a53c973c8e2c8397bca04b061e1cef6e229db800e11b95ebdbc2"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-21.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-21.js",
+      "bytes": 1020,
+      "sha256": "8026ca9270191907f46369f9019bf823a625d28183255e39c5bde300d9f9c82c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-22.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-22.js",
+      "bytes": 718,
+      "sha256": "494d1b91a29ecda741e52693e6b1fda8d97a9df8f410f07af47ad2911d19cd87"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-23.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-23.js",
+      "bytes": 814,
+      "sha256": "339e3035bc119994856d41a72ea984b448eebd5b64a53455a597b012e4d1ed12"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-24.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-24.js",
+      "bytes": 784,
+      "sha256": "115b645436e5cf3ec7a334a5afc5de5e115e7c9b8563f2aad1244579037d8aa8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-25.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-25.js",
+      "bytes": 865,
+      "sha256": "1c9a94fb8db7fa1f1653fd8e0eeec88cac0534bed956252e9cd76290daefa798"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-26.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-26.js",
+      "bytes": 850,
+      "sha256": "2fbca4062facd92bd12e5d7ae340f92525e64969c49b4c94738b6e45f3cd5532"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-27.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-27.js",
+      "bytes": 935,
+      "sha256": "911321760c858eed4edf99b9f9460ce1e471d9c42cdc6033a84f9eb32a6559a8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-28.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-28.js",
+      "bytes": 597,
+      "sha256": "75cf28eb109b6a6f8dcbd81d8c5c8570d6187e20367432f583d490898a36f5d7"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-29.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-29.js",
+      "bytes": 725,
+      "sha256": "b0fccdf6719437f22d00522d45a81cdd170f8404890b7e54cd129658ffad0b38"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-3.js",
+      "bytes": 420,
+      "sha256": "448016548d98ed3c4cefb81f0d995cd12e3d9d13fd90a5d119dd072108979419"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-30.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-30.js",
+      "bytes": 783,
+      "sha256": "c9d3b11afc4ee9de5f82aa30d981d5791d17de0e499e30629641ff9d22456f81"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-31.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-31.js",
+      "bytes": 596,
+      "sha256": "e106db7025236e90d55eafc67504affa53ceb46d903507f25626b4b74ff10d18"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-32.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-32.js",
+      "bytes": 600,
+      "sha256": "7ae49d2c80837829f77c1c1f8c7f361030a25879a456867c1cb8101ebf8454ba"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-33.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-33.js",
+      "bytes": 798,
+      "sha256": "3b832a62a7eb41249636488a3c7cb70f339b9fa9bf7d2a61718c52ba7ac7ffa0"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-4.js",
+      "bytes": 568,
+      "sha256": "888ef295cf236543663ac873c2ca3c9c43e9b9c9a15cc35e4757d34b19356ca9"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-5.js",
+      "bytes": 443,
+      "sha256": "599f01a3f1d5bfa8a070fc7839620c0b694e18730ba13c013ce9235554fa9ba2"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-6.js",
+      "bytes": 591,
+      "sha256": "d389d03867aef471519b23d75bf6b24e68038a91de9f4489ac0d08da9f393bbb"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-7.js",
+      "bytes": 467,
+      "sha256": "5afb53c527ddb49da7a505af67cd59ad49d8b47d5af9280ed0e5578672a94c40"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-8.js",
+      "bytes": 466,
+      "sha256": "b43155da59433b1de29652bbdfba3ad5c64eeb9b937eb22bd809bfe6a6a39955"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-5-9.js",
+      "bytes": 466,
+      "sha256": "5082c00520b84d031ec7de96d97a1c48c23ae561d7fcbdba31636563347f1ca5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-6-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-6-1.js",
+      "bytes": 444,
+      "sha256": "4ebe2c5252e903103a2a907dc1e5e6d51fb704a57d7bf6eb5d2ddff4b95e8530"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-6-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-6-2.js",
+      "bytes": 381,
+      "sha256": "cc6bc858592435660397c6fe69deb22cc3ac7efc5e85532e63e854e1721ebd63"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-6-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-6-3.js",
+      "bytes": 371,
+      "sha256": "a279ca3982d6bd7fc0e4b0e5672de5b78693ff6f98f457c45ec21ad71c90e1a5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-6-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-6-4.js",
+      "bytes": 358,
+      "sha256": "7823f88e44356a5a0d0da86fda5a2842c35202c221d28978104a879219e532c8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-6-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-6-5.js",
+      "bytes": 343,
+      "sha256": "88f5a1c39fa4ed9965948bdb777076c62878f2465c3fc86c6f79dcab6a10b9e3"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-6-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-6-6.js",
+      "bytes": 363,
+      "sha256": "4b596a804266a6ad7645031fdc6c06a9fab280ff6dd7e4401d32d6dc7a3b7035"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-7-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-7-1.js",
+      "bytes": 486,
+      "sha256": "02a87ccc6f75826bbfa087b259df3005e08809e5cf812d1a74a5ef04e8c3f7dc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-7-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-7-2.js",
+      "bytes": 372,
+      "sha256": "fc9a055ecc914ecb6ab582a43cdfa2d500b47c3127b11d8be5f1871c8aacb689"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-7-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-7-3.js",
+      "bytes": 384,
+      "sha256": "6141c1885cbc0245be793e6481130b7d785e4d0c0f36afd87d6bb29944853c49"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-7-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-7-4.js",
+      "bytes": 380,
+      "sha256": "4a8b05e7eb415f43bc5c760eddf093ae0415b71e9c5802613d4f780ac0b1bdf5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-1.js",
+      "bytes": 560,
+      "sha256": "6b0a280252b011c983faed50ed23ae36bf0eb6d2629a0d379b83a8fbb751b873"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-10.js",
+      "bytes": 624,
+      "sha256": "e915fb94ab7366dc9341f4188b4d0010849cb953abfdf8ecefbe5bb280398298"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-11.js",
+      "bytes": 523,
+      "sha256": "e7f95af6ed62eb71aada16b5c33867dc73dc018f0ff2592cbbef6099db084067"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-2.js",
+      "bytes": 739,
+      "sha256": "339c9b0fdc28d8c5256bca46f5bfac907da00750f780ba6289173a2738eae269"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-3.js",
+      "bytes": 505,
+      "sha256": "37a5fe8933d8992ffffc6ecc9c6793731e625b1a9042abe246771a0e3b5899f0"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-4.js",
+      "bytes": 555,
+      "sha256": "2aa861e7796056ea85d718739c08212cacf09dd2d251f4137ac143abf6cd231e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-5.js",
+      "bytes": 606,
+      "sha256": "8f8e33acdd5ed710fdadb6aeebc2fd3adb5f4df12b81b980ea1d9729a24adab9"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-6.js",
+      "bytes": 541,
+      "sha256": "29b618cd4f3602e56de25ad6965f9993a0283e26da728107acb9f67c3e9d59ac"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-7.js",
+      "bytes": 441,
+      "sha256": "9728e4ccbfd998601a1a3cc7bf14da0bd4d007c1aa30f5ba1445d05ce4cb764d"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-8.js",
+      "bytes": 472,
+      "sha256": "48c6c56a4032c6c46288436411dc64eeaaf8225351ca3b1d926537f96fa675ce"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-9.js",
+      "bytes": 988,
+      "sha256": "f2f43629a923e1e790e496736b7f671d0c0691af77d1cb7ae64854e09b4a5070"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-1.js",
+      "bytes": 547,
+      "sha256": "6c2c60750d3573fa2d64af249127fdb29c1122e25a490fa71b4c978909c9bebc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-10.js",
+      "bytes": 650,
+      "sha256": "cb4243e75578148a59e47b88a9b216947bab7db7fa2ab60cb994dd7de53eb5ef"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-11.js",
+      "bytes": 692,
+      "sha256": "7a50879a9186243ee6ba8dce89e9fffb684df66bc21542fa71e494156ba26ad7"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-12.js",
+      "bytes": 635,
+      "sha256": "b724d54007d6e69ea7b26eea2a9a218bab142c9da9cde5470a1ddc988cbce329"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-13.js",
+      "bytes": 652,
+      "sha256": "1be2e98b7d4a2269156e5d57aef3160c7d453668463b167bd1b1b80461d70eba"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-14.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-14.js",
+      "bytes": 575,
+      "sha256": "0eb16206d914931d3e61fc66eb6abd0aceba9e2d174d55be6d6905fe3244aea6"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-15.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-15.js",
+      "bytes": 667,
+      "sha256": "7077d5ea1e23abd6596fb866975a189c415f7736034dd79460a4d981f64f5f9b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-16.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-16.js",
+      "bytes": 579,
+      "sha256": "9489b9160e859ae7b0796c798871d8cae54fb61c984bb83477d6bc56f4b37945"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-17.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-17.js",
+      "bytes": 534,
+      "sha256": "530984c2b3f1c8eae2c2b353946fef9c867870cc21c11a8df473e029f8dccf75"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-18.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-18.js",
+      "bytes": 689,
+      "sha256": "74e1787be5e162e885440c6af349adb47e0027236aeb79ccde136df7f64cf0e5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-19.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-19.js",
+      "bytes": 682,
+      "sha256": "9ce659fb1d61b29ce2ae1be355d66b4a2950187c7fcd4937533313b3cf322f20"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-2.js",
+      "bytes": 604,
+      "sha256": "fb77470c0715630eaec3eb0f7111725a6da5c5d5d291ff5e5637cecf6be62bfc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-3.js",
+      "bytes": 550,
+      "sha256": "2541a6588010e3aa8e0d1d315cf586a0c818c758650dcd09bbeb5e198faf4101"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-4.js",
+      "bytes": 550,
+      "sha256": "7de66f19dc695dfa0640f3fa569bf4d2be397b27141d2c5c4121a9fb02508b62"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-5.js",
+      "bytes": 576,
+      "sha256": "c78fb442d3bb3b3e6e54b1f318b53d575250685e652963d541418ccdedd3f1bf"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-6.js",
+      "bytes": 524,
+      "sha256": "8093b9d8ad26ef426e8c9c6dba730125b5aa4b283978d725e2d18816994dd905"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-7.js",
+      "bytes": 689,
+      "sha256": "4bae4b5f5f73bef9fe8b5bce80f7b3c5b46836064a6e6cbb6503dcce42329a68"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-8.js",
+      "bytes": 626,
+      "sha256": "91bd93aafa679f94ef3dc94bc8fc7a37dec1b8eca06ee40617756732ef3341e2"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-a-9.js",
+      "bytes": 731,
+      "sha256": "841cbd631761b74e5051de2023f2b3f087cc9e56beac2a69ab254d5d7bbba5f1"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-1.js",
+      "bytes": 358,
+      "sha256": "411a85345bd1a6e4a11ecb445afc5402717ea9aa848d04e8ebfb7dee8ce3692b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-1.js",
+      "bytes": 682,
+      "sha256": "87fe8831d7db3fdf23158b8b1084ecde7aa6d87d40eff33ec975d70f5eebc73c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-10.js",
+      "bytes": 958,
+      "sha256": "7cd133a22b0d32a711502de68985446ebdaacbebc0529aaadd3ae58bba423b3c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-11.js",
+      "bytes": 561,
+      "sha256": "222ecfb9bbb43d8b65b5200bbb0aec23bb38ebcc045e673187365f31c556b6ba"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-12.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-12.js",
+      "bytes": 631,
+      "sha256": "677e6d95f50c0c258d6012d24aac150f4d474a9d62e3f9d249ed9a096b776698"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-13.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-13.js",
+      "bytes": 652,
+      "sha256": "b774eb4d4358436bb28e702272612639f6bf9c8d13d45f28f79cb7b631e13bc6"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-14.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-14.js",
+      "bytes": 722,
+      "sha256": "3693e3c9c1f66a0f191af691493b687aa08a30b35681ee546b917599bfe859fb"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-15.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-15.js",
+      "bytes": 868,
+      "sha256": "52c745080e16be63956eb989571937cf58fc55b9386cd9ff4e286abe45f26b75"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-16.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-16.js",
+      "bytes": 1051,
+      "sha256": "16a716de4f2089c83c5175200ae1ad10850ed225a4525859a071a48ea951569b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-17.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-17.js",
+      "bytes": 499,
+      "sha256": "0945ceff9d8346c3c4f458e341cf3efc98dcee9a0d4b4f015360b368a4ec7b90"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-18.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-18.js",
+      "bytes": 568,
+      "sha256": "607b0799861032be13f7f424392e5f49f44cd2767bbf5f295a32011abde40458"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-19.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-19.js",
+      "bytes": 796,
+      "sha256": "f4dfd8e35f4a801f3242153ac9c787d21557b34f08e74c7df1763c9853dd7c99"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-2.js",
+      "bytes": 600,
+      "sha256": "aabd298edb855fcf84729fc14aa0cc6f6aac29f5effc0bedc6f2531a77768e44"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-20.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-20.js",
+      "bytes": 733,
+      "sha256": "879a3e4331689cc9b4fa4c6f7b1a62532baef8339b0175a709795f8d20bef1e4"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-21.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-21.js",
+      "bytes": 505,
+      "sha256": "e6a4c1b617f66e4debe97d3d033811602ca773627d6b99f67d99ad478f09f3c9"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-22.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-22.js",
+      "bytes": 582,
+      "sha256": "7cf7c4eafbfd52372d10fc9eebba574808895e3af3b8793383c236c5c0381416"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-25.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-25.js",
+      "bytes": 592,
+      "sha256": "2aa001d566d42f6a5ff80db475df1283bfdaca40ceee9db891b301a35e844e7e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-26.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-26.js",
+      "bytes": 666,
+      "sha256": "cae0cd97a70e19345c296e97a63d2d6d7dd4027f3cbe76da7fae9ed92366ea73"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-27.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-27.js",
+      "bytes": 716,
+      "sha256": "787622b46dfc6f34211a6c1ce6278fef61a07bc10eab7e85ea61272e9bb277dc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-28.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-28.js",
+      "bytes": 713,
+      "sha256": "11dd449babf729d7aa4ca79489fe6843359ef0de5f65fb86ba440ac1b8c8a831"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-29.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-29.js",
+      "bytes": 782,
+      "sha256": "e08b4dc075dedba2c625fc76627ea52c7263b30e97313ea77f469e5852ff661b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-3.js",
+      "bytes": 492,
+      "sha256": "f791c31a48b94e4739e3528f232b680ad77afe665b955171dacf5b6c4fbfa835"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-30.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-30.js",
+      "bytes": 679,
+      "sha256": "baa7659403d9cd3dd2dbafd6afa9d7dc4e8c30df04f9eefdb5f00d597014a8c0"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-31.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-31.js",
+      "bytes": 726,
+      "sha256": "d920bc6b2d88e19504ae009bc65b1f8521398108128f6fcb6a3f75028e6a5542"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-4.js",
+      "bytes": 554,
+      "sha256": "944a9f5a8b9a1d6213d74760bdc610df7745f6e68a18d0afd5e3cb5885355d5f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-5.js",
+      "bytes": 541,
+      "sha256": "67bce1783592834c1f9f7eab0c378e458c60a6830c67dc828ec9aae0ad7bd8dc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-6.js",
+      "bytes": 644,
+      "sha256": "cc29f73e47a5439dfeeb69cd0e171fd23ee85492f2cae6e2c268a22d13c875ed"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-7.js",
+      "bytes": 631,
+      "sha256": "2b2b04fa123fbafa08df499cb8dae4e631f008ef79f44d8964c7348da62e3976"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-8.js",
+      "bytes": 814,
+      "sha256": "1486754a911aeaafc0647db710f5dd4e2b75a23a1d0c773e0bfd7a93a03ce9c3"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-i-9.js",
+      "bytes": 807,
+      "sha256": "080a8f094edbaeae5badb1844b8df45bd9b84c2c6ec6b519e90fbbca29c8b8c0"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-1.js",
+      "bytes": 743,
+      "sha256": "82e9f382068a4788d473c5a838fc2694cd841457bd723c83b26268ece050d4dc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-10.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-10.js",
+      "bytes": 406,
+      "sha256": "3ed30fcaf172ff69ca56f2187f7c0636bce08134fa80acfbd6f51918773051c1"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-11.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-11.js",
+      "bytes": 460,
+      "sha256": "430f95f9312764c2ede3369b2785140b7c75b705558438d1044dc056d354d5f9"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-2.js",
+      "bytes": 480,
+      "sha256": "001714f75575374aa43ab9d251337fdebcf734215c8bad3aed222b16994e2927"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-3.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-3.js",
+      "bytes": 378,
+      "sha256": "353deb7928dcd7b9160a0603520a32f54d947b44000a3d7264ce3a3622b2322b"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-4.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-4.js",
+      "bytes": 348,
+      "sha256": "1cd1d590b28217942e71acccad80ae041be1a1dec72f9fbde631eda4c21971ab"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-5.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-5.js",
+      "bytes": 351,
+      "sha256": "af30cf9b217b15f8331bf79cd5637080f2daa90b94df7c85a238233d9aa20d2f"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-6.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-6.js",
+      "bytes": 352,
+      "sha256": "3663f5bf782b093dd6098f4e4bdfdc2b0c496da40058e9d7290ce28578328f23"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-7.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-7.js",
+      "bytes": 352,
+      "sha256": "ec0fcca242852ba7864135765f1f78094a328cb0a18e7289a06780bb8a63edf8"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-8.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-8.js",
+      "bytes": 395,
+      "sha256": "599e9930ee58a64e7cd1d2fad51001e0d41d6adbc52a51fa60f449f9ed0e77dc"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-9.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-ii-9.js",
+      "bytes": 462,
+      "sha256": "7b7b1c49df332a1c7bfbe3e3dd71fa8aafe6914867e886dcbd5403237d718418"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-iii-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-iii-1.js",
+      "bytes": 401,
+      "sha256": "dde78c48bc5c47b562c84f8b1d0ea83c7331c94a8dd587fd648272f2f6829503"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-iii-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-8-b-iii-2.js",
+      "bytes": 830,
+      "sha256": "64a8cd3fac8ce8b2477663b436fdd28eb4a0e422f845f3785a02b69819c96089"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-9-1.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-9-1.js",
+      "bytes": 1062,
+      "sha256": "0a481b74f523acea5b0816278abfe0474ac2703b63c505b7fe523a8bb46b8d0c"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-9-2.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/15.4.4.15-9-2.js",
+      "bytes": 577,
+      "sha256": "8c543bfacf67001c1e3732fdacaeea15f83976f0baac3a9064d2eaeb980c3a64"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/call-with-boolean.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/call-with-boolean.js",
+      "bytes": 499,
+      "sha256": "03049d7e4bf2bb56476033659f9f1d4ba165d7c50fac721635da7b0c0beb2364"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/calls-only-has-on-prototype-after-length-zeroed.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/calls-only-has-on-prototype-after-length-zeroed.js",
+      "bytes": 1256,
+      "sha256": "dc38ac16a4cf88eb5b4ed382532f7557a843d47421e3b683b3dd1fc25f3e2c8a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/coerced-position-grow.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/coerced-position-grow.js",
+      "bytes": 1861,
+      "sha256": "61a1c980b541d6b7e8beb726782375106997bc688ece9191fd613011cc5298c9"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/coerced-position-shrink.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/coerced-position-shrink.js",
+      "bytes": 2092,
+      "sha256": "60ca8758bc0fdaca91057adfe2ba6851d13f2f1ff84d929774ac5427a616d2b3"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/fromindex-zero-conversion.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/fromindex-zero-conversion.js",
+      "bytes": 518,
+      "sha256": "8231b818adf4123a4e5c9b65206b0b72984894b825319da669b99f820c75f963"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/length-near-integer-limit.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/length-near-integer-limit.js",
+      "bytes": 1057,
+      "sha256": "94fcf0924ee3ef2c1ee12b83d160ee63df6857596e3b4844754a74ba167e71e7"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/length-zero-returns-minus-one.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/length-zero-returns-minus-one.js",
+      "bytes": 634,
+      "sha256": "24e9b35ba5b8bc46ba36f934f414d9e1bd289cedf8e293d540649d8a9a0478ea"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/length.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/length.js",
+      "bytes": 1081,
+      "sha256": "9ade90fb129d1d1dc171bc505f46e161a48884b4cb36036a6400e83911709e5e"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/name.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/name.js",
+      "bytes": 895,
+      "sha256": "2f1147a227740584a87a544e00881347362dab3757732d600d505d68885de120"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/not-a-constructor.js",
+      "bytes": 916,
+      "sha256": "17cafde04f0a4bb0059af6aa3c7b775b489f5e1a19cb6d0b2f8a2e6b5a5fdff5"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/prop-desc.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/prop-desc.js",
+      "bytes": 713,
+      "sha256": "8b7fc6b450d340ecdb72eb05ce472f2f403dce98ee978f79a8a3230ea128594a"
+    },
+    {
+      "path": "test/built-ins/Array/prototype/lastIndexOf/resizable-buffer.js",
+      "upstream_path": "test/built-ins/Array/prototype/lastIndexOf/resizable-buffer.js",
+      "bytes": 6931,
+      "sha256": "09b749af1b71c21d79348aaa1ee74faf47bff807c66a125633f17add16f20501"
+    }
+  ]
+}

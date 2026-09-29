@@ -1,9 +1,15 @@
 # Compatibility status
 
+[Array.lastIndexOf](../tests/conformance/array-last-index-of.md) now supports
+ordinary generic receivers, holes, inherited entries, saved length and live
+getters. Its complete 395-mode inventory records 338 passed, two Date failures,
+eight array-setup resource stops and 47 unsupported modes. Array descriptor and
+sparse-storage gaps remain; this is an observation inventory, not a healthy gate.
+
 [String.lastIndexOf](../tests/conformance/string-last-index-of.md) now handles
 ordered conversion, NaN/default positions and reverse UTF-16 search. Its complete
-50-mode selection records 48 passed and two failures that call the separate
-missing Array.lastIndexOf method. The match/search selection gains 12 passes.
+50-mode selection now passes all modes after the Array follow-up. The earlier
+String implementation also added 12 match/search passes.
 
 [String and RegExp match/search protocols](../tests/conformance/regexp-match-search.md)
 now support custom symbol hooks, raw receivers, observable fallback dispatch,

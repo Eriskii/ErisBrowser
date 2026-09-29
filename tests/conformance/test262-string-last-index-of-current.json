@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "2ed8995ab41234ccc82eaf827a5c406f7fca62d2f530fc36fbc0b8f1e73224bb",
   "runner_policy_sha256": "c93ebc27df493f0d52da1728fb7221c1066702178f037d6dde01f76d46b9b391",
-  "binary_sha256": "4855bfcd5c86e96ca0501b4f22006218c069e7b103a6d8e1e87861e98581951a",
+  "binary_sha256": "bbafaea885b1f989087877715584f1680f26c1c8fff5f6cf73cf52afc69bf767",
   "cases": {
     "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A10.js:sloppy": {
       "status": "passed",
@@ -45,12 +45,12 @@
       "source_sha256": "fc3bf8e6b24d4cbac433b30984b4f785f059b5e3ac2445cf76f30f8419d76e2e"
     },
     "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T12.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "aab824d665fc4fcd9e755ef9ad03967cb4cc4a5e2c4b233ea0c106b571911ac3",
       "source_sha256": "92b3466b5e7f9bb5f0d64c57a17cd9c5786bf76eb589eedefac4ff27fda225e1"
     },
     "test/built-ins/String/prototype/lastIndexOf/S15.5.4.8_A1_T12.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "e15da95866ac2036a5e5d2617eed1f78f57f3b9cf7e965b019b383737ffceb98",
       "source_sha256": "92b3466b5e7f9bb5f0d64c57a17cd9c5786bf76eb589eedefac4ff27fda225e1"
     },
