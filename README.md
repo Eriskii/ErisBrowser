@@ -285,6 +285,11 @@ adds four passes for 200 nested groups, bringing that directory to 772 passed,
 200 unsupported and four resource stops. Both parsing and prefix analysis use
 budgeted heap frames; all other 9,074 observations and 2,288 controls stay identical.
 
+[Required-literal rejection](tests/conformance/regexp-required-literals.md) adds
+both XML-pattern modes by rejecting impossible matches before backtracking. The
+directory now records 774 passed, 200 unsupported and two script-work resource
+stops, with unchanged budgets. All other 9,076 observations remain identical.
+
 ## Implementation
 
 The [architecture notes](docs/ARCHITECTURE.md) describe the page pipeline and native process boundaries.

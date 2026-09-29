@@ -23,9 +23,10 @@ observable construction, execution and captures.
 [RegExp constructor conversion](../tests/conformance/regexp-constructor.md)
 adds classification and ordered conversion with 16 more passes.
 [Flat bounded regexp group parsing](../tests/conformance/regexp-deep-groups.md)
-now adds four deep-pattern passes. Efficient matching of larger patterns, Unicode
-regexp syntax, the other String symbol protocols and Function source retention
-remain concrete next dependencies.
+now adds four deep-pattern passes. [Required-literal rejection](../tests/conformance/regexp-required-literals.md)
+adds two XML-pattern passes without raising budgets. General matching performance,
+the remaining full-UTF-16 loop, Unicode regexp syntax, the other String symbol
+protocols and Function source retention remain concrete next dependencies.
 
 The goal remains an independent, fully web-compatible Rust browser with a
 defensible security boundary and measured performance within the requested

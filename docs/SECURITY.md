@@ -262,3 +262,13 @@ allocations are charged before reservation, including replacement allocations.
 The separate native lookahead execution guard remains enforced. Tests cover
 2,000 nested groups on a 128 KiB thread stack and failure/cleanup paths. Four
 deep-group resource modes now pass; four work-budget stops remain visible.
+
+[Required-literal rejection](../tests/conformance/regexp-required-literals.md)
+now avoids backtracking when the input lacks necessary literal occurrences.
+Its temporary analysis records have four fixed entries per bounded AST node,
+charged before allocation. Scanning uses fixed storage and the shared work
+budget; arithmetic saturates and assertions/backreferences add no requirements.
+Tests preserve full captures against the unfiltered VM and exercise allocation
+refusal, scan exhaustion and zero VM allocation for rejected inputs. Two XML
+modes now pass; two full-UTF-16 script-loop stops remain. This optimization does
+not remove the need for budgets or establish complete allocation accounting.

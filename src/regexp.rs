@@ -171,6 +171,79 @@ enum Node {
     Lookahead(usize, bool),
 }
 
+// A lower bound on consumed literal code units, never on assertions or
+// backreferences. Dropping an entry only weakens this optional rejection test.
+#[derive(Clone, Copy, Debug, Default)]
+struct RequiredLiterals {
+    units: [u16; 4],
+    counts: [usize; 4],
+    len: usize,
+}
+impl RequiredLiterals {
+    fn add(&mut self, other: Self, budget: &mut Budget) -> Result<()> {
+        for i in 0..other.len {
+            budget.work(self.len + 1)?;
+            if let Some(j) = self.units[..self.len]
+                .iter()
+                .position(|u| *u == other.units[i])
+            {
+                self.counts[j] = self.counts[j].saturating_add(other.counts[i]);
+            } else if self.len < self.units.len() {
+                self.units[self.len] = other.units[i];
+                self.counts[self.len] = other.counts[i];
+                self.len += 1;
+            }
+        }
+        Ok(())
+    }
+
+    fn intersect(&mut self, other: Self, budget: &mut Budget) -> Result<()> {
+        let mut len = 0;
+        for i in 0..self.len {
+            budget.work(other.len + 1)?;
+            if let Some(j) = other.units[..other.len]
+                .iter()
+                .position(|u| *u == self.units[i])
+            {
+                self.units[len] = self.units[i];
+                self.counts[len] = self.counts[i].min(other.counts[j]);
+                len += 1;
+            }
+        }
+        self.len = len;
+        Ok(())
+    }
+
+    fn possible(mut self, text: &[u16], ignore_case: bool, budget: &mut Budget) -> Result<bool> {
+        if self.len == 0 {
+            return Ok(true);
+        }
+        budget.work(self.len)?;
+        let mut remaining = self.counts[..self.len]
+            .iter()
+            .fold(0usize, |a, b| a.saturating_add(*b));
+        if remaining > text.len() {
+            return Ok(false);
+        }
+        for unit in text {
+            // This covers every comparison, including entries already met.
+            budget.work(self.len + 1)?;
+            let unit = if ignore_case { canonical(*unit) } else { *unit };
+            for i in 0..self.len {
+                if self.units[i] == unit && self.counts[i] > 0 {
+                    self.counts[i] -= 1;
+                    remaining -= 1;
+                    if remaining == 0 {
+                        return Ok(true);
+                    }
+                    break;
+                }
+            }
+        }
+        Ok(false)
+    }
+}
+
 #[derive(Clone, Debug)]
 pub(crate) struct RegExp {
     pub source: JsString,
@@ -180,6 +253,7 @@ pub(crate) struct RegExp {
     root: usize,
     captures: usize,
     start_nodes: Option<Vec<Vec<usize>>>,
+    required: RequiredLiterals,
 }
 
 struct Parser<'a> {
@@ -254,8 +328,12 @@ impl RegExp {
         if parser.identity_k && !parser.names.is_empty() {
             return Err(parser.syntax("invalid named capture escape"));
         }
+        let mut variable_repeat = false;
+        let mut literal = false;
         for node in &mut parser.nodes {
             match node {
+                Node::Repeat { min, max, .. } if *max > 1 && *min < *max => variable_repeat = true,
+                Node::Unit(_) => literal = true,
                 Node::Backref(index) if *index > parser.captures => {
                     return Err(Error::Unsupported(
                         "legacy decimal/octal RegExp escapes are not implemented",
@@ -283,6 +361,7 @@ impl RegExp {
             root,
             captures: parser.captures,
             start_nodes: None,
+            required: RequiredLiterals::default(),
         };
         result.start_nodes = result.first_nodes(root, parser.budget)?;
         if result
@@ -291,6 +370,15 @@ impl RegExp {
             .is_some_and(|items| items.iter().any(Vec::is_empty))
         {
             result.start_nodes = None;
+        }
+        parser
+            .budget
+            .allocate(std::mem::size_of::<RequiredLiterals>())?;
+        // Ordinary literal/class patterns already have cheap prefix checks.
+        // Repetition is where absence of a later delimiter can make the VM
+        // repeatedly reconsider an otherwise plausible starting position.
+        if variable_repeat && literal {
+            result.required = result.required_literals(parser.budget)?;
         }
         Ok(result)
     }
@@ -303,6 +391,12 @@ impl RegExp {
         budget: &mut Budget,
     ) -> Result<Option<Match>> {
         if start > text.len() {
+            return Ok(None);
+        }
+        if !self
+            .required
+            .possible(&text[start..], self.flags.ignore_case, budget)?
+        {
             return Ok(None);
         }
         for position in start..=text.len() {
@@ -349,6 +443,58 @@ impl RegExp {
             }
         }
         Ok(None)
+    }
+
+    fn required_literals(&self, budget: &mut Budget) -> Result<RequiredLiterals> {
+        // The parser emits children before parents. One fixed-size record per
+        // bounded AST node suffices; only the root record survives compilation.
+        let mut memo = Vec::<RequiredLiterals>::new();
+        budget.allocate(self.nodes.len() * std::mem::size_of::<RequiredLiterals>())?;
+        memo.try_reserve_exact(self.nodes.len())
+            .map_err(|_| Error::Resource("regular expression allocation failed"))?;
+        for node in &self.nodes {
+            budget.work(1)?;
+            let mut required = RequiredLiterals::default();
+            match node {
+                Node::Unit(unit) => {
+                    required.units[0] = if self.flags.ignore_case {
+                        canonical(*unit)
+                    } else {
+                        *unit
+                    };
+                    required.counts[0] = 1;
+                    required.len = 1;
+                }
+                Node::Capture(_, child) => required = memo[*child],
+                Node::Sequence(children) => {
+                    for child in children {
+                        budget.work(1)?;
+                        required.add(memo[*child], budget)?;
+                    }
+                }
+                Node::Alternative(children) => {
+                    if let Some((first, rest)) = children.split_first() {
+                        required = memo[*first];
+                        for child in rest {
+                            budget.work(1)?;
+                            required.intersect(memo[*child], budget)?;
+                        }
+                    }
+                }
+                Node::Repeat { node, min, .. } if *min > 0 => {
+                    required = memo[*node];
+                    budget.work(required.len)?;
+                    for count in &mut required.counts[..required.len] {
+                        *count = count.saturating_mul(*min);
+                    }
+                }
+                // Assertion text can overlap consuming text. Counting it here
+                // would incorrectly reject, for example, /(?=a)a+/ on "a".
+                _ => {}
+            }
+            memo.push(required);
+        }
+        Ok(memo[self.root])
     }
 
     fn run(
@@ -1466,6 +1612,139 @@ mod tests {
     }
 
     #[test]
+    fn required_literals_reject_missing_delimiters_without_vm_allocations() {
+        for source in [
+            r"[^-]*-([^-][^-]*-)*-",
+            r"[^\]]*\]([^\]]+\])*\]+",
+            r"[^?]*\?+",
+            r".*(?:abz|cdz)",
+        ] {
+            let mut budget = budget();
+            let regexp = RegExp::compile(source.into(), &"".into(), &mut budget).unwrap();
+            assert!(regexp.required.len > 0);
+            let allocated = budget.allocated;
+            let mut input = vec![97; 1024];
+            input[512] = 45;
+            assert!(
+                regexp
+                    .find(&input, 0, false, &mut budget)
+                    .unwrap()
+                    .is_none()
+            );
+            assert_eq!(budget.allocated, allocated);
+            assert!(budget.steps > 90_000);
+            budget.steps = 5;
+            assert!(matches!(
+                regexp.find(&input, 0, false, &mut budget),
+                Err(Error::Resource(_))
+            ));
+            assert_eq!(budget.steps, 0);
+        }
+    }
+
+    #[test]
+    fn required_literal_analysis_is_bounded_and_keeps_failure_charges() {
+        let source = "(?:ab|ac)+defgh";
+        let mut full = budget();
+        let regexp = RegExp::compile(source.into(), &"".into(), &mut full).unwrap();
+        assert!(regexp.required.len <= 4);
+        let mut limited = budget();
+        limited.heap_limit = full.allocated - 1;
+        assert!(matches!(
+            RegExp::compile(source.into(), &"".into(), &mut limited),
+            Err(Error::Resource(_))
+        ));
+        assert!(limited.allocated > limited.heap_limit);
+        for steps in 0..100 {
+            let mut limited = budget();
+            limited.steps = steps;
+            if matches!(
+                RegExp::compile(source.into(), &"".into(), &mut limited),
+                Err(Error::Resource(_))
+            ) {
+                assert_eq!(limited.steps, 0);
+            }
+        }
+        let mut budget = budget();
+        let regexp = RegExp::compile(
+            "(?:(?:(?:a{1000000}){1000000}){1000000}){1000000}b*".into(),
+            &"".into(),
+            &mut budget,
+        )
+        .unwrap();
+        assert_eq!(regexp.required.counts[0], usize::MAX);
+        assert!(
+            regexp
+                .find(&[97, 98], 0, false, &mut budget)
+                .unwrap()
+                .is_none()
+        );
+    }
+
+    #[test]
+    fn required_literal_filter_preserves_full_vm_capture_results() {
+        let patterns = [
+            "a+bcdef",
+            "(?:abcdef|ab)+g",
+            "(?:abcdef)?g+",
+            "(?:ab|a)+",
+            "(?:abc|)+",
+            "(?:ab)?c*",
+            "(?:abc){0}d*",
+            "(?:a{3})*b+",
+            "(?:a+b|c+)",
+            "(?=a)a+",
+            "(?!a)b+",
+            r"(?=(a))a+\1",
+            r"(?:a|(b))+\1",
+            r"(a)?b+\1",
+            r"\u0000+\u0000",
+            r"\ud800+\ud800",
+            r"\ud83d+\ude00",
+            r"\u03c2+\u03c3",
+            "s+",
+            "k+",
+            "a+A",
+            ".*(?:abz|cdz)",
+            r"(?<x>a)+\k<x>",
+            "^.*b$",
+        ];
+        let inputs = [
+            "", "a", "b", "bb", "aba", "aab", "abcdef", "abg", "ccc", "g", "xabba", "\na", "Aa",
+            "ſ", "K", "Σς", "\0\0", "😀",
+        ];
+        for pattern in patterns {
+            for flags in ["", "i", "ms"] {
+                let regexp = RegExp::compile(pattern.into(), &flags.into(), &mut budget()).unwrap();
+                let mut unfiltered = regexp.clone();
+                unfiltered.required = RequiredLiterals::default();
+                for text in inputs
+                    .into_iter()
+                    .map(JsString::from)
+                    .chain([JsString::from(vec![0xd800, 0xd800])])
+                {
+                    for start in [0, 1, 2] {
+                        for sticky in [false, true] {
+                            let actual = regexp
+                                .find(text.units(), start, sticky, &mut budget())
+                                .unwrap();
+                            let expected = unfiltered
+                                .find(text.units(), start, sticky, &mut budget())
+                                .unwrap();
+                            assert_eq!(
+                                actual,
+                                expected,
+                                "/{pattern}/{flags} on {:?}, start={start}, sticky={sticky}",
+                                text.units()
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
     fn prefix_optimization_preserves_unoptimized_capture_results() {
         let atoms = [
             "a", "b?", "(a|b)", "(?:a|)", "[ab]", "a*", "(a)?", "(?=a)a", r"(a)\1",
@@ -1481,6 +1760,7 @@ mod tests {
                     RegExp::compile(pattern.clone().into(), &"".into(), &mut budget()).unwrap();
                 let mut unoptimized = compiled.clone();
                 unoptimized.start_nodes = None;
+                unoptimized.required = RequiredLiterals::default();
                 for input in inputs {
                     let text = JsString::from(input);
                     let expected = unoptimized

@@ -1,0 +1,2453 @@
+{
+  "kind": "Bounded required-literal rejection before regexp backtracking",
+  "full_web_compatibility": false,
+  "full_ecmascript_conformance": false,
+  "production_security_certified": false,
+  "chromium_comparison": false,
+  "independent_review": false,
+  "prior_commit": "45fb59e9caaf1c218daf15d77924839e18e79e74",
+  "prior_ci": {
+    "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/36511558755",
+    "head": "45fb59e9caaf1c218daf15d77924839e18e79e74",
+    "conclusion": "success",
+    "jobs": 6
+  },
+  "prior_input_sha256": "600dc3f85471068122ce32c20e38e8598a3e74ecd177453ff6f74783c1511d63",
+  "input_sha256": "27c2b5f2d7fcd1d6be6cee4b973b3fa4eb17ec5bbc123434f13bcb9641c877e6",
+  "source_files": {
+    "Cargo.toml": "015958175457d712165b649803198aa8aa5bba2f35e19dd49814def7308b03ec",
+    "Cargo.lock": "fc2d595602095e8a4333975b5f2e8ba748a1b82fbdc84505e64abcbd2b92a0de",
+    "src/lib.rs": "d96945bd6e61e3f7e5e2210b4df69e51f61d82a9c1fd945313666709e2de9d92",
+    "src/main.rs": "21fe1be4c60887579fdb3ef49ac2d4d09e4784938ebc3a87b813947e01ac4da1",
+    "src/graphics.rs": "1b51c4af2c8ae4eea66476397868022da35e566d3593f3fcddf29a156bae62a2",
+    "src/net.rs": "6746e871dc0468575edc5e669566a2550d32786636ebada8a51fa58a77122f45",
+    "src/dom.rs": "f4e3d256e7b0f0704ad6f610e96c20035a8f26e57e2696bf8b8894ea8a0913a7",
+    "src/page.rs": "f3cefdb218cf285559cd9a5f70147b9eaf9d8f39a0f22a885672c62c20b82a42",
+    "src/layout.rs": "bfbec78e9c7ca3b5ec45dfb6a2b948b5192de40f93d86b19e6425437579e83e4",
+    "src/script.rs": "7ab15ac7bad572a79d5fa761d73d55816ef0882def420d3b50bce7d3abaf07b5",
+    "src/browser.rs": "826ef6c2a8e1b812db7d7a90b8654e847546c7bee13b4ca641fd8922d6511571",
+    "src/css.rs": "0e354f1e5118ea52b329a053a11f96f45030730fa20ab60488ab7761c84a691d",
+    "src/svg.rs": "4a9b9664d4f2d3cb63188e4de0f53f95f40477a7d315c49c988875a5d5ca7170",
+    "src/edit.rs": "caffc2137b31622ddc2bad7ae9472472e80462c9024273a8f7cf72369ef43e99",
+    "src/js_string.rs": "511a2325e6b1e2f99ced2a4e9c3b26c7b2ef4d31ecd3c522445cb38f5f1f62ee",
+    "src/worker.rs": "60d4b4b40a818705fded997324b2ee36bdb1ad5132f8d8a9d84689ef4740ee59",
+    "src/image_limits.rs": "16b91652b9e29b37feddff97b25cf6ae5f6d3c7177a2b40fc1217bc30a92de4c",
+    "src/text_encoding.rs": "8dd6ec34ee5373d5f0955e9ba86c183dc64a1a7ced8e8c8226a7b7933e551a09",
+    "src/regexp.rs": "d0b35579fb179c53f8497b06e13e6608e7402d53ea22f1e9668427ba216bf801",
+    "src/document_url.rs": "b18d9d98f338209bbb5ef8f0ae265969d42f2172b8fd49bd85cfd973a87ac96c",
+    "src/stylesheet_loading.rs": "d0a92e739ea44fd306fb9ba01649c44622b0dd65058636fd5dce909677ebb310",
+    "src/worker_benchmark.rs": "460d37f1df4ec99b61358479cb3b67a63a527dc67bae1f66de86905eec99e609",
+    "src/selectors.rs": "0f5984c941a45dec2faca6310d17c1b53aa2f19908ca0d9dd12ca56d5075097c",
+    "src/presenter.rs": "f9bd2a4d817fe0ded8abd695296abf5b4151dbe13a5a00313a1f981fcb0d3094",
+    "src/cssom.rs": "69144f437fa1d0060e80c7ab56450dfe4432dfd30444b8cae90ec489fbb477a3",
+    "src/js_identifier.rs": "49187f73fcbae9d685e7848c6a412315c247a7fbfd4f3919bd5c08f8a6a7b552",
+    "src/js_uri.rs": "4759c1634201f4f6720871e240201c35a08e81addc30417376a45f69fc4830e6",
+    "src/bin/eris-stress.rs": "c4768e4028c34c9e891e24d39d3ec8573c8411fc72c4f93d000923d86e7e4743",
+    "src/bin/eris-dom.rs": "5d41cb4fc67ab675be7564053f11cf696c6f1e6d59ae1b8dd26e16f0b1d6e2b8",
+    "src/bin/eris-js.rs": "a214c63a90abf482783ce8acd80259a8e48fc04f31767b993aaf5cd697ff5448",
+    "src/worker/sandbox.rs": "2d29da2a4375c0064f4646ae378243912c1f2eb5889cd94d6016ea9d6ec202d6",
+    "src/worker/codec.rs": "f5468378310a14e701b310db80ad9b8b9ca462f9fda553335cb13fa97d1de705",
+    "src/worker/channel.rs": "fa5e11334ea0cace8ac7e5b43c770f77dcaa7ccbf245a71365ff3540d9226d44",
+    "src/worker/broker.rs": "895d42125e6a654f7795e48b426d4eae7464d4be1e255b1350289ac58f5dd1dd",
+    "src/worker/image_decoder.rs": "af55b24c4469ce88441b9039c8f0c5f64afc37ddd249f2412a052c5c740ca661",
+    "src/worker/launcher.rs": "22257be63985052060a613c5eaab02b7c59f79f07a808537e0e063e1e7944ab3",
+    "src/script/names.rs": "6ccbc235c97507315f65c827169270e30c0bb4bb2533ed435fa9b5cddc138332",
+    "src/script/code.rs": "668501f9b7996c8becd1e06393fea0b47a246f294bb1ce4c39e78543f2f9558e",
+    "src/script/tokens.rs": "b044323426c54e4c8eef93312eae0d0b45ab5b6019a796321c7d73085c373342",
+    "src/script/machine.rs": "bd9c12f99f576f9d64b1f847afedc7421086f735268ced1b3d2c85120a226963",
+    "src/script/parser_legacy.rs": "43b507b3761fc865aef670ee64e3d08e5cef697d5f8afa47ff79addd5cb47c1b",
+    "src/script/parser.rs": "83c0c6e074f8ac3358b07edf4647c21c064cf95bdbf49954c8f7908ff9fee96e",
+    "src/script/symbols.rs": "de5b3bcee0160678c28b80343f9d16b6c52d13567d3f685dcab297f3bf3dd6cc",
+    "src/script/property_keys.rs": "7bd4055f08eb2d05b798b16b02c0ddf6e03a5a3fce2c269633e2967f92c665a3",
+    "src/script/dom_bindings.rs": "93413bbdd5b96dc8dc95e577d3d12f3f5ffe3cc6c134a0161b20f725e8a97c21",
+    "src/script/window.rs": "c11348fbf8ce1dd4cec72b3245ee7dfb5d897e482acc987c0f2e64d27abd1544",
+    "src/script/string_builtins.rs": "5f98fff7d2403786aa0d03397b96451e51cc45701f29ffa46cafce1c39b343df",
+    "src/script/construction.rs": "331fdd773cc5a1e57c880bbddd1c7768993b7998c353eda8facb48a8a0346193",
+    "src/script/regexp_builtins.rs": "7181d25f6993ea9c6d9bc0e17fcb1bd26082165ef2b60f5d6887cceee05886f0",
+    "src/presenter/vulkan.rs": "d3de9ac6382a8776448c48ebe571debe70e4eab85878429070f95fbaa40df68b",
+    "src/presenter/vulkan/control.rs": "24233c70d6ab550ee44303c098f944fc33551052fa00feebf660ef5302a89abd",
+    "src/presenter/vulkan/transfer.rs": "b1ec4bd22469eccfd7caae685eb580733628c461148078470c9dfdc4869c4937",
+    "src/script/machine/statements.rs": "6fda5a222f32aebd07828f9eccdbec82ab5caea63bc487593fded4c9b1f1cbcd",
+    "src/script/machine/calls.rs": "6e445ed9ae9aa46bae54002e0517887dcf98fc8f19a8469002c6d1327b7b0e3d",
+    "src/script/code/records.rs": "85581141e1ebb437d9b23ff884dcbee6e7b1f6bc8a19933f21de39097e398860",
+    "src/script/parser/driver.rs": "d26dfc353e1eb4d951d3efc5a642f2fbfa206b7f9703bbd1f7da69aa87cd0c55",
+    "src/script/parser/driver/expressions.rs": "8565b8fb1b950578916e6bc2da4b560efe0f1d04b1387eca14e70e47e902e369",
+    "src/script/parser/driver/functions.rs": "6368872f99233786e16b7db4f6b70ddf93fb48e68189154c4a7f6a97e3ce7aa6",
+    "src/script/parser/driver/statements.rs": "757092fcedb2618036371d14da8d33a0ed80eabfb8c3a71c4e0da01259d02c81"
+  },
+  "before_binary_sha256": "811149c74f7a2b1d2bf1ebf6258879d1a2dd430a811e1c072b30e49b95530f30",
+  "binaries": {
+    "default": {
+      "eris-browser": "065ad929cf251a2d5f6aaa6f7bea75c195b9e35a5f9f550a8cac65db949dd8eb",
+      "eris-js": "ec1bcb3ee458ef6f6fa181a62ec10420824147415e247709c0458675a9856182",
+      "eris-dom": "e6d8f63edb88bd11f5987c8be0e1898c385155a1e017125497316c0f36627bce",
+      "eris-stress": "80a6bc12052fcbd89397cbb0b35e59cd9d07939b48ca8cf20ef6fe152cc92115"
+    },
+    "feature": "dc4bfbc5f3b60582ce731ca1270a6383a9d839741bba5b54539fcd04549a3dcb"
+  },
+  "comparison": {
+    "profiles": {
+      "regexp-constructor": {
+        "before_counts": {
+          "passed": 772,
+          "unsupported": 200,
+          "resource": 4
+        },
+        "after_counts": {
+          "passed": 774,
+          "unsupported": 200,
+          "resource": 2
+        },
+        "manifest_sha256": "1a015d223e88fcd113ee1ec1c1272692291e4466c82d8024b50fb6a56cf675da",
+        "policy_sha256": "74e43872e59c6ffc5e55a68ad3887f9ced2f69d5c9690a25136f9f9d1e6127d1",
+        "mode_cases": 976,
+        "controls": 72,
+        "before_report_sha256": "8b0eb3e58d9f820f776c1a66b902e5614e65b2fda56d80520cb4b65c2701d4e6",
+        "after_report_sha256": "560f048fb36864fa80d9c86e980d9a882d661c9431f604a12a8b77b767646c77"
+      },
+      "regexp-split": {
+        "before_counts": {
+          "passed": 88,
+          "failed": 2,
+          "unsupported": 6
+        },
+        "after_counts": {
+          "passed": 88,
+          "failed": 2,
+          "unsupported": 6
+        },
+        "manifest_sha256": "7e380ee0ee12fed435b33bebb97ce784c024e21faee72809e8cda2d97f1e5028",
+        "policy_sha256": "0e8c2b54d69e660d939a6c02946e920f459695f6be4405163f7e94bf0547f245",
+        "mode_cases": 96,
+        "controls": 72,
+        "before_report_sha256": "1833fae85f815deaaea5538af8d90b312822a3b9f28a32f237498b9a1e2ef873",
+        "after_report_sha256": "a680c98982598b95d49a4970dc9cd70cbac859f2cf0a925552a6608342934e17"
+      },
+      "string-search": {
+        "before_counts": {
+          "passed": 470,
+          "unsupported": 12,
+          "failed": 2
+        },
+        "after_counts": {
+          "passed": 470,
+          "unsupported": 12,
+          "failed": 2
+        },
+        "manifest_sha256": "51f7812dbdccfac8179261013188f15a8ba1b965bf0bfb9ebb61e8aff742338b",
+        "policy_sha256": "a9ea3c01e1d4fea35619985a2e3c464b4be23d29c1581e69c493d9f8d73e26e3",
+        "mode_cases": 484,
+        "controls": 72,
+        "before_report_sha256": "4af61ca9648737ab5089cf5d6546190808a567352d5b28f1273137d74069dca8",
+        "after_report_sha256": "eb9f9a5feded8a4b65ffa160c3b98b456768ae88f4d20e4edb87dfbbcbfffd20"
+      },
+      "string-concat": {
+        "before_counts": {
+          "passed": 44
+        },
+        "after_counts": {
+          "passed": 44
+        },
+        "manifest_sha256": "e904181959ebb9592f63f75802b7a6f84a40e108379257e6cb8bb29354d5aa60",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 44,
+        "controls": 56,
+        "before_report_sha256": "a829ecf22f44086eaed26fffed08c66b53e3c375ece78226505a27f89cd22219",
+        "after_report_sha256": "5b9f9dfdd0b4f3a257f9bbb08cb7e10181d2b5544baed7da539edaf0c22ef1c7"
+      },
+      "symbols": {
+        "before_counts": {
+          "passed": 182,
+          "unsupported": 54,
+          "failed": 6
+        },
+        "after_counts": {
+          "passed": 182,
+          "unsupported": 54,
+          "failed": 6
+        },
+        "manifest_sha256": "c234ca3a603d668cff1b769612b3574cf2e59cfa5d21cd70695300e18751f127",
+        "policy_sha256": "e77db9454b9331d6178bc7bc1c49e1de55095e4701baaac3e27aae7efd42eec3",
+        "mode_cases": 242,
+        "controls": 80,
+        "before_report_sha256": "9b25a42262d18a83f1439a08401323ffcfddc380e2ed07c67efaa232c40105e4",
+        "after_report_sha256": "4df7802a459f31b13919ca0f2ba3443ae42266355cbb7ad576b1d5b04a2ff91e"
+      },
+      "string-json": {
+        "before_counts": {
+          "passed": 562,
+          "unsupported": 90
+        },
+        "after_counts": {
+          "passed": 562,
+          "unsupported": 90
+        },
+        "manifest_sha256": "f073410553ed7cac9c6ddb0d5d10da1e52616d067a0310578e84cbf000df4191",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 652,
+        "controls": 32,
+        "before_report_sha256": "d162f743b65b2067afdad04cc89db22a8153e6006995d2fb9aa6cabb68c52b0c",
+        "after_report_sha256": "ce4c3b976208d1d1d00d123bf2602e9219f6d91380e41c8cbd417a81ecb50253"
+      },
+      "regexp": {
+        "before_counts": {
+          "passed": 262,
+          "unsupported": 28
+        },
+        "after_counts": {
+          "passed": 262,
+          "unsupported": 28
+        },
+        "manifest_sha256": "33c8319c02da5367a5ac2596cbb48fc3176839740935966754ea0370f4408fa0",
+        "policy_sha256": "639d025e85b6e45a09d82252ece92d6f5ee95c0619b16ce3e2d61987a03b4cdd",
+        "mode_cases": 290,
+        "controls": 44,
+        "before_report_sha256": "a24a44a4f9945addb092e1bd53735dc0c7c8e26c700e3f9b45caf422c75f6ab2",
+        "after_report_sha256": "ed38106be2d3e89e4c70d49c6971cd7b4c167f7fecab12906dcb857d4f800633"
+      },
+      "function-constructor": {
+        "before_counts": {
+          "passed": 241,
+          "unsupported": 50
+        },
+        "after_counts": {
+          "passed": 241,
+          "unsupported": 50
+        },
+        "manifest_sha256": "9630ad1dc81216d3717a0df435e53b15cf2f2334210984a1965c7d40277aa2a7",
+        "policy_sha256": "b764ad3478933d38f28aa720721553a3798d8f262fc42658470ca01791499c0f",
+        "mode_cases": 291,
+        "controls": 64,
+        "before_report_sha256": "4c7c6398b3fd9ec105659169279c389b7938630f488af8362c1964d4c0b4e4fe",
+        "after_report_sha256": "f69d87fcefb48353f8d5d0909f436ea606e585b0e78565b93e93404d47f7dfcd"
+      },
+      "reflect-construction": {
+        "before_counts": {
+          "passed": 34,
+          "failed": 4
+        },
+        "after_counts": {
+          "passed": 34,
+          "failed": 4
+        },
+        "manifest_sha256": "a0efcbf267933681e09b4f9a75d4e43f75c0911ae1a93770571bc54f67a665b6",
+        "policy_sha256": "0e8c2b54d69e660d939a6c02946e920f459695f6be4405163f7e94bf0547f245",
+        "mode_cases": 38,
+        "controls": 96,
+        "before_report_sha256": "8f5f96d8547ace3fc12426b2412c6ac1dbc9b81c1a0e5f6779f8732490c6190c",
+        "after_report_sha256": "92fa787fafa2ee41e74d4e8aba59ccd77b44a83b7fd01997e5f9f765fbd77ded"
+      },
+      "new-target": {
+        "before_counts": {
+          "passed": 20,
+          "unsupported": 8
+        },
+        "after_counts": {
+          "passed": 20,
+          "unsupported": 8
+        },
+        "manifest_sha256": "73a1e0d8478b0dfbb7d98d0ca00d19a634033f708cca6e6c93ddcfbf16d826f7",
+        "policy_sha256": "0e8c2b54d69e660d939a6c02946e920f459695f6be4405163f7e94bf0547f245",
+        "mode_cases": 28,
+        "controls": 96,
+        "before_report_sha256": "2390f056aa6df93774ebfaf6aa6bac6819e3765f7301c4c505cf7498539fdec0",
+        "after_report_sha256": "e350666edcb93546a05e5f331159f08f9ada0a11001c8cc8b3d1b5a0673d9cb4"
+      },
+      "template-literal": {
+        "before_counts": {
+          "unsupported": 32,
+          "passed": 82
+        },
+        "after_counts": {
+          "unsupported": 32,
+          "passed": 82
+        },
+        "manifest_sha256": "58951312763d816ca4cc139a4fcb2bf63f43a81414b91bf673f65c450b217d94",
+        "policy_sha256": "3d1f69f1130da33216d9acb7fb1d220dbf006ee45351b930eed3b8ef175c2462",
+        "mode_cases": 114,
+        "controls": 44,
+        "before_report_sha256": "a2cfdc38ee7c5022b27e5f12da4f4719d179531fd96dd50836caea15b38a31cd",
+        "after_report_sha256": "51acac8d8442a8f514568d29aec4cd481b1c7c457312bff68ca2b8e961005ab0"
+      },
+      "functions": {
+        "before_counts": {
+          "passed": 546,
+          "unsupported": 585
+        },
+        "after_counts": {
+          "passed": 546,
+          "unsupported": 585
+        },
+        "manifest_sha256": "15281ebe6e6c980c547f113563df7d2b5d346ac0db5c9c4aca75dbb6fc60b330",
+        "policy_sha256": "012c455ee75d314d1a222c23205bf5cb5c48058ecdf5a067270bb6cff73f0089",
+        "mode_cases": 1131,
+        "controls": 48,
+        "before_report_sha256": "45259ed82b77d9e44e7d87a48bd3c9c9fd5560645fb03e25130e90844261ca39",
+        "after_report_sha256": "672c6bba3c551ab1664e249c608f792a57fb4e92b8050ef99fd1712e081b7021"
+      },
+      "rest-parameters": {
+        "before_counts": {
+          "unsupported": 6,
+          "passed": 16
+        },
+        "after_counts": {
+          "unsupported": 6,
+          "passed": 16
+        },
+        "manifest_sha256": "a3e15e061fc8c9cac736e081554f3e42b497d805ebfd7647ea49736cb2d83be5",
+        "policy_sha256": "a1f03c4f9590ec957d7dac54aaf1633e9b9c95f4faf7f7bdc7593ce337168a5b",
+        "mode_cases": 22,
+        "controls": 64,
+        "before_report_sha256": "d1773052f177304fe4c29d773863657d4f121788ad841f31ae363f82b3c774ad",
+        "after_report_sha256": "dad9c6d4fc6e265d44340d43550891e21ed5468adbf377dd622f93c89ffd216c"
+      },
+      "is-prototype-of": {
+        "before_counts": {
+          "unsupported": 6,
+          "passed": 14
+        },
+        "after_counts": {
+          "unsupported": 6,
+          "passed": 14
+        },
+        "manifest_sha256": "f019dcc5e150cf14a6b144577a30937ed1314c6b5de3dd331ad574585f16d461",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 20,
+        "controls": 64,
+        "before_report_sha256": "bca435fcb64dba88b238e4a47a0ba7cf7b5312b4270af36fdb8e21de145e032b",
+        "after_report_sha256": "8a5d9b16aeb2b2c9dc901370703418b8496024f4c8ec36448bfbbb351932cc48"
+      },
+      "global-values": {
+        "before_counts": {
+          "passed": 64,
+          "failed": 6,
+          "unsupported": 18
+        },
+        "after_counts": {
+          "passed": 64,
+          "failed": 6,
+          "unsupported": 18
+        },
+        "manifest_sha256": "c1b627a7249d3ab460d5be88b54f34ead98c375c160bee9e72379aef213894a4",
+        "policy_sha256": "bc9da7274e62951b4b886406c4b0d0f71ade2a62979a7194fd7451484009a063",
+        "mode_cases": 88,
+        "controls": 64,
+        "before_report_sha256": "a166e8b2b3ee4502ed36364b098a29c6bc500254b944efe6553ff156995ed523",
+        "after_report_sha256": "609a5e8c852c1f3fdfd4aacd515d9c866d7bf62201622d967bed2ba279e8cfe8"
+      },
+      "array-sort": {
+        "before_counts": {
+          "passed": 59,
+          "unsupported": 44,
+          "resource": 4
+        },
+        "after_counts": {
+          "passed": 59,
+          "unsupported": 44,
+          "resource": 4
+        },
+        "manifest_sha256": "d6f43dd379ae49ae08f959596852e28e6bd33a0420eb699d763ff696b0e961d2",
+        "policy_sha256": "8861817329776f3a0e78232610878c0086cd0daac7ccc896683dccfa3ef0b4aa",
+        "mode_cases": 107,
+        "controls": 80,
+        "before_report_sha256": "d72113c004442560fa8c1b313c0bd2d952fba40b8560ae4e1e668653bb195f71",
+        "after_report_sha256": "3abe96c88f7238075edc8ccdd2dd58a4134539492fff959bd10d17f2cb76e11b"
+      },
+      "identifiers": {
+        "before_counts": {
+          "passed": 509,
+          "unsupported": 154,
+          "resource": 6
+        },
+        "after_counts": {
+          "passed": 509,
+          "unsupported": 154,
+          "resource": 6
+        },
+        "manifest_sha256": "b93b9e76f5231a3d342d95fe0a8cf47ca79c2a3101f2a78e4d5bb564c4d06ea8",
+        "policy_sha256": "666c0fd88cdb1f836c1e9706e43415e1ac5ae6b4b3ac244ae7eb4dd8701f6f7e",
+        "mode_cases": 669,
+        "controls": 88,
+        "before_report_sha256": "8781bb79c7c1f1b5f8a98663fd7d13549c1113b9e7466d9d91c1e6a5073c4527",
+        "after_report_sha256": "6d5e496439366c02cc390e88ab8e09db1cdfb2e49afe0e3163f8b0d257d14c44"
+      },
+      "array-reduce": {
+        "before_counts": {
+          "passed": 860,
+          "failed": 8,
+          "unsupported": 166
+        },
+        "after_counts": {
+          "passed": 860,
+          "failed": 8,
+          "unsupported": 166
+        },
+        "manifest_sha256": "77ee716188d99fdba64adbe151ef4efd915fbaa6345b2b0ec8fe3550efb5ec24",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 1034,
+        "controls": 128,
+        "before_report_sha256": "240626875ff50adf19ee87b8c648c0e921b6c0c9f2fb78659740545a67d694c5",
+        "after_report_sha256": "beba155487618594d83cd90ba688a62ddfc13847bf7dbdad0ff71286c5993109"
+      },
+      "number-statics": {
+        "before_counts": {
+          "passed": 260,
+          "unsupported": 80
+        },
+        "after_counts": {
+          "passed": 260,
+          "unsupported": 80
+        },
+        "manifest_sha256": "3c5c2503458843bfc64eaf546ee08b6e693714f561df42330d9001a2ec8216cd",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 340,
+        "controls": 104,
+        "before_report_sha256": "f0d2d18f2ce3910895b8e385951d00a4fce178644d9fcef8309acb504e30314d",
+        "after_report_sha256": "d8b989d74df4551f6a83231b47aedfa0bb9b53ec5cd4439cba2ff7e7b72da81f"
+      },
+      "numeric-conversion": {
+        "before_counts": {
+          "passed": 32,
+          "unsupported": 28
+        },
+        "after_counts": {
+          "passed": 32,
+          "unsupported": 28
+        },
+        "manifest_sha256": "de7cf1098618ad0fdb7786d4ab4f6c648bfb6fe2543981fe21ca6e0cba50928f",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 60,
+        "controls": 80,
+        "before_report_sha256": "bc9b11b831444f7262885ace4b9415ee0bd363bc538c4b3816509ab7c98301e9",
+        "after_report_sha256": "c8d358eb847f4f38c95376d979201178f6428097a2feff0f38d243bac62597dc"
+      },
+      "numeric-parsing": {
+        "before_counts": {
+          "passed": 176,
+          "unsupported": 34,
+          "resource": 8
+        },
+        "after_counts": {
+          "passed": 176,
+          "unsupported": 34,
+          "resource": 8
+        },
+        "manifest_sha256": "f8959cc2e43d94b5b0c671105f87d3fc831fa6359065566791707a6f9b400c6a",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 218,
+        "controls": 80,
+        "before_report_sha256": "c815a4cc76f922f54725f273f9c2dddd292ae650f7f853d713e1d343da316d16",
+        "after_report_sha256": "ea9aea89f23698706032891288dbdb9ff721b8778a818166f11ca91e438d6227"
+      },
+      "compound-assignment": {
+        "before_counts": {
+          "unsupported": 169,
+          "passed": 617
+        },
+        "after_counts": {
+          "unsupported": 169,
+          "passed": 617
+        },
+        "manifest_sha256": "edc2b04b5e9f810e1757a327f5d2a32c240f41d61e8a6d2a89cb35c3ec14f1d0",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 786,
+        "controls": 128,
+        "before_report_sha256": "7c958965dfad647a1e3342e33de94f3e22774132456b5ef5a67fc3499c37831e",
+        "after_report_sha256": "cab7998f16bd3858e8760d2eeac7d119f07b2a8b77cb3f1c1d1a12920764e8ac"
+      },
+      "addition": {
+        "before_counts": {
+          "unsupported": 28,
+          "passed": 65,
+          "failed": 2
+        },
+        "after_counts": {
+          "unsupported": 28,
+          "passed": 65,
+          "failed": 2
+        },
+        "manifest_sha256": "56088f55075e4d44da6915ca41383604182a8a72aaef8230af61369513cbdc0c",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 95,
+        "controls": 64,
+        "before_report_sha256": "0a2405e643a7a6de69962b85e7d7634f230424121e27923e5776d0e7bd838f17",
+        "after_report_sha256": "d8cbca78f5c54f5ad09a297a1b1096e4aa575e51b6cac1fe0d15b73984bd928c"
+      },
+      "logical-assignment": {
+        "before_counts": {
+          "unsupported": 48,
+          "passed": 78,
+          "failed": 6
+        },
+        "after_counts": {
+          "unsupported": 48,
+          "passed": 78,
+          "failed": 6
+        },
+        "manifest_sha256": "a83f71b8a6b6a1523951d73a4711f024cf77ad3bf90e6698bc6224e7bfabf1a3",
+        "policy_sha256": "74a2627eaabaa31cba34e9ff9612cc8b944af7bae893c4e210fc1aa96f6868af",
+        "mode_cases": 132,
+        "controls": 104,
+        "before_report_sha256": "21d7ea7f742e05d3a1bc51e58ee0a42b9b1ac71aac50a02e5059e6b2ad10df16",
+        "after_report_sha256": "d76cef49c70ba8a2916fc51cc891a44061e500a5430701fd44b6e84c23d3fa6d"
+      },
+      "uri": {
+        "before_counts": {
+          "resource": 112,
+          "passed": 234
+        },
+        "after_counts": {
+          "resource": 112,
+          "passed": 234
+        },
+        "manifest_sha256": "bf48d1dddac882a9609fe78aea7521e7477c1cef2ba6036a74c48513ad28ab8f",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 346,
+        "controls": 128,
+        "before_report_sha256": "dedc6b6a55434046f68d07bfcdf4a36cf4781f541346f6788da1320342c5c8fd",
+        "after_report_sha256": "3abd2bfe1741b930867d7d8df9e839d4192f0bbf489946509497b4f8d12481cd"
+      },
+      "relational": {
+        "before_counts": {
+          "unsupported": 64,
+          "passed": 300
+        },
+        "after_counts": {
+          "unsupported": 64,
+          "passed": 300
+        },
+        "manifest_sha256": "34497c818a4de422d2628afe1270525fe6c5467bbb43126c1796324a5bc8f138",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 364,
+        "controls": 128,
+        "before_report_sha256": "c30d85f79ad39d77cf7f9ae40458b452f1196143dc6e23566c25b27f86b2a0da",
+        "after_report_sha256": "d6eab8e9759211bff4a568fa42aed66b8fb23a78d539f566073ca131a12808fd"
+      },
+      "equality": {
+        "before_counts": {
+          "unsupported": 96,
+          "passed": 190
+        },
+        "after_counts": {
+          "unsupported": 96,
+          "passed": 190
+        },
+        "manifest_sha256": "b1d07bdfaee72e164608d7ed3351ab70d05931ffda34f174f6c3f99bf12a0046",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 286,
+        "controls": 128,
+        "before_report_sha256": "c4254d6276364661d4e30aa5a3f6bf325f4c7db0992f44501ec683b7fc1b9a49",
+        "after_report_sha256": "51cb27bdcbfb842352e024dd4a63e6a3382fdd2e1a86090f63e1b649d8d4bfab"
+      },
+      "labels": {
+        "before_counts": {
+          "passed": 100,
+          "unsupported": 25
+        },
+        "after_counts": {
+          "passed": 100,
+          "unsupported": 25
+        },
+        "manifest_sha256": "32889cc4ab3de15132243dae4981418ba559cd10294df9222329070b8f74649b",
+        "policy_sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098",
+        "mode_cases": 125,
+        "controls": 80,
+        "before_report_sha256": "03d661e9ca1a0587044b842bbb7cf55fc4629a5d566fffc48ef59067088b49a4",
+        "after_report_sha256": "4466b2cb5028cd3efe0264216c83f6742c565aaccc524b2ec97ccd6e11841131"
+      }
+    },
+    "changes": [
+      {
+        "profile": "regexp-constructor",
+        "id": "test/built-ins/RegExp/S15.10.2_A1_T1.js:sloppy",
+        "before": {
+          "id": "test/built-ins/RegExp/S15.10.2_A1_T1.js:sloppy",
+          "file": "test/built-ins/RegExp/S15.10.2_A1_T1.js",
+          "mode": "sloppy",
+          "case_sha256": "245e8ab676df1f76a42294a81a34fdeb601e9f7bd9b194a5d270589eb957acb8",
+          "source_sha256": "d140b0134c328c9c452f3b359a8991f918fca6a473d4f5a2564836796cae8c7f",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression work limit exceeded",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "test/built-ins/RegExp/S15.10.2_A1_T1.js:sloppy",
+          "file": "test/built-ins/RegExp/S15.10.2_A1_T1.js",
+          "mode": "sloppy",
+          "case_sha256": "245e8ab676df1f76a42294a81a34fdeb601e9f7bd9b194a5d270589eb957acb8",
+          "source_sha256": "d140b0134c328c9c452f3b359a8991f918fca6a473d4f5a2564836796cae8c7f",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      },
+      {
+        "profile": "regexp-constructor",
+        "id": "test/built-ins/RegExp/S15.10.2_A1_T1.js:strict",
+        "before": {
+          "id": "test/built-ins/RegExp/S15.10.2_A1_T1.js:strict",
+          "file": "test/built-ins/RegExp/S15.10.2_A1_T1.js",
+          "mode": "strict",
+          "case_sha256": "6f4ae06d2140790c15cff52cc5d087584869b553da8db88eb8b2cd2630aec4e5",
+          "source_sha256": "d140b0134c328c9c452f3b359a8991f918fca6a473d4f5a2564836796cae8c7f",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression work limit exceeded",
+            "harness": ""
+          }
+        },
+        "after": {
+          "id": "test/built-ins/RegExp/S15.10.2_A1_T1.js:strict",
+          "file": "test/built-ins/RegExp/S15.10.2_A1_T1.js",
+          "mode": "strict",
+          "case_sha256": "6f4ae06d2140790c15cff52cc5d087584869b553da8db88eb8b2cd2630aec4e5",
+          "source_sha256": "d140b0134c328c9c452f3b359a8991f918fca6a473d4f5a2564836796cae8c7f",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      }
+    ],
+    "total_modes": 9078,
+    "total_controls": 2288,
+    "unchanged_observations": 9076,
+    "updated_baselines": [],
+    "no_prior_pass_lost": true,
+    "policies_unchanged": true
+  },
+  "remaining_constructor_resource_cases": [
+    {
+      "id": "test/built-ins/RegExp/character-class-escape-non-whitespace.js:sloppy",
+      "file": "test/built-ins/RegExp/character-class-escape-non-whitespace.js",
+      "mode": "sloppy",
+      "case_sha256": "231cdcb985fa03cf139f80c240be0ad78c5d147479a8e3a2e3cbf50161b17d4e",
+      "source_sha256": "1afceaefc8088925591df29d45730694af5de6d145bc6b1a555485999c9f6bb5",
+      "expected_negative": null,
+      "status": "resource",
+      "observation": {
+        "status": "resource",
+        "phase": "runtime",
+        "error_type": "ResourceLimit",
+        "error_identity": "",
+        "message": "script instruction limit exceeded",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/RegExp/character-class-escape-non-whitespace.js:strict",
+      "file": "test/built-ins/RegExp/character-class-escape-non-whitespace.js",
+      "mode": "strict",
+      "case_sha256": "02d654cea3147743d64aafbeb8882dd0167a77b29f32b523e2f55176a4134b69",
+      "source_sha256": "1afceaefc8088925591df29d45730694af5de6d145bc6b1a555485999c9f6bb5",
+      "expected_negative": null,
+      "status": "resource",
+      "observation": {
+        "status": "resource",
+        "phase": "runtime",
+        "error_type": "ResourceLimit",
+        "error_identity": "",
+        "message": "script instruction limit exceeded",
+        "harness": ""
+      }
+    }
+  ],
+  "healthy_baselines_preserved": 23,
+  "local_fixture": {
+    "path": "tests/conformance/regexp-required-literals.js",
+    "before": {
+      "binary_sha256": "811149c74f7a2b1d2bf1ebf6258879d1a2dd430a811e1c072b30e49b95530f30",
+      "fixture_sha256": "b9a7721841537cc321653657cd44e9ecfbdbe370b2548ef393b83cdc3968099b",
+      "counts": {
+        "resource": 8,
+        "passed": 22
+      },
+      "cases": [
+        {
+          "id": "missing-second-hyphen#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "8f420abcace540fd65c5fe81652d92174b6b30205245d710a08cc27a2bfc6275",
+          "source_sha256": "00e3d740c0bec3fa058a293590711fd7e1220484caa0e050d51144107ba5e0ce",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression work limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "missing-second-hyphen#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "7d72de0ee87afa3898c631ebc5b64c642f85d48188b4501d08cf00fae409aae3",
+          "source_sha256": "00e3d740c0bec3fa058a293590711fd7e1220484caa0e050d51144107ba5e0ce",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression work limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "missing-closing-brackets#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "aaa56d16a585f573ae638e4b09879964e75ae9514afd44beefe063c6c65dbf3d",
+          "source_sha256": "249dd333650157cac2b94a56047d15b307d40d6a7ddd2f3137842801e542f0bb",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression work limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "missing-closing-brackets#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "f6a8fbd3b62280ca5afe990b9eb88e00e250293d57826288baee63bd0bafc032",
+          "source_sha256": "249dd333650157cac2b94a56047d15b307d40d6a7ddd2f3137842801e542f0bb",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression work limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "missing-question-mark#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "c4a145a0ccf6c70b0e83a6536a1ce52e221b207ee87ca69d4e8c71e7b1332c78",
+          "source_sha256": "1232a7f9010ccc45cb0a4c02e37821049e0ed1b000748e171aa3ef0716154c1a",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression work limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "missing-question-mark#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "3936c5d92a97e61de06c8c6aee1b01ae86bfa706cdf880c955b484c7707d0db4",
+          "source_sha256": "1232a7f9010ccc45cb0a4c02e37821049e0ed1b000748e171aa3ef0716154c1a",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression work limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "common-alternative-literal-missing#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "15d794059631b830d8d84a33e95cf872918665814afae67bcb73696388b254e2",
+          "source_sha256": "f38d97b96f141a9e0cce02d362504b3491f6a5e2ccd0e679e4b7d8ea25c11f2a",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression work limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "common-alternative-literal-missing#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "12361b1d11eed5822650a07913c4551996dbea569adcecb480e50115cdffe43c",
+          "source_sha256": "f38d97b96f141a9e0cce02d362504b3491f6a5e2ccd0e679e4b7d8ea25c11f2a",
+          "expected_negative": null,
+          "status": "resource",
+          "observation": {
+            "status": "resource",
+            "phase": "runtime",
+            "error_type": "ResourceLimit",
+            "error_identity": "",
+            "message": "regular expression work limit exceeded",
+            "harness": ""
+          }
+        },
+        {
+          "id": "required-delimiters-present#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "4b15a2837cf3ff538678a6a9d5eec7dd4c19ca3ed98325bb27699263d43a8a00",
+          "source_sha256": "f02d22cf9eaaf20594147a7b93fb722bd324215b11c087a7d74ca15db0667af8",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "required-delimiters-present#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "6a0023b60eb821f1551ae4aefbdbb6f334e64ab4d3559566ae5123d15fb1ea9b",
+          "source_sha256": "f02d22cf9eaaf20594147a7b93fb722bd324215b11c087a7d74ca15db0667af8",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "lookahead-counts-do-not-overlap#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "60a743dba0eea842b93ff7abb8948e7f934663efaba4a4c7ac876150ba5463d3",
+          "source_sha256": "9e59fdf541c4a5e1c817cdf1afea9717a560fb0ff48beee53127d913726204db",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "lookahead-counts-do-not-overlap#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "7e3a64536713bfa49aeb3b5d6029d0185167e183af5880be162c12dc3b393f82",
+          "source_sha256": "9e59fdf541c4a5e1c817cdf1afea9717a560fb0ff48beee53127d913726204db",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "alternative-intersection-and-empty-branch#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "37cea46138a28cfab36ef9608031fa4b57229899475bab7daa6a1ce24b44cc4f",
+          "source_sha256": "170ed597020144a9a95aca3b8be51c3e9a3d5f1b920e6715d42eb8a05bb34a17",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "alternative-intersection-and-empty-branch#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "1ec955762fd17f40acc50c56da5907527489f1de519d9d47338dc83ffa80d51b",
+          "source_sha256": "170ed597020144a9a95aca3b8be51c3e9a3d5f1b920e6715d42eb8a05bb34a17",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "optional-groups-and-zero-repeats#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "76230f883442d5e4601aa15a1031ed9cf866fafcb83565c404bb696590933d12",
+          "source_sha256": "d207f9e1c036a12212a2cbcc97741658a3e7238fe2803e32480da3b6e89d55eb",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "optional-groups-and-zero-repeats#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "6d6b23599407a12b9ecc34005d7fdd6a180173f79d9b8b66d86bd3b5b0e9d195",
+          "source_sha256": "d207f9e1c036a12212a2cbcc97741658a3e7238fe2803e32480da3b6e89d55eb",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "backreferences-do-not-add-requirements#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "beb0dcd820fe8b143a0010038c86cebdb0e65c88cc4db5cbb63447d598f4efa6",
+          "source_sha256": "00c171883ec18af3e07ac771f5fc684ae8fea75ca4623b614b55097a4064bdb7",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "backreferences-do-not-add-requirements#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "95f408d8885f9d587465cea4677b0ff2c9c9936c90a7bfaa280658e61c4575e0",
+          "source_sha256": "00c171883ec18af3e07ac771f5fc684ae8fea75ca4623b614b55097a4064bdb7",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "ignore-case-canonicalization#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "2f9a3ace85a665e6276a32051c31987be7da71b69e848f8d1ffdc0bc8a524e8b",
+          "source_sha256": "c5c824d83356d4c9fdf845b3fb453f2e0b3fa10c7247031c77fd33ebe718ec46",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "ignore-case-canonicalization#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "6ea78fb9b725cae92cc888f9269f30259eb0056e75fd097a07fb225e9bffd7ed",
+          "source_sha256": "c5c824d83356d4c9fdf845b3fb453f2e0b3fa10c7247031c77fd33ebe718ec46",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "surrogate-code-unit-counts#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "00c0823571a9cbc901debcada971fef0fc4bf9006382d2b9e16d69f475cd2634",
+          "source_sha256": "94c0bc88ab7cd15ba57e76be3dfca340e116265987eb17566f0df48e44c22e62",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "surrogate-code-unit-counts#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "3a410d4f352aef3cc66ba3221bcf7f1580bbc0f7c9549b6d626499170feb7027",
+          "source_sha256": "94c0bc88ab7cd15ba57e76be3dfca340e116265987eb17566f0df48e44c22e62",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "global-start-and-reset#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "75fadaf71d4258e619808be71f4ec3cda935afc706e455c4b46be872e2fe8d3e",
+          "source_sha256": "92cb7567f645a6a5ccb867396dbed086a85eb9f1e669c060fc0d9ed60f6bc870",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "global-start-and-reset#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "4c8469f1706b8a318d79a476a9e20a4d35f2ae80d1e29226ed04df3d53cf0688",
+          "source_sha256": "92cb7567f645a6a5ccb867396dbed086a85eb9f1e669c060fc0d9ed60f6bc870",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "sticky-start-and-reset#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "7f2a9e0e72ef93e61e1d344381da07f09e2c66d4b8cf642cd727d5614c88081c",
+          "source_sha256": "de9b0fac141601de9eea817d275e876d0f50aeef55290422e36d49737825d69e",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "sticky-start-and-reset#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "04ca4beda3a142603092e167d54daebb505925d525cad0757e7e137afdbdb5ff",
+          "source_sha256": "de9b0fac141601de9eea817d275e876d0f50aeef55290422e36d49737825d69e",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "more-than-four-required-units#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "123d52704640bc9bba631dbff5d1f67ca8ff281dad701cd384ce17fbc2752e0a",
+          "source_sha256": "8322e8092452fdcba4b51882d57ff01ec8227985671627789f23aa149ccee83b",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "more-than-four-required-units#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "c525945c5cb0dfa9959973b4ece8d7c5f867fa30e44bb9fd580e3dc79ff49416",
+          "source_sha256": "8322e8092452fdcba4b51882d57ff01ec8227985671627789f23aa149ccee83b",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "saturating-positive-repeat-counts#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "7ad4eb193fc3e4c6cb10e318a46a9d81503875222c1f792bbfd86f28dd90f690",
+          "source_sha256": "36ca61bcdcef2ddb09a98a3d75cd097054f463404a13e0591a06d0d099ad9d7c",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "saturating-positive-repeat-counts#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "748cf8d29e2e963580d98cfbca554d6c615549f3f79f5da547128c9a6f194003",
+          "source_sha256": "36ca61bcdcef2ddb09a98a3d75cd097054f463404a13e0591a06d0d099ad9d7c",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      ]
+    },
+    "after": {
+      "binary_sha256": "ec1bcb3ee458ef6f6fa181a62ec10420824147415e247709c0458675a9856182",
+      "fixture_sha256": "b9a7721841537cc321653657cd44e9ecfbdbe370b2548ef393b83cdc3968099b",
+      "counts": {
+        "passed": 30
+      },
+      "cases": [
+        {
+          "id": "missing-second-hyphen#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "8f420abcace540fd65c5fe81652d92174b6b30205245d710a08cc27a2bfc6275",
+          "source_sha256": "00e3d740c0bec3fa058a293590711fd7e1220484caa0e050d51144107ba5e0ce",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "missing-second-hyphen#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "7d72de0ee87afa3898c631ebc5b64c642f85d48188b4501d08cf00fae409aae3",
+          "source_sha256": "00e3d740c0bec3fa058a293590711fd7e1220484caa0e050d51144107ba5e0ce",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "missing-closing-brackets#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "aaa56d16a585f573ae638e4b09879964e75ae9514afd44beefe063c6c65dbf3d",
+          "source_sha256": "249dd333650157cac2b94a56047d15b307d40d6a7ddd2f3137842801e542f0bb",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "missing-closing-brackets#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "f6a8fbd3b62280ca5afe990b9eb88e00e250293d57826288baee63bd0bafc032",
+          "source_sha256": "249dd333650157cac2b94a56047d15b307d40d6a7ddd2f3137842801e542f0bb",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "missing-question-mark#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "c4a145a0ccf6c70b0e83a6536a1ce52e221b207ee87ca69d4e8c71e7b1332c78",
+          "source_sha256": "1232a7f9010ccc45cb0a4c02e37821049e0ed1b000748e171aa3ef0716154c1a",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "missing-question-mark#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "3936c5d92a97e61de06c8c6aee1b01ae86bfa706cdf880c955b484c7707d0db4",
+          "source_sha256": "1232a7f9010ccc45cb0a4c02e37821049e0ed1b000748e171aa3ef0716154c1a",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "common-alternative-literal-missing#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "15d794059631b830d8d84a33e95cf872918665814afae67bcb73696388b254e2",
+          "source_sha256": "f38d97b96f141a9e0cce02d362504b3491f6a5e2ccd0e679e4b7d8ea25c11f2a",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "common-alternative-literal-missing#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "12361b1d11eed5822650a07913c4551996dbea569adcecb480e50115cdffe43c",
+          "source_sha256": "f38d97b96f141a9e0cce02d362504b3491f6a5e2ccd0e679e4b7d8ea25c11f2a",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "required-delimiters-present#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "4b15a2837cf3ff538678a6a9d5eec7dd4c19ca3ed98325bb27699263d43a8a00",
+          "source_sha256": "f02d22cf9eaaf20594147a7b93fb722bd324215b11c087a7d74ca15db0667af8",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "required-delimiters-present#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "6a0023b60eb821f1551ae4aefbdbb6f334e64ab4d3559566ae5123d15fb1ea9b",
+          "source_sha256": "f02d22cf9eaaf20594147a7b93fb722bd324215b11c087a7d74ca15db0667af8",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "lookahead-counts-do-not-overlap#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "60a743dba0eea842b93ff7abb8948e7f934663efaba4a4c7ac876150ba5463d3",
+          "source_sha256": "9e59fdf541c4a5e1c817cdf1afea9717a560fb0ff48beee53127d913726204db",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "lookahead-counts-do-not-overlap#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "7e3a64536713bfa49aeb3b5d6029d0185167e183af5880be162c12dc3b393f82",
+          "source_sha256": "9e59fdf541c4a5e1c817cdf1afea9717a560fb0ff48beee53127d913726204db",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "alternative-intersection-and-empty-branch#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "37cea46138a28cfab36ef9608031fa4b57229899475bab7daa6a1ce24b44cc4f",
+          "source_sha256": "170ed597020144a9a95aca3b8be51c3e9a3d5f1b920e6715d42eb8a05bb34a17",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "alternative-intersection-and-empty-branch#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "1ec955762fd17f40acc50c56da5907527489f1de519d9d47338dc83ffa80d51b",
+          "source_sha256": "170ed597020144a9a95aca3b8be51c3e9a3d5f1b920e6715d42eb8a05bb34a17",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "optional-groups-and-zero-repeats#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "76230f883442d5e4601aa15a1031ed9cf866fafcb83565c404bb696590933d12",
+          "source_sha256": "d207f9e1c036a12212a2cbcc97741658a3e7238fe2803e32480da3b6e89d55eb",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "optional-groups-and-zero-repeats#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "6d6b23599407a12b9ecc34005d7fdd6a180173f79d9b8b66d86bd3b5b0e9d195",
+          "source_sha256": "d207f9e1c036a12212a2cbcc97741658a3e7238fe2803e32480da3b6e89d55eb",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "backreferences-do-not-add-requirements#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "beb0dcd820fe8b143a0010038c86cebdb0e65c88cc4db5cbb63447d598f4efa6",
+          "source_sha256": "00c171883ec18af3e07ac771f5fc684ae8fea75ca4623b614b55097a4064bdb7",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "backreferences-do-not-add-requirements#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "95f408d8885f9d587465cea4677b0ff2c9c9936c90a7bfaa280658e61c4575e0",
+          "source_sha256": "00c171883ec18af3e07ac771f5fc684ae8fea75ca4623b614b55097a4064bdb7",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "ignore-case-canonicalization#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "2f9a3ace85a665e6276a32051c31987be7da71b69e848f8d1ffdc0bc8a524e8b",
+          "source_sha256": "c5c824d83356d4c9fdf845b3fb453f2e0b3fa10c7247031c77fd33ebe718ec46",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "ignore-case-canonicalization#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "6ea78fb9b725cae92cc888f9269f30259eb0056e75fd097a07fb225e9bffd7ed",
+          "source_sha256": "c5c824d83356d4c9fdf845b3fb453f2e0b3fa10c7247031c77fd33ebe718ec46",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "surrogate-code-unit-counts#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "00c0823571a9cbc901debcada971fef0fc4bf9006382d2b9e16d69f475cd2634",
+          "source_sha256": "94c0bc88ab7cd15ba57e76be3dfca340e116265987eb17566f0df48e44c22e62",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "surrogate-code-unit-counts#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "3a410d4f352aef3cc66ba3221bcf7f1580bbc0f7c9549b6d626499170feb7027",
+          "source_sha256": "94c0bc88ab7cd15ba57e76be3dfca340e116265987eb17566f0df48e44c22e62",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "global-start-and-reset#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "75fadaf71d4258e619808be71f4ec3cda935afc706e455c4b46be872e2fe8d3e",
+          "source_sha256": "92cb7567f645a6a5ccb867396dbed086a85eb9f1e669c060fc0d9ed60f6bc870",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "global-start-and-reset#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "4c8469f1706b8a318d79a476a9e20a4d35f2ae80d1e29226ed04df3d53cf0688",
+          "source_sha256": "92cb7567f645a6a5ccb867396dbed086a85eb9f1e669c060fc0d9ed60f6bc870",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "sticky-start-and-reset#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "7f2a9e0e72ef93e61e1d344381da07f09e2c66d4b8cf642cd727d5614c88081c",
+          "source_sha256": "de9b0fac141601de9eea817d275e876d0f50aeef55290422e36d49737825d69e",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "sticky-start-and-reset#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "04ca4beda3a142603092e167d54daebb505925d525cad0757e7e137afdbdb5ff",
+          "source_sha256": "de9b0fac141601de9eea817d275e876d0f50aeef55290422e36d49737825d69e",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "more-than-four-required-units#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "123d52704640bc9bba631dbff5d1f67ca8ff281dad701cd384ce17fbc2752e0a",
+          "source_sha256": "8322e8092452fdcba4b51882d57ff01ec8227985671627789f23aa149ccee83b",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "more-than-four-required-units#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "c525945c5cb0dfa9959973b4ece8d7c5f867fa30e44bb9fd580e3dc79ff49416",
+          "source_sha256": "8322e8092452fdcba4b51882d57ff01ec8227985671627789f23aa149ccee83b",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "saturating-positive-repeat-counts#sloppy",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "sloppy",
+          "case_sha256": "7ad4eb193fc3e4c6cb10e318a46a9d81503875222c1f792bbfd86f28dd90f690",
+          "source_sha256": "36ca61bcdcef2ddb09a98a3d75cd097054f463404a13e0591a06d0d099ad9d7c",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        },
+        {
+          "id": "saturating-positive-repeat-counts#strict",
+          "file": "tests/conformance/regexp-required-literals.js",
+          "mode": "strict",
+          "case_sha256": "748cf8d29e2e963580d98cfbca554d6c615549f3f79f5da547128c9a6f194003",
+          "source_sha256": "36ca61bcdcef2ddb09a98a3d75cd097054f463404a13e0591a06d0d099ad9d7c",
+          "expected_negative": null,
+          "status": "passed",
+          "observation": {
+            "status": "complete",
+            "phase": "runtime",
+            "error_type": "",
+            "error_identity": "",
+            "message": "",
+            "harness": ""
+          }
+        }
+      ]
+    }
+  },
+  "differential": {
+    "identical_parses": 3888,
+    "identical_matches": 106040,
+    "source": "#![allow(dead_code)]\n#[path=\"/tmp/eris-before-js_string.rs\"] mod js_string;\n#[path=\"/tmp/eris-matching-old-regexp.rs\"] mod old;\n#[path=\"/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/regexp.rs\"] mod new;\nuse js_string::JsString;\nfn ob()->old::Budget{old::Budget{steps:100_000,allocated:0,heap_limit:8*1024*1024,stack_limit:22}}\nfn nb()->new::Budget{new::Budget{steps:100_000,allocated:0,heap_limit:8*1024*1024,stack_limit:22}}\nfn main(){\n let atoms=[\"a\",\"b\",\".\",\"[ab]\",\"[^a]\",\"[\\\\d]\",\"[\\\\s]\",\"[^]\",\"[]\",\"()\",\"(a)\",\"(?:a|)\",\"(a|ab)\",\"(a(b)?)\",\"(?=a)\",\"(?!b)\",\"(?<x>a)\",\"(a)\\\\1\",\"(a)?\\\\1\",\"\\\\b\",\"^\",\"$\",\"\\\\uD800\",\"{x}\"];\n let suffixes=[\"\",\"?\",\"*\",\"+\",\"??\",\"*?\",\"{0}\",\"{2,3}\",\"{2,1}\"];\n let tails=[\"\",\"b\",\"|a\",\"|\",\"(a)?\",\"$\",\"(?!b)\",\"\\\\k<x>\",\")\"];\n let inputs=[\"\",\"a\",\"b\",\"ab\",\"aa\",\"aba\",\"aab\",\"abba\",\"\\na\",\"A\",\"\ud83d\ude00\"];\n let mut parses=0;let mut matches=0;\n for atom in atoms{for suffix in suffixes{for tail in tails{for flags in [\"\",\"im\"]{\n  let source=format!(\"{atom}{suffix}{tail}\");\n  let a=old::RegExp::compile(source.clone().into(),&flags.into(),&mut ob());\n  let b=new::RegExp::compile(source.clone().into(),&flags.into(),&mut nb());parses+=1;\n  match(a,b){\n   (Ok(a),Ok(b))=>for input in inputs{let text=JsString::from(input);for sticky in [false,true]{for start in [0,1]{\n    let x=a.find(text.units(),start,sticky,&mut ob()).map(|x|x.map(|m|m.captures));\n    let y=b.find(text.units(),start,sticky,&mut nb()).map(|x|x.map(|m|m.captures));\n    assert_eq!(format!(\"{x:?}\"),format!(\"{y:?}\"),\"/{source}/{flags} input={input:?} start={start} sticky={sticky}\");matches+=1;\n   }}},\n   (Err(a),Err(b))=>assert_eq!(format!(\"{a:?}\"),format!(\"{b:?}\"),\"/{source}/{flags}\"),\n   (a,b)=>panic!(\"compile difference /{source}/{flags}: {a:?} {b:?}\")\n  }\n }}}}\n println!(\"PASS: {parses} identical parse outcomes; {matches} identical full capture/error outcomes (two flags, two start indices, sticky and scanning)\");\n}\n",
+    "source_sha256": "bd97113d45710a5565db5725deb7a39e07ee1a00ab4c656d8f694913caca1b66",
+    "old_parser_sha256": "19d3035116585b1f045340f3fd8a8420ebe2b01e946f3973d931763777ce603b",
+    "new_parser_sha256": "d0b35579fb179c53f8497b06e13e6608e7402d53ea22f1e9668427ba216bf801",
+    "independent_conformance_oracle": false
+  },
+  "microbenchmark": {
+    "compiler": "rustc 1.95.0 (59807616e 2026-04-14)",
+    "source": "#![allow(dead_code)]\n#[path=\"/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/js_string.rs\"] mod js_string;\n#[path=\"/tmp/eris-matching-old-regexp.rs\"] mod old;\n#[path=\"/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/regexp.rs\"] mod new;\nuse js_string::JsString;\nuse std::{hint::black_box,time::Instant};\nmacro_rules! benchmark {($name:ident,$module:ident)=>{\nfn $name(source:&str,text:&str,iterations:usize,compile_only:bool)->(u128,usize,usize,usize) {\n let make=||$module::Budget{steps:100_000,allocated:0,heap_limit:8*1024*1024,stack_limit:22};\n let pattern=JsString::from(source);let flags=JsString::from(\"\");let text=JsString::from(text);\n let compiled=$module::RegExp::compile(pattern.clone(),&flags,&mut make()).unwrap();\n let started=Instant::now();let mut pass=0;let mut miss=0;let mut error=0;\n for _ in 0..iterations {\n  let mut b=make();\n  if compile_only {black_box($module::RegExp::compile(pattern.clone(),&flags,&mut b).unwrap());pass+=1;}\n  else {match black_box(compiled.find(text.units(),0,false,&mut b)){Ok(Some(_))=>pass+=1,Ok(None)=>miss+=1,Err(_)=>error+=1}}\n }\n (started.elapsed().as_nanos(),pass,miss,error)\n}}}\nbenchmark!(old_run,old);benchmark!(new_run,new);\nfn main(){\n let cases=[\n (\"literal-match\",\"hello\".to_string(),\"hello\".to_string(),10000,false),\n (\"literal-compile\",\"hello\".to_string(),\"\".to_string(),10000,true),\n (\"repeat-compile\",\"a+b\".to_string(),\"\".to_string(),10000,true),\n (\"repeat-short-match\",\"a+b\".to_string(),\"aaab\".to_string(),10000,false),\n (\"repeat-early-match\",\"a+b\".to_string(),format!(\"ab{}\",\"x\".repeat(512)),10000,false),\n (\"repeat-long-match\",\"a+b\".to_string(),format!(\"{}b\",\"a\".repeat(512)),500,false),\n (\"prefix-missing\",\"z+\".to_string(),\"a\".repeat(512),1000,false),\n (\"class-repeat\",\"[ab]+\".to_string(),\"a\".repeat(512),500,false),\n (\"delimiter-missing\",\"[^?]*\\\\?+\".to_string(),\"a\".repeat(512),200,false),\n (\"xml-compile\",std::fs::read_to_string(\"/tmp/eris-regexp-xml-inputs/23.txt\").unwrap(),\"\".to_string(),1000,true),\n ];\n for (name,source,text,n,compile) in cases {\n  old_run(&source,&text,16,compile);new_run(&source,&text,16,compile);\n  for sample in 0..7 {\n   let (a,b)=if sample%2==0{let a=old_run(&source,&text,n,compile);let b=new_run(&source,&text,n,compile);(a,b)}else{let b=new_run(&source,&text,n,compile);let a=old_run(&source,&text,n,compile);(a,b)};\n   println!(\"{name}\\t{sample}\\t{n}\\t{}\\t{}\\t{:?}\\t{:?}\",a.0,b.0,(a.1,a.2,a.3),(b.1,b.2,b.3));\n  }\n }\n}\n",
+    "source_sha256": "b22255277fb955377aef30436af85a25fe507a4067050e53f15f776313f80376",
+    "engine_sha256": "d0b35579fb179c53f8497b06e13e6608e7402d53ea22f1e9668427ba216bf801",
+    "prior_engine_sha256": "19d3035116585b1f045340f3fd8a8420ebe2b01e946f3973d931763777ce603b",
+    "cases": {
+      "literal-match": {
+        "before_median_ns": 96.2245,
+        "after_median_ns": 96.2425,
+        "ratio": 1.0001870625464409,
+        "samples": [
+          {
+            "sample": 0,
+            "iterations": 10000,
+            "before_ns": 1186269,
+            "after_ns": 995017,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 1,
+            "iterations": 10000,
+            "before_ns": 1026868,
+            "after_ns": 986611,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 2,
+            "iterations": 10000,
+            "before_ns": 954650,
+            "after_ns": 954510,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 3,
+            "iterations": 10000,
+            "before_ns": 962245,
+            "after_ns": 964008,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 4,
+            "iterations": 10000,
+            "before_ns": 978015,
+            "after_ns": 962425,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 5,
+            "iterations": 10000,
+            "before_ns": 941596,
+            "after_ns": 961714,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 6,
+            "iterations": 10000,
+            "before_ns": 949891,
+            "after_ns": 939912,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          }
+        ]
+      },
+      "literal-compile": {
+        "before_median_ns": 234.7652,
+        "after_median_ns": 243.3304,
+        "ratio": 1.0364841126367963,
+        "samples": [
+          {
+            "sample": 0,
+            "iterations": 10000,
+            "before_ns": 3207212,
+            "after_ns": 2617544,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 1,
+            "iterations": 10000,
+            "before_ns": 2325039,
+            "after_ns": 2431281,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 2,
+            "iterations": 10000,
+            "before_ns": 2338084,
+            "after_ns": 2713456,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 3,
+            "iterations": 10000,
+            "before_ns": 2346310,
+            "after_ns": 2525719,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 4,
+            "iterations": 10000,
+            "before_ns": 2360045,
+            "after_ns": 2433304,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 5,
+            "iterations": 10000,
+            "before_ns": 2347652,
+            "after_ns": 2412405,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 6,
+            "iterations": 10000,
+            "before_ns": 2391104,
+            "after_ns": 2433165,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          }
+        ]
+      },
+      "repeat-compile": {
+        "before_median_ns": 274.211,
+        "after_median_ns": 328.529,
+        "ratio": 1.19808833343666,
+        "samples": [
+          {
+            "sample": 0,
+            "iterations": 10000,
+            "before_ns": 2764262,
+            "after_ns": 3313915,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 1,
+            "iterations": 10000,
+            "before_ns": 2766306,
+            "after_ns": 3323542,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 2,
+            "iterations": 10000,
+            "before_ns": 2741709,
+            "after_ns": 3259992,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 3,
+            "iterations": 10000,
+            "before_ns": 2752610,
+            "after_ns": 3285290,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 4,
+            "iterations": 10000,
+            "before_ns": 2729606,
+            "after_ns": 3277836,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 5,
+            "iterations": 10000,
+            "before_ns": 2735337,
+            "after_ns": 3308464,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 6,
+            "iterations": 10000,
+            "before_ns": 2742110,
+            "after_ns": 3272135,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          }
+        ]
+      },
+      "repeat-short-match": {
+        "before_median_ns": 158.3613,
+        "after_median_ns": 167.8674,
+        "ratio": 1.0600279234888828,
+        "samples": [
+          {
+            "sample": 0,
+            "iterations": 10000,
+            "before_ns": 1578523,
+            "after_ns": 1706316,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 1,
+            "iterations": 10000,
+            "before_ns": 1570067,
+            "after_ns": 1625273,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 2,
+            "iterations": 10000,
+            "before_ns": 1581640,
+            "after_ns": 1678674,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 3,
+            "iterations": 10000,
+            "before_ns": 1593031,
+            "after_ns": 1636103,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 4,
+            "iterations": 10000,
+            "before_ns": 1583613,
+            "after_ns": 1756942,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 5,
+            "iterations": 10000,
+            "before_ns": 1589725,
+            "after_ns": 1699903,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 6,
+            "iterations": 10000,
+            "before_ns": 1594984,
+            "after_ns": 1649558,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          }
+        ]
+      },
+      "repeat-early-match": {
+        "before_median_ns": 115.5371,
+        "after_median_ns": 116.6141,
+        "ratio": 1.00932168108772,
+        "samples": [
+          {
+            "sample": 0,
+            "iterations": 10000,
+            "before_ns": 1135814,
+            "after_ns": 1166141,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 1,
+            "iterations": 10000,
+            "before_ns": 1312829,
+            "after_ns": 1212490,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 2,
+            "iterations": 10000,
+            "before_ns": 1143167,
+            "after_ns": 1194826,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 3,
+            "iterations": 10000,
+            "before_ns": 1155371,
+            "after_ns": 1179066,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 4,
+            "iterations": 10000,
+            "before_ns": 1150693,
+            "after_ns": 1160020,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 5,
+            "iterations": 10000,
+            "before_ns": 1155441,
+            "after_ns": 1159770,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          },
+          {
+            "sample": 6,
+            "iterations": 10000,
+            "before_ns": 1162203,
+            "after_ns": 1165480,
+            "before_outcomes": "(10000, 0, 0)",
+            "after_outcomes": "(10000, 0, 0)"
+          }
+        ]
+      },
+      "repeat-long-match": {
+        "before_median_ns": 16804.968,
+        "after_median_ns": 17116.98,
+        "ratio": 1.0185666524327806,
+        "samples": [
+          {
+            "sample": 0,
+            "iterations": 500,
+            "before_ns": 8186705,
+            "after_ns": 8492365,
+            "before_outcomes": "(500, 0, 0)",
+            "after_outcomes": "(500, 0, 0)"
+          },
+          {
+            "sample": 1,
+            "iterations": 500,
+            "before_ns": 10550969,
+            "after_ns": 8479259,
+            "before_outcomes": "(500, 0, 0)",
+            "after_outcomes": "(500, 0, 0)"
+          },
+          {
+            "sample": 2,
+            "iterations": 500,
+            "before_ns": 8291423,
+            "after_ns": 10743944,
+            "before_outcomes": "(500, 0, 0)",
+            "after_outcomes": "(500, 0, 0)"
+          },
+          {
+            "sample": 3,
+            "iterations": 500,
+            "before_ns": 8402484,
+            "after_ns": 8558490,
+            "before_outcomes": "(500, 0, 0)",
+            "after_outcomes": "(500, 0, 0)"
+          },
+          {
+            "sample": 4,
+            "iterations": 500,
+            "before_ns": 8387355,
+            "after_ns": 8478558,
+            "before_outcomes": "(500, 0, 0)",
+            "after_outcomes": "(500, 0, 0)"
+          },
+          {
+            "sample": 5,
+            "iterations": 500,
+            "before_ns": 8409167,
+            "after_ns": 8720277,
+            "before_outcomes": "(500, 0, 0)",
+            "after_outcomes": "(500, 0, 0)"
+          },
+          {
+            "sample": 6,
+            "iterations": 500,
+            "before_ns": 8479981,
+            "after_ns": 8680011,
+            "before_outcomes": "(500, 0, 0)",
+            "after_outcomes": "(500, 0, 0)"
+          }
+        ]
+      },
+      "prefix-missing": {
+        "before_median_ns": 2939.945,
+        "after_median_ns": 214.537,
+        "ratio": 0.07297313385114347,
+        "samples": [
+          {
+            "sample": 0,
+            "iterations": 1000,
+            "before_ns": 3039844,
+            "after_ns": 214607,
+            "before_outcomes": "(0, 1000, 0)",
+            "after_outcomes": "(0, 1000, 0)"
+          },
+          {
+            "sample": 1,
+            "iterations": 1000,
+            "before_ns": 2939945,
+            "after_ns": 214506,
+            "before_outcomes": "(0, 1000, 0)",
+            "after_outcomes": "(0, 1000, 0)"
+          },
+          {
+            "sample": 2,
+            "iterations": 1000,
+            "before_ns": 2893998,
+            "after_ns": 214537,
+            "before_outcomes": "(0, 1000, 0)",
+            "after_outcomes": "(0, 1000, 0)"
+          },
+          {
+            "sample": 3,
+            "iterations": 1000,
+            "before_ns": 2899479,
+            "after_ns": 235166,
+            "before_outcomes": "(0, 1000, 0)",
+            "after_outcomes": "(0, 1000, 0)"
+          },
+          {
+            "sample": 4,
+            "iterations": 1000,
+            "before_ns": 3007143,
+            "after_ns": 226550,
+            "before_outcomes": "(0, 1000, 0)",
+            "after_outcomes": "(0, 1000, 0)"
+          },
+          {
+            "sample": 5,
+            "iterations": 1000,
+            "before_ns": 3003686,
+            "after_ns": 213244,
+            "before_outcomes": "(0, 1000, 0)",
+            "after_outcomes": "(0, 1000, 0)"
+          },
+          {
+            "sample": 6,
+            "iterations": 1000,
+            "before_ns": 2903997,
+            "after_ns": 214366,
+            "before_outcomes": "(0, 1000, 0)",
+            "after_outcomes": "(0, 1000, 0)"
+          }
+        ]
+      },
+      "class-repeat": {
+        "before_median_ns": 12633.518,
+        "after_median_ns": 12728.878,
+        "ratio": 1.007548174625627,
+        "samples": [
+          {
+            "sample": 0,
+            "iterations": 500,
+            "before_ns": 6406890,
+            "after_ns": 6359871,
+            "before_outcomes": "(500, 0, 0)",
+            "after_outcomes": "(500, 0, 0)"
+          },
+          {
+            "sample": 1,
+            "iterations": 500,
+            "before_ns": 6294577,
+            "after_ns": 6392553,
+            "before_outcomes": "(500, 0, 0)",
+            "after_outcomes": "(500, 0, 0)"
+          },
+          {
+            "sample": 2,
+            "iterations": 500,
+            "before_ns": 6293975,
+            "after_ns": 6364439,
+            "before_outcomes": "(500, 0, 0)",
+            "after_outcomes": "(500, 0, 0)"
+          },
+          {
+            "sample": 3,
+            "iterations": 500,
+            "before_ns": 6548158,
+            "after_ns": 6348579,
+            "before_outcomes": "(500, 0, 0)",
+            "after_outcomes": "(500, 0, 0)"
+          },
+          {
+            "sample": 4,
+            "iterations": 500,
+            "before_ns": 6305167,
+            "after_ns": 6416128,
+            "before_outcomes": "(500, 0, 0)",
+            "after_outcomes": "(500, 0, 0)"
+          },
+          {
+            "sample": 5,
+            "iterations": 500,
+            "before_ns": 6523230,
+            "after_ns": 6373025,
+            "before_outcomes": "(500, 0, 0)",
+            "after_outcomes": "(500, 0, 0)"
+          },
+          {
+            "sample": 6,
+            "iterations": 500,
+            "before_ns": 6316759,
+            "after_ns": 6364059,
+            "before_outcomes": "(500, 0, 0)",
+            "after_outcomes": "(500, 0, 0)"
+          }
+        ]
+      },
+      "delimiter-missing": {
+        "before_median_ns": 647587.565,
+        "after_median_ns": 214.06,
+        "ratio": 0.000330549892507587,
+        "samples": [
+          {
+            "sample": 0,
+            "iterations": 200,
+            "before_ns": 132304929,
+            "after_ns": 43042,
+            "before_outcomes": "(0, 0, 200)",
+            "after_outcomes": "(0, 200, 0)"
+          },
+          {
+            "sample": 1,
+            "iterations": 200,
+            "before_ns": 133139793,
+            "after_ns": 42671,
+            "before_outcomes": "(0, 0, 200)",
+            "after_outcomes": "(0, 200, 0)"
+          },
+          {
+            "sample": 2,
+            "iterations": 200,
+            "before_ns": 130500337,
+            "after_ns": 42812,
+            "before_outcomes": "(0, 0, 200)",
+            "after_outcomes": "(0, 200, 0)"
+          },
+          {
+            "sample": 3,
+            "iterations": 200,
+            "before_ns": 129517513,
+            "after_ns": 42711,
+            "before_outcomes": "(0, 0, 200)",
+            "after_outcomes": "(0, 200, 0)"
+          },
+          {
+            "sample": 4,
+            "iterations": 200,
+            "before_ns": 128432946,
+            "after_ns": 42851,
+            "before_outcomes": "(0, 0, 200)",
+            "after_outcomes": "(0, 200, 0)"
+          },
+          {
+            "sample": 5,
+            "iterations": 200,
+            "before_ns": 127738129,
+            "after_ns": 42721,
+            "before_outcomes": "(0, 0, 200)",
+            "after_outcomes": "(0, 200, 0)"
+          },
+          {
+            "sample": 6,
+            "iterations": 200,
+            "before_ns": 128764395,
+            "after_ns": 42821,
+            "before_outcomes": "(0, 0, 200)",
+            "after_outcomes": "(0, 200, 0)"
+          }
+        ]
+      },
+      "xml-compile": {
+        "before_median_ns": 26033.349,
+        "after_median_ns": 29467.261,
+        "ratio": 1.1319043508386109,
+        "samples": [
+          {
+            "sample": 0,
+            "iterations": 1000,
+            "before_ns": 25976461,
+            "after_ns": 29620472,
+            "before_outcomes": "(1000, 0, 0)",
+            "after_outcomes": "(1000, 0, 0)"
+          },
+          {
+            "sample": 1,
+            "iterations": 1000,
+            "before_ns": 26458495,
+            "after_ns": 29832945,
+            "before_outcomes": "(1000, 0, 0)",
+            "after_outcomes": "(1000, 0, 0)"
+          },
+          {
+            "sample": 2,
+            "iterations": 1000,
+            "before_ns": 25909634,
+            "after_ns": 29929578,
+            "before_outcomes": "(1000, 0, 0)",
+            "after_outcomes": "(1000, 0, 0)"
+          },
+          {
+            "sample": 3,
+            "iterations": 1000,
+            "before_ns": 26043167,
+            "after_ns": 29425602,
+            "before_outcomes": "(1000, 0, 0)",
+            "after_outcomes": "(1000, 0, 0)"
+          },
+          {
+            "sample": 4,
+            "iterations": 1000,
+            "before_ns": 26061933,
+            "after_ns": 29467261,
+            "before_outcomes": "(1000, 0, 0)",
+            "after_outcomes": "(1000, 0, 0)"
+          },
+          {
+            "sample": 5,
+            "iterations": 1000,
+            "before_ns": 26013130,
+            "after_ns": 29297739,
+            "before_outcomes": "(1000, 0, 0)",
+            "after_outcomes": "(1000, 0, 0)"
+          },
+          {
+            "sample": 6,
+            "iterations": 1000,
+            "before_ns": 26033349,
+            "after_ns": 29426053,
+            "before_outcomes": "(1000, 0, 0)",
+            "after_outcomes": "(1000, 0, 0)"
+          }
+        ]
+      }
+    },
+    "scope": "Synthetic direct compile/find calls, seven alternating samples per case, warmups, no browser workload or Chromium comparison. The old delimiter-missing case exhausts its work budget, so its ratio is not a completed-work speedup."
+  },
+  "xml_direct_vm_probe": {
+    "before": "xml\t0\t5\tcompile=16\twork=613\theap=22988\telapsed_us=12\tOk(Some((1, 98)))\nxml\t1\t6\tcompile=24\twork=1844\theap=67608\telapsed_us=36\tOk(Some((0, 258)))\nxml\t2\t20\tcompile=90\twork=100000\theap=3203184\telapsed_us=696\tErr(Resource(\"regular expression work limit exceeded\"))\nxml\t3\t22\tcompile=95\twork=100000\theap=3214008\telapsed_us=503\tErr(Resource(\"regular expression work limit exceeded\"))\nxml\t4\t22\tcompile=86\twork=100000\theap=3213320\telapsed_us=554\tErr(Resource(\"regular expression work limit exceeded\"))\nxml\t5\t54\tcompile=150\twork=100000\theap=3200104\telapsed_us=377\tErr(Resource(\"regular expression work limit exceeded\"))\nxml\t6\t10\tcompile=27\twork=101\theap=1984\telapsed_us=2\tOk(Some((5, 6)))\nxml\t7\t23\tcompile=44\twork=65\theap=2108\telapsed_us=1\tOk(Some((1, 2)))\nxml\t8\t28\tcompile=52\twork=76\theap=2224\telapsed_us=1\tOk(Some((1, 2)))\nxml\t9\t56\tcompile=131\twork=295\theap=9128\telapsed_us=5\tOk(Some((1, 5)))\nxml\t10\t15\tcompile=61\twork=364\theap=11212\telapsed_us=5\tOk(Some((12, 42)))\nxml\t11\t153\tcompile=289\twork=610\theap=18892\telapsed_us=7\tOk(Some((5, 11)))\nxml\t12\t30\tcompile=165\twork=1530\theap=50312\telapsed_us=15\tOk(Some((1, 95)))\nxml\t13\t9\tcompile=22\twork=66\theap=1332\telapsed_us=2\tOk(Some((5, 6)))\nxml\t14\t8\tcompile=31\twork=100000\theap=3514808\telapsed_us=856\tErr(Resource(\"regular expression work limit exceeded\"))\nxml\t15\t38\tcompile=100\twork=100000\theap=3341312\telapsed_us=852\tErr(Resource(\"regular expression work limit exceeded\"))\nxml\t16\t233\tcompile=647\twork=967\theap=36972\telapsed_us=19\tOk(Some((5, 6)))\nxml\t17\t424\tcompile=814\twork=1466\theap=52040\telapsed_us=23\tOk(Some((5, 11)))\nxml\t18\t529\tcompile=1042\twork=3708\theap=44828\telapsed_us=28\tOk(None)\nxml\t19\t97\tcompile=263\twork=12422\theap=419876\telapsed_us=147\tOk(Some((1, 5)))\nxml\t20\t71\tcompile=211\twork=467\theap=15332\telapsed_us=20\tOk(Some((1, 6)))\nxml\t21\t17\tcompile=65\twork=398\theap=11284\telapsed_us=6\tOk(Some((12, 42)))\nxml\t22\t188\tcompile=542\twork=3769\theap=123088\telapsed_us=26\tOk(Some((1, 95)))\nxml\t23\t907\tcompile=2216\twork=10769\theap=381556\telapsed_us=59\tOk(Some((0, 95)))\nxml\t24\t913\tcompile=2235\twork=10845\theap=384420\telapsed_us=56\tOk(Some((0, 95)))\nparse\tcapture\t16\twork=135\theap=11380\tOk(())\nparse\tnoncapture\t16\twork=135\theap=9460\tOk(())\nparse\tflat\t16\twork=130\theap=6872\tOk(())\nparse\tcapture\t22\twork=183\theap=16084\tOk(())\nparse\tnoncapture\t22\twork=183\theap=13444\tOk(())\nparse\tflat\t22\twork=178\theap=9336\tOk(())\nparse\tcapture\t23\twork=191\theap=16484\tOk(())\nparse\tnoncapture\t23\twork=191\theap=13724\tOk(())\nparse\tflat\t23\twork=186\theap=9704\tOk(())\nparse\tcapture\t32\twork=263\theap=22644\tOk(())\nparse\tnoncapture\t32\twork=263\theap=18804\tOk(())\nparse\tflat\t32\twork=258\theap=13016\tOk(())\nparse\tcapture\t64\twork=519\theap=45172\tOk(())\nparse\tnoncapture\t64\twork=519\theap=37492\tOk(())\nparse\tflat\t64\twork=514\theap=25304\tOk(())\nparse\tcapture\t128\twork=1031\theap=90228\tOk(())\nparse\tnoncapture\t128\twork=1031\theap=74868\tOk(())\nparse\tflat\t128\twork=1026\theap=49880\tOk(())\nparse\tcapture\t129\twork=1039\theap=109060\tOk(())\nparse\tnoncapture\t129\twork=1039\theap=93580\tOk(())\nparse\tflat\t129\twork=1034\theap=52296\tOk(())\nparse\tcapture\t200\twork=1607\theap=137460\tOk(())\nparse\tnoncapture\t200\twork=1607\theap=113460\tOk(())\nparse\tflat\t200\twork=1602\theap=78424\tOk(())\n",
+    "after": "xml\t0\t5\tcompile=16\twork=613\theap=23036\telapsed_us=10\tOk(Some((1, 98)))\nxml\t1\t6\tcompile=31\twork=2368\theap=67848\telapsed_us=31\tOk(Some((0, 258)))\nxml\t2\t20\tcompile=113\twork=1446\theap=5600\telapsed_us=4\tOk(None)\nxml\t3\t22\tcompile=121\twork=1454\theap=6024\telapsed_us=3\tOk(None)\nxml\t4\t22\tcompile=111\twork=1444\theap=5688\telapsed_us=3\tOk(None)\nxml\t5\t54\tcompile=210\twork=2210\theap=9544\telapsed_us=4\tOk(None)\nxml\t6\t10\tcompile=34\twork=108\theap=2320\telapsed_us=1\tOk(Some((5, 6)))\nxml\t7\t23\tcompile=44\twork=65\theap=2156\telapsed_us=1\tOk(Some((1, 2)))\nxml\t8\t28\tcompile=52\twork=76\theap=2272\telapsed_us=1\tOk(Some((1, 2)))\nxml\t9\t56\tcompile=157\twork=321\theap=10040\telapsed_us=4\tOk(Some((1, 5)))\nxml\t10\t15\tcompile=87\twork=390\theap=11788\telapsed_us=4\tOk(Some((12, 42)))\nxml\t11\t153\tcompile=384\twork=705\theap=21868\telapsed_us=7\tOk(Some((5, 11)))\nxml\t12\t30\tcompile=202\twork=1758\theap=51272\telapsed_us=15\tOk(Some((1, 95)))\nxml\t13\t9\tcompile=22\twork=66\theap=1380\telapsed_us=1\tOk(Some((5, 6)))\nxml\t14\t8\tcompile=40\twork=1373\theap=2136\telapsed_us=1\tOk(None)\nxml\t15\t38\tcompile=148\twork=2148\theap=6448\telapsed_us=4\tOk(None)\nxml\t16\t233\tcompile=883\twork=1203\theap=42396\telapsed_us=15\tOk(Some((5, 6)))\nxml\t17\t424\tcompile=1182\twork=1834\theap=61592\telapsed_us=18\tOk(Some((5, 11)))\nxml\t18\t529\tcompile=1601\twork=4267\theap=57884\telapsed_us=25\tOk(None)\nxml\t19\t97\tcompile=340\twork=12499\theap=421940\telapsed_us=133\tOk(Some((1, 5)))\nxml\t20\t71\tcompile=250\twork=506\theap=16724\telapsed_us=12\tOk(Some((1, 6)))\nxml\t21\t17\tcompile=91\twork=424\theap=11860\telapsed_us=4\tOk(Some((12, 42)))\nxml\t22\t188\tcompile=670\twork=3897\theap=127168\telapsed_us=24\tOk(Some((1, 95)))\nxml\t23\t907\tcompile=3056\twork=11612\theap=402916\telapsed_us=62\tOk(Some((0, 95)))\nxml\t24\t913\tcompile=3081\twork=11691\theap=405972\telapsed_us=69\tOk(Some((0, 95)))\nparse\tcapture\t16\twork=135\theap=11428\tOk(())\nparse\tnoncapture\t16\twork=135\theap=9508\tOk(())\nparse\tflat\t16\twork=130\theap=6920\tOk(())\nparse\tcapture\t22\twork=183\theap=16132\tOk(())\nparse\tnoncapture\t22\twork=183\theap=13492\tOk(())\nparse\tflat\t22\twork=178\theap=9384\tOk(())\nparse\tcapture\t23\twork=191\theap=16532\tOk(())\nparse\tnoncapture\t23\twork=191\theap=13772\tOk(())\nparse\tflat\t23\twork=186\theap=9752\tOk(())\nparse\tcapture\t32\twork=263\theap=22692\tOk(())\nparse\tnoncapture\t32\twork=263\theap=18852\tOk(())\nparse\tflat\t32\twork=258\theap=13064\tOk(())\nparse\tcapture\t64\twork=519\theap=45220\tOk(())\nparse\tnoncapture\t64\twork=519\theap=37540\tOk(())\nparse\tflat\t64\twork=514\theap=25352\tOk(())\nparse\tcapture\t128\twork=1031\theap=90276\tOk(())\nparse\tnoncapture\t128\twork=1031\theap=74916\tOk(())\nparse\tflat\t128\twork=1026\theap=49928\tOk(())\nparse\tcapture\t129\twork=1039\theap=109108\tOk(())\nparse\tnoncapture\t129\twork=1039\theap=93628\tOk(())\nparse\tflat\t129\twork=1034\theap=52344\tOk(())\nparse\tcapture\t200\twork=1607\theap=137508\tOk(())\nparse\tnoncapture\t200\twork=1607\theap=113508\tOk(())\nparse\tflat\t200\twork=1602\theap=78472\tOk(())\n",
+    "scope": "Fresh per-pattern budgets, includes compilation; upstream full-script completion is separately measured by the unchanged Test262 modes."
+  },
+  "rust_checks": [
+    {
+      "rust": "1.88.0",
+      "configuration": "default",
+      "passed": 1023,
+      "failed": 0,
+      "ignored": 0,
+      "strict_all_target_clippy": true,
+      "log_sha256": "987785bac8e1ae2245d106f8b68a868ac938d93271552e549d311481d44d7f56"
+    },
+    {
+      "rust": "1.88.0",
+      "configuration": "feature",
+      "passed": 1034,
+      "failed": 0,
+      "ignored": 0,
+      "strict_all_target_clippy": true,
+      "log_sha256": "55603e3e8b2e216417cb13d978c2382a8548fd0882c8ac455a1e319d01745360"
+    },
+    {
+      "rust": "1.95.0",
+      "configuration": "default",
+      "passed": 1023,
+      "failed": 0,
+      "ignored": 0,
+      "strict_all_target_clippy": true,
+      "log_sha256": "eb9c101c4e5fc7c13d37aa149ff506d1b0db45e8cd214f9332ce7d5976e954a7"
+    },
+    {
+      "rust": "1.95.0",
+      "configuration": "feature",
+      "passed": 1034,
+      "failed": 0,
+      "ignored": 0,
+      "strict_all_target_clippy": true,
+      "log_sha256": "7d925f1ba383d410d82991dbea814b974263f482e5bf65b227fed98caeb3d0d2"
+    }
+  ],
+  "pixel_references": {
+    "default": 57,
+    "vulkan_feature_headless": 57,
+    "gpu_exercised": false
+  },
+  "python_checks": 174,
+  "mutation_cases": 45000,
+  "mutation_seed": "0xe2152026",
+  "html": {
+    "counts": {
+      "matched": 3868,
+      "mismatched": 2,
+      "unsupported": 6
+    },
+    "exact_cases_preserved": true,
+    "report_sha256": "5130efb73653c5583a0d9f8f64f8e21c25124658377924efe1f9750be2e0b202"
+  },
+  "logs": {
+    "artifacts/regexp-required-literals-validation.log": "e6e0efc9db20deb96f0f5b4af0df50da12c2e2d963b4755ff41b17b9647bf37a",
+    "artifacts/regexp-required-literals-python-final.log": "48994a0d79710001f28e69d3a96f2e82e03ee669242490c05ea604f0b171e824",
+    "artifacts/regexp-required-literals-stress.log": "faa751df2842393428942a7014234f6cd1c70a8b7fe0055ec04b93f24b4d8310",
+    "artifacts/regexp-required-literals-upstream.log": "2ba194c7d0c748bc456b851b951cb7b92ab21657447f1e972f2a8dd67bc45ad0",
+    "artifacts/regexp-required-literals-differential-final.log": "9ce4bcf758eab7b0b822ede6111805f93db01c31db9692448444fd1fc867c6de",
+    "artifacts/regexp-required-literals-feature-pixels.log": "d0e92757f5176266bc2f8c4f179cb68a7f14d53e345d9fb92962cb51958e4922",
+    "artifacts/regexp-required-literals-default-pixels.log": "16514df0523113887512ef1f270f5652351198a86439831f9d1795ccfe121299",
+    "artifacts/regexp-required-literals-bench-final.tsv": "f4d1a66657367c8e426e86b7573d764d7d9bbbb7ba449afbfd5cc6cf843f66f7",
+    "artifacts/regexp-required-literals-benchmark.json": "aee84c21556b22c4a00d6491dee5caf125fb7682deaead367ee628b8b74f7284",
+    "artifacts/regexp-required-literals-probe-final.tsv": "284f0232a6f7fda1fd4d99a9744d6b92ea850fdd4ae784c4aab7bc6c27970f86"
+  },
+  "limits": [
+    "The complete direct RegExp directory still includes two script-work resource stops and remains an observation profile.",
+    "All 9076 other observations and 2288 assertion controls are identical, with unchanged fingerprints, policies and 23 healthy baseline gates.",
+    "At most four consumed literal lower bounds are retained per AST node; omitted candidates only weaken rejection. Assertions and backreferences contribute no requirements.",
+    "The temporary analysis arena is precharged and bounded by the existing node limit; scans and comparisons consume shared work. No existing work, heap, stack, pattern, node or repetition quota changes.",
+    "Common positive matching overhead and compilation overhead are visible in the synthetic before/after timing samples. These are not browser workloads or Chromium comparisons.",
+    "Unicode regexp syntax, broader legacy grammar, other String symbol protocols and broader matching performance remain incomplete.",
+    "No independent review or security audit was performed."
+  ]
+}

@@ -1,5 +1,24 @@
 # Validation record
 
+## Required literal counts before regexp matching
+
+The [implementation record](../tests/conformance/regexp-required-literals.md) and
+[evidence](../tests/conformance/regexp-required-literals.json) compare against
+`45fb59e`. Both unchanged XML-pattern modes now complete, bringing the constructor
+directory to **774 passed / 200 unsupported / two script-work resource stops**.
+All **9,076 other observations / 2,288 controls** are identical; sources, policies,
+mode fingerprints and 23 healthy baseline gates are unchanged. All **30 frozen
+local modes** pass, including eight former resource stops.
+
+The direct comparison preserves **3,888 parse outcomes / 106,040 complete capture
+or error outcomes**. Rust **1.88 / 1.95** pass strict all-target Clippy and **1,023
+default / 1,034 Vulkan-feature tests**, none ignored. Both releases preserve
+**57 CPU pixel references**. **174 Python tests**, **45,000 mutation cases** and
+unchanged HTML observations pass. Seven alternating timing samples retain the
+measured compilation overhead and matching results; they are synthetic direct
+Rust calls, not browser workloads or Chromium measurements. No independent agent
+review or GPU exercise was performed.
+
 ## Flat regexp group parsing and prefix analysis
 
 The [implementation record](../tests/conformance/regexp-deep-groups.md) and
