@@ -122,10 +122,13 @@ Acceptance work:
   costs, memory and frame latency. Vulkan alone does not establish a Chromium
   performance result.
 
-The custom Vulkan rasterizer remains planned. The optional upload presenter
-adopts one transfer/presentation path; production driver requirements and
-broader platform coverage remain undecided. Ongoing standards and
-security work continues alongside preparation for this backend.
+The standalone [custom rectangle raster probe](../tools/vulkan-raster-probe/README.md)
+now executes an Eris WGSL shader through Vulkan, with seven exact offscreen
+fixtures on each of three host adapters. It uploads geometry metadata and
+rasterizes ordered opaque rectangles, including clip/fixed coordinate scopes.
+Browser integration, text, images, blending and compositing remain planned.
+The optional upload presenter continues to use CPU-painted frames. Production
+driver requirements and broader platform coverage remain undecided.
 
 ## JavaScript execution depth
 

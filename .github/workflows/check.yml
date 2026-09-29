@@ -129,3 +129,17 @@ jobs:
       - run: python3 -m unittest discover -s tools/vulkan-probe -p 'test_*.py'
       # GPU execution is an explicit host check; CI must not label an absent
       # adapter as a successful transfer or browser rendering result.
+  vulkan-raster-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      RUSTUP_TOOLCHAIN: 1.88.0
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup toolchain install 1.88.0 --profile minimal --component rustfmt --component clippy
+      - run: cargo fmt --manifest-path tools/vulkan-raster-probe/Cargo.toml -- --check
+      - run: cargo clippy --locked --manifest-path tools/vulkan-raster-probe/Cargo.toml --all-targets -- -D warnings
+      - run: cargo test --locked --manifest-path tools/vulkan-raster-probe/Cargo.toml
+      - run: python3 -m unittest discover -s tools/vulkan-raster-probe -p 'test_*.py'
+      # These checks exercise the planner and fake-process supervisor. Actual
+      # custom shader execution/readback remains a separately recorded host run.

@@ -1,0 +1,294 @@
+{
+  "schema": 1,
+  "scope": "custom offscreen Vulkan opaque rectangle compute probe; no browser integration or performance result",
+  "tested_source_files": {
+    "Cargo.toml": {
+      "bytes": 323,
+      "sha256": "3150058ef3ee321212873e93aea1d745b7a5923faa39808e631ccbef28e4df23"
+    },
+    "Cargo.lock": {
+      "bytes": 23795,
+      "sha256": "b619519af5f81d79d976a0569ae1278565b3bbdd3e4a7243438f1d1ced81a182"
+    },
+    "run_host.py": {
+      "bytes": 13765,
+      "sha256": "0360d30d34e31e407539c6804044dd05c4f62798316574eb090fc68f6d8369c4"
+    },
+    "test_protocol.py": {
+      "bytes": 1515,
+      "sha256": "da26d70d111d8a8f1ba04b1d277be60481a7b6e7ccda5cc87b14cb99f492b3ba"
+    },
+    "test_supervisor.py": {
+      "bytes": 2488,
+      "sha256": "85d3d91272710f006da8b340dae6030102183939b6e5325e82674d81318ac806"
+    },
+    "src/lib.rs": {
+      "bytes": 9561,
+      "sha256": "c78349deae41d00b10f20a02d49b16a9fe35998ae76a7bd1eeede671f81493f2"
+    },
+    "src/main.rs": {
+      "bytes": 12473,
+      "sha256": "f7cb5cafd8d0dc397caf483ad89ce5a48cba6f3e656068aa9aaf4cd3c8860961"
+    },
+    "src/fixtures.rs": {
+      "bytes": 4785,
+      "sha256": "7779ecab36a587f2792acf258b28709b9b4606ece0976c48c0c04aa8e1a45ab8"
+    },
+    "src/tests.rs": {
+      "bytes": 7319,
+      "sha256": "b8483bed33a116fa1ee305806638821edec36b9bbdf1a99d80dbb97f0729aa39"
+    },
+    "src/rect.wgsl": {
+      "bytes": 790,
+      "sha256": "e290ce60bef71560fdf7ab536410fbae0aa5d2b54f648d0706a457dae5c2c9af"
+    }
+  },
+  "tested_source_location": "/tmp/eris-vulkan-raster-prototype; published compiler inputs and supervisor are identical bytes",
+  "source_preparation_sha256": "1f7bbe04286bc31f01a2a9646cce9b29f9ea2ac1c2dce10487dd70673aef052f",
+  "source_preparation_status": "earlier source freeze before GPU execution; retained unchanged",
+  "offline_checks": [
+    {
+      "toolchain": "1.88.0",
+      "action": "test",
+      "argv": [
+        "cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/tmp/eris-vulkan-raster-prototype/Cargo.toml"
+      ],
+      "exit_code": 0,
+      "seconds": 0.163,
+      "log": "offline-1.88.0-test.log",
+      "sha256": "2d208e53def4414e3ce89b72451b7f192d77cd9da3d6b1a666dcd44971079b2b"
+    },
+    {
+      "toolchain": "1.88.0",
+      "action": "clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/tmp/eris-vulkan-raster-prototype/Cargo.toml",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "seconds": 7.417,
+      "log": "offline-1.88.0-clippy.log",
+      "sha256": "e7088250ed17ad5022d08dc58d3dba6524c30b805c78bb72a1faaa8013c46f9a"
+    },
+    {
+      "toolchain": "1.88.0",
+      "action": "build",
+      "argv": [
+        "cargo",
+        "build",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/tmp/eris-vulkan-raster-prototype/Cargo.toml",
+        "--bins"
+      ],
+      "exit_code": 0,
+      "seconds": 1.364,
+      "log": "offline-1.88.0-build.log",
+      "sha256": "8bc70185ebb9eeca3fd9144b282d5eae2303ebe02b06e076f92f2635f5785232"
+    },
+    {
+      "toolchain": "1.98.0",
+      "action": "test",
+      "argv": [
+        "cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/tmp/eris-vulkan-raster-prototype/Cargo.toml"
+      ],
+      "exit_code": 0,
+      "seconds": 8.674,
+      "log": "offline-1.98.0-test.log",
+      "sha256": "b107c32dfa5ba3b7f7329275ffa6d6f5f99129777b429ae7ef4c2c5b1ddf7e5f"
+    },
+    {
+      "toolchain": "1.98.0",
+      "action": "clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/tmp/eris-vulkan-raster-prototype/Cargo.toml",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "seconds": 0.113,
+      "log": "offline-1.98.0-clippy.log",
+      "sha256": "da617cec9cb409cc7d90040e129ad90b46ac0d3bfc0d87a5184fe72f43403805"
+    },
+    {
+      "toolchain": "1.98.0",
+      "action": "build",
+      "argv": [
+        "cargo",
+        "build",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/tmp/eris-vulkan-raster-prototype/Cargo.toml",
+        "--bins"
+      ],
+      "exit_code": 0,
+      "seconds": 0.414,
+      "log": "offline-1.98.0-build.log",
+      "sha256": "bffcf3ec5339c6d508e2021216f365d44c17d7ebdf4970f958ec242bf65380c0"
+    }
+  ],
+  "other_offline_checks": {
+    "Rust_1_95_tests": 9,
+    "Rust_1_95_strict_clippy": true,
+    "Python_protocol_and_fake_CPU_process_tests": 8,
+    "wgsl_parse_and_validation": "passed Naga 30.0.1 without adapter/device",
+    "rustfmt_check": true
+  },
+  "host": {
+    "schema": 1,
+    "binary_sha256": "69f679647b69400f166a890d3df8502aedf0412f7da3ae511530624296bce391",
+    "scope": "offscreen custom WGSL opaque rectangle prototype; no native surface or performance claim",
+    "binary": "target-198/debug/eris-vulkan-raster-prototype",
+    "loader_override": true,
+    "timeout_seconds": 25.0,
+    "success": true,
+    "adapter_count": 3,
+    "runs": [
+      {
+        "name": "enumeration",
+        "args": [
+          "--list"
+        ],
+        "status": "exited",
+        "returncode": 0,
+        "timeout_seconds": 25.0,
+        "elapsed_seconds": 0.213134,
+        "captured_bytes": 465,
+        "observed_bytes": 465,
+        "output_limit_bytes": 262144,
+        "stdout_log": "enumeration.stdout.log",
+        "stderr_log": "enumeration.stderr.log",
+        "stdout_tail": "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"\nADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"\nADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\"\n",
+        "stderr_tail": ""
+      },
+      {
+        "name": "adapter-0",
+        "args": [
+          "--adapter",
+          "0"
+        ],
+        "status": "exited",
+        "returncode": 0,
+        "timeout_seconds": 25.0,
+        "elapsed_seconds": 0.290505,
+        "captured_bytes": 1256,
+        "observed_bytes": 1256,
+        "output_limit_bytes": 262144,
+        "stdout_log": "adapter-0.stdout.log",
+        "stderr_log": "adapter-0.stderr.log",
+        "stdout_tail": "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"\nADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"\nADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\"\nPASS overlapping-order 8x6 draws=5 invocations=320 gpu_buffers=1664 compared_bytes=192 exact=true\nPASS fractional-clips 8x6 draws=4 invocations=256 gpu_buffers=1408 compared_bytes=192 exact=true\nPASS fixed-resets-and-restores 10x7 draws=6 invocations=448 gpu_buffers=2096 compared_bytes=280 exact=true\nPASS out-of-bounds-and-empty 7x5 draws=3 invocations=192 gpu_buffers=1048 compared_bytes=140 exact=true\nPASS 319x239-dispatch-edges 319x239 draws=4 invocations=156160 gpu_buffers=610952 compared_bytes=304964 exact=true\nPASS forty-ordered-full-writes 320x240 draws=41 invocations=3148800 gpu_buffers=624896 compared_bytes=307200 exact=true\nPASS gpu-clear-only 7x3 draws=1 invocations=64 gpu_buffers=424 compared_bytes=84 exact=true\nCOMPLETE adapter=0 fixtures=7 exact=true custom_wgsl=true\n",
+        "stderr_tail": "",
+        "validation": "passed"
+      },
+      {
+        "name": "adapter-1",
+        "args": [
+          "--adapter",
+          "1"
+        ],
+        "status": "exited",
+        "returncode": 0,
+        "timeout_seconds": 25.0,
+        "elapsed_seconds": 0.124345,
+        "captured_bytes": 1256,
+        "observed_bytes": 1256,
+        "output_limit_bytes": 262144,
+        "stdout_log": "adapter-1.stdout.log",
+        "stderr_log": "adapter-1.stderr.log",
+        "stdout_tail": "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"\nADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"\nADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\"\nPASS overlapping-order 8x6 draws=5 invocations=320 gpu_buffers=1664 compared_bytes=192 exact=true\nPASS fractional-clips 8x6 draws=4 invocations=256 gpu_buffers=1408 compared_bytes=192 exact=true\nPASS fixed-resets-and-restores 10x7 draws=6 invocations=448 gpu_buffers=2096 compared_bytes=280 exact=true\nPASS out-of-bounds-and-empty 7x5 draws=3 invocations=192 gpu_buffers=1048 compared_bytes=140 exact=true\nPASS 319x239-dispatch-edges 319x239 draws=4 invocations=156160 gpu_buffers=610952 compared_bytes=304964 exact=true\nPASS forty-ordered-full-writes 320x240 draws=41 invocations=3148800 gpu_buffers=624896 compared_bytes=307200 exact=true\nPASS gpu-clear-only 7x3 draws=1 invocations=64 gpu_buffers=424 compared_bytes=84 exact=true\nCOMPLETE adapter=1 fixtures=7 exact=true custom_wgsl=true\n",
+        "stderr_tail": "",
+        "validation": "passed"
+      },
+      {
+        "name": "adapter-2",
+        "args": [
+          "--adapter",
+          "2"
+        ],
+        "status": "exited",
+        "returncode": 0,
+        "timeout_seconds": 25.0,
+        "elapsed_seconds": 0.201604,
+        "captured_bytes": 1256,
+        "observed_bytes": 1256,
+        "output_limit_bytes": 262144,
+        "stdout_log": "adapter-2.stdout.log",
+        "stderr_log": "adapter-2.stderr.log",
+        "stdout_tail": "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"\nADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"\nADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\"\nPASS overlapping-order 8x6 draws=5 invocations=320 gpu_buffers=1664 compared_bytes=192 exact=true\nPASS fractional-clips 8x6 draws=4 invocations=256 gpu_buffers=1408 compared_bytes=192 exact=true\nPASS fixed-resets-and-restores 10x7 draws=6 invocations=448 gpu_buffers=2096 compared_bytes=280 exact=true\nPASS out-of-bounds-and-empty 7x5 draws=3 invocations=192 gpu_buffers=1048 compared_bytes=140 exact=true\nPASS 319x239-dispatch-edges 319x239 draws=4 invocations=156160 gpu_buffers=610952 compared_bytes=304964 exact=true\nPASS forty-ordered-full-writes 320x240 draws=41 invocations=3148800 gpu_buffers=624896 compared_bytes=307200 exact=true\nPASS gpu-clear-only 7x3 draws=1 invocations=64 gpu_buffers=424 compared_bytes=84 exact=true\nCOMPLETE adapter=2 fixtures=7 exact=true custom_wgsl=true\n",
+        "stderr_tail": "",
+        "validation": "passed"
+      }
+    ]
+  },
+  "original_host_record_sha256": "2fe22f25a553c183d1c636a49133ff200d8d5f4a6e84d699173e15592a94c360",
+  "logs": {
+    "adapter-0.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "adapter-0.stdout.log": "4f2b1782b255963f38998d9531fb21fb1b640370b3fb58004543efce9b376dcd",
+    "adapter-1.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "adapter-1.stdout.log": "7712fe0a28cf2da65c2445c0c534b5a50de12b087ea868345d1d28b853009ea0",
+    "adapter-2.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "adapter-2.stdout.log": "87681cc2c50eb9703f78d2237dca52151b26a68198055616ca5bce0d91c776e5",
+    "enumeration.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "enumeration.stdout.log": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+  },
+  "fixtures_per_adapter": 7,
+  "compared_bytes_per_adapter": 613052,
+  "total_compared_bytes": 1839156,
+  "all_bytes_exact": true,
+  "all_stderr_empty": true,
+  "bounds": {
+    "viewport": [
+      320,
+      240
+    ],
+    "commands": 256,
+    "combined_scopes": 32,
+    "draws_including_clear": 257,
+    "rounded_invocations_per_plan": 4000000,
+    "explicit_buffer_budget": 1048576,
+    "maximum_requested_buffer_bytes": 680192,
+    "metadata_bytes": 65792,
+    "API_wait_seconds": 5,
+    "application_deadline_seconds": 20,
+    "supervisor_default_seconds": 25,
+    "supervisor_output_bytes": 262144,
+    "supervisor_reap_wait_seconds": 2,
+    "maximum_adapters": 16
+  },
+  "limitations": [
+    "Driver/poll/drop/spawn internals and uninterruptible kernel cleanup are not proven finitely complete.",
+    "Strict opaque unrounded rectangle subset only; no browser integration, surface presentation, text, image, blending, antialiasing, opacity or performance evidence.",
+    "Plan and Draw public fields are acceptable only for this private trusted-fixture binary; embedding must prevent validation bypass.",
+    "A separate compute pass per rectangle is deliberately simple, not an optimization claim."
+  ],
+  "native_surface": false,
+  "chromium_comparison": false,
+  "full_goal_complete": false
+}

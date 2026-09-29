@@ -266,6 +266,17 @@ do not establish recovery from a real driver hang.
 
 ## Milestone B: custom GPU rasterization
 
+The isolated [rectangle raster probe](../tools/vulkan-raster-probe/README.md)
+now executes a custom WGSL compute shader for bounded, ordered opaque rectangles.
+Its [host evidence](../tools/vulkan-raster-probe/evidence/host-raster.json)
+records seven exact offscreen fixtures per NVIDIA, AMD and software Vulkan
+adapter, totaling 1,839,156 compared bytes. Independent literal pixel maps and
+band/constant expectations cover overlap, fractional clips, fixed scopes and
+dispatch edges. Only geometry/color metadata is uploaded; the shader also
+performs the background clear. This is a standalone prototype with its own
+manifest and lockfile. Browser integration and performance measurement remain
+open, and the normal browser still uses the CPU rasterizer.
+
 Add a separate renderer entry that accepts the existing validated display list,
 images, viewport clip and document/fixed offsets. Initially accept a coherent
 subset: opaque, unrounded rectangles; opaque nearest-neighbor images; lines
