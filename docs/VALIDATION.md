@@ -4040,3 +4040,22 @@ The deterministic mutation run used seed `0xe2152026` and at most 8 KiB per gene
 Native and headless output for the home page, forms, gallery, and a narrow viewport was visually inspected. Native clipboard contents were not read during validation. Windows and macOS were not validated.
 
 The [performance record](PERFORMANCE.md) defines the measured phases and includes three fixture timings. There was no Chromium comparison. The [compatibility inventory](COMPATIBILITY.md) and [security boundary](SECURITY.md) list material unfulfilled requirements, including missing platform APIs and, at that initial checkpoint, the absence of OS process isolation.
+
+### DataView startup prototype lookup removal
+
+The DataView installer now constructs its 21 function bags with their final
+Function prototype. It no longer looks up Object.prototype only to overwrite it.
+This removes 462 charged work units, leaving 70,796 after initialization; all
+heap charges, object identities, numeric limits and script-entry resets remain
+unchanged. This is a logical accounting result, not a timing benchmark.
+
+Rust 1.88 passes all 1,378 default tests and Rust 1.98 passes all 1,495 native
+feature tests, including ignored tests and the unchanged exhaustive UTF-16 JSON
+regression. Native strict Clippy and formatting pass. The new test compares
+identical installs with normal, empty, absent and misdirected prototype tables;
+existing exact/one-short admission tests remain unchanged. The release DataView
+profile retains all 1,122 case rows and 232 control rows exactly (694 passes,
+12 failures, 416 exclusions), and its existing gate passes. The
+[summary and raw records](evidence/data-view-bootstrap-lookup.json) bind these
+checks. The previous initialization checkpoint also passes all nine
+[GitHub CI jobs](evidence/runtime-initialization-ci.json).

@@ -999,3 +999,99 @@ fn data_view_bootstrap_reports_actual_remaining_budget() {
     assert!(runtime.steps < MAX_STEPS);
     assert!(runtime.allocated < MAX_HEAP);
 }
+
+#[test]
+fn data_view_function_metadata_does_not_need_an_object_prototype_anchor() {
+    let mut reference_costs = None;
+    for anchor in ["normal", "empty", "absent", "misdirected"] {
+        let (mut runtime, owner) = installer_setup();
+        match anchor {
+            "normal" => {}
+            "empty" => runtime.prototypes.clear(),
+            "absent" => {
+                runtime.prototypes.remove("Object");
+            }
+            "misdirected" => {
+                runtime.prototypes.insert("Object", usize::MAX);
+            }
+            _ => unreachable!(),
+        }
+        let mut costs = Vec::new();
+        let mut ids = Vec::new();
+        for (full, display, key, length, getter) in [
+            ("DataView.anchorFirst", "first", "first", 1, false),
+            ("DataView.anchorSecond", "get second", "second", 0, true),
+        ] {
+            let before_work = runtime.steps;
+            let before_heap = runtime.allocated;
+            let expected_id = runtime.objects.len();
+            runtime
+                .data_view_install_function(owner, full, display, length, key, getter)
+                .unwrap();
+            costs.push((before_work - runtime.steps, runtime.allocated - before_heap));
+            let id = runtime.native_properties[full];
+            assert_eq!(id, expected_id);
+            assert_eq!(runtime.objects.len(), expected_id + 1);
+            ids.push(id);
+            let bag = &runtime.objects[id];
+            assert_eq!(
+                bag.prototype,
+                Some(Value::Function(runtime.function_prototype))
+            );
+            assert_eq!(
+                bag.order,
+                [PropertyKey::from("name"), PropertyKey::from("length")]
+            );
+            assert_eq!(bag.values.len(), 2);
+            for (name, expected) in [
+                ("name", Value::String(display.into())),
+                ("length", Value::Number(length as f64)),
+            ] {
+                let property = &bag.values[&PropertyKey::from(name)];
+                assert!(!property.enumerable && property.configurable);
+                let PropertyValue::Data { value, writable } = &property.value else {
+                    panic!()
+                };
+                assert!(!writable);
+                assert_eq!(value, &expected);
+            }
+            let property = &runtime.objects[owner].values[&PropertyKey::from(key)];
+            assert!(!property.enumerable && property.configurable);
+            let function = if getter {
+                let PropertyValue::Accessor { get, set } = &property.value else {
+                    panic!()
+                };
+                assert_eq!(set, &Value::Undefined);
+                get
+            } else {
+                let PropertyValue::Data { value, writable } = &property.value else {
+                    panic!()
+                };
+                assert!(*writable);
+                value
+            };
+            let Value::Native(native) = function else {
+                panic!()
+            };
+            assert_eq!(native.name, full);
+        }
+        // Identical installs must cost the same regardless of an unrelated
+        // prototype table. The former empty-table path saved a lookup charge.
+        if let Some(reference) = &reference_costs {
+            assert_eq!(&costs, reference, "Object anchor: {anchor}");
+        } else {
+            reference_costs = Some(costs);
+        }
+        assert_ne!(ids[0], ids[1]);
+        runtime.objects[ids[0]].insert_hidden("name".into(), Value::String("changed".into()));
+        assert_eq!(
+            runtime.objects[ids[1]].get("name"),
+            Some(&Value::String("get second".into()))
+        );
+        assert_eq!(
+            runtime.objects[owner].order,
+            [PropertyKey::from("first"), PropertyKey::from("second")]
+        );
+        clean(&runtime);
+    }
+}

@@ -274,8 +274,7 @@ impl Runtime {
         let registry = self.native_properties.len();
         let properties = self.objects[owner].values.len();
         self.work(
-            64 + search_work(self.prototypes.len(), 6)
-                + search_work(registry, full.len())
+            64 + search_work(registry, full.len())
                 + insertion_work(registry)
                 + search_work(properties, key.len())
                 + insertion_work(properties)
@@ -292,12 +291,17 @@ impl Runtime {
         )?;
         self.charge(insertion_bytes::<String, usize>(registry)?)?;
         self.charge(insertion_bytes::<PropertyKey, Property>(properties)?)?;
-        let Value::Object(id) = self.object_ordered([])? else {
-            unreachable!()
-        };
-        let function_prototype = self.function_prototype;
+        // Keep the ordinary object base debit and publication position, but
+        // construct the final prototype without an unused Object lookup.
+        self.charge(
+            72 + std::mem::size_of::<Option<AbortSlot>>() + std::mem::size_of::<Option<f64>>(),
+        )?;
+        let id = self.objects.len();
+        self.objects.push(ScriptObject {
+            prototype: Some(Value::Function(self.function_prototype)),
+            ..ScriptObject::default()
+        });
         let bag = &mut self.objects[id];
-        bag.prototype = Some(Value::Function(function_prototype));
         bag.order
             .try_reserve_exact(2)
             .map_err(|_| ScriptError::resource("DataView function order allocation failed"))?;

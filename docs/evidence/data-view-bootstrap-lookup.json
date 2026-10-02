@@ -1,0 +1,248 @@
+{
+  "schema": 1,
+  "parent": "d455d986204a8319eb41a72c42345c4f793c75b3",
+  "change": "Construct 21 DataView function bags with their final Function.prototype, eliminating unused Object.prototype lookups.",
+  "source_files": {
+    "src/script/data_view.rs": "36615b8bc4105cbe4b9a9e215691de752565687631125b9afef1efc3a46a903c",
+    "src/script/data_view/tests.rs": "02ab25810052489b8fd4db50a5a61689f8bf83dd9bdc7c7956e4417a434ede1b",
+    "src/script/bootstrap_tests.rs": "a2f247d37ddeeba527f2fca482b922b4cb9995f2f55b1f14a7d880201b115e85"
+  },
+  "source_diff_sha256": "0a44c6a7159690c75e8e250082d7de9879c32b3b55dbd375f8b3db674ee79f1e",
+  "budget": {
+    "before_remaining_steps": 70334,
+    "after_remaining_steps": 70796,
+    "saved_logical_work": 462,
+    "maximum_steps_unchanged": 100000,
+    "maximum_heap_unchanged": 8388608,
+    "logical_heap_bytes_unchanged": 734594,
+    "objects_unchanged": 351,
+    "native_entries_unchanged": 320,
+    "prototype_entries_unchanged": 25,
+    "script_entry_resets_unchanged": true
+  },
+  "tests": {
+    "rust_1_88_default": 1378,
+    "rust_1_98_vulkan_raster": 1495,
+    "failed": 0,
+    "ignored": 0,
+    "new_group": "data_view_function_metadata_does_not_need_an_object_prototype_anchor",
+    "original_exhaustive_utf16_json_test_unchanged": true,
+    "snapshot_changes": "Only exact bootstrap remaining-work snapshots increase by462; no quotas or workload size changed."
+  },
+  "commands": [
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 2.173,
+      "log": "clippy-native-198-1.log",
+      "sha256": "04431740bb91ea9541b1f6560133862e96e59660140fb3475ff3c630224c9d37"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit": 0,
+      "log": "format.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 21.342,
+      "log": "full-default-188-1.log",
+      "sha256": "54e8a38257ea155d25a4af95e1e4fdef1085ebba247aacffb7504bfccdb90ff6"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 15.538,
+      "log": "full-native-198-1.log",
+      "sha256": "4c20c84e9024b78d5e6dcc1b87b5e0abb72754b22ee25937619315944a0d00eb"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--release",
+        "--bin",
+        "eris-js"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 29.628,
+      "log": "release-198-1.log",
+      "sha256": "a3d7cd4c7f814c18bff73f393aa0d7a586ef5ffe39748fbee18bf2117d92ebab"
+    }
+  ],
+  "data_view": {
+    "mode_cases": 1122,
+    "counts": {
+      "unsupported": 416,
+      "passed": 694,
+      "failed": 12
+    },
+    "harness_preflight_passed": true,
+    "before_report_sha256": "c90c36ac67f9a65fc6b3340b748c51308643951239a8e32068bfa16d62428ed8",
+    "after_report_sha256": "f458e02ec60f4c6413aaa5240f7fc569f723fef9b0b76a02f06f30be0ef0c2a1",
+    "case_rows_unchanged": 1122,
+    "control_rows_unchanged": 232
+  },
+  "binary_sha256": "a37f8a39b4c507eca41fa584d175d05fb6e1c33f1c29b0fbbbe4a07e34134b39",
+  "archive": {
+    "path": "data-view-bootstrap-lookup.tar.gz",
+    "bytes": 281485,
+    "sha256": "3cc4ad5b4d5a5f8b47682ad1b8c306bbf651663881a8b7e2fc4a310a0f3b6e31",
+    "members": [
+      {
+        "path": "comparison.json",
+        "bytes": 391,
+        "sha256": "4f2a6baa63f0e24041be0fa4cdeb670a7e118d0cec25facc0ac2cc79e382f600"
+      },
+      {
+        "path": "data-view-after.json",
+        "bytes": 887309,
+        "sha256": "f458e02ec60f4c6413aaa5240f7fc569f723fef9b0b76a02f06f30be0ef0c2a1"
+      },
+      {
+        "path": "data-view-before.json",
+        "bytes": 887319,
+        "sha256": "c90c36ac67f9a65fc6b3340b748c51308643951239a8e32068bfa16d62428ed8"
+      },
+      {
+        "path": "data-view.execution.json",
+        "bytes": 442,
+        "sha256": "b908a70e525c0320df52c56823cdb1446d2668021d4bd056d10147df7c346e39"
+      },
+      {
+        "path": "data-view.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "data-view.stdout.log",
+        "bytes": 212,
+        "sha256": "4df4f58c0737f1108bcd18e6ffce474651f78801372b0522be823dc069a50c2a"
+      },
+      {
+        "path": "review.json",
+        "bytes": 2022,
+        "sha256": "b49c7ee65f884932dd9034c0a0ea41ce706b700b74f82a80001263834d1fdaa9"
+      },
+      {
+        "path": "source-ready.json",
+        "bytes": 1842,
+        "sha256": "d9b37c7b5081b9700a385515266b5eb9a6412d2ddbca4b1f7bdb38fe42f5aaf6"
+      },
+      {
+        "path": "source.diff",
+        "bytes": 7684,
+        "sha256": "0a44c6a7159690c75e8e250082d7de9879c32b3b55dbd375f8b3db674ee79f1e"
+      },
+      {
+        "path": "validation/check.py",
+        "bytes": 1255,
+        "sha256": "85dfa516c8bb6468f1dbdc20909921dcc6f8fa1f78395c44f13bb1276c7ec482"
+      },
+      {
+        "path": "validation/clippy-native-198-1.json",
+        "bytes": 391,
+        "sha256": "fe1137aad8e5aae4736be201b8035669474b6f425787d36550fd1bc00bf98e8c"
+      },
+      {
+        "path": "validation/clippy-native-198-1.log",
+        "bytes": 164,
+        "sha256": "04431740bb91ea9541b1f6560133862e96e59660140fb3475ff3c630224c9d37"
+      },
+      {
+        "path": "validation/format.json",
+        "bytes": 215,
+        "sha256": "4c3597aa3324bf6b2f526886f2a66e3f9777b855ba4bcfae4ea0b555a091d85e"
+      },
+      {
+        "path": "validation/format.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "validation/full-default-188-1.json",
+        "bytes": 328,
+        "sha256": "105e0e6aa1ff326295a3979172914595010dde352f2867d4a9b23dbd8d00e38c"
+      },
+      {
+        "path": "validation/full-default-188-1.log",
+        "bytes": 131152,
+        "sha256": "54e8a38257ea155d25a4af95e1e4fdef1085ebba247aacffb7504bfccdb90ff6"
+      },
+      {
+        "path": "validation/full-native-198-1.json",
+        "bytes": 366,
+        "sha256": "5f4dfc14a3f9b09b48a40ce1a16e4cf91dbd1cf9a9f9554c9faba936cf12b824"
+      },
+      {
+        "path": "validation/full-native-198-1.log",
+        "bytes": 144333,
+        "sha256": "4c20c84e9024b78d5e6dcc1b87b5e0abb72754b22ee25937619315944a0d00eb"
+      },
+      {
+        "path": "validation/release-198-1.json",
+        "bytes": 334,
+        "sha256": "c7d1bfe817f10f75d7e6734b122b5520f9e0a05a799c874621614bcbd422ea7d"
+      },
+      {
+        "path": "validation/release-198-1.log",
+        "bytes": 155,
+        "sha256": "a3d7cd4c7f814c18bff73f393aa0d7a586ef5ffe39748fbee18bf2117d92ebab"
+      }
+    ]
+  },
+  "limitations": [
+    "Logical work savings are not a wall-clock browser performance measurement.",
+    "No new web standard is implemented by this optimization.",
+    "No claim of full standards support, production security, or Chromium performance parity."
+  ]
+}

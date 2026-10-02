@@ -23,7 +23,9 @@ Successful initialization retains its original field values, installation order,
 Date host assignment, work charges and heap charges. It leaves **70,334 work
 units** before any script-entry reset. Numeric quotas and all existing script
 and event reset points are unchanged. This change adds no JavaScript or DOM
-feature support.
+feature support. A [later DataView startup optimization](evidence/data-view-bootstrap-lookup.json)
+removes 21 unused prototype lookups and increases the remaining work to 70,796;
+heap charges, object counts and numeric limits stay the same.
 
 `Runtime::new`, `with_date_host`, `Default` and the existing Page convenience
 constructors remain documented panicking APIs. The new fallible paths propagate
