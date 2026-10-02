@@ -12,9 +12,11 @@ Its complete upstream profile records 694 passes, 12 failures and 416 exclusions
 Typed arrays, BigInt codecs and shared memory remain unfinished.
 [Object.is](tests/conformance/object-is.md) now passes its complete 42-case
 upstream profile. The [DOM method follow-up](tests/conformance/dom-method-identity.md)
-separates eight Document, Element and DocumentFragment function identities and
-checks their receivers before conversion. Interface prototypes, ordinary host
-method replacement and Document.append remain unfinished. The
+separates Document, Element and DocumentFragment function identities and
+checks their receivers before conversion. [Document.append](docs/document-append.md)
+now shares checked insertion with Element and DocumentFragment, including
+hierarchy errors and ordered partial effects. Interface prototypes and ordinary
+host method replacement remain unfinished. The
 [Vulkan snapshot bridge](tools/vulkan-raster-probe/BROWSER_BRIDGE.md) now checks
 real browser display lists with the custom GPU rasterizer and whole-frame CPU
 fallback. Its 16 cases pass on three Vulkan adapters. A separate

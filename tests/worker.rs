@@ -2103,3 +2103,13 @@ fn image_decoder_confines_decodes_once_and_exits_without_response_body_leaks() {
         );
     }
 }
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn confined_document_append_failure_prefixes_and_root_restoration_survive_callbacks() {
+    assert_six_scripted_samples_through_worker_with_result_text(
+        include_str!("fixtures/document-append.html"),
+        199,
+        Some(["ready", "6"]),
+    );
+}

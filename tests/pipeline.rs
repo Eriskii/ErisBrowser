@@ -1263,3 +1263,11 @@ fn event_demo_capture_custom_dispatch_and_imported_layers_reach_pixels() {
     assert!(canvas.pixels.contains(&0xf4f0e7));
     assert!(page.diagnostics.is_empty(), "{:?}", page.diagnostics);
 }
+
+#[test]
+fn document_append_failure_prefixes_and_root_restoration_survive_callbacks() {
+    assert_six_scripted_samples_with_result_text(
+        include_str!("fixtures/document-append.html"),
+        Some(["ready", "6"]),
+    );
+}

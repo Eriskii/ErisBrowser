@@ -9,10 +9,15 @@ function does not alter another. Inherited Node methods retain shared identity.
 Saved methods check the actual receiver's defining interface before required
 arguments or author conversion. Valid calls keep the existing query/append
 algorithms and conversion order. Text and Comment nodes no longer expose these
-ParentNode methods. Document.append, real interface prototypes and ordinary
-method replacement on individual host objects remain incomplete.
+ParentNode methods. The later [Document.append checkpoint](../../docs/document-append.md)
+adds the ninth function and checked insertion. Real interface prototypes and
+ordinary method replacement on individual host objects remain incomplete.
 
 ## Independent outcomes
+
+The results below record the original eight-function checkpoint. The later
+[Document.append evidence](../../docs/evidence/document-append.json) retains the
+same oracle and reports the new result separately.
 
 The unchanged [local oracle](dom-method-identity-local-oracle.json) contains
 29 sources in sloppy and strict mode: 24 behavior sources, three ordinary

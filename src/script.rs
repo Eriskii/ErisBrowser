@@ -2740,6 +2740,7 @@ impl Runtime {
             Ok("SyntaxError") => 12.0,
             Ok("InvalidCharacterError") => 5.0,
             Ok("NotFoundError") => 8.0,
+            Ok("HierarchyRequestError") => 3.0,
             Ok("AbortError") => 20.0,
             _ => 0.0,
         };
@@ -5739,6 +5740,13 @@ impl Runtime {
                         doc,
                     );
                 }
+                "append" => {
+                    return self.dom_parent_method(
+                        &receiver,
+                        dom_bindings::ParentOperation::Append,
+                        doc,
+                    );
+                }
                 "getElementById"
                 | "getElementsByTagName"
                 | "getElementsByClassName"
@@ -6042,6 +6050,16 @@ impl Runtime {
     // destination's host-inclusive ancestors, and removes the old sibling
     // entry. Account for all that work before it changes either child list.
     fn charge_dom_append(&mut self, parent: NodeId, child: NodeId, doc: &Document) -> Result<()> {
+        self.charge_dom_append_admission(parent, child, doc)
+            .map(|_| ())
+    }
+
+    fn charge_dom_append_admission(
+        &mut self,
+        parent: NodeId,
+        child: NodeId,
+        doc: &Document,
+    ) -> Result<bool> {
         self.tick()?;
         if parent >= doc.nodes.len()
             || child >= doc.nodes.len()
@@ -6054,14 +6072,14 @@ impl Runtime {
             || matches!(doc.nodes[child].kind, NodeKind::Doctype(_))
                 && !matches!(doc.nodes[parent].kind, NodeKind::Document)
         {
-            return Ok(());
+            return Ok(false);
         }
         let mut cursor = Some(parent);
         let mut ancestors = 0;
         while let Some(id) = cursor {
             self.tick()?;
             if id == child || ancestors >= crate::dom::MAX_DEPTH {
-                return Ok(());
+                return Ok(false);
             }
             ancestors += 1;
             cursor = doc.nodes[id].parent.or(match doc.nodes[id].kind {
@@ -6077,7 +6095,7 @@ impl Runtime {
             self.tick()?;
             visited += 1;
             if ancestors + depth > crate::dom::MAX_DEPTH || visited > MAX_NODES {
-                return Ok(());
+                return Ok(false);
             }
             let children = &doc.nodes[id].children;
             contains_base |= matches!(&doc.nodes[id].kind, NodeKind::Element(element)
@@ -6105,7 +6123,8 @@ impl Runtime {
         };
         self.work(doc.base_tree_change_work(parent, child, contains_base))?;
         self.work(doc.details_tree_change_work(parent, child))?;
-        self.charge(inserted.saturating_mul(2 * std::mem::size_of::<NodeId>()))
+        self.charge(inserted.saturating_mul(2 * std::mem::size_of::<NodeId>()))?;
+        Ok(true)
     }
 
     fn charge_dom_remove(&mut self, parent: NodeId, doc: &Document) -> Result<()> {

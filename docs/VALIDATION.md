@@ -4059,3 +4059,27 @@ profile retains all 1,122 case rows and 232 control rows exactly (694 passes,
 [summary and raw records](evidence/data-view-bootstrap-lookup.json) bind these
 checks. The previous initialization checkpoint also passes all nine
 [GitHub CI jobs](evidence/runtime-initialization-ci.json).
+
+### Checked Document.append and insertion hierarchy
+
+The [append implementation](document-append.md) adds Document.append and shares
+hierarchy validation with script-facing appendChild. Variadic conversion, text
+creation, temporary-fragment assembly and final insertion retain their specified
+order; later errors preserve earlier observable effects. Text storage refusals
+terminate execution before truncation can occur.
+
+Rust 1.88 passes **1,401 default tests**; Rust 1.98 passes **1,518 native-feature
+tests**, including ignored tests. The 23 added groups include direct-page and
+confined-worker checks of six literal pixels and result text on load and click.
+Native strict Clippy and formatting pass. Independent source review found no
+concrete defect. The frozen DOM identity corpus gains two passes, reaching
+**54/58 verified expectations**, with all 44 controls unchanged. Every Object.is
+local case and control row remains unchanged (72/78 expectations, 60 controls).
+
+Installing the ninth method uses 140 additional logical work units; initialization
+now leaves 70,656, charges 738,522 bytes and uses 352 objects and 321 native
+entries. Numeric quotas, script-entry resets and the exhaustive UTF-16 JSON test
+are unchanged. The [summary and raw records](evidence/document-append.json)
+bind source, checks and complete local reports. These checks do not establish
+complete DOM compatibility or production security. The previous DataView
+optimization passed all nine [GitHub CI jobs](evidence/data-view-bootstrap-lookup-ci.json).

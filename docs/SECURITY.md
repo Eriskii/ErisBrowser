@@ -190,7 +190,7 @@ View bounds are rechecked after conversions, and complete writes are prepaid
 before their first byte changes. Record growth pays full requested new storage
 and movement. Intrinsic installation builds final descriptors with cached vacant
 entries, retaining explicit search, structural, node and order-buffer charges.
-Twenty-seven private DataView groups cover codec literals, exhaustive binary16
+Twenty-eight private DataView groups cover codec literals, exhaustive binary16
 boundaries, callback effects and exact/one-short work/storage admission.
 Typed-array access, BigInt codecs, shared memory, foreign realms and host
 detachment remain absent. These scoped checks do not establish general arena
@@ -206,8 +206,17 @@ retaining the existing ordinary allocation charges. Twenty private groups check
 exact/one-short admission, full-heap comparisons and terminal cleanup. Existing
 limits and maximum-string regressions are unchanged. Generic infallible allocator
 boundaries remain explicit. The later [DOM follow-up](../tests/conformance/dom-method-identity.md)
-addresses eight defining-interface methods; complete host identity and Web IDL
+addresses defining-interface methods; complete host identity and Web IDL
 conformance remain unestablished.
+
+[Checked script insertion](document-append.md) now validates appendChild and
+Document/Element/DocumentFragment.append before their raw DOM mutations. Invalid
+hierarchies throw DOMException; implementation depth, work and storage refusals
+terminate script execution. Text admission checks UTF-8 storage before creating
+nodes, preventing silent truncation on this path. Conversion callbacks and
+earlier temporary-fragment moves remain observable after later failures.
+The parser's internal insertion path is unchanged. This does not add arbitrary
+cross-document adoption, mutation observers or complete DOM allocation recovery.
 
 ## Representative limits
 

@@ -29,12 +29,14 @@ broader interpreter performance and accounting remain open work.
 The [DOM method follow-up](../tests/conformance/dom-method-identity.md) separates
 eight Document, Element and DocumentFragment function identities, property bags
 and receiver checks. It closes four earlier Object.is identity failures and
-18 modes in the new DOM suite, which now verifies 52/58 expectations.
-All 44 formal profiles retain their complete results; all 36 existing gates
-pass. The 11 local suites gain 22 passes without regressions or control changes.
-Document.append, real interface prototypes and ordinary host method replacement
-remain ordinary unmet expectations. Broader DOM interfaces and reflection remain
-open work.
+18 modes in the new DOM suite. [Checked Document.append](document-append.md)
+adds the ninth method and closes two further modes; that suite now verifies
+54/58 expectations with all 44 controls healthy.
+At the eight-method checkpoint, all 44 formal profiles retained their complete
+results and all 36 existing gates passed. Its 11 local suites gained 22 passes
+without regressions or control changes.
+Real interface prototypes and ordinary host method replacement remain ordinary
+unmet expectations. Broader DOM interfaces and reflection remain open work.
 
 [Fallible runtime initialization](runtime-initialization.md) now carries checked
 bootstrap failures through the browser, adapter and stress tool. Partial realms

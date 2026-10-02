@@ -6,12 +6,14 @@ object/symbol identity. All **42 upstream modes pass**, with 80 healthy controls
 The [DOM method follow-up](../tests/conformance/dom-method-identity.md) closes
 four Document/Element query-identity failures, bringing the unchanged local
 suite to **72/78 verified expectations**, with 60 healthy controls. Proxy,
-BigInt and foreign-realm cases remain unmet. Eight existing query/append
+BigInt and foreign-realm cases remain unmet. Existing query/append
 methods now have separate defining-interface identities, function properties
-and receiver checks. Their new local suite verifies **52/58 expectations**;
-Document.append, real interface prototypes and host-member replacement remain
-ordinary failures. The complete 44-profile replay preserves all prior formal
-case/control observations and all 36 baseline gates.
+and receiver checks. [Document.append](document-append.md) adds the ninth method
+and checked insertion, bringing the unchanged local suite to **54/58 verified
+expectations**, with 44 healthy controls. Real interface prototypes and
+host-member replacement remain ordinary failures. The earlier eight-method
+checkpoint's complete 44-profile replay preserved all prior formal case/control
+observations and all 36 baseline gates.
 
 [ArrayBuffer](../tests/conformance/array-buffer.md) supports nonshared fixed and
 resizable buffers, byteLength/maxByteLength/resizable/detached getters, resize,

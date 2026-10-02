@@ -184,11 +184,11 @@ fn bootstrap_late_heap_boundary_returns_error_or_the_complete_realm() {
 #[test]
 fn bootstrap_convenience_and_try_paths_retain_direct_helper_budget() {
     let reference = Runtime::try_new().unwrap();
-    // DataView metadata now skips 21 unused Object-prototype lookups:
-    // 70,334 + 21 * 22 = 70,796. No script-entry reset has happened.
-    assert_eq!(reference.steps, 70_796);
-    assert_eq!(reference.objects.len(), 351);
-    assert_eq!(reference.native_properties.len(), 320);
+    // The ninth DOM method costs 140 more bootstrap work units than the
+    // previous 70,796-unit remainder. No script-entry reset has happened.
+    assert_eq!(reference.steps, 70_656);
+    assert_eq!(reference.objects.len(), 352);
+    assert_eq!(reference.native_properties.len(), 321);
     assert_eq!(reference.prototypes.len(), 25);
     for mut runtime in [
         Runtime::try_new().unwrap(),
@@ -210,7 +210,7 @@ fn bootstrap_convenience_and_try_paths_retain_direct_helper_budget() {
                 .unwrap(),
             Value::Bool(true)
         );
-        assert_eq!(runtime.steps, 70_792);
+        assert_eq!(runtime.steps, 70_652);
         assert_eq!(runtime.allocated, reference.allocated);
         idle(&runtime);
     }
@@ -265,7 +265,7 @@ fn bootstrap_try_date_host_is_installed_without_clock_reads() {
         runtime.date_host.zone().unwrap(),
         zone.as_ref()
     ));
-    assert_eq!(runtime.steps, 70_796);
+    assert_eq!(runtime.steps, 70_656);
     let mut doc = Document::parse("");
     for (source, expected) in [
         ("Date.now()", Value::Number(0.0)),

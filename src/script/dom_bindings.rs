@@ -2,6 +2,10 @@
 use super::*;
 use std::collections::btree_map::Entry;
 
+mod append;
+
+#[cfg(test)]
+mod append_tests;
 #[cfg(test)]
 mod identity_tests;
 
@@ -51,7 +55,7 @@ struct ParentMethod {
     operation: ParentOperation,
 }
 
-static PARENT_METHODS: [ParentMethod; 8] = [
+static PARENT_METHODS: [ParentMethod; 9] = [
     ParentMethod {
         full: "DOM.Document.querySelector",
         suffix: "Document.querySelector",
@@ -116,6 +120,14 @@ static PARENT_METHODS: [ParentMethod; 8] = [
         interface: ParentInterface::DocumentFragment,
         operation: ParentOperation::Append,
     },
+    ParentMethod {
+        full: "DOM.Document.append",
+        suffix: "Document.append",
+        name: "append",
+        length: 0,
+        interface: ParentInterface::Document,
+        operation: ParentOperation::Append,
+    },
 ];
 
 fn parent_method(
@@ -133,7 +145,7 @@ fn parent_method(
         (DocumentFragment, QuerySelectorAll) => 5,
         (Element, Append) => 6,
         (DocumentFragment, Append) => 7,
-        (Document, Append) => return None,
+        (Document, Append) => 8,
     };
     Some(&PARENT_METHODS[index])
 }
@@ -160,7 +172,7 @@ pub(super) fn is_parent_method_name(name: &str) -> bool {
 // A bootstrap reservation, not a runtime object limit. The current complete
 // intrinsic inventory fits this existing capacity; private checks bind that fact.
 const BOOTSTRAP_OBJECT_CAPACITY: usize = 512;
-const PARENT_INSTALL_ORDER: [usize; 8] = [0, 3, 7, 2, 5, 6, 1, 4];
+const PARENT_INSTALL_ORDER: [usize; 9] = [8, 0, 3, 7, 2, 5, 6, 1, 4];
 const PARENT_SHARED_WORK: usize = 8 + 90 + 4;
 
 fn parent_node_bytes<K, V>() -> usize {
@@ -540,8 +552,7 @@ impl Runtime {
                     _ => return Err(ScriptError::type_error("expected DOM node")),
                 };
                 if name == "appendChild" {
-                    self.charge_dom_append(id, child, doc)?;
-                    doc.append_child(id, child);
+                    self.dom_checked_append(id, child, doc)?;
                 } else {
                     if doc.nodes[child].parent != Some(id) {
                         return Err(self.dom_throw("NotFoundError", "node is not a child")?);
@@ -553,37 +564,7 @@ impl Runtime {
                 Ok(Value::Node(child))
             }
             "append" => {
-                // Web IDL converts the entire variadic union before DOM tree
-                // operations. Conversion may mutate the live destination.
-                self.work(args.len() + 1)?;
-                self.charge(
-                    args.len()
-                        .saturating_mul(std::mem::size_of::<AppendValue>())
-                        + 32,
-                )?;
-                let mut values = Vec::new();
-                values
-                    .try_reserve_exact(args.len())
-                    .map_err(|_| ScriptError::resource("DOM argument allocation failed"))?;
-                for value in args {
-                    values.push(match value {
-                        Value::Node(child) => AppendValue::Node(*child),
-                        Value::Document => AppendValue::Node(doc.root),
-                        _ => AppendValue::Text(self.dom_string(value.clone(), doc)?),
-                    });
-                }
-                for value in values {
-                    let child = match value {
-                        AppendValue::Node(id) => id,
-                        AppendValue::Text(text) => {
-                            self.ensure_dom_capacity(doc, 1)?;
-                            self.charge(text.len())?;
-                            doc.create_text_node(&text)
-                        }
-                    };
-                    self.charge_dom_append(id, child, doc)?;
-                    doc.append_child(id, child);
-                }
+                self.dom_append(id, args, doc)?;
                 Ok(Value::Undefined)
             }
             "cloneNode" => self

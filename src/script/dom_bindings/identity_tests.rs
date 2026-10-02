@@ -81,7 +81,7 @@ fn metadata(runtime: &Runtime, full: &str, name: &str, length: usize) {
 }
 
 #[test]
-fn dom_parent_eight_keys_metadata_and_legacy_inventory_are_exact() {
+fn dom_parent_nine_keys_metadata_and_legacy_inventory_are_exact() {
     let (runtime, _) = fresh();
     let legacy = [
         ("DOM.getElementById", 1),
@@ -128,7 +128,7 @@ fn dom_parent_eight_keys_metadata_and_legacy_inventory_are_exact() {
             .keys()
             .filter(|name| name.starts_with("DOM.") || name.starts_with("DOMTokenList."))
             .count(),
-        26
+        27
     );
 }
 
@@ -139,7 +139,7 @@ fn dom_parent_pinned_leaf_and_payload_bounds_use_actual_types() {
         .map(|&i| PARENT_METHODS[i].full)
         .collect();
     assert!(names.windows(2).all(|pair| pair[0] < pair[1]));
-    assert_eq!(names.len(), 8);
+    assert_eq!(names.len(), 9);
     assert!(names.len() < 11); // Pinned B=6 leaf capacity.
     let mut registry = BTreeMap::new();
     for (ordinal, &index) in PARENT_INSTALL_ORDER.iter().enumerate() {
@@ -338,7 +338,7 @@ fn dom_parent_fresh_batch_guard_total_admission_and_partial_publication() {
             .iter()
             .map(parent_install_bytes)
             .sum::<usize>();
-    assert_eq!(work, 1144);
+    assert_eq!(work, 1284);
     for (available_work, available_heap, success) in [
         (work - 1, heap, false),
         (work, heap - 1, false),
@@ -349,7 +349,7 @@ fn dom_parent_fresh_batch_guard_total_admission_and_partial_publication() {
         runtime.steps = available_work;
         runtime.allocated = MAX_HEAP - available_heap;
         let result = runtime.initialize_dom_parent_bindings();
-        let rows = if success { 8 } else { 7 };
+        let rows = if success { 9 } else { 8 };
         if success {
             result.unwrap();
             assert_eq!((runtime.steps, runtime.allocated), (0, MAX_HEAP));
@@ -432,9 +432,10 @@ fn dom_parent_row_guard_and_occupied_entry_never_replace_metadata() {
     let mut runtime = install_setup(0);
     runtime.objects = runtime.objects.into_boxed_slice().into_vec();
     let len = runtime.objects.len();
+    let row = &PARENT_METHODS[PARENT_INSTALL_ORDER[0]];
     assert!(
         runtime
-            .install_dom_parent_method(0, &PARENT_METHODS[0], &"querySelector".into(), &keys)
+            .install_dom_parent_method(0, row, &row.name.into(), &keys)
             .unwrap_err()
             .is_resource_limit()
     );
@@ -467,7 +468,7 @@ fn dom_parent_direct_bags_preserve_defaults_and_share_only_immutable_payloads() 
     for indices in [
         [0, 1, 2].as_slice(),
         [3, 4, 5].as_slice(),
-        [6, 7].as_slice(),
+        [6, 7, 8].as_slice(),
     ] {
         let pointers: Vec<_> = indices
             .iter()
@@ -544,12 +545,14 @@ fn dom_parent_classifier_rejects_wrong_kinds_and_invalid_ids_before_allocation()
         );
         assert_eq!((runtime.steps, runtime.allocated), (0, MAX_HEAP));
     }
+    // Document.append is recognized; its wrapper still needs admission after
+    // classification instead of returning the old missing-method value.
     runtime.steps = 6;
-    assert_eq!(
+    assert!(
         runtime
             .dom_parent_method(&Value::Document, ParentOperation::Append, &doc)
-            .unwrap(),
-        Value::Undefined
+            .unwrap_err()
+            .is_resource_limit()
     );
     assert_eq!((runtime.steps, runtime.allocated), (0, MAX_HEAP));
 }
@@ -628,7 +631,7 @@ fn dom_parent_preclone_exact_one_short_and_unknown_namespace_admission() {
         assert!(!is_parent_method_name(name));
     }
     for name in [
-        "DOM.Document.append",
+        "DOM.Document.invalid",
         "DOM.Element.invalid",
         "DOM.DocumentFragment.querySelectox",
         "DOM.E",
@@ -802,7 +805,12 @@ fn dom_parent_frozen_ordinary_sources_pass_in_both_modes() {
     for part in LOCAL.split("// ").skip(1).take(29) {
         let (header, body) = part.split_once('\n').unwrap();
         let name = header.split_once(' ').unwrap().0;
-        if name.ends_with("-standard-prerequisite") || header.ends_with("[resource]") {
+        if matches!(
+            name,
+            "real-interface-prototypes-standard-prerequisite"
+                | "host-method-replacement-standard-prerequisite"
+        ) || header.ends_with("[resource]")
+        {
             continue;
         }
         for strict in [false, true] {
@@ -818,7 +826,7 @@ fn dom_parent_frozen_ordinary_sources_pass_in_both_modes() {
             modes += 1;
         }
     }
-    assert_eq!(modes, 48);
+    assert_eq!(modes, 50);
 }
 
 #[test]
@@ -932,7 +940,7 @@ fn dom_parent_bootstrap_reports_actual_remaining_budget_and_capacities() {
     );
     assert!(runtime.steps < MAX_STEPS);
     assert!(runtime.allocated < MAX_HEAP);
-    assert_eq!(runtime.objects.len(), 351);
+    assert_eq!(runtime.objects.len(), 352);
     assert!(runtime.objects.capacity() >= BOOTSTRAP_OBJECT_CAPACITY);
     // Runtime::new additionally compares this capacity to its actual immediate
     // post-reserve capacity on every test build, detecting any later growth.

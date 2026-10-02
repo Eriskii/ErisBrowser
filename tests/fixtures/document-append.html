@@ -1,0 +1,83 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Document append through page callbacks</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#identity{left:0}#root{left:50px}#restore{left:100px}#moves{left:150px}#fragments{left:200px}#cycle{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="identity" class="sample"></div><div id="root" class="sample"></div>
+<div id="restore" class="sample"></div><div id="moves" class="sample"></div>
+<div id="fragments" class="sample"></div><div id="cycle" class="sample"></div>
+<button id="change" type="button">Run append callbacks</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+function hierarchy(action){
+  let error;try{action();}catch(e){error=e;}
+  check(error instanceof DOMException&&error.name==='HierarchyRequestError'&&error.code===3,'hierarchy error');
+}
+const root=document.documentElement,savedAppend=document.append;
+let runs=0;
+function apply(color){
+  check(runs===(color==='green'?0:1),'load/click progression');
+  check(document.documentElement===root&&root.parentNode===document,'visible root at entry');
+  const probe=document.createElement('section'),empty=document.createDocumentFragment();
+  check(typeof savedAppend==='function'&&savedAppend===document.append&&savedAppend!==probe.append&&savedAppend!==empty.append,'defining interface identity');
+  check(savedAppend.name==='append'&&savedAppend.length===0,'method metadata');
+  check(savedAppend.call(document)===undefined&&document.append(empty)===undefined,'empty appends');
+  let conversions=0,brand=false;
+  try{savedAppend.call(probe,{toString(){conversions++;return 'x';}});}catch(e){brand=e instanceof TypeError;}
+  check(brand&&conversions===0,'brand before conversion');mark('identity',color);
+
+  hierarchy(function(){document.append(root);});
+  check(document.documentElement===root&&root.parentNode===document,'single root refusal does not detach');
+  check(document.append(root,root)===undefined,'duplicate root succeeds after assembly');
+  check(document.documentElement===root&&root.parentNode===document,'duplicate root restored by operation');mark('root',color);
+
+  let removed;
+  try{
+    hierarchy(function(){document.append(root,'x');});
+    check(document.documentElement===null,'failed batch leaves document without root');
+    removed=root.parentNode;
+    check(removed.nodeType===11&&removed.parentNode===null&&removed.childNodes.length===2,'retained temporary fragment');
+    check(removed.childNodes[0]===root&&removed.childNodes[1].nodeType===3&&removed.childNodes[1].textContent==='x','root then literal text');
+  }finally{
+    if(root.parentNode!==document)savedAppend.call(document,root);
+  }
+  check(document.documentElement===root&&root.parentNode===document,'explicit author restoration');
+  check(removed.childNodes.length===1&&removed.firstChild.textContent==='x','restoration moves only root');mark('restore',color);
+
+  const left=document.createElement('aside'),right=document.createElement('aside');
+  const a=document.createElement('a'),b=document.createElement('b');left.append(a);right.append(b);
+  let trace='';const text={toString(){check(a.parentNode===left&&b.parentNode===right,'convert before moves');trace+='C';left.setAttribute('data-converted','yes');return 'x';}};
+  hierarchy(function(){document.append(a,b,text);});
+  const moved=a.parentNode;
+  check(trace==='C'&&left.getAttribute('data-converted')==='yes','conversion effect retained');
+  check(left.childNodes.length===0&&right.childNodes.length===0,'old parents emptied');
+  check(moved.nodeType===11&&moved.parentNode===null&&b.parentNode===moved&&moved.childNodes.length===3,'failed destination retains moves');
+  check(moved.childNodes[0]===a&&moved.childNodes[1]===b&&moved.childNodes[2].textContent==='x','assembled order');
+  check(document.documentElement===root,'unrelated root preserved');mark('moves',color);
+
+  const fragment=document.createDocumentFragment(),nothing=document.createDocumentFragment();
+  const first=document.createElement('i'),second=document.createElement('u');fragment.append(first,second);
+  hierarchy(function(){document.append(fragment);});
+  check(fragment.childNodes.length===2&&first.parentNode===fragment&&second.parentNode===fragment,'single fragment unchanged');
+  hierarchy(function(){document.append(fragment,nothing);});
+  const regrouped=first.parentNode;
+  check(fragment.childNodes.length===0&&nothing.childNodes.length===0,'multi-argument assembly drains source');
+  check(regrouped!==fragment&&regrouped.nodeType===11&&regrouped.parentNode===null&&regrouped.childNodes.length===2,'new fragment retained');
+  check(regrouped.childNodes[0]===first&&regrouped.childNodes[1]===second&&second.parentNode===regrouped,'fragment order retained');mark('fragments',color);
+
+  const holder=document.createElement('aside'),target=document.createElement('section'),child=document.createElement('b');
+  holder.append(target);target.append(child);
+  hierarchy(function(){target.append(child,target);});
+  const prefix=child.parentNode;
+  check(holder.childNodes.length===0&&target.childNodes.length===0,'completed prefix emptied old parents');
+  check(prefix.nodeType===11&&prefix.parentNode===null&&target.parentNode===prefix&&prefix.childNodes.length===2,'cycle leaves temporary ownership');
+  check(prefix.childNodes[0]===child&&prefix.childNodes[1]===target,'cycle prefix order');mark('cycle',color);
+  runs++;
+}
+apply('green');document.getElementById('result').textContent='ready';document.body.className='ready';
+document.getElementById('change').onclick=function(){apply('blue');check(runs===2,'two complete runs');document.getElementById('result').textContent='6';document.body.className='clicked';};
+</script>

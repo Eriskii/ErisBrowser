@@ -1,0 +1,295 @@
+{
+  "schema": 1,
+  "parent": "84839103310e7cefe37e6fe37e880b31070aaaeb",
+  "change": "Implement Document.append and checked script-facing append insertion with ordered conversion, temporary-fragment effects, hierarchy errors and terminal resource admission.",
+  "source_files": {
+    "src/dom.rs": "80cfa36e079d3029d842cff7323fb70b65a962c29229e45f77fb92f2836bf15e",
+    "src/script.rs": "728e7ecc0ed9d01256f9b04a10ec21920b07e84264d12bddc891f2bbf8397a5b",
+    "src/script/dom_bindings.rs": "335ace277a554b6962b995e050fc25087da9a1b3dafd16e36d631c55520cd52a",
+    "src/script/dom_bindings/append.rs": "3425d55a68d05f0e89d6013d280e9490ee392bc7f2dff198c1b4043d085cb725",
+    "src/script/dom_bindings/append_tests.rs": "41f08c9c0ed85a1496c448387deffafaf8c502489cc3fa89ef265eaff8ace517",
+    "src/script/dom_bindings/identity_tests.rs": "b650a802a7d7c8d5fd8ad517c8fb49358110929f2b3f9ccad74f34b95f466e4c",
+    "src/script/bootstrap_tests.rs": "704e5b7632345415d3d25538a1c74c7c50d69b10c153154a58efcd35e82c827e",
+    "tests/fixtures/document-append.html": "c708febfb81afd6dd4d037db4951da698766dca3f993cac3e352d90b1d877168",
+    "tests/pipeline.rs": "3317ee4063f7199c37dc3e39ff294985e0aea42eead8cbffcaff01ed178a2959",
+    "tests/worker.rs": "937a5e1ab692ddb8df0af3ccba58bb1dbdc2c14a7dc531ba029cb1f7a39b705a"
+  },
+  "source_diff_sha256": "a43a854278415522595acda123247e2f7c5d061c2fbf9503f072b9bc12a56096",
+  "binary_sha256": "dd17c879be4089cb670d05245dd1f5d78afdfc01f3d8358bf44f7a3187661a19",
+  "tests": {
+    "rust_1_88_default": 1401,
+    "rust_1_98_vulkan_raster": 1518,
+    "new_test_groups": 23,
+    "failed": 0,
+    "ignored": 0
+  },
+  "budget": {
+    "before_remaining_steps": 70796,
+    "after_remaining_steps": 70656,
+    "logical_heap_bytes": 738522,
+    "objects": 352,
+    "native_entries": 321,
+    "prototype_entries": 25,
+    "maximum_steps_unchanged": 100000,
+    "maximum_heap_unchanged": 8388608,
+    "script_entry_resets_unchanged": true
+  },
+  "commands": [
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 21.551,
+      "log": "full-default-188-1.log",
+      "sha256": "7867aae4943d74ae35efbbd10f252ebad09cad318f4bdcd465055fd5333f96a1"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 18.159,
+      "log": "full-native-198-1.log",
+      "sha256": "cf04519f8a127d03a19942ac437ca91278fae96861e4f3a6435de2cdecb4ba6b"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 3.403,
+      "log": "clippy-native-198-1.log",
+      "sha256": "d0db6118aa32b24d0debd892d03078cf72f3f2bd6cecba81ffd4f0274fcc9982"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--release",
+        "--bin",
+        "eris-js"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 58.727,
+      "log": "release-adapter-188-1.log",
+      "sha256": "6e94788744a5b6300fbf766654990f31aec0ad418291daa84f31f693c15e065a"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit": 0,
+      "log": "format.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "local_conformance": {
+    "dom-method-identity": {
+      "counts": {
+        "passed": 50,
+        "failed": 4,
+        "resource": 4
+      },
+      "expectations_verified": 54,
+      "cases": 58,
+      "controls_verified": 44,
+      "changed_cases": [
+        "document-append-standard-prerequisite#sloppy",
+        "document-append-standard-prerequisite#strict"
+      ],
+      "unchanged_complete_case_rows": 56,
+      "controls_unchanged": true,
+      "before_sha256": "c72409ef88cb328b787f29711014fb832cc0d882b6c99b2ffe6bfd8a126104e3",
+      "after_sha256": "3c6f161510f4fc184f9433130f44419bcddf82eb793554563db021d80f223a83"
+    },
+    "object-is": {
+      "counts": {
+        "passed": 68,
+        "resource": 4,
+        "failed": 4,
+        "unsupported": 2
+      },
+      "expectations_verified": 72,
+      "cases": 78,
+      "controls_verified": 60,
+      "changed_cases": [],
+      "unchanged_complete_case_rows": 78,
+      "controls_unchanged": true,
+      "before_sha256": "4a62f9cdc4e784c9d4ace31ed30b1e3b017d6b6f6b88ce131f16dc1ce6b5ea6e",
+      "after_sha256": "f05bca22ebb5f0fc36dadb4cf3e99f1e6561688d71e8a410f042c07d025f4883"
+    }
+  },
+  "archive": {
+    "path": "document-append.tar.gz",
+    "bytes": 147837,
+    "sha256": "92aac9fd6de48d129fe5f4bb87207c87ed4b7fbb95045a4d89b9f938cf874607",
+    "members": [
+      {
+        "path": "binary.json",
+        "bytes": 132,
+        "sha256": "45791102a0c64b264f2f0d7c5a7f7e25f1869465bc2ecb65c019681b1b2c6b05"
+      },
+      {
+        "path": "comparison.json",
+        "bytes": 1061,
+        "sha256": "c412e7f42725aa1ce7d76e566218d29f780c8cf5abb8acab2f0428f46f79e205"
+      },
+      {
+        "path": "dom-method-identity-after.json",
+        "bytes": 278061,
+        "sha256": "3c6f161510f4fc184f9433130f44419bcddf82eb793554563db021d80f223a83"
+      },
+      {
+        "path": "dom-method-identity-before.json",
+        "bytes": 278156,
+        "sha256": "c72409ef88cb328b787f29711014fb832cc0d882b6c99b2ffe6bfd8a126104e3"
+      },
+      {
+        "path": "dom-method-identity.execution.json",
+        "bytes": 383,
+        "sha256": "ec749c3e5e784e51d6039e7e2c2bffe36f642a10cbcc26cf43964a47b2a8facf"
+      },
+      {
+        "path": "dom-method-identity.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "dom-method-identity.stdout.log",
+        "bytes": 6828,
+        "sha256": "ccfd5a5c218b19a9561e0fe458d0ed69565c8adff05ecd1169dd3679a3919f51"
+      },
+      {
+        "path": "object-is-after.json",
+        "bytes": 305747,
+        "sha256": "f05bca22ebb5f0fc36dadb4cf3e99f1e6561688d71e8a410f042c07d025f4883"
+      },
+      {
+        "path": "object-is-before.json",
+        "bytes": 305761,
+        "sha256": "4a62f9cdc4e784c9d4ace31ed30b1e3b017d6b6f6b88ce131f16dc1ce6b5ea6e"
+      },
+      {
+        "path": "object-is.execution.json",
+        "bytes": 363,
+        "sha256": "a5d9accf510606c66b989a0ab0de53c16fd321635a62a4fdab232570710acd53"
+      },
+      {
+        "path": "object-is.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "object-is.stdout.log",
+        "bytes": 7568,
+        "sha256": "fb38f11ad11f2e547bbe5c5ca8adbfcc1e04b74550090136957dce94f2a6919e"
+      },
+      {
+        "path": "review.json",
+        "bytes": 4616,
+        "sha256": "367fcfa09c315ad0782b67f859676d1c5630869804c6b83e976d97b2e672478b"
+      },
+      {
+        "path": "source.diff",
+        "bytes": 60871,
+        "sha256": "a43a854278415522595acda123247e2f7c5d061c2fbf9503f072b9bc12a56096"
+      },
+      {
+        "path": "validation/clippy-native-198-1.json",
+        "bytes": 391,
+        "sha256": "a56ce7c4e320acf1beb977c1161a246e4601af202d1db951de24f70036337deb"
+      },
+      {
+        "path": "validation/clippy-native-198-1.log",
+        "bytes": 164,
+        "sha256": "d0db6118aa32b24d0debd892d03078cf72f3f2bd6cecba81ffd4f0274fcc9982"
+      },
+      {
+        "path": "validation/format.json",
+        "bytes": 215,
+        "sha256": "4c3597aa3324bf6b2f526886f2a66e3f9777b855ba4bcfae4ea0b555a091d85e"
+      },
+      {
+        "path": "validation/format.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "validation/full-default-188-1.json",
+        "bytes": 328,
+        "sha256": "17fa2909952465af30b11f1bbacb373cae6d136a236c8e6fc355f4d9b0aa2bfc"
+      },
+      {
+        "path": "validation/full-default-188-1.log",
+        "bytes": 133763,
+        "sha256": "7867aae4943d74ae35efbbd10f252ebad09cad318f4bdcd465055fd5333f96a1"
+      },
+      {
+        "path": "validation/full-native-198-1.json",
+        "bytes": 366,
+        "sha256": "176200cd2d8e2471df77e6a29afd51b3a4b47d6f800eacc5f255d6b51300484e"
+      },
+      {
+        "path": "validation/full-native-198-1.log",
+        "bytes": 146944,
+        "sha256": "cf04519f8a127d03a19942ac437ca91278fae96861e4f3a6435de2cdecb4ba6b"
+      },
+      {
+        "path": "validation/release-adapter-188-1.json",
+        "bytes": 342,
+        "sha256": "a76fc29af6dc5dbfa9e7b4840465eb881b4e60b1324f5d62999a626f7e44ea9d"
+      },
+      {
+        "path": "validation/release-adapter-188-1.log",
+        "bytes": 4879,
+        "sha256": "6e94788744a5b6300fbf766654990f31aec0ad418291daa84f31f693c15e065a"
+      }
+    ]
+  },
+  "limitations": [
+    "No new full formal-profile replay was run locally for this checkpoint.",
+    "Interface prototypes, host-member replacement, broader adoption and observers remain incomplete.",
+    "No claim of full standards support, production security, or Chromium performance parity."
+  ]
+}

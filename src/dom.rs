@@ -816,6 +816,13 @@ impl Document {
         self.establish_template_contents(id);
         id
     }
+    // Script insertion uses this admission before calling the parser-oriented
+    // builder, which deliberately clamps input at its storage limits.
+    pub(crate) fn admits_text_node(&self, bytes: usize) -> bool {
+        self.nodes.len() < MAX_NODES
+            && bytes <= MAX_TEXT
+            && bytes <= MAX_DOM_BYTES.saturating_sub(self.retained_bytes)
+    }
     pub fn create_text_node(&mut self, text: &str) -> NodeId {
         self.create_character_data(text, false)
     }
@@ -10091,5 +10098,69 @@ mod tests {
             decode_entities("&#0; &#xD800; &#x80; &#128512;"),
             "� � € 😀"
         );
+    }
+    // Private accounting setup avoids allocating MAX_TEXT/MAX_DOM_BYTES payloads.
+
+    #[test]
+    fn script_text_admission_checks_per_node_and_remaining_byte_boundaries() {
+        let mut doc = Document::parse("");
+        let count = doc.nodes.len();
+        let retained = doc.retained_bytes;
+        assert!(doc.admits_text_node(MAX_TEXT));
+        assert!(!doc.admits_text_node(MAX_TEXT + 1));
+        assert!(!doc.admits_text_node(usize::MAX));
+        assert_eq!(doc.nodes.len(), count);
+        assert_eq!(doc.retained_bytes, retained);
+
+        // A controlled near-full ledger tests the independent document-byte cap.
+        // It represents earlier retained payloads without constructing them here.
+        doc.retained_bytes = MAX_DOM_BYTES - 3;
+        assert!(doc.admits_text_node(3));
+        assert!(!doc.admits_text_node(4));
+        assert_eq!(doc.retained_bytes, MAX_DOM_BYTES - 3);
+        let text = doc.create_text_node("€");
+        assert!(matches!(&doc.nodes[text].kind, NodeKind::Text(value) if value == "€"));
+        assert_eq!(doc.nodes[text].parent, None);
+        assert_eq!(doc.retained_bytes, MAX_DOM_BYTES);
+        assert!(doc.admits_text_node(0));
+        assert!(!doc.admits_text_node(1));
+    }
+
+    #[test]
+    fn public_append_refuses_one_short_retained_storage_instead_of_truncating_text() {
+        for strict in [false, true] {
+            for remaining in [2, 1] {
+                let mut doc = Document::parse("<body><i></i></body>");
+                let body = doc.query_selector("body").unwrap();
+                let children = doc.nodes[body].children.clone();
+                let count = doc.nodes.len();
+                // Only the ledger is near its limit; the fixture stays tiny.
+                doc.retained_bytes = MAX_DOM_BYTES - remaining;
+                let mut runtime = crate::script::Runtime::new();
+                let source = "document.body.append('é');";
+                let result = if strict {
+                    runtime.execute_strict(source, &mut doc)
+                } else {
+                    runtime.execute(source, &mut doc)
+                };
+                if remaining == 2 {
+                    assert_eq!(result.unwrap(), crate::script::Value::Undefined);
+                    assert_eq!(doc.nodes.len(), count + 1);
+                    assert_eq!(&doc.nodes[body].children[..children.len()], &children);
+                    assert_eq!(doc.nodes[body].children.len(), children.len() + 1);
+                    let appended = *doc.nodes[body].children.last().unwrap();
+                    assert!(
+                        matches!(&doc.nodes[appended].kind, NodeKind::Text(value) if value == "é")
+                    );
+                    assert_eq!(doc.nodes[appended].parent, Some(body));
+                    assert_eq!(doc.retained_bytes, MAX_DOM_BYTES);
+                } else {
+                    assert!(result.unwrap_err().is_resource_limit());
+                    assert_eq!(doc.nodes.len(), count);
+                    assert_eq!(doc.nodes[body].children, children);
+                    assert_eq!(doc.retained_bytes, MAX_DOM_BYTES - 1);
+                }
+            }
+        }
     }
 }
