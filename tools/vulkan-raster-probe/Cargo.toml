@@ -28,6 +28,7 @@ path = "src/bin/worker-text-check.rs"
 required-features = ["browser-bridge"]
 
 [dependencies]
+eris-raster-core = { path = "../../crates/raster-core", features = ["gpu"] }
 wgpu = { version = "=30.0.1", default-features = false, features = ["std", "vulkan", "wgsl"] }
 eris = { package = "eris-browser", path = "../..", default-features = false, optional = true }
 

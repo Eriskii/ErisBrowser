@@ -2,6 +2,13 @@
 
 This standalone probe executes custom WGSL for unrounded rectangles and nearest-neighbor images, including source alpha over an opaque RGB target. It is experimental groundwork for the browser backend, with its own dependency graph. The optional [browser display-list bridge](BROWSER_BRIDGE.md) adds a separate offscreen checker using actual Eris worker snapshots and complete CPU fallback. Neither checker supplies a native surface, window, compositor capture or performance claim. The CPU-only tests do not enumerate adapters.
 
+The planner and reusable GPU encoding now live in
+[`eris-raster-core`](../../crates/raster-core/README.md). This crate preserves
+the original import paths through reexports and retains the fixture, adapter,
+supervision and readback-comparison harness. All four existing suites still pass
+on the three host adapters after extraction; see the
+[source-bound record](evidence/host-core-extraction.json).
+
 The separate [glyph checker](GLYPHS.md) adds bounded font-mask preparation and
 custom integer GPU compositing. Its twelve independent literal-mask cases and
 fourteen preserved-CPU font comparisons all pass on NVIDIA, AMD and software

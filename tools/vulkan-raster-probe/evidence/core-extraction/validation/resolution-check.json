@@ -1,0 +1,10 @@
+{
+  "registry_versions_checksums_and_normalized_dependency_edges_unchanged": true,
+  "root_manifest_and_lock_unchanged": true,
+  "core_default_nodes": 1,
+  "core_lock_packages": 97,
+  "probe_lock_packages": 328,
+  "probe_added_package": "eris-raster-core 0.1.0",
+  "core_optional_gpu_uses_existing_wgpu": "30.0.1",
+  "initial_comparison_note": "Comparing literal lock dependency strings first reported a difference; Cargo removed version disambiguators when duplicate package versions disappeared. Resolving dependency identities proves unchanged edges."
+}

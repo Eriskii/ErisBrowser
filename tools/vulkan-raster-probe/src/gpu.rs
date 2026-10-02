@@ -1,6 +1,7 @@
 //! Shared bounded Vulkan execution for the standalone probes.
 //! Plans and independent targets must be complete before this module is called.
-use crate::{DrawKind, MAX_GPU_BUFFER_BYTES, PARAM_STRIDE, Plan, Result};
+use crate::{MAX_GPU_BUFFER_BYTES, Plan, Result};
+use eris_raster_core::gpu::Rasterizer;
 use std::{
     future::Future,
     pin::pin,
@@ -49,18 +50,10 @@ impl Deadline {
     }
 }
 
-struct Kernels {
-    rectangle: wgpu::ComputePipeline,
-    rectangle_layout: wgpu::BindGroupLayout,
-    image: wgpu::ComputePipeline,
-    image_layout: wgpu::BindGroupLayout,
-    glyph: Option<wgpu::ComputePipeline>,
-}
-
 fn raster(
     device: &wgpu::Device,
     queue: &wgpu::Queue,
-    kernels: &Kernels,
+    rasterizer: &Rasterizer,
     p: &Plan,
     expected: &[u32],
     deadline: &Deadline,
@@ -68,122 +61,31 @@ fn raster(
     deadline.remaining()?;
     let frame = p.frame();
     let pixel_bytes = u64::from(frame.width) * u64::from(frame.height) * 4;
-    let metadata = p.parameters();
-    let input = p.input_bytes();
-    let actual_buffer_bytes = pixel_bytes * 2 + metadata.len() as u64 + input.len() as u64;
-    if actual_buffer_bytes != p.gpu_buffer_bytes() || actual_buffer_bytes > MAX_GPU_BUFFER_BYTES {
-        return Err("explicit GPU allocation budget mismatch".into());
-    }
     if expected.len() as u64 * 4 != pixel_bytes {
         return Err("fixture length mismatch".into());
     }
-    let alignment = device.limits().min_uniform_buffer_offset_alignment;
-    if alignment == 0 || !(PARAM_STRIDE as u32).is_multiple_of(alignment) {
-        return Err("unexpected uniform alignment".into());
-    }
-    let output = device.create_buffer(&wgpu::BufferDescriptor {
-        label: Some("GPU-written packed RGB only"),
-        size: pixel_bytes,
-        usage: wgpu::BufferUsages::STORAGE | wgpu::BufferUsages::COPY_SRC,
-        mapped_at_creation: false,
+    let mut encoder = device.create_command_encoder(&wgpu::CommandEncoderDescriptor {
+        label: Some("ordered custom compute rasterization"),
     });
+    let encoded = rasterizer.encode(device, queue, p, &mut encoder, || {
+        deadline.remaining().map(|_| ())
+    })?;
+    // Core owns one target; the probe owns the separately charged readback.
+    // Preserve the planner's two-target cap instead of silently relaxing it.
+    if encoded.owned_buffer_bytes().checked_add(pixel_bytes) != Some(p.gpu_buffer_bytes())
+        || encoded.planned_buffer_bytes() != p.gpu_buffer_bytes()
+        || encoded.output_bytes() != pixel_bytes
+        || p.gpu_buffer_bytes() > MAX_GPU_BUFFER_BYTES
+    {
+        return Err("explicit GPU allocation budget mismatch".into());
+    }
     let readback = device.create_buffer(&wgpu::BufferDescriptor {
         label: Some("bounded readback"),
         size: pixel_bytes,
         usage: wgpu::BufferUsages::COPY_DST | wgpu::BufferUsages::MAP_READ,
         mapped_at_creation: false,
     });
-    let parameters = device.create_buffer(&wgpu::BufferDescriptor {
-        label: Some("immutable ordered draw metadata"),
-        size: metadata.len() as u64,
-        usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
-        mapped_at_creation: false,
-    });
-    let group = device.create_bind_group(&wgpu::BindGroupDescriptor {
-        label: Some("rectangle output and uniform window"),
-        layout: &kernels.rectangle_layout,
-        entries: &[
-            wgpu::BindGroupEntry {
-                binding: 0,
-                resource: output.as_entire_binding(),
-            },
-            wgpu::BindGroupEntry {
-                binding: 1,
-                resource: wgpu::BindingResource::Buffer(wgpu::BufferBinding {
-                    buffer: &parameters,
-                    offset: 0,
-                    size: wgpu::BufferSize::new(32),
-                }),
-            },
-        ],
-    });
-    // Rectangle-only plans allocate no input buffer or dummy binding. Inputs
-    // hold original source colors, coverage and index/row tables, never a
-    // CPU-painted target. Output deliberately has no COPY_DST usage.
-    let input_arena = if p.has_input() {
-        let buffer = device.create_buffer(&wgpu::BufferDescriptor {
-            label: Some("bounded immutable colors, coverage and coordinate tables"),
-            size: input.len() as u64,
-            usage: wgpu::BufferUsages::STORAGE | wgpu::BufferUsages::COPY_DST,
-            mapped_at_creation: false,
-        });
-        let group = device.create_bind_group(&wgpu::BindGroupDescriptor {
-            label: Some("input-backed output, uniform window and input arena"),
-            layout: &kernels.image_layout,
-            entries: &[
-                wgpu::BindGroupEntry {
-                    binding: 0,
-                    resource: output.as_entire_binding(),
-                },
-                wgpu::BindGroupEntry {
-                    binding: 1,
-                    resource: wgpu::BindingResource::Buffer(wgpu::BufferBinding {
-                        buffer: &parameters,
-                        offset: 0,
-                        size: wgpu::BufferSize::new(64),
-                    }),
-                },
-                wgpu::BindGroupEntry {
-                    binding: 2,
-                    resource: buffer.as_entire_binding(),
-                },
-            ],
-        });
-        queue.write_buffer(&buffer, 0, input);
-        Some((buffer, group))
-    } else {
-        None
-    };
-    queue.write_buffer(&parameters, 0, metadata);
-    let mut encoder = device.create_command_encoder(&wgpu::CommandEncoderDescriptor {
-        label: Some("ordered custom compute rasterization"),
-    });
-    for (index, draw) in p.draws().iter().enumerate() {
-        deadline.remaining()?;
-        // Separate pass boundary for every draw; storage read/write transitions are
-        // tracked/barriered by wgpu-core. Never dispatch overlapping writers in
-        // one dispatch or rely on a workgroup barrier for cross-dispatch order.
-        let mut pass = encoder.begin_compute_pass(&wgpu::ComputePassDescriptor {
-            label: Some("one ordered source-over draw"),
-            timestamp_writes: None,
-        });
-        let (pipeline, draw_group) = match draw.kind() {
-            DrawKind::Rectangle => (&kernels.rectangle, &group),
-            DrawKind::Image => (
-                &kernels.image,
-                &input_arena.as_ref().ok_or("missing image arena")?.1,
-            ),
-            DrawKind::Glyph => (
-                kernels.glyph.as_ref().ok_or("missing glyph pipeline")?,
-                &input_arena.as_ref().ok_or("missing glyph arena")?.1,
-            ),
-        };
-        pass.set_pipeline(pipeline);
-        pass.set_bind_group(0, draw_group, &[(index * PARAM_STRIDE) as u32]);
-        let (x, y) = draw.groups();
-        pass.dispatch_workgroups(x, y, 1);
-    }
-    encoder.copy_buffer_to_buffer(&output, 0, &readback, 0, pixel_bytes);
+    encoder.copy_buffer_to_buffer(encoded.output_buffer(), 0, &readback, 0, pixel_bytes);
     let submission = queue.submit([encoder.finish()]);
     let (tx, rx) = mpsc::sync_channel(1);
     readback.map_async(wgpu::MapMode::Read, .., move |result| {
@@ -224,12 +126,8 @@ fn raster(
         }
     };
     readback.unmap();
-    output.destroy();
+    encoded.destroy_after_completion();
     readback.destroy();
-    parameters.destroy();
-    if let Some((buffer, _)) = input_arena {
-        buffer.destroy();
-    }
     comparison
 }
 /// Enumerate Vulkan adapters and optionally compare every supplied plan.
@@ -283,133 +181,14 @@ pub fn run_plans(
             ..Default::default()
         }))?
         .map_err(|e| format!("device: {e}"))?;
+    deadline.remaining()?;
     let validation = device.push_error_scope(wgpu::ErrorFilter::Validation);
     let oom = device.push_error_scope(wgpu::ErrorFilter::OutOfMemory);
     let internal = device.push_error_scope(wgpu::ErrorFilter::Internal);
-    let layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
-        label: Some("bounded rectangle bindings"),
-        entries: &[
-            wgpu::BindGroupLayoutEntry {
-                binding: 0,
-                visibility: wgpu::ShaderStages::COMPUTE,
-                ty: wgpu::BindingType::Buffer {
-                    ty: wgpu::BufferBindingType::Storage { read_only: false },
-                    has_dynamic_offset: false,
-                    min_binding_size: wgpu::BufferSize::new(4),
-                },
-                count: None,
-            },
-            wgpu::BindGroupLayoutEntry {
-                binding: 1,
-                visibility: wgpu::ShaderStages::COMPUTE,
-                ty: wgpu::BindingType::Buffer {
-                    ty: wgpu::BufferBindingType::Uniform,
-                    has_dynamic_offset: true,
-                    min_binding_size: wgpu::BufferSize::new(32),
-                },
-                count: None,
-            },
-        ],
-    });
-    let pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
-        label: Some("explicit compute layout"),
-        bind_group_layouts: &[Some(&layout)],
-        immediate_size: 0,
-    });
-    let module = device.create_shader_module(wgpu::ShaderModuleDescriptor {
-        label: Some("custom WGSL rectangle rasterizer"),
-        source: wgpu::ShaderSource::Wgsl(include_str!("rect.wgsl").into()),
-    });
-    let pipeline = device.create_compute_pipeline(&wgpu::ComputePipelineDescriptor {
-        label: Some("integer coverage and source-over blending"),
-        layout: Some(&pipeline_layout),
-        module: &module,
-        entry_point: Some("rectangle"),
-        compilation_options: Default::default(),
-        cache: None,
-    });
-    let image_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
-        label: Some("bounded image bindings"),
-        entries: &[
-            wgpu::BindGroupLayoutEntry {
-                binding: 0,
-                visibility: wgpu::ShaderStages::COMPUTE,
-                ty: wgpu::BindingType::Buffer {
-                    ty: wgpu::BufferBindingType::Storage { read_only: false },
-                    has_dynamic_offset: false,
-                    min_binding_size: wgpu::BufferSize::new(4),
-                },
-                count: None,
-            },
-            wgpu::BindGroupLayoutEntry {
-                binding: 1,
-                visibility: wgpu::ShaderStages::COMPUTE,
-                ty: wgpu::BindingType::Buffer {
-                    ty: wgpu::BufferBindingType::Uniform,
-                    has_dynamic_offset: true,
-                    min_binding_size: wgpu::BufferSize::new(64),
-                },
-                count: None,
-            },
-            wgpu::BindGroupLayoutEntry {
-                binding: 2,
-                visibility: wgpu::ShaderStages::COMPUTE,
-                ty: wgpu::BindingType::Buffer {
-                    ty: wgpu::BufferBindingType::Storage { read_only: true },
-                    has_dynamic_offset: false,
-                    min_binding_size: wgpu::BufferSize::new(4),
-                },
-                count: None,
-            },
-        ],
-    });
-    let image_pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
-        label: Some("explicit image compute layout"),
-        bind_group_layouts: &[Some(&image_layout)],
-        immediate_size: 0,
-    });
-    let image_module = device.create_shader_module(wgpu::ShaderModuleDescriptor {
-        label: Some("custom WGSL source-over image rasterizer"),
-        source: wgpu::ShaderSource::Wgsl(include_str!("image.wgsl").into()),
-    });
-    let image_pipeline = device.create_compute_pipeline(&wgpu::ComputePipelineDescriptor {
-        label: Some("integer nearest-neighbor gathering and blending"),
-        layout: Some(&image_pipeline_layout),
-        module: &image_module,
-        entry_point: Some("image"),
-        compilation_options: Default::default(),
-        cache: None,
-    });
-    // Existing rectangle/image-only runs do not create an extra shader or
-    // pipeline. Glyphs reuse the exact input/output/uniform binding layout.
-    let glyph_pipeline = if plans.iter().any(|(_, _, plan)| plan.has_glyphs()) {
-        let module = device.create_shader_module(wgpu::ShaderModuleDescriptor {
-            label: Some("custom integer glyph coverage"),
-            source: wgpu::ShaderSource::Wgsl(include_str!("glyph.wgsl").into()),
-        });
-        Some(
-            device.create_compute_pipeline(&wgpu::ComputePipelineDescriptor {
-                label: Some("ordered glyph coverage and source-over"),
-                layout: Some(&image_pipeline_layout),
-                module: &module,
-                entry_point: Some("glyph"),
-                compilation_options: Default::default(),
-                cache: None,
-            }),
-        )
-    } else {
-        None
-    };
-    let kernels = Kernels {
-        rectangle: pipeline,
-        rectangle_layout: layout,
-        image: image_pipeline,
-        image_layout,
-        glyph: glyph_pipeline,
-    };
+    let rasterizer = Rasterizer::new(&device, plans.iter().any(|(_, _, plan)| plan.has_glyphs()));
     let outcome: Result<()> = (|| {
         for &(name, expected, plan) in plans {
-            raster(&device, &queue, &kernels, plan, expected, &deadline)
+            raster(&device, &queue, &rasterizer, plan, expected, &deadline)
                 .map_err(|e| format!("{name}: {e}"))?;
             on_pass(name, plan, expected)?;
         }

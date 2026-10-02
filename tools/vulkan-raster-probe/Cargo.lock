@@ -500,10 +500,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "eris-raster-core"
+version = "0.1.0"
+dependencies = [
+ "wgpu",
+]
+
+[[package]]
 name = "eris-vulkan-raster-prototype"
 version = "0.0.0"
 dependencies = [
  "eris-browser",
+ "eris-raster-core",
  "wgpu",
 ]
 

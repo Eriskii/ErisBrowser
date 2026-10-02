@@ -144,9 +144,16 @@ jobs:
     timeout-minutes: 15
     env:
       RUSTUP_TOOLCHAIN: 1.88.0
+      CARGO_TARGET_DIR: ${{ github.workspace }}/target/vulkan-raster-ci
     steps:
       - uses: actions/checkout@v4
       - run: rustup toolchain install 1.88.0 --profile minimal --component rustfmt --component clippy
+      # Dependency unit tests are not run by cargo test on the probe package.
+      - run: cargo fmt --manifest-path crates/raster-core/Cargo.toml -- --check
+      - run: cargo clippy --locked --manifest-path crates/raster-core/Cargo.toml --all-targets -- -D warnings
+      - run: cargo test --locked --manifest-path crates/raster-core/Cargo.toml
+      - run: cargo clippy --locked --manifest-path crates/raster-core/Cargo.toml --all-targets --features gpu -- -D warnings
+      - run: cargo test --locked --manifest-path crates/raster-core/Cargo.toml --features gpu
       - run: cargo fmt --manifest-path tools/vulkan-raster-probe/Cargo.toml -- --check
       - run: cargo clippy --locked --manifest-path tools/vulkan-raster-probe/Cargo.toml --all-targets -- -D warnings
       - run: cargo test --locked --manifest-path tools/vulkan-raster-probe/Cargo.toml

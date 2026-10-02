@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "kind": "completed exact-byte publication ledger",
+  "index": {
+    "path": "index.json",
+    "bytes": 57011,
+    "sha256": "a4bc7b9d9e065553580307c873d41af7c86e297f30edec0cbe021bba5da210c3"
+  },
+  "completed_run_review": {
+    "path": "reviews/eris-vulkan-core-completed-run-review.json",
+    "sha256": "d9cb06ac0135898e683ff4e566b030e9619981bc350819136a967cbdd888eced"
+  },
+  "totals": {
+    "payload_artifacts": 113,
+    "identity_copies": 110,
+    "compressed_stdout_logs": 3,
+    "uncompressed_payload_bytes": 2841806,
+    "stored_payload_bytes": 706201,
+    "current_source_bindings_verified": 182
+  },
+  "verification": [
+    "Every copied artifact matches its unchanged original after copying.",
+    "Compressed stdout round-trips exactly and recompresses deterministically.",
+    "All stdout with a standalone supervisor receipt matches its stdout_sha256.",
+    "The 182 source/fixture inputs match the retained source manifest before and after publication.",
+    "The omitted full Cargo metadata graph remains hash-bound; its concise resolution receipt is included."
+  ],
+  "execution": "Packaging, hashing and lossless compression only; no compiler/test/Canvas/worker/GPU/CI rerun."
+}

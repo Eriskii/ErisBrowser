@@ -1,0 +1,167 @@
+{
+  "schema": 1,
+  "status": "planner source ready; no compiler or engine execution",
+  "old_archive": "/tmp/eris-vulkan-core-planner-before",
+  "owned_files": [
+    {
+      "path": "crates/raster-core/src/lib.rs",
+      "bytes": 24348,
+      "sha256": "ed1a56b424d1ea4b60f998eae0c6e6bb1746c2c8b98ab5f8a7ba70e6690a191f"
+    },
+    {
+      "path": "crates/raster-core/src/scope.rs",
+      "bytes": 3645,
+      "sha256": "415ca9027a583914626b5e1f2ac3bd8fc9206acea0fa7ac2af88bc323ee5f22a"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/lib.rs",
+      "bytes": 897,
+      "sha256": "03856fe6ccc765592060dd6b4d4a89eece7722b167f591786492fa199fcb9f4c"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/scope.rs",
+      "bytes": 137,
+      "sha256": "e162979f7956d1dbeac82c65910c2244c28aa431b38e6f4323db4d7a069aa1fc"
+    }
+  ],
+  "preservation": {
+    "planner_body_byte_identical": true,
+    "scope_only_delta": "pub(crate) -> pub for CoordinateState and six existing methods",
+    "public_probe_symbols": [
+      "MAX_WIDTH",
+      "MAX_HEIGHT",
+      "MAX_COMMANDS",
+      "MAX_SCOPES",
+      "MAX_INVOCATIONS",
+      "MAX_GPU_BUFFER_BYTES",
+      "PARAM_STRIDE",
+      "MAX_COORDINATE",
+      "MAX_SOURCE_ENTRIES",
+      "MAX_SOURCE_RGBA_BYTES",
+      "MAX_MASK_AXIS",
+      "MAX_MASK_PIXELS",
+      "MAX_MASK_COVERAGE_BYTES",
+      "MAX_ROW_ENTRIES",
+      "MAX_LUT_ENTRIES",
+      "Result",
+      "Rect",
+      "Command",
+      "rect",
+      "Frame",
+      "SourceImage",
+      "SourceMask",
+      "DrawKind",
+      "Draw",
+      "Plan",
+      "plan",
+      "plan_with_images",
+      "plan_with_masks"
+    ],
+    "original_fixture_and_test_files_byte_identical": true,
+    "private_fields": "Plan, Draw, ImageParameters and CoordinateState storage remain private",
+    "limits_errors_order": "unchanged"
+  },
+  "core_test_mapping": [
+    {
+      "path": "tools/vulkan-raster-probe/src/tests.rs",
+      "sha256": "0453f0431e7f352015876ee801c28bfcda49d9be6c5d4c5605144629534bef61",
+      "tests": [
+        "independent_pixel_fixtures_agree_with_integer_plan",
+        "fractional_rectangle_and_clip_left_edges_are_deliberately_different",
+        "unsupported_content_is_rejected_even_after_hidden_or_empty_content",
+        "invalid_nonfinite_coordinates_offsets_and_dimensions_are_rejected",
+        "typed_scope_balance_and_combined_depth_are_checked_atomically",
+        "commands_overdraw_invocations_and_explicit_buffers_stay_bounded",
+        "metadata_records_are_immutable_aligned_and_never_pixels",
+        "exact_edges_touching_clips_and_fixed_escape_empty_ancestors",
+        "image_frozen_pixels_and_independently_counted_protocol_are_exact",
+        "image_plan_owns_sources_reuses_ids_and_validates_even_unused_entries",
+        "image_strict_sources_reject_malformed_and_hidden_input",
+        "image_geometry_scopes_and_unsupported_commands_refuse_whole_plan",
+        "image_exact_gpu_byte_and_invocation_caps_accept_and_next_unit_rejects",
+        "image_source_command_and_scope_caps_accept_exact_boundaries",
+        "image_scalar_sampling_matches_nine_frozen_float_edge_oracles",
+        "image_all_642_frozen_lookup_entries_and_origins_are_preserved",
+        "alpha_frozen_literals_and_counter_contracts_match_serialized_plans",
+        "alpha_only_old_rejections_are_supported_without_discarding_source_alpha",
+        "transparent_rectangles_validate_geometry_and_radius_before_elision",
+        "transparent_commands_cannot_bypass_typed_scopes_counts_or_clear_validation",
+        "transparent_source_structure_is_checked_even_if_unused_empty_or_clipped",
+        "fully_transparent_images_keep_dispatch_arena_and_exact_resource_caps"
+      ],
+      "count": 22,
+      "execution": "core unit tests"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+      "sha256": "44c3339ff5df30becefbc8e6e434322a4898abc98e971f01b4c4e2e6ad3accbd",
+      "tests": [
+        "glyph_packing_keeps_original_sources_and_signed_rows_in_separate_ranges",
+        "glyph_addition_retains_literal_image_only_parameter_and_input_layout",
+        "glyph_and_image_draw_order_and_index_namespaces_remain_distinct",
+        "glyph_reached_ids_and_height_validate_before_alpha_or_clip_culling",
+        "glyph_unused_sources_and_row_tables_are_validated_without_a_draw",
+        "glyph_empty_canonical_sources_count_but_create_no_gpu_input",
+        "glyph_mask_axis_area_and_aggregate_coverage_caps_are_distinct",
+        "glyph_row_table_entry_total_is_bounded_including_unused_tables",
+        "glyph_exact_combined_gpu_byte_ceiling_counts_all_mask_and_row_words",
+        "glyph_repeated_dispatches_share_masks_but_pay_full_invocation_work",
+        "glyph_fractional_clip_uses_integer_origins_and_both_upper_edges",
+        "glyph_signed_extremes_and_negative_y_clip_without_overflow",
+        "glyph_absolute_origins_ignore_offsets_but_obey_fixed_clip_restore",
+        "glyph_shared_scope_state_preserves_typed_nesting_and_float_order",
+        "glyph_zero_coverage_is_not_scanned_to_suppress_dispatch",
+        "glyph_returned_plan_owns_coverage_and_rows_without_source_lifetimes"
+      ],
+      "count": 16,
+      "execution": "core unit tests"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/fixtures.rs",
+      "sha256": "7779ecab36a587f2792acf258b28709b9b4606ece0976c48c0c04aa8e1a45ab8",
+      "tests": [],
+      "count": 0,
+      "execution": "core unit tests"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/image_fixtures.rs",
+      "sha256": "d7fd6c1970f1bfad52021b0ae48401596d3124c5a7e29a1171a310d6d6f096ee",
+      "tests": [],
+      "count": 0,
+      "execution": "core unit tests"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/alpha_fixtures.rs",
+      "sha256": "a67934fd08cb9095c6b00b1e2d875315d87b00dc7525b6d3252ccaaa2ebb61b7",
+      "tests": [
+        "alpha_fixture_inputs_and_literal_outputs_are_bounded",
+        "alpha_fixture_frozen_counter_arithmetic"
+      ],
+      "count": 2,
+      "execution": "core unit tests and existing probe alpha fixture tests"
+    }
+  ],
+  "core_groups_without_gpu": 40,
+  "duplicate_test_note": "Two alpha fixture structural groups execute in both core and probe because the unchanged fixture module includes cfg(test) tests. Count duplicate identities separately.",
+  "gpu_owner": "layout: optional core GPU module/shaders and probe comparison wrapper; not reviewed or changed by this receipt",
+  "manifest_owner": "root: core/probe manifests, lockfiles and explicit core test/CI invocations",
+  "commands": [
+    {
+      "command": "rustfmt --edition 2024 --config skip_children=true <four owned files>",
+      "toolchain": "1.88.0",
+      "status": 0
+    },
+    {
+      "command": "inert byte/API/test-name comparisons",
+      "status": 0
+    }
+  ],
+  "not_executed": [
+    "Cargo",
+    "compiler",
+    "Rust tests",
+    "worker",
+    "font/Canvas",
+    "GPU"
+  ]
+}

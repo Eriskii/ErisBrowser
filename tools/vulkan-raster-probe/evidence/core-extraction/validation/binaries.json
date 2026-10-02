@@ -1,0 +1,42 @@
+[
+  {
+    "path": "/tmp/eris-vulkan-core-1/eris-vulkan-raster-prototype-1.88.0",
+    "bytes": 18564064,
+    "sha256": "9cd77fc2112c3181ee4f5118e8aed2d802fc0e7076901b20107c64229d0d85f2"
+  },
+  {
+    "path": "/tmp/eris-vulkan-core-1/eris-vulkan-browser-check-1.88.0",
+    "bytes": 23985480,
+    "sha256": "d28c6515947795df0b940d36968c3f6b9c26262efc64c0298e1c3d212a7e9a05"
+  },
+  {
+    "path": "/tmp/eris-vulkan-core-1/eris-vulkan-glyph-check-1.88.0",
+    "bytes": 21601368,
+    "sha256": "1219eb954a348a01863576caf743f1d51b2b55e530304600da1c275c3960d1cc"
+  },
+  {
+    "path": "/tmp/eris-vulkan-core-1/eris-vulkan-worker-text-check-1.88.0",
+    "bytes": 24067176,
+    "sha256": "9963970bd829c5620e2ff3c1116a53e583ed001e6d4a09a0212015ab15ca50fb"
+  },
+  {
+    "path": "/tmp/eris-vulkan-core-1/eris-vulkan-raster-prototype-1.98.0",
+    "bytes": 23503696,
+    "sha256": "e5bb15b6be4afed601cc6bb9c4638f6964cd28469f758ebb03e8ef8601a5e5f9"
+  },
+  {
+    "path": "/tmp/eris-vulkan-core-1/eris-vulkan-browser-check-1.98.0",
+    "bytes": 29120624,
+    "sha256": "430e51f58d20e1e16c1963cc9846b37eb33ae21e78b4909441f902b5287ef17e"
+  },
+  {
+    "path": "/tmp/eris-vulkan-core-1/eris-vulkan-glyph-check-1.98.0",
+    "bytes": 26637304,
+    "sha256": "fbfd2df5a39cd47e0ed37448feb4fb46023a45e14fd0b808c97235e1927608b1"
+  },
+  {
+    "path": "/tmp/eris-vulkan-core-1/eris-vulkan-worker-text-check-1.98.0",
+    "bytes": 29227824,
+    "sha256": "4f579bb6393771d02d9b7317af219909eb0c66ebb213ecef4ebe457fcf244621"
+  }
+]

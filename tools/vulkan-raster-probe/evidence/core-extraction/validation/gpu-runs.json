@@ -1,0 +1,80 @@
+[
+  {
+    "name": "standalone-host-1",
+    "command": [
+      "/run/current-system/sw/bin/python3",
+      "/tmp/eris-vulkan-core-1/launch.py",
+      "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/run_host.py",
+      "--binary",
+      "/tmp/eris-vulkan-core-1/eris-vulkan-raster-prototype-1.98.0",
+      "--output-dir",
+      "/tmp/eris-vulkan-core-1/standalone-host-1",
+      "--allow-experimental-gpu",
+      "--loader-directory",
+      "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib"
+    ],
+    "exit": 0,
+    "success": true,
+    "adapter_count": 3
+  },
+  {
+    "name": "glyph-host-1",
+    "command": [
+      "/run/current-system/sw/bin/python3",
+      "/tmp/eris-vulkan-core-1/launch.py",
+      "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/run_glyph_host.py",
+      "--binary",
+      "/tmp/eris-vulkan-core-1/eris-vulkan-glyph-check-1.98.0",
+      "--baselines",
+      "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/glyph-fixtures/parent-baselines",
+      "--output",
+      "/tmp/eris-vulkan-core-1/glyph-host-1",
+      "--allow-experimental-gpu",
+      "--loader-directory",
+      "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib"
+    ],
+    "exit": 0,
+    "success": true,
+    "adapter_count": 3
+  },
+  {
+    "name": "browser-host-1",
+    "command": [
+      "/run/current-system/sw/bin/python3",
+      "/tmp/eris-vulkan-core-1/launch.py",
+      "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/run_browser_host.py",
+      "--binary",
+      "/tmp/eris-vulkan-core-1/eris-vulkan-browser-check-1.98.0",
+      "--browser",
+      "/tmp/eris-vulkan-worker-text-2/eris-browser-stripped",
+      "--output-dir",
+      "/tmp/eris-vulkan-core-1/browser-host-1",
+      "--allow-experimental-gpu",
+      "--loader-directory",
+      "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib"
+    ],
+    "exit": 0,
+    "success": true,
+    "adapter_count": 3
+  },
+  {
+    "name": "worker-text-host-1",
+    "command": [
+      "/run/current-system/sw/bin/python3",
+      "/tmp/eris-vulkan-core-1/launch.py",
+      "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/run_worker_text_host.py",
+      "--binary",
+      "/tmp/eris-vulkan-core-1/eris-vulkan-worker-text-check-1.98.0",
+      "--browser",
+      "/tmp/eris-vulkan-worker-text-2/eris-browser-stripped",
+      "--output",
+      "/tmp/eris-vulkan-core-1/worker-text-host-1",
+      "--allow-experimental-gpu",
+      "--loader-directory",
+      "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib"
+    ],
+    "exit": 0,
+    "success": true,
+    "adapter_count": 3
+  }
+]

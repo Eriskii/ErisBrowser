@@ -15,6 +15,11 @@ GPU rasterization and group compositing remain future work.
 No GPU speedup or Chromium performance result is established. Earlier isolated
 experiments and their failed compositor comparisons remain recorded below.
 
+The reusable [raster core](../crates/raster-core/README.md) now separates
+primitive planning and GPU encoding from probe-only device selection, readback
+and comparison. Callers receive owned frame resources on their existing device.
+The browser adapter still lives in the probe; native call sites are unchanged.
+
 Build and select the experimental presenter explicitly:
 
 ```sh

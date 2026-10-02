@@ -1,0 +1,23 @@
+[package]
+name = "eris-raster-core"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.88"
+publish = false
+license = "MIT"
+description = "Browser-independent bounded planning and GPU drawing for Eris"
+
+[workspace]
+
+[features]
+default = []
+gpu = ["dep:wgpu"]
+
+[dependencies]
+wgpu = { version = "=30.0.1", optional = true, default-features = false, features = ["std", "vulkan", "wgsl"] }
+
+[profile.dev]
+debug = 0
+
+[lints.rust]
+unsafe_code = "forbid"

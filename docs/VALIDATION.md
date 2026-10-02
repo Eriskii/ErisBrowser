@@ -1,5 +1,46 @@
 # Validation record
 
+## Reusable raster core
+
+[`eris-raster-core`](../crates/raster-core/README.md) now owns the unchanged
+primitive planner and an optional GPU encoder on caller-owned devices. The
+probe retains adapter selection, deadlines, error scopes and full pixel
+comparison. Its old public planner paths are reexports of the same types.
+Returned frame resources retain their buffers, bindings and pipelines through
+submission; explicit destruction requires the caller to have confirmed
+completion. Encoding errors require discarding the incomplete encoder.
+
+The original planner body and three shader sources retain exact bytes.
+Coordinate-state changes expose only the narrow API needed by the browser
+adapter. Frame and work caps, source validation and two-target GPU accounting
+are unchanged. The root Cargo files remain byte-identical; the probe adds one
+local path package, and the core uses existing external versions and checksums.
+The core default dependency graph contains only the core itself.
+
+Both Rust 1.88 and 1.98 pass formatting and strict all-target Clippy. Core tests
+pass **40 groups without GPU and 43 with GPU**; probe tests pass **5 default
+and 41 with the browser bridge**. The combined feature runs preserve all 79
+prior executions, add two duplicate alpha-fixture executions across crates and
+three new accounting/alignment/glyph-admission groups. CI explicitly runs core
+tests because dependency unit tests are not run by testing the probe alone.
+
+All four existing GPU suites pass on NVIDIA, AMD and software Vulkan:
+
+| Suite | GPU-compared bytes across three adapters | CPU fallback reference bytes |
+| --- | ---: | ---: |
+| 30 standalone rectangle/image/alpha cases | 2,764,860 | 0 |
+| 26 literal-mask and parent-font cases | 1,034,868 | 0 |
+| 16 browser bridge cases | 1,812 | 552 |
+| 7 worker-text cases | 921,600 | 153,600 |
+
+That is **4,723,140 GPU-compared bytes**, with **154,152 fallback reference
+bytes kept separate**. The Rust 1.88 glyph CPU check also matches all fourteen
+preserved-parent font references cold and warm. Existing fixture values and
+Python protocols are unchanged. The [retained evidence](../tools/vulkan-raster-probe/evidence/host-core-extraction.json)
+records exact source, binary and run bindings. This extraction establishes no
+native-window rasterization or performance result; browser adapter relocation,
+scene construction, rounded geometry and presentation remain unfinished.
+
 ## Vulkan text from actual worker snapshots
 
 The [worker-text checker](../tools/vulkan-raster-probe/WORKER_TEXT.md) loads seven
@@ -36,6 +77,9 @@ all three adapters. Existing WGSL and renderer admission limits are unchanged.
 Native-window rasterization, shaping, rounded geometry, group opacity,
 production security, full web compatibility and the Chromium performance target
 remain unfinished.
+All seven [CI jobs for `a744eb1`](https://github.com/Eriskii/ErisBrowser/actions/runs/36969011123)
+passed; the exact [terminal result](../tools/vulkan-raster-probe/evidence/host-worker-text-ci.json)
+is retained alongside the host evidence.
 
 ## Bounded Vulkan glyph masks
 

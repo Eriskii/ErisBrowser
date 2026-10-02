@@ -1,11 +1,16 @@
 # Proposed native GPU raster integration
 
-This is an architecture proposal, not implemented behavior. The published
-offscreen glyph checkpoint does not change native window rendering. Native
+This proposes native scene construction and presentation. The offscreen
+checkpoints do not change native window rendering. Native
 Eris still paints a complete CPU `Canvas`; its optional Vulkan presenter
 uploads those pixels. The custom probe renders bounded offscreen plans and
 compares readback. Neither result establishes native GPU raster performance
 or general web typography support.
+
+The [raster-core extraction](../crates/raster-core/README.md) is now implemented:
+primitive planning and optional GPU encoding have a browser-independent owner.
+The browser adapter and native scene/presentation portions below remain work
+to implement. Existing probe imports continue through reexports.
 
 ## Current seams
 

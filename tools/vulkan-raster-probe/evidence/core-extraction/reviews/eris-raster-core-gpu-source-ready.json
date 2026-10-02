@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "activity": "source-only GPU extraction; no compiler/unit/engine/GPU execution",
+  "baseline": "a744eb1",
+  "original": [
+    {
+      "source": "tools/vulkan-raster-probe/src/gpu.rs",
+      "copy": "/tmp/eris-raster-core-gpu-before/gpu.rs",
+      "sha256": "f60141761316a3170a573937b0219e95e63181a415cf734a0bd7f720d040d6b2",
+      "bytes": 17494
+    },
+    {
+      "source": "tools/vulkan-raster-probe/src/rect.wgsl",
+      "copy": "/tmp/eris-raster-core-gpu-before/rect.wgsl",
+      "sha256": "b0f67e88f3b5630cb98c8406ee20df6e8890b3ca42410451f105f64fb2a68afa",
+      "bytes": 1593
+    },
+    {
+      "source": "tools/vulkan-raster-probe/src/image.wgsl",
+      "copy": "/tmp/eris-raster-core-gpu-before/image.wgsl",
+      "sha256": "ede39857bf369d5a33f5503e7ae96bd04bd5ca06a11937f28fa97793011b3446",
+      "bytes": 2959
+    },
+    {
+      "source": "tools/vulkan-raster-probe/src/glyph.wgsl",
+      "copy": "/tmp/eris-raster-core-gpu-before/glyph.wgsl",
+      "sha256": "a045be94313471d703e7a797f36d1956785b43e69129851d9eb8a99ad9dc86b7",
+      "bytes": 3578
+    }
+  ],
+  "files": [
+    {
+      "path": "crates/raster-core/src/gpu.rs",
+      "sha256": "606f2bdbc8c68347e3d6c01f465ab43e3d7538791e0b0341295f43ba7c468efa",
+      "bytes": 18801
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/gpu.rs",
+      "sha256": "a75e50da5923e57b5dc3deb465ad8f70a865145f1737e3c8a5b21c9010dc5455",
+      "bytes": 8304
+    },
+    {
+      "path": "crates/raster-core/src/rect.wgsl",
+      "sha256": "b0f67e88f3b5630cb98c8406ee20df6e8890b3ca42410451f105f64fb2a68afa",
+      "bytes": 1593
+    },
+    {
+      "path": "crates/raster-core/src/image.wgsl",
+      "sha256": "ede39857bf369d5a33f5503e7ae96bd04bd5ca06a11937f28fa97793011b3446",
+      "bytes": 2959
+    },
+    {
+      "path": "crates/raster-core/src/glyph.wgsl",
+      "sha256": "a045be94313471d703e7a797f36d1956785b43e69129851d9eb8a99ad9dc86b7",
+      "bytes": 3578
+    }
+  ],
+  "source_comparisons": {
+    "deadline_and_waker_exact": true,
+    "full_readback_comparison_exact": true,
+    "submission_poll_map_exact": true,
+    "pending_future_test_exact": true,
+    "run_entry_inventory_device_scopes_exact_except_added_pre_scope_deadline": true,
+    "saved_outcome_callback_scope_pop_order_exact": true,
+    "pipeline_descriptors_exact_except_glyph_boolean_and_formatting": true,
+    "allocation_upload_body_exact_except_readback_owned_by_probe_and_formatting": true,
+    "ordered_pass_body_exact_except_callback_and_formatting": true,
+    "readback_descriptor_exact": true,
+    "rect_shader_exact_both_paths": true,
+    "image_shader_exact_both_paths": true,
+    "glyph_shader_exact_both_paths": true
+  },
+  "new_pure_tests": 3,
+  "differences": [
+    "Caller-owned device/queue/encoder and caller scopes; core owns output/params/optional input/bindings/pipeline references in EncodedFrame.",
+    "Readback allocation moved after encode and counted separately; unchanged two-target cap is checked before core buffers and summed again by probe.",
+    "Cancellation checked before core preparation and each draw, plus before opening wrapper scopes/pipeline preparation.",
+    "Missing glyph pipeline is rejected by pure preflight before frame buffers; malformed accounting uses checked additions.",
+    "Explicit core destroy requires caller-confirmed completion and does not wait; normal early-error drops do not explicitly destroy.",
+    "Successful teardown now destroys core-owned buffers together, then separate readback; mapped range still drops and unmap occurs first.",
+    "Probe complete readback/callback/saved-error scope logic remains unchanged."
+  ],
+  "limitations": [
+    "Device/queue identity and completion precondition are caller responsibilities.",
+    "Driver calls and pipeline construction remain synchronous and cannot be interrupted mid-call.",
+    "No compilation or runtime validation performed by this agent."
+  ]
+}

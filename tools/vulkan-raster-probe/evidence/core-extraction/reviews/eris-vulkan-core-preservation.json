@@ -1,0 +1,1552 @@
+{
+  "schema": 1,
+  "phase": "published baseline before core extraction comparison",
+  "commit": "a744eb1c347717d58fe088f0d82db0105c66a48b",
+  "method": "Read-only git object inventory and Rust/Python text parsing. No build, renderer, planner, fixture constructor or GPU execution. Source-byte bindings are the full value oracle; extraction review must distinguish permitted module/import changes from semantic changes.",
+  "source_files": [
+    {
+      "path": "tools/vulkan-raster-probe/src/alpha_fixtures.rs",
+      "bytes": 25781,
+      "sha256": "a67934fd08cb9095c6b00b1e2d875315d87b00dc7525b6d3252ccaaa2ebb61b7",
+      "git_blob": "614dd77c87e1d4de0d2ad768d73fa8fac79a811e"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/bin/browser-check.rs",
+      "bytes": 22413,
+      "sha256": "c61193f5fc625ba78a13d74a14bacb0f55e0b0a2c33d8e30c5f83dee04150451",
+      "git_blob": "598de45b3c4cb3feb93d1a8986aae25cfcfd41a8"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/bin/checker_support/mod.rs",
+      "bytes": 13330,
+      "sha256": "3716cf3c921ef02fb5fd955bbd07599f7143dfcf40e95a2d30dc59c0b45b7cdf",
+      "git_blob": "cc4033ab12dcf0b79320c2504fdf53bd47c24799"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/bin/glyph-check.rs",
+      "bytes": 11926,
+      "sha256": "9f88ba6feb66fb2fb01b1b56c72354b0df587e94a442b91710ceeacf4d4d280a",
+      "git_blob": "f3af32b79f16c16d54ba9b0e80cfb68c9fc1fb16"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/bin/worker-text-check.rs",
+      "bytes": 22379,
+      "sha256": "1ff049f0494086171630a3d618707d1b39256154486ebed0afa649d29d4ab934",
+      "git_blob": "2fd8a2341018ab7578c8bb9080ecd36aae2fbbad"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/browser_adapter.rs",
+      "bytes": 17953,
+      "sha256": "ef74f617036456661c0ff6ede702d6b721b7615031cb9085dc2d9b645fef9fa3",
+      "git_blob": "e7a91fb35d63932ee5c1f391bae986f6c1e19306"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+      "bytes": 28463,
+      "sha256": "85f2a6a539b12cf88d21ab565eaa330758484cfe38ace0299d047ccb61db4ef8",
+      "git_blob": "3ba9051e5f84a4c2b993e4e6f709f5b8c0576870"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/browser_adapter/text.rs",
+      "bytes": 15379,
+      "sha256": "d2db12bdef76b85f20dfb4b5586a12de44d8410fb0335fb9481b2251fe01947a",
+      "git_blob": "6db29c10b15edcd66ee43d3b6f89210bfa2e5aa7"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/browser_adapter/text/tests.rs",
+      "bytes": 6473,
+      "sha256": "f21ac32fce15e97677933de907a52a5a8838c0b1b1f0c50c5e30d7310d830c92",
+      "git_blob": "3dbe08e7ffc7d751c5f000d766d0e6cb627f9a49"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/browser_fixtures.rs",
+      "bytes": 21380,
+      "sha256": "15300b65d7e1ebfbd00df96f16dfcd5c08da200f5da19699baeee60c6c5f8e16",
+      "git_blob": "66ca15896de247b5c8a51afb579a43472a5f1a67"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/fixtures.rs",
+      "bytes": 4785,
+      "sha256": "7779ecab36a587f2792acf258b28709b9b4606ece0976c48c0c04aa8e1a45ab8",
+      "git_blob": "95c88a75b151bf2eb17232111e050eb918025008"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/glyph.wgsl",
+      "bytes": 3578,
+      "sha256": "a045be94313471d703e7a797f36d1956785b43e69129851d9eb8a99ad9dc86b7",
+      "git_blob": "334b6ea31c2407b957101493286442e878bc7afa"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/glyph_fixtures/font_inventory.rs",
+      "bytes": 21064,
+      "sha256": "fc57a9b0664cd3c654e705cae0d983e878b87f2a9e62871f38783d0ba9d8a5dd",
+      "git_blob": "9e10b7e76f4ae24c85d01412a2b0064935082131"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/glyph_fixtures/literal_inventory.rs",
+      "bytes": 23628,
+      "sha256": "42a72998217703683cd9c89a61aa8cb2e92dd4644506c223f1534864039beee8",
+      "git_blob": "e2083fd6fd28ec3b0b2169e3b4b123c366352b37"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+      "bytes": 13760,
+      "sha256": "44c3339ff5df30becefbc8e6e434322a4898abc98e971f01b4c4e2e6ad3accbd",
+      "git_blob": "feac49570e62b6c9193f2e77e5b5cbbebc88ef14"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/gpu.rs",
+      "bytes": 17494,
+      "sha256": "f60141761316a3170a573937b0219e95e63181a415cf734a0bd7f720d040d6b2",
+      "git_blob": "e7512c146dd9fa6a8e41a210fcff04a8165b5529"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/image.wgsl",
+      "bytes": 2959,
+      "sha256": "ede39857bf369d5a33f5503e7ae96bd04bd5ca06a11937f28fa97793011b3446",
+      "git_blob": "c237a3d89d3811a2bbbdf5b3093fffac5c48e6cf"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/image_fixtures.rs",
+      "bytes": 19757,
+      "sha256": "d7fd6c1970f1bfad52021b0ae48401596d3124c5a7e29a1171a310d6d6f096ee",
+      "git_blob": "39f5e0e1f819aacb4656436fd3d53e808da5ffe4"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/lib.rs",
+      "bytes": 23457,
+      "sha256": "e134b9c963e7a120465a03a978325aff58f5857a8aeb2e77470662e903f3fc8b",
+      "git_blob": "bc2b7faadd28d4eadaf72149bb71f2e245fce689"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/main.rs",
+      "bytes": 2019,
+      "sha256": "692a4bff79c1fe15e24961e1ca29372c8f94697a7387f5e3eb10c7eb9c97175d",
+      "git_blob": "348ad30ec718ddd32037f6936d3eb104a22e2723"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/rect.wgsl",
+      "bytes": 1593,
+      "sha256": "b0f67e88f3b5630cb98c8406ee20df6e8890b3ca42410451f105f64fb2a68afa",
+      "git_blob": "9e8ab40deb0305f9b6056f9024b662ce114b1c9e"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/scope.rs",
+      "bytes": 3687,
+      "sha256": "258c1f8e2f9c36e46d0a0256cad3bcffb713325788540e572e66188d1db10efe",
+      "git_blob": "b69437e5aeb3f8052a9a70d5401a0924ff1437d2"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/tests.rs",
+      "bytes": 38696,
+      "sha256": "0453f0431e7f352015876ee801c28bfcda49d9be6c5d4c5605144629534bef61",
+      "git_blob": "8b2acbb35fc9d274947fd43e235f0a75b12d828d"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/tests/glyph_contracts.rs",
+      "bytes": 7754,
+      "sha256": "1d0b10a0b603f603fbb8510fdd703286b99e2c473d440e165b92d893008f1944",
+      "git_blob": "2612234d737020366706438d67d401b58a87bed8"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/Cargo.toml",
+      "bytes": 828,
+      "sha256": "a5bdf9aa44c9dc1d8db466f9d73578c79dc220495b583edc94abada391292303",
+      "git_blob": "3fbbe7ebf6c7e874fd32b57f51bc08225eb02a7b"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/Cargo.lock",
+      "bytes": 81429,
+      "sha256": "c3ec1b8cecc74528ecb7e183cc782933124b879a7201e1978bce18ee046dd9d3",
+      "git_blob": "44d7edc53d4f680264ed1bc7ea075f726f7ff077"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/run_host.py",
+      "bytes": 15273,
+      "sha256": "bdea875e2a4ba522088b8b986150745569489bcab2b7f503034e858eee10bbd6",
+      "git_blob": "10519caaa6f1d76e1562e38f2c9b07bbea875294"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/run_browser_host.py",
+      "bytes": 8689,
+      "sha256": "1e07e300d75e8d71a652f7795e89b62c88a98e7ef5b44bc88bcbd5ad29421abc",
+      "git_blob": "44e34697c1511e63db67b39e62370a7c70e71676"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/run_glyph_host.py",
+      "bytes": 8005,
+      "sha256": "4afe738f5b65e1b229bfab341e3ae19fc96adf55208c67ed43c3eda01de4c525",
+      "git_blob": "54487a26632c9b4145c9bd67562586cad4f15426"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/run_worker_text_host.py",
+      "bytes": 6495,
+      "sha256": "19b55e852333f20007fe4c57ec53752a9304dedcbdc2535c021ea33766778c67",
+      "git_blob": "eb3de2d5e5dabf88436f96e64f3b346c0b0675ce"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/browser_protocol.py",
+      "bytes": 19063,
+      "sha256": "228b7d00dc3bd4554e0ae193ab2be67e0ed81e215ffbeaa8a0ccd78a41dd75ac",
+      "git_blob": "d1e270252fb7839e227b0090ebccaf7bab37e7aa"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/glyph_protocol.py",
+      "bytes": 13567,
+      "sha256": "26c98d717f5ee8a94b6171867937398778e8f2bc0363a7d17f817b7884a2fee4",
+      "git_blob": "66d82a331cb53d5719fe40522f71edd9fe7d1d23"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/worker_text_protocol.py",
+      "bytes": 16392,
+      "sha256": "2d475be2d451d92ac133a7c52344747b56afa1e26d04fc32f404056925b19882",
+      "git_blob": "f966e8c48e7a9f345ae91f40873ee2bac05bdf39"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/bridge_supervisor.py",
+      "bytes": 14300,
+      "sha256": "bfecc971df88c6543f50272313f12b71873713f931070dfa2a7ff4d5f566f9f5",
+      "git_blob": "afe0655c835cd7ee9f1910d9e3518d2132b266a0"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/worker-text-fixtures/fixture_inventory.rs",
+      "bytes": 16939,
+      "sha256": "dabfe62b4095bcee1c607d0999f0ba12736dabc512b37d0c004cbda93ceace51",
+      "git_blob": "897692a35374da2cce8012601d5cdc473e947fe7"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/worker-text-fixtures/inventory.json",
+      "bytes": 18243,
+      "sha256": "2b433848063481c59814310c610be80a7b013735dfae81102b31478b7486a63b",
+      "git_blob": "391573ec2ec701d141ecf63d1d63388d7b6f3285"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/worker-text-fixtures/freeze.json",
+      "bytes": 2998,
+      "sha256": "bae728bb77043263235ab8ee6eda966c27f1edb0740abbd7f6312c8822542504",
+      "git_blob": "543aa42bc70ed2f7857c5f019b29a4b5bc9f20d5"
+    },
+    {
+      "path": ".github/workflows/check.yml",
+      "bytes": 13059,
+      "sha256": "01cfbdfa6698e6c9380c104fe00e415b513b94d25663297f9a4231935045159f",
+      "git_blob": "b1355985add5f64d9d1dc50ca645efe6a17d73a0"
+    }
+  ],
+  "planner": {
+    "pure_lib_prefix_sha256": "ad4fc0adaac0974ae2b784ccd30f7f67e5e6637fdd92cc55d1ed1183ae9183e8",
+    "public_constants": [
+      {
+        "name": "MAX_WIDTH",
+        "type": "u32",
+        "expression": "320"
+      },
+      {
+        "name": "MAX_HEIGHT",
+        "type": "u32",
+        "expression": "240"
+      },
+      {
+        "name": "MAX_COMMANDS",
+        "type": "usize",
+        "expression": "256"
+      },
+      {
+        "name": "MAX_SCOPES",
+        "type": "usize",
+        "expression": "32"
+      },
+      {
+        "name": "MAX_INVOCATIONS",
+        "type": "u64",
+        "expression": "4_000_000"
+      },
+      {
+        "name": "MAX_GPU_BUFFER_BYTES",
+        "type": "u64",
+        "expression": "1_048_576"
+      },
+      {
+        "name": "PARAM_STRIDE",
+        "type": "usize",
+        "expression": "256"
+      },
+      {
+        "name": "MAX_COORDINATE",
+        "type": "f32",
+        "expression": "1_000_000.0"
+      },
+      {
+        "name": "MAX_SOURCE_ENTRIES",
+        "type": "usize",
+        "expression": "256"
+      },
+      {
+        "name": "MAX_SOURCE_RGBA_BYTES",
+        "type": "usize",
+        "expression": "1_048_576"
+      },
+      {
+        "name": "MAX_MASK_AXIS",
+        "type": "u32",
+        "expression": "1024"
+      },
+      {
+        "name": "MAX_MASK_PIXELS",
+        "type": "usize",
+        "expression": "262_144"
+      },
+      {
+        "name": "MAX_MASK_COVERAGE_BYTES",
+        "type": "usize",
+        "expression": "262_144"
+      },
+      {
+        "name": "MAX_ROW_ENTRIES",
+        "type": "usize",
+        "expression": "65_536"
+      },
+      {
+        "name": "MAX_LUT_ENTRIES",
+        "type": "usize",
+        "expression": "MAX_COMMANDS * (MAX_WIDTH + MAX_HEIGHT) as usize"
+      }
+    ],
+    "public_types": [
+      {
+        "kind": "struct",
+        "name": "Rect",
+        "declaration": "pub struct Rect {\n    pub x: f32,\n    pub y: f32,\n    pub width: f32,\n    pub height: f32,\n}"
+      },
+      {
+        "kind": "enum",
+        "name": "Command",
+        "declaration": "pub enum Command {\n    Rect {\n        rect: Rect,\n        rgba: [u8; 4],\n        radius: f32,\n    },\n    Image {\n        rect: Rect,\n        source: u32,\n    },\n    /// Mask source and row-table indices are separate from image source IDs.\n    /// Row origins and y are absolute framebuffer coordinates.\n    Glyph {\n        source: u32,\n        rows: u32,\n        y: i32,\n        rgba: [u8; 4],\n    },\n    PushClip(Rect),\n    PopClip,\n    PushFixed,\n    PopFixed,\n    Unsupported(&'static str),\n}"
+      },
+      {
+        "kind": "struct",
+        "name": "Frame",
+        "declaration": "pub struct Frame {\n    pub width: u32,\n    pub height: u32,\n    pub clear: u32,\n    pub caller_clip: Rect,\n    pub document_offset: (f32, f32),\n    pub viewport_offset: (f32, f32),\n}"
+      },
+      {
+        "kind": "struct",
+        "name": "SourceImage",
+        "declaration": "pub struct SourceImage<'a> {\n    pub width: u32,\n    pub height: u32,\n    pub rgba: &'a [u8],\n}"
+      },
+      {
+        "kind": "struct",
+        "name": "SourceMask",
+        "declaration": "pub struct SourceMask<'a> {\n    pub width: u32,\n    pub height: u32,\n    pub coverage: &'a [u8],\n}"
+      },
+      {
+        "kind": "enum",
+        "name": "DrawKind",
+        "declaration": "pub enum DrawKind {\n    Rectangle,\n    Image,\n    Glyph,\n}"
+      },
+      {
+        "kind": "struct",
+        "name": "Draw",
+        "declaration": "pub struct Draw {\n    x: u32,\n    y: u32,\n    width: u32,\n    height: u32,\n    color: u32, // source 0xAARRGGBB, including the opaque clear\n    image: Option<ImageParameters>,\n}"
+      },
+      {
+        "kind": "struct",
+        "name": "Plan",
+        "declaration": "pub struct Plan {\n    frame: Frame,\n    draws: Vec<Draw>,\n    invocations: u64,\n    gpu_buffer_bytes: u64,\n    parameters: Vec<u8>,\n    input: Vec<u8>,\n}"
+      }
+    ],
+    "public_functions": [
+      {
+        "name": "new",
+        "signature": "pub const fn new(x: f32, y: f32, width: f32, height: f32) -> Self",
+        "body_sha256": "3798f63d33c88a356fe2029ae14cc32447ae7bcdaf5af4a297f18efb26c77806"
+      },
+      {
+        "name": "rect",
+        "signature": "pub fn rect(x: f32, y: f32, width: f32, height: f32, color: u32) -> Command",
+        "body_sha256": "eb5e29997178c22514e33e46a37dcf75b0a7da893ea33382c46d9401d8df0d21"
+      },
+      {
+        "name": "new",
+        "signature": "pub fn new(width: u32, height: u32, clear: u32) -> Self",
+        "body_sha256": "0a251e4e8ddd5f9812670070d4ed31ce6f6895b5c792111039f666fdd2750bd9"
+      },
+      {
+        "name": "kind",
+        "signature": "pub fn kind(self) -> DrawKind",
+        "body_sha256": "c3f89615ab2175d7a356f8e51ee1941268b6e810be12be1fa2ecc5e6d98c9508"
+      },
+      {
+        "name": "bounds",
+        "signature": "pub fn bounds(self) -> (u32, u32, u32, u32)",
+        "body_sha256": "0708282934b3f8bb0f91f0a062bdd09bffc6840149bf2c3a6a955a53982356e6"
+      },
+      {
+        "name": "groups",
+        "signature": "pub fn groups(self) -> (u32, u32)",
+        "body_sha256": "926e05fae20c692a06777feb8f14a78c7ed3595b94ec8f6a24aec809c9ef0996"
+      },
+      {
+        "name": "frame",
+        "signature": "pub fn frame(&self) -> Frame",
+        "body_sha256": "ec3c417f3d4675e396948a15e586a3765171c3501a0e93a81b60c24a9b11ada8"
+      },
+      {
+        "name": "draws",
+        "signature": "pub fn draws(&self) -> &[Draw]",
+        "body_sha256": "a3386350715080f500dcdb9ff8effb7a76024b593a0813c0e41e557c13956996"
+      },
+      {
+        "name": "invocations",
+        "signature": "pub fn invocations(&self) -> u64",
+        "body_sha256": "7e63033d683ebe1d30534b466754378790ba33c2b2a413b4e311d2db63ad9d59"
+      },
+      {
+        "name": "gpu_buffer_bytes",
+        "signature": "pub fn gpu_buffer_bytes(&self) -> u64",
+        "body_sha256": "a47d355424b9b8cc9f7022f2526f31751db4bcd9343c8026af6d9f2f2f0d9b79"
+      },
+      {
+        "name": "parameters",
+        "signature": "pub fn parameters(&self) -> &[u8]",
+        "body_sha256": "8e31ab1429f2400dafb144be8f3c3e70943296b1d5a630f4200e565c5e6409cc"
+      },
+      {
+        "name": "input_bytes",
+        "signature": "pub fn input_bytes(&self) -> &[u8]",
+        "body_sha256": "7e58e7344bbd4d05c0e3a18b71420a11de651264d959c09f24b545930d5c1718"
+      },
+      {
+        "name": "has_images",
+        "signature": "pub fn has_images(&self) -> bool",
+        "body_sha256": "0cdc820ccccf9760e89d457c81ef3a3fe7e6ed50509b0804b047ed4c40ff4b1d"
+      },
+      {
+        "name": "has_glyphs",
+        "signature": "pub fn has_glyphs(&self) -> bool",
+        "body_sha256": "13541670d9fd86c76b7a4dee38d51a38674190f307eb9c836ddbccb5a8d8de41"
+      },
+      {
+        "name": "has_input",
+        "signature": "pub fn has_input(&self) -> bool",
+        "body_sha256": "ee8f10cdeea7f562515944980e7b05d04b974e45e8dba4daff4b88c3c41cbca4"
+      },
+      {
+        "name": "plan",
+        "signature": "pub fn plan(frame: Frame, commands: &[Command]) -> Result<Plan>",
+        "body_sha256": "b1a0286d01a947c2fb90693924a8cae8583ee52c2b38a2101226de2ab63cecb6"
+      },
+      {
+        "name": "plan_with_images",
+        "signature": "pub fn plan_with_images( frame: Frame, commands: &[Command], sources: &[SourceImage<'_>], ) -> Result<Plan>",
+        "body_sha256": "944e3958b17db7254c087374087735bbbfae3e278aaa722b8fabc50e1c47c4f0"
+      },
+      {
+        "name": "plan_with_masks",
+        "signature": "pub fn plan_with_masks( frame: Frame, commands: &[Command], sources: &[SourceImage<'_>], masks: &[SourceMask<'_>], row_tables: &[&[i32]], ) -> Result<Plan>",
+        "body_sha256": "658b6f5fd71813668fe87aae03f187a473ddadb428b629d9109992ec685acc36"
+      }
+    ],
+    "result_alias": "std::result::Result<T, String>",
+    "privacy": "Plan/Draw fields are private. Public Plan accessors expose immutable owned buffers/slices; returned Plan retains no image/mask/row lifetimes.",
+    "scope_source_sha256": "258c1f8e2f9c36e46d0a0256cad3bcffb713325788540e572e66188d1db10efe"
+  },
+  "tests": {
+    "unique_source_tests": 75,
+    "default_probe_executions": 43,
+    "browser_bridge_probe_executions": 79,
+    "feature_library_executions": 69,
+    "feature_binary_executions": 8,
+    "integration_executions": 2,
+    "names_and_body_bindings": [
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::independent_pixel_fixtures_agree_with_integer_plan",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "fc90a1469baf15e2410b8fc3b756ccdd994fee746b897607d586531542049162"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::fractional_rectangle_and_clip_left_edges_are_deliberately_different",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "8b60407e1ad6c4675272a07646303d3e370f650c12955245148463e40d639a10"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::unsupported_content_is_rejected_even_after_hidden_or_empty_content",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "421f813f76878c53af98e703dd58369c9aeb7617d376234f93804043d2ffb930"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::invalid_nonfinite_coordinates_offsets_and_dimensions_are_rejected",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "0e12a4aa8122ae8ea7ea8fb6f108aa99bcad5a01b7e4d89d2014fdfe73c58fdc"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::typed_scope_balance_and_combined_depth_are_checked_atomically",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "6b800f425f780562a774eb917e031f7be57876a6fd077bf4514690c73d49b859"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::commands_overdraw_invocations_and_explicit_buffers_stay_bounded",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "b5fcc27d237d93cacf625ddcaf0a949c1cdc9e20e47227d040bf4c8c5f4ad5ef"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::metadata_records_are_immutable_aligned_and_never_pixels",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "2fb7553aefa132bc227b80f5572dd27133ae08b274ed64ae32defb0b2aa9866a"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::exact_edges_touching_clips_and_fixed_escape_empty_ancestors",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "75b552d855d38919fd82e59365a785e94fc02061f257817232b894283765efa9"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::image_frozen_pixels_and_independently_counted_protocol_are_exact",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "ad5e95a79eda1621e8dfeb14b446403d4f9f5d10d0d7c3141fe3c341120b5fd5"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::image_plan_owns_sources_reuses_ids_and_validates_even_unused_entries",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "075cf8a39eaf943a6cc0c54c20c43279fd1afa089f8be1ef82b203db939c2683"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::image_strict_sources_reject_malformed_and_hidden_input",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "011bd7ba5b8d43d693aa919de8f9d8f81d2becdf26a30478ccc9da7a3a7da3c3"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::image_geometry_scopes_and_unsupported_commands_refuse_whole_plan",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "3df45dae5b35da1f1a5e2fed1256e99f75cc036a0f6aa1536b9b9094bad7049b"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::image_exact_gpu_byte_and_invocation_caps_accept_and_next_unit_rejects",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "43d5be721057baf4344194c369cd8323ba963bd8adecb93056d0b0b4ed046b6d"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::image_source_command_and_scope_caps_accept_exact_boundaries",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "2a4f52640ca4e3c7a73aa1b6e57c204df6c37059cdb351eefce02f83f6022a80"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::image_scalar_sampling_matches_nine_frozen_float_edge_oracles",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "099486f71580858b55d54cfcc00cbb235bfc578106af58362db280a4a289bcb3"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::image_all_642_frozen_lookup_entries_and_origins_are_preserved",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "267847fe6f85d89226a2c186f27037c26413109cd57931aed8b5a3f4aa8dfaf2"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::alpha_frozen_literals_and_counter_contracts_match_serialized_plans",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "a701c969b2fa644d53b3701ee164cc79db3cf7ac486530d21ae0567e3d257484"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::alpha_only_old_rejections_are_supported_without_discarding_source_alpha",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "7a7cb3763ace720edc4e7aeaa63620c1f07ac800a9fb7d67892c2db4afe79103"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::transparent_rectangles_validate_geometry_and_radius_before_elision",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "ee95cda512512bef3cf322c427d1c720c15519ccb90b19f8caef6c7422fd82df"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::transparent_commands_cannot_bypass_typed_scopes_counts_or_clear_validation",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "4f317fd981b1c22f90c3d59713da4d8d0610537917d252d01875f899e721c62e"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::transparent_source_structure_is_checked_even_if_unused_empty_or_clipped",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "8784cd9911f2c75d0184a175242083e2b57c76570532bf03210685586dcd2482"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/tests.rs",
+        "target": "lib",
+        "name": "tests::fully_transparent_images_keep_dispatch_arena_and_exact_resource_caps",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "9d49cef302e63fe04fbaf2f96595bac393b3adb76abd1fc33f6896b92a770b95"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+        "target": "lib",
+        "name": "glyph_tests::glyph_packing_keeps_original_sources_and_signed_rows_in_separate_ranges",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "883129e21fc4cc964b19cf6460618ca890ff3c9aec92ca7e827195525ab1ef96"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+        "target": "lib",
+        "name": "glyph_tests::glyph_addition_retains_literal_image_only_parameter_and_input_layout",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "a50a959b37c6a72eb28d98fe4fe7e9fc3ad3a77bc4d9b45af9715c1a3be37585"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+        "target": "lib",
+        "name": "glyph_tests::glyph_and_image_draw_order_and_index_namespaces_remain_distinct",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "4dd5dffc7e2823829ad0097595c3b33f766cdd65e6f70f265867e7a63577a7f1"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+        "target": "lib",
+        "name": "glyph_tests::glyph_reached_ids_and_height_validate_before_alpha_or_clip_culling",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "1b22520e4fa43ed3550d0a8e59116a260fecc97671fcf008621e9cf43463d8c7"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+        "target": "lib",
+        "name": "glyph_tests::glyph_unused_sources_and_row_tables_are_validated_without_a_draw",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "8d7e809712f3bc0f780aab73be93100a28134febc34a5c77ff22a3981cde6c06"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+        "target": "lib",
+        "name": "glyph_tests::glyph_empty_canonical_sources_count_but_create_no_gpu_input",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "289850cb6586ef0eb471e5ab62ab848af499c10846a7017ef42436b808e27278"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+        "target": "lib",
+        "name": "glyph_tests::glyph_mask_axis_area_and_aggregate_coverage_caps_are_distinct",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "653111546c10dcbf1b636232dbbf3f19a66afe37dcb1f63b75c0bcf9aaca7f8c"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+        "target": "lib",
+        "name": "glyph_tests::glyph_row_table_entry_total_is_bounded_including_unused_tables",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "0bf40ef978b81bc3b524a5a801776d557a6ae57fdc6f7cd53e56e86ee4e4664b"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+        "target": "lib",
+        "name": "glyph_tests::glyph_exact_combined_gpu_byte_ceiling_counts_all_mask_and_row_words",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "991b5952d67fe249e22f1f76e98804fecf4520c96ae13714b7e58e8ea60b1dbf"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+        "target": "lib",
+        "name": "glyph_tests::glyph_repeated_dispatches_share_masks_but_pay_full_invocation_work",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "57c11a5e05510cf9ecc7f4a770cd2ff715fe12457cac026ca4f07dbdfd8920f0"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+        "target": "lib",
+        "name": "glyph_tests::glyph_fractional_clip_uses_integer_origins_and_both_upper_edges",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "56e9a946141810b4bd6a590c0037117554a35e4c1c7fdffead7b34cbf7e20fed"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+        "target": "lib",
+        "name": "glyph_tests::glyph_signed_extremes_and_negative_y_clip_without_overflow",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "f3e8e0587588162ef7cf3f28e8e41cd715c2fd39acf9de5c2fee9f7f72d78ae7"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+        "target": "lib",
+        "name": "glyph_tests::glyph_absolute_origins_ignore_offsets_but_obey_fixed_clip_restore",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "aeac978f9d0cf0be23b771e96da483e58b4059a20a88543260a04fecde29db2c"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+        "target": "lib",
+        "name": "glyph_tests::glyph_shared_scope_state_preserves_typed_nesting_and_float_order",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "a7f006d684f1146a6e90f3f1603cd8d5aa8ab0a21757d6bb29352cedb25d650c"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+        "target": "lib",
+        "name": "glyph_tests::glyph_zero_coverage_is_not_scanned_to_suppress_dispatch",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "e003fea3084e007fba7e39f659d6ee72d38c87ccaed01c70b1ca2f7e79fe4f1c"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+        "target": "lib",
+        "name": "glyph_tests::glyph_returned_plan_owns_coverage_and_rows_without_source_lifetimes",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "14a3125c30e758b9fc8426cccb0a8dfa8364c743728055e1e073fc1b7efed3ea"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/alpha_fixtures.rs",
+        "target": "lib",
+        "name": "alpha_fixtures::tests::alpha_fixture_inputs_and_literal_outputs_are_bounded",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "f36be616bc652080c468ff83d264fae775a9739cccc12fc8b5bd0111e2fc688f"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/alpha_fixtures.rs",
+        "target": "lib",
+        "name": "alpha_fixtures::tests::alpha_fixture_frozen_counter_arithmetic",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "0a4d73a23f8e6a9898253a21404682e975a0dcb136a736fdc2c777066ff65f8e"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/gpu.rs",
+        "target": "lib",
+        "name": "gpu::tests::pending_future_uses_finite_deadline_without_gpu",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "edd5e7132f3012926bcfb185e7271cd5f534bf27f8f663bb834e65d47a173048"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_rejects_unsupported_hidden_content_at_original_indices",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "3fe4239043e545e42f4e95f7b9a4aceed45eb8432f81b1def7af9e1cb2eb3eb9"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_validates_original_scalars_before_alpha_or_missing_elision",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "9257daac05c268b1e691c9ae9c3c3e2cee6b01e1ef5fcc14d377c8f703fdb768"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_frame_caps_and_unconditional_clear_remain_exact",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "b2ca86dcd7ed3bd7209758ffe595445aa1bc387ffb5af5361fcfeba5b1375d8b"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_original_command_and_cpu_work_caps_precede_lowering",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "37cd16737482f417bffd9223718f1495d639d83c7b9223bd1487594405cc2455"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_combined_typed_scopes_check_boundaries_and_mismatches",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "b6afff9b0bb240ff6299e646f13129ba3c971479d317a679b57caf2f7a1993aa"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_map_capacity_is_bounded_before_a_sparse_iteration",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "1218558b8be7c51cc247af582fbf5efef3ebae4502b25555dd07692d9af3bd7e"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_individual_key_limit_counts_utf8_bytes",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "673d4a46de1780dbfc9093780318a2dd6a392dddd9db9c81d4e61f80c5e0b922"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_aggregate_key_limits_precede_sorting_and_lookup",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "2172a86991ef1d3ba7a26ae60ec3adf33571faa69359bb977ecf22cb19af14af"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_private_comparison_prechecks_cover_maximum_and_overflow",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "53f5cbeb0f7b29adb70b155d619a56f4b89dcde16031377c638d793eb0531205"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_borrowed_sort_and_binary_lookup_match_spelled_keys",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "5eaa7320f9459a07c8864a3fa4744dbd5dd37c3ba973b1815481a53f6a4a2d55"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_unused_and_hidden_bad_sources_are_refused",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "5200980d7d007bbbc04b359f73f5811bf143ee1d9248ae80d24df7065da50ed9"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_unique_rgba_cap_counts_aliases_once_and_distinct_sources_twice",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "05a722e9e2c0e172d0a8d39a9ed19a5b833e0c1a96e537331b4aa9d207d83429"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_source_ids_use_first_reference_then_lexical_unused_order",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "97257530befbbdd33c915932fe479f7d9fb1bcc38df788e6c26fb3a438aea666"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_randomized_map_insertion_does_not_change_plan_or_counts",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "cd12eabb6f6d2d1469f7f1fda5e1feccc084b31166dbaf86f3d3437cefae635a"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_borrows_sources_during_planning_and_owns_only_finished_payload",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "54a7199fb39c6e4d16d83b21d0df05ff3cdb6ffd5256304eaa2f6eaa23514073"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_hidden_images_keep_reference_stats_without_arena_allocation",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "5e0ebd289470a6d1b602ccc0069673e5cc6321bda21bbe87ef142df7f881700a"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_full_source_packing_can_refuse_unchanged_gpu_byte_cap",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "04e7db594710cc9d1e58c89e9894df41f8e610406b896ba434e3df9aa6775ab1"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_lines_keep_canvas_f32_order_and_original_endpoint_checks",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "1fa9848aac564655fb043deaed9a0afce020b4f998f41dd70da8c8323b7fadb2"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_fixed_escape_restores_offsets_and_scopes_without_flattening",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "a461a162a2a0752c4a8e215f415292dce423ed1cee0c9ce17a4f4c0585c5f33e"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_translucent_clip_and_source_alpha_reach_existing_planner",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "36f01acbd4bc3b215b54b09f40df7094269bf755bd03de54cef92295fe205318"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::tests::browser_bridge_snapshot_delegation_borrows_public_fields_without_mutation",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "8e10aa54c7f5810e2856d6c031c3b867e0cdd9ffbc12be4071bcb4ec9dfea9ec"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/text/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::text::tests::old_entry_keeps_text_fallback_while_new_entry_admits_masks",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "70279b490abcb318ef2481b9593b268585673aa8b0435f4ae2e8d9e44a140cbe"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/text/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::text::tests::all_text_inputs_are_counted_even_when_coarsely_culled",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "e4612074ddc86710e2d333e541eafa399eaf8b5b0cb4fa7c1a87e32f793cd0dd"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/text/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::text::tests::no_outline_repetitions_consume_operations_and_cpu_work",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "326aac5603b7969b6bb283520b96ce4bba160dd0f61c00ab384d264e14853cde"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/text/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::text::tests::text_charges_remaining_cpu_allowance_before_mask_allocation",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "434acd3de83e5b853688e8f744505828ea76314dce640294a3d0069061246338"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/text/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::text::tests::complete_structural_preflight_precedes_all_glyph_preparation",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "eb8c84eb640cc6fbe1c74109f72c369a2cc3709cd9ddcc276e1e18fdef491997"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/text/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::text::tests::image_and_mask_sources_share_the_existing_entry_budget",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "d51875945398e94698ee708233e2226f41a3abaf43db4a92297a036448be1e98"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/browser_adapter/text/tests.rs",
+        "target": "lib",
+        "name": "browser_adapter::text::tests::existing_cpu_font_cache_does_not_change_admission_or_packed_plan",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 1,
+        "body_sha256": "ed3bf0982122cdcd1a25330e97eaa28c6e248ad5ea121c7dcd528aef84cec907"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/bin/checker_support/mod.rs",
+        "target": "browser-check + worker-text-check",
+        "name": "checker_support::tests::gpu_grant_requires_exact_token_and_complete_input",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 2,
+        "body_sha256": "c7a2d45f07936b315f32e1e24d27a58142e84910ba8eac802b0e24d3b176992c"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/bin/checker_support/mod.rs",
+        "target": "browser-check + worker-text-check",
+        "name": "checker_support::tests::fixture_file_address_encodes_reserved_and_utf8_bytes",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 2,
+        "body_sha256": "4e63a88bc72b97b3375c4974e3b7eeb7b9fc561d061625dceaa3e0721939f76b"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/bin/checker_support/mod.rs",
+        "target": "browser-check + worker-text-check",
+        "name": "checker_support::tests::capture_measure_rejects_oversized_payload_before_output_allocation",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 2,
+        "body_sha256": "be4a905599686063486dc441481e70b783cf301babb7e2f5f2ec4f50e230bf0b"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/src/bin/checker_support/mod.rs",
+        "target": "browser-check + worker-text-check",
+        "name": "checker_support::tests::canonical_record_keeps_utf8_and_negative_zero_bits",
+        "browser_bridge_required": true,
+        "executions_per_feature_run": 2,
+        "body_sha256": "7e3cb307c5c2bd2fb8d39aa219230d44325bba43f26d849feb79a011ab9c292f"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/tests/glyph_contracts.rs",
+        "target": "integration:glyph_contracts",
+        "name": "frozen_refusal_inventory_covers_nineteen_recipes_and_six_culling_variants",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "dc23a5121a8559196e21b86f9c809f67fb2e78d73ede024464f40089e149e0c5"
+      },
+      {
+        "source": "tools/vulkan-raster-probe/tests/glyph_contracts.rs",
+        "target": "integration:glyph_contracts",
+        "name": "frozen_positive_inventory_covers_all_three_exact_cap_plans",
+        "browser_bridge_required": false,
+        "executions_per_feature_run": 1,
+        "body_sha256": "4121c9d286b5e48fc1961543b12c3e32264838e1b056018a3ccbf653360e9327"
+      }
+    ],
+    "required_after_move": "Relocated dependency unit tests are not run by cargo test of the probe. Add explicit core cargo test invocations for no-default pure mode and optional GPU mode, preserving all 38 planner/glyph tests and one GPU deadline test. Preserve alpha fixture tests, adapter tests, duplicate checker-support tests in both targets and two public-contract integration tests. Additional test executions are allowed but must not mask a dropped identity."
+  },
+  "shaders": [
+    {
+      "path": "tools/vulkan-raster-probe/src/rect.wgsl",
+      "bytes": 1593,
+      "sha256": "b0f67e88f3b5630cb98c8406ee20df6e8890b3ca42410451f105f64fb2a68afa",
+      "git_blob": "9e8ab40deb0305f9b6056f9024b662ce114b1c9e"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/image.wgsl",
+      "bytes": 2959,
+      "sha256": "ede39857bf369d5a33f5503e7ae96bd04bd5ca06a11937f28fa97793011b3446",
+      "git_blob": "c237a3d89d3811a2bbbdf5b3093fffac5c48e6cf"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/glyph.wgsl",
+      "bytes": 3578,
+      "sha256": "a045be94313471d703e7a797f36d1956785b43e69129851d9eb8a99ad9dc86b7",
+      "git_blob": "334b6ea31c2407b957101493286442e878bc7afa"
+    }
+  ],
+  "fixtures": {
+    "source_bindings": [
+      {
+        "path": "tools/vulkan-raster-probe/src/fixtures.rs",
+        "sha256": "7779ecab36a587f2792acf258b28709b9b4606ece0976c48c0c04aa8e1a45ab8",
+        "literal_declared_names": [
+          "overlapping-order",
+          "fractional-clips",
+          "fixed-resets-and-restores",
+          "out-of-bounds-and-empty",
+          "319x239-dispatch-edges",
+          "forty-ordered-full-writes",
+          "gpu-clear-only"
+        ],
+        "preservation": "Complete Rust input/expected builder bytes are bound; no fixture function or renderer executed. Return order is also bound by file bytes and main.rs; standalone order is recorded separately."
+      },
+      {
+        "path": "tools/vulkan-raster-probe/src/image_fixtures.rs",
+        "sha256": "d7fd6c1970f1bfad52021b0ae48401596d3124c5a7e29a1171a310d6d6f096ee",
+        "literal_declared_names": [
+          "image-upscale-2x2",
+          "image-three-columns-to-five",
+          "image-downscale-distinct-4x4",
+          "image-clip-preserves-original-origin",
+          "image-negative-document-offset",
+          "image-negative-fractional-origin",
+          "image-tiny-and-fractional-clip",
+          "image-exact-and-one-ulp-translated-edges",
+          "image-f32-endpoint-addition-rounds-back",
+          "image-rectangle-order-and-source-reuse",
+          "image-fixed-escape-and-nested-restoration",
+          "image-dispatch-tail-and-clear-border",
+          "image-valid-empty-and-hidden",
+          "image-subnormal-origin-and-lost-extent"
+        ],
+        "preservation": "Complete Rust input/expected builder bytes are bound; no fixture function or renderer executed. Return order is also bound by file bytes and main.rs; standalone order is recorded separately."
+      },
+      {
+        "path": "tools/vulkan-raster-probe/src/alpha_fixtures.rs",
+        "sha256": "a67934fd08cb9095c6b00b1e2d875315d87b00dc7525b6d3252ccaaa2ebb61b7",
+        "literal_declared_names": [
+          "alpha-rectangle-six-boundaries",
+          "alpha-image-six-boundaries",
+          "alpha-ordered-mixed-draws",
+          "alpha-one-repeated-rounding",
+          "alpha-subpixel-and-fractional-clip",
+          "alpha-image-negative-fractional-original-origin",
+          "alpha-fixed-reset-and-restoration",
+          "alpha-transparent-hidden-rgb",
+          "alpha-empty-clip-still-clears-opaque-target"
+        ],
+        "preservation": "Complete Rust input/expected builder bytes are bound; no fixture function or renderer executed. Return order is also bound by file bytes and main.rs; standalone order is recorded separately."
+      },
+      {
+        "path": "tools/vulkan-raster-probe/src/glyph_fixtures/literal_inventory.rs",
+        "sha256": "42a72998217703683cd9c89a61aa8cb2e92dd4644506c223f1534864039beee8",
+        "literal_declared_names": [
+          "coverage-alpha-floor",
+          "ordered-overlap",
+          "repeated-low-alpha",
+          "interleaved-rect-image",
+          "signed-row-origins-and-y",
+          "varying-row-origins",
+          "fractional-clip-both-edges",
+          "fixed-escape-and-restoration",
+          "absolute-origins-ignore-offset",
+          "empty-zero-coverage-and-alpha",
+          "signed-i32-extremes",
+          "dispatch-tail-9x9"
+        ],
+        "preservation": "Complete Rust input/expected builder bytes are bound; no fixture function or renderer executed. Return order is also bound by file bytes and main.rs; standalone order is recorded separately."
+      },
+      {
+        "path": "tools/vulkan-raster-probe/src/glyph_fixtures/font_inventory.rs",
+        "sha256": "fc57a9b0664cd3c654e705cae0d983e878b87f2a9e62871f38783d0ba9d8a5dd",
+        "literal_declared_names": [
+          "font-regular-kern-av-to",
+          "font-bold-translucent",
+          "font-mono-no-kern",
+          "font-mono-bold-precedence",
+          "font-italic-negative-bearing",
+          "font-space-zero-advance",
+          "font-missing-regular",
+          "font-missing-bold",
+          "font-missing-mono",
+          "font-composite-unicode",
+          "font-subpixel-rounding",
+          "font-shared-bitmap-quantum",
+          "font-bitmap-quantum-boundary",
+          "font-fixed-clip-image-order"
+        ],
+        "preservation": "Complete Rust input/expected builder bytes are bound; no fixture function or renderer executed. Return order is also bound by file bytes and main.rs; standalone order is recorded separately."
+      },
+      {
+        "path": "tools/vulkan-raster-probe/src/browser_fixtures.rs",
+        "sha256": "15300b65d7e1ebfbd00df96f16dfcd5c08da200f5da19699baeee60c6c5f8e16",
+        "literal_declared_names": [
+          "direct-fixed-escape-and-nested-restoration",
+          "direct-translucent-fractional-clip-edges",
+          "direct-repeated-key-alias-and-alpha",
+          "direct-missing-image-is-a-legal-noop",
+          "direct-lines-are-bounding-rectangles",
+          "direct-hidden-text-refuses-whole-frame",
+          "direct-rounded-refuses-whole-frame",
+          "direct-unit-opacity-refuses-whole-frame",
+          "direct-transparent-hidden-rounded-still-refuses",
+          "html-ordered-rectangles",
+          "html-fixed-child-escapes-scrolling-clip",
+          "html-repeated-decoded-image-key",
+          "html-unavailable-image-keeps-placeholder",
+          "html-rounded-page-requires-full-cpu-fallback",
+          "direct-command-cap-refuses-whole-frame",
+          "direct-scope-cap-refuses-balanced-whole-frame"
+        ],
+        "preservation": "Complete Rust input/expected builder bytes are bound; no fixture function or renderer executed. Return order is also bound by file bytes and main.rs; standalone order is recorded separately."
+      },
+      {
+        "path": "tools/vulkan-raster-probe/worker-text-fixtures/fixture_inventory.rs",
+        "sha256": "dabfe62b4095bcee1c607d0999f0ba12736dabc512b37d0c004cbda93ceace51",
+        "literal_declared_names": [
+          "worker-text-flow-unicode",
+          "worker-text-font-flags",
+          "worker-text-overflow-restoration",
+          "worker-text-scroll-fixed",
+          "worker-text-image-order",
+          "worker-text-alpha-underline",
+          "worker-text-rounded-fallback"
+        ],
+        "preservation": "Complete Rust input/expected builder bytes are bound; no fixture function or renderer executed. Return order is also bound by file bytes and main.rs; standalone order is recorded separately."
+      }
+    ],
+    "standalone_population_order": [
+      "seven rectangle",
+      "fourteen image",
+      "nine alpha"
+    ],
+    "standalone_expected_tuple_fields": [
+      "name",
+      "width",
+      "height",
+      "draws",
+      "invocations",
+      "gpu_buffers",
+      "compared_bytes"
+    ],
+    "standalone_ordered_tuples": [
+      [
+        "overlapping-order",
+        8,
+        6,
+        5,
+        320,
+        1664,
+        192
+      ],
+      [
+        "fractional-clips",
+        8,
+        6,
+        4,
+        256,
+        1408,
+        192
+      ],
+      [
+        "fixed-resets-and-restores",
+        10,
+        7,
+        6,
+        448,
+        2096,
+        280
+      ],
+      [
+        "out-of-bounds-and-empty",
+        7,
+        5,
+        3,
+        192,
+        1048,
+        140
+      ],
+      [
+        "319x239-dispatch-edges",
+        319,
+        239,
+        4,
+        156160,
+        610952,
+        304964
+      ],
+      [
+        "forty-ordered-full-writes",
+        320,
+        240,
+        41,
+        3148800,
+        624896,
+        307200
+      ],
+      [
+        "gpu-clear-only",
+        7,
+        3,
+        1,
+        64,
+        424,
+        84
+      ],
+      [
+        "image-upscale-2x2",
+        6,
+        6,
+        2,
+        128,
+        848,
+        144
+      ],
+      [
+        "image-three-columns-to-five",
+        7,
+        3,
+        2,
+        128,
+        716,
+        84
+      ],
+      [
+        "image-downscale-distinct-4x4",
+        4,
+        4,
+        2,
+        128,
+        720,
+        64
+      ],
+      [
+        "image-clip-preserves-original-origin",
+        8,
+        3,
+        2,
+        128,
+        736,
+        96
+      ],
+      [
+        "image-negative-document-offset",
+        5,
+        3,
+        2,
+        128,
+        680,
+        60
+      ],
+      [
+        "image-negative-fractional-origin",
+        4,
+        4,
+        2,
+        128,
+        680,
+        64
+      ],
+      [
+        "image-tiny-and-fractional-clip",
+        6,
+        4,
+        3,
+        192,
+        1044,
+        96
+      ],
+      [
+        "image-exact-and-one-ulp-translated-edges",
+        5,
+        3,
+        3,
+        192,
+        928,
+        60
+      ],
+      [
+        "image-f32-endpoint-addition-rounds-back",
+        4,
+        2,
+        2,
+        128,
+        592,
+        32
+      ],
+      [
+        "image-rectangle-order-and-source-reuse",
+        6,
+        4,
+        5,
+        320,
+        1568,
+        96
+      ],
+      [
+        "image-fixed-escape-and-nested-restoration",
+        8,
+        5,
+        6,
+        384,
+        1956,
+        160
+      ],
+      [
+        "image-dispatch-tail-and-clear-border",
+        320,
+        240,
+        2,
+        153600,
+        617160,
+        307200
+      ],
+      [
+        "image-valid-empty-and-hidden",
+        4,
+        3,
+        1,
+        64,
+        352,
+        48
+      ],
+      [
+        "image-subnormal-origin-and-lost-extent",
+        2,
+        2,
+        2,
+        128,
+        564,
+        16
+      ],
+      [
+        "alpha-rectangle-six-boundaries",
+        6,
+        2,
+        12,
+        768,
+        3168,
+        48
+      ],
+      [
+        "alpha-image-six-boundaries",
+        6,
+        2,
+        3,
+        192,
+        944,
+        48
+      ],
+      [
+        "alpha-ordered-mixed-draws",
+        4,
+        1,
+        10,
+        640,
+        2644,
+        16
+      ],
+      [
+        "alpha-one-repeated-rounding",
+        7,
+        1,
+        65,
+        4160,
+        16696,
+        28
+      ],
+      [
+        "alpha-subpixel-and-fractional-clip",
+        4,
+        3,
+        4,
+        256,
+        1132,
+        48
+      ],
+      [
+        "alpha-image-negative-fractional-original-origin",
+        5,
+        3,
+        2,
+        128,
+        672,
+        60
+      ],
+      [
+        "alpha-fixed-reset-and-restoration",
+        5,
+        3,
+        6,
+        384,
+        1680,
+        60
+      ],
+      [
+        "alpha-transparent-hidden-rgb",
+        2,
+        2,
+        2,
+        128,
+        576,
+        16
+      ],
+      [
+        "alpha-empty-clip-still-clears-opaque-target",
+        3,
+        2,
+        1,
+        64,
+        304,
+        24
+      ]
+    ],
+    "standalone_total_cases": 30,
+    "standalone_compared_bytes_per_adapter": 921620,
+    "other_preserved_populations": {
+      "browser": 16,
+      "literal_masks": 12,
+      "font_reference": 14,
+      "worker_text": 7
+    },
+    "golden_policy": "Independent literal rectangle/image/alpha/mask targets remain independent. Actual-font parent-Canvas references and same-snapshot worker-text CPU references retain their distinct provenance."
+  },
+  "gpu_contract": {
+    "source_sha256": "f60141761316a3170a573937b0219e95e63181a415cf734a0bd7f720d040d6b2",
+    "wrapper_main_sha256": "692a4bff79c1fe15e24961e1ca29372c8f94697a7387f5e3eb10c7eb9c97175d",
+    "entry": "run_plans(selected: Option<usize>, plans: &[(&str, &[u32], &Plan)], on_pass: FnMut(&str, &Plan, &[u32]) -> Result<()>) -> Result<()>",
+    "ordering": [
+      "Reject more than 30 plans, or selected Some with no plans, before instance creation.",
+      "Start one 20-second run deadline before Vulkan enumeration.",
+      "Create display-handle-free Vulkan-only instance; require compiled and returned backend Vulkan.",
+      "Enumerate 1..16 adapters, print complete ordered ADAPTER inventory before selection error or rendering.",
+      "selected None returns after inventory; selected Some selects checked index and requests device with empty features/downlevel defaults.",
+      "Push Validation, OutOfMemory, Internal error scopes before layouts/pipelines.",
+      "Build rectangle and image pipelines; only build glyph pipeline if a submitted plan has glyphs.",
+      "Each plan validates exact GPU allocation ledger and expected full-frame length, then executes ordered separate compute passes, copies to readback, waits, and compares every u32.",
+      "Invoke on_pass only after successful frame comparison; stop first raster/callback failure.",
+      "Pop error scopes in Internal, OutOfMemory, Validation order even after collected raster/callback failure; scope/wait errors precede saved outcome."
+    ],
+    "deadlines": {
+      "per_wait_cap_seconds": 5,
+      "whole_run_seconds": 20,
+      "pending_poll_park_ms": 10,
+      "checkpoints": "Enumeration/request-device futures; each plan and draw; device.poll, mapping callback, and each error-scope pop. Outer process timeout remains responsible for a synchronously blocking driver call."
+    },
+    "storage_and_output": [
+      "Output STORAGE|COPY_SRC has no COPY_DST: CPU reference is never uploaded as output.",
+      "Readback COPY_DST|MAP_READ; parameter UNIFORM|COPY_DST; optional source STORAGE|COPY_DST, allocated only for nonempty input.",
+      "Each draw uses dynamic 256-byte parameter slot; rectangle uniform size32, image/glyph size64; device alignment must divide256.",
+      "One compute pass per draw preserves source-over order; workgroups 8x8 as immutable Plan.",
+      "Exact full-frame little-endian readback, including zero high byte expected values; mismatch reports first pixel coordinate and values.",
+      "Readback unmapped and normal comparison-path buffers explicitly destroyed.",
+      "Errors are failures, never CPU fallback. Callback is bounded synchronous output."
+    ],
+    "protocol": {
+      "adapter": "ADAPTER {i} vendor={:#x} device={:#x} type={:?} backend={:?} name={:?} driver={:?} info={:?}",
+      "standalone_pass": "PASS {} {}x{} draws={} invocations={} gpu_buffers={} compared_bytes={} exact=true",
+      "standalone_complete": "COMPLETE adapter={index} fixtures={} exact=true custom_wgsl=true",
+      "failure": "stderr FAIL {e}, unsuccessful ExitCode; no COMPLETE on error",
+      "wrapper_requirement": "If printing/comparison move out of reusable core, preserve all observable wrapper line contents/order/counts, original plan/expected identity, callback and error-scope semantics, and bounded waits."
+    }
+  },
+  "known_preparation_note": "Initial source copy tried .github/workflows/ci.yml, which does not exist; correct published workflow check.yml is now archived and bound. No source/build execution occurred.",
+  "next": "Compare held pure-core/facade and optional GPU-core/wrapper from source owners, then issue separate delta receipt. Baseline receipt is immutable."
+}

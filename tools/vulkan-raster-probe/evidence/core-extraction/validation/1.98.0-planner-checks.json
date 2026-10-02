@@ -1,0 +1,14 @@
+[
+  {
+    "name": "core-clippy-default",
+    "exit": 0,
+    "log": "1.98.0-core-clippy-default.log",
+    "sha256": "c38e7b376cb6e444669a9073e6771040395a33cade717a572a1ec9908a890cff"
+  },
+  {
+    "name": "core-test-default",
+    "exit": 0,
+    "log": "1.98.0-core-test-default.log",
+    "sha256": "df5872de4392fc2fa0b39a669e731f9267d6c054842431acebc4bbd2e3f52f0d"
+  }
+]

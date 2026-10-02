@@ -1,0 +1,197 @@
+{
+  "schema": 1,
+  "result": "clear: no concrete preservation, ownership, accounting or error-path defect found in held extraction",
+  "baseline": {
+    "path": "/tmp/eris-vulkan-core-preservation.json",
+    "bytes": 63173,
+    "sha256": "4eb4d907ad0c4d189fa7348eb8f9d10abf568479f6bec518518d7b3966b44ddb"
+  },
+  "activity": "Read-only source, declaration/test-body/hash, normalized moved-block comparisons. No builds, tests, fixture constructors, workers, renderers or GPU executions.",
+  "source_bindings": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/crates/raster-core/src/lib.rs",
+      "bytes": 24348,
+      "sha256": "ed1a56b424d1ea4b60f998eae0c6e6bb1746c2c8b98ab5f8a7ba70e6690a191f"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/crates/raster-core/src/scope.rs",
+      "bytes": 3645,
+      "sha256": "415ca9027a583914626b5e1f2ac3bd8fc9206acea0fa7ac2af88bc323ee5f22a"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/crates/raster-core/src/gpu.rs",
+      "bytes": 18801,
+      "sha256": "606f2bdbc8c68347e3d6c01f465ab43e3d7538791e0b0341295f43ba7c468efa"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/lib.rs",
+      "bytes": 897,
+      "sha256": "03856fe6ccc765592060dd6b4d4a89eece7722b167f591786492fa199fcb9f4c"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/scope.rs",
+      "bytes": 137,
+      "sha256": "e162979f7956d1dbeac82c65910c2244c28aa431b38e6f4323db4d7a069aa1fc"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/gpu.rs",
+      "bytes": 8304,
+      "sha256": "a75e50da5923e57b5dc3deb465ad8f70a865145f1737e3c8a5b21c9010dc5455"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/crates/raster-core/Cargo.toml",
+      "bytes": 450,
+      "sha256": "b5f776ce46bf7f8d3a8606b1cf1b8e4fd1bdb40ff5a37e785e592fc3b5368df4"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/crates/raster-core/Cargo.lock",
+      "bytes": 23783,
+      "sha256": "5fe923bf47baaa9844ffb8c6300a4ed7a929a081a47137c1335bb6135fbaa30a"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/Cargo.toml",
+      "bytes": 905,
+      "sha256": "a7633fdfa22c60642a5cb49ab9a864c08fd14c375ad688b746716141263b2a63"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/Cargo.lock",
+      "bytes": 81535,
+      "sha256": "ed8f1b7f7b62e6388c777019dcd2e7f788a1d2670cbc62b26fd631792fccd977"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/.github/workflows/check.yml",
+      "bytes": 13697,
+      "sha256": "1befe2f30081c0ce5ffa20687648523ac37d319f7b5c4bebf76197fc702f0a8e"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/crates/raster-core/src/rect.wgsl",
+      "bytes": 1593,
+      "sha256": "b0f67e88f3b5630cb98c8406ee20df6e8890b3ca42410451f105f64fb2a68afa"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/crates/raster-core/src/image.wgsl",
+      "bytes": 2959,
+      "sha256": "ede39857bf369d5a33f5503e7ae96bd04bd5ca06a11937f28fa97793011b3446"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/crates/raster-core/src/glyph.wgsl",
+      "bytes": 3578,
+      "sha256": "a045be94313471d703e7a797f36d1956785b43e69129851d9eb8a99ad9dc86b7"
+    }
+  ],
+  "planner": {
+    "unchanged_prefix_bytes": 23181,
+    "unchanged_prefix_sha256": "ad4fc0adaac0974ae2b784ccd30f7f67e5e6637fdd92cc55d1ed1183ae9183e8",
+    "all_old_public_types_constants_methods_and_result_alias_preserved": true,
+    "probe_reexports_old_public_planner_paths": true,
+    "private_Plan_and_Draw_fields_unchanged": true,
+    "scope_delta": "Six pub(crate)->pub sites: CoordinateState and five methods; bodies/storage unchanged.",
+    "source_validator": "New public validate_source_images wrapper delegates exactly to original private source_pixels. Browser adapter receives its existing crate-private name through alias.",
+    "no_new_default_core_runtime_dependencies": true
+  },
+  "tests": {
+    "all_75_original_source_test_body_hashes_match": true,
+    "all_79_original_feature_execution_identities_have_retained_targets": true,
+    "expected_static_counts": {
+      "core_default": 40,
+      "core_gpu": 43,
+      "probe_default": 5,
+      "probe_browser_bridge": 41
+    },
+    "original_deadline_test": "Unchanged in probe gpu::tests, not moved into dependency.",
+    "duplicated_alpha_structural_tests": 2,
+    "new_optional_core_gpu_tests": [
+      "two_target_admission_accepts_exact_cap_and_rejects_overflow_or_mismatch",
+      "clear_plan_keeps_second_target_charge_and_uniform_alignment_refusal",
+      "glyph_plan_requires_pipeline_before_frame_preparation"
+    ],
+    "combined_core_gpu_and_feature_probe": 84,
+    "count_reconciliation": "79 original executions + two duplicated alpha groups + three new pure GPU-accounting groups. Counts are static target/module inventory, not newly executed tests.",
+    "explicit_core_default_and_gpu_CI_jobs_present": true,
+    "test_relocation_note": "Core cfg(test) paths compile the original unchanged 22 planner +16 glyph +two alpha fixture groups; production core does not compile test fixtures."
+  },
+  "gpu_preserved_blocks": {
+    "deadline_and_waker_exact": true,
+    "enumeration_device_selection_and_descriptor_exact_except_extra_deadline": true,
+    "pipeline_descriptors_tokens_exact_except_caller_glyph_flag": true,
+    "allocations_and_uploads_tokens_exact_except_moved_readback": true,
+    "ordered_passes_tokens_exact_except_callback_deadline": true,
+    "submission_poll_map_and_full_comparison_exact": true,
+    "saved_callback_outcome_and_scope_pop_order_exact": true,
+    "all_three_shaders_identical_in_old_and_new_locations": true,
+    "all_old_wrappers_protocol_sources_fixture_values_and_order_unchanged": true
+  },
+  "gpu_review": [
+    "Core has no instance/adapter enumeration, surface, submission, poll, readback, CPU reference, stdout protocol or fallback policy. Caller owns device/queue/encoder and scopes.",
+    "Rasterizer stores Arc<Kernels>; EncodedFrame owns output, parameter/input buffers, binding groups and cloned pipelines. Returned frame carries no Plan/CPU target/source borrow.",
+    "Checked BufferAccounting enforces output+parameters+input+second target exactly equal unchanged Plan charge and <=1MiB. Missing glyph pipeline and zero/non-divisor uniform alignment fail before core frame buffers.",
+    "Probe checks full expected length, calls encode with deadline callback, then independently verifies owned+readback, planned and output byte counts before creating readback.",
+    "Output remains STORAGE|COPY_SRC without COPY_DST; metadata and source arenas are the only queue writes. Each ordered draw retains a separate pass and identical dynamic parameter offsets.",
+    "Failed encode requires caller to discard partially recorded encoder; queued immutable writes may exist. Early-error drop never explicitly destroys pending buffers. Probe propagates failure into the existing saved outcome then error-scope handling.",
+    "Successful readback waits for its submission and mapping callback, drops mapped view, unmaps, explicitly destroys EncodedFrame buffers, then readback. Early poll/map/range failure uses ordinary handle drop, matching prior absence of premature explicit destroy.",
+    "20s whole-run and 5s wait limits, pending-future test, per-draw checks, complete ADAPTER inventory and first-failure behavior remain. Added checks before opening scopes and before core preparation tighten existing deadline handling.",
+    "Validation/OOM/Internal scope push and Internal/OOM/Validation pop order remain; scope or wait failure short-circuits as before and may outrank saved raster/callback error. PASS callback occurs only after exact readback, before final scope collection; COMPLETE requires all scopes and saved outcome succeed."
+  ],
+  "intentional_deltas": [
+    "Readback allocation now follows encode; the core buffer cap includes the same second-target reservation.",
+    "Command encoder is caller-owned and created before core preparation; GPU driver overhead remains outside explicit buffer ledger.",
+    "Normal explicit destruction groups core buffers before destroying the separate readback.",
+    "Core public API requires same-device handles and caller-proven completion before destroy_after_completion; it cannot prove those preconditions."
+  ],
+  "limitations": [
+    "Source review does not claim compiler or GPU success.",
+    "Synchronous driver/pipeline work remains non-interruptible mid-call; outer supervisor remains necessary.",
+    "Core tests currently reference repo-local unchanged fixture sources under cfg(test); source distribution must include those paths."
+  ],
+  "unchanged_baseline_files": [
+    "tools/vulkan-raster-probe/src/alpha_fixtures.rs",
+    "tools/vulkan-raster-probe/src/bin/browser-check.rs",
+    "tools/vulkan-raster-probe/src/bin/checker_support/mod.rs",
+    "tools/vulkan-raster-probe/src/bin/glyph-check.rs",
+    "tools/vulkan-raster-probe/src/bin/worker-text-check.rs",
+    "tools/vulkan-raster-probe/src/browser_adapter.rs",
+    "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+    "tools/vulkan-raster-probe/src/browser_adapter/text.rs",
+    "tools/vulkan-raster-probe/src/browser_adapter/text/tests.rs",
+    "tools/vulkan-raster-probe/src/browser_fixtures.rs",
+    "tools/vulkan-raster-probe/src/fixtures.rs",
+    "tools/vulkan-raster-probe/src/glyph.wgsl",
+    "tools/vulkan-raster-probe/src/glyph_fixtures/font_inventory.rs",
+    "tools/vulkan-raster-probe/src/glyph_fixtures/literal_inventory.rs",
+    "tools/vulkan-raster-probe/src/glyph_tests.rs",
+    "tools/vulkan-raster-probe/src/image.wgsl",
+    "tools/vulkan-raster-probe/src/image_fixtures.rs",
+    "tools/vulkan-raster-probe/src/main.rs",
+    "tools/vulkan-raster-probe/src/rect.wgsl",
+    "tools/vulkan-raster-probe/src/tests.rs",
+    "tools/vulkan-raster-probe/tests/glyph_contracts.rs",
+    "tools/vulkan-raster-probe/run_host.py",
+    "tools/vulkan-raster-probe/run_browser_host.py",
+    "tools/vulkan-raster-probe/run_glyph_host.py",
+    "tools/vulkan-raster-probe/run_worker_text_host.py",
+    "tools/vulkan-raster-probe/browser_protocol.py",
+    "tools/vulkan-raster-probe/glyph_protocol.py",
+    "tools/vulkan-raster-probe/worker_text_protocol.py",
+    "tools/vulkan-raster-probe/bridge_supervisor.py",
+    "tools/vulkan-raster-probe/worker-text-fixtures/fixture_inventory.rs",
+    "tools/vulkan-raster-probe/worker-text-fixtures/inventory.json",
+    "tools/vulkan-raster-probe/worker-text-fixtures/freeze.json"
+  ],
+  "owner_receipts": [
+    {
+      "path": "/tmp/eris-vulkan-core-planner-source-ready.json",
+      "bytes": 6899,
+      "sha256": "b3d55111a4fca006c4f7fd39661c3be13cc3892b0e30f7e78b5286eaf0b9943c"
+    },
+    {
+      "path": "/tmp/eris-raster-core-gpu-source-ready.json",
+      "bytes": 3913,
+      "sha256": "b805595431efb740f5fb9d5ed123ce868ecc52e1266f14e0bc62afb4a66693bd"
+    }
+  ],
+  "audit_source": {
+    "path": "/tmp/eris-vulkan-core-preservation-review.py",
+    "bytes": 11203,
+    "sha256": "bccd82b5d9a64a506895fb48c0975644788379429b4a32a44d8d228958391265"
+  }
+}

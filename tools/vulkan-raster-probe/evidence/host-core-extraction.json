@@ -1,0 +1,107 @@
+{
+  "schema": 1,
+  "subject": "browser-independent planner and reusable GPU encoding extraction",
+  "parent_commit": "a744eb1c347717d58fe088f0d82db0105c66a48b",
+  "source_manifest_sha256": "ba211a7f966723502a940a1c1e11a370c4bc63d29b78b1c4f95daa79e4b930a4",
+  "source_files": 182,
+  "planner_body_unchanged": true,
+  "shader_bytes_unchanged": true,
+  "public_probe_imports_preserved": true,
+  "root_cargo_files_unchanged": true,
+  "default_core_external_dependencies": 0,
+  "external_registry_versions_checksums_dependency_edges_unchanged": true,
+  "encoding_contract": {
+    "caller_owns_device_queue_encoder_error_scopes_submission_completion": true,
+    "core_creates_no_instance_surface_or_readback": true,
+    "core_accepts_no_expected_pixels": true,
+    "encoded_frame_retains_buffers_bindings_pipelines": true,
+    "preparation_and_per_draw_cancellation_callback": true,
+    "explicit_destroy_waits_for_completion": false,
+    "unchanged_plan_charge_includes_two_targets": true
+  },
+  "rust_validation": {
+    "toolchains": [
+      "1.88.0",
+      "1.98.0"
+    ],
+    "formatting": true,
+    "strict_all_target_clippy": true,
+    "core_default_groups": 40,
+    "core_gpu_groups": 43,
+    "probe_default_groups": 5,
+    "probe_browser_bridge_groups": 41,
+    "original_feature_executions_retained": 79,
+    "additional_duplicate_alpha_executions": 2,
+    "new_gpu_admission_groups": 3,
+    "combined_feature_executions": 84
+  },
+  "gpu_suites": [
+    {
+      "directory": "standalone-host-1",
+      "cases_per_adapter": 30,
+      "adapters": 3,
+      "gpu_compared_bytes": 2764860,
+      "fallback_cpu_reference_bytes": 0,
+      "host_results_sha256": "ce709c76f6682700b260c1f603db0707749187c2b364e9a1cbf090f5343abfb9"
+    },
+    {
+      "directory": "glyph-host-1",
+      "cases_per_adapter": 26,
+      "adapters": 3,
+      "gpu_compared_bytes": 1034868,
+      "fallback_cpu_reference_bytes": 0,
+      "host_results_sha256": "e24713869d439f974654af7191f400edca9bec2b824e5c7dcc465e919ff69ba5"
+    },
+    {
+      "directory": "browser-host-1",
+      "cases_per_adapter": 16,
+      "adapters": 3,
+      "gpu_compared_bytes": 1812,
+      "fallback_cpu_reference_bytes": 552,
+      "host_results_sha256": "d272489fc73bf26d8eae5a97482b215a6acae178bfc403cc69724dfac42ee2a3"
+    },
+    {
+      "directory": "worker-text-host-1",
+      "cases_per_adapter": 7,
+      "adapters": 3,
+      "gpu_compared_bytes": 921600,
+      "fallback_cpu_reference_bytes": 153600,
+      "host_results_sha256": "35e00d524f632737b64f11d12329ca5c395202809ad34fe9058b7496386c5088"
+    }
+  ],
+  "gpu_compared_bytes_total": 4723140,
+  "fallback_reference_bytes_total": 154152,
+  "cpu_reference_check": {
+    "checker_toolchain": "1.88.0",
+    "font_cases": 14,
+    "cpu_font_passes": 28,
+    "cpu_font_compared_bytes": 688128,
+    "literal_cpu_comparisons": 0,
+    "gpu_comparisons": 0
+  },
+  "supervision": {
+    "all17_checker_processes_exit_zero": true,
+    "standalone_process_group_runs": 4,
+    "subreaper_runs": 13,
+    "subreaper_cleanup_complete": true,
+    "worker_to_gpu_grants": 6
+  },
+  "browser_reused": {
+    "path": "/tmp/eris-vulkan-worker-text-2/eris-browser-stripped",
+    "sha256": "4ce8139a186080e7cd68d6478b46e81a6234494ffd556e359d0d8a6eca63fb0e",
+    "source": "unchanged root sources and prior published worker-text build/strip records"
+  },
+  "native_window_shader_rasterization": false,
+  "full_web_compatibility": false,
+  "production_security_claimed": false,
+  "chromium_performance_target_demonstrated": false,
+  "remote_ci": {
+    "status": "pending publication"
+  },
+  "artifact_index": "core-extraction/index.json",
+  "artifact_index_sha256": "a4bc7b9d9e065553580307c873d41af7c86e297f30edec0cbe021bba5da210c3",
+  "artifact_publication": {
+    "path": "core-extraction/publication.json",
+    "sha256": "54e8db17366c6467a98e3c8c6672f2268d1fe39c5bb63da7bd12c15aa84ef4b2"
+  }
+}

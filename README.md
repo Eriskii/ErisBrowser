@@ -17,6 +17,8 @@ also passes seven actual HTML snapshots on all three adapters, including
 whole-frame fallback. Native browser painting
 currently remains on the CPU; the [rendering docket](docs/vulkan-rendering.md)
 tracks the remaining integration work.
+Drawing plans and GPU encoding now live in the reusable
+[raster core](crates/raster-core/README.md), separate from the comparison tools.
 
 ## Open the browser
 

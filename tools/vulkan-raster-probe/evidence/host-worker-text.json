@@ -77,7 +77,13 @@
   "production_security_claimed": false,
   "chromium_performance_target_demonstrated": false,
   "remote_ci": {
-    "status": "pending publication"
+    "status": "completed",
+    "conclusion": "success",
+    "commit": "a744eb1c347717d58fe088f0d82db0105c66a48b",
+    "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/36969011123",
+    "jobs_passed": 7,
+    "record": "host-worker-text-ci.json",
+    "sha256": "c3a03656b69bab22da5dc0ecd52cface82f0838f26d776236c78392be1d51496"
   },
   "artifact_index": "worker-text/index.json",
   "artifact_index_sha256": "ab5163ed74c44ead815a4864edd93248d589ced3b1751389fbe5ed0abde33f17",

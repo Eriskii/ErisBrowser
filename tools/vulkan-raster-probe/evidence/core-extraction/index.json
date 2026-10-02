@@ -1,0 +1,1176 @@
+{
+  "schema": 1,
+  "kind": "exact retained reusable-core extraction evidence; no new execution",
+  "parent": "a744eb1c347717d58fe088f0d82db0105c66a48b",
+  "files": [
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.88.0-checks.json",
+      "raw_path": "validation/1.88.0-checks.json",
+      "path": "validation/1.88.0-checks.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 3873,
+      "raw_sha256": "6d892df508274438c4a3709b4d4c2d313e6edfe32dd43dcaba491beac2b727bf",
+      "stored_bytes": 3873,
+      "stored_sha256": "6d892df508274438c4a3709b4d4c2d313e6edfe32dd43dcaba491beac2b727bf"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.88.0-core-clippy-default.log",
+      "raw_path": "validation/1.88.0-core-clippy-default.log",
+      "path": "validation/1.88.0-core-clippy-default.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 175,
+      "raw_sha256": "ec00aa3dc01d1698f83f837208c0d0dfe89c682c3aefdb5b9c701f938f545cc7",
+      "stored_bytes": 175,
+      "stored_sha256": "ec00aa3dc01d1698f83f837208c0d0dfe89c682c3aefdb5b9c701f938f545cc7"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.88.0-core-clippy-gpu.log",
+      "raw_path": "validation/1.88.0-core-clippy-gpu.log",
+      "path": "validation/1.88.0-core-clippy-gpu.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 227,
+      "raw_sha256": "2df585c5af29255481b137d1d8a8c6820ebc27426f878fdbca58cf2d31dce2e6",
+      "stored_bytes": 227,
+      "stored_sha256": "2df585c5af29255481b137d1d8a8c6820ebc27426f878fdbca58cf2d31dce2e6"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.88.0-core-fmt.log",
+      "raw_path": "validation/1.88.0-core-fmt.log",
+      "path": "validation/1.88.0-core-fmt.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.88.0-core-test-default.log",
+      "raw_path": "validation/1.88.0-core-test-default.log",
+      "path": "validation/1.88.0-core-test-default.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 4000,
+      "raw_sha256": "65e7e5cbbff896de6d109b6ff33096e871841b58c91a0fb8e62609b16a3cce18",
+      "stored_bytes": 4000,
+      "stored_sha256": "65e7e5cbbff896de6d109b6ff33096e871841b58c91a0fb8e62609b16a3cce18"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.88.0-core-test-gpu.log",
+      "raw_path": "validation/1.88.0-core-test-gpu.log",
+      "path": "validation/1.88.0-core-test-gpu.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 4266,
+      "raw_sha256": "125ec96206154989f0cc7d0bd133e188e3e78a6ba7d6e397647ab009b4f92eaf",
+      "stored_bytes": 4266,
+      "stored_sha256": "125ec96206154989f0cc7d0bd133e188e3e78a6ba7d6e397647ab009b4f92eaf"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.88.0-planner-checks.json",
+      "raw_path": "validation/1.88.0-planner-checks.json",
+      "path": "validation/1.88.0-planner-checks.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 369,
+      "raw_sha256": "c9334e09069915593aa8fa51bb230e4bd382b78c3e53580d6c20937804bdda4a",
+      "stored_bytes": 369,
+      "stored_sha256": "c9334e09069915593aa8fa51bb230e4bd382b78c3e53580d6c20937804bdda4a"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.88.0-probe-build-feature.log",
+      "raw_path": "validation/1.88.0-probe-build-feature.log",
+      "path": "validation/1.88.0-probe-build-feature.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 60,
+      "raw_sha256": "3fe980a0f9709b0a2d093ea2a65202e1e589d4893ac71be4272c165923b9e527",
+      "stored_bytes": 60,
+      "stored_sha256": "3fe980a0f9709b0a2d093ea2a65202e1e589d4893ac71be4272c165923b9e527"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.88.0-probe-clippy-default.log",
+      "raw_path": "validation/1.88.0-probe-clippy-default.log",
+      "path": "validation/1.88.0-probe-clippy-default.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 309,
+      "raw_sha256": "fb573d4bf088c409530ae9dd8956576aea333314773dca82f215c519d5da9804",
+      "stored_bytes": 309,
+      "stored_sha256": "fb573d4bf088c409530ae9dd8956576aea333314773dca82f215c519d5da9804"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.88.0-probe-clippy-feature.log",
+      "raw_path": "validation/1.88.0-probe-clippy-feature.log",
+      "path": "validation/1.88.0-probe-clippy-feature.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 309,
+      "raw_sha256": "6862a0f5f459f5819b3358b00cf06fd94a09cb58d40909d9cdea06c32d53c015",
+      "stored_bytes": 309,
+      "stored_sha256": "6862a0f5f459f5819b3358b00cf06fd94a09cb58d40909d9cdea06c32d53c015"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.88.0-probe-fmt.log",
+      "raw_path": "validation/1.88.0-probe-fmt.log",
+      "path": "validation/1.88.0-probe-fmt.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.88.0-probe-test-default.log",
+      "raw_path": "validation/1.88.0-probe-test-default.log",
+      "path": "validation/1.88.0-probe-test-default.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 1605,
+      "raw_sha256": "b37af49d000b90d7d729c51e5e599259ab91d21dcd20508edbbc3831131998cd",
+      "stored_bytes": 1605,
+      "stored_sha256": "b37af49d000b90d7d729c51e5e599259ab91d21dcd20508edbbc3831131998cd"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.88.0-probe-test-feature.log",
+      "raw_path": "validation/1.88.0-probe-test-feature.log",
+      "path": "validation/1.88.0-probe-test-feature.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 6044,
+      "raw_sha256": "662443f129912798659b19a32682bb0268266eb78ee0373429dae098eabc965a",
+      "stored_bytes": 6044,
+      "stored_sha256": "662443f129912798659b19a32682bb0268266eb78ee0373429dae098eabc965a"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.98.0-checks.json",
+      "raw_path": "validation/1.98.0-checks.json",
+      "path": "validation/1.98.0-checks.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 3877,
+      "raw_sha256": "e449095ce6a7b7068b4708ac0acacf61aa78bb62af6fe2b8aa20c93697355fc2",
+      "stored_bytes": 3877,
+      "stored_sha256": "e449095ce6a7b7068b4708ac0acacf61aa78bb62af6fe2b8aa20c93697355fc2"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.98.0-core-clippy-default.log",
+      "raw_path": "validation/1.98.0-core-clippy-default.log",
+      "path": "validation/1.98.0-core-clippy-default.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 175,
+      "raw_sha256": "c38e7b376cb6e444669a9073e6771040395a33cade717a572a1ec9908a890cff",
+      "stored_bytes": 175,
+      "stored_sha256": "c38e7b376cb6e444669a9073e6771040395a33cade717a572a1ec9908a890cff"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.98.0-core-clippy-gpu.log",
+      "raw_path": "validation/1.98.0-core-clippy-gpu.log",
+      "path": "validation/1.98.0-core-clippy-gpu.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 227,
+      "raw_sha256": "20d1511e0f7cc61fbb93445b8b118e6def5b2b71b8f438fb88bcb9f503830c9d",
+      "stored_bytes": 227,
+      "stored_sha256": "20d1511e0f7cc61fbb93445b8b118e6def5b2b71b8f438fb88bcb9f503830c9d"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.98.0-core-fmt.log",
+      "raw_path": "validation/1.98.0-core-fmt.log",
+      "path": "validation/1.98.0-core-fmt.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.98.0-core-test-default.log",
+      "raw_path": "validation/1.98.0-core-test-default.log",
+      "path": "validation/1.98.0-core-test-default.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 3999,
+      "raw_sha256": "df5872de4392fc2fa0b39a669e731f9267d6c054842431acebc4bbd2e3f52f0d",
+      "stored_bytes": 3999,
+      "stored_sha256": "df5872de4392fc2fa0b39a669e731f9267d6c054842431acebc4bbd2e3f52f0d"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.98.0-core-test-gpu.log",
+      "raw_path": "validation/1.98.0-core-test-gpu.log",
+      "path": "validation/1.98.0-core-test-gpu.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 4265,
+      "raw_sha256": "7a0eecba2ba9a5b8c95b012613b4eb840c1713b2fa4d654d2e9ef1a3521f0d96",
+      "stored_bytes": 4265,
+      "stored_sha256": "7a0eecba2ba9a5b8c95b012613b4eb840c1713b2fa4d654d2e9ef1a3521f0d96"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.98.0-planner-checks.json",
+      "raw_path": "validation/1.98.0-planner-checks.json",
+      "path": "validation/1.98.0-planner-checks.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 369,
+      "raw_sha256": "e490a56762caa7b533309ec9c5726cfd20a17aed890797d0fca0764c119f539d",
+      "stored_bytes": 369,
+      "stored_sha256": "e490a56762caa7b533309ec9c5726cfd20a17aed890797d0fca0764c119f539d"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.98.0-probe-build-feature.log",
+      "raw_path": "validation/1.98.0-probe-build-feature.log",
+      "path": "validation/1.98.0-probe-build-feature.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 60,
+      "raw_sha256": "3fe980a0f9709b0a2d093ea2a65202e1e589d4893ac71be4272c165923b9e527",
+      "stored_bytes": 60,
+      "stored_sha256": "3fe980a0f9709b0a2d093ea2a65202e1e589d4893ac71be4272c165923b9e527"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.98.0-probe-clippy-default.log",
+      "raw_path": "validation/1.98.0-probe-clippy-default.log",
+      "path": "validation/1.98.0-probe-clippy-default.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 309,
+      "raw_sha256": "f17737652ffff3d165e45a657a597a1664d40a029ca40e421fbb697073ba8c09",
+      "stored_bytes": 309,
+      "stored_sha256": "f17737652ffff3d165e45a657a597a1664d40a029ca40e421fbb697073ba8c09"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.98.0-probe-clippy-feature.log",
+      "raw_path": "validation/1.98.0-probe-clippy-feature.log",
+      "path": "validation/1.98.0-probe-clippy-feature.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 309,
+      "raw_sha256": "4125d5fced1f97fe7331bb381f6b9ab6220400ec490de2efd8be6d1d6b7c5769",
+      "stored_bytes": 309,
+      "stored_sha256": "4125d5fced1f97fe7331bb381f6b9ab6220400ec490de2efd8be6d1d6b7c5769"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.98.0-probe-fmt.log",
+      "raw_path": "validation/1.98.0-probe-fmt.log",
+      "path": "validation/1.98.0-probe-fmt.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.98.0-probe-test-default.log",
+      "raw_path": "validation/1.98.0-probe-test-default.log",
+      "path": "validation/1.98.0-probe-test-default.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 1602,
+      "raw_sha256": "1297b59557e251a807ee782725c8c3b64420f4565f81a638d00c447c90f39f84",
+      "stored_bytes": 1602,
+      "stored_sha256": "1297b59557e251a807ee782725c8c3b64420f4565f81a638d00c447c90f39f84"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/1.98.0-probe-test-feature.log",
+      "raw_path": "validation/1.98.0-probe-test-feature.log",
+      "path": "validation/1.98.0-probe-test-feature.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 6038,
+      "raw_sha256": "a2f78d7a323d71698786d2aeaaa44e9a335d5a49e7a1e176fb88056b5dda0f58",
+      "stored_bytes": 6038,
+      "stored_sha256": "a2f78d7a323d71698786d2aeaaa44e9a335d5a49e7a1e176fb88056b5dda0f58"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/binaries.json",
+      "raw_path": "validation/binaries.json",
+      "path": "validation/binaries.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 1493,
+      "raw_sha256": "585e88fbe946b3d07ae6419fb9848c4dae802a2acc7ea47a5c441e4fc0f6ed9d",
+      "stored_bytes": 1493,
+      "stored_sha256": "585e88fbe946b3d07ae6419fb9848c4dae802a2acc7ea47a5c441e4fc0f6ed9d"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/browser-host-1-launcher.log",
+      "raw_path": "validation/browser-host-1-launcher.log",
+      "path": "validation/browser-host-1-launcher.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 109,
+      "raw_sha256": "17154cb76966bf284edc2536dcf0a34d2b796a4ab5bb0cf6a43a7f31247e8782",
+      "stored_bytes": 109,
+      "stored_sha256": "17154cb76966bf284edc2536dcf0a34d2b796a4ab5bb0cf6a43a7f31247e8782"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/check-rust.py",
+      "raw_path": "validation/check-rust.py",
+      "path": "validation/check-rust.py",
+      "encoding": "identity",
+      "uncompressed_bytes": 2000,
+      "raw_sha256": "ae4e516e771b6328fe52c8f8287ed5da3774d5ca673ff8a81e18b1e1fcbe3de8",
+      "stored_bytes": 2000,
+      "stored_sha256": "ae4e516e771b6328fe52c8f8287ed5da3774d5ca673ff8a81e18b1e1fcbe3de8"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/core-metadata.json",
+      "raw_path": "validation/core-metadata.json",
+      "path": "validation/core-metadata.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 1970,
+      "raw_sha256": "ec345f8b2382890e2f18b792c9cc49226241b54835e2512e4c439c6a65cfc586",
+      "stored_bytes": 1970,
+      "stored_sha256": "ec345f8b2382890e2f18b792c9cc49226241b54835e2512e4c439c6a65cfc586"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/core-resolution.log",
+      "raw_path": "validation/core-resolution.log",
+      "path": "validation/core-resolution.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-host-1-launcher.log",
+      "raw_path": "validation/glyph-host-1-launcher.log",
+      "path": "validation/glyph-host-1-launcher.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 107,
+      "raw_sha256": "950b83a024c0195ac6cca9a9df068c61ecd2a3adac4023e6897c70aea810a61b",
+      "stored_bytes": 107,
+      "stored_sha256": "950b83a024c0195ac6cca9a9df068c61ecd2a3adac4023e6897c70aea810a61b"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/gpu-runs.json",
+      "raw_path": "validation/gpu-runs.json",
+      "path": "validation/gpu-runs.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 2779,
+      "raw_sha256": "b2bd1af2912e1cfe2c5be221172fc1902e0cab4c2b24600eb57541e0885e73f3",
+      "stored_bytes": 2779,
+      "stored_sha256": "b2bd1af2912e1cfe2c5be221172fc1902e0cab4c2b24600eb57541e0885e73f3"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/launch.py",
+      "raw_path": "validation/launch.py",
+      "path": "validation/launch.py",
+      "encoding": "identity",
+      "uncompressed_bytes": 236,
+      "raw_sha256": "607abd92921aa018479f61581415adb93b3776e8a84e043399e9ee6a4e0fd514",
+      "stored_bytes": 236,
+      "stored_sha256": "607abd92921aa018479f61581415adb93b3776e8a84e043399e9ee6a4e0fd514"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/planner-source.json",
+      "raw_path": "validation/planner-source.json",
+      "path": "validation/planner-source.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 1575,
+      "raw_sha256": "39b96d30d352599c94cf2428aa386e2bc55153c6be1d5aeaa500fa7223d2ab64",
+      "stored_bytes": 1575,
+      "stored_sha256": "39b96d30d352599c94cf2428aa386e2bc55153c6be1d5aeaa500fa7223d2ab64"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/probe-lock-before.lock",
+      "raw_path": "validation/probe-lock-before.lock",
+      "path": "validation/probe-lock-before.lock",
+      "encoding": "identity",
+      "uncompressed_bytes": 81429,
+      "raw_sha256": "c3ec1b8cecc74528ecb7e183cc782933124b879a7201e1978bce18ee046dd9d3",
+      "stored_bytes": 81429,
+      "stored_sha256": "c3ec1b8cecc74528ecb7e183cc782933124b879a7201e1978bce18ee046dd9d3"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/probe-resolution.log",
+      "raw_path": "validation/probe-resolution.log",
+      "path": "validation/probe-resolution.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 177,
+      "raw_sha256": "0b79b250da38660e1dd6d95cac913d192a66426a4149f27862d509b5f0ba43a8",
+      "stored_bytes": 177,
+      "stored_sha256": "0b79b250da38660e1dd6d95cac913d192a66426a4149f27862d509b5f0ba43a8"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/resolution-check.json",
+      "raw_path": "validation/resolution-check.json",
+      "path": "validation/resolution-check.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 557,
+      "raw_sha256": "7112052a0b5ad543af479bc4657acea275d5320466ae1daca0fb985982e75d8a",
+      "stored_bytes": 557,
+      "stored_sha256": "7112052a0b5ad543af479bc4657acea275d5320466ae1daca0fb985982e75d8a"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/run-gpu-suites.py",
+      "raw_path": "validation/run-gpu-suites.py",
+      "path": "validation/run-gpu-suites.py",
+      "encoding": "identity",
+      "uncompressed_bytes": 1823,
+      "raw_sha256": "796cfcaa791e750e2357836333f5aa0317ca8d997e33542e860962f071db03cc",
+      "stored_bytes": 1823,
+      "stored_sha256": "796cfcaa791e750e2357836333f5aa0317ca8d997e33542e860962f071db03cc"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/source.json",
+      "raw_path": "validation/source.json",
+      "path": "validation/source.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 32403,
+      "raw_sha256": "ba211a7f966723502a940a1c1e11a370c4bc63d29b78b1c4f95daa79e4b930a4",
+      "stored_bytes": 32403,
+      "stored_sha256": "ba211a7f966723502a940a1c1e11a370c4bc63d29b78b1c4f95daa79e4b930a4"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/standalone-host-1-launcher.log",
+      "raw_path": "validation/standalone-host-1-launcher.log",
+      "path": "validation/standalone-host-1-launcher.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 107,
+      "raw_sha256": "3762f228c2507f7f59282cad443dac03d5030afc09f8c81389875f4fe01a9beb",
+      "stored_bytes": 107,
+      "stored_sha256": "3762f228c2507f7f59282cad443dac03d5030afc09f8c81389875f4fe01a9beb"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/worker-text-host-1-launcher.log",
+      "raw_path": "validation/worker-text-host-1-launcher.log",
+      "path": "validation/worker-text-host-1-launcher.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 113,
+      "raw_sha256": "0963f87cc06a15de62700c60420885193658f589057fe2c71da0c4aa362f4450",
+      "stored_bytes": 113,
+      "stored_sha256": "0963f87cc06a15de62700c60420885193658f589057fe2c71da0c4aa362f4450"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-cpu-1.88.0/cpu-check.json",
+      "raw_path": "hosts/glyph-cpu-1.88.0/cpu-check.json",
+      "path": "hosts/glyph-cpu-1.88.0/cpu-check.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 883,
+      "raw_sha256": "4dd417f05452f920e6feb00bb89978f0eed4e9c992041b81525273e91a1a9b8d",
+      "stored_bytes": 883,
+      "stored_sha256": "4dd417f05452f920e6feb00bb89978f0eed4e9c992041b81525273e91a1a9b8d"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-cpu-1.88.0/cpu-check.stderr.log",
+      "raw_path": "hosts/glyph-cpu-1.88.0/cpu-check.stderr.log",
+      "path": "hosts/glyph-cpu-1.88.0/cpu-check.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-cpu-1.88.0/cpu-check.stdout.log",
+      "raw_path": "hosts/glyph-cpu-1.88.0/cpu-check.stdout.log",
+      "path": "hosts/glyph-cpu-1.88.0/cpu-check.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 6312,
+      "raw_sha256": "384257354cecfb0091debae777c88a23b409f3efffd3f6790260eba73d618593",
+      "stored_bytes": 6312,
+      "stored_sha256": "384257354cecfb0091debae777c88a23b409f3efffd3f6790260eba73d618593",
+      "supervisor_stdout_sha256": "384257354cecfb0091debae777c88a23b409f3efffd3f6790260eba73d618593"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-cpu-1.88.0/cpu-check.supervisor.stderr.log",
+      "raw_path": "hosts/glyph-cpu-1.88.0/cpu-check.supervisor.stderr.log",
+      "path": "hosts/glyph-cpu-1.88.0/cpu-check.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-cpu-1.88.0/host-results.json",
+      "raw_path": "hosts/glyph-cpu-1.88.0/host-results.json",
+      "path": "hosts/glyph-cpu-1.88.0/host-results.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 21637,
+      "raw_sha256": "616bc129a187f4ebcea944be4260bd914acec0acb69ee65581b99a379b18a03f",
+      "stored_bytes": 21637,
+      "stored_sha256": "616bc129a187f4ebcea944be4260bd914acec0acb69ee65581b99a379b18a03f"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/standalone-host-1/adapter-0.stderr.log",
+      "raw_path": "hosts/standalone-host-1/adapter-0.stderr.log",
+      "path": "hosts/standalone-host-1/adapter-0.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/standalone-host-1/adapter-0.stdout.log",
+      "raw_path": "hosts/standalone-host-1/adapter-0.stdout.log",
+      "path": "hosts/standalone-host-1/adapter-0.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 3854,
+      "raw_sha256": "a26a8bda066a19373385f55faa40146200a6dff8c55a6c76545999094415d68c",
+      "stored_bytes": 3854,
+      "stored_sha256": "a26a8bda066a19373385f55faa40146200a6dff8c55a6c76545999094415d68c"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/standalone-host-1/adapter-1.stderr.log",
+      "raw_path": "hosts/standalone-host-1/adapter-1.stderr.log",
+      "path": "hosts/standalone-host-1/adapter-1.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/standalone-host-1/adapter-1.stdout.log",
+      "raw_path": "hosts/standalone-host-1/adapter-1.stdout.log",
+      "path": "hosts/standalone-host-1/adapter-1.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 3854,
+      "raw_sha256": "fa07469bc41234b92472e7ec4053d45fba836215bee3b393353acc99bf184472",
+      "stored_bytes": 3854,
+      "stored_sha256": "fa07469bc41234b92472e7ec4053d45fba836215bee3b393353acc99bf184472"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/standalone-host-1/adapter-2.stderr.log",
+      "raw_path": "hosts/standalone-host-1/adapter-2.stderr.log",
+      "path": "hosts/standalone-host-1/adapter-2.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/standalone-host-1/adapter-2.stdout.log",
+      "raw_path": "hosts/standalone-host-1/adapter-2.stdout.log",
+      "path": "hosts/standalone-host-1/adapter-2.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 3854,
+      "raw_sha256": "b9144976b3f73a8d29de8b85012c2db291f3d6981ce03851061f8981be26e10f",
+      "stored_bytes": 3854,
+      "stored_sha256": "b9144976b3f73a8d29de8b85012c2db291f3d6981ce03851061f8981be26e10f"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/standalone-host-1/enumeration.stderr.log",
+      "raw_path": "hosts/standalone-host-1/enumeration.stderr.log",
+      "path": "hosts/standalone-host-1/enumeration.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/standalone-host-1/enumeration.stdout.log",
+      "raw_path": "hosts/standalone-host-1/enumeration.stdout.log",
+      "path": "hosts/standalone-host-1/enumeration.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 465,
+      "raw_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "stored_bytes": 465,
+      "stored_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/standalone-host-1/host-results.json",
+      "raw_path": "hosts/standalone-host-1/host-results.json",
+      "path": "hosts/standalone-host-1/host-results.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 14515,
+      "raw_sha256": "ce709c76f6682700b260c1f603db0707749187c2b364e9a1cbf090f5343abfb9",
+      "stored_bytes": 14515,
+      "stored_sha256": "ce709c76f6682700b260c1f603db0707749187c2b364e9a1cbf090f5343abfb9"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-host-1/adapter-0.json",
+      "raw_path": "hosts/glyph-host-1/adapter-0.json",
+      "path": "hosts/glyph-host-1/adapter-0.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 889,
+      "raw_sha256": "61b8c65aa99ade9e5eedbe9faa2147cf31ca342685d45c084a9bb5714d2d6717",
+      "stored_bytes": 889,
+      "stored_sha256": "61b8c65aa99ade9e5eedbe9faa2147cf31ca342685d45c084a9bb5714d2d6717"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-host-1/adapter-0.stderr.log",
+      "raw_path": "hosts/glyph-host-1/adapter-0.stderr.log",
+      "path": "hosts/glyph-host-1/adapter-0.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-host-1/adapter-0.stdout.log",
+      "raw_path": "hosts/glyph-host-1/adapter-0.stdout.log",
+      "path": "hosts/glyph-host-1/adapter-0.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 9613,
+      "raw_sha256": "f4c09162126579d4aae37fab038727dafc7abfcc84c965f08240d14f1297da1c",
+      "stored_bytes": 9613,
+      "stored_sha256": "f4c09162126579d4aae37fab038727dafc7abfcc84c965f08240d14f1297da1c",
+      "supervisor_stdout_sha256": "f4c09162126579d4aae37fab038727dafc7abfcc84c965f08240d14f1297da1c"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-host-1/adapter-0.supervisor.stderr.log",
+      "raw_path": "hosts/glyph-host-1/adapter-0.supervisor.stderr.log",
+      "path": "hosts/glyph-host-1/adapter-0.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-host-1/adapter-1.json",
+      "raw_path": "hosts/glyph-host-1/adapter-1.json",
+      "path": "hosts/glyph-host-1/adapter-1.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 888,
+      "raw_sha256": "7d03da91f516787d31a11e4b6034d4645844ce290454365fd19bd4b95196a0f3",
+      "stored_bytes": 888,
+      "stored_sha256": "7d03da91f516787d31a11e4b6034d4645844ce290454365fd19bd4b95196a0f3"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-host-1/adapter-1.stderr.log",
+      "raw_path": "hosts/glyph-host-1/adapter-1.stderr.log",
+      "path": "hosts/glyph-host-1/adapter-1.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-host-1/adapter-1.stdout.log",
+      "raw_path": "hosts/glyph-host-1/adapter-1.stdout.log",
+      "path": "hosts/glyph-host-1/adapter-1.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 9613,
+      "raw_sha256": "82d9b41c9fd915d862d841f857afd55725af0d47ec93c35c0aabd5339a0942a9",
+      "stored_bytes": 9613,
+      "stored_sha256": "82d9b41c9fd915d862d841f857afd55725af0d47ec93c35c0aabd5339a0942a9",
+      "supervisor_stdout_sha256": "82d9b41c9fd915d862d841f857afd55725af0d47ec93c35c0aabd5339a0942a9"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-host-1/adapter-1.supervisor.stderr.log",
+      "raw_path": "hosts/glyph-host-1/adapter-1.supervisor.stderr.log",
+      "path": "hosts/glyph-host-1/adapter-1.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-host-1/adapter-2.json",
+      "raw_path": "hosts/glyph-host-1/adapter-2.json",
+      "path": "hosts/glyph-host-1/adapter-2.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 889,
+      "raw_sha256": "927e32531610ccabc1c54e220c5927bf97127cc1b2a76bcef57816d59e15b397",
+      "stored_bytes": 889,
+      "stored_sha256": "927e32531610ccabc1c54e220c5927bf97127cc1b2a76bcef57816d59e15b397"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-host-1/adapter-2.stderr.log",
+      "raw_path": "hosts/glyph-host-1/adapter-2.stderr.log",
+      "path": "hosts/glyph-host-1/adapter-2.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-host-1/adapter-2.stdout.log",
+      "raw_path": "hosts/glyph-host-1/adapter-2.stdout.log",
+      "path": "hosts/glyph-host-1/adapter-2.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 9613,
+      "raw_sha256": "d57398020d112455156a593c9a04d75c2b6e6a3f1e900faaf85911889417588d",
+      "stored_bytes": 9613,
+      "stored_sha256": "d57398020d112455156a593c9a04d75c2b6e6a3f1e900faaf85911889417588d",
+      "supervisor_stdout_sha256": "d57398020d112455156a593c9a04d75c2b6e6a3f1e900faaf85911889417588d"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-host-1/adapter-2.supervisor.stderr.log",
+      "raw_path": "hosts/glyph-host-1/adapter-2.supervisor.stderr.log",
+      "path": "hosts/glyph-host-1/adapter-2.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-host-1/enumeration.json",
+      "raw_path": "hosts/glyph-host-1/enumeration.json",
+      "path": "hosts/glyph-host-1/enumeration.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 734,
+      "raw_sha256": "3ccb7e205d22a7cf14453882eb8cb8e8e6316f3fc41119c94688ad6381ed5865",
+      "stored_bytes": 734,
+      "stored_sha256": "3ccb7e205d22a7cf14453882eb8cb8e8e6316f3fc41119c94688ad6381ed5865"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-host-1/enumeration.stderr.log",
+      "raw_path": "hosts/glyph-host-1/enumeration.stderr.log",
+      "path": "hosts/glyph-host-1/enumeration.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-host-1/enumeration.stdout.log",
+      "raw_path": "hosts/glyph-host-1/enumeration.stdout.log",
+      "path": "hosts/glyph-host-1/enumeration.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 465,
+      "raw_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "stored_bytes": 465,
+      "stored_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "supervisor_stdout_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-host-1/enumeration.supervisor.stderr.log",
+      "raw_path": "hosts/glyph-host-1/enumeration.supervisor.stderr.log",
+      "path": "hosts/glyph-host-1/enumeration.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/glyph-host-1/host-results.json",
+      "raw_path": "hosts/glyph-host-1/host-results.json",
+      "path": "hosts/glyph-host-1/host-results.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 56425,
+      "raw_sha256": "e24713869d439f974654af7191f400edca9bec2b824e5c7dcc465e919ff69ba5",
+      "stored_bytes": 56425,
+      "stored_sha256": "e24713869d439f974654af7191f400edca9bec2b824e5c7dcc465e919ff69ba5"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/browser-host-1/adapter-0.json",
+      "raw_path": "hosts/browser-host-1/adapter-0.json",
+      "path": "hosts/browser-host-1/adapter-0.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 958,
+      "raw_sha256": "83f4de177fba2fac58c233b143164d67fc780b1851b1b2abcfa26a2bdba53f13",
+      "stored_bytes": 958,
+      "stored_sha256": "83f4de177fba2fac58c233b143164d67fc780b1851b1b2abcfa26a2bdba53f13"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/browser-host-1/adapter-0.stderr.log",
+      "raw_path": "hosts/browser-host-1/adapter-0.stderr.log",
+      "path": "hosts/browser-host-1/adapter-0.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/browser-host-1/adapter-0.stdout.log",
+      "raw_path": "hosts/browser-host-1/adapter-0.stdout.log",
+      "path": "hosts/browser-host-1/adapter-0.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 14901,
+      "raw_sha256": "80eed12b41161f7e098ee6b2abe78ecc47b0461b42012965bdd183071d1d7d78",
+      "stored_bytes": 14901,
+      "stored_sha256": "80eed12b41161f7e098ee6b2abe78ecc47b0461b42012965bdd183071d1d7d78",
+      "supervisor_stdout_sha256": "80eed12b41161f7e098ee6b2abe78ecc47b0461b42012965bdd183071d1d7d78"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/browser-host-1/adapter-0.supervisor.stderr.log",
+      "raw_path": "hosts/browser-host-1/adapter-0.supervisor.stderr.log",
+      "path": "hosts/browser-host-1/adapter-0.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/browser-host-1/adapter-1.json",
+      "raw_path": "hosts/browser-host-1/adapter-1.json",
+      "path": "hosts/browser-host-1/adapter-1.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 959,
+      "raw_sha256": "aa6b49899dc6e316332b30c8db650cce082ab79b79c2a1c7d09f637006ae46c6",
+      "stored_bytes": 959,
+      "stored_sha256": "aa6b49899dc6e316332b30c8db650cce082ab79b79c2a1c7d09f637006ae46c6"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/browser-host-1/adapter-1.stderr.log",
+      "raw_path": "hosts/browser-host-1/adapter-1.stderr.log",
+      "path": "hosts/browser-host-1/adapter-1.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/browser-host-1/adapter-1.stdout.log",
+      "raw_path": "hosts/browser-host-1/adapter-1.stdout.log",
+      "path": "hosts/browser-host-1/adapter-1.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 14901,
+      "raw_sha256": "16b3a1ade4a2d5323aff816e4bd47bc6f8eb381bf0d54ddf247e0ed115a02e8f",
+      "stored_bytes": 14901,
+      "stored_sha256": "16b3a1ade4a2d5323aff816e4bd47bc6f8eb381bf0d54ddf247e0ed115a02e8f",
+      "supervisor_stdout_sha256": "16b3a1ade4a2d5323aff816e4bd47bc6f8eb381bf0d54ddf247e0ed115a02e8f"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/browser-host-1/adapter-1.supervisor.stderr.log",
+      "raw_path": "hosts/browser-host-1/adapter-1.supervisor.stderr.log",
+      "path": "hosts/browser-host-1/adapter-1.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/browser-host-1/adapter-2.json",
+      "raw_path": "hosts/browser-host-1/adapter-2.json",
+      "path": "hosts/browser-host-1/adapter-2.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 959,
+      "raw_sha256": "24dcf8931dd66003b5eb9eb00edade39c4bf6bc7880c80db80b1826c9f5bb44a",
+      "stored_bytes": 959,
+      "stored_sha256": "24dcf8931dd66003b5eb9eb00edade39c4bf6bc7880c80db80b1826c9f5bb44a"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/browser-host-1/adapter-2.stderr.log",
+      "raw_path": "hosts/browser-host-1/adapter-2.stderr.log",
+      "path": "hosts/browser-host-1/adapter-2.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/browser-host-1/adapter-2.stdout.log",
+      "raw_path": "hosts/browser-host-1/adapter-2.stdout.log",
+      "path": "hosts/browser-host-1/adapter-2.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 14901,
+      "raw_sha256": "143c99c77e2b55e81ad96167ba38032115d27af50c5e867d89a7cf40fbcf64ff",
+      "stored_bytes": 14901,
+      "stored_sha256": "143c99c77e2b55e81ad96167ba38032115d27af50c5e867d89a7cf40fbcf64ff",
+      "supervisor_stdout_sha256": "143c99c77e2b55e81ad96167ba38032115d27af50c5e867d89a7cf40fbcf64ff"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/browser-host-1/adapter-2.supervisor.stderr.log",
+      "raw_path": "hosts/browser-host-1/adapter-2.supervisor.stderr.log",
+      "path": "hosts/browser-host-1/adapter-2.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/browser-host-1/enumeration.json",
+      "raw_path": "hosts/browser-host-1/enumeration.json",
+      "path": "hosts/browser-host-1/enumeration.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 735,
+      "raw_sha256": "6b75e282eb81d8129e294f9a4d80959dcb184a8eb70ef347329459b4be21103a",
+      "stored_bytes": 735,
+      "stored_sha256": "6b75e282eb81d8129e294f9a4d80959dcb184a8eb70ef347329459b4be21103a"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/browser-host-1/enumeration.stderr.log",
+      "raw_path": "hosts/browser-host-1/enumeration.stderr.log",
+      "path": "hosts/browser-host-1/enumeration.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/browser-host-1/enumeration.stdout.log",
+      "raw_path": "hosts/browser-host-1/enumeration.stdout.log",
+      "path": "hosts/browser-host-1/enumeration.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 465,
+      "raw_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "stored_bytes": 465,
+      "stored_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "supervisor_stdout_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/browser-host-1/enumeration.supervisor.stderr.log",
+      "raw_path": "hosts/browser-host-1/enumeration.supervisor.stderr.log",
+      "path": "hosts/browser-host-1/enumeration.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/browser-host-1/host-results.json",
+      "raw_path": "hosts/browser-host-1/host-results.json",
+      "path": "hosts/browser-host-1/host-results.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 117766,
+      "raw_sha256": "d272489fc73bf26d8eae5a97482b215a6acae178bfc403cc69724dfac42ee2a3",
+      "stored_bytes": 117766,
+      "stored_sha256": "d272489fc73bf26d8eae5a97482b215a6acae178bfc403cc69724dfac42ee2a3"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/worker-text-host-1/adapter-0.json",
+      "raw_path": "hosts/worker-text-host-1/adapter-0.json",
+      "path": "hosts/worker-text-host-1/adapter-0.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 962,
+      "raw_sha256": "be038f0cc7671fdfcc9743df238e67b68c26879d9d49b7d2686d022ca89289fb",
+      "stored_bytes": 962,
+      "stored_sha256": "be038f0cc7671fdfcc9743df238e67b68c26879d9d49b7d2686d022ca89289fb"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/worker-text-host-1/adapter-0.stderr.log",
+      "raw_path": "hosts/worker-text-host-1/adapter-0.stderr.log",
+      "path": "hosts/worker-text-host-1/adapter-0.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/worker-text-host-1/adapter-0.stdout.log",
+      "raw_path": "hosts/worker-text-host-1/adapter-0.stdout.log",
+      "path": "hosts/worker-text-host-1/adapter-0.stdout.log.gz",
+      "encoding": "gzip-mtime-0",
+      "uncompressed_bytes": 729716,
+      "raw_sha256": "e20f75f9ab32e8dbe323eb85814d8827e9715894dcf10fddccf73a5be8d0569e",
+      "stored_bytes": 17853,
+      "stored_sha256": "926d1d1bbd8d3adeaba7f63a44535d9721408051ed3a2864afd359ee71da7414",
+      "supervisor_stdout_sha256": "e20f75f9ab32e8dbe323eb85814d8827e9715894dcf10fddccf73a5be8d0569e"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/worker-text-host-1/adapter-0.supervisor.stderr.log",
+      "raw_path": "hosts/worker-text-host-1/adapter-0.supervisor.stderr.log",
+      "path": "hosts/worker-text-host-1/adapter-0.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/worker-text-host-1/adapter-1.json",
+      "raw_path": "hosts/worker-text-host-1/adapter-1.json",
+      "path": "hosts/worker-text-host-1/adapter-1.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 962,
+      "raw_sha256": "43687e1136fa29d57b976a64fb6762700f092501c45f3e1736ff84348cbab6bd",
+      "stored_bytes": 962,
+      "stored_sha256": "43687e1136fa29d57b976a64fb6762700f092501c45f3e1736ff84348cbab6bd"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/worker-text-host-1/adapter-1.stderr.log",
+      "raw_path": "hosts/worker-text-host-1/adapter-1.stderr.log",
+      "path": "hosts/worker-text-host-1/adapter-1.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/worker-text-host-1/adapter-1.stdout.log",
+      "raw_path": "hosts/worker-text-host-1/adapter-1.stdout.log",
+      "path": "hosts/worker-text-host-1/adapter-1.stdout.log.gz",
+      "encoding": "gzip-mtime-0",
+      "uncompressed_bytes": 729716,
+      "raw_sha256": "656a8b201f5d261f6b78d73d741626c6bf245a527a063e4b92405c62240410e3",
+      "stored_bytes": 17845,
+      "stored_sha256": "fc26bbee72aa782b195bfe623c9e042427e32461f6d71bf82a8d344e3f240f05",
+      "supervisor_stdout_sha256": "656a8b201f5d261f6b78d73d741626c6bf245a527a063e4b92405c62240410e3"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/worker-text-host-1/adapter-1.supervisor.stderr.log",
+      "raw_path": "hosts/worker-text-host-1/adapter-1.supervisor.stderr.log",
+      "path": "hosts/worker-text-host-1/adapter-1.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/worker-text-host-1/adapter-2.json",
+      "raw_path": "hosts/worker-text-host-1/adapter-2.json",
+      "path": "hosts/worker-text-host-1/adapter-2.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 961,
+      "raw_sha256": "8e8bad2c4d73675f2e07cf859082ba092c4904fc40ae3774a39c40de152113dc",
+      "stored_bytes": 961,
+      "stored_sha256": "8e8bad2c4d73675f2e07cf859082ba092c4904fc40ae3774a39c40de152113dc"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/worker-text-host-1/adapter-2.stderr.log",
+      "raw_path": "hosts/worker-text-host-1/adapter-2.stderr.log",
+      "path": "hosts/worker-text-host-1/adapter-2.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/worker-text-host-1/adapter-2.stdout.log",
+      "raw_path": "hosts/worker-text-host-1/adapter-2.stdout.log",
+      "path": "hosts/worker-text-host-1/adapter-2.stdout.log.gz",
+      "encoding": "gzip-mtime-0",
+      "uncompressed_bytes": 729716,
+      "raw_sha256": "e0e8f7c5b7fa297fc34100d640502542ceb8166d4a29f32bc881929346bb2fcf",
+      "stored_bytes": 17845,
+      "stored_sha256": "bf465395772cf4c2ca3f33fc0ef11182d5ab883b19cf56f7baa59e0642f425d4",
+      "supervisor_stdout_sha256": "e0e8f7c5b7fa297fc34100d640502542ceb8166d4a29f32bc881929346bb2fcf"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/worker-text-host-1/adapter-2.supervisor.stderr.log",
+      "raw_path": "hosts/worker-text-host-1/adapter-2.supervisor.stderr.log",
+      "path": "hosts/worker-text-host-1/adapter-2.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/worker-text-host-1/enumeration.json",
+      "raw_path": "hosts/worker-text-host-1/enumeration.json",
+      "path": "hosts/worker-text-host-1/enumeration.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 740,
+      "raw_sha256": "95a874fa76616190d489039d86fff58a8b061a89782b2ddc21c11f7b6fa11fe1",
+      "stored_bytes": 740,
+      "stored_sha256": "95a874fa76616190d489039d86fff58a8b061a89782b2ddc21c11f7b6fa11fe1"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/worker-text-host-1/enumeration.stderr.log",
+      "raw_path": "hosts/worker-text-host-1/enumeration.stderr.log",
+      "path": "hosts/worker-text-host-1/enumeration.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/worker-text-host-1/enumeration.stdout.log",
+      "raw_path": "hosts/worker-text-host-1/enumeration.stdout.log",
+      "path": "hosts/worker-text-host-1/enumeration.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 465,
+      "raw_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "stored_bytes": 465,
+      "stored_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "supervisor_stdout_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/worker-text-host-1/enumeration.supervisor.stderr.log",
+      "raw_path": "hosts/worker-text-host-1/enumeration.supervisor.stderr.log",
+      "path": "hosts/worker-text-host-1/enumeration.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-1/worker-text-host-1/host-results.json",
+      "raw_path": "hosts/worker-text-host-1/host-results.json",
+      "path": "hosts/worker-text-host-1/host-results.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 42124,
+      "raw_sha256": "35e00d524f632737b64f11d12329ca5c395202809ad34fe9058b7496386c5088",
+      "stored_bytes": 42124,
+      "stored_sha256": "35e00d524f632737b64f11d12329ca5c395202809ad34fe9058b7496386c5088"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-preservation.json",
+      "raw_path": "reviews/eris-vulkan-core-preservation.json",
+      "path": "reviews/eris-vulkan-core-preservation.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 63173,
+      "raw_sha256": "4eb4d907ad0c4d189fa7348eb8f9d10abf568479f6bec518518d7b3966b44ddb",
+      "stored_bytes": 63173,
+      "stored_sha256": "4eb4d907ad0c4d189fa7348eb8f9d10abf568479f6bec518518d7b3966b44ddb"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-preservation-review.json",
+      "raw_path": "reviews/eris-vulkan-core-preservation-review.json",
+      "path": "reviews/eris-vulkan-core-preservation-review.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 11516,
+      "raw_sha256": "b4edf7231cd291474597885e2bc16b94cae0ebd9f32307ea280acbff5229f5ff",
+      "stored_bytes": 11516,
+      "stored_sha256": "b4edf7231cd291474597885e2bc16b94cae0ebd9f32307ea280acbff5229f5ff"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-planner-source-ready.json",
+      "raw_path": "reviews/eris-vulkan-core-planner-source-ready.json",
+      "path": "reviews/eris-vulkan-core-planner-source-ready.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 6899,
+      "raw_sha256": "b3d55111a4fca006c4f7fd39661c3be13cc3892b0e30f7e78b5286eaf0b9943c",
+      "stored_bytes": 6899,
+      "stored_sha256": "b3d55111a4fca006c4f7fd39661c3be13cc3892b0e30f7e78b5286eaf0b9943c"
+    },
+    {
+      "source": "/tmp/eris-raster-core-gpu-source-ready.json",
+      "raw_path": "reviews/eris-raster-core-gpu-source-ready.json",
+      "path": "reviews/eris-raster-core-gpu-source-ready.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 3913,
+      "raw_sha256": "b805595431efb740f5fb9d5ed123ce868ecc52e1266f14e0bc62afb4a66693bd",
+      "stored_bytes": 3913,
+      "stored_sha256": "b805595431efb740f5fb9d5ed123ce868ecc52e1266f14e0bc62afb4a66693bd"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-extraction-map.md",
+      "raw_path": "reviews/eris-vulkan-core-extraction-map.md",
+      "path": "reviews/eris-vulkan-core-extraction-map.md",
+      "encoding": "identity",
+      "uncompressed_bytes": 15696,
+      "raw_sha256": "00482b1ff0cb41d498d36d5e5923eecd544291e46bae9b9750dc72b1013172cd",
+      "stored_bytes": 15696,
+      "stored_sha256": "00482b1ff0cb41d498d36d5e5923eecd544291e46bae9b9750dc72b1013172cd"
+    },
+    {
+      "source": "/tmp/eris-vulkan-core-completed-run-review.json",
+      "raw_path": "reviews/eris-vulkan-core-completed-run-review.json",
+      "path": "reviews/eris-vulkan-core-completed-run-review.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 24854,
+      "raw_sha256": "d9cb06ac0135898e683ff4e566b030e9619981bc350819136a967cbdd888eced",
+      "stored_bytes": 24854,
+      "stored_sha256": "d9cb06ac0135898e683ff4e566b030e9619981bc350819136a967cbdd888eced"
+    }
+  ],
+  "hash_bound_omissions": [
+    {
+      "path": "/tmp/eris-vulkan-core-1/probe-metadata.json",
+      "bytes": 549759,
+      "sha256": "269d04700f658c5afe91f9f9d9fa907d27526d9cf9c0d4ae721df8e216853ff0",
+      "reason": "Full Cargo metadata graph; concise resolution-check.json and lock/input bindings are copied."
+    }
+  ],
+  "totals": {
+    "payload_artifacts": 113,
+    "identity_copies": 110,
+    "compressed_stdout_logs": 3,
+    "uncompressed_payload_bytes": 2841806,
+    "stored_payload_bytes": 706201,
+    "current_source_bindings_verified": 182
+  },
+  "compression": "Large stdout logs only: deterministic gzip with an empty filename and mtime=0. Decompression recovers raw_path exactly; raw_sha256 and uncompressed_bytes match retained supervisor identities.",
+  "selection": "Both Rust toolchains: planner default checks and final optional-GPU/probe checks, resolver receipts, source/binary identities, all logs, one glyph CPU run, all four three-adapter host runs, preservation/source-ready and completed-run reviews.",
+  "exclusions": [
+    "Executable binaries",
+    "Build/target/cache trees",
+    "Full Cargo metadata graph (hash-bound omission)",
+    "Root-owned primary host-core-extraction.json",
+    "Existing source/fixture/font/reference populations (bound by the copied source manifest and host records)"
+  ],
+  "attribution": "Copied records retain their original scope and phase. GPU compared bytes, CPU differential/reference bytes and whole-frame fallback bytes remain separate in host reports and the completed-run audit. This index reports byte identities and makes no new performance, security or compatibility claim."
+}
