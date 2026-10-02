@@ -1,0 +1,21 @@
+{
+  "command": [
+    "cargo",
+    "+1.88.0",
+    "test",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "Cargo.toml",
+    "--features",
+    "vulkan-presenter",
+    "--bin",
+    "eris-browser",
+    "--",
+    "--include-ignored"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 3.671,
+  "log": "presenter-bin-tests-1880.log",
+  "sha256": "3f7899fd4e8b60598a0ddf278dc7419d70711b63c7a07b27f202b3ddc6228ca5"
+}

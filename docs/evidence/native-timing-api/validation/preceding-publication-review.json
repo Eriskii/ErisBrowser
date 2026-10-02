@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "conclusion": "clear",
+  "index_sha256": "0a845b6b28b8c94043536ed582a59a1fe6bef0cd8ffcdd82f28efe135cb2a7e4",
+  "primary_sha256": "76c2fdf02ca1108af71456e2fa43f15ff800f1d692bd5c9869789928b2d07840",
+  "files": 89,
+  "payload_bytes": 810609,
+  "file_types": {
+    ".json": 39,
+    ".log": 32,
+    ".py": 16,
+    ".patch": 1,
+    ".md": 1
+  },
+  "explicit_primary_bindings": 14,
+  "compiled_paths_unchanged": 112,
+  "successful_rust_commands": 19,
+  "rust_test_counts": {
+    "bridge-tests-1880.log": 53,
+    "bridge-tests-1980.log": 53,
+    "core-default-1880.log": 84,
+    "core-default-1980.log": 84,
+    "core-gpu-1880.log": 95,
+    "core-gpu-1980.log": 95,
+    "probe-tests-1880.log": 14,
+    "probe-tests-1980.log": 14,
+    "root-native-full-1880.log": 1355,
+    "root-native-full-1980.log": 1355
+  },
+  "python_tests": 48,
+  "host_outcomes": [
+    {
+      "case": "wide-verified",
+      "work": 3459456,
+      "compared_bytes": 4505600
+    },
+    {
+      "case": "wide-normal",
+      "work": 3459328,
+      "compared_bytes": 0
+    }
+  ],
+  "local_links_resolved": 342,
+  "executable_candidates": [],
+  "secret_pattern_candidates": [],
+  "unrelated_desktop_metadata_candidates": [],
+  "docs": [
+    {
+      "path": "README.md",
+      "sha256": "649f18e81af54dc80c1be7309533d6115ccb2884c13d1c1f567dcb6d9327ee2f"
+    },
+    {
+      "path": "docs/ROADMAP.md",
+      "sha256": "6965d92685990a2893381dc7c71feba7120d7bee9a6a8d250e0764d846acb91a"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "sha256": "d607eaa7a9bd96678ed716dddf7ac5ba0726798a2a764d198126e2988de78f30"
+    },
+    {
+      "path": "docs/vulkan-native-window.md",
+      "sha256": "ebd125f00aa0551fefebb4c7457ce4fc4c44c5d637e5acdd9a1ce04f15a5c6cb"
+    },
+    {
+      "path": "crates/raster-core/README.md",
+      "sha256": "99bd9cee9dc817b776f489521a5ca02196dbd43ec685bfec1dc374ef3d717551"
+    }
+  ],
+  "execution": "read-only data audit; no builds/tests/desktop/GPU reruns"
+}

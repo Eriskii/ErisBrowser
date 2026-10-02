@@ -1431,10 +1431,7 @@ impl Browser {
             return Ok(());
         }
         #[cfg(all(target_os = "linux", feature = "vulkan-raster"))]
-        if self.presenter_config.benchmark_frames == 0
-            && !self.presenter_config.benchmark_check
-            && self.presenter.as_ref().is_some_and(Presenter::wants_native)
-        {
+        if self.presenter.as_ref().is_some_and(Presenter::wants_native) {
             let reference_requested = self
                 .presenter
                 .as_ref()

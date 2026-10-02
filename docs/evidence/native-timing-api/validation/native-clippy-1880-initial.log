@@ -1,0 +1,22 @@
+    Checking eris-browser v0.1.0 (/home/eriskii/Documents/Programming/Projects/ErisBrowser)
+error: this boolean expression can be simplified
+   --> src/presenter/vulkan/control.rs:291:12
+    |
+291 |         if (frames != 0 && !(2..=128).contains(&frames)) || (frames != 0 && check) {
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#nonminimal_bool
+    = note: `-D clippy::nonminimal-bool` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::nonminimal_bool)]`
+help: try
+    |
+291 -         if (frames != 0 && !(2..=128).contains(&frames)) || (frames != 0 && check) {
+291 +         if !(frames == 0 || (2..=128).contains(&frames) && !check) {
+    |
+291 -         if (frames != 0 && !(2..=128).contains(&frames)) || (frames != 0 && check) {
+291 +         if (check || !(2..=128).contains(&frames)) && frames != 0 {
+    |
+
+error: could not compile `eris-browser` (bin "eris-browser") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `eris-browser` (bin "eris-browser" test) due to 1 previous error

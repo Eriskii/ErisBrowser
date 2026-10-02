@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "status": "source ready; formatted only, no build or execution",
+  "source": {
+    "path": "src/browser/native_benchmark_report.rs",
+    "sha256": "fdc6d0df9bfe54e17f929fe14e46c231a01584ea8a33427790e97710585343af",
+    "bytes": 20037
+  },
+  "private_test_groups": 7,
+  "api": "write(output: &mut impl std::io::Write, context: Context, timing: Option<&TimingReport>) -> Result<(), String>",
+  "schema_fields": [
+    "schema",
+    "kind",
+    "mode",
+    "route",
+    "requested_frames",
+    "completed_frames",
+    "accepted_frames",
+    "scene_hex",
+    "width",
+    "height",
+    "generation",
+    "viewport_revision",
+    "scale_factor",
+    "source_load_ms",
+    "edit_sequence",
+    "diagnostics",
+    "checked",
+    "failure",
+    "owner_failure",
+    "owner_init_ns",
+    "samples"
+  ],
+  "sample_fields": [
+    "id",
+    "generation",
+    "viewport_revision",
+    "serial",
+    "width",
+    "height",
+    "route",
+    "outcome",
+    "submission",
+    "configured",
+    "ui_prepare_ns",
+    "queue_ns",
+    "acquire_ns",
+    "encode_upload_ns",
+    "submit_ns",
+    "completion_wait_ns",
+    "cleanup_ns",
+    "present_call_ns",
+    "owner_total_ns",
+    "prepare_to_present_ns"
+  ],
+  "bounds": {
+    "scene_bytes": 65536,
+    "samples": 128,
+    "each_failure_json_bytes_including_quotes_and_escaping": 4096,
+    "whole_output_bytes": 262144,
+    "hex_stack_buffer_bytes": 512
+  },
+  "semantics": [
+    "JSON schema1 kind native-benchmark; one object and newline",
+    "full lowercase scene hex; finite source_load_ms else null",
+    "all optional phases and owner init preserve null",
+    "Context failure and TimingReport failure remain separate",
+    "checked true may coexist with later shutdown failure",
+    "check has no timing records and accepted_frames0; measure never checked",
+    "empty scene allowed for failed pre-arm runs",
+    "same immutable inputs pass a no-storage counting serializer before any output",
+    "no whole JSON allocation/sample clone/truncation/new dependencies"
+  ],
+  "caller_preconditions": [
+    "owner positively released before serialization",
+    "checked true only after actual verified idle-retired frame"
+  ],
+  "validation": {
+    "formatter": "Rust1.88 direct rustfmt --edition2024 passed",
+    "compiled": false,
+    "tests_executed": false
+  },
+  "identity_capacity_correction": {
+    "source_sha256": "d1b830f842b9b51c11bcc466fe45498cc6d7cf5a71797586730dc0f962d76e4b",
+    "receipt_sha256": "6ed9cf4f611adb6e418e087d7d0a7e41e214caa93b42f5a18e6c8789b536a99d"
+  }
+}

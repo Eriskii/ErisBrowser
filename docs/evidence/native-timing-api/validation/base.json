@@ -1,0 +1,5 @@
+{
+  "parent_commit": "f945b61958b61a2f2702d699112e1158bbb46b41",
+  "goal": "Bounded completion-paced host timing for equal CPU-upload and native-shader scenes; no verification inside measurements",
+  "initial_scope": "Same release binary and controlled loaded scene, initialization/first/steady-state separate; no Chromium or isolated GPU timing claim"
+}

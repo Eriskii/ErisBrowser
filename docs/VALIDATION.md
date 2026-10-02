@@ -1,5 +1,27 @@
 # Validation record
 
+## Native timing API and exact-scene checks
+
+The opt-in `--benchmark-native` and `--benchmark-native-check` modes add bounded
+host-clock records and a separate one-frame correctness process. They require
+Linux and the native Vulkan build. Scene identity includes full image payloads
+and ordered paint inputs; a fixed status avoids load-time text differences.
+Only positive presentation and post-retirement completion advance sampling.
+Owner release is required before JSON output.
+
+Both Rust 1.88 and 1.98 pass **1,387 native-feature tests**, including **95
+browser/presenter groups**, with **32 new private groups**. Strict Clippy passes
+for default, Vulkan-presenter and native-raster configurations; default and
+presenter binary suites pass **41** and **62** groups. The frozen release passes
+**15 CLI rejection cases** before window startup. Two initial lint failures and
+an outer-sandbox socket-preflight failure remain retained; corrected checks
+and unchanged confinement tests pass.
+
+This is source/unit/CLI evidence. Actual paired desktop measurements are still
+pending, and no GPU timing, compositor latency or Chromium result is claimed.
+See the [measurement contract](native-render-benchmark.md) and
+[hash-bound evidence](evidence/vulkan-native-timing-api.json).
+
 ## Native wide rounded masks
 
 Native rounded rectangles can now use two disjoint horizontal masks while

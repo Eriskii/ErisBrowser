@@ -555,3 +555,8 @@ lifecycle pass those gates. Milestone B is complete only for its explicitly
 tested GPU-painted subset. Neither milestone establishes complete browser
 compatibility, a complete GPU compositor, a new sandbox guarantee or the
 requested Chromium performance threshold.
+
+The opt-in [native frame benchmark](native-render-benchmark.md) now provides
+completion-paced host intervals with a bounded exact-scene identity and a
+separate correctness mode. Its source/unit/CLI checks pass; controlled paired
+desktop release measurements remain pending.

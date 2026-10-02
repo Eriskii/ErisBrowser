@@ -1,5 +1,12 @@
 # Development docket
 
+The [native frame benchmark](native-render-benchmark.md) now has an opt-in
+completion-paced API, bounded exact scene identity and a separate acquired-pixel
+check mode. Both Rust toolchains pass 1,387 native-feature tests. Controlled
+paired release measurements are the next Vulkan step; no performance threshold
+is claimed. [Retained API validation](evidence/vulkan-native-timing-api.json)
+binds the source and compiled CLI checks.
+
 [ArrayBuffer](../tests/conformance/array-buffer.md) adds nonshared fixed and
 resizable backing storage, resizing, same-realm species slicing, transfers and
 detachment. Its complete pinned profile records 262 passes, 50 failures and 130

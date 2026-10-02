@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "conclusion": "clear after two source-review corrections",
+  "scope": "Read-only browser/CLI integration and presenter trace/owner review; no build, test, renderer, desktop or GPU execution by reviewer",
+  "files": [
+    {
+      "path": "src/browser/native_benchmark.rs",
+      "sha256": "e7f90eee29ef8efe731a2ed382cbb44fb269f5b38b03cbee0fc654688efdc7a7",
+      "bytes": 17878
+    },
+    {
+      "path": "src/browser/native_benchmark_identity.rs",
+      "sha256": "d1b830f842b9b51c11bcc466fe45498cc6d7cf5a71797586730dc0f962d76e4b",
+      "bytes": 25316
+    },
+    {
+      "path": "src/browser/native_benchmark_report.rs",
+      "sha256": "fdc6d0df9bfe54e17f929fe14e46c231a01584ea8a33427790e97710585343af",
+      "bytes": 20037
+    },
+    {
+      "path": "src/browser/native_scene.rs",
+      "sha256": "581a420a1e43ef4cdcc76ec27aba57b6605b5b137a099d32acae365ac65838a1",
+      "bytes": 16656
+    },
+    {
+      "path": "src/browser.rs",
+      "sha256": "bfacbc839c089b274c9bb6978c7cb689afd912ae9507f0597360d8bab8f0c55f",
+      "bytes": 115061
+    },
+    {
+      "path": "src/main.rs",
+      "sha256": "341527644d626a7c892d6e636f856f59f1340344b67928900b2f0eb6b50acb27",
+      "bytes": 14863
+    },
+    {
+      "path": "src/presenter.rs",
+      "sha256": "f544fbda01ff73b8f825f581aad2ea7a9f41e88a778fcd8eff1a04e597ac2dc7",
+      "bytes": 22795
+    },
+    {
+      "path": "src/presenter/timing.rs",
+      "sha256": "bdd7c21be84f8fd6e2d27c30c58ae87900db17c045b4a7b0514aad29c4134969",
+      "bytes": 10787
+    },
+    {
+      "path": "src/presenter/vulkan.rs",
+      "sha256": "50d90b8664b136bf1713e073e4155ce01182260eba43b91c9e2edb3b5c536ddb",
+      "bytes": 31949
+    },
+    {
+      "path": "src/presenter/vulkan/control.rs",
+      "sha256": "cefca28896617574f1a66f5d019849139fc22c03d9f7f39de830b3f1d3da8268",
+      "bytes": 57237
+    },
+    {
+      "path": "src/presenter/vulkan/native.rs",
+      "sha256": "5b7d0127b89f47037d2b09c13931150713c7043640d99f3906b1f736c296a327",
+      "bytes": 16214
+    },
+    {
+      "path": "src/presenter/vulkan/transfer.rs",
+      "sha256": "b461e82327664d32c52d0205566b20fc6a9076ca96e0edbd01465d7040b74c61",
+      "bytes": 7858
+    }
+  ],
+  "presenter_source_ready": {
+    "path": "/tmp/eris-native-timing-presenter-source-ready-final.json",
+    "sha256": "e125392bcbf3c76b488503ff97157c9523e57fb21c9fbfebbf79458fc9766cfb",
+    "bytes": 6615
+  },
+  "presenter_manifest_matches": true,
+  "findings": [
+    {
+      "id": "positive-release-before-report",
+      "initial_issue": "Check skipped report extraction, and measure caught extraction refusal then still serialized; stalled-owner shutdown could emit JSON before positive release.",
+      "status": "resolved",
+      "final_locations": [
+        "src/browser/native_benchmark.rs:298",
+        "src/presenter.rs:363",
+        "src/presenter/vulkan.rs:167"
+      ],
+      "resolution": "Both report modes first require benchmark_owner_released; only Phase::Released qualifies. Unresolved owner returns failure without stdout JSON. Existing failure remains primary.",
+      "reviewed_test_source": [
+        "src/presenter/vulkan.rs:822",
+        "src/presenter/vulkan.rs:844"
+      ],
+      "tests_executed_by_reviewer": false
+    },
+    {
+      "id": "check-acquisition-skip-terminal",
+      "initial_issue": "Check-only acquire returning None retired with verified=0, cleared the deadline and left the browser pending without completion/error/wake.",
+      "status": "resolved",
+      "final_locations": [
+        "src/presenter/vulkan/control.rs:759",
+        "src/presenter/vulkan/control.rs:770",
+        "src/presenter/vulkan/control.rs:788"
+      ],
+      "resolution": "After safe packet retirement and accounting reset, an armed selected check with zero verification fails, receives a release deadline and wakes the UI once. No retry or false verified/completion record.",
+      "reviewed_test_source": [
+        "src/presenter/vulkan/control.rs:1166"
+      ],
+      "tests_executed_by_reviewer": false
+    }
+  ],
+  "other_reviewed_conclusions": [
+    "Exact scene bytes, target epochs, scale factor, edit acknowledgement and queued transport are checked before each timed preparation and again at completion; UI/page changes after arming fail.",
+    "Benchmark-only fixed status applies to both routes; unused real load time remains metadata.",
+    "Check verification remains disarmed through startup; selected serial/route and safe idle are required for checked proof.",
+    "Timed samples require one outstanding exact ID/stamp; nonpresented/failed work cannot advance the successful sample count.",
+    "Identity/serialization and scene diagnostics remain outside measured preparation; default/check-only paths do not evaluate optional timing clocks.",
+    "Timed pending data cannot be replaced by an untimed/new timed packet; CPU fallback cannot count as the native route.",
+    "Native partial encoders remain discarded; MayHaveWrites still flushes exactly once, retirement and reverse error scopes run before outcome propagation; explicit destruction only follows completion.",
+    "Packet drop precedes idle and completion publication. Late deadline/scope failures remain terminal and retain failed/incomplete evidence.",
+    "Timing report extraction requires actual Released state and moves samples without cloning; check result can retain proven checked=true alongside a later overall failure.",
+    "CLI rejects native measurement with verification/check/headless/other benchmark modes and screenshots before startup; ordinary configuration remains unchanged."
+  ],
+  "limitations": [
+    "Static review only; no execution result is asserted.",
+    "CPU cleanup_ns is absent, not invented zero; durations are host wall-clock brackets, not GPU timestamps or display latency.",
+    "Canonical paint inputs are not an independent pixel oracle; separate correctness runs remain required."
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "status": "source-ready; no compile or test execution",
+  "source": {
+    "path": "src/browser/native_benchmark_identity.rs",
+    "sha256": "d1b830f842b9b51c11bcc466fe45498cc6d7cf5a71797586730dc0f962d76e4b",
+    "bytes": 25316
+  },
+  "parent": "f945b61958b61a2f2702d699112e1158bbb46b41",
+  "api": [
+    "pub(super) const MAX_IDENTITY_BYTES: usize = 64 * 1024",
+    "pub(super) fn capture(browser: &Browser, size: PhysicalSize<u32>) -> Result<Vec<u8>, String>"
+  ],
+  "registration": "root owns module hook; native-raster configuration required for Profile::Native",
+  "format": "EBNI version 1: five-byte magic EBNI\\x01; little-endian integer and raw finite float bits; boolean and command tags u8; counted UTF-8/byte strings u32 length",
+  "ordered_inputs": [
+    "physical width/height",
+    "scroll/zoom",
+    "snapshot title/address/address focus",
+    "input value/effective normalized caret and anchor",
+    "focused node and first matching hit rectangle/fixed flag",
+    "content height",
+    "explicit status; if empty, document-node count/diagnostic count/load_ms bits",
+    "all ordered command variants and fields",
+    "lexicographically sorted image key, first sorted Arc-alias ordinal, width/height/full RGBA"
+  ],
+  "admission": [
+    "loaded current snapshot",
+    "matching processed/current edit sequence",
+    "idle task state",
+    "no closing/startup error/worker error",
+    "Native physical dimensions",
+    "finite scalar/geometry and valid image length",
+    "balanced typed scopes <=128",
+    "commands/hits traversals <=65536 entries",
+    "image map <=256 entries and capacity <=512 before traversal",
+    "exact total serialized bytes <=65536"
+  ],
+  "allocations": [
+    "one fallible 65536-byte output reserve before writes",
+    "bounded fallible borrowed image metadata reserve, max256 entries",
+    "in-place unstable sort; no coverage/image/snapshot clones"
+  ],
+  "exclusions": [
+    "generation and serial values after freshness checks",
+    "PIDs/timing-of-capture/GPU handles/font cache state",
+    "load_ms and default-status counts when explicit status is nonempty",
+    "unconsumed document/diagnostic text/URL metadata and unrelated hit geometry",
+    "source and bundled-font identity belongs to host manifest"
+  ],
+  "private_test_groups": 9,
+  "validation": {
+    "rustfmt": "Rust 1.88 direct rustfmt --edition 2024 passed",
+    "builds": false,
+    "tests_executed": false,
+    "engine_gpu_runs": false
+  },
+  "repo_ownership": "Only src/browser/native_benchmark_identity.rs written by this task",
+  "prefreeze_correction": {
+    "reason": "Root review: reject actual output Vec capacity above 64 KiB after fallible reserve",
+    "initial_source": "/tmp/eris-native-benchmark-identity-before-capacity-check.rs",
+    "initial_receipt": "/tmp/eris-native-benchmark-identity-source-ready-initial.json",
+    "no_execution": true
+  }
+}

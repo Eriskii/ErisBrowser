@@ -1,0 +1,195 @@
+{
+  "schema": 1,
+  "binary": "/tmp/eris-native-timing-1/eris-browser-native-timing-2",
+  "binary_sha256": "038ffe37d58b0e27189ee3681ec6a84ab183beba9433f4a22cca766e47af08de",
+  "cases": [
+    {
+      "name": "one",
+      "args": [
+        "--benchmark-native",
+        "1"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "eris-browser: native benchmark frames must be between 2 and 128\n",
+      "passed": true
+    },
+    {
+      "name": "too-many",
+      "args": [
+        "--benchmark-native",
+        "129"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "eris-browser: native benchmark frames must be between 2 and 128\n",
+      "passed": true
+    },
+    {
+      "name": "negative",
+      "args": [
+        "--benchmark-native",
+        "-1"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "eris-browser: invalid native benchmark frame count\n",
+      "passed": true
+    },
+    {
+      "name": "missing",
+      "args": [
+        "--benchmark-native"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "eris-browser: --benchmark-native needs a frame count\n",
+      "passed": true
+    },
+    {
+      "name": "software",
+      "args": [
+        "--benchmark-native",
+        "2"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "eris-browser: native benchmark requires Linux, a desktop Vulkan presenter and --features vulkan-raster\n",
+      "passed": true
+    },
+    {
+      "name": "headless",
+      "args": [
+        "--benchmark-native",
+        "2",
+        "--render",
+        "--presenter=vulkan"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "eris-browser: native benchmark requires Linux, a desktop Vulkan presenter and --features vulkan-raster\n",
+      "passed": true
+    },
+    {
+      "name": "other-benchmark",
+      "args": [
+        "--benchmark-native",
+        "2",
+        "--benchmark",
+        "2",
+        "--presenter=vulkan"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "eris-browser: native benchmark requires Linux, a desktop Vulkan presenter and --features vulkan-raster\n",
+      "passed": true
+    },
+    {
+      "name": "worker-benchmark",
+      "args": [
+        "--benchmark-native",
+        "2",
+        "--benchmark-worker",
+        "2",
+        "--presenter=vulkan"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "eris-browser: native benchmark requires Linux, a desktop Vulkan presenter and --features vulkan-raster\n",
+      "passed": true
+    },
+    {
+      "name": "verification",
+      "args": [
+        "--benchmark-native",
+        "2",
+        "--vulkan-verify-frames",
+        "1",
+        "--presenter=vulkan"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "eris-browser: native timing cannot be combined with verification/check mode\n",
+      "passed": true
+    },
+    {
+      "name": "check-and-measure",
+      "args": [
+        "--benchmark-native",
+        "2",
+        "--benchmark-native-check",
+        "--presenter=vulkan"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "eris-browser: native timing cannot be combined with verification/check mode\n",
+      "passed": true
+    },
+    {
+      "name": "check-two-first",
+      "args": [
+        "--vulkan-verify-frames",
+        "2",
+        "--benchmark-native-check",
+        "--presenter=vulkan"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "eris-browser: native benchmark check requires exactly one verification frame\n",
+      "passed": true
+    },
+    {
+      "name": "check-two-last",
+      "args": [
+        "--benchmark-native-check",
+        "--vulkan-verify-frames",
+        "2",
+        "--presenter=vulkan"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "eris-browser: native benchmark check requires exactly one verification frame\n",
+      "passed": true
+    },
+    {
+      "name": "check-headless",
+      "args": [
+        "--benchmark-native-check",
+        "--render",
+        "--presenter=vulkan"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "eris-browser: native benchmark requires Linux, a desktop Vulkan presenter and --features vulkan-raster\n",
+      "passed": true
+    },
+    {
+      "name": "screenshot",
+      "args": [
+        "--benchmark-native",
+        "2",
+        "--window-screenshot",
+        "/tmp/eris-native-timing-forbidden.png",
+        "--presenter=vulkan"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "eris-browser: --benchmark-native cannot be combined with --window-screenshot\n",
+      "passed": true
+    },
+    {
+      "name": "check-screenshot",
+      "args": [
+        "--benchmark-native-check",
+        "--window-screenshot",
+        "/tmp/eris-native-timing-forbidden.png",
+        "--presenter=vulkan"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "eris-browser: --benchmark-native cannot be combined with --window-screenshot\n",
+      "passed": true
+    }
+  ],
+  "success": true
+}

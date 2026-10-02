@@ -1,0 +1,19 @@
+{
+  "command": [
+    "cargo",
+    "+1.98.0",
+    "test",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "Cargo.toml",
+    "--features",
+    "vulkan-raster",
+    "--",
+    "--include-ignored"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 11.52,
+  "log": "native-tests-1980-final.log",
+  "sha256": "a98d2deeb55e957b840e3299ed4f27bdcfe8c9b617279b1cf7729dfe20d1d0ea"
+}

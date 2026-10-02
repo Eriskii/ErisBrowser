@@ -1,0 +1,833 @@
+{
+  "schema": 1,
+  "parent_commit": "f945b61958b61a2f2702d699112e1158bbb46b41",
+  "scope": "Opt-in completion-paced native host timing API and exact-scene check CLI; source/unit/CLI validation only. No new actual GPU measurement claimed.",
+  "release": {
+    "binary": "/tmp/eris-native-timing-1/eris-browser-native-timing-2",
+    "bytes": 16138144,
+    "sha256": "038ffe37d58b0e27189ee3681ec6a84ab183beba9433f4a22cca766e47af08de",
+    "profile": "release",
+    "toolchain": "1.98.0",
+    "features": [
+      "vulkan-raster"
+    ]
+  },
+  "compile_inputs": "native-timing-api/validation/release-2.json",
+  "native_tests": {
+    "rust_1_88": 1387,
+    "rust_1_98": 1387,
+    "binary_private_groups": 95,
+    "new_private_groups": 32
+  },
+  "other_variants": {
+    "default_binary_groups": 41,
+    "vulkan_presenter_binary_groups": 62,
+    "strict_clippy": [
+      "default Rust1.88",
+      "vulkan-presenter Rust1.88",
+      "vulkan-raster Rust1.88",
+      "vulkan-raster Rust1.98"
+    ]
+  },
+  "cli_guards": 15,
+  "initial_failures": [
+    {
+      "log": "native-clippy-1880-initial.log",
+      "reason": "nonminimal boolean Clippy lint; equivalent factored expression accepted"
+    },
+    {
+      "log": "native-tests-1880-final.log",
+      "reason": "outer sandbox denied socket preflight in two existing confinement tests; unchanged tests pass outside outer sandbox"
+    },
+    {
+      "log": "native-clippy-1980.log",
+      "reason": "new compiler prefers as_chunks in test-only hex assertion; corrected and rerun on both toolchains"
+    }
+  ],
+  "resolved_review_findings": [
+    "Reports require positive owner release, including failure reports",
+    "An armed correctness packet retired without verification fails and wakes instead of waiting indefinitely"
+  ],
+  "source_deltas": [
+    "Post-review report test uses as_chunks to satisfy Rust1.98 Clippy; serialization implementation unchanged",
+    "Benchmark startup skips ordinary native preparation and uses its existing CPU loading frame until exact-scene admission; final candidates and release-2 bind this change"
+  ],
+  "limits": [
+    "2..128 samples",
+    "64KiB exact canonical scene",
+    "256KiB identity and metadata reserve plus actual sample capacity in unchanged128MiB presenter ledger",
+    "256KiB streamed JSON output",
+    "No measured verification/readback; separate one-frame correctness mode",
+    "No Chromium comparison, broad compatibility, production security or GPU/display latency conclusion"
+  ],
+  "checks": [
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--bin",
+        "eris-browser",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 2.907,
+      "log": "default-bin-tests-1880.log",
+      "sha256": "777a9e67fac32108176be4a9d102f1c02df8dbf79bf5d3c316dc7a40a04788df",
+      "test_groups": [
+        [
+          41,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.64,
+      "log": "default-clippy-1880.log",
+      "sha256": "f96d84185314fd282e98e2541a68eb15c7cc20c2f97010236db6babd331e85bd",
+      "test_groups": []
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--bin",
+        "eris-browser",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 3.449,
+      "log": "native-bin-tests-1880-report-fix.log",
+      "sha256": "315dcee19329115c2756e2d9f2153253baba302b3e4909e3fa9eac1a620b8742",
+      "test_groups": [
+        [
+          95,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--bin",
+        "eris-browser",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 3.874,
+      "log": "native-bin-tests-1880-startup.log",
+      "sha256": "c8f16f2757ca9e43ad7970b046dbefabeab8e1f8262ce1730f34f7bf390bee0c",
+      "test_groups": [
+        [
+          95,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--bin",
+        "eris-browser",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 4.918,
+      "log": "native-bin-tests-1880.log",
+      "sha256": "601870af3b1cc43da844c8ad07dc7f12686233082ba664258d61822a1ca2ee59",
+      "test_groups": [
+        [
+          94,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 1.127,
+      "log": "native-clippy-1880-final.log",
+      "sha256": "8221a4f9ced15a496cce42e2e00a5de9ef3f06ec32f9c5c523f68460d7580783",
+      "test_groups": []
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 101,
+      "elapsed_seconds": 1.496,
+      "log": "native-clippy-1880-initial.log",
+      "sha256": "1dcac60635d3dfa9b3dd838cfbfc4adc3327e2b0d8298dfde92e1eb310899492",
+      "test_groups": []
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.81,
+      "log": "native-clippy-1880-release-fix.log",
+      "sha256": "b4784e510cd5851bf2889ae48a728d7fb924f0647aea92c4e426c3bac7dea2ff",
+      "test_groups": []
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.689,
+      "log": "native-clippy-1880-report-fix.log",
+      "sha256": "df47ffeed3ec3bc1a0ac99f3cf5d925f5acf875e7248018d1247389473691c86",
+      "test_groups": []
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.798,
+      "log": "native-clippy-1880-startup.log",
+      "sha256": "a1b4a10907cbfb302c4c7fcfe6a00ed6e420cde4059a168450097bded864c456",
+      "test_groups": []
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.473,
+      "log": "native-clippy-1980-candidate.log",
+      "sha256": "2cf7a36f9749a060c30d2fe959db0e976d6235a0080c947f576d179e58b9ef03",
+      "test_groups": []
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.783,
+      "log": "native-clippy-1980-report-fix.log",
+      "sha256": "e146d70e175542fd97975d3db98843aa3e4101ad7b207e412c40b6b91bacdefc",
+      "test_groups": []
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 101,
+      "elapsed_seconds": 0.977,
+      "log": "native-clippy-1980.log",
+      "sha256": "11d82b401cae47d9e2f426415f3ec8db6ac98cca329be8493249ddf294f1a5bd",
+      "test_groups": []
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--release",
+        "--bin",
+        "eris-browser"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 21.484,
+      "log": "native-release-1980-startup.log",
+      "sha256": "42c59fa0e9e2824508edd18db405f49f290bd2ca3a51d9ec852d8ba38877a001",
+      "test_groups": []
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--release",
+        "--bin",
+        "eris-browser"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 72.802,
+      "log": "native-release-1980.log",
+      "sha256": "4ecd66e480ff97ca6f81bbfe426b94b210a79d6fd0361bca1dd30fa57282402f",
+      "test_groups": []
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 14.729,
+      "log": "native-tests-1880-candidate.log",
+      "sha256": "6c33d046697dcb7d2c6ba5bcf2569bfd5c4d1c14231332d792e94914789384d6",
+      "test_groups": [
+        [
+          1130,
+          0,
+          0
+        ],
+        [
+          95,
+          0,
+          0
+        ],
+        [
+          4,
+          0,
+          0
+        ],
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          5,
+          0,
+          0
+        ],
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          17,
+          0,
+          0
+        ],
+        [
+          59,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          9,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0
+        ],
+        [
+          51,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 101,
+      "elapsed_seconds": 14.366,
+      "log": "native-tests-1880-final.log",
+      "sha256": "c357b89fdb9f32434b9079562b6b65032586738762d9b193741ece118926b11b",
+      "test_groups": []
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 10.119,
+      "log": "native-tests-1880-host.log",
+      "sha256": "714885740b9d62d66f1e5e480d3c778746ef7aa3ac5a44f81807774104d62a1e",
+      "test_groups": [
+        [
+          1130,
+          0,
+          0
+        ],
+        [
+          95,
+          0,
+          0
+        ],
+        [
+          4,
+          0,
+          0
+        ],
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          5,
+          0,
+          0
+        ],
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          17,
+          0,
+          0
+        ],
+        [
+          59,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          9,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0
+        ],
+        [
+          51,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 9.698,
+      "log": "native-tests-1980-candidate.log",
+      "sha256": "b04135933f0ee85b100b9a14cc191fabf12dd58014c93e0b72526eb852f116b2",
+      "test_groups": [
+        [
+          1130,
+          0,
+          0
+        ],
+        [
+          95,
+          0,
+          0
+        ],
+        [
+          4,
+          0,
+          0
+        ],
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          5,
+          0,
+          0
+        ],
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          17,
+          0,
+          0
+        ],
+        [
+          59,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          9,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0
+        ],
+        [
+          51,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 11.52,
+      "log": "native-tests-1980-final.log",
+      "sha256": "a98d2deeb55e957b840e3299ed4f27bdcfe8c9b617279b1cf7729dfe20d1d0ea",
+      "test_groups": [
+        [
+          1130,
+          0,
+          0
+        ],
+        [
+          95,
+          0,
+          0
+        ],
+        [
+          4,
+          0,
+          0
+        ],
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          5,
+          0,
+          0
+        ],
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          17,
+          0,
+          0
+        ],
+        [
+          59,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          9,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0
+        ],
+        [
+          51,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-presenter",
+        "--bin",
+        "eris-browser",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 3.671,
+      "log": "presenter-bin-tests-1880.log",
+      "sha256": "3f7899fd4e8b60598a0ddf278dc7419d70711b63c7a07b27f202b3ddc6228ca5",
+      "test_groups": [
+        [
+          62,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-presenter",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.873,
+      "log": "presenter-clippy-1880.log",
+      "sha256": "a4b4d0c163cabd0a8022ac361eed360ad4d21afadca1ce816eeab635be1b5e15",
+      "test_groups": []
+    }
+  ],
+  "package": {
+    "index": "native-timing-api/index.json",
+    "sha256": "5d3cfea1178f655b49bfa97d2bc59da012be4240e923910db5d56944ea69d03d",
+    "files": 81,
+    "payload_bytes": 1482538
+  }
+}

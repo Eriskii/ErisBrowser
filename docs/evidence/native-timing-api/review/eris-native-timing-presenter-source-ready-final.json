@@ -1,0 +1,152 @@
+{
+  "schema": 1,
+  "status": "source held; root owns execution",
+  "base_commit": "f945b61958b61a2f2702d699112e1158bbb46b41",
+  "files": [
+    {
+      "path": "src/presenter.rs",
+      "bytes": 22795,
+      "sha256": "f544fbda01ff73b8f825f581aad2ea7a9f41e88a778fcd8eff1a04e597ac2dc7",
+      "base_sha256": "a763c3035ebe69b846d83d90342b3b8527c9e77be6000f9ee5177308a98cf98d",
+      "added_tests": [
+        "benchmark_configuration_bounds_and_separate_check_quota_are_explicit"
+      ],
+      "retained_test_names": true
+    },
+    {
+      "path": "src/presenter/timing.rs",
+      "bytes": 10787,
+      "sha256": "bdd7c21be84f8fd6e2d27c30c58ae87900db17c045b4a7b0514aad29c4134969",
+      "base_sha256": null,
+      "added_tests": [
+        "disabled_trace_never_reads_the_optional_clock",
+        "synthetic_intervals_keep_route_queue_and_unreached_phases_distinct",
+        "late_failure_and_clock_inversion_cannot_be_success"
+      ],
+      "retained_test_names": true
+    },
+    {
+      "path": "src/presenter/vulkan.rs",
+      "bytes": 31949,
+      "sha256": "50d90b8664b136bf1713e073e4155ce01182260eba43b91c9e2edb3b5c536ddb",
+      "base_sha256": "0a83e62ab869e3dfd5969cd77f429f52ee876ef14652c6c11215859e68808f47",
+      "added_tests": [],
+      "retained_test_names": true
+    },
+    {
+      "path": "src/presenter/vulkan/control.rs",
+      "bytes": 57237,
+      "sha256": "cefca28896617574f1a66f5d019849139fc22c03d9f7f39de830b3f1d3da8268",
+      "base_sha256": "1c42edcd785eb205ca670c52342980ece91167417a1001a73d6944de885dbc09",
+      "added_tests": [
+        "timing_storage_charges_actual_capacity_and_preserves_application_ceiling",
+        "readiness_interest_wakes_once_after_startup_packet_retires_in_both_modes",
+        "timed_completion_requires_idle_exact_identity_and_positive_owner_release",
+        "timed_overlap_or_wrong_id_is_terminal_without_replacing_a_measured_sample",
+        "abort_flush_and_device_failure_cannot_publish_presented_completion",
+        "benchmark_check_arms_once_and_only_completes_after_checked_packet_idle",
+        "armed_check_acquisition_skip_fails_after_retirement_and_wakes",
+        "timed_or_armed_native_mode_refuses_cpu_fallback_as_the_measured_route"
+      ],
+      "retained_test_names": true
+    },
+    {
+      "path": "src/presenter/vulkan/native.rs",
+      "bytes": 16214,
+      "sha256": "5b7d0127b89f47037d2b09c13931150713c7043640d99f3906b1f736c296a327",
+      "base_sha256": "2082f1af30c18b5bd1cf946ad1547344f405add5cb62c4f1a73e723855ab3b19",
+      "added_tests": [],
+      "retained_test_names": true
+    }
+  ],
+  "added_synthetic_groups": 12,
+  "tests": [
+    {
+      "path": "src/presenter.rs",
+      "name": "benchmark_configuration_bounds_and_separate_check_quota_are_explicit"
+    },
+    {
+      "path": "src/presenter/timing.rs",
+      "name": "disabled_trace_never_reads_the_optional_clock"
+    },
+    {
+      "path": "src/presenter/timing.rs",
+      "name": "synthetic_intervals_keep_route_queue_and_unreached_phases_distinct"
+    },
+    {
+      "path": "src/presenter/timing.rs",
+      "name": "late_failure_and_clock_inversion_cannot_be_success"
+    },
+    {
+      "path": "src/presenter/vulkan/control.rs",
+      "name": "timing_storage_charges_actual_capacity_and_preserves_application_ceiling"
+    },
+    {
+      "path": "src/presenter/vulkan/control.rs",
+      "name": "readiness_interest_wakes_once_after_startup_packet_retires_in_both_modes"
+    },
+    {
+      "path": "src/presenter/vulkan/control.rs",
+      "name": "timed_completion_requires_idle_exact_identity_and_positive_owner_release"
+    },
+    {
+      "path": "src/presenter/vulkan/control.rs",
+      "name": "timed_overlap_or_wrong_id_is_terminal_without_replacing_a_measured_sample"
+    },
+    {
+      "path": "src/presenter/vulkan/control.rs",
+      "name": "abort_flush_and_device_failure_cannot_publish_presented_completion"
+    },
+    {
+      "path": "src/presenter/vulkan/control.rs",
+      "name": "benchmark_check_arms_once_and_only_completes_after_checked_packet_idle"
+    },
+    {
+      "path": "src/presenter/vulkan/control.rs",
+      "name": "armed_check_acquisition_skip_fails_after_retirement_and_wakes"
+    },
+    {
+      "path": "src/presenter/vulkan/control.rs",
+      "name": "timed_or_armed_native_mode_refuses_cpu_fallback_as_the_measured_route"
+    }
+  ],
+  "author_checks": [
+    "Rust 1.88 rustfmt owned files only",
+    "git diff --check owned files",
+    "static owner/clock/config/ledger review"
+  ],
+  "author_executions": {
+    "builds": 0,
+    "tests": 0,
+    "GPU": 0
+  },
+  "root_correction": {
+    "file": "src/presenter/vulkan/control.rs",
+    "before": "(frames != 0 && !(2..=128).contains(&frames)) || (frames != 0 && check)",
+    "after": "frames != 0 && (!(2..=128).contains(&frames) || check)",
+    "reason": "Clippy nonminimal_bool; equivalent guard",
+    "initial_log": "/tmp/eris-native-timing-1/native-clippy-1880-initial.log",
+    "initial_log_sha256": "1dcac60635d3dfa9b3dd838cfbfc4adc3327e2b0d8298dfde92e1eb310899492"
+  },
+  "contract": {
+    "timing_frames": "0 disabled; 2..128 enabled; separate check requires verify_frames=1",
+    "completion": "packet drop then idle then completion; no completion on owner failure; late idle failure retains Failed sample",
+    "release": "successful timing and report extraction require Phase::Released; initialization must be present",
+    "check": "idle-only one-shot arm; next route-matching serial verified; completion only after idle; startup cannot consume quota",
+    "disabled": "no optional clock evaluation, sample allocation or completion/readiness wake",
+    "ledger": "256 KiB identity/metadata reserve plus actual bounded sample capacity; maximum128; unchanged128MiB ceiling",
+    "durations": "host wall time; CPU cleanup phase absent; Native scopes/destruction measured; no GPU timestamp/display latency claim",
+    "fallback": "benchmark errors fatal; no software recovery"
+  },
+  "unchanged_transfer_sha256": "b461e82327664d32c52d0205566b20fc6a9076ca96e0edbd01465d7040b74c61",
+  "supersedes": {
+    "path": "/tmp/eris-native-timing-presenter-source-ready.json",
+    "sha256": "44bbf2d729f84e5b255c86ef80ce1c954c8be2179d0229d3bc59362f5e969a40"
+  },
+  "final_delta": {
+    "release_query": "benchmark_owner_released() is exactly Phase::Released, false for stalled/panicked-finished owners; existing real-drop tests extended",
+    "check_no_verification": "armed selected packet retiring without verification fails and wakes once; new acquisition-skip synthetic group",
+    "requested_by": "root and layout static review before host execution",
+    "source_held": true
+  }
+}
