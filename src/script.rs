@@ -1718,11 +1718,18 @@ impl Runtime {
             next_global_order,
             global_non_scalar: BTreeMap::new(),
         };
+        runtime
+            .reserve_bootstrap_objects()
+            .expect("fixed bootstrap object arena fits runtime limits");
+        #[cfg(test)]
+        let bootstrap_object_capacity = runtime.objects.capacity();
         machine::initialize(&mut runtime)
             .expect("fixed expression frame bootstrap fits runtime limits");
         runtime
             .initialize_intrinsics()
             .expect("fixed intrinsic bootstrap fits runtime limits");
+        #[cfg(test)]
+        assert_eq!(runtime.objects.capacity(), bootstrap_object_capacity);
         runtime
     }
 
@@ -1824,6 +1831,7 @@ impl Runtime {
                 },
             );
         }
+        self.initialize_dom_parent_bindings()?;
         let Value::Array(array_prototype) = self.array(Vec::new())? else {
             unreachable!()
         };
@@ -5695,9 +5703,21 @@ impl Runtime {
                     return self.string(doc.title());
                 }
                 "readyState" => return self.string("complete"),
-                "querySelector"
-                | "querySelectorAll"
-                | "getElementById"
+                "querySelector" => {
+                    return self.dom_parent_method(
+                        &receiver,
+                        dom_bindings::ParentOperation::QuerySelector,
+                        doc,
+                    );
+                }
+                "querySelectorAll" => {
+                    return self.dom_parent_method(
+                        &receiver,
+                        dom_bindings::ParentOperation::QuerySelectorAll,
+                        doc,
+                    );
+                }
+                "getElementById"
                 | "getElementsByTagName"
                 | "getElementsByClassName"
                 | "createElement"
@@ -5815,9 +5835,29 @@ impl Runtime {
                     "checked" | "disabled" | "hidden" => {
                         return Ok(Value::Bool(doc.attr(id, key).is_some()));
                     }
-                    "appendChild" | "append" | "removeChild" | "remove" | "setAttribute"
-                    | "getAttribute" | "hasAttribute" | "removeAttribute" | "querySelector"
-                    | "querySelectorAll" => return self.dom_method(key, false),
+                    "querySelector" => {
+                        return self.dom_parent_method(
+                            &receiver,
+                            dom_bindings::ParentOperation::QuerySelector,
+                            doc,
+                        );
+                    }
+                    "querySelectorAll" => {
+                        return self.dom_parent_method(
+                            &receiver,
+                            dom_bindings::ParentOperation::QuerySelectorAll,
+                            doc,
+                        );
+                    }
+                    "append" => {
+                        return self.dom_parent_method(
+                            &receiver,
+                            dom_bindings::ParentOperation::Append,
+                            doc,
+                        );
+                    }
+                    "appendChild" | "removeChild" | "remove" | "setAttribute" | "getAttribute"
+                    | "hasAttribute" | "removeAttribute" => return self.dom_method(key, false),
                     "cloneNode" => return self.dom_method(key, false),
                     _ => {}
                 }

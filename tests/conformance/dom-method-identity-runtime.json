@@ -1,0 +1,403 @@
+{
+  "schema": 1,
+  "scope": "Defining-interface identity and receiver brands for eight existing ParentNode functions",
+  "full_browser_goal_achieved": false,
+  "production_security_claim": false,
+  "chromium_performance_claim": false,
+  "source_parent": "af81786de5c339fe38ac7fc5567ab6bbb0eeb616",
+  "final_candidate": "candidate-2",
+  "production_input_sha256": "c08347f8e7cbcff45ae7b07e31f9a08641a4931b93199e68c0e9315ff48b9ebc",
+  "binary_sha256": "11b1f068bee169a290eed3ceed7fe9a6686bd43519e89b3737f067bdd146643b",
+  "browser_binary_sha256": "8006538e21f9c70a873b98c9aa915bfe555aeea3d74c27dd0dfabec5061323d1",
+  "source_archive": {
+    "path": "/tmp/eris-dom-method-identity-runtime-1/candidate-2/source.tar",
+    "bytes": 12216320,
+    "sha256": "ad22e04668c239b7fc33b6523bd42bb323b2b5ee5bd4e4505685be4507fe977d"
+  },
+  "source_inventory": {
+    "path": "/tmp/eris-dom-method-identity-runtime-1/candidate-2/archive-inputs.json",
+    "bytes": 71824,
+    "sha256": "41b870430d84a428f640c2674bacef9e0dbaa0cc1122bfcbfa57440ba91d33b6"
+  },
+  "functions": {
+    "Document": [
+      "querySelector",
+      "querySelectorAll"
+    ],
+    "Element": [
+      "querySelector",
+      "querySelectorAll",
+      "append"
+    ],
+    "DocumentFragment": [
+      "querySelector",
+      "querySelectorAll",
+      "append"
+    ]
+  },
+  "remaining_dom_prerequisites": [
+    "Document.append",
+    "Real interface prototypes",
+    "Method replacement on host nodes"
+  ],
+  "remaining_object_is_prerequisites": [
+    "Proxy",
+    "BigInt",
+    "Foreign realms"
+  ],
+  "local": {
+    "source_files": 29,
+    "cases": 58,
+    "counts": {
+      "passed": 48,
+      "failed": 6,
+      "resource": 4
+    },
+    "expectations_verified": 52,
+    "controls": 44,
+    "all_controls_verified": true,
+    "raw_pass_gains": [
+      "eight-function-identity-matrix#sloppy",
+      "eight-function-identity-matrix#strict",
+      "fragment-and-template-content-identity#sloppy",
+      "fragment-and-template-content-identity#strict",
+      "eight-isolated-function-expando-bags#sloppy",
+      "eight-isolated-function-expando-bags#strict",
+      "name-length-descriptors-and-isolation#sloppy",
+      "name-length-descriptors-and-isolation#strict",
+      "dispatch-ignores-public-name-and-length#sloppy",
+      "dispatch-ignores-public-name-and-length#strict",
+      "all-selector-cross-interface-brands-before-coercion#sloppy",
+      "all-selector-cross-interface-brands-before-coercion#strict",
+      "append-call-apply-bind-distinct-receivers#sloppy",
+      "append-call-apply-bind-distinct-receivers#strict",
+      "append-brand-before-any-argument-conversion#sloppy",
+      "append-brand-before-any-argument-conversion#strict",
+      "text-and-comment-have-no-parentnode-methods#sloppy",
+      "text-and-comment-have-no-parentnode-methods#strict"
+    ],
+    "report": {
+      "path": "/tmp/eris-dom-method-identity-runtime-1/local-candidate-2/dom-method-identity.json",
+      "bytes": 278166,
+      "sha256": "fb8bd8df96b6e2cfecf34ce598b954978869e06385f6e421393bf655bd0d3ce3"
+    },
+    "unmet": [
+      {
+        "id": "document-append-standard-prerequisite#sloppy",
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        },
+        "reason": null
+      },
+      {
+        "id": "document-append-standard-prerequisite#strict",
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        },
+        "reason": null
+      },
+      {
+        "id": "real-interface-prototypes-standard-prerequisite#sloppy",
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        },
+        "reason": null
+      },
+      {
+        "id": "real-interface-prototypes-standard-prerequisite#strict",
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        },
+        "reason": null
+      },
+      {
+        "id": "host-method-replacement-standard-prerequisite#sloppy",
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "cannot set property 'querySelector'",
+          "harness": ""
+        },
+        "reason": null
+      },
+      {
+        "id": "host-method-replacement-standard-prerequisite#strict",
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "cannot set property 'querySelector'",
+          "harness": ""
+        },
+        "reason": null
+      }
+    ],
+    "controls_verified": 44
+  },
+  "local_before": {
+    "counts": {
+      "failed": 24,
+      "passed": 30,
+      "resource": 4
+    },
+    "expectations_verified": 34,
+    "controls": 44,
+    "report": {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/dom-method-identity-local-before.json",
+      "bytes": 279077,
+      "sha256": "334bb174fb8cfd0d5490a09e56a49885e84f47b6569497f36d4a370176dc46b7"
+    }
+  },
+  "object_is_followup": {
+    "source_files": 39,
+    "cases": 78,
+    "counts": {
+      "passed": 68,
+      "resource": 4,
+      "failed": 4,
+      "unsupported": 2
+    },
+    "expectations_verified": 72,
+    "controls": 60,
+    "all_controls_verified": true,
+    "raw_pass_gains": [
+      "dom-defining-interface-querySelector#sloppy",
+      "dom-defining-interface-querySelector#strict",
+      "dom-defining-interface-querySelectorAll#sloppy",
+      "dom-defining-interface-querySelectorAll#strict"
+    ],
+    "report": {
+      "path": "/tmp/eris-dom-method-identity-runtime-1/local-candidate-2/object-is.json",
+      "bytes": 305771,
+      "sha256": "9e86b6e70b76de3b4ed7ab5b53bd9fe24e365a0b348e01784964eb9e52672cea"
+    },
+    "unmet": [
+      {
+        "id": "proxy-identity-no-traps#sloppy",
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "ReferenceError",
+          "error_identity": "ReferenceError",
+          "message": "'Proxy' is not defined",
+          "harness": ""
+        },
+        "reason": null
+      },
+      {
+        "id": "proxy-identity-no-traps#strict",
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "ReferenceError",
+          "error_identity": "ReferenceError",
+          "message": "'Proxy' is not defined",
+          "harness": ""
+        },
+        "reason": null
+      },
+      {
+        "id": "bigint-identity-and-number-distinction#sloppy",
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "identifier immediately follows numeric literal",
+          "harness": ""
+        },
+        "reason": null
+      },
+      {
+        "id": "bigint-identity-and-number-distinction#strict",
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "parse",
+          "error_type": "SyntaxError",
+          "error_identity": "SyntaxError",
+          "message": "identifier immediately follows numeric literal",
+          "harness": ""
+        },
+        "reason": null
+      },
+      {
+        "id": "foreign-realm-object-identity#sloppy",
+        "status": "unsupported",
+        "observation": null,
+        "reason": "Test262 host hooks are not implemented (conservative source check)"
+      },
+      {
+        "id": "foreign-realm-object-identity#strict",
+        "status": "unsupported",
+        "observation": null,
+        "reason": "Test262 host hooks are not implemented (conservative source check)"
+      }
+    ],
+    "controls_verified": 60
+  },
+  "all_formal": {
+    "profiles": 44,
+    "cases": 19727,
+    "controls": 4564,
+    "improvements": 0,
+    "regressions": 0,
+    "other_changes": 0,
+    "control_changes": 0,
+    "baseline_gates_checked": 36,
+    "baseline_gates_passed": 36,
+    "report": {
+      "path": "/tmp/eris-dom-method-identity-runtime-1/formal-candidate-2/profiles-comparison.json",
+      "bytes": 67627,
+      "sha256": "7221933dee5b1594b247aebcf64a31ef924c2bc45d579917cfaff8848b8b054c"
+    },
+    "audit": {
+      "path": "/tmp/eris-dom-method-identity-runtime-1/formal-gate-review.json",
+      "bytes": 7651,
+      "sha256": "2b2b8f910309ef32b5136e986141314925c2829ffc41206e089159d1046c8619"
+    }
+  },
+  "all_local": {
+    "suites": 11,
+    "case_modes": 1756,
+    "controls": 588,
+    "changed_case_rows": 22,
+    "unchanged_complete_rows": 2322,
+    "changed_control_rows": 0,
+    "raw_pass_losses": 0,
+    "unchanged_policy_rows": 48,
+    "unchanged_dom_gap_modes": 6,
+    "new_raw_passes": 22,
+    "old_suites_complete_records_unchanged": 9,
+    "controls_verified": 588,
+    "audit": {
+      "path": "/tmp/eris-dom-method-identity-runtime-1/local-audit/result.json",
+      "bytes": 38907,
+      "sha256": "72ab16cdfbd1316949d07f0ae72c31d96858745bfb0d8bdc1a84632159fd2804"
+    }
+  },
+  "validation": {
+    "test_totals": {
+      "1.88.0": {
+        "default": 1361,
+        "native": 1478
+      },
+      "1.98.0": {
+        "default": 1361,
+        "native": 1478
+      }
+    },
+    "private_groups": 21,
+    "strict_clippy_variants": 6,
+    "format_passed": true,
+    "ignored_tests_executed": true,
+    "browser_initial_and_click_pixels_verified": true,
+    "unchanged_maximum_string_tests_passed": true,
+    "new_actual_gpu_window_run": false,
+    "summary": {
+      "path": "/tmp/eris-dom-method-identity-runtime-1/validation/final-summary.json",
+      "bytes": 41015,
+      "sha256": "724c25b76320f6d995ad139fd4459d6050e2d9a390167f1b205889a365eb7a97"
+    }
+  },
+  "accounting": {
+    "bootstrap": {
+      "candidate-1": {
+        "remaining_steps": 66390,
+        "allocated": 759874,
+        "native_properties": 320,
+        "prototypes": 25,
+        "objects": 351,
+        "object_capacity": 512
+      },
+      "candidate-2": {
+        "remaining_steps": 70334,
+        "allocated": 734594,
+        "native_properties": 320,
+        "prototypes": 25,
+        "objects": 351,
+        "object_capacity": 512
+      }
+    },
+    "correction": "Prepay and fallibly reserve 512 empty arena slots before initialization; install eight sorted direct descriptors into one empty native-registry leaf, sharing only immutable keys/names. Distinct mutable bags and existing per-object/property charges remain.",
+    "unchanged_limits": true,
+    "logical_requested_storage_not_physical_allocator_measurement": true,
+    "review": {
+      "path": "/tmp/eris-dom-method-identity-runtime-1/installer-diagnosis/root-final-source-review.json",
+      "bytes": 1057,
+      "sha256": "21a06dc10e4a62281dce8519a51772ca8294e8ce617e52b7a890baea9245ecba"
+    }
+  },
+  "retained_failures": [
+    {
+      "candidate": 1,
+      "labels": [
+        "full-default-188-1",
+        "full-default-198-1"
+      ],
+      "test": "script::tests::every_utf16_code_unit_round_trips_through_json",
+      "outcome": "1148 passed,1 failed; instruction-limit error after Runtime::new initialization",
+      "correction": "Candidate2 changes the scoped bootstrap algorithm and its prepaid arena; old test and quota are unchanged."
+    },
+    {
+      "candidate": 2,
+      "label": "full-default-188-2",
+      "test": "date_host::tests::host_run_capture_drains_output_during_a_large_private_partial_request",
+      "outcome": "1151 passed,1 failed; TimedOut",
+      "later_outcomes": [
+        "Exact focused timezone test passed on identical source.",
+        "Complete Rust1.88 attempt3 matrix passed after the concurrently running matrix work finished, as reported by root."
+      ],
+      "inference": "Contention is a possible explanation, not a proven cause. No deadline or test-source change.",
+      "same_source_verified": true
+    }
+  ],
+  "helper_correction": {
+    "scope": "Release helper only, before build: use the freezer Path ordering for production-input verification; original mismatch and corrected check retained. No engine, quota, test or oracle change.",
+    "record": {
+      "path": "/tmp/eris-dom-method-identity-runtime-1/build-preparation/digest-order-correction.json",
+      "bytes": 1931,
+      "sha256": "fdfb9694cc593f320996c72cebe12a0c9e270b6d06612aadf98790b7f09354d5"
+    }
+  },
+  "release_build": {
+    "path": "/tmp/eris-dom-method-identity-runtime-1/validation/release-default-build-2.json",
+    "bytes": 3701,
+    "sha256": "8fac6267bb6dbb9cd44cfc8f85be514301c42da6730e31e1fb3f89347923ced9"
+  },
+  "evidence": "../../docs/evidence/dom-method-identity-runtime/index.json",
+  "preparation_evidence": "../../docs/evidence/dom-method-identity-preparation/index.json",
+  "publication_policy": "No new formal profile or gate; all 36 existing baseline files unchanged. Ordinary failures, resource-policy outcomes and prior exclusions remain visible."
+}

@@ -3,10 +3,15 @@
 [Object.is](../tests/conformance/object-is.md) implements SameValue for existing
 runtime values, including NaN, signed zero, exact UTF-16 strings and ordinary
 object/symbol identity. All **42 upstream modes pass**, with 80 healthy controls.
-The local suite verifies **68/78 expectations** with 60 healthy controls.
-Four ordinary failures expose collapsed Document/Element query-method identity;
-the other unmet cases require Proxy, BigInt or foreign realms. The complete
-44-profile replay preserves all older case/control observations.
+The [DOM method follow-up](../tests/conformance/dom-method-identity.md) closes
+four Document/Element query-identity failures, bringing the unchanged local
+suite to **72/78 verified expectations**, with 60 healthy controls. Proxy,
+BigInt and foreign-realm cases remain unmet. Eight existing query/append
+methods now have separate defining-interface identities, function properties
+and receiver checks. Their new local suite verifies **52/58 expectations**;
+Document.append, real interface prototypes and host-member replacement remain
+ordinary failures. The complete 44-profile replay preserves all prior formal
+case/control observations and all 36 baseline gates.
 
 [ArrayBuffer](../tests/conformance/array-buffer.md) supports nonshared fixed and
 resizable buffers, byteLength/maxByteLength/resizable/detached getters, resize,

@@ -1,5 +1,32 @@
 # Validation record
 
+## DOM defining-interface methods
+
+The [DOM method follow-up](../tests/conformance/dom-method-identity.md) separates
+eight query/append function identities and checks their defining-interface
+receiver before conversion. The original 58-mode local inventory now has
+48 passes, six ordinary prerequisite failures and four expected resource stops;
+52 expectations and all 44 controls verify. Four earlier Object.is identity
+failures also pass. Across 11 local suites, all 1,756 case modes and 588 controls
+are retained: 22 gains, no losses or other complete-record changes, and all
+48 explicit resource expectations match. All 44 formal profiles retain their
+19,727 case and 4,564 control records; all 36 established gates pass unchanged.
+
+The corrected frozen candidate passes 21 focused groups, 1,361 default tests
+and 1,478 native-feature tests on each of Rust 1.88 and 1.98, including ignored
+confinement tests and initial/click pixel checks. All six strict Clippy variants
+and formatting pass. Source, release binaries and results are bound by the
+[runtime summary](../tests/conformance/dom-method-identity-runtime.json) and
+[evidence index](evidence/dom-method-identity-runtime/index.json).
+
+Both first-candidate full runs failed the existing exhaustive UTF-16 JSON test
+after bootstrap used too much work. The correction removes repeated metadata
+work and prepays the full bootstrap object arena; the unchanged test passes.
+One later parallel MSRV attempt timed out in an unchanged timezone stress test;
+its isolated check and complete matrix then passed without source/deadline
+changes. All attempts remain retained. This establishes the scoped result,
+not full Web IDL compatibility, production security or Chromium performance.
+
 ## Native retired-buffer reuse
 
 The owner retains one exact-size complete GPU buffer lease only after tracked

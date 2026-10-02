@@ -130,6 +130,21 @@ fn invoke_native(
     }
     let result = if NumberPredicate::from_name(&native.name).is_some() {
         runtime.native_call(&native, arguments, doc)
+    } else if crate::script::dom_bindings::is_parent_method_name(&native.name) {
+        // Keep failure inside `result`: the stack ownership below must unwind
+        // even when admission rejects the temporary owned name before cloning.
+        runtime
+            .dom_parent_call_preflight(&native.name)
+            .and_then(|()| {
+                runtime.native_call(
+                    &Native {
+                        name: native.name.clone(),
+                        receiver,
+                    },
+                    arguments,
+                    doc,
+                )
+            })
     } else if native.name.contains('.') {
         runtime.native_call(
             &Native {

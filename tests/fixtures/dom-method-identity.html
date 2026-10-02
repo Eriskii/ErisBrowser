@@ -1,0 +1,56 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Defining-interface DOM methods through callbacks</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#identity{left:0}#aliases{left:50px}#borrow{left:100px}#brands{left:150px}#append{left:200px}#metadata{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="identity" class="sample"></div><div id="aliases" class="sample"></div>
+<div id="borrow" class="sample"></div><div id="brands" class="sample"></div>
+<div id="append" class="sample"></div><div id="metadata" class="sample"></div>
+<button id="change" type="button">Run DOM method callbacks</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+const element=document.createElement('section'),other=document.createElement('section');
+const fragment=document.createDocumentFragment(),second=document.createDocumentFragment();
+const a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');
+element.appendChild(a);fragment.appendChild(b);other.appendChild(c);second.appendChild(d);
+const dq=document.querySelector,eq=element.querySelector,fq=fragment.querySelector;
+check(typeof dq==='function'&&typeof eq==='function'&&typeof fq==='function','selector prerequisites');
+check(dq.call(document,'#change')===document.getElementById('change')&&eq.call(element,'i')===a&&fq.call(fragment,'i')===b,'working selectors');
+check(typeof document.querySelectorAll==='function'&&typeof element.querySelectorAll==='function'&&typeof fragment.querySelectorAll==='function','all selector prerequisites');
+check(document.querySelectorAll('#change')[0]===document.getElementById('change')&&element.querySelectorAll('i')[0]===a&&fragment.querySelectorAll('i')[0]===b,'working all selectors');
+let runs=0;
+function apply(color){
+  check(runs===(color==='green'?0:1),'callback progression');
+  check(dq===document.querySelector&&eq===other.querySelector&&fq===second.querySelector,'same interface shares method');
+  check(dq!==eq&&dq!==fq&&eq!==fq,'different interfaces have distinct methods');
+  check(document.querySelectorAll!==element.querySelectorAll&&element.querySelectorAll!==fragment.querySelectorAll&&document.querySelectorAll!==fragment.querySelectorAll,'all selector identities');mark('identity',color);
+  eq.browserToken=runs+11;check(other.querySelector.browserToken===runs+11&&dq.browserToken===undefined&&fq.browserToken===undefined,'function expandos isolate interfaces');
+  check(element.querySelectorAll.browserToken===undefined,'operations have distinct properties');mark('aliases',color);
+  check(eq.call(other,'i')===c&&fq.apply(second,['i'])===d,'borrowed methods');
+  check(eq.bind(other)('i')===c&&fq.bind(second)('i')===d,'bound methods');mark('borrow',color);
+  let conversions=0;const selector={toString(){conversions++;return 'i';}};
+  let rejected=0;try{eq.call(fragment,selector);}catch(e){check(e instanceof TypeError,'Element brand TypeError');rejected++;}
+  try{fq.call(element,selector);}catch(e){check(e instanceof TypeError,'Fragment brand TypeError');rejected++;}
+  try{dq.call(element,selector);}catch(e){check(e instanceof TypeError,'Document brand TypeError');rejected++;}
+  check(rejected===3&&conversions===0,'brand precedes selector conversion');
+  check(eq.call(element,selector)===a&&conversions===1,'correct receiver converts once');mark('brands',color);
+  const target=document.createElement('p'),part=document.createDocumentFragment();
+  check(typeof target.append==='function'&&typeof part.append==='function'&&target.append!==part.append,'append identities');
+  target.append.call(target,'a');part.append.call(part,'b');check(target.textContent==='a'&&part.textContent==='b','same interface append');
+  let touched=0,caught=false;try{target.append.call(part,{toString(){touched++;return 'bad';}});}catch(e){check(e instanceof TypeError,'append brand TypeError');caught=true;}
+  check(caught&&touched===0&&part.textContent==='b','append rejects before conversion');mark('append',color);
+  const saved=Object.getOwnPropertyDescriptor(eq,'name');
+  check(saved.value==='querySelector'&&!saved.writable&&!saved.enumerable&&saved.configurable&&eq.length===1,'public metadata');
+  check(Object.getOwnPropertyDescriptor(eq,'prototype')===undefined,'no constructor prototype');
+  Object.defineProperty(eq,'name',{value:'renamed'});
+  check(other.querySelector.name==='renamed'&&dq.name==='querySelector'&&fq.name==='querySelector','isolated mutable metadata');
+  check(eq.call(element,'i')===a,'dispatch independent of public name');
+  Object.defineProperty(eq,'name',saved);delete eq.browserToken;mark('metadata',color);runs++;
+}
+apply('green');document.getElementById('result').textContent='ready';document.body.className='ready';
+document.getElementById('change').onclick=function(){apply('blue');check(runs===2,'callback count');document.getElementById('result').textContent='6';document.body.className='clicked';};
+</script>

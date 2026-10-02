@@ -15,20 +15,26 @@ case changes and 48 newly healthy controls. Every older profile's complete
 case/control records is unchanged; all 35 prior baseline gates pass.
 The new Object.is gate raises the total to 36 without changing old baselines.
 
-| Independent local outcomes | Modes |
+| Local outcomes at the Object.is checkpoint | Modes |
 | --- | ---: |
 | Passed | 64 |
 | Failed | 8 |
 | Foreign-realm host-hook exclusions | 2 |
 | Expected terminal resource outcomes | 4 |
 
-The local suite verifies 68/78 expectations and all 60 controls. Four failures
-are the two Document-versus-Element query-method identity cases in both modes.
-The current host representation loses the defining-interface distinction;
-these ordinary success-expecting cases remain failures. The other four failures
+At that checkpoint the local suite verified 68/78 expectations and all 60 controls.
+Four failures were the two Document-versus-Element query-method identity cases
+in both modes. The host representation lost the defining-interface distinction;
+those ordinary success-expecting cases failed. The other four failures
 are missing Proxy and BigInt prerequisites. Two foreign-realm cases remain
 static host-hook exclusions. No denominator, expected result or resource limit
 was changed to hide these gaps.
+
+The later [DOM defining-interface follow-up](dom-method-identity.md) passes all
+four original query-identity modes without rewriting them. The local suite now
+has 68 passes, four failures, two exclusions and four expected resource outcomes,
+verifying 72/78 expectations. All other complete rows and all 60 controls remain
+unchanged. This repairs those DOM representations without changing Object.is.
 
 The [runtime summary](object-is-runtime.json) and
 [retained evidence](../../docs/evidence/object-is-runtime/index.json) bind the
@@ -46,8 +52,9 @@ The method compares borrowed operands without allocating, reading properties
 or traversing object contents. Equal-length strings prepay their UTF-16
 comparison, even when their storage is shared. Unequal lengths and mismatched
 value kinds avoid payload scans. Native function wrappers use the existing
-represented method identity with bounded, iterative key comparisons. This does
-not repair the separate defining-interface host identity gap.
+represented method identity with bounded, iterative key comparisons. This did
+not repair the defining-interface host identity gap at this checkpoint;
+the later DOM follow-up addresses those specific methods.
 
 A dedicated dispatch precedes the generic native payload scan, so ignored
 receivers and extra values add no comparison charge. Argument evaluation,
@@ -60,7 +67,8 @@ buffer. Existing ordinary allocation charges remain. The measured installation
 uses 507 logical work units and 11,560 charged bytes with spare owner capacity;
 a separately forced growth case uses 578 units and 12,584 bytes. These are
 logical budget charges, not physical allocator or processor measurements.
-The resulting bootstrap has 71,429 work units remaining. Limits are unchanged.
+At this checkpoint the bootstrap had 71,429 work units remaining. The DOM
+follow-up records its later measurement; limits remain unchanged.
 
 Twenty private test groups cover numeric and UTF-16 values, identity, exact and
 one-short work/heap boundaries, ignored payloads, iterative native keys,

@@ -1,12 +1,15 @@
 //! Checked conversion and receiver dispatch for the supported DOM operations.
 use super::*;
+use std::collections::btree_map::Entry;
 
+#[cfg(test)]
+mod identity_tests;
+
+// Unrelated operations keep their original order, installation and access fees.
 const METHODS: &[(&str, usize)] = &[
     ("DOM.getElementById", 1),
     ("DOM.getElementsByTagName", 1),
     ("DOM.getElementsByClassName", 1),
-    ("DOM.querySelector", 1),
-    ("DOM.querySelectorAll", 1),
     ("DOM.createElement", 1),
     ("DOM.createTextNode", 1),
     ("DOM.createDocumentFragment", 0),
@@ -16,7 +19,6 @@ const METHODS: &[(&str, usize)] = &[
     ("DOM.removeAttribute", 1),
     ("DOM.appendChild", 1),
     ("DOM.removeChild", 1),
-    ("DOM.append", 0),
     ("DOM.remove", 0),
     ("DOM.cloneNode", 0),
     ("DOMTokenList.add", 0),
@@ -24,6 +26,179 @@ const METHODS: &[(&str, usize)] = &[
     ("DOMTokenList.toggle", 1),
     ("DOMTokenList.contains", 1),
 ];
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum ParentInterface {
+    Document,
+    Element,
+    DocumentFragment,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum ParentOperation {
+    QuerySelector,
+    QuerySelectorAll,
+    Append,
+}
+
+#[derive(Debug)]
+struct ParentMethod {
+    full: &'static str,
+    suffix: &'static str,
+    name: &'static str,
+    length: usize,
+    interface: ParentInterface,
+    operation: ParentOperation,
+}
+
+static PARENT_METHODS: [ParentMethod; 8] = [
+    ParentMethod {
+        full: "DOM.Document.querySelector",
+        suffix: "Document.querySelector",
+        name: "querySelector",
+        length: 1,
+        interface: ParentInterface::Document,
+        operation: ParentOperation::QuerySelector,
+    },
+    ParentMethod {
+        full: "DOM.Element.querySelector",
+        suffix: "Element.querySelector",
+        name: "querySelector",
+        length: 1,
+        interface: ParentInterface::Element,
+        operation: ParentOperation::QuerySelector,
+    },
+    ParentMethod {
+        full: "DOM.DocumentFragment.querySelector",
+        suffix: "DocumentFragment.querySelector",
+        name: "querySelector",
+        length: 1,
+        interface: ParentInterface::DocumentFragment,
+        operation: ParentOperation::QuerySelector,
+    },
+    ParentMethod {
+        full: "DOM.Document.querySelectorAll",
+        suffix: "Document.querySelectorAll",
+        name: "querySelectorAll",
+        length: 1,
+        interface: ParentInterface::Document,
+        operation: ParentOperation::QuerySelectorAll,
+    },
+    ParentMethod {
+        full: "DOM.Element.querySelectorAll",
+        suffix: "Element.querySelectorAll",
+        name: "querySelectorAll",
+        length: 1,
+        interface: ParentInterface::Element,
+        operation: ParentOperation::QuerySelectorAll,
+    },
+    ParentMethod {
+        full: "DOM.DocumentFragment.querySelectorAll",
+        suffix: "DocumentFragment.querySelectorAll",
+        name: "querySelectorAll",
+        length: 1,
+        interface: ParentInterface::DocumentFragment,
+        operation: ParentOperation::QuerySelectorAll,
+    },
+    ParentMethod {
+        full: "DOM.Element.append",
+        suffix: "Element.append",
+        name: "append",
+        length: 0,
+        interface: ParentInterface::Element,
+        operation: ParentOperation::Append,
+    },
+    ParentMethod {
+        full: "DOM.DocumentFragment.append",
+        suffix: "DocumentFragment.append",
+        name: "append",
+        length: 0,
+        interface: ParentInterface::DocumentFragment,
+        operation: ParentOperation::Append,
+    },
+];
+
+fn parent_method(
+    interface: ParentInterface,
+    operation: ParentOperation,
+) -> Option<&'static ParentMethod> {
+    use ParentInterface::{Document, DocumentFragment, Element};
+    use ParentOperation::{Append, QuerySelector, QuerySelectorAll};
+    let index = match (interface, operation) {
+        (Document, QuerySelector) => 0,
+        (Element, QuerySelector) => 1,
+        (DocumentFragment, QuerySelector) => 2,
+        (Document, QuerySelectorAll) => 3,
+        (Element, QuerySelectorAll) => 4,
+        (DocumentFragment, QuerySelectorAll) => 5,
+        (Element, Append) => 6,
+        (DocumentFragment, Append) => 7,
+        (Document, Append) => return None,
+    };
+    Some(&PARENT_METHODS[index])
+}
+
+fn parent_interface(receiver: &Value, doc: &Document) -> Option<ParentInterface> {
+    let id = match receiver {
+        Value::Document => doc.root,
+        Value::Node(id) => *id,
+        _ => return None,
+    };
+    match &doc.nodes.get(id)?.kind {
+        NodeKind::Document => Some(ParentInterface::Document),
+        NodeKind::Element(_) => Some(ParentInterface::Element),
+        NodeKind::DocumentFragment { .. } => Some(ParentInterface::DocumentFragment),
+        _ => None,
+    }
+}
+
+// Only the fixed five-byte namespace guard precedes the scoped paid resolver.
+pub(super) fn is_parent_method_name(name: &str) -> bool {
+    name.as_bytes().get(..4) == Some(b"DOM.") && matches!(name.as_bytes().get(4), Some(b'D' | b'E'))
+}
+
+// A bootstrap reservation, not a runtime object limit. The current complete
+// intrinsic inventory fits this existing capacity; private checks bind that fact.
+const BOOTSTRAP_OBJECT_CAPACITY: usize = 512;
+const PARENT_INSTALL_ORDER: [usize; 8] = [0, 3, 7, 2, 5, 6, 1, 4];
+const PARENT_SHARED_WORK: usize = 8 + 90 + 4;
+
+fn parent_node_bytes<K, V>() -> usize {
+    16 * (std::mem::size_of::<K>() + std::mem::size_of::<V>())
+        + 32 * std::mem::size_of::<usize>()
+        + 64
+}
+
+fn parent_install_work(ordinal: usize, row: &ParentMethod) -> usize {
+    // The guarded sorted batch fits one B=6 leaf (capacity eleven). Entry
+    // searches each earlier key once; right-edge insertion moves no old entry.
+    // Eight logical entry/length/handle units are not byte-copy counts. The
+    // first root's setup is covered by PARENT_SHARED_WORK.
+    (64 + row.full.len() + 8 + 16).saturating_add(ordinal.saturating_mul(1 + row.full.len() / 8))
+}
+
+fn parent_install_bytes(row: &ParentMethod) -> usize {
+    // Retain the original literal payload allowance, ordinary object base and
+    // both ordinary property debits, despite direct final-descriptor creation.
+    1536 + 8 * (row.full.len() + row.name.len())
+        + parent_node_bytes::<PropertyKey, Property>()
+        + 4 * std::mem::size_of::<PropertyKey>()
+        + 72
+        + std::mem::size_of::<Option<AbortSlot>>()
+        + std::mem::size_of::<Option<f64>>()
+        + 552
+}
+
+fn parent_ascii(text: &str) -> Result<JsString> {
+    // Only the five static ASCII literals reach this builder, after admission.
+    // Reserving first avoids geometric Vec relocation in the two-pass debit.
+    let mut units = Vec::new();
+    units
+        .try_reserve_exact(text.len())
+        .map_err(|_| ScriptError::resource("DOM method string allocation failed"))?;
+    units.extend(text.bytes().map(u16::from));
+    Ok(units.into())
+}
 
 fn ascii_space(c: char) -> bool {
     matches!(c, '\t' | '\n' | '\u{c}' | '\r' | ' ')
@@ -42,6 +217,145 @@ impl Runtime {
             self.intrinsic_function(full, full.rsplit('.').next().unwrap(), length)?;
         }
         Ok(())
+    }
+
+    pub(super) fn reserve_bootstrap_objects(&mut self) -> Result<()> {
+        if self.objects.capacity() >= BOOTSTRAP_OBJECT_CAPACITY {
+            return Ok(());
+        }
+        let length = self.objects.len();
+        let additional = BOOTSTRAP_OBJECT_CAPACITY
+            .checked_sub(length)
+            .ok_or_else(|| ScriptError::resource("bootstrap object arena overflow"))?;
+        let bytes = BOOTSTRAP_OBJECT_CAPACITY
+            .checked_mul(std::mem::size_of::<ScriptObject>())
+            .ok_or_else(|| ScriptError::resource("bootstrap object arena overflow"))?;
+        self.work(1usize.saturating_add(length.saturating_mul(2)))?;
+        // Full requested block, with no refund for any previous allocation.
+        // Real bootstrap reaches this with zero objects, before machine setup.
+        self.charge(bytes)?;
+        self.objects
+            .try_reserve_exact(additional)
+            .map_err(|_| ScriptError::resource("bootstrap object arena allocation failed"))
+    }
+
+    pub(super) fn initialize_dom_parent_bindings(&mut self) -> Result<()> {
+        self.work(8)?;
+        if !self.native_properties.is_empty()
+            || self.functions.get(self.function_prototype).is_none()
+        {
+            return Err(ScriptError::resource(
+                "DOM method bootstrap state is not fresh",
+            ));
+        }
+        // Five immutable UTF-16 strings: 45 units encoded then copied once.
+        // Four further units initialize the one fresh registry leaf.
+        self.work(PARENT_SHARED_WORK - 8)?;
+        self.charge(512 + parent_node_bytes::<String, usize>())?;
+        let keys = [parent_ascii("name")?.into(), parent_ascii("length")?.into()];
+        let display = [
+            parent_ascii("querySelector")?,
+            parent_ascii("querySelectorAll")?,
+            parent_ascii("append")?,
+        ];
+        for (ordinal, index) in PARENT_INSTALL_ORDER.into_iter().enumerate() {
+            let row = &PARENT_METHODS[index];
+            let display = &display[match row.operation {
+                ParentOperation::QuerySelector => 0,
+                ParentOperation::QuerySelectorAll => 1,
+                ParentOperation::Append => 2,
+            }];
+            self.install_dom_parent_method(ordinal, row, display, &keys)?;
+        }
+        Ok(())
+    }
+
+    fn install_dom_parent_method(
+        &mut self,
+        ordinal: usize,
+        row: &ParentMethod,
+        display: &JsString,
+        keys: &[PropertyKey; 2],
+    ) -> Result<()> {
+        self.work(parent_install_work(ordinal, row))?;
+        if ordinal >= PARENT_INSTALL_ORDER.len()
+            || self.native_properties.len() != ordinal
+            || !std::ptr::eq(row, &PARENT_METHODS[PARENT_INSTALL_ORDER[ordinal]])
+            || self.objects.len() == self.objects.capacity()
+        {
+            return Err(ScriptError::resource("DOM method batch invariant violated"));
+        }
+        self.charge(parent_install_bytes(row))?;
+        let mut bag = ScriptObject {
+            prototype: Some(Value::Function(self.function_prototype)),
+            ..ScriptObject::default()
+        };
+        bag.order
+            .try_reserve_exact(4)
+            .map_err(|_| ScriptError::resource("DOM method order allocation failed"))?;
+        // One fresh-leaf comparison, three entry moves, four setup operations,
+        // two order appends and six final descriptor flags: sixteen units.
+        for (key, value) in keys.iter().zip([
+            Value::String(display.clone()),
+            Value::Number(row.length as f64),
+        ]) {
+            let Entry::Vacant(entry) = bag.values.entry(key.clone()) else {
+                unreachable!()
+            };
+            bag.order.push(key.clone());
+            entry.insert(Property::data(value, false, false, true));
+        }
+        let id = self.objects.len();
+        let Entry::Vacant(entry) = self.native_properties.entry(row.full.to_owned()) else {
+            return Err(ScriptError::resource("duplicate DOM method metadata"));
+        };
+        // Every admission/allocation except the prepaid registry leaf precedes
+        // publication. No callback or whole-Runtime call crosses this borrow.
+        self.objects.push(bag);
+        entry.insert(id);
+        Ok(())
+    }
+
+    pub(super) fn dom_parent_method(
+        &mut self,
+        receiver: &Value,
+        operation: ParentOperation,
+        doc: &Document,
+    ) -> Result<Value> {
+        self.work(4)?;
+        let Some(interface) = parent_interface(receiver, doc) else {
+            return Ok(Value::Undefined);
+        };
+        self.work(2)?;
+        let Some(row) = parent_method(interface, operation) else {
+            return Ok(Value::Undefined);
+        };
+        self.work(8 + row.full.len())?;
+        self.charge(
+            32 + std::mem::size_of::<Native>() + 2 * std::mem::size_of::<usize>() + row.full.len(),
+        )?;
+        Ok(Self::native(row.full, Value::Undefined))
+    }
+
+    fn dom_parent_resolve(&mut self, name: &str, full: bool) -> Result<&'static ParentMethod> {
+        for row in &PARENT_METHODS {
+            let candidate = if full { row.full } else { row.suffix };
+            self.tick()?;
+            if name.len() == candidate.len() {
+                self.work(1 + name.len() / 8)?;
+                if name == candidate {
+                    return Ok(row);
+                }
+            }
+        }
+        Err(ScriptError::type_error("unknown DOM parent method"))
+    }
+
+    pub(super) fn dom_parent_call_preflight(&mut self, name: &str) -> Result<()> {
+        self.work(4)?;
+        let row = self.dom_parent_resolve(name, true)?;
+        self.work(4 + row.full.len())?;
+        self.charge(32 + row.full.len())
     }
 
     pub(super) fn dom_method(&mut self, name: &str, tokens: bool) -> Result<Value> {
@@ -86,6 +400,21 @@ impl Runtime {
         doc: &mut Document,
     ) -> Result<Value> {
         self.tick()?;
+        let name = if matches!(name.as_bytes().first(), Some(b'D' | b'E')) {
+            let row = self.dom_parent_resolve(name, false)?;
+            self.work(4)?;
+            if parent_interface(&receiver, doc) != Some(row.interface) {
+                return Err(ScriptError::type_error("incompatible DOM method receiver"));
+            }
+            // Only normalize after the defining-interface brand succeeds.
+            match row.operation {
+                ParentOperation::QuerySelector => "querySelector",
+                ParentOperation::QuerySelectorAll => "querySelectorAll",
+                ParentOperation::Append => "append",
+            }
+        } else {
+            name
+        };
         let node = match receiver {
             Value::Document => Some(doc.root),
             Value::Node(id) if id < doc.nodes.len() => Some(id),

@@ -205,7 +205,9 @@ The scoped installer prepays node and order-buffer costs before publication,
 retaining the existing ordinary allocation charges. Twenty private groups check
 exact/one-short admission, full-heap comparisons and terminal cleanup. Existing
 limits and maximum-string regressions are unchanged. Generic infallible allocator
-boundaries and the separate DOM interface-identity gap remain explicit.
+boundaries remain explicit. The later [DOM follow-up](../tests/conformance/dom-method-identity.md)
+addresses eight defining-interface methods; complete host identity and Web IDL
+conformance remain unestablished.
 
 ## Representative limits
 
@@ -293,6 +295,16 @@ lookups observe that live state. Host conversion charges scans and worst-case
 UTF-8 storage before decoding. Staged arguments, token parsing/deduplication,
 vector growth, serialization, query scratch and native method handles share the
 existing ledger. No quota increased.
+
+Eight defining-interface query/append methods reject a mismatched receiver before
+required arguments or conversion hooks. Their metadata, getter wrappers, row
+searches and temporary native call-name copies are prepaid. A refused name copy
+still releases the call's stack ownership; prior author effects remain on later
+conversion failure. Distinct mutable metadata bags share only immutable strings.
+Bootstrap now prepays a 512-slot object-arena reservation before initialization,
+avoiding later bootstrap growth. This is reserved capacity, not a new object
+limit. Logical requested-byte accounting excludes allocator rounding and retains
+the existing infallible B-tree/Rc allocation boundaries.
 
 The [focused validation](../tests/conformance/dom-string-conversion.json) includes
 allocation refusals and looping/recursive callbacks that cannot catch resource

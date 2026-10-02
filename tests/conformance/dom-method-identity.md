@@ -1,59 +1,91 @@
-# DOM defining-interface method identity preparation
+# DOM defining-interface method identity
 
-This checkpoint records independent tests before changing the existing DOM
-bindings. Document, Element and DocumentFragment currently share selector
-function identities and property bags. Their selector calls also accept the
-other interfaces as receivers. Element and DocumentFragment share the same
-problem for `append`.
+Document, Element and DocumentFragment now have separate `querySelector` and
+`querySelectorAll` function identities and property bags. Element and
+DocumentFragment also have separate `append` functions. Repeated access through
+the same interface shares its function properties; editing one interface's
+function does not alter another. Inherited Node methods retain shared identity.
 
-The scoped change will give the six `querySelector`/`querySelectorAll` functions
-and two existing `append` functions separate defining-interface identities,
-independent function properties and receiver checks before argument conversion.
-Methods inherited from Node must remain shared. Document.append, real interface
-prototypes and ordinary host method replacement remain separate prerequisites.
+Saved methods check the actual receiver's defining interface before required
+arguments or author conversion. Valid calls keep the existing query/append
+algorithms and conversion order. Text and Comment nodes no longer expose these
+ParentNode methods. Document.append, real interface prototypes and ordinary
+method replacement on individual host objects remain incomplete.
 
-The [local oracle](dom-method-identity-local-oracle.json) contains 29 sources,
-each in sloppy and strict mode: 24 ordinary behavior sources, three ordinary
+## Independent outcomes
+
+The unchanged [local oracle](dom-method-identity-local-oracle.json) contains
+29 sources in sloppy and strict mode: 24 behavior sources, three ordinary
 prerequisite expectations and two terminal resource policies. Its
 [readable companion](dom-method-identity-local.js) preserves the exact sources.
-There are 32 paired feature controls and 12 unchanged common controls.
+All 32 paired feature controls and 12 common controls verify.
 
-The original [BEFORE report](dom-method-identity-local-before.json) records:
+| Outcome | Original BEFORE | Corrected runtime |
+| --- | ---: | ---: |
+| Passed modes | 30 | 48 |
+| Failed modes | 24 | 6 |
+| Expected terminal resource modes | 4 | 4 |
+| Verified expectations | 34/58 | 52/58 |
 
-| Outcome | Modes |
-| --- | ---: |
-| Passed | 30 |
-| Failed | 24 |
-| Expected terminal resource outcomes | 4 |
+The six failures are `document-append-standard-prerequisite`,
+`real-interface-prototypes-standard-prerequisite` and
+`host-method-replacement-standard-prerequisite`, each in both modes. They remain
+ordinary success expectations. No case was excluded or rewritten after observing
+its result. Resource expectations describe the unchanged engine policy, not
+ECMAScript exceptions.
 
-All 44 controls verify. The run verifies 34/58 fixture expectations, with no
-exclusions. Eighteen failing modes cover the identity, property isolation,
-receiver and member-exposure issues in this increment. Six other failures
-remain ordinary success expectations for Document.append, real interface
-prototypes and host replacement. Resource expectations describe the engine's
-unchanged execution policy, rather than ECMAScript exceptions.
+The four original Object.is Document/Element identity failures also pass now.
+Across all 11 local suites, 1,756 modes and 588 controls, the replay gains 22
+passes, loses none and preserves every other complete case/control record.
+All 48 explicit terminal-policy expectations match. The full 44-profile formal
+replay preserves all 19,727 case modes and 4,564 controls exactly, and all 36
+existing baseline gates pass without changed baseline bytes.
 
-The run uses the unchanged published Object.is binary
-`804bc8dd688182641be37be577feade9fe043a0869000cd272977707c320b4df`
-from commit `8e2a2740ef1d63c9b3d0d2626400f8b125e4575c`. Its process completed,
-inputs were unchanged before and after, and all 102 case/control records were
-retained. No candidate implementation has been measured in this checkpoint.
-The four existing Object.is Document-versus-Element identity modes also remain
-unchanged for later comparison.
-The [preparation evidence](../../docs/evidence/dom-method-identity-preparation/index.json)
-retains the runner, original observations, source reviews and corrections.
+The [runtime summary](dom-method-identity-runtime.json) and
+[runtime evidence](../../docs/evidence/dom-method-identity-runtime/index.json)
+bind the source, binaries, attempts and complete reports. The original
+[BEFORE report](dom-method-identity-local-before.json) and
+[preparation evidence](../../docs/evidence/dom-method-identity-preparation/index.json)
+remain retained. BEFORE used published Object.is commit
+`8e2a2740ef1d63c9b3d0d2626400f8b125e4575c`.
 
-Source review corrected five property-helper calls to restore descriptors
-before subsequent mutation or explicit deletion. The original draft remains
-retained. The browser fixture also gained positive selector prerequisites and
-calls on distinct same-interface receivers before execution. No observation
-was used to change an expected result or resource limit.
+## Accounting and validation
 
-The planned installer prepays the new metadata, registry and reached object
-arena allocations. Method acquisition, row lookup and the temporary native
-name copy have scoped work/storage charges. Failures in the pre-copy check
-must still release call-stack ownership. These are implementation requirements,
-not completed security or conformance claims.
+The metadata installer, getter wrappers, row lookup and temporary native
+call-name copies have scoped work/storage admission. A refused name copy still
+unwinds its call-stack ownership. Callback effects that precede a later error
+remain visible. These checks do not establish complete DOM atomicity, total
+process-memory bounds or production security.
+
+The first frozen candidate passed 18 focused groups, then failed the unchanged
+exhaustive UTF-16 JSON test on both Rust versions. Its eager metadata setup left
+66,390 bootstrap work units; 1,148 library tests passed and one failed in each
+run. Those attempts remain in the evidence.
+
+The correction installs the eight rows into an empty registry, builds final
+descriptors directly and shares immutable strings between distinct mutable
+bags. An explicitly prepaid 512-slot reservation before initialization removes
+later bootstrap object-buffer growth. Ordinary object/property charges and
+numeric limits remain unchanged. The measured bootstrap retains 70,334 work
+units, charges 734,594 bytes, and uses 351 of the reserved object slots. These
+are logical budget measurements, not allocator or CPU performance measurements.
+
+The corrected candidate passes 21 focused groups and the original UTF-16 test.
+Rust 1.88 and 1.98 each pass 1,361 default and 1,478 native-feature tests,
+including ignored confinement tests, both new browser callback fixtures and
+existing maximum-string regressions. Six strict Clippy configurations and
+formatting pass. The direct-page and confined-worker fixtures check six literal
+pixels and result text on initial load and click.
+
+One parallel Rust 1.88 attempt timed out in an unchanged timezone-helper stress
+test. That attempt is retained; the isolated test and complete matrix then
+passed with identical source and deadlines. Contention is an inference, not a
+proven cause. No external conformance replay ran for the rejected first candidate.
+
+Before execution, source review added five property-helper `restore` options
+and positive browser-fixture selector guards; original drafts remain retained.
+The release verifier also corrected path sorting to match the frozen digest.
+None of these corrections changed an observed case's expectation or quota.
 
 Normative references: [Web IDL operations](https://webidl.spec.whatwg.org/#es-operations)
 and [DOM ParentNode](https://dom.spec.whatwg.org/#interface-parentnode).

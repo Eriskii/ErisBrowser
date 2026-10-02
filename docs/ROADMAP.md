@@ -25,13 +25,16 @@ Typed arrays, BigInt codecs, shared memory, Proxy and foreign realms remain ahea
 closes two metadata-heavy local work stops without raising quotas;
 broader interpreter performance and accounting remain open work.
 
-[Object.is](../tests/conformance/object-is.md) now passes all 42 upstream modes
-and verifies 68/78 independent local expectations under existing budgets.
-The full 44-profile replay gains 42 cases without regressions. The
-[DOM method preparation](../tests/conformance/dom-method-identity.md) records
-58 independent modes before separating Document, Element and DocumentFragment
-function identities, metadata bags and receiver checks. The ordinary local
-Document-versus-Element identity failures stay visible until it is implemented.
+[Object.is](../tests/conformance/object-is.md) passes all 42 upstream modes.
+The [DOM method follow-up](../tests/conformance/dom-method-identity.md) separates
+eight Document, Element and DocumentFragment function identities, property bags
+and receiver checks. It closes four earlier Object.is identity failures and
+18 modes in the new DOM suite, which now verifies 52/58 expectations.
+All 44 formal profiles retain their complete results; all 36 existing gates
+pass. The 11 local suites gain 22 passes without regressions or control changes.
+Document.append, real interface prototypes and ordinary host method replacement
+remain ordinary unmet expectations. Broader DOM interfaces and reflection remain
+open work.
 
 The [native GPU route](vulkan-native-window.md) now connects the custom shaders
 to the actual browser window behind `vulkan-raster`. Admitted loaded pages,

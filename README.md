@@ -11,7 +11,10 @@ views, nine Number codec pairs including Float16, and authentic `isView`.
 Its complete upstream profile records 694 passes, 12 failures and 416 exclusions.
 Typed arrays, BigInt codecs and shared memory remain unfinished.
 [Object.is](tests/conformance/object-is.md) now passes its complete 42-case
-upstream profile; separate host method-identity gaps remain visible. The
+upstream profile. The [DOM method follow-up](tests/conformance/dom-method-identity.md)
+separates eight Document, Element and DocumentFragment function identities and
+checks their receivers before conversion. Interface prototypes, ordinary host
+method replacement and Document.append remain unfinished. The
 [Vulkan snapshot bridge](tools/vulkan-raster-probe/BROWSER_BRIDGE.md) now checks
 real browser display lists with the custom GPU rasterizer and whole-frame CPU
 fallback. Its 16 cases pass on three Vulkan adapters. A separate
