@@ -1,5 +1,19 @@
 # Validation record
 
+## Processing-instruction serialization
+
+HTML serialization now writes the separate `?>` terminator required by the
+[current standard](https://html.spec.whatwg.org/multipage/parsing.html#serialising-html-fragments).
+Previously, reparsing serialized data ending in `?` silently consumed that last
+data character. The new regression covers empty data, literal markup characters,
+a trailing question mark and Unicode, with exact output and reparsed node data.
+The existing tree-position assertion now uses the correct terminators.
+
+All 1,210 default library tests pass on Rust 1.88, including confinement tests;
+formatting passes. The first run's two confinement preflights failed inside the
+outer sandbox; unchanged code passes outside it. Both attempts are retained in
+the [evidence](evidence/processing-instruction-serialization.json).
+
 ## Runtime initialization
 
 The [fallible initialization checkpoint](runtime-initialization.md) passes all

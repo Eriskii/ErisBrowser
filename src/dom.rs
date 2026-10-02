@@ -1675,7 +1675,7 @@ impl Document {
                     push_serialized(&mut out, target);
                     push_serialized(&mut out, " ");
                     push_serialized(&mut out, data);
-                    push_serialized(&mut out, ">");
+                    push_serialized(&mut out, "?>");
                 }
                 NodeKind::Text(text) => {
                     if node.parent.and_then(|parent| self.namespace(parent))
@@ -9696,7 +9696,7 @@ mod tests {
         );
         assert_eq!(
             d.outer_html(d.root),
-            "<!--before--><!DOCTYPE html PUBLIC \"public\" \"system\"><?build version><html><!--html--><head><!--head--></head><!--between--><body>x<!--body--><?step done></body><!--afterbody--></html><!--afterhtml-->"
+            "<!--before--><!DOCTYPE html PUBLIC \"public\" \"system\"><?build version?><html><!--html--><head><!--head--></head><!--between--><body>x<!--body--><?step done?></body><!--afterbody--></html><!--afterhtml-->"
         );
         assert_eq!(d.text_content(d.root), "x");
         assert!(
@@ -9753,6 +9753,30 @@ mod tests {
                 .iter()
                 .any(|node| matches!(node.kind, NodeKind::Doctype(_)))
         );
+    }
+    #[test]
+    fn processing_instruction_serialization_preserves_trailing_question_marks() {
+        // HTML fragment serialization appends a separate ?> after the data.
+        // Without its ?, reparsing silently consumes a data-ending ? instead.
+        for (data, expected) in [
+            ("", "<?Build ?>"),
+            ("a & < \"b\"", "<?Build a & < \"b\"?>"),
+            ("ending?", "<?Build ending??>"),
+            ("🦀", "<?Build 🦀?>"),
+        ] {
+            let mut original = parse("<div></div>");
+            let pi = original.create_processing_instruction("Build", data);
+            let serialized = original.outer_html(pi);
+            assert_eq!(serialized, expected);
+            let restored = parse(&format!("<div>{serialized}</div>"));
+            let parent = restored.query_selector("div").unwrap();
+            assert_eq!(restored.nodes[parent].children.len(), 1);
+            let child = restored.nodes[parent].children[0];
+            assert!(
+                matches!(&restored.nodes[child].kind, NodeKind::ProcessingInstruction { target, data: actual } if target == "Build" && actual == data),
+                "{serialized:?}"
+            );
+        }
     }
     #[test]
     fn non_container_mutations_and_retained_character_data_are_bounded() {

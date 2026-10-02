@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "parent": "a6fe7df8a610284113c96860a1dc241b78bc45f1",
+  "change": "Serialize ProcessingInstruction with the separate ?> terminator, preserving a trailing question mark in data when reparsed.",
+  "spec": "https://html.spec.whatwg.org/multipage/parsing.html#serialising-html-fragments",
+  "source_sha256": "38a50b47f75d4b249b464183011d72f4b52e92b819dd897099b910c725f7ddb5",
+  "diff_sha256": "0234f4aac981cf881808a4ff8e8f7f0aa7211f7e77035b293392e1be6f098e1d",
+  "rust_1_88_default_library": {
+    "passed": 1210,
+    "failed": 0,
+    "ignored": 0
+  },
+  "new_test_groups": 1,
+  "private_expectation_correction": "Existing tree-position serialization assertion now includes the required question mark in each PI terminator. No external fixture or baseline changed.",
+  "initial_attempt": "1208 passed, two Linux confinement tests failed their local socket preflight inside the outer sandbox. Unchanged code passed all1210 outside it. Both logs retained.",
+  "commands": [
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--lib",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 101,
+      "elapsed_seconds": 13.208,
+      "log": "default-library-188-1.log",
+      "sha256": "5266c7fa62bd9da0012412590104a465a9e652cf37fdc854aa24c12d38554fc4"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--lib",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 8.351,
+      "log": "default-library-188-2.log",
+      "sha256": "7ea132b50f3f5af8b8c1579feb4b2a793e7388f73ba8375eeacfe7510d9b3645"
+    }
+  ],
+  "format": {
+    "command": [
+      "cargo",
+      "+1.88.0",
+      "fmt",
+      "--all",
+      "--",
+      "--check"
+    ],
+    "exit": 0
+  },
+  "raw_archive": {
+    "path": "processing-instruction-serialization-logs.tar.gz",
+    "sha256": "831f6b1805411053bd2bfacdc240b7920403f2eb78093f55b60ad2efa9120ee0",
+    "bytes": 56040
+  }
+}
