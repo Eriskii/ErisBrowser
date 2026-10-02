@@ -27,9 +27,10 @@ broader interpreter performance and accounting remain open work.
 
 [Object.is](../tests/conformance/object-is.md) now passes all 42 upstream modes
 and verifies 68/78 independent local expectations under existing budgets.
-The full 44-profile replay gains 42 cases without regressions. Distinct function
-identities, metadata bags and receiver checks for Document, Element and
-DocumentFragment operations remain the next DOM follow-up; the ordinary local
+The full 44-profile replay gains 42 cases without regressions. The
+[DOM method preparation](../tests/conformance/dom-method-identity.md) records
+58 independent modes before separating Document, Element and DocumentFragment
+function identities, metadata bags and receiver checks. The ordinary local
 Document-versus-Element identity failures stay visible until it is implemented.
 
 The [native GPU route](vulkan-native-window.md) now connects the custom shaders

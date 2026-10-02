@@ -1,0 +1,644 @@
+{
+  "schema": 1,
+  "status": "Independent authored draft; no parser, runner, compiler or engine execution",
+  "case_sources": 29,
+  "case_modes": 58,
+  "feature_pairs": 8,
+  "feature_control_modes": 32,
+  "common_controls": "Reuse the exact twelve Object.is/DataView common control modes and original harness order.",
+  "protocol_positive_pair": "document-query-selector",
+  "original_object_is_modes": "The four original Object.is defining-interface modes remain in their held suite, unchanged.",
+  "cases": [
+    {
+      "id": "eight-function-identity-matrix",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nvar again=[document.querySelector,document.querySelectorAll,o.querySelector,o.querySelectorAll,g.querySelector,g.querySelectorAll,o.append,g.append];\nfor(var i=0;i<8;i++){assert.sameValue(methods[i]===again[i],true);assert.sameValue(Object.is(methods[i],again[i]),true);for(var j=0;j<8;j++){assert.sameValue(methods[i]===methods[j],i===j);assert.sameValue(Object.is(methods[i],methods[j]),i===j);}}\n",
+      "sha256": "d0edf6254278ae672a3bbc46a0fca0b7621f740be155ab85ad8eb7d5b1897a06"
+    },
+    {
+      "id": "element-identity-across-tags-and-namespace",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nvar box=document.createElement('div');box.innerHTML='<svg><g></g></svg>';var svg=box.firstChild;\nassert.sameValue(svg.namespaceURI,'http://www.w3.org/2000/svg');\nassert.sameValue(eq,o.querySelector);assert.sameValue(eq,svg.querySelector);assert.sameValue(ea,svg.querySelectorAll);assert.sameValue(ep,svg.append);\nassert.sameValue(svg.querySelector('g'),svg.firstChild);assert.sameValue(svg.querySelectorAll('g')[0],svg.firstChild);\n",
+      "sha256": "49097033f6c30652cfc0930ec9bef79a720a05139b49c6ff9acec99c3a7f8149"
+    },
+    {
+      "id": "fragment-and-template-content-identity",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nvar template=document.createElement('template');template.innerHTML='<i></i>';var content=template.content;\nassert.sameValue(content.nodeType,11);assert.sameValue(fq,g.querySelector);assert.sameValue(fq,content.querySelector);assert.sameValue(fa,content.querySelectorAll);assert.sameValue(fp,content.append);\nassert.sameValue(fq.call(content,'i'),content.firstChild);assert.sameValue(fa.call(content,'i')[0],content.firstChild);assert.notSameValue(fq,eq);assert.notSameValue(fp,ep);\n",
+      "sha256": "1bb7796bd6a402837af0971b3d8e5a3c39c7b25e9aac8432f0a3441016a0450f"
+    },
+    {
+      "id": "saved-aliases-survive-tree-movement",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\ndocument.body.removeChild(e);g.appendChild(e);assert.sameValue(eq,e.querySelector);assert.sameValue(ea,e.querySelectorAll);assert.sameValue(ep,e.append);\nassert.sameValue(eq.call(e,'i'),a);assert.sameValue(fq,g.querySelector);assert.sameValue(fq.call(g,'i'),d);\nvar copy=e.cloneNode(true);assert.sameValue(eq,copy.querySelector);assert.notSameValue(eq.call(copy,'i'),a);\n",
+      "sha256": "e93e8dbca1ff68750337ed715f4cb712e921b31fa9e7cafa8893fd2a9189c502"
+    },
+    {
+      "id": "eight-isolated-function-expando-bags",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nvar again=[document.querySelector,document.querySelectorAll,o.querySelector,o.querySelectorAll,g.querySelector,g.querySelectorAll,o.append,g.append];\nfor(var i=0;i<8;i++){var marker={index:i};methods[i].identityToken=marker;assert.sameValue(again[i].identityToken,marker);for(var j=0;j<8;j++)if(j!==i)assert.sameValue(methods[j].identityToken,undefined);assert.sameValue(delete methods[i].identityToken,true);assert.sameValue(Object.getOwnPropertyDescriptor(again[i],'identityToken'),undefined);}\n",
+      "sha256": "ceea730d31895a3b8a0c35bd9c0532e5689400023cc1f00e9eed969d09bfd805"
+    },
+    {
+      "id": "name-length-descriptors-and-isolation",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nvar names=['querySelector','querySelectorAll','querySelector','querySelectorAll','querySelector','querySelectorAll','append','append'];\nvar again=[document.querySelector,document.querySelectorAll,o.querySelector,o.querySelectorAll,g.querySelector,g.querySelectorAll,o.append,g.append];\nfor(var i=0;i<8;i++){var m=methods[i],name=Object.getOwnPropertyDescriptor(m,'name'),len=Object.getOwnPropertyDescriptor(m,'length');verifyProperty(m,'name',{value:names[i],writable:false,enumerable:false,configurable:true},{restore:true});verifyProperty(m,'length',{value:i<6?1:0,writable:false,enumerable:false,configurable:true},{restore:true});Object.defineProperty(m,'name',{value:'renamed'});Object.defineProperty(m,'length',{value:77});assert.sameValue(again[i].name,'renamed');assert.sameValue(again[i].length,77);for(var j=0;j<8;j++)if(j!==i){assert.sameValue(methods[j].name,names[j]);assert.sameValue(methods[j].length,j<6?1:0);}Object.defineProperty(m,'name',name);Object.defineProperty(m,'length',len);}\n",
+      "sha256": "0d8331477c6642bb36b8ad677a819f8c29ba76963ab114a8e6b789bd59c2234e"
+    },
+    {
+      "id": "deleted-own-metadata-stays-deleted",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nvar keys=['name','length'];\nfor(var i=0;i<8;i++)for(var j=0;j<2;j++){var key=keys[j],saved=Object.getOwnPropertyDescriptor(methods[i],key);assert.sameValue(delete methods[i][key],true);var again=[document.querySelector,document.querySelectorAll,e.querySelector,e.querySelectorAll,f.querySelector,f.querySelectorAll,e.append,f.append];assert.sameValue(Object.getOwnPropertyDescriptor(again[i],key),undefined);Object.defineProperty(methods[i],key,saved);assert.sameValue(Object.getOwnPropertyDescriptor(again[i],key).value,saved.value);}\n",
+      "sha256": "311bb571eba55637a796b539b0e9a4a1b34126ff2d144182c83a9f7b6745773d"
+    },
+    {
+      "id": "dispatch-ignores-public-name-and-length",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nvar qn=Object.getOwnPropertyDescriptor(eq,'name'),an=Object.getOwnPropertyDescriptor(ea,'name'),ql=Object.getOwnPropertyDescriptor(eq,'length');\nObject.defineProperty(eq,'name',{value:'querySelectorAll'});Object.defineProperty(ea,'name',{value:'querySelector'});Object.defineProperty(eq,'length',{value:99});\nassert.sameValue(eq,e.querySelector);assert.sameValue(eq.call(o,'i'),c);var found=ea.call(o,'i');assert.sameValue(found.length,1);assert.sameValue(found[0],c);assert.sameValue(dq.name,'querySelector');assert.sameValue(fq.name,'querySelector');\nObject.defineProperty(eq,'name',qn);Object.defineProperty(ea,'name',an);Object.defineProperty(eq,'length',ql);\n",
+      "sha256": "25cfb0630334eb73d03fdbf39b686660ec4229140541ceae54e3268b4f6d4dab"
+    },
+    {
+      "id": "selectors-call-distinct-same-interface-receiver",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nassert.sameValue(dq.call(document,'#domIdentityProbe'),a);assert.sameValue(da.call(document,'#domIdentityProbe')[0],a);\nassert.sameValue(eq.call(o,'i'),c);assert.sameValue(ea.call(o,'i')[0],c);assert.sameValue(fq.call(g,'i'),d);assert.sameValue(fa.call(g,'i')[0],d);\n",
+      "sha256": "d7ea2d19e0042760a18330de5ffe064570aa8c81e15b2a188a05f33f20c92e5f"
+    },
+    {
+      "id": "selectors-apply-distinct-same-interface-receiver",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nassert.sameValue(dq.apply(document,['#domIdentityProbe']),a);assert.sameValue(da.apply(document,['#domIdentityProbe'])[0],a);\nassert.sameValue(eq.apply(o,['i']),c);assert.sameValue(ea.apply(o,['i'])[0],c);assert.sameValue(fq.apply(g,['i']),d);assert.sameValue(fa.apply(g,['i'])[0],d);\n",
+      "sha256": "bbe229238d79f57806cde7c0661b7560aa784cc5b30875ef0ceff027feccb88f"
+    },
+    {
+      "id": "selectors-bind-preserves-target-and-fresh-function-identity",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nvar target=[document,document,o,o,g,g],want=[a,a,c,c,d,d];\nfor(var i=0;i<6;i++){var bound=methods[i].bind(target[i]),again=methods[i].bind(target[i]);assert.sameValue(bound,bound);assert.notSameValue(bound,again);assert.notSameValue(bound,methods[i]);var r=bound.call({},'i');assert.sameValue(i%2?r[0]:r,want[i]);}\n",
+      "sha256": "62a085ee49dcbae0145f80095d331190f415da7021c7d49eb0263ac4e590f78c"
+    },
+    {
+      "id": "all-selector-cross-interface-brands-before-coercion",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nvar kinds=[document,e,f];\nfor(var i=0;i<6;i++){var touches=0,arg={};Object.defineProperty(arg,'toString',{get:function(){touches++;return function(){touches++;return 'i';};}});for(var j=0;j<3;j++)if(j!==Math.floor(i/2))assert.throws(TypeError,function(){methods[i].call(kinds[j],arg);});assert.sameValue(touches,0);var r=methods[i].call(receivers[i],arg);assert.sameValue(touches,2);assert.sameValue(i%2?r[0]:r,i<4?a:b);}\n",
+      "sha256": "743f3a975cb1335fa54641fc4129c8c8f5a06a17103ae5ea4244278365c669d1"
+    },
+    {
+      "id": "selector-noninterface-and-forged-receivers",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nvar fake={nodeType:1,tagName:'SECTION'},inherited=Object.create(Object.getPrototypeOf(e)),text=document.createTextNode('x');\nvar bad=[null,undefined,window,{},text,fake,inherited];\nfor(var i=0;i<6;i++){var touches=0,arg={toString:function(){touches++;return 'i';}};for(var j=0;j<bad.length;j++)assert.throws(TypeError,function(){methods[i].call(bad[j],arg);});assert.sameValue(touches,0);}\n",
+      "sha256": "3232ef177ad86068463dfb0e763b7f2ffc2c647eaef4f1551521e38da61b2f3b"
+    },
+    {
+      "id": "selector-required-argument-versus-explicit-undefined",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nfor(var i=0;i<6;i++){assert.throws(TypeError,function(){methods[i].call(receivers[i]);});var r=methods[i].call(receivers[i],undefined);if(i%2)assert.sameValue(r.length,0);else assert.sameValue(r,null);}\n",
+      "sha256": "d4ca7a6a237c1a03df95ca6538f63597e82eaf37ee2b784709cf393b42815357"
+    },
+    {
+      "id": "selector-primitive-getter-hint-and-ignored-extra",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nfor(var i=0;i<6;i++){var count=0,arg={},extra={toString:function(){throw new Test262Error('ignored conversion');}};Object.defineProperty(arg,Symbol.toPrimitive,{get:function(){count++;return function(hint){assert.sameValue(this,arg);assert.sameValue(hint,'string');count++;return 'i';};}});var r=methods[i].call(receivers[i],arg,extra);assert.sameValue(count,2);assert.sameValue(i%2?r[0]:r,i<4?a:b);}\n",
+      "sha256": "a7b9db87680d0bddf3e96b1000b7eadd459c3caae471df90dd5a341bbe284bb7"
+    },
+    {
+      "id": "selector-conversion-throws-exact-sentinel",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nfor(var i=0;i<6;i++){var marker={},count=0,arg={};Object.defineProperty(arg,'toString',{get:function(){count++;throw marker;}});try{methods[i].call(receivers[i],arg);throw new Test262Error('no conversion throw');}catch(error){assert.sameValue(error,marker);}assert.sameValue(count,1);}\n",
+      "sha256": "b61a142fadb184d189b15b970a6dca711a0131ca6174b3f8d97ec50b4d8c7ae2"
+    },
+    {
+      "id": "selectors-observe-live-tree-after-conversion",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nvar targets=[e,f],qs=[eq,fq],qas=[ea,fa];\nfor(var i=0;i<2;i++){var count=0,added=document.createElement('strong'),arg={toString:function(){count++;targets[i].appendChild(added);return 'strong';}};assert.sameValue(qs[i].call(targets[i],arg),added);assert.sameValue(count,1);var next=document.createElement('em'),allArg={toString:function(){count++;targets[i].appendChild(next);return 'em';}};var r=qas[i].call(targets[i],allArg);assert.sameValue(r.length,1);assert.sameValue(r[0],next);assert.sameValue(count,2);}\n",
+      "sha256": "4d04c5b6cd5037be2b511271b65f718cac62bd0c75c7dbb10630a0aa70352a7c"
+    },
+    {
+      "id": "append-call-apply-bind-distinct-receivers",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nassert.sameValue(ep,o.append);assert.sameValue(fp,g.append);assert.notSameValue(ep,fp);\nassert.sameValue(ep.call(o,'A'),undefined);assert.sameValue(fp.apply(g,['B']),undefined);assert.sameValue(ep.bind(o)('C'),undefined);assert.sameValue(fp.bind(g)('D'),undefined);\nassert.sameValue(o.textContent,'AC');assert.sameValue(g.textContent,'BD');assert.sameValue(e.textContent,'');assert.sameValue(f.textContent,'');assert.sameValue(o.firstChild,c);assert.sameValue(g.firstChild,d);\n",
+      "sha256": "013593717d8bd132bfb3d475c1502aa6971deff2288d8fac9dada878da1e1869"
+    },
+    {
+      "id": "append-brand-before-any-argument-conversion",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nvar ms=[ep,fp],rs=[e,f],invalid=[[document,f,{},document.createTextNode('x'),null,undefined],[document,e,{},document.createTextNode('x'),null,undefined]];\nfor(var i=0;i<2;i++){var hits=0,arg={toString:function(){hits++;return 'X';}};for(var j=0;j<invalid[i].length;j++)assert.throws(TypeError,function(){ms[i].call(invalid[i][j],arg);});assert.sameValue(hits,0);assert.sameValue(ms[i].call(rs[i],arg),undefined);assert.sameValue(hits,1);assert.sameValue(rs[i].textContent,'X');}\n",
+      "sha256": "0398f6d26c9f326ba41552fb5437ebfa35fbd9b27014489d4f03552836f65d83"
+    },
+    {
+      "id": "append-all-conversions-before-operation-mutation",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nvar ms=[ep,fp];\nfor(var i=0;i<2;i++){var destination=i?document.createDocumentFragment():document.createElement('div'),holder=document.createElement('aside'),child=document.createElement('b'),marker={},trace='';holder.appendChild(child);var first={toString:function(){trace+='a';destination.textContent='author';return 'prepared';}},second={toString:function(){trace+='b';throw marker;}};try{ms[i].call(destination,child,first,second);throw new Test262Error('no throw');}catch(error){assert.sameValue(error,marker);}assert.sameValue(trace,'ab');assert.sameValue(destination.textContent,'author');assert.sameValue(child.parentNode,holder);}\n",
+      "sha256": "d8e9958683407a597d2b8535902afad624eb75035ad82894c97cba91ba1a29c4"
+    },
+    {
+      "id": "append-reentry-and-fragment-move",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nvar ms=[ep,fp];\nfor(var i=0;i<2;i++){var destination=i?document.createDocumentFragment():document.createElement('div'),part=document.createDocumentFragment(),child=document.createElement('b');part.appendChild(child);var hits=0,arg={toString:function(){hits++;destination.textContent='during';return 'after';}};assert.sameValue(ms[i].call(destination,part,arg),undefined);assert.sameValue(hits,1);assert.sameValue(destination.textContent,'duringafter');assert.sameValue(child.parentNode,destination);assert.sameValue(part.firstChild,null);}\n",
+      "sha256": "a7fff99bf6c86b4ada5bae8285fad8b523c887147b28ad3f9d8c606debca1517"
+    },
+    {
+      "id": "operations-nonconstructable-and-no-own-prototype",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nassert.sameValue(typeof Reflect.construct,'function');function C(){}var ordinary=Reflect.construct(C,[]);assert.sameValue(Object.getPrototypeOf(ordinary),C.prototype);\nfor(var i=0;i<8;i++){var m=methods[i];assert.sameValue(Object.getOwnPropertyDescriptor(m,'prototype'),undefined);assert.throws(TypeError,function(){new m();});assert.throws(TypeError,function(){Reflect.construct(m,[]);});assert.throws(TypeError,function(){Reflect.construct(C,[],m);});var bound=m.bind(receivers[i]);assert.throws(TypeError,function(){new bound();});}\n",
+      "sha256": "26b42e6540ff92e63162289f8cbaacc3ef54b5a854a7b12d3e70ae76a960a1ab"
+    },
+    {
+      "id": "text-and-comment-have-no-parentnode-methods",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nvar text=document.createTextNode('x'),box=document.createElement('div');box.innerHTML='<!--x-->';var comment=box.firstChild;assert.sameValue(text.nodeType,3);assert.sameValue(comment.nodeType,8);\nvar wrong=[text,comment];for(var i=0;i<2;i++){assert.sameValue(wrong[i].querySelector,undefined);assert.sameValue(wrong[i].querySelectorAll,undefined);assert.sameValue(wrong[i].append,undefined);}\n",
+      "sha256": "a1ea409aae0c9b0d60a826950726ec3052b34059fde4318e5ef1d8afce7d57d4"
+    },
+    {
+      "id": "node-inherited-methods-are-not-split",
+      "kind": "ordinary",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nvar text=document.createTextNode('x');var names=['appendChild','removeChild','cloneNode'];for(var i=0;i<3;i++){assert.sameValue(typeof e[names[i]],'function');assert.sameValue(e[names[i]],f[names[i]]);assert.sameValue(e[names[i]],text[names[i]]);}\nvar node=document.createElement('b');assert.sameValue(e.appendChild.call(g,node),node);assert.sameValue(node.parentNode,g);assert.sameValue(f.removeChild.call(g,node),node);assert.sameValue(node.parentNode,null);assert.notSameValue(text.cloneNode.call(a,true),a);\n",
+      "sha256": "8d8ab265c059ee835488bc3ea4fa8410384d5c57823a26603f0d061fe926466b"
+    },
+    {
+      "id": "document-append-standard-prerequisite",
+      "kind": "missing-prerequisite",
+      "requires": [
+        "Document.append"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nassert.sameValue(typeof document.append,'function');assert.notSameValue(document.append,ep);assert.notSameValue(document.append,fp);assert.sameValue(document.append(),undefined);\n",
+      "sha256": "b301118839e1718119900e7d67c117d715b4da091655cbb75be6394fb5ae506b",
+      "note": "Ordinary success expectation; the scoped increment intentionally leaves Document.append absent."
+    },
+    {
+      "id": "real-interface-prototypes-standard-prerequisite",
+      "kind": "missing-prerequisite",
+      "requires": [
+        "Document, Element and DocumentFragment interface prototypes"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nassert.sameValue(typeof Document,'function');assert.sameValue(typeof Element,'function');assert.sameValue(typeof DocumentFragment,'function');\nvar protos=[Document.prototype,Element.prototype,DocumentFragment.prototype],objs=[document,e,f],qs=[dq,eq,fq],qas=[da,ea,fa];\nfor(var i=0;i<3;i++){assert.sameValue(protos[i].isPrototypeOf(objs[i]),true);verifyProperty(protos[i],'querySelector',{value:qs[i],writable:true,enumerable:true,configurable:true},{restore:true});verifyProperty(protos[i],'querySelectorAll',{value:qas[i],writable:true,enumerable:true,configurable:true},{restore:true});assert.sameValue(Object.getOwnPropertyDescriptor(objs[i],'querySelector'),undefined);}\n",
+      "sha256": "ae7b55991da655a81ee61f4ea92b7a00468e3ff4b5234b5efc47678d85690a2a",
+      "note": "Ordinary success expectation; EventTarget fallback is not a substitute for real interface prototype descriptors."
+    },
+    {
+      "id": "host-method-replacement-standard-prerequisite",
+      "kind": "missing-prerequisite",
+      "requires": [
+        "ordinary host object property bags"
+      ],
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nvar targets=[document,e,f],saved=[dq,eq,fq];\nfor(var i=0;i<3;i++){var replacement=function(){return 73;};targets[i].querySelector=replacement;assert.sameValue(targets[i].querySelector,replacement);assert.sameValue(targets[i].querySelector(),73);verifyProperty(targets[i],'querySelector',{value:replacement,writable:true,enumerable:true,configurable:true},{restore:true});assert.sameValue(delete targets[i].querySelector,true);assert.sameValue(targets[i].querySelector,saved[i]);Object.defineProperty(targets[i],'querySelector',{value:replacement,writable:true,enumerable:true,configurable:true});assert.sameValue(targets[i].querySelector,replacement);assert.sameValue(delete targets[i].querySelector,true);assert.sameValue(targets[i].querySelector,saved[i]);}\n",
+      "sha256": "f6f70bb1cfce49b126178da79ddb12b11f0de2dbaf9c037ae79d605fc5080b01",
+      "note": "Ordinary success expectation; no exclusion or special error allowance for missing host expandos/replacement."
+    },
+    {
+      "id": "repeated-method-acquisition-terminal-policy",
+      "kind": "terminal-policy",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "resource",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nassert.sameValue(e.querySelector.call(e,'i'),a);for(;;){var next=e.querySelector;}\n",
+      "sha256": "bd126072d0630c7d7a76386897777756e9648615d9c4d0518913352b4eefc388",
+      "note": "Existing cumulative runtime work/heap policy, not an ECMAScript error or catchable success."
+    },
+    {
+      "id": "cumulative-function-property-growth-terminal-policy",
+      "kind": "terminal-policy",
+      "requires": [
+        "browser DOM",
+        "Object.is"
+      ],
+      "expectation": "resource",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\neq.policyProbe=1;assert.sameValue(eq.policyProbe,1);for(var n=0;;n++){eq['owned'+n]=n;}\n",
+      "sha256": "65d997455be924b2dd3e1d759dcbcfc6bc7c1db34a1fc2fd91606849eb335d71",
+      "note": "Unchanged cumulative quota. No reset, catch or expectation inferred from candidate behavior."
+    }
+  ],
+  "feature_controls": [
+    {
+      "id": "dom-method-identity-document-query-selector-positive",
+      "pair": "document-query-selector",
+      "variant": "positive",
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nassert.sameValue(dq.call(document,'#domIdentityProbe'),a);assert.sameValue(dq.name,'querySelector');\n",
+      "sha256": "37fbb2d79f0611fdfb1c113c85b19cd1a85004eea28855b7defb5bf9219e7e07"
+    },
+    {
+      "id": "dom-method-identity-document-query-selector-wrong",
+      "pair": "document-query-selector",
+      "variant": "wrong",
+      "expectation": "Test262Error",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nassert.sameValue(dq.call(document,'#domIdentityProbe'),a);assert.sameValue(dq.name,'deliberately-wrong-name');\n",
+      "sha256": "08975430aa17432bb35ca683cf4b0a609ea7ce2eacb1a92182ba32e0b4d3b088"
+    },
+    {
+      "id": "dom-method-identity-document-query-selector-all-positive",
+      "pair": "document-query-selector-all",
+      "variant": "positive",
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nassert.sameValue(da.call(document,'#domIdentityProbe')[0],a);assert.sameValue(da.name,'querySelectorAll');\n",
+      "sha256": "2214c71185818908ae03024314ce59367ec46a4d00d6be6aa8e4237c62a6ace9"
+    },
+    {
+      "id": "dom-method-identity-document-query-selector-all-wrong",
+      "pair": "document-query-selector-all",
+      "variant": "wrong",
+      "expectation": "Test262Error",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nassert.sameValue(da.call(document,'#domIdentityProbe')[0],a);assert.sameValue(da.name,'deliberately-wrong-name');\n",
+      "sha256": "745d7986d371f570899eb2e552363818d0bba283942cc2ee51e157dfd549b004"
+    },
+    {
+      "id": "dom-method-identity-element-query-selector-positive",
+      "pair": "element-query-selector",
+      "variant": "positive",
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nassert.sameValue(eq.call(o,'i'),c);assert.sameValue(eq.name,'querySelector');\n",
+      "sha256": "518c95438f8db3006fcdcb8679587dc74e8277e40b096902601bbebcbf17945a"
+    },
+    {
+      "id": "dom-method-identity-element-query-selector-wrong",
+      "pair": "element-query-selector",
+      "variant": "wrong",
+      "expectation": "Test262Error",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nassert.sameValue(eq.call(o,'i'),c);assert.sameValue(eq.name,'deliberately-wrong-name');\n",
+      "sha256": "b66528fa58f5385e81a76b2f94815d118ed1be5cfc6e8c096c5506ef9c2523e7"
+    },
+    {
+      "id": "dom-method-identity-element-query-selector-all-positive",
+      "pair": "element-query-selector-all",
+      "variant": "positive",
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nassert.sameValue(ea.call(o,'i')[0],c);assert.sameValue(ea.name,'querySelectorAll');\n",
+      "sha256": "c5787bc802f2cb9c1174e27dc50b56a5c59b29c055342c7182cc6457afaf42bd"
+    },
+    {
+      "id": "dom-method-identity-element-query-selector-all-wrong",
+      "pair": "element-query-selector-all",
+      "variant": "wrong",
+      "expectation": "Test262Error",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nassert.sameValue(ea.call(o,'i')[0],c);assert.sameValue(ea.name,'deliberately-wrong-name');\n",
+      "sha256": "34c8c8c4874a155b5049676c1f7a8892fe6e08db6f1280cf4729b96ce4e5ae9f"
+    },
+    {
+      "id": "dom-method-identity-fragment-query-selector-positive",
+      "pair": "fragment-query-selector",
+      "variant": "positive",
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nassert.sameValue(fq.call(g,'i'),d);assert.sameValue(fq.name,'querySelector');\n",
+      "sha256": "2fddd98b3bb5cd9a9a13d16aadb725b71d931cc19ea4424bb29f24a0f7f8d0df"
+    },
+    {
+      "id": "dom-method-identity-fragment-query-selector-wrong",
+      "pair": "fragment-query-selector",
+      "variant": "wrong",
+      "expectation": "Test262Error",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nassert.sameValue(fq.call(g,'i'),d);assert.sameValue(fq.name,'deliberately-wrong-name');\n",
+      "sha256": "7c551012d94d53320c06ee22f396f18b411f5b24557778b48b3b346f78301164"
+    },
+    {
+      "id": "dom-method-identity-fragment-query-selector-all-positive",
+      "pair": "fragment-query-selector-all",
+      "variant": "positive",
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nassert.sameValue(fa.call(g,'i')[0],d);assert.sameValue(fa.name,'querySelectorAll');\n",
+      "sha256": "c5f6c5fe4f951b73f110b2241cda4dee0380d671e1ba7b77224648ca4c39e419"
+    },
+    {
+      "id": "dom-method-identity-fragment-query-selector-all-wrong",
+      "pair": "fragment-query-selector-all",
+      "variant": "wrong",
+      "expectation": "Test262Error",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nassert.sameValue(fa.call(g,'i')[0],d);assert.sameValue(fa.name,'deliberately-wrong-name');\n",
+      "sha256": "3c148d4bd45ceac4abbbf468b5467d2e168c010bccf62f4b2814af71b6312087"
+    },
+    {
+      "id": "dom-method-identity-element-append-positive",
+      "pair": "element-append",
+      "variant": "positive",
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nep.call(o,'control');assert.sameValue(o.textContent,'control');assert.sameValue(ep.name,'append');\n",
+      "sha256": "ad1bc728f7aeb2d7081cfa6e77a77b34ef8881ef49ee474c8422c0707c73a94a"
+    },
+    {
+      "id": "dom-method-identity-element-append-wrong",
+      "pair": "element-append",
+      "variant": "wrong",
+      "expectation": "Test262Error",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nep.call(o,'control');assert.sameValue(o.textContent,'control');assert.sameValue(ep.name,'deliberately-wrong-name');\n",
+      "sha256": "9ad7e641134ab224dd0826d3968e9c993d3668b1daa210b40f9cf97ed7772f87"
+    },
+    {
+      "id": "dom-method-identity-fragment-append-positive",
+      "pair": "fragment-append",
+      "variant": "positive",
+      "expectation": "pass",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nfp.call(g,'control');assert.sameValue(g.textContent,'control');assert.sameValue(fp.name,'append');\n",
+      "sha256": "8e1e3348361855078905dfe4ee5c44f007195d33b3d989274b3cfdd48c122604"
+    },
+    {
+      "id": "dom-method-identity-fragment-append-wrong",
+      "pair": "fragment-append",
+      "variant": "wrong",
+      "expectation": "Test262Error",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\nvar e=document.createElement('section'),o=document.createElement('article');\nvar f=document.createDocumentFragment(),g=document.createDocumentFragment();\nvar a=document.createElement('i'),b=document.createElement('i'),c=document.createElement('i'),d=document.createElement('i');\na.setAttribute('id','domIdentityProbe');e.appendChild(a);f.appendChild(b);o.appendChild(c);g.appendChild(d);document.body.appendChild(e);\nvar dq=document.querySelector,da=document.querySelectorAll,eq=e.querySelector,ea=e.querySelectorAll,fq=f.querySelector,fa=f.querySelectorAll,ep=e.append,fp=f.append;\nvar methods=[dq,da,eq,ea,fq,fa,ep,fp],receivers=[document,document,e,e,f,f,e,f];\nfor(var i=0;i<8;i++)assert.sameValue(typeof methods[i],'function');\nfor(var i=0;i<6;i++){var r=methods[i].call(receivers[i],'i'),want=i<4?a:b;if(i%2){assert.sameValue(r.length,1);assert.sameValue(r[0],want);}else assert.sameValue(r,want);}\nvar epGuard=document.createElement('p'),fpGuard=document.createDocumentFragment();\nassert.sameValue(ep.call(epGuard,'E'),undefined);assert.sameValue(epGuard.textContent,'E');\nassert.sameValue(fp.call(fpGuard,'F'),undefined);assert.sameValue(fpGuard.textContent,'F');\nfp.call(g,'control');assert.sameValue(g.textContent,'control');assert.sameValue(fp.name,'deliberately-wrong-name');\n",
+      "sha256": "5b5cef250380638c429b63d84f21cbbef2782863e3703cc683dbcf4706470c3b"
+    }
+  ]
+}
