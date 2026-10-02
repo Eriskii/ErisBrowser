@@ -1,0 +1,5719 @@
+{
+  "schema": 1,
+  "status": "independent draft; no engine outcomes",
+  "palette": {
+    "W": "ffffff",
+    "R": "ff0000",
+    "G": "00ff00",
+    "B": "0000ff",
+    "C": "00ffff",
+    "M": "ff00ff",
+    "Y": "ffff00",
+    "K": "000000",
+    "P": "ff7f7f",
+    "T": "204060",
+    "A": "742a44",
+    "D": "9e1f36",
+    "F": "3535ff",
+    "H": "7f7fff",
+    "S": "eceef2"
+  },
+  "cases": [
+    {
+      "name": "direct-fixed-escape-and-nested-restoration",
+      "input_kind": "direct-draw-command",
+      "frame": {
+        "width": 6,
+        "height": 4,
+        "clear_rgb": "ffffff",
+        "caller_clip": [
+          1,
+          0,
+          4,
+          4
+        ],
+        "document_offset": [
+          0,
+          -1
+        ],
+        "viewport_offset": [
+          1,
+          1
+        ],
+        "zoom": 1
+      },
+      "commands": [
+        {
+          "kind": "Rect",
+          "rect": [
+            1,
+            1,
+            4,
+            3
+          ],
+          "color": [
+            255,
+            0,
+            0,
+            255
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "PushClip",
+          "rect": [
+            2,
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            6,
+            6
+          ],
+          "color": [
+            0,
+            255,
+            0,
+            255
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            2,
+            1
+          ],
+          "color": [
+            0,
+            0,
+            255,
+            255
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "PushClip",
+          "rect": [
+            1,
+            0,
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            2,
+            1,
+            2,
+            1
+          ],
+          "color": [
+            255,
+            255,
+            0,
+            255
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            4,
+            4
+          ],
+          "color": [
+            255,
+            0,
+            255,
+            255
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "PopClip"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            2,
+            1,
+            1,
+            1
+          ],
+          "color": [
+            0,
+            255,
+            255,
+            255
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "PopClip"
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            4,
+            3,
+            1,
+            1
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            255
+          ],
+          "radius": 0
+        }
+      ],
+      "images": [],
+      "literal_rows": [
+        "WRCRRW",
+        "WBMRRW",
+        "WRRYKW",
+        "WWWWWW"
+      ],
+      "expected_path": "gpu",
+      "expected_fallback_reason": null,
+      "expected_rgb_hex_row_major": [
+        "ffffff",
+        "ff0000",
+        "00ffff",
+        "ff0000",
+        "ff0000",
+        "ffffff",
+        "ffffff",
+        "0000ff",
+        "ff00ff",
+        "ff0000",
+        "ff0000",
+        "ffffff",
+        "ffffff",
+        "ff0000",
+        "ff0000",
+        "ffff00",
+        "000000",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff"
+      ],
+      "expected_rgb_bytes_sha256": "78590e56ffd340433232ea019d14fa17060c73bc5f9c344fa42e9914c0a6e2fa",
+      "expected_packed_rgb_le_sha256": "e06b77c7245721ce310c364bfbc2dcfe267cb535d52ff8ebb9e55ad23e1f71ce",
+      "expected_cpu_exhausted": false,
+      "expected_rgb_file": "expected/direct-fixed-escape-and-nested-restoration.rgb"
+    },
+    {
+      "name": "direct-translucent-fractional-clip-edges",
+      "input_kind": "direct-draw-command",
+      "frame": {
+        "width": 5,
+        "height": 3,
+        "clear_rgb": "ffffff",
+        "caller_clip": [
+          0.5,
+          0.5,
+          3,
+          1.5
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ],
+        "zoom": 1
+      },
+      "commands": [
+        {
+          "kind": "Rect",
+          "rect": [
+            -0.25,
+            -0.25,
+            5,
+            3
+          ],
+          "color": [
+            255,
+            0,
+            0,
+            128
+          ],
+          "radius": 0
+        }
+      ],
+      "images": [],
+      "literal_rows": [
+        "WWWWW",
+        "WPPPW",
+        "WWWWW"
+      ],
+      "expected_path": "gpu",
+      "expected_fallback_reason": null,
+      "expected_rgb_hex_row_major": [
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ff7f7f",
+        "ff7f7f",
+        "ff7f7f",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff"
+      ],
+      "expected_rgb_bytes_sha256": "204fe68429499a02ef2d833aec124154ec220184afc760c06a381f983147d023",
+      "expected_packed_rgb_le_sha256": "ac259693470046a1c4b20b8a2a05e74d8140b19cb6acac3b4dfe6383f5b9c631",
+      "expected_cpu_exhausted": false,
+      "expected_rgb_file": "expected/direct-translucent-fractional-clip-edges.rgb"
+    },
+    {
+      "name": "direct-repeated-key-alias-and-alpha",
+      "input_kind": "direct-draw-command",
+      "frame": {
+        "width": 4,
+        "height": 2,
+        "clear_rgb": "204060",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          2
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ],
+        "zoom": 1
+      },
+      "commands": [
+        {
+          "kind": "Image",
+          "rect": [
+            0,
+            0,
+            4,
+            1
+          ],
+          "key": "shared.png"
+        },
+        {
+          "kind": "Image",
+          "rect": [
+            0,
+            0,
+            4,
+            1
+          ],
+          "key": "shared.png"
+        },
+        {
+          "kind": "Image",
+          "rect": [
+            0,
+            1,
+            4,
+            1
+          ],
+          "key": "alias.png"
+        }
+      ],
+      "images": [
+        {
+          "keys": [
+            "shared.png",
+            "alias.png"
+          ],
+          "backing_id": "shared-0",
+          "width": 2,
+          "height": 1,
+          "rgba": [
+            200,
+            20,
+            40,
+            128,
+            99,
+            77,
+            55,
+            0
+          ]
+        }
+      ],
+      "literal_rows": [
+        "DDTT",
+        "AATT"
+      ],
+      "expected_path": "gpu",
+      "expected_fallback_reason": null,
+      "expected_rgb_hex_row_major": [
+        "9e1f36",
+        "9e1f36",
+        "204060",
+        "204060",
+        "742a44",
+        "742a44",
+        "204060",
+        "204060"
+      ],
+      "expected_rgb_bytes_sha256": "0c1a9dafdd5a66918f6a788b0c979aa85c2dbb37f30e2d3f32196d9bc649f140",
+      "expected_packed_rgb_le_sha256": "a49ae1fe7d7099865fd36ed64351b1b96ff2e2980c9d68cbb8e3bbe9d6ed380e",
+      "expected_cpu_exhausted": false,
+      "expected_rgb_file": "expected/direct-repeated-key-alias-and-alpha.rgb"
+    },
+    {
+      "name": "direct-missing-image-is-a-legal-noop",
+      "input_kind": "direct-draw-command",
+      "frame": {
+        "width": 4,
+        "height": 2,
+        "clear_rgb": "ffffff",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          2
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ],
+        "zoom": 1
+      },
+      "commands": [
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            2,
+            2
+          ],
+          "color": [
+            255,
+            0,
+            0,
+            255
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Image",
+          "rect": [
+            0,
+            0,
+            4,
+            2
+          ],
+          "key": "missing.png"
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            3,
+            1,
+            1,
+            1
+          ],
+          "color": [
+            0,
+            0,
+            255,
+            255
+          ],
+          "radius": 0
+        }
+      ],
+      "images": [],
+      "literal_rows": [
+        "RRWW",
+        "RRWB"
+      ],
+      "expected_path": "gpu",
+      "expected_fallback_reason": null,
+      "absent_image_keys": [
+        "missing.png"
+      ],
+      "expected_rgb_hex_row_major": [
+        "ff0000",
+        "ff0000",
+        "ffffff",
+        "ffffff",
+        "ff0000",
+        "ff0000",
+        "ffffff",
+        "0000ff"
+      ],
+      "expected_rgb_bytes_sha256": "3dc8007acc7bdc6938676753f1136033d422a534b0da352d126e9b38d2b7fcb4",
+      "expected_packed_rgb_le_sha256": "3e2bae00e7122e9f459a457136c2449a019ec5cbd45db02b7e635228caefef9e",
+      "expected_cpu_exhausted": false,
+      "expected_rgb_file": "expected/direct-missing-image-is-a-legal-noop.rgb"
+    },
+    {
+      "name": "direct-lines-are-bounding-rectangles",
+      "input_kind": "direct-draw-command",
+      "frame": {
+        "width": 5,
+        "height": 4,
+        "clear_rgb": "ffffff",
+        "caller_clip": [
+          0,
+          0,
+          5,
+          4
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ],
+        "zoom": 1
+      },
+      "commands": [
+        {
+          "kind": "Line",
+          "x1": 4,
+          "y1": 2,
+          "x2": 1,
+          "y2": 0,
+          "width": 1,
+          "color": [
+            0,
+            0,
+            255,
+            255
+          ]
+        },
+        {
+          "kind": "Line",
+          "x1": 0,
+          "y1": 3,
+          "x2": 4,
+          "y2": 3,
+          "width": 1,
+          "color": [
+            255,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "kind": "Line",
+          "x1": 0,
+          "y1": 0,
+          "x2": 0,
+          "y2": 0,
+          "width": 2,
+          "color": [
+            0,
+            255,
+            0,
+            255
+          ]
+        }
+      ],
+      "images": [],
+      "literal_rows": [
+        "GGBBW",
+        "GGBBW",
+        "WWWWW",
+        "RRRRW"
+      ],
+      "expected_path": "gpu",
+      "expected_fallback_reason": null,
+      "expected_rgb_hex_row_major": [
+        "00ff00",
+        "00ff00",
+        "0000ff",
+        "0000ff",
+        "ffffff",
+        "00ff00",
+        "00ff00",
+        "0000ff",
+        "0000ff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ff0000",
+        "ff0000",
+        "ff0000",
+        "ff0000",
+        "ffffff"
+      ],
+      "expected_rgb_bytes_sha256": "71b132d8bb46350f9ff7fbf8d3265548327de58f9eaaf859aa8002c9fe669e8c",
+      "expected_packed_rgb_le_sha256": "ae88c1d6c56db68457be1aad843a8f40391aaa05cd3a5b04c94ea7ad80296110",
+      "expected_cpu_exhausted": false,
+      "expected_rgb_file": "expected/direct-lines-are-bounding-rectangles.rgb"
+    },
+    {
+      "name": "direct-hidden-text-refuses-whole-frame",
+      "input_kind": "direct-draw-command",
+      "frame": {
+        "width": 4,
+        "height": 2,
+        "clear_rgb": "ffffff",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          2
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ],
+        "zoom": 1
+      },
+      "commands": [
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            2,
+            2
+          ],
+          "color": [
+            255,
+            0,
+            0,
+            255
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "PushClip",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "kind": "Text",
+          "x": 0,
+          "y": 0,
+          "text": "hidden",
+          "size": 12,
+          "color": [
+            0,
+            0,
+            0,
+            255
+          ],
+          "bold": false,
+          "italic": false,
+          "monospace": false
+        },
+        {
+          "kind": "PopClip"
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            3,
+            1,
+            1,
+            1
+          ],
+          "color": [
+            0,
+            0,
+            255,
+            255
+          ],
+          "radius": 0
+        }
+      ],
+      "images": [],
+      "literal_rows": [
+        "RRWW",
+        "RRWB"
+      ],
+      "expected_path": "cpu-fallback",
+      "expected_fallback_reason": "unsupported-text",
+      "first_reason_command_index": 2,
+      "expected_rgb_hex_row_major": [
+        "ff0000",
+        "ff0000",
+        "ffffff",
+        "ffffff",
+        "ff0000",
+        "ff0000",
+        "ffffff",
+        "0000ff"
+      ],
+      "expected_rgb_bytes_sha256": "3dc8007acc7bdc6938676753f1136033d422a534b0da352d126e9b38d2b7fcb4",
+      "expected_packed_rgb_le_sha256": "3e2bae00e7122e9f459a457136c2449a019ec5cbd45db02b7e635228caefef9e",
+      "expected_cpu_exhausted": false,
+      "expected_rgb_file": "expected/direct-hidden-text-refuses-whole-frame.rgb"
+    },
+    {
+      "name": "direct-rounded-refuses-whole-frame",
+      "input_kind": "direct-draw-command",
+      "frame": {
+        "width": 4,
+        "height": 3,
+        "clear_rgb": "ffffff",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ],
+        "zoom": 1
+      },
+      "commands": [
+        {
+          "kind": "Rect",
+          "rect": [
+            1,
+            0,
+            2,
+            2
+          ],
+          "color": [
+            0,
+            0,
+            255,
+            255
+          ],
+          "radius": 1
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            2,
+            1,
+            1
+          ],
+          "color": [
+            255,
+            0,
+            0,
+            255
+          ],
+          "radius": 0
+        }
+      ],
+      "images": [],
+      "literal_rows": [
+        "WFFW",
+        "WFFW",
+        "RWWW"
+      ],
+      "expected_path": "cpu-fallback",
+      "expected_fallback_reason": "unsupported-rounded-rectangle",
+      "first_reason_command_index": 0,
+      "expected_rgb_hex_row_major": [
+        "ffffff",
+        "3535ff",
+        "3535ff",
+        "ffffff",
+        "ffffff",
+        "3535ff",
+        "3535ff",
+        "ffffff",
+        "ff0000",
+        "ffffff",
+        "ffffff",
+        "ffffff"
+      ],
+      "expected_rgb_bytes_sha256": "aa0eb258ba18d785e049ca9c8f4314ecf575f6e763abd98d3bade2fe2a0eee46",
+      "expected_packed_rgb_le_sha256": "ebc292386a40ba296bba8da64eae10bdc2403797ec31cb04503ea4cf89e42003",
+      "expected_cpu_exhausted": false,
+      "expected_rgb_file": "expected/direct-rounded-refuses-whole-frame.rgb"
+    },
+    {
+      "name": "direct-unit-opacity-refuses-whole-frame",
+      "input_kind": "direct-draw-command",
+      "frame": {
+        "width": 3,
+        "height": 2,
+        "clear_rgb": "ffffff",
+        "caller_clip": [
+          0,
+          0,
+          3,
+          2
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ],
+        "zoom": 1
+      },
+      "commands": [
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            3,
+            2
+          ],
+          "color": [
+            0,
+            0,
+            255,
+            255
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "PushOpacity",
+          "opacity": 1
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            2,
+            1
+          ],
+          "color": [
+            255,
+            0,
+            0,
+            255
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "PopOpacity"
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            2,
+            1,
+            1,
+            1
+          ],
+          "color": [
+            0,
+            255,
+            0,
+            255
+          ],
+          "radius": 0
+        }
+      ],
+      "images": [],
+      "literal_rows": [
+        "RRB",
+        "BBG"
+      ],
+      "expected_path": "cpu-fallback",
+      "expected_fallback_reason": "unsupported-opacity",
+      "first_reason_command_index": 1,
+      "expected_rgb_hex_row_major": [
+        "ff0000",
+        "ff0000",
+        "0000ff",
+        "0000ff",
+        "0000ff",
+        "00ff00"
+      ],
+      "expected_rgb_bytes_sha256": "ef40b7f937395a2e5810f78655f2d55a9f6c2fd35d576ab50156b6a671930264",
+      "expected_packed_rgb_le_sha256": "116c7a436fd61b0951218f575d6ebc19a4fa0035bbc2cf6b03b0100aed404487",
+      "expected_cpu_exhausted": false,
+      "expected_rgb_file": "expected/direct-unit-opacity-refuses-whole-frame.rgb"
+    },
+    {
+      "name": "direct-transparent-hidden-rounded-still-refuses",
+      "input_kind": "direct-draw-command",
+      "frame": {
+        "width": 3,
+        "height": 2,
+        "clear_rgb": "ffffff",
+        "caller_clip": [
+          0,
+          0,
+          3,
+          2
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ],
+        "zoom": 1
+      },
+      "commands": [
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "color": [
+            255,
+            0,
+            0,
+            255
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "PushClip",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "color": [
+            99,
+            77,
+            55,
+            0
+          ],
+          "radius": 3
+        },
+        {
+          "kind": "PopClip"
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            2,
+            1,
+            1,
+            1
+          ],
+          "color": [
+            0,
+            0,
+            255,
+            255
+          ],
+          "radius": 0
+        }
+      ],
+      "images": [],
+      "literal_rows": [
+        "RWW",
+        "WWB"
+      ],
+      "expected_path": "cpu-fallback",
+      "expected_fallback_reason": "unsupported-rounded-rectangle",
+      "first_reason_command_index": 2,
+      "expected_rgb_hex_row_major": [
+        "ff0000",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "0000ff"
+      ],
+      "expected_rgb_bytes_sha256": "b264d50882783e189ebe8cae2a58fdbb0872ea01fe58a35e659f6a43c78d0ae0",
+      "expected_packed_rgb_le_sha256": "30cac8663319637fb69700672bde4c3bbc22126c3747f04fcf41259c815e1756",
+      "expected_cpu_exhausted": false,
+      "expected_rgb_file": "expected/direct-transparent-hidden-rounded-still-refuses.rgb"
+    },
+    {
+      "name": "html-ordered-rectangles",
+      "input_kind": "worker-html",
+      "html_file": "html/html-ordered-rectangles.html",
+      "frame": {
+        "width": 6,
+        "height": 4,
+        "clear_rgb": "ffffff",
+        "caller_clip": [
+          0,
+          0,
+          6,
+          4
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ],
+        "zoom": 1
+      },
+      "literal_rows": [
+        "WWWBBW",
+        "WRRBBW",
+        "WRRBBW",
+        "WWWWWW"
+      ],
+      "expected_path": "gpu",
+      "expected_fallback_reason": null,
+      "worker_command_assumptions": [
+        "White root/body canvas background covers the viewport.",
+        "Visible rectangles are red [1,1,4,2], then blue [3,0,2,3], radius zero.",
+        "No Text, Image, opacity or rounded commands; balanced allowed scopes only."
+      ],
+      "scripts_enabled": false,
+      "network_allowed": false,
+      "expected_rgb_hex_row_major": [
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "0000ff",
+        "0000ff",
+        "ffffff",
+        "ffffff",
+        "ff0000",
+        "ff0000",
+        "0000ff",
+        "0000ff",
+        "ffffff",
+        "ffffff",
+        "ff0000",
+        "ff0000",
+        "0000ff",
+        "0000ff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff"
+      ],
+      "expected_rgb_bytes_sha256": "7704024730fe07beddc79d430f0072dfc8228d903f6aa555194676dbd101993a",
+      "expected_packed_rgb_le_sha256": "7800588c8cbaf5c9df058d321e6233ccee109062bd0ef220ccf6776670ffe8b3",
+      "expected_cpu_exhausted": false,
+      "expected_rgb_file": "expected/html-ordered-rectangles.rgb"
+    },
+    {
+      "name": "html-fixed-child-escapes-scrolling-clip",
+      "input_kind": "worker-html",
+      "html_file": "html/html-fixed-child-escapes-scrolling-clip.html",
+      "frame": {
+        "width": 8,
+        "height": 4,
+        "clear_rgb": "ffffff",
+        "caller_clip": [
+          0,
+          0,
+          8,
+          4
+        ],
+        "document_offset": [
+          0,
+          -1
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ],
+        "zoom": 1
+      },
+      "literal_rows": [
+        "WRRWWBBW",
+        "WRGWWWWW",
+        "WWWWWWWW",
+        "WWWWWWWW"
+      ],
+      "expected_path": "gpu",
+      "expected_fallback_reason": null,
+      "worker_command_assumptions": [
+        "Red box is [1,1,2,2] in document coordinates; green child is [2,2,2,2].",
+        "A document clip [1,1,2,2] clips the green child.",
+        "Blue fixed child is [5,0,2,1] in viewport coordinates inside a typed fixed scope.",
+        "Fixed rendering escapes the ancestor clip; scope restoration remains balanced.",
+        "No Text, Image, opacity or rounded commands."
+      ],
+      "scripts_enabled": false,
+      "network_allowed": false,
+      "expected_rgb_hex_row_major": [
+        "ffffff",
+        "ff0000",
+        "ff0000",
+        "ffffff",
+        "ffffff",
+        "0000ff",
+        "0000ff",
+        "ffffff",
+        "ffffff",
+        "ff0000",
+        "00ff00",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff"
+      ],
+      "expected_rgb_bytes_sha256": "d96bf74f2bbdb6b31e56b9cdfb4ecb93bd6b88368708ab0f902e80793f3aee53",
+      "expected_packed_rgb_le_sha256": "108960d22cf8a743f82c8d419d095db5f6d91c827f94054e06957a7636a7ea25",
+      "expected_cpu_exhausted": false,
+      "expected_rgb_file": "expected/html-fixed-child-escapes-scrolling-clip.rgb"
+    },
+    {
+      "name": "html-repeated-decoded-image-key",
+      "input_kind": "worker-html",
+      "html_file": "html/html-repeated-decoded-image-key.html",
+      "frame": {
+        "width": 6,
+        "height": 2,
+        "clear_rgb": "ffffff",
+        "caller_clip": [
+          0,
+          0,
+          6,
+          2
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ],
+        "zoom": 1
+      },
+      "literal_rows": [
+        "RRHHWW",
+        "WWRRHH"
+      ],
+      "expected_path": "gpu",
+      "expected_fallback_reason": null,
+      "worker_command_assumptions": [
+        "Both image commands use the same key two-pixels.png and one decoded 2x1 RGBA source.",
+        "Decoded source bytes are [255,0,0,255,0,0,255,128] with no color transformation.",
+        "Image rectangles are [0,0,4,1] then [2,1,4,1].",
+        "Successful image loading suppresses the missing-image placeholder and alt text.",
+        "No Text, opacity or rounded commands; background is white."
+      ],
+      "scripts_enabled": false,
+      "network_allowed": false,
+      "expected_rgb_hex_row_major": [
+        "ff0000",
+        "ff0000",
+        "7f7fff",
+        "7f7fff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ff0000",
+        "ff0000",
+        "7f7fff",
+        "7f7fff"
+      ],
+      "expected_rgb_bytes_sha256": "755c08ffce08cc1e3ed054d3e8efd1c7ffbecbc020b7a1180dd3c1e92cf9134f",
+      "expected_packed_rgb_le_sha256": "22d529014eb5f8946179e25bcfe30c2f2a85ec37718ae55af9f57bfc07a5297f",
+      "expected_cpu_exhausted": false,
+      "expected_rgb_file": "expected/html-repeated-decoded-image-key.rgb"
+    },
+    {
+      "name": "html-unavailable-image-keeps-placeholder",
+      "input_kind": "worker-html",
+      "html_file": "html/html-unavailable-image-keeps-placeholder.html",
+      "frame": {
+        "width": 4,
+        "height": 2,
+        "clear_rgb": "ffffff",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          2
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ],
+        "zoom": 1
+      },
+      "literal_rows": [
+        "WSSW",
+        "WWWB"
+      ],
+      "expected_path": "gpu",
+      "expected_fallback_reason": null,
+      "worker_command_assumptions": [
+        "deliberately-absent.png is absent; no raster exists for its Image command key.",
+        "Layout emits opaque placeholder [1,0,2,1] RGB(236,238,242), radius zero, followed by the legal missing Image command.",
+        "The blue rectangle [3,1,1,1] remains visible after the missing image.",
+        "Empty alt suppresses text; missing-load diagnostics are retained, not turned into a GPU fallback.",
+        "The bridge itself performs no image retrieval or file opening."
+      ],
+      "scripts_enabled": false,
+      "network_allowed": false,
+      "expected_rgb_hex_row_major": [
+        "ffffff",
+        "eceef2",
+        "eceef2",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "0000ff"
+      ],
+      "expected_rgb_bytes_sha256": "cabe78bf9662f83b80ffcbdf921fa3e0b81d63a6c880d78a5ce55f3e9764c785",
+      "expected_packed_rgb_le_sha256": "ecc6575c7d7a8695765d2bc99e881a5691eaa897f15f59796b4d5ec2c321eaac",
+      "expected_cpu_exhausted": false,
+      "expected_rgb_file": "expected/html-unavailable-image-keeps-placeholder.rgb"
+    },
+    {
+      "name": "html-rounded-page-requires-full-cpu-fallback",
+      "input_kind": "worker-html",
+      "html_file": "html/html-rounded-page-requires-full-cpu-fallback.html",
+      "frame": {
+        "width": 4,
+        "height": 3,
+        "clear_rgb": "ffffff",
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ],
+        "zoom": 1
+      },
+      "literal_rows": [
+        "WFFW",
+        "WFFW",
+        "RWWW"
+      ],
+      "expected_path": "cpu-fallback",
+      "expected_fallback_reason": "unsupported-rounded-rectangle",
+      "worker_command_assumptions": [
+        "Blue background rectangle is [1,0,2,2], radius one, with no border.",
+        "Red rectangle is [0,2,1,1], radius zero; white canvas background covers the viewport.",
+        "No earlier unsupported command changes the expected rounded-rectangle rejection reason."
+      ],
+      "scripts_enabled": false,
+      "network_allowed": false,
+      "expected_rgb_hex_row_major": [
+        "ffffff",
+        "3535ff",
+        "3535ff",
+        "ffffff",
+        "ffffff",
+        "3535ff",
+        "3535ff",
+        "ffffff",
+        "ff0000",
+        "ffffff",
+        "ffffff",
+        "ffffff"
+      ],
+      "expected_rgb_bytes_sha256": "aa0eb258ba18d785e049ca9c8f4314ecf575f6e763abd98d3bade2fe2a0eee46",
+      "expected_packed_rgb_le_sha256": "ebc292386a40ba296bba8da64eae10bdc2403797ec31cb04503ea4cf89e42003",
+      "expected_cpu_exhausted": false,
+      "expected_rgb_file": "expected/html-rounded-page-requires-full-cpu-fallback.rgb"
+    },
+    {
+      "name": "direct-command-cap-refuses-whole-frame",
+      "input_kind": "direct-draw-command",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear_rgb": "ffffff",
+        "caller_clip": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ],
+        "zoom": 1
+      },
+      "commands": [
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "radius": 0
+        }
+      ],
+      "images": [],
+      "literal_rows": [
+        "W"
+      ],
+      "expected_path": "cpu-fallback",
+      "expected_fallback_reason": "command-budget",
+      "limit": 256,
+      "supplied": 257,
+      "expected_rgb_hex_row_major": [
+        "ffffff"
+      ],
+      "expected_rgb_bytes_sha256": "5ae7e6a42304dc6e4176210b83c43024f99a0bce9a870c3b6d2c95fc8ebfb74c",
+      "expected_packed_rgb_le_sha256": "6fc6f4524161c3ae0d316812d7088e3fcd372023edaea2d7821093be40ae1060",
+      "expected_cpu_exhausted": false,
+      "expected_rgb_file": "expected/direct-command-cap-refuses-whole-frame.rgb"
+    },
+    {
+      "name": "direct-scope-cap-refuses-balanced-whole-frame",
+      "input_kind": "direct-draw-command",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear_rgb": "ffffff",
+        "caller_clip": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ],
+        "zoom": 1
+      },
+      "commands": [
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "PopFixed"
+        }
+      ],
+      "images": [],
+      "literal_rows": [
+        "W"
+      ],
+      "expected_path": "cpu-fallback",
+      "expected_fallback_reason": "scope-budget",
+      "limit": 32,
+      "supplied_depth": 33,
+      "expected_rgb_hex_row_major": [
+        "ffffff"
+      ],
+      "expected_rgb_bytes_sha256": "5ae7e6a42304dc6e4176210b83c43024f99a0bce9a870c3b6d2c95fc8ebfb74c",
+      "expected_packed_rgb_le_sha256": "6fc6f4524161c3ae0d316812d7088e3fcd372023edaea2d7821093be40ae1060",
+      "expected_cpu_exhausted": false,
+      "expected_rgb_file": "expected/direct-scope-cap-refuses-balanced-whole-frame.rgb"
+    }
+  ],
+  "counts": {
+    "cases": 16,
+    "direct": 11,
+    "worker_html": 5,
+    "gpu": 9,
+    "cpu_fallback": 7,
+    "rgb_bytes": 591,
+    "packed_rgb_bytes": 788
+  }
+}

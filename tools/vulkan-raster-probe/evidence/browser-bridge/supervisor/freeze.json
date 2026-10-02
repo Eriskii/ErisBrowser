@@ -1,0 +1,20 @@
+{
+  "scope": "source only; fake-process tests pending review",
+  "files": [
+    {
+      "path": "tools/vulkan-raster-probe/bridge_supervisor.py",
+      "bytes": 13678,
+      "sha256": "d38c129e010564c2ffa3903e1f86ae53d26667723749d9407659a14d188b32a8"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/test_bridge_supervisor.py",
+      "bytes": 8161,
+      "sha256": "80c9414a6a214a2f1c7c73b19bc424519fe9b392625650ff1b283995508fb6c3"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/run_browser_host.py",
+      "bytes": 8453,
+      "sha256": "51ac06679b31bcfbc3f051df814850631b45fce1943ab6d89fb226349994de10"
+    }
+  ]
+}

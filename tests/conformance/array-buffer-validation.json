@@ -831,7 +831,7 @@
       "sha256": "ea6515af04f975be8175376c1767d34aae27a7bf80b79382cffae1cf8737dc0e"
     }
   },
-  "remote_ci_status": "pending publication and exact-commit CI",
+  "remote_ci_status": "success",
   "full_goal_complete": false,
   "performance_comparison_performed": false,
   "gpu_execution_in_this_checkpoint": false,
@@ -857,5 +857,15 @@
     "bytes": 31514,
     "sha256": "7ba2a510d0ea7bbc43292b3881e433c42c4c536a2d359e74f976b4843c727c69"
   },
-  "known_state_gates": 34
+  "known_state_gates": 34,
+  "remote_ci": {
+    "commit": "9a7b8dc755780b573bdfc1a8ea2a7a8b988cfe40",
+    "run_id": 36959177431,
+    "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/36959177431",
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": 7,
+    "evidence": "tests/conformance/array-buffer-ci.json",
+    "evidence_sha256": "31cceef29280cf6df48f2bbc65760b2162db0fa6baa00210487862c138e74433"
+  }
 }

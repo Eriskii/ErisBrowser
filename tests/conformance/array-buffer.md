@@ -109,7 +109,8 @@ One mutation-smoke run covers **15,000 cases**, with zero panics/invariant failu
 and seventeen bounded paint stops. Byte-identical HTML adapters and 68 unchanged
 inputs justify [reusing](array-buffer-html-reuse.json) the preceding **3,868 matched
 / two mismatched / six unsupported** report; no fresh HTML run is claimed.
-Remote CI for this checkpoint remains pending publication.
+All seven [remote CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36959177431)
+passed for published commit `9a7b8dc`.
 
 Shared buffers, genuine views, Proxy, foreign realms, host detachment hooks and
 immutable-buffer proposals remain separate gaps. Scoped backing-store accounting

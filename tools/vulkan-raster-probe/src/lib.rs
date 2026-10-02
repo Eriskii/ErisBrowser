@@ -555,7 +555,12 @@ pub fn plan_with_images(
 }
 
 pub mod alpha_fixtures;
+#[cfg(feature = "browser-bridge")]
+pub mod browser_adapter;
+#[cfg(feature = "browser-bridge")]
+pub mod browser_fixtures;
 pub mod fixtures;
+pub mod gpu;
 pub mod image_fixtures;
 #[cfg(test)]
 mod tests;

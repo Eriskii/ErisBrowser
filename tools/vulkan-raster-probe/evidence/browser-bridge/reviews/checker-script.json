@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "scope": "Independent bounded read-only checker review against frozen worker_command_assumptions and adapter/capture contract. No checker, planner, Canvas, compiler, engine or GPU execution. Separate root-authorized private adapter fixture correction is documented elsewhere.",
+  "source_bindings": [
+    {
+      "path": "tools/vulkan-raster-probe/src/bin/browser-check.rs",
+      "bytes": 35152,
+      "sha256": "ea5f41fb64cad07338bb0b11d85222a9b76f31cb306ae40e95e7bf572112a9cc"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/browser_adapter.rs",
+      "bytes": 17320,
+      "sha256": "1c0da92ef487589d821097446d0ac89d278c98246416620eb8199eb2577fce12"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/browser_fixtures.rs",
+      "bytes": 21380,
+      "sha256": "15300b65d7e1ebfbd00df96f16dfcd5c08da200f5da19699baeee60c6c5f8e16"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/gpu.rs",
+      "bytes": 16325,
+      "sha256": "e1b639f231739542c85e28a2434861bd785a1f803b36cf3c0433c4458d9a4226"
+    },
+    {
+      "path": "src/graphics.rs",
+      "bytes": 60970,
+      "sha256": "1b51c4af2c8ae4eea66476397868022da35e566d3593f3fcddf29a156bae62a2"
+    },
+    {
+      "path": "src/worker.rs",
+      "bytes": 25092,
+      "sha256": "f4a24a86233ddb68ed7f64657d97653f8e1063104589b7db017fb69371ea4281"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/fixtures.json",
+      "bytes": 100169,
+      "sha256": "d85574775ec6a2eb3537b498fe24678a888b930fe0e06efc52b410c8f15c0130"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/contract.md",
+      "bytes": 5445,
+      "sha256": "e33296d0557bd239118bff568716d36bfd89c9cc96c24e2e3e48b2a410df2983"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-contract-review.md",
+      "bytes": 18725,
+      "sha256": "474c66f9e9a75eac2d0f23d2abed7f1dc660f2118af0fc3465da545cc8b394b1"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-root-plan.json",
+      "bytes": 2991,
+      "sha256": "21284dfa249449184dc20a1f2188d0f203981b6e1f801d30528c6e2acd38f438"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-supervisor-script-review.json",
+      "bytes": 4452,
+      "sha256": "fff9fe3cb77a1d7aa7e4cf912a08031cb31656764eba14f7440d2225852be6c4"
+    }
+  ],
+  "findings": [],
+  "observations": [
+    {
+      "area": "Worker acquisition and assumptions",
+      "details": "Exact local fixture paths feed scripts-disabled WorkerClient Load/Render and existing IPC decoding. Requested generation, zero edit sequence, Idle state and URL are checked. All five cases have independently spelled ordered primitive geometry/colors/radii or keys; repeated image requires the exact single 2x1 eight-byte RGBA source. Missing image retains absent store, placeholder/Image ordering and matching diagnostic. Text, Line, opacity and unexpected drawing primitives are refused. Typed clip/fixed nesting is checked; green document clip and blue fixed context are explicitly required."
+    },
+    {
+      "area": "Equivalent wrappers and original commands",
+      "details": "Balanced clip/fixed wrappers and radius-zero transparent/zero-size rectangles can remain in worker input. They remain present in complete dumps, original Canvas painting and adapter admission. Exact CPU literal equality additionally checks their effective paint. Unsupported commands are not removed before admission."
+    },
+    {
+      "area": "Whole-frame CPU reference and fallback",
+      "details": "Both admitted and expected-fallback cases invoke Canvas clear/set_clip/paint_with_viewport on the original complete command list and image store, require exhausted=false and compare every packed pixel with frozen independent literals. Exact rejection indices are asserted only for four oracle rows specifying them. Expected fallbacks own no GPU plan; they report zero GPU counters and cannot enter the GPU plan list."
+    },
+    {
+      "area": "Capture lifetime and gate",
+      "details": "Each snapshot and WorkerClient drops before the next worker and before capture returns. Own task child lists are checked before and after workers, at capture completion and before grant wait. No Vulkan entry occurs until the corrected exact ten-byte supervisor grant succeeds; the dedicated supervisor separately proves absence of already-adopted descendants. The --list branch captures no workers."
+    },
+    {
+      "area": "Retention and canonical dump",
+      "details": "Sixteen cases bound worst-case explicit GPU storage to 16MiB and draws to 4112 before planning; actual totals are rechecked. Viewports and retained literal pixels are bounded to 4915200 bytes. EWB1 measures before fallible exact output reservation, caps each snapshot record at 65536 bytes, preserves raw floating bits/UTF8/diagnostics/commands, sorts bounded keys, and encodes shared Arc identity as stable source IDs. Hex output is additionally bounded; snapshots/CPU canvases are not retained across capture."
+    },
+    {
+      "area": "Protocol and comparison claims",
+      "details": "CASE counts use original command/image counts, BridgeStats for admitted lowering/source metrics, and actual Plan draw/invocation/explicit-buffer totals. Fallback-only metrics are none rather than fabricated source counts. GPU callbacks occur only after raster readback equals each literal target. Footer totals are 16 cases, nine GPU, seven fallback and 197 pixels/788 packed comparison bytes across both paths."
+    }
+  ],
+  "limits": [
+    "Static checks establish source behavior, not successful worker geometry/PNG decoding on this host; those remain for the authorized real-worker run.",
+    "Snapshot serialization deliberately excludes DOM and hit regions; it preserves the complete paint stream and listed capture metadata rather than claiming a complete object serialization.",
+    "Explicit retained payload/count bounds exclude allocator overhead, fonts, original bounded IPC snapshots, driver storage and synchronous OS teardown; the contract states these limits.",
+    "Full browser_protocol.py validator review is separate; this receipt covers checker emissions and their source inputs."
+  ]
+}

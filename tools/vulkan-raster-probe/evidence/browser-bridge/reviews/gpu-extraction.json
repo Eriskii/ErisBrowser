@@ -1,0 +1,42 @@
+{
+  "scope": "Read-only static review and byte comparisons; no compiler, worker, renderer, engine or GPU executions",
+  "candidate_freeze": {
+    "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/freeze.json",
+    "sha256": "e05867c35383ea1e733db73d331f440ee4f2cee413b690d24389bf51a321eace"
+  },
+  "exact_extracted_regions": {
+    "deadline_kernels_raster": {
+      "bytes": 8507,
+      "sha256": "f6d39d1b6d7adfdf323ede46a872da5108d3345fc451cbb5af7c7690de4d4ea0"
+    },
+    "adapter_device_pipelines": {
+      "bytes": 6125,
+      "sha256": "1861dae9800439c99f285c419810b4bfc938d0c88a4a03ed3530d5d7291cfb32"
+    },
+    "fixture_planning": {
+      "bytes": 501,
+      "sha256": "6a3188f98d756e8a43fcf0f2213364ad01e9fbaeca57f828ed519a4a3f030f30"
+    }
+  },
+  "unchanged_HEAD_inputs": {
+    "tools/vulkan-raster-probe/src/rect.wgsl": "b0f67e88f3b5630cb98c8406ee20df6e8890b3ca42410451f105f64fb2a68afa",
+    "tools/vulkan-raster-probe/src/image.wgsl": "ede39857bf369d5a33f5503e7ae96bd04bd5ca06a11937f28fa97793011b3446",
+    "tools/vulkan-raster-probe/src/fixtures.rs": "7779ecab36a587f2792acf258b28709b9b4606ece0976c48c0c04aa8e1a45ab8",
+    "tools/vulkan-raster-probe/src/image_fixtures.rs": "d7fd6c1970f1bfad52021b0ae48401596d3124c5a7e29a1171a310d6d6f096ee",
+    "tools/vulkan-raster-probe/src/alpha_fixtures.rs": "4904499c2fc209083a3c928e575963cfe4a63a553dcc3bb3183e5fa9320708d5"
+  },
+  "held_owned_sources": {
+    "tools/vulkan-raster-probe/src/gpu.rs": "e1b639f231739542c85e28a2434861bd785a1f803b36cf3c0433c4458d9a4226",
+    "tools/vulkan-raster-probe/src/main.rs": "692a4bff79c1fe15e24961e1ca29372c8f94697a7387f5e3eb10c7eb9c97175d",
+    "tools/vulkan-raster-probe/src/bin/browser-check.rs": "ea5f41fb64cad07338bb0b11d85222a9b76f31cb306ae40e95e7bf572112a9cc"
+  },
+  "findings": [],
+  "conclusions": [
+    "All three original fixture families and both shaders remain byte-identical to HEAD.",
+    "Default main keeps the exact original complete fixture planning region, adapter enumeration, device/pipeline region and complete raster/readback implementation.",
+    "Full actual GPU readback must equal the independent target before on_pass emits any expected pixels; existing validation/OOM/internal scopes remain.",
+    "Adapter-only checker grant reads a constant-derived ten-byte token after stdout flush; list remains ungated. No worker launch follows capture marker.",
+    "Six GPU BridgeStats counters are emitted from accepted plans; fallback counters are none. Literal pixel output follows prior full CPU comparison and, for GPU rows, actual GPU equality.",
+    "No browser integration, GPU execution or performance outcome is asserted by this static review."
+  ]
+}

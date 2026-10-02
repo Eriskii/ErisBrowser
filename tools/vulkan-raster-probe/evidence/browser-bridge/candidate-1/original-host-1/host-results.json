@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "binary_sha256": "3a0c68a6a24a2f61a0ca07e6a291ab53492ee45157856b0a42e16df717302146",
+  "scope": "offscreen custom WGSL source-over rectangle and nearest-neighbor image prototype; no native surface or performance claim",
+  "binary": "../../../../../../../../tmp/eris-vulkan-browser-bridge-candidate-1/eris-vulkan-raster-prototype-1.98.0-default",
+  "loader_override": true,
+  "timeout_seconds": 25.0,
+  "success": true,
+  "adapter_count": 3,
+  "runs": [
+    {
+      "name": "enumeration",
+      "args": [
+        "--list"
+      ],
+      "status": "exited",
+      "returncode": 0,
+      "timeout_seconds": 25.0,
+      "elapsed_seconds": 0.182791,
+      "captured_bytes": 465,
+      "observed_bytes": 465,
+      "output_limit_bytes": 262144,
+      "stdout_log": "enumeration.stdout.log",
+      "stderr_log": "enumeration.stderr.log",
+      "stdout_tail": "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"\nADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"\nADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\"\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "adapter-0",
+      "args": [
+        "--adapter",
+        "0"
+      ],
+      "status": "exited",
+      "returncode": 0,
+      "timeout_seconds": 25.0,
+      "elapsed_seconds": 0.339959,
+      "captured_bytes": 3854,
+      "observed_bytes": 3854,
+      "output_limit_bytes": 262144,
+      "stdout_log": "adapter-0.stdout.log",
+      "stderr_log": "adapter-0.stderr.log",
+      "stdout_tail": "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"\nADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"\nADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\"\nPASS overlapping-order 8x6 draws=5 invocations=320 gpu_buffers=1664 compared_bytes=192 exact=true\nPASS fractional-clips 8x6 draws=4 invocations=256 gpu_buffers=1408 compared_bytes=192 exact=true\nPASS fixed-resets-and-restores 10x7 draws=6 invocations=448 gpu_buffers=2096 compared_bytes=280 exact=true\nPASS out-of-bounds-and-empty 7x5 draws=3 invocations=192 gpu_buffers=1048 compared_bytes=140 exact=true\nPASS 319x239-dispatch-edges 319x239 draws=4 invocations=156160 gpu_buffers=610952 compared_bytes=304964 exact=true\nPASS forty-ordered-full-writes 320x240 draws=41 invocations=3148800 gpu_buffers=624896 compared_bytes=307200 exact=true\nPASS gpu-clear-only 7x3 draws=1 invocations=64 gpu_buffers=424 compared_bytes=84 exact=true\nPASS image-upscale-2x2 6x6 draws=2 invocations=128 gpu_buffers=848 compared_bytes=144 exact=true\nPASS image-three-columns-to-five 7x3 draws=2 invocations=128 gpu_buffers=716 compared_bytes=84 exact=true\nPASS image-downscale-distinct-4x4 4x4 draws=2 invocations=128 gpu_buffers=720 compared_bytes=64 exact=true\nPASS image-clip-preserves-original-origin 8x3 draws=2 invocations=128 gpu_buffers=736 compared_bytes=96 exact=true\nPASS image-negative-document-offset 5x3 draws=2 invocations=128 gpu_buffers=680 compared_bytes=60 exact=true\nPASS image-negative-fractional-origin 4x4 draws=2 invocations=128 gpu_buffers=680 compared_bytes=64 exact=true\nPASS image-tiny-and-fractional-clip 6x4 draws=3 invocations=192 gpu_buffers=1044 compared_bytes=96 exact=true\nPASS image-exact-and-one-ulp-translated-edges 5x3 draws=3 invocations=192 gpu_buffers=928 compared_bytes=60 exact=true\nPASS image-f32-endpoint-addition-rounds-back 4x2 draws=2 invocations=128 gpu_buffers=592 compared_bytes=32 exact=true\nPASS image-rectangle-order-and-source-reuse 6x4 draws=5 invocations=320 gpu_buffers=1568 compared_bytes=96 exact=true\nPASS image-fixed-escape-and-nested-restoration 8x5 draws=6 invocations=384 gpu_buffers=1956 compared_bytes=160 exact=true\nPASS image-dispatch-tail-and-clear-border 320x240 draws=2 invocations=153600 gpu_buffers=617160 compared_bytes=307200 exact=true\nPASS image-valid-empty-and-hidden 4x3 draws=1 invocations=64 gpu_buffers=352 compared_bytes=48 exact=true\nPASS image-subnormal-origin-and-lost-extent 2x2 draws=2 invocations=128 gpu_buffers=564 compared_bytes=16 exact=true\nPASS alpha-rectangle-six-boundaries 6x2 draws=12 invocations=768 gpu_buffers=3168 compared_bytes=48 exact=true\nPASS alpha-image-six-boundaries 6x2 draws=3 invocations=192 gpu_buffers=944 compared_bytes=48 exact=true\nPASS alpha-ordered-mixed-draws 4x1 draws=10 invocations=640 gpu_buffers=2644 compared_bytes=16 exact=true\nPASS alpha-one-repeated-rounding 7x1 draws=65 invocations=4160 gpu_buffers=16696 compared_bytes=28 exact=true\nPASS alpha-subpixel-and-fractional-clip 4x3 draws=4 invocations=256 gpu_buffers=1132 compared_bytes=48 exact=true\nPASS alpha-image-negative-fractional-original-origin 5x3 draws=2 invocations=128 gpu_buffers=672 compared_bytes=60 exact=true\nPASS alpha-fixed-reset-and-restoration 5x3 draws=6 invocations=384 gpu_buffers=1680 compared_bytes=60 exact=true\nPASS alpha-transparent-hidden-rgb 2x2 draws=2 invocations=128 gpu_buffers=576 compared_bytes=16 exact=true\nPASS alpha-empty-clip-still-clears-opaque-target 3x2 draws=1 invocations=64 gpu_buffers=304 compared_bytes=24 exact=true\nCOMPLETE adapter=0 fixtures=30 exact=true custom_wgsl=true\n",
+      "stderr_tail": "",
+      "validation": "passed"
+    },
+    {
+      "name": "adapter-1",
+      "args": [
+        "--adapter",
+        "1"
+      ],
+      "status": "exited",
+      "returncode": 0,
+      "timeout_seconds": 25.0,
+      "elapsed_seconds": 0.150559,
+      "captured_bytes": 3854,
+      "observed_bytes": 3854,
+      "output_limit_bytes": 262144,
+      "stdout_log": "adapter-1.stdout.log",
+      "stderr_log": "adapter-1.stderr.log",
+      "stdout_tail": "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"\nADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"\nADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\"\nPASS overlapping-order 8x6 draws=5 invocations=320 gpu_buffers=1664 compared_bytes=192 exact=true\nPASS fractional-clips 8x6 draws=4 invocations=256 gpu_buffers=1408 compared_bytes=192 exact=true\nPASS fixed-resets-and-restores 10x7 draws=6 invocations=448 gpu_buffers=2096 compared_bytes=280 exact=true\nPASS out-of-bounds-and-empty 7x5 draws=3 invocations=192 gpu_buffers=1048 compared_bytes=140 exact=true\nPASS 319x239-dispatch-edges 319x239 draws=4 invocations=156160 gpu_buffers=610952 compared_bytes=304964 exact=true\nPASS forty-ordered-full-writes 320x240 draws=41 invocations=3148800 gpu_buffers=624896 compared_bytes=307200 exact=true\nPASS gpu-clear-only 7x3 draws=1 invocations=64 gpu_buffers=424 compared_bytes=84 exact=true\nPASS image-upscale-2x2 6x6 draws=2 invocations=128 gpu_buffers=848 compared_bytes=144 exact=true\nPASS image-three-columns-to-five 7x3 draws=2 invocations=128 gpu_buffers=716 compared_bytes=84 exact=true\nPASS image-downscale-distinct-4x4 4x4 draws=2 invocations=128 gpu_buffers=720 compared_bytes=64 exact=true\nPASS image-clip-preserves-original-origin 8x3 draws=2 invocations=128 gpu_buffers=736 compared_bytes=96 exact=true\nPASS image-negative-document-offset 5x3 draws=2 invocations=128 gpu_buffers=680 compared_bytes=60 exact=true\nPASS image-negative-fractional-origin 4x4 draws=2 invocations=128 gpu_buffers=680 compared_bytes=64 exact=true\nPASS image-tiny-and-fractional-clip 6x4 draws=3 invocations=192 gpu_buffers=1044 compared_bytes=96 exact=true\nPASS image-exact-and-one-ulp-translated-edges 5x3 draws=3 invocations=192 gpu_buffers=928 compared_bytes=60 exact=true\nPASS image-f32-endpoint-addition-rounds-back 4x2 draws=2 invocations=128 gpu_buffers=592 compared_bytes=32 exact=true\nPASS image-rectangle-order-and-source-reuse 6x4 draws=5 invocations=320 gpu_buffers=1568 compared_bytes=96 exact=true\nPASS image-fixed-escape-and-nested-restoration 8x5 draws=6 invocations=384 gpu_buffers=1956 compared_bytes=160 exact=true\nPASS image-dispatch-tail-and-clear-border 320x240 draws=2 invocations=153600 gpu_buffers=617160 compared_bytes=307200 exact=true\nPASS image-valid-empty-and-hidden 4x3 draws=1 invocations=64 gpu_buffers=352 compared_bytes=48 exact=true\nPASS image-subnormal-origin-and-lost-extent 2x2 draws=2 invocations=128 gpu_buffers=564 compared_bytes=16 exact=true\nPASS alpha-rectangle-six-boundaries 6x2 draws=12 invocations=768 gpu_buffers=3168 compared_bytes=48 exact=true\nPASS alpha-image-six-boundaries 6x2 draws=3 invocations=192 gpu_buffers=944 compared_bytes=48 exact=true\nPASS alpha-ordered-mixed-draws 4x1 draws=10 invocations=640 gpu_buffers=2644 compared_bytes=16 exact=true\nPASS alpha-one-repeated-rounding 7x1 draws=65 invocations=4160 gpu_buffers=16696 compared_bytes=28 exact=true\nPASS alpha-subpixel-and-fractional-clip 4x3 draws=4 invocations=256 gpu_buffers=1132 compared_bytes=48 exact=true\nPASS alpha-image-negative-fractional-original-origin 5x3 draws=2 invocations=128 gpu_buffers=672 compared_bytes=60 exact=true\nPASS alpha-fixed-reset-and-restoration 5x3 draws=6 invocations=384 gpu_buffers=1680 compared_bytes=60 exact=true\nPASS alpha-transparent-hidden-rgb 2x2 draws=2 invocations=128 gpu_buffers=576 compared_bytes=16 exact=true\nPASS alpha-empty-clip-still-clears-opaque-target 3x2 draws=1 invocations=64 gpu_buffers=304 compared_bytes=24 exact=true\nCOMPLETE adapter=1 fixtures=30 exact=true custom_wgsl=true\n",
+      "stderr_tail": "",
+      "validation": "passed"
+    },
+    {
+      "name": "adapter-2",
+      "args": [
+        "--adapter",
+        "2"
+      ],
+      "status": "exited",
+      "returncode": 0,
+      "timeout_seconds": 25.0,
+      "elapsed_seconds": 0.234268,
+      "captured_bytes": 3854,
+      "observed_bytes": 3854,
+      "output_limit_bytes": 262144,
+      "stdout_log": "adapter-2.stdout.log",
+      "stderr_log": "adapter-2.stderr.log",
+      "stdout_tail": "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"\nADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"\nADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\"\nPASS overlapping-order 8x6 draws=5 invocations=320 gpu_buffers=1664 compared_bytes=192 exact=true\nPASS fractional-clips 8x6 draws=4 invocations=256 gpu_buffers=1408 compared_bytes=192 exact=true\nPASS fixed-resets-and-restores 10x7 draws=6 invocations=448 gpu_buffers=2096 compared_bytes=280 exact=true\nPASS out-of-bounds-and-empty 7x5 draws=3 invocations=192 gpu_buffers=1048 compared_bytes=140 exact=true\nPASS 319x239-dispatch-edges 319x239 draws=4 invocations=156160 gpu_buffers=610952 compared_bytes=304964 exact=true\nPASS forty-ordered-full-writes 320x240 draws=41 invocations=3148800 gpu_buffers=624896 compared_bytes=307200 exact=true\nPASS gpu-clear-only 7x3 draws=1 invocations=64 gpu_buffers=424 compared_bytes=84 exact=true\nPASS image-upscale-2x2 6x6 draws=2 invocations=128 gpu_buffers=848 compared_bytes=144 exact=true\nPASS image-three-columns-to-five 7x3 draws=2 invocations=128 gpu_buffers=716 compared_bytes=84 exact=true\nPASS image-downscale-distinct-4x4 4x4 draws=2 invocations=128 gpu_buffers=720 compared_bytes=64 exact=true\nPASS image-clip-preserves-original-origin 8x3 draws=2 invocations=128 gpu_buffers=736 compared_bytes=96 exact=true\nPASS image-negative-document-offset 5x3 draws=2 invocations=128 gpu_buffers=680 compared_bytes=60 exact=true\nPASS image-negative-fractional-origin 4x4 draws=2 invocations=128 gpu_buffers=680 compared_bytes=64 exact=true\nPASS image-tiny-and-fractional-clip 6x4 draws=3 invocations=192 gpu_buffers=1044 compared_bytes=96 exact=true\nPASS image-exact-and-one-ulp-translated-edges 5x3 draws=3 invocations=192 gpu_buffers=928 compared_bytes=60 exact=true\nPASS image-f32-endpoint-addition-rounds-back 4x2 draws=2 invocations=128 gpu_buffers=592 compared_bytes=32 exact=true\nPASS image-rectangle-order-and-source-reuse 6x4 draws=5 invocations=320 gpu_buffers=1568 compared_bytes=96 exact=true\nPASS image-fixed-escape-and-nested-restoration 8x5 draws=6 invocations=384 gpu_buffers=1956 compared_bytes=160 exact=true\nPASS image-dispatch-tail-and-clear-border 320x240 draws=2 invocations=153600 gpu_buffers=617160 compared_bytes=307200 exact=true\nPASS image-valid-empty-and-hidden 4x3 draws=1 invocations=64 gpu_buffers=352 compared_bytes=48 exact=true\nPASS image-subnormal-origin-and-lost-extent 2x2 draws=2 invocations=128 gpu_buffers=564 compared_bytes=16 exact=true\nPASS alpha-rectangle-six-boundaries 6x2 draws=12 invocations=768 gpu_buffers=3168 compared_bytes=48 exact=true\nPASS alpha-image-six-boundaries 6x2 draws=3 invocations=192 gpu_buffers=944 compared_bytes=48 exact=true\nPASS alpha-ordered-mixed-draws 4x1 draws=10 invocations=640 gpu_buffers=2644 compared_bytes=16 exact=true\nPASS alpha-one-repeated-rounding 7x1 draws=65 invocations=4160 gpu_buffers=16696 compared_bytes=28 exact=true\nPASS alpha-subpixel-and-fractional-clip 4x3 draws=4 invocations=256 gpu_buffers=1132 compared_bytes=48 exact=true\nPASS alpha-image-negative-fractional-original-origin 5x3 draws=2 invocations=128 gpu_buffers=672 compared_bytes=60 exact=true\nPASS alpha-fixed-reset-and-restoration 5x3 draws=6 invocations=384 gpu_buffers=1680 compared_bytes=60 exact=true\nPASS alpha-transparent-hidden-rgb 2x2 draws=2 invocations=128 gpu_buffers=576 compared_bytes=16 exact=true\nPASS alpha-empty-clip-still-clears-opaque-target 3x2 draws=1 invocations=64 gpu_buffers=304 compared_bytes=24 exact=true\nCOMPLETE adapter=2 fixtures=30 exact=true custom_wgsl=true\n",
+      "stderr_tail": "",
+      "validation": "passed"
+    }
+  ]
+}

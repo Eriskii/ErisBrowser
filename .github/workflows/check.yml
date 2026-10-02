@@ -150,6 +150,8 @@ jobs:
       - run: cargo fmt --manifest-path tools/vulkan-raster-probe/Cargo.toml -- --check
       - run: cargo clippy --locked --manifest-path tools/vulkan-raster-probe/Cargo.toml --all-targets -- -D warnings
       - run: cargo test --locked --manifest-path tools/vulkan-raster-probe/Cargo.toml
+      - run: cargo clippy --locked --manifest-path tools/vulkan-raster-probe/Cargo.toml --all-targets --features browser-bridge -- -D warnings
+      - run: cargo test --locked --manifest-path tools/vulkan-raster-probe/Cargo.toml --features browser-bridge
       - run: python3 -m unittest discover -s tools/vulkan-raster-probe -p 'test_*.py'
       # These checks exercise the planner and fake-process supervisor. Actual
       # custom shader execution/readback remains a separately recorded host run.

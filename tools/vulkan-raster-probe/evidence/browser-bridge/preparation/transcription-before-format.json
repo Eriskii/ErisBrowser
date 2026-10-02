@@ -1,0 +1,30 @@
+{
+  "scope": "Independent decoding of generated Rust literal expressions and repeat counts back into the frozen JSON; data only, no Rust/compiler/planner/Canvas/worker/GPU execution.",
+  "source": {
+    "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/browser_fixtures.rs",
+    "sha256": "c008438edcef5ac332fac666ee3956e0148988b83fbf16a96d3f4c6e9113c6f5"
+  },
+  "verifier": {
+    "path": "/tmp/eris-vulkan-browser-fixtures-verify.py",
+    "sha256": "b0985ce99a659b5f455499547c56a56b4c90ba5fbd561cc46d89fca289a39274"
+  },
+  "oracle_freeze_sha256": "ec652b547096f37db93433d5347c78873cef2eae63a03ced622013aa746b88e1",
+  "oracle_fixtures_sha256": "d85574775ec6a2eb3537b498fe24678a888b930fe0e06efc52b410c8f15c0130",
+  "cases_checked": 16,
+  "direct_cases": 11,
+  "worker_cases": 5,
+  "expanded_direct_commands_checked": 365,
+  "literal_pixels_checked": 197,
+  "rgb_bytes_checked": 591,
+  "frozen_input_copies_exact": 29,
+  "original_freeze_copy_exact": true,
+  "all_worker_paths_and_kind_routes_exact": true,
+  "all_frames_commands_colors_scopes_f32_values_exact": true,
+  "all_arc_alias_groups_exact": true,
+  "all_fallback_categories_exact": true,
+  "all_original_worker_assumption_text_preserved_in_json": true,
+  "limitations": [
+    "This checks data transcription, not future checker enforcement of the worker assumptions.",
+    "A static read must also confirm the small builder helpers preserve data and use bounded fallible reserves."
+  ]
+}

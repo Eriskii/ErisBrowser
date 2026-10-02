@@ -7,12 +7,12 @@ exclusions. Typed arrays, DataView, shared memory, Proxy and foreign realms
 remain ahead. Two metadata-heavy local modes reach the unchanged work limit;
 broader interpreter performance and accounting remain open work.
 
-The [Vulkan milestones](vulkan-rendering.md) remain active: connect the custom
-rasterizer to browser drawing, then extend coverage to text, rounded edges and
-compositing. The standalone probe already covers rectangles, nearest-neighbor
-images and source alpha over opaque RGB. Browser painting still runs on the CPU;
-the optional Vulkan presenter uploads those CPU frames. Performance within 30%
-of Chromium has not been demonstrated.
+The [Vulkan milestones](vulkan-rendering.md) now include an optional offscreen
+bridge from real confined-worker snapshots to custom GPU drawing, with explicit
+whole-frame CPU fallback. Native-window integration, text, rounded edges and
+compositing remain ahead. The browser window still paints on the CPU; its optional
+Vulkan presenter uploads those frames. Performance within 30% of Chromium has
+not been demonstrated.
 
 [Array concat](../tests/conformance/array-concat.md) now streams live
 spreadability, same-realm species and aliased results. Its complete upstream
@@ -22,8 +22,8 @@ All 40 older profiles and six selected local suites retain their complete
 observations. Resource outcomes prevent a new gate; the 33 established gates
 remain unchanged. Proxy, typed arrays, foreign realms, remaining Array methods
 and broader accounting remain ahead. That checkpoint left the optional
-CPU-frame Vulkan presenter and standalone raster probe unchanged; browser GPU
-rasterization and compositing remain open.
+CPU-frame Vulkan presenter and standalone raster probe unchanged; native-window
+GPU rasterization and compositing remain open.
 
 [Array splice](../tests/conformance/array-splice.md) now streams live property
 operations with same-realm species, aliased results and ordered partial effects.
@@ -160,14 +160,14 @@ CPU-painted frames through a Vulkan-only wgpu binding. It uses one owner thread,
 one active upload and one replaceable pending frame, fixed operation deadlines,
 and confirmed resource release before software fallback. Verification reads
 back actual acquired surface textures; it does not certify compositor output.
-Software remains the default/headless path. Browser integration of custom GPU
-rasterization and driver isolation/performance work remain open.
+Software remains the default/headless path. Native-window integration of custom
+GPU rasterization and driver isolation/performance work remain open.
 
 Acceptance work:
 
-- Define a backend interface for the existing validated display list and image
-  resources, preserving clipping, fixed coordinates, text coverage, alpha and
-  nested opacity behavior.
+- Extend the optional offscreen display-list bridge to normal browser drawing,
+  preserving clipping, fixed coordinates, text coverage, alpha and nested
+  opacity behavior.
 - Bound GPU allocations, command work, uploads and retained resources. Decide
   the GPU process/driver boundary explicitly; GPU access must not broaden the
   renderer's filesystem or network authority.
@@ -187,11 +187,27 @@ opaque RGB, including clip/fixed scopes and per-draw rounding. Nine independentl
 frozen alpha fixtures join the unchanged 21 rectangle/image cases. Source,
 metadata and target buffers retain the 1 MiB explicit GPU limit, with unchanged
 work, command and scope caps. The [alpha evidence](../tools/vulkan-raster-probe/evidence/host-alpha.json)
-records 25 Rust tests per toolchain, ten Python tests and actual GPU readback.
-Browser integration, text, rounded coverage, group opacity, color conversion,
-production security and performance comparisons remain planned.
-The optional upload presenter continues to use CPU-painted frames. Production
-driver requirements and broader platform coverage remain undecided.
+records its 25 Rust tests per toolchain, ten Python tests and actual GPU readback.
+Those historical fixture and evidence bytes remain unchanged.
+
+The optional [browser bridge](../tools/vulkan-raster-probe/BROWSER_BRIDGE.md)
+now borrows snapshots/display lists and image stores. Its
+[host checkpoint](../tools/vulkan-raster-probe/evidence/host-browser-bridge.json)
+passes 16 cases per NVIDIA, AMD and software Vulkan adapter, including five real
+confined-page captures. Nine cases use GPU drawing and seven use complete CPU
+fallback: 151 GPU pixels plus 46 fallback pixels, 788 packed bytes per adapter
+and 2,364 combined bytes. Hidden unsupported commands refuse the whole frame;
+image aliases, missing images and typed scopes retain their original semantics.
+All 30 prior standalone cases still pass on all three adapters.
+
+Both Rust 1.88 and 1.98 pass 50 feature-enabled tests; the unchanged default
+25-test checks are reused from the first candidate. Eleven new process-supervisor
+and fourteen protocol tests pass. The 320×240, 256-command, 32-scope, 1 MiB GPU
+buffer and four-million-invocation caps remain. The native window's 400×250
+minimum and text chrome exceed this subset; its upload presenter continues to
+use CPU-painted frames. Native-window integration, text, rounded coverage, group
+opacity, color conversion, full compatibility, production security and Chromium
+performance comparisons remain open.
 
 ## JavaScript execution depth
 

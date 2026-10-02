@@ -1,0 +1,13 @@
+{
+  "command": [
+    "rustfmt",
+    "+1.88.0",
+    "--edition",
+    "2024",
+    "tools/vulkan-raster-probe/src/browser_fixtures.rs"
+  ],
+  "exit_code": 1,
+  "stderr": "info: syncing channel updates for 1.88.0-x86_64-unknown-linux-gnu\nerror: could not create temp file /home/eriskii/.rustup/tmp/6evxw4j3ovo_e693_file: Read-only file system (os error 30)\n",
+  "source_unchanged": true,
+  "note": "Rustup launcher could not use its default read-only home; no formatting, compilation or tests occurred. Follow-up uses the already cached formatter executable directly."
+}

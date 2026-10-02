@@ -1,0 +1,200 @@
+   Compiling bitflags v2.13.2
+   Compiling once_cell v1.21.4
+   Compiling smallvec v1.16.2
+   Compiling linux-raw-sys v0.12.1
+   Compiling stable_deref_trait v1.2.1
+   Compiling dlib v0.5.3
+   Compiling downcast-rs v1.2.1
+   Compiling scoped-tls v1.0.1
+   Compiling num-traits v0.2.19
+   Compiling thiserror v2.0.21
+   Compiling bytemuck v1.25.2
+   Compiling zerofrom v0.1.8
+   Compiling zerocopy v0.8.59
+   Compiling writeable v0.6.4
+   Compiling simd-adler32 v0.3.10
+   Compiling litemap v0.8.3
+   Compiling adler2 v2.0.1
+   Compiling naga-types v30.0.1
+   Compiling utf8_iter v1.0.4
+   Compiling zeroize v1.9.0
+   Compiling percent-encoding v2.3.2
+   Compiling wayland-sys v0.31.11
+   Compiling yoke v0.8.3
+   Compiling parking_lot_core v0.9.12
+   Compiling spirv v0.4.0+sdk-1.4.341.0
+   Compiling as-raw-xcb-connection v1.0.1
+   Compiling linux-raw-sys v0.4.15
+   Compiling miniz_oxide v0.9.1
+   Compiling wgpu-types v30.0.1
+   Compiling rustls-pki-types v1.15.1
+   Compiling thiserror v1.0.69
+   Compiling crc32fast v1.5.2
+   Compiling icu_normalizer_data v2.3.0
+   Compiling icu_properties_data v2.3.0
+   Compiling getrandom v0.2.17
+   Compiling zerovec v0.11.8
+   Compiling zerotrie v0.2.5
+   Compiling pin-project-lite v0.2.17
+   Compiling parking_lot v0.12.5
+   Compiling tracing-core v0.1.36
+   Compiling untrusted v0.9.0
+   Compiling slab v0.4.12
+   Compiling x11rb-protocol v0.13.2
+   Compiling ring v0.17.14
+   Compiling gpu-allocator v0.28.0
+   Compiling rustix v0.38.44
+   Compiling memmap2 v0.9.11
+   Compiling flate2 v1.1.10
+   Compiling tracing v0.1.44
+   Compiling ordered-float v5.3.0
+   Compiling xkeysym v0.2.1
+   Compiling tinystr v0.8.4
+   Compiling potential_utf v0.1.6
+   Compiling xcursor v0.3.11
+   Compiling cursor-icon v1.2.0
+   Compiling icu_collections v2.3.0
+   Compiling bytes v1.12.1
+   Compiling icu_locale_core v2.3.0
+   Compiling itoa v1.0.18
+   Compiling httparse v1.10.1
+   Compiling getrandom v0.3.4
+   Compiling fdeflate v0.3.7
+   Compiling miniz_oxide v0.8.9
+   Compiling color_quant v1.1.0
+   Compiling ctor v0.10.1
+   Compiling base64 v0.23.1
+   Compiling ttf-parser v0.25.1
+   Compiling byteorder-lite v0.1.0
+   Compiling rustix v1.1.5
+   Compiling zune-core v0.5.3
+   Compiling http v1.5.0
+   Compiling pxfm v0.1.30
+   Compiling subtle v2.6.1
+   Compiling quick-error v2.0.1
+   Compiling weezl v0.1.12
+   Compiling image-webp v0.2.4
+   Compiling zune-jpeg v0.5.15
+   Compiling png v0.18.1
+   Compiling rustls-webpki v0.103.15
+   Compiling icu_provider v2.3.1
+   Compiling gif v0.14.2
+   Compiling icu_normalizer v2.3.0
+   Compiling icu_properties v2.3.0
+   Compiling rustls v0.23.45
+   Compiling ureq-proto v0.6.1
+   Compiling xkbcommon-dl v0.4.2
+   Compiling tiny-xlib v0.2.5
+   Compiling enumflags2 v0.7.12
+   Compiling x11-dl v2.21.0
+   Compiling webpki-roots v1.0.9
+   Compiling form_urlencoded v1.2.2
+   Compiling fastrand v2.5.0
+   Compiling ab_glyph_rasterizer v0.1.10
+   Compiling smol_str v0.2.2
+   Compiling dpi v0.1.2
+   Compiling utf8-zero v0.8.1
+   Compiling landlock v0.4.7
+   Compiling seccompiler v0.5.0
+   Compiling owned_ttf_parser v0.25.1
+   Compiling encoding_rs v0.8.35
+   Compiling base64 v0.22.1
+   Compiling idna_adapter v1.2.2
+   Compiling ab_glyph v0.2.32
+   Compiling idna v1.1.0
+   Compiling moxcms v0.8.1
+   Compiling url v2.5.8
+   Compiling half v2.7.1
+   Compiling ahash v0.8.12
+   Compiling naga v30.0.1
+   Compiling ureq v3.4.0
+   Compiling wayland-backend v0.3.17
+   Compiling polling v3.11.0
+   Compiling gethostname v1.1.0
+   Compiling calloop v0.13.0
+   Compiling image v0.25.10
+   Compiling wayland-client v0.31.15
+   Compiling wayland-csd-frame v0.3.0
+   Compiling wayland-protocols v0.32.13
+   Compiling wayland-cursor v0.31.14
+   Compiling calloop-wayland-source v0.3.0
+   Compiling x11rb v0.13.2
+   Compiling wgpu-naga-bridge v30.0.1
+   Compiling wgpu-hal v30.0.1
+   Compiling softbuffer v0.4.8
+   Compiling arboard v3.6.1
+   Compiling wayland-protocols-wlr v0.3.12
+   Compiling wayland-protocols-plasma v0.3.12
+   Compiling wgpu-core-deps-windows-linux-android v30.0.1
+   Compiling wgpu-core v30.0.1
+   Compiling smithay-client-toolkit v0.19.2
+   Compiling winit v0.30.13
+   Compiling eris-browser v0.1.0 (/tmp/eris-vulkan-browser-bridge-candidate-1/source)
+   Compiling wgpu v30.0.1
+   Compiling eris-vulkan-raster-prototype v0.0.0 (/tmp/eris-vulkan-browser-bridge-candidate-1/source/tools/vulkan-raster-probe)
+    Finished `test` profile [unoptimized] target(s) in 17.98s
+     Running unittests src/lib.rs (/tmp/eris-vulkan-raster-prototype/target-198/debug/deps/eris_vulkan_raster_prototype-a49f160b41af156c)
+
+running 46 tests
+test alpha_fixtures::tests::alpha_fixture_frozen_counter_arithmetic ... ok
+test browser_adapter::tests::browser_bridge_borrowed_sort_and_binary_lookup_match_spelled_keys ... ok
+test alpha_fixtures::tests::alpha_fixture_inputs_and_literal_outputs_are_bounded ... ok
+test browser_adapter::tests::browser_bridge_borrows_sources_during_planning_and_owns_only_finished_payload ... ok
+test browser_adapter::tests::browser_bridge_frame_caps_and_unconditional_clear_remain_exact ... ok
+test browser_adapter::tests::browser_bridge_combined_typed_scopes_check_boundaries_and_mismatches ... ok
+test browser_adapter::tests::browser_bridge_fixed_escape_restores_offsets_and_scopes_without_flattening ... ok
+test browser_adapter::tests::browser_bridge_full_source_packing_can_refuse_unchanged_gpu_byte_cap ... ok
+test browser_adapter::tests::browser_bridge_hidden_images_keep_reference_stats_without_arena_allocation ... ok
+test browser_adapter::tests::browser_bridge_lines_keep_canvas_f32_order_and_original_endpoint_checks ... ok
+test browser_adapter::tests::browser_bridge_individual_key_limit_counts_utf8_bytes ... ok
+test browser_adapter::tests::browser_bridge_private_comparison_prechecks_cover_maximum_and_overflow ... ok
+test browser_adapter::tests::browser_bridge_rejects_unsupported_hidden_content_at_original_indices ... ok
+test browser_adapter::tests::browser_bridge_original_command_and_cpu_work_caps_precede_lowering ... FAILED
+test browser_adapter::tests::browser_bridge_source_ids_use_first_reference_then_lexical_unused_order ... ok
+test browser_adapter::tests::browser_bridge_translucent_clip_and_source_alpha_reach_existing_planner ... ok
+test browser_adapter::tests::browser_bridge_snapshot_delegation_borrows_public_fields_without_mutation ... ok
+test browser_adapter::tests::browser_bridge_unused_and_hidden_bad_sources_are_refused ... ok
+test browser_adapter::tests::browser_bridge_validates_original_scalars_before_alpha_or_missing_elision ... ok
+test browser_adapter::tests::browser_bridge_aggregate_key_limits_precede_sorting_and_lookup ... ok
+test tests::alpha_only_old_rejections_are_supported_without_discarding_source_alpha ... ok
+test tests::exact_edges_touching_clips_and_fixed_escape_empty_ancestors ... ok
+test tests::fractional_rectangle_and_clip_left_edges_are_deliberately_different ... ok
+test tests::image_geometry_scopes_and_unsupported_commands_refuse_whole_plan ... ok
+test tests::image_scalar_sampling_matches_nine_frozen_float_edge_oracles ... ok
+test tests::image_plan_owns_sources_reuses_ids_and_validates_even_unused_entries ... ok
+test tests::alpha_frozen_literals_and_counter_contracts_match_serialized_plans ... ok
+test browser_adapter::tests::browser_bridge_unique_rgba_cap_counts_aliases_once_and_distinct_sources_twice ... ok
+test tests::image_source_command_and_scope_caps_accept_exact_boundaries ... ok
+test tests::invalid_nonfinite_coordinates_offsets_and_dimensions_are_rejected ... ok
+test tests::metadata_records_are_immutable_aligned_and_never_pixels ... ok
+test tests::transparent_rectangles_validate_geometry_and_radius_before_elision ... ok
+test tests::transparent_commands_cannot_bypass_typed_scopes_counts_or_clear_validation ... ok
+test tests::commands_overdraw_invocations_and_explicit_buffers_stay_bounded ... ok
+test tests::unsupported_content_is_rejected_even_after_hidden_or_empty_content ... ok
+test tests::typed_scope_balance_and_combined_depth_are_checked_atomically ... ok
+test browser_adapter::tests::browser_bridge_map_capacity_is_bounded_before_a_sparse_iteration ... ok
+test browser_adapter::tests::browser_bridge_randomized_map_insertion_does_not_change_plan_or_counts ... ok
+test tests::image_strict_sources_reject_malformed_and_hidden_input ... ok
+test tests::transparent_source_structure_is_checked_even_if_unused_empty_or_clipped ... ok
+test gpu::tests::pending_future_uses_finite_deadline_without_gpu ... ok
+test tests::image_all_642_frozen_lookup_entries_and_origins_are_preserved ... ok
+test tests::fully_transparent_images_keep_dispatch_arena_and_exact_resource_caps ... ok
+test tests::image_frozen_pixels_and_independently_counted_protocol_are_exact ... ok
+test tests::independent_pixel_fixtures_agree_with_integer_plan ... ok
+test tests::image_exact_gpu_byte_and_invocation_caps_accept_and_next_unit_rejects ... ok
+
+failures:
+
+---- browser_adapter::tests::browser_bridge_original_command_and_cpu_work_caps_precede_lowering stdout ----
+
+thread 'browser_adapter::tests::browser_bridge_original_command_and_cpu_work_caps_precede_lowering' (6847) panicked at src/browser_adapter/tests.rs:244:5:
+assertion failed: plan_display_list(&vec![hidden(); 16], &ImageStore::new(), f).is_ok()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    browser_adapter::tests::browser_bridge_original_command_and_cpu_work_caps_precede_lowering
+
+test result: FAILED. 45 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.10s
+
+error: test failed, to rerun pass `--lib`

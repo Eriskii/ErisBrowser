@@ -1,0 +1,45 @@
+{
+  "scope": "Pythonhost/supervisor/protocol input; only14syntheticprotocol tests initiallyauthorized; fakeprocess11already passed exactsame supervisorbytes",
+  "files": [
+    {
+      "path": "tools/vulkan-raster-probe/bridge_supervisor.py",
+      "bytes": 13678,
+      "sha256": "d38c129e010564c2ffa3903e1f86ae53d26667723749d9407659a14d188b32a8"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/test_bridge_supervisor.py",
+      "bytes": 8161,
+      "sha256": "80c9414a6a214a2f1c7c73b19bc424519fe9b392625650ff1b283995508fb6c3"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/run_browser_host.py",
+      "bytes": 8453,
+      "sha256": "51ac06679b31bcfbc3f051df814850631b45fce1943ab6d89fb226349994de10"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/browser_protocol.py",
+      "bytes": 19063,
+      "sha256": "228b7d00dc3bd4554e0ae193ab2be67e0ed81e215ffbeaa8a0ccd78a41dd75ac"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/test_browser_protocol.py",
+      "bytes": 19885,
+      "sha256": "69c7fea6ebf16ad3bb85dcb82205218dfe782c69f98d3d962979d522bbcb3f76"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/run_host.py",
+      "bytes": 15273,
+      "sha256": "bdea875e2a4ba522088b8b986150745569489bcab2b7f503034e858eee10bbd6"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/test_protocol.py",
+      "bytes": 2889,
+      "sha256": "c69dd8d76ed9475bfc5f492249278f48dc036b93b408b2e411ad09e29d0dc66b"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/test_supervisor.py",
+      "bytes": 2488,
+      "sha256": "85d3d91272710f006da8b340dae6030102183939b6e5325e82674d81318ac806"
+    }
+  ]
+}

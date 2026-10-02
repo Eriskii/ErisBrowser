@@ -1,0 +1,16 @@
+test_adopted_orphan_prevents_capture_grant (test_bridge_supervisor.SupervisorTests.test_adopted_orphan_prevents_capture_grant) ... ok
+test_already_orphaned_grandchild_is_adopted_by_supervisor (test_bridge_supervisor.SupervisorTests.test_already_orphaned_grandchild_is_adopted_by_supervisor) ... ok
+test_cancellation_after_successful_reap_cannot_report_success (test_bridge_supervisor.SupervisorTests.test_cancellation_after_successful_reap_cannot_report_success) ... ok
+test_cancellation_still_reaps_distinct_session (test_bridge_supervisor.SupervisorTests.test_cancellation_still_reaps_distinct_session) ... ok
+test_capture_grant_requires_live_checker_without_adopted_children (test_bridge_supervisor.SupervisorTests.test_capture_grant_requires_live_checker_without_adopted_children) ... ok
+test_clean_exit_without_required_gate_is_failure (test_bridge_supervisor.SupervisorTests.test_clean_exit_without_required_gate_is_failure) ... ok
+test_normal_exit_with_detached_pipe_holder_is_a_failure (test_bridge_supervisor.SupervisorTests.test_normal_exit_with_detached_pipe_holder_is_a_failure) ... ok
+test_output_flood_is_bounded_even_after_exit (test_bridge_supervisor.SupervisorTests.test_output_flood_is_bounded_even_after_exit) ... ok
+test_success_and_nonzero_keep_exact_output (test_bridge_supervisor.SupervisorTests.test_success_and_nonzero_keep_exact_output) ... ok
+test_timeout_adopts_and_reaps_worker_in_a_distinct_session (test_bridge_supervisor.SupervisorTests.test_timeout_adopts_and_reaps_worker_in_a_distinct_session) ... ok
+test_waited_child_does_not_become_an_orphan_failure (test_bridge_supervisor.SupervisorTests.test_waited_child_does_not_become_an_orphan_failure) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 1.225s
+
+OK

@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "/tmp/eris-vulkan-browser-bridge-candidate-2/source/tools/vulkan-raster-probe",
+    "-p",
+    "test_browser_protocol.py",
+    "-v"
+  ],
+  "exit_code": 0,
+  "seconds": 0.46352401992771775,
+  "log_sha256": "7ec70cca06a82ea216da95018429f985021d5c422ea71d5c92922b1b8134e55c"
+}

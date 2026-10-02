@@ -1,6 +1,6 @@
 # Custom Vulkan rectangle, image and source-alpha compute experiment
 
-This standalone probe executes custom WGSL for unrounded rectangles and nearest-neighbor images, including source alpha over an opaque RGB target. It is experimental groundwork for the browser backend, with its own dependency graph. It has no browser integration, native surface, window, compositor capture or performance claim. The CPU-only tests do not enumerate adapters.
+This standalone probe executes custom WGSL for unrounded rectangles and nearest-neighbor images, including source alpha over an opaque RGB target. It is experimental groundwork for the browser backend, with its own dependency graph. The optional [browser display-list bridge](BROWSER_BRIDGE.md) adds a separate offscreen checker using actual Eris worker snapshots and complete CPU fallback. Neither checker supplies a native surface, window, compositor capture or performance claim. The CPU-only tests do not enumerate adapters.
 
 The [alpha host record](evidence/host-alpha.json) records all **30 fixtures passing on each of the NVIDIA, AMD and software Vulkan adapters**: **921,620 exact compared bytes per adapter, 2,764,860 total**. All four processes, including enumeration, exited normally with empty stderr. It binds the actual source, binary, loader, adapter identities and raw output.
 
@@ -33,7 +33,7 @@ One 8×8-workgroup compute dispatch handles each planned draw in a separate comp
 
 Synchronous driver calls, future polling internals, device destruction, process creation and kernel-uninterruptible teardown are **not** proven to finish within those deadlines. Failure/timeout remains visible. The supervisor is Linux-specific, does not change driver settings, and requires a new output directory. It freezes exact adapter identity and checks all 30 expected PASS records plus COMPLETE; exit zero alone is insufficient. Actual execution requires `--allow-experimental-gpu`.
 
-`Plan` and `Draw` storage is private with immutable accessors. Planning copies the source pixels into owned storage, so later caller mutations cannot alter a validated submission. There is no browser fallback or worker security integration here, and no supported external command ingestion API.
+`Plan` and `Draw` storage is private with immutable accessors. Planning copies the source pixels into owned storage, so later caller mutations cannot alter a validated submission. The default standalone cases do not start browser workers; the optional snapshot checker has its own bounded admission and supervision contract.
 
 ## Independent fixtures
 
@@ -47,7 +47,7 @@ The [independently frozen alpha oracle](evidence/alpha-fixture-oracle.json) adds
 
 ## Reproduction
 
-Pinned wgpu 30.0.1, defaults disabled, exactly `std,vulkan,wgsl`, edition 2024, minimum Rust 1.88. No additional direct dependencies or toolchain installs. `Cargo.lock` copies the published isolated transfer probe dependency resolution; only this root package name changes.
+Pinned wgpu 30.0.1, defaults disabled, exactly `std,vulkan,wgsl`, edition 2024, minimum Rust 1.88. The optional `browser-bridge` feature adds a path dependency on this repository's own browser library with default features disabled. The expanded lockfile retains every original probe package version and checksum; the default probe does not activate the browser dependency. No toolchain install is required by the tools.
 
 ```
 cargo test --offline --locked
@@ -77,4 +77,4 @@ Planner f32 bounds and fixed scopes were derived from the existing `src/graphics
 - Pinned wgpu-core 30.0.1 `src/command/compute.rs`, `State::flush_bindings`: per-dispatch usage scopes and `CommandEncoder::drain_barriers` for conflicting storage usage. This is the synchronization mechanism; no unsafe raw Vulkan escape is used.
 - Linux waitid ownership behavior: https://man7.org/linux/man-pages/man2/waitid.2.html ; process-group signals: https://man7.org/linux/man-pages/man2/kill.2.html .
 
-All crate Rust sources forbid unsafe code; transitive wgpu/Vulkan driver internals are outside that claim. Exact source/lock/binary/provenance hashes and offline outcomes are recorded separately in the [rectangle](evidence/host-raster.json), [image](evidence/host-images.json) and [alpha](evidence/host-alpha.json) evidence. Earlier native-surface experiment failures remain unchanged; this offscreen prototype is no new compositor evidence. Browser integration, text, rounded coverage, group opacity, color conversion, production security and performance comparisons remain open.
+All crate Rust sources forbid unsafe code; transitive wgpu/Vulkan driver internals are outside that claim. Exact source/lock/binary/provenance hashes and offline outcomes are recorded separately in the [rectangle](evidence/host-raster.json), [image](evidence/host-images.json) and [alpha](evidence/host-alpha.json) evidence. Earlier native-surface experiment failures remain unchanged; this offscreen prototype is no new compositor evidence. Native browser rendering, text, rounded coverage, group opacity, color conversion, production security and performance comparisons remain open.

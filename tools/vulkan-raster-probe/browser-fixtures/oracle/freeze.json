@@ -1,0 +1,176 @@
+{
+  "schema": 1,
+  "state": "frozen independent oracle proposal; root interface review and execution authorization still required",
+  "frozen_at_utc": "2026-10-02T03:20:01.785663+00:00",
+  "root": "/tmp/eris-vulkan-browser-bridge-oracle",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2147,
+      "sha256": "4da3fdfd1f091495c806752276f810929890999987537200ff7fe2796f563acd"
+    },
+    {
+      "path": "contract.md",
+      "bytes": 5445,
+      "sha256": "e33296d0557bd239118bff568716d36bfd89c9cc96c24e2e3e48b2a410df2983"
+    },
+    {
+      "path": "data-checks.json",
+      "bytes": 2726,
+      "sha256": "0dba4f0add61bee2aa41b60495874f8a20a87de4da38ac0e5b01055c9f7b488f"
+    },
+    {
+      "path": "derivations.md",
+      "bytes": 5078,
+      "sha256": "64274c87cadbc3dddfd0798cc16a9a04ca367131ab350c848c355116d3758753"
+    },
+    {
+      "path": "expected/direct-command-cap-refuses-whole-frame.rgb",
+      "bytes": 3,
+      "sha256": "5ae7e6a42304dc6e4176210b83c43024f99a0bce9a870c3b6d2c95fc8ebfb74c"
+    },
+    {
+      "path": "expected/direct-fixed-escape-and-nested-restoration.rgb",
+      "bytes": 72,
+      "sha256": "78590e56ffd340433232ea019d14fa17060c73bc5f9c344fa42e9914c0a6e2fa"
+    },
+    {
+      "path": "expected/direct-hidden-text-refuses-whole-frame.rgb",
+      "bytes": 24,
+      "sha256": "3dc8007acc7bdc6938676753f1136033d422a534b0da352d126e9b38d2b7fcb4"
+    },
+    {
+      "path": "expected/direct-lines-are-bounding-rectangles.rgb",
+      "bytes": 60,
+      "sha256": "71b132d8bb46350f9ff7fbf8d3265548327de58f9eaaf859aa8002c9fe669e8c"
+    },
+    {
+      "path": "expected/direct-missing-image-is-a-legal-noop.rgb",
+      "bytes": 24,
+      "sha256": "3dc8007acc7bdc6938676753f1136033d422a534b0da352d126e9b38d2b7fcb4"
+    },
+    {
+      "path": "expected/direct-repeated-key-alias-and-alpha.rgb",
+      "bytes": 24,
+      "sha256": "0c1a9dafdd5a66918f6a788b0c979aa85c2dbb37f30e2d3f32196d9bc649f140"
+    },
+    {
+      "path": "expected/direct-rounded-refuses-whole-frame.rgb",
+      "bytes": 36,
+      "sha256": "aa0eb258ba18d785e049ca9c8f4314ecf575f6e763abd98d3bade2fe2a0eee46"
+    },
+    {
+      "path": "expected/direct-scope-cap-refuses-balanced-whole-frame.rgb",
+      "bytes": 3,
+      "sha256": "5ae7e6a42304dc6e4176210b83c43024f99a0bce9a870c3b6d2c95fc8ebfb74c"
+    },
+    {
+      "path": "expected/direct-translucent-fractional-clip-edges.rgb",
+      "bytes": 45,
+      "sha256": "204fe68429499a02ef2d833aec124154ec220184afc760c06a381f983147d023"
+    },
+    {
+      "path": "expected/direct-transparent-hidden-rounded-still-refuses.rgb",
+      "bytes": 18,
+      "sha256": "b264d50882783e189ebe8cae2a58fdbb0872ea01fe58a35e659f6a43c78d0ae0"
+    },
+    {
+      "path": "expected/direct-unit-opacity-refuses-whole-frame.rgb",
+      "bytes": 18,
+      "sha256": "ef40b7f937395a2e5810f78655f2d55a9f6c2fd35d576ab50156b6a671930264"
+    },
+    {
+      "path": "expected/html-fixed-child-escapes-scrolling-clip.rgb",
+      "bytes": 96,
+      "sha256": "d96bf74f2bbdb6b31e56b9cdfb4ecb93bd6b88368708ab0f902e80793f3aee53"
+    },
+    {
+      "path": "expected/html-ordered-rectangles.rgb",
+      "bytes": 72,
+      "sha256": "7704024730fe07beddc79d430f0072dfc8228d903f6aa555194676dbd101993a"
+    },
+    {
+      "path": "expected/html-repeated-decoded-image-key.rgb",
+      "bytes": 36,
+      "sha256": "755c08ffce08cc1e3ed054d3e8efd1c7ffbecbc020b7a1180dd3c1e92cf9134f"
+    },
+    {
+      "path": "expected/html-rounded-page-requires-full-cpu-fallback.rgb",
+      "bytes": 36,
+      "sha256": "aa0eb258ba18d785e049ca9c8f4314ecf575f6e763abd98d3bade2fe2a0eee46"
+    },
+    {
+      "path": "expected/html-unavailable-image-keeps-placeholder.rgb",
+      "bytes": 24,
+      "sha256": "cabe78bf9662f83b80ffcbdf921fa3e0b81d63a6c880d78a5ce55f3e9764c785"
+    },
+    {
+      "path": "fixtures.json",
+      "bytes": 100169,
+      "sha256": "d85574775ec6a2eb3537b498fe24678a888b930fe0e06efc52b410c8f15c0130"
+    },
+    {
+      "path": "html/html-fixed-child-escapes-scrolling-clip.html",
+      "bytes": 494,
+      "sha256": "15c11e99057e7cfb35f6740a199ef0d5c4606345e56e24281c9e9fd9d8e85395"
+    },
+    {
+      "path": "html/html-ordered-rectangles.html",
+      "bytes": 378,
+      "sha256": "84a096ee77afbde32bf7fd22548aa155b9528fd88e2324afd3140743ef504996"
+    },
+    {
+      "path": "html/html-repeated-decoded-image-key.html",
+      "bytes": 373,
+      "sha256": "e68a6e87c22ddb1ec1502a2acd0c2d1f24108df6e6192a5fa5a98ae6cc2d3653"
+    },
+    {
+      "path": "html/html-rounded-page-requires-full-cpu-fallback.html",
+      "bytes": 394,
+      "sha256": "0d2e92496d362442296e14da9e458b9582741413ff440194d9253363328d7f21"
+    },
+    {
+      "path": "html/html-unavailable-image-keeps-placeholder.html",
+      "bytes": 417,
+      "sha256": "4ab74a7dce520e97056de28a031faaeab959e037e6643f81418cd897c2f04d75"
+    },
+    {
+      "path": "html/two-pixels.png",
+      "bytes": 71,
+      "sha256": "5a43ec1305804c9be3f99944cc19630ecb0839f0743c32deffd29357409efe54"
+    },
+    {
+      "path": "prepare.py",
+      "bytes": 11186,
+      "sha256": "b48fa91f60041d0cd22498342ad9a7b6ae98d136c44e2b36cc0e1952d3d777f8"
+    },
+    {
+      "path": "reviews/script-review.json",
+      "bytes": 11111,
+      "sha256": "60fb9015891a3f9240397f9569d44ddf22d3a137e368eecf9087174128bc79ce"
+    }
+  ],
+  "file_count": 29,
+  "canonical_file_ledger_sha256": "73613466654447d570801a0156a910a10431f50214d5c13b81a138e5ed78fac4",
+  "counts": {
+    "cases": 16,
+    "direct": 11,
+    "worker_html": 5,
+    "gpu": 9,
+    "cpu_fallback": 7,
+    "rgb_bytes": 591,
+    "packed_rgb_bytes": 788
+  },
+  "all_literal_pixels": 197,
+  "renderer_planner_browser_compiler_gpu_executions": 0,
+  "repository_edits": false,
+  "existing_probe_oracles_or_limits_changed": false,
+  "independent_peer_review": "reviews/script-review.json",
+  "fixture_status_note": "The draft status field labels a proposed, unexecuted bridge contract; all bytes listed here are now immutable. Any later correction must preserve this record and original inputs.",
+  "pending_checks": [
+    "Root review of interfaces and resource admission policy before implementation",
+    "Five actual worker command streams and decoded PNG bytes must satisfy the listed source-derived assumptions before accepted fixture execution",
+    "Additional bridge key/metadata and CPU-work budget boundary oracles after API and bounds are agreed"
+  ],
+  "source_reference_ledger": "data-checks.json"
+}

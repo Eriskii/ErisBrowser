@@ -1,0 +1,59 @@
+{
+  "reviewer": "/root/html_css",
+  "scope": "Read-only static process-ownership review; no child processes, tests or supervisor execution by reviewer.",
+  "source": {
+    "path": "tools/vulkan-raster-probe/bridge_supervisor.py",
+    "retained_copy": "/tmp/eris-vulkan-browser-supervisor-reviewed-initial.py",
+    "sha256": "1346ada8577132eef363223bb716ef11764b9963395dd919766597d546b30fc7"
+  },
+  "status": "Concrete changes requested before acceptance; final delta review pending",
+  "findings": [
+    {
+      "id": "cancel-during-cleanup",
+      "lines": [
+        181,
+        195,
+        222,
+        227,
+        258
+      ],
+      "issue": "Cancellation after the normal-exit observation but before owned cleanup finishes is recorded in cancellation_signal without changing exited status, so CLI can return success.",
+      "requested_change": "After cleanup, recheck cancellation before permitting normal exited success; preserve cleanup failure precedence.",
+      "test": "Inject cancellation after normal exit is observed and during cleanup; require non-success status even with checker returncode zero."
+    },
+    {
+      "id": "stop-known-checker-before-proc-enumeration",
+      "lines": [
+        89,
+        106,
+        124,
+        127
+      ],
+      "issue": "The bounded own_children read happens before signaling the still-unreaped known checker; procfs/count failures can return without stopping even that owned checker group. Failure is reported honestly, but known authority is left unused.",
+      "requested_change": "Attempt signal_owned(checker_pid) before enumerating descendants, retaining non-reaping proof and explicit failure handling.",
+      "test": "With known child ownership and an enumeration bound/error, verify known checker signal is attempted before returning cleanup_error."
+    },
+    {
+      "id": "checker-number-after-first-reap",
+      "lines": [
+        111,
+        119
+      ],
+      "issue": "A saved checker_pid is still used to classify later reaps after its original process has been reaped. Numeric reuse can overwrite the original checker returncode and miscount a later adopted child. No stale number is currently used as signaling authority, but identity classification should stop at first reap.",
+      "requested_change": "Track whether the original checker is already reaped and classify any later reap as a descendant even if its numeric PID matches.",
+      "test": "Synthetic reap stream with original checker completion followed by a later owned child carrying the same number must retain original checker exit and increment descendant count."
+    }
+  ],
+  "sound_paths": [
+    "Each signal_owned call uses waitid WNOWAIT with one waiter before kill; a child exiting in between remains unreaped and reserves its PID.",
+    "Cleanup signals all currently observed children before the reaping phase and re-enumerates adoption on subsequent iterations; it does not use stored reaped PIDs for later signals.",
+    "Success requires no proc children plus ECHILD from P_ALL; descendant reaps on a normal exit become surviving_descendants failure.",
+    "Count/byte/reap/deadline failures are explicit cleanup_error, never Released or fallback.",
+    "Output is bounded jointly across both pipes; inherited pipe holders remain part of cleanup and post-reap EOF checking."
+  ],
+  "limitations": [
+    "Process-group isolation follows the sole start_new_session checker lineage; no arbitrary external PID scan is used.",
+    "Finite cleanup cannot prove SIGKILL completion for unkillable kernel state; unresolved cleanup is explicitly failed.",
+    "No source correction or test result has yet been reviewed."
+  ]
+}

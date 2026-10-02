@@ -1,0 +1,55 @@
+{
+  "format": 1,
+  "phase": "Source-only final delta; Rust 1.88 rustfmt only; no compiler, test, planner, Canvas, worker or GPU execution",
+  "original_receipt": {
+    "path": "/tmp/eris-vulkan-browser-checker-source-ready.json",
+    "sha256": "c7ac528da2684b3e9e960bf21ec6df00a86bf6d47a2c6443bb9ca21ff672e786"
+  },
+  "sources": {
+    "tools/vulkan-raster-probe/src/gpu.rs": "e1b639f231739542c85e28a2434861bd785a1f803b36cf3c0433c4458d9a4226",
+    "tools/vulkan-raster-probe/src/main.rs": "692a4bff79c1fe15e24961e1ca29372c8f94697a7387f5e3eb10c7eb9c97175d",
+    "tools/vulkan-raster-probe/src/bin/browser-check.rs": "ea5f41fb64cad07338bb0b11d85222a9b76f31cb306ae40e95e7bf572112a9cc",
+    "tools/vulkan-raster-probe/src/rect.wgsl": "b0f67e88f3b5630cb98c8406ee20df6e8890b3ca42410451f105f64fb2a68afa",
+    "tools/vulkan-raster-probe/src/image.wgsl": "ede39857bf369d5a33f5503e7ae96bd04bd5ca06a11937f28fa97793011b3446"
+  },
+  "changes": [
+    "Drop Canvas pixels immediately after full equality with independent target; retain only the expected literal target.",
+    "Six BridgeStats counters are decimal for GPU and literal none for fallback; no fabricated fallback statistics.",
+    "Adapter runs flush stdout after capture and require exactly the fixed ten-byte GPU_READY newline grant on stdin immediately before Vulkan. Buffer length is derived from the token constant. List mode remains ungated. Outer supervisor owns the wait deadline.",
+    "Add one pure token parsing test group, now four checker groups; not executed."
+  ],
+  "case_stats_field_order": [
+    "lowered_commands",
+    "unique_sources",
+    "referenced_sources",
+    "total_rgba_bytes",
+    "referenced_rgba_bytes",
+    "missing_images"
+  ],
+  "case_stats_position": "After image_entries and before draws; all other stdout and EWB1 fields unchanged",
+  "extraction_unchanged": true,
+  "old_shader_bytes_unchanged": true,
+  "new_checker_unit_groups": 4,
+  "limits": {
+    "cases": 16,
+    "retained_gpu_bytes": 16777216,
+    "retained_cpu_pixels_bytes": 4915200,
+    "draws": 4112,
+    "snapshot_dump_bytes_each": 65536,
+    "own_tasks": 64,
+    "own_children_file_bytes": 4096,
+    "capture_deadline_seconds": 180
+  },
+  "notes": [
+    "Parent and peer source review continues; held source must not change without notifying root.",
+    "No workers or snapshots survive capture; own child check plus external subreaper grant cover both direct and adopted descendants.",
+    "Synchronous grant may block; the outer host supervisor enforces the process deadline and cleanup."
+  ],
+  "previous_delta_receipt": {
+    "path": "/tmp/eris-vulkan-browser-checker-source-ready-final.json",
+    "sha256": "32de6900841d708dcd5c75a21d2cd145e466ccf2d7af0c6249d5139e79e683d9"
+  },
+  "precompile_correction": "Peer static review caught the prior incorrect nine-byte buffer. Fixed to EXPECTED.len() before any compilation or execution. Prior source-ready receipt is unchanged and records the initial mistake.",
+  "grant_token_hex": "4750555f52454144590a",
+  "grant_token_length": 10
+}

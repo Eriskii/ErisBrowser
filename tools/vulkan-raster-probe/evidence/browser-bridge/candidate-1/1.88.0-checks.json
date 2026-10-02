@@ -1,0 +1,106 @@
+[
+  {
+    "name": "fmt",
+    "toolchain": "1.88.0",
+    "argv": [
+      "cargo",
+      "fmt",
+      "--",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.114,
+    "log": "1.88.0-fmt.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "default-clippy",
+    "toolchain": "1.88.0",
+    "argv": [
+      "cargo",
+      "clippy",
+      "--offline",
+      "--locked",
+      "--all-targets",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit_code": 0,
+    "seconds": 10.577,
+    "log": "1.88.0-default-clippy.log",
+    "sha256": "2b71ccc0d64d74da68573b3ee364ade7b641c2e8503254cba80b2ea8dde6378e"
+  },
+  {
+    "name": "default-test",
+    "toolchain": "1.88.0",
+    "argv": [
+      "cargo",
+      "test",
+      "--offline",
+      "--locked"
+    ],
+    "exit_code": 0,
+    "seconds": 11.941,
+    "log": "1.88.0-default-test.log",
+    "sha256": "972f0a64e588b72d131a305b5adb60895ed415056f05061b020f54103e6ceb0e"
+  },
+  {
+    "name": "default-build",
+    "toolchain": "1.88.0",
+    "argv": [
+      "cargo",
+      "build",
+      "--offline",
+      "--locked",
+      "--bins"
+    ],
+    "exit_code": 0,
+    "seconds": 1.771,
+    "log": "1.88.0-default-build.log",
+    "sha256": "6d2e53b879624ca1021fd695bd835c1f53181bd74ae97e51385fd3d528d0bc70",
+    "binaries": [
+      {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/eris-vulkan-raster-prototype-1.88.0-default",
+        "bytes": 18475832,
+        "sha256": "c83ac2bcd94e35a653360856b8a81564e22cadaf65be6b3bcb1fe1c40d181fe0"
+      }
+    ]
+  },
+  {
+    "name": "bridge-clippy",
+    "toolchain": "1.88.0",
+    "argv": [
+      "cargo",
+      "clippy",
+      "--offline",
+      "--locked",
+      "--features",
+      "browser-bridge",
+      "--all-targets",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit_code": 0,
+    "seconds": 15.671,
+    "log": "1.88.0-bridge-clippy.log",
+    "sha256": "8d2489fd040c7b58cd8d3abc070a421e86f67d2237f33ce85af4a6342d5d39f6"
+  },
+  {
+    "name": "bridge-test",
+    "toolchain": "1.88.0",
+    "argv": [
+      "cargo",
+      "test",
+      "--offline",
+      "--locked",
+      "--features",
+      "browser-bridge"
+    ],
+    "exit_code": 101,
+    "seconds": 18.776,
+    "log": "1.88.0-bridge-test.log",
+    "sha256": "6bbf83cd5fc678996bc4f1e7d3098909df1c600fe854b04926373e56026ac390"
+  }
+]

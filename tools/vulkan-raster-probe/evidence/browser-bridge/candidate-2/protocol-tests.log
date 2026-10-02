@@ -1,0 +1,19 @@
+test_all_six_stats_are_exact_and_fallback_does_not_invent_stats (test_browser_protocol.BrowserProtocolTests.test_all_six_stats_are_exact_and_fallback_does_not_invent_stats) ... ok
+test_benign_worker_entries_are_retained_and_counted_not_pruned (test_browser_protocol.BrowserProtocolTests.test_benign_worker_entries_are_retained_and_counted_not_pruned) ... ok
+test_binary_decoder_preserves_float_bits_and_rejects_invalid_bool (test_browser_protocol.BrowserProtocolTests.test_binary_decoder_preserves_float_bits_and_rejects_invalid_bool) ... ok
+test_capture_hex_length_magic_truncation_tail_and_unknown_tags (test_browser_protocol.BrowserProtocolTests.test_capture_hex_length_magic_truncation_tail_and_unknown_tags) ... ok
+test_case_counts_routes_indices_and_resource_bounds (test_browser_protocol.BrowserProtocolTests.test_case_counts_routes_indices_and_resource_bounds) ... ok
+test_complete_synthetic_transcript_retains_all_capture_fields (test_browser_protocol.BrowserProtocolTests.test_complete_synthetic_transcript_retains_all_capture_fields) ... ok
+test_every_case_omission_duplicate_reordering_and_changed_pixels_rejected (test_browser_protocol.BrowserProtocolTests.test_every_case_omission_duplicate_reordering_and_changed_pixels_rejected) ... ok
+test_frozen_oracle_assets_cannot_be_changed_to_accept_a_transcript (test_browser_protocol.BrowserProtocolTests.test_frozen_oracle_assets_cannot_be_changed_to_accept_a_transcript) ... ok
+test_image_bytes_dimensions_alias_ids_keys_and_missing_diagnostics (test_browser_protocol.BrowserProtocolTests.test_image_bytes_dimensions_alias_ids_keys_and_missing_diagnostics) ... ok
+test_listing_rejects_extras_duplicates_order_gaps_and_bad_backend (test_browser_protocol.BrowserProtocolTests.test_listing_rejects_extras_duplicates_order_gaps_and_bad_backend) ... ok
+test_phase_boundaries_inventory_and_footer_are_mandatory (test_browser_protocol.BrowserProtocolTests.test_phase_boundaries_inventory_and_footer_are_mandatory) ... ok
+test_record_sizes_utf8_and_noncanonical_numbers (test_browser_protocol.BrowserProtocolTests.test_record_sizes_utf8_and_noncanonical_numbers) ... ok
+test_worker_fixed_clip_balance_and_hidden_unsupported_are_checked (test_browser_protocol.BrowserProtocolTests.test_worker_fixed_clip_balance_and_hidden_unsupported_are_checked) ... ok
+test_worker_request_identity_and_source_assumptions_cannot_drift (test_browser_protocol.BrowserProtocolTests.test_worker_request_identity_and_source_assumptions_cannot_drift) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.396s
+
+OK

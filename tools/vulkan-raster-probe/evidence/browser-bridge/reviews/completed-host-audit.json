@@ -1,0 +1,921 @@
+{
+  "scope": "Independent offline audit only. No compiler, engine, worker, Canvas, GPU or fake-child reruns. Imported protocol parsers run only on retained raw stdout with original run-specific oracle path; subprocess.Popen is explicitly forbidden.",
+  "findings": [],
+  "bindings": [
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/freeze.json",
+      "bytes": 49952,
+      "sha256": "e05867c35383ea1e733db73d331f440ee4f2cee413b690d24389bf51a321eace"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/freeze.json",
+      "bytes": 49952,
+      "sha256": "9c7e662aa4cce338238356f1e3ba5163c906aa029a793acebc0eb4fdc94d655d"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/python-freeze.json",
+      "bytes": 1621,
+      "sha256": "4a69cde7afb2ad16fa10dfdb01ef5df6234b2676b28cf5af6fee52b5e8b08240"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/reuse.json",
+      "bytes": 708,
+      "sha256": "4b4b14ff0ad588b5e00787195c6b8cc9c52cbfb4454f7a319d1726c716472036"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-adapter-cpu-fixture-correction.json",
+      "bytes": 2730,
+      "sha256": "e634427320384ade309ce87ed435de6587c02f9d492939277627ee05f1de3566"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.88.0-checks.json",
+      "bytes": 2353,
+      "sha256": "ce3f4697bf06ef5d0ebe4cb41853067849644d631a1eabcb5326afbc5f3e6372"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.98.0-checks.json",
+      "bytes": 2352,
+      "sha256": "b8a5f7abfa810673ef95d4f352fea3bb6d6e3ab6247cd57ec9a73ef407d9f607"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/1.88.0-checks.json",
+      "bytes": 1927,
+      "sha256": "f0019da2c8ae9918c3cedb77915bec2769e2de153cd5623056aed11707f653db"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/1.98.0-checks.json",
+      "bytes": 1927,
+      "sha256": "41b5d830c0a08d2ce18181489dbee78435ca18f2e8241721fd9389897f3ec94b"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/protocol-tests.json",
+      "bytes": 358,
+      "sha256": "b0affb979b0725debb79375a5a6fcc6f1d42df76158b0d4b4f37683857dff616"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-supervisor-candidate-1/result.json",
+      "bytes": 138,
+      "sha256": "b3a14924eb19353dc1c00be4974e73c16c49a19af43cd247a661ec02759fbb8c"
+    }
+  ],
+  "source": {
+    "candidate_files_each": 285,
+    "changed_files": [
+      "tools/vulkan-raster-probe/src/browser_adapter/tests.rs"
+    ],
+    "all_frozen_copies_verified": true,
+    "all_current_build_inputs_match_candidate2": true,
+    "python_files_verified": 8,
+    "production_sources_unchanged": true
+  },
+  "rust_checks": [
+    {
+      "candidate": "eris-vulkan-browser-bridge-candidate-1",
+      "version": "1.88.0",
+      "name": "fmt",
+      "exit_code": 0,
+      "log": {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.88.0-fmt.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "candidate": "eris-vulkan-browser-bridge-candidate-1",
+      "version": "1.88.0",
+      "name": "default-clippy",
+      "exit_code": 0,
+      "log": {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.88.0-default-clippy.log",
+        "bytes": 2040,
+        "sha256": "2b71ccc0d64d74da68573b3ee364ade7b641c2e8503254cba80b2ea8dde6378e"
+      }
+    },
+    {
+      "candidate": "eris-vulkan-browser-bridge-candidate-1",
+      "version": "1.88.0",
+      "name": "default-test",
+      "exit_code": 0,
+      "log": {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.88.0-default-test.log",
+        "bytes": 4398,
+        "sha256": "972f0a64e588b72d131a305b5adb60895ed415056f05061b020f54103e6ceb0e"
+      },
+      "test_groups": [
+        [
+          25,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "total": {
+        "passed": 25,
+        "failed": 0,
+        "ignored": 0
+      }
+    },
+    {
+      "candidate": "eris-vulkan-browser-bridge-candidate-1",
+      "version": "1.88.0",
+      "name": "default-build",
+      "exit_code": 0,
+      "log": {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.88.0-default-build.log",
+        "bytes": 240,
+        "sha256": "6d2e53b879624ca1021fd695bd835c1f53181bd74ae97e51385fd3d528d0bc70"
+      }
+    },
+    {
+      "candidate": "eris-vulkan-browser-bridge-candidate-1",
+      "version": "1.88.0",
+      "name": "bridge-clippy",
+      "exit_code": 0,
+      "log": {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.88.0-bridge-clippy.log",
+        "bytes": 5149,
+        "sha256": "8d2489fd040c7b58cd8d3abc070a421e86f67d2237f33ce85af4a6342d5d39f6"
+      }
+    },
+    {
+      "candidate": "eris-vulkan-browser-bridge-candidate-1",
+      "version": "1.88.0",
+      "name": "bridge-test",
+      "exit_code": 101,
+      "log": {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.88.0-bridge-test.log",
+        "bytes": 9597,
+        "sha256": "6bbf83cd5fc678996bc4f1e7d3098909df1c600fe854b04926373e56026ac390"
+      },
+      "test_groups": [
+        [
+          45,
+          1,
+          0
+        ]
+      ],
+      "total": {
+        "passed": 45,
+        "failed": 1,
+        "ignored": 0
+      }
+    },
+    {
+      "candidate": "eris-vulkan-browser-bridge-candidate-1",
+      "version": "1.98.0",
+      "name": "fmt",
+      "exit_code": 0,
+      "log": {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.98.0-fmt.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "candidate": "eris-vulkan-browser-bridge-candidate-1",
+      "version": "1.98.0",
+      "name": "default-clippy",
+      "exit_code": 0,
+      "log": {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.98.0-default-clippy.log",
+        "bytes": 2039,
+        "sha256": "312fb2574687e4bbdeff4d5480da07748fb94190147205300959024b405ce6e0"
+      }
+    },
+    {
+      "candidate": "eris-vulkan-browser-bridge-candidate-1",
+      "version": "1.98.0",
+      "name": "default-test",
+      "exit_code": 0,
+      "log": {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.98.0-default-test.log",
+        "bytes": 4396,
+        "sha256": "36b130931d5674b857d548c576f09fae7a982d48cf66176184866b52656c3d64"
+      },
+      "test_groups": [
+        [
+          25,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "total": {
+        "passed": 25,
+        "failed": 0,
+        "ignored": 0
+      }
+    },
+    {
+      "candidate": "eris-vulkan-browser-bridge-candidate-1",
+      "version": "1.98.0",
+      "name": "default-build",
+      "exit_code": 0,
+      "log": {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.98.0-default-build.log",
+        "bytes": 292,
+        "sha256": "f682d8130867df15b5546cf44b3c931d5e6b35fe75ef1f37833779415fbd01dc"
+      }
+    },
+    {
+      "candidate": "eris-vulkan-browser-bridge-candidate-1",
+      "version": "1.98.0",
+      "name": "bridge-clippy",
+      "exit_code": 0,
+      "log": {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.98.0-bridge-clippy.log",
+        "bytes": 5149,
+        "sha256": "8f2b4d0d70d83f9ba7f1869966d88b1e62f3e1acb9ef9a1b2e12b790a1a599e4"
+      }
+    },
+    {
+      "candidate": "eris-vulkan-browser-bridge-candidate-1",
+      "version": "1.98.0",
+      "name": "bridge-test",
+      "exit_code": 101,
+      "log": {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.98.0-bridge-test.log",
+        "bytes": 9603,
+        "sha256": "ca22cb3d8cd2335fb23ccf4b2d6afcd61fc74e3179699ed3835a25195b6a59c5"
+      },
+      "test_groups": [
+        [
+          45,
+          1,
+          0
+        ]
+      ],
+      "total": {
+        "passed": 45,
+        "failed": 1,
+        "ignored": 0
+      }
+    },
+    {
+      "candidate": "eris-vulkan-browser-bridge-candidate-2",
+      "version": "1.88.0",
+      "name": "fmt",
+      "exit_code": 0,
+      "log": {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/1.88.0-fmt.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "candidate": "eris-vulkan-browser-bridge-candidate-2",
+      "version": "1.88.0",
+      "name": "bridge-clippy",
+      "exit_code": 0,
+      "log": {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/1.88.0-bridge-clippy.log",
+        "bytes": 430,
+        "sha256": "5f437e32dfa6a415d2896e551ef0a26feda8ebb87054ff1ac5f26b9e38aa72d7"
+      }
+    },
+    {
+      "candidate": "eris-vulkan-browser-bridge-candidate-2",
+      "version": "1.88.0",
+      "name": "bridge-test",
+      "exit_code": 0,
+      "log": {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/1.88.0-bridge-test.log",
+        "bytes": 5784,
+        "sha256": "6e5bd0a5073155c7fd16fe9c1301922e3c465ba0aab96f3ede93a46beb80d6db"
+      },
+      "test_groups": [
+        [
+          46,
+          0,
+          0
+        ],
+        [
+          4,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "total": {
+        "passed": 50,
+        "failed": 0,
+        "ignored": 0
+      }
+    },
+    {
+      "candidate": "eris-vulkan-browser-bridge-candidate-2",
+      "version": "1.88.0",
+      "name": "bridge-build",
+      "exit_code": 0,
+      "log": {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/1.88.0-bridge-build.log",
+        "bytes": 188,
+        "sha256": "423d74eb443ff283931dc6ad1c581c10aa9fc8b99bd18b52faad7dd221f83e92"
+      }
+    },
+    {
+      "candidate": "eris-vulkan-browser-bridge-candidate-2",
+      "version": "1.98.0",
+      "name": "fmt",
+      "exit_code": 0,
+      "log": {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/1.98.0-fmt.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "candidate": "eris-vulkan-browser-bridge-candidate-2",
+      "version": "1.98.0",
+      "name": "bridge-clippy",
+      "exit_code": 0,
+      "log": {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/1.98.0-bridge-clippy.log",
+        "bytes": 430,
+        "sha256": "d16e8d68219ae16e4dff5f148b1fd0c99b216c79d41c8107227d6d640d78b9a1"
+      }
+    },
+    {
+      "candidate": "eris-vulkan-browser-bridge-candidate-2",
+      "version": "1.98.0",
+      "name": "bridge-test",
+      "exit_code": 0,
+      "log": {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/1.98.0-bridge-test.log",
+        "bytes": 5781,
+        "sha256": "8fceea2023a627c8f2166ef5f46ad6304dfc4e4baa9f32ff5306a6cb82eaa848"
+      },
+      "test_groups": [
+        [
+          46,
+          0,
+          0
+        ],
+        [
+          4,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "total": {
+        "passed": 50,
+        "failed": 0,
+        "ignored": 0
+      }
+    },
+    {
+      "candidate": "eris-vulkan-browser-bridge-candidate-2",
+      "version": "1.98.0",
+      "name": "bridge-build",
+      "exit_code": 0,
+      "log": {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/1.98.0-bridge-build.log",
+        "bytes": 188,
+        "sha256": "4437460bb393675981ce53abf3fc4bf6882a2992b8cca4f9738abed968fae11a"
+      }
+    }
+  ],
+  "binaries": [
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/eris-vulkan-raster-prototype-1.88.0-default",
+      "bytes": 18475832,
+      "sha256": "c83ac2bcd94e35a653360856b8a81564e22cadaf65be6b3bcb1fe1c40d181fe0"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/eris-vulkan-raster-prototype-1.98.0-default",
+      "bytes": 22281136,
+      "sha256": "3a0c68a6a24a2f61a0ca07e6a291ab53492ee45157856b0a42e16df717302146"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/eris-vulkan-raster-prototype-1.88.0-bridge",
+      "bytes": 18524088,
+      "sha256": "e42b3e0a941555bc8fc7569e2efbf45b4be5eb8106187f09e72d12f18888f61a"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/eris-vulkan-browser-check-1.88.0-bridge",
+      "bytes": 23927208,
+      "sha256": "5482ab185b6ca9e637bea408aae0f575290262718b627874094f241123f21589"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/eris-vulkan-raster-prototype-1.98.0-bridge",
+      "bytes": 23443312,
+      "sha256": "ca81a25de106cf274e7246bcbfb64a0710132575e819342cee5297052c2c0221"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/eris-vulkan-browser-check-1.98.0-bridge",
+      "bytes": 29050584,
+      "sha256": "f667d35bd444fc72f485211032b5107a075362a73eb9925ba1f471aeeeaa1172"
+    }
+  ],
+  "browser_host": {
+    "bindings": [
+      {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/host-results.json",
+        "bytes": 117325,
+        "sha256": "c544ef171da40746055d153dc01c0744b827e758b1034b6caeefd4b13afc6b4a"
+      },
+      {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-plan.json",
+        "bytes": 1307,
+        "sha256": "a76a6502a43346c5ceead39b6f365988d1ee499b80341e4e19522f3844136f02"
+      },
+      {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-result.json",
+        "bytes": 138,
+        "sha256": "746b38bf7ad755b364921365b949596bb33fbd425a763f699caf5b29b7647442"
+      },
+      {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host.log",
+        "bytes": 129,
+        "sha256": "073e134c218629c83a9ddcf5455d2a40bbe90b4d8ccf982e0f86ad695217619d"
+      }
+    ],
+    "adapters": [
+      "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"",
+      "ADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"",
+      "ADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\""
+    ],
+    "runs": [
+      {
+        "name": "enumeration",
+        "receipt": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/enumeration.json",
+          "bytes": 763,
+          "sha256": "2aad6c5b9ebfff038b8766dcef50d0d70a0ee32373c47e90d0e6eb4d49f46684"
+        },
+        "stdout": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/enumeration.stdout.log",
+          "bytes": 465,
+          "sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+        },
+        "stderr": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/enumeration.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "supervisor_stderr": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/enumeration.supervisor.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "cleanup": {
+          "complete": true,
+          "reaped": 1,
+          "descendants": 0,
+          "checker_returncode": 0,
+          "error": null
+        },
+        "gate_granted": false
+      },
+      {
+        "name": "adapter-0",
+        "receipt": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-0.json",
+          "bytes": 975,
+          "sha256": "f5901275ed81e62b44c131f7813aa84edcdfbf1f2b928f6aea82d054db2a136e"
+        },
+        "stdout": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-0.stdout.log",
+          "bytes": 14781,
+          "sha256": "41e426dfa0c3e6174a60ed415357e5671c6083100f6bc4332cefb13565c0bb52"
+        },
+        "stderr": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-0.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "supervisor_stderr": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-0.supervisor.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "cleanup": {
+          "complete": true,
+          "reaped": 1,
+          "descendants": 0,
+          "checker_returncode": 0,
+          "error": null
+        },
+        "gate_granted": true,
+        "strict_protocol_identical_to_summary": true,
+        "gpu_pixels": 151,
+        "cpu_fallback_pixels": 46,
+        "total_pixels": 197,
+        "compared_bytes": 788,
+        "snapshots": [
+          {
+            "name": "html-ordered-rectangles",
+            "bytes": 596,
+            "sha256": "516f0ab923c97b765ce61fa49493909bc6ed7083e367b6b510d7fc327c56e415",
+            "commands": 3,
+            "sources": 0,
+            "diagnostics": [
+              "Page process 1204472: Landlock ABI 6 and seccomp: no direct resource or socket access",
+              "Resource broker 1204473: committed URL and fetch policy enforced outside renderer"
+            ]
+          },
+          {
+            "name": "html-fixed-child-escapes-scrolling-clip",
+            "bytes": 673,
+            "sha256": "3e014642b3f8e94be946e72c492bd44c879699848c61ccf5f6a134131a0675a9",
+            "commands": 8,
+            "sources": 0,
+            "diagnostics": [
+              "Page process 1204474: Landlock ABI 6 and seccomp: no direct resource or socket access",
+              "Resource broker 1204475: committed URL and fetch policy enforced outside renderer"
+            ]
+          },
+          {
+            "name": "html-repeated-decoded-image-key",
+            "bytes": 674,
+            "sha256": "30f34f7b0d6672d5e9f01258efe35980cbe46976bbe8bfeae91f017575eb77ce",
+            "commands": 3,
+            "sources": 1,
+            "diagnostics": [
+              "Page process 1204476: Landlock ABI 6 and seccomp: no direct resource or socket access",
+              "Resource broker 1204477: committed URL and fetch policy enforced outside renderer"
+            ]
+          },
+          {
+            "name": "html-unavailable-image-keeps-placeholder",
+            "bytes": 744,
+            "sha256": "f585177c46d563fa4f86dc48bacdad4315ec71a3b9b53398b8bba8e05242d893",
+            "commands": 4,
+            "sources": 0,
+            "diagnostics": [
+              "resource deliberately-absent.png: image loading or decoding failed",
+              "Page process 1204478: Landlock ABI 6 and seccomp: no direct resource or socket access",
+              "Resource broker 1204479: committed URL and fetch policy enforced outside renderer"
+            ]
+          },
+          {
+            "name": "html-rounded-page-requires-full-cpu-fallback",
+            "bytes": 638,
+            "sha256": "a6b1e34602a14bad217ebec42994c375edd3024d7214019109d86740d38b28db",
+            "commands": 3,
+            "sources": 0,
+            "diagnostics": [
+              "Page process 1204480: Landlock ABI 6 and seccomp: no direct resource or socket access",
+              "Resource broker 1204481: committed URL and fetch policy enforced outside renderer"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "adapter-1",
+        "receipt": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-1.json",
+          "bytes": 973,
+          "sha256": "1ad362ae5d62856818958cdb941ef1ca831affaeff7e4d1f894b0a4ed446cc60"
+        },
+        "stdout": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-1.stdout.log",
+          "bytes": 14781,
+          "sha256": "c2d78a17a7096d8c5584dc62475ed3d2ececd00a6f09fde83e2a3a7d170a6649"
+        },
+        "stderr": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-1.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "supervisor_stderr": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-1.supervisor.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "cleanup": {
+          "complete": true,
+          "reaped": 1,
+          "descendants": 0,
+          "checker_returncode": 0,
+          "error": null
+        },
+        "gate_granted": true,
+        "strict_protocol_identical_to_summary": true,
+        "gpu_pixels": 151,
+        "cpu_fallback_pixels": 46,
+        "total_pixels": 197,
+        "compared_bytes": 788,
+        "snapshots": [
+          {
+            "name": "html-ordered-rectangles",
+            "bytes": 596,
+            "sha256": "6d5aceb56b956f5fb5d69313c325d6fe4ac31519d7fe3839aa491f2d9fbc0631",
+            "commands": 3,
+            "sources": 0,
+            "diagnostics": [
+              "Page process 1204507: Landlock ABI 6 and seccomp: no direct resource or socket access",
+              "Resource broker 1204508: committed URL and fetch policy enforced outside renderer"
+            ]
+          },
+          {
+            "name": "html-fixed-child-escapes-scrolling-clip",
+            "bytes": 673,
+            "sha256": "8ad44e016a5f7fb50f61852b446fa9849a57a201aed37d9c797a3fe916f1048b",
+            "commands": 8,
+            "sources": 0,
+            "diagnostics": [
+              "Page process 1204509: Landlock ABI 6 and seccomp: no direct resource or socket access",
+              "Resource broker 1204510: committed URL and fetch policy enforced outside renderer"
+            ]
+          },
+          {
+            "name": "html-repeated-decoded-image-key",
+            "bytes": 674,
+            "sha256": "fdbe4c85a2151e9abbb8588bdf5c3bfa5f48103ad9de7c1687a19fc07661c71f",
+            "commands": 3,
+            "sources": 1,
+            "diagnostics": [
+              "Page process 1204511: Landlock ABI 6 and seccomp: no direct resource or socket access",
+              "Resource broker 1204512: committed URL and fetch policy enforced outside renderer"
+            ]
+          },
+          {
+            "name": "html-unavailable-image-keeps-placeholder",
+            "bytes": 744,
+            "sha256": "2d09d3959115f90ce92bdc87721a77c1894b3f03fd778dabe8803277ceebd076",
+            "commands": 4,
+            "sources": 0,
+            "diagnostics": [
+              "resource deliberately-absent.png: image loading or decoding failed",
+              "Page process 1204513: Landlock ABI 6 and seccomp: no direct resource or socket access",
+              "Resource broker 1204514: committed URL and fetch policy enforced outside renderer"
+            ]
+          },
+          {
+            "name": "html-rounded-page-requires-full-cpu-fallback",
+            "bytes": 638,
+            "sha256": "9f91347c21364fb09965d49501de1716c8763943841964413c7b6e0fc1e25109",
+            "commands": 3,
+            "sources": 0,
+            "diagnostics": [
+              "Page process 1204515: Landlock ABI 6 and seccomp: no direct resource or socket access",
+              "Resource broker 1204516: committed URL and fetch policy enforced outside renderer"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "adapter-2",
+        "receipt": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-2.json",
+          "bytes": 975,
+          "sha256": "cdc090c13dc86c97f43b4979d1cab96aa35a01f227ff49f62118c6c41fbf584b"
+        },
+        "stdout": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-2.stdout.log",
+          "bytes": 14781,
+          "sha256": "8753d22e1e68db1212d805fb9b1f6d3c236b7fd85b4007c0899d59db761ac715"
+        },
+        "stderr": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-2.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "supervisor_stderr": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-2.supervisor.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "cleanup": {
+          "complete": true,
+          "reaped": 1,
+          "descendants": 0,
+          "checker_returncode": 0,
+          "error": null
+        },
+        "gate_granted": true,
+        "strict_protocol_identical_to_summary": true,
+        "gpu_pixels": 151,
+        "cpu_fallback_pixels": 46,
+        "total_pixels": 197,
+        "compared_bytes": 788,
+        "snapshots": [
+          {
+            "name": "html-ordered-rectangles",
+            "bytes": 596,
+            "sha256": "d2bb8929a5c0b5310df0fd8948caec94a148b51b0870c561cbd531b11f09d503",
+            "commands": 3,
+            "sources": 0,
+            "diagnostics": [
+              "Page process 1204532: Landlock ABI 6 and seccomp: no direct resource or socket access",
+              "Resource broker 1204533: committed URL and fetch policy enforced outside renderer"
+            ]
+          },
+          {
+            "name": "html-fixed-child-escapes-scrolling-clip",
+            "bytes": 673,
+            "sha256": "35175260e250ae30c9f654d980ce30f75829046ab0acc05801d72a525da23c11",
+            "commands": 8,
+            "sources": 0,
+            "diagnostics": [
+              "Page process 1204534: Landlock ABI 6 and seccomp: no direct resource or socket access",
+              "Resource broker 1204535: committed URL and fetch policy enforced outside renderer"
+            ]
+          },
+          {
+            "name": "html-repeated-decoded-image-key",
+            "bytes": 674,
+            "sha256": "6b84440ad23b37baeeadc2d55f4d5243bd31e29fcc489ccbcf433776e61d626a",
+            "commands": 3,
+            "sources": 1,
+            "diagnostics": [
+              "Page process 1204536: Landlock ABI 6 and seccomp: no direct resource or socket access",
+              "Resource broker 1204538: committed URL and fetch policy enforced outside renderer"
+            ]
+          },
+          {
+            "name": "html-unavailable-image-keeps-placeholder",
+            "bytes": 744,
+            "sha256": "902e3ceed14f96f259c88a4f81f8319a96669a75b97d2bae7ff917eb404ed88f",
+            "commands": 4,
+            "sources": 0,
+            "diagnostics": [
+              "resource deliberately-absent.png: image loading or decoding failed",
+              "Page process 1204539: Landlock ABI 6 and seccomp: no direct resource or socket access",
+              "Resource broker 1204540: committed URL and fetch policy enforced outside renderer"
+            ]
+          },
+          {
+            "name": "html-rounded-page-requires-full-cpu-fallback",
+            "bytes": 638,
+            "sha256": "e7537df6f469c8a73b2635f90d9e846b43b9cbcd08ac340e5312b3ba0867d9a6",
+            "commands": 3,
+            "sources": 0,
+            "diagnostics": [
+              "Page process 1204541: Landlock ABI 6 and seccomp: no direct resource or socket access",
+              "Resource broker 1204543: committed URL and fetch policy enforced outside renderer"
+            ]
+          }
+        ]
+      }
+    ],
+    "per_adapter": {
+      "gpu_cases": 9,
+      "gpu_pixels": 151,
+      "gpu_compared_bytes": 604,
+      "fallback_cases": 7,
+      "fallback_pixels": 46,
+      "fallback_compared_bytes": 184,
+      "all_pixels": 197,
+      "all_compared_bytes": 788
+    },
+    "all_three_adapters": {
+      "gpu_case_comparisons": 27,
+      "gpu_pixel_comparisons": 453,
+      "gpu_compared_bytes": 1812,
+      "fallback_case_comparisons": 21,
+      "fallback_pixel_comparisons": 138,
+      "fallback_compared_bytes": 552,
+      "all_pixels": 591,
+      "all_compared_bytes": 2364
+    },
+    "original_oracle_path": "/tmp/eris-vulkan-browser-bridge-candidate-2/source/tools/vulkan-raster-probe/browser-fixtures/oracle"
+  },
+  "original30_host": {
+    "summary": {
+      "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-1/host-results.json",
+      "bytes": 14543,
+      "sha256": "8ad59daf6bffb9caa8970e43331844126092c245dc4d8f9bba23ccf6edefc704"
+    },
+    "runs": [
+      {
+        "name": "enumeration",
+        "stdout": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-1/enumeration.stdout.log",
+          "bytes": 465,
+          "sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+        },
+        "stderr": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-1/enumeration.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "strict_protocol": true
+      },
+      {
+        "name": "adapter-0",
+        "stdout": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-1/adapter-0.stdout.log",
+          "bytes": 3854,
+          "sha256": "a26a8bda066a19373385f55faa40146200a6dff8c55a6c76545999094415d68c"
+        },
+        "stderr": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-1/adapter-0.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "strict_protocol": true
+      },
+      {
+        "name": "adapter-1",
+        "stdout": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-1/adapter-1.stdout.log",
+          "bytes": 3854,
+          "sha256": "fa07469bc41234b92472e7ec4053d45fba836215bee3b393353acc99bf184472"
+        },
+        "stderr": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-1/adapter-1.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "strict_protocol": true
+      },
+      {
+        "name": "adapter-2",
+        "stdout": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-1/adapter-2.stdout.log",
+          "bytes": 3854,
+          "sha256": "b9144976b3f73a8d29de8b85012c2db291f3d6981ce03851061f8981be26e10f"
+        },
+        "stderr": {
+          "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-1/adapter-2.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "strict_protocol": true
+      }
+    ],
+    "fixtures_per_adapter": 30,
+    "adapters": 3,
+    "compared_bytes_per_adapter": 921620,
+    "identical_default_code_reused_from_candidate1": true
+  },
+  "dependency_lock": {
+    "old_package_identities": 97,
+    "new_lock_package_identities": 327,
+    "all_old_name_version_source_and_checksums_retained": true,
+    "root_lock_byte_identical": true,
+    "bindings": [
+      {
+        "path": "/tmp/eris-vulkan-browser-bridge-graph/Cargo.lock.before",
+        "bytes": 23795,
+        "sha256": "b619519af5f81d79d976a0569ae1278565b3bbdd3e4a7243438f1d1ced81a182"
+      },
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/Cargo.lock",
+        "bytes": 81429,
+        "sha256": "c3ec1b8cecc74528ecb7e183cc782933124b879a7201e1978bce18ee046dd9d3"
+      },
+      {
+        "path": "/tmp/eris-vulkan-browser-bridge-graph/root-Cargo.lock.before",
+        "bytes": 78862,
+        "sha256": "fc2d595602095e8a4333975b5f2e8ba748a1b82fbdc84505e64abcbd2b92a0de"
+      },
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/Cargo.lock",
+        "bytes": 78862,
+        "sha256": "fc2d595602095e8a4333975b5f2e8ba748a1b82fbdc84505e64abcbd2b92a0de"
+      },
+      {
+        "path": "/tmp/eris-vulkan-browser-bridge-graph/preserved-lock-review.json",
+        "bytes": 26124,
+        "sha256": "3efe999f3687f04fad7e8d63a9bea0270464792e43eab984f4e5fe835d4f7fef"
+      }
+    ],
+    "limit": "Lock inventory includes optional and platform packages; this does not claim all 327 packages execute on Linux or a new Cargo metadata run."
+  },
+  "limits": [
+    "The bridge run is one retained execution per adapter using the Rust1.98 checker. Rust1.88 builds/tests passed but no second GPU host run is claimed.",
+    "Default25 tests per toolchain and the original30 GPU run are candidate1 results legitimately reused because candidate2 changes only the bridge cfg(test) fixture.",
+    "151 GPU pixels plus 46 CPU-fallback pixels equals 197, not 191. The 788-byte footer combines GPU and CPU comparisons; actual GPU comparison bytes are 604 per adapter.",
+    "Successful bounded cleanup records establish the retained runs only, not a guarantee for all future kernel/driver failures. No native window or performance claim is inferred."
+  ]
+}

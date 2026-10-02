@@ -1,0 +1,15 @@
+{
+  "scope": "eleven real fake-child process tests; no renderer/browser/GPU",
+  "argv": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tools/vulkan-raster-probe",
+    "-p",
+    "test_bridge_supervisor.py",
+    "-v"
+  ],
+  "source_review": "root review plus html_css initial fixes and script ownership/gate review; checker token issue separate"
+}

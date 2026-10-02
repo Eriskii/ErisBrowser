@@ -1,0 +1,258 @@
+{
+  "schema": 1,
+  "owner": "/root/html_css",
+  "status": "Formatted source and exact asset copies held for root candidate freeze; no pending writes",
+  "prepared_at_utc": "2026-10-02T03:35:54.604453+00:00",
+  "files": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/browser_fixtures.rs",
+      "bytes": 21380,
+      "sha256": "15300b65d7e1ebfbd00df96f16dfcd5c08da200f5da19699baeee60c6c5f8e16"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/implementation-contract.md",
+      "bytes": 18725,
+      "sha256": "474c66f9e9a75eac2d0f23d2abed7f1dc660f2118af0fc3465da545cc8b394b1"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/README.md",
+      "bytes": 2147,
+      "sha256": "4da3fdfd1f091495c806752276f810929890999987537200ff7fe2796f563acd"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/contract.md",
+      "bytes": 5445,
+      "sha256": "e33296d0557bd239118bff568716d36bfd89c9cc96c24e2e3e48b2a410df2983"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/data-checks.json",
+      "bytes": 2726,
+      "sha256": "0dba4f0add61bee2aa41b60495874f8a20a87de4da38ac0e5b01055c9f7b488f"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/derivations.md",
+      "bytes": 5078,
+      "sha256": "64274c87cadbc3dddfd0798cc16a9a04ca367131ab350c848c355116d3758753"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-command-cap-refuses-whole-frame.rgb",
+      "bytes": 3,
+      "sha256": "5ae7e6a42304dc6e4176210b83c43024f99a0bce9a870c3b6d2c95fc8ebfb74c"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-fixed-escape-and-nested-restoration.rgb",
+      "bytes": 72,
+      "sha256": "78590e56ffd340433232ea019d14fa17060c73bc5f9c344fa42e9914c0a6e2fa"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-hidden-text-refuses-whole-frame.rgb",
+      "bytes": 24,
+      "sha256": "3dc8007acc7bdc6938676753f1136033d422a534b0da352d126e9b38d2b7fcb4"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-lines-are-bounding-rectangles.rgb",
+      "bytes": 60,
+      "sha256": "71b132d8bb46350f9ff7fbf8d3265548327de58f9eaaf859aa8002c9fe669e8c"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-missing-image-is-a-legal-noop.rgb",
+      "bytes": 24,
+      "sha256": "3dc8007acc7bdc6938676753f1136033d422a534b0da352d126e9b38d2b7fcb4"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-repeated-key-alias-and-alpha.rgb",
+      "bytes": 24,
+      "sha256": "0c1a9dafdd5a66918f6a788b0c979aa85c2dbb37f30e2d3f32196d9bc649f140"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-rounded-refuses-whole-frame.rgb",
+      "bytes": 36,
+      "sha256": "aa0eb258ba18d785e049ca9c8f4314ecf575f6e763abd98d3bade2fe2a0eee46"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-scope-cap-refuses-balanced-whole-frame.rgb",
+      "bytes": 3,
+      "sha256": "5ae7e6a42304dc6e4176210b83c43024f99a0bce9a870c3b6d2c95fc8ebfb74c"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-translucent-fractional-clip-edges.rgb",
+      "bytes": 45,
+      "sha256": "204fe68429499a02ef2d833aec124154ec220184afc760c06a381f983147d023"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-transparent-hidden-rounded-still-refuses.rgb",
+      "bytes": 18,
+      "sha256": "b264d50882783e189ebe8cae2a58fdbb0872ea01fe58a35e659f6a43c78d0ae0"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-unit-opacity-refuses-whole-frame.rgb",
+      "bytes": 18,
+      "sha256": "ef40b7f937395a2e5810f78655f2d55a9f6c2fd35d576ab50156b6a671930264"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/html-fixed-child-escapes-scrolling-clip.rgb",
+      "bytes": 96,
+      "sha256": "d96bf74f2bbdb6b31e56b9cdfb4ecb93bd6b88368708ab0f902e80793f3aee53"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/html-ordered-rectangles.rgb",
+      "bytes": 72,
+      "sha256": "7704024730fe07beddc79d430f0072dfc8228d903f6aa555194676dbd101993a"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/html-repeated-decoded-image-key.rgb",
+      "bytes": 36,
+      "sha256": "755c08ffce08cc1e3ed054d3e8efd1c7ffbecbc020b7a1180dd3c1e92cf9134f"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/html-rounded-page-requires-full-cpu-fallback.rgb",
+      "bytes": 36,
+      "sha256": "aa0eb258ba18d785e049ca9c8f4314ecf575f6e763abd98d3bade2fe2a0eee46"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/html-unavailable-image-keeps-placeholder.rgb",
+      "bytes": 24,
+      "sha256": "cabe78bf9662f83b80ffcbdf921fa3e0b81d63a6c880d78a5ce55f3e9764c785"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/fixtures.json",
+      "bytes": 100169,
+      "sha256": "d85574775ec6a2eb3537b498fe24678a888b930fe0e06efc52b410c8f15c0130"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/freeze.json",
+      "bytes": 6430,
+      "sha256": "ec652b547096f37db93433d5347c78873cef2eae63a03ced622013aa746b88e1"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-fixed-child-escapes-scrolling-clip.html",
+      "bytes": 494,
+      "sha256": "15c11e99057e7cfb35f6740a199ef0d5c4606345e56e24281c9e9fd9d8e85395"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-ordered-rectangles.html",
+      "bytes": 378,
+      "sha256": "84a096ee77afbde32bf7fd22548aa155b9528fd88e2324afd3140743ef504996"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-repeated-decoded-image-key.html",
+      "bytes": 373,
+      "sha256": "e68a6e87c22ddb1ec1502a2acd0c2d1f24108df6e6192a5fa5a98ae6cc2d3653"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-rounded-page-requires-full-cpu-fallback.html",
+      "bytes": 394,
+      "sha256": "0d2e92496d362442296e14da9e458b9582741413ff440194d9253363328d7f21"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-unavailable-image-keeps-placeholder.html",
+      "bytes": 417,
+      "sha256": "4ab74a7dce520e97056de28a031faaeab959e037e6643f81418cd897c2f04d75"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/two-pixels.png",
+      "bytes": 71,
+      "sha256": "5a43ec1305804c9be3f99944cc19630ecb0839f0743c32deffd29357409efe54"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/prepare.py",
+      "bytes": 11186,
+      "sha256": "b48fa91f60041d0cd22498342ad9a7b6ae98d136c44e2b36cc0e1952d3d777f8"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/reviews/script-review.json",
+      "bytes": 11111,
+      "sha256": "60fb9015891a3f9240397f9569d44ddf22d3a137e368eecf9087174128bc79ce"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/provenance.json",
+      "bytes": 10771,
+      "sha256": "7cdb6c1c3aecb5d1de2c5acda66c483dd2941c7f8bc770bce5472f7f8306254e"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/root-plan.json",
+      "bytes": 2991,
+      "sha256": "21284dfa249449184dc20a1f2188d0f203981b6e1f801d30528c6e2acd38f438"
+    }
+  ],
+  "owned_file_count": 34,
+  "oracle_frozen_inputs_copied_exact": 29,
+  "oracle_freeze_copied_exact": true,
+  "approved_contract_and_root_plan_copied_exact": true,
+  "transcription_verification": {
+    "path": "/tmp/eris-vulkan-browser-fixtures-transcription-chunk-style.json",
+    "bytes": 1492,
+    "sha256": "fc5215176f3694a6ae99faca56cdfd5bc7c302884b564ad0b293db09d5fc954b"
+  },
+  "before_format_verification": {
+    "path": "/tmp/eris-vulkan-browser-fixtures-transcription-before-format.json",
+    "bytes": 1492,
+    "sha256": "e31ead6fcca9d31e5c676aa2f48c79564e471faecec97aa7d19720454f3b7bfa"
+  },
+  "verifier": {
+    "path": "/tmp/eris-vulkan-browser-fixtures-verify.py",
+    "bytes": 9771,
+    "sha256": "b0985ce99a659b5f455499547c56a56b4c90ba5fbd561cc46d89fca289a39274"
+  },
+  "generator": {
+    "path": "/tmp/eris-vulkan-browser-fixtures-transcribe.py",
+    "bytes": 8601,
+    "sha256": "99aaad6540e6b130308b0d439ec715065d2f9ddcea2d5802af2b4897853e4844"
+  },
+  "before_format_source": {
+    "path": "/tmp/eris-vulkan-browser-fixtures.before-format.rs",
+    "bytes": 17956,
+    "sha256": "c008438edcef5ac332fac666ee3956e0148988b83fbf16a96d3f4c6e9113c6f5"
+  },
+  "formatting": {
+    "tool": {
+      "path": "/tmp/eris-vulkan-rustup/toolchains/1.88.0-x86_64-unknown-linux-gnu/bin/rustfmt",
+      "bytes": 6269752,
+      "sha256": "a6479674942b4cad09a7e1ec5f8900f0b02cb1451e11580576194e1a8e93726f"
+    },
+    "arguments": [
+      "--edition",
+      "2024",
+      "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/browser_fixtures.rs"
+    ],
+    "exit_code": 0,
+    "initial_launcher_failure_retained": {
+      "path": "/tmp/eris-vulkan-browser-fixtures-format-attempt-1.json",
+      "bytes": 569,
+      "sha256": "abcf9d0a3145bbb3bbebdb96e573e955aca5c1bdcef537181bd7a2f4c669c169"
+    }
+  },
+  "builder_static_review": [
+    "Every vector is fallibly reserved for its exact literal count before pushes; command arrays expand to the verified fixed counts.",
+    "Owned keys/text reserve source length before copying. The only ImageStore insertion pair reserves two entries first.",
+    "The two aliases use Arc::clone of one RasterImage; no byte-content deduplication occurs.",
+    "Literal RGB bytes are length-checked then assembled into 0x00RRGGBB with no blending, sampling or geometry computation.",
+    "Workers use the frozen html/<name>.html path relative to explicit --fixtures DIR; the five WorkerKind routes match the frozen descriptions."
+  ],
+  "existing_30_fixture_modules_and_shader_bytes_unchanged": true,
+  "executions": {
+    "Rust_compiler": 0,
+    "Cargo": 0,
+    "renderer": 0,
+    "planner": 0,
+    "worker": 0,
+    "GPU": 0
+  },
+  "remaining": "Root/checker must enforce the unchanged worker assumption requirements and perform later authorized validation. Data transcription does not establish observed renderer correctness.",
+  "supersedes": {
+    "path": "/tmp/eris-vulkan-browser-fixtures-source-ready.json",
+    "bytes": 12510,
+    "sha256": "b99b654cff07bfc0dd024c072986b8f89ab7583e0611b1b638ba30b93b06a071"
+  },
+  "equivalent_source_style_correction": {
+    "before_source": {
+      "path": "/tmp/eris-vulkan-browser-fixtures.before-chunk-style.rs",
+      "bytes": 21377,
+      "sha256": "9a54b455d07b8364bd8e5bc60f2abb82356af13db36c36f050317e6627ee850c"
+    },
+    "change": "rgb.chunks_exact(3) -> rgb.as_chunks::<3>().0",
+    "reason": "Independent static reviewer identified the previously encountered Rust 1.98 chunks_exact_to_as_chunks strict-Clippy rule before compilation. Exact length is already checked as width*height*3; both forms traverse the same complete three-byte groups.",
+    "all_other_source_and_asset_bytes_unchanged": true,
+    "no_compiler_or_test_run": true
+  }
+}

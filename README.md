@@ -7,8 +7,11 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 The [ArrayBuffer checkpoint](tests/conformance/array-buffer.md) adds fixed and
 resizable buffers, resizing, same-realm species-aware slicing, transfers and
 detachment. Typed arrays, DataView and shared memory remain unfinished. The
-[Vulkan rendering docket](docs/vulkan-rendering.md) tracks the custom GPU
-rasterizer; native browser painting currently remains on the CPU.
+[Vulkan snapshot bridge](tools/vulkan-raster-probe/BROWSER_BRIDGE.md) now checks
+real browser display lists with the custom GPU rasterizer and whole-frame CPU
+fallback. Its 16 cases pass on three Vulkan adapters. Native browser painting
+currently remains on the CPU; the [rendering docket](docs/vulkan-rendering.md)
+tracks the remaining integration work.
 
 ## Open the browser
 

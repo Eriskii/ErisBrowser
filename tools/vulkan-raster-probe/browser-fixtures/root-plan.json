@@ -1,0 +1,68 @@
+{
+  "phase": "Root accepted static bridge and independent oracle contracts before implementation or renderer execution",
+  "parent": "9a7b8dc755780b573bdfc1a8ea2a7a8b988cfe40",
+  "parent_ci_all_seven_passed": true,
+  "bindings": [
+    {
+      "path": "/tmp/eris-vulkan-next-step-review.md",
+      "sha256": "62d3a2f434a21aeafe01cd3e19d83ef8c5751eaa07d7e3cffe26d1a9b88e0167"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-contract-review.md",
+      "sha256": "474c66f9e9a75eac2d0f23d2abed7f1dc660f2118af0fc3465da545cc8b394b1"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/freeze.json",
+      "sha256": "ec652b547096f37db93433d5347c78873cef2eae63a03ced622013aa746b88e1"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/fixtures.json",
+      "sha256": "d85574775ec6a2eb3537b498fe24678a888b930fe0e06efc52b410c8f15c0130"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle-script-review.json",
+      "sha256": "60fb9015891a3f9240397f9569d44ddf22d3a137e368eecf9087174128bc79ce"
+    },
+    {
+      "path": "/tmp/eris-array-buffer-candidate-2/ci-final.json",
+      "sha256": "31cceef29280cf6df48f2bbc65760b2162db0fa6baa00210487862c138e74433"
+    }
+  ],
+  "scope": [
+    "Optional checker-only own-eris path dependency; default browser/presenter/IPC source unchanged",
+    "Borrowed real snapshots and direct DrawCommands; whole-frame CPU fallback before GPU for all unsupported/budget inputs",
+    "All unique Arc rasters validate and pack under existing planner policy; first-reference IDs then lexical unused order",
+    "Original30probe fixtures/protocol/shaders and all existing limits held",
+    "New fixed CPU admission bounds per reviewed contract; conservative original_command_count*area Canvas budget",
+    "16 independently frozen cases,197literalpixels,9GPUadmissions/7fallbacks; worker input assumptions require verification",
+    "Sequential capture/drop before any Vulkan initialization; checker verifies capture release; dedicated subreaper supervisor handles separate worker process groups",
+    "Shader/device/map/readback/mismatch errors never count as expected CPU fallback"
+  ],
+  "aggregate_bounds": {
+    "max_cases": 16,
+    "max_retained_gpu_payload_bytes": 16777216,
+    "max_retained_cpu_pixel_bytes": 4915200,
+    "max_planned_draws": 4112,
+    "scope": "Explicit retained payload/count bounds; exclude allocator overhead, fonts and driver allocations"
+  },
+  "ownership": {
+    "root": [
+      "Cargo.toml/Cargo.lock/lib.rs hooks",
+      "host supervisor/protocol and validation"
+    ],
+    "script": [
+      "browser_adapter.rs",
+      "browser_adapter/tests.rs"
+    ],
+    "layout": [
+      "shared gpu.rs extraction",
+      "main.rs preserving original protocol",
+      "bin/browser-check.rs"
+    ],
+    "html_css": [
+      "browser_fixtures.rs data-only transcription",
+      "browser fixture assets and independent expected bytes"
+    ]
+  },
+  "compilation_or_engine_execution_authorized": false
+}

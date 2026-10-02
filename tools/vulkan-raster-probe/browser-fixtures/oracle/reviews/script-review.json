@@ -1,0 +1,225 @@
+{
+  "format": 1,
+  "reviewer": "/root/script",
+  "scope": "Independent static oracle review against primary repository DrawCommand/Canvas/layout/image semantics. No engine, Canvas, candidate adapter/planner, compiler, image decoder or GPU execution; no oracle or repository edits.",
+  "inputs": [
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/fixtures.json",
+      "bytes": 100169,
+      "sha256": "d85574775ec6a2eb3537b498fe24678a888b930fe0e06efc52b410c8f15c0130"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/contract.md",
+      "bytes": 5445,
+      "sha256": "e33296d0557bd239118bff568716d36bfd89c9cc96c24e2e3e48b2a410df2983"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/derivations.md",
+      "bytes": 5078,
+      "sha256": "64274c87cadbc3dddfd0798cc16a9a04ca367131ab350c848c355116d3758753"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/prepare.py",
+      "bytes": 11186,
+      "sha256": "b48fa91f60041d0cd22498342ad9a7b6ae98d136c44e2b36cc0e1952d3d777f8"
+    },
+    {
+      "path": "src/graphics.rs",
+      "bytes": 60970,
+      "sha256": "1b51c4af2c8ae4eea66476397868022da35e566d3593f3fcddf29a156bae62a2"
+    },
+    {
+      "path": "src/layout.rs",
+      "bytes": 285677,
+      "sha256": "bfbec78e9c7ca3b5ec45dfb6a2b948b5192de40f93d86b19e6425437579e83e4"
+    },
+    {
+      "path": "src/page.rs",
+      "bytes": 78827,
+      "sha256": "ec8aa579113b706619958e2b29779a212016243b7373880fc09adf6f6d11d004"
+    },
+    {
+      "path": "src/worker/codec.rs",
+      "bytes": 74268,
+      "sha256": "bdad12aa8ddde871aa121ccd6ae4b372e3ff42264d376a5422851771595f7d28"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/lib.rs",
+      "bytes": 17619,
+      "sha256": "1b0eaa97320f254e96e1df4907f4045c186b3faf1c1f50687c1b9279428437a3"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/html/html-fixed-child-escapes-scrolling-clip.html",
+      "bytes": 494,
+      "sha256": "15c11e99057e7cfb35f6740a199ef0d5c4606345e56e24281c9e9fd9d8e85395"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/html/html-ordered-rectangles.html",
+      "bytes": 378,
+      "sha256": "84a096ee77afbde32bf7fd22548aa155b9528fd88e2324afd3140743ef504996"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/html/html-repeated-decoded-image-key.html",
+      "bytes": 373,
+      "sha256": "e68a6e87c22ddb1ec1502a2acd0c2d1f24108df6e6192a5fa5a98ae6cc2d3653"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/html/html-rounded-page-requires-full-cpu-fallback.html",
+      "bytes": 394,
+      "sha256": "0d2e92496d362442296e14da9e458b9582741413ff440194d9253363328d7f21"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/html/html-unavailable-image-keeps-placeholder.html",
+      "bytes": 417,
+      "sha256": "4ab74a7dce520e97056de28a031faaeab959e037e6643f81418cd897c2f04d75"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/html/two-pixels.png",
+      "bytes": 71,
+      "sha256": "5a43ec1305804c9be3f99944cc19630ecb0839f0743c32deffd29357409efe54"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/expected/direct-command-cap-refuses-whole-frame.rgb",
+      "bytes": 3,
+      "sha256": "5ae7e6a42304dc6e4176210b83c43024f99a0bce9a870c3b6d2c95fc8ebfb74c"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/expected/direct-fixed-escape-and-nested-restoration.rgb",
+      "bytes": 72,
+      "sha256": "78590e56ffd340433232ea019d14fa17060c73bc5f9c344fa42e9914c0a6e2fa"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/expected/direct-hidden-text-refuses-whole-frame.rgb",
+      "bytes": 24,
+      "sha256": "3dc8007acc7bdc6938676753f1136033d422a534b0da352d126e9b38d2b7fcb4"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/expected/direct-lines-are-bounding-rectangles.rgb",
+      "bytes": 60,
+      "sha256": "71b132d8bb46350f9ff7fbf8d3265548327de58f9eaaf859aa8002c9fe669e8c"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/expected/direct-missing-image-is-a-legal-noop.rgb",
+      "bytes": 24,
+      "sha256": "3dc8007acc7bdc6938676753f1136033d422a534b0da352d126e9b38d2b7fcb4"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/expected/direct-repeated-key-alias-and-alpha.rgb",
+      "bytes": 24,
+      "sha256": "0c1a9dafdd5a66918f6a788b0c979aa85c2dbb37f30e2d3f32196d9bc649f140"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/expected/direct-rounded-refuses-whole-frame.rgb",
+      "bytes": 36,
+      "sha256": "aa0eb258ba18d785e049ca9c8f4314ecf575f6e763abd98d3bade2fe2a0eee46"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/expected/direct-scope-cap-refuses-balanced-whole-frame.rgb",
+      "bytes": 3,
+      "sha256": "5ae7e6a42304dc6e4176210b83c43024f99a0bce9a870c3b6d2c95fc8ebfb74c"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/expected/direct-translucent-fractional-clip-edges.rgb",
+      "bytes": 45,
+      "sha256": "204fe68429499a02ef2d833aec124154ec220184afc760c06a381f983147d023"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/expected/direct-transparent-hidden-rounded-still-refuses.rgb",
+      "bytes": 18,
+      "sha256": "b264d50882783e189ebe8cae2a58fdbb0872ea01fe58a35e659f6a43c78d0ae0"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/expected/direct-unit-opacity-refuses-whole-frame.rgb",
+      "bytes": 18,
+      "sha256": "ef40b7f937395a2e5810f78655f2d55a9f6c2fd35d576ab50156b6a671930264"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/expected/html-fixed-child-escapes-scrolling-clip.rgb",
+      "bytes": 96,
+      "sha256": "d96bf74f2bbdb6b31e56b9cdfb4ecb93bd6b88368708ab0f902e80793f3aee53"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/expected/html-ordered-rectangles.rgb",
+      "bytes": 72,
+      "sha256": "7704024730fe07beddc79d430f0072dfc8228d903f6aa555194676dbd101993a"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/expected/html-repeated-decoded-image-key.rgb",
+      "bytes": 36,
+      "sha256": "755c08ffce08cc1e3ed054d3e8efd1c7ffbecbc020b7a1180dd3c1e92cf9134f"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/expected/html-rounded-page-requires-full-cpu-fallback.rgb",
+      "bytes": 36,
+      "sha256": "aa0eb258ba18d785e049ca9c8f4314ecf575f6e763abd98d3bade2fe2a0eee46"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-oracle/expected/html-unavailable-image-keeps-placeholder.rgb",
+      "bytes": 24,
+      "sha256": "cabe78bf9662f83b80ffcbdf921fa3e0b81d63a6c880d78a5ce55f3e9764c785"
+    }
+  ],
+  "inventory": {
+    "cases": 16,
+    "direct": 11,
+    "worker_html": 5,
+    "expected_gpu": 9,
+    "expected_whole_frame_fallback": 7,
+    "pixels": 197,
+    "RGB_bytes": 591,
+    "packed_RGB_bytes": 788
+  },
+  "findings": [],
+  "static_checks": [
+    {
+      "area": "Alpha and packing",
+      "source": "src/graphics.rs:478",
+      "conclusion": "Canvas blends unlayered channels with (src*a + dst*(255-a) + 127)/255 each pass. The 128-alpha samples derive independently as (116,42,68), then (158,31,54); alpha-zero image pixels preserve (32,64,96). Packed high byte is zero. Literal palette/rows/files/RGB and packed hashes agree."
+    },
+    {
+      "area": "Fractional clips",
+      "source": "src/graphics.rs:538",
+      "conclusion": "Translucent rectangle scanning is followed by integer-origin clip.contains checks. The fractional clip admits only x=1,2,3 at y=1, matching WPPPW; opaque fast-path upper-edge differences are not conflated with this translucent case."
+    },
+    {
+      "area": "Fixed nesting",
+      "source": "src/graphics.rs:771",
+      "conclusion": "PushFixed restores caller clip and replaces both offsets with viewport offset; PopFixed restores prior clip and offsets. Nested direct case manually traces to WRCRRW/WBMRRW/WRRYKW/WWWWWW."
+    },
+    {
+      "area": "Lines",
+      "source": "src/graphics.rs:844",
+      "conclusion": "Reversed diagonal and zero-length line commands become min-coordinate rectangles with each extent max(abs(delta),width). The authored GGBBW/GGBBW/WWWWW/RRRRW grid follows this behavior without line antialiasing assumptions."
+    },
+    {
+      "area": "CPU fallback pixels",
+      "source": "src/graphics.rs:579",
+      "conclusion": "Radius-one 2x2 coverage truncates to 202 at all four samples, producing (53,53,255) over white. Empty-clip text returns before font/glyph work, opacity one adds no layer, and alpha-zero rounded input paints nothing. Visible suffixes and separate no-submission assertion correctly require complete-frame fallback."
+    },
+    {
+      "area": "Limits",
+      "source": "src/graphics.rs:5",
+      "conclusion": "257 commands and depth 33 exceed unchanged probe caps 256/32 while remaining below Canvas 200000/128. Balanced streams and tiny visible grids justify nonexhausted CPU expectations. These cases do not cover all proposed bridge key/storage/CPU-work limits; the contract explicitly leaves those to independent boundary controls."
+    },
+    {
+      "area": "HTML geometry and sources",
+      "source": "src/layout.rs:1024",
+      "conclusion": "Explicit body geometry, positioned rectangles, ancestor clip/fixed handling, transparent placeholder suppression on successful load, and RGB(236,238,242) missing-image placeholder agree with the relevant source paths. Empty alt/content avoid font-based pixels. The five actual worker streams and exact PNG decode are still unobserved assumptions requiring later IPC/capture checks."
+    },
+    {
+      "area": "Image identity",
+      "source": "src/worker/codec.rs:757",
+      "conclusion": "Snapshot decoding can retain Arc aliases via raster indices. Direct alias identity is separately specified; deterministic first-reference assignment and no HashMap-order dependency remain checker requirements. No CPU alpha scan is part of the expected accepted-image policy."
+    }
+  ],
+  "whole_frame_contract": "Unsupported text, nonzero radius and opacity scopes must refuse before any GPU submission even when hidden; fallback is a separate admission result, while driver/map/readback mismatches remain failures. No existing implementation outcome was used as a pixel oracle.",
+  "limits": [
+    "This is static clearance of the authored semantic oracle, not acceptance of future adapter output or proof of its accounting.",
+    "Worker HTML display lists, decoded image bytes, diagnostic retention and complete scoped command order still need exact frozen-input execution checks.",
+    "Lifecycle/confinement review and adapter API admission proof remain assigned separately.",
+    "No native browser GPU rasterization, broad standards/security claim, performance comparison or changed limits are established."
+  ],
+  "preparation_only_read_command_issues": [
+    "An initial shell glob src/paint* matched no path; corrected using rg --files. A later rg list included absent src/resource.rs; remaining requested source reads completed. Neither command ran an engine or changed data."
+  ]
+}

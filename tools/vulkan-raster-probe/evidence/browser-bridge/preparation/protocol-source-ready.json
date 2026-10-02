@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "status": "source ready for independent review before first synthetic test execution",
+  "files": [
+    {
+      "path": "tools/vulkan-raster-probe/browser_protocol.py",
+      "bytes": 19063,
+      "sha256": "228b7d00dc3bd4554e0ae193ab2be67e0ed81e215ffbeaa8a0ccd78a41dd75ac"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/test_browser_protocol.py",
+      "bytes": 19885,
+      "sha256": "69c7fea6ebf16ad3bb85dcb82205218dfe782c69f98d3d962979d522bbcb3f76"
+    }
+  ],
+  "static_checks": [
+    "Python AST syntax only"
+  ],
+  "not_executed": [
+    "protocol parser",
+    "unit tests",
+    "worker",
+    "Canvas",
+    "GPU",
+    "Cargo"
+  ],
+  "oracle_sha256": "d85574775ec6a2eb3537b498fe24678a888b930fe0e06efc52b410c8f15c0130",
+  "oracle_freeze_sha256": "ec652b547096f37db93433d5347c78873cef2eae63a03ced622013aa746b88e1",
+  "test_groups": 14,
+  "case_contract": {
+    "cases": 16,
+    "worker_snapshots": 5,
+    "gpu_cases": 9,
+    "fallback_cases": 7,
+    "pixels": 197,
+    "compared_bytes": 788
+  },
+  "scope": "phase grammar, strict EWB1 decoding, original oracle binding, literal pixels, exact six bridge stats, bounded GPU counters; exit/stderr/process ownership remain host obligations"
+}

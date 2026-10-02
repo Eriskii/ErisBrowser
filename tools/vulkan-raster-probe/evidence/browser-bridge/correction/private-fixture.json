@@ -1,0 +1,38 @@
+{
+  "scope": "One private fixture setup correction; no production, quota or independent oracle changes. No compiler, engine, planner or GPU execution by reviewer.",
+  "before": {
+    "path": "/tmp/eris-vulkan-browser-adapter-tests-before-cpu-fixture-correction.rs",
+    "bytes": 28463,
+    "sha256": "d8f22756c44b4394f883ec0779b8be55d597e98972525fde1d14e3291b6249d0"
+  },
+  "after": {
+    "path": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+    "bytes": 28463,
+    "sha256": "85f2a6a539b12cf88d21ab565eaa330758484cfe38ace0299d047ccb61db4ef8"
+  },
+  "retained_initial_failures": [
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.88.0-bridge-test.log",
+      "bytes": 9597,
+      "sha256": "6bbf83cd5fc678996bc4f1e7d3098909df1c600fe854b04926373e56026ac390"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.98.0-bridge-test.log",
+      "bytes": 9603,
+      "sha256": "ca22cb3d8cd2335fb23ccf4b2d6afcd61fc74e3179699ed3835a25195b6a59c5"
+    }
+  ],
+  "explanation": "Old 250x250 frame exceeded unchanged MAX_HEIGHT=240 and failed before CPU-work admission. New 250x200 frame is legal; area=50000, clamp(area*16,1000000,32000000)=1000000. Twenty hidden commands meet exactly 1000000 work; twenty-one exceed it at 1050000. Existing direct 320x240 16/17 checks remain unchanged.",
+  "diff": "--- initial\n+++ corrected\n@@ -239,11 +239,11 @@\n     too_many.push(hidden());\n     let reason = plan_display_list(&too_many, &ImageStore::new(), Frame::new(1, 1, 0)).unwrap_err();\n     assert_eq!(reason.category(), \"command-budget\");\n-    let f = Frame::new(250, 250, 0);\n-    // 16 * 62,500 is exactly the unchanged minimum 1,000,000 pixel budget.\n-    assert!(plan_display_list(&vec![hidden(); 16], &ImageStore::new(), f).is_ok());\n-    expect_reason(\n-        &vec![hidden(); 17],\n+    let f = Frame::new(250, 200, 0);\n+    // 20 * 50,000 is exactly the unchanged minimum 1,000,000 pixel budget.\n+    assert!(plan_display_list(&vec![hidden(); 20], &ImageStore::new(), f).is_ok());\n+    expect_reason(\n+        &vec![hidden(); 21],\n         &ImageStore::new(),\n         f,\n         FallbackKind::CpuPaintBudget,\n",
+  "formatting": [
+    {
+      "command": "rustfmt +1.88.0 --edition 2024 tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+      "exit_code": 1,
+      "error": "Default RUSTUP_HOME attempted channel sync and could not create /home/eriskii/.rustup/tmp/gzcpf75g8a3wd7od_file: Read-only file system (os error 30). No source mutation by this failed formatter."
+    },
+    {
+      "command": "RUSTUP_HOME=/tmp/eris-vulkan-rustup rustfmt +1.88.0 --edition 2024 tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+      "exit_code": 0
+    }
+  ]
+}

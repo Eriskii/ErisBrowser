@@ -1,0 +1,304 @@
+{
+  "schema": 1,
+  "scope": "Optional offscreen worker-snapshot/display-list to custom Vulkan bridge; whole-frame CPU fallback remains explicit. Native browser presentation is unchanged.",
+  "published_parent": "9a7b8dc755780b573bdfc1a8ea2a7a8b988cfe40",
+  "ledger": {
+    "path": "publication-ledger.json",
+    "bytes": 21709,
+    "sha256": "bfc1d181f24ca7bd44a6b62892ba7644687971110b71b585063672ebde301682"
+  },
+  "browser_bridge": {
+    "success": true,
+    "adapters": [
+      {
+        "index": 0,
+        "identity": "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"",
+        "cases": 16,
+        "gpu_cases": 9,
+        "fallback_cases": 7,
+        "gpu_pixels": 151,
+        "fallback_pixels": 46,
+        "compared_bytes": 788,
+        "snapshot_count": 5,
+        "capture_gate_granted": true,
+        "owned_cleanup_complete": true,
+        "remaining_descendants": 0
+      },
+      {
+        "index": 1,
+        "identity": "ADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"",
+        "cases": 16,
+        "gpu_cases": 9,
+        "fallback_cases": 7,
+        "gpu_pixels": 151,
+        "fallback_pixels": 46,
+        "compared_bytes": 788,
+        "snapshot_count": 5,
+        "capture_gate_granted": true,
+        "owned_cleanup_complete": true,
+        "remaining_descendants": 0
+      },
+      {
+        "index": 2,
+        "identity": "ADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\"",
+        "cases": 16,
+        "gpu_cases": 9,
+        "fallback_cases": 7,
+        "gpu_pixels": 151,
+        "fallback_pixels": 46,
+        "compared_bytes": 788,
+        "snapshot_count": 5,
+        "capture_gate_granted": true,
+        "owned_cleanup_complete": true,
+        "remaining_descendants": 0
+      }
+    ],
+    "per_adapter": {
+      "cases": 16,
+      "gpu_cases": 9,
+      "fallback_cases": 7,
+      "gpu_pixels": 151,
+      "fallback_pixels": 46,
+      "gpu_compared_bytes": 604,
+      "fallback_compared_bytes": 184,
+      "combined_compared_bytes": 788
+    },
+    "all_adapters": {
+      "adapters": 3,
+      "case_executions": 48,
+      "gpu_case_executions": 27,
+      "fallback_case_executions": 21,
+      "gpu_compared_bytes": 1812,
+      "fallback_compared_bytes": 552,
+      "combined_compared_bytes": 2364
+    },
+    "host": {
+      "path": "candidate-2/browser-host-1/host-results.json",
+      "bytes": 117325,
+      "sha256": "c544ef171da40746055d153dc01c0744b827e758b1034b6caeefd4b13afc6b4a"
+    },
+    "plan": {
+      "path": "candidate-2/browser-host-plan.json",
+      "bytes": 1307,
+      "sha256": "a76a6502a43346c5ceead39b6f365988d1ee499b80341e4e19522f3844136f02"
+    },
+    "result": {
+      "path": "candidate-2/browser-host-result.json",
+      "bytes": 138,
+      "sha256": "746b38bf7ad755b364921365b949596bb33fbd425a763f699caf5b29b7647442"
+    },
+    "processes": 4,
+    "all_stderr_empty": true,
+    "all_supervisor_stderr_empty": true,
+    "snapshot_note": "Five full EWB1 captures per adapter were checked before Vulkan; actual unpruned commands, source bytes and diagnostics remain in raw logs and host JSON."
+  },
+  "original_30": {
+    "success": true,
+    "adapter_count": 3,
+    "case_executions": 90,
+    "compared_bytes_per_adapter": 921620,
+    "compared_bytes_total": 2764860,
+    "host": {
+      "path": "candidate-1/original-host-1/host-results.json",
+      "bytes": 14543,
+      "sha256": "8ad59daf6bffb9caa8970e43331844126092c245dc4d8f9bba23ccf6edefc704"
+    },
+    "plan": {
+      "path": "candidate-1/original-host-plan.json",
+      "bytes": 904,
+      "sha256": "5bdc41295fd4926d4504563bbc6741e199b2571980c7d9c3cfc7f31061cf8047"
+    },
+    "result": {
+      "path": "candidate-1/original-host-result.json",
+      "bytes": 138,
+      "sha256": "cafa9161caf46accd052315671ce8bb3fcd245ce687476e6185958b73b315cc2"
+    },
+    "reuse": {
+      "path": "candidate-2/reuse.json",
+      "bytes": 708,
+      "sha256": "4b4b14ff0ad588b5e00787195c6b8cc9c52cbfb4454f7a319d1726c716472036"
+    },
+    "note": "Executed after GPU extraction on candidate 1; reused for candidate 2 because only the new bridge cfg(test) fixture changed."
+  },
+  "rust_validation": {
+    "toolchains": [
+      "1.88.0",
+      "1.98.0"
+    ],
+    "default_tests_per_toolchain": 25,
+    "bridge_library_tests_per_toolchain": 46,
+    "bridge_checker_tests_per_toolchain": 4,
+    "strict_all_target_clippy": true,
+    "format_checks": true,
+    "failed_or_ignored_final_tests": 0,
+    "candidate_1_checks": [
+      {
+        "path": "candidate-1/1.88.0-checks.json",
+        "bytes": 2353,
+        "sha256": "ce3f4697bf06ef5d0ebe4cb41853067849644d631a1eabcb5326afbc5f3e6372"
+      },
+      {
+        "path": "candidate-1/1.98.0-checks.json",
+        "bytes": 2352,
+        "sha256": "b8a5f7abfa810673ef95d4f352fea3bb6d6e3ab6247cd57ec9a73ef407d9f607"
+      }
+    ],
+    "candidate_2_checks": [
+      {
+        "path": "candidate-2/1.88.0-checks.json",
+        "bytes": 1927,
+        "sha256": "f0019da2c8ae9918c3cedb77915bec2769e2de153cd5623056aed11707f653db"
+      },
+      {
+        "path": "candidate-2/1.98.0-checks.json",
+        "bytes": 1927,
+        "sha256": "41b5d830c0a08d2ce18181489dbee78435ca18f2e8241721fd9389897f3ec94b"
+      }
+    ],
+    "reused_default_checks": true
+  },
+  "python_validation": {
+    "synthetic_protocol_groups": 14,
+    "fake_process_supervisor_groups": 11,
+    "protocol_result": {
+      "path": "candidate-2/protocol-tests.json",
+      "bytes": 358,
+      "sha256": "b0affb979b0725debb79375a5a6fcc6f1d42df76158b0d4b4f37683857dff616"
+    },
+    "supervisor_result": {
+      "path": "supervisor/result.json",
+      "bytes": 138,
+      "sha256": "b3a14924eb19353dc1c00be4974e73c16c49a19af43cd247a661ec02759fbb8c"
+    }
+  },
+  "preserved_failure": {
+    "candidate_1_bridge_test_failures_per_toolchain": 1,
+    "reason": "The private CPU-work fixture used a 250x250 viewport, exceeding unchanged MAX_HEIGHT=240 before its intended work boundary.",
+    "correction": "Only the private fixture changed to 250x200 with 20/21 commands at 1000000/1050000 work. Production, caps and independent oracle bytes remained unchanged.",
+    "receipt": {
+      "path": "correction/private-fixture.json",
+      "bytes": 2730,
+      "sha256": "e634427320384ade309ce87ed435de6587c02f9d492939277627ee05f1de3566"
+    },
+    "original_private_fixture": {
+      "path": "correction/private-fixture-before.rs",
+      "bytes": 28463,
+      "sha256": "d8f22756c44b4394f883ec0779b8be55d597e98972525fde1d14e3291b6249d0"
+    }
+  },
+  "source_bindings": {
+    "candidate_1_freeze": {
+      "path": "candidate-1/freeze.json",
+      "bytes": 49952,
+      "sha256": "e05867c35383ea1e733db73d331f440ee4f2cee413b690d24389bf51a321eace"
+    },
+    "candidate_2_freeze": {
+      "path": "candidate-2/freeze.json",
+      "bytes": 49952,
+      "sha256": "9c7e662aa4cce338238356f1e3ba5163c906aa029a793acebc0eb4fdc94d655d"
+    },
+    "python_freeze": {
+      "path": "candidate-2/python-freeze.json",
+      "bytes": 1621,
+      "sha256": "4a69cde7afb2ad16fa10dfdb01ef5df6234b2676b28cf5af6fee52b5e8b08240"
+    },
+    "supervisor_freeze": {
+      "path": "supervisor/freeze.json",
+      "bytes": 629,
+      "sha256": "9bf499b9561f9a4c8ef3534075bb43aeffc1676c05a5165f33ce28d69a16ccaf"
+    },
+    "candidate_file_count": 285,
+    "only_candidate_delta": [
+      "tools/vulkan-raster-probe/src/browser_adapter/tests.rs"
+    ],
+    "current_files_match_candidate_2": true,
+    "both_source_archives_verified": true,
+    "browser_runtime_unchanged_from_parent": true,
+    "unchanged_runtime_paths_checked": [
+      "src/**",
+      "Cargo.toml",
+      "Cargo.lock"
+    ]
+  },
+  "binary_bindings": {
+    "built_binaries": [
+      {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/eris-vulkan-raster-prototype-1.88.0-default",
+        "bytes": 18475832,
+        "sha256": "c83ac2bcd94e35a653360856b8a81564e22cadaf65be6b3bcb1fe1c40d181fe0"
+      },
+      {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/eris-vulkan-raster-prototype-1.98.0-default",
+        "bytes": 22281136,
+        "sha256": "3a0c68a6a24a2f61a0ca07e6a291ab53492ee45157856b0a42e16df717302146"
+      },
+      {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/eris-vulkan-raster-prototype-1.88.0-bridge",
+        "bytes": 18524088,
+        "sha256": "e42b3e0a941555bc8fc7569e2efbf45b4be5eb8106187f09e72d12f18888f61a"
+      },
+      {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/eris-vulkan-browser-check-1.88.0-bridge",
+        "bytes": 23927208,
+        "sha256": "5482ab185b6ca9e637bea408aae0f575290262718b627874094f241123f21589"
+      },
+      {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/eris-vulkan-raster-prototype-1.98.0-bridge",
+        "bytes": 23443312,
+        "sha256": "ca81a25de106cf274e7246bcbfb64a0710132575e819342cee5297052c2c0221"
+      },
+      {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/eris-vulkan-browser-check-1.98.0-bridge",
+        "bytes": 29050584,
+        "sha256": "f667d35bd444fc72f485211032b5107a075362a73eb9925ba1f471aeeeaa1172"
+      }
+    ],
+    "executed_browser_bridge": {
+      "/tmp/eris-vulkan-browser-bridge-candidate-2/eris-vulkan-browser-check-1.98.0-bridge": "f667d35bd444fc72f485211032b5107a075362a73eb9925ba1f471aeeeaa1172",
+      "/tmp/eris-array-buffer-candidate-2/eris-browser": "8b88d35a175dc30de81b983e99ae38cd1460d0366c62db21604c941abd490932"
+    },
+    "executed_original_probe": {
+      "path": "/tmp/eris-vulkan-browser-bridge-candidate-1/eris-vulkan-raster-prototype-1.98.0-default",
+      "sha256": "3a0c68a6a24a2f61a0ca07e6a291ab53492ee45157856b0a42e16df717302146"
+    },
+    "loader": {
+      "path": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib/libvulkan.so.1",
+      "sha256": "c75ff661f583ea7308bc5526321f6d6c0527a12ec9cd708dfb21323ddbb297ba"
+    },
+    "note": "Hashes and sizes retained; executable bytes are not duplicated in public evidence."
+  },
+  "existing_oracle_bindings": {
+    "browser-fixtures/oracle/freeze.json": {
+      "path": "../../browser-fixtures/oracle/freeze.json",
+      "bytes": 6430,
+      "sha256": "ec652b547096f37db93433d5347c78873cef2eae63a03ced622013aa746b88e1"
+    },
+    "browser-fixtures/oracle/fixtures.json": {
+      "path": "../../browser-fixtures/oracle/fixtures.json",
+      "bytes": 100169,
+      "sha256": "d85574775ec6a2eb3537b498fe24678a888b930fe0e06efc52b410c8f15c0130"
+    },
+    "browser-fixtures/provenance.json": {
+      "path": "../../browser-fixtures/provenance.json",
+      "bytes": 10771,
+      "sha256": "7cdb6c1c3aecb5d1de2c5acda66c483dd2941c7f8bc770bce5472f7f8306254e"
+    },
+    "browser-fixtures/implementation-contract.md": {
+      "path": "../../browser-fixtures/implementation-contract.md",
+      "bytes": 18725,
+      "sha256": "474c66f9e9a75eac2d0f23d2abed7f1dc660f2118af0fc3465da545cc8b394b1"
+    },
+    "browser-fixtures/root-plan.json": {
+      "path": "../../browser-fixtures/root-plan.json",
+      "bytes": 2991,
+      "sha256": "21284dfa249449184dc20a1f2188d0f203981b6e1f801d30528c6e2acd38f438"
+    }
+  },
+  "limitations": [
+    "The browser goal is not complete: this is an optional offscreen checker, not native-window shader integration.",
+    "Text, rounded rectangles, opacity groups and exceeded admission caps select whole-frame CPU fallback, including hidden unsupported commands.",
+    "GPU results establish exactness for this bounded 16-case oracle on the three recorded adapters; no general compatibility, security or performance claim.",
+    "Default checks and original30 GPU execution are retained reuse, not newly repeated candidate-2 execution.",
+    "The original records retain their phase-specific pending/authorization wording and scratch paths. This index records subsequent outcomes without rewriting them."
+  ]
+}

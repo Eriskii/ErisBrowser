@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "python3",
+    "/tmp/eris-vulkan-browser-bridge-candidate-2/source/tools/vulkan-raster-probe/run_browser_host.py",
+    "--allow-experimental-gpu",
+    "--binary",
+    "/tmp/eris-vulkan-browser-bridge-candidate-2/eris-vulkan-browser-check-1.98.0-bridge",
+    "--browser",
+    "/tmp/eris-array-buffer-candidate-2/eris-browser",
+    "--fixtures",
+    "/tmp/eris-vulkan-browser-bridge-candidate-2/source/tools/vulkan-raster-probe/browser-fixtures/oracle",
+    "--output-dir",
+    "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1",
+    "--loader-directory",
+    "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib"
+  ],
+  "scope": "first actual worker+customVulkan bridge run; gated ownedchild transition",
+  "binary_sha256": "f667d35bd444fc72f485211032b5107a075362a73eb9925ba1f471aeeeaa1172",
+  "browser_sha256": "8b88d35a175dc30de81b983e99ae38cd1460d0366c62db21604c941abd490932",
+  "loader_sha256": "c75ff661f583ea7308bc5526321f6d6c0527a12ec9cd708dfb21323ddbb297ba",
+  "rust_freeze_sha256": "9c7e662aa4cce338238356f1e3ba5163c906aa029a793acebc0eb4fdc94d655d",
+  "python_freeze_sha256": "4a69cde7afb2ad16fa10dfdb01ef5df6234b2676b28cf5af6fee52b5e8b08240",
+  "launch_environment_source_sha256": "141dab68e638654ce26700f16fc05818b6a5650755cce07227b4cd0de9411f7f"
+}

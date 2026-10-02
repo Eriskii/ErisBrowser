@@ -1,5 +1,58 @@
 # Validation record
 
+## Vulkan bridge for actual browser snapshots
+
+The optional [browser bridge](../tools/vulkan-raster-probe/BROWSER_BRIDGE.md)
+borrows Eris worker snapshots and original display lists for the custom WGSL
+renderer. The [host evidence](../tools/vulkan-raster-probe/evidence/host-browser-bridge.json)
+records all **16 cases passing on NVIDIA, AMD and software Vulkan**. Each adapter
+captures five real local HTML/image documents through the confined page worker
+and resource broker. Eleven other inputs are direct display lists. Every actual
+worker geometry, scope, decoded image and diagnostic assumption is checked
+against the independently frozen inputs; no pixel target changed after execution.
+
+Each adapter has **nine GPU cases / 151 pixels / 604 compared bytes**, plus
+**seven complete CPU fallbacks / 46 pixels / 184 compared bytes**. The combined
+total is **197 pixels / 788 bytes per adapter, 2,364 bytes across three adapters**;
+the fallback bytes are not GPU output. Both original Canvas results and GPU
+readbacks must match the literal targets where GPU admission succeeds. Text,
+rounded rectangles, opacity, excessive original commands and excessive scope
+depth exercise complete CPU fallback. Unsupported hidden content still refuses
+the entire GPU frame.
+
+All four supervised processes exit successfully with empty stderr and complete
+cleanup. Each adapter receives its Vulkan grant only after all worker clients
+and snapshots are dropped, every checker task has no children, and the dedicated
+subreaper has no adopted descendants. The raw canonical snapshot records retain
+complete commands, sorted image keys and shared source identities, exact RGBA,
+diagnostics and request metadata. DOM and hit-test regions are outside those
+records. No worker starts after the grant.
+
+Rust **1.88.0 and 1.98.0** pass formatting, strict all-target Clippy, builds and
+**50 feature-enabled tests**, including 21 bridge admission groups and four
+checker utilities. Both default builds pass the unchanged **25 tests**. All
+**11 new real-process supervisor tests** and **14 synthetic protocol tests** pass.
+The first feature runs fail one private test because its 250×250 viewport exceeds
+the existing 240-pixel height cap. The corrected 250×200 test checks exactly
+1,000,000 units of CPU work with 20 commands and refusal with 21. Production
+code, every oracle and all existing limits remain unchanged by that correction.
+Earlier precompile review corrections and the initial failure logs are retained.
+
+After extracting the shared GPU executor, all **30 original standalone cases**
+also pass on all three adapters: **2,764,860 exact compared bytes**. Their fixture
+definitions, shaders, original protocol and limits are unchanged. The two shader
+validation results are reused from the preceding checkpoint because the bytes
+are identical. The expanded optional path-dependency lock retains all original
+97 probe package versions and checksums; the root browser lock is unchanged.
+
+This checkpoint changes the standalone tool and its optional adapter, with no
+browser runtime source change. Native window rendering, text, rounded geometry,
+group opacity, broader web compatibility, production security and performance
+within 30% of Chromium remain open. Existing browser conformance and CPU pixel
+results retain their earlier attribution; no new full-browser suite is claimed
+as part of the local bridge checks. Remote CI is pending publication of this
+checkpoint.
+
 ## ArrayBuffer storage, resizing, slicing and transfers
 
 The [ArrayBuffer evidence](../tests/conformance/array-buffer.json) compares the
@@ -50,8 +103,9 @@ All existing quotas remain unchanged. Private tests cover byte initialization,
 copying, shrink/regrow zeroing, species-result suffixes, callback ordering and
 allocation/copy refusal. Typed arrays, DataView, shared memory and broader
 accounting remain unfinished. This checkpoint adds no GPU execution, Chromium
-performance comparison or security certification. Exact-commit remote CI is
-pending publication.
+performance comparison or security certification. All seven
+[remote CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36959177431)
+passed for published commit `9a7b8dc`.
 
 ## Standalone Vulkan source-alpha rasterization
 

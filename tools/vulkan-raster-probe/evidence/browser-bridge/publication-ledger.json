@@ -1,0 +1,506 @@
+{
+  "schema": 1,
+  "scope": "Exact retained evidence copies; original bytes and historical scratch paths are preserved.",
+  "files": [
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.88.0-bridge-clippy.log",
+      "path": "candidate-1/1.88.0-bridge-clippy.log",
+      "bytes": 5149,
+      "sha256": "8d2489fd040c7b58cd8d3abc070a421e86f67d2237f33ce85af4a6342d5d39f6"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.88.0-bridge-test.log",
+      "path": "candidate-1/1.88.0-bridge-test.log",
+      "bytes": 9597,
+      "sha256": "6bbf83cd5fc678996bc4f1e7d3098909df1c600fe854b04926373e56026ac390"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.88.0-checks.json",
+      "path": "candidate-1/1.88.0-checks.json",
+      "bytes": 2353,
+      "sha256": "ce3f4697bf06ef5d0ebe4cb41853067849644d631a1eabcb5326afbc5f3e6372"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.88.0-default-build.log",
+      "path": "candidate-1/1.88.0-default-build.log",
+      "bytes": 240,
+      "sha256": "6d2e53b879624ca1021fd695bd835c1f53181bd74ae97e51385fd3d528d0bc70"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.88.0-default-clippy.log",
+      "path": "candidate-1/1.88.0-default-clippy.log",
+      "bytes": 2040,
+      "sha256": "2b71ccc0d64d74da68573b3ee364ade7b641c2e8503254cba80b2ea8dde6378e"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.88.0-default-test.log",
+      "path": "candidate-1/1.88.0-default-test.log",
+      "bytes": 4398,
+      "sha256": "972f0a64e588b72d131a305b5adb60895ed415056f05061b020f54103e6ceb0e"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.88.0-fmt.log",
+      "path": "candidate-1/1.88.0-fmt.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.98.0-bridge-clippy.log",
+      "path": "candidate-1/1.98.0-bridge-clippy.log",
+      "bytes": 5149,
+      "sha256": "8f2b4d0d70d83f9ba7f1869966d88b1e62f3e1acb9ef9a1b2e12b790a1a599e4"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.98.0-bridge-test.log",
+      "path": "candidate-1/1.98.0-bridge-test.log",
+      "bytes": 9603,
+      "sha256": "ca22cb3d8cd2335fb23ccf4b2d6afcd61fc74e3179699ed3835a25195b6a59c5"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.98.0-checks.json",
+      "path": "candidate-1/1.98.0-checks.json",
+      "bytes": 2352,
+      "sha256": "b8a5f7abfa810673ef95d4f352fea3bb6d6e3ab6247cd57ec9a73ef407d9f607"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.98.0-default-build.log",
+      "path": "candidate-1/1.98.0-default-build.log",
+      "bytes": 292,
+      "sha256": "f682d8130867df15b5546cf44b3c931d5e6b35fe75ef1f37833779415fbd01dc"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.98.0-default-clippy.log",
+      "path": "candidate-1/1.98.0-default-clippy.log",
+      "bytes": 2039,
+      "sha256": "312fb2574687e4bbdeff4d5480da07748fb94190147205300959024b405ce6e0"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.98.0-default-test.log",
+      "path": "candidate-1/1.98.0-default-test.log",
+      "bytes": 4396,
+      "sha256": "36b130931d5674b857d548c576f09fae7a982d48cf66176184866b52656c3d64"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/1.98.0-fmt.log",
+      "path": "candidate-1/1.98.0-fmt.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/freeze.json",
+      "path": "candidate-1/freeze.json",
+      "bytes": 49952,
+      "sha256": "e05867c35383ea1e733db73d331f440ee4f2cee413b690d24389bf51a321eace"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-1/adapter-0.stderr.log",
+      "path": "candidate-1/original-host-1/adapter-0.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-1/adapter-0.stdout.log",
+      "path": "candidate-1/original-host-1/adapter-0.stdout.log",
+      "bytes": 3854,
+      "sha256": "a26a8bda066a19373385f55faa40146200a6dff8c55a6c76545999094415d68c"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-1/adapter-1.stderr.log",
+      "path": "candidate-1/original-host-1/adapter-1.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-1/adapter-1.stdout.log",
+      "path": "candidate-1/original-host-1/adapter-1.stdout.log",
+      "bytes": 3854,
+      "sha256": "fa07469bc41234b92472e7ec4053d45fba836215bee3b393353acc99bf184472"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-1/adapter-2.stderr.log",
+      "path": "candidate-1/original-host-1/adapter-2.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-1/adapter-2.stdout.log",
+      "path": "candidate-1/original-host-1/adapter-2.stdout.log",
+      "bytes": 3854,
+      "sha256": "b9144976b3f73a8d29de8b85012c2db291f3d6981ce03851061f8981be26e10f"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-1/enumeration.stderr.log",
+      "path": "candidate-1/original-host-1/enumeration.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-1/enumeration.stdout.log",
+      "path": "candidate-1/original-host-1/enumeration.stdout.log",
+      "bytes": 465,
+      "sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-1/host-results.json",
+      "path": "candidate-1/original-host-1/host-results.json",
+      "bytes": 14543,
+      "sha256": "8ad59daf6bffb9caa8970e43331844126092c245dc4d8f9bba23ccf6edefc704"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-plan.json",
+      "path": "candidate-1/original-host-plan.json",
+      "bytes": 904,
+      "sha256": "5bdc41295fd4926d4504563bbc6741e199b2571980c7d9c3cfc7f31061cf8047"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-result.json",
+      "path": "candidate-1/original-host-result.json",
+      "bytes": 138,
+      "sha256": "cafa9161caf46accd052315671ce8bb3fcd245ce687476e6185958b73b315cc2"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host.log",
+      "path": "candidate-1/original-host.log",
+      "bytes": 125,
+      "sha256": "988ebb2cbf3195522d2d79678ed9f8dffe2d3e909d475af3fd412599da4c3150"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/1.88.0-bridge-build.log",
+      "path": "candidate-2/1.88.0-bridge-build.log",
+      "bytes": 188,
+      "sha256": "423d74eb443ff283931dc6ad1c581c10aa9fc8b99bd18b52faad7dd221f83e92"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/1.88.0-bridge-clippy.log",
+      "path": "candidate-2/1.88.0-bridge-clippy.log",
+      "bytes": 430,
+      "sha256": "5f437e32dfa6a415d2896e551ef0a26feda8ebb87054ff1ac5f26b9e38aa72d7"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/1.88.0-bridge-test.log",
+      "path": "candidate-2/1.88.0-bridge-test.log",
+      "bytes": 5784,
+      "sha256": "6e5bd0a5073155c7fd16fe9c1301922e3c465ba0aab96f3ede93a46beb80d6db"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/1.88.0-checks.json",
+      "path": "candidate-2/1.88.0-checks.json",
+      "bytes": 1927,
+      "sha256": "f0019da2c8ae9918c3cedb77915bec2769e2de153cd5623056aed11707f653db"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/1.88.0-fmt.log",
+      "path": "candidate-2/1.88.0-fmt.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/1.98.0-bridge-build.log",
+      "path": "candidate-2/1.98.0-bridge-build.log",
+      "bytes": 188,
+      "sha256": "4437460bb393675981ce53abf3fc4bf6882a2992b8cca4f9738abed968fae11a"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/1.98.0-bridge-clippy.log",
+      "path": "candidate-2/1.98.0-bridge-clippy.log",
+      "bytes": 430,
+      "sha256": "d16e8d68219ae16e4dff5f148b1fd0c99b216c79d41c8107227d6d640d78b9a1"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/1.98.0-bridge-test.log",
+      "path": "candidate-2/1.98.0-bridge-test.log",
+      "bytes": 5781,
+      "sha256": "8fceea2023a627c8f2166ef5f46ad6304dfc4e4baa9f32ff5306a6cb82eaa848"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/1.98.0-checks.json",
+      "path": "candidate-2/1.98.0-checks.json",
+      "bytes": 1927,
+      "sha256": "41b5d830c0a08d2ce18181489dbee78435ca18f2e8241721fd9389897f3ec94b"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/1.98.0-fmt.log",
+      "path": "candidate-2/1.98.0-fmt.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-0.json",
+      "path": "candidate-2/browser-host-1/adapter-0.json",
+      "bytes": 975,
+      "sha256": "f5901275ed81e62b44c131f7813aa84edcdfbf1f2b928f6aea82d054db2a136e"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-0.stderr.log",
+      "path": "candidate-2/browser-host-1/adapter-0.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-0.stdout.log",
+      "path": "candidate-2/browser-host-1/adapter-0.stdout.log",
+      "bytes": 14781,
+      "sha256": "41e426dfa0c3e6174a60ed415357e5671c6083100f6bc4332cefb13565c0bb52"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-0.supervisor.stderr.log",
+      "path": "candidate-2/browser-host-1/adapter-0.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-1.json",
+      "path": "candidate-2/browser-host-1/adapter-1.json",
+      "bytes": 973,
+      "sha256": "1ad362ae5d62856818958cdb941ef1ca831affaeff7e4d1f894b0a4ed446cc60"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-1.stderr.log",
+      "path": "candidate-2/browser-host-1/adapter-1.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-1.stdout.log",
+      "path": "candidate-2/browser-host-1/adapter-1.stdout.log",
+      "bytes": 14781,
+      "sha256": "c2d78a17a7096d8c5584dc62475ed3d2ececd00a6f09fde83e2a3a7d170a6649"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-1.supervisor.stderr.log",
+      "path": "candidate-2/browser-host-1/adapter-1.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-2.json",
+      "path": "candidate-2/browser-host-1/adapter-2.json",
+      "bytes": 975,
+      "sha256": "cdc090c13dc86c97f43b4979d1cab96aa35a01f227ff49f62118c6c41fbf584b"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-2.stderr.log",
+      "path": "candidate-2/browser-host-1/adapter-2.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-2.stdout.log",
+      "path": "candidate-2/browser-host-1/adapter-2.stdout.log",
+      "bytes": 14781,
+      "sha256": "8753d22e1e68db1212d805fb9b1f6d3c236b7fd85b4007c0899d59db761ac715"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/adapter-2.supervisor.stderr.log",
+      "path": "candidate-2/browser-host-1/adapter-2.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/enumeration.json",
+      "path": "candidate-2/browser-host-1/enumeration.json",
+      "bytes": 763,
+      "sha256": "2aad6c5b9ebfff038b8766dcef50d0d70a0ee32373c47e90d0e6eb4d49f46684"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/enumeration.stderr.log",
+      "path": "candidate-2/browser-host-1/enumeration.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/enumeration.stdout.log",
+      "path": "candidate-2/browser-host-1/enumeration.stdout.log",
+      "bytes": 465,
+      "sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/enumeration.supervisor.stderr.log",
+      "path": "candidate-2/browser-host-1/enumeration.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-1/host-results.json",
+      "path": "candidate-2/browser-host-1/host-results.json",
+      "bytes": 117325,
+      "sha256": "c544ef171da40746055d153dc01c0744b827e758b1034b6caeefd4b13afc6b4a"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-plan.json",
+      "path": "candidate-2/browser-host-plan.json",
+      "bytes": 1307,
+      "sha256": "a76a6502a43346c5ceead39b6f365988d1ee499b80341e4e19522f3844136f02"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host-result.json",
+      "path": "candidate-2/browser-host-result.json",
+      "bytes": 138,
+      "sha256": "746b38bf7ad755b364921365b949596bb33fbd425a763f699caf5b29b7647442"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/browser-host.log",
+      "path": "candidate-2/browser-host.log",
+      "bytes": 129,
+      "sha256": "073e134c218629c83a9ddcf5455d2a40bbe90b4d8ccf982e0f86ad695217619d"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/freeze.json",
+      "path": "candidate-2/freeze.json",
+      "bytes": 49952,
+      "sha256": "9c7e662aa4cce338238356f1e3ba5163c906aa029a793acebc0eb4fdc94d655d"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/protocol-tests.json",
+      "path": "candidate-2/protocol-tests.json",
+      "bytes": 358,
+      "sha256": "b0affb979b0725debb79375a5a6fcc6f1d42df76158b0d4b4f37683857dff616"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/protocol-tests.log",
+      "path": "candidate-2/protocol-tests.log",
+      "bytes": 2587,
+      "sha256": "7ec70cca06a82ea216da95018429f985021d5c422ea71d5c92922b1b8134e55c"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/python-freeze.json",
+      "path": "candidate-2/python-freeze.json",
+      "bytes": 1621,
+      "sha256": "4a69cde7afb2ad16fa10dfdb01ef5df6234b2676b28cf5af6fee52b5e8b08240"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-candidate-2/reuse.json",
+      "path": "candidate-2/reuse.json",
+      "bytes": 708,
+      "sha256": "4b4b14ff0ad588b5e00787195c6b8cc9c52cbfb4454f7a319d1726c716472036"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-adapter-tests-before-cpu-fixture-correction.rs",
+      "path": "correction/private-fixture-before.rs",
+      "bytes": 28463,
+      "sha256": "d8f22756c44b4394f883ec0779b8be55d597e98972525fde1d14e3291b6249d0"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-adapter-cpu-fixture-correction.json",
+      "path": "correction/private-fixture.json",
+      "bytes": 2730,
+      "sha256": "e634427320384ade309ce87ed435de6587c02f9d492939277627ee05f1de3566"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-adapter-source-ready.json",
+      "path": "preparation/adapter-source-ready.json",
+      "bytes": 3621,
+      "sha256": "3c491432cc827fee8850f3ad66fcf041250b18bf7f30038a931be2e6c2451b8e"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-checker-source-ready-final-2.json",
+      "path": "preparation/checker-source-ready.json",
+      "bytes": 3034,
+      "sha256": "fa00031439273bbc41b3665f43cb01643e87e1fcc20db011f2b219879ad0bda9"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-fixtures-source-ready-final.json",
+      "path": "preparation/fixtures-source-ready.json",
+      "bytes": 13383,
+      "sha256": "aec3a54c588086768ad313cf921ca4e9b8c4eb59cbfd28c9af17b258a5d73a5c"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-fixtures-format-attempt-1.json",
+      "path": "preparation/format-launcher-failure.json",
+      "bytes": 569,
+      "sha256": "abcf9d0a3145bbb3bbebdb96e573e955aca5c1bdcef537181bd7a2f4c669c169"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-protocol-source-ready.json",
+      "path": "preparation/protocol-source-ready.json",
+      "bytes": 1217,
+      "sha256": "f87b79f5424dd3ee3c53615be0240feadc1059e05be2285f8fa162b71a2e61b8"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-fixtures-transcription-before-format.json",
+      "path": "preparation/transcription-before-format.json",
+      "bytes": 1492,
+      "sha256": "e31ead6fcca9d31e5c676aa2f48c79564e471faecec97aa7d19720454f3b7bfa"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-fixtures-transcription-chunk-style.json",
+      "path": "preparation/transcription-final.json",
+      "bytes": 1492,
+      "sha256": "fc5215176f3694a6ae99faca56cdfd5bc7c302884b564ad0b293db09d5fc954b"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-adapter-checker-peer-review.json",
+      "path": "reviews/adapter-checker-peer.json",
+      "bytes": 1954,
+      "sha256": "221c415fbe1733f0ca8d6642714944567675ee19266c1ed75aaca7758ab4996b"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-checker-script-review.json",
+      "path": "reviews/checker-script.json",
+      "bytes": 6155,
+      "sha256": "e519a997ee44607e8ec417a204f5904e214f6ce59ee4b64d85ee884cf273e6db"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-evidence-script-review.json",
+      "path": "reviews/completed-host-audit.json",
+      "bytes": 33434,
+      "sha256": "993170c35d0b3f49c26eb06dd55be5de7f01bcba5bb010b8b53cfbfbf68dcbe2"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-extraction-final-review.json",
+      "path": "reviews/gpu-extraction.json",
+      "bytes": 2676,
+      "sha256": "168e01c82ee241729c08ec039c4b92afbf6a98a2f31edc1f8abcbcee9e07ee6a"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-supervisor-script-review.json",
+      "path": "reviews/supervisor-final.json",
+      "bytes": 4452,
+      "sha256": "fff9fe3cb77a1d7aa7e4cf912a08031cb31656764eba14f7440d2225852be6c4"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-supervisor-initial-review.json",
+      "path": "reviews/supervisor-initial.json",
+      "bytes": 3676,
+      "sha256": "20d774a3fad9330c9250436f9d2c0ec4d6e95ef553047d83de6698629e66bc0c"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-supervisor-script-review-initial.json",
+      "path": "reviews/supervisor-script-initial.json",
+      "bytes": 3873,
+      "sha256": "693165f978c5c861d8c218970f88630678549791b1d4f56bce6937b95c70b475"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-supervisor-candidate-1/execution-plan.json",
+      "path": "supervisor/execution-plan.json",
+      "bytes": 373,
+      "sha256": "a35acb1c3774dbdeffbbc8100089e428a2068416c13aeafdd50582c04dc6543e"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-supervisor-candidate-1/freeze.json",
+      "path": "supervisor/freeze.json",
+      "bytes": 629,
+      "sha256": "9bf499b9561f9a4c8ef3534075bb43aeffc1676c05a5165f33ce28d69a16ccaf"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-supervisor-candidate-1/result.json",
+      "path": "supervisor/result.json",
+      "bytes": 138,
+      "sha256": "b3a14924eb19353dc1c00be4974e73c16c49a19af43cd247a661ec02759fbb8c"
+    },
+    {
+      "origin": "/tmp/eris-vulkan-browser-bridge-supervisor-candidate-1/tests.log",
+      "path": "supervisor/tests.log",
+      "bytes": 1787,
+      "sha256": "25ec5f2260c930fddde1201467ca01820ba9f6384886137236715103924a3a05"
+    }
+  ],
+  "copied_files": 82,
+  "copied_bytes": 479719,
+  "not_copied": [
+    "executables",
+    "full source archives",
+    "duplicate oracle/HTML/PNG assets"
+  ],
+  "verification": "Every origin and destination length and SHA-256 was compared; no engine, renderer, parser or test rerun."
+}

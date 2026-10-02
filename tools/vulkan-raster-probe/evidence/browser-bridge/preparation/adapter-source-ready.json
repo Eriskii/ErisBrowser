@@ -1,0 +1,84 @@
+{
+  "format": 1,
+  "state": "Source complete, formatted and held before root candidate freeze/first compiler execution.",
+  "owned_files": [
+    {
+      "path": "tools/vulkan-raster-probe/src/browser_adapter.rs",
+      "bytes": 17320,
+      "sha256": "1c0da92ef487589d821097446d0ac89d278c98246416620eb8199eb2577fce12"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+      "bytes": 28463,
+      "sha256": "d8f22756c44b4394f883ec0779b8be55d597e98972525fde1d14e3291b6249d0"
+    }
+  ],
+  "public_api": {
+    "functions": [
+      "plan_snapshot(&eris::worker::Snapshot, Frame)",
+      "plan_display_list(&[DrawCommand], &ImageStore, Frame)"
+    ],
+    "result": "Result<BridgePlan, FallbackReason>",
+    "BridgePlan": [
+      "plan() -> &Plan",
+      "stats() -> &BridgeStats"
+    ],
+    "BridgeStats_fields": [
+      "original_commands",
+      "lowered_commands",
+      "image_store_entries",
+      "unique_sources",
+      "referenced_sources",
+      "total_rgba_bytes",
+      "referenced_rgba_bytes",
+      "missing_images"
+    ],
+    "FallbackReason": [
+      "pub kind: FallbackKind",
+      "pub command_index: Option<usize>",
+      "category() -> &static str"
+    ]
+  },
+  "tests": {
+    "groups": 21,
+    "coverage": [
+      "unsupported hidden/transparent content and original-index whole-frame refusal",
+      "original geometry/frame/scalar/Line ordering",
+      "command/scope/type/CPU-work exact and over boundaries",
+      "sparse overreserved HashMap and source entry count",
+      "individual UTF-8 and aggregate store/command key bytes, long-prefix present and missing lookup",
+      "comparison precheck arithmetic and overflow",
+      "all-source validation including malformed unused/hidden sources",
+      "unique RGBA exact/over cap, shared aliases and equal bytes in distinct Arcs",
+      "first-reference source order then lexical unused, randomized insertion order",
+      "no Arc/snapshot/key/source clone, finished Plan owns its payload",
+      "zero-alpha images retain GPU work, hidden draws avoid arena",
+      "full unique packing retains existing GPU buffer cap",
+      "fixed escape, fractional alpha and snapshot delegation"
+    ],
+    "executed": false
+  },
+  "admission_limits": {
+    "existing_planner_caps_changed": false,
+    "map_capacity": 512,
+    "individual_UTF8_key_bytes": 4096,
+    "store_key_bytes": 65536,
+    "command_key_bytes": 65536,
+    "sort_comparison_bytes": 16777216,
+    "lookup_work_units": 1048576,
+    "CPU_work": "original command count * framebuffer area <= Canvas clamp(area*16,1000000,32000000)"
+  },
+  "accounting_notes": [
+    "All scalar/count/key/work checks and typed scope validation precede metadata reserves.",
+    "Four metadata vectors are fallibly reserved to bounded entry/command/unique counts; contain only references or fixed-size records.",
+    "Insertion sort uses prechecked (N-1)*store-key-bytes; explicit binary lookup makes one lexical comparison per iteration.",
+    "Source IDs use Arc pointer equality without clone/content comparison, first-reference then lexical unused order.",
+    "Existing source_pixels validates every unique stored source before byte copying and existing plan_with_images validates it again.",
+    "Original scalar caps and f32 Line steps are preserved; no additional translated-sum cap, coverage implementation or alpha scan."
+  ],
+  "commands_run": [
+    "rustfmt --edition 2024 on the two owned files",
+    "read-only source/static hash inspection; no compiler, planner, Canvas, engine or GPU execution"
+  ],
+  "production_oracles_and_old_planner_shaders_modified": false
+}

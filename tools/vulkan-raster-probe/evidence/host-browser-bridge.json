@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "scope": "Optional offscreen worker-snapshot/display-list to custom Vulkan bridge; whole-frame CPU fallback remains explicit. Native browser presentation is unchanged.",
+  "parent": "9a7b8dc755780b573bdfc1a8ea2a7a8b988cfe40",
+  "success": true,
+  "evidence_index": {
+    "path": "browser-bridge/index.json",
+    "bytes": 12091,
+    "sha256": "617e2521d4558d9c3053c3a0fe002373d24a5c4cf4b25acec16102a9df279399"
+  },
+  "browser_bridge": {
+    "adapters": 3,
+    "per_adapter": {
+      "cases": 16,
+      "gpu_cases": 9,
+      "fallback_cases": 7,
+      "gpu_pixels": 151,
+      "fallback_pixels": 46,
+      "gpu_compared_bytes": 604,
+      "fallback_compared_bytes": 184,
+      "combined_compared_bytes": 788
+    },
+    "all_adapters": {
+      "adapters": 3,
+      "case_executions": 48,
+      "gpu_case_executions": 27,
+      "fallback_case_executions": 21,
+      "gpu_compared_bytes": 1812,
+      "fallback_compared_bytes": 552,
+      "combined_compared_bytes": 2364
+    },
+    "host": {
+      "path": "browser-bridge/candidate-2/browser-host-1/host-results.json",
+      "sha256": "c544ef171da40746055d153dc01c0744b827e758b1034b6caeefd4b13afc6b4a"
+    }
+  },
+  "original_standalone_cases": {
+    "cases_per_adapter": 30,
+    "adapters": 3,
+    "all_exact": true,
+    "compared_bytes": 2764860
+  },
+  "validation": {
+    "rust_toolchains": [
+      "1.88.0",
+      "1.98.0"
+    ],
+    "default_tests_each": 25,
+    "feature_tests_each": 50,
+    "new_python_process_tests": 11,
+    "new_python_protocol_tests": 14,
+    "strict_clippy": true,
+    "all_final_checks_passed": true,
+    "initial_private_test_failure_retained": true
+  },
+  "limits_unchanged": true,
+  "browser_runtime_unchanged": true,
+  "native_window_shader_rendering": false,
+  "full_web_compatibility": false,
+  "production_security_claimed": false,
+  "chromium_performance_target_demonstrated": false,
+  "remote_ci": {
+    "status": "pending publication"
+  }
+}

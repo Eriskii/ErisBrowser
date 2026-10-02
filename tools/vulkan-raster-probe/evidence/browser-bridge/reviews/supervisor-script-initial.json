@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "scope": "Independent read-only source review; reviewer did not execute tests, children, compiler, planner, Canvas or GPU. Root alone ran the separately bound fake-child tests after Python source clearance.",
+  "files": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/bridge_supervisor.py",
+      "bytes": 13678,
+      "sha256": "d38c129e010564c2ffa3903e1f86ae53d26667723749d9407659a14d188b32a8"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/test_bridge_supervisor.py",
+      "bytes": 8161,
+      "sha256": "80c9414a6a214a2f1c7c73b19bc424519fe9b392625650ff1b283995508fb6c3"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/run_browser_host.py",
+      "bytes": 8453,
+      "sha256": "51ac06679b31bcfbc3f051df814850631b45fce1943ab6d89fb226349994de10"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/bin/browser-check.rs",
+      "bytes": 35152,
+      "sha256": "ea5f41fb64cad07338bb0b11d85222a9b76f31cb306ae40e95e7bf572112a9cc"
+    }
+  ],
+  "supervisor_freeze": {
+    "path": "/tmp/eris-vulkan-browser-bridge-supervisor-candidate-1/freeze.json",
+    "bytes": 629,
+    "sha256": "9bf499b9561f9a4c8ef3534075bb43aeffc1676c05a5165f33ce28d69a16ccaf"
+  },
+  "root_test_result": {
+    "path": "/tmp/eris-vulkan-browser-bridge-supervisor-candidate-1/result.json",
+    "bytes": 138,
+    "sha256": "b3a14924eb19353dc1c00be4974e73c16c49a19af43cd247a661ec02759fbb8c"
+  },
+  "python_review": "No remaining concrete finding; held Python sources cleared for the planned fake-child tests.",
+  "findings": [
+    {
+      "file": "tools/vulkan-raster-probe/src/bin/browser-check.rs",
+      "function": "read_gpu_grant",
+      "issue": "The reviewed checker declares [0u8; 9], but GPU_READY followed by newline is 10 bytes. Exact input cannot pass its comparison.",
+      "status": "Reported to root and checker owner before checker compiler freeze; correction pending verification in this receipt.",
+      "required_correction": "Read exactly 10 bytes, preferably deriving the array length from the grant constant."
+    }
+  ],
+  "checks": [
+    "Known unreaped checker is signalled before bounded procfs enumeration; WNOWAIT ownership precedes every signal and sole-waiter reaping.",
+    "checker_reaped prevents post-reap numeric PID reclassification; cleanup loops through adopted descendants with explicit count, output and time bounds.",
+    "Capture marker is exact and bounded; own_tasks is 1..64. Grant requires sole direct child equal to the live checker and rechecks cancellation/deadline before writing ten bytes.",
+    "Grant is disabled before cleanup, clean exit without grant fails, and cancellation after cleanup cannot report success.",
+    "Host requires capture_gate for adapter runs and stops before another checker after any supervisor, output, protocol or cleanup failure.",
+    "Host --fixtures directory argument agrees exactly with checker parsing; --list does not capture workers and is ungated.",
+    "All eleven fake-child test methods reviewed, including adopted orphan denial, missing gate, successful exact grant, cancellation and inherited-pipe ownership."
+  ],
+  "limits": [
+    "Static source review is not proof of OS scheduling, kernel teardown or GPU behavior.",
+    "Synchronous spawn and kernel-uninterruptible cleanup can exceed the intended deadline; unresolved cleanup remains an explicit failure and cannot authorize subsequent phases.",
+    "browser_protocol.py was not present during this review, so its eventual protocol validation is outside this receipt.",
+    "Root test results are bound as external evidence; the reviewer did not rerun or independently execute them."
+  ]
+}

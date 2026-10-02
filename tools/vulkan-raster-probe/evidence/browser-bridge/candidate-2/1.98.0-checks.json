@@ -1,0 +1,81 @@
+[
+  {
+    "name": "fmt",
+    "toolchain": "1.98.0",
+    "argv": [
+      "cargo",
+      "fmt",
+      "--",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.113,
+    "log": "1.98.0-fmt.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "bridge-clippy",
+    "toolchain": "1.98.0",
+    "argv": [
+      "cargo",
+      "clippy",
+      "--offline",
+      "--locked",
+      "--features",
+      "browser-bridge",
+      "--all-targets",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit_code": 0,
+    "seconds": 3.015,
+    "log": "1.98.0-bridge-clippy.log",
+    "sha256": "d16e8d68219ae16e4dff5f148b1fd0c99b216c79d41c8107227d6d640d78b9a1"
+  },
+  {
+    "name": "bridge-test",
+    "toolchain": "1.98.0",
+    "argv": [
+      "cargo",
+      "test",
+      "--offline",
+      "--locked",
+      "--features",
+      "browser-bridge"
+    ],
+    "exit_code": 0,
+    "seconds": 6.018,
+    "log": "1.98.0-bridge-test.log",
+    "sha256": "8fceea2023a627c8f2166ef5f46ad6304dfc4e4baa9f32ff5306a6cb82eaa848"
+  },
+  {
+    "name": "bridge-build",
+    "toolchain": "1.98.0",
+    "argv": [
+      "cargo",
+      "build",
+      "--offline",
+      "--locked",
+      "--features",
+      "browser-bridge",
+      "--bins"
+    ],
+    "exit_code": 0,
+    "seconds": 0.615,
+    "log": "1.98.0-bridge-build.log",
+    "sha256": "4437460bb393675981ce53abf3fc4bf6882a2992b8cca4f9738abed968fae11a",
+    "binaries": [
+      {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/eris-vulkan-raster-prototype-1.98.0-bridge",
+        "bytes": 23443312,
+        "sha256": "ca81a25de106cf274e7246bcbfb64a0710132575e819342cee5297052c2c0221"
+      },
+      {
+        "path": "/tmp/eris-vulkan-browser-bridge-candidate-2/eris-vulkan-browser-check-1.98.0-bridge",
+        "bytes": 29050584,
+        "sha256": "f667d35bd444fc72f485211032b5107a075362a73eb9925ba1f471aeeeaa1172"
+      }
+    ]
+  }
+]

@@ -1,9 +1,10 @@
 # Vulkan rendering milestones
 
-Status: an **optional Linux Vulkan upload presenter** is implemented. Software
-remains the default and the only headless path. Both paths use Eris's custom CPU
-rasterizer. A standalone custom GPU probe passes rectangle/image source-alpha
-fixtures over opaque RGB; browser integration and group compositing remain future work.
+Status: an **optional Linux Vulkan upload presenter** is implemented. The browser's
+default and headless paths remain software; both native presenters use Eris's
+custom CPU rasterizer. An optional offscreen bridge now borrows real confined-worker
+snapshots for custom GPU rectangle/image rasterization, with whole-frame CPU
+fallback. Native-window GPU rasterization and group compositing remain future work.
 No GPU speedup or Chromium performance result is established. Earlier isolated
 experiments and their failed compositor comparisons remain recorded below.
 
@@ -278,7 +279,7 @@ image fixture definitions and protocol tuples are unchanged. Their
 [image](../tools/vulkan-raster-probe/evidence/host-images.json) evidence retain
 their original source/binary attribution.
 
-Nine new literal targets cover alpha 0/1/127/128/254/255, draw order, repeated
+The nine alpha literal targets cover alpha 0/1/127/128/254/255, draw order, repeated
 rounding, clip/fixed behavior and transparent hidden RGB. Each ordered pass uses
 Canvas's integer source-over formula, with a zero target high byte. Valid
 alpha-zero rectangles are validated then omitted; transparent image samples
@@ -293,36 +294,49 @@ clear and all target writes; the target is never uploaded. Plans own immutable
 data, validate every supplied source, and retain the existing 1 MiB explicit
 GPU-buffer and four-million-invocation limits. Those bounds exclude driver and
 upload staging allocations. This remains a standalone prototype with its own
-manifest and lockfile. Both Rust 1.88 and 1.98 pass 25 tests, formatting, strict
-Clippy and builds; ten Python tests and both offline Naga shader checks pass.
-The first candidate's test-helper type-inference failure is retained; only
-explicit `u32` types on three lines changed before the successful build. Browser
-integration and performance measurement remain open, and the normal browser
-still uses the CPU rasterizer.
+manifest and lockfile. The alpha checkpoint records 25 tests on each of Rust
+1.88 and 1.98, formatting, strict Clippy and builds, ten Python tests and two
+offline Naga shader checks. Its initial test-helper type-inference failure and
+three-line explicit-`u32` correction remain preserved with that historical evidence.
 
-Add a separate renderer entry that accepts the existing validated display list,
-images, viewport clip and document/fixed offsets. Initially accept a coherent
-subset: unrounded rectangles and nearest-neighbor images with source-over onto
-opaque RGB; lines with the existing rectangle interpretation; and balanced
-clip/fixed scopes. This browser integration remains to be implemented and tested.
-Resolve scopes and clipped bounds with bounded CPU work, then execute custom
-GPU kernels or draws in display-list order. Overlapping writes must be ordered;
-a single unordered dispatch over primitives would be incorrect.
+The optional [browser bridge](../tools/vulkan-raster-probe/BROWSER_BRIDGE.md)
+now borrows a validated worker snapshot or original display list and image store.
+It accepts unrounded rectangles and nearest-neighbor images with source-over
+onto opaque RGB, Canvas-style line rectangles and balanced clip/fixed scopes.
+It preserves image-key resolution, shared image identities, missing-image
+no-ops and earlier placeholder commands without cloning snapshots or staging an
+extra RGBA copy; final validated plans own their packed source data.
+Hidden text, rounding and opacity commands refuse the entire frame before GPU
+execution; fallback paints the original complete frame with Canvas. GPU errors
+and pixel mismatches remain failures.
 
-The next integration check will consume real confined-worker snapshots in an
-offscreen harness, with independently specified pixels and explicit whole-frame
-fallback. It must preserve image-key resolution, legal missing images, line
-lowering and typed scope restoration. Complete worker teardown before Vulkan
-initialization keeps this first check separate from driver/spawn interactions.
-The probe's 320×240 cap is below the native window's 400×250 minimum, and browser
-chrome needs text rendering. Neither native-window integration nor larger frame
-limits follow from a successful offscreen bridge; both need separate validation.
+The [bridge host evidence](../tools/vulkan-raster-probe/evidence/host-browser-bridge.json)
+records **16 exact cases on each of the NVIDIA, AMD and software Vulkan adapters**,
+including five actual confined-page captures per adapter. Nine cases use custom
+GPU drawing and seven use whole-frame CPU fallback: **151 GPU pixels plus 46
+fallback pixels**, or 788 packed bytes per adapter and **2,364 combined bytes**.
+That total includes CPU fallback comparisons. Complete captured commands, image
+keys, source RGBA and diagnostics are retained. The original 30 standalone cases
+also pass on all three adapters with unchanged fixtures, shaders and protocol.
 
-Reject unsupported frames before GPU execution and paint the complete frame
-with the CPU backend. Do not drop unsupported commands or mix partial frames
-without a defined compositing model. This first subset mostly exercises simple
-rectangle/image pages; text-heavy pages still use software. Report which path
-actually rendered each measured frame.
+Preparation retains the 320×240 viewport, 256-command, 32-scope, 1 MiB explicit
+GPU-buffer and four-million-invocation caps. Borrowed key lookup, source alias
+accounting and CPU fallback work have separate conservative bounds. Workers and
+snapshots are released before Vulkan initialization; a supervised capture grant
+also checks descendants adopted by the outer Linux subreaper. This offscreen
+process experiment does not establish production driver isolation or security.
+
+Both Rust 1.88 and 1.98 pass 50 feature-enabled tests, formatting, strict Clippy
+and builds. The 25 default tests per toolchain and original 30-case host run are
+reused from candidate 1 because candidate 2 changed only a bridge test fixture.
+Eleven process-supervisor and fourteen protocol tests pass. The unchanged shader
+bytes retain their earlier Naga validation. Full compatibility and Chromium
+performance remain unmeasured.
+
+The native window still paints through Canvas and optionally uploads the result.
+Its 400×250 minimum exceeds the bridge's 320×240 cap, and browser chrome needs
+text rendering. Native-window integration and larger frame limits therefore
+require separate implementation and validation.
 
 Subsequent bounded slices add existing CPU-generated glyph masks as a bounded
 atlas, rounded coverage and group opacity. Reusing

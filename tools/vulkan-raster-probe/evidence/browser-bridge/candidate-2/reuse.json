@@ -1,0 +1,14 @@
+{
+  "changed": [
+    "tools/vulkan-raster-probe/src/browser_adapter/tests.rs"
+  ],
+  "production_sources_unchanged": true,
+  "reused_default_checks": [
+    "/tmp/eris-vulkan-browser-bridge-candidate-1/1.88.0-checks.json",
+    "/tmp/eris-vulkan-browser-bridge-candidate-1/1.98.0-checks.json"
+  ],
+  "reused_original30_host": "/tmp/eris-vulkan-browser-bridge-candidate-1/original-host-1/host-results.json",
+  "reason": "Only a new bridge cfg(test) fixture changed; default-feature module set, original30 fixtures, shared GPU source, shaders and dependency locks are byte-identical",
+  "default_rerun": false,
+  "old_shader_validation_reused": "unchanged byte-identical shaders validated in alpha checkpoint"
+}
