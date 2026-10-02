@@ -983,7 +983,7 @@ fn data_view_intrinsic_tag_admission_and_duplicate_keep_order() {
 
 #[test]
 fn data_view_bootstrap_reports_actual_remaining_budget() {
-    let (runtime, _) = fresh();
+    let runtime = Runtime::uninitialized().finish_bootstrap().unwrap();
     println!(
         "DATAVIEW_BOOTSTRAP remaining_steps={} allocated={} native_properties={} prototypes={} order_capacity={}",
         runtime.steps,

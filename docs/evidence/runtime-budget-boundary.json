@@ -1,0 +1,292 @@
+{
+  "schema": 1,
+  "parent": "c33e6294bf0c6010b0d2378ec7fee7ef6a407853",
+  "change": "Grant a successfully bootstrapped runtime a fresh fixed author work allowance; preserve raw bootstrap admission and cumulative heap.",
+  "source_files": {
+    "src/script.rs": "2fa74366a4f689e2ded15a6d9f86ff88fe1dd13389bdf5eb5bbc2bb158f8ffb0",
+    "src/script/bootstrap_tests.rs": "6e40959519d6ab56864c45d2bd510a664c4b1b55a16a79a4cc283dc2cd5eebdc",
+    "src/script/data_view/tests.rs": "ec678fa7be4b23fd239950f77ec7a298e3f1a10d831672d02c1b9e9f4cc29ef6",
+    "src/script/object_is/tests.rs": "c7fda05a309aa0b25e2ecb6f0452e7ef5ec705fb763ce99e53132698908dfd31",
+    "src/script/dom_bindings/identity_tests.rs": "64b116d7e528c779ec5e173efd45d82b1b895ded226fe0855bb3b88151289459"
+  },
+  "source_diff_sha256": "21808f4dd90bc76f6c6a881f97d30cc14fc729e79992f48a14a0f81edaae8101",
+  "binary_sha256": "0f588601b50f79e2d700a17595ed210740c3c4e7192b0ffead4bf04bc08c982e",
+  "budget": {
+    "raw_bootstrap_remaining_steps": 70656,
+    "returned_runtime_steps_before": 70656,
+    "returned_runtime_steps_after": 100000,
+    "bootstrap_allowance": 100000,
+    "author_allowance": 100000,
+    "logical_heap_bytes": 738522,
+    "maximum_heap": 8388608,
+    "heap_reset": false,
+    "existing_author_entry_resets_changed": false,
+    "callbacks_grant_work": false
+  },
+  "tests": {
+    "rust_1_88_default": 1426,
+    "rust_1_98_vulkan_raster": 1549,
+    "new_test_groups": 2,
+    "failed": 0,
+    "ignored": 0
+  },
+  "commands": [
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 2.999,
+      "log": "clippy-native-198-1.log",
+      "sha256": "1b1e782c4a96cd53f517d9f500476c49930476cb7de1eb1c2c7d5e454dd7480d"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit": 0,
+      "log": "format.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 21.689,
+      "log": "full-default-188-1.log",
+      "sha256": "891aa0b025c02ea7a7f57b46c1cb40490bafc1431a6a9ff67a234a61fc1a400c"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 16.033,
+      "log": "full-native-198-1.log",
+      "sha256": "2fc6d5dd387d06429f1761308fdb3f82839998190625fc860f502d71e0d7629e"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--release",
+        "--bin",
+        "eris-js"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 35.313,
+      "log": "release-adapter-188-1.log",
+      "sha256": "6b0bb91fef5be9f2093c545458402344bdfe288060c476ab810e3da8cd489cf2"
+    }
+  ],
+  "local_conformance": {
+    "dom-method-identity": {
+      "case_rows_equal": true,
+      "control_rows_equal": true,
+      "counts": {
+        "passed": 50,
+        "failed": 2,
+        "unsupported": 2,
+        "resource": 4
+      },
+      "cases": 58,
+      "expectations_verified": 54,
+      "controls": 44,
+      "controls_verified": 44
+    },
+    "object-is": {
+      "case_rows_equal": true,
+      "control_rows_equal": true,
+      "counts": {
+        "passed": 68,
+        "resource": 4,
+        "failed": 4,
+        "unsupported": 2
+      },
+      "cases": 78,
+      "expectations_verified": 72,
+      "controls": 60,
+      "controls_verified": 60
+    }
+  },
+  "failed_attempts": [],
+  "witness_changes": "Raw-bootstrap diagnostic and exact-boundary witnesses now call finish_bootstrap directly. Their raw70656 and exact/one-short admission expectations remain; wrapper/direct-helper assertions reflect the explicit new boundary. Three external descriptive diagnostics change only the witness statement.",
+  "archive": {
+    "path": "runtime-budget-boundary.tar.gz",
+    "bytes": 142062,
+    "sha256": "ee08532da7031b344bcd1cc50acce77ed406dd63e2b6430e73f56586a5f9fbef",
+    "members": [
+      {
+        "path": "attempt-1/focused-bootstrap.log",
+        "bytes": 2678,
+        "sha256": "90e348c191342596fc736b4491f80267e53309223139e486fd1a1beb9600c158"
+      },
+      {
+        "path": "call-site-analysis.md",
+        "bytes": 7853,
+        "sha256": "12dfb20886adcd85f6248df3604c5270b51113dbba87da1aee4379e40b57eca8"
+      },
+      {
+        "path": "dom-method-identity-after.json",
+        "bytes": 278171,
+        "sha256": "889a53926ef55991d0d2a351e88bb7f0de5264653458480acc21509d498c03fb"
+      },
+      {
+        "path": "dom-method-identity-before.json",
+        "bytes": 278166,
+        "sha256": "639b5dbb81ae1411f7c442ceec2b62c45d46c3aad9d899ed258f4d1108a66768"
+      },
+      {
+        "path": "dom-method-identity-replay.json",
+        "bytes": 494,
+        "sha256": "4926a1e134cd283beb38e23e9a81517ce8c27868a454a0862809a6c0b88a1798"
+      },
+      {
+        "path": "dom-method-identity-replay.log",
+        "bytes": 6898,
+        "sha256": "9ae8669b90ab53d65ca02316a6f660446169db713b18afc0f04454ca13890327"
+      },
+      {
+        "path": "local-comparison.json",
+        "bytes": 587,
+        "sha256": "b12157e274d1b3ba9f0c66ce73cf77f4f1a9216cbbfa46d7fc8aaaf83206b76c"
+      },
+      {
+        "path": "object-is-after.json",
+        "bytes": 305755,
+        "sha256": "8ec4ac9a0d981a304699fbf3c0c400b29db905ec62b0b2cf4cb0912753e316aa"
+      },
+      {
+        "path": "object-is-before.json",
+        "bytes": 305750,
+        "sha256": "a71616afc0e3f9eece534b1a37fa7d013b3af7f708da1b46a95779a9926294fc"
+      },
+      {
+        "path": "object-is-replay.json",
+        "bytes": 464,
+        "sha256": "5c30aeb35000949ee53057d5df57ac99c0baaa83a9134f0d72e0686410883fb1"
+      },
+      {
+        "path": "object-is-replay.log",
+        "bytes": 7568,
+        "sha256": "fb38f11ad11f2e547bbe5c5ca8adbfcc1e04b74550090136957dce94f2a6919e"
+      },
+      {
+        "path": "review.md",
+        "bytes": 3649,
+        "sha256": "9884af7507c2a9ee1c604198e2a8b4fbdb30e166fa1a5003d8096261aa57ea82"
+      },
+      {
+        "path": "source-ready.json",
+        "bytes": 2795,
+        "sha256": "d91a8767d25eacbf65b8b318d9b95d0f0f9442b589ed906ba09041ffc51024e9"
+      },
+      {
+        "path": "source.diff",
+        "bytes": 9462,
+        "sha256": "21808f4dd90bc76f6c6a881f97d30cc14fc729e79992f48a14a0f81edaae8101"
+      },
+      {
+        "path": "validation/check.py",
+        "bytes": 1255,
+        "sha256": "85dfa516c8bb6468f1dbdc20909921dcc6f8fa1f78395c44f13bb1276c7ec482"
+      },
+      {
+        "path": "validation/clippy-native-198-1.json",
+        "bytes": 391,
+        "sha256": "d7da69a7d0118f82b9dee2ecd4f1f7b1d926d25cdd84e10165a4e234a8d4a7b1"
+      },
+      {
+        "path": "validation/clippy-native-198-1.log",
+        "bytes": 320,
+        "sha256": "1b1e782c4a96cd53f517d9f500476c49930476cb7de1eb1c2c7d5e454dd7480d"
+      },
+      {
+        "path": "validation/format.json",
+        "bytes": 215,
+        "sha256": "4c3597aa3324bf6b2f526886f2a66e3f9777b855ba4bcfae4ea0b555a091d85e"
+      },
+      {
+        "path": "validation/format.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "validation/full-default-188-1.json",
+        "bytes": 328,
+        "sha256": "0bfa8245795effbc2341a43502960e67fecbfc31f58bf82b8568d70685648657"
+      },
+      {
+        "path": "validation/full-default-188-1.log",
+        "bytes": 136422,
+        "sha256": "891aa0b025c02ea7a7f57b46c1cb40490bafc1431a6a9ff67a234a61fc1a400c"
+      },
+      {
+        "path": "validation/full-native-198-1.json",
+        "bytes": 366,
+        "sha256": "6e7f9b0c0299bf82f4a24ff485131fb0de68da2839dff2939075d51ab09da45f"
+      },
+      {
+        "path": "validation/full-native-198-1.log",
+        "bytes": 150225,
+        "sha256": "2fc6d5dd387d06429f1761308fdb3f82839998190625fc860f502d71e0d7629e"
+      },
+      {
+        "path": "validation/release-adapter-188-1.json",
+        "bytes": 342,
+        "sha256": "752089822aad987494488c07da7cb18c074d152b9cd8721fde6692f04858b0e4"
+      },
+      {
+        "path": "validation/release-adapter-188-1.log",
+        "bytes": 259,
+        "sha256": "6b0bb91fef5be9f2093c545458402344bdfe288060c476ab810e3da8cd489cf2"
+      }
+    ]
+  },
+  "limitations": [
+    "This changes the returned runtime/direct-helper work state, not a numeric quota or an existing author-entry reset.",
+    "Checked bootstrap failure still drops the incomplete realm; infallible or uncharged allocation coverage is unchanged.",
+    "No compatibility or elapsed-time performance gain is claimed."
+  ]
+}

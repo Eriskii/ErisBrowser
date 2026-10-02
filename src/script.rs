@@ -1577,8 +1577,12 @@ impl Runtime {
     /// Construct a realm, returning checked initialization failures unchanged.
     /// This constructor does not access the filesystem. Local Date operations
     /// require an explicitly supplied host; UTC operations remain available.
+    /// Successful construction starts a fresh execution work budget;
+    /// initialization allocations remain charged to the realm.
     pub fn try_new() -> Result<Self> {
-        Self::uninitialized().finish_bootstrap()
+        let mut runtime = Self::uninitialized().finish_bootstrap()?;
+        runtime.steps = MAX_STEPS;
+        Ok(runtime)
     }
 
     fn uninitialized() -> Self {

@@ -4136,3 +4136,24 @@ and newly implemented own-descriptor reads return undefined for inherited DOM
 attributes. The original failing sources are retained; the frozen external
 oracle and all five Window reflection refusals are unchanged. The previous
 Vulkan zoom checkpoint passed all nine [CI jobs](evidence/vulkan-native-zoom-ci.json).
+
+### Explicit initialization and author-work boundary
+
+The [runtime work boundary](runtime-budget-boundary.md) grants a fresh fixed
+author allowance only after raw bootstrap succeeds. Both phase limits remain
+100,000, allocation accounting remains cumulative, and existing script/event
+entry resets are unchanged. Raw bootstrap still leaves 70,656 units and charges
+738,522 bytes. Diagnostic witnesses now observe the raw phase directly.
+
+Rust 1.88 passes **1,426 default tests**, Rust 1.98 passes **1,549 native-feature
+tests**, native strict Clippy and formatting pass. Two new groups verify exact
+first-script observation/debit equivalence and terminal shared work across
+getters, conversions and nested event dispatch. Existing raw exact/one-short
+bootstrap and heap boundaries remain intact. Independent source review is clear.
+
+Every complete row in the frozen DOM and Object.is local corpora remains
+unchanged: 136 cases and 104 controls, including all eight expected resource
+outcomes. There is no conformance or timing gain claimed. All checks passed on
+their first attempts; the [raw results](evidence/runtime-budget-boundary.json)
+retain commands, observations, the source diff and review. The prior DOM
+own-property commit passed all nine [CI jobs](evidence/dom-own-properties-ci.json).

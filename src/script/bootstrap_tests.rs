@@ -129,7 +129,7 @@ fn bootstrap_intrinsic_work_failure_preserves_the_original_resource_error() {
 
 #[test]
 fn bootstrap_late_work_boundary_returns_error_or_the_complete_realm() {
-    let complete = Runtime::try_new().unwrap();
+    let complete = Runtime::uninitialized().finish_bootstrap().unwrap();
     let consumed = MAX_STEPS - complete.steps;
     let mut witness = Runtime::uninitialized();
     witness.steps = consumed - 1;
@@ -156,7 +156,7 @@ fn bootstrap_late_work_boundary_returns_error_or_the_complete_realm() {
 
 #[test]
 fn bootstrap_late_heap_boundary_returns_error_or_the_complete_realm() {
-    let complete = Runtime::try_new().unwrap();
+    let complete = Runtime::uninitialized().finish_bootstrap().unwrap();
     let consumed = complete.allocated - Runtime::uninitialized().allocated;
     let initial = MAX_HEAP - consumed;
     let mut witness = Runtime::uninitialized();
@@ -182,8 +182,8 @@ fn bootstrap_late_heap_boundary_returns_error_or_the_complete_realm() {
 }
 
 #[test]
-fn bootstrap_convenience_and_try_paths_retain_direct_helper_budget() {
-    let reference = Runtime::try_new().unwrap();
+fn bootstrap_convenience_and_try_paths_separate_work_and_retain_heap() {
+    let reference = Runtime::uninitialized().finish_bootstrap().unwrap();
     // The ninth DOM method costs 140 more bootstrap work units than the
     // previous 70,796-unit remainder. No script-entry reset has happened.
     assert_eq!(reference.steps, 70_656);
@@ -197,7 +197,7 @@ fn bootstrap_convenience_and_try_paths_retain_direct_helper_budget() {
         Runtime::try_with_date_host(DateHost::unconfigured()).unwrap(),
         Runtime::with_date_host(DateHost::unconfigured()),
     ] {
-        assert_eq!(runtime.steps, reference.steps);
+        assert_eq!(runtime.steps, MAX_STEPS);
         assert_eq!(runtime.allocated, reference.allocated);
         assert_eq!(runtime.objects.capacity(), reference.objects.capacity());
         assert_eq!(runtime.frames.capacity(), reference.frames.capacity());
@@ -210,7 +210,7 @@ fn bootstrap_convenience_and_try_paths_retain_direct_helper_budget() {
                 .unwrap(),
             Value::Bool(true)
         );
-        assert_eq!(runtime.steps, 70_652);
+        assert_eq!(runtime.steps, MAX_STEPS - 4);
         assert_eq!(runtime.allocated, reference.allocated);
         idle(&runtime);
     }
@@ -265,7 +265,7 @@ fn bootstrap_try_date_host_is_installed_without_clock_reads() {
         runtime.date_host.zone().unwrap(),
         zone.as_ref()
     ));
-    assert_eq!(runtime.steps, 70_656);
+    assert_eq!(runtime.steps, MAX_STEPS);
     let mut doc = Document::parse("");
     for (source, expected) in [
         ("Date.now()", Value::Number(0.0)),
@@ -304,5 +304,97 @@ fn bootstrap_try_path_does_not_move_the_execute_budget_reset() {
     );
     // execute_program still charges source/compiled storage before resetting.
     assert_eq!(runtime.steps, 123);
+    idle(&runtime);
+}
+
+#[test]
+fn bootstrap_first_public_script_entry_has_the_same_work_and_heap() {
+    const SOURCE: &str = "var trace='';var value={valueOf:function(){trace+='v';return 7;}};\
+        var holder={get x(){trace+='g';return value;}};\
+        var result=+holder.x;console.log(trace);trace+':'+result;";
+    for strict in [false, true] {
+        let mut observation = None;
+        for mut runtime in [
+            Runtime::uninitialized().finish_bootstrap().unwrap(),
+            Runtime::try_new().unwrap(),
+        ] {
+            let mut doc = Document::parse("");
+            let result = if strict {
+                runtime.execute_strict(SOURCE, &mut doc)
+            } else {
+                runtime.execute(SOURCE, &mut doc)
+            }
+            .unwrap();
+            assert_eq!(result, Value::String("gv:7".into()));
+            assert_eq!(runtime.console, ["gv"]);
+            let actual = (
+                result,
+                runtime.steps,
+                runtime.allocated,
+                runtime.objects.len(),
+                runtime.functions.len(),
+            );
+            if let Some(expected) = &observation {
+                assert_eq!(&actual, expected);
+            } else {
+                observation = Some(actual);
+            }
+            assert_eq!(runtime.calls, 0);
+            assert_eq!(runtime.stack_units, 0);
+            assert!(runtime.frames.is_empty());
+        }
+    }
+}
+
+#[test]
+fn bootstrap_callbacks_and_nested_dispatch_cannot_refresh_author_work() {
+    let mut runtime = Runtime::try_new().unwrap();
+    let mut doc = Document::parse("");
+    runtime
+        .execute(
+            "var target=new EventTarget(),event=new Event('pulse');\
+             var getters=0,conversions=0,listeners=0,caught=false,finished=false;\
+             target.addEventListener('pulse',function(){listeners++;});\
+             var argument={valueOf:function(){conversions++;target.dispatchEvent(event);return 1;}};\
+             var holder={get value(){getters++;return argument;}};",
+            &mut doc,
+        )
+        .unwrap();
+    // Enter an already admitted author computation with a smaller remaining
+    // allowance. Getters, ToPrimitive and nested synthetic dispatch must all
+    // consume it; none is a new host entry.
+    let unit = parser::Parser::program(
+        "try{for(var i=0;i<200;i++){+holder.value;}}\
+         catch(error){caught=true;}finally{finished=true;}",
+    )
+    .unwrap();
+    runtime.steps = 2_000;
+    let error = match machine::evaluate_statements(
+        &mut runtime,
+        &unit,
+        machine::ListOwner::Program,
+        1,
+        &mut doc,
+    ) {
+        Ok(_) => panic!("callbacks refreshed the author work allowance"),
+        Err(error) => error,
+    };
+    assert!(error.is_resource_limit());
+    assert_eq!(error.message, "script instruction limit exceeded");
+    assert_eq!(runtime.steps, 0);
+    assert!(runtime.allocated < MAX_HEAP);
+    for name in ["getters", "conversions", "listeners"] {
+        let Value::Number(count) = runtime.lookup(0, name).unwrap().1 else {
+            panic!("callback counter is not numeric");
+        };
+        assert!(count > 0.0 && count < 200.0, "{name}: {count}");
+    }
+    assert_eq!(runtime.lookup(0, "caught").unwrap().1, Value::Bool(false));
+    assert_eq!(runtime.lookup(0, "finished").unwrap().1, Value::Bool(false));
+    let event = runtime.lookup(0, "event").unwrap().1;
+    let event = &runtime.events[runtime.event_index(&event).unwrap()];
+    assert!(!event.dispatching);
+    assert!(event.path.is_empty());
+    assert_eq!(event.current_target, Value::Null);
     idle(&runtime);
 }

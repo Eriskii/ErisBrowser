@@ -928,7 +928,7 @@ fn dom_parent_append_terminal_conversion_keeps_author_effect_but_not_operation_m
 
 #[test]
 fn dom_parent_bootstrap_reports_actual_remaining_budget_and_capacities() {
-    let (runtime, _) = fresh();
+    let runtime = Runtime::uninitialized().finish_bootstrap().unwrap();
     println!(
         "DOM_PARENT_BOOTSTRAP remaining_steps={} allocated={} native_properties={} prototypes={} objects={} object_capacity={}",
         runtime.steps,

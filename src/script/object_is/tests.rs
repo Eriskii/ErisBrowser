@@ -633,7 +633,7 @@ fn object_is_tree_and_actual_type_storage_bounds() {
 
 #[test]
 fn object_is_bootstrap_reports_actual_charged_budget() {
-    let (runtime, _) = fresh();
+    let runtime = Runtime::uninitialized().finish_bootstrap().unwrap();
     let owner = runtime.native_properties["Object"];
     println!(
         "OBJECT_IS_BOOTSTRAP remaining_steps={} allocated={} native_properties={} prototypes={} owner_order_capacity={}",

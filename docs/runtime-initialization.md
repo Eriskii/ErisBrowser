@@ -19,13 +19,18 @@ reported as an adapter initialization error, without an author exception identit
 The stress tool similarly reports a harness failure rather than counting the
 case as a rejected script.
 
-Successful initialization retains its original field values, installation order,
+At the original checkpoint, successful initialization retained its field values, installation order,
 Date host assignment, work charges and heap charges. It leaves **70,334 work
 units** before any script-entry reset. Numeric quotas and all existing script
 and event reset points are unchanged. This change adds no JavaScript or DOM
 feature support. A [later DataView startup optimization](evidence/data-view-bootstrap-lookup.json)
 removes 21 unused prototype lookups and increases the remaining work to 70,796;
 heap charges, object counts and numeric limits stay the same.
+
+The later [work-boundary change](runtime-budget-boundary.md) retains those raw
+bootstrap charges, then gives a successfully returned runtime a fresh fixed
+author allowance. Heap accounting and the existing script/event entry resets
+remain unchanged; the verification below describes the original checkpoint.
 
 `Runtime::new`, `with_date_host`, `Default` and the existing Page convenience
 constructors remain documented panicking APIs. The new fallible paths propagate

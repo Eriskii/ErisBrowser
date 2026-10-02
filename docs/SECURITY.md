@@ -229,6 +229,12 @@ cover the reached own-property paths, not general host allocation recovery.
 
 ## Representative limits
 
+[Runtime construction](runtime-budget-boundary.md) has a separate fixed work
+allowance. A successful bootstrap grants the returned runtime one fresh author
+allowance; failure grants none. Heap accounting remains cumulative. Existing
+script and host-event entry resets are unchanged, and nested callbacks share
+the current allowance.
+
 | Resource | Bound |
 |---|---:|
 | Individual fetched/decompressed resource | 8 MiB |
@@ -244,6 +250,7 @@ cover the reached own-property paths, not general host allocation recovery.
 | Additive calculation input / nesting / terms | 4 KiB / 16 / 256, within shared token and work budgets |
 | Script source / tokens | 256 KiB / 32,768 |
 | Script entry instructions / hard call-depth cap | 100,000 / 32 |
+| Runtime bootstrap instructions | 100,000, separately charged before author execution |
 | Shared execution nesting | 96 weighted units; calls cost 4, other guarded nesting costs 1 |
 | Script cumulative allocation accounting | 8 MiB |
 | ArrayBuffer absolute backing/max-length feasibility | 8 MiB; remaining script work and cumulative allocation limits also apply |

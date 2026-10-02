@@ -47,6 +47,10 @@ are not published, and failed initialization does not trigger a second attempt
 to draw an error page. Existing budgets and all compatibility observations remain
 unchanged. Broader fallible allocation coverage and bootstrap optimization remain
 open work.
+The [explicit work boundary](runtime-budget-boundary.md) now grants a successful
+runtime its fixed author allowance after charged initialization. Raw bootstrap
+limits, cumulative heap accounting and existing script/event entry resets remain
+unchanged. This prepares for additional interface metadata.
 
 The [native GPU route](vulkan-native-window.md) now connects the custom shaders
 to the actual browser window behind `vulkan-raster`. Admitted loaded pages,
