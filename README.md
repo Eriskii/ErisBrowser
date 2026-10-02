@@ -16,10 +16,11 @@ adapters. The [worker-text checker](tools/vulkan-raster-probe/WORKER_TEXT.md)
 also passes seven actual HTML snapshots on all three adapters, including
 whole-frame fallback. The optional Linux [native GPU route](docs/vulkan-native-window.md)
 now draws admitted loaded pages, overlays and browser controls into the actual
-window using the custom shaders. One 1180×880 acquired texture matches all
-4,153,600 CPU-reference bytes on the NVIDIA host; a separate normal run uses no
-CPU reference or readback. Opacity and over-budget scenes take complete CPU
-fallback. Bundled-font and rounded coverage still come from CPU preparation.
+window using the custom shaders. Wide rounded shapes now split into bounded
+adjacent masks. One 1280×880 acquired texture matches all 4,505,600 CPU-reference
+bytes on the NVIDIA host; a separate normal run uses no CPU reference or readback.
+Earlier 1180×880 evidence remains retained. Opacity and over-budget scenes take
+complete CPU fallback. Font and rounded coverage still come from CPU preparation.
 The [rendering docket](docs/vulkan-rendering.md) tracks broader admission,
 compositing and performance work. There is no measured Chromium parity.
 

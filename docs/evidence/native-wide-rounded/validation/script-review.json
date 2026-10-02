@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "status": "clear after precompile private-test type correction",
+  "scope": "isolated wide-rounded production delta and twelve new private groups; source-only review",
+  "plan": {
+    "path": "/tmp/eris-native-wide-rounded-next.md",
+    "bytes": 10434,
+    "sha256": "ca72f19ab67ebfc7dbb5c3d10cd80e1038efec68f3f8c323879dd381811d8f44"
+  },
+  "base": {
+    "path": "/tmp/eris-native-wide-rounded-work/review/base.json",
+    "bytes": 969,
+    "sha256": "fd93148aa6badf74d03a4b6bee29dcc5ee2ded2b55cbde0fc6c8ca80b0ab4b3b"
+  },
+  "source_bindings": [
+    {
+      "path": "/tmp/eris-native-wide-rounded-work/crates/raster-core/src/rounded.rs",
+      "bytes": 16984,
+      "sha256": "e8d46955f2cd29e7e54e73ce9100165d3b2c7926b37f14847f44e427ce2d6f2e"
+    },
+    {
+      "path": "/tmp/eris-native-wide-rounded-work/crates/raster-core/src/rounded_tests.rs",
+      "bytes": 24396,
+      "sha256": "0234378d1633ee10e84deba046089f71805249daf74a16493db3924a5fae8bfa"
+    },
+    {
+      "path": "/tmp/eris-native-wide-rounded-work/src/graphics/raster_bridge/native.rs",
+      "bytes": 35178,
+      "sha256": "06c87255aa75d23fd3c52cd9f6d2e2e74e935e2e2cc9b0bbc9b4e9152e9c3653"
+    },
+    {
+      "path": "/tmp/eris-native-wide-rounded-work/src/graphics/raster_bridge/native/tests.rs",
+      "bytes": 39365,
+      "sha256": "3db876fa8d8e68c1a129484f0ecb651f6096d8da866db04eb6d8f5c7946fe336"
+    }
+  ],
+  "main_repository_still_matches_saved_base_for_all_four_files": true,
+  "old_test_body_preservation": {
+    "crates/raster-core/src/rounded_tests.rs": {
+      "before": 18,
+      "after": 24
+    },
+    "src/graphics/raster_bridge/native/tests.rs": {
+      "before": 19,
+      "after": 25
+    }
+  },
+  "resolved_findings": [
+    {
+      "path": "crates/raster-core/src/rounded_tests.rs",
+      "test": "rounded_native_partition_keeps_old_axis_refusal_and_full_area_limit",
+      "issue": "width tuple was unsuffixed while u64::from(width) requires an unsigned inference anchor",
+      "resolution": "first width now1024u32; same geometry and expected values; found and fixed before compiler execution"
+    }
+  ],
+  "reviewed_properties": [
+    "Legacy RoundedShape::prepare forwards the identical MAX_MASK_AXIS and retains geometry/radius/crop/refusal ordering. New width admission is private to Native partition preparation.",
+    "Exact original f32 expression is moved unchanged into coverage_at; both paths evaluate original absolute framebuffer x/y. No tile-local geometry, reclamping, reintersection or offset addition occurs.",
+    "Validated Native width bounds produce at most two positive half-open consecutive strips; aggregate area is rejected before splitting. Each tile fits old dimensions and disjoint windows prevent double blending.",
+    "Single group callback precedes every fallible reserve and all coverage evaluation. Four possible vectors reserve before the first pixel; errors return no collection and already-created owners drop.",
+    "Prospective ledger adds K-1 operations and original loop work once, then every tile source/row/coverage/GPU storage charge; original ledger commits only after all checks. Original nontext CPU debit remains once.",
+    "Fixed destination capacity plus complete group owner metadata is included in preparation peak; coverage/row payload totals reuse unchanged global maxima. No monolithic extra coverage copy.",
+    "Consecutive lowering preserves primitive/scope order and mixed font/rounded source identity. Final core still performs the global padded invocation check after bounded preparation.",
+    "New groups independently cover191-wide-band and translucent seam targets, original fractional addresses, legacy single-strip equivalence, reserve failures, whole-group atomic boundaries, source/operation/coverage caps, fixed/interleaved Canvas differential, and desktop-wide placement."
+  ],
+  "limitations": [
+    "No Rust compilation, tests, planner, font, Canvas, GPU or host execution by reviewer.",
+    "Static review does not establish actual1280-wide browser admission; later host observation must retain every refusal.",
+    "Full original Canvas comparisons are differential tests, not independent golden typography or GPU execution."
+  ],
+  "execution": "file reads, hashes and textual test-preservation checks only",
+  "findings": [],
+  "final_format_delta": {
+    "previous_review": {
+      "path": "/tmp/eris-native-wide-rounded-script-review-preformat.json",
+      "bytes": 4314,
+      "sha256": "ff058148937949276112296307cfc1fb78b06a89fb652599dfdfb8c5862524f8"
+    },
+    "source_ready": {
+      "path": "/tmp/eris-native-wide-rounded-work/review/source-ready.json",
+      "bytes": 3294,
+      "sha256": "e2b4bd929fb6ad2dcfca9d82ad361319afac9beeee72e2e24578e8df922e6f51"
+    },
+    "review": "Reread corrected u32 tuple after rustfmt expansion; production/native tests remain identical. No execution."
+  }
+}

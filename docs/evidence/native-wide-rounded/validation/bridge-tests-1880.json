@@ -1,0 +1,21 @@
+{
+  "command": [
+    "cargo",
+    "+1.88.0",
+    "test",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "Cargo.toml",
+    "--features",
+    "raster-bridge",
+    "--lib",
+    "graphics::raster_bridge::",
+    "--",
+    "--include-ignored"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 11.125,
+  "log": "bridge-tests-1880.log",
+  "sha256": "71bb167c405d4c00d698949be8d5c77a944492f540fd3eb3e22f9c95a5a9bccd"
+}

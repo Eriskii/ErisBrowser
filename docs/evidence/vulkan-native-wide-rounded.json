@@ -1,0 +1,290 @@
+{
+  "schema": 1,
+  "checkpoint": "Native wide rounded-mask strips",
+  "parent_commit": "9a30882c183f8d34dd62471b1b03ad20ceb6ea6b",
+  "status": "implemented and locally validated; full browser requirements remain unfinished",
+  "package": {
+    "path": "native-wide-rounded/index.json",
+    "sha256": "0a845b6b28b8c94043536ed582a59a1fe6bef0cd8ffcdd82f28efe135cb2a7e4",
+    "files": 89,
+    "payload_bytes": 810609,
+    "encoding": "identity"
+  },
+  "sources": {
+    "compiled_manifest": {
+      "path": "native-wide-rounded/validation/source.json",
+      "sha256": "f35f2ed9c76b46c4c22ba93c55b01dc8acf7dd87287be20818aedf7661cb3e4a"
+    },
+    "implementation_ledger": {
+      "path": "native-wide-rounded/validation/source-ready.json",
+      "sha256": "e2b4bd929fb6ad2dcfca9d82ad361319afac9beeee72e2e24578e8df922e6f51"
+    },
+    "implementation_patch": {
+      "path": "native-wide-rounded/validation/native-wide-rounded.patch",
+      "sha256": "690c3ec90bb3c479980ea7c0501f3f1d3fc0775f81dfdd6dcb448878a7480585"
+    },
+    "static_review": {
+      "path": "native-wide-rounded/validation/script-review.json",
+      "sha256": "e927aedd8f7ff0a2a23db0b0a6efa4af28ee1d4a6bcf0ff5042355cc07add10d"
+    },
+    "host_ledger": {
+      "path": "native-wide-rounded/validation/host-source-ready.json",
+      "sha256": "3ffa713ab131aae3385b365fba99928911ff335a073b26c93ae6876b7c6076d5"
+    },
+    "host_review": {
+      "path": "native-wide-rounded/validation/host-script-review.json",
+      "sha256": "fec0f8fecfa8faf7049277a9b71f32794b92c9e1314cd2788ea250a5b079f0f5"
+    },
+    "scope": "112 compiled/configuration paths unchanged after testing; host source snapshots and earlier synthetic versions retained separately."
+  },
+  "binary": {
+    "build_log": "native-wide-rounded/validation/native-build-1980.log",
+    "source": {
+      "bytes": 289925888,
+      "sha256": "51756f08ba973626381378813b781725b9b96bdde59a57273d61e7be62a022c2"
+    },
+    "stripped": {
+      "bytes": 67523016,
+      "sha256": "fe25c6303f0a192752a3073886097496f3b56e72facc56dd42b37a93f2e42435"
+    },
+    "allocated_sections_unchanged": true,
+    "allocated_section_count": 31,
+    "action": "strip --strip-debug only; not a release/performance build",
+    "receipt": {
+      "path": "native-wide-rounded/validation/binary.json",
+      "sha256": "b30f0a27bc7d5391fa905d6b21802607d8f327d3cdf6861c76b63fa861558c67"
+    }
+  },
+  "implementation": {
+    "api": "rounded::RoundedTiles::prepare_native",
+    "maximum_horizontal_strips": 2,
+    "per_mask_axis": 1024,
+    "native_viewport_max": [
+      1280,
+      1024
+    ],
+    "mask_coverage_bytes": 262144,
+    "row_entries": 65536,
+    "combined_sources": 256,
+    "original_commands": 256,
+    "lowered_operations": 256,
+    "planned_gpu_bytes": 16777216,
+    "total_padded_invocations": 4000000,
+    "limits_raised": false,
+    "work": "Original CPU primitive work counted once; every tile contributes actual source/row/storage/lowered-operation and padded GPU work to shared ledgers. Whole-group preflight precedes all allocation; no partial collection or scene returned.",
+    "legacy": "Original single-mask API, Probe policy and old test bodies preserved; coverage expression extracted into a shared helper without reassociation."
+  },
+  "validation": {
+    "rust": {
+      "record": {
+        "path": "native-wide-rounded/validation/rust-check-index.json",
+        "sha256": "ef47e693a9614ad7536ca628338a085fd7bf9ef455f5f384a7938a047b905220"
+      },
+      "successful_commands": 19,
+      "toolchains": [
+        "1.88.0",
+        "1.98.0"
+      ],
+      "full_native_tests_each": 1355,
+      "adapter_tests_each": 53,
+      "core_default_tests_each": 84,
+      "core_gpu_tests_each": 95,
+      "probe_feature_tests_each": 14,
+      "new_core_groups": 6,
+      "new_adapter_groups": 6,
+      "strict_all_target_clippy": true,
+      "formatting": {
+        "path": "native-wide-rounded/validation/formatting.json",
+        "sha256": "9796a9a91d6e59db20d192c1482ecb47010438899c4769264347bc715dbf9e63"
+      },
+      "exact_adapter_test_identities": {
+        "path": "native-wide-rounded/validation/adapter-discovery.json",
+        "sha256": "939f102ee148c561d6d563ac099993a1e9d348bfe93813a5b586d91992623648"
+      }
+    },
+    "python": {
+      "record": {
+        "path": "native-wide-rounded/validation/host-tests-final.json",
+        "sha256": "2093373bc6daf390fa99128426fdba7b4ccdfc070ca385cd0140a9513a34d1e8"
+      },
+      "tests": 48,
+      "base": 23,
+      "followup": 13,
+      "wide": 12,
+      "preliminary_outcomes": "Two runs each had three socket-permission setup errors (including one unchanged accidental repeat), then one run exposed a buffered-native-proof ordering failure; all retained with earlier source versions. The live gate and offline parser were corrected before the two actual desktop runs."
+    },
+    "host": {
+      "record": {
+        "path": "native-wide-rounded/hosts/host-1/wide-host-results.json",
+        "sha256": "19c9028e441eb046c68a53f141d40b477a060d3539255e65a5adb67d887acfa4"
+      },
+      "adapter": "NVIDIA GeForce RTX 4070 SUPER",
+      "surface_format": "Bgra8Unorm",
+      "physical_size": [
+        1280,
+        880
+      ],
+      "runs": [
+        {
+          "name": "wide-verified",
+          "exit": 0,
+          "cleanup": {
+            "complete": true,
+            "reaped": 1,
+            "descendants": 0,
+            "checker_returncode": 0,
+            "error": null
+          },
+          "validation": {
+            "case": "wide-verified",
+            "size": [
+              1280,
+              880
+            ],
+            "release": {
+              "prefix_bytes": 729,
+              "prefix_sha256": "320077aef8a3979634e019f3ae26d744e82b571c0e0bf60a920d93d5c82f2783",
+              "html_sha256": "1674d4de78a90cc621f9e786e45214e2a190d615e8d68431f0e1468e42449759",
+              "physical_size": [
+                1280,
+                880
+              ]
+            },
+            "adapter": "presenter: Vulkan adapter=\"NVIDIA GeForce RTX 4070 SUPER\" type=DiscreteGpu driver=\"NVIDIA\" format=Bgra8Unorm color_space=Srgb alpha=Opaque mode=Fifo; raster=native-shaders with complete CPU admission fallback",
+            "prepared_scenes": [
+              {
+                "serial": 6,
+                "snapshot_generation": 1,
+                "page_commands": 6,
+                "images": 1,
+                "phases": 3,
+                "lowered_commands": 119,
+                "rounded_masks": 3,
+                "raster_invocations": 2333056,
+                "total_invocations": 3459456,
+                "loading": false,
+                "reference": true
+              }
+            ],
+            "native_presentations": [
+              {
+                "serial": 6,
+                "reference": true
+              }
+            ],
+            "acquired_verifications": [
+              {
+                "serial": 6,
+                "generation": 1,
+                "viewport_revision": 5,
+                "compared_bytes": 4505600
+              }
+            ],
+            "verification_summaries": [
+              {
+                "frames": 1,
+                "compared_bytes": 4505600,
+                "last_serial": 6
+              }
+            ],
+            "acquired_texture_compared_bytes": 4505600,
+            "fallback_reasons": [
+              "native scene awaits a current loaded page; size=1275x764",
+              "native scene awaits a current loaded page; size=1268x758",
+              "native scene awaits a current loaded page; size=1285x774",
+              "native scene awaits a current loaded page; size=1280x880"
+            ],
+            "other_diagnostic_lines": [
+              "[page] Page process 1812279: Landlock ABI 6 and seccomp: no direct resource or socket access",
+              "[page] Resource broker 1812281: committed URL and fetch policy enforced outside renderer"
+            ],
+            "scope": "frozen HTML/PNG over a gated owned loopback origin; Canvas differential before compositor; no performance claim"
+          }
+        },
+        {
+          "name": "wide-normal",
+          "exit": 0,
+          "cleanup": {
+            "complete": true,
+            "reaped": 1,
+            "descendants": 0,
+            "checker_returncode": 0,
+            "error": null
+          },
+          "validation": {
+            "case": "wide-normal",
+            "size": [
+              1280,
+              880
+            ],
+            "release": {
+              "prefix_bytes": 729,
+              "prefix_sha256": "320077aef8a3979634e019f3ae26d744e82b571c0e0bf60a920d93d5c82f2783",
+              "html_sha256": "1674d4de78a90cc621f9e786e45214e2a190d615e8d68431f0e1468e42449759",
+              "physical_size": [
+                1280,
+                880
+              ]
+            },
+            "adapter": "presenter: Vulkan adapter=\"NVIDIA GeForce RTX 4070 SUPER\" type=DiscreteGpu driver=\"NVIDIA\" format=Bgra8Unorm color_space=Srgb alpha=Opaque mode=Fifo; raster=native-shaders with complete CPU admission fallback",
+            "prepared_scenes": [
+              {
+                "serial": 6,
+                "snapshot_generation": 1,
+                "page_commands": 6,
+                "images": 1,
+                "phases": 3,
+                "lowered_commands": 119,
+                "rounded_masks": 3,
+                "raster_invocations": 2332928,
+                "total_invocations": 3459328,
+                "loading": false,
+                "reference": false
+              }
+            ],
+            "native_presentations": [
+              {
+                "serial": 6,
+                "reference": false
+              }
+            ],
+            "acquired_verifications": [],
+            "verification_summaries": [],
+            "acquired_texture_compared_bytes": 0,
+            "fallback_reasons": [
+              "native scene awaits a current loaded page; size=1275x764",
+              "native scene awaits a current loaded page; size=1268x758",
+              "native scene awaits a current loaded page; size=1285x774",
+              "native scene awaits a current loaded page; size=1280x880"
+            ],
+            "other_diagnostic_lines": [
+              "[page] Page process 1812507: Landlock ABI 6 and seccomp: no direct resource or socket access",
+              "[page] Resource broker 1812508: committed URL and fetch policy enforced outside renderer"
+            ],
+            "scope": "frozen HTML/PNG over a gated owned loopback origin; Canvas differential before compositor; no performance claim"
+          }
+        }
+      ]
+    },
+    "acquired_texture_compared_bytes": 4505600,
+    "preceding_ci": {
+      "record": {
+        "path": "native-wide-rounded/validation/preceding-ci.json",
+        "sha256": "5fa5f5dbdec019334d08e6570a448ec7eecf74e5dd92f7046b8c4d76adae5221"
+      },
+      "commit": "9a30882c183f8d34dd62471b1b03ad20ceb6ea6b",
+      "successful_jobs": 9,
+      "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/36980781764"
+    },
+    "current_ci": "Pending publication; local results are not represented as CI results."
+  },
+  "claim_boundaries": [
+    "Coverage remains CPU geometry/font preparation with custom GPU integer compositing; this is not GPU outline rasterization.",
+    "Exactly one acquired texture contributes 4,505,600 active bytes, compared with the original Canvas painter before the compositor. The normal run contributes zero comparison bytes.",
+    "The fixed HTML/PNG are served on an owned gated loopback origin. Ephemeral port differences affect address-bar glyphs; verified and normal cases are not identical-input timing pairs.",
+    "Both runs exit zero with complete cleanup and no owned descendants. The gate binds controlled logical size plus latest browser physical loading size before releasing the document.",
+    "Original 1180x880 fallback/reload results belong to the preceding executable. Its older controller may see newly admitted startup frames before resize with this renderer; current validation uses the new gate.",
+    "The stripped debug binary is not a release/performance build. No latency, throughput, Chromium parity, complete standards compatibility or independent security assurance follows.",
+    "One selected NVIDIA/BGRA8 native surface was checked; earlier multi-adapter offscreen observations are separate."
+  ]
+}

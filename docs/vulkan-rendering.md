@@ -7,10 +7,12 @@ CPU-prepared font and rounded masks supply coverage; GPU kernels perform color
 compositing and surface conversion. Normal native frames contain no CPU target
 or readback. Unsupported or over-budget scenes use the complete CPU painter.
 
-The [native-window record](vulkan-native-window.md) covers one exact 1180×880
-acquired-texture comparison (4,153,600 bytes), separate reference-free rendering,
-opacity and overdraw fallback, and retained initial refusals. This is one NVIDIA
-surface/format, before the compositor. No speedup or Chromium comparison follows.
+The [native-window record](vulkan-native-window.md) now includes a gated 1280×880
+comparison (4,505,600 acquired bytes) using two-strip rounded coverage and a
+separate reference-free run. The earlier 1180×880 comparison, opacity/overdraw
+fallback and initial refusals remain tied to their original executable. These
+checks cover one NVIDIA surface/format before the compositor. No speedup or
+Chromium comparison follows.
 The default and headless paths remain software. `--presenter=vulkan` alone retains
 the existing CPU upload route.
 

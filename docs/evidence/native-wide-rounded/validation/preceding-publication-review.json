@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "conclusion": "clear after primary build-log relative path correction",
+  "data_review_sha256": "91561ec219f88b0c0592cd7e7180bb4d49052002af1e32b6e8bcd2027ef0b0c0",
+  "index_sha256": "510b41d77cc5c5f0f8b9dd68c08390d29f099f68cacfd43073a6000bd35e8375",
+  "primary_sha256": "646a9b22404bef91558996c5fd19428e2ea75c4ae7005641a5efc9cf72a818d7",
+  "files": 167,
+  "payload_bytes": 733152,
+  "rust_successful_commands": 42,
+  "python_tests": 35,
+  "source_manifest_paths": 114,
+  "compiled_source_drift": false,
+  "documentation_only_drift": [
+    "crates/raster-core/README.md"
+  ],
+  "scope": [
+    "All package paths/bytes/hashes and explicit primary bindings checked",
+    "Raw four-case and two-follow-up outcomes match publication",
+    "Observed exact acquired byte total4153600; fallback/reload have separate zero-comparison claims",
+    "No compiled/executable-mode files, secret-pattern candidates or unrelated desktop client metadata found",
+    "All reviewed Markdown links resolve; new paragraphs preserve CPU-coverage/differential/single-adapter limitations"
+  ],
+  "executions": "none: data-only readback, no test/build/GPU reruns"
+}

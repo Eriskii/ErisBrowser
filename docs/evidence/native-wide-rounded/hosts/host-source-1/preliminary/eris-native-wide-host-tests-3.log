@@ -1,0 +1,14 @@
+.......................................F........
+======================================================================
+FAIL: test_early_native_frame_connection_cap_and_oversized_header_refuse (test_native_raster_wide_host.HttpReleaseTests.test_early_native_frame_connection_cap_and_oversized_header_refuse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/test_native_raster_wide_host.py", line 218, in test_early_native_frame_connection_cap_and_oversized_header_refuse
+    with context, self.assertRaises(ValueError):
+                  ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 48 tests in 0.084s
+
+FAILED (failures=1)

@@ -151,8 +151,8 @@ Chromium threshold. The current implementation does not satisfy that goal;
 
 ## Vulkan rendering backend
 
-Requested for future implementation on September 28, 2026. Add a custom Vulkan
-backend for rasterization and compositing.
+Requested on September 28, 2026. An optional bounded custom Vulkan raster and
+compositing path is now implemented; broader coverage remains in progress.
 
 The [Vulkan milestone design](vulkan-rendering.md) records the host device
 probe, separates upload/presentation from custom GPU rasterization, and compares
@@ -173,12 +173,15 @@ back actual acquired surface textures; it does not certify compositor output.
 Software remains the default/headless path. The optional bounded
 [native raster route](vulkan-native-window.md) now uses this owner; broader
 compositing, driver isolation and performance work remain open.
+Native rounded shapes can use two adjacent masks without raising shared limits.
+Two gated 1280×880 window cases pass, including 4,505,600 acquired bytes matching
+the CPU reference. Next measurements will compare release-build CPU and GPU
+routes on equal scenes, with preparation and presentation costs kept separate.
 
 Acceptance work:
 
-- Extend the optional offscreen display-list bridge to normal browser drawing,
-  preserving clipping, fixed coordinates, text coverage, alpha and nested
-  opacity behavior.
+- Expand the bounded native route to more browser scenes, preserving clipping,
+  fixed coordinates, text coverage and alpha while adding nested opacity.
 - Bound GPU allocations, command work, uploads and retained resources. Decide
   the GPU process/driver boundary explicitly; GPU access must not broaden the
   renderer's filesystem or network authority.

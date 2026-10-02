@@ -1,5 +1,34 @@
 # Validation record
 
+## Native wide rounded masks
+
+Native rounded rectangles can now use two disjoint horizontal masks while
+preserving the original floating-point geometry. Every mask keeps its 1024-pixel
+axis cap. Shared coverage, source, row, operation, storage and invocation limits
+are unchanged; the whole group is checked before allocation. Original primitive
+work is counted once. The legacy single-mask and Probe refusals are preserved.
+
+Both Rust 1.88 and 1.98 pass **1,355 native-feature tests**, **53 adapter groups**,
+**84 default / 95 GPU-feature core groups**, and strict all-target Clippy.
+Twelve added Rust groups cover exact translucent seams, fractional/fixed
+coordinates, original ordering, allocation failures and global cutpoints.
+All **48 native host Python groups** pass. Synthetic tests found and corrected
+a buffered-log ordering bug in the new controller before desktop execution;
+the preliminary failures and source versions remain retained.
+
+Two actual **1280×880** window cases pass on NVIDIA RTX 4070 SUPER/BGRA8:
+**4,505,600 acquired texture bytes** match the full Canvas reference, and a
+separate normal frame uses no reference or readback. Both use the new two-strip
+address bar and finish with no owned descendants. The controller releases the
+frozen HTML/PNG over its bounded loopback origin only after owned-window sizing
+and the browser's latest physical-size diagnostic agree. Different ephemeral
+ports affect address-bar text; these runs are not a performance comparison.
+See the [source-bound evidence](evidence/vulkan-native-wide-rounded.json) and
+[current window-check instructions](vulkan-native-window.md#wide-mask-validation).
+The earlier 1180×880 fallback/reload results below remain evidence for their
+original executable. This change establishes no broader viewport, web-standard,
+security or Chromium-relative performance guarantee.
+
 ## Native GPU window integration
 
 The optional `vulkan-raster` feature now connects the custom rasterizer to the
@@ -42,6 +71,11 @@ This remains hybrid CPU coverage/GPU compositing. Group opacity, wider admission
 zoom, shaping, native GPU screenshots, independent security auditing and the
 requested Chromium performance threshold remain unfinished. No compositor or
 performance result is inferred from exact acquired-texture bytes.
+
+All nine [CI jobs for `9a30882`](https://github.com/Eriskii/ErisBrowser/actions/runs/36980781764)
+passed, including both native-feature rows. The
+[terminal receipt](evidence/vulkan-native-window-ci.json) is retained separately
+from the original local evidence.
 
 All seven [CI jobs for the preceding `d07c827` checkpoint](https://github.com/Eriskii/ErisBrowser/actions/runs/36974379124)
 passed; its [terminal receipt](../tools/vulkan-raster-probe/evidence/host-native-prerequisites-ci.json)

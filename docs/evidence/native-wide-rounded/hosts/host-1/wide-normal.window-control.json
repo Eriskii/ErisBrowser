@@ -1,0 +1,233 @@
+{
+  "schema": 1,
+  "success": true,
+  "control_complete": true,
+  "commands": [
+    {
+      "argv": [
+        "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "-j",
+        "clients"
+      ],
+      "status": "exited",
+      "returncode": 0,
+      "stdout_bytes": 7872,
+      "stdout_sha256": "dc6299a7c3269f47b654a1fab814f5e01d5e08d3d3823d2a38f0b9cfa002fc99",
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "",
+      "owned_client": null
+    },
+    {
+      "argv": [
+        "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "-j",
+        "clients"
+      ],
+      "status": "exited",
+      "returncode": 0,
+      "stdout_bytes": 7872,
+      "stdout_sha256": "dc6299a7c3269f47b654a1fab814f5e01d5e08d3d3823d2a38f0b9cfa002fc99",
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "",
+      "owned_client": null
+    },
+    {
+      "argv": [
+        "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "-j",
+        "clients"
+      ],
+      "status": "exited",
+      "returncode": 0,
+      "stdout_bytes": 7872,
+      "stdout_sha256": "dc6299a7c3269f47b654a1fab814f5e01d5e08d3d3823d2a38f0b9cfa002fc99",
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "",
+      "owned_client": null
+    },
+    {
+      "argv": [
+        "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "-j",
+        "clients"
+      ],
+      "status": "exited",
+      "returncode": 0,
+      "stdout_bytes": 7872,
+      "stdout_sha256": "dc6299a7c3269f47b654a1fab814f5e01d5e08d3d3823d2a38f0b9cfa002fc99",
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "",
+      "owned_client": null
+    },
+    {
+      "argv": [
+        "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "-j",
+        "clients"
+      ],
+      "status": "exited",
+      "returncode": 0,
+      "stdout_bytes": 8705,
+      "stdout_sha256": "de1bae262d7aaf59f41cf819a6d13436edb5ac31b393ffccc42ce0210f0182d1",
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "",
+      "owned_client": {
+        "pid": 1812502,
+        "size": [
+          1268,
+          758
+        ],
+        "floating": false,
+        "mapped": true
+      }
+    },
+    {
+      "argv": [
+        "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "dispatch",
+        "setfloating",
+        "pid:1812502"
+      ],
+      "status": "exited",
+      "returncode": 0,
+      "stdout_bytes": 3,
+      "stdout_sha256": "dc51b8c96c2d745df3bd5590d990230a482fd247123599548e0632fdbf97fc22",
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "ok\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "-j",
+        "clients"
+      ],
+      "status": "exited",
+      "returncode": 0,
+      "stdout_bytes": 8701,
+      "stdout_sha256": "bb50e386a99bf4a5f33f39120367a25f44131671b7b98880c8430876f9985d91",
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "",
+      "owned_client": {
+        "pid": 1812502,
+        "size": [
+          1285,
+          774
+        ],
+        "floating": true,
+        "mapped": true
+      }
+    },
+    {
+      "argv": [
+        "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "dispatch",
+        "resizewindowpixel",
+        "exact 1280 880,pid:1812502"
+      ],
+      "status": "exited",
+      "returncode": 0,
+      "stdout_bytes": 3,
+      "stdout_sha256": "dc51b8c96c2d745df3bd5590d990230a482fd247123599548e0632fdbf97fc22",
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "ok\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "-j",
+        "clients"
+      ],
+      "status": "exited",
+      "returncode": 0,
+      "stdout_bytes": 8702,
+      "stdout_sha256": "83ab43eb67767f3a900cd91e3bb6497a95d25ee06cb34fb1571f56ef5576c859",
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "",
+      "owned_client": {
+        "pid": 1812502,
+        "size": [
+          1280,
+          880
+        ],
+        "floating": true,
+        "mapped": true
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/admitted.html",
+      "method": "GET",
+      "header_bytes": 153,
+      "header_sha256": "e05d31fa797f83fcd0a8e21b7eaee45af8a399a7772c380b2517cec2bf87b7f8",
+      "body_bytes": 320,
+      "body_sha256": "1674d4de78a90cc621f9e786e45214e2a190d615e8d68431f0e1468e42449759",
+      "response_complete": true,
+      "response_bytes": 419,
+      "response_sha256": "81e8af5ab36a96dba64d5c5b5f816a6d9a705d962f01d2b6d805d0f366b2a0c5"
+    },
+    {
+      "path": "/two-pixels.png",
+      "method": "GET",
+      "header_bytes": 154,
+      "header_sha256": "5d2bc9d73449b00cdc565abc6ffbe31acd7773f34cb24240f939d44d3a7ed5d9",
+      "body_bytes": 71,
+      "body_sha256": "5a43ec1305804c9be3f99944cc19630ecb0839f0743c32deffd29357409efe54",
+      "response_complete": true,
+      "response_bytes": 154,
+      "response_sha256": "261411794eed0e863071e82776c1ff1962b5652a8a76537cb7bd6bcbfc32ba4e"
+    }
+  ],
+  "accepted_connections": 2,
+  "identity": {
+    "pid": 1812502,
+    "parent_pid": 1812499,
+    "process_group": 1812499,
+    "start_ticks": 104695613
+  },
+  "browser_reaped": true,
+  "browser_returncode": 0,
+  "binary_sha256": "fe25c6303f0a192752a3073886097496f3b56e72facc56dd42b37a93f2e42435",
+  "controller_sha256": "66d66d2680208f4e11741985f952f25e3e8f583c73953ce46220a4e82e1053d9",
+  "fixture_freeze": "957fd5ad91da6b2d193fd60e8596bc22c0f4b6c219385d5a2e2f098eac657f5a",
+  "limits": {
+    "header_bytes": 8192,
+    "connections": 8,
+    "active_connections": 4,
+    "requests": 2
+  },
+  "port": 54117,
+  "browser_command": [
+    "/tmp/eris-native-wide-rounded-1/eris-browser-native-wide",
+    "http://127.0.0.1:54117/admitted.html",
+    "--presenter=vulkan",
+    "--raster=gpu",
+    "--no-scripts",
+    "--exit-after",
+    "6.0"
+  ],
+  "controlled_size": [
+    1280,
+    880
+  ],
+  "release": {
+    "prefix_bytes": 729,
+    "prefix_sha256": "320077aef8a3979634e019f3ae26d744e82b571c0e0bf60a920d93d5c82f2783",
+    "html_sha256": "1674d4de78a90cc621f9e786e45214e2a190d615e8d68431f0e1468e42449759",
+    "physical_size": [
+      1280,
+      880
+    ]
+  }
+}

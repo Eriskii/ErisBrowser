@@ -1,0 +1,5 @@
+{
+  "parent_commit": "9a30882c183f8d34dd62471b1b03ad20ceb6ea6b",
+  "proposal_sha256": "ca72f19ab67ebfc7dbb5c3d10cd80e1038efec68f3f8c323879dd381811d8f44",
+  "scope": "Native horizontal rounded-mask strips only, unchanged global limits; root owns builds and actual GPU runs"
+}

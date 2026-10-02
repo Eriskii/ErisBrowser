@@ -104,6 +104,19 @@ impl RoundedShape {
         clip: Rect,
         radius: f32,
     ) -> Result<RoundedDisposition> {
+        Self::prepare_with_width(profile, frame, translated_rect, clip, radius, MAX_MASK_AXIS)
+    }
+
+    // Only the Native partition API may admit a wider temporary geometry.
+    // It never exposes that shape as an individually materializable mask.
+    fn prepare_with_width(
+        profile: Profile,
+        frame: Frame,
+        translated_rect: Rect,
+        clip: Rect,
+        radius: f32,
+        max_width: u32,
+    ) -> Result<RoundedDisposition> {
         profile.validate_viewport(frame.width, frame.height)?;
         if !valid_geometry(translated_rect)
             || !valid_geometry(clip)
@@ -153,7 +166,7 @@ impl RoundedShape {
         }
         let width = (right - x0) as u32;
         let height = (bottom - y0) as u32;
-        if width > MAX_MASK_AXIS || height > MAX_MASK_AXIS {
+        if width > max_width || height > MAX_MASK_AXIS {
             return Err("rounded mask dimensions".into());
         }
         let coverage_bytes = (width as usize)
@@ -228,18 +241,7 @@ impl RoundedShape {
         rows.resize(self.info.row_entries, self.info.origin_x);
         for y in self.info.origin_y..self.info.origin_y + self.info.height as i32 {
             for x in self.info.origin_x..self.info.origin_x + self.info.width as i32 {
-                // Keep these f32 operations in the same order as Canvas::rect.
-                let px = x as f32 + 0.5;
-                let py = y as f32 + 0.5;
-                let dx = (self.rect.x + self.radius - px)
-                    .max(px - (self.rect.x + self.rect.width - self.radius))
-                    .max(0.0);
-                let dy = (self.rect.y + self.radius - py)
-                    .max(py - (self.rect.y + self.rect.height - self.radius))
-                    .max(0.0);
-                let cov = ((self.radius + 0.5 - (dx * dx + dy * dy).sqrt()).clamp(0.0, 1.0) * 255.0)
-                    as u8;
-                coverage.push(cov);
+                coverage.push(self.coverage_at(x, y));
             }
         }
         Ok(RoundedCoverage {
@@ -247,5 +249,213 @@ impl RoundedShape {
             coverage,
             rows,
         })
+    }
+
+    fn coverage_at(&self, x: i32, y: i32) -> u8 {
+        // Keep these f32 operations in the same order as Canvas::rect. Both
+        // callers supply original framebuffer coordinates, never tile-local x/y.
+        let px = x as f32 + 0.5;
+        let py = y as f32 + 0.5;
+        let dx = (self.rect.x + self.radius - px)
+            .max(px - (self.rect.x + self.rect.width - self.radius))
+            .max(0.0);
+        let dy = (self.rect.y + self.radius - py)
+            .max(py - (self.rect.y + self.rect.height - self.radius))
+            .max(0.0);
+        ((self.radius + 0.5 - (dx * dx + dy * dy).sqrt()).clamp(0.0, 1.0) * 255.0) as u8
+    }
+}
+
+/// Native-only partition metadata. Work belongs to the original primitive,
+/// while storage and tile count cover all strips together.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct RoundedTilesInfo {
+    pub loop_work: u64,
+    pub tile_count: usize,
+    pub coverage_bytes: usize,
+    pub row_entries: usize,
+    pub cpu_payload_bytes: usize,
+    pub packed_input_bytes: usize,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct RoundedTileInfo {
+    pub origin_x: i32,
+    pub origin_y: i32,
+    pub width: u32,
+    pub height: u32,
+    pub coverage_bytes: usize,
+    pub row_entries: usize,
+}
+
+#[derive(Clone, Copy, Debug)]
+pub enum RoundedTilesDisposition {
+    Empty { loop_work: u64 },
+    ZeroRadius { loop_work: u64 },
+    Tiles(RoundedTiles),
+}
+
+/// At most two disjoint horizontal strips. No source geometry is rebased or
+/// re-intersected at a strip boundary. The legacy single-mask API is unchanged.
+#[derive(Clone, Copy, Debug)]
+pub struct RoundedTiles {
+    shape: RoundedShape,
+    info: RoundedTilesInfo,
+}
+
+#[derive(Debug)]
+pub struct RoundedTile {
+    info: RoundedTileInfo,
+    coverage: Vec<u8>,
+    rows: Vec<i32>,
+}
+impl RoundedTile {
+    pub fn info(&self) -> RoundedTileInfo {
+        self.info
+    }
+    pub fn mask(&self) -> SourceMask<'_> {
+        SourceMask {
+            width: self.info.width,
+            height: self.info.height,
+            coverage: &self.coverage,
+        }
+    }
+    pub fn row_origins(&self) -> &[i32] {
+        &self.rows
+    }
+    pub fn origin_y(&self) -> i32 {
+        self.info.origin_y
+    }
+}
+
+#[derive(Debug)]
+pub struct RoundedTilesCoverage {
+    tiles: [Option<RoundedTile>; 2],
+}
+impl RoundedTilesCoverage {
+    pub fn into_tiles(self) -> impl Iterator<Item = RoundedTile> {
+        self.tiles.into_iter().flatten()
+    }
+}
+
+impl RoundedTiles {
+    pub fn prepare_native(
+        frame: Frame,
+        translated_rect: Rect,
+        clip: Rect,
+        radius: f32,
+    ) -> Result<RoundedTilesDisposition> {
+        let shape = match RoundedShape::prepare_with_width(
+            Profile::Native,
+            frame,
+            translated_rect,
+            clip,
+            radius,
+            Profile::Native.max_width(),
+        )? {
+            RoundedDisposition::Empty { loop_work } => {
+                return Ok(RoundedTilesDisposition::Empty { loop_work });
+            }
+            RoundedDisposition::ZeroRadius { loop_work } => {
+                return Ok(RoundedTilesDisposition::ZeroRadius { loop_work });
+            }
+            RoundedDisposition::Shape(shape) => shape,
+        };
+        let original = shape.info();
+        // Native viewport validation already bounds the original height. The
+        // complete area check above still precedes any split: tiling does not
+        // authorize more coverage than a single primitive/whole scene allows.
+        let count = original.width.div_ceil(MAX_MASK_AXIS) as usize;
+        if count > 2 {
+            return Err("rounded Native partition budget".into());
+        }
+        let rows = original
+            .row_entries
+            .checked_mul(count)
+            .filter(|&n| n <= MAX_ROW_ENTRIES)
+            .ok_or("rounded partition row budget")?;
+        let cpu_payload_bytes = rows
+            .checked_mul(std::mem::size_of::<i32>())
+            .and_then(|n| n.checked_add(original.coverage_bytes))
+            .ok_or("rounded partition CPU storage overflow")?;
+        let packed_input_bytes = original
+            .coverage_bytes
+            .checked_add(rows)
+            .and_then(|n| n.checked_mul(std::mem::size_of::<u32>()))
+            .ok_or("rounded partition input storage overflow")?;
+        Ok(RoundedTilesDisposition::Tiles(Self {
+            shape,
+            info: RoundedTilesInfo {
+                loop_work: original.loop_work,
+                tile_count: count,
+                coverage_bytes: original.coverage_bytes,
+                row_entries: rows,
+                cpu_payload_bytes,
+                packed_input_bytes,
+            },
+        }))
+    }
+
+    pub fn info(&self) -> RoundedTilesInfo {
+        self.info
+    }
+    pub fn tiles(&self) -> impl Iterator<Item = RoundedTileInfo> + '_ {
+        let original = self.shape.info();
+        (0..self.info.tile_count).map(move |index| {
+            let column = index as u32 * MAX_MASK_AXIS;
+            let width = (original.width - column).min(MAX_MASK_AXIS);
+            RoundedTileInfo {
+                origin_x: original.origin_x + column as i32,
+                origin_y: original.origin_y,
+                width,
+                height: original.height,
+                coverage_bytes: width as usize * original.height as usize,
+                row_entries: original.row_entries,
+            }
+        })
+    }
+
+    /// One whole-group cumulative check runs before every reserve or coverage
+    /// evaluation. All storage is reserved before evaluating the first cell.
+    pub fn materialize(
+        &self,
+        preflight: impl FnOnce(&Self) -> Result<()>,
+    ) -> Result<RoundedTilesCoverage> {
+        self.materialize_with(preflight, reserved::<u8>, reserved::<i32>)
+    }
+
+    pub(super) fn materialize_with(
+        &self,
+        preflight: impl FnOnce(&Self) -> Result<()>,
+        mut coverage_reserve: impl FnMut(usize) -> Result<Vec<u8>>,
+        mut row_reserve: impl FnMut(usize) -> Result<Vec<i32>>,
+    ) -> Result<RoundedTilesCoverage> {
+        preflight(self)?;
+        let mut tiles = [None, None];
+        for (slot, info) in tiles.iter_mut().zip(self.tiles()) {
+            let coverage = coverage_reserve(info.coverage_bytes)?;
+            let rows = row_reserve(info.row_entries)?;
+            if !coverage.is_empty()
+                || coverage.capacity() < info.coverage_bytes
+                || !rows.is_empty()
+                || rows.capacity() < info.row_entries
+            {
+                return Err("invalid rounded partition reserve result".into());
+            }
+            *slot = Some(RoundedTile {
+                info,
+                coverage,
+                rows,
+            });
+        }
+        for tile in tiles.iter_mut().flatten() {
+            tile.rows.resize(tile.info.row_entries, tile.info.origin_x);
+            for y in tile.info.origin_y..tile.info.origin_y + tile.info.height as i32 {
+                for x in tile.info.origin_x..tile.info.origin_x + tile.info.width as i32 {
+                    tile.coverage.push(self.shape.coverage_at(x, y));
+                }
+            }
+        }
+        Ok(RoundedTilesCoverage { tiles })
     }
 }

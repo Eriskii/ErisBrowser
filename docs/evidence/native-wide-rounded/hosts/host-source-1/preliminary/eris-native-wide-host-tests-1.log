@@ -1,0 +1,41 @@
+......................................EEE.......
+======================================================================
+ERROR: test_document_response_waits_for_both_signals_then_serves_exact_fixed_bodies (test_native_raster_wide_host.HttpReleaseTests.test_document_response_waits_for_both_signals_then_serves_exact_fixed_bodies)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/test_native_raster_wide_host.py", line 181, in test_document_response_waits_for_both_signals_then_serves_exact_fixed_bodies
+    stream, listener, pairs, record, emitted, context, startup = self.scenario()
+                                                                 ~~~~~~~~~~~~~^^
+  File "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/test_native_raster_wide_host.py", line 161, in scenario
+    pairs[0][1].sendall(bad_header if bad_header is not None else request())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 1] Operation not permitted
+
+======================================================================
+ERROR: test_early_native_frame_connection_cap_and_oversized_header_refuse (test_native_raster_wide_host.HttpReleaseTests.test_early_native_frame_connection_cap_and_oversized_header_refuse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/test_native_raster_wide_host.py", line 204, in test_early_native_frame_connection_cap_and_oversized_header_refuse
+    stream, listener, _pairs, record, emitted, context, _ = self.scenario(**kwargs)
+                                                            ~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/test_native_raster_wide_host.py", line 161, in scenario
+    pairs[0][1].sendall(bad_header if bad_header is not None else request())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 1] Operation not permitted
+
+======================================================================
+ERROR: test_missing_physical_or_compositor_confirmation_never_releases_document (test_native_raster_wide_host.HttpReleaseTests.test_missing_physical_or_compositor_confirmation_never_releases_document)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/test_native_raster_wide_host.py", line 194, in test_missing_physical_or_compositor_confirmation_never_releases_document
+    stream, listener, _pairs, record, emitted, context, _ = self.scenario(**kwargs)
+                                                            ~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/test_native_raster_wide_host.py", line 161, in scenario
+    pairs[0][1].sendall(bad_header if bad_header is not None else request())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 1] Operation not permitted
+
+----------------------------------------------------------------------
+Ran 48 tests in 0.082s
+
+FAILED (errors=3)

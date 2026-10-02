@@ -1,0 +1,17 @@
+{
+  "command": [
+    "cargo",
+    "+1.98.0",
+    "test",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "tools/vulkan-raster-probe/Cargo.toml",
+    "--features",
+    "browser-bridge"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 5.576,
+  "log": "probe-tests-1980.log",
+  "sha256": "3b540ba58020856df4fe4142f12c4ca0715dab7986c0161186ca77d9e6e2f664"
+}

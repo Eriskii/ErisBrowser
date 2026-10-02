@@ -1,4 +1,4 @@
-use crate::rounded::{RoundedDisposition, RoundedShape};
+use crate::rounded::{RoundedDisposition, RoundedShape, RoundedTiles, RoundedTilesDisposition};
 use crate::{Frame, MAX_COORDINATE, MAX_MASK_COVERAGE_BYTES, Profile, Rect, reserved};
 use std::cell::Cell;
 
@@ -469,4 +469,240 @@ fn rounded_zero_coverage_corners_still_count_and_remain_in_mask() {
     assert_eq!(output.info().loop_work, 64);
     assert_eq!(output.info().coverage_bytes, 64);
     assert_eq!(output.row_origins(), &[0; 8]);
+}
+
+fn native_tiles(frame: Frame, rect: Rect, clip: Rect, radius: f32) -> RoundedTiles {
+    match RoundedTiles::prepare_native(frame, rect, clip, radius).unwrap() {
+        RoundedTilesDisposition::Tiles(shape) => shape,
+        other => panic!("expected Native partition, got {other:?}"),
+    }
+}
+
+#[test]
+fn rounded_native_partition_keeps_old_axis_refusal_and_full_area_limit() {
+    let frame = Frame::new(1280, 1024, 0);
+    for (width, count, last) in [
+        (1024u32, 1, 1024),
+        (1025, 2, 1),
+        (1084, 2, 60),
+        (1280, 2, 256),
+    ] {
+        let rect = Rect::new(0.0, 0.0, width as f32, 1.0);
+        let shape = native_tiles(frame, rect, frame.caller_clip, 0.25);
+        let info = shape.info();
+        assert_eq!(info.tile_count, count);
+        assert_eq!(info.loop_work, u64::from(width));
+        assert_eq!(info.coverage_bytes, width as usize);
+        assert_eq!(info.row_entries, count);
+        let windows: Vec<_> = shape.tiles().collect();
+        assert_eq!(windows.last().unwrap().width, last);
+        assert_eq!(windows[0].origin_x, 0);
+        if count == 2 {
+            assert_eq!(windows[0].width, 1024);
+            assert_eq!(windows[1].origin_x, 1024);
+            assert!(
+                RoundedShape::prepare(Profile::Native, frame, rect, frame.caller_clip, 0.25)
+                    .is_err()
+            );
+        }
+    }
+    let huge = Rect::new(0.0, 0.0, 1280.0, 205.0);
+    assert!(RoundedTiles::prepare_native(frame, huge, frame.caller_clip, 7.0).is_err());
+    // The new Native seam does not alter Probe viewport or old mask contracts.
+    assert!(RoundedShape::prepare(Profile::Probe, frame, huge, frame.caller_clip, 7.0).is_err());
+    assert!(matches!(
+        RoundedTiles::prepare_native(frame, huge, frame.caller_clip, 0.0).unwrap(),
+        RoundedTilesDisposition::ZeroRadius { .. }
+    ));
+    let hidden = Rect::new(-10.0, -10.0, 0.0, 0.0);
+    assert!(RoundedTiles::prepare_native(frame, hidden, hidden, f32::NAN).is_err());
+}
+
+#[test]
+fn rounded_native_wide_band_is_independent_literal_across_both_strips() {
+    let frame = Frame::new(1280, 100, 0);
+    let shape = native_tiles(
+        frame,
+        Rect::new(181.0, 31.0, 1084.0, 34.0),
+        frame.caller_clip,
+        0.25,
+    );
+    let info = shape.info();
+    assert_eq!(info.loop_work, 36_856);
+    assert_eq!(info.coverage_bytes, 36_856);
+    assert_eq!(info.row_entries, 68);
+    assert_eq!(info.cpu_payload_bytes, 36_856 + 272);
+    assert_eq!(info.packed_input_bytes, 147_696);
+    let tiles: Vec<_> = shape
+        .materialize(|_| Ok(()))
+        .unwrap()
+        .into_tiles()
+        .collect();
+    assert_eq!(tiles.len(), 2);
+    for (tile, x, width) in [(&tiles[0], 181, 1024), (&tiles[1], 1205, 60)] {
+        assert_eq!(tile.info().origin_x, x);
+        assert_eq!(tile.origin_y(), 31);
+        assert_eq!(tile.mask().width, width);
+        assert_eq!(tile.mask().height, 34);
+        assert_eq!(tile.row_origins(), vec![x; 34]);
+        // Every center is inside the unmodified rect's r=.25 core:
+        // floor((.25+.5)*255) = 191, including both sides of the seam.
+        assert!(tile.mask().coverage.iter().all(|&value| value == 191));
+    }
+}
+
+#[test]
+fn rounded_native_partition_keeps_original_fractional_pixel_addresses() {
+    let frame = Frame::new(1280, 1, 0);
+    let shape = native_tiles(
+        frame,
+        Rect::new(0.25, 0.0, 1079.0, 1.0),
+        frame.caller_clip,
+        0.25,
+    );
+    let tiles: Vec<_> = shape
+        .materialize(|_| Ok(()))
+        .unwrap()
+        .into_tiles()
+        .collect();
+    assert_eq!(tiles[0].mask().coverage, vec![191; 1024]);
+    assert_eq!(tiles[1].info().origin_x, 1024);
+    assert_eq!(tiles[1].mask().width, 56);
+    assert_eq!(&tiles[1].mask().coverage[..55], &[191; 55]);
+    // Last center is1079.5; original right-r is1079.0, hence dx=.5,
+    // dy=0 and floor((.75-.5)*255)=63. No artificial tile corner.
+    assert_eq!(tiles[1].mask().coverage[55], 63);
+    for edge in [
+        f32::from_bits(1024.0f32.to_bits() - 1),
+        1024.0,
+        f32::from_bits(1024.0f32.to_bits() + 1),
+    ] {
+        let clip = Rect::new(edge, 0.0, 1280.0 - edge, 1.0);
+        let shape = native_tiles(frame, Rect::new(-0.25, 0.0, 1200.0, 1.0), clip, 0.25);
+        let expected_origin = edge.ceil() as i32;
+        let tile = shape
+            .materialize(|_| Ok(()))
+            .unwrap()
+            .into_tiles()
+            .next()
+            .unwrap();
+        assert_eq!(tile.info().origin_x, expected_origin);
+        assert!(tile.mask().coverage.iter().all(|&value| value == 191));
+    }
+}
+
+#[test]
+fn rounded_native_partition_preserves_uncropped_loop_work_once() {
+    let frame = Frame::new(2, 1, 0);
+    let rect = Rect::new(f32::from_bits(0xbfffec57), 0.0, 4.0, 1.0);
+    let clip = Rect::new(-2.0, 0.0, 3.0, 1.0);
+    let shape = native_tiles(frame, rect, clip, 0.25);
+    assert_eq!(shape.info().loop_work, 2);
+    assert_eq!(shape.info().coverage_bytes, 1);
+    let called = Cell::new(0);
+    let output = shape
+        .materialize(|shape| {
+            called.set(called.get() + 1);
+            assert_eq!(shape.info().loop_work, 2);
+            Ok(())
+        })
+        .unwrap();
+    assert_eq!(called.get(), 1);
+    assert_eq!(output.into_tiles().next().unwrap().mask().coverage, &[191]);
+}
+
+#[test]
+fn rounded_native_partition_checks_group_before_all_four_allocations() {
+    let frame = Frame::new(1280, 1, 0);
+    let shape = native_tiles(
+        frame,
+        Rect::new(0.0, 0.0, 1025.0, 1.0),
+        frame.caller_clip,
+        0.25,
+    );
+    for (work, cpu, packed) in [(1024, 1033, 4108), (1025, 1032, 4108), (1025, 1033, 4107)] {
+        let result = shape.materialize_with(
+            |shape| {
+                let info = shape.info();
+                if info.loop_work > work
+                    || info.cpu_payload_bytes > cpu
+                    || info.packed_input_bytes > packed
+                {
+                    Err("whole partition refused".into())
+                } else {
+                    Ok(())
+                }
+            },
+            |_| panic!("coverage allocated before group admission"),
+            |_| panic!("rows allocated before group admission"),
+        );
+        assert_eq!(result.unwrap_err(), "whole partition refused");
+    }
+    for fail_at in 1..=4 {
+        let calls = Cell::new(0);
+        let result = shape.materialize_with(
+            |_| Ok(()),
+            |size| {
+                calls.set(calls.get() + 1);
+                if calls.get() == fail_at {
+                    Err("injected reserve".into())
+                } else {
+                    reserved::<u8>(size)
+                }
+            },
+            |size| {
+                calls.set(calls.get() + 1);
+                if calls.get() == fail_at {
+                    Err("injected reserve".into())
+                } else {
+                    reserved::<i32>(size)
+                }
+            },
+        );
+        assert_eq!(result.unwrap_err(), "injected reserve");
+        assert_eq!(calls.get(), fail_at);
+    }
+    // Immutable preparation remains reusable after every failed attempt.
+    assert_eq!(
+        shape.materialize(|_| Ok(())).unwrap().into_tiles().count(),
+        2
+    );
+}
+
+#[test]
+fn rounded_native_single_strip_matches_legacy_coverage_and_placement() {
+    let frame = Frame::new(320, 240, 0);
+    for (rect, clip, radius) in [
+        (Rect::new(0.0, 0.0, 2.0, 2.0), frame.caller_clip, 1.0),
+        (
+            Rect::new(-0.25, -0.75, 180.5, 12.25),
+            Rect::new(1.25, 2.5, 90.5, 10.25),
+            7.0,
+        ),
+        (
+            Rect::new(-100.0, -100.0, 1000.0, 1000.0),
+            Rect::new(0.0, 0.0, 3.0, 2.0),
+            0.25,
+        ),
+    ] {
+        let legacy = shape(Profile::Native, frame, rect, clip, radius)
+            .materialize(|_| Ok(()))
+            .unwrap();
+        let partition = native_tiles(frame, rect, clip, radius);
+        assert_eq!(partition.info().tile_count, 1);
+        let tile = partition
+            .materialize(|_| Ok(()))
+            .unwrap()
+            .into_tiles()
+            .next()
+            .unwrap();
+        assert_eq!(tile.mask().coverage, legacy.mask().coverage);
+        assert_eq!(tile.row_origins(), legacy.row_origins());
+        assert_eq!(tile.origin_y(), legacy.origin_y());
+        assert_eq!(partition.info().loop_work, legacy.info().loop_work);
+        assert_eq!(
+            partition.info().packed_input_bytes,
+            legacy.info().packed_input_bytes
+        );
+    }
 }

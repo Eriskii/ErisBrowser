@@ -1,0 +1,9 @@
+{
+  "record": "host-1/wide-host-results.json",
+  "sha256": "19c9028e441eb046c68a53f141d40b477a060d3539255e65a5adb67d887acfa4",
+  "cases": 2,
+  "all_exit_zero": true,
+  "no_owned_descendants": true,
+  "acquired_texture_compared_bytes": 4505600,
+  "scope": "one NVIDIA/BGRA8 acquired texture; separate normal run; gated loopback document/PNG; no performance comparison"
+}

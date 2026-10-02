@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "kind": "fixed native-window fixture inputs; differential CPU reference, not pixel goldens",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 1604,
+      "sha256": "13d471136b1dd73ce359b708ea7e6f263bdc7caf17d5ee471c266b62a008b788"
+    },
+    {
+      "path": "admitted.html",
+      "bytes": 320,
+      "sha256": "1674d4de78a90cc621f9e786e45214e2a190d615e8d68431f0e1468e42449759"
+    },
+    {
+      "path": "opacity.html",
+      "bytes": 332,
+      "sha256": "9483b0ad2805615941fe57d1673379e26c52e0bcc2c57bdf35b5384a6f0c43b7"
+    },
+    {
+      "path": "overdraw.html",
+      "bytes": 315,
+      "sha256": "1f58f963606777dba90496ecb62f26939fa1a4e16289b8b28205036d3505f661"
+    },
+    {
+      "path": "two-pixels.png",
+      "bytes": 71,
+      "sha256": "5a43ec1305804c9be3f99944cc19630ecb0839f0743c32deffd29357409efe54"
+    }
+  ],
+  "cases": [
+    {
+      "name": "admitted-verified",
+      "html": "admitted.html",
+      "route": "native",
+      "verify_frames": 1
+    },
+    {
+      "name": "admitted-normal",
+      "html": "admitted.html",
+      "route": "native",
+      "verify_frames": 0
+    },
+    {
+      "name": "opacity-fallback",
+      "html": "opacity.html",
+      "route": "complete-cpu-fallback",
+      "verify_frames": 0
+    },
+    {
+      "name": "overdraw-fallback",
+      "html": "overdraw.html",
+      "route": "complete-cpu-fallback",
+      "verify_frames": 0
+    }
+  ],
+  "image_origin": {
+    "path": "tools/vulkan-raster-probe/worker-text-fixtures/html/two-pixels.png",
+    "sha256": "5a43ec1305804c9be3f99944cc19630ecb0839f0743c32deffd29357409efe54"
+  },
+  "expected_size": [
+    1180,
+    880
+  ],
+  "scripts": false,
+  "revision": {
+    "original_freeze_sha256": "3bb7764b3db0cbcb3b806ab814a29f8564b8c6607815406dce54b2ff39c550ac",
+    "original_admitted_preserved_as": "overdraw.html",
+    "reason": "Separate one-background native admission from the observed original two-background planner-budget refusal; unchanged limits."
+  }
+}

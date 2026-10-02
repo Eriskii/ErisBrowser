@@ -1,0 +1,953 @@
+--- a/crates/raster-core/src/rounded.rs
++++ b/crates/raster-core/src/rounded.rs
+@@ -104,6 +104,19 @@
+         clip: Rect,
+         radius: f32,
+     ) -> Result<RoundedDisposition> {
++        Self::prepare_with_width(profile, frame, translated_rect, clip, radius, MAX_MASK_AXIS)
++    }
++
++    // Only the Native partition API may admit a wider temporary geometry.
++    // It never exposes that shape as an individually materializable mask.
++    fn prepare_with_width(
++        profile: Profile,
++        frame: Frame,
++        translated_rect: Rect,
++        clip: Rect,
++        radius: f32,
++        max_width: u32,
++    ) -> Result<RoundedDisposition> {
+         profile.validate_viewport(frame.width, frame.height)?;
+         if !valid_geometry(translated_rect)
+             || !valid_geometry(clip)
+@@ -153,7 +166,7 @@
+         }
+         let width = (right - x0) as u32;
+         let height = (bottom - y0) as u32;
+-        if width > MAX_MASK_AXIS || height > MAX_MASK_AXIS {
++        if width > max_width || height > MAX_MASK_AXIS {
+             return Err("rounded mask dimensions".into());
+         }
+         let coverage_bytes = (width as usize)
+@@ -228,18 +241,7 @@
+         rows.resize(self.info.row_entries, self.info.origin_x);
+         for y in self.info.origin_y..self.info.origin_y + self.info.height as i32 {
+             for x in self.info.origin_x..self.info.origin_x + self.info.width as i32 {
+-                // Keep these f32 operations in the same order as Canvas::rect.
+-                let px = x as f32 + 0.5;
+-                let py = y as f32 + 0.5;
+-                let dx = (self.rect.x + self.radius - px)
+-                    .max(px - (self.rect.x + self.rect.width - self.radius))
+-                    .max(0.0);
+-                let dy = (self.rect.y + self.radius - py)
+-                    .max(py - (self.rect.y + self.rect.height - self.radius))
+-                    .max(0.0);
+-                let cov = ((self.radius + 0.5 - (dx * dx + dy * dy).sqrt()).clamp(0.0, 1.0) * 255.0)
+-                    as u8;
+-                coverage.push(cov);
++                coverage.push(self.coverage_at(x, y));
+             }
+         }
+         Ok(RoundedCoverage {
+@@ -248,4 +250,212 @@
+             rows,
+         })
+     }
+-}
++
++    fn coverage_at(&self, x: i32, y: i32) -> u8 {
++        // Keep these f32 operations in the same order as Canvas::rect. Both
++        // callers supply original framebuffer coordinates, never tile-local x/y.
++        let px = x as f32 + 0.5;
++        let py = y as f32 + 0.5;
++        let dx = (self.rect.x + self.radius - px)
++            .max(px - (self.rect.x + self.rect.width - self.radius))
++            .max(0.0);
++        let dy = (self.rect.y + self.radius - py)
++            .max(py - (self.rect.y + self.rect.height - self.radius))
++            .max(0.0);
++        ((self.radius + 0.5 - (dx * dx + dy * dy).sqrt()).clamp(0.0, 1.0) * 255.0) as u8
++    }
++}
++
++/// Native-only partition metadata. Work belongs to the original primitive,
++/// while storage and tile count cover all strips together.
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub struct RoundedTilesInfo {
++    pub loop_work: u64,
++    pub tile_count: usize,
++    pub coverage_bytes: usize,
++    pub row_entries: usize,
++    pub cpu_payload_bytes: usize,
++    pub packed_input_bytes: usize,
++}
++
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub struct RoundedTileInfo {
++    pub origin_x: i32,
++    pub origin_y: i32,
++    pub width: u32,
++    pub height: u32,
++    pub coverage_bytes: usize,
++    pub row_entries: usize,
++}
++
++#[derive(Clone, Copy, Debug)]
++pub enum RoundedTilesDisposition {
++    Empty { loop_work: u64 },
++    ZeroRadius { loop_work: u64 },
++    Tiles(RoundedTiles),
++}
++
++/// At most two disjoint horizontal strips. No source geometry is rebased or
++/// re-intersected at a strip boundary. The legacy single-mask API is unchanged.
++#[derive(Clone, Copy, Debug)]
++pub struct RoundedTiles {
++    shape: RoundedShape,
++    info: RoundedTilesInfo,
++}
++
++#[derive(Debug)]
++pub struct RoundedTile {
++    info: RoundedTileInfo,
++    coverage: Vec<u8>,
++    rows: Vec<i32>,
++}
++impl RoundedTile {
++    pub fn info(&self) -> RoundedTileInfo {
++        self.info
++    }
++    pub fn mask(&self) -> SourceMask<'_> {
++        SourceMask {
++            width: self.info.width,
++            height: self.info.height,
++            coverage: &self.coverage,
++        }
++    }
++    pub fn row_origins(&self) -> &[i32] {
++        &self.rows
++    }
++    pub fn origin_y(&self) -> i32 {
++        self.info.origin_y
++    }
++}
++
++#[derive(Debug)]
++pub struct RoundedTilesCoverage {
++    tiles: [Option<RoundedTile>; 2],
++}
++impl RoundedTilesCoverage {
++    pub fn into_tiles(self) -> impl Iterator<Item = RoundedTile> {
++        self.tiles.into_iter().flatten()
++    }
++}
++
++impl RoundedTiles {
++    pub fn prepare_native(
++        frame: Frame,
++        translated_rect: Rect,
++        clip: Rect,
++        radius: f32,
++    ) -> Result<RoundedTilesDisposition> {
++        let shape = match RoundedShape::prepare_with_width(
++            Profile::Native,
++            frame,
++            translated_rect,
++            clip,
++            radius,
++            Profile::Native.max_width(),
++        )? {
++            RoundedDisposition::Empty { loop_work } => {
++                return Ok(RoundedTilesDisposition::Empty { loop_work });
++            }
++            RoundedDisposition::ZeroRadius { loop_work } => {
++                return Ok(RoundedTilesDisposition::ZeroRadius { loop_work });
++            }
++            RoundedDisposition::Shape(shape) => shape,
++        };
++        let original = shape.info();
++        // Native viewport validation already bounds the original height. The
++        // complete area check above still precedes any split: tiling does not
++        // authorize more coverage than a single primitive/whole scene allows.
++        let count = original.width.div_ceil(MAX_MASK_AXIS) as usize;
++        if count > 2 {
++            return Err("rounded Native partition budget".into());
++        }
++        let rows = original
++            .row_entries
++            .checked_mul(count)
++            .filter(|&n| n <= MAX_ROW_ENTRIES)
++            .ok_or("rounded partition row budget")?;
++        let cpu_payload_bytes = rows
++            .checked_mul(std::mem::size_of::<i32>())
++            .and_then(|n| n.checked_add(original.coverage_bytes))
++            .ok_or("rounded partition CPU storage overflow")?;
++        let packed_input_bytes = original
++            .coverage_bytes
++            .checked_add(rows)
++            .and_then(|n| n.checked_mul(std::mem::size_of::<u32>()))
++            .ok_or("rounded partition input storage overflow")?;
++        Ok(RoundedTilesDisposition::Tiles(Self {
++            shape,
++            info: RoundedTilesInfo {
++                loop_work: original.loop_work,
++                tile_count: count,
++                coverage_bytes: original.coverage_bytes,
++                row_entries: rows,
++                cpu_payload_bytes,
++                packed_input_bytes,
++            },
++        }))
++    }
++
++    pub fn info(&self) -> RoundedTilesInfo {
++        self.info
++    }
++    pub fn tiles(&self) -> impl Iterator<Item = RoundedTileInfo> + '_ {
++        let original = self.shape.info();
++        (0..self.info.tile_count).map(move |index| {
++            let column = index as u32 * MAX_MASK_AXIS;
++            let width = (original.width - column).min(MAX_MASK_AXIS);
++            RoundedTileInfo {
++                origin_x: original.origin_x + column as i32,
++                origin_y: original.origin_y,
++                width,
++                height: original.height,
++                coverage_bytes: width as usize * original.height as usize,
++                row_entries: original.row_entries,
++            }
++        })
++    }
++
++    /// One whole-group cumulative check runs before every reserve or coverage
++    /// evaluation. All storage is reserved before evaluating the first cell.
++    pub fn materialize(
++        &self,
++        preflight: impl FnOnce(&Self) -> Result<()>,
++    ) -> Result<RoundedTilesCoverage> {
++        self.materialize_with(preflight, reserved::<u8>, reserved::<i32>)
++    }
++
++    pub(super) fn materialize_with(
++        &self,
++        preflight: impl FnOnce(&Self) -> Result<()>,
++        mut coverage_reserve: impl FnMut(usize) -> Result<Vec<u8>>,
++        mut row_reserve: impl FnMut(usize) -> Result<Vec<i32>>,
++    ) -> Result<RoundedTilesCoverage> {
++        preflight(self)?;
++        let mut tiles = [None, None];
++        for (slot, info) in tiles.iter_mut().zip(self.tiles()) {
++            let coverage = coverage_reserve(info.coverage_bytes)?;
++            let rows = row_reserve(info.row_entries)?;
++            if !coverage.is_empty()
++                || coverage.capacity() < info.coverage_bytes
++                || !rows.is_empty()
++                || rows.capacity() < info.row_entries
++            {
++                return Err("invalid rounded partition reserve result".into());
++            }
++            *slot = Some(RoundedTile {
++                info,
++                coverage,
++                rows,
++            });
++        }
++        for tile in tiles.iter_mut().flatten() {
++            tile.rows.resize(tile.info.row_entries, tile.info.origin_x);
++            for y in tile.info.origin_y..tile.info.origin_y + tile.info.height as i32 {
++                for x in tile.info.origin_x..tile.info.origin_x + tile.info.width as i32 {
++                    tile.coverage.push(self.shape.coverage_at(x, y));
++                }
++            }
++        }
++        Ok(RoundedTilesCoverage { tiles })
++    }
++}
+--- a/crates/raster-core/src/rounded_tests.rs
++++ b/crates/raster-core/src/rounded_tests.rs
+@@ -1,4 +1,4 @@
+-use crate::rounded::{RoundedDisposition, RoundedShape};
++use crate::rounded::{RoundedDisposition, RoundedShape, RoundedTiles, RoundedTilesDisposition};
+ use crate::{Frame, MAX_COORDINATE, MAX_MASK_COVERAGE_BYTES, Profile, Rect, reserved};
+ use std::cell::Cell;
+ 
+@@ -470,3 +470,239 @@
+     assert_eq!(output.info().coverage_bytes, 64);
+     assert_eq!(output.row_origins(), &[0; 8]);
+ }
++
++fn native_tiles(frame: Frame, rect: Rect, clip: Rect, radius: f32) -> RoundedTiles {
++    match RoundedTiles::prepare_native(frame, rect, clip, radius).unwrap() {
++        RoundedTilesDisposition::Tiles(shape) => shape,
++        other => panic!("expected Native partition, got {other:?}"),
++    }
++}
++
++#[test]
++fn rounded_native_partition_keeps_old_axis_refusal_and_full_area_limit() {
++    let frame = Frame::new(1280, 1024, 0);
++    for (width, count, last) in [
++        (1024u32, 1, 1024),
++        (1025, 2, 1),
++        (1084, 2, 60),
++        (1280, 2, 256),
++    ] {
++        let rect = Rect::new(0.0, 0.0, width as f32, 1.0);
++        let shape = native_tiles(frame, rect, frame.caller_clip, 0.25);
++        let info = shape.info();
++        assert_eq!(info.tile_count, count);
++        assert_eq!(info.loop_work, u64::from(width));
++        assert_eq!(info.coverage_bytes, width as usize);
++        assert_eq!(info.row_entries, count);
++        let windows: Vec<_> = shape.tiles().collect();
++        assert_eq!(windows.last().unwrap().width, last);
++        assert_eq!(windows[0].origin_x, 0);
++        if count == 2 {
++            assert_eq!(windows[0].width, 1024);
++            assert_eq!(windows[1].origin_x, 1024);
++            assert!(
++                RoundedShape::prepare(Profile::Native, frame, rect, frame.caller_clip, 0.25)
++                    .is_err()
++            );
++        }
++    }
++    let huge = Rect::new(0.0, 0.0, 1280.0, 205.0);
++    assert!(RoundedTiles::prepare_native(frame, huge, frame.caller_clip, 7.0).is_err());
++    // The new Native seam does not alter Probe viewport or old mask contracts.
++    assert!(RoundedShape::prepare(Profile::Probe, frame, huge, frame.caller_clip, 7.0).is_err());
++    assert!(matches!(
++        RoundedTiles::prepare_native(frame, huge, frame.caller_clip, 0.0).unwrap(),
++        RoundedTilesDisposition::ZeroRadius { .. }
++    ));
++    let hidden = Rect::new(-10.0, -10.0, 0.0, 0.0);
++    assert!(RoundedTiles::prepare_native(frame, hidden, hidden, f32::NAN).is_err());
++}
++
++#[test]
++fn rounded_native_wide_band_is_independent_literal_across_both_strips() {
++    let frame = Frame::new(1280, 100, 0);
++    let shape = native_tiles(
++        frame,
++        Rect::new(181.0, 31.0, 1084.0, 34.0),
++        frame.caller_clip,
++        0.25,
++    );
++    let info = shape.info();
++    assert_eq!(info.loop_work, 36_856);
++    assert_eq!(info.coverage_bytes, 36_856);
++    assert_eq!(info.row_entries, 68);
++    assert_eq!(info.cpu_payload_bytes, 36_856 + 272);
++    assert_eq!(info.packed_input_bytes, 147_696);
++    let tiles: Vec<_> = shape
++        .materialize(|_| Ok(()))
++        .unwrap()
++        .into_tiles()
++        .collect();
++    assert_eq!(tiles.len(), 2);
++    for (tile, x, width) in [(&tiles[0], 181, 1024), (&tiles[1], 1205, 60)] {
++        assert_eq!(tile.info().origin_x, x);
++        assert_eq!(tile.origin_y(), 31);
++        assert_eq!(tile.mask().width, width);
++        assert_eq!(tile.mask().height, 34);
++        assert_eq!(tile.row_origins(), vec![x; 34]);
++        // Every center is inside the unmodified rect's r=.25 core:
++        // floor((.25+.5)*255) = 191, including both sides of the seam.
++        assert!(tile.mask().coverage.iter().all(|&value| value == 191));
++    }
++}
++
++#[test]
++fn rounded_native_partition_keeps_original_fractional_pixel_addresses() {
++    let frame = Frame::new(1280, 1, 0);
++    let shape = native_tiles(
++        frame,
++        Rect::new(0.25, 0.0, 1079.0, 1.0),
++        frame.caller_clip,
++        0.25,
++    );
++    let tiles: Vec<_> = shape
++        .materialize(|_| Ok(()))
++        .unwrap()
++        .into_tiles()
++        .collect();
++    assert_eq!(tiles[0].mask().coverage, vec![191; 1024]);
++    assert_eq!(tiles[1].info().origin_x, 1024);
++    assert_eq!(tiles[1].mask().width, 56);
++    assert_eq!(&tiles[1].mask().coverage[..55], &[191; 55]);
++    // Last center is1079.5; original right-r is1079.0, hence dx=.5,
++    // dy=0 and floor((.75-.5)*255)=63. No artificial tile corner.
++    assert_eq!(tiles[1].mask().coverage[55], 63);
++    for edge in [
++        f32::from_bits(1024.0f32.to_bits() - 1),
++        1024.0,
++        f32::from_bits(1024.0f32.to_bits() + 1),
++    ] {
++        let clip = Rect::new(edge, 0.0, 1280.0 - edge, 1.0);
++        let shape = native_tiles(frame, Rect::new(-0.25, 0.0, 1200.0, 1.0), clip, 0.25);
++        let expected_origin = edge.ceil() as i32;
++        let tile = shape
++            .materialize(|_| Ok(()))
++            .unwrap()
++            .into_tiles()
++            .next()
++            .unwrap();
++        assert_eq!(tile.info().origin_x, expected_origin);
++        assert!(tile.mask().coverage.iter().all(|&value| value == 191));
++    }
++}
++
++#[test]
++fn rounded_native_partition_preserves_uncropped_loop_work_once() {
++    let frame = Frame::new(2, 1, 0);
++    let rect = Rect::new(f32::from_bits(0xbfffec57), 0.0, 4.0, 1.0);
++    let clip = Rect::new(-2.0, 0.0, 3.0, 1.0);
++    let shape = native_tiles(frame, rect, clip, 0.25);
++    assert_eq!(shape.info().loop_work, 2);
++    assert_eq!(shape.info().coverage_bytes, 1);
++    let called = Cell::new(0);
++    let output = shape
++        .materialize(|shape| {
++            called.set(called.get() + 1);
++            assert_eq!(shape.info().loop_work, 2);
++            Ok(())
++        })
++        .unwrap();
++    assert_eq!(called.get(), 1);
++    assert_eq!(output.into_tiles().next().unwrap().mask().coverage, &[191]);
++}
++
++#[test]
++fn rounded_native_partition_checks_group_before_all_four_allocations() {
++    let frame = Frame::new(1280, 1, 0);
++    let shape = native_tiles(
++        frame,
++        Rect::new(0.0, 0.0, 1025.0, 1.0),
++        frame.caller_clip,
++        0.25,
++    );
++    for (work, cpu, packed) in [(1024, 1033, 4108), (1025, 1032, 4108), (1025, 1033, 4107)] {
++        let result = shape.materialize_with(
++            |shape| {
++                let info = shape.info();
++                if info.loop_work > work
++                    || info.cpu_payload_bytes > cpu
++                    || info.packed_input_bytes > packed
++                {
++                    Err("whole partition refused".into())
++                } else {
++                    Ok(())
++                }
++            },
++            |_| panic!("coverage allocated before group admission"),
++            |_| panic!("rows allocated before group admission"),
++        );
++        assert_eq!(result.unwrap_err(), "whole partition refused");
++    }
++    for fail_at in 1..=4 {
++        let calls = Cell::new(0);
++        let result = shape.materialize_with(
++            |_| Ok(()),
++            |size| {
++                calls.set(calls.get() + 1);
++                if calls.get() == fail_at {
++                    Err("injected reserve".into())
++                } else {
++                    reserved::<u8>(size)
++                }
++            },
++            |size| {
++                calls.set(calls.get() + 1);
++                if calls.get() == fail_at {
++                    Err("injected reserve".into())
++                } else {
++                    reserved::<i32>(size)
++                }
++            },
++        );
++        assert_eq!(result.unwrap_err(), "injected reserve");
++        assert_eq!(calls.get(), fail_at);
++    }
++    // Immutable preparation remains reusable after every failed attempt.
++    assert_eq!(
++        shape.materialize(|_| Ok(())).unwrap().into_tiles().count(),
++        2
++    );
++}
++
++#[test]
++fn rounded_native_single_strip_matches_legacy_coverage_and_placement() {
++    let frame = Frame::new(320, 240, 0);
++    for (rect, clip, radius) in [
++        (Rect::new(0.0, 0.0, 2.0, 2.0), frame.caller_clip, 1.0),
++        (
++            Rect::new(-0.25, -0.75, 180.5, 12.25),
++            Rect::new(1.25, 2.5, 90.5, 10.25),
++            7.0,
++        ),
++        (
++            Rect::new(-100.0, -100.0, 1000.0, 1000.0),
++            Rect::new(0.0, 0.0, 3.0, 2.0),
++            0.25,
++        ),
++    ] {
++        let legacy = shape(Profile::Native, frame, rect, clip, radius)
++            .materialize(|_| Ok(()))
++            .unwrap();
++        let partition = native_tiles(frame, rect, clip, radius);
++        assert_eq!(partition.info().tile_count, 1);
++        let tile = partition
++            .materialize(|_| Ok(()))
++            .unwrap()
++            .into_tiles()
++            .next()
++            .unwrap();
++        assert_eq!(tile.mask().coverage, legacy.mask().coverage);
++        assert_eq!(tile.row_origins(), legacy.row_origins());
++        assert_eq!(tile.origin_y(), legacy.origin_y());
++        assert_eq!(partition.info().loop_work, legacy.info().loop_work);
++        assert_eq!(
++            partition.info().packed_input_bytes,
++            legacy.info().packed_input_bytes
++        );
++    }
++}
+--- a/src/graphics/raster_bridge/native.rs
++++ b/src/graphics/raster_bridge/native.rs
+@@ -9,7 +9,7 @@
+ use eris_raster_core::{
+     MAX_MASK_COVERAGE_BYTES, MAX_NATIVE_PHASES, MAX_ROW_ENTRIES, PARAM_STRIDE, Phase, Profile,
+     SourceMask,
+-    rounded::{RoundedCoverage, RoundedDisposition, RoundedInfo, RoundedShape},
++    rounded::{RoundedTile, RoundedTiles, RoundedTilesCoverage, RoundedTilesDisposition},
+     scope::CoordinateState,
+ };
+ use std::cell::Cell;
+@@ -287,6 +287,7 @@
+     Ok(counts)
+ }
+ 
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+ struct Ledger {
+     operations: usize,
+     sources: usize,
+@@ -396,19 +397,33 @@
+             at(FallbackKind::MaskPreparation, phase, command),
+         )
+     }
+-    fn rounded(&mut self, info: RoundedInfo, phase: usize, command: usize) -> NativeResult<()> {
+-        self.rounded_loop_work = self
++    fn rounded(&mut self, shape: &RoundedTiles, phase: usize, command: usize) -> NativeResult<()> {
++        let info = shape.info();
++        // One original nontext command was already counted. Charge all extra
++        // lowered operations and every tile's source/row/storage before the
++        // group's first allocation. Failure leaves the caller's ledger intact.
++        let mut next = *self;
++        next.operations = next
++            .operations
++            .checked_add(info.tile_count - 1)
++            .filter(|&n| n <= MAX_COMMANDS)
++            .ok_or_else(|| at(FallbackKind::CommandLimit, phase, command))?;
++        next.rounded_loop_work = next
+             .rounded_loop_work
+             .checked_add(info.loop_work)
+             .ok_or_else(|| at(FallbackKind::CpuPaintBudget, phase, command))?;
+         // Its complete loop work is covered by the original nontext area debit.
+-        self.mask(
+-            info.coverage_bytes,
+-            info.row_entries,
+-            true,
+-            false,
+-            at(FallbackKind::MaskPreparation, phase, command),
+-        )
++        for tile in shape.tiles() {
++            next.mask(
++                tile.coverage_bytes,
++                tile.row_entries,
++                true,
++                false,
++                at(FallbackKind::MaskPreparation, phase, command),
++            )?;
++        }
++        *self = next;
++        Ok(())
+     }
+ }
+ 
+@@ -466,7 +481,13 @@
+         (MAX_COMMANDS, size_of::<RowSource>()),
+         (MAX_SOURCE_ENTRIES, size_of::<MaskSource>()),
+         (MAX_SOURCE_ENTRIES, size_of::<(MaskKey, usize)>()),
+-        (MAX_COMMANDS, size_of::<RoundedCoverage>()),
++        (MAX_COMMANDS, size_of::<RoundedTile>()),
++        // Fixed Native partition metadata and the all-or-nothing pair of
++        // owners coexist with the reserved destination Vec during handoff.
++        (
++            1,
++            size_of::<RoundedTiles>() + size_of::<RoundedTilesCoverage>(),
++        ),
+         (MAX_SOURCE_ENTRIES * 2, size_of::<SourceMask<'_>>()),
+         (MAX_COMMANDS, size_of::<&[i32]>()),
+         (MAX_NATIVE_PHASES, size_of::<Phase<'_>>()),
+@@ -603,7 +624,7 @@
+     let mut row_sources = reserve_native(MAX_COMMANDS)?;
+     let mut mask_sources = reserve_native(MAX_SOURCE_ENTRIES)?;
+     let mut keys = reserve_native::<(MaskKey, usize)>(MAX_SOURCE_ENTRIES)?;
+-    let mut rounded = reserve_native::<RoundedCoverage>(MAX_COMMANDS)?;
++    let mut rounded = reserve_native::<RoundedTile>(MAX_COMMANDS)?;
+     let mut ranges = [(0, 0); MAX_NATIVE_PHASES];
+     ordinal = 0;
+     for (phase_index, phase) in phases.iter().enumerate() {
+@@ -715,49 +736,46 @@
+                         rect.width,
+                         rect.height,
+                     );
+-                    let disposition = RoundedShape::prepare(
+-                        Profile::Native,
+-                        target,
+-                        translated,
+-                        state.clip(),
+-                        *radius,
+-                    )
+-                    .map_err(|_| at(FallbackKind::MaskPreparation, phase_index, index))?;
++                    let disposition =
++                        RoundedTiles::prepare_native(target, translated, state.clip(), *radius)
++                            .map_err(|_| at(FallbackKind::MaskPreparation, phase_index, index))?;
+                     match disposition {
+-                        RoundedDisposition::Empty { .. } => continue,
+-                        RoundedDisposition::ZeroRadius { .. } => Command::Rect {
++                        RoundedTilesDisposition::Empty { .. } => continue,
++                        RoundedTilesDisposition::ZeroRadius { .. } => Command::Rect {
+                             rect,
+                             rgba: [color.r, color.g, color.b, color.a],
+                             radius: 0.0,
+                         },
+-                        RoundedDisposition::Shape(shape) => {
++                        RoundedTilesDisposition::Tiles(shape) => {
+                             if color.a == 0 {
+                                 continue;
+                             }
+                             let refusal = Cell::new(None);
+                             let coverage = shape
+                                 .materialize(|shape| {
+-                                    ledger.rounded(shape.info(), phase_index, index).map_err(
+-                                        |error| {
+-                                            refusal.set(Some(error));
+-                                            "native rounded preflight".to_owned()
+-                                        },
+-                                    )
++                                    ledger.rounded(shape, phase_index, index).map_err(|error| {
++                                        refusal.set(Some(error));
++                                        "native rounded preflight".to_owned()
++                                    })
+                                 })
+                                 .map_err(|_| {
+                                     refusal.get().unwrap_or_else(|| {
+                                         at(FallbackKind::AllocationFailure, phase_index, index)
+                                     })
+                                 })?;
+-                            lowered.push(Command::Glyph {
+-                                source: mask_sources.len() as u32,
+-                                rows: row_sources.len() as u32,
+-                                y: coverage.origin_y(),
+-                                rgba: [color.r, color.g, color.b, color.a],
+-                            });
+-                            mask_sources.push(MaskSource::Rounded(rounded.len()));
+-                            row_sources.push(RowSource::Rounded(rounded.len()));
+-                            rounded.push(coverage);
++                            // Consecutive disjoint strips preserve the original
++                            // primitive's order and blend each pixel once.
++                            for tile in coverage.into_tiles() {
++                                lowered.push(Command::Glyph {
++                                    source: mask_sources.len() as u32,
++                                    rows: row_sources.len() as u32,
++                                    y: tile.origin_y(),
++                                    rgba: [color.r, color.g, color.b, color.a],
++                                });
++                                mask_sources.push(MaskSource::Rounded(rounded.len()));
++                                row_sources.push(RowSource::Rounded(rounded.len()));
++                                rounded.push(tile);
++                            }
+                             continue;
+                         }
+                     }
+--- a/src/graphics/raster_bridge/native/tests.rs
++++ b/src/graphics/raster_bridge/native/tests.rs
+@@ -985,3 +985,278 @@
+     assert!(result.plan().invocations() <= 4_000_000);
+     assert!(preparation_peak_bytes(target, true).unwrap() <= 16 * 1024 * 1024);
+ }
++
++#[test]
++fn native_wide_address_bar_admits_real_and_maximum_viewport_without_extra_pixel_work() {
++    for (width, height) in [(1275, 764), (1280, 1024)] {
++        let target = Frame::new(width, height, 0xffffff);
++        let bar_width = width - 196;
++        let commands = [fill(
++            181.0,
++            31.0,
++            bar_width as f32,
++            34.0,
++            Color::rgb(38, 45, 61),
++            7.0,
++        )];
++        let result = single(&commands, target).unwrap();
++        let stats = result.stats();
++        assert_eq!(stats.bridge.original_commands, 1);
++        assert_eq!(stats.bridge.lowered_commands, 2);
++        assert_eq!(stats.rounded_masks, 2);
++        assert_eq!(stats.mask_sources, 2);
++        assert_eq!(stats.row_entries, 68);
++        assert_eq!(stats.coverage_bytes, bar_width as usize * 34);
++        assert_eq!(stats.rounded_loop_work, u64::from(bar_width) * 34);
++        assert_eq!(
++            stats.cpu_pixel_upper_bound,
++            u64::from(width) * u64::from(height)
++        );
++        let draws = result.plan().draws();
++        assert_eq!(draws.len(), 3);
++        assert_eq!(draws[1].bounds(), (181, 31, 1024, 34));
++        assert_eq!(draws[2].bounds(), (1205, 31, bar_width - 1024, 34));
++        let full_dispatch = u64::from(width.div_ceil(8)) * u64::from(height.div_ceil(8)) * 64;
++        let rounded_dispatch = u64::from(bar_width.div_ceil(8)) * 5 * 64;
++        assert_eq!(
++            result.plan().invocations(),
++            full_dispatch * 2 + rounded_dispatch
++        );
++        assert_eq!(
++            result.plan().input_bytes().len(),
++            4 * (bar_width as usize * 34 + 68)
++        );
++        assert!(preparation_peak_bytes(target, true).unwrap() <= 16 * 1024 * 1024);
++        assert_eq!(
++            decode_pixels(result.plan()),
++            canvas_pixels(
++                target,
++                &[NativePhase {
++                    frame: target,
++                    commands: &commands
++                }],
++                &ImageStore::new(),
++                &Fonts::new()
++            )
++        );
++    }
++}
++
++#[test]
++fn native_wide_translucent_seam_uses_independent_integer_targets() {
++    let target = Frame::new(1079, 1, 0xffffff);
++    let black = fill(0.0, 0.0, 1079.0, 1.0, Color::rgba(0, 0, 0, 128), 0.25);
++    let first = single(std::slice::from_ref(&black), target).unwrap();
++    // coverage191, alpha=floor(128*191/255)=95, white→160 per channel.
++    assert_eq!(decode_pixels(first.plan()), vec![0xa0a0a0; 1079]);
++    let commands = [
++        black,
++        fill(0.0, 0.0, 1079.0, 1.0, Color::rgb(255, 0, 0), 0.25),
++    ];
++    let result = single(&commands, target).unwrap();
++    // Red alpha191 over160 gives round((255*191+160*64)/255)=231;
++    // other channels round(160*64/255)=40. Both seams have one blend/pass.
++    assert_eq!(decode_pixels(result.plan()), vec![0xe72828; 1079]);
++    assert_eq!(result.stats().bridge.lowered_commands, 4);
++    let draws = result.plan().draws();
++    assert_eq!(draws[1].bounds(), (0, 0, 1024, 1));
++    assert_eq!(draws[2].bounds(), (1024, 0, 55, 1));
++    assert_eq!(draws[3].bounds(), draws[1].bounds());
++    assert_eq!(draws[4].bounds(), draws[2].bounds());
++}
++
++#[test]
++fn native_wide_tiles_preserve_fractional_fixed_and_interleaved_phase_order() {
++    let target = Frame::new(1280, 80, 0xffffff);
++    let mut page_frame = target;
++    page_frame.document_offset = (-0.25, 3.5);
++    page_frame.viewport_offset = (0.25, 1.25);
++    let commands = [
++        DrawCommand::PushClip {
++            rect: BrowserRect {
++                x: 0.0,
++                y: 0.0,
++                width: 1060.5,
++                height: 50.0,
++            },
++        },
++        fill(
++            -0.25,
++            0.25,
++            1200.0,
++            5.25,
++            Color::rgba(20, 70, 130, 180),
++            7.0,
++        ),
++        DrawCommand::PushFixed,
++        fill(0.25, 8.25, 1270.0, 6.5, Color::rgba(180, 30, 90, 110), 7.0),
++        image("mark", 1023.5),
++        text("A"),
++        DrawCommand::PopFixed,
++        fill(1000.25, 4.0, 80.0, 5.0, Color::rgba(5, 210, 80, 140), 0.25),
++        DrawCommand::PopClip,
++    ];
++    let overlay = [
++        fill(1023.25, 8.0, 3.0, 5.0, Color::rgba(220, 150, 40, 90), 0.25),
++        text("B"),
++    ];
++    let phases = [
++        NativePhase {
++            frame: page_frame,
++            commands: &commands,
++        },
++        NativePhase {
++            frame: target,
++            commands: &overlay,
++        },
++    ];
++    let mut images = ImageStore::new();
++    images.insert("mark".into(), raster([25, 190, 250, 150]));
++    let fonts = Fonts::new();
++    let result = plan_native_scene(target, &phases, &images, &fonts).unwrap();
++    assert_eq!(result.stats().rounded_masks, 6);
++    assert_eq!(
++        decode_pixels(result.plan()),
++        canvas_pixels(target, &phases, &images, &fonts)
++    );
++}
++
++#[test]
++fn native_wide_group_shares_sources_and_original_operation_allowance() {
++    let target = Frame::new(1025, 1, 0xffffff);
++    let bar = fill(0.0, 0.0, 1025.0, 1.0, Color::BLACK, 0.25);
++    let commands = [bar.clone()];
++    let phases = [NativePhase {
++        frame: target,
++        commands: &commands,
++    }];
++    let mut images = ImageStore::new();
++    for index in 0..254 {
++        images.insert(format!("{index:03}"), raster([0, 0, 0, 255]));
++    }
++    let fonts = Fonts::new();
++    let exact = plan_native_scene(target, &phases, &images, &fonts).unwrap();
++    assert_eq!(
++        exact.stats().bridge.unique_sources + exact.stats().mask_sources,
++        256
++    );
++    images.insert("last".into(), raster([0, 0, 0, 255]));
++    assert_eq!(
++        plan_native_scene(target, &phases, &images, &fonts).unwrap_err(),
++        at(FallbackKind::MaskPreparation, 0, 0)
++    );
++    let mut commands = vec![hidden(); 254];
++    commands.push(bar.clone());
++    let exact = single(&commands, target).unwrap();
++    assert_eq!(exact.stats().bridge.original_commands, 255);
++    assert_eq!(exact.stats().bridge.lowered_commands, 2);
++    commands.insert(0, hidden());
++    assert_eq!(
++        single(&commands, target).unwrap_err(),
++        at(FallbackKind::CommandLimit, 0, 255)
++    );
++}
++
++#[test]
++fn native_wide_coverage_total_is_global_across_phases() {
++    let target = Frame::new(1025, 256, 0xffffff);
++    let wide = [fill(0.0, 0.0, 1025.0, 255.0, Color::BLACK, 0.25)];
++    let rest = [
++        fill(0.0, 0.0, 3.0, 256.0, Color::BLACK, 0.25),
++        fill(0.0, 0.0, 1.0, 1.0, Color::BLACK, 0.25),
++    ];
++    let phases = [
++        NativePhase {
++            frame: target,
++            commands: &wide,
++        },
++        NativePhase {
++            frame: target,
++            commands: &rest,
++        },
++    ];
++    let exact = plan_native_scene(target, &phases, &ImageStore::new(), &Fonts::new()).unwrap();
++    assert_eq!(exact.stats().coverage_bytes, 262_144);
++    assert_eq!(exact.stats().rounded_masks, 4);
++    assert_eq!(exact.stats().row_entries, 767);
++    let extra = [rest[1].clone()];
++    let phases = [
++        phases[0],
++        phases[1],
++        NativePhase {
++            frame: target,
++            commands: &extra,
++        },
++    ];
++    assert_eq!(
++        plan_native_scene(target, &phases, &ImageStore::new(), &Fonts::new()).unwrap_err(),
++        at(FallbackKind::MaskPreparation, 2, 0)
++    );
++}
++
++fn partition_ledger() -> Ledger {
++    Ledger {
++        operations: 1,
++        sources: 0,
++        masks: 0,
++        rows: 0,
++        row_tables: 0,
++        coverage: 0,
++        image_bytes: 0,
++        image_lut_words: 0,
++        targets: 0,
++        cpu_pixels: 1025,
++        cpu_limit: 1_000_000,
++        gpu_upper: 0,
++        rounded_loop_work: 0,
++    }
++}
++
++#[test]
++fn native_wide_group_preflight_is_atomic_at_each_global_cutpoint() {
++    let target = Frame::new(1025, 1, 0);
++    let RoundedTilesDisposition::Tiles(shape) =
++        RoundedTiles::prepare_native(target, target.caller_clip, target.caller_clip, 0.25).unwrap()
++    else {
++        panic!("partition");
++    };
++    let mut exact = partition_ledger();
++    exact.rounded(&shape, 2, 3).unwrap();
++    assert_eq!(exact.operations, 2);
++    assert_eq!(exact.sources, 2);
++    assert_eq!(exact.rows, 2);
++    assert_eq!(exact.coverage, 1025);
++    assert_eq!(exact.rounded_loop_work, 1025);
++    assert_eq!(exact.cpu_pixels, 1025); // original nontext allowance paid once
++    assert_eq!(exact.gpu_upper, 4108 + 3 * 256);
++    for field in 0..7 {
++        let mut fits = partition_ledger();
++        match field {
++            0 => fits.operations = 255,
++            1 => fits.sources = 254,
++            2 => fits.rows = MAX_ROW_ENTRIES - 2,
++            3 => fits.row_tables = 254,
++            4 => fits.coverage = MAX_MASK_COVERAGE_BYTES - 1025,
++            5 => fits.targets = Profile::Native.max_gpu_buffer_bytes() - exact.gpu_upper,
++            6 => fits.rounded_loop_work = u64::MAX - 1025,
++            _ => unreachable!(),
++        }
++        let mut fails = fits;
++        match field {
++            0 => fails.operations += 1,
++            1 => fails.sources += 1,
++            2 => fails.rows += 1,
++            3 => fails.row_tables += 1,
++            4 => fails.coverage += 1,
++            5 => fails.targets += 1,
++            6 => fails.rounded_loop_work += 1,
++            _ => unreachable!(),
++        }
++        fits.rounded(&shape, 2, 3).unwrap();
++        let before = fails;
++        let result =
++            shape.materialize(|shape| fails.rounded(shape, 2, 3).map_err(|e| e.to_string()));
++        assert!(result.is_err(), "boundary {field}");
++        assert_eq!(fails, before, "partial group ledger at boundary {field}");
++    }
++}

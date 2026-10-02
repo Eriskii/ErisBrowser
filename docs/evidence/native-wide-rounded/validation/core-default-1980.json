@@ -1,0 +1,15 @@
+{
+  "command": [
+    "cargo",
+    "+1.98.0",
+    "test",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "crates/raster-core/Cargo.toml"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 1.657,
+  "log": "core-default-1980.log",
+  "sha256": "dc853a3ce8c261cc29fbc6fc184e15bca0fb94ffb202f9757642a3e34075db65"
+}

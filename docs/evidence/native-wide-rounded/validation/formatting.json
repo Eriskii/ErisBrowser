@@ -1,0 +1,7 @@
+{
+  "toolchain": "1.88.0",
+  "root_fmt_all_check": true,
+  "core_fmt_all_check": true,
+  "diff_whitespace_clean": true,
+  "source_paths_unchanged": 112
+}

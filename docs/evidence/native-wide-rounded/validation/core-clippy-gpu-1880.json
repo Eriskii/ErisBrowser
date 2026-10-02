@@ -1,0 +1,21 @@
+{
+  "command": [
+    "cargo",
+    "+1.88.0",
+    "clippy",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "crates/raster-core/Cargo.toml",
+    "--features",
+    "gpu",
+    "--all-targets",
+    "--",
+    "-D",
+    "warnings"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 0.807,
+  "log": "core-clippy-gpu-1880.log",
+  "sha256": "c107c88249a0cb2cec13a20c47fd6e0b62fd41e311298a09a8791abfc2d5b4af"
+}

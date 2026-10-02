@@ -985,3 +985,278 @@ fn native_normal_desktop_page_and_rounded_chrome_fit_the_closed_profile() {
     assert!(result.plan().invocations() <= 4_000_000);
     assert!(preparation_peak_bytes(target, true).unwrap() <= 16 * 1024 * 1024);
 }
+
+#[test]
+fn native_wide_address_bar_admits_real_and_maximum_viewport_without_extra_pixel_work() {
+    for (width, height) in [(1275, 764), (1280, 1024)] {
+        let target = Frame::new(width, height, 0xffffff);
+        let bar_width = width - 196;
+        let commands = [fill(
+            181.0,
+            31.0,
+            bar_width as f32,
+            34.0,
+            Color::rgb(38, 45, 61),
+            7.0,
+        )];
+        let result = single(&commands, target).unwrap();
+        let stats = result.stats();
+        assert_eq!(stats.bridge.original_commands, 1);
+        assert_eq!(stats.bridge.lowered_commands, 2);
+        assert_eq!(stats.rounded_masks, 2);
+        assert_eq!(stats.mask_sources, 2);
+        assert_eq!(stats.row_entries, 68);
+        assert_eq!(stats.coverage_bytes, bar_width as usize * 34);
+        assert_eq!(stats.rounded_loop_work, u64::from(bar_width) * 34);
+        assert_eq!(
+            stats.cpu_pixel_upper_bound,
+            u64::from(width) * u64::from(height)
+        );
+        let draws = result.plan().draws();
+        assert_eq!(draws.len(), 3);
+        assert_eq!(draws[1].bounds(), (181, 31, 1024, 34));
+        assert_eq!(draws[2].bounds(), (1205, 31, bar_width - 1024, 34));
+        let full_dispatch = u64::from(width.div_ceil(8)) * u64::from(height.div_ceil(8)) * 64;
+        let rounded_dispatch = u64::from(bar_width.div_ceil(8)) * 5 * 64;
+        assert_eq!(
+            result.plan().invocations(),
+            full_dispatch * 2 + rounded_dispatch
+        );
+        assert_eq!(
+            result.plan().input_bytes().len(),
+            4 * (bar_width as usize * 34 + 68)
+        );
+        assert!(preparation_peak_bytes(target, true).unwrap() <= 16 * 1024 * 1024);
+        assert_eq!(
+            decode_pixels(result.plan()),
+            canvas_pixels(
+                target,
+                &[NativePhase {
+                    frame: target,
+                    commands: &commands
+                }],
+                &ImageStore::new(),
+                &Fonts::new()
+            )
+        );
+    }
+}
+
+#[test]
+fn native_wide_translucent_seam_uses_independent_integer_targets() {
+    let target = Frame::new(1079, 1, 0xffffff);
+    let black = fill(0.0, 0.0, 1079.0, 1.0, Color::rgba(0, 0, 0, 128), 0.25);
+    let first = single(std::slice::from_ref(&black), target).unwrap();
+    // coverage191, alpha=floor(128*191/255)=95, white→160 per channel.
+    assert_eq!(decode_pixels(first.plan()), vec![0xa0a0a0; 1079]);
+    let commands = [
+        black,
+        fill(0.0, 0.0, 1079.0, 1.0, Color::rgb(255, 0, 0), 0.25),
+    ];
+    let result = single(&commands, target).unwrap();
+    // Red alpha191 over160 gives round((255*191+160*64)/255)=231;
+    // other channels round(160*64/255)=40. Both seams have one blend/pass.
+    assert_eq!(decode_pixels(result.plan()), vec![0xe72828; 1079]);
+    assert_eq!(result.stats().bridge.lowered_commands, 4);
+    let draws = result.plan().draws();
+    assert_eq!(draws[1].bounds(), (0, 0, 1024, 1));
+    assert_eq!(draws[2].bounds(), (1024, 0, 55, 1));
+    assert_eq!(draws[3].bounds(), draws[1].bounds());
+    assert_eq!(draws[4].bounds(), draws[2].bounds());
+}
+
+#[test]
+fn native_wide_tiles_preserve_fractional_fixed_and_interleaved_phase_order() {
+    let target = Frame::new(1280, 80, 0xffffff);
+    let mut page_frame = target;
+    page_frame.document_offset = (-0.25, 3.5);
+    page_frame.viewport_offset = (0.25, 1.25);
+    let commands = [
+        DrawCommand::PushClip {
+            rect: BrowserRect {
+                x: 0.0,
+                y: 0.0,
+                width: 1060.5,
+                height: 50.0,
+            },
+        },
+        fill(
+            -0.25,
+            0.25,
+            1200.0,
+            5.25,
+            Color::rgba(20, 70, 130, 180),
+            7.0,
+        ),
+        DrawCommand::PushFixed,
+        fill(0.25, 8.25, 1270.0, 6.5, Color::rgba(180, 30, 90, 110), 7.0),
+        image("mark", 1023.5),
+        text("A"),
+        DrawCommand::PopFixed,
+        fill(1000.25, 4.0, 80.0, 5.0, Color::rgba(5, 210, 80, 140), 0.25),
+        DrawCommand::PopClip,
+    ];
+    let overlay = [
+        fill(1023.25, 8.0, 3.0, 5.0, Color::rgba(220, 150, 40, 90), 0.25),
+        text("B"),
+    ];
+    let phases = [
+        NativePhase {
+            frame: page_frame,
+            commands: &commands,
+        },
+        NativePhase {
+            frame: target,
+            commands: &overlay,
+        },
+    ];
+    let mut images = ImageStore::new();
+    images.insert("mark".into(), raster([25, 190, 250, 150]));
+    let fonts = Fonts::new();
+    let result = plan_native_scene(target, &phases, &images, &fonts).unwrap();
+    assert_eq!(result.stats().rounded_masks, 6);
+    assert_eq!(
+        decode_pixels(result.plan()),
+        canvas_pixels(target, &phases, &images, &fonts)
+    );
+}
+
+#[test]
+fn native_wide_group_shares_sources_and_original_operation_allowance() {
+    let target = Frame::new(1025, 1, 0xffffff);
+    let bar = fill(0.0, 0.0, 1025.0, 1.0, Color::BLACK, 0.25);
+    let commands = [bar.clone()];
+    let phases = [NativePhase {
+        frame: target,
+        commands: &commands,
+    }];
+    let mut images = ImageStore::new();
+    for index in 0..254 {
+        images.insert(format!("{index:03}"), raster([0, 0, 0, 255]));
+    }
+    let fonts = Fonts::new();
+    let exact = plan_native_scene(target, &phases, &images, &fonts).unwrap();
+    assert_eq!(
+        exact.stats().bridge.unique_sources + exact.stats().mask_sources,
+        256
+    );
+    images.insert("last".into(), raster([0, 0, 0, 255]));
+    assert_eq!(
+        plan_native_scene(target, &phases, &images, &fonts).unwrap_err(),
+        at(FallbackKind::MaskPreparation, 0, 0)
+    );
+    let mut commands = vec![hidden(); 254];
+    commands.push(bar.clone());
+    let exact = single(&commands, target).unwrap();
+    assert_eq!(exact.stats().bridge.original_commands, 255);
+    assert_eq!(exact.stats().bridge.lowered_commands, 2);
+    commands.insert(0, hidden());
+    assert_eq!(
+        single(&commands, target).unwrap_err(),
+        at(FallbackKind::CommandLimit, 0, 255)
+    );
+}
+
+#[test]
+fn native_wide_coverage_total_is_global_across_phases() {
+    let target = Frame::new(1025, 256, 0xffffff);
+    let wide = [fill(0.0, 0.0, 1025.0, 255.0, Color::BLACK, 0.25)];
+    let rest = [
+        fill(0.0, 0.0, 3.0, 256.0, Color::BLACK, 0.25),
+        fill(0.0, 0.0, 1.0, 1.0, Color::BLACK, 0.25),
+    ];
+    let phases = [
+        NativePhase {
+            frame: target,
+            commands: &wide,
+        },
+        NativePhase {
+            frame: target,
+            commands: &rest,
+        },
+    ];
+    let exact = plan_native_scene(target, &phases, &ImageStore::new(), &Fonts::new()).unwrap();
+    assert_eq!(exact.stats().coverage_bytes, 262_144);
+    assert_eq!(exact.stats().rounded_masks, 4);
+    assert_eq!(exact.stats().row_entries, 767);
+    let extra = [rest[1].clone()];
+    let phases = [
+        phases[0],
+        phases[1],
+        NativePhase {
+            frame: target,
+            commands: &extra,
+        },
+    ];
+    assert_eq!(
+        plan_native_scene(target, &phases, &ImageStore::new(), &Fonts::new()).unwrap_err(),
+        at(FallbackKind::MaskPreparation, 2, 0)
+    );
+}
+
+fn partition_ledger() -> Ledger {
+    Ledger {
+        operations: 1,
+        sources: 0,
+        masks: 0,
+        rows: 0,
+        row_tables: 0,
+        coverage: 0,
+        image_bytes: 0,
+        image_lut_words: 0,
+        targets: 0,
+        cpu_pixels: 1025,
+        cpu_limit: 1_000_000,
+        gpu_upper: 0,
+        rounded_loop_work: 0,
+    }
+}
+
+#[test]
+fn native_wide_group_preflight_is_atomic_at_each_global_cutpoint() {
+    let target = Frame::new(1025, 1, 0);
+    let RoundedTilesDisposition::Tiles(shape) =
+        RoundedTiles::prepare_native(target, target.caller_clip, target.caller_clip, 0.25).unwrap()
+    else {
+        panic!("partition");
+    };
+    let mut exact = partition_ledger();
+    exact.rounded(&shape, 2, 3).unwrap();
+    assert_eq!(exact.operations, 2);
+    assert_eq!(exact.sources, 2);
+    assert_eq!(exact.rows, 2);
+    assert_eq!(exact.coverage, 1025);
+    assert_eq!(exact.rounded_loop_work, 1025);
+    assert_eq!(exact.cpu_pixels, 1025); // original nontext allowance paid once
+    assert_eq!(exact.gpu_upper, 4108 + 3 * 256);
+    for field in 0..7 {
+        let mut fits = partition_ledger();
+        match field {
+            0 => fits.operations = 255,
+            1 => fits.sources = 254,
+            2 => fits.rows = MAX_ROW_ENTRIES - 2,
+            3 => fits.row_tables = 254,
+            4 => fits.coverage = MAX_MASK_COVERAGE_BYTES - 1025,
+            5 => fits.targets = Profile::Native.max_gpu_buffer_bytes() - exact.gpu_upper,
+            6 => fits.rounded_loop_work = u64::MAX - 1025,
+            _ => unreachable!(),
+        }
+        let mut fails = fits;
+        match field {
+            0 => fails.operations += 1,
+            1 => fails.sources += 1,
+            2 => fails.rows += 1,
+            3 => fails.row_tables += 1,
+            4 => fails.coverage += 1,
+            5 => fails.targets += 1,
+            6 => fails.rounded_loop_work += 1,
+            _ => unreachable!(),
+        }
+        fits.rounded(&shape, 2, 3).unwrap();
+        let before = fails;
+        let result =
+            shape.materialize(|shape| fails.rounded(shape, 2, 3).map_err(|e| e.to_string()));
+        assert!(result.is_err(), "boundary {field}");
+        assert_eq!(fails, before, "partial group ledger at boundary {field}");
+    }
+}

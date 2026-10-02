@@ -58,6 +58,16 @@ absolute row origins for `Command::Glyph`; it never paints RGB. Zero radius
 must use the ordinary rectangle path. Positive-radius `Command::Rect` remains
 unsupported unless the caller explicitly performs this lowering.
 
+`rounded::RoundedTiles::prepare_native` additionally partitions a wide Native
+shape into at most two adjacent horizontal masks, each still at most 1024
+pixels wide. Coverage uses the original floating-point geometry and absolute
+pixel coordinates; no new corners or overlapping pixels are introduced at the
+split. One aggregate preflight charges all masks, extra row tables and lowered
+operations before either tile is allocated. Original primitive loop work is
+counted once, and allocation failure returns no partial collection. Aggregate
+coverage, source, row, storage and dispatch limits remain unchanged. The legacy
+single-mask API and Probe admission rules retain their existing refusals.
+
 ## GPU ownership
 
 The optional GPU interface accepts a caller-owned device, queue and command
@@ -113,9 +123,11 @@ CPU-only tests do not initialize a graphics device. Actual Vulkan execution
 uses the separate supervised probe commands and their retained evidence.
 
 The browser now uses these APIs through its optional
-[native-window route](../../docs/vulkan-native-window.md). Core tests remain
-CPU-only: **78 default / 89 GPU-feature groups** pass on Rust 1.88 and 1.98.
-The browser owns actual acquisition, submission, verification and presentation.
+[native-window route](../../docs/vulkan-native-window.md). With the partition
+tests, **84 default / 95 GPU-feature groups** pass on Rust 1.88 and 1.98.
+Core tests remain CPU-only. The browser owns actual acquisition, submission,
+verification and presentation; separate window evidence is required for those
+operations.
 
 The earlier [native prerequisite checker](../../tools/vulkan-raster-probe/NATIVE_PREREQUISITES.md)
 exercises larger offscreen targets, rounded coverage and byte conversion.

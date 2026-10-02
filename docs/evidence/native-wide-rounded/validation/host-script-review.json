@@ -1,0 +1,144 @@
+{
+  "schema": 1,
+  "status": "clear after preserved causal-gate correction",
+  "kind": "bounded independent source/test/evidence review; no execution",
+  "source_ready": {
+    "path": "/tmp/eris-native-wide-host-source-ready.json",
+    "bytes": 5987,
+    "sha256": "3ffa713ab131aae3385b365fba99928911ff335a073b26c93ae6876b7c6076d5"
+  },
+  "bindings": [
+    {
+      "path": "tools/native_raster_wide_host.py",
+      "bytes": 28793,
+      "sha256": "8c90ed267257f9c18b14ce1a433363e124c02b0004bcbfda85480cb0f1d32249"
+    },
+    {
+      "path": "tools/test_native_raster_wide_host.py",
+      "bytes": 19253,
+      "sha256": "394309c619757078eac5b6558d191c4646fe4b0ac064a67c480a3150e33df324"
+    },
+    {
+      "path": "tools/native_raster_host.py",
+      "bytes": 27438,
+      "sha256": "7ed60d976cf14efd3d50e210dc49dff2433b6163ffa791fe1802e784a953dc52"
+    },
+    {
+      "path": "tools/test_native_raster_host.py",
+      "bytes": 23913,
+      "sha256": "98bc0d9b1ca0b37bfa0234185ce5f7d1e982f54054663deb615801ba2e6a186f"
+    },
+    {
+      "path": "tools/native_raster_followup.py",
+      "bytes": 20680,
+      "sha256": "edd7b1f6ead0fde62f6aea8dc7e18952620f5d17529366fdf52e493529a7dcce"
+    },
+    {
+      "path": "tools/test_native_raster_followup.py",
+      "bytes": 14028,
+      "sha256": "9e475bd02fc6e70f2c84c5be893c4ce3f55a4cad54746163f28b4fe8d5efb749"
+    },
+    {
+      "path": "tools/native-raster-fixtures/freeze.json",
+      "bytes": 1987,
+      "sha256": "957fd5ad91da6b2d193fd60e8596bc22c0f4b6c219385d5a2e2f098eac657f5a"
+    }
+  ],
+  "synthetic_groups": {
+    "test_native_raster_host.py": 23,
+    "test_native_raster_followup.py": 13,
+    "test_native_raster_wide_host.py": 12
+  },
+  "base_regression_check": {
+    "only_changed_top_level_function": "configure_owned",
+    "new_argument": "keyword-only requested_size=SIZE; only1180x880 or1280x880",
+    "default_unchanged": true,
+    "base_validator_followup_and_fixture_bytes_unchanged": true
+  },
+  "resolved_finding": {
+    "issue": "release was emitted while processing physical-size line before native proof already present later in the same read chunk; partial lines could likewise be placed after the marker",
+    "resolution": "drain all immediately readable stderr under the unreleased state, reject native proof there, require pending empty and live owned child before release; both live/offline paths require latest fallback to confirm1280x880",
+    "coverage": "original negative retained; split-line variant and later-wrong-size transcript with recomputed prefix/hash added"
+  },
+  "reviewed_properties": [
+    "Document response remains held until compositor control completion and exact browser physical loading-size diagnostic. Prefix byte count/hash, HTML hash, child PID and physical size bind one marker before first native proof.",
+    "Only two fixed loopback GET routes are served, with exact frozen HTML/PNG bytes, explicit length and close. Headers8KiB/65 lines; no declared body or same-buffer pipeline; max8 total/4 active connections and one completed request per route.",
+    "Verified route joins released generation1 scene with6commands/1image/3phases/3rounded masks to exact1280x880 first native presentation and4505600 acquired bytes, one-frame quota. Normal route forbids CPU reference/readback. Lowered font count is bounded, not invented.",
+    "HTTP/relay share one original operating deadline. Emergency reap and evidence-only drain are separately bounded. Partial diagnostics and setup-failure stderr remain retained; owned PID signaling precedes reap and outer subreaper checks all descendants.",
+    "Hash/policy/control failures stop the second case. Existing fixture/base/followup route expectations remain separate and no Rust admission quota changed."
+  ],
+  "retained_author_execution": {
+    "reviewer_executed": false,
+    "logs": [
+      {
+        "path": "/tmp/eris-native-wide-host-tests-1.log",
+        "bytes": 3360,
+        "sha256": "6db918c8ec015e2d939782f16904e00dc9e1cd71132c90c79d886d2df8aac0b6"
+      },
+      {
+        "path": "/tmp/eris-native-wide-host-tests-2.log",
+        "bytes": 3360,
+        "sha256": "b401e1c28a6ebe0747c2cf3e86778a9b609b134f5359a28fa860fc183a2373ec"
+      },
+      {
+        "path": "/tmp/eris-native-wide-host-tests-3.log",
+        "bytes": 850,
+        "sha256": "1ab240c0acdc34eb7f5f3f9eb49d2bdcdbbaeaefe2d0eb1cb72fe8c293c62d6c"
+      },
+      {
+        "path": "/tmp/eris-native-wide-host-tests-4.log",
+        "bytes": 147,
+        "sha256": "020831c206d8a3ab699e55e4d0311e3f1b3ff203b776ffd8740337c273240da9"
+      },
+      {
+        "path": "/tmp/eris-native-wide-host-tests-5.log",
+        "bytes": 147,
+        "sha256": "020831c206d8a3ab699e55e4d0311e3f1b3ff203b776ffd8740337c273240da9"
+      },
+      {
+        "path": "/tmp/eris-native-wide-host-tests-final-delta.log",
+        "bytes": 98,
+        "sha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5"
+      }
+    ],
+    "classification": [
+      {
+        "attempt": 1,
+        "result": "45 pass /3 setup errors: sandbox denies socketpair writes; initial test source retained"
+      },
+      {
+        "attempt": 2,
+        "result": "same unchanged suite repeated after test-edit command used an incorrect working directory and failed before editing; same3socket setup errors retained"
+      },
+      {
+        "attempt": 3,
+        "result": "47pass /1 failure: in-memory transport exposed release inserted before an already-read native proof; source/test bytes retained"
+      },
+      {
+        "attempt": 4,
+        "result": "48pass after draining all immediately readable stderr and deferring release while partial line pending"
+      },
+      {
+        "attempt": 5,
+        "result": "48pass with added split-line early-proof coverage"
+      },
+      {
+        "attempt": "final-delta",
+        "result": "1focused group passed after later-wrong-size mutation with matching recomputed prefix binding"
+      }
+    ],
+    "final": "48full synthetic groups passed; final targeted offline mutation group passed"
+  },
+  "limitations": [
+    "Reviewer performed only source reads, AST equivalence/test enumeration, hashes and retained-log inspection.",
+    "This is readiness for actual desktop validation; no compositor, HTTP browser, worker, Canvas, planner or GPU success is asserted here.",
+    "The acquired comparison is an original Canvas differential before the compositor; no desktop screenshot or performance claim."
+  ],
+  "findings": [],
+  "root_final_source_full_synthetic_check": {
+    "path": "/tmp/eris-native-wide-rounded-1/host-tests-final.log",
+    "bytes": 8948,
+    "sha256": "5591fe2d2fca6450579e91e434f1fd51182531f2779466a24f06b8680088e4ca",
+    "result": "48pass on final held files; root executed, reviewer only read"
+  }
+}

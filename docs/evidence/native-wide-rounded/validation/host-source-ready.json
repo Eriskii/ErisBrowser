@@ -1,0 +1,164 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "tools/native_raster_wide_host.py",
+      "bytes": 28793,
+      "sha256": "8c90ed267257f9c18b14ce1a433363e124c02b0004bcbfda85480cb0f1d32249"
+    },
+    {
+      "path": "tools/test_native_raster_wide_host.py",
+      "bytes": 19253,
+      "sha256": "394309c619757078eac5b6558d191c4646fe4b0ac064a67c480a3150e33df324"
+    },
+    {
+      "path": "tools/native_raster_host.py",
+      "bytes": 27438,
+      "sha256": "7ed60d976cf14efd3d50e210dc49dff2433b6163ffa791fe1802e784a953dc52"
+    },
+    {
+      "path": "tools/test_native_raster_host.py",
+      "bytes": 23913,
+      "sha256": "98bc0d9b1ca0b37bfa0234185ce5f7d1e982f54054663deb615801ba2e6a186f"
+    },
+    {
+      "path": "tools/native_raster_followup.py",
+      "bytes": 20680,
+      "sha256": "edd7b1f6ead0fde62f6aea8dc7e18952620f5d17529366fdf52e493529a7dcce"
+    },
+    {
+      "path": "tools/test_native_raster_followup.py",
+      "bytes": 14028,
+      "sha256": "9e475bd02fc6e70f2c84c5be893c4ce3f55a4cad54746163f28b4fe8d5efb749"
+    },
+    {
+      "path": "tools/native-raster-fixtures/freeze.json",
+      "bytes": 1987,
+      "sha256": "957fd5ad91da6b2d193fd60e8596bc22c0f4b6c219385d5a2e2f098eac657f5a"
+    }
+  ],
+  "tests": {
+    "full_population": 48,
+    "groups": {
+      "base": 23,
+      "followup": 13,
+      "wide": 12
+    },
+    "last_full_success": "/tmp/eris-native-wide-host-tests-5.log",
+    "final_focused_delta_success": "/tmp/eris-native-wide-host-tests-final-delta.log",
+    "logs": [
+      {
+        "path": "/tmp/eris-native-wide-host-tests-1.log",
+        "bytes": 3360,
+        "sha256": "6db918c8ec015e2d939782f16904e00dc9e1cd71132c90c79d886d2df8aac0b6"
+      },
+      {
+        "path": "/tmp/eris-native-wide-host-tests-2.log",
+        "bytes": 3360,
+        "sha256": "b401e1c28a6ebe0747c2cf3e86778a9b609b134f5359a28fa860fc183a2373ec"
+      },
+      {
+        "path": "/tmp/eris-native-wide-host-tests-3.log",
+        "bytes": 850,
+        "sha256": "1ab240c0acdc34eb7f5f3f9eb49d2bdcdbbaeaefe2d0eb1cb72fe8c293c62d6c"
+      },
+      {
+        "path": "/tmp/eris-native-wide-host-tests-4.log",
+        "bytes": 147,
+        "sha256": "020831c206d8a3ab699e55e4d0311e3f1b3ff203b776ffd8740337c273240da9"
+      },
+      {
+        "path": "/tmp/eris-native-wide-host-tests-5.log",
+        "bytes": 147,
+        "sha256": "020831c206d8a3ab699e55e4d0311e3f1b3ff203b776ffd8740337c273240da9"
+      },
+      {
+        "path": "/tmp/eris-native-wide-host-tests-final-delta.log",
+        "bytes": 98,
+        "sha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5"
+      }
+    ]
+  },
+  "preliminary_outcomes": [
+    {
+      "attempt": 1,
+      "result": "45 pass /3 setup errors: sandbox denies socketpair writes; initial test source retained"
+    },
+    {
+      "attempt": 2,
+      "result": "same unchanged suite repeated after test-edit command used an incorrect working directory and failed before editing; same3socket setup errors retained"
+    },
+    {
+      "attempt": 3,
+      "result": "47pass /1 failure: in-memory transport exposed release inserted before an already-read native proof; source/test bytes retained"
+    },
+    {
+      "attempt": 4,
+      "result": "48pass after draining all immediately readable stderr and deferring release while partial line pending"
+    },
+    {
+      "attempt": 5,
+      "result": "48pass with added split-line early-proof coverage"
+    },
+    {
+      "attempt": "final-delta",
+      "result": "1focused group passed after later-wrong-size mutation with matching recomputed prefix binding"
+    }
+  ],
+  "retained_sources": [
+    {
+      "path": "/tmp/eris-native-wide-base-host-before.py",
+      "bytes": 27201,
+      "sha256": "efe6ce8a9ca78e6df3ff1740e3fe56974909849467f525fa4e68751cb6b0db1a"
+    },
+    {
+      "path": "/tmp/eris-native-wide-base-tests-before.py",
+      "bytes": 23261,
+      "sha256": "9770d5a6f050cd28e42f80269603e6b5ef4c98326e97b9ebf04507f7afb31f69"
+    },
+    {
+      "path": "/tmp/eris-native-wide-host-tests-initial.py",
+      "bytes": 16986,
+      "sha256": "18335fe650c1a7749dea740fc71bef04ac8be8e3f48c7925036c01e7f0aebd3c"
+    },
+    {
+      "path": "/tmp/eris-native-wide-host-before-causal-fix.py",
+      "bytes": 28483,
+      "sha256": "f4a1855ee0a0f21d6a59179a5b9b878ceb167c4e14b730a767eef78eaa3abf2b"
+    },
+    {
+      "path": "/tmp/eris-native-wide-host-tests-before-causal-fix.py",
+      "bytes": 17702,
+      "sha256": "eb2a034a856525a6cb1de2c9ee3ddc1ca15e2d60c09fff15021c606267e79592"
+    },
+    {
+      "path": "/tmp/eris-native-wide-host-tests-first-pass.py",
+      "bytes": 18036,
+      "sha256": "8051fd3b1def1a4b92fa2c8ff308add97ae641c4626eb63e07a20760276cff9f"
+    },
+    {
+      "path": "/tmp/eris-native-wide-host-tests-last-full.py",
+      "bytes": 18575,
+      "sha256": "c876076be8f883bad9c6dd05abdc676456f0bbc7dfe2d9b957755f0e3b30dc00"
+    }
+  ],
+  "changes": [
+    "New two-case1280x880 host with bounded owned loopback HTTP document/PNG only",
+    "Exact original admitted HTML/PNG held until compositor and latest browser physical loading size agree",
+    "Strict released-scene6commands/1image/3phases/3rounded-masks joins;4505600verifiedbytes;normal no reference",
+    "Existing configure_owned accepts keyword-only requested_size default1180x880 with only1180x880/1280x880 admitted; no globals mutated",
+    "Original base validator, follow-up and fixtures unchanged"
+  ],
+  "execution_scope": "Only synthetic Python tests; no actual browser/worker/Canvas/planner/GPU execution",
+  "gate_limits": {
+    "request_headers": 8192,
+    "header_lines": 65,
+    "connections": 8,
+    "simultaneous_connections": 4,
+    "fixed_get_requests": 2,
+    "stderr_bytes": 2097152,
+    "default_window_seconds": 6,
+    "default_supervisor_seconds": 30
+  },
+  "lifetime": "One original owned-browser operating deadline (window_seconds+5), shared by HTTP and stderr/gate work; existing bounded emergency reap/drain and outer subreaper cleanup remain separate."
+}

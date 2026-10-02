@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "status": "isolated-source-ready-unexecuted",
+  "work_directory": "/tmp/eris-native-wide-rounded-work",
+  "base_commit": "9a30882c183f8d34dd62471b1b03ad20ceb6ea6b",
+  "main_repository_owned_files_match_base": true,
+  "old_test_bodies_byte_identical": true,
+  "execution": {
+    "rustfmt": "1.88.0, four owned files, skip_children=true",
+    "builds": 0,
+    "tests": 0,
+    "renderers": 0,
+    "GPU": 0
+  },
+  "files": [
+    {
+      "path": "crates/raster-core/src/rounded.rs",
+      "base_sha256": "b410aa8a65dae1b630c6bd951f3fac94c8bee074d9e89dccb6ba0ad1429eb6d4",
+      "after_sha256": "e8d46955f2cd29e7e54e73ce9100165d3b2c7926b37f14847f44e427ce2d6f2e",
+      "base_bytes": 9913,
+      "after_bytes": 16984,
+      "new_private_groups": []
+    },
+    {
+      "path": "crates/raster-core/src/rounded_tests.rs",
+      "base_sha256": "a947006126aa5dc012b7e42253560013eb1c5b96425e2b2e8f39c73117d7a79a",
+      "after_sha256": "0234378d1633ee10e84deba046089f71805249daf74a16493db3924a5fae8bfa",
+      "base_bytes": 15793,
+      "after_bytes": 24396,
+      "new_private_groups": [
+        "rounded_native_partition_keeps_old_axis_refusal_and_full_area_limit",
+        "rounded_native_wide_band_is_independent_literal_across_both_strips",
+        "rounded_native_partition_keeps_original_fractional_pixel_addresses",
+        "rounded_native_partition_preserves_uncropped_loop_work_once",
+        "rounded_native_partition_checks_group_before_all_four_allocations",
+        "rounded_native_single_strip_matches_legacy_coverage_and_placement"
+      ]
+    },
+    {
+      "path": "src/graphics/raster_bridge/native.rs",
+      "base_sha256": "e8290d6b2b578c29965e2439c3cf6a4d60e64294ebb6513b749daffe31601e29",
+      "after_sha256": "06c87255aa75d23fd3c52cd9f6d2e2e74e935e2e2cc9b0bbc9b4e9152e9c3653",
+      "base_bytes": 34159,
+      "after_bytes": 35178,
+      "new_private_groups": []
+    },
+    {
+      "path": "src/graphics/raster_bridge/native/tests.rs",
+      "base_sha256": "367ebae292140b78b8d069bb584512a83ae7c797b5731f948f84b285500c691f",
+      "after_sha256": "3db876fa8d8e68c1a129484f0ecb651f6096d8da866db04eb6d8f5c7946fe336",
+      "base_bytes": 29845,
+      "after_bytes": 39365,
+      "new_private_groups": [
+        "native_wide_address_bar_admits_real_and_maximum_viewport_without_extra_pixel_work",
+        "native_wide_translucent_seam_uses_independent_integer_targets",
+        "native_wide_tiles_preserve_fractional_fixed_and_interleaved_phase_order",
+        "native_wide_group_shares_sources_and_original_operation_allowance",
+        "native_wide_coverage_total_is_global_across_phases",
+        "native_wide_group_preflight_is_atomic_at_each_global_cutpoint"
+      ]
+    }
+  ],
+  "patch": {
+    "path": "/tmp/eris-native-wide-rounded-work/review/native-wide-rounded.patch",
+    "bytes": 36742,
+    "sha256": "690c3ec90bb3c479980ea7c0501f3f1d3fc0775f81dfdd6dcb448878a7480585"
+  },
+  "private_groups_added": 12,
+  "static_review_correction": "Width tuple first literal clarified to u32 after peer noted default i32 inference; no compiler execution or semantic expectation change.",
+  "scope": "Native-only one/two-strip coverage; original API/Probe limits retained; prospective whole-group ledger before allocation; no cap increases; main repository unchanged."
+}

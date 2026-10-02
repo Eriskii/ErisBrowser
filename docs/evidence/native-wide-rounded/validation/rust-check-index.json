@@ -1,0 +1,387 @@
+{
+  "schema": 1,
+  "checks": [
+    {
+      "record": "bridge-clippy-1880.json",
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "raster-bridge",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 8.258,
+      "log": "bridge-clippy-1880.log",
+      "sha256": "af439ca4b549dc9437ab19fcc7649143ca75d727112f65f38b2ab9392c066d8e"
+    },
+    {
+      "record": "bridge-clippy-1980.json",
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "raster-bridge",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 4.539,
+      "log": "bridge-clippy-1980.log",
+      "sha256": "d2a3adc2242d752d9891efbf0345a476b373a8e5ff2682d55c19e62822275673"
+    },
+    {
+      "record": "bridge-tests-1880.json",
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "raster-bridge",
+        "--lib",
+        "graphics::raster_bridge::",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 11.125,
+      "log": "bridge-tests-1880.log",
+      "sha256": "71bb167c405d4c00d698949be8d5c77a944492f540fd3eb3e22f9c95a5a9bccd"
+    },
+    {
+      "record": "bridge-tests-1980.json",
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "raster-bridge",
+        "--lib",
+        "graphics::raster_bridge::",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 8.823,
+      "log": "bridge-tests-1980.log",
+      "sha256": "e81492b384b800e49b00b341c01551af45e88dffece584022a03f9d0778672a0"
+    },
+    {
+      "record": "core-clippy-default-1880.json",
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "crates/raster-core/Cargo.toml",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.644,
+      "log": "core-clippy-default-1880.log",
+      "sha256": "46aab82635c84a228091d8ac0fe5dfae1ab8b6d8466fa7e374067a8e38667d1b"
+    },
+    {
+      "record": "core-clippy-default-1980.json",
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "crates/raster-core/Cargo.toml",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.395,
+      "log": "core-clippy-default-1980.log",
+      "sha256": "42ef4c4f92ef2d142660ddeb1941f99863bd32659cddd3c4c8a9f1afd485d18c"
+    },
+    {
+      "record": "core-clippy-gpu-1880.json",
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "crates/raster-core/Cargo.toml",
+        "--features",
+        "gpu",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.807,
+      "log": "core-clippy-gpu-1880.log",
+      "sha256": "c107c88249a0cb2cec13a20c47fd6e0b62fd41e311298a09a8791abfc2d5b4af"
+    },
+    {
+      "record": "core-clippy-gpu-1980.json",
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "crates/raster-core/Cargo.toml",
+        "--features",
+        "gpu",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.519,
+      "log": "core-clippy-gpu-1980.log",
+      "sha256": "161edd82d4166bcfab09948d854177b117d2bfd07b3909d3150b85de4af5c210"
+    },
+    {
+      "record": "core-default-1880.json",
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "crates/raster-core/Cargo.toml"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 1.856,
+      "log": "core-default-1880.log",
+      "sha256": "8d85556ed2f5e93bdec56c5a90d4b71f6f4a613589891743265a2f45a4452de5"
+    },
+    {
+      "record": "core-default-1980.json",
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "crates/raster-core/Cargo.toml"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 1.657,
+      "log": "core-default-1980.log",
+      "sha256": "dc853a3ce8c261cc29fbc6fc184e15bca0fb94ffb202f9757642a3e34075db65"
+    },
+    {
+      "record": "core-gpu-1880.json",
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "crates/raster-core/Cargo.toml",
+        "--features",
+        "gpu"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 2.278,
+      "log": "core-gpu-1880.log",
+      "sha256": "8c414af9590d6cf82fdfe82d72525b274ccb85d7a0e2c5bbccc922729b2f649a"
+    },
+    {
+      "record": "core-gpu-1980.json",
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "crates/raster-core/Cargo.toml",
+        "--features",
+        "gpu"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 1.87,
+      "log": "core-gpu-1980.log",
+      "sha256": "02b273f3349f352e37a7e6dcb11e6ca2e00dabb1a6860f9686218c2de057ff33"
+    },
+    {
+      "record": "native-build-1980.json",
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--bin",
+        "eris-browser"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.183,
+      "log": "native-build-1980.log",
+      "sha256": "f0788aa36d1c86b6ccdfb7f4042a5574102d82061c046422a2d42e008a1e4710"
+    },
+    {
+      "record": "native-clippy-1880.json",
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 8.24,
+      "log": "native-clippy-1880.log",
+      "sha256": "d973096d0962c55a7a4e4cede9a6aa0db316a213d4b3620ef0f6c6151ffef53f"
+    },
+    {
+      "record": "native-clippy-1980.json",
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 4.689,
+      "log": "native-clippy-1980.log",
+      "sha256": "626cf2709a1eac042344fc587ba6cfae8e52ba77816ddbce3dc2e66b82ce7da1"
+    },
+    {
+      "record": "probe-tests-1880.json",
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--features",
+        "browser-bridge"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 9.546,
+      "log": "probe-tests-1880.log",
+      "sha256": "81e7af900f0a2d3fa668dcfbe18f1dc344c225265e7d681e78d1ebe982fac8d2"
+    },
+    {
+      "record": "probe-tests-1980.json",
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--features",
+        "browser-bridge"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 5.576,
+      "log": "probe-tests-1980.log",
+      "sha256": "3b540ba58020856df4fe4142f12c4ca0715dab7986c0161186ca77d9e6e2f664"
+    },
+    {
+      "record": "root-native-full-1880.json",
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 41.526,
+      "log": "root-native-full-1880.log",
+      "sha256": "98cf17de6859a852c58798fdda358a5635a360ba92205fb4a65a9a3837f39b90"
+    },
+    {
+      "record": "root-native-full-1980.json",
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 29.413,
+      "log": "root-native-full-1980.log",
+      "sha256": "f637fdc2f218d3a7edc9724f0df57462fe63d1c5ddc2650ac0cfe8f61d933831"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/run/current-system/sw/bin/python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tools",
+    "-p",
+    "test_native_raster*.py",
+    "-v"
+  ],
+  "exit": 0,
+  "log": "host-tests-final.log",
+  "sha256": "5591fe2d2fca6450579e91e434f1fd51182531f2779466a24f06b8680088e4ca"
+}

@@ -9,7 +9,7 @@ use crate::graphics::{
 use eris_raster_core::{
     MAX_MASK_COVERAGE_BYTES, MAX_NATIVE_PHASES, MAX_ROW_ENTRIES, PARAM_STRIDE, Phase, Profile,
     SourceMask,
-    rounded::{RoundedCoverage, RoundedDisposition, RoundedInfo, RoundedShape},
+    rounded::{RoundedTile, RoundedTiles, RoundedTilesCoverage, RoundedTilesDisposition},
     scope::CoordinateState,
 };
 use std::cell::Cell;
@@ -287,6 +287,7 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
     Ok(counts)
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 struct Ledger {
     operations: usize,
     sources: usize,
@@ -396,19 +397,33 @@ impl Ledger {
             at(FallbackKind::MaskPreparation, phase, command),
         )
     }
-    fn rounded(&mut self, info: RoundedInfo, phase: usize, command: usize) -> NativeResult<()> {
-        self.rounded_loop_work = self
+    fn rounded(&mut self, shape: &RoundedTiles, phase: usize, command: usize) -> NativeResult<()> {
+        let info = shape.info();
+        // One original nontext command was already counted. Charge all extra
+        // lowered operations and every tile's source/row/storage before the
+        // group's first allocation. Failure leaves the caller's ledger intact.
+        let mut next = *self;
+        next.operations = next
+            .operations
+            .checked_add(info.tile_count - 1)
+            .filter(|&n| n <= MAX_COMMANDS)
+            .ok_or_else(|| at(FallbackKind::CommandLimit, phase, command))?;
+        next.rounded_loop_work = next
             .rounded_loop_work
             .checked_add(info.loop_work)
             .ok_or_else(|| at(FallbackKind::CpuPaintBudget, phase, command))?;
         // Its complete loop work is covered by the original nontext area debit.
-        self.mask(
-            info.coverage_bytes,
-            info.row_entries,
-            true,
-            false,
-            at(FallbackKind::MaskPreparation, phase, command),
-        )
+        for tile in shape.tiles() {
+            next.mask(
+                tile.coverage_bytes,
+                tile.row_entries,
+                true,
+                false,
+                at(FallbackKind::MaskPreparation, phase, command),
+            )?;
+        }
+        *self = next;
+        Ok(())
     }
 }
 
@@ -466,7 +481,13 @@ pub fn preparation_peak_bytes(target: Frame, include_reference: bool) -> NativeR
         (MAX_COMMANDS, size_of::<RowSource>()),
         (MAX_SOURCE_ENTRIES, size_of::<MaskSource>()),
         (MAX_SOURCE_ENTRIES, size_of::<(MaskKey, usize)>()),
-        (MAX_COMMANDS, size_of::<RoundedCoverage>()),
+        (MAX_COMMANDS, size_of::<RoundedTile>()),
+        // Fixed Native partition metadata and the all-or-nothing pair of
+        // owners coexist with the reserved destination Vec during handoff.
+        (
+            1,
+            size_of::<RoundedTiles>() + size_of::<RoundedTilesCoverage>(),
+        ),
         (MAX_SOURCE_ENTRIES * 2, size_of::<SourceMask<'_>>()),
         (MAX_COMMANDS, size_of::<&[i32]>()),
         (MAX_NATIVE_PHASES, size_of::<Phase<'_>>()),
@@ -603,7 +624,7 @@ pub fn plan_native_scene(
     let mut row_sources = reserve_native(MAX_COMMANDS)?;
     let mut mask_sources = reserve_native(MAX_SOURCE_ENTRIES)?;
     let mut keys = reserve_native::<(MaskKey, usize)>(MAX_SOURCE_ENTRIES)?;
-    let mut rounded = reserve_native::<RoundedCoverage>(MAX_COMMANDS)?;
+    let mut rounded = reserve_native::<RoundedTile>(MAX_COMMANDS)?;
     let mut ranges = [(0, 0); MAX_NATIVE_PHASES];
     ordinal = 0;
     for (phase_index, phase) in phases.iter().enumerate() {
@@ -715,49 +736,46 @@ pub fn plan_native_scene(
                         rect.width,
                         rect.height,
                     );
-                    let disposition = RoundedShape::prepare(
-                        Profile::Native,
-                        target,
-                        translated,
-                        state.clip(),
-                        *radius,
-                    )
-                    .map_err(|_| at(FallbackKind::MaskPreparation, phase_index, index))?;
+                    let disposition =
+                        RoundedTiles::prepare_native(target, translated, state.clip(), *radius)
+                            .map_err(|_| at(FallbackKind::MaskPreparation, phase_index, index))?;
                     match disposition {
-                        RoundedDisposition::Empty { .. } => continue,
-                        RoundedDisposition::ZeroRadius { .. } => Command::Rect {
+                        RoundedTilesDisposition::Empty { .. } => continue,
+                        RoundedTilesDisposition::ZeroRadius { .. } => Command::Rect {
                             rect,
                             rgba: [color.r, color.g, color.b, color.a],
                             radius: 0.0,
                         },
-                        RoundedDisposition::Shape(shape) => {
+                        RoundedTilesDisposition::Tiles(shape) => {
                             if color.a == 0 {
                                 continue;
                             }
                             let refusal = Cell::new(None);
                             let coverage = shape
                                 .materialize(|shape| {
-                                    ledger.rounded(shape.info(), phase_index, index).map_err(
-                                        |error| {
-                                            refusal.set(Some(error));
-                                            "native rounded preflight".to_owned()
-                                        },
-                                    )
+                                    ledger.rounded(shape, phase_index, index).map_err(|error| {
+                                        refusal.set(Some(error));
+                                        "native rounded preflight".to_owned()
+                                    })
                                 })
                                 .map_err(|_| {
                                     refusal.get().unwrap_or_else(|| {
                                         at(FallbackKind::AllocationFailure, phase_index, index)
                                     })
                                 })?;
-                            lowered.push(Command::Glyph {
-                                source: mask_sources.len() as u32,
-                                rows: row_sources.len() as u32,
-                                y: coverage.origin_y(),
-                                rgba: [color.r, color.g, color.b, color.a],
-                            });
-                            mask_sources.push(MaskSource::Rounded(rounded.len()));
-                            row_sources.push(RowSource::Rounded(rounded.len()));
-                            rounded.push(coverage);
+                            // Consecutive disjoint strips preserve the original
+                            // primitive's order and blend each pixel once.
+                            for tile in coverage.into_tiles() {
+                                lowered.push(Command::Glyph {
+                                    source: mask_sources.len() as u32,
+                                    rows: row_sources.len() as u32,
+                                    y: tile.origin_y(),
+                                    rgba: [color.r, color.g, color.b, color.a],
+                                });
+                                mask_sources.push(MaskSource::Rounded(rounded.len()));
+                                row_sources.push(RowSource::Rounded(rounded.len()));
+                                rounded.push(tile);
+                            }
                             continue;
                         }
                     }
